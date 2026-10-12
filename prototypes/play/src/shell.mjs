@@ -99,7 +99,7 @@ function layout() {
   // the bar
   place(bar, 0, 0, W, 40);
   const tw = short || narrow ? [12, 124, 236] : [12, 144, 276], tabW = short || narrow ? 104 : 124;
-  ["station", "companion", "bench"].forEach((d, i) => { place(tabs[d], tw[i], 4, tabW, 32); tabs[d].classList.toggle("on", owner === d); });
+  ["station", "companion", "bench"].forEach((d, i) => { place(tabs[d], tw[i], 4, tabW, 32); tabs[d].classList.toggle("on", owner === d); tabs[d].setAttribute("aria-pressed", String(owner === d)); });
   const iconOnly = narrow || (short && W < 1104);
   const dockX = narrow ? W - 232 : short ? (iconOnly ? W - 232 : W - 360) : W - 436, dockW = iconOnly ? 40 : 168;
   place(dockCtl, dockX, 4, dockW, 32);
@@ -107,7 +107,9 @@ function layout() {
   place(devBtn, short || narrow ? W - 112 : W - 160, 4, short || narrow ? 100 : 148, 32);
   devBtn.textContent = short || narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
   layoutDock(iconOnly);
-  note.classList.toggle("hidden", !narrow); if (narrow) place(note, 12, 44, W - 24, 16);
+  const sheetUp = benchRaised && !hasShelf();
+  note.classList.toggle("hidden", !narrow || sheetUp); if (narrow) place(note, 12, 44, W - 24, 16);
+  if (sheetUp) stage.setAttribute("inert", ""); else stage.removeAttribute("inert");
   // shells
   const sx = narrow ? 12 : 12 + oxr, sh = short ? 616 : 672;
   place(shS, sx, cyBase, 1040, sh); place(frames.station, 8, 8, 1024, 600); place($("rowStation"), 8, 616, 1024, 48);
@@ -131,7 +133,7 @@ function layout() {
   // the bench
   layoutBench(); const benchRect = benchBox();
   if (ringTarget) { ring.classList.remove("hidden"); place(ring, ringTarget[0] - 3, ringTarget[1] - 3, ringTarget[2] + 6, ringTarget[3] + 6); }
-  else if (benchRect) { ring.classList.remove("hidden"); place(ring, benchRect[0] - 3, benchRect[1] - 3, benchRect[2] + 6, benchRect[3] + 6); } else ring.classList.add("hidden");
+  else if (benchRect && !(narrow && sheetUp)) { ring.classList.remove("hidden"); place(ring, benchRect[0] - 3, benchRect[1] - 3, benchRect[2] + 6, benchRect[3] + 6); } else ring.classList.add("hidden");
   // the developer tools
   dev.classList.toggle("hidden", !devOpen); dev.classList.toggle("column", wide);
   if (wide) place(dev, W - 332, 52, 320, H - 64); else { const w = tier === "standard" ? 360 : Math.min(360, W); place(dev, W - w, 40, w, H - 40); }
@@ -220,7 +222,7 @@ shC.addEventListener("pointerdown", () => { if (owner !== "companion") setOwner(
 bench.addEventListener("pointerdown", () => { if (owner !== "bench") setOwner("bench"); });
 handle.addEventListener("click", () => setOwner("bench"));
 $("benchLower").addEventListener("click", () => { benchRaised = false; setOwner(lastDevice); layout(); });
-tabs.station.addEventListener("click", () => { setOwner("station"); }); tabs.companion.addEventListener("click", () => { setOwner("companion"); }); tabs.bench.addEventListener("click", () => { if (owner === "bench" && !hasShelf()) { benchRaised = false; setOwner(lastDevice); } else setOwner("bench"); });
+tabs.station.addEventListener("click", () => { setOwner("station"); }); tabs.companion.addEventListener("click", () => { setOwner("companion"); }); tabs.bench.addEventListener("click", () => { if (owner !== "bench") setOwner("bench"); });   // a second press does nothing, in every tier
 function toggleDev(on = !devOpen) { devOpen = on; layout(); try { frames.station.contentWindow.postMessage({ t: "mb-dev", on: devOpen }, location.origin); } catch { /* not loaded */ } if (document.activeElement && document.activeElement.closest && document.activeElement.closest("#bar")) giveKeys(owner); }
 devBtn.addEventListener("click", () => { toggleDev(); giveKeys(owner); });
 function toggleKeys(on = !keysOpen) { keysOpen = on; layout(); }

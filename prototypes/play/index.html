@@ -95,14 +95,14 @@ iframe{border:0; display:block; background:var(--void)}
 .bk.confirm svg{stroke:#fff8ef; stroke-width:3}
 .bk img{width:calc(var(--f) * 24px); height:calc(var(--f) * 24px); image-rendering:pixelated; pointer-events:none}
 /* the bench */
-#bench{position:absolute; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); z-index:10}
+#bench{position:fixed; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); z-index:10}
 #bench header{position:absolute; left:0; top:0; right:0; border-bottom:calc(var(--f) * 1px) solid var(--hairline); color:var(--fog)}
 #bench header span{position:absolute}
-#benchHandle{position:absolute; background:var(--bar); border:0; border-top:calc(var(--f) * 1px) solid var(--hairline); color:var(--fog); text-align:left; z-index:10; padding:0}
+#benchHandle{position:fixed; background:var(--bar); border:0; border-top:calc(var(--f) * 1px) solid var(--hairline); color:var(--fog); text-align:left; z-index:10; padding:0}
 #benchHandle span{position:absolute}
 #benchLower{position:absolute}
 /* the developer drawer or column: the Station's own panel, restyled in the Station palette */
-#dev{position:absolute; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); z-index:15; padding:calc(var(--f) * 16px); overflow:auto; color:var(--fog); --panel:#23292f; --line:#3d434b; --ink:#c6c4d8; --muted:#8d8aa6; --chip:#1d232b; --bg-2:#1d232b}
+#dev{position:fixed; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); z-index:15; padding:calc(var(--f) * 16px); overflow:auto; color:var(--fog); --panel:#23292f; --line:#3d434b; --ink:#c6c4d8; --muted:#8d8aa6; --chip:#1d232b; --bg-2:#1d232b}
 #dev.column{border-radius:calc(var(--f) * 8px)}
 #dev .dev-group{border-top:1px solid var(--line); padding:6px 0}
 #dev .dev-group summary{cursor:pointer; font:500 15px/1.4 system-ui,sans-serif}
@@ -115,7 +115,7 @@ iframe{border:0; display:block; background:var(--void)}
 #devStationOut{font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace; background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; white-space:pre-wrap; color:var(--ink); max-height:320px; overflow:auto; margin:8px 0 0}
 #observer{margin:calc(var(--f) * 12px) 0 0; color:var(--mist); font-size:calc(var(--f) * 12px); line-height:1.4}
 /* Keys ? */
-#keysPanel{position:absolute; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); border-radius:calc(var(--f) * 8px); z-index:30; padding:calc(var(--f) * 16px); overflow:auto; color:var(--fog)}
+#keysPanel{position:fixed; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); border-radius:calc(var(--f) * 8px); z-index:30; padding:calc(var(--f) * 16px); overflow:auto; color:var(--fog)}
 #keysPanel h2{margin:0 0 calc(var(--f) * 6px); font-weight:500; font-size:calc(var(--f) * 16px); color:var(--bone)}
 #keysPanel p{margin:0 0 calc(var(--f) * 10px); color:var(--mist); font-size:calc(var(--f) * 12px)}
 #keysPanel h3{margin:calc(var(--f) * 10px) 0 calc(var(--f) * 4px); font-weight:500; font-size:calc(var(--f) * 12px); color:var(--bone)}
@@ -137,10 +137,10 @@ iframe{border:0; display:block; background:var(--void)}
   <div id="band" class="hidden"></div>
   <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
   <div id="ring"></div>
+</div>
   <div id="bench" class="hidden"><header><span id="benchTitle">Bench</span><button type="button" class="ctl" id="benchLower">Lower ↓</button></header><iframe id="fBench" title="Bench" allow=""></iframe></div>
   <button type="button" id="benchHandle" class="hidden"><span>Raise the bench ↑, or press ` until it has the keys</span></button>
   <div id="dev" class="hidden"><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
-</div>
 <div id="bar">
   <button type="button" class="ctl" id="tabStation">Station</button>
   <button type="button" class="ctl" id="tabCompanion">Companion</button>

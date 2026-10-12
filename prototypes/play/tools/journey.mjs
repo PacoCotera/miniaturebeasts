@@ -46,6 +46,14 @@ const box = async (page, sel) => { const b = await page.locator(sel).boundingBox
 const rd = (buf) => decodePNG(Buffer.isBuffer(buf) ? buf : Buffer.from(buf));
 const dataPng = (url) => rd(Buffer.from(url.split(",")[1], "base64"));
 const sameImage = (a, b) => a.width === b.width && a.height === b.height && Buffer.compare(Buffer.from(a.data.buffer, a.data.byteOffset, a.data.byteLength), Buffer.from(b.data.buffer, b.data.byteOffset, b.data.byteLength)) === 0;
+// the lamp's 8 × 8 clip against its master composited over the cradle's fill (bar #23292f): the opaque pixels exact, the rest within 1 a channel
+const BAR = [0x23, 0x29, 0x2f];
+async function lampIs(page, which, label) {
+  const r = await page.locator("#lamp").boundingBox(), got = rd(await page.screenshot({ clip: { x: r.x, y: r.y, width: 8, height: 8 } })), m = decodePNG(readFileSync(path.join(root, `ui/assets/masters/pods/frame-lamp-8-${which}.png`)));
+  let opaque = 0, bad = 0;
+  for (let i = 0; i < 64; i++) { const a = m.data[i * 4 + 3]; if (a === 255) opaque++; for (let c = 0; c < 3; c++) { const want = Math.round((m.data[i * 4 + c] * a) / 255 + (BAR[c] * (255 - a)) / 255), have = got.data[i * 4 + c]; if (a === 255 ? have !== want : Math.abs(have - want) > 1) bad++; } }
+  expect(bad === 0 && opaque === 16, `${label}: the lamp is the ${which} master over the cradle's fill (${opaque} opaque pixels, ${bad} channels off)`);
+}
 const pixel = async (page, x, y) => { const p = rd(await page.screenshot({ clip: { x, y, width: 1, height: 1 } })); return [...p.data.slice(0, 3)]; };
 const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("src"), dot: !document.getElementById("dockDot").hidden, live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
 const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, { recursive: true }), page.screenshot({ path: path.join(img, name), clip: rect ?? { x: 0, y: 0, width: page.viewportSize().width, height: page.viewportSize().height } })) : null;
@@ -78,24 +86,29 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 
 // ---- B. the dock round trip (viewport 1920 × 1080, one crate aboard) ----
 {
-  const { ctx, page, st, mb } = await open(1920, 1080);
+  const { ctx, page, st, mb } = await open(1920, 1080, { query: "?test&seed=3" });
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   let s = await state(page);
+  await lampIs(page, "stone", "B1");
   eq([s.word, s.mark.includes("outline"), s.dot, s.caddy.docked, s.caddy.crates], ["Dock", true, true, false, 1], "B1: away: Dock, the outline mark, the amber dot");
   await st().evaluate(() => window.__st.act("research")); await page.waitForTimeout(300);   // the Station on Pods
   eq(await st().evaluate(() => window.__st.UI.screen), "pods", "B2: the Station is on Pods");
   await page.mouse.click(1300, 300); await page.waitForTimeout(200);   // a click inside the Companion frame gives it the keys
   s = await state(page); eq(s.owner, "companion", "B2: the Companion has the keys");
+  await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "place"); await page.waitForTimeout(700); await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "map"); await page.waitForTimeout(300);
+  const walk = () => mb().evaluate(() => { const e = window.__mb.S.exp; return { start: e.start, pos: e.pos, face: e.face }; }), w0 = await walk();
+  eq([w0.face, w0.pos === w0.start], ["down", true], "B2: before D the Companion faces down at its start");
   await mb().evaluate(() => { window.__heard = []; window.addEventListener("keydown", (e) => window.__heard.push((e.shiftKey ? "Shift+" : "") + e.code)); });
   await page.keyboard.press("d"); await page.waitForTimeout(400);
-  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "B2: plain D never docks"); eq(await mb().evaluate(() => window.__heard), ["KeyD"], "B2: plain D reached the Companion (its own key)");
+  const w1 = await walk(); eq([w1.face, w1.pos], ["right", w0.start + 1], "B2: after D the Companion faces right, one step on");
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "B2: plain D never docks"); eq(await mb().evaluate(() => window.__heard), ["KeyD"], "B2: and the Companion heard exactly KeyD");
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   expect(!(await mb().evaluate(() => window.__heard)).includes("Shift+KeyD"), "B2: Shift+D (the letter) never reached the Companion");
   s = await state(page);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "B2: the Caddy is docked within 600 ms");
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.home.f]), ["home", "room"], "B2: the landing rule: Home with the ring on the room");
   eq([s.word, s.mark.includes("solid"), s.dot], ["Lift", true, false], "B2: the control reads Lift with the solid mark and no dot");
-  eq(await pixel(page, 1084, 748), [...decodePNG(readFileSync(path.join(root, "ui/assets/masters/pods/frame-lamp-8-mint.png"))).data.slice(4 * 8 * 4 + 4 * 4, 4 * 8 * 4 + 4 * 4 + 3)], "B2: the lamp is the mint master (its centre pixel)");
+  await lampIs(page, "mint", "B2");
   near((await box(page, "#fCompanion"))[1], 68, "B2: the Companion frame is at y 68 (seated)");
   const ring = await page.evaluate(() => __play.rects().ring), sh = await box(page, "#shStation"); expect(ring[0] < sh[0] && ring[1] < sh[1], "B2: the ring is on the Station shell");
   eq(s.active, "fStation", "B2: the keys went to the Station"); eq(s.live, "Companion docked", "B2: the live region");
@@ -106,7 +119,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600); s = await state(page);
   eq(await st().evaluate(() => [window.__st.ST.dock.docked, window.__st.UI.screen]), [false, "pods"], "B4: lifted, and the Station stays on Pods");
   eq([s.word, s.mark.includes("outline")], ["Dock", true], "B4: the control reads Dock again"); near((await box(page, "#fCompanion"))[1], 60, "B4: the Companion frame is back at y 60");
-  eq(s.active, "fCompanion", "B4: the Companion has the keys"); eq(s.live, "Companion lifted", "B4: the live region");
+  await lampIs(page, "stone", "B4"); eq(s.active, "fCompanion", "B4: the Companion has the keys"); eq(s.live, "Companion lifted", "B4: the live region");
   // B5: Create keeps the player where they are, with the plate
   await st().evaluate(() => { const S = window.__st; S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 1); S.openCreate(p.id); }); await page.waitForTimeout(400);
   eq(await st().evaluate(() => window.__st.UI.screen), "create", "B5: the Station is on Create");
@@ -141,6 +154,13 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.ST.dock.docked]), ["home", true], "C: it shows Home, docked");
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion"), await st().evaluate(() => window.__st.ST.dock.docked)], ["hidden", "visible", false], "C: Lift shows the Companion");
+  // the bench in narrow: the sheet is a fixed child of the body, the stage is inert, and the note and the ring are gone while it is raised; a second press on the tab does nothing
+  await page.click("#tabBench"); await page.waitForTimeout(300);
+  const up = await page.evaluate(() => ({ owner: __play.owner, pos: getComputedStyle(document.getElementById("bench")).position, parent: document.getElementById("bench").parentElement.tagName, inert: document.getElementById("stage").hasAttribute("inert"), note: document.getElementById("note").classList.contains("hidden"), ring: document.getElementById("ring").classList.contains("hidden"), pressed: document.getElementById("tabBench").getAttribute("aria-pressed"), others: [document.getElementById("tabStation").getAttribute("aria-pressed"), document.getElementById("tabCompanion").getAttribute("aria-pressed")] }));
+  eq([up.owner, up.pos, up.parent, up.inert, up.note, up.ring, up.pressed, up.others], ["bench", "fixed", "BODY", true, true, true, "true", ["false", "false"]], "C: the raised sheet in narrow");
+  await page.click("#tabBench"); await page.waitForTimeout(200); eq((await state(page)).owner, "bench", "C: a second press on the Bench tab does nothing");
+  await page.click("#tabCompanion"); await page.waitForTimeout(300);
+  eq(await page.evaluate(() => [__play.owner, document.getElementById("stage").hasAttribute("inert"), document.getElementById("note").classList.contains("hidden")]), ["companion", false, false], "C: the Companion tab lowers the sheet and the stage is live again");
   // the hidden frame's storage path: the Station is hidden, a crate arrives, the control's dot changes within 600 ms
   eq((await state(page)).dot, false, "C: no dot before the crate");
   await st().evaluate(() => window.__st.seedCrate("S01", 1, 7)); await page.waitForTimeout(600);
@@ -172,6 +192,9 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
   await page.click("#tabCompanion"); await page.waitForTimeout(400);
   near((await box(page, "#fCompanion"))[0], 1440 - 1546 + 1068 + 8, "standard: the Companion focused pans −106", 0.51);
+  await page.click("#tabBench"); await page.waitForTimeout(300); await page.click("#tabBench"); await page.waitForTimeout(200);
+  eq(await page.evaluate(() => [__play.owner, !document.getElementById("bench").classList.contains("hidden")]), ["bench", true], "standard: a second press on the Bench tab does nothing");
+  await page.click("#tabCompanion"); await page.waitForTimeout(300);
   await clip(page, "play-standard-companion.png"); await ctx.close();
 }
 {
