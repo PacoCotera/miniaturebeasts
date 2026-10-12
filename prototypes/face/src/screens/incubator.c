@@ -97,9 +97,10 @@ static int hatch_moving(void) { return hatch_set() != NULL && in_state("hatch");
 int incubator_tick(uint32_t now) { (void)now; return 0; }   /* the hatch is an event: its frames are drawn while it plays */
 static int mv_at(int at_ms) { return at_ms; }
 /* the cell (close-cell name), dy, lift, a dither (from NULL: clear) and shadow-75 at t ms of the hatch; NULL cell: not shown yet */
-typedef struct { const char *cell, *dfrom; int dy, lift, dl, ddf, ddt, sh75, shadow, up, dup; } hatchf_t;   /* up, dup: the stand-in anchor's raise of the cell and of the dither's from (HATCH_STANDIN_FEET) */
+typedef struct { const char *cell, *dfrom; int dy, lift, dl, ddf, ddt, sh75, shadow, shl, up, dup; } hatchf_t;   /* up, dup: the stand-in anchor's raise of the cell and of the dither's from (HATCH_STANDIN_FEET); shl: the shadow's dither-in level (0: whole) */
 /* M1a only (motion-spec §2.7a): the curl stand-in's feet sit at row 424, centred on x 512, from 1000 to the end of the curl-to-crouch dither at 2320; the crouch comes in at 472 inside that dither, never a cut.
-   M1b drops this: the real 304 x 312 curl stands at 472 from 1000. One constant. */
+   While the stand-in stands there no juvenile shadow is drawn (the nest's painted shade grounds it); the shadow comes in with the crouch through that dither and is on from 2320.
+   M1b drops this: the real 304 x 312 curl stands at 472 from 1000, its shadow on from 1180. One constant. */
 #define HATCH_STANDIN_FEET 424
 static void hatch_frame(const mv_stage_t *S0, int t, hatchf_t *f) {
   memset(f, 0, sizeof *f);
@@ -110,9 +111,9 @@ static void hatch_frame(const mv_stage_t *S0, int t, hatchf_t *f) {
   if (t < 1000) return;
   int jr[4]; crect("regions.juvenile.rect", jr); const int up = jr[1] + jr[3] - HATCH_STANDIN_FEET;   /* the stand-in anchor (M1a): 472 - 424 */
   if (t < 1180) { int n = hatch_fade_level(t); if (n <= 0) return; f->cell = "curl"; f->dl = n; f->dfrom = NULL; f->up = up; return; }   /* the curl comes in at n from clear while the bud goes out at 16 − n (motion-spec §2.7a); level 0 shows nothing */
-  if (t < 1500) { f->cell = "curl"; f->shadow = 1; f->up = up; return; }
-  if (t < 2140) { f->cell = "curl-b1"; f->shadow = 1; f->up = up; return; }
-  if (t < 2320) { f->cell = "crouch"; f->dy = 2; f->dl = 1 + 15 * (t - 2140) / 180; f->dfrom = "curl"; f->ddt = 2; f->shadow = 1; f->dup = up; return; }   /* the curl goes out at its anchor while the crouch comes in at 472 */
+  if (t < 1500) { f->cell = "curl"; f->shadow = !up; f->up = up; return; }   /* the anchored stand-in has no shadow */
+  if (t < 2140) { f->cell = "curl-b1"; f->shadow = !up; f->up = up; return; }
+  if (t < 2320) { f->cell = "crouch"; f->dy = 2; f->dl = 1 + 15 * (t - 2140) / 180; f->dfrom = "curl"; f->ddt = 2; f->shadow = 1; f->shl = up ? f->dl : 0; f->dup = up; return; }   /* the curl goes out at its anchor while the crouch, and with an anchor its shadow, come in at 472 */
   if (t < 2720) { f->cell = "crouch"; f->dy = 2; f->shadow = 1; return; }
   if (t < 5120) { int k = (t - 2720) / 80, c = S0->breathe.cell[0]; for (int i = 0; i < S0->breathe.n; i++) { int d = S0->breathe.ms[i] / 80; if (k < d) { c = S0->breathe.cell[i]; break; } k -= d; } f->cell = S0->wcell[c]; f->shadow = 1; return; }   /* the first breath from 2720 */
   { int lift[8], n = 0; for (int i = 0, m = spec_len(I, "events.hatch.moving.steps"); i < m; i++) if (spec_len(I, v_fmt("events.hatch.moving.steps.%d.lift", i)) > 0) { n = spec_len(I, v_fmt("events.hatch.moving.steps.%d.lift", i)); if (n > 8) n = 8; for (int k = 0; k < n; k++) lift[k] = spec_int(I, v_fmt("events.hatch.moving.steps.%d.lift.%d", i, k), 0); break; }
@@ -124,7 +125,9 @@ int incubator_test_cell(void) { const mv_stage_t *S0 = hatch_set(); if (!S0) ret
 static void build_moving_juvenile(const mv_stage_t *S0, int t) {
   int r[4]; crect("regions.juvenile.rect", r); const char *atlas = v_pstr("regions.juvenile.moving.close"), *shadow = v_pstr("regions.juvenile.moving.shadow"); char at[96], sh[96]; snprintf(at, sizeof at, "%s", atlas); snprintf(sh, sizeof sh, "%s", shadow);
   hatchf_t f; hatch_frame(S0, t, &f); int feet = r[1] + r[3];
-  if (wire_has_asset(sh)) { v_name("juvenile.shadow"); if (f.cell && f.shadow) v_sprite_window("juvenile.shadow", sh, 1 + (f.sh75 ? 1 : 0) * S0->scw, 0, r[0], feet - S0->sch, S0->scw, S0->sch); else v_sprite_hidden("juvenile.shadow", sh, r[0], feet - S0->sch); }
+  if (wire_has_asset(sh)) { v_name("juvenile.shadow"); const int sx = 1 + (f.sh75 ? 1 : 0) * S0->scw;
+    if (f.cell && f.shadow && f.shl) { v_sprite_hidden("juvenile.shadow", sh, r[0], feet - S0->sch); v_dither_window("juvenile.shadow.in", NULL, 0, 0, sh, sx, 0, f.shl, r[0], feet - S0->sch, S0->scw, S0->sch); }   /* coming in with the crouch (the stand-in anchor, M1a) */
+    else if (f.cell && f.shadow) v_sprite_window("juvenile.shadow", sh, sx, 0, r[0], feet - S0->sch, S0->scw, S0->sch); else v_sprite_hidden("juvenile.shadow", sh, r[0], feet - S0->sch); }
   v_name("juvenile");
   if (!f.cell) { v_sprite_hidden("juvenile", at, r[0], r[1]); return; }
   int ci = moving_close_cell(S0, f.cell); if (ci < 0) ci = 0;
