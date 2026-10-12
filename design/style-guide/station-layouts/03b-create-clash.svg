@@ -46,7 +46,7 @@
 <line x1="400" y1="536.5" x2="624" y2="536.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
 <text x="628" y="532" font-size="9" fill="#c45f12">feet 536</text>
 <rect x="312.5" y="536.5" width="399" height="15" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
-<text x="512" y="548" font-size="9" fill="#555" text-anchor="middle">work tray (chamber) 312,232 400×320 · floor 16 · placeholder</text>
+<text x="512" y="548" font-size="9" fill="#555" text-anchor="middle">work tray (chamber) 312,232 400×320 · floor 16</text>
 <rect x="296.5" y="88.5" width="431" height="103" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
 <rect x="304.5" y="104.5" width="127" height="71" fill="#e9edf0" stroke="#666" stroke-width="1"/>
 <text x="308" y="117" font-size="9" fill="#222">1 · as the pod is</text>
@@ -64,11 +64,11 @@
 <rect x="296.5" y="200.5" width="431" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="216" font-size="13" fill="#c93440" text-anchor="middle">✕ Eyes: won't grow like this</text>
 <rect x="776.5" y="104.5" width="175" height="223" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1"/>
-<rect x="776.5" y="296.5" width="175" height="31" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
-<text x="780" y="118" font-size="10" fill="#222">small chamber (placeholder)</text>
+<rect x="776.5" y="274.5" width="175" height="53" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
+<text x="780" y="118" font-size="10" fill="#222">small chamber</text>
 <text x="780" y="129" font-size="9" fill="#777">776,104 176×224</text>
-<text x="780" y="141" font-size="9" fill="#777">floor 296 · busy: bud 64×80</text>
-<rect x="832.5" y="216.5" width="63" height="79" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="780" y="141" font-size="9" fill="#777">floor 274 · busy: bud 64×80</text>
+<rect x="832.5" y="194.5" width="63" height="79" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="768.5" y="336.5" width="191" height="47" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="768.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>
 <rect x="780.5" y="336.5" width="7" height="11" fill="none" stroke="#5a6672" stroke-width="1"/>

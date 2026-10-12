@@ -1242,7 +1242,7 @@ Vectors: from `roll`, each of ◀ ▶ ▲ ▼ sends its step and the ring stays 
 | Event | Hold | What plays |
 | --- | --- | --- |
 | `roll`: `{ kind: dither, target: founder, ms: 200, levels: 16 }` | 0 | The founder's old picture cross-dithers to the new one in its own box, 16-level Bayer, as a composed picture; the roll, the ring, the line, the pip, the stamp and the price are cuts |
-| `grow` (900 ms) | 1080 ms | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
+| `grow` (900 ms) | 1080 ms | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; its feet behind the small chamber's sill, under the bud's floor (274); the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
 
 With `motion: false` both jump to their ends.
 
