@@ -1,0 +1,4169 @@
+{
+ "biome": "meadow",
+ "tile": 48,
+ "quarter": 24,
+ "palette": "meadow",
+ "paletteFile": "meadow-palette.json",
+ "note": "The meadow drop, every piece a candidate. Sheets are 8-bit indexed on meadow-palette.json (index 96 transparent). Built by art/companion-48/tools/build-meadow-drop.py from the tileset on art-terrain-grass.",
+ "sheets": {
+  "ground": "meadow-ground.png",
+  "quarters": "meadow-quarters.png",
+  "shore": "meadow-shore.png",
+  "walls": "meadow-walls.png",
+  "stairs": "meadow-stairs.png",
+  "props": "meadow-props.png"
+ },
+ "pieces": [
+  {
+   "name": "meadow/ground/deep-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "deep",
+   "variant": "1",
+   "sheet": "ground",
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/deep-2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "deep",
+   "variant": "2",
+   "sheet": "ground",
+   "x": 49,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/lawn-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "lawn",
+   "variant": "1",
+   "sheet": "ground",
+   "x": 98,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/lawn-2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "lawn",
+   "variant": "2",
+   "sheet": "ground",
+   "x": 147,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/lawn-3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "lawn",
+   "variant": "3",
+   "sheet": "ground",
+   "x": 196,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/lawn-4",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "lawn",
+   "variant": "4",
+   "sheet": "ground",
+   "x": 245,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/lawn-5",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "lawn",
+   "variant": "5",
+   "sheet": "ground",
+   "x": 294,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/lawn-6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "lawn",
+   "variant": "6",
+   "sheet": "ground",
+   "x": 343,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/ground/sand-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "ground",
+   "set": "sand",
+   "variant": "1",
+   "sheet": "ground",
+   "x": 392,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/material/rock-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "material",
+   "set": "rock",
+   "variant": "1",
+   "sheet": "ground",
+   "x": 441,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/material/rock-2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "material",
+   "set": "rock",
+   "variant": "2",
+   "sheet": "ground",
+   "x": 490,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/decal/grass1-01",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass1-01",
+   "sheet": "ground",
+   "x": 539,
+   "y": 0,
+   "w": 28,
+   "h": 35
+  },
+  {
+   "name": "meadow/decal/grass2-03",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass2-03",
+   "sheet": "ground",
+   "x": 568,
+   "y": 0,
+   "w": 31,
+   "h": 34
+  },
+  {
+   "name": "meadow/decal/grass3-05",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass3-05",
+   "sheet": "ground",
+   "x": 600,
+   "y": 0,
+   "w": 37,
+   "h": 30
+  },
+  {
+   "name": "meadow/decal/grass4-07",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass4-07",
+   "sheet": "ground",
+   "x": 638,
+   "y": 0,
+   "w": 39,
+   "h": 25
+  },
+  {
+   "name": "meadow/decal/grass3-04",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass3-04",
+   "sheet": "ground",
+   "x": 678,
+   "y": 0,
+   "w": 23,
+   "h": 14
+  },
+  {
+   "name": "meadow/decal/grass4-06",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass4-06",
+   "sheet": "ground",
+   "x": 702,
+   "y": 0,
+   "w": 19,
+   "h": 14
+  },
+  {
+   "name": "meadow/decal/flowers1-17",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "flowers",
+   "variant": "flowers1-17",
+   "sheet": "ground",
+   "x": 722,
+   "y": 0,
+   "w": 19,
+   "h": 11
+  },
+  {
+   "name": "meadow/decal/flowers2-18",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "flowers",
+   "variant": "flowers2-18",
+   "sheet": "ground",
+   "x": 742,
+   "y": 0,
+   "w": 12,
+   "h": 10
+  },
+  {
+   "name": "meadow/decal/tall1-08",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "tall",
+   "variant": "tall1-08",
+   "sheet": "ground",
+   "x": 755,
+   "y": 0,
+   "w": 8,
+   "h": 10
+  },
+  {
+   "name": "meadow/decal/flowers1-15",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "flowers",
+   "variant": "flowers1-15",
+   "sheet": "ground",
+   "x": 764,
+   "y": 0,
+   "w": 12,
+   "h": 9
+  },
+  {
+   "name": "meadow/decal/tall1-09",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "tall",
+   "variant": "tall1-09",
+   "sheet": "ground",
+   "x": 777,
+   "y": 0,
+   "w": 8,
+   "h": 9
+  },
+  {
+   "name": "meadow/decal/tall1-10",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "tall",
+   "variant": "tall1-10",
+   "sheet": "ground",
+   "x": 786,
+   "y": 0,
+   "w": 7,
+   "h": 8
+  },
+  {
+   "name": "meadow/decal/tall2-11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "tall",
+   "variant": "tall2-11",
+   "sheet": "ground",
+   "x": 794,
+   "y": 0,
+   "w": 10,
+   "h": 8
+  },
+  {
+   "name": "meadow/decal/tall2-13",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "tall",
+   "variant": "tall2-13",
+   "sheet": "ground",
+   "x": 805,
+   "y": 0,
+   "w": 7,
+   "h": 8
+  },
+  {
+   "name": "meadow/decal/grass1-02",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "grass",
+   "variant": "grass1-02",
+   "sheet": "ground",
+   "x": 813,
+   "y": 0,
+   "w": 9,
+   "h": 7
+  },
+  {
+   "name": "meadow/decal/tall2-12",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "tall",
+   "variant": "tall2-12",
+   "sheet": "ground",
+   "x": 823,
+   "y": 0,
+   "w": 8,
+   "h": 7
+  },
+  {
+   "name": "meadow/decal/flowers1-14",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "flowers",
+   "variant": "flowers1-14",
+   "sheet": "ground",
+   "x": 832,
+   "y": 0,
+   "w": 7,
+   "h": 6
+  },
+  {
+   "name": "meadow/decal/flowers1-16",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "decal",
+   "set": "flowers",
+   "variant": "flowers1-16",
+   "sheet": "ground",
+   "x": 840,
+   "y": 0,
+   "w": 7,
+   "h": 5
+  },
+  {
+   "name": "meadow/shore/water-beach-e-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "e",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 0,
+   "y": 0,
+   "w": 88,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-beach-e-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "e",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 89,
+   "y": 0,
+   "w": 88,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-beach-w-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "w",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 178,
+   "y": 0,
+   "w": 88,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-beach-w-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "w",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 267,
+   "y": 0,
+   "w": 88,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-bend-se-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-bend",
+   "cells": [
+    3,
+    2
+   ],
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 356,
+   "y": 0,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-bend-se-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-bend",
+   "cells": [
+    3,
+    2
+   ],
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 501,
+   "y": 0,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-in-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "in",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 646,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-in-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "in",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 695,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-out-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "out",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 744,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-out-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "out",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 793,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-in-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "in",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 842,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-in-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "in",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 891,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-out-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "out",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 940,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-out-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "out",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 0,
+   "y": 97,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-ne-outer-r42-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "ne",
+   "radius": 42,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 49,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-ne-outer-r42-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "ne",
+   "radius": 42,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 146,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-ne-outer-r60-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "ne",
+   "radius": 60,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 243,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-ne-outer-r60-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "ne",
+   "radius": 60,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 340,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-nw-outer-r42-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "nw",
+   "radius": 42,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 437,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-nw-outer-r42-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "nw",
+   "radius": 42,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 534,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-nw-outer-r60-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "nw",
+   "radius": 60,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 631,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-nw-outer-r60-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "nw",
+   "radius": 60,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 728,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-se-outer-r42-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "se",
+   "radius": 42,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 825,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-se-outer-r42-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "se",
+   "radius": 42,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 922,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-se-outer-r60-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "se",
+   "radius": 60,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 0,
+   "y": 194,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-se-outer-r60-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "se",
+   "radius": 60,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 97,
+   "y": 194,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r42-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 42,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 194,
+   "y": 194,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r42-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 42,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 291,
+   "y": 194,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r60-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 60,
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 388,
+   "y": 194,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r60-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 60,
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 485,
+   "y": 194,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/shore/water-beach-n-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "n",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 582,
+   "y": 194,
+   "w": 96,
+   "h": 88
+  },
+  {
+   "name": "meadow/shore/water-beach-n-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "n",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 679,
+   "y": 194,
+   "w": 96,
+   "h": 88
+  },
+  {
+   "name": "meadow/shore/water-beach-s-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "s",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 776,
+   "y": 194,
+   "w": 96,
+   "h": 88
+  },
+  {
+   "name": "meadow/shore/water-beach-s-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-beach",
+   "side": "s",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 873,
+   "y": 194,
+   "w": 96,
+   "h": 88
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-in-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "in",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 0,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-in-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "in",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 97,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-out-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "out",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 194,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-out-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "out",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 291,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-in-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "in",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 388,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-in-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "in",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 485,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-out-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "out",
+   "frame": 1,
+   "sheet": "quarters",
+   "x": 582,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-out-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "out",
+   "frame": 2,
+   "sheet": "quarters",
+   "x": 679,
+   "y": 291,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/lip/lip-ne-edgeh",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "edgeh",
+   "sheet": "quarters",
+   "x": 776,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-ne-edgev",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "edgev",
+   "sheet": "quarters",
+   "x": 801,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-ne-edgev0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "edgev0",
+   "sheet": "quarters",
+   "x": 826,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-ne-fill",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "fill",
+   "sheet": "quarters",
+   "x": 851,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-ne-inner",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "inner",
+   "sheet": "quarters",
+   "x": 876,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-ne-outer",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "outer",
+   "sheet": "quarters",
+   "x": 901,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-ne-outer0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "ne",
+   "state": "outer0",
+   "sheet": "quarters",
+   "x": 926,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-edgeh",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "edgeh",
+   "sheet": "quarters",
+   "x": 951,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-edgev",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "edgev",
+   "sheet": "quarters",
+   "x": 976,
+   "y": 291,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-edgev0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "edgev0",
+   "sheet": "quarters",
+   "x": 0,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-fill",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "fill",
+   "sheet": "quarters",
+   "x": 25,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-inner",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "inner",
+   "sheet": "quarters",
+   "x": 50,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-outer",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "outer",
+   "sheet": "quarters",
+   "x": 75,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-nw-outer0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "nw",
+   "state": "outer0",
+   "sheet": "quarters",
+   "x": 100,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-edgeh",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "edgeh",
+   "sheet": "quarters",
+   "x": 125,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-edgev",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "edgev",
+   "sheet": "quarters",
+   "x": 150,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-edgev0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "edgev0",
+   "sheet": "quarters",
+   "x": 175,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-fill",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "fill",
+   "sheet": "quarters",
+   "x": 200,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-inner",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "inner",
+   "sheet": "quarters",
+   "x": 225,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-outer",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "outer",
+   "sheet": "quarters",
+   "x": 250,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-se-outer0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "se",
+   "state": "outer0",
+   "sheet": "quarters",
+   "x": 275,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-edgeh",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "edgeh",
+   "sheet": "quarters",
+   "x": 300,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-edgev",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "edgev",
+   "sheet": "quarters",
+   "x": 325,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-edgev0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "edgev0",
+   "sheet": "quarters",
+   "x": 350,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-fill",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "fill",
+   "sheet": "quarters",
+   "x": 375,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-inner",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "inner",
+   "sheet": "quarters",
+   "x": 400,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-outer",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "outer",
+   "sheet": "quarters",
+   "x": 425,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/lip/lip-sw-outer0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "lip",
+   "quad": "sw",
+   "state": "outer0",
+   "sheet": "quarters",
+   "x": 450,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-edgeh-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgeh",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 475,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-edgeh-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgeh",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 500,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-edgev-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgev",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 525,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-edgev-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgev",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 550,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-fill-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "fill",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 575,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-fill-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "fill",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 600,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-inner-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "inner",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 625,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-inner-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "inner",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 650,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-outer-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "outer",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 675,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-ne-outer-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "ne",
+   "state": "outer",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 700,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-edgeh-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgeh",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 725,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-edgeh-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgeh",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 750,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-edgev-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgev",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 775,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-edgev-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgev",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 800,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-fill-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "fill",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 825,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-fill-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "fill",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 850,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-inner-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "inner",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 875,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-inner-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "inner",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 900,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-outer-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "outer",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 925,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-nw-outer-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "nw",
+   "state": "outer",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 950,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-edgeh-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgeh",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 975,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-edgeh-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgeh",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 1000,
+   "y": 340,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-edgev-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgev",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 0,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-edgev-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgev",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 25,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-fill-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "fill",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 50,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-fill-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "fill",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 75,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-inner-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "inner",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 100,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-inner-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "inner",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 125,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-outer-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "outer",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 150,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-se-outer-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "se",
+   "state": "outer",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 175,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-edgeh-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgeh",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 200,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-edgeh-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgeh",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 225,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-edgev-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgev",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 250,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-edgev-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgev",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 275,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-fill-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "fill",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 300,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-fill-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "fill",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 325,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-inner-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "inner",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 350,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-inner-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "inner",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 375,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-outer-f1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "outer",
+   "frame": 1,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 400,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/shore/water-sw-outer-f2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shore",
+   "quad": "sw",
+   "state": "outer",
+   "frame": 2,
+   "set": "water",
+   "sheet": "quarters",
+   "x": 425,
+   "y": 365,
+   "w": 24,
+   "h": 24
+  },
+  {
+   "name": "meadow/band/fill-body",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "band",
+   "cells": [
+    1,
+    1
+   ],
+   "sheet": "shore",
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-a",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "a",
+   "sheet": "walls",
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-b",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "b",
+   "sheet": "walls",
+   "x": 49,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-c",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "c",
+   "sheet": "walls",
+   "x": 98,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-d",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "d",
+   "sheet": "walls",
+   "x": 147,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-a",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "a",
+   "sheet": "walls",
+   "x": 196,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-b",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "b",
+   "sheet": "walls",
+   "x": 245,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-c",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "c",
+   "sheet": "walls",
+   "x": 294,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-d",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "d",
+   "sheet": "walls",
+   "x": 343,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-1x2-h14",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    1,
+    2
+   ],
+   "variant": "h14",
+   "sheet": "walls",
+   "x": 392,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-1x2-i14",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    1,
+    2
+   ],
+   "variant": "i14",
+   "sheet": "walls",
+   "x": 441,
+   "y": 0,
+   "w": 48,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-b6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "b6",
+   "sheet": "walls",
+   "x": 490,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-d6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "d6",
+   "sheet": "walls",
+   "x": 587,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-e14",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "e14",
+   "sheet": "walls",
+   "x": 684,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-e16",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "e16",
+   "sheet": "walls",
+   "x": 781,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-e6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "e6",
+   "sheet": "walls",
+   "x": 878,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-f6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "f6",
+   "sheet": "walls",
+   "x": 0,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-g6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "g6",
+   "sheet": "walls",
+   "x": 97,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-h6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "h6",
+   "sheet": "walls",
+   "x": 194,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-2x2-i6",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "i6",
+   "sheet": "walls",
+   "x": 291,
+   "y": 97,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-a0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "a0",
+   "sheet": "walls",
+   "x": 388,
+   "y": 97,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-a3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "a3",
+   "sheet": "walls",
+   "x": 533,
+   "y": 97,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-b0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "b0",
+   "sheet": "walls",
+   "x": 678,
+   "y": 97,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-b3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "b3",
+   "sheet": "walls",
+   "x": 823,
+   "y": 97,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-c0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "c0",
+   "sheet": "walls",
+   "x": 0,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-c3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "c3",
+   "sheet": "walls",
+   "x": 145,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-d0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d0",
+   "sheet": "walls",
+   "x": 290,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-d11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d11",
+   "sheet": "walls",
+   "x": 435,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-d3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d3",
+   "sheet": "walls",
+   "x": 580,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-d8",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d8",
+   "sheet": "walls",
+   "x": 725,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-e0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e0",
+   "sheet": "walls",
+   "x": 870,
+   "y": 194,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-e11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e11",
+   "sheet": "walls",
+   "x": 0,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-e3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e3",
+   "sheet": "walls",
+   "x": 145,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-e8",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e8",
+   "sheet": "walls",
+   "x": 290,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-f0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f0",
+   "sheet": "walls",
+   "x": 435,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-f11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f11",
+   "sheet": "walls",
+   "x": 580,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-f3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f3",
+   "sheet": "walls",
+   "x": 725,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-f8",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f8",
+   "sheet": "walls",
+   "x": 870,
+   "y": 291,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-g0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g0",
+   "sheet": "walls",
+   "x": 0,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-g11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g11",
+   "sheet": "walls",
+   "x": 145,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-g3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g3",
+   "sheet": "walls",
+   "x": 290,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-g8",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g8",
+   "sheet": "walls",
+   "x": 435,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-h0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h0",
+   "sheet": "walls",
+   "x": 580,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-h11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h11",
+   "sheet": "walls",
+   "x": 725,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-h3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h3",
+   "sheet": "walls",
+   "x": 870,
+   "y": 388,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-h8",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h8",
+   "sheet": "walls",
+   "x": 0,
+   "y": 485,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-i0",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i0",
+   "sheet": "walls",
+   "x": 145,
+   "y": 485,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-i11",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i11",
+   "sheet": "walls",
+   "x": 290,
+   "y": 485,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-i3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i3",
+   "sheet": "walls",
+   "x": 435,
+   "y": 485,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/face/wall-3x2-i8",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i8",
+   "sheet": "walls",
+   "x": 580,
+   "y": 485,
+   "w": 144,
+   "h": 96
+  },
+  {
+   "name": "meadow/side/side-e-tail",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "side",
+   "side": "e",
+   "end": "tail",
+   "cells": [
+    0,
+    2
+   ],
+   "variant": "",
+   "sheet": "walls",
+   "x": 725,
+   "y": 485,
+   "w": 36,
+   "h": 96
+  },
+  {
+   "name": "meadow/side/side-w-tail",
+   "status": "candidate",
+   "offset": [
+    4,
+    0
+   ],
+   "kind": "side",
+   "side": "w",
+   "end": "tail",
+   "cells": [
+    0,
+    2
+   ],
+   "variant": "",
+   "sheet": "walls",
+   "x": 762,
+   "y": 485,
+   "w": 44,
+   "h": 96
+  },
+  {
+   "name": "meadow/side/side-e-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "side",
+   "side": "e",
+   "variant": "1",
+   "end": "none",
+   "sheet": "walls",
+   "x": 807,
+   "y": 485,
+   "w": 36,
+   "h": 48
+  },
+  {
+   "name": "meadow/side/side-e-2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "side",
+   "side": "e",
+   "variant": "2",
+   "end": "none",
+   "sheet": "walls",
+   "x": 844,
+   "y": 485,
+   "w": 36,
+   "h": 48
+  },
+  {
+   "name": "meadow/side/side-e-3",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "side",
+   "side": "e",
+   "variant": "3",
+   "end": "none",
+   "sheet": "walls",
+   "x": 881,
+   "y": 485,
+   "w": 36,
+   "h": 48
+  },
+  {
+   "name": "meadow/side/side-w-1",
+   "status": "candidate",
+   "offset": [
+    4,
+    0
+   ],
+   "kind": "side",
+   "side": "w",
+   "variant": "1",
+   "end": "none",
+   "sheet": "walls",
+   "x": 918,
+   "y": 485,
+   "w": 44,
+   "h": 48
+  },
+  {
+   "name": "meadow/side/side-w-2",
+   "status": "candidate",
+   "offset": [
+    4,
+    0
+   ],
+   "kind": "side",
+   "side": "w",
+   "variant": "2",
+   "end": "none",
+   "sheet": "walls",
+   "x": 963,
+   "y": 485,
+   "w": 44,
+   "h": 48
+  },
+  {
+   "name": "meadow/side/side-w-3",
+   "status": "candidate",
+   "offset": [
+    4,
+    0
+   ],
+   "kind": "side",
+   "side": "w",
+   "variant": "3",
+   "end": "none",
+   "sheet": "walls",
+   "x": 0,
+   "y": 582,
+   "w": 44,
+   "h": 48
+  },
+  {
+   "name": "meadow/side/side-e-foot",
+   "status": "candidate",
+   "offset": [
+    0,
+    24
+   ],
+   "kind": "side",
+   "side": "e",
+   "end": "foot",
+   "variant": "",
+   "sheet": "walls",
+   "x": 45,
+   "y": 582,
+   "w": 36,
+   "h": 24
+  },
+  {
+   "name": "meadow/side/side-e-top",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "side",
+   "side": "e",
+   "end": "top",
+   "variant": "",
+   "sheet": "walls",
+   "x": 82,
+   "y": 582,
+   "w": 36,
+   "h": 24
+  },
+  {
+   "name": "meadow/side/side-w-foot",
+   "status": "candidate",
+   "offset": [
+    4,
+    24
+   ],
+   "kind": "side",
+   "side": "w",
+   "end": "foot",
+   "variant": "",
+   "sheet": "walls",
+   "x": 119,
+   "y": 582,
+   "w": 44,
+   "h": 24
+  },
+  {
+   "name": "meadow/side/side-w-top",
+   "status": "candidate",
+   "offset": [
+    4,
+    0
+   ],
+   "kind": "side",
+   "side": "w",
+   "end": "top",
+   "variant": "",
+   "sheet": "walls",
+   "x": 164,
+   "y": 582,
+   "w": 44,
+   "h": 24
+  },
+  {
+   "name": "meadow/foot/foot-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    34
+   ],
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "variant": "1",
+   "sheet": "walls",
+   "x": 209,
+   "y": 582,
+   "w": 48,
+   "h": 16
+  },
+  {
+   "name": "meadow/foot/foot-2",
+   "status": "candidate",
+   "offset": [
+    0,
+    34
+   ],
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "variant": "2",
+   "sheet": "walls",
+   "x": 258,
+   "y": 582,
+   "w": 48,
+   "h": 16
+  },
+  {
+   "name": "meadow/foot/foot-3",
+   "status": "candidate",
+   "offset": [
+    0,
+    34
+   ],
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "variant": "3",
+   "sheet": "walls",
+   "x": 307,
+   "y": 582,
+   "w": 48,
+   "h": 16
+  },
+  {
+   "name": "meadow/foot/foot-4",
+   "status": "candidate",
+   "offset": [
+    0,
+    34
+   ],
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "variant": "4",
+   "sheet": "walls",
+   "x": 356,
+   "y": 582,
+   "w": 48,
+   "h": 16
+  },
+  {
+   "name": "meadow/stair/side2x2-e",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "E",
+   "sheet": "stairs",
+   "x": 0,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/stair/side2x2-w",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "W",
+   "sheet": "stairs",
+   "x": 97,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/stair/wide2x1-1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "S",
+   "variant": "1",
+   "sheet": "stairs",
+   "x": 194,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/stair/wide2x1-2",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "S",
+   "variant": "2",
+   "sheet": "stairs",
+   "x": 291,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  {
+   "name": "meadow/stair/apron-top-l",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "apron-top",
+   "cells": [
+    1,
+    1
+   ],
+   "part": 0,
+   "sheet": "stairs",
+   "x": 388,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/stair/apron-top-r",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "apron-top",
+   "cells": [
+    1,
+    1
+   ],
+   "part": 1,
+   "sheet": "stairs",
+   "x": 437,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/stair/foot-l",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "foot",
+   "cells": [
+    1,
+    1
+   ],
+   "part": 0,
+   "sheet": "stairs",
+   "x": 486,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/stair/foot-r",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "foot",
+   "cells": [
+    1,
+    1
+   ],
+   "part": 1,
+   "sheet": "stairs",
+   "x": 535,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/stair/landing-l",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "landing",
+   "cells": [
+    1,
+    1
+   ],
+   "part": 0,
+   "sheet": "stairs",
+   "x": 584,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/stair/landing-r",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "landing",
+   "cells": [
+    1,
+    1
+   ],
+   "part": 1,
+   "sheet": "stairs",
+   "x": 633,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/stair/top2x1",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "stair",
+   "cells": [
+    2,
+    1
+   ],
+   "facing": "N",
+   "sheet": "stairs",
+   "x": 682,
+   "y": 0,
+   "w": 96,
+   "h": 48
+  },
+  {
+   "name": "meadow/prop/bridge-1",
+   "status": "candidate",
+   "offset": [
+    -24,
+    -239
+   ],
+   "kind": "prop",
+   "type": "bridge",
+   "sheet": "props",
+   "x": 0,
+   "y": 0,
+   "w": 96,
+   "h": 287
+  },
+  {
+   "name": "meadow/prop/bush-3",
+   "status": "candidate",
+   "offset": [
+    -63,
+    -112
+   ],
+   "kind": "prop",
+   "type": "bush",
+   "sheet": "props",
+   "x": 97,
+   "y": 0,
+   "w": 174,
+   "h": 160
+  },
+  {
+   "name": "meadow/prop/bush-2",
+   "status": "candidate",
+   "offset": [
+    -39,
+    -64
+   ],
+   "kind": "prop",
+   "type": "bush",
+   "sheet": "props",
+   "x": 272,
+   "y": 0,
+   "w": 125,
+   "h": 112
+  },
+  {
+   "name": "meadow/prop/fern-1",
+   "status": "candidate",
+   "offset": [
+    -36,
+    -44
+   ],
+   "kind": "prop",
+   "type": "fern",
+   "sheet": "props",
+   "x": 398,
+   "y": 0,
+   "w": 120,
+   "h": 92
+  },
+  {
+   "name": "meadow/prop/bush-1",
+   "status": "candidate",
+   "offset": [
+    -21,
+    -31
+   ],
+   "kind": "prop",
+   "type": "bush",
+   "sheet": "props",
+   "x": 519,
+   "y": 0,
+   "w": 89,
+   "h": 79
+  },
+  {
+   "name": "meadow/prop/boulder-4",
+   "status": "candidate",
+   "offset": [
+    -12,
+    -28
+   ],
+   "kind": "prop",
+   "type": "boulder",
+   "sheet": "props",
+   "x": 609,
+   "y": 0,
+   "w": 71,
+   "h": 76
+  },
+  {
+   "name": "meadow/prop/fern-2",
+   "status": "candidate",
+   "offset": [
+    -16,
+    -28
+   ],
+   "kind": "prop",
+   "type": "fern",
+   "sheet": "props",
+   "x": 681,
+   "y": 0,
+   "w": 79,
+   "h": 76
+  },
+  {
+   "name": "meadow/prop/reeds-1",
+   "status": "candidate",
+   "offset": [
+    -3,
+    -28
+   ],
+   "kind": "prop",
+   "type": "reeds",
+   "sheet": "props",
+   "x": 761,
+   "y": 0,
+   "w": 54,
+   "h": 76
+  },
+  {
+   "name": "meadow/prop/reeds-2",
+   "status": "candidate",
+   "offset": [
+    -4,
+    -28
+   ],
+   "kind": "prop",
+   "type": "reeds",
+   "sheet": "props",
+   "x": 816,
+   "y": 0,
+   "w": 56,
+   "h": 76
+  },
+  {
+   "name": "meadow/prop/fern-3",
+   "status": "candidate",
+   "offset": [
+    -4,
+    -4
+   ],
+   "kind": "prop",
+   "type": "fern",
+   "sheet": "props",
+   "x": 873,
+   "y": 0,
+   "w": 56,
+   "h": 52
+  },
+  {
+   "name": "meadow/prop/boulder-3",
+   "status": "candidate",
+   "offset": [
+    -7,
+    -3
+   ],
+   "kind": "prop",
+   "type": "boulder",
+   "sheet": "props",
+   "x": 930,
+   "y": 0,
+   "w": 61,
+   "h": 51
+  },
+  {
+   "name": "meadow/prop/flowers-2",
+   "status": "candidate",
+   "offset": [
+    1,
+    0
+   ],
+   "kind": "prop",
+   "type": "flowers",
+   "sheet": "props",
+   "x": 0,
+   "y": 288,
+   "w": 46,
+   "h": 48
+  },
+  {
+   "name": "meadow/prop/boulder-2",
+   "status": "candidate",
+   "offset": [
+    2,
+    10
+   ],
+   "kind": "prop",
+   "type": "boulder",
+   "sheet": "props",
+   "x": 47,
+   "y": 288,
+   "w": 43,
+   "h": 38
+  },
+  {
+   "name": "meadow/prop/flowers-1",
+   "status": "candidate",
+   "offset": [
+    2,
+    13
+   ],
+   "kind": "prop",
+   "type": "flowers",
+   "sheet": "props",
+   "x": 91,
+   "y": 288,
+   "w": 43,
+   "h": 35
+  },
+  {
+   "name": "meadow/prop/boulder-1",
+   "status": "candidate",
+   "offset": [
+    7,
+    18
+   ],
+   "kind": "prop",
+   "type": "boulder",
+   "sheet": "props",
+   "x": 135,
+   "y": 288,
+   "w": 33,
+   "h": 30
+  }
+ ]
+}
