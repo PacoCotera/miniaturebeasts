@@ -179,9 +179,9 @@ test("the goal away reads the aim, growUp counts the walks in words, and the Pro
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
   assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "the young mibi grows with care" });
-  assert.equal(face({ key: "guide", species: "S01", step: { key: "readPod", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }).text, `read ${frameOf("S01").chapters[0].name} on the Loika pod`);
+  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: `read ${frameOf("S01").chapters[0].name} on the Loika pod`, icons: "", plain: "" }, "the guide's read has no name, so no nameless sibling");
   assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "find a Loika pod", "away, a findPod step reads its own words, not the aim");
-  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", name: "Dot" } }), { text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" });
+  assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" });
   assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "walks grow the pair up");
   assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "read the new mibi's chapters");
   for (const goal of [{ key: "cross", names: ["Dot", "Moss"], step: { key: "cross" } }, { key: "firstPod", step: { key: "goOut" } }, { key: "pair", name: "Dot", species: "S01", step: { key: "identify", species: "S01" } }]) assert.equal(face(goal).plain, "", goal.key);
@@ -192,4 +192,15 @@ test("a mibi with no painting changes nothing on Home: the Incubator is empty wi
   const r = build(st, sv).props.regions;
   assert.equal(r.incubator.state, "empty"); assert.equal(r.incubator.lamp, "off");
   assert.ok(r.residents.every((p) => p.waiting === false) && r.bed.sleepers.every((p) => p.waiting === false), "no person has waiting: true");
+});
+
+test("a new pod is firm until Pods has drawn it: firm, the goal is absent; seen, the goal takes the notice, the room's ✓ stays and the Pods lamp is not amber; a second unseen pod is firm again, counting one", () => {
+  const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
+  const p1 = pod(st, "S01", 5, false);
+  let b = build(st, sv0());
+  assert.equal(b.line.need, "a new pod waits"); assert.equal(b.line.goal, undefined, "firm: no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  p1.seen = 1; b = build(st, sv0());
+  assert.equal(b.line.need, ""); assert.ok(b.line.goal, "soft: the goal takes the notice"); assert.equal(b.line.ok, "Look at the pods"); assert.equal(b.props.regions.pods.lamp, "well");
+  const p2 = pod(st, "S01", 6, false); assert.ok(!p2.seen); b = build(st, sv0());
+  assert.equal(b.line.need, "a new pod waits", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
 });

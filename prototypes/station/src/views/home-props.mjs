@@ -58,7 +58,7 @@ export function homeBuild(m, spec, frame) {
   const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
   // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
-  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
+  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod && !need.soft ? "needsYou" : null);
 
   // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
   const lw = livingOf({ st, sv, settings, docked, light: m.light }, R, req, ph, frame.light);
@@ -117,7 +117,7 @@ function lineOf(m, spec, v) {
   const { st } = m, Sg = spec.strings, { notice, action } = wordsOf(v.need, spec), cur = v.cur;
   const spelled = (n) => SPELL[n] ?? "many", plural = (t, n, key) => fill(n === 1 && t[key + "One"] ? t[key + "One"] : t[key], { count: spelled(n) });
   // the notice zone: the first-group need as now (amber, its lamp, the goal does not show); else the goal (mist, no lamp); else the soft need (couldGrow short, toRead, budGrowing) as now. needKey and the room's ✓ are unchanged.
-  const goal = S.goalKey(st, m.sv, m.settings), first = v.need && (["crates", "budReady", "meet", "newPods", "glints", "waitingPods"].includes(v.need.key) || (v.need.key === "couldGrow" && !v.need.short));
+  const goal = S.goalKey(st, m.sv, m.settings), first = v.need && ((["crates", "budReady", "meet", "newPods", "glints", "waitingPods"].includes(v.need.key) && !v.need.soft) || (v.need.key === "couldGrow" && !v.need.short));
   const goalWords_ = !first && goal ? goalWords(goal, !!m.docked, v.frame) : null;
   const base = { back: null, need: goalWords_ ? "" : notice, ...(goalWords_ ? { goal: goalWords_ } : {}) };
   if (cur === "room") return { ...base, ok: action, subject: "" };

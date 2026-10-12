@@ -20,7 +20,7 @@ export function goalWords(goal, docked, frame) {
     return out(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more);
   }
   if (st.key === "short") return out(fill(G.step.short[st.from] ?? G.step.short.field, { icons: "" }).trim(), "", st.icons);
-  if (st.key === "readPod") { const fr = frameOf(st.species), ch = fr && fr.chapters.find((c) => c.id === st.chapter); return out(fill(G.step.readPod, { chapter: ch ? ch.name : st.chapter, species: speciesWord(st.species) })); }
+  if (st.key === "read" && goal.key === "guide") { const fr = frameOf(st.species), ch = fr && fr.chapters.find((c) => c.id === st.chapter); return out(fill(G.step.readPod, { chapter: ch ? ch.name : st.chapter, species: speciesWord(st.species) })); }
   if (st.key === "read") return out(fill(G.step.read, vals), G.step.readNoName);
   if (st.key === "findPod" && !vals.species) return out(G.step.goOut);
   const t = G.step[st.key]; if (typeof t !== "string") return null;

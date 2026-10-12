@@ -113,7 +113,7 @@ test("the guide rung names the first living species with an incomplete guide and
   const r = S.seedPodFromGenome(st, podGenome(frameOf("S04"), 7), settings, 1000); assert.equal(r.ok, true);
   g = S.goalKey(st, sv0()); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, "S04");
   const pod = st.tray.find((p) => S.speciesOf(p) === "S04"); S.skipIdentify(st, pod);
-  g = S.goalKey(st, sv0()); assert.equal(g.step.key, "readPod"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
+  g = S.goalKey(st, sv0()); assert.equal(g.step.key, "read"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
   st.d = 0; const cost = S.readCost(st, pod, g.step.chapter, settings); g = S.goalKey(st, sv0());
   if (cost > 0) { assert.equal(g.step.key, "short"); assert.equal(g.step.icons, "◆"); }
   fillGuide(st, "S04"); assert.equal(S.goalKey(st, sv0()), null, "every guide complete");
@@ -149,4 +149,49 @@ test("goalSpendWarn: a spend that would leave the step's next price short warns 
   // a step that is a wait is never priced
   const f = fresh(); assert.equal(S.goalSpendWarn(f, sv0(), settings, { d: 1 }, { key: "identify", pod: tuik }), null, "firstPod: goOut");
   const p = fresh(); const [c] = adults(p, 1); c.name = "Dot"; p.dock = { docked: false, at: 1 }; assert.equal(S.goalSpendWarn(p, sv0(), settings, { e: 1 }, { key: "mend" }), null, "findPod");
+});
+
+// ---- the guide rung over held species, the Probe stand-in, and where fit stands ----
+const seedPods = (st, species, n, seed = 9) => { for (let i = 0; i < n; i++) assert.equal(S.seedPodFromGenome(st, podGenome(frameOf(species), seed + i), settings, 1000 + i).ok, true); };
+test("QA trip 4: two adult Loikas with a complete guide, Cross shut: the held Tuikis is the guide's species; fit replaces its step docked and affordable; the Probe stands in when nothing is held; tier 2 and nothing held is the only null", () => {
+  const sv = sv0(), st = fresh(); adults(st, 2); fillGuide(st, "S01"); st.dock = { docked: true, at: 0 }; st.probe = { tier: 1, shield: 3, smax: 3 }; st.e = 13; st.d = 14; st.s = 9;
+  seedPods(st, "S03", 3);
+  let g = S.goalKey(st, sv, settings, { cross: false });
+  assert.equal(g.key, "guide"); assert.equal(g.species, "S03");
+  assert.deepEqual(g.step, { key: "fit" }, "fit replaces the guide's identify step while docked and affordable");
+  st.dock = { docked: false, at: 0 }; g = S.goalKey(st, sv, settings, { cross: false });
+  assert.equal(g.step.key, "identify"); assert.equal(g.probe.key, "save");
+  st.tray = []; st.waiting = []; st.dock = { docked: true, at: 0 }; g = S.goalKey(st, sv, settings, { cross: false });
+  assert.equal(g.key, "probe"); assert.deepEqual(g.step, { key: "fit" });
+  st.e = 3; g = S.goalKey(st, sv, settings, { cross: false });
+  assert.equal(g.key, "probe"); assert.equal(g.step.key, "goOut"); assert.deepEqual(g.e, [3, 12]);
+  st.probe.tier = 2; assert.equal(S.goalKey(st, sv, settings, { cross: false }), null, "the only null");
+});
+test("a held species counts for the guide rung whether the pod is identified or waiting, after the living species", () => {
+  const sv = sv0(), st = fresh(); adults(st, 2); fillGuide(st, "S01"); st.probe = { tier: 2, shield: 3, smax: 3 }; st.dock = { docked: false, at: 0 };
+  st.waiting.push({ id: "w1", species: "S04", sp: 0, g: "meadow", how: "calm", gs: 3, idd: 0, read: [] });
+  const g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.key, "guide"); assert.equal(g.species, "S04"); assert.deepEqual(g.step, { key: "findPod", species: "S04" }, "a waiting pod is not in a well: find one");
+});
+test("careful: Dot and Moss growing up, one unidentified Tuikis pod in a well: the goal is growUp, not the pod", () => {
+  const sv = sv0(), st = fresh(); const [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"], [1, 2]); st.turn = 2; st.dock = { docked: false, at: 0 }; st.probe = { tier: 1, shield: 3, smax: 3 };
+  seedPods(st, "S03", 1); assert.equal(S.goalKey(st, sv, settings, { cross: false }).key, "growUp");
+});
+test("a Loika pod while the goal is the pair (Dot) gives the identify step", () => {
+  const sv = sv0(), st = fresh(); const [a] = adults(st, 1); named([a], ["Dot"]); st.dock = { docked: false, at: 0 }; st.d = 5; seedPods(st, "S01", 1);
+  const g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.key, "pair"); assert.deepEqual(g.step, { key: "identify", species: "S01" });
+});
+test("with Cross shut at the cross moment (two adults, a Probe below tier 2) the second goal is save or fit", () => {
+  const st = fresh(); adults(st, 2); st.dock = { docked: false, at: 0 }; st.probe = { tier: 1, shield: 3, smax: 3 }; st.e = 2; st.d = 0;
+  const g = S.goalKey(st, sv0(), settings, { cross: false }); assert.ok(g.probe && ["save", "fit"].includes(g.probe.key), "the probe goal stands beside the guide");
+});
+test("goalSpendWarn: a read that leaves ◆ under the crossed child's read price warns ◆ (Cross open); an Identify of another pod warns ◆ when it leaves the goal's Identify short", () => {
+  const st = fresh(), [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"]); b.from = { how: "cross", of: ["x", "y"] }; b.read = []; st.dock = { docked: false, at: 0 }; st.e = 9; st.s = 9;
+  const doors = { cross: true }, g = S.goalKey(st, sv0(), settings, doors); assert.equal(g.key, "readChild"); assert.equal(g.step.key, "read");
+  const ch = frameOf("S01").chapters.find((c) => !b.read.includes(c.id)), cost = S.mibiReadCost(st, b, ch.id, settings); st.d = cost;
+  const w = S.goalSpendWarn(st, sv0(), settings, { d: 1 }, { key: "other" }, doors); if (cost > 0) { assert.equal(w.step, "read"); assert.equal(w.name, "Moss"); assert.equal(w.icons, "◆"); }
+  // Identify in ◆: the goal's next price is an Identify, and another pod's Identify leaves it short
+  const s2 = fresh(); const [dot] = adults(s2, 1); named([dot], ["Dot"]); s2.dock = { docked: false, at: 0 }; s2.d = 1; seedPods(s2, "S01", 1); seedPods(s2, "S04", 1, 33);
+  const other = s2.tray.find((p) => S.speciesOf(p) === "S04"), warn = S.goalSpendWarn(s2, sv0(), settings, { d: S.identifyCost(s2, settings) }, { key: "identify", pod: other });
+  assert.equal(warn.step, "identify"); assert.equal(warn.icons, "◆");
+  const mine = s2.tray.find((p) => S.speciesOf(p) === "S01"); assert.equal(S.goalSpendWarn(s2, sv0(), settings, { d: 1 }, { key: "identify", pod: mine }), null, "identifying the goal's own pod warns of nothing");
 });

@@ -445,7 +445,7 @@ export function identify(st, p, settings = DEFAULT_SETTINGS) {
   if (st.d < cost) return { ok: false, msg: (known ? "Logging" : "Identifying") + " costs " + cost + " ◆ · " + shortText(st, 0, cost, 0) };
   st.d -= cost;
   if (!known) st.knownIds.push(fr.species.id); if (!st.metIds.includes(fr.species.id)) st.metIds.push(fr.species.id); syncKnown(st);
-  p.idd = 1; p.fresh = 0; p.newSp = known ? 0 : 1;
+  p.idd = 1; p.seen = 1; p.fresh = 0; p.newSp = known ? 0 : 1;
   logEv(st, (known ? "Logged · " : "New species · ") + fr.species.name + (cost ? " · " + spendText(0, cost, 0) : " (free)"));
   return { ok: true, free: !cost, newSp: !known, species: fr.species.id };
 }
@@ -569,7 +569,7 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
   if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
-  const fresh = st.tray.filter((p) => !p.idd); if (fresh.length) return { key: "newPods", n: fresh.length, max: 6, act: "pods" };
+  const fresh = st.tray.filter((p) => !p.idd); if (fresh.length) { const unseen = fresh.filter((p) => !p.seen); return { key: "newPods", n: unseen.length || fresh.length, soft: unseen.length === 0, max: 6, act: "pods" }; }   // soft: every unidentified pod has been seen in Pods (the goal takes the notice, the lamp is not amber)
   const glint = st.tray.filter((p) => podGlints(st, p)); if (glint.length) return { key: "glints", n: glint.length, max: 6, act: "pods" };
   if (st.waiting.length) return { key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" };
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
@@ -643,7 +643,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     for (const p of st.tray) { if (!p.idd || speciesOf(p) !== sp) continue; const fr = frameOf(sp); if (!fr) continue;
       for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
     cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost);
-    if (cand[0]) { const c = cand[0]; return st.d >= c.cost ? { key: "readPod", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
+    if (cand[0]) { const c = cand[0]; return st.d >= c.cost ? { key: "read", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
     if (docked(st) && cs.length) return { key: "openBay" };
     const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
     if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
@@ -670,12 +670,15 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
         g = { key: "cross", names: [a.name, b.name], step: why ? { key: "blocked", why } : canPay(st, c.e, c.d, c.s) ? { key: "cross" } : short(c.e, c.d, c.s) }; break; }
     }
     if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
-    if (!g) { const sp = spOrder.find((x) => !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+    // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
+    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
   }
+  // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
+  if (!g && st.probe && st.probe.tier < 2) g = { key: "probe", step: tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
   if (!g) return null;
   // the second goal, from growUp onward while the Probe is below tier 2
   g.probe = null; if (["growUp", "cross", "readChild", "guide"].includes(g.key) && st.probe && st.probe.tier < 2) g.probe = tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
-  if (g.probe && g.probe.key === "fit" && ["goOut", "findPod", "bud"].includes(g.step.key)) g.step = { key: "fit" };
+  if (g.probe && g.probe.key === "fit" && (["goOut", "findPod", "bud"].includes(g.step.key) || (g.key === "guide" && g.step.key !== "openBay"))) g.step = { key: "fit" };
   // the read to suggest while the step is a wait
   g.meanwhile = null;
   if (["goOut", "findPod", "bud", "short"].includes(g.step.key)) {
@@ -697,9 +700,9 @@ export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, a
   if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
   else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
   else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
+  else if (step.key === "read" && g.key === "guide") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; }
   else if (step.key === "read") { const m = g.key === "readChild" || g.key === "guide" ? st.mibis.find((x) => x.name === step.name && !x.released) : null; if (!m) return null; if (act.key === "read" && act.mibi && act.mibi.id === m.id) return null;
     const fr = frameFor(m), ch = fr && fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)); if (!ch) return null; next = { e: 0, d: mibiReadCost(st, m, ch.id, settings) || 0, s: 0 }; who = { name: m.name }; }
-  else if (step.key === "readPod") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; key = "read"; }
   else if (step.key === "fit") { if (act.key === "fit") return null; next = { e: price_(PRICE.tier2E, settings), d: price_(PRICE.tier2D, settings), s: 0 }; who = {}; }
   else return null;
   if (!canPay(st, next.e, next.d, next.s)) return null;   // it cannot be paid now: the act's own short or the step's own short says so
@@ -729,7 +732,7 @@ export function seedPodFromGenome(st, genome, settings = DEFAULT_SETTINGS, now =
   logEv(st, "Developer pod from a genome · " + digest);
   return { ok: true, pod };
 }
-export function skipIdentify(st, p) { if (!p || p.idd) return; const fr = frameFor(p); p.idd = 1; p.fresh = 0; if (fr && !st.knownIds.includes(fr.species.id)) st.knownIds.push(fr.species.id); syncKnown(st); logEv(st, "Developer: identified " + p.id); }
+export function skipIdentify(st, p) { if (!p || p.idd) return; const fr = frameFor(p); p.idd = 1; p.seen = 1; p.fresh = 0; if (fr && !st.knownIds.includes(fr.species.id)) st.knownIds.push(fr.species.id); syncKnown(st); logEv(st, "Developer: identified " + p.id); }
 export function skipRead(st, p, settings = DEFAULT_SETTINGS) {
   skipIdentify(st, p); const fr = frameFor(p); if (!fr) return;
   for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; p.read.push(ch.id); const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(ch.id)) once.push(ch.id); for (const [t, ls] of chapterLooks(fr, ch, p.genome)) guideAdd(st, fr.species.id, t, ls); }
