@@ -248,6 +248,6 @@
    "region": "pods",
    "show": "a PH plate at well + (4,0) for each occupied well, in rack order; nothing for an empty well; the 32×40 well pod is never scaled down"
   },
-  "empty": "the bay (open or shut), the wells, the chamber, the cradle, the journal, the nap poses and the glass master: nothing drawn, layout unchanged; the lamp, the notice, the top bar and the context line carry that information"
+  "empty": "the nap poses: nothing drawn, layout unchanged; the lamp, the notice, the top bar and the context line carry that information"
  }
 }

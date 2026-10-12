@@ -24,7 +24,6 @@ export const PLACEHOLDERS = [
   { id: "spread-study-S01..S16-80x96", what: "a met species' study, 80×96: the same specimen reduced to its 1 px outline in stone, transparent inside", until: "the sixteen spread study masters" },
   { id: "spread-gilt-corner-16x16", what: "the gilt corner of a portrayed species: a 16×16 clay L, 4 px thick, along the top and right edges", until: "the gilt corner master" },
   { id: "spread-seal-16x16", what: "the seal of a complete guide: a 16×16 sand disc with a 1 px bark edge", until: "the seal master" },
-  { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
   { id: "cargo-bay-992x320", what: "Cargo's bay, 992×320, open and shut: the panel component (panel fill, a bevel top, a hairline edge, a ground inside, no rim and no seals drawn); shut, a PH plate (cargo-bay-shut-976x304) over its inside with no label", until: "the bay masters (open and shut)" },
   { id: "crate-sealed-256x176", what: "a sealed crate in Cargo's bay: a PH plate; a sitting crate (crate-sitting-256x176) is left out until the portrait's reveal is designed", until: "the crate masters" },
   { id: "crate-sealed-384x256", what: "the crate closer, sealed: a PH plate, the same as the next two (no tag, tear or lid; the change reads as the pods appearing)", until: "the crate closer masters" },

@@ -68,7 +68,7 @@ export function homeBuild(m, spec, frame) {
   const cargoState = !docked ? "away" : crates ? "crates" : st.waiting.length ? "waiting" : "empty";
   const cargo = {
     state: cargoState, crates: Math.min(crates, R.cargo.max), lamp: lampOf("cargo") ?? "off",
-    bay: slot(cargoState === "away" ? "home-bay-shut" : "home-bay-open", R.cargo.bay.slice(2)),
+    bay: slot(`home-bay-${cargoState === "away" ? "shut" : "open"}-176x72`, R.cargo.bay.slice(2)),
     crate: ph(`home-crate-${R.cargo.crate.join("x")}`, R.cargo.crate), waiting: cargoState === "waiting" ? req({ kind: "waiting", id: "waiting:24" }) : "",
   };
   const rackSize = R.pods.wells.slots, podSize = R.pods.pod.size;
@@ -78,25 +78,25 @@ export function homeBuild(m, spec, frame) {
     const sp = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.speciesOf(q) : null;
     return { pod: ph(`home-rack-pod-${podSize.join("x")}`, podSize), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
   });
-  const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well", R.pods.wells.size), wells };
+  const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
   const bud = st.bud, ready = S.budReady(st, settings);
   const incState = !bud ? "empty" : ready ? "ready" : "growing";
   const L = S.budLeaves(st, settings, m.now, R.incubator.leaves.max, 20), total = L.total;
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
-    chamber: slot(`home-chamber-${incState}`, R.incubator.chamber.slice(2)),
+    chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}-72x72`, R.incubator.chamber.slice(2)),
     leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: L.full, filling: L.rows, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;
   const probe = {
     state: docked ? "docked" : "away", lamp: lampOf("probe") ?? (docked ? "well" : "off"),
-    cradle: slot(docked ? "home-cradle-full" : "home-cradle-empty", R.probe.cradle.slice(2)),
+    cradle: slot(`home-cradle-${docked ? "full" : "empty"}-96x72`, R.probe.cradle.slice(2)),
     shields: { count: pr ? Math.min(pr.smax, R.probe.shields.count) : 0, whole: pr ? Math.min(pr.shield, pr.smax) : 0, wholePicture: ph(R.probe.shields.pictures.whole, R.probe.shields.size), gonePicture: ph(R.probe.shields.pictures.gone, R.probe.shields.size, true) },
     frame: held ? ph(R.probe.slotPicture, R.probe.slot.slice(2)) : "",
   };
   const found = st.knownIds.length;
-  const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal", R.library.journal.slice(2)) };
+  const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal-104x72", R.library.journal.slice(2)) };
 
   const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library };
 

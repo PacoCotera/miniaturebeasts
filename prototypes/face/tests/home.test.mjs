@@ -44,11 +44,11 @@ const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? (r.kind === "waiting" ? [24, 24] : r.kind === "star" ? [12, 12] : [16, 16]);
 
-async function start(b, { motion = true, frame = {}, t0 = 0 } = {}) {
+async function start(b, { motion = true, frame = {}, t0 = 0, crateArt = false } = {}) {   // crateArt: the walk crate drawn as an art stand-in, so its union is its own region (the bay is painted)
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-crate-/.test(i) ? { policy: "art" } : {}) })));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => (crateArt && /^home-crate-/.test(i) ? { ...standIn(i, sizeOf(r)), policy: "art" } : standIn(i, sizeOf(r)))));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "home", ...b.props, motion, frame: frameProps({ ...b.line, ...frame }) }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -112,8 +112,8 @@ test("while the rest holds, the face moves no focus and sends no intent but room
 const crateRects = (f) => { const lg = logOf(f); return lg.regions.filter((r) => r.id === "cargo" && r.layer === "painted").map((r) => r.rect); };
 test("the crates slide in (events.crateIn): each from 40 px above over 500 ms, 250 ms apart, eased out, clipped to the bay; each stands on the spec's rectangle when its time is up", { skip }, async () => {
   const ev = homeSpec.events.crateIn.each, rest = homeSpec.regions.cargo.crateRects, bay = homeSpec.regions.cargo.rect, clip = [bay[0] + 112, bay[1] + 8, 176, 72];
-  const play = async (n, total) => { const f = await start(scene({ adults: 1, crates: n, carry: [] }), { t0: 1000 }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "cargo", ms: total });
-    return { f, at: (ms) => { f.frame(t0 + ms); return logOf(f).regions.find((r) => r.id === "cargo" && r.layer === "art")?.rect ?? null; } }; };   // the crates' union (the stand-ins are art)
+  const play = async (n, total) => { const f = await start(scene({ adults: 1, crates: n, carry: [] }), { t0: 1000, crateArt: true }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "cargo", ms: total });
+    return { f, at: (ms) => { f.frame(t0 + ms); return logOf(f).regions.find((r) => r.id === "cargo" && r.layer === "art")?.rect ?? null; } }; };   // the crates' union (the crate as an art stand-in, apart from the painted bay)
   { const { f, at } = await play(1, ev.ms);
     assert.deepEqual(at(0), [rest[0][0], clip[1], rest[0][2], 16], "at 0 the crate is 40 px above its place: its lower 16 px show in the bay"); assert.deepEqual(f.errors(), []);
     const tops = [100, 200, 300, 400, 499].map((ms) => at(ms)[1]); assert.ok(tops.every((y, i) => y >= clip[1] && y <= rest[0][1] && (i === 0 || y >= tops[i - 1])), "it comes down and stops, never above the bay's top: " + tops);
@@ -215,7 +215,7 @@ test("a light change is a cut: Home redraws the whole of its glass at most (312,
   const LIGHTS = ["dawn", "day", "dusk", "night"];
   for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {
     const f = await start(scene({ adults: 4, young: 2, carry: [0, 1], light: from }), { motion: false, t0: 1000 }), b = scene({ adults: 4, young: 2, carry: [0, 1], light: to });
-    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-crate-/.test(i) ? { policy: "art" } : {}) })));
+    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r))));
     assert.equal(f.props({ screen: "home", ...b.props, motion: false, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16));
     const a = dirty(f); assert.ok(a <= 312320, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
   }

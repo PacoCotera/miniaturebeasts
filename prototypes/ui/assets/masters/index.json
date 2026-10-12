@@ -295,6 +295,13 @@
    "sha256": "08178e9744f4eb41f6ec21dc6efbd32f324cb68fcf9ad07df80b99472cceb792",
    "signed": "art director (home hand masters, 942821f6, #112)"
   },
+  "crate-sitting-48x40": {
+   "file": "pods/crate-sitting-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "e9af94a27c29680e4b63be600a9e923169a6706e6171ba98f78bfa23aa1c25c9",
+   "signed": "art director, hand recut (pass 137), signed at 1x 10-11 14:37"
+  },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
    "w": 16,
@@ -624,6 +631,20 @@
    "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-bay-open-176x72": {
+   "file": "home/home-bay-open-176x72.png",
+   "w": 176,
+   "h": 72,
+   "sha256": "5000a012065260677d54b10ae3be1b33efba927d48b4638afa4df8a92c9742bf",
+   "signed": "art director, hand recut (pass 137), signed at 1x 10-11 14:37"
+  },
+  "home-bay-shut-176x72": {
+   "file": "home/home-bay-shut-176x72.png",
+   "w": 176,
+   "h": 72,
+   "sha256": "70a31efda54232c7245704cb96bfb48b1c18dea95864d15b1ad6e4fec3c5fa56",
+   "signed": "art director, hand recut (pass 137), signed at 1x 10-11 14:37"
+  },
   "home-bed-dawn-192x56": {
    "file": "home/home-bed-dawn-192x56.png",
    "w": 192,
@@ -659,12 +680,47 @@
    "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
    "signed": "art director, verdict (d09acb12)"
   },
+  "home-chamber-empty-72x72": {
+   "file": "home/home-chamber-empty-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-chamber-growing-72x72": {
+   "file": "home/home-chamber-growing-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-chamber-ready-72x72": {
+   "file": "home/home-chamber-ready-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "e57b1c225c968a69f355fa6fa0f645b2897a0e02de712e20a3d7edaf10893a0d",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-cradle-empty-96x72": {
+   "file": "home/home-cradle-empty-96x72.png",
+   "w": 96,
+   "h": 72,
+   "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-cradle-full-96x72": {
+   "file": "home/home-cradle-full-96x72.png",
+   "w": 96,
+   "h": 72,
+   "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
   "home-crate-48x40": {
    "file": "pods/home-crate-48x40.png",
    "w": 48,
    "h": 40,
-   "sha256": "87d9a930ffd62bfcbb1a9fb522e12aefb8f29595dcd0e4d90346c867a4bb7d0d",
-   "signed": "art director (home hand masters, #112 and #116)"
+   "sha256": "a896513a48c395d956fb3f9a89a0475fdcf5649b54f911ce12ada4550ffea053",
+   "signed": "art director, hand recut from crate-sealed-256x176 (pass 138), signed at 1x 10-11 14:37"
   },
   "home-glass-dawn-640x488": {
    "file": "home/home-glass-dawn-640x488.png",
@@ -693,6 +749,13 @@
    "h": 488,
    "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
    "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-journal-104x72": {
+   "file": "home/home-journal-104x72.png",
+   "w": 104,
+   "h": 72,
+   "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c",
+   "signed": "art director, Home column verdict (1f7d4a83)"
   },
   "home-lamp-amber-12x12": {
    "file": "pods/home-lamp-amber-12x12.png",
@@ -742,6 +805,13 @@
    "h": 32,
    "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
    "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-well-32x32": {
+   "file": "home/home-well-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44",
+   "signed": "art director, Home column verdict (1f7d4a83)"
   },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",
