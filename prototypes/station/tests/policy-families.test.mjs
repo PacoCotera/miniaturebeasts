@@ -55,6 +55,10 @@ test("every picture Pods asks for, in every state of every species, is in a laye
   assert.deepEqual(unknown, []); assert.ok(seen.size > 40, "the walk found the pictures: " + seen.size);
 });
 
+test("the rack pod picture is art (composed on the palette); its layers stay art masters", () => {
+  assert.equal(policyOf("rackpod:S01"), "art"); assert.equal(policyOf("rackpod:unknown"), "art"); assert.equal(policyOf("home-rack-pod-body-24x32", "master"), "art");
+});
+
 test("the walk crate on Home is a painted picture; the other home crates are in no family until placed", () => {
   assert.equal(policyOf("home-crate-48x40", "master"), "painted"); assert.equal(policyOf("home-crate-48x40:48x40", "master"), "painted"); assert.throws(() => policyOf("home-crate-80x56"), /no layer family/);
   assert.equal(policyOf("crate-sitting-48x40", "master"), "painted");

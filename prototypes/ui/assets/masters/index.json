@@ -785,6 +785,83 @@
    "sha256": "96321b87d0283a57d0543a22bd46b398b4d2acea4af77304a01cfc8251326ee7",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-rack-pod-accent-24x32": {
+   "file": "pods/home-rack-pod-accent-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "172313d6d3c600d6a4617c0d77524fcdd0eb16ca0774b3ec9a8572c58979795b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-body-24x32": {
+   "file": "pods/home-rack-pod-body-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "e78384b3cac271c61f01d00db0704ab1f017aa7bdeee2ce326fac7d267e447ce",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-light-24x32": {
+   "file": "pods/home-rack-pod-light-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "4ce2f1ce69dc60ba5dcbc41e53fb7ddb2f05a8f2b661af9b5ca8086ed9f37d1b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-outline-24x32": {
+   "file": "pods/home-rack-pod-outline-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "ab4144236c16519639a4546f8c16af2a5f466397d86cfbc91c8215c1aca91e5d",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-bands-24x32": {
+   "file": "pods/home-rack-pod-pattern-bands-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "89b5db434b657898ec82702f653867d3c9b885c6ed1edc0d3093a489e89c1d40",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-dots-24x32": {
+   "file": "pods/home-rack-pod-pattern-dots-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "0ba226431bb006e34696cd192295522f0438a0c07690e5c6f7c91cd17e86511d",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-plates-24x32": {
+   "file": "pods/home-rack-pod-pattern-plates-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "aa14653e529546fc8f0a253a60aa850459620283d3eed19b8134f71b1bfcfd14",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-ribs-24x32": {
+   "file": "pods/home-rack-pod-pattern-ribs-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "8589a8563b5ba33fcd68503ee9b70fa14c6fcb0ff3cd284d72cc0519a6c2de1f",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-segments-24x32": {
+   "file": "pods/home-rack-pod-pattern-segments-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "c77d41c42620a81f2ad95d44707c3fe756c7ed0b9c97f0851b2313030a65775b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-stripes-24x32": {
+   "file": "pods/home-rack-pod-pattern-stripes-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "1ba72652eb378b2d603842be198dd6141a1c4857d62889a2ce6a55c907684bff",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-shade-24x32": {
+   "file": "pods/home-rack-pod-shade-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "19916a8e503df7c97ee3886b4dd2e2ca2f8de896231f381b23478109d2c6ba49",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
   "home-shield-lost-12x24": {
    "file": "pods/home-shield-lost-12x24.png",
    "w": 12,

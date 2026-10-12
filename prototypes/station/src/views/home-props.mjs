@@ -76,7 +76,7 @@ export function homeBuild(m, spec, frame) {
     const q = st.tray[i];
     if (!q) return { pod: "", glint: "" };
     const sp = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.speciesOf(q) : null;
-    return { pod: ph(`home-rack-pod-${podSize.join("x")}`, podSize), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
+    return { pod: req({ kind: "rackpod", id: `rackpod:${sp ?? "unknown"}`, species: sp, size: podSize }), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
   });
   const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
   const bud = st.bud, ready = S.budReady(st, settings);

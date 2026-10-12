@@ -813,7 +813,6 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Bed | 192×56 |
 | Cargo's bay, open and shut | 176×72, signed (the pass 137 recut) |
 | Waiting mark | 24×24, `mark-waiting-24` |
-| Rack pod | 24×32, the rack class, rendered at its size |
 | Well | 32×32, signed (the Home column, 1f7d4a83) |
 | Chamber | 72×72, signed (1f7d4a83) |
 | Probe in its cradle | 96×72, signed (1f7d4a83) |
