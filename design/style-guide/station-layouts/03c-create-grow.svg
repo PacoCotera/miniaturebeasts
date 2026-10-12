@@ -98,8 +98,8 @@
 <line x1="776" y1="549.5" x2="952" y2="549.5" stroke="#3c4b57" stroke-width="1"/>
 <text x="864" y="541" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
 <rect x="88.5" y="120.5" width="847" height="287" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
-<rect x="792.5" y="120.5" width="143" height="175" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
-<text x="796" y="100" font-size="9" fill="#c45f12">to 792,120 (feet 864,296)</text>
+<rect x="820.5" y="184.5" width="87" height="111" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="796" y="100" font-size="9" fill="#c45f12">to 820,184 88×112 (feet 864,296)</text>
 <rect x="440.5" y="176.5" width="143" height="175" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 3"/>
 <text x="444" y="346" font-size="9" fill="#c45f12">pod at 300 ms of 600</text>
 <line x1="160" y1="320" x2="852" y2="208" stroke="#c45f12" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>

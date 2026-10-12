@@ -77,7 +77,7 @@ export function createBuild(m, spec, pods) {
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
   regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
-  regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }) };
+  regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }), dome: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${pods.classes.pod.collection.join("x")}`, species: S.speciesOf(p), state: "identified", size: pods.classes.pod.collection }) };   // the pod at rest in the small chamber: the collection class, only ever reduced
   regions.podShadow = { picture: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + pods.shadow.widen, pods.shadow.h], "the contact shadow") };   // as Pods' rule: named in every state, the face keeps its node
   regions.cradle = { front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };   // the dish itself is Create's own stage's; its near lip is registered and not drawn while the spec says `until`
   regions.origin = S.podOriginLines(p);

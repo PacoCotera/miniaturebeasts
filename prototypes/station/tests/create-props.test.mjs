@@ -132,3 +132,12 @@ test("regions.podShadow.picture is the class's contact shadow slot: pod-large-sh
   }
   const all = make("S01", 3, 2).build(); assert.deepEqual(validate(all.props, schema), []);
 });
+
+// the pod at rest in the small chamber (create.json regions.travel.rest): the collection class, whatever the species' own class
+test("regions.pod.dome is the pod at the collection class, pod:<species>:i:88x112, for a large, a medium and a small species", () => {
+  for (const [id, cls] of [["S02", "large"], ["S01", "medium"], ["S03", "small"]]) {
+    const b = make(id, 3, 0).build(), pod = b.props.regions.pod;
+    assert.equal(pod.sizeClass, cls); assert.equal(pod.dome, `pod:${id}:i:88x112`); assert.notEqual(pod.dome, pod.picture);
+    const r = b.requests.find((x) => x.id === pod.dome); assert.ok(r && r.kind === "pod" && r.size.join("x") === "88x112" && r.species === id, "the request is the collection class's picture");
+  }
+});

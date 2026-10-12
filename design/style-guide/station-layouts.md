@@ -1177,7 +1177,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | Leaves to grow | 768, 336, 192, 48 | The word `leaves`, form grid: 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48), all empty: one per minute it will take, 20 plus one a change, the first founder 5 whatever is shaped |
 | **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box; x 804 centres it on the column's axis, 4 px off the grid, as Home's juvenile and the medium pod are |
 | Code | 776, 525, 176, 25 | The line box 525 to 545, baseline 541, a 1 px `hairline` rule at y 549, 8 px from the baseline to the rule (off the grid for that clearance); at Grow the code prints here, centred on x 864, in three groups with spaces ("K7Q 4MX P2D"). 176 wide: the widest code, "WWW WWW WWW", is 152 px |
-| Travel (grow only) | 88, 120, 848, 288 | The pod's path from its box to (792, 120), feet (864, 296), behind the chamber and the roll; its feet behind the small chamber's sill, under the bud's floor (274) |
+| Travel (grow only) | 88, 120, 848, 288 | The pod's path from its box to the dome, feet (864, 296); from 530 ms, behind the work tray, a step to 88×112 (the collection class) at (820, 184); behind the chamber and the roll; its feet behind the small chamber's sill |
 
 **Regions and their words.** Every drawn region names its word from the closed vocabulary (`component`) or its composition (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **nothingRead** (an identified pod with no chapter read), **shape** (a chapter read; at rest and while rolling) and **grow** (from `✓ Grow it` until the screen changes, input held).
 
@@ -1243,7 +1243,7 @@ Vectors: from `roll`, each of ◀ ▶ ▲ ▼ sends its step and the ring stays 
 | Event | Hold | What plays |
 | --- | --- | --- |
 | `roll`: `{ kind: dither, target: founder, ms: 200, levels: 16 }` | 0 | The founder's old picture cross-dithers to the new one in its own box, 16-level Bayer, as a composed picture; the roll, the ring, the line, the pip, the stamp and the price are cuts |
-| `grow` (900 ms) | 1080 ms | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
+| `grow` (900 ms) | 1080 ms | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; at 530 the pod steps to 88×112 behind the work tray; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
 
 With `motion: false` both jump to their ends.
 

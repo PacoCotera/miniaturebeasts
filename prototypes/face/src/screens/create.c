@@ -54,7 +54,7 @@ static void picture(const char *region, const char *id, const char *path, const 
 static void pic_or(const char *id, int on, const char *asset, int x, int y, int w, int h);
 static void build_pod(int grow) {
   int b[4]; if (!pod_box(b)) return; const char *pic = v_pstr("regions.pod.picture"); if (!has(pic)) return;
-  int dx = 0, dy = 0;
+  int dx = 0, dy = 0, rest = 0;
   {   /* the contact shadow (as on Pods, specimen.c): pods.json `shadow` widens the class's width by `widen`, `h` tall, centred on the axis and the feet, on the painted layer before the pod; it never travels: shown in shape and nothing read, and in grow until the travel starts (a cut to a zero-size node), never with reduced motion in grow */
     int sw = b[2] + spec_int("pods", "shadow.widen", 0), sh = spec_int("pods", "shadow.h", 0), at = ci("events.grow.steps.2.at", 300), t = grow_time(), on = !grow || (t >= 0 && t < at);
     v_region("podShadow", LAYER_PAINTED); pic_or("podShadow", on, v_pstr("regions.podShadow.picture"), ci("regions.pod.axis", 160) - v_half(sw), ci("regions.pod.feet", 408) - v_half(sh), sw, sh);
@@ -62,8 +62,11 @@ static void build_pod(int grow) {
   if (grow) {   /* the pod travels from its box to the dome in a straight line, whole pixels, eased: from `travel.at` over `travel.ms`, feet (160, 408) to (864, 296) */
     int at = ci("events.grow.steps.2.at", 300), ms = ci("events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = layout_ease_io(p);
     dx = layout_lerp(0, ck("regions.travel.foot.to", 0) - ck("regions.travel.foot.from", 0), e); dy = layout_lerp(0, ck("regions.travel.foot.to", 1) - ck("regions.travel.foot.from", 1), e);
+    rest = t < 0 || t >= ci("regions.travel.rest.at", 530);   /* from 530 ms (and with reduced motion) the pod rests at the collection class, a step and never interpolated, on the same foot */
   }
-  v_region(grow ? "travel" : "pod", LAYER_PAINTED); v_sprite("pod", pic, b[0] + dx, b[1] + dy, b[2], b[3]);
+  v_region(grow ? "travel" : "pod", LAYER_PAINTED);
+  if (rest && has(v_pstr("regions.pod.dome"))) { int w = ck("regions.travel.rest.size", 0), h = ck("regions.travel.rest.size", 1); v_sprite("pod", v_pstr("regions.pod.dome"), ci("regions.pod.axis", 160) + dx - v_half(w), ci("regions.pod.feet", 408) + dy - h, w, h); }
+  else v_sprite("pod", pic, b[0] + dx, b[1] + dy, b[2], b[3]);
 }
 static void build_origin(void) {
   int r[4]; crect("regions.origin.rect", r); int px = ci("regions.origin.px", 16), pitch = ci("regions.origin.pitch", 20), maxLines = ci("regions.origin.lines", 2), cx = ci("regions.origin.centre", 160), line = 0;

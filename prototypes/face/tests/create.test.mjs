@@ -189,18 +189,28 @@ test("the code appears on the rule at 300 ms (a cut), three groups with spaces c
   let lg = at(299); assert.equal(lg.type.some((t) => t.region === "code" && t.text), false, "no code at 299"); assert.deepEqual(region(lg, "code", "chrome").rect, [776, 549, 176, 1], "the rule");
   lg = at(300); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); const r = region(lg, "code", "type"); assert.ok(Math.abs(r.rect[0] + r.rect[2] / 2 - 864) <= 1, "centred on 864"); assert.equal(r.rect[1] + 4 + 12, 541, "the baseline: the line box 525 to 545, the cap 12 px, 4 px above the box's middle");
 });
-test("the pod travels from its box to the dome from 300 to 900 ms in a straight line, whole pixels, eased in and out (e = p·p·(3000 − 2p)/1000000); at rest before, in the dome after, behind the work tray in between", { skip }, async () => {
-  const { b, f, at } = await growing(), box = [100, 256, 120, 152], F = R.travel.foot, dx = F.to[0] - F.from[0], dy = F.to[1] - F.from[1];   // the medium class: bottom-centred on (160, 408)
-  assert.equal(b.props.regions.pod.sizeClass, "medium");
+test("the pod travels from its box to the dome from 300 to 900 ms in a straight line, whole pixels, eased in and out (e = p·p·(3000 − 2p)/1000000); at rest before, in the dome after, behind the work tray in between; at 530 ms it steps to the collection class, 88×112, on the same foot", { skip }, async () => {
+  const { b, f, at } = await growing(), box = [100, 256, 120, 152], F = R.travel.foot, dx = F.to[0] - F.from[0], dy = F.to[1] - F.from[1], rest = R.travel.rest;   // the medium class: bottom-centred on (160, 408)
+  assert.equal(b.props.regions.pod.sizeClass, "medium"); assert.deepEqual(rest.size, podsSpec.classes.pod.collection); assert.equal(rest.at, 530);
   for (const ms of [0, 300]) assert.deepEqual(region(at(ms), "travel", "painted").rect, box, `at ${ms} the pod is in its dish`);
-  for (const ms of [330, 450, 600, 750, 870, 899]) { const e = ease((ms - 300) * 1000 / 600), want = [box[0] + lerp(0, dx, e), box[1] + lerp(0, dy, e), 120, 152]; assert.deepEqual(region(at(ms), "travel", "painted").rect, want, `at ${ms}`); }
-  assert.deepEqual(region(at(600), "travel", "painted").rect.slice(0, 2), [box[0] + 352, box[1] - 56], "half way at half the time");
-  assert.deepEqual(region(at(900), "travel", "painted").rect, [box[0] + dx, box[1] + dy, 120, 152], "in the dome at 900: feet (864, 296)"); assert.equal(f.poll("done")?.kind, "grow"); assert.deepEqual(f.errors(), []);
+  for (const ms of [330, 450, 529, 530, 600, 750, 870, 899]) {
+    const e = ease((ms - 300) * 1000 / 600), fx = F.from[0] + lerp(0, dx, e), fy = F.from[1] + lerp(0, dy, e), want = ms < 530 ? [fx - 60, fy - 152, 120, 152] : [fx - 44, fy - 112, 88, 112];
+    assert.deepEqual(region(at(ms), "travel", "painted").rect, want, `at ${ms}`);
+  }
+  assert.deepEqual(region(at(600), "travel", "painted").rect, [160 + lerp(0, 704, 500) - 44, 408 + lerp(0, -112, 500) - 112, 88, 112], "half way at half the time, at the collection class");
+  assert.deepEqual(region(at(900), "travel", "painted").rect, [820, 184, 88, 112], "in the dome at 900: 88×112, feet (864, 296)"); assert.equal(f.poll("done")?.kind, "grow"); assert.deepEqual(f.errors(), []);
+});
+test("the step to the collection class: the travelling sprite is the medium's own picture at 529 ms and the 88×112 picture at 530 (the work tray's pictures left out, so the pod can be read)", { skip }, async () => {
+  const b = scene({ read: 2, f: 1, roll: 1, grown: true }); b.props.regions.chamber.back = ""; b.props.regions.chamberFront.picture = ""; b.props.regions.founder.picture = "";   // the pod is behind the work tray and the founder at that instant: with their pictures out it shows
+  const f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); f.send({ t: "event", kind: "grow", target: "pod", ms: EV.grow.ms, hold: EV.grow.hold });
+  const F = R.travel.foot, probe = (ms) => { f.frame(t0 + ms); logOf(f); const e = ease((ms - 300) * 1000 / 600); return [F.from[0] + lerp(0, F.to[0] - F.from[0], e), F.from[1] + lerp(0, F.to[1] - F.from[1], e) - 60]; };
+  assert.match(b.props.regions.pod.picture, /^pod:.*:i:120x152$/); assert.match(b.props.regions.pod.dome, /^pod:.*:i:88x112$/);
+  let [x, y] = probe(529); assert.ok(pixelIs(f, x, y, b.props.regions.pod.picture), "at 529 the medium's own picture"); [x, y] = probe(530); assert.ok(pixelIs(f, x, y, b.props.regions.pod.dome), "at 530 the 88×112 picture"); assert.deepEqual(f.errors(), []);
 });
 test("grow with reduced motion is its end at once: the stamp whole, the code printed, the pod in the dome, the event done on the frame", { skip }, async () => {
   const b = scene({ read: 2, f: 1, roll: 1, grown: true }), f = await start(b, { motion: false, t0: 1000 }); f.send({ t: "event", kind: "grow", target: "pod", ms: 900, hold: 0 }); frames(f, 2); assert.equal(f.poll("done")?.kind, "grow");
   assert.equal(f.props({ screen: "create", ...b.props, motion: false, frame: frameProps(b.line) }), 0); frames(f); const lg = logOf(f);
-  assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stamp", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); assert.deepEqual(region(lg, "travel", "painted").rect, [804, 144, 120, 152]);
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stamp", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); assert.deepEqual(region(lg, "travel", "painted").rect, [820, 184, 88, 112]);
 });
 test("no refresh redraws more than a quarter of the screen while the pod travels (frames every 16 ms) or the founder dithers, the frame of the key that starts each included", { skip }, async () => {
   const area = (f, o) => dirty(f, o);
