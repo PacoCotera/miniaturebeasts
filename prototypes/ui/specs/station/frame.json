@@ -88,6 +88,11 @@
   "strings": { "line": "this screen is not built yet", "subject": "", "rule": "one sentence in lower case, as the frame's notices and Idle's line, a name keeping its capital; no digits, no full stop; on a framed screen the name is the top bar's title, never repeated in the line; Idle has no title, so its line names it" }
  },
  "navigation": {
+  "dock": {
+   "rule": "the Caddy's Dock, a world event. Pressed while the Station has the keys: no navigation (each screen's own cut; Home and Cargo no plate, elsewhere the rule's plate). Pressed while another device has the keys (the play page): Pods, Incubator, Vivarium, one mibi up close with the namer shut, Library and the Probe bench land on Home with the ring on the room, as idle.keys.dock; Home and Cargo play their own arrival; Create or Cross with an unpaid choice, the namer and the Sitting stay, with the plate. Lift never navigates.",
+   "stays": ["home", "cargo", "create", "cross", "sitting"],
+   "namerStays": true
+  },
   "spec": "design/style-guide/station-screens.md#keys-and-navigation",
   "map": "design/style-guide/station-layouts/nav-map.png",
   "rule": "Home is the hub; Incubator and Probe under Home with the Research mark; a room key always opens its room's top; stack navigation (← to the parent of the screen you are on, never to the history); the first press on Idle only wakes; a room key pressed on Create or Cross drops the unpaid choices, and coming back starts fresh",

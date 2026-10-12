@@ -321,7 +321,7 @@ export function mergeCare(st, sv) {
 }
 // Dock or lift: docking always works; it brings the crates and the Probe (a break mended free, else up to two plates, then 1 Energy a plate while the switch is on).
 export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  if (!hasWorld(sv) && !st.devBay.length && !st.devWorld) return { ok: false, msg: "No Companion world yet · open the Companion page first, or seed a crate in the developer panel" };
+  if (!hasWorld(sv) && !st.devBay.length && !st.devWorld) return { ok: false, msg: "The Companion has no world yet: set out with it first" };
   if (docked(st)) { st.dock = { docked: false, at: now }; logEv(st, "Companion lifted"); return { ok: true, lifted: true, msg: "Lifted · the Companion can set out" }; }
   st.dock = { docked: true, at: now }; st.dockN = (st.dockN || 0) + 1;
   st.turn = Math.max(st.turn, (sv && sv.turn) || 0);
@@ -556,7 +556,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
   if (st.bud) return { text: "a bud is growing", act: "inc", label: "Look at the incubator" };
-  if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "open the Companion page", act: null };
+  if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "set out with the Companion", act: null };
   return { text: "", act: null };
 }
 

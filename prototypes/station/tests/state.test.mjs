@@ -420,12 +420,12 @@ test("nav fix: adults seeded by the developer make their species known, so the L
   const s2 = S.freshSt("w1", 0, 1); S.normalize(s2); S.seedSiblings(s2, "S01", 9, settings); assert.ok(s2.knownIds.includes("S01"));
 });
 
-test("nav fix: 'open the Companion page' clears once a seeded world has a crate, a pod or a mibi", () => {
+test("nav fix: 'set out with the Companion' clears once a seeded world has a crate, a pod or a mibi", () => {
   const sv = { v: 8 };   // no world: the Companion page was never opened
   const fresh = () => { const st = S.freshSt("w1", 0, 1); S.normalize(st); return st; };
-  assert.equal(S.need(fresh(), sv, settings).text, "open the Companion page");
-  const a = fresh(); S.seedCrate(a, "S01", 1, 3, 1); assert.notEqual(S.need(a, sv, settings).text, "open the Companion page");
-  const b = fresh(); S.seedAdults(b, "S01", 3, 1, settings); assert.notEqual(S.need(b, sv, settings).text, "open the Companion page");
+  assert.equal(S.need(fresh(), sv, settings).text, "set out with the Companion");
+  const a = fresh(); S.seedCrate(a, "S01", 1, 3, 1); assert.notEqual(S.need(a, sv, settings).text, "set out with the Companion");
+  const b = fresh(); S.seedAdults(b, "S01", 3, 1, settings); assert.notEqual(S.need(b, sv, settings).text, "set out with the Companion");
 });
 
 test("nav fix: every screen the Station names has a mark in the title bar", () => {

@@ -36,6 +36,7 @@ async function loadFrames() {
 }
 
 // --- the face ---
+let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
 let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null;   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
@@ -78,7 +79,7 @@ function frame(t) {
 // --- the Station's keys: pad, Home/Research/Library/Vivarium, ← and ✓, plus the Caddy's Dock/Lift key ---
 // A key goes to the face, which moves the ring or says an intent; the intent is the rule call (intents/*). The Dock key is the Caddy's, a world event and not a Station key: the host calls the frame's dock.
 // The Caddy's Dock key, a world event and never a Station key: it wakes Idle (the dither back, held) and docks or lifts. A Dock pressed in a hold is kept by the host and acts when the hold ends (host.mjs).
-function dockKey() { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); } frameIntents.dock(H, wasIdle); }
+function dockKey() { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); } frameIntents.dock(H, wasIdle, dockElsewhere); dockElsewhere = false; }
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
@@ -96,10 +97,13 @@ function bindKeys(root) {
     const up = () => btn.classList.remove("is-down"); btn.addEventListener("pointerup", up); btn.addEventListener("pointercancel", up); btn.addEventListener("lostpointercapture", up);
     btn.addEventListener("click", (e) => e.preventDefault()); });
 }
-bindKeys(stationEl); bindKeys($("caddy"));
+bindKeys(stationEl);
+$("dockCtl").addEventListener("click", (e) => { act("dock"); e.currentTarget.blur(); });
 stationEl.addEventListener("contextmenu", (e) => e.preventDefault());
 ["touchstart", "touchmove", "gesturestart", "dblclick"].forEach((type) => stationEl.addEventListener(type, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
 const KEYMAP = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Enter: "confirm", NumpadEnter: "confirm", Space: "confirm", Escape: "back", Backspace: "back", KeyH: "home", KeyR: "research", KeyL: "library", KeyB: "habitat", KeyD: "dock" };
+const EMBED = document.documentElement.classList.contains("embed");   // ?embed: the screen alone in the play page
+if (EMBED) delete KEYMAP.KeyD;   // on the play page no device key docks: the shell owns Shift+D
 window.addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = KEYMAP[e.code] || { " ": "confirm", Enter: "confirm", Escape: "back" }[e.key]; if (!k) return;
@@ -121,18 +125,46 @@ function fit() {
   vis.style.width = Math.round(W * s) + "px";
 }
 window.addEventListener("resize", fit);
-const caddyEl = $("caddy"), dockKeyEl = $("dockKey"), caddyPaper = $("caddyPaper");
+// ?embed: one function sets the screen's width at a whole number of physical pixels per device pixel; a media query on the current dpr re-arms itself on every change, and resize stays for the zoom paths that resize
+const EMBED_W = 1024;
+const setEmbedW = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty("--embed-w", (EMBED_W * k / d) + "px"); };
+let dprQuery = null;
+function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
+function onDpr() { setEmbedW(); armDpr(); }
+if (EMBED) { setEmbedW(); armDpr(); window.addEventListener("resize", setEmbedW); window.removeEventListener("resize", fit); }
+const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), dockWord = $("dockWord"), dockDot = $("dockDot"), caddyPaper = $("caddyPaper");
 let caddyKey = "";
 const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
+// The Caddy's state as the control and the play page's shell take it (frame.json navigation.dock; the shell never reads the save): canDock is the exact condition state.mjs refuses a dock on
+const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock) });
+let lastPosted = "";
+function postCaddy(force = false) {
+  const m = caddyState(), k = JSON.stringify(m); if (!force && k === lastPosted) return; lastPosted = k;
+  if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
+}
 function updateCaddy() {
-  const d = docked(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at); if (key === caddyKey) return; caddyKey = key;
-  caddyEl.classList.toggle("lifted", !d); dockKeyEl.textContent = d ? "LIFT" : "DOCK";
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock; if (key === caddyKey) return; caddyKey = key;
+  if (EMBED) { postCaddy(); return; }
+  caddyEl.classList.toggle("lifted", !d);
+  dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
+  const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion from the Caddy" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion in the Caddy";   // copy: station-copy-w1-polish A1
+  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion from the Caddy" : crates ? "Dock the Companion in the Caddy; cargo waits aboard" : "Dock the Companion in the Caddy");
+  if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
+  dockCtl.title = title;
+  dockDot.hidden = !(!d && c.canDock && c.crates > 0); dockCtl.classList.toggle("is-pressed", c.pending);
   caddyPaper.textContent = !hasWorld() ? "Caddy · no Companion world yet" : d ? "Caddy · Companion docked" + (bayCrates().length ? " · " + S.plural(bayCrates().length, "crate") + " sealed" : "") : "Caddy · Companion lifted at " + hm(G.st.dock.at);
 }
-window.addEventListener("storage", (e) => { if (e.key !== S.SAVE_KEY && e.key !== null) return; if (!G.ready) return; storageChanged(); });
-const devEl = $("dev"), devBtn = $("devBtn"), devOut = $("devOut");
-function showDev(on) { devEl.hidden = !on; devBtn.setAttribute("aria-pressed", String(on)); devBtn.textContent = on ? "Hide developer tools" : "Developer tools"; if (on) refreshDev(); }
-function refreshDev() { if (devOut && !devEl.hidden && devOut.dataset.live === "1") devOut.textContent = genomesText(); }
+if (EMBED) window.addEventListener("message", (e) => {   // the play page's shell: the dock by postMessage, the developer panel's visibility; both ends check the origin and the parent
+  if (e.origin !== location.origin || e.source !== parent) return; const m = e.data || {};
+  if (m.t === "mb-dock") { dockElsewhere = !!m.keysElsewhere; act("dock"); postCaddy(true); }
+  else if (m.t === "mb-dev") showDev(!!m.on);
+});
+window.addEventListener("storage", (e) => { if (e.key !== S.SAVE_KEY && e.key !== null) return; if (!G.ready) return; storageChanged(); updateCaddy(); });   // updateCaddy here too: a hidden frame's animation frames may pause, and the shell still hears a Companion change
+const inShell = (() => { try { return EMBED && parent !== window && !!parent.document; } catch { return false; } })();   // the developer panel is built into the play page's drawer (nodes made here are adopted on append; their listeners run in this realm)
+const devEl = $("dev"), devBtn = $("devBtn"), devOut = (inShell && parent.document.getElementById("devStationOut")) || $("devOut");
+let devOn = false;
+function showDev(on) { if (inShell) { devOn = on; if (on) refreshDev(); return; } devEl.hidden = !on; devBtn.setAttribute("aria-pressed", String(on)); devBtn.textContent = on ? "Hide developer tools" : "Developer tools"; if (on) refreshDev(); }
+function refreshDev() { if (devOut && (inShell ? true : !devEl.hidden) && devOut.dataset.live === "1") devOut.textContent = genomesText(); }
 devBtn.addEventListener("click", (e) => { showDev(devEl.hidden); e.currentTarget.blur(); });
 onChange(refreshDev);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
@@ -143,7 +175,7 @@ fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw 
 
 // --- boot ---
 for (const id of ["howTo", "whatTry"]) $(id).open = false;
-fit();
+if (!EMBED) fit();
 requestAnimationFrame(frame);
 const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the face is up the screen is blank; the words go to the page
 bootText("loading the species frames…");
@@ -171,8 +203,9 @@ const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
   UI.lastInput = performance.now(); G.ready = true;
-  buildDevPanel($("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); } });
+  buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); } });
   caddy.startClient();
+  if (EMBED) { caddyKey = ""; updateCaddy(); postCaddy(true); }   // the shell hears the Caddy's state at ready
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
