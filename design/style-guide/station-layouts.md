@@ -7,6 +7,7 @@ The measured layout of every built Station screen at 1024×600, 1×, so the buil
 - The rail shows as many chapters as the species has.
 - No digits where a picture can do the job. Prices on the bottom line are the exception.
 - Labels are one word. Never a text page. Never childish.
+- Every state is composed: it names its main object, an empty region draws nothing, and no flat-box stand-in reaches a golden ([Every state composed](#every-state-composed-one-rule-every-screen)).
 
 **For the builder.** Where a layout departs from its concept plate, it says so and why. The wireframes in [`station-layouts/`](station-layouts/) are measured boxes and labels only, with no art: one per screen, drawn from the same numbers as the tables below.
 
@@ -334,6 +335,22 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why. Marks never sit on the picture.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
 - **No words in a living window.** The vivarium, the up-close window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); the vivarium's name tag, and its meet ribbon in the tag's place ([the vivarium, up close](#the-vivarium-the-whole-and-one-mibi-up-close)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
+
+### Every state composed (one rule, every screen)
+
+UI/UX designer, 2026-10-11 23:56, step 0 of the Station's global fix plan, after the owner rejected the screens as a whole (2026-10-11 23:49). Every layout in this file measured its parts and never said what a state looks like when a part is absent, so the builds followed the specs into empty frames, lavender boxes and dead fields. This rule closes that gap. It outranks every per-screen table below, the "Placeholders on …" tables included. Where a screen's spec still says otherwise, this rule wins, and the spec catches up before that screen's gate.
+
+1. **Each state names its main object.** Every state of every screen (each `states` entry of its spec, and each event's end frame) names one main object: the region id the eye lands on first, and its rect. Examples: Create shape, the founder (360, 240, 304, 312); the Incubator empty, the chamber (360, 200, 304, 272); Pods' overview, the pod (184, 216, 144, 176). The spec lists it as `composed.<state>: { "main": "<region id>", "rect": [x, y, w, h] }`. A state that cannot name one is not designed, and the builder does not build it. The main object is drawn in that state. If its master has not landed, the state is not ready for its gate.
+2. **An empty region draws nothing.** A region with nothing to show keeps its node with no size (w 0, h 0, as Grow keeps its nodes, [lvgl-switch.md §2.2](../proposals/lvgl-switch.md)). It never draws an empty frame, an outline, a dashed or dotted box, a bare panel, a dark well, a bare label plate, or a caption standing for the absent thing. An empty state that the design shows as an object is not an empty region: the empty dish, the shut journal, the dark chamber and the shut bay are objects, drawn from their masters. Retired by this rule, to be removed from each spec at its screen's gate:
+   - the bay strip's free bay as a `dash` outline (the vivarium, up close and the whole);
+   - the up-close Companion module's empty dark slots;
+   - the bare stamp label with no stamp (Create `nothingRead`, `habitat.json regions.stamp.until`);
+   - Pods' place tiles beside the collection rings;
+   - Home's module object boxes in their empty states, until each empty object is painted.
+3. **No flat-box stand-in on a golden.** Some stand-ins are a flat fill, an outline or an unpainted plate: the register's lavender `placeholder` plates, flat roll fills, `standIn` edge boxes, a `colours.*StandIn` fill. Such a stand-in is never drawn in a frame that is goldened, captured for a review or shown to the owner. The region stays with no size. A stand-in the art director has signed as a picture (named in the register with its signer, such as the juvenile stand-in) is art, not a box, and may be placed. Which creature renderings may stand in is the art director's question, not this rule's.
+4. **Placeholder slots show nothing until their art lands.** The "Placeholders on …" tables give the size each master is painted at. They are not things to draw. A slot whose picture is not a signed master (register status `placeholder` without the art director's stand-in signature) draws nothing. The layout does not move to fill the gap, as `create.c` already does for a picture the host has not sent. When the master lands, it is placed 1:1 at the slot's rect, and the rect does not change for it.
+
+**How the gate checks it.** At 1×, on every golden of the screen, the reviewer names the main object and finds it drawn at its rect. Every other drawn rectangle must map to a region that holds content. A flat fill, outline or dotted box that holds no content fails the screen, wherever it sits.
 
 ### Never upscaled
 
