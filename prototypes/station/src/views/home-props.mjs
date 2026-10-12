@@ -5,6 +5,7 @@
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { movingIds, playable } from "../moving.mjs";
+import { standLook } from "../stands.mjs";
 import { goalWords } from "./goal-words.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
@@ -13,7 +14,9 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + 
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<id>:<juvenile|adult|elder>:<w>x<h>
 export const mibiPictureId = (id, stage, [w, h]) => `mibi:${id}:${stage}:${w}x${h}`;
-export const mibiReq = (req, st, mb, size, settings) => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(mb.id, stage, size), mibi: mb.id, stage, species: S.speciesOf(mb), size }); };
+// An adult or elder without its signed stand takes its species' juvenile stand, 1:1 in its own size (stands.mjs, station-layouts.md Composed states, rule 5): the picture is named by the stage and size it is drawn at.
+export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.mibiStage(st, mb, settings), size);
+export const mibiReq = (req, st, mb, size, settings) => { const { stage, size: drawn } = lookOf(st, mb, size, settings); return req({ kind: "mibi", id: mibiPictureId(mb.id, stage, drawn), mibi: mb.id, stage, species: S.speciesOf(mb), size: drawn }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
@@ -67,10 +70,10 @@ export function livingOf(m, R, req, ph, L) {
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings);
-  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: false, ...extra }; };
+  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; const look = lookOf(st, mb, size, settings); return { id: String(mb.id), name: mb.name, stage: look.stage, picture: pic(mb, size), waiting: false, ...extra }; };   // `stage` is the stage drawn: a juvenile stand sizes the box, the ring, the lift and the lamp as a juvenile's
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
-  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, p.stage, req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, p.stage, req, m, ["nap"]); if (mv) p.moving = mv; return p; }) : [];
+  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, stageOf(mb), req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
+  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, stageOf(mb), req, m, ["nap"]); if (mv) p.moving = mv; return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
