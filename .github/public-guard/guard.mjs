@@ -40,9 +40,9 @@ export const hashName = (name, salt = nameSalt) => createHash("sha256").update(s
 let publicNames = null;   // each tracked file's basename and that basename without its last extension, once per run
 export function PUBLIC_NAMES() {
   if (!publicNames) {
-    publicNames = new Set();
+    publicNames = new Set();   // lowercased: names compare case-insensitively
     for (const f of execFileSync("git", ["ls-files", "-z"], { encoding: "buffer", maxBuffer: 1 << 30 }).toString("utf8").split("\0").filter(Boolean)) {
-      const b = path.posix.basename(f); publicNames.add(b); publicNames.add(b.replace(/\.[^.]*$/, ""));
+      const b = path.posix.basename(f).toLowerCase(); publicNames.add(b); publicNames.add(b.replace(/\.[^.]*$/, ""));
     }
   }
   return publicNames;
@@ -55,8 +55,8 @@ const memoHash = new Map();
 export function internalRefs(text) {
   const out = [], pub = PUBLIC_NAMES();
   for (const re of irRules) for (const h of matches(re, text)) out.push({ ...h, part: "a" });
-  for (const m of text.matchAll(sectionRe)) if (!pub.has(m[1].replace(/\.md$/, ""))) out.push({ index: m.index, text: m[0], part: "b-section" });
-  for (const m of text.matchAll(mdNameRe)) if (!pub.has(m[1]) && !pub.has(m[1].slice(0, -3))) out.push({ index: m.index, text: m[1], part: "b-name" });
+  for (const m of text.matchAll(sectionRe)) if (!/^v\d+$/i.test(m[1]) && !pub.has(m[1].toLowerCase().replace(/\.md$/, ""))) out.push({ index: m.index, text: m[0], part: "b-section" });
+  for (const m of text.matchAll(mdNameRe)) if (!pub.has(m[1].toLowerCase()) && !pub.has(m[1].toLowerCase().slice(0, -3))) out.push({ index: m.index, text: m[1], part: "b-name" });
   if (nameHashes.size) for (const m of text.matchAll(tokenRe)) {
     const t = m[1].toLowerCase(); let h = memoHash.get(t); if (h === undefined) memoHash.set(t, (h = hashName(t)));
     if (nameHashes.has(h)) out.push({ index: m.index, text: m[1], part: "c" });
@@ -170,7 +170,7 @@ export function checkLine(file, line) {
   }
   // one report per rule and position
   const uniq = new Map();
-  for (const h of hits) uniq.set(h.rule + "\0" + h.text, h);
+  for (const h of hits) uniq.set(h.rule + "\0" + (h.part || "") + "\0" + h.text, h);
   return [...uniq.values()];
 }
 
@@ -305,10 +305,14 @@ export const FIXTURES = [
   { rule: "session", file: "art/x/budget.json", hit: '"plan": "/tmp/claude-0/x/plan.json"', pass: '"plan": "plan-pods-r1-flat.json"' },
   { rule: "abs-path", file: "prototypes/x.mjs", hit: 'const R = "/home/user/miniaturebeasts";', pass: "const R = process.env.MB_ROOT;" },
   { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as ruled (decisions 10-11 14:17)", pass: "// the 10-11 grid" },
+  { rule: "internal-ref", file: "design/x.md", hit: "the record is in decisions.md", pass: "## Owner decisions (2026-10-08)" },
+  { rule: "internal-ref", file: "design/x.md", hit: "(decisions, 2026-10-08 19:49)", pass: "the owner's decision 2026-10-08" },
   { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// c2a-48px-spec §4.1", pass: "// lvgl-switch.md §2.2" },
-  { rule: "internal-ref", file: "design/x.md", hit: "// see station-x10-economy.md", pass: "// see ROADMAP.md" },
+  { rule: "internal-ref", file: "design/x.md", hit: "see station-x10-economy.md", pass: "see ROADMAP.md" },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// station-w1-x3-ready.md §6.2", pass: "// Research-loop §7" },
+  { rule: "internal-ref", file: "design/x.md", hit: "motion-spec §3", pass: "art-pipeline.md v2 §3" },
   { rule: "internal-ref", file: "design/x.md", hit: "the zz-selftest-name note", pass: "the home-props view" },
-  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as in decisions, 2026-10-08", pass: 'const s = "decisions 10-11 in a string";' },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as in decisions.md", pass: 'const s = "decisions 10-11 14:17 in a string";' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: 'const apiToken = "q8Zr2mXv91";', pass: "const key = process.env.GEMINI_API_KEY;" },
   { rule: "secret-value", file: "prototypes/caddy/tests/caddy.test.mjs", hit: 'GEMINI_API_KEY: "real-looking-key"', pass: 'GEMINI_API_KEY: "test-key-never-used"' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: "const k = sk-proj-Xa7mQ2zL9pR4tW8vB1nC6dF3;", pass: "the sk-proj- prefix names a project key" },
