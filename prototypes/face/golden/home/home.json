@@ -6,19 +6,19 @@
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "dba38a20",
+   "hash": "dc893d5e",
    "png": "home-docked.png"
   },
   "home-goal-docked": {
-   "hash": "a0010aa2",
+   "hash": "00ae51cc",
    "png": "home-goal-docked.png"
   },
   "home-goal-away": {
-   "hash": "bf92d0e8",
+   "hash": "2331033b",
    "png": "home-goal-away.png"
   },
   "home-away": {
-   "hash": "fd522f53",
+   "hash": "bf323e8e",
    "png": "home-away.png"
   },
   "home-waiting": {
@@ -86,7 +86,7 @@
    "png": "home-sleeper-focused.png"
   },
   "home-moving-asleep": {
-   "hash": "f6008b36",
+   "hash": "f911c8ee",
    "png": "home-moving-asleep.png"
   },
   "home-knob-pressed": {
@@ -98,7 +98,7 @@
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "337a0ed0",
+   "hash": "5bbb5c16",
    "png": "home-crates-arriving.png"
   }
  }
