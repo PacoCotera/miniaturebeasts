@@ -71,12 +71,16 @@ await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["f
 await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 // The page's clock, real until held: __hold() freezes performance.now() and queues requestAnimationFrame; __step(ms) runs the queued frames at 40 ms steps (as face/tools/station-page.mjs VIRTUAL_CLOCK); __release() resumes real time from where it stopped (no jump forward or back). The hold is at the last frame's own timestamp, so the face's first step is exactly 40 ms whatever the frame phase was
 await page.addInitScript(() => {
-  const realNow = performance.now.bind(performance), realRaf = window.requestAnimationFrame.bind(window); let held = false, t = 0, off = 0, q = [], last = null;
+  const realNow = performance.now.bind(performance), realRaf = window.requestAnimationFrame.bind(window); let held = false, t = 0, off = 0, q = [], last = null, pend = new Set();
   performance.now = () => (held ? t : realNow() + off);
-  window.requestAnimationFrame = (cb) => { if (held) { q.push(cb); return 0; } return realRaf((ts) => { if (held) q.push(cb); else { last = ts + off; cb(last); } }); };
-  window.__hold = () => { if (!held) { t = last ?? realNow() + off; held = true; } return t; };
+  window.requestAnimationFrame = (cb) => {
+    if (held) { q.push(cb); return 0; }
+    const rec = { cb }; pend.add(rec);
+    return realRaf((ts) => { if (!pend.delete(rec)) return; last = ts + off; cb(last); });
+  };
+  window.__hold = () => { if (!held) { t = last ?? realNow() + off; held = true; for (const r of pend) q.push(r.cb); pend.clear(); } return t; };   // a frame requested but not yet run is queued now: whenever the real frame would have come
   window.__step = (ms) => { const end = t + ms; while (t < end) { t = Math.min(end, t + 40); const run = q; q = []; for (const cb of run) cb(t); } return t; };
-  window.__release = () => { if (!held) return; off = t - realNow(); held = false; const run = q; q = []; for (const cb of run) realRaf((ts) => cb(ts + off)); };
+  window.__release = () => { if (!held) return; off = t - realNow(); held = false; const run = q; q = []; for (const cb of run) window.requestAnimationFrame(cb); };
 });
 const hold = () => page.evaluate(() => window.__hold()), stepClock = (ms) => page.evaluate((m) => window.__step(m), ms), release = () => page.evaluate(() => window.__release());
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test`, { waitUntil: "load" });
