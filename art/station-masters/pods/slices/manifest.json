@@ -10041,10 +10041,10 @@
   "rect": null,
   "src": "source/raw/vivarium-day.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by day: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (pass 94)",
-  "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
+  "sha256": "9997fdb57d4369ef7a5f62b1d6e592127dbe4318ccd2a0b77ade74be4c4f5e7c",
   "status": "signed",
-  "signed_in": "art director, Idle verdict (62bbd883)",
-  "status_note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference)"
+  "signed_in": "art director at 1x, 10-11 18:32 (full-screen seam, idle-seam/edges.py)",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference); side fixtures carried to the top edge (rows 0-119 at x<104 and x>=856); rows 120-567 byte-identical to main 489d08df"
  },
  "idle-vivarium-dusk-1024x568": {
   "size": [
@@ -10054,10 +10054,10 @@
   "rect": null,
   "src": "source/raw/vivarium-dusk.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dusk: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (the day picture's edit: dusk is warmer and lower) (pass 94)",
-  "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
+  "sha256": "b622799abfc5bad71055fb6de9a1cfa2a1e0c3a5957d83c68c76b39caaa8d518",
   "status": "signed",
-  "signed_in": "art director, Idle verdict (62bbd883)",
-  "status_note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
+  "signed_in": "art director at 1x, 10-11 18:32 (full-screen seam, idle-seam/edges.py)",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference); side fixtures carried to the top edge (rows 0-119 at x<104 and x>=856); rows 120-567 byte-identical to main 489d08df"
  },
  "idle-vivarium-night-1024x568": {
   "size": [
@@ -10067,10 +10067,10 @@
   "rect": null,
   "src": "source/raw/idle-night-repaint.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by night: a Pro repaint of the signed Idle day under the device's grow lamp dimmed to a low warm glow (the owner-approved repaint of Oct 10; the first night, vivarium-night-r2, is withdrawn), centre-cut and reduced with Lanczos, then regraded by hand within the night targets (background about 17, ground 35, at most 3 percent above L* 70) (pass 119)",
-  "sha256": "3dd1077137c080904691b283088b6def18be9f3b71876ec8ab49a46532dde9ab",
+  "sha256": "76e3c911c8e6462a628bf035417bac5e0d31a81db3f5628b3badd869f006a43e",
   "status": "signed",
-  "signed_in": "art director, verdict (528b73d5)",
-  "status_note": "signed (art director) at 1x: L* 25.0, key R-B 45, sat 58, 0.0 percent above L* 70, R above B, against the revised night rule; the grow-lamp hood painted out, its light kept; placed as the night set with Idle night, glass night and night bed (the pair rule)"
+  "signed_in": "art director at 1x, 10-11 18:32 (full-screen seam, idle-seam/edges.py)",
+  "status_note": "signed (art director) at 1x: L* 25.0, key R-B 45, sat 58, 0.0 percent above L* 70, R above B, against the revised night rule; the grow-lamp hood painted out, its light kept; placed as the night set with Idle night, glass night and night bed (the pair rule); side fixtures carried to the top edge (rows 0-119 at x<104 and x>=856); rows 120-567 byte-identical to main 489d08df"
  },
  "home-bay-shut-176x72": {
   "size": [
@@ -10305,10 +10305,10 @@
   "rect": null,
   "src": "source/raw/vivarium-dawn.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded and given a gold tint by hand (tools/dawntint.py: the lit pixels warmed, the level set to a mean L* of 40.5)",
-  "sha256": "4f1938a8b44c8143dd05768e7027deeeb505b9a4f08a06af6f3d0aad176749eb",
+  "sha256": "a5644197a3eb3d095f78fae3fcd8758b867e276cb9d705c888cc0cd9ab81227a",
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "status_note": "signed (art director) at 1x: L* 40.5, key R-B 37, sat 33 against the dawn rule (key R-B >= 35, L* 38-42); day 43.1/72/48"
+  "signed_in": "art director at 1x, 10-11 18:32 (full-screen seam, idle-seam/edges.py)",
+  "status_note": "signed (art director) at 1x: L* 40.5, key R-B 37, sat 33 against the dawn rule (key R-B >= 35, L* 38-42); day 43.1/72/48; side fixtures carried to the top edge (rows 0-119 at x<104 and x>=856); rows 120-567 byte-identical to main 489d08df"
  },
  "vivarium-near-dawn-544x408": {
   "size": [
