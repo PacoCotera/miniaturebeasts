@@ -54,7 +54,7 @@
 
 - **Palette.** b1's meadow set: the core 48 at 0–47 unchanged, then the 48 meadow colours. Per decisions 2026-10-10 19:49 (8-bit, per-biome sets).
   - Each entry carries its DARK, LIGHT, DARK2, FOG and FADE. The core's are the page's own. The meadow greens step along the saturated lawn ramp; the other meadow colours step along their own material's ramp.
-  - Index 96 in the sheets is transparent.
+  - In the sheets, magenta's slot (44), used by no piece, is transparent through tRNS: every PLTE entry is in the table (spec §4.6).
 - **Rebuilt on b1's look.** The older pieces under `grass/` were on the core 48.
   - Lawn: 6 tiles from b1's flecks at the middle level's tone, with tufts kept 8 px inside.
   - Lip: the 28 quarters, on the candidate geometry, by test map 12's edge rule.

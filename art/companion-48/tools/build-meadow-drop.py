@@ -16,7 +16,7 @@ Pieces, by the catalogue's keys (§4.2):
   lip             the 28 quarters: the candidate set's edge geometry (pieces/region) drawn by test map 12's plateau-edge rule on b1's
                   ramp (outline, lit rim, two shade steps beyond, a ragged fringe); transparent where the lawn is untouched
   face, cap, side, foot strips, stairs, props: tileset/walls, stairs and props, mapped to the 96 by test map 12's own nearest rule
-Every piece is `candidate`. Sheets are 8-bit indexed: PLTE the 96 colours in order plus index 96 transparent (tRNS), no colour chunks.
+Every piece is `candidate`. Sheets are 8-bit indexed: PLTE the 96 colours in order, magenta's slot (44, used by no piece) transparent through tRNS, no colour chunks.
 usage: python3 -I build-meadow-drop.py OUT_DIR PROOF_DIR"""
 import json, os, sys
 import numpy as np
@@ -29,7 +29,7 @@ out, proof = sys.argv[1:3]; os.makedirs(out, exist_ok=True); os.makedirs(proof, 
 P48 = palmod.load()
 cols = json.load(open(os.path.join(G, "mockup", "b1", "biome-meadow.json")))["colours"]
 hx = lambda h: tuple(int(h[k:k + 2], 16) for k in (1, 3, 5))
-PAL = np.array([hx(c["hex"]) for c in cols]); NC = len(PAL); TR = NC          # index 96: transparent
+PAL = np.array([hx(c["hex"]) for c in cols]); NC = len(PAL); TR = NC          # transparent while building; written as magenta's slot (44)
 assert NC == 96 and all(cols[i]["hex"] == P48.hexes[i] for i in range(48))
 CORE_G = ["pine", "forest", "leaf", "grass", "sprout", "lime"]
 mat = np.array([c.get("material", "grass" if c.get("name") in CORE_G else "core") for c in cols])
@@ -249,7 +249,7 @@ GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/"
           ("shore", lambda n: "/shore" in n or "/band/" in n), ("walls", lambda n: any(k in n for k in ("/face/", "/cap/", "/side/", "/foot/"))),
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
 man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json",
-       "note": "The meadow drop, every piece a candidate. Sheets are 8-bit indexed on meadow-palette.json (index 96 transparent). "
+       "note": "The meadow drop, every piece a candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
                "Built by art/companion-48/tools/build-meadow-drop.py from the tileset on art-terrain-grass.", "sheets": {}, "pieces": []}
 done = set()
 for g, pick in GROUPS:
@@ -266,8 +266,10 @@ for g, pick in GROUPS:
     for (px, py), (n, a, f) in zip(pos, items):
         sheet[py:py + a.shape[0], px:px + a.shape[1]] = a; done.add(n)
         man["pieces"].append({"name": n, **f, "sheet": g, "x": px, "y": py, "w": int(a.shape[1]), "h": int(a.shape[0])})
-    im = Image.fromarray(sheet, "P"); im.putpalette([v for c in PAL for v in c] + [0, 0, 0])
-    im.save(os.path.join(out, f"meadow-{g}.png"), transparency=bytes([255] * NC + [0]), optimize=True)
+    KEYI = P48.index["magenta"]; assert not (sheet == KEYI).any()      # transparent is magenta's slot, unused by every piece (§4.6: PLTE all in the table)
+    sheet[sheet == TR] = KEYI
+    im = Image.fromarray(sheet, "P"); im.putpalette([v for c in PAL for v in c])
+    im.save(os.path.join(out, f"meadow-{g}.png"), transparency=bytes([255] * KEYI + [0] + [255] * (NC - KEYI - 1)))
     man["sheets"][g] = f"meadow-{g}.png"
 left = [n for n, _, _ in PIECES if n not in done]; assert not left, left
 json.dump(man, open(os.path.join(out, "meadow.json"), "w"), indent=1)
