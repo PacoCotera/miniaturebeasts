@@ -228,10 +228,10 @@
   {
    "id": "internal-path",
    "applies": "text",
-   "_note": "A reference to the internal repository's folders (plans/, boards/) in any tracked text file: prose, code and comments alike. Case-sensitive, so a word that only ends in the name (keyboards/, airplanes/) passes.",
+   "_note": "A reference to the internal repository's folders (plans/, boards/) in any tracked text file: prose, code and comments alike. Case-sensitive, so a word that only ends in the name (keyboards/, airplanes/) passes, and a path segment inside a URL or another path (after a word character, a dot, a slash or a hyphen) is spared.",
    "patterns": [
     [
-     "\\b(plans|boards)/",
+     "(?<![\\w./-])\\b(plans|boards)/",
      ""
     ]
    ]

@@ -268,6 +268,7 @@ export const FIXTURES = [
   { rule: "secret-value", file: "ops/x.sh", hit: "EXAMPLE_API_KEY=q7Lm2Xv9Rt4Wp8Zn", pass: "EXAMPLE_API_KEY=$EXAMPLE_API_KEY" },
   { rule: "internal-path", file: "prototypes/x.mjs", hit: "// spec: boards/mibi-motion/tier2-method.md", pass: "// the airplanes/ folder of the sample set" },
   { rule: "internal-path", file: "design/x.md", hit: "as the plan says (plans/public-cleanup.md)", pass: "the keyboards/ sprites" },
+  { rule: "internal-path", file: "v1/native/README.md", hit: "the method (`boards/mibi-motion/tier2-method.md`)", pass: "[XIAO BLE board](https://docs.zephyrproject.org/latest/boards/seeed/xiao_ble/doc/index.html)" },
 ];
 
 function selfTest() {
