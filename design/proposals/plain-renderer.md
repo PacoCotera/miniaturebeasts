@@ -1,10 +1,10 @@
 # The placeholder: the rig pass shown while a painting is pending
 
-**Retitled in place 2026-10-08.** This was "The plain renderer: the look every mibi wears", the brief for a standard look rendered from the rig. **Decided 2026-10-08 (the standard painting):** generic, locally hosted generation below the quality of the Loika painted with Gemini is not accepted; the standard look of every mibi is the cloud painting made at Grow ([art pipeline](art-pipeline.md) §1, §1.1). What the rig draws by itself is therefore the **placeholder**: a deliberate, stylised rig pass shown while a painting is pending (offline, or in the minutes before it lands), **with no faces and no materials**, and never the final look. The decisions below (§3 technique, §5 species sheets, §7 stages, §8) are **superseded** by that decision and kept as the record; the species pieces are now painted by the cloud painter at authoring (§5 note), and the portrait brief is [the portrait](the-portrait.md).
+This was "The plain renderer: the look every mibi wears", the brief for a standard look rendered from the rig. Generic, locally hosted generation below the quality of the Loika painted with Gemini is not accepted; the standard look of every mibi is the cloud painting made at Grow ([art pipeline](art-pipeline.md) §1, §1.1). What the rig draws by itself is therefore the **placeholder**: a deliberate, stylised rig pass shown while a painting is pending (offline, or in the minutes before it lands), **with no faces and no materials**, and never the final look. The points below (§3 technique, §5 species sheets, §7 stages, §8) are **superseded** by the standard painting and kept as the record; the species pieces are now painted by the cloud painter at authoring (§5 note), and the portrait brief is [the portrait](the-portrait.md).
 
 ## 0. The placeholder
 
-**Proposal** from the design editor, 2026-10-08, for the art director. The placeholder is the rig's shaded pass finished only as far as honesty allows:
+The placeholder is the rig's shaded pass finished only as far as honesty allows:
 
 - **Keeps** the exact silhouette, slots, markings and proportions the painting must keep, so a mibi waiting for its painting is already recognisably itself, and the landing changes craft, not identity.
 - **Draws** the device ramps quantised, the 1 px outline from the index pass, one light from the top left, a plain ground; the colour slots filled flat from the individual's pool values; markings as flat fields.
@@ -14,14 +14,14 @@
 
 The original brief follows.
 
-**Proposal** from the design editor, 2026-10-08, for the owner and the art director. It is the brief for the **standard look** that the owner decided is the game's art for every mibi ([art pipeline](art-pipeline.md) §1, §3): the picture a mibi opens in, lives in and, for most, keeps for life. The [portrait](the-portrait.md) is the exception a sitting buys. **Decided** marks owner decisions restated; everything else is **Proposal**. *Superseded 2026-10-08, see the note at the top.*
+It is the brief for the **standard look**, the game's art for every mibi ([art pipeline](art-pipeline.md) §1, §3): the picture a mibi opens in, lives in and, for most, keeps for life. The [portrait](the-portrait.md) is the exception a sitting buys. *Superseded, see the note at the top.*
 
 ## 1. What it is
 
 A **deterministic render, on the Station, from the rig** ([the workbench](../../prototypes/workbench/README.md)): the same genome gives the same bytes, with no call out and no stored art per individual. It draws:
 
 - **Continuous proportions** from the genome: girth, head, muzzle, ears, legs, tail, flaps, shell, so two Loikas differ in body before colour does.
-- **Species pools** for colour with slight per-individual variation (Decided 3), the pigment slots filled from the individual's pool values.
+- **Species pools** for colour with slight per-individual variation (art pipeline principle 3), the pigment slots filled from the individual's pool values.
 - **Markings** from the mask passes (coat, flaps, cap, mask, rings, shell, belly), painted inside their fields.
 - **Materials by covering**: fur, scales, feathers, skin, leaf, shell, sheen, the charged body.
 - **The species' face**: eyes, mouth, expression.
@@ -52,12 +52,12 @@ Today's plain look, the rig's shaded pass as the stage 1 sheets show it, is **no
 
 ## 4. Device budgets, and what runs where
 
-**Decided:** the Station renders, the Companion receives synced frames and never renders or calls out ([devices](../devices.md)).
+The Station renders, the Companion receives synced frames and never renders or calls out ([devices](../devices.md)).
 
 | | Station (Pi, 1024×600) | Companion (450×600) | Field token |
 | --- | --- | --- | --- |
 | Subject | 300×310, master 600×620; six residents in the vivarium at once | 280×300, no alpha, the 48 ramps, the 4×4 Bayer only | 48 px |
-| Drawn by | the Station, within a second of Grow; a fine pixel grain on creatures, chrome crisp | the Station: the master down-rendered and quantised to the 48 ramps, the outline from the index pass, no anti-aliasing | the species' token rig, slots remapped to the individual's pool values; generic per species (Decided 4) |
+| Drawn by | the Station, within a second of Grow; a fine pixel grain on creatures, chrome crisp | the Station: the master down-rendered and quantised to the 48 ramps, the outline from the index pass, no anti-aliasing | the species' token rig, slots remapped to the individual's pool values; generic per species (art pipeline principle 4) |
 | Motion | smooth, by rule from the still (breathing, blink, routines) | stepped frames synced at the dock: idle 2 at 2 Hz, walk 3 at 150 ms; about 85 KB a stage | idle 2, walk 3 |
 | To prove | six residents idling at the panel's rate with the instrument live | the frames the ESP32 holds for the mibis it carries | the token rig per species |
 
@@ -72,11 +72,11 @@ The rig cannot say three things (stage 0 report): materials, the face, the pose.
 
 About 6–10 art hours per species at C; the first five species first (Loika, Kilpo, Belatz, Peplos, Lehten).
 
-*Superseded 2026-10-08:* the species pieces are the type specimen, the face set, a generic token for silhouettes not yet met and the Library face, painted once per species at authoring by the cloud painter under the art director's pick ([art pipeline](art-pipeline.md) §1.1); the placeholder uses none of them.
+*Superseded:* the species pieces are the type specimen, the face set, a generic token for silhouettes not yet met and the Library face, painted once per species at authoring by the cloud painter under the art director's pick ([art pipeline](art-pipeline.md) §1.1); the placeholder uses none of them.
 
 ## 6. Test plan
 
-**Six specimens of three species rendered plain beside their portraits, at device size, for the owner.** Loika, Belatz and Peplos (skin, fur, flaps): the type specimen and one random individual each, the plain at 300×310 beside its stage 1 unique Station painting on a true-size Station at 1×, and the plain derived to 280×300 beside the derived portrait on a true-size Companion. The accepted Pip on the same sheet as the bar. Two questions, blind: *same creature?* (pair each plain with its portrait among the species' others) and *finished?* (content if this were all your mibi ever got). A plain read as a draft fails.
+**Six specimens of three species rendered plain beside their portraits, at device size, for review.** Loika, Belatz and Peplos (skin, fur, flaps): the type specimen and one random individual each, the plain at 300×310 beside its stage 1 unique Station painting on a true-size Station at 1×, and the plain derived to 280×300 beside the derived portrait on a true-size Companion. The accepted Pip on the same sheet as the bar. Two questions, blind: *same creature?* (pair each plain with its portrait among the species' others) and *finished?* (content if this were all your mibi ever got). A plain read as a draft fails.
 
 ## 7. Stages
 
@@ -90,9 +90,9 @@ About 6–10 art hours per species at C; the first five species first (Loika, Ki
 
 **What the workbench builds first:** P1 on the Loika, so the stage 1 sheets' "plain" column can be redrawn fairly and the §6 test run before any species sheet is painted.
 
-## 8. Decisions for the owner
+## 8. Settled points
 
-*Superseded 2026-10-08 (the standard painting):* none of these is open. The technique is the placeholder pass of §0; the bar is the Loika painted with Gemini, met by the painting, not the rig; the species sheets become the species pieces of the pipeline.
+*Superseded (the standard painting):* none of these is open. The technique is the placeholder pass of §0; the bar is the Loika painted with Gemini, met by the painting, not the rig; the species sheets become the species pieces of the pipeline.
 
 1. **The technique.** *Recommended:* C, the shaded rig pass with the stylising post-process, built so toon-shaded 3D (A) can take its place later without repainting the species sheets. *Alternative:* A now, if live poses matter more than reaching the test quickly. B is not recommended.
 2. **The bar.** *Recommended:* the plain is judged against the accepted Pip and must pass "same creature, less jewelled" beside a portrait; no mibi opens in the shaded pass as it is today. *Alternative:* accept the shaded pass as the testing look, with the finish to follow.
