@@ -15,7 +15,8 @@ Pieces, by the catalogue's keys (§4.2):
   water           tileset/water's quarters, frames 1 and 2, and its macros, lobes, beaches, bend and band (catalogued as other)
   lip             the 28 quarters: the candidate set's edge geometry (pieces/region) drawn by test map 12's plateau-edge rule on b1's
                   ramp (outline, lit rim, two shade steps beyond, a ragged fringe); transparent where the lawn is untouched
-  face, cap, side, foot strips, stairs, props: tileset/walls, stairs and props, mapped to the 96 by test map 12's own nearest rule
+  face, cap, side, foot strips, stairs, props: tileset/walls, stairs and props, mapped to the 96 by test map 12's own nearest rule;
+                  a face's or cap's enclosed key holes filled with the lawn that showed through them
 Pieces are `signed` or `candidate` by signed() below. Sheets are 8-bit indexed: PLTE the 96 colours in order, magenta's slot (44, used by no piece) transparent through tRNS, no colour chunks.
 usage: python3 -I build-meadow-drop.py OUT_DIR PROOF_DIR"""
 import json, os, sys
@@ -222,7 +223,14 @@ def spill(a, seed):
     return a
 for p in WJ:
     a = to_idx(os.path.join(TS, "walls", p["file"])); h, w = a.shape
-    if p["kind"] in ("face", "cap"): a = spill(a, sum(map(ord, p["name"])))
+    if p["kind"] in ("face", "cap"):
+        a = spill(a, sum(map(ord, p["name"])))
+        # the key's holes inside a face (moss and vines keyed out): filled with the lawn they showed in test map 12 and the proof,
+        # so a face over any ground reads the same
+        from scipy import ndimage as nd_
+        lab, n = nd_.label(a == TR); edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]])))
+        hole = np.isin(lab, [i for i in range(1, n + 1) if i not in edge])
+        f = LIPF[0]; yy, xx = np.nonzero(hole); a[yy, xx] = tone(LAWN0 + f[yy % 48, xx % 48])
     f = {k: v for k, v in p.items() if k not in ("name", "file", "px")}
     if p["kind"] == "side-end": f["kind"] = "side"
     if f["kind"] == "side":
@@ -261,7 +269,7 @@ GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/"
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
 man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json",
        "note": "The meadow drop: signed where the art director has signed, else candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
-               "Built by art/companion-48/tools/build-meadow-drop.py from the tileset on art-terrain-grass.", "sheets": {}, "pieces": []}
+               "Built from the tileset candidates on branch art-terrain-grass by its tools/build-meadow-drop.py; the sources are not on main, so main ships the result only.", "sheets": {}, "pieces": []}
 done = set()
 for g, pick in GROUPS:
     items = [(n, a, f) for n, a, f in PIECES if n not in done and pick(n)]
