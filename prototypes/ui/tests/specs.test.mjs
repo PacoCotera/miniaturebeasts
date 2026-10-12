@@ -620,10 +620,11 @@ test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate o
   for (const w of wells) { assert.ok(inside(w, R.rack.rect)); is(w, "well"); assert.ok(inside([w[0] + R.rack.pod.at[0], w[1] + R.rack.pod.at[1], ...R.rack.pod.size], w)); }
   assert.equal(wells[0][0] + (wells[5][0] + wells[5][2] - wells[0][0]) / 2, 512, "the wells centred on 512"); assert.equal(R.rack.rect[1] - (R.bay.rect[1] + R.bay.rect[3]), 32);
   assert.deepEqual(R.rack.pod.size, [88, 112], "the collection class, as Pods draws it");
-  // one crate opening: the crate closer, centred, the ribbon 8 px above it, its pods inside it, the travel holding the crate and the wells
-  is(R.crate.rect, "crate", O); is(R.ribbon.rect, "ribbon", O); assert.equal(R.crate.rect[0] + R.crate.rect[2] / 2, 512); assert.equal(R.ribbon.rect[0] + R.ribbon.rect[2] / 2, 512); assert.equal(R.crate.rect[1] - (R.ribbon.rect[1] + R.ribbon.rect[3]), 8);
+  // one crate opening: the crate closer, centred, the ribbon 24 px above it, the rack 8 px under it, its pods inside it, the travel holding the crate and the wells
+  is(R.crate.rect, "crate", O); is(R.ribbon.rect, "ribbon", O); assert.equal(R.crate.rect[0] + R.crate.rect[2] / 2, 512); assert.equal(R.ribbon.rect[0] + R.ribbon.rect[2] / 2, 512); assert.equal(R.crate.rect[1] - (R.ribbon.rect[1] + R.ribbon.rect[3]), 24, "the ribbon 24 px above the crate"); assert.equal(R.rack.rect[1] - (R.crate.rect[1] + R.crate.rect[3]), 8, "the rack 8 px under the crate");
   for (const [n, ps] of Object.entries(R.crate.pods.places)) { assert.equal(ps.length, +n); for (const p of ps) assert.ok(inside(p, R.crate.rect)); assert.equal((ps[0][0] + ps.at(-1)[0] + 88) / 2, 512, n + " pods centred"); }
   for (const p of R.crate.pods.places[3]) is(p, "pod in the crate", O);
+  for (const p of Object.values(R.stores.places)) { assert.ok(inside(p, R.stores.rect) && inside(p, R.travel.rect)); assert.deepEqual(p.slice(2), R.stores.size); assert.equal(p[1] + p[3], R.stores.feetY); assert.ok(gapOk(p, R.crate.rect), "a container 8 px clear of the crate"); is(p, "container", O); }
   assert.ok(inside(R.crate.rect, R.travel.rect) && wells.every((w) => inside(w, R.travel.rect)), "the travel holds the crate and the wells"); assert.ok(R.crate.rect[1] + R.crate.rect[3] < R.rack.rect[1]);
   // the report: the card at its fullest, 16 px above the rack; its height by the rule
   const full = 104 + 24 * (3 + 1) + 40 + 24 * 3; assert.equal(R.report.rect[3], full); assert.ok(full <= R.report.maxHeight); is(R.report.rect, "report", P);

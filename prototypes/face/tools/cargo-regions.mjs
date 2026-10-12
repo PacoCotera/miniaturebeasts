@@ -19,10 +19,16 @@ export function departures(log, spec, frame, state = "bay") {
   for (const r of got("ribbon", "type")) must(within(r.rect, R.ribbon.rect), `the ribbon's words ${r.rect} leave it`);
   for (const layer of ["art", "painted"]) for (const r of got("crate", layer)) must(within(r.rect, R.crate.rect), `the crate's picture and pods (${layer}) ${r.rect} leave the crate ${R.crate.rect}`);
   for (const layer of ["art", "painted"]) for (const r of got("travel", layer)) must(within(r.rect, R.travel.rect), `a travelling pod (${layer}) ${r.rect} leaves the travel rectangle ${R.travel.rect}`);
+  {   // the log merges the nodes of one name into one rectangle: with several containers shown it is their bounding box, so it must be the bounding box of some non-empty set of the places
+    const P = Object.values(R.stores.places), boxes = [];
+    for (let m = 1; m < 1 << P.length; m++) { const q = P.filter((_, i) => m >> i & 1), x0 = Math.min(...q.map((p) => p[0])), y0 = Math.min(...q.map((p) => p[1])), x1 = Math.max(...q.map((p) => p[0] + p[2])), y1 = Math.max(...q.map((p) => p[1] + p[3])); boxes.push([x0, y0, x1 - x0, y1 - y0]); }
+    for (const layer of ["art", "painted"]) for (const r of got("stores", layer)) must(boxes.some((b) => eq(r.rect, b)), `a container (${layer}) ${r.rect} is not a place or the span of places ${JSON.stringify(P)}`);
+  }
   { const c = R.report.rect; for (const r of got("report", "chrome")) must(r.rect[0] === c[0] && r.rect[1] === c[1] && r.rect[2] === c[2] + shadow[0] && r.rect[3] >= 104 + 24 && r.rect[1] + r.rect[3] <= c[1] + R.report.maxHeight + shadow[1], `the report card ${r.rect} is not at ${c.slice(0, 2)}, 560 wide (and its shadow ${shadow}) and at most ${R.report.maxHeight} tall`);
     for (const id of ["report.heading", "report.crate", "report.gathered", "report.probe", "report.world"]) for (const r of got(id)) must(within(r.rect, [c[0], c[1], c[2], R.report.maxHeight]), `${id} (${r.layer}) ${r.rect} leaves the card`); }
   must(state === "report" || got("report").length === 0, "the report card shows only in the report");
   must(state === "opening" || (got("ribbon").length === 0 && got("crate").length === 0 && got("travel").length === 0), "the ribbon, the crate and the travelling pods show only in the opening");
+  must(state === "opening" || got("stores").length === 0, "the containers show only in the opening");
   must(state === "bay" || got("crates").length === 0, "the bay's crates show only in the bay");
   must(state === "opening" ? got("bay").length === 0 : got("bay", "chrome").length === 1, state === "opening" ? "the bay is not drawn in the opening" : "the bay is drawn once");
   // what each state must draw (a node with no size is not in the log, so a region that vanished is found here)

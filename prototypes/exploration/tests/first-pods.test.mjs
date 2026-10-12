@@ -8,11 +8,12 @@ import { createHash } from "node:crypto";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
+import * as V from "../src/view.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
-const MODS = { world: W, atlas: A };
+// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
+const MODS = { world: W, view: V, atlas: A };
 const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
 const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
 const SCRIPT = MODULE.replace(IMPORT_RE, "");
@@ -128,13 +129,14 @@ test("3. pure and deterministic: equal results, the pods argument unchanged", ()
 // ---- test 4 ----
 // Pinned from main c54b90f9 before the change: genLife(s) for seeds 1 to 1000 on genWorld(s, 2), and world-vectors.json's bytes.
 const GENLIFE_DIGEST = "bded648704592ec2944290393c1130442325dbcb12ff855a545da9fc51ff7dec";
-const VECTORS_SHA = "e666da87d8100678a9d5d5d9bbd24473ef6477e343802cea5cb4451a48bd6709";
+// the world vectors (format, hash note, capturedFrom and both generators), without the view cases C2a adds beside them
+const VECTORS_SHA = "46f09a6a633d4b2f35b15b83465c15ecd1ce1e3aee3b89ddc82f776a16e91575";
 test("4. the world is unchanged: genLife's output and generator 2's frozen vectors", () => {
   const h = createHash("sha256");
   for (const s of SEEDS) h.update(JSON.stringify(life(s)) + "\n");
   assert.equal(h.digest("hex"), GENLIFE_DIGEST);
-  const vec = readFileSync(new URL("./world-vectors.json", import.meta.url));
-  assert.equal(createHash("sha256").update(vec).digest("hex"), VECTORS_SHA);
+  const v = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
+  assert.equal(createHash("sha256").update(JSON.stringify({ format: v.format, hash: v.hash, capturedFrom: v.capturedFrom, gens: v.gens })).digest("hex"), VECTORS_SHA);
 });
 
 // ---- test 5 ----

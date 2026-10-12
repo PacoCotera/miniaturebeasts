@@ -1,6 +1,7 @@
 // Golden vectors for the seeded world: per generator and seed, a digest of the world (genWorld) and of its places (genPlace), hashed
 // with the game's own hash(). Generator 1 has up to 11 places a seed; generator 2 up to 16 more, one per terrain side (placeKeys2).
 // Not a suite: CI runs tests/world.test.mjs, which checks src/world.mjs against tests/world-vectors.json.
+// The file also holds `view`: literal cases for src/view.mjs (the place camera and coordinates, C2a §8.2), each input with its output.
 //   node prototypes/exploration/tools/world-vectors.mjs                         the whole file from ../src/world.mjs, JSON to stdout:
 //        gens["1"] is checked against the stored file and never re-captured (exits non-zero if it differs); gens["2"] is captured
 //   node prototypes/exploration/tools/world-vectors.mjs --page <index.html>     generator 1 from that page's own script, run in a vm
@@ -132,13 +133,37 @@ export function pageApi(file) {
 }
 
 // One seed object per line; inside it, one line per place. capturedFrom is generator 1's; generator 2 carries its own.
-export function format(seedObjs, capturedFrom, gen2 = null) {
+export function format(seedObjs, capturedFrom, gen2 = null, view = null) {
   const seedLine = d => "{ \"seed\": " + JSON.stringify(d.seed) + ", \"world\": " + JSON.stringify(d.world) + ", \"places\": [\n" +
     d.places.map(p => "  " + JSON.stringify(p)).join(",\n") + " ] }";
   return "{ \"format\": 1, \"hash\": " + JSON.stringify(HASH_NOTE) + ",\n  \"capturedFrom\": " + JSON.stringify(capturedFrom) +
     ", \"gens\": { \"1\": { \"seeds\": [\n" + seedObjs.map(seedLine).join(",\n") + "\n] }" +
-    (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " } }\n";
+    (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " }" +
+    (view ? ",\n  \"view\": [\n" + view.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n]" : "") + " }\n";
 }
+
+// src/view.mjs's cases: a `view` argument is viewOf's five arguments, a `box` is the module's named box; the output is captured.
+export const VIEW_CASES = [
+  { name: "viewOf", fn: "viewOf", args: [48, 0, 32, 450, 532] },
+  { name: "camAt at spawn", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 672, 1392] },
+  { name: "visTiles at spawn", fn: "visTiles", args: [{ view: [48, 0, 32, 450, 532] }, { x: 471, y: 1004 }] },
+  { name: "camAt one step right", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 720, 1392] },
+  { name: "camAt two steps right", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 768, 1392] },
+  { name: "camAt mid-place", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 624, 720] },
+  { name: "camAt top-left corner", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 0, 0] },
+  { name: "camAt bottom-right corner", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 1296, 1488] },
+  { name: "camAt at 32 (today's value)", fn: "camAt", args: [{ view: [32, 0, 32, 450, 532] }, 448, 928] },
+  { name: "tileScr", fn: "tileScr", args: [{ view: [48, 0, 32, 450, 532] }, { x: 471, y: 1004 }, 14, 29] },
+  { name: "scrTile", fn: "scrTile", args: [{ view: [48, 0, 32, 450, 532] }, { x: 471, y: 1004 }, 201, 420] },
+  { name: "sprOff 48", fn: "sprOff", args: [48] },
+  { name: "sprOff 32", fn: "sprOff", args: [32] },
+  ...[[609, 298], [513, 586], [225, -134], [417, 538], [-111, 394], [465, 154]].map(([bx, by]) =>
+    ({ name: "edgePoint to " + bx + "," + by, fn: "edgePoint", args: [{ box: "ON_SCREEN" }, 225, 298, bx, by] })),
+  ...[[4, 5], [5, 0], [0, -6]].map(([dx, dy]) =>   // the pawn on tile (13, 15) with the camera at (423, 478): its centre at (225, 298)
+    ({ name: "tileOnScreen " + dx + "," + dy, fn: "tileOnScreen", args: [{ view: [48, 0, 32, 450, 532] }, { x: 423, y: 478 }, 13 + dx, 15 + dy, { box: "ON_SCREEN" }] })),
+];
+export function viewArgs(V, args) { return args.map(a => a && a.view ? V.viewOf(...a.view) : a && a.box ? V[a.box] : a); }
+export function viewVectors(V) { return VIEW_CASES.map(c => ({ ...c, out: V[c.fn](...viewArgs(V, c.args)) })); }
 
 function headCommit() {
   try { return execFileSync("git", ["rev-parse", "--short=8", "HEAD"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch (e) { return "unknown"; }
@@ -162,8 +187,10 @@ async function main(argv) {
   // Generator 1 is never re-captured: the module's digests must equal the stored ones, which are kept with their capturedFrom.
   const stored = JSON.parse(readFileSync(VECTORS_FILE, "utf8")), api1 = await moduleApi(1), g1 = SEEDS.map(s => seedDigest(api1, s));
   if (JSON.stringify(g1) !== JSON.stringify(stored.gens["1"].seeds)) { console.error("generator 1 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
-  const api2 = await moduleApi(2);
-  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: headCommit(), seeds: SEEDS.map(s => seedDigest(api2, s)) }));
+  // generator 2 keeps its stored capture (and its capturedFrom) while the module still gives the same digests
+  const api2 = await moduleApi(2), g2 = SEEDS.map(s => seedDigest(api2, s)), same2 = stored.gens["2"] && JSON.stringify(g2) === JSON.stringify(stored.gens["2"].seeds);
+  const V = await import(new URL("../src/view.mjs", import.meta.url));
+  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? stored.gens["2"].capturedFrom : headCommit(), seeds: g2 }, viewVectors(V)));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) await main(process.argv.slice(2));
