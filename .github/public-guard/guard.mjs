@@ -290,6 +290,11 @@ function selfTest() {
   ok(pl("the owner chose"), "process-label should hit: the owner chose");
   ok(pl("a hull"), "process-label should hit: a hull");
   ok(pl("Agreed on 2026-10-09."), "process-label should hit a date");
+  ok(pl("(decisions 10-11 14:17)"), "process-label should hit: (decisions 10-11 14:17)");
+  ok(pl("see decision 10-11"), "process-label should hit: decision 10-11");
+  ok(pl("tuned (owner 14:17)"), "process-label should hit: (owner 14:17)");
+  ok(pl("tuned (owner 10-11 14:17)"), "process-label should hit: (owner 10-11 14:17)");
+  ok(!pl("a decision between 2 options and 14 stones"), "process-label should pass: a decision between 2 options and 14 stones");
   ok(!pl("A child takes one copy from each parent."), "process-label should pass: A child takes one copy from each parent.");
   ok(!pl("![x](img/2026-10-08-a.png)"), "process-label should pass: ![x](img/2026-10-08-a.png)");
   ok(!pl("see `the owner` and [a](notes/2026-10-08.md)"), "process-label should skip inline code and link targets");
