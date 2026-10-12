@@ -5,9 +5,10 @@
 //                                                         each image added or changed, and the commit messages in <ref>..HEAD
 //   node .github/public-guard/guard.mjs --tree             tree mode: every tracked file
 //   node .github/public-guard/guard.mjs --self-test        one positive and one negative fixture per rule
-// A hit prints `file:line rule-id match` with the match masked after four characters, and the run fails.
+// A hit prints `file:line rule-id match` with the match masked after four characters, and the run fails; a rule with "tree": "report" only prints in tree mode.
 // Node 22, no dependencies. Excluded paths are in rules.json; frozen files are read, never written.
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { inflateSync } from "node:zlib";
 import path from "node:path";
@@ -27,6 +28,41 @@ const compiled = Object.fromEntries(RULES.rules.map((r) => [r.id, {
 const textRules = RULES.rules.filter((r) => r.applies === "text").map((r) => r.id);
 const PL = byId["process-label"];
 const plDate = PL ? rx(PL.datePattern) : null;
+
+// internal-ref: references to internal documents (rules.json, the rule's _note). (a) the rule's pattern; (b) a section citation or a Markdown name the public tree does not hold;
+// (c) a bare hyphenated name whose salted hash is in internal-names.json. Prose files whole, code files in their comments only.
+const IR = byId["internal-ref"];
+const irRules = IR ? compiled["internal-ref"].patterns : [];
+const namesFile = path.join(here, "internal-names.json");
+const NAMES = existsSync(namesFile) ? JSON.parse(readFileSync(namesFile, "utf8")) : { salt: "", hashes: [] };
+export const nameHashes = new Set(NAMES.hashes), nameSalt = NAMES.salt;
+export const hashName = (name, salt = nameSalt) => createHash("sha256").update(salt + name.toLowerCase()).digest("hex").slice(0, 16);
+let publicNames = null;   // each tracked file's basename and that basename without its last extension, once per run
+export function PUBLIC_NAMES() {
+  if (!publicNames) {
+    publicNames = new Set();
+    for (const f of execFileSync("git", ["ls-files", "-z"], { encoding: "buffer", maxBuffer: 1 << 30 }).toString("utf8").split("\0").filter(Boolean)) {
+      const b = path.posix.basename(f); publicNames.add(b); publicNames.add(b.replace(/\.[^.]*$/, ""));
+    }
+  }
+  return publicNames;
+}
+const sectionRe = /(?<![\w./-])([A-Za-z][\w.-]*[\d-][\w.-]*|[\w-]+\.md)\s?§\s?\d/g;
+const mdNameRe = /(?<![\w/.-])([\w-]+\.md)\b/g;
+const tokenRe = /(?<![\w/.-])([a-z0-9]+(?:-[a-z0-9]+)+)(?![\w-])/gi;
+const memoHash = new Map();
+// The internal-ref hits of one text (a prose line, or a code line's comment): [{index, text, part}].
+export function internalRefs(text) {
+  const out = [], pub = PUBLIC_NAMES();
+  for (const re of irRules) for (const h of matches(re, text)) out.push({ ...h, part: "a" });
+  for (const m of text.matchAll(sectionRe)) if (!pub.has(m[1].replace(/\.md$/, ""))) out.push({ index: m.index, text: m[0], part: "b-section" });
+  for (const m of text.matchAll(mdNameRe)) if (!pub.has(m[1]) && !pub.has(m[1].slice(0, -3))) out.push({ index: m.index, text: m[1], part: "b-name" });
+  if (nameHashes.size) for (const m of text.matchAll(tokenRe)) {
+    const t = m[1].toLowerCase(); let h = memoHash.get(t); if (h === undefined) memoHash.set(t, (h = hashName(t)));
+    if (nameHashes.has(h)) out.push({ index: m.index, text: m[1], part: "c" });
+  }
+  return out;
+}
 
 // process-label: design/**/*.md, README.md, ROADMAP.md and prototypes/**/README.md, never docs-standard.md; in tree mode only under PL.tree.
 export function processDoc(file, tree = false) {
@@ -128,6 +164,10 @@ export function checkLine(file, line) {
     for (const re of compiled["cost-prose"].codeStringPatterns) add("cost-prose", line, matches(re, line).filter((h) => !seen.has(h.index)));
   }
   for (const id of textRules) for (const re of compiled[id].patterns) add(id, line, matches(re, line));
+  if (IR && (kind === "prose" || kind === "code")) {
+    const text = kind === "prose" ? line : commentOf(file, line), off = line.length - text.length;
+    for (const h of internalRefs(text)) { const hit = { index: h.index + off, text: h.text }; if (!allowed(file, "internal-ref", line, hit)) hits.push({ rule: "internal-ref", text: h.text, part: h.part }); }
+  }
   // one report per rule and position
   const uniq = new Map();
   for (const h of hits) uniq.set(h.rule + "\0" + h.text, h);
@@ -189,8 +229,10 @@ export function checkMessage(msg) {
 const mask = (s) => (s.length <= 4 ? s : s.slice(0, 4) + "*".repeat(Math.min(s.length - 4, 12)));
 const git = (...args) => execFileSync("git", args, { encoding: "buffer", maxBuffer: 1 << 30 });
 
+// A rule with "tree": "report" is printed in tree mode and does not fail the run.
+const reportOnly = new Set(RULES.rules.filter((r) => r.tree === "report").map((r) => r.id));
 function report(hits) {
-  for (const h of hits) console.log(`${h.file}:${h.line} ${h.rule} ${mask(h.text)}`);
+  for (const h of hits) console.log(`${h.file}:${h.line} ${h.rule}${h.part ? "/" + h.part : ""} ${mask(h.text)}${h.report ? " (report)" : ""}`);
 }
 
 function printAllowlist() {
@@ -235,7 +277,7 @@ function treeMode() {
     if (buf.subarray(0, 8192).includes(0)) continue;
     const text = buf.toString("utf8"), pd = processDoc(f, true), fl = pd ? fencedLines(text) : null;
     text.split("\n").forEach((line, i) => {
-      for (const x of checkLine(f, line)) hits.push({ file: f, line: i + 1, ...x });
+      for (const x of checkLine(f, line)) hits.push({ file: f, line: i + 1, ...x, report: reportOnly.has(x.rule) });
       if (pd && !fl.has(i + 1)) for (const x of checkProcess(f, line)) hits.push({ file: f, line: i + 1, ...x });
     });
   }
@@ -262,6 +304,11 @@ export const FIXTURES = [
   { rule: "host", file: "design/x.md", hit: "on the VM", pass: "the critter-lab repository" },
   { rule: "session", file: "art/x/budget.json", hit: '"plan": "/tmp/claude-0/x/plan.json"', pass: '"plan": "plan-pods-r1-flat.json"' },
   { rule: "abs-path", file: "prototypes/x.mjs", hit: 'const R = "/home/user/miniaturebeasts";', pass: "const R = process.env.MB_ROOT;" },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as ruled (decisions 10-11 14:17)", pass: "// the 10-11 grid" },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// c2a-48px-spec §4.1", pass: "// lvgl-switch.md §2.2" },
+  { rule: "internal-ref", file: "design/x.md", hit: "// see station-x10-economy.md", pass: "// see ROADMAP.md" },
+  { rule: "internal-ref", file: "design/x.md", hit: "the zz-selftest-name note", pass: "the home-props view" },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as in decisions, 2026-10-08", pass: 'const s = "decisions 10-11 in a string";' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: 'const apiToken = "q8Zr2mXv91";', pass: "const key = process.env.GEMINI_API_KEY;" },
   { rule: "secret-value", file: "prototypes/caddy/tests/caddy.test.mjs", hit: 'GEMINI_API_KEY: "real-looking-key"', pass: 'GEMINI_API_KEY: "test-key-never-used"' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: "const k = sk-proj-Xa7mQ2zL9pR4tW8vB1nC6dF3;", pass: "the sk-proj- prefix names a project key" },
@@ -273,6 +320,7 @@ export const FIXTURES = [
 
 function selfTest() {
   let bad = 0;
+  nameHashes.add(hashName("zz-selftest-name"));   // the hashed-name fixture's hash, added at run time
   const ok = (cond, what) => { if (!cond) { bad++; console.log("self-test FAIL: " + what); } };
   const covered = new Set();
   for (const f of FIXTURES) {
@@ -325,6 +373,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     hits = diffMode(argv[i + 1]);
   }
   report(hits);
-  console.log(hits.length ? `public guard: ${hits.length} hits` : "public guard ok");
-  process.exit(hits.length ? 1 : 0);
+  const failing = hits.filter((h) => !h.report), reported = hits.filter((h) => h.report);
+  if (reported.length) {
+    const parts = {}; for (const h of reported) { const k = h.rule + (h.part ? "/" + h.part : ""); parts[k] = (parts[k] || 0) + 1; }
+    console.log(`report only (${reported.length}): ${Object.entries(parts).map(([k, n]) => `${k} ${n}`).join(" · ")}; in ${new Set(reported.map((h) => h.file)).size} files`);
+  }
+  console.log(failing.length ? `public guard: ${failing.length} hits` : "public guard ok");
+  process.exit(failing.length ? 1 : 0);
 }

@@ -237,6 +237,19 @@
    ]
   },
   {
+   "id": "internal-ref",
+   "applies": "refs",
+   "builtin": "docRefs",
+   "tree": "report",
+   "_note": "A reference to an internal document, in prose files whole (fenced blocks and inline code included) and in the comments of code files, never in string literals. Part (a), a decisions stamp, is the pattern below. Part (b) reads the public tree: a section citation (\"name §4.1\") or a Markdown file name that the tracked files do not hold. Part (c) is a bare hyphenated name whose salted hash is in internal-names.json, written by an internal tool and never edited by hand. A decisions record is not in this repository, so a public line states the rule or cites a public document, never the internal date stamp. Diff mode fails; tree mode prints the hits and does not fail. A removed hash needs the architect's review, as an allowlist entry does.",
+   "patterns": [
+    [
+     "\\bdecisions?(?:\\.md)?[ ,:(]+(?:20\\d\\d-)?\\d{1,2}-\\d{1,2}\\b",
+     "i"
+    ]
+   ]
+  },
+  {
    "id": "secret-value",
    "applies": "text",
    "patterns": [
