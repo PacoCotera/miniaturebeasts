@@ -47,3 +47,20 @@
     - The gaps:
       - The pond's lobes are rounded rectangles, where b1's are free curves.
       - The side stairs are the south stair turned. They read as stairs but aren't yet drawn for their own view.
+
+## The drop (`terrain/meadow/` on main, by PR)
+
+`tools/build-meadow-drop.py OUT PROOF` writes the indexed drop from this tileset: six 8-bit indexed sheets, `meadow.json` (c2a-48px-spec §4.1, every piece `candidate` with its `offset`) and `meadow-palette.json`. All candidate.
+
+- **Palette.** b1's meadow set: the core 48 at 0–47 unchanged, then the 48 meadow colours. Per decisions 2026-10-10 19:49 (8-bit, per-biome sets).
+  - Each entry carries its DARK, LIGHT, DARK2, FOG and FADE. The core's are the page's own. The meadow greens step along the saturated lawn ramp; the other meadow colours step along their own material's ramp.
+  - Index 96 in the sheets is transparent.
+- **Rebuilt on b1's look.** The older pieces under `grass/` were on the core 48.
+  - Lawn: 6 tiles from b1's flecks at the middle level's tone, with tufts kept 8 px inside.
+  - Lip: the 28 quarters, on the candidate geometry, by test map 12's edge rule.
+  - Sand and deep: from the pond's bank and body.
+  - Rock material: from the 1-wide faces.
+  - Decals: greens moved onto the ramp.
+- **Faces and caps** carry test map 12's turf spill over their top: 9–24 px lobes. Each piece's lobes fall to 10 px at its sides, so any face meets any other.
+- **Props:** the magenta key's residue is gone (0 px of magenta, wine or plum).
+- **Proof:** `proof/drop-place-*.png` (`tools/meadow-drop-proof.py`) is a place composed from the drop by the spec's §4.3 rules. Not composed there: the light layer and level tones (spec §12), and side columns.
