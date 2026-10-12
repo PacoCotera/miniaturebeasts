@@ -245,6 +245,14 @@ test("the hatch with a moving set, 1000–1180 (motion-spec §2.7a): the curl co
   assert.ok(asGone / differ > 0.3 && asGone / differ < 0.7, `at ${halfAt} ms the bud is gone from ${(asGone / differ).toFixed(2)} of its pixels`);
   console.log(`# the hatch's crossfade at ${halfAt} ms: the bud on ${(asWhole / differ).toFixed(2)} of its pixels, gone from ${(asGone / differ).toFixed(2)}`);
 });
+test("the hatch with a moving set, the stand-in anchor (motion-spec §2.7a, M1a only): the curl's feet at 424 from 1000 to 2320, the step down to 472 inside the curl-to-crouch dither, the table's feet from 2320", { skip }, async () => {
+  const f = await hatchMoving(), J = incSpec.regions.juvenile.rect, rectOf = () => (logOf(f)?.regions ?? []).find((r) => r.id === "juvenile" && r.layer === "art")?.rect;
+  const seen = {};
+  for (let t = 16; t <= 2800; t += 16) { f.frame((f.t += 16)); if ([1104, 1296, 1792, 2192, 2496].includes(t)) seen[t] = rectOf(); }
+  for (const t of [1104, 1296, 1792]) assert.deepEqual(seen[t], [J[0], 424 - J[3], J[2], J[3]], `${t} ms: the curl's feet at 424`);
+  assert.deepEqual(seen[2192], [J[0], 424 - J[3], J[2], J[1] + J[3] + 2 - (424 - J[3])], "2192 ms: the curl going out at 424 and the crouch coming in at 472 (+2), one region over both");
+  assert.deepEqual(seen[2496], [J[0], J[1] + 2, J[2], J[3]], "2496 ms: the crouch at the table's feet (472, +2)");
+});
 test("the hatch with a moving set, motion off: the cut to its end (the stand)", { skip }, async () => {
   const f = await hatchMoving({ motion: false }); frames(f); assert.equal(hatchCell(f), "stand");
 });
