@@ -151,6 +151,21 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       if (bw < 1 || bh < 1 || bw * bh > 1024 * 64 || x < 0 || y < 0 || x + bw > w || y + bh > h || ring_tab_mask(mask, &t) < 0) { free(mask); return -1; }
       for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
+    } else if (nl == 5 && strncmp(name, "plate", 5) == 0 && tok[i].size == 10) {   /* ["plate", x, y, w, h, radius, "fill", fillAlpha, "edge", edgeWidth]: the one filled shape and the only op with opacity (the away bed's frames, the architect 85c9c0b) */
+      static const char INS[4][5] = { "0001", "0111", "0111", "1111" }, EDG[4][5] = { "0001", "0110", "0100", "1000" };   /* the top-left 4 x 4 corner, row by row: the art director's 1x rule, never LVGL's anti-aliased rounding; the other corners mirror it */
+      int x = A(0), y = A(1), bw = A(2), bh = A(3), radius = A(4), alpha = A(6), ew = A(8); uint32_t fill, edge = 0;
+      if (g_bad || radius != 4 || bw < 8 || bh < 8 || x < 0 || y < 0 || x + bw > w || y + bh > h || alpha < 0 || alpha > 255 || (ew != 0 && ew != 1)) return -1;
+      if (tok[j + 5].type != JSMN_STRING || colour_of(ops + tok[j + 5].start, tok[j + 5].end - tok[j + 5].start, &fill) != 0) return -1;
+      { int el = tok[j + 7].end - tok[j + 7].start; if (tok[j + 7].type != JSMN_STRING) return -1;
+        if (ew == 1 ? (el == 0 || colour_of(ops + tok[j + 7].start, el, &edge) != 0) : el != 0) return -1; }   /* an edge needs its colour; no edge needs "" */
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) {
+        int cx = xx < 4 ? xx : xx >= bw - 4 ? bw - 1 - xx : -1, cy = yy < 4 ? yy : yy >= bh - 4 ? bh - 1 - yy : -1, in, on;
+        if (cx >= 0 && cy >= 0) { in = INS[cy][cx] == '1'; on = EDG[cy][cx] == '1'; } else { in = 1; on = xx == 0 || yy == 0 || xx == bw - 1 || yy == bh - 1; }
+        uint8_t *q = px + ((y + yy) * w + x + xx) * 4;
+        if (ew == 1 && on) { q[0] = (uint8_t)edge; q[1] = (uint8_t)(edge >> 8); q[2] = (uint8_t)(edge >> 16); q[3] = 255; }
+        else if (in) { q[0] = (uint8_t)fill; q[1] = (uint8_t)(fill >> 8); q[2] = (uint8_t)(fill >> 16); q[3] = (uint8_t)alpha; }
+        else { q[0] = q[1] = q[2] = q[3] = 0; }   /* straight ARGB8888, as every face picture */
+      }
     } else if (nl == 9 && strncmp(name, "bayerPick", 9) == 0 && tok[i].size == 10) {   /* ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy]: the same pick between two windows of the picture's w x h, `from`'s at (fsx, fsy) and `to`'s at (tsx, tsy) (two cells of an atlas, M1 §2.1); each window lies inside its asset; `from` -1 is clear (a dither-in), `to` -1 is clear (a dither-out: `from` keeps the pixels a dither-in at the same level leaves) */
       static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
       int fh = A(0), th = A(1), level = A(2), ox = A(3), oy = A(4), fsx = A(5), fsy = A(6), tsx = A(7), tsy = A(8);
@@ -192,8 +207,8 @@ uint8_t *prim_asset(int handle, int w, int h) {
   return g_a[handle].px;
 }
 /* the layer a picture shows on, its asset's own (the host's policy: art or painted); a composed source has none and takes its node's */
-int prim_asset_layer_of(int handle) { return handle >= 0 && handle < MAX_ASSET && g_a[handle].layer ? g_a[handle].layer : LAYER_ART; }
-void prim_asset_layer(int handle, int layer) { if (handle >= 0 && handle < MAX_ASSET) g_a[handle].layer = layer; }
+int prim_asset_layer_of(int handle) { return handle >= 0 && handle < MAX_ASSET + MAX_SRC && g_a[handle].layer ? g_a[handle].layer : LAYER_ART; }
+void prim_asset_layer(int handle, int layer) { if (handle >= 0 && handle < MAX_ASSET + MAX_SRC) g_a[handle].layer = layer; }   /* a host picture or a face-owned source (a plate's, painted) */
 void prim_asset_free(int handle) { if (handle < 0 || handle >= MAX_ASSET) return; free(g_a[handle].px); memset(&g_a[handle], 0, sizeof g_a[handle]); }
 /* A face-owned source picture from composed ops (w x h), cached by the ops' hash: the same ops are the same picture, kept once. A handle for a nine-slice or a sprite, or -1 when refused or the table is full. */
 int prim_source(const char *ops, int w, int h) {
@@ -295,7 +310,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region;
-  if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
+  if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET + MAX_SRC && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
   int px = x - ox, py = y - oy;
   if (kind == FN_TEXT) {
     /* the label's top is the line's top; the page gives the cap top. The baseline sits (line height - base line) below the line's top. */

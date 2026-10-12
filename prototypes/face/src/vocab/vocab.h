@@ -30,6 +30,9 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y);
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* The same between two w x h windows (atlas cells, M1 §2.1): `fromAsset`'s at (fsx, fsy) and `toAsset`'s at (tsx, tsy); `fromAsset` NULL or "" is clear (a dither-in), `toAsset` NULL or "" is clear (a dither-out, keeping the pixels a dither-in at the same level leaves); never both. */
 int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, const char *toAsset, int tsx, int tsy, int level, int x, int y, int w, int h);
+/* A plate drawn by the composed op `plate` (the away bed's frames and the glyph's plate): one cached source per size and look on the painted layer, a sprite 1:1. 1, or 0 and an error when refused. v_fillPlateHidden: the same node with no size (a free place). */
+int v_fillPlate(const char *id, int x, int y, int w, int h, int radius, const char *fill, int fillAlpha, const char *edge, int edgeWidth);
+int v_fillPlateHidden(const char *id, int x, int y, int w, int h, int radius, const char *fill, int fillAlpha, const char *edge, int edgeWidth);
 /* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);

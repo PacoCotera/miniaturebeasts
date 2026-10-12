@@ -59,9 +59,9 @@ const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for 
 
 const SCENES = {
   "docked: five at home, two asleep, eight bays": { adults: 4, young: 3, carry: [0, 1] },
-  "away: two out with the Companion, the mark on the bed": { adults: 4, young: 3, carry: [0, 1], away: true },
+  "away: two out with the Companion, their frames on the bed": { adults: 4, young: 3, carry: [0, 1], away: true },
   "a fresh world's: empty, six free bays, the nest alone": { bays: 6 },
-  "a fresh world's, the Companion away: the nest and its mark": { bays: 6, away: true },
+  "a fresh world's, the Companion away: the nest alone (nobody carried)": { bays: 6, away: true },
   "twelve adults, twelve compact tiles": { bays: 12, adults: 12 },
   "docked, nobody carried: the nest drawn empty": { adults: 3 },
   "the ring on a sleeper": { adults: 4, young: 3, carry: [0, 1], focus: "resident:1" },

@@ -33,7 +33,7 @@ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f)
 setMoving(MOVING);
 export const T0 = 1_000_000;
 export const VIV_RULES = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/vivarium.json"), "utf8")).rules;
-// o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets }; returns { st, sv, settings, m } for a view
+// o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets, carry }; returns { st, sv, settings, m } for a view
 export function household(o = {}) {
   const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
   if (o.adults) S.seedAdults(st, "S01", 5, o.adults, settings);
@@ -42,7 +42,7 @@ export function household(o = {}) {
   if (n5) S.seedAdults(st, "S05", 9, n5, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(o.adults ?? 0)) m.born = st.turn;   // the juveniles
-  const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };   // o.carry: the indices the Companion holds
   return { st, sv, settings, m: { st, sv, settings, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };
 }
 // the bed's sleepers of a second world (3 juveniles carried), with their requests, spliced into a view's props
@@ -83,9 +83,9 @@ export function movingScene(screen, o = {}) {
   const props = screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };
   return { props, requests, st, hh, specs: { frame, vivarium: viv, home }, screen };
 }
-export async function bootScene(sc, { motion = true, moving = MOVING, atlas = {}, t = 5000 } = {}) {
+export async function bootScene(sc, { motion = true, moving = MOVING, atlas = {}, t = 5000, node = false } = {}) {   // node: the test build (dist/node), with the box probe
   atlas = { sets: moving, ...atlas };
-  const f = await bootFace(pathToFileURL(DIST + "/"), { test: true });
+  const f = await bootFace(pathToFileURL((node ? DIST + "/node" : DIST) + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette });
   for (const [n, j] of Object.entries(sc.specs)) if (f.send({ t: "spec", screen: n, json: j }) < 0) throw new Error("spec " + n + ": " + f.errors().join("; "));
   if (sendMoving(f, moving) < 0) throw new Error("moving: " + f.errors().join("; "));

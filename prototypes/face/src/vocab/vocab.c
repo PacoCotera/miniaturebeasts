@@ -182,3 +182,20 @@ void v_plate(const char *id, const char *namePath, int w, int x, int y) {
   char asset[96]; snprintf(asset, sizeof asset, "%s-%dx%d", series, w, h);
   if (!v_sprite(id, asset, x, y, w, h)) { char b[140]; snprintf(b, sizeof b, "word: the name plate %.60s is not on the face", asset); v_error(b); prim_refuse(); }
 }
+
+/* A plate (the away bed's frames and the glyph's plate; the architect, 85c9c0b): one composed source per size and look, cached by its ops, on the painted layer, placed 1:1 as a sprite.
+   Its look comes from the spec: radius 4 only, a palette fill at fillAlpha, an optional 1 px palette edge ("" and 0 for none). */
+static int plate_src(int w, int h, int radius, const char *fill, int fillAlpha, const char *edge, int edgeWidth) {
+  char ops[160]; snprintf(ops, sizeof ops, "[[\"plate\",0,0,%d,%d,%d,\"%s\",%d,\"%s\",%d]]", w, h, radius, fill ? fill : "", fillAlpha, edge ? edge : "", edgeWidth);
+  int src = prim_source(ops, w, h); if (src < 0) { v_error("word plate: the picture is refused"); prim_refuse(); return -1; }
+  prim_asset_layer(src, LAYER_PAINTED); return src;
+}
+int v_fillPlate(const char *id, int x, int y, int w, int h, int radius, const char *fill, int fillAlpha, const char *edge, int edgeWidth) {
+  int src = plate_src(w, h, radius, fill, fillAlpha, edge, edgeWidth); if (src < 0) return 0;
+  prim_node(v_id(id), FN_SPRITE, x, y, w, h, 0, src, 0); return 1;
+}
+/* the same node with no size (a place the count does not fill): the same source, a window of no size at source x 1, as v_sprite_hidden */
+int v_fillPlateHidden(const char *id, int x, int y, int w, int h, int radius, const char *fill, int fillAlpha, const char *edge, int edgeWidth) {
+  int src = plate_src(w, h, radius, fill, fillAlpha, edge, edgeWidth); if (src < 0) return 0;
+  prim_node(v_id(id), FN_SPRITE, x, y, 0, 0, 1u << 16, src, 0); return 1;
+}

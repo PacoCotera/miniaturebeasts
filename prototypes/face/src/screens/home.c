@@ -453,6 +453,30 @@ static void nap_draw(const ent_t *e) {
   v_name("bed.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, e->box[1], e->waiting);
 }
 
+/* ---- the away bed's frames (station-vivarium-polish, option D; the architect's plates, 85c9c0b): away, frame i of n at (places.<n>[i], frames.y), a plate 56 x 56 (soil at frameOpa, a 1 px gold edge,
+   radius 4) and its mini 1:1 at the thumb; then the glyph's plate (the same fill, no edge) and the glyph at their offsets from (x0, frames.y). Eight stable nodes: a place the count does not fill is its node with no size.
+   draw 0: the nodes' count only (the clip's), 1: send them. Every value is the spec's. ---- */
+static const char *bed_col(const char *k) { static char b[4][24]; static int r; char *o = b[r++ & 3]; spec_str(sp(), v_fmt("%scolours.bed.%s", g_idle ? "idle." : "", k), o, 24); return o; }
+static int bed_frames(int draw) {
+  const char *bp = v_pstr("regions.bed.picture"); int bedPic = has(bp), n = v_plen("regions.bed.carried"); if (n < 0) n = 0; if (n > MAXS) n = MAXS;
+  int fw = hk("regions.bed.frames.size", 0), fh = hk("regions.bed.frames.size", 1), fy = hi("regions.bed.frames.y", 0), round = hi("regions.bed.frames.round", 4), edgeW = hi("regions.bed.frames.edge", 1);
+  int tx = hk("regions.bed.frames.thumb", 0), ty = hk("regions.bed.frames.thumb", 1), tw = hk("regions.bed.frames.thumb", 2), th = hk("regions.bed.frames.thumb", 3);
+  int gw = hk("regions.bed.frames.glyph.size", 0), gh = hk("regions.bed.frames.glyph.size", 1), gx = hk("regions.bed.frames.glyph.at", 0), gy = hk("regions.bed.frames.glyph.at", 1);
+  int pw = hk("regions.bed.frames.glyph.plate.size", 0), ph = hk("regions.bed.frames.glyph.plate.size", 1), px = hk("regions.bed.frames.glyph.plate.at", 0), py = hk("regions.bed.frames.glyph.plate.at", 1), pr = hi("regions.bed.frames.glyph.plate.round", 4);
+  const char *fill = bed_col("frame"), *edge = bed_col("frameEdge"); int opa = spec_int(sp(), v_fmt("%scolours.bed.frameOpa", g_idle ? "idle." : ""), 255);
+  const char *glyph = v_pstr("regions.bed.glyph"); int x0 = n ? hk(v_fmt("regions.bed.frames.places.%d", n), 0) : 0, count = 0;
+  if (draw) v_name("bed.frames");   /* a region of its own: the nest stays exactly at its rect in the log */
+  for (int i = 0; i < MAXS; i++) {
+    int on = i < n, x = on ? hk(v_fmt("regions.bed.frames.places.%d", n), i) : 0; const char *mini = on ? v_pstr(v_fmt("regions.bed.carried.%d.picture", i)) : "";
+    count++; if (draw) { if (on) v_fillPlate(v_fmt("bed.frame.%d", i), x, fy, fw, fh, round, fill, opa, edge, edgeW); else v_fillPlateHidden(v_fmt("bed.frame.%d", i), 0, fy, fw, fh, round, fill, opa, edge, edgeW); }
+    if (on && has(mini)) { count++; if (draw) v_sprite(v_fmt("bed.mini.%d", i), mini, x + tx, fy + ty, tw, th); }
+    else if (bedPic) { count++; if (draw) v_sprite_hidden(v_fmt("bed.mini.%d", i), bp, x + tx, fy + ty); }   /* the mini's node with no size, on the bed's own picture (a sprite needs one) */
+  }
+  count++; if (draw) { if (n) v_fillPlate("bed.glyphPlate", x0 + px, fy + py, pw, ph, pr, fill, opa, "", 0); else v_fillPlateHidden("bed.glyphPlate", 0, fy + py, pw, ph, pr, fill, opa, "", 0); }
+  if (n && has(glyph)) { count++; if (draw) v_sprite("bed.glyph", glyph, x0 + gx, fy + gy, gw, gh); }
+  else if (bedPic) { count++; if (draw) v_sprite_hidden("bed.glyph", bp, x0 + gx, fy + gy); }
+  return count;
+}
 /* ---- the glass: residents and the bed in the order of their feet, clipped to the glass; the focused one last: its feet ring, then it ---- */
 typedef struct { int kind; int ent; } item_t;   /* kind 0: a resident; 1: the bed group (the bed, then its sleepers right to left); 2: the focused resident or sleeper, drawn last under its ring */
 static void glass_group(const char *cur) {
@@ -471,17 +495,17 @@ static void glass_group(const char *cur) {
   /* the nodes inside the clip, counted before they are sent */
   int count = 0, lift = hi("regions.resident.lift", 4);
   int bedPic = has(v_pstr("regions.bed.picture")), lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
-  const char *mk = v_pstr("regions.bed.mark"); int markN = (mk && *mk) ? wire_has_asset(mk) : bedPic;   /* the bed's mark: its picture away, else a node of no size on the bed's own picture */
+  int framesN = bed_frames(0);   /* the away frames, the minis, the glyph's plate and the glyph: eight stable nodes (fewer only when a picture is missing) */
   for (int k = 0; k < ni; k++) {
     if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent];
       if (e->mv >= 0) { const mv_t *m = &g_m[e->mv]; count += 1 + (has(m->shadow) ? 1 : 0) + (m->dl ? 1 : 0) + lampN + (it[k].kind == 2 ? 1 : 0); }   /* a moving resident: its shadow, the picture (hidden while it dithers), the dither node, the lamp */
       else if (e->nap >= 0) count += 1 + lampN + (it[k].kind == 2 ? 1 : 0);
       else count += has(e->pic) + lampN + (it[k].kind == 2 ? 1 : 0); }
-    else { count += bedPic + markN; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && i != focused) count += (g_e[i].nap >= 0 ? 1 : has(g_e[i].pic)) + lampN; }
+    else { count += bedPic + framesN; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && i != focused) count += (g_e[i].nap >= 0 ? 1 : has(g_e[i].pic)) + lampN; }
   }
   if (count == 0) return;
   prim_node(v_id("glass.clip"), FN_CLIP, glass[0], glass[1], glass[2], glass[3], 0, count, 0);
-  /* the nodes are named by the mibi (g.<id>, g.<id>.lamp, g.bed, g.bed.mark): when two residents change places in depth the objects change places in the order and only where they overlap is redrawn
+  /* the nodes are named by the mibi (g.<id>, g.<id>.lamp, g.bed, bed.frame.<i>, bed.mini.<i>, bed.glyphPlate, bed.glyph): when two residents change places in depth the objects change places in the order and only where they overlap is redrawn
      (prim.c move_to), a resident that did not step is not redrawn */
   for (int k = 0; k < ni; k++) {
     if (it[k].kind != 1) {
@@ -494,8 +518,7 @@ static void glass_group(const char *cur) {
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, ly, e->waiting);
     } else {
       v_name("bed"); v_sprite("g.bed", v_pstr("regions.bed.picture"), bed[0], bed[1], bed[2], bed[3]);
-      { int mk[4]; hrect("regions.bed.markRect", mk); const char *mp = v_pstr("regions.bed.mark"); v_name("bed");   /* away only: the Companion's mark, 1:1 over the bed, a stable node (no size when it is not shown) */
-        if (mp && *mp) v_sprite("g.bed.mark", mp, mk[0], mk[1], mk[2], mk[3]); else v_sprite_hidden("g.bed.mark", v_pstr("regions.bed.picture"), mk[0], mk[1]); }
+      bed_frames(1);   /* away: the frames and the glyph (the bed's mark is retired) */
       for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first carried is drawn last, in front */
         const ent_t *e = &g_e[i];
         if (e->nap >= 0) { nap_draw(e); continue; }
@@ -657,7 +680,7 @@ void vivarium_words(void) {
   { int st[4]; char ground[24]; spec_str("vivarium", "colours.stageGround", ground, sizeof ground);
     if (v_spec_rect("vivarium", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
   word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0));   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
-  glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest, and its mark while away */
+  glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest alone while docked or with nobody carried */
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; g_tagOver = g_e[i].asleep; build_nameTag(sp(), "regions.window", g_e[i].name, g_e[i].sleeper ? g_e[i].draw : g_e[i].asleep ? g_e[i].ink : g_e[i].box, g_e[i].sleeper || g_e[i].asleep ? 0 : hi("regions.resident.lift", 4), tag); g_tagOver = 0;   /* asleep in place: over the ink, no lift (UI/UX item 4) */ }
   { int box[4]; build_bayStrip("vivarium", cur, box);
     if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding()) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, "vivarium", "focus.targets.tile.ring", frame_ring()); } }

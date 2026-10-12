@@ -1,5 +1,6 @@
 // Check 1 for Home (lvgl-switch.md §4): every region the face's log says it drew, against the rectangle home.json (and frame.json for the stage) gives it. `departures` returns the list of departures, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: home.json; frame: frame.json; cur: the focus ("room" when none).
+import { bedFramesDepartures } from "./vivarium-regions.mjs";
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 export const MODULES = ["cargo", "pods", "incubator", "probe", "library"];
@@ -13,7 +14,8 @@ export function departures(log, spec, frame, cur = "room") {
   for (const r of got("glass", "chrome")) must(eq(r.rect, glass), `glass ${r.rect} is not ${glass}`);
   for (const r of got("glass", "painted")) must(eq(r.rect, glass), `the glass master ${r.rect} is not ${glass}`);
   must(got("glass", "painted").length === 0 || got("glass", "chrome").length === 0, "the glass plates show under the light's painting");   // the painting on the face: the plates are nodes with no size
-  for (const id of ["resident", "bed", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, glass), `${id} (${r.layer}) ${r.rect} leaves the glass ${glass}`);   // the residents and the bed are clipped to the glass
+  for (const id of ["resident", "bed", "resident.lamp", "bed.lamp", "bed.frames"]) for (const r of got(id)) must(within(r.rect, glass), `${id} (${r.layer}) ${r.rect} leaves the glass ${glass}`);   // the residents and the bed are clipped to the glass
+  for (const m of bedFramesDepartures(got, R)) must(false, m);   // the away frames at the signed table
   for (const r of got("nameTag")) must(within(r.rect, tagBox), `the name tag (${r.layer}) ${r.rect} is not 8 px inside the glass ${glass}`);
   { const tag = got("nameTag", "chrome")[0], txt = got("nameTag", "type")[0]; if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); must(!!tag === /^resident\./.test(cur), `the name tag shows only on a resident (focus ${cur}, tag ${tag ? "drawn" : "absent"})`); }
   for (const r of got("knob")) must(within(r.rect, [R.knob.rect[0], R.knob.rect[1], R.knob.rect[2], R.knob.rect[3]]), `the knob ${r.rect} leaves ${R.knob.rect}`);

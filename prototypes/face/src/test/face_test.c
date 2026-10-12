@@ -141,6 +141,34 @@ static void ring_vectors(const char *dir) {
   printf("rings: %d cases, %d differ\n", n, bad);
   free(mask); free(px); free(js);
 }
+/* the composed op `plate` (the away bed's frames and the glyph's plate; the architect's vectors, 85c9c0b): counts, pixels, the hash of the picture as R, G, B, A with every alpha-0 pixel zeroed, and the refusals */
+static int plate_alpha(const uint8_t *px, int w, int x, int y) { return px[(y * w + x) * 4 + 3]; }
+static void plate_sha(const uint8_t *px, int w, int h, char out[65]) {
+  sha_t s; sha_init(&s); for (int i = 0; i < w * h; i++) { const uint8_t *q = px + i * 4; uint8_t rgba[4] = { q[2], q[1], q[0], q[3] }; if (!q[3]) memset(rgba, 0, 4); sha_add(&s, rgba, 4); } sha_hex(&s, out);
+}
+static void plate_vectors(void) {
+  prim_palette_clear(); prim_palette_add("soil", 0x4b3023); prim_palette_add("gold", 0xd89b14);
+  uint8_t *px = (uint8_t *)calloc(56 * 56, 4); char got[65], d[120]; int n255 = 0, n153 = 0, n0 = 0;
+  check(prim_compose(px, 56, 56, "[[\"plate\",0,0,56,56,4,\"soil\",153,\"gold\",1]]") == 1, "plate 56x56", "composed");
+  for (int i = 0; i < 56 * 56; i++) { int a = px[i * 4 + 3]; n255 += a == 255; n153 += a == 153; n0 += a == 0; }
+  snprintf(d, sizeof d, "%d gold, %d soil, %d clear", n255, n153, n0); check(n255 == 212 && n153 == 2904 && n0 == 20, "plate 56x56 counts", d);
+  { static const int G[][2] = { {3,0},{1,1},{2,1},{1,2},{0,3},{28,0},{0,28},{55,28},{28,55},{52,0},{53,1},{54,1},{55,3} }, F[][2] = { {3,1},{2,2},{28,28},{52,1} }, T[][2] = { {0,0},{2,0},{0,2},{55,55} };
+    for (unsigned k = 0; k < sizeof G / sizeof *G; k++) { const uint8_t *q = px + (G[k][1] * 56 + G[k][0]) * 4; snprintf(d, sizeof d, "(%d,%d)", G[k][0], G[k][1]); check(q[3] == 255 && q[2] == 0xd8 && q[1] == 0x9b && q[0] == 0x14, "plate gold", d); }
+    for (unsigned k = 0; k < sizeof F / sizeof *F; k++) { const uint8_t *q = px + (F[k][1] * 56 + F[k][0]) * 4; snprintf(d, sizeof d, "(%d,%d)", F[k][0], F[k][1]); check(q[3] == 153 && q[2] == 0x4b && q[1] == 0x30 && q[0] == 0x23, "plate soil at 153", d); }
+    for (unsigned k = 0; k < sizeof T / sizeof *T; k++) { snprintf(d, sizeof d, "(%d,%d)", T[k][0], T[k][1]); check(plate_alpha(px, 56, T[k][0], T[k][1]) == 0, "plate clear", d); } }
+  plate_sha(px, 56, 56, got); check(strncmp(got, "c4b514cda26b6deb", 16) == 0, "plate 56x56 hash", got);
+  memset(px, 0, 56 * 56 * 4); n255 = n153 = n0 = 0;
+  check(prim_compose(px, 20, 28, "[[\"plate\",0,0,20,28,4,\"soil\",153,\"\",0]]") == 1, "plate 20x28", "composed");
+  for (int i = 0; i < 20 * 28; i++) { int a = px[i * 4 + 3]; n255 += a == 255; n153 += a == 153; n0 += a == 0; }
+  snprintf(d, sizeof d, "%d opaque, %d soil, %d clear", n255, n153, n0); check(n255 == 0 && n153 == 540 && n0 == 20, "plate 20x28 counts", d);
+  check(plate_alpha(px, 20, 3, 0) == 153 && plate_alpha(px, 20, 1, 1) == 153 && plate_alpha(px, 20, 0, 3) == 153 && plate_alpha(px, 20, 2, 0) == 0 && plate_alpha(px, 20, 0, 2) == 0, "plate 20x28 pixels", "");
+  plate_sha(px, 20, 28, got); check(strncmp(got, "3edb464858a76390", 16) == 0, "plate 20x28 hash", got);
+  static const char *R[] = { "[[\"plate\",0,0,56,56,3,\"soil\",153,\"gold\",1]]", "[[\"plate\",0,0,56,56,4,\"soil\",153,\"gold\",2]]", "[[\"plate\",0,0,56,56,4,\"soil\",153,\"\",1]]",
+    "[[\"plate\",0,0,56,56,4,\"soil\",256,\"gold\",1]]", "[[\"plate\",0,0,56,56,4,\"teal\",153,\"gold\",1]]", "[[\"plate\",0,0,7,56,4,\"soil\",153,\"gold\",1]]", "[[\"plate\",0,0,56,56,4,\"soil\",153,\"gold\",0]]" };
+  for (unsigned k = 0; k < sizeof R / sizeof *R; k++) { memset(px, 0, 56 * 56 * 4); check(prim_compose(px, 56, 56, R[k]) < 0, "plate refused", R[k]); }
+  printf("plates: the 56 x 56 frame and the 20 x 28 glyph plate as the architect's vectors, %d refusals\n", (int)(sizeof R / sizeof *R));
+  free(px);
+}
 /* the metrics (metrics.json, made from the table of the compiled fonts): lv_text_get_width gives the width the table sums, for every Station string at 16, 20 and 28 px */
 static void metrics_vectors(const char *dir) {
   char path[512]; snprintf(path, sizeof path, "%s/metrics.json", dir); long len; char *js = slurp(path, &len);
@@ -210,6 +238,7 @@ int main(int argc, char **argv) {
   spec_graphs(argc > 2 ? argv[2] : "../ui/specs/station");
   metrics_vectors(dir);
   ring_vectors(dir);
+  plate_vectors();
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;

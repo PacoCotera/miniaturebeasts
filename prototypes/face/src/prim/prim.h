@@ -49,7 +49,11 @@ int prim_palette_count(void);
 int prim_palette_has(uint32_t rgb);
 int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by name: 0, or -1 when the palette has no such name */
 /* The composed picture's ops, JSON: [["h", x, y, len, "colour"], ["v", x, y, len, "colour"], ["dash", x, y, len, "h"|"v", on, off, "colour"], ["dot", x, y, "colour"],
-   ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"], ["bayerPick", from, to, level, ox, oy], or with the windows ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy] (from -1: clear)] (bayerPick: the picture of asset `to` where the Bayer cell at the screen position (ox + x, oy + y) is below `level`, else that of asset `from`; both are the picture's size) with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
+   ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"], ["bayerPick", from, to, level, ox, oy], or with the windows ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy] (from -1 or to -1: clear),
+   ["ring", ...], ["tabRing", ...], ["plate", x, y, w, h, radius, "fill", fillAlpha, "edge", edgeWidth]] (bayerPick: the picture of asset `to` where the Bayer cell at the screen position (ox + x, oy + y) is below `level`, else that of asset `from`; both are the picture's size) with x, y relative to the picture.
+   The composed picture's ops: h, v, dash, dot, lattice, bayerPick, ring, tabRing and plate. All are one pixel wide where they are lines, palette colours only, with no anti-aliasing. plate is the one filled shape and the only op with opacity:
+   ["plate", x, y, w, h, radius, "fill", fillAlpha, "edge", edgeWidth], radius 4 only, its corners from a fixed table (the art director's 1x rule, never LVGL's anti-aliased rounding). A picture holding a plate is put on the painted layer.
+   Plates of one size and look share one source picture (prim_source, cached by the ops' hash).
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */
 int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
