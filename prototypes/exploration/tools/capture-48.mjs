@@ -54,7 +54,7 @@ function proof(pngFile, gridFile) {
     else if (ch === "w") tiles[i] = T.WATER; else if (ch === "s") tiles[i] = T.SAND; }
   const lay = { key: "proof", cell: 0, tiles, terr, tmask, base: T.GRASS };
   const idx = new Map(cat.lawn.map((p, k) => [p.name, k])), lawnPick = (x, y, def) => { const cell = grid.cells[y + "," + x]; return cell && idx.has(cell.lawn) ? idx.get(cell.lawn) : def; };
-  const r = placeLayers(lay, 0, cat, 0, 0, { macros: false, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: false, waterSand: true, darkShadow: true, lawnPick });
+  const r = placeLayers(lay, 0, cat, 0, 0, { macros: false, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: false, waterSand: true, darkShadow: true, grassDecals: false, lawnPick });
   // Tiles the proof draws other things on are left out of the pixel compare: the second row of a two-row face (the proof's layout marks a
   // face run's first row only, and the face piece covers the row below), and, with --proof-script, the proof's decal and prop cells
   // with their neighbours (their pieces are placed by the proof's own hash, which the page does not reproduce).

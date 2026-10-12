@@ -34,7 +34,7 @@ export function catalogue(pieces, levelTone = null) {
   for (const q of QUADS) { water[q] = {}; waterSand[q] = {}; for (const s of SHORE_STATES) { water[q][s] = []; waterSand[q][s] = []; } lip[q] = {}; for (const s of LIP_STATES) lip[q][s] = []; waterMacro[q] = { 42: [], 60: [] }; waterMacroSand[q] = { 42: [], 60: [] }; sandShore[q] = {}; for (const s of SHORE_STATES) sandShore[q][s] = []; }
   const sideOf = () => ({ mid: [], top: [], foot: [], tail: [] });
   const cat = {
-    lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [] }, water, waterSand, waterMacro, waterMacroSand, lip,
+    lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [], grass: [] }, water, waterSand, waterMacro, waterMacroSand, lip,
     face: { w3: [], w2: [], w1: [] }, cap: { w: [], e: [] }, cornerIn: { w: [], e: [] }, side: { e: sideOf(), w: sideOf() },
     stair: { S: [], N: [], E: [], W: [] }, landing: two(), foot2: two(), apronTop: two(),
     prop: { boulder: [], reeds: [], flowers: [] }, sandShore, shadow, other: [],
@@ -48,7 +48,7 @@ export function catalogue(pieces, levelTone = null) {
     switch (p.kind) {
       case 'ground': ok = p.set === 'lawn' || p.set === 'sand' || p.set === 'deep' ? put(cat[p.set], p) : false; break;
       case 'material': ok = p.set === 'rock' && put(cat.material.rock, p); break;
-      case 'decal': ok = (p.set === 'tall' || p.set === 'flowers') && put(cat.decal[p.set], p); break;
+      case 'decal': ok = (p.set === 'tall' || p.set === 'flowers' || p.set === 'grass') && put(cat.decal[p.set], p); break;
       case 'shadow': ok = p.set === 'cast' && p.state in shadow && put(shadow[p.state], p); break;
       case 'shore': { const q4 = QUADS.includes(p.quad) && SHORE_STATES.includes(p.state), fr2 = p.frame === 1 || p.frame === 2;   // sets: water (lawn margin), water-sand (sand margin), sand (the sand's own edge)
         ok = p.set === 'sand' ? q4 && put(sandShore[p.quad][p.state], p) : p.set === 'water' ? q4 && fr2 && put(water[p.quad][p.state], p) : p.set === 'water-sand' && q4 && fr2 && put(waterSand[p.quad][p.state], p); break; }
@@ -223,8 +223,8 @@ const GRASSY = [T.GRASS, T.TALL, T.FLOWERS];
 // level is the place's height level (generator 2, 0–2) or null; the catalogue's levelTone lifts the lawn and its tall-grass decals of
 // a level ('light' or 'dark'), and lip quarters take the tone of the level below. { ok: false } when a blocking tile needs the rock
 // stand-in and face.w1 or material.rock is empty: that place stays at 32.
-// The rules in effect: shore macros, and the face and water tones. Only the vectors' check of digests captured before them turns them off.
-export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true, waterSand: true, darkShadow: true };
+// The rules in effect: shore macros, the face and water tones, the grass decals. Only the vectors' check of digests captured before them turns them off.
+export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true, waterSand: true, darkShadow: true, grassDecals: true };
 export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULES) {
   const toneOf = L => { const t = L == null || !cat.levelTone ? null : cat.levelTone[L]; return t === 'light' || t === 'dark' ? t : null; };
   const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1), faceTone = rules.faceTone && level != null ? toneOf(level + 1) : null, waterTone = rules.waterTone ? lawnTone : null;
@@ -260,6 +260,23 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
   const footAt = (x, y) => terr ? at(x, y) === T.FACE && terr[y * PW + x] === TERR.FACE && (tmask[y * PW + x] & 1) === 1 : isCliff(x, y) && onP(x, y + 1) && !isCliff(x, y + 1);
   const shadowState = (x, y) => castState(raised, footAt, x, y);
   const lawnBase = lay.base === T.GRASS || lay.base === T.DARK;
+  // grass decals: one candidate tile per 2 × 2 block (hashed), taken only when it is plain lawn with no terrain kind, no shadow and no feature on it;
+  // the piece steps off the pick of the block to the west and the block to the north. Computed row by row of blocks, as faceAt is.
+  const decalAt = new Map(), gd = cat.decal.grass;
+  if (rules.grassDecals && gd.length) {
+    const BW = (PW + 1) >> 1, BH = (PH + 1) >> 1, pickOf = new Array(BW * BH).fill(-1), feat = new Set((lay.feats || []).map(f => f.y * PW + f.x));
+    for (let by = 0; by < BH; by++) for (let bx = 0; bx < BW; bx++) {
+      const j = hash(seed, 'gb', key, bx, by) & 3, x = 2 * bx + (j & 1), y = 2 * by + (j >> 1), i = y * PW + x;
+      if (x >= PW || y >= PH) continue;
+      const t = lay.tiles[i]; if ((t !== T.GRASS && t !== T.DARK) || (terr && terr[i]) || macroAt.has(i) || feat.has(i) || shadowState(x, y) !== null) continue;
+      let k = hash(seed, 'gp', key, x, y) % gd.length;
+      const kw = bx > 0 ? pickOf[by * BW + bx - 1] : -1, kn = by > 0 ? pickOf[(by - 1) * BW + bx] : -1;
+      for (let s = 0; s < 2; s++) if (k === kw || k === kn) k = (k + 1) % gd.length;
+      pickOf[by * BW + bx] = k;
+      const p = gd[k], l = atLayer(p, hash(seed, 'gx', key, x, y) % (49 - Math.min(p.w, 48)), hash(seed, 'gy', key, x, y) % (49 - Math.min(p.h, 48)));
+      if (l) decalAt.set(i, Object.assign(l, { tone: lawnTone }));
+    }
+  }
   for (let i = 0; i < N; i++) {
     const x = i % PW, y = (i / PW) | 0, t = lay.tiles[i], kind = terr ? terr[i] : 0, m = tmask ? tmask[i] : 0;
     const L = [], tile = { layers: L, dark: 0 }; tiles[i] = tile;
@@ -279,6 +296,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
       const sh = shadowState(x, y), p = sh ? pick(cat.shadow[sh], 0) : null; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone }));
     }
     const ground = L.length;
+    if (decalAt.has(i)) L.push(decalAt.get(i));
     // by tile code
     if (t === T.TALL) for (let k = 0; k < 2; k++) { const p = pick(cat.decal.tall, hash(seed, 'td', key, x, y, k));
       if (p) { const l = atLayer(p, hash(seed, 'tx', key, x, y, k) % (49 - Math.min(p.w, 48)), hash(seed, 'ty', key, x, y, k) % (49 - Math.min(p.h, 48))); if (l) L.push(Object.assign(l, { tone: lawnTone })); } }
