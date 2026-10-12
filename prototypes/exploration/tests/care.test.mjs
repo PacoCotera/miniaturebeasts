@@ -717,9 +717,9 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
 // (sp -1 on the Station: a species beyond the Companion's three), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
-  const W = await import("../src/world.mjs"), A = await import("../src/atlas.mjs"), { frameOf } = await import("../../station/src/genome.mjs");
-  // every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
-  const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1], MODS = { world: W, atlas: A };
+  const W = await import("../src/world.mjs"), A = await import("../src/atlas.mjs"), V = await import("../src/view.mjs"), { frameOf } = await import("../../station/src/genome.mjs");
+  // every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
+  const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1], MODS = { world: W, view: V, atlas: A };
   const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
   const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
   const SCRIPT = MODULE.replace(IMPORT_RE, "");
