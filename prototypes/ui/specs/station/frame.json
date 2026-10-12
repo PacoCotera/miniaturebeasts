@@ -145,7 +145,7 @@
    {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
    {"from": "incubator", "state": "empty", "action": "Choose a pod", "to": "pods", "view": "collection", "focus": "the first identified pod in rack order, else the first pod", "when": "the rack holds a pod and a bay is free"},
    {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
-   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "slot 8"},
+   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "slot 8", "shut": "until slot 8: not a target (pods.json regions.overview.figure.target); the figure is drawn and the pod's ▶ goes to kin.first"},
    {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "slot 8", "shut": "until slot 8: no ✓ cap (habitat.json bottomLine.species.shut)"}
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
