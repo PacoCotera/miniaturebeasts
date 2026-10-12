@@ -7,11 +7,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
+import * as V from "../src/view.mjs";
 import * as A from "../src/atlas.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-const MODS = { world: W, atlas: A };
+const MODS = { world: W, view: V, atlas: A };
 const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
 const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
 const SCRIPT = MODULE.replace(IMPORT_RE, "");
@@ -140,4 +141,13 @@ test("the read-only line: a broken save says it is kept untouched, with the page
   const saidN = drawnText(n); assert.ok(saidN.includes(NEWER_LINE)); assert.ok(!saidN.includes(BROKEN_LINE));
   assert.notEqual(n.els.resetNote && n.els.resetNote.hidden, false, "no page line for a newer page's save");
   const ok = page({ "mb-save-v8": SCHEMA }); assert.notEqual(ok.els.resetNote && ok.els.resetNote.hidden, false, "none for a save that draws");
+});
+
+test("pods: a world pod the save already holds, as itself (w3 in the cargo) or in the Station's crate form (c9:w5 in st.pods), is not regenerated", () => {
+  const p = page(), o = JSON.parse(SCHEMA); delete o.pods;
+  o.exp = { cargo: { pods: [{ id: "w3", sp: 0 }] } }; o.st.pods = [{ id: "c9:w5", sp: 1 }];
+  p.store[p.KEY] = JSON.stringify(o); assert.equal(p.run("load()"), true);
+  const life = plain(p.run("genLife(123456).pods")), got = plain(p.run("S.pods"));
+  assert.ok(life.some(q => q.id === "w3") && life.some(q => q.id === "w5"));
+  assert.deepEqual(got, life.filter(q => q.id !== "w3" && q.id !== "w5"));
 });

@@ -729,7 +729,7 @@ function migrate7(o) {
   if (s.phase === 'station') s.phase = 'setup';
   return s;
 }
-// Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report).
+// Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report, the Station's part).
 function idsIn(o, out = new Set()) {
   if (Array.isArray(o)) for (const v of o) idsIn(v, out);
   else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
@@ -745,12 +745,14 @@ function load() {
     dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
-    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods or cr is the world's
-    // life, regenerated below, and a missing or invalid nextId is counted from the pod ids the save holds.
-    const noPods = !Object.hasOwn(S, 'pods'), noCr = !Object.hasOwn(S, 'cr'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), held = idsIn(S);
+    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods is the world's life,
+    // regenerated below without any pod the save already holds (as itself, or as the Station's crate id + ':' + pod id),
+    // and a missing or invalid nextId is counted from the pod ids the save holds.
+    const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
+    const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
     layoutCache.clear(); G = genWorld(S.seed, gen);
-    if (noPods || noCr) { const life = genLife(S.seed); if (noPods) S.pods = life.pods.filter(p => !held.has(p.id)); if (noCr) S.cr = life.cr; }
+    if (noPods) S.pods = genLife(S.seed).pods.filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); return true;
   } catch (e) { dropOld(); return false; }
