@@ -120,17 +120,17 @@ test("--drop: every sheet's form is printed, and a sheet that is not 8-bit index
 // ---- the biome palette: the core 48 unchanged, then the biome's own entries with their five tables ----
 const TABLES = pageTables(), FIELDS = ["dark", "light", "dark2", "fog", "fade"];
 const hexOf = c => "#" + c.map(v => v.toString(16).padStart(2, "0")).join("");
-// A fixture meadow: four colours off the core, their tables by the page's mixLUT rule over the whole table (the nearest entry, by its
-// weighted distance, to the colour mixed toward a target): dark toward void, light toward white, dark2 the dark of the dark,
-// fog toward bone at .62, fade toward stone at .5.
+// A fixture meadow: four colours off the core, with tables over the whole table of 52: fog toward bone at .62 and fade toward stone
+// at .5 by the page's mixLUT rule (the nearest entry, by its weighted distance, to the mixed colour); dark and light a step down and
+// up, here the nearest entry to the colour mixed toward void and toward white; dark2 the dark of the dark, as the page's DARK2.
 const MEADOW = ["#3a773b", "#418338", "#2b3b34", "#1d6888"].map(h => [1, 3, 5].map(k => parseInt(h.slice(k, k + 2), 16)));
 function fixturePalette() {
   const rgb = RGB.concat(MEADOW), near = (r, g, b) => { let best = 0, bd = Infinity; rgb.forEach(([R, G, B], i) => { const d = (R - r) ** 2 * 3 + (G - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; };
   const mix = (c, t, k) => near(c[0] + (t[0] - c[0]) * k, c[1] + (t[1] - c[1]) * k, c[2] + (t[2] - c[2]) * k), at = h => RGB.findIndex(c => hexOf(c) === h);
   const [VOID, WHITE, BONE, STONE] = ["#0c0a12", "#ffffff", "#f1ebdf", "#5d5974"].map(h => RGB[at(h)]);   // the page's void, white, bone and stone
   const entries = RGB.map((c, i) => ({ i, name: "core-" + i, hex: hexOf(c), ...Object.fromEntries(FIELDS.map(f => [f, TABLES[f][i]])) }));
-  MEADOW.forEach((c, j) => { const i = 48 + j, dark = mix(c, VOID, .35);
-    entries.push({ i, name: "meadow-" + j, hex: hexOf(c), dark, light: mix(c, WHITE, .3), dark2: dark >= 48 ? mix(MEADOW[dark - 48], VOID, .35) : TABLES.dark[dark], fog: mix(c, BONE, .62), fade: mix(c, STONE, .5) }); });
+  MEADOW.forEach((c, j) => entries.push({ i: 48 + j, name: "meadow-" + j, hex: hexOf(c), dark: mix(c, VOID, .35), light: mix(c, WHITE, .3), dark2: null, fog: mix(c, BONE, .62), fade: mix(c, STONE, .5) }));
+  for (const e of entries.slice(48)) e.dark2 = entries[entries[e.i].dark].dark;
   return { biome: "meadow", entries };
 }
 // An indexed sheet on the fixture: index 0 transparent, then core colours and the four meadow colours (48–51).
@@ -193,6 +193,22 @@ test("palette 8: no palette (or core48) is the page's 48: a meadow colour is ref
     const r = runPal({ palette, pal: null, pieces: CORE.concat(piece("x/meadow", { x: 2, y: 0, w: 2, h: 1 })) });
     assert.match(r.out, /^palette core48: 48 entries, 0 biome entries, the page's 48$/m); assert.match(r.out, /REFUSED x\/meadow: 2 off-palette px/);
   }
+});
+test("palette: dark2 must be dark[dark[i]]: the fixture holds it, and one entry off it is refused", () => {
+  assert.ok(PAL.entries.every(e => e.dark2 === PAL.entries[PAL.entries[e.i].dark].dark), "the fixture");
+  const e = PAL.entries[49], wrong = PAL.entries.findIndex(x => x.i !== e.dark2 && x.i < 52);
+  assert.deepEqual(paletteTable(RGB, TABLES, edit(49, { dark2: wrong })).errors, ["entry 49: dark2 " + wrong + " is not dark[dark[49]] (" + e.dark2 + ")"]);
+  assert.match(runPal({ pal: edit(49, { dark2: wrong }) }).out, /REFUSED palette meadow .*entry 49: dark2 \d+ is not dark\[dark\[49\]\]/);
+});
+test("transparency: an indexed sheet's tRNS alpha 0 decodes to -1 whatever its colour; a tRNS alpha other than 0 or 255 is refused", () => {
+  const d = decodeExact(Uint8Array.from([1, 2, 3, 0, ...RGB[4], 255]), 2, 1, RGB); assert.equal(d.bad, 0); assert.deepEqual([...d.px], [-1, 4]);
+  // index 0 is an off-palette colour with tRNS 0 (transparent), index 1 a core colour, index 2 a core colour at tRNS 128
+  const plte = [[1, 2, 3], RGB[5], RGB[6]], sheet = png(3, 1, [0, 1, 2], { plte, trns: [0, 255, 128] });
+  const r = runPal({ files: { "s.png": MEADOW_SHEET(), "t.png": sheet }, pieces: CORE.concat(piece("x/clear", { sheet: undefined, file: "t.png" })) });
+  assert.match(r.out, /REFUSED x\/clear: 1 px with alpha not 0 or 255, first at 2,0 \(alpha 128\)/);
+  const ok = png(2, 1, [0, 1], { plte: plte.slice(0, 2), trns: [0, 255] });
+  const r2 = runPal({ files: { "s.png": MEADOW_SHEET(), "t.png": ok }, pieces: CORE.concat(piece("x/clear", { sheet: undefined, file: "t.png" })) });
+  assert.equal(r2.refused, 0, r2.out); assert.match(r2.out, /ok x\/clear 2×1/);
 });
 test("palette: an i gap, a repeated hex, and manifests naming different palettes are refused", () => {
   assert.match(paletteTable(RGB, TABLES, edit(50, { i: 53 })).errors.join(";"), /entry 50: i is 53/);

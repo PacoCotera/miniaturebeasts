@@ -81,7 +81,7 @@ export function coreMissing(cat) {
 export function coreSet(cat) { return coreMissing(cat).length === 0; }
 
 // The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the five lookup
-// tables the page draws through (dark, light, dark2, fog, fade). coreRGB and coreTables are the page's own 48. Returns the table's
+// tables the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]). coreRGB and coreTables are the page's own 48. Returns the table's
 // rgb and tables (arrays of length N), or { errors }.
 export const PALETTE_MAX = 256;
 export const TABLE_FIELDS = ['dark', 'light', 'dark2', 'fog', 'fade'];
@@ -111,6 +111,10 @@ export function paletteTable(coreRGB, coreTables, file) {
       if (r[0] !== c[0] || r[1] !== c[1] || r[2] !== c[2]) errors.push('entry ' + k + ': hex ' + hex + ' differs from the core colour');
       for (const f of TABLE_FIELDS) if (e[f] !== coreTables[f][k]) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(e[f]) + ' differs from the core table (' + coreTables[f][k] + ')');
     }
+  }
+  for (let k = 0; k < n; k++) {   // dark2 is the dark of the dark, as the page builds its own DARK2
+    const d = out.dark[k], dd = Number.isInteger(d) && d >= 0 && d < n ? out.dark[d] : undefined;
+    if (dd !== undefined && out.dark2[k] !== dd) errors.push('entry ' + k + ': dark2 ' + JSON.stringify(out.dark2[k]) + ' is not dark[dark[' + k + ']] (' + dd + ')');
   }
   return errors.length ? { errors } : out;
 }
