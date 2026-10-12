@@ -244,7 +244,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.mouse.click(1300, 300); await page.keyboard.press("Enter"); await page.waitForTimeout(900); await page.keyboard.press("Enter"); await page.waitForTimeout(900);   // the Companion on its map
   const cdp = await ctx.newCDPSession(page); await cdp.send("Performance.enable"); await cdp.send("Runtime.enable");
   const MB = 1048576, bar = (v, lim, unit = "MB") => `${(v / MB).toFixed(1)} ${unit} against ≤ ${(lim / MB).toFixed(0)} ${unit}: ${v <= lim ? "within" : "over"}`;
-  const heap = await cdp.send("Runtime.getHeapUsage"); console.log(`D: page JavaScript heap (all frames, one isolate): ${bar(heap.usedSize, 192 * MB)} (embedder ${(heap.embedderHeapUsedSize / MB).toFixed(1)} MB, backing store ${(heap.backingStorageSize / MB).toFixed(1)} MB)`);
+  const heap = await cdp.send("Runtime.getHeapUsage"); console.log(`D: page JavaScript heap (all frames, one isolate): ${bar(heap.usedSize, 192 * MB)} (embedder ${((heap.embedderHeapUsedSize || 0) / MB).toFixed(1)} MB, backing store ${((heap.backingStorageSize || 0) / MB).toFixed(1)} MB)`);
   const face = await st().evaluate(() => window.__st.face.stats); console.log(`D: the face's wasm memory: ${bar(face.heap, 64 * MB)}; frames ${face.frames}, props ${face.props}, pictures ${face.pictures}`);
   const perFrame = async (label) => {
     const m0 = Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]));

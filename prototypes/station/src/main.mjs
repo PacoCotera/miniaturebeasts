@@ -130,7 +130,8 @@ const EMBED_W = 1024;
 const setEmbedW = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty("--embed-w", (EMBED_W * k / d) + "px"); };
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
-function onDpr() { setEmbedW(); armDpr(); }
+// the change event can fire before devicePixelRatio reports the new value (older Chromium): read it again on the next frame and after 100 ms (idempotent), re-arming each time
+function onDpr() { const again = () => { setEmbedW(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }
 if (EMBED) { setEmbedW(); armDpr(); window.addEventListener("resize", setEmbedW); window.removeEventListener("resize", fit); }
 const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), dockWord = $("dockWord"), dockDot = $("dockDot"), caddyPaper = $("caddyPaper");
 let caddyKey = "";
