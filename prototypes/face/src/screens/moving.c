@@ -134,14 +134,15 @@ int moving_load(char *err, int cap) {
     mv_set_t *set = &sets[n]; memset(set, 0, sizeof *set); snprintf(set->id, sizeof set->id, "%s", sid);
     for (int k = 0, m = spec_len(M, sid); k < m; k++) { char key[24], v[2]; spec_member(M, sid, k, key, sizeof key, v, sizeof v); if (strcmp(key, "species") && strcmp(key, "native") && strcmp(key, "gait") && strcmp(key, "juvenile") && strcmp(key, "adult") && strcmp(key, "elder")) { bad("%s: unknown clip %s", sid, key); break; } }
     char nat[8]; spec_str(M, P("%s.native", sid), nat, sizeof nat); if (strcmp(nat, "right") && strcmp(nat, "left")) bad("%s.native is \"right\" or \"left\"", sid); set->native_right = !strcmp(nat, "right");
-    char gait[12]; spec_str(M, P("%s.gait", sid), gait, sizeof gait); if (strcmp(gait, "hop") && strcmp(gait, "walkCycle")) bad("%s.gait is \"hop\" or \"walkCycle\" (the clip it names)", sid);
+    char gait[12]; spec_str(M, P("%s.gait", sid), gait, sizeof gait); if (strcmp(gait, "hop") && strcmp(gait, "walk")) bad("%s.gait is \"hop\" or \"walk\"", sid);
+    const char *clip = !strcmp(gait, "walk") ? "walkCycle" : "hop";   /* the gait's clip: hop is hop, walk is walkCycle (the architect's Q4) */
     if (has(P("%s.juvenile", sid))) stage(sid, "juvenile", MV_JUV, &set->st[MV_JUV]);
     if (has(P("%s.adult", sid))) stage(sid, "adult", MV_ADULT, &set->st[MV_ADULT]);
     if (has(P("%s.elder", sid))) elder(sid, set);
-    static const char *SN[3] = { "juvenile", "adult", "elder" };   /* the loader reads the clip `gait` names: a stage with both hop and walkCycle, or without the one named, is refused (the architect's Q4) */
+    static const char *SN[3] = { "juvenile", "adult", "elder" };   /* the loader reads the clip of the `gait` (hop: hop, walk: walkCycle): a stage with both hop and walkCycle, or without the one named, is refused (the architect's Q4) */
     if (!g_bad) for (int k = 0; k < 3; k++) if (set->st[k].present) { const mv_stage_t *t = &set->st[k];
       if (t->hopper && t->walker) bad("%s.%s has both hop and walkCycle", sid, SN[k]);
-      else if (!strcmp(gait, "hop") ? !t->hopper : !t->walker) bad("%s.%s: the gait names %s, which the stage lacks", sid, SN[k], gait); }
+      else if (!strcmp(clip, "hop") ? !t->hopper : !t->walker) bad("%s.%s: the gait %s needs the clip %s, which the stage lacks", sid, SN[k], gait, clip); }
     if (g_bad) break;
     n++;
   }

@@ -1,7 +1,7 @@
 {
   "species": "S05",
   "native": "right",
-  "gait": "walkCycle",
+  "gait": "walk",
   "juvenile": {
     "walk": { "size": [104, 112], "cells": ["stand", "stand-b1", "stand-b2", "crouch", "pass", "stepa", "stepb", "curl", "curl-b1"], "mirror": ["stand", "stand-b1", "stand-b2", "crouch", "pass", "stepa", "stepb"] },
     "walkCycle": { "beat": "quick", "cycle": [["pass", 80], ["stepa", 160], ["pass", 80], ["stepb", 160]], "stride": 12, "passRise": 1 },
