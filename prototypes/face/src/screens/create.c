@@ -51,9 +51,14 @@ static void build_bench(void) {
 }
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
+static void pic_or(const char *id, int on, const char *asset, int x, int y, int w, int h);
 static void build_pod(int grow) {
   int b[4]; if (!pod_box(b)) return; const char *pic = v_pstr("regions.pod.picture"); if (!has(pic)) return;
   int dx = 0, dy = 0;
+  {   /* the contact shadow (as on Pods, specimen.c): pods.json `shadow` widens the class's width by `widen`, `h` tall, centred on the axis and the feet, on the painted layer before the pod; it never travels: shown in shape and nothing read, and in grow until the travel starts (a cut to a zero-size node), never with reduced motion in grow */
+    int sw = b[2] + spec_int("pods", "shadow.widen", 0), sh = spec_int("pods", "shadow.h", 0), at = ci("events.grow.steps.2.at", 300), t = grow_time(), on = !grow || (t >= 0 && t < at);
+    v_region("pod", LAYER_PAINTED); pic_or("pod.shadow", on, v_pstr("regions.pod.shadow"), ci("regions.pod.axis", 160) - v_half(sw), ci("regions.pod.feet", 408) - v_half(sh), sw, sh);
+  }
   if (grow) {   /* the pod travels from its box to the dome in a straight line, whole pixels, eased: from `travel.at` over `travel.ms`, feet (160, 408) to (864, 296) */
     int at = ci("events.grow.steps.2.at", 300), ms = ci("events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = layout_ease_io(p);
     dx = layout_lerp(0, ck("regions.travel.foot.to", 0) - ck("regions.travel.foot.from", 0), e); dy = layout_lerp(0, ck("regions.travel.foot.to", 1) - ck("regions.travel.foot.from", 1), e);
