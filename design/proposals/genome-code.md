@@ -18,8 +18,8 @@ Options for the genome ring's form: is it future-proof as loci, layers and speci
 | R10 | Monochrome-safe: a thermal printer and an e-paper Caddy | `devices.md` |
 | R11 | Decodes offline: the kit works with no account or internet; frames ship with every reader | The project's standalone rule |
 | R12 | A locus need not have two copies: the codec takes copy counts from the foundation | `codec-contract.md` |
-| R13 | A code, not a species art motif; the owner would rather have "something different to a QR" | owner 10-07; 09-24 |
-| R14 | The format is public: the project is open source, so obscurity protects nothing | website, open source visible (09-29) |
+| R13 | A code, not a species art motif, and something different from a QR | The project's direction |
+| R14 | The format is public: the project is open source, so obscurity protects nothing | The website: the source is open |
 
 The short code (`G7F · CD0 · 3H2`) stays the mibi's name and a lookup, not the genome (**Decided**), whatever the form.
 
