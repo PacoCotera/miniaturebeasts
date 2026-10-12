@@ -89,25 +89,39 @@ test("the bay: one crate accepted once, the loose economy tops up, pods land in 
   assert.equal(r.plays.length, 2);
   assert.deepEqual(st.accepted, ["x1", "x2"]);
   assert.equal(st.tray.length, 6); assert.equal(st.waiting.length, 2);
-  assert.equal(st.e, 2 * (3 + 2)); assert.equal(st.d, 2 * (3 + 3)); assert.equal(st.s, 2 * (4 + 2));
+  assert.equal(st.e, 2 * (3 + 2)); assert.equal(st.d, 2 * (3 + 3)); assert.equal(st.s, 2 * (4 + 4));
   assert.ok(st.tray.every((p) => p.species === "S01" && p.genome && p.read.length === 0 && !p.idd));
   assert.equal(S.openBay(st, sv, S.DEFAULT_SETTINGS, 6).plays.length, 0, "accepted crates never reopen");
   assert.equal(S.bayCrates(st, sv).length, 0);
 });
 
-test("identify: 1 Energy, the first ever free; a new species is learned once and the Companion's known index follows", () => {
-  const { sv, st } = stocked([crate(1, [loikaPod(1, 11), loikaPod(2, 12), { id: "t", sp: 1, g: "rock", how: "slab", gs: 5, k: null }])]);
-  st.e = 1;
-  const r1 = S.identify(st, st.tray[0], settings); assert.equal(r1.ok, true); assert.equal(r1.free, true); assert.equal(r1.newSp, true); assert.equal(st.e, 1);
-  const r2 = S.identify(st, st.tray[1], settings); assert.equal(r2.ok, true); assert.equal(r2.free, false); assert.equal(r2.newSp, false); assert.equal(st.e, 0);
-  const r3 = S.identify(st, st.tray[2], settings); assert.equal(r3.ok, false); assert.match(r3.msg, /needs ⚡ 1 more/);
-  assert.deepEqual(st.knownIds, ["S01"]); assert.deepEqual(st.known, [0]); assert.deepEqual(st.met, [0]);
-  st.e = 1; assert.equal(S.identify(st, st.tray[2], settings).newSp, true); assert.deepEqual(st.known, [0, 1]);
+test("identify: ◆1 on every pod, no free first one, no Energy; a new species is learned once and the Companion's known index follows", () => {
+  const { st } = stocked([crate(1, [loikaPod(1, 11), loikaPod(2, 12), { id: "t", sp: 1, g: "rock", how: "slab", gs: 5, k: null }])]);
+  st.e = 0; st.d = 1;
+  assert.equal(S.identifyCost(st, settings), 1, "the first Identify ever costs ◆1");
+  const r1 = S.identify(st, st.tray[0], settings); assert.equal(r1.ok, true); assert.equal(r1.free, false); assert.equal(r1.newSp, true);
+  assert.equal(st.d, 0); assert.equal(st.e, 0, "Energy untouched");
+  const r2 = S.identify(st, st.tray[1], settings); assert.equal(r2.ok, false); assert.match(r2.msg, /needs ◆ 1 more/); assert.equal(st.tray[1].idd, 0);
+  st.d = 1; assert.equal(S.identify(st, st.tray[1], settings).newSp, false); assert.equal(st.d, 0);
+  assert.deepEqual(st.knownIds, ["S01"]); assert.deepEqual(st.known, [0]);
+  st.d = 1; assert.equal(S.identify(st, st.tray[2], settings).newSp, true); assert.deepEqual(st.known, [0, 1]); assert.deepEqual(st.met, [0, 1]);
+  // the free economy still waives it
+  assert.equal(S.identifyCost(S.freshSt("w1", 0, 1), { ...settings, economy: "free" }), 0);
+});
+
+test("the opening pays for the first Identify: a fresh save's first crate opens before any Identify and brings its Data", () => {
+  const { st } = stocked([crate(1, [loikaPod(1, 11)])]);
+  assert.ok(st.d >= S.identifyCost(st, settings), "the first crate brings the first Identify's Data");
+  assert.equal(S.identify(st, st.tray[0], settings).ok, true);
+});
+
+test("the dock spends nothing: a fresh save's switch is off (mendFull defaults to false)", () => {
+  const st = S.freshSt("w1", 0, 1); S.normalize(st); assert.equal(st.mendFull, false);
 });
 
 test("reads: 1 Data a trait, the first read ever free, half rounded up once the chapter was read on an earlier pod of the species, a read chapter free to look at again", () => {
   const { sv, st } = stocked([crate(1, [loikaPod(1, 11), loikaPod(2, 12), { id: "t", sp: 1, g: "rock", how: "slab", gs: 5, k: null }])]);
-  st.e = 9; st.d = 10; st.tray.forEach((p) => S.identify(st, p, settings));
+  st.e = 9; st.d = 3; st.tray.forEach((p) => S.identify(st, p, settings)); st.d = 10;
   const [a, b, t] = st.tray, tuikis = frameOf("S03");
   assert.equal(S.readCost(st, a, "coat", settings), 0, "the first read ever is free");
   assert.equal(S.read(st, a, "coat", settings).first, true); assert.equal(st.d, 10);
@@ -134,7 +148,7 @@ test("a glint says new here: a chapter read before on the species, unread on thi
   for (let i = 1; i < 200 && !b; i++) { const g = podGenome(fr, i), carried = fr.chapters[1].traits.flatMap((t) => traitState(fr, t, g).carried).sort().join();
     if (!a) a = { i, carried }; else if (carried !== a.carried && !carried.split(",").every((l) => a.carried.split(",").includes(l))) b = { i, carried }; }
   const { sv, st } = stocked([crate(1, [loikaPod(1, a.i), loikaPod(2, b.i)])]);
-  st.e = 9; st.d = 20; st.tray.forEach((p) => S.identify(st, p, settings));
+  st.e = 9; st.d = 3; st.tray.forEach((p) => S.identify(st, p, settings)); st.d = 20;
   const [pa, pb] = st.tray;
   assert.equal(S.glint(st, pb, "face"), false, "nothing glints before the chapter was ever read");
   S.read(st, pa, "face", settings);
@@ -147,7 +161,7 @@ test("a glint says new here: a chapter read before on the species, unread on thi
 
 test("compare: the traits read on both pods that differ; return a pod for +1 Essence and the Companion's record", () => {
   const { sv, st } = stocked([crate(1, [loikaPod(1, 1), loikaPod(2, 2), { id: "t", sp: 1, g: "rock", how: "slab", gs: 5, k: "12" }])]);
-  st.e = 9; st.d = 20; st.tray.forEach((p) => S.identify(st, p, settings));
+  st.e = 9; st.d = 3; st.tray.forEach((p) => S.identify(st, p, settings)); st.d = 20;
   const [a, b, t] = st.tray;
   assert.equal(S.compareDiff(st, a, t), null, "two species never compare");
   assert.deepEqual(S.compareDiff(st, a, b), [], "nothing read: nothing differs");
@@ -536,7 +550,7 @@ test("growBlockKey names what stops Grow in the rules' order (unidentified, busy
   const st = S.freshSt("w1", 1, 1000); S.normalize(st); st.firstMibi = false; S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const p = st.tray[0];
   assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "unidentified", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "identify it first");
   S.skipIdentify(st, p); st.e = 99; st.d = 99; st.s = 99; assert.equal(S.growBlockKey(st, p, {}, settings), null); assert.equal(S.growBlock(st, p, {}, settings), "");
-  st.e = 0; st.s = 0; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "short", short: "⚡ ❀" }); assert.equal(S.growBlock(st, p, {}, settings), S.shortText(st, 2, 0, 4));
+  st.e = 0; st.s = 0; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "short", short: "⚡ ❀", from: "field" }); assert.equal(S.growBlock(st, p, {}, settings), S.shortText(st, 2, 0, 4));
   const free = { ...settings, economy: "free" }; assert.equal(S.growBlockKey(st, p, {}, free), null, "a free economy is short of nothing");
   st.bud = { kind: "founder" }; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "busy", short: null }, "busy before short"); assert.equal(S.growBlock(st, p, {}, settings), "the incubator is busy"); st.bud = null;
   for (let i = 0; i < 12; i++) st.mibis.push({ id: 100 + i, bay: i, released: false }); assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "noBay", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "no bay free · return one"); st.mibis = [];

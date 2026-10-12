@@ -3,6 +3,7 @@
 // The output is plain JSON: { props (the part sent to the face: state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props: plain requests the
 // asset manifest registers), mode, cur, empty }. Runs in Node, tested there. It is the only view of Pods: the JavaScript drawing it replaced is deleted.
 import * as S from "../state.mjs";
+import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { pageGrid } from "../../../ui/specs/derive.mjs";
 
@@ -52,7 +53,7 @@ export function podsBuild(m, spec) {
     view.kin = kin.map((q) => ({ id: q.id, ring: req({ kind: "kinring", id: `kinring:${R.kin.first[2]}`, size: R.kin.first[2], band: R.kin.band }), pod: req({ kind: "pod", id: `pod:${S.speciesOf(q)}:i:${R.kin.pod.join("x")}`, species: S.speciesOf(q), state: "identified", size: R.kin.pod }) }));
     view.hatch = req({ kind: "hatch", id: `hatch:${R.hatch.rect.slice(2).join("x")}`, size: R.hatch.rect.slice(2) });
   }
-  view.line = lineOf(m, spec, cur, chapters, ci, view);
+  view.line = lineOf(m, spec, cur, chapters, ci, view, m.frameSpec);
   view.targets = targetsOf(view, st, spec, cur);
   return view;
 }
@@ -134,7 +135,7 @@ function collectionView(view, m, spec, req) {
   view.bench = [slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the collection's room master"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];
   view.list = { places, waiting: st.waiting.length ? req({ kind: "waiting", id: "waiting:24" }) : null };
   view.rail = null; view.page = null; view.stamp = null; view.specimen = null;
-  view.line = lineOf(m, spec, S.podById(st, ui.cur), [], 0, view);
+  view.line = lineOf(m, spec, S.podById(st, ui.cur), [], 0, view, m.frameSpec);
   view.targets = targetsOf(view, st, spec, S.podById(st, ui.cur));
   return view;
 }
@@ -191,8 +192,8 @@ const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
 // What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
 const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
 const priceOf = (cost, icon) => (cost ? icon + " " + cost : "");   // the icon before its figure
-function lineOf(m, spec, p, chapters, ci, view) {
-  const { st, settings, ui, docked } = m, f = m.focus ?? (view.mode === "collection" ? null : "pod"), Sg = spec.strings, glintOf = (q) => (q && S.podGlints(st, q) ? Sg.glintPod : null);
+function lineOf(m, spec, p, chapters, ci, view, frame) {
+  const { st, settings, ui, docked } = m, warn = (price, act) => (frame ? warnWords(st, m.sv, settings, frame, price, act) : null), f = m.focus ?? (view.mode === "collection" ? null : "pod"), Sg = spec.strings, glintOf = (q) => (q && S.podGlints(st, q) ? Sg.glintPod : null);
   const state = (q) => {
     if (!q.idd) return Sg.unknownSubject;
     const fr = podFrame(q), open = fr ? fr.chapters.filter((c) => !c.sealed || settings.sealedOpen) : [], n = open.filter((c) => q.read.includes(c.id)).length;
@@ -207,7 +208,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
   if (!p) return { back: "Home" };
   const back = view.mode === "chapter" ? S.cap(S.spName(p)) : "Pods", glintPod = glintOf(p);
   if (f === "pod") {
-    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "⚡"), dim: st.e < cost, back, subject: state(p), need: st.e < cost ? fill(Sg.needMore, { icons: "⚡" }) : null }; }
+    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "◆"), dim: st.d < cost, back, subject: state(p), need: st.d < cost ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : warn({ d: cost }, { key: "identify", pod: p }) }; }
     const b = S.growBlock(st, p, {}, settings, []); return { ok: "Shape a founder", price: "", dim: !!b, back, subject: state(p), need: blockNeed(b, Sg) ?? glintPod };
   }
   if (f && f.startsWith("rail.")) {
@@ -218,7 +219,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
     if (b === null) return { back, subject, need: here };
     if (b.startsWith("sealed")) return { back, subject };
     const cost = S.readCost(st, p, ch.id, settings);
-    return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: blockNeed(b, Sg) ?? here };
+    return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: (b && /^needs/.test(b) ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : blockNeed(b, Sg)) ?? (b === "" ? warn({ d: cost }, { key: "read", pod: p }) : null) ?? here };
   }
   if (f && f.startsWith("kin.")) { const q = S.podById(st, view.kin[+f.slice(4)]?.id); return q ? { ok: "Compare", back, subject: state(q), need: glintOf(q) } : { back }; }
   if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: S.gainText(1), back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };

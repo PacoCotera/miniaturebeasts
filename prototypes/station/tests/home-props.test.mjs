@@ -8,7 +8,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { homeBuild, lightAt } from "../src/views/home-props.mjs";
+import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { homeBuild, lightAt, wordsOf } from "../src/views/home-props.mjs";
+import { goalWords } from "../src/views/goal-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -109,7 +111,7 @@ test("the room's ✓ agrees with state.need(): the same action, the same screen"
 
 test("the short notices carry each short material once, Energy before Essence, and ◆ for a read", () => {
   const mk = (e, sEss) => { const st = world(); dock(st); const p = pod(st, "S01"); p.read = [frameOf("S01").chapters[0].id]; st.e = e; st.s = sEss; st.d = 99; const c = S.growCost(st, {}, settings); return { st, c }; };
-  const need = (st) => build(st, sv0()).line.need;
+  const need = (st) => wordsOf(S.needKey(st, sv0(), settings, {}), spec).notice;   // the soft need's words (the notice zone shows the goal instead while there is one, below)
   { const { st, c } = mk(0, 99); assert.ok(c.e > 0); assert.match(need(st), /pod needs more ⚡$/); assert.equal((need(st).match(/⚡/g) || []).length, 1); }
   { const { st, c } = mk(99, 0); assert.ok(c.s > 0); assert.match(need(st), /pod needs more ❀$/); assert.ok(!/⚡/.test(need(st))); }
   { const { st } = mk(0, 0); assert.match(need(st), /pod needs more ⚡ ❀$/); }
@@ -147,9 +149,74 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
 
+// ---- the goal in the notice zone (frame.json strings.goal; station-x10-economy.md) ----
+const G = frameSpec.strings.goal;
+test("the goal: a soft need gives its notice to the goal, the room's ✓ keeps the need's action; a first-group need keeps the zone", () => {
+  // loop 2: the pair (Dot) is short of ⚡ for the Loika pod it holds; a Tuikis pod waits unread
+  const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot"; st.e = 1;
+  const lk = pod(st, "S01"); lk.read = [frameOf("S01").chapters[0].id];
+  const b = build(st, sv0());
+  assert.equal(b.line.ok, "Look at the pods"); assert.deepEqual(b.line.goal, { text: "go out for more", icons: "⚡", plain: "" }); assert.equal(b.line.need, "", "no amber notice");
+  assert.equal(S.needKey(st, sv0(), settings, {}).key, "couldGrow", "needKey is unchanged");
+  // a new pod (first group): the notice as now, no goal
+  const st2 = world(); dock(st2); S.seedAdults(st2, "S01", 5, 1, settings); pod(st2, "S01", 5, false);
+  const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod waits"); assert.equal(c.line.goal, undefined);
+  // no goal: the soft need as now (two adults, the guide complete, a bud growing)
+  const st3 = world(); dock(st3); S.seedAdults(st3, "S01", 5, 2, settings); { const fr = frameOf("S01"); st3.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st3, "S01", t.id, traitLooks(fr, t)); } st3.bud = { kind: "founder", species: "S03", start: Date.now(), minutes: 5 };
+  st3.probe = { tier: 2, shield: 3, smax: 3 }; const d = build(st3, sv0()); assert.equal(S.goalKey(st3, sv0()), null); assert.equal(d.line.need, "a bud is growing"); assert.equal(d.line.goal, undefined);
+});
+test("the goal away reads the aim, growUp counts the walks in words, and the Probe's context follows its goal", () => {
+  const st = world(); dock(st, false); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
+  assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).line.goal, { text: "find a Loika pod", icons: "", plain: "" }, "away, pair, findPod: only goOut reads the aim, so the step's own words show");
+  const w = world(); dock(w, false); const [a, b2] = S.seedAdults(w, "S01", 5, 2, settings).mibis; a.name = "Dot"; b2.name = "Moss"; a.born = 1; b2.born = 2; w.turn = 2;
+  assert.equal(build(w, sv0()).line.goal.text, "walks grow Dot up"); assert.equal(build(w, sv0()).line.goal.plain, "walks grow the pair up");
+  dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).line.goal.text, "more walks grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).line.goal.text, "one more walk grows the pair");
+  // the Probe's context: save, fit, docked, away
+  w.probe = { tier: 1, shield: 3, smax: 3 }; w.e = 3; w.d = 0; const pr = (x) => build(x, sv0(), { focus: "probe" }).line.subject;
+  assert.equal(pr(w), frameSpec ? spec.strings.subjects.probe.save : "", "saving up for its upgrade"); w.e = 12; w.d = 4; assert.equal(pr(w), spec.strings.subjects.probe.fit);
+  w.e = 0; w.d = 0; w.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(pr(w), spec.strings.subjects.probe.docked, "the Probe in its cradle: tier 2, nothing to save for");
+});
+test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
+  const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
+  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "the young mibi grows with care" });
+  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: `read ${frameOf("S01").chapters[0].name} on the Loika pod`, icons: "", plain: "" }, "the guide's read has no name, so no nameless sibling");
+  assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "find a Loika pod", "away, a findPod step reads its own words, not the aim");
+  assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" });
+  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "walks grow the pair up");
+  assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "read the new mibi's chapters");
+  for (const goal of [{ key: "cross", names: ["Dot", "Moss"], step: { key: "cross" } }, { key: "firstPod", step: { key: "goOut" } }, { key: "pair", name: "Dot", species: "S01", step: { key: "identify", species: "S01" } }]) assert.equal(face(goal).plain, "", goal.key);
+  assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆ ⚡", from: "fieldAndBench" } }).text, "go out and watch for more"); assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆", from: "bench" } }).icons, "◆");
+});
 test("a mibi with no painting changes nothing on Home: the Incubator is empty with its lamp off and nobody waits (Grow paints nothing)", () => {
   const { st, sv } = scenes().docked; assert.ok(st.mibis.every((m) => !m.paint), "no mibi has a painting");
   const r = build(st, sv).props.regions;
   assert.equal(r.incubator.state, "empty"); assert.equal(r.incubator.lamp, "off");
   assert.ok(r.residents.every((p) => p.waiting === false) && r.bed.sleepers.every((p) => p.waiting === false), "no person has waiting: true");
+});
+
+test("a new pod is firm until Pods has drawn it: firm, the goal is absent; seen, the goal takes the notice, the room's ✓ stays and the Pods lamp is not amber; a second unseen pod is firm again, counting one", () => {
+  const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
+  const p1 = pod(st, "S01", 5, false);
+  let b = build(st, sv0());
+  assert.equal(b.line.need, "a new pod waits"); assert.equal(b.line.goal, undefined, "firm: no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  p1.seen = 1; b = build(st, sv0());
+  assert.equal(b.line.need, ""); assert.ok(b.line.goal, "soft: the goal takes the notice"); assert.equal(b.line.ok, "Look at the pods"); assert.equal(b.props.regions.pods.lamp, "well");
+  const p2 = pod(st, "S01", 6, false); assert.ok(!p2.seen); b = build(st, sv0());
+  assert.equal(b.line.need, "a new pod waits", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
+});
+
+test("a waiting pod in the bay is a first-group need ahead of a seen unidentified pod's soft notice: amber, the Pods lamp amber, no goal; with it gone the goal takes the zone and the lamp is well", () => {
+  const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
+  const p1 = pod(st, "S01", 5, false); p1.seen = 1;
+  st.waiting.push({ id: "wait0", species: "S01", sp: 0, g: "meadow", how: "calm", gs: 9, idd: 0, read: [] });
+  let b = build(st, sv0()); assert.equal(S.needKey(st, sv0(), settings, {}).key, "waitingPods");
+  assert.notEqual(b.line.need, ""); assert.equal(b.line.goal, undefined, "no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  st.waiting = []; b = build(st, sv0());
+  assert.equal(S.needKey(st, sv0(), settings, {}).soft, true); assert.equal(b.line.need, ""); assert.ok(b.line.goal, "the goal in mist"); assert.equal(b.props.regions.pods.lamp, "well");
+});
+test("the Probe's context follows the Probe goal wherever it comes from: every guide complete, tier 1 and ⚡3 reads save; with the upgrade payable it reads fit", () => {
+  const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); { const fr = frameOf("S01"); st.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, "S01", t.id, traitLooks(fr, t)); }
+  st.probe = { tier: 1, shield: 3, smax: 3 }; st.e = 3; st.d = 0; const pr = () => build(st, sv0(), { focus: "probe" }).line.subject;
+  assert.equal(S.goalKey(st, sv0()).key, "probe"); assert.equal(pr(), spec.strings.subjects.probe.save);
+  st.e = 12; st.d = 4; assert.equal(S.goalKey(st, sv0()).step.key, "fit"); assert.equal(pr(), spec.strings.subjects.probe.fit);
 });

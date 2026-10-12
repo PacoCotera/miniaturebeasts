@@ -219,6 +219,8 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
 
+**Home's goal in the notice zone.** With the Companion in the room and no first-group need (crates waiting, a bud ready, a meet, new pods, glints, waiting pods, a mibi that could grow and can be paid for), the zone carries the goal: the sentence `goalKey` names, in `mist`, right-aligned to x 896 as the notice is, with no lamp. A new pod is a first-group need until Pods has drawn it (the notice counts only pods not yet seen); once every unidentified pod has been seen it gives way to the goal, the room's ✓ stays "Look at the pods" and the Pods module's lamp is not amber. The goal's ladder reaches held species (the pods in the wells and waiting) after the living ones, and the Probe's upgrade stands in when no rung holds and the Probe is below tier 2. A first-group need keeps the zone amber with its lamp; with neither, the soft need shows as before. A step that is short of materials draws its icons as 16 px icons after the words (gap 4, pitch 20). When the name makes the line wider than the room (272 on Home) with its icons at 20 px each, the face takes the sibling sentence without the name. Away, a step that is going out reads the `aim` sentence. `needKey` and the room's ✓ do not change.
+
 **The marks are art.** Every mark in the frame is a studio master placed 1:1 at its size, never drawn by the build and never scaled:
 
 | Mark | Slice id | Size |
@@ -884,7 +886,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
 | `rack` | as in the bay | A well stays empty until its pod lands |
 
-**The report.** The card at (232, 72, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0), at most 312; its bottom at 384, 16 px above the rack. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
+**The report.** The card at (232, 72, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), at most 320; its bottom at 384, 16 px above the rack. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
 
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
@@ -893,6 +895,8 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
 | Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
 | The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
+
+**The report's goal rows.** After the world block, a goal row (lead "Next") names the step `goalKey` gives, and a meanwhile row (lead "While you wait") the read to spend the wait on, with its ◆ price, when the step is a wait. The card is h + (a goal ? 8 + 24 × (1 + meanwhile) : 0) tall, at most 320: world lines drop from the last until it fits.
 
 **The Probe row's source.** The row comes from the dock's mend, `{ free, paid, broke }`: free plates or a break (a break is mended free) read "mended free"; plates paid for read "mended for" and their price; no mend, no row. Cargo keeps the mend in its UI state from the dock until the report. It is not in the save: after a reload the report has no Probe row.
 
@@ -1332,7 +1336,7 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 - **The chamber's ink** (window and hood) stays inside the arch outline (the chamber window row below), so the leaf arcs keep their clearance.
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
 - **The bud** grows in two pictures, the first half of the wait and the second (one generic `bud-late-128x160`, with no drift toward the species' hue).
-- **Ready:** the chamber's light comes up full and the species' shape is visible inside the bud. Nothing steps out until the player opens it. The shape is the species' juvenile-proportion silhouette from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat, soft-edged, dark warm shape with no eye and no detail; its ink at most 96×96, centred in its 112×112 box. `bud-ready-128x160` is drawn behind it and `bud-ready-front-128x160` over it.
+- **Ready:** the chamber's light comes up full and the species' shape is visible inside the bud. Nothing steps out until the player opens it. The shape is the species' juvenile-proportion silhouette from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat, soft-edged, dark warm shape with no eye and no detail; its ink at most 96×96 (measured at alpha ≥ 128), centred in its 112×112 box. `bud-ready-128x160` is drawn behind it and `bud-ready-front-128x160` over it.
 - **The leaf:** one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, an outline in `metal`. The same drawing at 8×12 is the small leaf of Create and Home.
 - **Empty invites:** a standby light inside (a soft warm pool on the bed, about half the growing glow); the clean window; the base's foot light on, as in every state; the nest lit and plump with its hollow visible; the plaque word in `fog`.
 - **Calm:** only the glow and the filling leaf move.
@@ -1360,7 +1364,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Rail | 96, 40, 832, 40 | Hanging, its run centred on x 512; not a focus target; no glint |
 | Leaves | 256, 88, 512, 216 | The word `leaves`, form arc, rule `leafArc`: two arcs centred on the bud's centre (512, 344), inner radius 216, outer 244, each up to 20 leaves of 16×20 on an 8° pitch across ±76°, the run centred on the top; the inner fills first; up to 40 ([the leaf arcs](#the-leaf-arcs)) |
 | Chamber window (`dome`) | 360, 200, 304, 272 | The window and its hood keep their ink inside an arch: a half circle of radius 152 on (512, 354), its top at y 202 (2 px into the region), over a body to y 472 (the old bell jar's outline, kept as the limit) |
-| **Bud (focal)** | 448, 264, 128, 160 | Rendered at size, centred on (512, 344). Ready: the species' shape at 456, 288, 112×112, its ink at most 96×96 |
+| **Bud (focal)** | 448, 264, 128, 160 | Rendered at size, centred on (512, 344). Ready: the species' shape at 456, 288, 112×112, its ink at most 96×96 (measured at alpha ≥ 128) |
 | Nest | 408, 400, 208, 48 | Empty: lit and plump, its hollow visible |
 | Base | 344, 456, 336, 96 | The sand housing, not wood; the chamber stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
 | Plaque | 448, 496, 128, 32 | One word, 16 px, centred on x 512, its line box 502 to 522 |
@@ -1380,7 +1384,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `dome` | 360, 200, 304, 272 | living window, part inside | | standby (empty); the glow |
 | `nest` | 408, 400, 208, 48 | living window, part inside | | lit and plump when empty |
 | `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
-| `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking |
+| `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking: crack-1 then crack-2 over the ready bud |
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
 | `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
 | `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
@@ -1443,8 +1447,8 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | Chamber (`dome`, `domeFront`) | 304×272 region (the old glass 304×270), back and front; empty, `dome-inside-standby-304x272` (the standby light at the region's size) | Stale: a bell jar; becomes the sheltered chamber with one hooded window, its ink inside the arch |
 | Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte, its foot light `sage` |
-| Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Re-judged against the concept board's bean on moss; the box stays |
-| Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 | Carried |
+| Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Signed (art director, 963f4eab): the bean on moss |
+| Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 (measured at alpha ≥ 128) | S01 and S03 are placed (signed, art director at 1x, masters-pods 8c3b6a7b); S02 and S04–S16 are empty slots, nothing drawn until placed |
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |

@@ -25,8 +25,9 @@ test("a walk's crate docks once and pays the decided yield; the field spends its
   const f = by(/^the field:/); assert.equal(f.length, Math.floor(P.walks / 2), "a beacon every other walk (a Call inside a place is free; only a map pin costs Energy)"); for (const s of f) assert.deepEqual([s.e, s.d, s.s], [-1, 0, 0], "a beacon, 1 Energy");
 });
 
-test("identify: the first ever is free, later ones 1 Energy; the species is found", () => {
-  const ids = by(/^identify/); assert.deepEqual(ids.map((s) => s.e), [0, -1]);
+test("identify: ◆1 each, no Energy and no free first one (owner 2026-10-11 15:20); the species is found", () => {
+  assert.deepEqual(by(/^identify/).map((s) => [s.e, s.d]), [[0, -1], [0, -1]]);
+  assert.ok(P.steps.every((s) => s.stock.every((n) => n >= 0)), "no stock below zero");
   assert.equal(L.speciesStatus(st, "S01"), "found"); assert.ok(podA.idd);
 });
 

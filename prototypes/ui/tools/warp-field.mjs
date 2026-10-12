@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Tier 2 warp fields: turns the animator's landmarks JSON (one file per species, stage and blend; every per-picture fact is in it) into a displacement field per blend end
-// and size (boards/mibi-motion/tier2-method.md §1 T2, §2, the animator's rulings on Q-A and the architect's harness answers). Deterministic: a thin-plate spline through the
+// and size (the tier 2 method, the animator's rulings on Q-A and the architect's harness answers). Deterministic: a thin-plate spline through the
 // constraints, rounded to whole px; refuses a field outside the bounds or the gradient with the pixel named. Nothing here touches painted pixels.
 //   node prototypes/ui/tools/warp-field.mjs --landmarks file.json --size 104x112 --out dir [--picture name]
 //        [overrides, each marks the run `override` and gives no verdict: --head-mask png --shadow-rows y0-y1 --belly-y N --amplitude k]   (--stand png gives the ink for the domain)

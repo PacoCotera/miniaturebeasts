@@ -33,14 +33,14 @@ The face is a grid of square cells, N×N with N in a size series, chosen by payl
   - When the flag is set, the 64-bit postmark follows (111 bits in all). It is shown as "postmark present, unverified", and the stamp grows by the size step it needs, if any: a Hiljan goes from 25×25 to 29×29, while a Loika stays at 25×25 and a Tuikis at 37×37.
   - When the flag is clear, nothing is reserved.
   - The reader tries both layouts; Reed–Solomon and the flag itself decide which one a stamp uses.
-- **Format 2 (current, 2026-10-09): blends on the step.** A blended copy (a number from the cross) is stored on a fixed step of 1/59 of its locus's catalogue range, and the stamp packs every copy of a continuous locus in 6 bits: codes below the locus's count of named looks are those looks, and the rest are steps 0 to 59. A stamp therefore holds the exact genome, and a scan reads back the exact number. A number off the step is refused by the encoder, never rounded. **Format 1** stamps (a blended copy as its bin, the nearest named look) still decode, so every print made before reads.
+- **Format 2 (current): blends on the step.** A blended copy (a number from the cross) is stored on a fixed step of 1/59 of its locus's catalogue range, and the stamp packs every copy of a continuous locus in 6 bits: codes below the locus's count of named looks are those looks, and the rest are steps 0 to 59. A stamp therefore holds the exact genome, and a scan reads back the exact number. A number off the step is refused by the encoder, never rounded. **Format 1** stamps (a blended copy as its bin, the nearest named look) still decode, so every print made before reads.
 - **The stamp code.** The shareable code is the stamp's own message bytes (header, CRC-16, read mask and chapter blocks, without the Reed–Solomon parity; trailing zero bytes dropped) as text: five bits a character in Crockford's base 32 (no I, L, O or U), then two check characters of CRC-10, which refuse any one changed character and any two swapped neighbours. It opens with the species, frame version and read mask in plain text (`S3v3-7F-…`), which must agree with the bytes. `decodeStampCode` gives the same genome a scan does; `inspect.html` reads a pasted code. It carries what the stamp carries, never an unread chapter or a shut sealed one, and it only shows a mibi. The name code stays a name.
 - **Read mask:** one bit per chapter, so its length comes from the frame and there is no 8-chapter cap.
 - **CRC-16/CCITT end to end,** over the header, the read mask and every shown payload bit.
 - **One Reed–Solomon codeword** over GF(256) (the same code family as QR, but not QR's layout) covers the header, CRC, mask and every data cell. About 30% of it is parity, which corrects about 15% of the bytes. Bytes run along the cells, so a local smudge costs few bytes.
 - **Chase retry.** If Reed–Solomon fails, the reader flips up to 4 of the 12 least certain cells and tries again (cells under glare count as uncertain). Any result must still pass the CRC-16.
 - **Verified only.** A read is shown only after RS correction and the CRC both pass. The RS decoder can mis-correct when overwhelmed, and the CRC catches that. A failed frame never shows a species: the page says "no read yet" and what to try.
-- **Frame registry.** The species frames ship inside every reader (`src/frames-data.mjs`, built by `tools/extract-frames.mjs`) and are append-only, so an old print decodes for as long as its frame is carried. Since 2026-10-08 the registry is the workbench's (`prototypes/workbench/frames/*.json`, `mb-species-frame/2` on catalogue `mb-genome-framework@9`): the sixteen species S01 Loika to S16 Blikur, species number = the species' order. **Frame version 3** (2026-10-08) is current: the species glyphs were redrawn as the abstract marks (`art/species-marks`), and the glyph is part of the face, so a changed glyph is a new frame. The version 2 frames (the old glyphs, same loci and borders) stay in the registry beside it, so a print made at version 2 still decodes; the encoder defaults to the newest version (`byName(id)`; a genome names its version, and `byName(id, 2)` still writes the old face), and the decoder matches the glyph against every carried frame and takes the version from the header. The three legacy frames (species 11 to 13, version 1, on catalogue 6: the working ids `hopper`, `puffcap`, `glowtail`) stay too. `tools/extract-frames.mjs` only appends: it carries every frame already in the snapshot and stops if the workbench builds an existing species and version with different content. A copy is packed as its index among the catalogue's alleles; a continuous locus carries its alleles' values too, so the reader computes the same blend steps as the workbench (format 2), or the bin of a format 1 print. Scanning shows, never grants.
+- **Frame registry.** The species frames ship inside every reader (`src/frames-data.mjs`, built by `tools/extract-frames.mjs`) and are append-only, so an old print decodes for as long as its frame is carried. The registry is the workbench's (`prototypes/workbench/frames/*.json`, `mb-species-frame/2` on catalogue `mb-genome-framework@9`): the sixteen species S01 Loika to S16 Blikur, species number = the species' order. **Frame version 3** is current: the species glyphs were redrawn as the abstract marks (`art/species-marks`), and the glyph is part of the face, so a changed glyph is a new frame. The version 2 frames (the old glyphs, same loci and borders) stay in the registry beside it, so a print made at version 2 still decodes; the encoder defaults to the newest version (`byName(id)`; a genome names its version, and `byName(id, 2)` still writes the old face), and the decoder matches the glyph against every carried frame and takes the version from the header. The three legacy frames (species 11 to 13, version 1, on catalogue 6: the working ids `hopper`, `puffcap`, `glowtail`) stay too. `tools/extract-frames.mjs` only appends: it carries every frame already in the snapshot and stops if the workbench builds an existing species and version with different content. A copy is packed as its index among the catalogue's alleles; a continuous locus carries its alleles' values too, so the reader computes the same blend steps as the workbench (format 2), or the bin of a format 1 print. Scanning shows, never grants.
 
 ## Size series
 
@@ -69,7 +69,7 @@ Chapters are whole-column blocks, so a frame can need a size more than its bit c
 
 ## Results
 
-Generated by `node tests/run.mjs --n 50 --sweep-n 30` (2026-10-09). 12220 decodes, **0 false accepts** (a verified read of a wrong genome). Species: Loika (5 open loci, 25×25); Tuikis (40 open loci, 37×37); Tuikis with a postmark (40 open loci, 37×37); Future, 150 open loci (150 open loci, 37×37).
+Generated by `node tests/run.mjs --n 50 --sweep-n 30`. 12220 decodes, **0 false accepts** (a verified read of a wrong genome). Species: Loika (5 open loci, 25×25); Tuikis (40 open loci, 37×37); Tuikis with a postmark (40 open loci, 37×37); Future, 150 open loci (150 open loci, 37×37).
 
 ### Screen, 50 individuals per cell (300 / 200 / 120 px)
 
@@ -176,7 +176,7 @@ Failure modes:
 - sweepMM · future150 · 14 · 6: no read: too many cells unreadable (30)
 
 ![Distortions at 200 px, all decoded](img/distortions-200.png)
-*Tuikis at 200 px, left to right then down: 35° and 45° close tilt, glare, warm light, inkjet fuzz, and the owner's scan conditions together (35° close, warm, inkjet, glare, JPEG 60). All decoded.*
+*Tuikis at 200 px, left to right then down: 35° and 45° close tilt, glare, warm light, inkjet fuzz, and the first phone scan's conditions together (35° close, warm, inkjet, glare, JPEG 60). All decoded.*
 
 ### The Caddy print
 
@@ -197,7 +197,7 @@ The print pipeline is the ring work's:
 
 ### Limits found
 
-Measured on format 2 (2026-10-09), where every stamp but the synthetic 150-loci one is larger than in format 1:
+Measured on format 2, where every stamp but the synthetic 150-loci one is larger than in format 1:
 - **Every stamp reads at 16, 20 and 30 mm on the Caddy** at both photo distances, and at 15°, 35° and 45° close tilt on screen, at 98–100% under every screen condition.
 - **The 25×25 Loika has the most room.** Its cells are the biggest (6.4 dots at 20 mm): it reads at 10 mm (100% at both 9 and 6 px/mm), at 64 px with every distortion, and through blur σ 3 px at 200 px (96.7%).
 - **The 37×37 stamps (Tuikis, Belatz, and the Tuikis with a postmark) need 16 mm at 6 px/mm.** At 14 mm they read 100% at 9 px/mm but 6.7% at 6 px/mm, and at 10 mm they fail (3–10% at 9 px/mm). In format 1 the Tuikis (25×25) still read at 10 mm.

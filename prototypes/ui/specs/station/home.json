@@ -176,7 +176,7 @@
  },
  "line": {
   "rule": "the bottom line for each focus: the action (✓ and its verb), the context (mist, at most six words, the only part that may end in …), the notice (the most pressing need, strings.needs, amber with its lamp, the same wherever the ring is) and no way back",
-  "room": { "action": "strings.needs[*].action, or no ✓ cap when nothing needs the player", "subject": "" },
+  "room": { "action": "strings.needs[*].action, or no ✓ cap when nothing needs the player", "subject": "", "need": "the first-group need (crates, budReady, meet, newPods, glints, waitingPods, couldGrow while it can be paid), else the goal (frame.json strings.goal: mist, no lamp, in the notice zone on every focus), else the soft need (couldGrow short, toRead, budGrowing); needKey and the room's ✓ are unchanged" },
   "vivarium": { "action": "strings.actions.vivarium", "subject": "strings.subjects.vivarium" },
   "resident": { "action": "strings.actions.resident", "subject": "strings.subjects.resident" },
   "cargo": { "action": "strings.actions.cargo", "subject": "strings.subjects.cargo" },
@@ -220,7 +220,7 @@
    "cargo": { "away": "the bay is shut", "empty": "the bay is empty", "one": "a sealed crate", "few": "{count} sealed crates", "waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well" },
    "pods": { "empty": "the rack is empty", "one": "a pod in the rack", "few": "{count} pods in the rack" },
    "incubator": { "empty": "the Incubator is empty", "growing": "a {species} bud, growing", "ready": "a {species} bud, ready" },
-   "probe": { "docked": "the Probe in its cradle", "away": "the Probe is away" },
+   "probe": { "docked": "the Probe in its cradle", "away": "the Probe is away", "fit": "its upgrade can be fitted", "save": "saving up for its upgrade" },
    "library": { "pages": "the field journal", "empty": "the journal is empty" },
    "knob": "the Vivarium plays alone"
   },

@@ -1,4 +1,4 @@
-// The paid-call ledger's one helper for every writer (plans/public-cleanup.md §1.2), the same API as ledger.py.
+// The paid-call ledger's one helper for every writer, the same API as ledger.py.
 // Public records keep provenance; cost, credit and balance go to the ledger directory named by MB_LEDGER,
 // outside this repository. With MB_LEDGER unset or not writable, requireLedger() throws before any paid call.
 // Mocks and dry runs never call it.

@@ -9,7 +9,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 | Step | What the tester does | Rule |
 | --- | --- | --- |
 | **Arrival** | A crate comes from the Companion page's End expedition, or from a dev seed. Dock, then `✓ Open the bay`; the pods roll into the rack's six wells | Sample bay of three crates; cargo moves only on docking |
-| **Identify** | 1 Energy, the first ever free. The seal breaks, the glyph lights; a new species learns its frame and opens its Library page | Research loop §1 |
+| **Identify** | 1 Data. The seal breaks, the glyph lights; a new species learns its frame and opens its Library page | Research loop §1 |
 | **Read** | One chapter of one pod: 1 Data a trait, half (rounded up) once that chapter was read on an earlier pod of the species, the first read ever free. Pictures: shows, hides, only, asleep, breed to change, sealed. Glint per chapter; Compare free; return a pod for +1 Essence | Research loop §4, §8 |
 | **Create** | Shape each read look among three pictures from the pod's own copies, +1 Data a change; doings breed only; a shape that won't build marks its traits and withholds Grow | Research loop §5 |
 | **Grow** | 2 Energy and 4 Essence (the first founder 2 Energy). The bud takes twenty minutes plus one per shaped trait; **the first bud ever five**; **an instant grow for a price**; unread chapters clear across the wait; a full vivarium refuses before payment | Research economy §5–6 (**Decided**) |

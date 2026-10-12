@@ -82,8 +82,9 @@ export function podsBody() {
   if (!podById(p.cur)) { const q = S.neediestPod(G.st); p.cur = q ? q.id : null; }
   if (!p.cur || !G.st.tray.length) p.view = "collection";
   const key = p.cmp ? "overview" : p.view;
+  { let newly = false; const see = (q) => { if (q && !q.seen) { q.seen = 1; newly = true; } }; if (key === "collection") G.st.tray.forEach(see); else see(podById(p.cur)); if (newly) save(); }   // a pod Pods draws has been seen (the Home notice stops demanding it); never cleared
   if (p.focusView !== key) { p.focusView = key; if (!F.cur || !F.cur.startsWith(key === "collection" ? "place." : key === "chapter" ? "rail." : "")) F.cur = null; }
-  const model = () => ({ st: G.st, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, present: {} });
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, present: {} });
   let body = podsProps(model(), SPECS.pods, SPECS.frame);
   if (p.cmp) F.cur = null; else if (!body.props.focus.targets.some((t) => t.id === F.cur)) { F.cur = null; F.ensure(body.props.focus.targets, initialFocus(key)); body = podsProps(model(), SPECS.pods, SPECS.frame); }
   if (F.cur && F.cur.startsWith("rail.")) p.ci = +F.cur.slice(5);
@@ -141,13 +142,13 @@ export function cargoBody() {
 // ---- Create ----
 // The founder's shaping: Create's state is the UI's (UI.create), the pod and the rules are the rules'. The ring is on the roll when a trait is read, else on nothing.
 export function createBody() {
-  return createBuild({ st: G.st, settings: G.settings, ui: UI }, SPECS.create, SPECS.pods);
+  return createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods);
 }
 
 // ---- Incubator ----
 // The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). No lamp: Grow paints nothing (decisions 10-11 14:17).
 export function incubatorBody() {
-  return incubatorBuild({ st: G.st, settings: G.settings, ui: UI, lamp: "" }, SPECS.incubator, SPECS.pods);
+  return incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, lamp: "" }, SPECS.incubator, SPECS.pods);
 }
 
 // ---- the props of the screen on the page ----

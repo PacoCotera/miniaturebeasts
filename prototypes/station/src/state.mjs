@@ -5,6 +5,7 @@
 // accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
+import { traitLooks } from "../../workbench/framework/describe.mjs";
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 3;
@@ -12,7 +13,7 @@ export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
 export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
-export const PRICE = { identify: 1, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, wild: 1, wildMibi: 2 };
+export const PRICE = { identify: 1 /* Data: ◆1, always, no free first one (owner 2026-10-11 15:20) */, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, wild: 1, wildMibi: 2 };
 export const RACK = 6, BAYS = 6;
 // The rack: the wells in play (the developer setting, else the six of the Station)
 export const rackSize = (settings = DEFAULT_SETTINGS) => settings.rack || RACK;
@@ -50,7 +51,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
 export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { light: null, economy: "loose", topUp: { e: 2, d: 3, s: 2 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
+export const DEFAULT_SETTINGS = { light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -62,7 +63,7 @@ export function freshSt(wid, turn, now = Date.now()) {
   return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
-    dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: true, returned: [], log: [] };
+    dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [] };
 }
 export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
 
@@ -436,16 +437,16 @@ export function benchCompare(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Da
 }
 
 // --- pods: identify, read, glint, compare, return ----------------------------------------------------
-export function identifyCost(st, settings = DEFAULT_SETTINGS) { return st.freeId ? price(PRICE.identify, settings) : 0; }
+export function identifyCost(st, settings = DEFAULT_SETTINGS) { return price(PRICE.identify, settings); }   // Data, always: no pod is ever identified free (st.freeId stays in the save for its shape and nothing reads it)
 export function identify(st, p, settings = DEFAULT_SETTINGS) {
   if (!p || p.idd) return { ok: false };
   const fr = frameFor(p); if (!fr) return { ok: false, msg: "This pod's species has no frame in the registry" };
   const cost = identifyCost(st, settings), known = st.knownIds.includes(fr.species.id);
-  if (st.e < cost) return { ok: false, msg: (known ? "Logging" : "Identifying") + " costs " + cost + " ⚡ · " + shortText(st, cost, 0, 0) };
-  if (!st.freeId) st.freeId = true; st.e -= cost;
+  if (st.d < cost) return { ok: false, msg: (known ? "Logging" : "Identifying") + " costs " + cost + " ◆ · " + shortText(st, 0, cost, 0) };
+  st.d -= cost;
   if (!known) st.knownIds.push(fr.species.id); if (!st.metIds.includes(fr.species.id)) st.metIds.push(fr.species.id); syncKnown(st);
-  p.idd = 1; p.fresh = 0; p.newSp = known ? 0 : 1;
-  logEv(st, (known ? "Logged · " : "New species · ") + fr.species.name + (cost ? " · " + spendText(cost, 0, 0) : " (free)"));
+  p.idd = 1; p.seen = 1; p.fresh = 0; p.newSp = known ? 0 : 1;
+  logEv(st, (known ? "Logged · " : "New species · ") + fr.species.name + (cost ? " · " + spendText(0, cost, 0) : " (free)"));
   return { ok: true, free: !cost, newSp: !known, species: fr.species.id };
 }
 // A chapter's read price: 1 Data a trait; half, rounded up, once it was read on an earlier pod of the species;
@@ -568,14 +569,20 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
   if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
-  const fresh = st.tray.filter((p) => !p.idd); if (fresh.length) return { key: "newPods", n: fresh.length, max: 6, act: "pods" };
+  const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen);
+  if (unseen.length) return { key: "newPods", n: unseen.length, max: 6, act: "pods" };   // firm: an unidentified pod Pods has not drawn yet
   const glint = st.tray.filter((p) => podGlints(st, p)); if (glint.length) return { key: "glints", n: glint.length, max: 6, act: "pods" };
   if (st.waiting.length) return { key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" };
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
+  let couldGrow = null;
   if (grown.length && !bayFull(st, settings)) {
     const p = grown[0], c = growCost(st, {}, settings), short = [st.e < c.e ? "⚡" : "", st.s < c.s ? "❀" : ""].filter(Boolean).join(" ");
-    return { key: "couldGrow", species: spName(p), a: art(spName(p)), short: short || null, act: "pods" };
+    couldGrow = { key: "couldGrow", species: spName(p), a: art(spName(p)), short: short || null, act: "pods" };
   }
+  if (couldGrow && !couldGrow.short) return couldGrow;
+  // the soft group: every unidentified pod has been seen (the goal takes the notice, the lamp is not amber)
+  if (fresh.length) return { key: "newPods", n: fresh.length, soft: true, max: 6, act: "pods" };
+  if (couldGrow) return couldGrow;
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) {
     const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
@@ -594,6 +601,121 @@ export function idleKey(st, sv, settings = DEFAULT_SETTINGS) {
   return null;
 }
 
+// A species' field guide is complete when no look is unseen and a chapter that is open has traits: the same rule as library.mjs fieldGuide(...).complete, kept here so state.mjs never imports library.mjs
+// (library.mjs imports state.mjs); tests/economy-x10.test.mjs holds the two equal.
+export function guideComplete(st, id, settings = DEFAULT_SETTINGS) {
+  const fr = frameOf(id); if (!fr) return false;
+  let unseen = 0, open = false;
+  for (const ch of fr.chapters) {
+    const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
+    if (!shut && ch.traits.length > 0) open = true;
+    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += traitLooks(fr, t).filter((l) => !seen.includes(l)).length; }
+  }
+  return unseen === 0 && open;
+}
+// --- the next goal (station-x10-economy.md ruling 4) ---------------------------------------------------
+// Where a short price has to come from: "field" (a walk brings ⚡ and ❀), "bench" (the Probe bench's trickle and the mibis' watching bring ◆), "fieldOrPod" (❀ alone, with a pod in a well to return) or
+// "fieldAndBench" (◆ and ⚡ or ❀); null when nothing is short. The one rule growBlockKey, needMore (Pods, Create) and goalKey's short step share.
+export function shortFrom(st, e, d, s) {
+  const eS = (e || 0) > st.e, dS = (d || 0) > st.d, sS = (s || 0) > st.s; if (!eS && !dS && !sS) return null;
+  if (dS && (eS || sS)) return "fieldAndBench"; if (dS) return "bench";
+  return sS && !eS && st.tray.length ? "fieldOrPod" : "field";
+}
+// What the player works toward, as facts only (no words, no rects): where needKey answers "what needs me now". The first rung that holds; `doors` is { cross: boolean } (state.mjs does not import nav.mjs): a missing
+// `doors`, or `doors.cross !== true`, is a shut Cross, and then the cross and readChild rungs are skipped and the ladder falls through to the guide. Returns
+// { key, ...facts, step, meanwhile, probe } or null.
+export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
+  const crossOpen = !!doors && doors.cross === true, aT = settings.adultTurns ?? JUVENILE_TURNS;
+  const living = st.mibis.filter((m) => !m.released).sort((a, b) => a.id - b.id), cs = bayCrates(st, sv), bud = st.bud;
+  const short = (e, d, s) => ({ key: "short", icons: shortIcons(st, e, d, s), from: shortFrom(st, e, d, s) });
+  const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()) });
+  // the pod chain for one species (or, with none named, for the first pod there is)
+  const chain = (species) => {
+    if (docked(st) && cs.length) return { key: "openBay" };
+    const mine = st.tray.filter((p) => !species || speciesOf(p) === species);
+    const idd = mine.find((p) => p.idd);
+    if (idd) { if (bud) return budStep(); if (bayFull(st, settings)) return { key: "noBay" };
+      const c = growCost(st, {}, settings); return canPay(st, c.e, c.d, c.s) ? { key: "grow", species: speciesOf(idd) } : short(c.e, c.d, c.s); }
+    const fresh = mine.find((p) => !p.idd);
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: speciesOf(fresh) } : short(0, c, 0); }
+    return { key: "findPod", species: species || null };
+  };
+  const speciesIn = (m) => speciesOf(m), members = (sp) => living.filter((m) => speciesIn(m) === sp);
+  const unreadOf = (m) => { const fr = frameFor(m); return fr ? fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : null; };
+  const readStep = (m) => { const ch = unreadOf(m), cost = mibiReadCost(st, m, ch.id, settings) || 0; return st.d >= cost ? { key: "read", name: m.name } : short(0, cost, 0); };
+  // the guide's step for one species: a read on a pod of it in a well (a glinting chapter first, else the cheapest unread), else identify one, else find one
+  const guideStep = (sp) => {
+    const cand = [];
+    for (const p of st.tray) { if (!p.idd || speciesOf(p) !== sp) continue; const fr = frameOf(sp); if (!fr) continue;
+      for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
+    cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost);
+    if (cand[0]) { const c = cand[0]; return st.d >= c.cost ? { key: "read", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
+    if (docked(st) && cs.length) return { key: "openBay" };
+    const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
+    return { key: "findPod", species: sp };
+  };
+  let g = null;
+  if (!living.length && !bud && !st.tray.length && !st.waiting.length && !cs.length) g = { key: "firstPod", step: { key: "goOut" } };
+  else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(st.tray[0] ? speciesOf(st.tray[0]) : null) };
+  else {
+    const spOrder = [...new Set(living.map(speciesIn))], count = (sp) => members(sp).length + (bud && speciesOf(bud) === sp ? 1 : 0);
+    if (!spOrder.some((sp) => count(sp) >= 2)) { const m = living[0], sp = speciesIn(m); g = { key: "pair", name: m.name, species: sp, step: chain(sp) }; }
+    if (!g) for (const sp of spOrder.concat(bud ? [speciesOf(bud)] : [])) {
+      if (count(sp) < 2) continue;
+      const adults = members(sp).filter((m) => isAdult(st, m, settings)); if (adults.length >= 2) continue;
+      const two = members(sp).slice(0, 2), budIsSecond = two.length < 2 && !!bud && speciesOf(bud) === sp;
+      const walkOf = (m) => Math.max(0, (m.born || 0) + aT - st.turn);
+      const walks = Math.max(...two.map(walkOf), budIsSecond ? aT : 0);
+      const bondedWaits = two.some((m) => m.bonded && m.grownTurn == null && !isAdult(st, m, settings));
+      g = { key: "growUp", names: [two[0].name, budIsSecond ? null : two[1]?.name ?? null], walks, bondedWaits, step: budIsSecond ? budStep() : { key: "goOut" } }; break;
+    }
+    if (!g && crossOpen && !living.some((m) => m.from && m.from.how === "cross") && !(bud && bud.kind === "cross")) {
+      for (const sp of spOrder) { const ad = members(sp).filter((m) => isAdult(st, m, settings)); if (ad.length < 2) continue;
+        const [a, b] = ad, why = crossBlock(st, sv, a, b, settings), c = crossCost(settings);
+        g = { key: "cross", names: [a.name, b.name], step: why ? { key: "blocked", why } : canPay(st, c.e, c.d, c.s) ? { key: "cross" } : short(c.e, c.d, c.s) }; break; }
+    }
+    if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
+    // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
+    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+  }
+  // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
+  if (!g && tierNow(st, sv) < 2) g = { key: "probe", step: st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };   // the Probe stands in; a save with no Probe goes out, never fits
+  if (!g) return null;
+  // the second goal, from growUp onward while the Probe is below tier 2
+  g.probe = null; if (["growUp", "cross", "readChild", "guide"].includes(g.key) && tierNow(st, sv) < 2) g.probe = st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
+  if (g.probe && g.probe.key === "fit" && (["goOut", "findPod", "bud"].includes(g.step.key) || (g.key === "guide" && g.step.key !== "openBay"))) g.step = { key: "fit" };
+  // the read to suggest while the step is a wait
+  g.meanwhile = null;
+  if (["goOut", "findPod", "bud", "short"].includes(g.step.key)) {
+    const cand = [];
+    for (const p of st.tray) { if (!p.idd) continue; const fr = frameFor(p); if (!fr) continue;
+      for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null || st.d < cost) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
+    cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost); g.meanwhile = cand[0] ? { pod: cand[0].pod, chapter: cand[0].chapter, glint: cand[0].glint, cost: cand[0].cost } : null;
+  }
+  return g;
+}
+
+// The one-line warning before a spend that would leave the goal's next price short: null, or { step, species | name, icons }. `price` is { e, d, s }, what the act pays; `act` is { key: "identify" | "read" | "grow" |
+// "growNow" | "mend" | "cross", pod?, mibi? } so that the act that IS the step never warns. Only identify, grow, cross, read and fit are priced; a step that is a wait, a short, a block or the guide is not. The Probe's `save` never
+// warns. Cross is never the priced step while its door is shut (goalKey is asked without doors, as every caller does today).
+export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, act = {}, doors) {
+  const g = goalKey(st, sv, settings, doors); if (!g) return null;
+  const step = g.step, p = { e: price.e || 0, d: price.d || 0, s: price.s || 0 }, grow = growCost(st, {}, settings), ident = { e: 0, d: identifyCost(st, settings), s: 0 };
+  let next = null, who = {}, key = step.key;
+  if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
+  else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
+  else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
+  else if (step.key === "read" && g.key === "guide") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; }
+  else if (step.key === "read") { const m = g.key === "readChild" || g.key === "guide" ? st.mibis.find((x) => x.name === step.name && !x.released) : null; if (!m) return null; if (act.key === "read" && act.mibi && act.mibi.id === m.id) return null;
+    const fr = frameFor(m), ch = fr && fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)); if (!ch) return null; next = { e: 0, d: mibiReadCost(st, m, ch.id, settings) || 0, s: 0 }; who = { name: m.name }; }
+  else if (step.key === "fit") { if (act.key === "fit") return null; next = { e: price_(PRICE.tier2E, settings), d: price_(PRICE.tier2D, settings), s: 0 }; who = {}; }
+  else return null;
+  if (!canPay(st, next.e, next.d, next.s)) return null;   // it cannot be paid now: the act's own short or the step's own short says so
+  const after = { e: st.e - p.e, d: st.d - p.d, s: st.s - p.s }; if (canPay(after, next.e, next.d, next.s)) return null;
+  return { step: key, ...who, icons: shortIcons(after, next.e, next.d, next.s) };
+}
+const price_ = price;
 // --- developer seeds and skips (dev.mjs calls these; they go through the same rules) ------------------
 // A crate of pods of one species in the Station's own dev bay: it arrives like any crate, at the dock.
 export function seedCrate(st, species, count, seed, now = Date.now()) {
@@ -616,7 +738,7 @@ export function seedPodFromGenome(st, genome, settings = DEFAULT_SETTINGS, now =
   logEv(st, "Developer pod from a genome · " + digest);
   return { ok: true, pod };
 }
-export function skipIdentify(st, p) { if (!p || p.idd) return; const fr = frameFor(p); p.idd = 1; p.fresh = 0; if (fr && !st.knownIds.includes(fr.species.id)) st.knownIds.push(fr.species.id); syncKnown(st); logEv(st, "Developer: identified " + p.id); }
+export function skipIdentify(st, p) { if (!p || p.idd) return; const fr = frameFor(p); p.idd = 1; p.seen = 1; p.fresh = 0; if (fr && !st.knownIds.includes(fr.species.id)) st.knownIds.push(fr.species.id); syncKnown(st); logEv(st, "Developer: identified " + p.id); }
 export function skipRead(st, p, settings = DEFAULT_SETTINGS) {
   skipIdentify(st, p); const fr = frameFor(p); if (!fr) return;
   for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; p.read.push(ch.id); const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(ch.id)) once.push(ch.id); for (const [t, ls] of chapterLooks(fr, ch, p.genome)) guideAdd(st, fr.species.id, t, ls); }
@@ -668,7 +790,7 @@ export function growBlockKey(st, p, choices = {}, settings = DEFAULT_SETTINGS, c
   if (st.bud) return { key: "busy", short: null };
   if (bayFull(st, settings)) return { key: "noBay", short: null };
   if ((clash ?? clashTraits(p, choices)).length) return { key: "clash", short: null };
-  const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { key: "short", short: shortIcons(st, cost.e, cost.d, cost.s) };
+  const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { key: "short", short: shortIcons(st, cost.e, cost.d, cost.s), from: shortFrom(st, cost.e, cost.d, cost.s) };
   return null;
 }
 export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {

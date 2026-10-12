@@ -4,6 +4,7 @@
 // Runs in Node, tested there (tests/incubator-props.test.mjs); the shape is incubator.props.json.
 //   m: { st, sv, settings, now, ui: { inc: { hatch } }, spec incubator.json, pods pods.json }
 import * as S from "../state.mjs";
+import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot, maxTraits } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
@@ -50,7 +51,7 @@ export function incubatorBuild(m, spec, pods) {
   if (state !== "empty") {
     const [bw, bh] = R.bud.rect.slice(2), p = B ? S.budProgress(st, settings, now) : 1, pic = (id) => ph(id, [bw, bh], false, stale);
     regions.bud = { stage: state === "hatch" ? "hatch" : ready ? "ready" : p < 0.5 ? "early" : "late", early: pic("bud-early-128x160"), late: pic("bud-late-128x160"), ready: pic("bud-ready-128x160"),
-      crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master") };
+      crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master"), front: slot(req, "bud-ready-front-128x160", R.bud.rect, signed) };
   }
   regions.base = { picture: slot(req, "base-336x96", R.base.rect, signed) };
   regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
@@ -78,6 +79,7 @@ export function incubatorBuild(m, spec, pods) {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
       line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)
       if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
+      else if (!gs && m.frame) line.need = warnWords(st, m.sv, settings, m.frame, c, { key: "growNow" }) ?? line.need;
     } else {
       const noBay = S.bayFull(st, settings);
       line = { ok: Sg.open, back: Sg.back, subject: bud, need: noBay ? Sg.noBay : null }; if (noBay) line.dim = true;   // a dimmed cap when no bay is free: a guard only
