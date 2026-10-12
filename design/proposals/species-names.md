@@ -1,6 +1,6 @@
 # Species and clan names
 
-**Proposal** from the copywriter, 2026-10-07, for the owner. It names the sixteen species and sixteen clans of [taxonomy](taxonomy.md) §3 (codes S01–S16, C01–C16). It follows the §5 rules of that document, the 10-07 naming decisions (English experience; invented, Latin, Greek or less-heard roots; no Spanish diminutives; clean room) and the method of the [name screen](name-screen.md). The second and third passes swap every name that carried a caution or collided in search. Nothing here is picked yet, and the codes stay in the frames until the owner chooses.
+**Proposal** from the copywriter, for owner review. It names the sixteen species and sixteen clans of [taxonomy](taxonomy.md) §3 (codes S01–S16, C01–C16). It follows the §5 rules of that document, the 10-07 naming decisions (English experience; invented, Latin, Greek or less-heard roots; no Spanish diminutives; clean room) and the method of the [name screen](name-screen.md). The second and third passes swap every name that carried a caution or collided in search. Nothing here is picked yet, and the codes stay in the frames until an owner choice.
 
 ## The voice
 
@@ -103,7 +103,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | Kapnis | 6 | None. Kapnisis is a Greek surname; Kapre and Kappa (folklore) by eye only | clear | No meaning. Fine |
 | Phyllaxa | 6 | None. Near Phylloxera and Phyllophaga (insects), Phylax (an Atari enemy) and Phyllali (Leafeon's French name, said differently) | clear | No meaning. Fine |
 | Brontelas | 6 | None. Brontal, a cough syrup, is the only near name | clear | Ends in *telas*, cloths. Fine |
-| *Swapped in round two (the owner's cautions)* | 1–2 | Krisel (a surname), Kauris (a dictionary plural), Nebla (search engines correct it to *nebula*), Elvar (Elvarg, RuneScape), Sigelos (an old genus synonym), Phrakta (said aloud, it starts like "frak") | withdrawn | |
+| *Swapped in round two (owner's cautions)* | 1–2 | Krisel (a surname), Kauris (a dictionary plural), Nebla (search engines correct it to *nebula*), Elvar (Elvarg, RuneScape), Sigelos (an old genus synonym), Phrakta (said aloud, it starts like "frak") | withdrawn | |
 | *Rejected in rounds two and three* | 1–6 | Namio (adult art in results), Arrano (a Spanish wine label), Sustrai (Emerald Sustrai, RWBY), Ludio (ludio.gg), Leimu (an Iittala lamp line), Nephelix (Nephelym, an adult game; Nepheli Loux), Ostraka (the Ainigmata Ostraka items, Assassin's Creed Odyssey), Skiada (Skiadrum, Fairy Tail), Augera (Aughra, The Dark Crystal; Augerino), Omichlis (Hive Omichlisk, fan art), Phengara (Pingara, Kubera; reads like Gengar), Kalyda (Kalydo, a game platform; Kalyba, The Priory of the Orange Tree), Kalyptis (Calyptis, a moth genus; Kalyptos, a Gnostic figure), Atmis (Atmos, One Piece; Dolby Atmos), Sarvik (a folk-tale figure), Kekel (Chuchel), Aspidas (Aspids, Hollow Knight), Lucir (a monster-game creature), Elytros (Elytra, Elder Scrolls), Kranidos (Cranidos in French), Vorden (Vördr, Northgard), Blysen (Bysen), Tholiska (Tholian, as with Tholan), Chelyka (Chelka, The Witch and the Hundred Knight 2), Umbo (Umbro), Kipen (Kipine; looks like Kilpo) | rejected | |
 | *Withdrawn for sound or meaning* | 1 | Facis (heard as "feces"), Siopeta (four syllables when said) | withdrawn | |
 | *Rejected in round one: existing creature, character or item* | 1–6 | Ailur, Tacet, Sarvel, Ludra, Viren, Selas, Fulgen, Eisel, Aetos, Kuntur, Lokina, Orygma, Keraunos, Keraunex | rejected | |
@@ -135,7 +135,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | S15 | Sustra (Basque *sustrai*, root). 1; check against Sustrai (RWBY) | Frondel (Latin *frons*, foliage). 1 | Juurel (Finnish *juuri*, root). 1 |
 | S16 | Oinaz (Basque, lightning). 1; near Oinaztargi; *oinaze* may mean pain | Tximis (Basque *tximista*, lightning; CHEE-meess). — | Leimar (Finnish *leimu*, a flare). —; shares -ar with Rupar |
 
-## Questions for the owner
+## Questions for owner review
 
 1. **Small matches.** Five names were kept despite a small match: Pesko (a Swiss sports shop), Peplos (Peplos Jeans, a small Indian label), Igara (a minor anime surname), Kilpo (one letter from Kilpi, a Czech outdoor brand) and Rupar (the old name of an Indian town). None is a creature, a game or a notable brand in toys or games. Is that your bar, or should any of them go to a reserve?
 2. **Legal clearance.** This is a web screen. Do you want a professional trademark search on each name that ships (name screen §7), and should it come before or after the art for these creatures is final?

@@ -92,7 +92,7 @@ Every sheet draws the same individuals from the same payload bits: Loika, Tuikis
 
   The QR also has a decade of phone-camera evidence behind it. **On the owner's test**, a 40 mm version-1 QR on office paper is the easiest case any phone camera meets. It would have decoded, its error correction would have repaired the bit, and a standard library never returns an unchecked read.
 - **Forgery.** As (a). Plus: anyone's QR app can read the payload, and anyone can generate one.
-- **Art and cost.** It is the look the owner said they would rather not have. The sidecar carries the charm. The cost is lowest: an encoder of about 150 lines (written for this memo and checked against zxing-cpp), and on the reading side the browser's BarcodeDetector or a bundled library, with zbar or quirc on the Station.
+- **Art and cost.** It is the look that was to be avoided. The sidecar carries the charm. The cost is lowest: an encoder of about 150 lines (written for this memo and checked against zxing-cpp), and on the reading side the browser's BarcodeDetector or a bundled library, with zbar or quirc on the Station.
 
 ### (d) Randomart or a hash picture: identity only
 

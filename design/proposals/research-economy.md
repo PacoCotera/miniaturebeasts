@@ -14,7 +14,7 @@ The game must last: the real economy will be made **more expensive** than the we
 
 **A week** is the unit for a species: about seven pods of it, hunted on purpose once a chapter is read (its pods wear the species' shell colour on the map). By the week's end every chapter is read, the guide shows nearly every look, two or three members live in the vivarium, and a first child is crossed. The last looks pull into the next week.
 
-*Superseded as the shipped pace:* one pod a day and a species in a week are the testing pace; the real game will be slower and dearer (see the owner's note above).
+*Superseded as the shipped pace:* one pod a day and a species in a week are the testing pace; the real game will be slower and dearer (see the note above).
 
 ## 2. The three currencies
 
