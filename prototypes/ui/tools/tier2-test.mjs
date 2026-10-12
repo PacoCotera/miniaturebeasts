@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Tier 2 test harness (boards/mibi-motion/tier2-method.md §3, §4, Q-A3, the architect's harness answers): renders the matrix {painted down, warped down, stand, warped up, painted up}
+// Tier 2 test harness (the tier 2 method, Q-A3, the architect's harness answers): renders the matrix {painted down, warped down, stand, warped up, painted up}
 // per size from masters and the landmarks JSON given by path, measures M1–M8, and writes 1× PNGs, a contact sheet, a CSV of every measure and the Vivarium pair as APNGs.
 // The warp moves existing pixels only (backward mapping, nearest sample, no blending); the head is a separate layer drawn unwarped over the warped body. Nothing is placed in the
 // Station and nothing is drawn: it reads files and writes to --out. Every per-picture fact is in the landmarks JSON; a flag only OVERRIDES one for a trial, and then the run is

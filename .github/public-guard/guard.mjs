@@ -266,6 +266,8 @@ export const FIXTURES = [
   { rule: "secret-value", file: "prototypes/caddy/tests/caddy.test.mjs", hit: 'GEMINI_API_KEY: "real-looking-key"', pass: 'GEMINI_API_KEY: "test-key-never-used"' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: "const k = sk-proj-Xa7mQ2zL9pR4tW8vB1nC6dF3;", pass: "the sk-proj- prefix names a project key" },
   { rule: "secret-value", file: "ops/x.sh", hit: "EXAMPLE_API_KEY=q7Lm2Xv9Rt4Wp8Zn", pass: "EXAMPLE_API_KEY=$EXAMPLE_API_KEY" },
+  { rule: "internal-path", file: "prototypes/x.mjs", hit: "// spec: boards/mibi-motion/tier2-method.md", pass: "// the airplanes/ folder of the sample set" },
+  { rule: "internal-path", file: "design/x.md", hit: "as the plan says (plans/public-cleanup.md)", pass: "the keyboards/ sprites" },
 ];
 
 function selfTest() {

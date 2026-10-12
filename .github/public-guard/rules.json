@@ -226,6 +226,17 @@
    ]
   },
   {
+   "id": "internal-path",
+   "applies": "text",
+   "_note": "A reference to the internal repository's folders (plans/, boards/) in any tracked text file: prose, code and comments alike. Case-sensitive, so a word that only ends in the name (keyboards/, airplanes/) passes.",
+   "patterns": [
+    [
+     "\\b(plans|boards)/",
+     ""
+    ]
+   ]
+  },
+  {
    "id": "secret-value",
    "applies": "text",
    "patterns": [

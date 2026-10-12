@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The paid-call ledger's one helper for every writer (plans/public-cleanup.md §1.2).
+"""The paid-call ledger's one helper for every writer.
 
 Public records keep provenance: model, prompt and its fields, seed, input SHA-256s, request or task id,
 usage tokens, seconds, status and checks. Cost, credit and balance go to the ledger, a directory outside
