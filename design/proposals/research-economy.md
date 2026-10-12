@@ -14,7 +14,7 @@ The game must last: the real economy will be made **more expensive** than the we
 
 **A week** is the unit for a species: about seven pods of it, hunted on purpose once a chapter is read (its pods wear the species' shell colour on the map). By the week's end every chapter is read, the guide shows nearly every look, two or three members live in the vivarium, and a first child is crossed. The last looks pull into the next week.
 
-*Superseded as the shipped pace:* one pod a day and a species in a week are the testing pace; the real game will be slower and dearer (see the note above).
+*Superseded as the shipped pace:* one pod a day and a species in a week are the testing pace; the real game will be slower and dearer (see the owner's note above).
 
 ## 2. The three currencies
 
@@ -127,11 +127,9 @@ A player keeps **as many mibis as the vivarium holds**; **the number of vivarium
 
 ## 8. Decisions
 
-All three follow the recommendations below.
-
-1. **Six bays, not eight.** Six keeps pods precious (no multitude of mibis) and makes the first shelf a goal inside the Pip week; eight pushes the first return and upgrade to week three. *Recommended: six.*
-2. **The first bud ever grows in five minutes, not twenty,** so the first turn at the bench ends with a meet (r7's best moment); it opens plain and swaps later, as the pipeline allows. *Recommended: yes.* Yes (it opens in the standard look, which is the game's art; nothing swaps unless the mibi sits for its portrait, [the portrait](the-portrait.md)). *The standard painting:* it opens in its standard painting if the kit is connected and the painting came in five minutes, else in the placeholder, and the painting lands at the next fresh draw.
-3. **A returned mibi's place can shed a pod of its lineage.** It makes the return a meaning, not a refund, and is the one way a player's shaping reaches the wild. The limits: one pod per returned mibi, a turn later, every read still paid. *Recommended: yes.*
+1. **Six bays, not eight.** Six keeps pods precious (no multitude of mibis) and makes the first shelf a goal inside the Pip week; eight would push the first return and upgrade to week three.
+2. **The first bud ever grows in five minutes, not twenty,** so the first turn at the bench ends with a meet (r7's best moment). It opens in the standard look, which is the game's art; nothing swaps unless the mibi sits for its portrait ([the portrait](the-portrait.md)). *The standard painting:* it opens in its standard painting if the kit is connected and the painting came in five minutes, else in the placeholder, and the painting lands at the next fresh draw.
+3. **A returned mibi's place sheds a pod of its lineage.** It makes the return a meaning, not a refund, and is the one way a player's shaping reaches the wild. The limits: one pod per returned mibi, a turn later, every read still paid.
 
 ## 9. Tuned: calm Energy and the Essence sink
 
