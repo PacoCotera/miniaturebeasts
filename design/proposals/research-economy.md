@@ -30,7 +30,7 @@ Energy runs the machines, Data reads genomes, Essence grows bodies (**Decided**)
 | **Bench trickle** (§4) | — | +1 per resident watched a minute, +1 per two residents compared; **cap 2 a day** *(tuned)* | — |
 | **Return a pod to the wild** | — | — | +1 (**Decided**) |
 | **Return a mibi to the wild** (§6) | — | a field-guide note | +2 *(tuned)* |
-| **Identify** (first ever free) | 1 | — | — |
+| **Identify** | — | 1 | — |
 | **Read a chapter** (first ever free) | — | 1 per trait; half, rounded up, once read on an earlier pod of the species (**Decided**) | — |
 | **Shape a trait at Grow** | — | +1 per trait changed (**Decided**); +1 bud minute | — |
 | **Grow a founder** | 2 | — | 4 (**Decided**) |

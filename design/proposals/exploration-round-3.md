@@ -23,8 +23,7 @@ Expedition 6, calm. The HUD corner shows the reach as 5×5 dots, 4 filled.
 
 ## 2. Energy economy
 
-**Decided:** Energy comes from storm-struck stones. Prices: identifying a pod 1,
-hatching 2 + 4 Essence, a pin 1, a shield patch 3, tier 2 at 12. **The
+Energy comes from storm-struck stones. Prices: hatching 2 + 4 Essence, a pin 1, a shield patch 3, tier 2 at 12. **The
 problem:** a calm expedition yields 0–3 Energy, so pods wait and pins never
 happen.
 

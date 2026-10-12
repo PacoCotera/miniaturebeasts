@@ -1,6 +1,6 @@
 # Tier 2 test harness
 
-Tools for judging whole-body blends (the tier 2 method, `boards/mibi-motion/tier2-method.md`). They read masters and the animator's landmarks JSON from paths and write to `--out`; nothing is placed in the Station and nothing is drawn. The warp only moves existing pixels (backward mapping, nearest sample, no blending); a source outside the picture is transparent.
+Tools for judging whole-body blends (the tier 2 method). They read masters and the animator's landmarks JSON from paths and write to `--out`; nothing is placed in the Station and nothing is drawn. The warp only moves existing pixels (backward mapping, nearest sample, no blending); a source outside the picture is transparent.
 
 **One file per species, stage and blend: the landmarks JSON.** Every per-picture fact (the zero rows, the fixed and moving landmarks, the head polygon, the belly line, the measured profile, the pairs and their bands, the breathing holds) is read from it. A command-line flag only overrides a value for a trial; the CSV then says `override` and the run gives no verdict, so a verdict is reproducible from the committed file alone. The JSON's shape is exercised by the synthetic copy in `tests/tier2-harness.test.mjs`.
 
