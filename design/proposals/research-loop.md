@@ -203,7 +203,7 @@ Paths marked "salvage" are under `miniaturebeasts-internal/history/salvage-2026-
 - **station-loop.md §6 and §9:** a minimal cross and wishes move into scope; the placeholder genomes ("4 windows") become species frames on the authoring catalogue, starting with Pip's five traits; the fingerprint spec becomes the ring.
 - **station-screens.md:** the pod list column stays and gains the progress ring; the "arc of four windows" and "The trait window" become chapter arcs and pages; "The fingerprint" becomes the ring; the Library's per-window sticker slots become one page per chapter; Create rolls traits; the words change to *only X* and *breed to change*.
 - **Also:** `design/style-guide/station-screens.md` (Pods, Library), `design/creatures-and-genomics.md` (research and fingerprint lines, once decided), and `design/play-manual.md` when it is built.
-- **Stays decided:** a Station the player drives; Identify for 1 Energy, the first free; the founder price; one pod, one founder; shaping only researched, permitted traits with the pod's own copies; incubation in real minutes by species; the sealed bay and no forced return; glint, free compare, never paid twice, findings survive; six cups; the separate 1024×600 page; a fingerprint and a code exist.
+- **Stays decided:** a Station the player drives; Identify for 1 Data; the founder price; one pod, one founder; shaping only researched, permitted traits with the pod's own copies; incubation in real minutes by species; the sealed bay and no forced return; glint, free compare, never paid twice, findings survive; six cups; the separate 1024×600 page; a fingerprint and a code exist.
 
 ## 11. Decisions for the owner
 

@@ -36,7 +36,7 @@ gives fuller pages and more looks to find, never more buttons.
 
 ## Identify
 
-Identifying a pod costs 1 Data, always: no Energy, and no pod is ever free. It may take the last Data. The seal breaks
+Identifying a pod costs 1 Data. The seal breaks
 and the species shows. The first identified pod of a species teaches the player
 that species for good: what it fixes is known from then on, and its page opens
 in the Library. An identified pod can be grown straight away, unread.
@@ -264,7 +264,7 @@ Essence grows bodies. Essence never turns into Energy.
 
 | At the Station | Price |
 | --- | --- |
-| Identify a pod | 1 Data (always; no free first) |
+| Identify a pod | 1 Energy; the first pod ever is free |
 | Read a chapter | 1 Data per trait; half, rounded up, once the chapter has been read on the species; the first read ever is free |
 | Look again, compare, wish, the Library | free |
 | Grow a founder | 2 Energy and 4 Essence; the first founder ever: 2 Energy |
