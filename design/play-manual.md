@@ -215,8 +215,8 @@ You can carry up to 20 of each. Essence never turns into Energy.
 
 | Material | Where it comes from | What it buys |
 | --- | --- | --- |
-| **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), identifying a pod (1), growing a mibi (2), mending the Shield at the Station (1 a bar), the tier 2 Probe (12) |
-| **Data** | Creature moments you cause (+1, or +2 for a first) | Studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
+| **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), growing a mibi (2), mending the Shield at the Station (1 a bar), the tier 2 Probe (12) |
+| **Data** | Creature moments you cause (+1, or +2 for a first) | Identifying a pod (1), studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
 | **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1), returning a pod to the wild (+1) | Growing a mibi (4) |
 
 ## 8. Ending an expedition: the sealed bay and the Station
@@ -251,7 +251,7 @@ Expeditions start only when the Companion is **lifted** from its dock. On the St
 This section follows the Station page as built. The next Station build reads a pod a **chapter** at a time instead of window by window, and draws its fingerprint as the **genome ring**; this section changes with that build ([research loop](proposals/research-loop.md)).
 
 The lamp on Home's bench rests the screen (the vivarium plays alone); any press wakes it and acts. The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Vivarium**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
-1. **Identify** a pod (1 Energy; your very first pod is free). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
+1. **Identify** a pod (1 Data). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
 2. **Study** a window (2 Data; the first study of each species is free). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the Untuva's colour opens with a tier 2 Probe). A window you studied stays open for good.
 3. **Glints.** Once you have studied a window on one pod of a species, later pods of that species twinkle with a star on each window where they hold a look you haven't seen yet. No star means nothing new there.
 4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; windows studied on both that differ pulse.
@@ -264,7 +264,7 @@ The lamp on Home's bench rests the screen (the vivarium plays alone); any press 
 
 | At the Station | Price |
 | --- | --- |
-| Identify a pod | 1 Energy (first pod ever: free) |
+| Identify a pod | 1 Data |
 | Study one window | 2 Data (the first of each species: free) |
 | Grow a mibi | 2 Energy + 4 Essence (your first: 2 Energy only) |
 | Change a window when shaping it | +2 Data each |

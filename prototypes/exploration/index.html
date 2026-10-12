@@ -538,6 +538,10 @@ const CARE_TEXT = {
   // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
   spOther: 'a Station species', abOther: 'no field ability yet', tendMomentOther: 'settles',
   walkedOther: (n, mem) => n + ' walks the ' + (mem || 'path'),
+  // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
+  riderTime: 'grows in time in the Companion', riderCare: 'grows with care in the Companion',
+  riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
+  walkedYoung: (n, mem) => CARE_TEXT.walkedOther(n, mem), onceGrown: ' once grown',
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
@@ -565,8 +569,8 @@ const CARE_ASSETS = [
   { id: 'FOOT', what: 'the foot below a stair, on the lower ground (stair/foot)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'APRON_TOP', what: 'the tile inside a north-facing stair top (stair/apron-top)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
 ];
-const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f']], 'c-token-48': ['stone', ['token', 't']],
-  'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels, longest first
+const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
+  'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
 const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 // The Companion's local date, Y-M-D on its own clock (never toISOString: that is UTC).
@@ -1068,7 +1072,7 @@ function startExpedition(type, cell) {
   if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
-  const pm = partnerMibi();
+  const pm = partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // no partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormFor(cell) : null;
   if (storm && S.expN === 1) storm.x -= 2 * storm.dir;   // the first storm comes a little later, so a new player can drain a stone first
   S.exp = { type, n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range, hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
@@ -1076,6 +1080,7 @@ function startExpedition(type, cell) {
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
     pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder' } : null,
+    rider: rd ? { id: rd.id, name: rd.name, sp: rd.sp } : null,   // shown in the HUD and named at set-out; never the partner, no field token, no ability
     stats: { flee: 0, sheds: 0, rev: 0, lit: 0, hits: 0, putFeeds: 0, handFeeds: 0, feedTries: 0, maxLvl: 0, stormActs: 0, openStormActs: 0 },
     supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [] };
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
@@ -1083,8 +1088,9 @@ function startExpedition(type, cell) {
   ex.reach = reachCells(cell, ex.range);
   chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
-  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
+  logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier);
   fxOnce('mapintro', 'Move with the pad · ✓ goes down · the flag is your start: end the expedition there', 3);
+  if (rd) fxOnce('rider', CARE_TEXT.riderSetOut(rd.name), 2, true);   // once per expedition; when mapintro fills the box it shows on the first move (noteHud)
   if (S.exp.shield < S.exp.smax) fxMsg('Shield ' + S.exp.shield + '/' + S.exp.smax + ' · stray strikes break it fast · shelter in a storm', 4);
   S.phase = 'map'; transition(); save();
 }
@@ -2093,9 +2099,9 @@ function careQueue(evs, dur) {
 }
 // The Walk as pressed on the shown mibi m: its walk moment; the line names them all. The Walk brings no Data.
 function walk(m) {
-  const evs = walkAll(); if (!evs) return;
+  const young = !isAdult(m), evs = walkAll(); if (!evs) return;   // young: as it set out (a bonded juvenile may grow on this Walk)
   FX.moment = { id: m.id, at: NOW }; FX.walk = { id: m.id, at: NOW, others: carriedMibis().filter(q => q !== m).map(q => q.id) }; lockInput(400);
-  const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.walkedOther(m.name, m.mem);
+  const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : young ? CARE_TEXT.walkedYoung(m.name, m.mem) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.walkedOther(m.name, m.mem);
   careLines(did, evs, WALK_MS);
 }
 function dirWord(dx, dy, n) {
@@ -3606,6 +3612,9 @@ function drawHUD() {
   if (S.bay.length && !(chipW && x + crateW + chipW > rx - 4)) x = drawCrateCount(x);
   if (chipW) { panel(x, 6, chipW, 22, C.ink, C.mint); text(DOCK_TEXT.chip, x + 8, 9, C.mint); x += chipW + 4; }
   if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 21); miniOf(ex.pt.sp, x, 10); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 9, C.amber); }
+  else if (!ex.pt && ex.rider && x + 14 < rx) {   // the rider in the partner's slot: its mini in a window (it rides in the device), no ring; its name in fog, clipped
+    panel(x - 2, 8, 16, 16, C.night, C.slate); miniOf(ex.rider.sp, x, 10);
+    const room = rx - 4 - (x + 17); if (room >= 30) text(clipText(ex.rider.name, room, 2), x + 17, 9, C.fog); }
   if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }
 }
 function drawTop(title, right, cs) {
@@ -3705,7 +3714,12 @@ function drawSetup(t) {
     text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, st, stageFill(st), 'bone');
     text(clipText(abTextOf(pm.sp), 220, 2), 112, 320, C.stone); }
-  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(carriedMibis().length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
+  else if (cm.length) { const rd = cm[0], st = mibiStage(rd), nm = clipText(rd.name, 220, 3);   // the rider, first in carried order: its picture with no ring, and how it grows
+    mibiSprite(rd.sp, 'idle', fr, 28, 264, 2);
+    text(nm, 112, 260, C.ink, 3); if (rd.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
+    chip(112, 292, st, stageFill(st), 'bone');
+    text(clipText(rd.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime, 306, 2), 112, 320, C.stone); }
+  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
   if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm); else blit(dashedCircleArt(24), fx, 262); }
   // the world preview: the whole map small, the last start flagged, and the count
@@ -3906,15 +3920,20 @@ const dashedCircleArt = d => art('dcirc' + d, () => { const pb = new PB(d, d), c
 // the partner's marker (`teal` for the partner, `stone` for the others), a plain outline.
 function ringFace(x, y, sp, partner) {
   const ring = partner ? ringArt('rf24t', 24, 8) : ringArt('rf24s', 24, 8, C.stone, C.slate);
-  blit(ring, x, y + 16); placeholderPlate('c-face-24', x, y);
+  blit(ring, x, y + 16); placeholderPlate('c-face-24', x, y, 1, sp);
   g.save(); g.beginPath(); g.rect(x, y + 20, 24, 4); g.clip(); blit(ring, x, y + 16); g.restore();   // the ring's front arc in front of the face: it stands on it
 }
 // A missing asset of the register (CARE_ASSETS), drawn as its labelled placeholder at its exact size (k: pixel for pixel at k×):
-// a flat plate, outlined, with its label where it fits. Never drawn art; the master replaces it by id.
-function placeholderPlate(id, x, y, k) {
-  const a = CARE_ASSETS.find(e => e.id === id), [fill, labels] = PLATE[id]; k = k || 1; const w = a.w * k, h = a.h * k;
+// a flat plate, outlined. A mibi's plate (sp given) carries the mibi's own built art centred: its 12 px mini on the face, its
+// 32 px sprite at 1× (breath frame fr) on the token. The label, where it fits, is drawn only while the observer panel is open,
+// so a reviewer can name every placeholder and a player sees no build words. Never drawn art; the master replaces it by id.
+const obsOpen = () => { const o = document.getElementById('obs'); return !!o && o.hidden === false; };
+function placeholderPlate(id, x, y, k, sp, fr) {
+  const a = CARE_ASSETS.find(e => e.id === id), [fill, labels, carries] = PLATE[id]; k = k || 1; const w = a.w * k, h = a.h * k;
   R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C[fill]);
-  const lbl = labels.find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
+  if (sp != null && carries === 'mini') miniOf(sp, x + (w - 12) / 2, y + (h - 12) / 2);
+  else if (sp != null && carries === 'sprite') mibiSprite(sp, 'idle', fr || 0, x + (w - 32) / 2, y + (h - 32) / 2, 1);
+  const lbl = obsOpen() && labels.find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
 }
 // A mibi's sprite at k× (1 field, 2 cards, BIG the stage); a species the Companion has no art for is its labelled plate in the same rect.
 function mibiSprite(sp, pose, fr, x, y, k, flip) {
@@ -3945,7 +3964,7 @@ function rosterRow(m, y0, sel, isP, fr) {
   rosterCard(16, y0, 418, 64, sel); const y = sel ? y0 - 2 : y0, st = mibiStage(m);
   const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
   if (isP) blit(RING(), 38, y + 48);
-  placeholderPlate('c-token-48', 28, y + 8 - hy);   // the 48 px field token is a missing asset
+  placeholderPlate('c-token-48', 28, y + 8 - hy, 1, m.sp, fr);   // the 48 px field token is a missing asset: its plate carries the mibi's sprite
   const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) placeholderPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
   let cx = 88; cx += chip(cx, y + 38, st, stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
   if (sel) text('▶', 422, y + 22, C.mist, 2, 'right');   // the open mark: ▶ opens this mibi's page
@@ -4002,6 +4021,16 @@ function drawNoOneWith() {
   text(CARE_TEXT.takeAlong, SCR_W / 2, 294, C.mist, 2, 'center'); text(CARE_TEXT.whenDocked, SCR_W / 2, 316, C.mist, 2, 'center');
   if (S.bay.length) text(bayLine(), SCR_W / 2, 352, C.amber, 2, 'center');
 }
+// The look-out (animator, 2026-10-11 15:04): a juvenile with you, on the stage mid-expedition and undocked, glances out of the
+// Companion: `alert` frame 0 at (97, 52), the place of idle (only the pose and the flip change) for LOOK_HOLD ms, a seeded LOOK_MIN–LOOK_MAX ms (start to start) from the page
+// opening; a Call answer or a page change restarts it. Every second look-out is flipped, and the turn sticks in its idle until
+// the next one turns it back. Reduced motion: idle frame 0, no look-out. a: ms since the (re)start.
+const LOOK_MIN = 5000, LOOK_MAX = 8000, LOOK_HOLD = 960;
+function lookOut(seed, a) {
+  const R = makeRng(seed); let at = 0, k = -1;
+  for (let next = R.range(LOOK_MIN, LOOK_MAX); next <= a; next += R.range(LOOK_MIN, LOOK_MAX)) { at = next; k++; }
+  return { on: k >= 0 && a - at < LOOK_HOLD, flip: k % 2 === 1 };
+}
 const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
 function drawActive(t) {
   viewBg(); drawHomeTop();
@@ -4018,6 +4047,10 @@ function drawActive(t) {
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
     if (a < d) flip = true;   // looking the wrong way first
     else { const k = a - d; pose = 'alert'; fr = 0; if (k < 600) y -= Math.round(Math.abs(Math.sin(k / 600 * Math.PI)) * 30); else y += 6; } }
+  if (mo && isW && S.exp && !isDocked() && st === 'juvenile') {   // the look-out: restarted by a page change (the stage not drawn on the last frame) or a Call answer
+    const L = RT.look; if (!L || L.id !== m.id || RT.lookN !== RT.frameN - 1 || h) RT.look = { id: m.id, at: NOW, n: (L ? L.n : 0) + 1 };
+    RT.lookN = RT.frameN;
+    if (!h && !sp) { const o = lookOut(hash(S.seed, 'look', m.id, RT.look.n), NOW - RT.look.at); flip = o.flip; if (o.on) { pose = 'alert'; fr = 0; } } }
   if (sp && m.sp === 1) blit(haloArt(), 75, 60);   // a Tuikis glows
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
@@ -4029,7 +4062,7 @@ function drawActive(t) {
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
   // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
   const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
-  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260); });   // the 48 px field token is a missing asset
+  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260, 1, q.sp, mo ? Math.floor(t * 1.25) % 2 : 0); });   // the 48 px field token is a missing asset
   // the bond's heart: c-heart-24 at 2×, rising beside the head from y 140 to 60 in four 20 px steps of 150 ms, held 900 ms;
   // under reduced motion it stands at y 60 for 1.5 s
   if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; placeholderPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
@@ -4037,7 +4070,7 @@ function drawActive(t) {
   const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
   const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, st, stageFill(st), 'bone');
   if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
-  text(clipText(mibiSpName(m) + ' · ' + abTextOf(m.sp) + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
+  text(clipText(mibiSpName(m) + ' · ' + abTextOf(m.sp) + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
   wrapText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
   // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
   const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
@@ -4162,6 +4195,7 @@ function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
   if (S.phase === 'patch') fxOnce('callplace', 'The teal CALL button pulses: it lifts the veil and finds things', 2);
   else fxOnce('callmap', 'CALL here drops a pin for 1 Energy', 1);
+  if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
   const lvl = stormLevel(); if (lvl) fxOnce('hudstorm', 'Bottom line: bolts are the storm · it moves ' + (ex.storm.dir > 0 ? '▶ east' : '◀ west'), 1);
   if (fogNear()) fxOnce('hudfog', 'Bottom line: the fog bank drifts ' + (ex.fog.dx > 0 ? '▶ east' : '◀ west'), 1);
 }
@@ -4213,12 +4247,12 @@ function lineFor() {
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
-      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : '', 'close'); }
+      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close', fieldFrozen()) : L1('', '', 'close');   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
-      if (!m) { if (S.exp) return L1('', CARE_TEXT.leadsThisExp, bk);   // the Lead card: read-only mid-expedition
+      if (!m) { if (S.exp) return L1('', S.exp.pt ? CARE_TEXT.leadsThisExp : CARE_TEXT.noOneGrown, bk);   // the Lead card: read-only mid-expedition; no partner leads one without a grown mibi
         const nx = nextLead(), g = carriedMibis().filter(isAdult).length;
         return nx ? L1(CARE_TEXT.leadLabel(nx.name), CARE_TEXT.leadCtx, bk) : L1('', !carriedMibis().length ? CARE_TEXT.noOneWith : g === 1 ? CARE_TEXT.onlyGrown : CARE_TEXT.noOneGrown, bk); }
       if (isCarried(m)) return canSwap() ? L1(CARE_TEXT.leaveLabel(m.name), CARE_TEXT.leaveCtx, bk) : L1(CARE_TEXT.visitLabel(m.name), CARE_TEXT.visitCtx, bk);
@@ -4237,7 +4271,7 @@ function lineFor() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // S is null here: nothing that reads it runs
-  RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null;
+  RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
