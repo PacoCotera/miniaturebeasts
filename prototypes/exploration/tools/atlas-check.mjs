@@ -6,10 +6,10 @@
 // - Decode: each sheet (or a piece's own `file`) with node:zlib: 8-bit indexed (PLTE, tRNS for alpha) or 8-bit RGBA, non-interlaced.
 //   Any other PNG form is refused and named; each sheet's form is printed. A gAMA, iCCP, cHRM or sRGB chunk refuses the sheet.
 // - Palette: each manifest's `palette`; absent or "core48" is the page's 48 colours, any other name loads <name>-palette.json
-//   beside the manifest and checks it with paletteTable (the core 48 and their tables as on the page, no gap in i, no repeated
-//   hex, every table index in range, dark2 the dark of its dark (dark[dark[i]]), at most 256 entries). All manifests name the
-//   same palette. With --drop, a sheet's PLTE
-//   may hold only colours in that palette, used or not.
+//   from that manifest's own folder (a missing file refuses that manifest) and checks it with paletteTable (the core 48 with their
+//   names, colours and tables as on the page, no gap in i, no repeated hex, every table index in range, dark2 the dark of its dark
+//   (dark[dark[i]]), at most 256 entries). Every palette found must be the same (name and entries), whatever the order of the
+//   manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its tRNS-0 slot included.
 // - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
@@ -33,16 +33,21 @@ export function pageTables() {
   const pal = page.match(/^const PALETTE = \[$[\s\S]*?^\];$/m)[0], darkOf = page.match(/^const DARK_OF = \{[\s\S]*?\};$/m)[0], lightOf = page.match(/^const LIGHT_OF = \{[\s\S]*?\};$/m)[0];
   const a = page.indexOf("const C = {}; PALETTE.forEach("), b = page.indexOf("\n", page.indexOf("     FADE = mixLUT("));
   const core = page.slice(a, b);
-  return vm.runInContext([pal, darkOf, lightOf, core, ";({ dark: DARK.slice(), light: LIGHT.slice(), dark2: DARK2.slice(), fog: FOGLUT.slice(), fade: FADE.slice() })"].join("\n"), vm.createContext({}));
+  return vm.runInContext([pal, darkOf, lightOf, core, ";({ names: PALETTE.map(p => p[0]), dark: DARK.slice(), light: LIGHT.slice(), dark2: DARK2.slice(), fog: FOGLUT.slice(), fade: FADE.slice() })"].join("\n"), vm.createContext({}));
 }
-// The palette a manifest names: absent or "core48" is the page's 48; any other name loads <name>-palette.json beside the manifest.
-export function loadPalette(name, dir) {
-  const RGB = pageRGB();
-  if (name == null || name === "core48") return { name: "core48", rgb: RGB, n: RGB.length, biome: 0 };
+// The palette file a manifest names, read from that manifest's own folder: absent or "core48" is the page's 48 (no file); any other
+// name is <name>-palette.json beside the manifest. Returns { name, file, json } or { name, file, unread } when it cannot be read.
+export function readPalette(name, dir) {
+  if (name == null || name === "core48") return { name: "core48", file: null, json: null };
   const file = path.join(dir, name + "-palette.json");
-  let json; try { json = JSON.parse(readFileSync(file, "utf8")); } catch (e) { return { name, file, errors: ["cannot read " + path.basename(file) + ": " + e.message] }; }
-  const t = paletteTable(RGB, pageTables(), json);
-  return t.errors ? { name, file, errors: t.errors } : { name, file, rgb: t.rgb, n: t.rgb.length, biome: t.rgb.length - RGB.length, table: t };
+  try { return { name, file, json: JSON.parse(readFileSync(file, "utf8")) }; } catch (e) { return { name, file, unread: e.message }; }
+}
+// The table a palette file gives: the page's 48 for core48, else paletteTable against the page's core colours, names and tables.
+export function loadPalette(p) {
+  const RGB = pageRGB();
+  if (!p || p.name === "core48") return { name: "core48", rgb: RGB, n: RGB.length, biome: 0 };
+  const t = paletteTable(RGB, pageTables(), p.json);
+  return t.errors ? { name: p.name, file: p.file, errors: t.errors } : { name: p.name, file: p.file, rgb: t.rgb, n: t.rgb.length, biome: t.rgb.length - RGB.length, table: t };
 }
 
 const FORBIDDEN = ["gAMA", "iCCP", "cHRM", "sRGB"];
@@ -146,10 +151,16 @@ export function check(files, log = console.log, { drop = false } = {}) {
   for (const f of files) {
     try { mans.push({ f, dir: path.dirname(f), man: JSON.parse(readFileSync(f, "utf8")) }); } catch (e) { log("REFUSED manifest " + f + ": " + e.message); refused++; }
   }
-  // the palette: every manifest names the same one; pieces decode against it (the page's 48 when it cannot be read)
-  const names = [...new Set(mans.map(m => m.man.palette == null ? "core48" : m.man.palette))];
-  let pal = loadPalette(names.length === 1 ? names[0] : null, mans.length ? mans[0].dir : ".");
-  if (names.length > 1) { log("REFUSED palette: the manifests name different palettes (" + names.join(", ") + ")"); refused++; }
+  // the palette: each manifest's own, read beside it (a manifest whose palette file cannot be read is refused); every palette found
+  // must be the same (name and parsed entries), so the order of the manifests never matters. Pieces decode against it (the page's 48
+  // when there is none to use).
+  for (const m of mans) {
+    m.pal = readPalette(m.man.palette, m.dir);
+    if (m.pal.unread) { log("REFUSED manifest " + m.f + ": its palette " + m.pal.name + " (" + path.relative(process.cwd(), m.pal.file) + ") cannot be read: " + m.pal.unread); refused++; m.skip = true; }
+  }
+  const used = mans.filter(m => !m.skip), sig = m => m.pal.name + "|" + JSON.stringify(m.pal.json && m.pal.json.entries), kinds = [...new Set(used.map(sig))];
+  let pal = loadPalette(kinds.length === 1 ? used[0].pal : null);
+  if (kinds.length > 1) { log("REFUSED palette: the manifests' palettes differ (" + used.map(m => m.pal.name + (m.pal.file ? " in " + path.relative(process.cwd(), path.dirname(m.pal.file)) : "")).join(", ") + ")"); refused++; }
   else if (pal.errors) { log("REFUSED palette " + pal.name + " (" + path.basename(pal.file) + "): " + pal.errors.join("; ")); refused++; pal = loadPalette(null); }
   else log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
   const RGB = pal.rgb, of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
@@ -164,7 +175,7 @@ export function check(files, log = console.log, { drop = false } = {}) {
       images.set(file, img);
     }
     return images.get(file); };
-  for (const { f, dir, man } of mans) {
+  for (const { f, dir, man } of used) {
     log("manifest " + f + ": " + (man.pieces || []).length + " pieces");
     for (const p of man.pieces || []) {
       if (typeof p.name === "string" && merged.has(p.name)) log("  " + p.name + ": replaced by the later entry");

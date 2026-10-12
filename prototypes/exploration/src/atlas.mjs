@@ -82,7 +82,7 @@ export function coreSet(cat) { return coreMissing(cat).length === 0; }
 
 // The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the five lookup
 // tables the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]). coreRGB and coreTables are the page's own 48. Returns the table's
-// rgb and tables (arrays of length N), or { errors }.
+// rgb and tables (arrays of length N), or { errors }. coreTables also carries the core names: the page addresses colours by name.
 export const PALETTE_MAX = 256;
 export const TABLE_FIELDS = ['dark', 'light', 'dark2', 'fog', 'fade'];
 export function paletteTable(coreRGB, coreTables, file) {
@@ -109,6 +109,7 @@ export function paletteTable(coreRGB, coreTables, file) {
     if (k < core) {
       const c = coreRGB[k], r = rgb[k];
       if (r[0] !== c[0] || r[1] !== c[1] || r[2] !== c[2]) errors.push('entry ' + k + ': hex ' + hex + ' differs from the core colour');
+      if (e.name !== coreTables.names[k]) errors.push('entry ' + k + ': name ' + JSON.stringify(e.name) + ' differs from the core name (' + coreTables.names[k] + ')');
       for (const f of TABLE_FIELDS) if (e[f] !== coreTables[f][k]) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(e[f]) + ' differs from the core table (' + coreTables[f][k] + ')');
     }
   }
