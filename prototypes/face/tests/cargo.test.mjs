@@ -247,9 +247,11 @@ test("the containers stand at their places from 800 ms, one for each material th
 test("a crate that brought all three shows all three; the 800 ms cut redraws at most 12288 px (the dirty test above holds the worst refresh to a quarter of the screen)", { skip }, async () => {
   const b = scene({ ...OPEN, podsEach: 2 }), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
   f.frame(t0 + 760); dirty(f); f.frame(t0 + 800); const add = dirty(f); assert.deepEqual(shownStores(f, b), MATS); assert.ok(add <= 12288, `the 800 frame redrew ${add} px`);
-  { const lg = logOf(f) ?? (f.frame(t0 + 800), logOf(f)); f.frame(t0 + 900); const lg2 = logOf(f) ?? lg, st = lg2.regions.filter((r) => r.id === "stores"); assert.ok(st.length >= 1, "the containers are logged");
-    assert.deepEqual(departures(lg2, cargoSpec, frameSpec, "opening"), [], "all three shown: their span is not a departure");
-    assert.ok(departures({ regions: [{ id: "stores", layer: "painted", rect: [184, 320, 640, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a span that is not the places' is a departure"); }
+  { const lg = logOf(f) ?? (f.frame(t0 + 800), logOf(f)); f.frame(t0 + 900); const lg2 = logOf(f) ?? lg, st = lg2.regions.filter((r) => r.id.startsWith("stores.")); assert.deepEqual(st.map((r) => r.id).sort(), ["stores.data", "stores.energy", "stores.essence"], "the containers are logged one region each");
+    assert.deepEqual(departures(lg2, cargoSpec, frameSpec, "opening"), [], "all three shown: each at its place is no departure");
+    assert.ok(departures({ regions: [{ id: "stores", layer: "painted", rect: [184, 320, 640, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a span under the old shared id is a departure");
+    { const c = JSON.parse(JSON.stringify(lg2)), d = c.regions.find((r) => r.id === "stores.data"); d.rect = [d.rect[0] + 8, d.rect[1], d.rect[2], d.rect[3]];
+      const out = departures(c, cargoSpec, frameSpec, "opening"); assert.ok(out.some((m) => /the data container/.test(m)), "the data container moved 8 px inside the span is found: " + JSON.stringify(out)); } }
   console.log(`# Cargo's containers: the 800 ms cut redraws ${add} px`);
 });
 test("with reduced motion the containers are the same props step, a cut at 800 ms, and none shows at 799; in the report none shows", { skip }, async () => {
@@ -257,6 +259,6 @@ test("with reduced motion the containers are the same props step, a cut at 800 m
   f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2);
   const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); };
   stage(799); assert.deepEqual(shownStores(f, b0), []); stage(800); assert.deepEqual(shownStores(f, b0), ["data"]);
-  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores"); assert.equal(st.length, 1, "the one container is logged as stores"); assert.deepEqual(st[0].rect, R.stores.places.data); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores", layer: "art", rect: [200, 320, 48, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
+  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores.data"); assert.equal(st.length, 1, "the one container is logged as stores.data"); assert.deepEqual(st[0].rect, R.stores.places.data); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: [200, 320, 48, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
   const r = scene({ ...OPEN, state: "report" }), g = await start(r); logOf(g); assert.deepEqual(shownStores(g, r), [], "the report has no containers");
 });
