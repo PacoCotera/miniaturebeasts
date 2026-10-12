@@ -674,10 +674,10 @@ function inPlace() {
   return p;
 }
 
-test("the place's Call help line reads 'Call lifts the veil, lights finds' and is 268 px at 2×", () => {
-  const p = world(), s = "Call lifts the veil, lights finds";
-  assert.match(PAGE, /fxOnce\('callplace', 'Call lifts the veil, lights finds', 2\)/);
-  assert.equal(p.run(`textW(${JSON.stringify(s)}, 2)`), 268);
+test("the place's Call help line reads 'Call lifts the veil: finds show' and is 260 px at 2×", () => {
+  const p = world(), s = "Call lifts the veil: finds show";
+  assert.match(PAGE, /fxOnce\('callplace', 'Call lifts the veil: finds show', 2\)/);
+  assert.equal(p.run(`textW(${JSON.stringify(s)}, 2)`), 260);
   assert.doesNotMatch(PAGE, /The teal CALL button/);
 });
 
@@ -786,4 +786,17 @@ test("shell: the Back and Confirm icons are the signed masters, byte for byte", 
     assert.equal(createHash("sha256").update(placed).digest("hex"), e.sha256, id + ": the manifest's hash");
     assert.ok(placed.equals(master), id + ": byte-identical to the master");
   }
+});
+
+test("Cargo's bottom line: a crate with room, the finds in the hold with the bay full; the menu's End row says what it does", () => {
+  const p = world(); p.key("confirm"); p.key("confirm"); assert.ok(p.run("S.exp"), "an expedition");
+  p.run("S.exp.pos = S.exp.start; S.phase = 'cargo';");
+  assert.equal(p.run("canSend()"), true);
+  const L = p.run("lineFor()"); assert.equal(L.ok, "End expedition");
+  assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)), ["seals a crate · the world turns", "seals a crate"]);
+  assert.ok(p.run("textWT('seals a crate', 2)") <= 223, "the short form fits the slot");
+  p.run("S.bay = [{}, {}, {}]"); assert.equal(p.run("lineFor().ctx"), "finds stay in the hold");
+  assert.ok(p.run("textWT('finds stay in the hold', 2)") <= 223, "fits whole");
+  assert.doesNotMatch(PAGE, /seals the hold · the world turns|shows what it seals/);
+  assert.match(PAGE, /'shows what it does'/);
 });

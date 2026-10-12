@@ -4223,7 +4223,7 @@ function mapContext() {
 // First sightings in the top bar: what the Call slot means, and the weather group's arrows.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  if (S.phase === 'patch') fxOnce('callplace', 'Call lifts the veil, lights finds', 2);
+  if (S.phase === 'patch') fxOnce('callplace', 'Call lifts the veil: finds show', 2);
   else fxOnce('callmap', 'CALL here drops a pin for 1 Energy', 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
   const lvl = stormLevel(); if (lvl) fxOnce('hudstorm', 'Bottom line: bolts are the storm · it moves ' + (ex.storm.dir > 0 ? '▶ east' : '◀ west'), 1);
@@ -4277,9 +4277,9 @@ function lineFor() {
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
-      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
+      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it does'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close', fieldFrozen()) : L1('', '', 'close');   // read-only: one way out
-    case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
+    case 'cargo': return S.exp ? (canSend() ? L1('End expedition', S.bay.length >= BAY ? 'finds stay in the hold' : ['seals a crate · the world turns', 'seals a crate'], 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
       if (!m) { if (S.exp) return L1('', S.exp.pt ? CARE_TEXT.leadsThisExp : CARE_TEXT.noOneGrown, bk);   // the Lead card: read-only mid-expedition; no partner leads one without a grown mibi
