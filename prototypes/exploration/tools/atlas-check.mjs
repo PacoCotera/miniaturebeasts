@@ -93,7 +93,7 @@ export function decodePNG(buf) {
 
 const isInt = v => Number.isInteger(v) && v >= 0;
 const pair = v => Array.isArray(v) && v.length === 2 && v.every(Number.isInteger);
-// The fields a piece must carry (§4.1, §15.2).
+// The fields a piece must carry.
 function fieldErrors(p, sheets) {
   const e = [];
   if (typeof p.name !== "string" || !p.name) e.push("missing field name");
@@ -133,7 +133,7 @@ function keyCounts(o, pre = "", out = []) {
   return out;
 }
 
-// The blocking kinds (§4.4, settled at M1) that are incomplete, so that the page would need the rock stand-in for some tile, while
+// The blocking kinds that are incomplete, so that the page would need the rock stand-in for some tile, while
 // the stand-in (face.w1 and material.rock) is not there: lip with any of its 4 × 7 quarter lists empty; face with face.w1 empty
 // (every other face list falls back to it); side with side.e.mid or side.w.mid empty; rock with no boulder of 48 × 48 or less.
 export function incompleteKinds(cat) {
