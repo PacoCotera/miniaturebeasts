@@ -68,6 +68,7 @@ The ruling on item 10: deliberate pixel-by-pixel placement and editing of a gene
 5. **Tree form:** regenerated: a new Gemini painting with the concept's canopy as the reference (leaf-cluster masses with notched, broken edges; [`sources/r11/C48-T-r11-b1`](sources/r11/)), Retro Diffusion at the final size 136 × 152 again (three seeds, seed 52 kept; the piece is 114 × 117 after the clean-up), cleaned as before; the round 11 rain table and the tealD outline are kept.
 6. **Pawn front:** a 1 px clay line between the chin and the ruff; the chin ruff is cream and sand, a step lighter than the skin. **Back:** the ruff is attached to the hood's outline, 1 to 2 px along both lower sides (rows 12 to 17), no floating pixels.
 7. **Side walks' sleeve:** drawn in the coat's orange shade down the hip with the mitten showing 2 px past the coat's edge, forward on one contact and back on the other (and forward in the passing frame).
+8. HANDOVER.md opens with round 11b.
 
 ## The owner's decision on the pawn, and what answers it
 
@@ -322,7 +323,7 @@ Sheets: six indexed PNGs (the ground sheet holds the tiles and the whole shore s
 
 ## Sign-off checklist, §2 Painted master, art director's column (round 9)
 
-From the review checklist, §2 Painted master; the lines it checks are in the style guide ([Masters](../../../design/style-guide/README.md#masters), [The Companion](../../../design/style-guide/README.md#the-companion)). Yes/no per line; failures listed, not hidden. The capabilities column is the builder's and is not signed here.
+From [`design/style-guide/sign-off.md`](../../../design/style-guide/sign-off.md) §2. Yes/no per line; failures listed, not hidden. The capabilities column is the builder's and is not signed here.
 
 | Art direction | |
 | --- | --- |

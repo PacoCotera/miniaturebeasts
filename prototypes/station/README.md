@@ -33,7 +33,7 @@ These steps are the deprecated layer's and are not to be followed for a new scre
 4. **The focus.** The graph is the spec's. The screen resolves the selectors it names (`list.current`, `rail.last`) and fills in nothing else.
 5. **The pictures.** Every picture is registered in the manifest at its size (`src/pictures.mjs`), a placeholder flagged with what it waits for. Close-ups are rendered by the rig's camera at their size, never cropped and enlarged.
 6. **The intents.** A key on a focused target is one rule call in `state.mjs` (new rules land there with tests); its result becomes events on the timeline (`TL.play({ kind, target, ms, hold })`), which hold input while they play. No global timestamps.
-7. **The journey and the review checklist.** Extend `tools/journey.mjs` with the screen's steps and `frameShot` points (1024×600 captures in `img/`), run `tools/checks.mjs`, fill in the review checklist's section 3.
+7. **The journey and the sign-off.** Extend `tools/journey.mjs` with the screen's steps and `frameShot` points (1024×600 captures in `img/`), run `tools/checks.mjs`, fill in the sign-off's section 3.
 
 **Frozen:** this registration (`registerScreen(name, { nodes, … })` or `{ draw, … }`) is the deprecated layer's; the freeze check refuses a screen that gains `draw`, `nodes` or `faceNodes`, and refuses a `registerScreen` call that is not a string name and an object literal.
 
@@ -183,7 +183,7 @@ The body of the Cross screen is the splice ([cross.json](../ui/specs/station/cro
 - **Never drawn:** a copy, look, seed or range of a chapter either parent has not read (its child's column is frost with "read {parent}'s {chapter}", and only the parent that read it shows its own copies, on the chapter view), anything of a sealed chapter but its find, the child's actual draw, odds, percentages or counts.
 - **Tests:** `tests/cross-splice.test.mjs` (the geometry on all frames, the routing from the forecast, nothing unread drawn, the sealed find, the heads and the line, the wish), `tests/cross-read.test.mjs` (the forecast's mask), and the journey (the overview, ▼ into a chapter, ▲ back, ◀ ▶), whose captures are `img/cross-overview.png` and `img/cross-chapter.png`.
 
-## The field guide: rules and spec, drawing pending
+## The field guide: rules and spec, drawing pending (lvgl-switch.md §6 Q3 a)
 
 The Book's second spread (every chapter a column, every trait a cell with its pips, a detail band with the look plates and "Carried by") was first built on the JavaScript drawing layer on the frozen `field-guide` branch (5927d91d). `main` carries only its data and rules; the drawing is built on the LVGL face at L2.1.
 
