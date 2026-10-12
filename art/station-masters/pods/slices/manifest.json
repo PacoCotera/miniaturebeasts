@@ -10717,10 +10717,10 @@
   ],
   "src": "slices/dome-back-304x272.png (signed)",
   "made": "the small chamber for Create, back: the signed Incubator chamber's back reduced uniformly to 176 wide (scale 0.5789, only ever reduced), set on the 176x224 region with its foot at region y 192, empty (pass 115)",
-  "sha256": "2a4a9dffc00610517078f6e5d8f518e9ad383ba54c64ab0e70f4c661f55b2343",
+  "sha256": "0c1f4a84108342532ba0f8728770e63b3a72bc949a4fd2bd3e5dea0e3c200a2f",
   "status": "signed",
   "signed_in": "art director, verdict (72561d74)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192"
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192; 10-11: the interior floor carried down 1-7 px to meet the front sill (screen rows 269-275), so the stage no longer shows through as a dark line under the bud"
  },
  "dome-small-front-176x224": {
   "size": [
