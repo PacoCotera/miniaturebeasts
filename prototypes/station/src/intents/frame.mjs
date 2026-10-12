@@ -18,11 +18,13 @@ export function roomKey(h, key) {
   h.goto(SCREEN_OF[key]);
   return true;
 }
-// The Companion's Dock key: it docks or lifts; docked while the screen slept, the arrival plays on Home where it is seen.
-export function dock(h, fromIdle = false) {
+// The Companion's Dock key: it docks or lifts; docked while the screen slept, or from the play page while another device had the keys, the arrival plays on Home where it is seen (frame.json navigation.dock).
+// A dock from the play page lands on Home with the ring on the room, unless the screen is one that stays: Home and Cargo play their own arrival, an unpaid choice (Create, Cross), the namer and the Sitting keep the player where they are.
+const landsHome = (h) => { const d = h.specs.frame.navigation.dock; return !d.stays.includes(h.ui.screen) && !(d.namerStays && h.ui.screen === "habitat" && h.ui.hab?.namer); };
+export function dock(h, fromIdle = false, keysElsewhere = false) {
   const r = T.dock(h.st, h.sv, h.settings, h.now());
   if (!r.ok) { h.say(r.msg); return r; }
-  if (r.docked && fromIdle) { h.ui.home.f = "room"; if (h.ui.screen !== "home") h.goto("home"); }   // the Dock from Idle docks and lands on Home with the ring on the room (frame.json idle.keys.dock)
+  if (r.docked && (fromIdle || (keysElsewhere && landsHome(h)))) { h.ui.home.f = "room"; if (h.ui.screen !== "home") h.goto("home"); }   // the Dock from Idle docks and lands on Home with the ring on the room (frame.json idle.keys.dock)
   if (r.docked) {
     h.ui.cargo.mend = r.mend;   // Cargo keeps the dock's mend until the report names it (cargo.json regions.report.probe)
     h.play({ kind: "tick", target: "dock", ms: 0 });

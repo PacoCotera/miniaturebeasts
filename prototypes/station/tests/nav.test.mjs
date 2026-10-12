@@ -49,5 +49,5 @@ test("the Book's Visit goes to a housed mibi of the species: its face if one is 
 
 test("Dock on Idle wakes and still acts (a source check on the host: the Dock key is the Caddy's, not a face verb)", () => {
   const src = (f) => readFileSync(path.resolve(here, "../src", f), "utf8");
-  assert.match(src("main.mjs"), /const wasIdle = UI\.idle; if \(wasIdle\) \{ UI\.idle = false;.*frameIntents\.dock\(H, wasIdle\)/, "Dock on Idle wakes and still acts");
+  assert.match(src("main.mjs"), /const wasIdle = UI\.idle; if \(wasIdle\) \{ UI\.idle = false;.*frameIntents\.dock\(H, wasIdle, dockElsewhere\)/, "Dock on Idle wakes and still acts");
 });

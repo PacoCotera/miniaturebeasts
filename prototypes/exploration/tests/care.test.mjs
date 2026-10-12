@@ -321,8 +321,8 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
   const once = JSON.stringify(S); t.normalizeCare(S); assert.equal(JSON.stringify(S), once);
 });
 test("a new world: the carried set, no `with`; SAVE_V stays 8", () => {
-  assert.match(source("newWorld"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
-  assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("newWorld")));
+  assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
+  assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
   assert.match(PAGE, /SAVE_KEY = 'mb-save-v8', SAVE_V = 8/);
 });
 

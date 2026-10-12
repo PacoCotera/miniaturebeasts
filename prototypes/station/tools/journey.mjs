@@ -703,7 +703,7 @@ await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "
 await page.evaluate(() => window.__st.ready);
 expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no save, no pods");
 await page.keyboard.press("KeyD"); await page.waitForTimeout(250);
-expect(/No Companion world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
+expect(/no world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(200); }
 await page.waitForTimeout(300); await hold(); await stepClock(1200); await frameShot("page-fresh", true); await release();   // the last screen change's dither and any arrival are over: the 1024×600 frame itself
 await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500); await frameShot("page-vivarium-empty", true);   // a fresh world's whole: nobody lives here yet, the bays free

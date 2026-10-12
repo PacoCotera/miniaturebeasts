@@ -84,7 +84,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     display, present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },
     hash: () => (M._face_hash() >>> 0).toString(16).padStart(8, "0"),
-    stats: () => ({ frames, copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: handles.size, props: M._face_props_count(), events: M._face_event_count() }),
+    stats: () => ({ frames, copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: handles.size, props: M._face_props_count(), events: M._face_event_count(), heap: M.HEAPU8.buffer.byteLength }),
     pixel: (x, y) => { const p = M._face_fb() + (y * W + x) * 4; return [M.HEAPU8[p + 2], M.HEAPU8[p + 1], M.HEAPU8[p]]; },
     // test mode: the layers a pass shows (1 chrome; 2 chrome and art; 3 all), the pixels outside the palette on the last frame
     // LVGL keeps a fixed number of invalid areas a refresh and redraws the whole screen on one more: the overflows so far (monotonic), and the cap
