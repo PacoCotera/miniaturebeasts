@@ -40,3 +40,14 @@ The first cut left magenta key residue under S13's feet and belly (1,163 px at 3
   - Then `match-juvenile.py S03 teal,gold` moved the head and the bulb onto the signed juvenile's teal and gold, keeping the painting's shading. The coat was already the juvenile's mint and was left alone. A mint pass made it bluer, so it was dropped.
   - Proof: `S03-vivarium-1x.png` (the juvenile at 104, the adult at 144 and 96, on the day glass).
   - Signed beside the juvenile at 1×; the whole-screen sign follows in builder 2's captures.
+
+## S02 (2026-10-12), the same recipe
+
+`mibi-adult-S02-a`, one request, 3.77 MXN, signed.
+- **Inputs:** the rig and the silhouette only. The bare base: a warm brown bean body under a small pale tan cap, rosy cheeks, a round tail puff, no spots, bands or flecks, short fuzz.
+- **Cut:** by `cut-adults.py`, 0 magenta at every size.
+- **Colour match:** `match-juvenile.py S02 brown,cap` moved the body's brown and the cap onto the signed juvenile's.
+- **Proof:** `S02-vivarium-1x.png`.
+- **Sign:** signed beside the juvenile at 1×; the whole-screen sign follows.
+
+The adult line stands at 8.14 of 16 MXN: S03 a (refused) 0.54, S03 b 3.83, S02 a 3.77.

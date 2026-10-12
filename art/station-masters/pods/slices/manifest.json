@@ -14230,5 +14230,57 @@
   "status": "signed",
   "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
   "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S02-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 304x312",
+  "sha256": "2deffd984707a18c6c9109cb4945f95532f059394c0a18bf04f1b726c8bcbf49",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S02-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 144x152",
+  "sha256": "1362c33472a99649a99c223d21c30d2ee57f9b66e05fa784b54b1f5f9f5044c9",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S02-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 96x88",
+  "sha256": "facedb7f27a6b41169100bb65cfb833da2cb23b78e56ebb1dcbccc8eb5b305b8",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S02-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 48x48",
+  "sha256": "0e23ae35585fa728f5fb2eac65de3439d1837c44dedd1ef99acda860512a4269",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
  }
 }
