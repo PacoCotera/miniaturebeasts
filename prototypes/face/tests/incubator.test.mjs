@@ -229,6 +229,22 @@ test("the hatch with a moving set (M1 §2.5, R2): the table by face_test_cell: n
   assert.ok(worst <= 153600, `${worst} px`);
   console.log(`# the hatch with a moving set: worst frame ${worst} px; ${seen.map(([t, c]) => t + " " + c).join(", ")}`);
 });
+test("the hatch with a moving set, 1000–1180 (motion-spec §2.7a): the curl comes in at n = floor(16·(t−1000)/180) while the crack-2 bud goes out at 16 − n; about half of each at 1090; no cut at 1180", { skip }, async () => {
+  const f = await hatchMoving(), B = incSpec.regions.bud.rect, grab = () => { const out = []; for (let y = B[1]; y < B[1] + B[3]; y++) for (let x = B[0]; x < B[0] + B[2]; x++) out.push(f.pixel(x, y).join()); return out; };
+  let t = 0, whole = null, half = null, halfAt = 0;
+  for (t = 16; t <= 1400; t += 16) {
+    f.frame((f.t += 16)); const c = f.M._face_test_hatch_cell(), n = Math.floor((16 * (t - 1000)) / 180);
+    if (t < 1000 || (t < 1180 && n <= 0)) assert.equal(c, -50, `${t} ms: no curl yet`);
+    else if (t < 1180) assert.equal(c, -1 - n, `${t} ms: the curl at level ${n}`);
+    else assert.ok(c >= 0, `${t} ms: the curl whole, no cut`);
+    if (t >= 976 && t < 1000) whole = grab(); if (!half && t >= 1088) { half = grab(); halfAt = t; }
+  }
+  const gone = grab(), asWhole = half.filter((p, i) => p === whole[i] && p !== gone[i]).length, asGone = half.filter((p, i) => p === gone[i] && p !== whole[i]).length, differ = whole.filter((p, i) => p !== gone[i]).length;
+  assert.ok(differ > 500, "the bud covers its rect before and is gone after");
+  assert.ok(asWhole / differ > 0.3 && asWhole / differ < 0.7, `at ${halfAt} ms the bud shows on ${(asWhole / differ).toFixed(2)} of its pixels`);
+  assert.ok(asGone / differ > 0.3 && asGone / differ < 0.7, `at ${halfAt} ms the bud is gone from ${(asGone / differ).toFixed(2)} of its pixels`);
+  console.log(`# the hatch's crossfade at ${halfAt} ms: the bud on ${(asWhole / differ).toFixed(2)} of its pixels, gone from ${(asGone / differ).toFixed(2)}`);
+});
 test("the hatch with a moving set, motion off: the cut to its end (the stand)", { skip }, async () => {
   const f = await hatchMoving({ motion: false }); frames(f); assert.equal(hatchCell(f), "stand");
 });

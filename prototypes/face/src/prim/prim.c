@@ -151,15 +151,16 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       if (bw < 1 || bh < 1 || bw * bh > 1024 * 64 || x < 0 || y < 0 || x + bw > w || y + bh > h || ring_tab_mask(mask, &t) < 0) { free(mask); return -1; }
       for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
-    } else if (nl == 9 && strncmp(name, "bayerPick", 9) == 0 && tok[i].size == 10) {   /* ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy]: the same pick between two windows of the picture's w x h, `from`'s at (fsx, fsy) and `to`'s at (tsx, tsy) (two cells of an atlas, M1 §2.1); each window lies inside its asset; `from` -1 is clear (a dither-in) */
+    } else if (nl == 9 && strncmp(name, "bayerPick", 9) == 0 && tok[i].size == 10) {   /* ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy]: the same pick between two windows of the picture's w x h, `from`'s at (fsx, fsy) and `to`'s at (tsx, tsy) (two cells of an atlas, M1 §2.1); each window lies inside its asset; `from` -1 is clear (a dither-in), `to` -1 is clear (a dither-out: `from` keeps the pixels a dither-in at the same level leaves) */
       static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
       int fh = A(0), th = A(1), level = A(2), ox = A(3), oy = A(4), fsx = A(5), fsy = A(6), tsx = A(7), tsy = A(8);
-      if (g_bad || fh < -1 || th < 0 || fh >= MAX_ASSET || th >= MAX_ASSET || level < 0 || level > 16 || fsx < 0 || fsy < 0 || tsx < 0 || tsy < 0) return -1;
-      const uint8_t *to = g_a[th].px, *from = fh >= 0 ? g_a[fh].px : NULL; static const uint8_t CLEAR[4] = { 0, 0, 0, 0 };
-      if (!to || tsx + w > g_a[th].w || tsy + h > g_a[th].h) return -1;
+      if (g_bad || fh < -1 || th < -1 || (fh < 0 && th < 0) || fh >= MAX_ASSET || th >= MAX_ASSET || level < 0 || level > 16 || fsx < 0 || fsy < 0 || tsx < 0 || tsy < 0) return -1;
+      const uint8_t *to = th >= 0 ? g_a[th].px : NULL, *from = fh >= 0 ? g_a[fh].px : NULL; static const uint8_t CLEAR[4] = { 0, 0, 0, 0 };
+      if (th >= 0 && (!to || tsx + w > g_a[th].w || tsy + h > g_a[th].h)) return -1;
       if (fh >= 0 && (!from || fsx + w > g_a[fh].w || fsy + h > g_a[fh].h)) return -1;
-      int tw = g_a[th].w, fw = fh >= 0 ? g_a[fh].w : 0;
-      for (int yy = 0; yy < h; yy++) for (int xx = 0; xx < w; xx++) memcpy(px + (yy * w + xx) * 4, BAYER[((oy + yy) & 3) * 4 + ((ox + xx) & 3)] < level ? to + ((tsy + yy) * tw + tsx + xx) * 4 : from ? from + ((fsy + yy) * fw + fsx + xx) * 4 : CLEAR, 4);
+      int tw = th >= 0 ? g_a[th].w : 0, fw = fh >= 0 ? g_a[fh].w : 0;
+      for (int yy = 0; yy < h; yy++) for (int xx = 0; xx < w; xx++) { const int pick = BAYER[((oy + yy) & 3) * 4 + ((ox + xx) & 3)] < level;
+        memcpy(px + (yy * w + xx) * 4, pick ? (to ? to + ((tsy + yy) * tw + tsx + xx) * 4 : CLEAR) : from ? from + ((fsy + yy) * fw + fsx + xx) * 4 : CLEAR, 4); }
     } else if (nl == 9 && strncmp(name, "bayerPick", 9) == 0 && tok[i].size == 6) {   /* ["bayerPick", from, to, level, ox, oy]: the picture of asset `to` where BAYER[((oy + y) & 3) * 4 + ((ox + x) & 3)] < level (0..16), else that of asset `from`: whole pixels, no blend (lvgl-switch.md §2.7). Both are the picture's own size. */
       static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
       int fh = A(0), th = A(1), level = A(2), ox = A(3), oy = A(4);

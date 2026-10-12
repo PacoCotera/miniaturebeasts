@@ -55,6 +55,8 @@ static void build_bench(void) {
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
 static int hatch_moving(void);
+#define HATCH_FADE0 1000
+static int hatch_fade_level(int t) { return 16 * (t - HATCH_FADE0) / 180; }   /* the crossfade's level n at t ms, 1000–1180 (motion-spec §2.7a): floor(16 · (t − 1000) / 180) */
 /* the bud: its five pictures, the ready shape and the ready front are always nodes, in this draw order (early, late, ready, shape, front, crack1, crack2); the state and the hatch's time show some of them: early, late, ready with its shape
    and its front (and in the hatch until 600), at 600 crack1 over ready (the shape and the front go), at 800 crack2 alone over ready, nothing at 1000 */
 static void build_bud(int t) {
@@ -66,14 +68,17 @@ static void build_bud(int t) {
   int ready = !gone && (c1 || c2 || (strcmp(stage, "early") != 0 && strcmp(stage, "late") != 0));
   int front = ready && !c1 && !c2 && (strcmp(stage, "ready") == 0 || strcmp(stage, "hatch") == 0);   /* the shape and the front: ready, and in the hatch until the crack at 600 */
   const char *fb = v_pstr("regions.bud.ready");
+  int fading = hatch_moving() && t >= HATCH_FADE0 && t < a3, n = fading ? hatch_fade_level(t) : 0;   /* with a moving set (motion-spec §2.7a): the crack-2 bud goes out at 16 − n while the curl comes in at n, 1000–1180, on the same Bayer: the bud keeps the pixels the curl has not taken */
   static const char *K[3] = { "early", "late", "ready" }; const int on3[3] = { early, late, ready };
   for (int i = 0; i < 3; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", K[i])); const char *id = v_fmt("bud.%s", K[i]);
-    if (has(pic) && on3[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
+    if (has(pic) && on3[i] && fading) { v_sprite_hidden(id, pic, r[0], r[1]); v_dither_window(v_fmt("bud.%s.fade", K[i]), pic, 0, 0, NULL, 0, 0, n, r[0], r[1], r[2], r[3]); }
+    else if (has(pic) && on3[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
   { const char *pic = v_pstr("regions.bud.shape"); v_name("bud"); if (has(pic) && front) v_sprite("bud.shape", pic, s[0], s[1], s[2], s[3]); else v_sprite_hidden("bud.shape", has(pic) ? pic : fb, s[0], s[1]); }
   { const char *pic = v_pstr("regions.bud.front"); v_name("bud"); if (has(pic) && front) v_sprite("bud.front", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("bud.front", has(pic) ? pic : fb, r[0], r[1]); }
   static const char *C[2] = { "crack1", "crack2" }; const int onc[2] = { c1, c2 };
   for (int i = 0; i < 2; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", C[i])); const char *id = v_fmt("bud.%s", C[i]);
-    if (has(pic) && onc[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
+    if (has(pic) && onc[i] && fading) { v_sprite_hidden(id, pic, r[0], r[1]); v_dither_window(v_fmt("bud.%s.fade", C[i]), pic, 0, 0, NULL, 0, 0, n, r[0], r[1], r[2], r[3]); }
+    else if (has(pic) && onc[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
 }
 static void build_base(void) {
   picture("base", "base", "regions.base.rect", v_pstr("regions.base.picture"));
@@ -100,7 +105,7 @@ static void hatch_frame(const mv_stage_t *S0, int t, hatchf_t *f) {
     int c = S0->breathe.cell[0]; for (int i = 0; i < S0->breathe.n; i++) { int d = S0->breathe.ms[i] / 80; if (k < d) { c = S0->breathe.cell[i]; break; } k -= d; }
     f->cell = S0->wcell[c]; f->shadow = 1; return; }
   if (t < 1000) return;
-  if (t < 1180) { f->cell = "curl"; f->dl = 1 + 15 * (t - 1000) / 180; f->dfrom = NULL; return; }   /* 16 levels from clear */
+  if (t < 1180) { int n = hatch_fade_level(t); if (n <= 0) return; f->cell = "curl"; f->dl = n; f->dfrom = NULL; return; }   /* the curl comes in at n from clear while the bud goes out at 16 − n (motion-spec §2.7a); level 0 shows nothing */
   if (t < 1500) { f->cell = "curl"; f->shadow = 1; return; }
   if (t < 2140) { f->cell = "curl-b1"; f->shadow = 1; return; }
   if (t < 2320) { f->cell = "crouch"; f->dy = 2; f->dl = 1 + 15 * (t - 2140) / 180; f->dfrom = "curl"; f->ddt = 2; f->shadow = 1; return; }

@@ -320,7 +320,7 @@ test("a moving atlas (M1 §1.2): its width is 1 + n·w for its set's cells, or i
   assert.equal(f.send({ t: "asset", id: "moving:juvenile:S01:walk:104x112:species", w: 1 + 12 * 104, h: 112, policy: "art", status: "placeholder" }), 0, f.errors().join());
   assert.equal(f.send({ t: "asset", id: "moving:adult:S01:shadow:144x16", w: 1 + 2 * 144, h: 16, policy: "art", status: "placeholder" }), 0);
 });
-test("bayerPick with windows (M1 §2.1): the pick between two w × h windows of larger pictures, a window inside its asset; from -1 is clear; the six-token form is unchanged", { skip }, async () => {
+test("bayerPick with windows (M1 §2.1): the pick between two w × h windows of larger pictures, a window inside its asset; from -1 is clear, to -1 is clear (never both); the six-token form is unchanged", { skip }, async () => {
   const f = await boot(); frames(f, 2);
   const block = (rgb, w, h) => () => { const d = new Uint8ClampedArray(w * h * 4); for (let i = 0; i < w * h; i++) { const x = i % w; const c = x < w / 2 ? rgb[0] : rgb[1]; d.set([...rgbOf(c), 255], i * 4); } return { w, h, data: d, policy: "art", status: "placeholder" }; };
   const a = f.handleOf("t:atlasA", block(["clay", "ice"], 9, 4)), b = f.handleOf("t:atlasB", block(["mist", "bark"], 9, 4));   // two cells of 4 × 4 after a 1 px column: the left cell clay (A) / mist (B), the right ice / bark
@@ -329,4 +329,10 @@ test("bayerPick with windows (M1 §2.1): the pick between two w × h windows of 
   f.scene(node([["bayerPick", a, b, 0, 0, 0, 5, 0, 1, 0]]), env); frames(f); assert.deepEqual(f.pixel(301, 301), rgbOf("ice"), "level 0: all `from`, its window at x 5 (the right cell)");
   f.scene(node([["bayerPick", -1, b, 0, 0, 0, 0, 0, 1, 0]]), env); frames(f); assert.deepEqual(f.pixel(301, 301), rgbOf("ground"), "from -1: clear, the ground shows");
   f.scene(node([["bayerPick", a, b, 8, 0, 0, 6, 0, 1, 0]]), env); frames(f); assert.equal(f.refused(), 1, "a window past its asset is refused");
+  // to -1 is clear (a dither-out, motion-spec §2.7a): `from` keeps exactly the pixels a dither-in at the same level leaves
+  const at8 = (from, to) => { f.scene(node([["bayerPick", from, to, 8, 0, 0, 5, 0, 1, 0]]), env); frames(f); const o = []; for (let y = 300; y < 304; y++) for (let x = 300; x < 304; x++) o.push(f.pixel(x, y).join()); return o; };
+  const inn = at8(-1, b), out = at8(a, -1), ground = rgbOf("ground").join();
+  assert.equal(inn.filter((p) => p === ground).length, 8, "a dither-in at 8: half clear"); assert.equal(out.filter((p) => p === ground).length, 8, "a dither-out at 8: half clear");
+  inn.forEach((p, i) => assert.ok((p === ground) !== (out[i] === ground), `pixel ${i}: in the dither-in or the dither-out, never both or neither`));
+  f.scene(node([["bayerPick", -1, -1, 8, 0, 0, 0, 0, 0, 0]]), env); frames(f); assert.equal(f.refused(), 1, "from and to both clear is refused");
 });
