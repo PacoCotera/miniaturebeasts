@@ -1,8 +1,8 @@
 # Species frames: the first three species on the real catalogue
 
-**Proposal** from game design with the genome engineer, 2026-10-07. It turns the approved [research loop](research-loop.md) (§3 the five kinds of part, §4 chapters and traits, §6 pods) into three concrete species frames on the real 114-pair authoring catalogue, so the Station can be built against real data. **Decided** marks owner decisions restated here; everything else is **Proposal**. The frames are data: [species-frames/](species-frames/) holds one JSON file per species in the [frame schema](species-frames/frames-schema.md), written by [frames.py](species-frames/frames.py). The script reads the catalogue (catalogue6, `v1/prototype/generator-workbench/innate-profile-package.mjs`) and builds every genome through the workbench's own resolver, so the ids, alleles and on/off states are real. Run `python3 design/proposals/species-frames/frames.py --check` to verify them.
+This turns the approved [research loop](research-loop.md) (§3 the five kinds of part, §4 chapters and traits, §6 pods) into three concrete species frames on the real 114-pair authoring catalogue, so the Station can be built against real data. The frames are data: [species-frames/](species-frames/) holds one JSON file per species in the [frame schema](species-frames/frames-schema.md), written by [frames.py](species-frames/frames.py). The script reads the catalogue (catalogue6, `v1/prototype/generator-workbench/innate-profile-package.mjs`) and builds every genome through the workbench's own resolver, so the ids, alleles and on/off states are real. Run `python3 design/proposals/species-frames/frames.py --check` to verify them.
 
-**Names.** The three species are the owner-approved **Loika** (S01, clan Lophessa), **Untuva** (S02, clan Kausida) and **Tuikis** (S03, clan Stilbera) of [species-names](species-names.md). Each frame carries a `name` and a `clan` field. The file names and ids keep the earlier working words (`species-hopper.json`, `species-puffcap.json`, `species-glowtail.json`) so that nothing that reads them breaks.
+**Names.** The three species are the approved **Loika** (S01, clan Lophessa), **Untuva** (S02, clan Kausida) and **Tuikis** (S03, clan Stilbera) of [species-names](species-names.md). Each frame carries a `name` and a `clan` field. The file names and ids keep the earlier working words (`species-hopper.json`, `species-puffcap.json`, `species-glowtail.json`) so that nothing that reads them breaks.
 
 ![Three species frames on the 114 paired loci](species-frames/frames.svg)
 
@@ -10,10 +10,10 @@
 
 ## 1. The frame method
 
-**What a frame is.** Every species carries all 114 pairs (**Decided:** copies stay when their owner is off, `compositional-contract.md`). A frame says, for each locus, whether the species fixes it or leaves it open, and puts each open locus in one trait of one chapter. The six draft loci and the four domains with no locus (maintenance, affinities, reproduction, fantastic physiology) are listed as "not yet", never as zero or absent.
+**What a frame is.** Every species carries all 114 pairs (copies stay when their owner is off, `compositional-contract.md`). A frame says, for each locus, whether the species fixes it or leaves it open, and puts each open locus in one trait of one chapter. The six draft loci and the four domains with no locus (maintenance, affinities, reproduction, fantastic physiology) are listed as "not yet", never as zero or absent.
 
 **Switches lock the plan.** The catalogue has two kinds of switch:
-- **Plan switches** (23) decide which owners exist: the older development switches (axial repeat, symmetry, attachments, jointed chains, membranes, fins, body wave), the eight organization switches (region depth, layout, symmetry, join, head, appendage role, groups, free links), posterior, wings or flaps, leg pairs, fur, skin or scales (both records), eye pair (the older record) and the temperament profile. They are **always locked**: species-defining organization is protected (**Decided**).
+- **Plan switches** (23) decide which owners exist: the older development switches (axial repeat, symmetry, attachments, jointed chains, membranes, fins, body wave), the eight organization switches (region depth, layout, symmetry, join, head, appendage role, groups, free links), posterior, wings or flaps, leg pairs, fur, skin or scales (both records), eye pair (the older record) and the temperament profile. They are **always locked**: species-defining organization is protected.
 - **Part switches** (6) turn one small part on or off: muzzle, crown, eyes, ears, tail and markings. A species may open one; Pip's crown is the case in point.
 
 **Switched off means locked.** When a switch is off, every part it owns keeps its copies but is not built (wings off, so span, chord and sweep are off too). The frame reads this from the resolver's own guard (`consumerGuard`, `compositional-vocabulary-adapter.mjs`), and for the older records that nothing draws yet, from the catalogue's `applicability`. A switched-off part is locked: the frame stores two equal copies for it.
@@ -26,9 +26,9 @@
 
 **Chapters by what the part is.** Coat: colours, markings, scales, fur. Face: head, muzzle, eyes, crown, ears. Shape: body proportions, regions, flaps. Legs & tail: legs, feet, tail. Movement, Stamina and Character: the movement, energy and cognition records. The ring order is fixed (Coat, Face, Shape, Legs & tail, Movement, Stamina, Character) and a species shows only the chapters it opens. A species may add one chapter of its own after them (the Tuikis's Glow, §4).
 
-**Sealed chapters are declared.** A species marks a chapter sealed and names the find that opens it (**Decided** as direction: a crystal, owner 09-27). Its parts are inherited and act from birth, but they can't be read or shaped until the find. The ring keeps a notch there.
+**Sealed chapters are declared.** A species marks a chapter sealed and names the find that opens it (the direction: a crystal). Its parts are inherited and act from birth, but they can't be read or shaped until the find. The ring keeps a notch there.
 
-**Shaping.** Looks are shapeable at Create and doings change only by breeding (**Decided** default, 10-07). A trait can override this, with a reason stored in the frame.
+**Shaping.** Looks are shapeable at Create and doings change only by breeding (the default). A trait can override this, with a reason stored in the frame.
 
 **Pod parameters come from the frame.** Size class from body size (`growth.core-half-length`). Proportion from the built type specimen's height to length (tall at 0.75 or more). Shell pattern: segments for a radial plan, otherwise soft ribs for fur, plates for scales and smooth dots for skin. Colour pair: two pigments from the species' pool. The glyph is drawn per species, 5×5 and mirrored.
 
@@ -36,7 +36,7 @@
 
 ## 2. Loika: the starter (Pip)
 
-Pip as in the approved art (**Decided:** charcoal, cream, orange eyes, leaf crest): one barrel body, a large fused head with a muzzle, two eyes and a crest, four short legs with pads, smooth skin, no ears, tail or wings. It leaves open **exactly the five traits of the Pip proof** (`v1/prototype/genetics/report.md`).
+Pip as in the approved art (charcoal, cream, orange eyes, leaf crest): one barrel body, a large fused head with a muzzle, two eyes and a crest, four short legs with pads, smooth skin, no ears, tail or wings. It leaves open **exactly the five traits of the Pip proof** (`v1/prototype/genetics/report.md`).
 
 | Chapter | Trait | Looks | Locus | Create |
 | --- | --- | --- | --- | --- |
@@ -141,17 +141,15 @@ A small, low, scaled burrower: two linked tapered body regions, a head with a sn
 | Built from random copies | 200 of 200 | 200 of 200 | 200 of 200 |
 | Not yet (all three) | 6 draft loci; maintenance, affinities, reproduction, fantastic physiology | | |
 
-The research loop's worked frame (57 locked, 57 heritable) was an illustration on a Loika-like plan with everything open; these frames replace it. The starter leaves 5 parts open and a later species 38, which is how genomes grow with the player (**Decided** as direction) on one catalogue.
+The research loop's worked frame (57 locked, 57 heritable) was an illustration on a Loika-like plan with everything open; these frames replace it. The starter leaves 5 parts open and a later species 38, which is how genomes grow with the player on one catalogue.
 
-## 6. Decisions for the owner
+## 6. Design choices
 
-1. **The Tuikis's glow is a doing.** It is how brightly and how long it glows at dusk, inherited only, on a Glow chapter of its own after Character once the emission locus exists. Until then it is fixed (gold, every Tuikis). The alternatives are a look shapeable at Create, where a child picks the brightest glow in one press and the pull is gone, or a look changed only by breeding, which works the same as a doing but breaks the default rule. *Recommended: a doing.* Breeding a brighter Tuikis is the first real reason to use the cross that is coming into the first build.
-2. **The Untuva's sealed Character chapter is the game's first find.** Its crystal is dug up by an Untuva partner sniffing out a buried pod. This teaches sealing on the third species the player meets, with a find they can work out. The alternative is to leave the Untuva fully open and seal something on a later species. *Recommended: yes, the first find.*
-3. **Pip on the catalogue, with two stand-ins.** Eye rings are carried by eye size: the pale rim grows with the eye, and the trait blends to three looks where Pip's `R` dominated. Drive is carried by pace, because `movement.burst-recruitment` is still a draft. The Loika has four legs as in the approved art, not the proof's six. *Recommended: accept these for the first build.* The genome engineer then adds a ring-pigment locus and validates burst recruitment, and the frame swaps the ids without the player seeing a change.
-4. **Chapter names as the player sees them.** The seven words stay fixed across species, in the same ring order, with at most one species chapter for a signature (Glow). *Recommended:* Coat, Face, Shape, Legs & tail, Movement, Stamina and **Nature** in place of Temperament. Nature is shorter on the ring, a child can read it, and it says "born that way", which is true: training changes behaviour, never genes (**Working rule**).
-
-**Decided 2026-10-08.** 1, 2 and 3 as recommended. 4: the seven chapter names stay fixed across species in ring order, with at most one species chapter for a signature. The seventh chapter is **Character**, not Nature: the taxonomy (`taxonomy.md` §5, decided earlier the same week) found *Nature* to be Pokémon's per-individual stat modifier and chose Character, and the workbench already uses it. Temperament is replaced by Character throughout the frames.
+1. **The Tuikis's glow is a doing.** It is how brightly and how long it glows at dusk, inherited only, on a Glow chapter of its own after Character once the emission locus exists. Until then it is fixed (gold, every Tuikis). Breeding a brighter Tuikis is the first real reason to use the cross that is coming into the first build. (A look shapeable at Create would let a child pick the brightest glow in one press and the pull would be gone; a look changed only by breeding works the same as a doing but breaks the default rule.)
+2. **The Untuva's sealed Character chapter is the game's first find.** Its crystal is dug up by an Untuva partner sniffing out a buried pod. This teaches sealing on the third species the player meets, with a find they can work out.
+3. **Pip on the catalogue, with two stand-ins.** Eye rings are carried by eye size: the pale rim grows with the eye, and the trait blends to three looks where Pip's `R` dominated. Drive is carried by pace, because `movement.burst-recruitment` is still a draft. The Loika has four legs as in the approved art, not the proof's six. These hold for the first build; the genome engineer then adds a ring-pigment locus and validates burst recruitment, and the frame swaps the ids without the player seeing a change.
+4. **Chapter names as the player sees them.** The seven chapter names stay fixed across species in ring order, with at most one species chapter for a signature (Glow). The seventh chapter is **Character**, not Nature: the taxonomy (`taxonomy.md` §5) found *Nature* to be Pokémon's per-individual stat modifier and chose Character, and the workbench already uses it. Temperament is replaced by Character throughout the frames. A child can read it, and it says "born that way", which is true: training changes behaviour, never genes.
 
 ## 7. For the genome engineer
 
-The frames need these from the catalogue, in this order: an emission locus (the glow); a ring pigment for the eyes; burst recruitment validated; a dorsal sheet for a cap on top; a belly field (Pip's cream belly); cap colour and markings on flaps. Each is listed under `notYet.pending` in the frame that needs it. A new catalogue pin means a new frame version, and saved mibis keep theirs (**Working rule:** rule changes never rewrite creatures).
+The frames need these from the catalogue, in this order: an emission locus (the glow); a ring pigment for the eyes; burst recruitment validated; a dorsal sheet for a cap on top; a belly field (Pip's cream belly); cap colour and markings on flaps. Each is listed under `notYet.pending` in the frame that needs it. A new catalogue pin means a new frame version, and saved mibis keep theirs (rule changes never rewrite creatures).

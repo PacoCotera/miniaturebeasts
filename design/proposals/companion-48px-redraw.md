@@ -1,6 +1,6 @@
 # Companion 48 px redraw: brief and plan
 
-**Proposal**, art-directed. Decided: 48 px tiles ([decisions](decisions/README.md) B), the 32/532/36 frame, Mibi 7×9 and the 48 colours ([ui-kit §6](ui-kit.md)), and Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
+Art-directed. Fixed: 48 px tiles, the 32/532/36 frame, Mibi 7×9 and the 48 colours ([ui-kit §6](ui-kit.md)), and Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
 
 ## 1. The brief
 
@@ -37,7 +37,7 @@ The **pixel artist** is a project role, under the art director's sign-off. Paint
 - **Mibi tokens:** derived on the Station from each mibi's painting: 48 px token (idle 2, walk 3), HUD face, 64 px partner face ([art pipeline](art-pipeline.md) §1.1, §6). Wild creatures and unmet silhouettes take the **generic token per species**, derived from the type specimen; a mibi awaiting its painting carries the placeholder set.
 - **Cleaned in Aseprite (headless)**, where the trial showed generation fails: seamless repeats, the outline rule, the Bayer edges, rain sheet streaks, two-frame idles and stepped cycles (generated frames boil), icons and key caps at 16 px, 9-slices.
 - **Assembled** as indexed sheets with a JSON atlas in `art/companion-48/`; sources, prompts and sidecars kept, generated stages labelled.
-- **Contact sheets** of every asset at 1× and 3× go to the owner at each review.
+- **Contact sheets** of every asset at 1× and 3× go to the reviewers at each review.
 
 ## 4. Palette discipline
 
@@ -57,7 +57,7 @@ Starts after the other builder's work in `index.html` lands.
 4. **Assets:** load signed sheets (indexed PNG and a JSON atlas: frames, anchor, foot point). Retire each procedural builder as its sheet lands; meanwhile a labelled grey box, never code-drawn art.
 5. **Light:** bake tiles per light level through the tables as now. The veil keeps its 16 px Bayer edge on 48 px tiles.
 6. **Sprites:** 48 px, anchored and sorted by foot; canopies 132×114, roofs 156×33; 40 a frame.
-7. **Reach view:** cells cut from the real 48 px ground, map props where the place's features stand (decision 1); tier 1 with 24 px signs and the silhouette pawn, tier 2 with 16 px. Cloud composed from the pieces by a seeded rule baked per world, rim toward the island, darkening through DARK away from it; rain as streaks behind one straight soft edge.
+7. **Reach view:** cells cut from the real 48 px ground, map props where the place's features stand (§9, 1); tier 1 with 24 px signs and the silhouette pawn, tier 2 with 16 px. Cloud composed from the pieces by a seeded rule baked per world, rim toward the island, darkening through DARK away from it; rain as streaks behind one straight soft edge.
 8. **Full map:** 26 px cells from the sheet, not crops.
 9. **Active mibi:** the derived 280×300 resident replaces the 8× token.
 10. **Checks:** `__mb.offPalette()` 0 everywhere; atlas sizes; cache size and `drawPatch` re-measured.
@@ -65,8 +65,9 @@ Starts after the other builder's work in `index.html` lands.
 ## 6. Order and reviews
 
 1. Palette file and tables signed.
-2. **Review place:** meadow and pond edge in a storm: meadow and shore sets, tree, bushes, three stones and a warned strike, outpost, pod, pawn, rain, HUD, bottom line, message box, with the creatures of decision 2. The builder hosts it meanwhile (§5, 1–6). **Review 1:** the owner sees this one place at 48 px, live at 1× on a true-size screen beside companion-storm and the 32 px mock-up, with its contact sheets. Nothing else is made until it is signed.
-3. Reach view: cloud, rim, rain sheet, signs, props, pawn. **Review 2:** the concept test (§7).4. Wood, rock field, cave, fog bank, veil, full map. **Review 3:** one place per land, then the map.
+2. **Review place:** meadow and pond edge in a storm: meadow and shore sets, tree, bushes, three stones and a warned strike, outpost, pod, pawn, rain, HUD, bottom line, message box, with the creatures of §9, 2. The builder hosts it meanwhile (§5, 1–6). **Review 1:** this one place is seen at 48 px, live at 1× on a true-size screen beside companion-storm and the 32 px mock-up, with its contact sheets. Nothing else is made until it is signed.
+3. Reach view: cloud, rim, rain sheet, signs, props, pawn. **Review 2:** the concept test (§7).
+4. Wood, rock field, cave, fog bank, veil, full map. **Review 3:** one place per land, then the map.
 5. HUD, bars, icons, pods, crates, panels. **Review 4:** each screen against its pass list.
 6. Final checks and the sign-off sheet.
 
@@ -75,7 +76,7 @@ The art director critiques each round at 1× first.
 ## 7. The concept test
 
 The reach view at 450×600, 1×, beside [companion-map-hands](../../art/concept-homepage/companion-map-hands.png) scaled to 450×600, as in [reach-vs-concept](ui-kit/reach-vs-concept.png), judged at arm's length at true size. It passes when:
-- the owner still calls it beautiful, and rates it at least level with the accepted mock-up shown unlabelled;
+- the reviewer still calls it beautiful, and rates it at least level with the accepted mock-up shown unlabelled;
 - the island is a lit clearing in soft, layered cloud with a lit rim, drawn heaps, no circles or slabs;
 - rain is one clean diagonal sheet;
 - the pawn is found within a second; signs read large.
@@ -86,12 +87,10 @@ On failure, cloud and props are redrawn before any other land starts.
 
 - **Down-render loses HiBit:** painted sources may turn to mush at 48 px. The review place tests the method first.
 - **Generated drift:** references get copied, tilesets ignore the palette; every output is snapped and checked.
-- **Derived tokens** may lose detail at 48 px. Only Pip's painting exists (decision 2).
+- **Derived tokens** may lose detail at 48 px. Only Pip's painting exists (§9, 2).
 - **Walking:** a place is about 3×3 screens and a reach already takes 538–845 actions. Place size goes to exploration design after Review 1.
 
-## 9. Decided
-
-**Decided** (2026-10-08):
+## 9. Settled choices
 
 1. **Reach-view ground.** Crops of the real ground plus map props at the place's features. Rejected: plain crops (wood reads as a blob, close-ups not little scenes); separate cell art (can disagree with the place).
 2. **Review place creatures.** Pip and wild Loikas, others as labelled placeholders, so Review 1 is not held for the Tuikis and Untuva species pieces.
