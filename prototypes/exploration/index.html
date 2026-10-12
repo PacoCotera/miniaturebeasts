@@ -235,6 +235,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(
     <div class="observer">
       <div class="obs-row"><button class="switch" id="obsToggle" aria-pressed="false" aria-controls="obs"><span class="track"></span>Observer</button>
         <button class="btn" id="resetGame" type="button">Reset game</button></div>
+      <p class="obs-note" id="resetNote" hidden>Reset game erases this save and starts fresh</p>
       <div class="reset-ask" id="resetAsk" hidden role="alertdialog" aria-labelledby="resetQ"><span id="resetQ">Erase this world and start fresh?</span>
         <button class="btn btn-danger" id="resetYes" type="button">Erase and start fresh</button><button class="btn" id="resetNo" type="button">Keep playing</button></div>
       <div class="obs" id="obs" hidden>
@@ -728,6 +729,12 @@ function migrate7(o) {
   if (s.phase === 'station') s.phase = 'setup';
   return s;
 }
+// Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report).
+function idsIn(o, out = new Set()) {
+  if (Array.isArray(o)) for (const v of o) idsIn(v, out);
+  else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
+  return out;
+}
 function load() {
   const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
@@ -738,9 +745,14 @@ function load() {
     dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
-    // whatever it holds, and `gen` is never filled (a save without it is generator 1)
+    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods or cr is the world's
+    // life, regenerated below, and a missing or invalid nextId is counted from the pod ids the save holds.
+    const noPods = !Object.hasOwn(S, 'pods'), noCr = !Object.hasOwn(S, 'cr'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), held = idsIn(S);
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = genWorld(S.seed, gen); indexCreatures(); return true;
+    layoutCache.clear(); G = genWorld(S.seed, gen);
+    if (noPods || noCr) { const life = genLife(S.seed); if (noPods) S.pods = life.pods.filter(p => !held.has(p.id)); if (noCr) S.cr = life.cr; }
+    if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
+    indexCreatures(); return true;
   } catch (e) { dropOld(); return false; }
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
@@ -4654,11 +4666,13 @@ copyBtn.addEventListener('click', () => {
 
 // ===================== 18. Boot =====================
 // A save from a newer page stays as stored: the page reads nothing from it, writes nothing and ignores input.
+// A loaded save that cannot be shown is kept the same way, with its own line and the page's line beside Reset game.
 function readOnlyNewer() { RT.readOnly = true; }
+function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getElementById('resetNote').hidden = false; }
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
-  text('This page is out of date · reload to play', 225, 289, C.bone, 2, 'center');
+  text(RT.broken ? 'This save can’t be shown · kept untouched' : 'This page is out of date · reload to play', 225, 289, C.bone, 2, 'center');
   R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
@@ -4674,7 +4688,6 @@ for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
   no.addEventListener('click', back);
   yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
-if (!RT.readOnly) { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup'; }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
 window.addEventListener('storage', e => {
@@ -4684,9 +4697,11 @@ window.addEventListener('storage', e => {
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
   save();   // save() re-reads the Station's part, syncs, and writes ours back unchanged otherwise
 });
-if (!RT.readOnly && S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
-// A loaded save that still cannot draw its screen opens read-only, as a newer page's save does, and is never written.
-if (ld === true) { try { render(NOW / 1000); } catch (e) { console.error(e); RT.readOnly = true; } }
+// A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup';
+  if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
+  catch (e) { console.error(e); readOnlyBroken(); } }
+else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
 RT.bootHold = false; save();
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
