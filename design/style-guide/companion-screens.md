@@ -219,12 +219,12 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 - **Palette.** Grass, warm earth and cool stone ramps; storms go blue, never brown-grey; red only for danger and fruit.
 - **Type.** Only the name tag and bubbles in the view; everything else in the message box and the bottom line.
 - **Chrome.** Message box (paper), name tag (ink with a pointer).
-- **Name tag placement.** The specimen is the spotlight: a name tag never covers a creature. The **clear zone** is the token's whole 48 px cell plus any pixel drawn outside it (a sprout or ear above the head, the teal ring at the feet), plus 4 px. The tag (22 px tall) goes, in this order, to the first position that stays inside the view (x 6–444, y 38–558) and covers no other creature's or token's clear zone, the pawn, the HUD, the bottom line or the message box, and never sits over the warned cell or a sign (the warned ring is the one signal the player must read):
-  1. **Below:** centred on the cell, its top 4 px under the clear zone's foot, pointer up.
-  2. **Right:** its left edge 4 px right of the clear zone, centred on the cell's middle row, pointer left.
+- **Name tag placement.** The specimen is the spotlight: a name tag never covers a creature. The **clear zone** is the token's whole 48 px cell plus any pixel drawn outside it (a sprout or ear above the head, the teal ring at the feet: at 48 px the ring's foot rows 48–49 fall below the cell), plus a 4 px margin that stays empty. The tag is a 20 px ink panel with an aqua border, and a 2×5 aqua pointer (5×2 sideways) on the side facing the token, centred on the cell's axis or middle row; the pointer sits just outside the margin and the panel starts after it. It goes, in this order, to the first position that stays inside the view (x 6–444, y 38–558) and covers no other creature's or token's clear zone, the pawn, the HUD, the bottom line, the message box or an edge tab, and never sits over the warned cell or a sign (the warned ring is the one signal the player must read):
+  1. **Below:** centred on the cell, its pointer just under the clear zone's foot, pointer up.
+  2. **Right:** its pointer just right of the clear zone, the panel centred on the cell's middle row, pointer left.
   3. **Left:** the mirror of right, pointer right.
-  4. **Above:** centred on the cell, its foot 4 px over the highest drawn pixel (the sprout tip, not the cell's top), pointer down.
-  5. **Below, slid sideways** inside the view until clear, the pointer kept on the cell's centre. If nothing is clear, the tag is not drawn until a position clears.
+  4. **Above:** centred on the cell, its pointer's tip 4 px over the highest drawn pixel (the sprout tip, not the cell's top, over the idle frames and the bob), pointer down.
+  5. **Below, slid sideways** in 4 px steps (+4, −4, +8, −8 …) until clear, the pointer kept on the cell's centre and at least 4 px inside the panel's ends. If nothing is clear, the tag is not drawn until a position clears.
 - **Motion.** Idle 2 frames at 2 Hz; walk 3 frames, 150 ms a step; the Call ring 3 frames over 300 ms, its last contour held a moment; a hit is a 260 ms 3 px shake.
 
 **Pass when**
