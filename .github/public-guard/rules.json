@@ -350,7 +350,7 @@
      ""
     ],
     [
-     "\\b(?:cairn|hull|outing|pocket)\\b",
+     "\\b(?:cairn|hull|pocket)\\b",
      "i"
     ],
     [
