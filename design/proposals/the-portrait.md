@@ -77,7 +77,7 @@ Each family names five things: the act, the token, the result, the card, and the
 | E | New Pokémon Snap with film, developing, Photodex; Viva Piñata camera and journal | New Pokémon Snap: film per run, a Photodex, a professor who rates photos. Viva Piñata: an in-game camera, a journal, photos printed and uploaded to its website. Tamagotchi Pix: a camera with characters. Each word is generic, but creature + film + photo + print + upload is those games' identity | **reject** (register) |
 | F | "signet" with Pokémon, Temtem, Monster Hunter, ARK; "signet" with Guild Wars 2, Final Fantasy, Bloodborne; "likeness" as a creature-game item | Signets are a Guild Wars 2 skill type, including the ranger's pet skill *Signet of the Wild*. "Likeness": no game item; Fields of Mistria's pet skins copy a look, an idea not a word | **caution** (Guild Wars 2) |
 
-**Recommendation: A, sitting and portrait.** A child can say "Fig sat for its portrait" and know what it means; the wait belongs to a sitting, and "portrait" already names the face in the book, which is what the prize becomes. It is the cleanest search, and its only cost is renaming two of our own words (the bench, faces).
+**The words: A, sitting and portrait.** A child can say "Fig sat for its portrait" and know what it means; the wait belongs to a sitting, and "portrait" already names the face in the book, which is what the prize becomes. It is the cleanest search, and its only cost is renaming two of our own words (the bench, faces).
 
 ## 5. The Companion's part
 
@@ -97,17 +97,17 @@ The Companion calls nothing; it learns at the dock.
 | **Card renderer** | One layout, three outputs: the website page at the postmark's link, the phone and Companion version, the Caddy print at 203 dpi; drawn from the archive, never from the Station |
 | **Screens** | Home's sitting slot; the vivarium's offer; the sitting screen's three steps; the bay's flat crate and its lamp; the Companion's notice and card; the cabinet's face choice |
 
-## 7. Settled points
+## 7. Decisions for the owner
 
-All three are settled.
+The owner took all three as set out below.
 
-1. **The words.** *Recommended:* family A (sitting, a sitting, portrait, portrait card, `✓ Portray Fig`), with the daily "bench sitting" renamed "the bench" and generic thumbnails renamed "faces". *Alternatives:* B (study, folio) if a naturalist's voice matters more than the studio, accepting the Fiend Folio caution; F (signing, signet, likeness) if the signed postmark should lead. **Settled: A.**
-2. **A sitting earned while one is held.** *Recommended:* it is not given, and the Station warns in time: once a guide is one look from full, the held frame in the slot pulses ("use your sitting first"). The paid monthly sitting waits on the account, not the kit, until the slot is empty. *Alternative:* a second sitting waits behind the first, which is holding two. **Settled: not given, with the warning; the paid sitting waits on the account.**
-3. **Returning a portrayed mibi to the wild.** *Recommended:* allowed, after the arm-then-confirm; the portrait stays in the book and on the card ("released"), and the mibi met again in its place wears its painted look. *Alternative:* a portrayed mibi cannot be returned, as a bonded one cannot. **Settled: allowed; the portrait stays in the book.**
+1. **The words.** Family A (sitting, a sitting, portrait, portrait card, `✓ Portray Fig`), with the daily "bench sitting" renamed "the bench" and generic thumbnails renamed "faces". *Alternatives not taken:* B (study, folio) if a naturalist's voice matters more than the studio, accepting the Fiend Folio caution; F (signing, signet, likeness) if the signed postmark should lead. **A.**
+2. **A sitting earned while one is held.** It is not given, and the Station warns in time: once a guide is one look from full, the held frame in the slot pulses ("use your sitting first"). The paid monthly sitting waits on the account, not the kit, until the slot is empty. *Alternative not taken:* a second sitting waits behind the first, which is holding two. **Not given, with the warning; the paid sitting waits on the account.**
+3. **Returning a portrayed mibi to the wild.** Allowed, after the arm-then-confirm; the portrait stays in the book and on the card ("released"), and the mibi met again in its place wears its painted look. *Alternative not taken:* a portrayed mibi cannot be returned, as a bonded one cannot. **Allowed; the portrait stays in the book.**
 
 ## 8. Rules for the build
 
-**Rules for the build (M6).** These answer the open rules for M6 and are rulings inside the points above; the questions that change the game's feel or economy stay open and are marked so.
+**Rules for the build (M6).** These answer the open rules for M6 and are rulings inside the points above; the questions that change the game's feel or economy wait for the owner and are marked so.
 
 - **Habits.** A habit is one of the species' routine acts, the states its behaviour runs through (creatures and genomics, "Behavior"). It is **watched** in two ways: at the bench, when a resident is kept in focus for a minute of its routine (the bench trickle's watch, research economy §4), the habit it was doing is recorded; and on a walk, when the mibi with the player does its act (a Tuikis digs a burrow or glows, a Loika calms a creature, an Untuva sniffs out a pod), the habit comes home with the crate and is recorded at the dock. A juvenile with you records the habit the Companion saw it do. The ids live in the species frame as a short `habits` list; for the first three: **Loika** `shake-dry`, `calm`, `sleep-curled`; **Untuva** `sniff`, `puff`, `sleep-curled`; **Tuikis** `dig`, `glow`, `sleep-curled`. A later species gets its list with its frame.
 - **Places.** A place is a map cell's place, as the book's place stamps show it. The pod's place counts from birth; every place the mibi entered while with the player is recorded at the dock (`recordWalk`, once per place).
