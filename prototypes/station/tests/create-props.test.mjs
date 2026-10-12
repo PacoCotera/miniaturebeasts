@@ -122,3 +122,22 @@ test("the founder's picture follows the choices (the roll's dither runs from the
   const a = m.build().props.regions.stamp.asset; m.cr.choices = {}; assert.notEqual(m.build().props.regions.stamp.asset, a, "a changed look redraws the stamp");
   const n = make("S01", 3, 0); assert.match(n.build().props.regions.founder.picture, /:all:/);
 });
+
+// the pod's contact shadow (create.json regions.podShadow; Pods' rule): a slot of the class's shadow master at the class's width + 16, named in every state
+test("regions.podShadow.picture is the class's contact shadow slot: pod-large-shadow:160x14, pod-medium-shadow:136x14 and pod-small-shadow:120x14", () => {
+  for (const [id, cls, want] of [["S02", "large", "pod-large-shadow:160x14"], ["S01", "medium", "pod-medium-shadow:136x14"], ["S03", "small", "pod-small-shadow:120x14"]]) {
+    const b = make(id, 3, 0).build(), w = pods.classes.pod[cls][0] + pods.shadow.widen;
+    assert.equal(b.props.regions.pod.sizeClass, cls); assert.equal(b.props.regions.podShadow.picture, want); assert.ok(want.endsWith(`:${w}x${pods.shadow.h}`), "the width is the class's + 16");
+    const r = b.requests.find((x) => x.id === want); assert.ok(r && r.kind === "slot" && r.master === `pod-${cls}-shadow` && r.size.join("x") === `${w}x14`, "the request is the class's shadow master slot");
+  }
+  const all = make("S01", 3, 2).build(); assert.deepEqual(validate(all.props, schema), []);
+});
+
+// the pod at rest in the small chamber (create.json regions.travel.rest): the collection class, whatever the species' own class
+test("regions.pod.dome is the pod at the collection class, pod:<species>:i:88x112, for a large, a medium and a small species", () => {
+  for (const [id, cls] of [["S02", "large"], ["S01", "medium"], ["S03", "small"]]) {
+    const b = make(id, 3, 0).build(), pod = b.props.regions.pod;
+    assert.equal(pod.sizeClass, cls); assert.equal(pod.dome, `pod:${id}:i:88x112`); assert.notEqual(pod.dome, pod.picture);
+    const r = b.requests.find((x) => x.id === pod.dome); assert.ok(r && r.kind === "pod" && r.size.join("x") === "88x112" && r.species === id, "the request is the collection class's picture");
+  }
+});

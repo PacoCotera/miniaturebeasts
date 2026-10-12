@@ -109,10 +109,10 @@ test("a clash is a 2 px red edge inside the chosen picture, the line red with it
   assert.ok(b.props.regions.roll.clash); assert.equal(b.props.regions.traitLine.changed, false); assert.match(b.props.regions.traitLine.text, /^✕ /); assert.equal(b.props.regions.traitLine.clash, true);
   for (const [x, y] of [[c[0], c[1] + 30], [c[0] + 1, c[1] + 30], [c[0] + 60, c[1]], [c[0] + 60, c[1] + 1], [c[0] + 60, c[1] + 71], [c[0] + 126, c[1] + 30], [c[0] + 127, c[1] + 30]]) assert.ok(red(f, x, y), `red at ${x}, ${y}`);
   assert.ok(!red(f, c[0] + 2, c[1] + 30) && !red(f, c[0] + 60, c[1] + 2) && !red(f, c[0] + 60, c[1] + 69), "the edge is 2 px, inside the picture"); assert.ok(pixelIs(f, c[0] + 60, c[1] + 30, b.props.regions.roll.pictures[1]));
-  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "chrome"), words = lg.type.filter((x) => x.region === "traitLine");
+  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "painted"), words = lg.type.filter((x) => x.region === "traitLine");
   assert.deepEqual([t.rect[2], t.rect[3], t.rect[1]], [88, 24, 200], "the tag: 88 wide, 24 tall, at the line's top"); assert.equal(words.length, 2, "the tag's word and the line"); assert.ok(words.some((x) => x.text === "changed"));
-  const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.equal(ty.rect[0], t.rect[0] + 8, "the tag's word is 8 px inside the tag"); assert.ok(Math.abs((t.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 1, "the group (tag, 8 px, the line) is centred on 512");
-  assert.deepEqual(g.pixel(t.rect[0] + 4, t.rect[1] + 12).join(), rgbOf("panel").join(), "the tag is a `panel` fill"); assert.deepEqual(g.pixel(t.rect[0], t.rect[1] + 12).join(), rgbOf("hairline").join(), "with a 1 px `hairline` edge");
+  const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.equal(ty.rect[0], t.rect[0] + 12, "the tag's word is at x0 + v_half(88 − w): 12 for 'changed', centred on the plate"); assert.equal(t.rect[2], 88, "the tag is the plate at its own width, 88, never stretched"); assert.ok(Math.abs((t.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 1, "the group (tag, 8 px, the line) is centred on 512");
+  assert.equal(n.props.regions.traitLine.tag, "plate-name-88x24"); assert.ok(pixelIs(g, t.rect[0] + 4, t.rect[1] + 12, n.props.regions.traitLine.tag), "the tag is the signed plate-name-88x24, on the painted layer");
 });
 
 
@@ -139,7 +139,8 @@ test("while the grow event holds (1080 ms): the face sends no intent but room:<x
 
 // ---- the founder's dither (events.roll) ----
 async function rolled(motion = true) {
-  const a = scene({ read: 2, f: 1 }), b = scene({ read: 2, f: 1, roll: 1 }), f = await start(a, { motion, t0: 1000 });
+  const a = scene({ read: 2, f: 1 }), b = scene({ read: 2, f: 1, roll: 1 }); for (const x of [a, b]) x.props.regions.chamberFront.picture = "";   // the tray's front is a flat stand-in over its whole rectangle here, which would hide the founder the dither probes
+  const f = await start(a, { motion, t0: 1000 });
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
   assert.notEqual(a.props.regions.founder.picture, b.props.regions.founder.picture); const t0 = f.t;
   f.send({ t: "event", kind: "dither", target: "founder", from: a.props.regions.founder.picture, ms: EV.roll.ms, hold: EV.roll.hold });
@@ -188,18 +189,28 @@ test("the code appears on the rule at 300 ms (a cut), three groups with spaces c
   let lg = at(299); assert.equal(lg.type.some((t) => t.region === "code" && t.text), false, "no code at 299"); assert.deepEqual(region(lg, "code", "chrome").rect, [776, 549, 176, 1], "the rule");
   lg = at(300); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); const r = region(lg, "code", "type"); assert.ok(Math.abs(r.rect[0] + r.rect[2] / 2 - 864) <= 1, "centred on 864"); assert.equal(r.rect[1] + 4 + 12, 541, "the baseline: the line box 525 to 545, the cap 12 px, 4 px above the box's middle");
 });
-test("the pod travels from its box to the dome from 300 to 900 ms in a straight line, whole pixels, eased in and out (e = p·p·(3000 − 2p)/1000000); at rest before, in the dome after, behind the work tray in between", { skip }, async () => {
-  const { b, f, at } = await growing(), box = [100, 256, 120, 152], F = R.travel.foot, dx = F.to[0] - F.from[0], dy = F.to[1] - F.from[1];   // the medium class: bottom-centred on (160, 408)
-  assert.equal(b.props.regions.pod.sizeClass, "medium");
+test("the pod travels from its box to the dome from 300 to 900 ms in a straight line, whole pixels, eased in and out (e = p·p·(3000 − 2p)/1000000); at rest before, in the dome after, behind the work tray in between; at 530 ms it steps to the collection class, 88×112, on the same foot", { skip }, async () => {
+  const { b, f, at } = await growing(), box = [100, 256, 120, 152], F = R.travel.foot, dx = F.to[0] - F.from[0], dy = F.to[1] - F.from[1], rest = R.travel.rest;   // the medium class: bottom-centred on (160, 408)
+  assert.equal(b.props.regions.pod.sizeClass, "medium"); assert.deepEqual(rest.size, podsSpec.classes.pod.collection); assert.equal(rest.at, 530);
   for (const ms of [0, 300]) assert.deepEqual(region(at(ms), "travel", "painted").rect, box, `at ${ms} the pod is in its dish`);
-  for (const ms of [330, 450, 600, 750, 870, 899]) { const e = ease((ms - 300) * 1000 / 600), want = [box[0] + lerp(0, dx, e), box[1] + lerp(0, dy, e), 120, 152]; assert.deepEqual(region(at(ms), "travel", "painted").rect, want, `at ${ms}`); }
-  assert.deepEqual(region(at(600), "travel", "painted").rect.slice(0, 2), [box[0] + 352, box[1] - 56], "half way at half the time");
-  assert.deepEqual(region(at(900), "travel", "painted").rect, [box[0] + dx, box[1] + dy, 120, 152], "in the dome at 900: feet (864, 296)"); assert.equal(f.poll("done")?.kind, "grow"); assert.deepEqual(f.errors(), []);
+  for (const ms of [330, 450, 529, 530, 600, 750, 870, 899]) {
+    const e = ease((ms - 300) * 1000 / 600), fx = F.from[0] + lerp(0, dx, e), fy = F.from[1] + lerp(0, dy, e), want = ms < 530 ? [fx - 60, fy - 152, 120, 152] : [fx - 44, fy - 112, 88, 112];
+    assert.deepEqual(region(at(ms), "travel", "painted").rect, want, `at ${ms}`);
+  }
+  assert.deepEqual(region(at(600), "travel", "painted").rect, [160 + lerp(0, 704, 500) - 44, 408 + lerp(0, -112, 500) - 112, 88, 112], "half way at half the time, at the collection class");
+  assert.deepEqual(region(at(900), "travel", "painted").rect, [820, 184, 88, 112], "in the dome at 900: 88×112, feet (864, 296)"); assert.equal(f.poll("done")?.kind, "grow"); assert.deepEqual(f.errors(), []);
+});
+test("the step to the collection class: the travelling sprite is the medium's own picture at 529 ms and the 88×112 picture at 530 (the work tray's pictures left out, so the pod can be read)", { skip }, async () => {
+  const b = scene({ read: 2, f: 1, roll: 1, grown: true }); b.props.regions.chamber.back = ""; b.props.regions.chamberFront.picture = ""; b.props.regions.founder.picture = "";   // the pod is behind the work tray and the founder at that instant: with their pictures out it shows
+  const f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); f.send({ t: "event", kind: "grow", target: "pod", ms: EV.grow.ms, hold: EV.grow.hold });
+  const F = R.travel.foot, probe = (ms) => { f.frame(t0 + ms); logOf(f); const e = ease((ms - 300) * 1000 / 600); return [F.from[0] + lerp(0, F.to[0] - F.from[0], e), F.from[1] + lerp(0, F.to[1] - F.from[1], e) - 60]; };
+  assert.match(b.props.regions.pod.picture, /^pod:.*:i:120x152$/); assert.match(b.props.regions.pod.dome, /^pod:.*:i:88x112$/);
+  let [x, y] = probe(529); assert.ok(pixelIs(f, x, y, b.props.regions.pod.picture), "at 529 the medium's own picture"); [x, y] = probe(530); assert.ok(pixelIs(f, x, y, b.props.regions.pod.dome), "at 530 the 88×112 picture"); assert.deepEqual(f.errors(), []);
 });
 test("grow with reduced motion is its end at once: the stamp whole, the code printed, the pod in the dome, the event done on the frame", { skip }, async () => {
   const b = scene({ read: 2, f: 1, roll: 1, grown: true }), f = await start(b, { motion: false, t0: 1000 }); f.send({ t: "event", kind: "grow", target: "pod", ms: 900, hold: 0 }); frames(f, 2); assert.equal(f.poll("done")?.kind, "grow");
   assert.equal(f.props({ screen: "create", ...b.props, motion: false, frame: frameProps(b.line) }), 0); frames(f); const lg = logOf(f);
-  assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stamp", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); assert.deepEqual(region(lg, "travel", "painted").rect, [804, 144, 120, 152]);
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stamp", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); assert.deepEqual(region(lg, "travel", "painted").rect, [820, 184, 88, 112]);
 });
 test("no refresh redraws more than a quarter of the screen while the pod travels (frames every 16 ms) or the founder dithers, the frame of the key that starts each included", { skip }, async () => {
   const area = (f, o) => dirty(f, o);
@@ -210,14 +221,14 @@ test("no refresh redraws more than a quarter of the screen while the pod travels
 
 
 // ---- the chrome the words draw, and the fronts that are not drawn ----
-test("the changed pip is a `bone` diamond, the clash pip a `red` cross, both drawn by the rail as chrome (the rows of the ruling); the focused trait's pip stands 2 px higher; the work tray's and the small chamber's fronts are not drawn", { skip }, async () => {
+test("the changed pip is a `bone` diamond, the clash pip a `red` cross, both drawn by the rail as chrome (the rows of the ruling); the focused trait's pip stands 2 px higher; the work tray's and the small chamber's fronts are drawn at their rects", { skip }, async () => {
   const CX = [2, 1, 0, 0, 1, 2], CW = [2, 4, 6, 6, 4, 2], find = (f, y0, y1, test) => { for (let y = y0; y < y1; y++) for (let x = 100; x < 940; x++) if (test(x, y)) return [x, y]; return null; };
   const is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
   const diamond = (f, x, y) => CX.every((cx, r) => is(f, x + cx, y + r, "bone") && is(f, x + cx + CW[r] - 1, y + r, "bone") && !is(f, x + cx + CW[r], y + r, "bone"));
   const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f);
   assert.ok(find(f, 60, 80, (x, y) => diamond(f, x, y)), "a bone diamond among the pips"); 
   const lifted = find(f, 60, 80, (x, y) => diamond(f, x, y)); assert.equal(lifted[1], 69, "the focused trait's pip: y 71 − 2");
-  assert.equal(region(lg, "chamberFront"), null); assert.equal(region(lg, "domeFront"), null);
+  assert.deepEqual(region(lg, "chamberFront")?.rect, R.chamberFront.rect, "the tray's front is drawn at its rect"); assert.deepEqual(region(lg, "domeFront")?.rect, R.domeFront.rect, "the small chamber's front is drawn at its rect");
   const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, 60, 80, (x, y) => [0, 1, 2, 3, 4, 5].every((k) => is(g, x + k, y + k, "red") && is(g, x + 5 - k, y + k, "red"))), "a red cross where the pip was");
 });
 test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 36), the verb and the price in mist; a short one has its verb at the same x", { skip }, async () => {
@@ -225,4 +236,22 @@ test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 
   let capInk = 0; for (let y = 574; y < 590; y++) for (let x = 16; x < 32; x++) if (!ground(blocked, x, y)) capInk++; assert.equal(capInk, 0, "no cap");
   let verbInk = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(blocked, x, y)) verbInk++; assert.ok(verbInk > 0, "the verb starts at x 36");
   let verbShort = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(short, x, y)) verbShort++; assert.ok(verbShort > 0, "a short line has its verb at the same x (its cap picture is the frame's, not in this test)");
+});
+
+// ---- the pod's contact shadow (regions.podShadow; Pods' rule): under the pod in shape and nothing read, in grow only until the travel starts, never with reduced motion ----
+const shadowOf = (lg) => lg.regions.find((r) => r.id === "podShadow" && r.layer === "painted");
+test("shape (a medium pod): the shadow is the painted node podShadow at [92, 401, 136, 14], the class's master, drawn just before the pod and clear of the departure check", { skip }, async () => {
+  const b = scene({ read: 2, f: 1 }), f = await start(b), lg = logOf(f), sh = shadowOf(lg), i = lg.regions.indexOf(sh), pod = lg.regions.findIndex((r) => r.id === "pod" && r.layer === "painted");
+  assert.equal(b.props.regions.pod.sizeClass, "medium"); assert.equal(b.props.regions.podShadow.picture, "pod-medium-shadow:136x14");
+  assert.deepEqual(sh?.rect, [92, 401, 136, 14]); assert.equal(i + 1, pod, "just before the pod"); assert.ok(pixelIs(f, 160, 412, "pod-medium-shadow:136x14"), "below the pod's feet the shadow's master shows");
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "shape"), []); assert.deepEqual(f.errors(), []);
+  const n = scene({ read: 0 }), g = await start(n); assert.deepEqual(shadowOf(logOf(g))?.rect, [92, 401, 136, 14], "nothing read too");
+});
+test("grow: the shadow stands at 0 and 299 ms, is a cut to no size at 300, 600 and 900, and is not there with reduced motion", { skip }, async () => {
+  const { f, at } = await growing();
+  for (const ms of [0, 299]) assert.deepEqual(shadowOf(at(ms))?.rect, [92, 401, 136, 14], `at ${ms}`);
+  for (const ms of [300, 600, 900]) assert.ok(!shadowOf(at(ms)) || shadowOf(at(ms)).rect[2] === 0, `gone at ${ms}`);
+  assert.deepEqual(f.errors(), []);
+  const b = scene({ read: 2, f: 1, roll: 1, grown: true, motion: false }), g = await start(b, { motion: false }); g.send({ t: "event", kind: "grow", target: "pod", ms: EV.grow.ms, hold: EV.grow.hold }); frames(g, 2);
+  assert.ok(!shadowOf(logOf(g)), "no shadow with reduced motion in grow");
 });

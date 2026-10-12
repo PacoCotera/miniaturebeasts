@@ -10,7 +10,8 @@ export async function loadMasters(base) {
   const res = await fetch(new URL("index.json", base), { cache: "no-store" });
   if (!res.ok) return { placed: 0 };
   const index = await res.json(), ids = Object.keys(index.masters ?? {});
-  await Promise.all(ids.map(async (id) => {
+  // at most 16 masters in flight: hundreds of concurrent fetches and decodes can fail with net::ERR_INSUFFICIENT_RESOURCES (measured on Chromium 141)
+  const one = async (id) => {
     const e = index.masters[id], r = await fetch(new URL(e.file, base), { cache: "no-store" });
     if (!r.ok) throw new Error(`master ${id}: ${e.file} is missing`);
     const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
@@ -18,6 +19,7 @@ export async function loadMasters(base) {
     const bmp = await createImageBitmap(new Blob([bytes], { type: "image/png" }), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
     let px = null; const pixels = () => px || (px = decodeRGBA(bmp));   // the decoded master as RGBA (the browser's decoder, with no colour conversion)
     placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.width, h: bmp.height, rgba: pixels});
-  }));
+  };
+  let next = 0; await Promise.all(Array.from({ length: Math.min(16, ids.length) }, async () => { while (next < ids.length) await one(ids[next++]); }));
   return { placed: ids.length };
 }
