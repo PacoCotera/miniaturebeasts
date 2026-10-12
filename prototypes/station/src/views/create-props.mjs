@@ -5,6 +5,7 @@
 //   m: { st, settings, ui: { create: { podId, choices, f, clash, grown } } }, spec create.json, pods pods.json
 //   ui.create.grown is what ✓ Grow it made (intents/create.mjs): { code, cost }; it holds the screen in its grow state while the pod, no longer in the rack, travels.
 import * as S from "../state.mjs";
+import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
 import { slot, railOf } from "./pods-props.mjs";
 
@@ -94,9 +95,10 @@ export function createBuild(m, spec, pods) {
   const unread = fr.chapters.filter((c) => !p.read.includes(c.id)), name = S.spName(p);
   const subject = !unread.length ? S.cap(S.aAn(name)) + ", fully known" : unread.length === fr.chapters.length ? Sg.surprise.all : unread.length === 1 ? fill(Sg.surprise.one, { Chapter: unread[0].name }) : fill(Sg.surprise.more, { "n in words": SPELL[unread.length] ?? "many" });
   const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s), back: S.cap(name), subject, need: null };
-  if (key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(pods.strings.needMore, { icons: key.short }); }   // short: the dimmed ✓, the short figures amber
+  if (key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(Sg.notices.shortFrom[key.from], { icons: key.short }); }   // short: the dimmed ✓, the short figures amber
   else if (key) { bottom.blocked = true; bottom.need = key.key === "busy" ? Sg.notices.busy : key.key === "noBay" ? Sg.notices.noBay : key.key === "clash" ? Sg.notices.clash : null; }   // busy, no bay, clash: no ✓ cap, the verb and the price in mist
 
+  if (!key && !grown && m.frame) bottom.need = warnWords(st, m.sv, settings, m.frame, cost, { key: "grow", pod: p });   // ✓ would leave the goal's next price short: one amber line, nothing asked
   const props = { state, regions, focus: { cur: list.length ? "roll" : "room", targets: list.length ? [{ id: "roll", group: "roll" }] : [] } };
   return { props, line: bottom, requests };
 }

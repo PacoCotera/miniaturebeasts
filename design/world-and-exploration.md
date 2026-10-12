@@ -231,7 +231,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 | Field | Pin | 1 Energy (**Decided**) |
 | Field | Light a beacon; light or relight an outpost | 1 Energy (**Decided**) |
 | Field | Patch one Shield bar / mend at a lit outpost | 3 / 1 Energy a bar |
-| Station | Identify a pod | 1 Energy (the first pod ever free) |
+| Station | Identify a pod | 1 Data (always; no free first) |
 | Station | Hatch a founder | 2 Energy + 4 Essence |
 | Station | Grow now (the instant grow) | 1 Essence per 2 minutes left on the bud, rounded up (**Decided 2026-10-09**) |
 | Station | A study | 2 Data |

@@ -44,7 +44,7 @@ export function buildDevPanel(container, hooks) {
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 10, 0, 10); save(); note("+10 Energy +10 Essence"); } }, "+10 ⚡ +10 ❀"));
   group("Economy", h("div", { class: "dev-row" }, "Prices ", select("economy", ["loose", "decided", "free"], (v) => ({ loose: "loose (decided + a top-up per crate, the default)", decided: "decided prices", free: "free" })[v])),
     h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["rule", "free"], (v) => ({ rule: "1 ❀ per 2 minutes left, rounded up (decided)", free: "free" })[v])),
-    h("p", { class: "dev-note" }, "Decided: Identify 1 ⚡ (first free) · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
+    h("p", { class: "dev-note" }, "Decided: Identify 1 ◆ always · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
   group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10, 12, 1, 2, 3, 4, 5, 7, 9, 11])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
     h("div", { class: "dev-row" }, "Daily grow cap ", select("growCap", [10, 2, 20])), h("div", { class: "dev-row" }, "Painter ", select("painter", ["mock", "real", "off"])), h("div", { class: "dev-row" }, "Bench watch ", select("watchMs", [60000, 5000], (v) => v / 1000 + " s")), h("div", { class: "dev-row" }, "Bench Data a day ", select("trickleCap", [2, 10, 0], (v) => (v === 0 ? "none" : String(v)))),

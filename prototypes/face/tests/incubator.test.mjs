@@ -17,7 +17,7 @@ import { pinnedPictures } from "../../ui/specs/derive.mjs";
 import { departures } from "../tools/incubator-regions.mjs";
 import { dirty } from "./dirty.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
+const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), distNode = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")) && existsSync(path.join(distNode, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), incSpec = J("incubator");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
@@ -44,8 +44,8 @@ function standIn(id, size, hollow = false) { const [w, h] = size, d = new Uint8C
 const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const PINNED = pinnedPictures(podsSpec, frameSpec);
 
-async function start(b, { motion = true, t0 = 0, top = {} } = {}) {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+async function start(b, { motion = true, t0 = 0, top = {}, node = false } = {}) {   // node: the test build, which can say where a node stands (nodeBox)
+  const f = await bootFace(pathToFileURL((node ? distNode : dist) + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["incubator", incSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
@@ -114,8 +114,8 @@ test("growNow: the n leaves still to fill (the filling one first) each turn whol
 });
 
 // ---- the hatch (events.hatch) ----
-async function hatching(o = {}) {   // as the host does it: on ✓ Open the event is sent, then the props of the hatch
-  const ready = scene({ minutes: 30, ...o }), b = scene({ minutes: 30, open: true, ...o }), f = await start(ready, { t0: 1000 }), t0 = f.t; logOf(f);
+async function hatching(o = {}, node = false) {   // as the host does it: on ✓ Open the event is sent, then the props of the hatch
+  const ready = scene({ minutes: 30, ...o }), b = scene({ minutes: 30, open: true, ...o }), f = await start(ready, { t0: 1000, node }), t0 = f.t; logOf(f);
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   f.send({ t: "event", kind: "hatch", target: "room", ms: EV.hatch.ms, hold: EV.hatch.hold });
   assert.equal(f.props({ screen: "incubator", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.build = b;
@@ -131,12 +131,17 @@ test("the hatch is a still beat: the chamber's back, the nest and the window's f
   }
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
-test("the hatch: the bud is the ready picture until 600, cracks at 600 and 800, gone at 1000; the juvenile stands from 1000 and steps out at 1400 and 1800 by the table; the ribbon shows at 1200; no leaves, no plaque word", { skip }, async () => {
-  const { b, f, at } = await hatching(), B = b.props.regions.bud, J = b.props.regions.juvenile.picture, [bx, by] = R.bud.rect, [jx, jy, jw] = R.juvenile.rect, BP = [bx + 4, by + 4];
+test("the hatch: the bud is the ready picture with its shape and its front until 600, crack-1 over the ready bud at 600, crack-2 alone over it at 800, gone at 1000; the juvenile stands from 1000 and steps out at 1400 and 1800 by the table; the ribbon shows at 1200; no leaves, no plaque word", { skip }, async () => {
+  const { b, f, at } = await hatching({}, true), B = b.props.regions.bud, J = b.props.regions.juvenile.picture, [bx, by] = R.bud.rect, [jx, jy, jw] = R.juvenile.rect, BP1 = [bx + 62, by + 16], BP2 = [bx + 61, by + 16];
   assert.equal(b.props.regions.leaves.total, 0); assert.equal(b.props.regions.plaque, "");
-  for (const [ms, want] of [[100, B.ready], [599, B.ready], [650, B.crack1], [799, B.crack1], [850, B.crack2], [999, B.crack2]]) { at(ms); assert.ok(colourIs(f, ...BP, want), `${ms} ms: the bud's ${want}`); }
-  for (const [ms, on] of [[100, true], [599, true], [650, false], [850, false]]) { at(ms); assert.equal(colourIs(f, 512, 344, B.shape), on, `${ms} ms: the ready shape ${on ? "stands" : "is gone"} (in the hatch until the crack at 600)`); }
-  for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!colourIs(f, ...BP, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.equal(lg.type.some((t) => t.region === "plaque"), false); }
+  const shown = (id) => { const n = f.nodeBox(id); return !!n && n.box[2] > 0; }, nodes = () => ["early", "late", "ready", "shape", "front", "crack1", "crack2"].filter((k) => shown(`bud.${k}`)).join();
+  // the cracks are overlays: crack-1's pixel (bud + (62, 16)) is crack-1's, crack-2's pixel (bud + (61, 16)) is crack-2's and crack-1 lacks it; the ready bud has no pixel free of its front, so it is told by the nodes shown
+  for (const [ms, want] of [[650, B.crack1], [799, B.crack1]]) { at(ms); assert.ok(colourIs(f, ...BP1, want), `${ms} ms: the bud's ${want}`); }
+  for (const ms of [850, 999]) { at(ms); assert.ok(colourIs(f, ...BP2, B.crack2), `${ms} ms: the bud's ${B.crack2}`); }
+  for (const [ms, want] of [[100, "ready,shape,front"], [300, "ready,shape,front"], [599, "ready,shape,front"], [650, "ready,crack1"], [799, "ready,crack1"], [850, "ready,crack2"], [999, "ready,crack2"], [1000, ""], [1100, ""]]) { at(ms); assert.equal(nodes(), want, `${ms} ms: the nodes shown`); }
+  for (const ms of [100, 300, 599]) { at(ms); assert.ok(shown("bud.front"), `${ms} ms: bud.front is shown`); assert.ok(shown("bud.ready"), `${ms} ms: bud.ready is shown under it`); }
+  for (const ms of [650, 850]) { at(ms); assert.ok(shown("bud.ready"), `${ms} ms: bud.ready is shown under the crack`); assert.ok(!shown("bud.shape") && !shown("bud.front"), `${ms} ms: the shape and the front are gone (in the hatch until the crack at 600)`); }
+  for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!colourIs(f, ...BP2, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.equal(lg.type.some((t) => t.region === "plaque"), false); }
   at(999); assert.ok(!colourIs(f, jx + 40, jy + 40, J), "the juvenile is not there at 999");
   let lg = at(1199); assert.ok(!lg.type.some((t) => t.region === "ribbon" && t.text), "no ribbon at 1199"); lg = at(1200); assert.ok(lg.type.some((t) => t.region === "ribbon" && /young/.test(t.text)), "the ribbon's words at 1200");
   const TABLE = EV.hatch.steps[6].lift, lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], top = (ms) => { for (let y = jy - 6; y < jy + 8; y++) if (colourIs(f, jx + 40, y, J)) return y; return null; };

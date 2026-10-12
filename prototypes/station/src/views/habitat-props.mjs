@@ -4,6 +4,7 @@
 // Runs in Node, tested there (tests/habitat-props.test.mjs); the shape is habitat.props.json.
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), habId (the mibi up close), meetId (the new mibi whose meet is on), armed (the Wild gate), offline }
 import * as S from "../state.mjs";
+import { warnWords } from "./goal-words.mjs";
 import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
@@ -115,7 +116,7 @@ export function habitatBuild(m, spec, frame, home) {
     const p = plates[+id.slice(6)], ch = fr.chapters[+id.slice(6)], Chapter = ch.name;
     if (p.state === "read") line = { ok: null, subject: fill(Sg.plateRead, { Chapter }), back: Sg.back, need: null };
     else if (p.state === "sealed") line = { ok: null, subject: fill(Sg.plateSealed, { Chapter }), back: Sg.back, need: null };
-    else { const c = cost(p), short = c > st.d ? S.shortIcons(st, 0, c, 0) : ""; line = { ok: fill(Sg.read, { Chapter }), price: c ? "◆ " + c : "", ...(short ? { dim: true, short } : {}), subject: fill(Sg.plateUnread, { Chapter }), back: Sg.back, need: null }; }
+    else { const c = cost(p), short = c > st.d ? S.shortIcons(st, 0, c, 0) : ""; line = { ok: fill(Sg.read, { Chapter }), price: c ? "◆ " + c : "", ...(short ? { dim: true, short } : {}), subject: fill(Sg.plateUnread, { Chapter }), back: Sg.back, need: !short && c && frame ? warnWords(st, m.sv, settings, frame, { d: c }, { key: "read", mibi: shown }) : null }; }
   } else if (id === "door") {
     const now = docked;
     line = dKind === "take" ? { ok: fill(Sg.take, named), subject: now ? Sg.takeNow : Sg.takeNext }

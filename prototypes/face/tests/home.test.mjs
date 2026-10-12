@@ -241,3 +241,20 @@ test("rule 2 on Home's glass (M1 §3): six adult walkers at 5 px a tick on one g
   assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`); assert.ok(a.r.deferred > 0, "the budget deferred changes"); assert.equal(a.hash, b.hash, "deterministic"); assert.equal(a.r.deferred, b.r.deferred);
   console.log(`# rule 2 (Home): worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
 });
+// ---- the goal in the notice zone (frame.json strings.goal; station-x10-economy.md) ----
+test("the goal is drawn in the notice zone in mist with no lamp; a name too wide for the zone falls back to the nameless sibling", { skip }, async () => {
+  const drawn = (f) => (logOf(f)?.type ?? []).find((t) => t.id === "line.goal" || /^line\.goal/.test(t.id ?? ""));
+  const withGoal = async (goal) => { const f = await start(scene({ adults: 1, carry: [] }), { frame: { need: "", goal } }); return f; };
+  let f = await withGoal({ text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" }); logOf(f);
+  f.frame((f.t += 16)); let lg = logOf(f); const inZone = (lg?.regions ?? []).filter((r) => r.id === "need"); assert.ok(inZone.length, "the notice zone carries the goal"); assert.ok(!(lg?.regions ?? []).some((r) => r.id === "need" && r.layer === "art"), "no lamp");
+  const wide = await withGoal({ text: "read WWWWWWWWWW's chapters", icons: "", plain: "read the new mibi's chapters" }), narrow = await withGoal({ text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" });
+  const widthOf = (g) => { const l = logOf(g); const r = (l?.regions ?? []).find((x) => x.id === "need" && x.layer === "type")?.rect; return r ? r[2] : null; };
+  const ww = widthOf(wide), wn = widthOf(narrow); assert.ok(ww !== null && wn !== null, "both goals draw"); assert.ok(ww <= 272, `the wide name's line fits the zone: ${ww}`); assert.ok(wn <= 272);
+  const plainOnly = await withGoal({ text: "read the new mibi's chapters", icons: "", plain: "" }), textOnly = await withGoal({ text: "read Dot's chapters", icons: "", plain: "" });
+  assert.equal(ww, widthOf(plainOnly), "too wide: the nameless sibling is what is drawn"); assert.equal(wn, widthOf(textOnly), "it fits: the words with the name are drawn"); assert.notEqual(wn, widthOf(plainOnly), "the two lines differ in width");
+  // with icons: the words and 20 px an icon must fit
+  const icons = await withGoal({ text: "watch your mibis for more", icons: "◆", plain: "" }); assert.ok(widthOf(icons) <= 272, "words and icons fit the zone");
+  // a need holds the zone: with both, only the need is drawn (the props never carry both, but the face must not draw the goal over a need)
+  const both = await start(scene({ adults: 1, carry: [] }), { frame: { need: "a new pod waits", goal: { text: "read Dot's chapters", icons: "", plain: "" } } }), only = await start(scene({ adults: 1, carry: [] }), { frame: { need: "a new pod waits" } });
+  logOf(both); logOf(only); both.frame((both.t += 16)); only.frame((only.t += 16)); assert.equal(widthOf(both), widthOf(only), "the need keeps the zone");
+});

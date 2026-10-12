@@ -38,8 +38,6 @@ export const PLACEHOLDERS = [
   { id: "create-dome-front-176x224", what: "Create's small chamber, front: registered, nothing drawn", until: "the Incubator's chamber master, small" },
   { id: "bud-small-64x80", what: "Create's busy bud, 64×80: a PH plate at the bud's rectangle, only while another bud grows (the Incubator's buds are other pictures)", until: "the bud master, re-judged with the Incubator's" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
-  { id: "bud-128x160", what: "the Incubator's buds, 128×160: bud-early, bud-late, bud-ready, bud-crack-1 and bud-crack-2 are PH plates at the bud's rectangle; bud-ready-front-128x160 is registered and nothing drawn", until: "the bud masters (bean on moss)" },
-  { id: "bud-ready-front-128x160", what: "the ready bud's front: registered, nothing drawn", until: "the bud masters (bean on moss)" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
 ];
 

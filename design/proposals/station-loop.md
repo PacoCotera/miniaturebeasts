@@ -41,7 +41,7 @@ When the Companion is docked and the Station accepts its sealed cargo (exactly o
 
 The pod list up close. Each pod in the list wears its place stamp, its species glyph (or its seal) and a progress ring that fills as its chapters are read. One pod fills the centre, large, with its origin written under it in play words ("Found on the rock field, as a Tuikis felt safe."). The pad moves between pods along the list.
 
-- **Identify** (1 Energy; the first pod ever is free). ✓ and the seal on the cap breaks: the species glyph shows, then its name. A new species gets a stamp ("New species · Tuikis"): its **frame**, every part the species fixes, is learned once and its Library page opens. A pod of a known species is quicker ("Tuikis · logged"). Either way the pod's genome ring draws its grey centre band, and each chapter shows as a sector of hairlines: something is there, not read yet.
+- **Identify** (1 Data). ✓ and the seal on the cap breaks: the species glyph shows, then its name. A new species gets a stamp ("New species · Tuikis"): its **frame**, every part the species fixes, is learned once and its Library page opens. A pod of a known species is quicker ("Tuikis · logged"). Either way the pod's genome ring draws its grey centre band, and each chapter shows as a sector of hairlines: something is there, not read yet.
 - **Read** (Data, one chapter). An identified pod shows its **chapters** as arcs and as pages: Coat, Face, Movement and so on, each a page of a few **traits**, each trait one picture (markings, crown, gait). Which chapters and traits exist comes from the species frame; the player never sees a locus.
 - **Create** (from this pod): opens Create, below.
 - **Return to the wild** (frees the cup, +1 Essence): the pod goes back to the place it came from; the Companion learns this at the next dock.
@@ -142,11 +142,11 @@ All rewards for going out, never penalties for staying home, and none timed:
 
 ## 4. Economy
 
-**Inputs.** Energy runs the machines (identify, incubate, mend, upgrade). Data reads genomes (reads, shaping, upgrades). Essence grows bodies (founders and crossed children). **Decided:** Essence never turns into Energy.
+**Inputs.** Energy runs the machines (incubate, mend, upgrade). Data reads genomes (identify, reads, shaping, upgrades). Essence grows bodies (founders and crossed children). Essence never turns into Energy.
 
 | At the Station | Price |
 | --- | --- |
-| Identify a pod (first ever free; a known species is "logged") | 1 Energy (**Decided**) |
+| Identify a pod (a known species is "logged") | 1 Data |
 | Read one chapter (the first read ever free) | 1 Data per trait in it; half, rounded up, once read on an earlier pod of the species (**Decided**) |
 | Create a founder | 2 Energy + 4 Essence (**Decided**, to tune) |
 | Change a shapeable trait at creation | +1 Data per trait (**Decided**) |
@@ -166,9 +166,9 @@ All rewards for going out, never penalties for staying home, and none timed:
 
 | | Cargo | At the Station | Store after |
 | --- | --- | --- | --- |
-| 1, calm | 2 pods (unknown, unknown), 4 ⚡, 5 ◆, 6 ❀ | Identify Loika (free) and Untuva (1 ⚡). Read the Loika's Coat (free, the first read ever): "shows plain · hides pale"; and its Face (2 ◆): "frill crown · hides bare head", "pale eye rings". Create an only-pale Loika: 2 ⚡ + 4 ❀ + 1 ◆. Untuva waits: "needs 1 ⚡ + 2 ❀" | 1 ⚡ · 2 ◆ · 2 ❀ |
-| 2, storm | 1 pod (Loika), 11 ⚡, 3 ◆, 3 ❀; Shield 1/3 | Free mend to 2, third bar 1 ⚡. Log the Loika (1 ⚡): its Face arc glints. Create the Untuva unedited (2 ⚡ + 4 ❀). Read the glinting Face at half price (1 ◆): "only plain eyes", new to the field guide | 8 ⚡ · 4 ◆ · 1 ❀ |
-| 3, calm | 1 pod (unknown), 4 ⚡, 4 ◆, 7 ❀ | Identify: Tuikis, new (1 ⚡). Now the choice: tier 2 needs 12 ⚡ + 4 ◆ (have 11 ⚡, 8 ◆), or a Tuikis founder now (2 ⚡ + 4 ❀) and tier 2 after the next storm | 11 ⚡ · 8 ◆ · 8 ❀ before choosing |
+| 1, calm | 2 pods (unknown, unknown), 4 ⚡, 5 ◆, 6 ❀ | Identify Loika and Untuva (1 ◆ each). Read the Loika's Coat (free, the first read ever): "shows plain · hides pale"; and its Face (2 ◆): "frill crown · hides bare head", "pale eye rings". Create an only-pale Loika: 2 ⚡ + 4 ❀ + 1 ◆. Untuva waits: "needs 2 ❀" | 2 ⚡ · 0 ◆ · 2 ❀ |
+| 2, storm | 1 pod (Loika), 11 ⚡, 3 ◆, 3 ❀; Shield 1/3 | Free mend to 2, third bar 1 ⚡. Log the Loika (1 ◆): its Face arc glints. Create the Untuva unedited (2 ⚡ + 4 ❀). Read the glinting Face at half price (1 ◆): "only plain eyes", new to the field guide | 10 ⚡ · 1 ◆ · 1 ❀ |
+| 3, calm | 1 pod (unknown), 4 ⚡, 4 ◆, 7 ❀ | Identify: Tuikis, new (1 ◆). Now the choice is in Data: tier 2 needs 12 ⚡ + 4 ◆ (have 14 ⚡, 4 ◆) and takes every ◆, or read the new Tuikis's Coat (3 ◆) now and fit tier 2 after the next walk's Data. The Tuikis founder (2 ⚡ + 4 ❀) is affordable either way | 14 ⚡ · 4 ◆ · 8 ❀ before choosing |
 
 Three expeditions, three species met, two mibis, one real choice, and every material had a job.
 
@@ -191,7 +191,7 @@ Breeding beyond the minimal same-species cross (eligibility rules, fertility, fa
 
 The Companion comes back with one consignment sealed ("1 consignment sealed · dock to transfer") and is set on the Caddy; the Station, on Home, accepts the cargo. A Tuikis pod rolls into a cup; the counters tick. Bottom line: "✓ Look at the new pods".
 
-1. ✓ Research opens on the new pod: the pod labelled "Unknown", with "Found on the rock field, as a creature felt safe.". Line: "✓ Identify · 1 ⚡".
+1. ✓ Research opens on the new pod: the pod labelled "Unknown", with "Found on the rock field, as a creature felt safe.". Line: "✓ Identify · 1 ◆".
 2. ✓ The seal breaks; the Tuikis glyph shows. "New species · Tuikis". Its frame is learned; the ring draws its grey band and four hairline sectors, one per chapter.
 3. Pad → the Coat arc. "✓ Read Coat · 3 ◆".
 4. ✓ The page turns: stripes on the flank with a seed holding spots ("shows stripes · hides spots"), "only teal", "short fur". The Coat sector fills; the preview redraws with stripes.

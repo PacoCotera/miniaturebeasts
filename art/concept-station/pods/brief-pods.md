@@ -91,7 +91,7 @@ Machined instrument viewports: a brushed slate ring with a fine bevel, an engrav
 - Bottom line: "✓ Study crown · 2" with a small blue diamond, then "← Home" | "Hopper pod · identified" | "crown glints · something new".
 
 ## 9. States of the screen (notes, not in this candidate)
-- Unidentified pod: shell fully opaque, no inner silhouette, no windows above (the arc is empty chrome), whorl absent; bottom line "✓ Identify · 1 ⚡"; subject "Hopper pod" only if already known, else the place.
+- Unidentified pod: shell fully opaque, no inner silhouette, no windows above (the arc is empty chrome), whorl absent; bottom line "✓ Identify · 1 ◆"; subject "Hopper pod" only if already known, else the place.
 - Compare: a second pod of the same species slides in beside the first at 300 ms, both nests narrower; the two arcs align window for window; differing windows pulse.
 - Return gate focused: the cream ring walks to the gate, it lifts; "✓ Return to the wild · +1 ❀".
 - Shutter state for a window: closed horizontal slats in the ring with a small picture of what opens it (a crystal, Probe tier 2), never a bare "?".

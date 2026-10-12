@@ -15,7 +15,7 @@
    "nest": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
    "nestFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
    "domeFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
-   "bud": { "type": "object", "required": ["stage", "early", "late", "ready", "crack1", "crack2", "shape"], "additionalProperties": false, "properties": { "stage": { "enum": ["early", "late", "ready", "hatch"] }, "early": { "$ref": "pic" }, "late": { "$ref": "pic" }, "ready": { "$ref": "pic" }, "crack1": { "$ref": "pic" }, "crack2": { "$ref": "pic" }, "shape": { "$ref": "pic" } } },
+   "bud": { "type": "object", "required": ["stage", "early", "late", "ready", "crack1", "crack2", "shape", "front"], "additionalProperties": false, "properties": { "stage": { "enum": ["early", "late", "ready", "hatch"] }, "early": { "$ref": "pic" }, "late": { "$ref": "pic" }, "ready": { "$ref": "pic" }, "crack1": { "$ref": "pic" }, "crack2": { "$ref": "pic" }, "shape": { "$ref": "pic" }, "front": { "$ref": "pic" } } },
    "base": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
    "plaque": { "type": "string" },
    "lamp": { "type": "object", "required": ["picture", "on", "why"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "on": { "type": "boolean" }, "why": { "enum": ["", "waiting", "offline"] } } },

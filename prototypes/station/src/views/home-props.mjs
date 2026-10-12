@@ -5,6 +5,7 @@
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { movingIds, playable } from "../moving.mjs";
+import { goalWords } from "./goal-words.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
@@ -85,7 +86,7 @@ export function homeBuild(m, spec, frame) {
   const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
   // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
-  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
+  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod && !need.soft ? "needsYou" : null);
 
   // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
   const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, frame.light);
@@ -135,7 +136,7 @@ export function homeBuild(m, spec, frame) {
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const focus = { cur, targets };
 
-  const line = lineOf(m, spec, { cur, residents, sleepers, here, cargoState, crates, pods, incubator, probe, library, need });
+  const line = lineOf(m, spec, { frame, cur, residents, sleepers, here, cargoState, crates, pods, incubator, probe, library, need });
   return { props: { state: "home", regions, focus }, line, requests, need, targets };
 }
 
@@ -143,7 +144,10 @@ export function homeBuild(m, spec, frame) {
 function lineOf(m, spec, v) {
   const { st } = m, Sg = spec.strings, { notice, action } = wordsOf(v.need, spec), cur = v.cur;
   const spelled = (n) => SPELL[n] ?? "many", plural = (t, n, key) => fill(n === 1 && t[key + "One"] ? t[key + "One"] : t[key], { count: spelled(n) });
-  const base = { back: null, need: notice };
+  // the notice zone: the first-group need as now (amber, its lamp, the goal does not show); else the goal (mist, no lamp); else the soft need (couldGrow short, toRead, budGrowing) as now. needKey and the room's ✓ are unchanged.
+  const goal = S.goalKey(st, m.sv, m.settings), first = v.need && ((["crates", "budReady", "meet", "newPods", "glints", "waitingPods"].includes(v.need.key) && !v.need.soft) || (v.need.key === "couldGrow" && !v.need.short));
+  const goalWords_ = !first && goal ? goalWords(goal, !!m.docked, v.frame) : null;
+  const base = { back: null, need: goalWords_ ? "" : notice, ...(goalWords_ ? { goal: goalWords_ } : {}) };
   if (cur === "room") return { ...base, ok: action, subject: "" };
   if (cur === "vivarium") {
     const n = v.residents.length + v.sleepers.length, S0 = Sg.subjects.vivarium;   // the mibis in the window: the residents and, docked, the sleepers on the bed
@@ -165,7 +169,9 @@ function lineOf(m, spec, v) {
     const B = st.bud, sp = B ? S.spName(B) : "";
     return { ...base, ok: Sg.actions.incubator, subject: !B ? S1.incubator.empty : fill(v.incubator.state === "ready" ? S1.incubator.ready : S1.incubator.growing, { species: sp }) };
   }
-  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? S1.probe.docked : S1.probe.away };
+  // the Probe's context follows the Probe goal wherever it comes from: the second goal beside a rung, or the goal itself
+  const pk = goal && (goal.probe ? goal.probe.key : goal.key === "probe" ? (goal.step.key === "fit" ? "fit" : "save") : null);
+  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? (pk === "fit" ? S1.probe.fit : pk === "save" ? S1.probe.save : S1.probe.docked) : S1.probe.away };
   if (cur === "library") return { ...base, ok: Sg.actions.library, subject: v.library.state === "pages" ? S1.library.pages : S1.library.empty };
   if (cur === "knob") return { ...base, ok: Sg.actions.knob, subject: S1.knob };
   return base;

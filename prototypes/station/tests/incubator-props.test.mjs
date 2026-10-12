@@ -92,3 +92,10 @@ test("the hatch's juvenile names its close atlas and shadow when its set may pla
   assert.deepEqual(validate(b.props, schema), []); assert.deepEqual(b.props.regions.juvenile.moving, { set: "S01", close: "moving:juvenile:S01:close:304x312:species", shadow: "moving:juvenile:S01:shadow:304x24" });
   assert.equal(incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: false }, spec, pods).props.regions.juvenile.moving, undefined, "the play gate shut: none");
 });
+test("the ready bud's front is requested as a slot of bud-ready-front-128x160 at the bud's rect (nothing drawn until placed); the other five bud pictures stay placeholders", () => {
+  const { st, p } = world(); assert.ok(S.grow(st, p, {}, settings, T0).ok);
+  const e = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 + 10_000), B = e.props.regions.bud;
+  assert.equal(B.front.split(":")[0], "bud-ready-front-128x160"); assert.deepEqual(validate(e.props, schema), []);
+  const front = e.requests.find((r) => r.id.startsWith("bud-ready-front-128x160")); assert.ok(front, "the front is requested"); assert.equal(front.kind, "slot"); assert.deepEqual(front.size, [128, 160]);
+  for (const id of ["early", "late", "ready", "crack1", "crack2"]) assert.ok(B[id], `${id} is a picture of the bud`);
+});

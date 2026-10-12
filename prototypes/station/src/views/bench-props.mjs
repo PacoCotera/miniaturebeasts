@@ -5,6 +5,7 @@
 //   m: { st, sv, settings, docked, ui (UI.bench: { f, arm, install }) }
 import * as S from "../state.mjs";
 import { slot } from "./pods-props.mjs";
+import { warnWords } from "./goal-words.mjs";
 
 const fill = (t, o) => t.replace(/\{([^{}|]+)\|([^{}|]+)\}/g, (_, a, b) => (o.n === 1 ? a : b)).replace(/\{([^{}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const SPELL = ["no", "one", "two", "three", "four"];
@@ -46,7 +47,7 @@ export function benchBuild(m, spec, frame) {
     const cost = S.price(S.PRICE.mend, settings);
     if (docked && gone) {
       const n = pr.smax - pr.shield; Object.assign(line, { ok: Sg.mend, price: cost ? S.priceText(cost, 0, 0) : "", subject: fill(Sg.toMend, { "n in words": SPELL[n] ?? String(n), n }) });
-      if (st.e < cost) { line.dim = true; line.short = S.shortIcons(st, cost, 0, 0); }
+      if (st.e < cost) { line.dim = true; line.short = S.shortIcons(st, cost, 0, 0); } else if (cost) line.need = warnWords(st, m.sv, settings, frame, { e: cost }, { key: "mend" }) ?? line.need;
     } else line.subject = Sg.whole;
   } else if (cur === "switch") {
     const free = S.price(S.PRICE.mend, settings) === 0;
