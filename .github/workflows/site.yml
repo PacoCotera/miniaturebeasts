@@ -86,15 +86,18 @@ jobs:
         # appears outside face/src/prim/. No exemptions. It reads the tree only, so it needs no base.
         run: node prototypes/face/tools/guard.mjs
       - name: Station rules and journey
-        timeout-minutes: 12   # the step takes about 2.5 minutes; a hang fails fast instead of holding the runner for the job's six hours
+        timeout-minutes: 15   # the step takes about 4 minutes with the play-page journey; a hang fails fast instead of holding the runner for the job's six hours
         # The Station's rules and the Caddy service in Node, and the Station's browser journey on the face with the service
         # in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
         # not built yet through their intents, Grow and Cross painting nothing, every not-built screen, Idle); station-build.md §5.
+        # The play page's journey (prototypes/play/tools/journey.mjs) follows it: both devices on one page at 1×, the dock round trip with the keys and the landing rule, the narrow and short tiers,
+        # a change of device pixel ratio, and printed figures.
         # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
         run: |
           set -euo pipefail
           node --test .github/roadmap.test.mjs prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/play/tools/journey.mjs
       - name: Placed masters match their index
         # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.
         run: node prototypes/ui/tools/place-masters.mjs --check
