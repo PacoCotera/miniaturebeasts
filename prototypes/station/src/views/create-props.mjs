@@ -72,17 +72,17 @@ export function createBuild(m, spec, pods) {
   regions.traitLine = line;
 
   // the work tray, the founder, the pod and its dish, the origin, the small chamber
-  regions.chamber = { back: ph("chamber-back-400x320", R.chamber.rect.slice(2), false, stale) };
-  regions.chamberFront = { picture: ph("chamber-front-400x320", R.chamberFront.rect.slice(2), false, stale) };
+  regions.chamber = { back: ph("chamber-back-400x320", R.chamber.rect.slice(2)) };
+  regions.chamberFront = { picture: ph("chamber-front-400x320", R.chamberFront.rect.slice(2)) };
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
   regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }), shadow: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + pods.shadow.widen, pods.shadow.h], "the contact shadow") };   // as Pods' specimen: named in every state, the face keeps its node
-  regions.cradle = { front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };   // the dish itself is Create's own stage's (until it lands); its near lip is registered and not drawn while the spec says `until`
+  regions.cradle = { front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };   // the dish itself is Create's own stage's; its near lip is registered and not drawn while the spec says `until`
   regions.origin = S.podOriginLines(p);
-  regions.dome = { back: ph("dome-small-back-176x224", R.dome.rect.slice(2), false, stale) };
-  regions.domeFront = { picture: ph("dome-small-front-176x224", R.domeFront.rect.slice(2), false, stale) };
-  regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2), false, stale), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
+  regions.dome = { back: ph("dome-small-back-176x224", R.dome.rect.slice(2)) };
+  regions.domeFront = { picture: ph("dome-small-front-176x224", R.domeFront.rect.slice(2)) };
+  regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2)), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
 
   // the leaves the bud will take, every one empty: the minutes it will grow
   regions.leaves = { total: S.budMinutes(st, changed.length, settings), full: 0, rows: 0, empty: ph(R.leaves.pictures.empty, R.leaves.leaf, true, stale), filled: ph(R.leaves.pictures.full, R.leaves.leaf, false, stale) };
