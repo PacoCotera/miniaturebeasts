@@ -185,5 +185,5 @@ test("the report's goal row names the next step after the crates; the meanwhile 
   const st3 = world(), [d3] = S.seedAdults(st3, "S01", 5, 1, settings).mibis; d3.name = "Dot"; const r3 = reported(st3, sv0([crate(1, 1)])).props.regions.report;
   assert.equal(r3.goal.text, "identify the Loika pod"); assert.equal(r3.meanwhile, null);
   // no goal: no row (two adults, the guide complete, nothing named)
-  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); { const fr = frameOf("S01"); st4.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st4, "S01", t.id, traitLooks(fr, t)); } assert.equal(S.goalKey(st4, sv0()), null); assert.equal(reported(st4, sv0([crate(1, 0)])).props.regions.report.goal, null);
+  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); { const fr = frameOf("S01"); st4.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st4, "S01", t.id, traitLooks(fr, t)); } st4.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(S.goalKey(st4, sv0()), null); assert.equal(reported(st4, sv0([crate(1, 0)])).props.regions.report.goal, null);
 });

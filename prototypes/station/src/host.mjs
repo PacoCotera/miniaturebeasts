@@ -82,7 +82,7 @@ export function podsBody() {
   if (!podById(p.cur)) { const q = S.neediestPod(G.st); p.cur = q ? q.id : null; }
   if (!p.cur || !G.st.tray.length) p.view = "collection";
   const key = p.cmp ? "overview" : p.view;
-  if (key === "collection") for (const q of G.st.tray) q.seen = 1; else { const q = podById(p.cur); if (q) q.seen = 1; }   // a pod Pods draws has been seen (the Home notice stops demanding it); never cleared
+  { let newly = false; const see = (q) => { if (q && !q.seen) { q.seen = 1; newly = true; } }; if (key === "collection") G.st.tray.forEach(see); else see(podById(p.cur)); if (newly) save(); }   // a pod Pods draws has been seen (the Home notice stops demanding it); never cleared
   if (p.focusView !== key) { p.focusView = key; if (!F.cur || !F.cur.startsWith(key === "collection" ? "place." : key === "chapter" ? "rail." : "")) F.cur = null; }
   const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, present: {} });
   let body = podsProps(model(), SPECS.pods, SPECS.frame);

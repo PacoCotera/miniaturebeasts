@@ -163,7 +163,7 @@ test("the goal: a soft need gives its notice to the goal, the room's ✓ keeps t
   const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod waits"); assert.equal(c.line.goal, undefined);
   // no goal: the soft need as now (two adults, the guide complete, a bud growing)
   const st3 = world(); dock(st3); S.seedAdults(st3, "S01", 5, 2, settings); { const fr = frameOf("S01"); st3.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st3, "S01", t.id, traitLooks(fr, t)); } st3.bud = { kind: "founder", species: "S03", start: Date.now(), minutes: 5 };
-  const d = build(st3, sv0()); assert.equal(S.goalKey(st3, sv0()), null); assert.equal(d.line.need, "a bud is growing"); assert.equal(d.line.goal, undefined);
+  st3.probe = { tier: 2, shield: 3, smax: 3 }; const d = build(st3, sv0()); assert.equal(S.goalKey(st3, sv0()), null); assert.equal(d.line.need, "a bud is growing"); assert.equal(d.line.goal, undefined);
 });
 test("the goal away reads the aim, growUp counts the walks in words, and the Probe's context follows its goal", () => {
   const st = world(); dock(st, false); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
@@ -174,7 +174,7 @@ test("the goal away reads the aim, growUp counts the walks in words, and the Pro
   // the Probe's context: save, fit, docked, away
   w.probe = { tier: 1, shield: 3, smax: 3 }; w.e = 3; w.d = 0; const pr = (x) => build(x, sv0(), { focus: "probe" }).line.subject;
   assert.equal(pr(w), frameSpec ? spec.strings.subjects.probe.save : "", "saving up for its upgrade"); w.e = 12; w.d = 4; assert.equal(pr(w), spec.strings.subjects.probe.fit);
-  w.e = 0; w.d = 0; w.probe = null; assert.equal(pr(w), spec.strings.subjects.probe.docked);
+  w.e = 0; w.d = 0; w.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(pr(w), spec.strings.subjects.probe.docked, "the Probe in its cradle: tier 2, nothing to save for");
 });
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
@@ -203,4 +203,20 @@ test("a new pod is firm until Pods has drawn it: firm, the goal is absent; seen,
   assert.equal(b.line.need, ""); assert.ok(b.line.goal, "soft: the goal takes the notice"); assert.equal(b.line.ok, "Look at the pods"); assert.equal(b.props.regions.pods.lamp, "well");
   const p2 = pod(st, "S01", 6, false); assert.ok(!p2.seen); b = build(st, sv0());
   assert.equal(b.line.need, "a new pod waits", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
+});
+
+test("a waiting pod in the bay is a first-group need ahead of a seen unidentified pod's soft notice: amber, the Pods lamp amber, no goal; with it gone the goal takes the zone and the lamp is well", () => {
+  const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
+  const p1 = pod(st, "S01", 5, false); p1.seen = 1;
+  st.waiting.push({ id: "wait0", species: "S01", sp: 0, g: "meadow", how: "calm", gs: 9, idd: 0, read: [] });
+  let b = build(st, sv0()); assert.equal(S.needKey(st, sv0(), settings, {}).key, "waitingPods");
+  assert.notEqual(b.line.need, ""); assert.equal(b.line.goal, undefined, "no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  st.waiting = []; b = build(st, sv0());
+  assert.equal(S.needKey(st, sv0(), settings, {}).soft, true); assert.equal(b.line.need, ""); assert.ok(b.line.goal, "the goal in mist"); assert.equal(b.props.regions.pods.lamp, "well");
+});
+test("the Probe's context follows the Probe goal wherever it comes from: every guide complete, tier 1 and ⚡3 reads save; with the upgrade payable it reads fit", () => {
+  const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); { const fr = frameOf("S01"); st.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, "S01", t.id, traitLooks(fr, t)); }
+  st.probe = { tier: 1, shield: 3, smax: 3 }; st.e = 3; st.d = 0; const pr = () => build(st, sv0(), { focus: "probe" }).line.subject;
+  assert.equal(S.goalKey(st, sv0()).key, "probe"); assert.equal(pr(), spec.strings.subjects.probe.save);
+  st.e = 12; st.d = 4; assert.equal(S.goalKey(st, sv0()).step.key, "fit"); assert.equal(pr(), spec.strings.subjects.probe.fit);
 });

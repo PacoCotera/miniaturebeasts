@@ -141,7 +141,9 @@ function lineOf(m, spec, v) {
     const B = st.bud, sp = B ? S.spName(B) : "";
     return { ...base, ok: Sg.actions.incubator, subject: !B ? S1.incubator.empty : fill(v.incubator.state === "ready" ? S1.incubator.ready : S1.incubator.growing, { species: sp }) };
   }
-  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? (goal && goal.probe && goal.probe.key === "fit" ? S1.probe.fit : goal && goal.probe && goal.probe.key === "save" ? S1.probe.save : S1.probe.docked) : S1.probe.away };
+  // the Probe's context follows the Probe goal wherever it comes from: the second goal beside a rung, or the goal itself
+  const pk = goal && (goal.probe ? goal.probe.key : goal.key === "probe" ? (goal.step.key === "fit" ? "fit" : "save") : null);
+  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? (pk === "fit" ? S1.probe.fit : pk === "save" ? S1.probe.save : S1.probe.docked) : S1.probe.away };
   if (cur === "library") return { ...base, ok: Sg.actions.library, subject: v.library.state === "pages" ? S1.library.pages : S1.library.empty };
   if (cur === "knob") return { ...base, ok: Sg.actions.knob, subject: S1.knob };
   return base;

@@ -246,7 +246,7 @@ await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page
   for (let y = 0; y < L[3]; y++) for (let x = 0; x < L[2]; x++) for (let k = 0; k < 4; k++) data[(y * L[2] + x) * 4 + k] = cap.data[((L[1] + y) * 1024 + L[0] + x) * 4 + k];
   const onScreen = decode({ width: L[2], height: L[3], data });
   expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, onScreen.stamps[0].genome), "the stamp on its 120 label, as the face drew it, decodes to the genome"); }
-// the second Loika: identify (1 Energy), its Face costs 1 (half of two, rounded up)
+// the second Loika: identify (◆ 1), its Face costs 1 (half of two, rounded up)
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
 await press("confirm", 2200);
 await page.evaluate((id) => window.__st.podsGo(id, "rail.1"), loika2.id); await page.waitForTimeout(300);   // to its Face on the page

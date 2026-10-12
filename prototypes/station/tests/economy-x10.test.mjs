@@ -96,7 +96,7 @@ test("goalKey while Cross is shut: no doors (or cross false) skips cross and rea
   const w = fresh(); const [c, d] = adults(w, 2); named([c, d], ["Dot", "Moss"], [1, 2]); w.turn = 2; w.dock = { docked: false, at: 1 }; w.probe = { tier: 1, shield: 3, smax: 3 };
   const g = S.goalKey(w, sv0(), settings, { cross: false }); assert.equal(g.key, "growUp"); assert.equal(g.walks, 2); assert.equal(g.probe.key, "save");
   // nothing left to name: every guide is complete
-  const z = fresh(); adults(z, 2); fillGuide(z, "S01"); assert.equal(S.goalKey(z, sv0()), null, "complete guide: no goal");
+  const z = fresh(); adults(z, 2); fillGuide(z, "S01"); z.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(S.goalKey(z, sv0()), null, "every guide complete and the Probe at tier 2: no goal");
 });
 
 // ---- the guide rung: the first living species whose field guide is not complete ----
@@ -114,8 +114,8 @@ test("the guide rung names the first living species with an incomplete guide and
   g = S.goalKey(st, sv0()); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, "S04");
   const pod = st.tray.find((p) => S.speciesOf(p) === "S04"); S.skipIdentify(st, pod);
   g = S.goalKey(st, sv0()); assert.equal(g.step.key, "read"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
-  st.d = 0; const cost = S.readCost(st, pod, g.step.chapter, settings); g = S.goalKey(st, sv0());
-  if (cost > 0) { assert.equal(g.step.key, "short"); assert.equal(g.step.icons, "◆"); }
+  st.readEver = true; st.d = 0; const cost = S.readCost(st, pod, g.step.chapter, settings); g = S.goalKey(st, sv0());
+  assert.ok(cost > 0, "the first read ever is free; after it a read costs"); assert.equal(g.step.key, "short"); assert.equal(g.step.icons, "◆");
   fillGuide(st, "S04"); assert.equal(S.goalKey(st, sv0()), null, "every guide complete");
 });
 test("goalKey: the meanwhile read, the probe goal (save, fit) and its outranking", () => {
@@ -186,12 +186,23 @@ test("with Cross shut at the cross moment (two adults, a Probe below tier 2) the
 });
 test("goalSpendWarn: a read that leaves ◆ under the crossed child's read price warns ◆ (Cross open); an Identify of another pod warns ◆ when it leaves the goal's Identify short", () => {
   const st = fresh(), [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"]); b.from = { how: "cross", of: ["x", "y"] }; b.read = []; st.dock = { docked: false, at: 0 }; st.e = 9; st.s = 9;
+  st.readEver = true;   // the first read ever is free: after it a read costs
+  st.d = 9;
   const doors = { cross: true }, g = S.goalKey(st, sv0(), settings, doors); assert.equal(g.key, "readChild"); assert.equal(g.step.key, "read");
-  const ch = frameOf("S01").chapters.find((c) => !b.read.includes(c.id)), cost = S.mibiReadCost(st, b, ch.id, settings); st.d = cost;
-  const w = S.goalSpendWarn(st, sv0(), settings, { d: 1 }, { key: "other" }, doors); if (cost > 0) { assert.equal(w.step, "read"); assert.equal(w.name, "Moss"); assert.equal(w.icons, "◆"); }
+  const ch = frameOf("S01").chapters.find((c) => !b.read.includes(c.id)), cost = S.mibiReadCost(st, b, ch.id, settings); assert.ok(cost > 0, "a read costs once the first is done"); st.d = cost;
+  const w = S.goalSpendWarn(st, sv0(), settings, { d: 1 }, { key: "other" }, doors); assert.equal(w.step, "read"); assert.equal(w.name, "Moss"); assert.equal(w.icons, "◆");
   // Identify in ◆: the goal's next price is an Identify, and another pod's Identify leaves it short
   const s2 = fresh(); const [dot] = adults(s2, 1); named([dot], ["Dot"]); s2.dock = { docked: false, at: 0 }; s2.d = 1; seedPods(s2, "S01", 1); seedPods(s2, "S04", 1, 33);
   const other = s2.tray.find((p) => S.speciesOf(p) === "S04"), warn = S.goalSpendWarn(s2, sv0(), settings, { d: S.identifyCost(s2, settings) }, { key: "identify", pod: other });
   assert.equal(warn.step, "identify"); assert.equal(warn.icons, "◆");
   const mine = s2.tray.find((p) => S.speciesOf(p) === "S01"); assert.equal(S.goalSpendWarn(s2, sv0(), settings, { d: 1 }, { key: "identify", pod: mine }), null, "identifying the goal's own pod warns of nothing");
+});
+
+// ---- GD Q2: the tier is read through tierNow (a save with no Probe takes the world's tier); a null Probe with an empty ladder goes out, never fits ----
+test("a null Probe with an empty ladder: sv tier 1 is the Probe goal with step goOut (never fit); sv tier 2 is the only null; growUp with a null Probe saves up", () => {
+  const sv = (tier) => ({ ...sv0(), tier }), mk = () => { const st = fresh(); adults(st, 2); fillGuide(st, "S01"); st.probe = null; st.dock = { docked: true, at: 0 }; st.e = 20; st.d = 20; st.s = 9; return st; };
+  const g = S.goalKey(mk(), sv(1), settings, { cross: false }); assert.equal(g.key, "probe"); assert.equal(g.step.key, "goOut", "never fit without a Probe"); assert.deepEqual(g.e, [20, 12]);
+  assert.equal(S.goalKey(mk(), sv(2), settings, { cross: false }), null, "tier 2 from the world: nothing left to name");
+  const st = fresh(), [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"], [1, 2]); st.turn = 2; st.dock = { docked: false, at: 0 }; st.probe = null;
+  const w = S.goalKey(st, sv(1), settings, { cross: false }); assert.equal(w.key, "growUp"); assert.equal(w.probe.key, "save");
 });
