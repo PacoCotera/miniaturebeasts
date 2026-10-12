@@ -142,14 +142,14 @@ test("old saves: no trips list, an expedition without the new fields", () => {
   const saved = { v: 8, seed: 7, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, store = { "mb-save-v8": JSON.stringify(saved) };
   const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
     SAVE_KEY: "mb-save-v8", SAVE_V: 8, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o,
-    layoutCache: { clear() {} }, genWorld() {}, GENS: [1], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2 };
-  const l = load(["load", "migrateCarried", "normalizeCare"], ctx);
+    layoutCache: { clear() {} }, genWorld() {}, GENS: [1], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
+  const l = load(["load", "migrateCarried", "normalizeCare", "worldFields"], ctx);
   assert.equal(l.load(), true);
   assert.deepEqual(plain(vm.runInContext("S.trips", l.ctx)), []);
 });
 
 test("a new world starts with no trips and expedition 1", () => {
-  assert.match(source("newWorld"), /expN: 1, trips: \[\]/);
+  assert.match(source("worldFields"), /expN: 1, trips: \[\]/);
 });
 
 // Ruling (game designer 18:02): End expedition is allowed while the Companion is docked, with no guard and canSend unchanged.

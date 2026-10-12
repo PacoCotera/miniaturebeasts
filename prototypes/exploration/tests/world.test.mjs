@@ -548,7 +548,7 @@ let G1P = null, G2P = null;
 const g1Page = () => G1P || (G1P = page(g1Save(), undefined, { canvas: true }));
 const g2Page = () => { if (!G2P) { G2P = page({}, undefined, { canvas: true }); G2P.run("newWorld(1)"); } return G2P; };
 const g1Map = () => { const p = g1Page();
-  p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; drawMap('view', 0);");
+  p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; scr.px().fill(-1); drawMap('view', 0);");
   return p; };
 
 test("M3: the lip on lime ground stays lime, in the edge marks at 72, 48 and 26 and in the place lip at 32 (no cream pixel)", () => {

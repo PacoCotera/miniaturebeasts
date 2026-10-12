@@ -682,23 +682,27 @@ function carryApply(S, st) {
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
+// A new world's fields, before its life is placed: newWorld starts from them, and load() fills from them what a save lacks.
+function worldFields(seed, gen) {
+  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
+    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
+    phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
+    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
+}
 function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   const gen = NEW_GEN;
   G = genWorld(seed, gen);
-  S = { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
-    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
-    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
-    phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
-    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
+  S = worldFields(seed, gen);
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
-  if (window.__mbResetting || RT.readOnly) return;   // a reset is reloading, or the save is from a newer page: nothing may write it
+  if (window.__mbResetting || RT.readOnly || RT.bootHold) return;   // a reset is reloading, the save is read-only, or the loaded save has not drawn yet: nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
@@ -733,6 +737,9 @@ function load() {
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
     dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
+    // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
+    // whatever it holds, and `gen` is never filled (a save without it is generator 1)
+    const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
     layoutCache.clear(); G = genWorld(S.seed, gen); indexCreatures(); return true;
   } catch (e) { dropOld(); return false; }
 }
@@ -4270,7 +4277,7 @@ function lineFor() {
 }
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
-  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // S is null here: nothing that reads it runs
+  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
@@ -4594,7 +4601,7 @@ function energyText() {
   return 'in reach: ' + w + ' warm stones (' + wf + ' unveiled) · ' + k + ' storm-charged (' + kf + ' unveiled) · drawn from warm this expedition ' + (ex.stats.warm || 0);
 }
 function onStateChanged() {
-  if (!obsEl || obsEl.hidden || !S) return;
+  if (!obsEl || obsEl.hidden || !S || RT.readOnly) return;
   const ex = S.exp;
   document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started';
   document.getElementById('oTurn').textContent = wTurn();
@@ -4655,8 +4662,9 @@ function drawNewer() {
   R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
-if (ld === true && S.exp && S.exp.beaconView) setTimeout(beaconDone, 0);   // reloaded mid-sweep: back beside the beacon
-if (ld === true && S.exp && S.exp.caveDue) setTimeout(digDone, 0);   // reloaded before the dug burrow's entry: into the cave
+RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
+if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
+if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
 // The side panel's two sections start collapsed on every load.
 for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
@@ -4676,8 +4684,10 @@ window.addEventListener('storage', e => {
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
   save();   // save() re-reads the Station's part, syncs, and writes ours back unchanged otherwise
 });
-save();
 if (!RT.readOnly && S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
+// A loaded save that still cannot draw its screen opens read-only, as a newer page's save does, and is never written.
+if (ld === true) { try { render(NOW / 1000); } catch (e) { console.error(e); RT.readOnly = true; } }
+RT.bootHold = false; save();
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
 fit();
