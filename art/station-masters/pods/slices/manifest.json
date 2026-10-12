@@ -10093,12 +10093,12 @@
   ],
   "rect": null,
   "src": "by hand, no source picture: drawn at 4x and reduced; colours from the signed home-chamber-empty-72x72 (its plate, window frame and warm interior)",
-  "made": "Home's Cargo bay, open and empty: the module's bay ground at its region (home.json cargo.bay, screen 800,56,176,72), no case: a sage plate with two screws, a grey metal framed recess (3,4)-(173,60), the warm dim back wall, two metal posts at x 54 and 118 between the places, a sage moulded floor (y 45-57) with three shallow places under the crate rects (x 0, 64, 128, 48x40, feet on y 56); the plate plain under the crates for the sitting lamps (18+64k, 60) and behind the waiting mark (76, 24) (pass 137)",
-  "sha256": "5000a012065260677d54b10ae3be1b33efba927d48b4638afa4df8a92c9742bf",
+  "made": "Home's Cargo bay, open and empty: the module's bay ground at its region (home.json cargo.bay, screen 800,56,176,72), no case: a sage plate with two screws, a grey metal framed recess (3,4)-(173,60), the warm dim back wall, two metal posts between the places (shafts x 58-61 and 114-117), a sage moulded floor (y 45-57) with three shallow places under the crate rects (x 8, 64, 120, 48x40, pitch 56, feet on y 56); the plate plain under the crates for the sitting lamps (26+56k, 60) and behind the waiting mark (76, 24) (pass 138)",
+  "sha256": "261fcea830792d8c80baa534265ac4788cf03e25007456a2d09e2d101ad12a68",
   "status": "signed",
-  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
-  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 37.4, mean R-B 15.2, 1.8 percent above L* 70; the column's sibling of the chamber, the walk and sitting crates stand on its floor line",
-  "replaces": "home-bay-open-176x72 sha256 b3c0a5d1e26b (art director, Home column verdict (1f7d4a83)): Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (n"
+  "signed_in": "art director, hand recut (pass 138)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 37.3, mean R-B 15.2, 1.8 percent above L* 70; the column's sibling of the chamber, the walk and sitting crates stand on its floor line",
+  "replaces": "home-bay-open-176x72 sha256 5000a0120652 (art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)): Home's Cargo bay, open and empty: the module's bay ground at its region (home.json cargo.bay, screen 800,56,176,72), no "
  },
  "home-well-32x32": {
   "size": [
