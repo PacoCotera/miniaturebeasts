@@ -227,3 +227,21 @@ test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 
   let verbInk = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(blocked, x, y)) verbInk++; assert.ok(verbInk > 0, "the verb starts at x 36");
   let verbShort = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(short, x, y)) verbShort++; assert.ok(verbShort > 0, "a short line has its verb at the same x (its cap picture is the frame's, not in this test)");
 });
+
+// ---- the pod's contact shadow (regions.podShadow; Pods' rule): under the pod in shape and nothing read, in grow only until the travel starts, never with reduced motion ----
+const shadowOf = (lg) => lg.regions.find((r) => r.id === "podShadow" && r.layer === "painted");
+test("shape (a medium pod): the shadow is the painted node podShadow at [92, 401, 136, 14], the class's master, drawn just before the pod and clear of the departure check", { skip }, async () => {
+  const b = scene({ read: 2, f: 1 }), f = await start(b), lg = logOf(f), sh = shadowOf(lg), i = lg.regions.indexOf(sh), pod = lg.regions.findIndex((r) => r.id === "pod" && r.layer === "painted");
+  assert.equal(b.props.regions.pod.sizeClass, "medium"); assert.equal(b.props.regions.podShadow.picture, "pod-medium-shadow:136x14");
+  assert.deepEqual(sh?.rect, [92, 401, 136, 14]); assert.equal(i + 1, pod, "just before the pod"); assert.ok(pixelIs(f, 160, 412, "pod-medium-shadow:136x14"), "below the pod's feet the shadow's master shows");
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "shape"), []); assert.deepEqual(f.errors(), []);
+  const n = scene({ read: 0 }), g = await start(n); assert.deepEqual(shadowOf(logOf(g))?.rect, [92, 401, 136, 14], "nothing read too");
+});
+test("grow: the shadow stands at 0 and 299 ms, is a cut to no size at 300, 600 and 900, and is not there with reduced motion", { skip }, async () => {
+  const { f, at } = await growing();
+  for (const ms of [0, 299]) assert.deepEqual(shadowOf(at(ms))?.rect, [92, 401, 136, 14], `at ${ms}`);
+  for (const ms of [300, 600, 900]) assert.ok(!shadowOf(at(ms)) || shadowOf(at(ms)).rect[2] === 0, `gone at ${ms}`);
+  assert.deepEqual(f.errors(), []);
+  const b = scene({ read: 2, f: 1, roll: 1, grown: true, motion: false }), g = await start(b, { motion: false }); g.send({ t: "event", kind: "grow", target: "pod", ms: EV.grow.ms, hold: EV.grow.hold }); frames(g, 2);
+  assert.ok(!shadowOf(logOf(g)), "no shadow with reduced motion in grow");
+});

@@ -57,7 +57,7 @@ static void build_pod(int grow) {
   int dx = 0, dy = 0;
   {   /* the contact shadow (as on Pods, specimen.c): pods.json `shadow` widens the class's width by `widen`, `h` tall, centred on the axis and the feet, on the painted layer before the pod; it never travels: shown in shape and nothing read, and in grow until the travel starts (a cut to a zero-size node), never with reduced motion in grow */
     int sw = b[2] + spec_int("pods", "shadow.widen", 0), sh = spec_int("pods", "shadow.h", 0), at = ci("events.grow.steps.2.at", 300), t = grow_time(), on = !grow || (t >= 0 && t < at);
-    v_region("pod", LAYER_PAINTED); pic_or("pod.shadow", on, v_pstr("regions.pod.shadow"), ci("regions.pod.axis", 160) - v_half(sw), ci("regions.pod.feet", 408) - v_half(sh), sw, sh);
+    v_region("podShadow", LAYER_PAINTED); pic_or("podShadow", on, v_pstr("regions.podShadow.picture"), ci("regions.pod.axis", 160) - v_half(sw), ci("regions.pod.feet", 408) - v_half(sh), sw, sh);
   }
   if (grow) {   /* the pod travels from its box to the dome in a straight line, whole pixels, eased: from `travel.at` over `travel.ms`, feet (160, 408) to (864, 296) */
     int at = ci("events.grow.steps.2.at", 300), ms = ci("events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = layout_ease_io(p);
