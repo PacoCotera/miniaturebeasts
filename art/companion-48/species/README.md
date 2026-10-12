@@ -10,7 +10,7 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - The other poses (alert, flee, huddle, shake, eat; for S03 also curl, settle, nest and glow) are drawn from the idle and hand-cleaned by the pixel artist.
 - All of it is candidate until the art director signs each master at 1× on a field capture beside the pawn.
 
-**S01 status:** the idle and the mini are a base only.
-- The cream needs a shade step under the belly.
-- The muzzle needs one clear line.
-- The mini needs the crest kept and the body shape simplified.
+**S01 status (candidate, for the art director's read; nothing signed):**
+- The idle and the mini are base plus hand-cleaning, and the seven other poses are drawn from the idle: `tools/species-s01-draw.py` places every pixel by coordinates (silhouette spans, the top-left shading rule, cream, mouth, eye, toes, the three-leaf crest, the poses' moves and redraws, the drops and the bit). The base from `build-species-token.py` stays the reference for the silhouette; the pieces here replace d912e098's.
+- Pieces: `c-token-S01-{idle,alert,flee,huddle,shake-f0,shake-f1,eat-f0,eat-f1}-32x32.png` and `c-mini-S01-12x12.png`; the review sheet is `sheet-S01-candidate.png` (all 9 at 8x on ink, and at 1x on a 48 px lawn tile beside the pawn; the 48 px pawn frame stands in for c-pawn-32), made by `tools/species-sheet.py`.
+- Checks: `atlas-check.mjs` on a one-piece manifest per file, each piece ok against the core 48 (its summary line, 22 core keys missing, is the one-piece manifest's, not a refusal); alpha only 0 and 255; the only void is the pupil.
