@@ -48,7 +48,7 @@ export function cargoBuild(m, spec, home, frame) {
     const slice = (name) => ph(`crate-${name}-${R.crate.rect[2]}x${R.crate.rect[3]}`, R.crate.rect.slice(2));
     regions.opening = {
       crate: c.crate, at: c.at,
-      crates: run.crates.map((k) => ({ ribbon: k.ribbon, sealed: slice("sealed"), opening: slice("opening"), open: slice("open"), pods: k.pods.map((p) => ({ picture: podPic(anyPod(p.id)), well: p.well })) })),
+      crates: run.crates.map((k) => ({ ribbon: k.ribbon, sealed: slice("sealed"), opening: slice("opening"), open: slice("open"), stores: ["energy", "data", "essence"].filter((m, i) => k.gained["eds"[i]] > 0).map((m) => ph(`cargo-${m}-${R.stores.size.join("x")}`, R.stores.size)), pods: k.pods.map((p) => ({ picture: podPic(anyPod(p.id)), well: p.well })) })),
     };
   }
   if (state === "report") regions.report = reportOf(run.report, spec, ph);

@@ -9,11 +9,12 @@ import vm from "node:vm";
 import { freshSt, dockKey } from "../../station/src/state.mjs";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
+import * as V from "../src/view.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
-const MODS = { world: W, atlas: A };
+// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
+const MODS = { world: W, view: V, atlas: A };
 const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
 const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
 const SCRIPT = MODULE.replace(IMPORT_RE, "");
@@ -394,4 +395,25 @@ test("docked: no one-time hint shows or is spent; after Lift the first press sho
   p.key("left"); assert.equal(p.S.phase, "patch");
   assert.equal(p.run("FX.msg"), CALL, "the first press after Lift shows the Call hint");
   assert.equal(p.S.found.includes("callplace"), true, "and spends it");
+});
+
+// ---- C2a §8.3: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----
+// 600 frames in each scene, 16 ms apart, with no pass(): no input timer runs, so only render() and frame() could write.
+function frozenBy(p, name) {
+  p.run("save()"); const snap = p.run("JSON.stringify(S)") + p.store[p.KEY]; let t = p.clock.t;
+  for (let i = 0; i < 600; i++) { t += 16; p.clock.t = t; p.run("frame(" + t + ")"); }
+  assert.equal(p.run("JSON.stringify(S)") + p.store[p.KEY], snap, name + ": S and the save as they were");
+  assert.equal(p.run("RT.err"), 0, name + ": no render error");
+}
+test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a place, the beacon sweep and the active screen with a cut due", () => {
+  { const { p } = begin(); frozenBy(p, "the reach view"); }
+  { const { p } = begin(); assert.ok(intoPlaceWithCreature(p), "a creature in sight"); assert.ok(p.run("!!(curLive().pt && S.exp.pt)"), "the partner along"); frozenBy(p, "a place with a creature and the partner"); }
+  { const { p } = begin();
+    assert.ok(p.run(`(() => { for (let c = 0; c < MW * MH; c++) { const lay = layout(String(c)); if (lay.cave) continue; const f = lay.feats.find(f => f.kind === 'j'); if (!f) continue;
+      S.exp.pos = c; S.exp.patch = { key: String(c), x: f.x, y: f.y + 1, dir: 'up', noise: 'creep' }; ensureLive(String(c)); S.phase = 'patch'; S.exp.cargo.e = 9; lightBeacon(f); return !!S.exp.beaconView; } return false; })()`), "the sweep runs");
+    frozenBy(p, "the beacon sweep"); p.pass(1800); assert.equal(p.S.exp.beaconView, undefined, "the sweep's own timer still brings the view back"); }
+  { const p = page(); p.run(`newWorld(${SEED}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null },
+      { id: 2, name: 'Pip', sp: 1, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1, 2];
+      S.phase = 'active'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
+    frozenBy(p, "the active screen with a cut due"); }
 });
