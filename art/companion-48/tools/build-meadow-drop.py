@@ -128,6 +128,7 @@ def add(name, a, **f): PIECES.append((name, a, dict(status="candidate", offset=[
 
 # ---- ground
 FL = fleck_windows(8, 1)
+LIPF = fleck_windows(8, 2)[6:]                                    # the lawn texture for the pieces that carry their own lawn (lip, shore margin, spill, holes)
 for k in range(6): add(f"meadow/ground/lawn-{k + 1}", lawn_tile(FL[k], 300 + k), kind="ground", set="lawn", variant=str(k + 1))
 WQ = {n: to_idx(os.path.join(TS, "water", n + ".png")) for n in ("q-nw-edgeh-f1", "q-nw-fill-f1")}
 bank = WQ["q-nw-edgeh-f1"]; bk = bank[bank != TR]; bk = bk[np.isin(mat[bk], ["earth", "sand"])]; bv, bc = np.unique(bk, return_counts=True)
@@ -159,33 +160,59 @@ for f in sorted(os.listdir(os.path.join(G, "decals"))):
 # ---- water
 for p in json.load(open(os.path.join(TS, "water", "water.json")))["pieces"]:
     f = {k: v for k, v in p.items() if k not in ("name", "file", "px")}
-    if p["kind"] == "shore": f["set"] = "water"
-    add(p["name"], to_idx(os.path.join(TS, "water", p["file"])), **f)
+    a = to_idx(os.path.join(TS, "water", p["file"]))
+    if p["kind"] == "shore":
+        f["set"] = "water"
+        # the page draws a water tile's quarters with no ground under them: the land margin beyond the bank is lawn here, never a hole
+        yy, xx = np.nonzero(a == TR); a[yy, xx] = tone(LAWN0 + LIPF[1][yy % 48, xx % 48])
+    add(p["name"], a, **f)
 
 # ---- lip quarters: the candidate geometry by the plateau-edge rule (outline, lit rim, two shade steps beyond, a fringe)
 def grow(m, n):
     m = m.copy()
     for _ in range(n): m[1:] |= m[:-1]; m[:-1] |= m[1:]; m[:, 1:] |= m[:, :-1]; m[:, :-1] |= m[:, 1:]
     return m
-LIPF = fleck_windows(8, 2)[6:]
+QO = {"nw": (0, 0), "ne": (24, 0), "se": (24, 24), "sw": (0, 24)}
+def waver(t): return np.round(1.2 * np.sin(2 * np.pi * t / 24) + 0.6 * np.sin(4 * np.pi * t / 24))   # 0 at every quarter's ends: any quarter joins any other
+def plateau(q, s, X, Y):
+    """the upper level's region in tile coordinates (0-47) for quarter q in state s: the edge 6 px inside an open north, west or east
+    side, waving gently; none on a south side (the face hangs from the cell's edge); at the tile's own side where it meets a face (the
+    0 states); outer corners rounded on 12 px; an inner corner a 6 px notch with a rounded inside"""
+    a = "N" if q in ("nw", "ne") else "S"; b = "W" if q in ("nw", "sw") else "E"
+    open_ = {"edgeh": {a}, "edgev": {b}, "outer": {a, b}, "edgev0": set(), "outer0": {a}, "inner": set(), "fill": set()}[s]
+    m = np.ones(X.shape, bool)
+    if "N" in open_: m &= Y >= 6 + waver(X)
+    if "W" in open_: m &= X >= 6 + waver(Y)
+    if "E" in open_: m &= X <= 41 - waver(Y)
+    if s.endswith("0"): m &= (X >= 0) if b == "W" else (X <= 47)
+    if s == "outer" and a == "N":
+        cx = 18 if b == "W" else 29; inc = (X < cx) if b == "W" else (X > cx)
+        m &= ~(inc & (Y < 18) & (np.hypot(X - cx, Y - 18) > 12))
+    if s == "inner":
+        cx, cy = (6 if b == "W" else 41), (6 if a == "N" else 41)
+        sx, sy = (X < cx) if b == "W" else (X > cx), (Y < cy) if a == "N" else (Y > cy)
+        m &= ~(sx & sy)
+        fx, fy = (cx + 4 if b == "W" else cx - 4), (cy + 4 if a == "N" else cy - 4)            # the notch's inside rounded on 4 px
+        inb = ((X < fx) if b == "W" else (X > fx)) & ((Y < fy) if a == "N" else (Y > fy))
+        m &= ~(inb & (np.hypot(X - fx, Y - fy) > 4))
+        if a == "S": m[:] = True                                        # a south diagonal: the face below carries it
+    return m
 for qi, q in enumerate(("nw", "ne", "se", "sw")):
     for s in ("fill", "edgeh", "edgev", "edgev0", "outer", "outer0", "inner"):
-        reg = np.asarray(Image.open(os.path.join(G, "pieces", "region", f"lip-{q}-{s}.png")).convert("L")) > 0
-        P_ = 16; m = np.pad(reg, P_, mode="edge")
-        if s == "fill": add(f"meadow/lip/lip-{q}-{s}", np.full((24, 24), TR), kind="lip", quad=q, state=s); continue
-        if s.endswith("0"):                                        # beside a face: the edge runs at the tile's own side, its shade on the face
-            if q in ("nw", "sw"): m[:, :P_] = False
-            else: m[:, -P_:] = False
-        fy, fx = (0, 0) if q in ("nw",) else (0, 24) if q == "ne" else (24, 24) if q == "se" else (24, 0)
-        base = tone(LAWN0 + np.pad(LIPF[qi % 2][fy:fy + 24, fx:fx + 24], P_, mode="wrap"))
-        img = np.full(m.shape, -1)
-        sf = np.zeros_like(m)                                      # the edge rule on north, west and east; never along a south side
-        beyond = grow(m, 12) & ~grow(m, 2) & ~m; img[beyond] = [gstep(v, -1) for v in base[beyond]]
-        near2 = grow(m, 5) & ~grow(m, 2) & ~m; img[near2] = [gstep(v, -2) for v in base[near2]]
+        P_ = 16; ox, oy = QO[q]
+        Y, X = np.mgrid[oy - P_:oy + 24 + P_, ox - P_:ox + 24 + P_]
+        m = plateau(q, s, X, Y)
+        if m.all():                                                     # no edge anywhere near: the plateau's own lawn shows
+            add(f"meadow/lip/lip-{q}-{s}", np.full((24, 24), TR), kind="lip", quad=q, state=s); continue
+        f = np.pad(LIPF[qi % 2][oy:oy + 24, ox:ox + 24], P_, mode="wrap")
+        low, up = tone(LAWN0 + f), tone(LAWN0 + 1 + f)                # the ground below, and the plateau one step up the ramp (the page draws its lawn through LIGHT)
+        img = np.where(~m, low, -1)                                     # outside the edge: the lower lawn, opaque, so the plateau tile shows the level change
+        beyond = grow(m, 12) & ~grow(m, 2) & ~m; img[beyond] = [gstep(v, -1) for v in low[beyond]]
+        near2 = grow(m, 5) & ~grow(m, 2) & ~m; img[near2] = [gstep(v, -2) for v in low[near2]]
         outl = grow(m, 2) & ~m; img[outl] = OUTL
         def nb(dy, dx): return np.roll(np.roll(m, dy, 0), dx, 1)
-        rim = m & ~(nb(4, 0) & nb(0, 4) & nb(0, -4) & nb(-4, 0)); img[rim] = [ls(v, 2) for v in base[rim]]
-        e1 = m & ~(nb(1, 0) & nb(0, 1) & nb(0, -1) & nb(-1, 0)); img[e1] = [gstep(v, 1) for v in np.where(img[e1] >= 0, img[e1], base[e1])]
+        rim = m & ~(nb(4, 0) & nb(0, 4) & nb(0, -4) & nb(-4, 0)); img[rim] = [gstep(v, 2) for v in up[rim]]
+        e1 = m & ~(nb(1, 0) & nb(0, 1) & nb(0, -1) & nb(-1, 0)); img[e1] = [gstep(v, 1) for v in img[e1]]
         rng = np.random.RandomState(1000 + qi * 10 + len(s))
         ry, rx = np.where(e1)
         for yb, xb in zip(ry, rx):
@@ -195,7 +222,7 @@ for qi, q in enumerate(("nw", "ne", "se", "sw")):
             if dy == 0 and dx == 0: continue
             for t in range(1, rng.randint(2, 5)):
                 y3, x3 = yb + dy * t, xb + dx * t
-                if 0 <= y3 < m.shape[0] and 0 <= x3 < m.shape[1]: img[y3, x3] = ls(LRAMP[LAWN0], 2 if t > 1 else 1)
+                if 0 <= y3 < m.shape[0] and 0 <= x3 < m.shape[1]: img[y3, x3] = gstep(up[y3, x3], 2 if t > 1 else 1)
         img = img[P_:P_ + 24, P_:P_ + 24]
         add(f"meadow/lip/lip-{q}-{s}", np.where(img >= 0, img, TR), kind="lip", quad=q, state=s)
 
@@ -210,21 +237,70 @@ def spill(a, seed):
     lobe *= np.clip(np.minimum(xs, w - 1 - xs) / 8.0, 0, 1)
     dd = np.clip(np.round(10 + lobe + rng.randint(-1, 2, w)), 9, 24).astype(int)
     f = LIPF[seed % 2]; f = np.concatenate([f, f[:, ::-1]] * (w // 96 + 1), 1)
-    up = LRAMP[LAWN0]
+    up = LRAMP[LAWN0 + 1]                                           # the plateau's tone: the turf is the upper lawn carried over
     for x, d in zip(xs, dd):
         col = np.where(a[:, x] != TR)[0]
         if not len(col): continue
         y0 = col[0]; d = min(d, h - 8)
-        for y in range(y0, y0 + d): a[y, x] = tone(LAWN0 + f[y % 48, x])
+        for y in range(y0, y0 + d): a[y, x] = tone(LAWN0 + 1 + f[y % 48, x])
         for y in range(y0 + d - 4, y0 + d - 1): a[y, x] = gstep(a[y, x], 1)
         a[y0 + d - 1, x] = gstep(up, -2); a[y0 + d, x] = OUTL
         if rng.rand() < .35:
             for t in range(1, rng.randint(2, 7)): a[y0 + d + t, x] = gstep(up, -1) if t < 3 else OUTL
     return a
+def flatten(a):
+    """the rock at the lawn's scale: a pixel takes its 3x3 majority colour when that colour holds 5 of the 9 and is the same material
+    (b1's own rule against soft gradients); cracks, moss and roots, which are runs, stay"""
+    h, w = a.shape; p_ = np.pad(a, 1, mode="edge"); out = a.copy()
+    st = np.stack([p_[1 + dy:h + 1 + dy, 1 + dx:w + 1 + dx] for dy in (-1, 0, 1) for dx in (-1, 0, 1)], -1)
+    for y in range(h):
+        for x in range(w):
+            v = a[y, x]
+            if v == TR: continue
+            u, c = np.unique(st[y, x], return_counts=True); k = u[np.argmax(c)]
+            if c.max() >= 5 and k != TR and k != v and mat[k] == mat[v]: out[y, x] = k
+    return out
+FEET = [to_idx(os.path.join(TS, "walls", p["file"])) for p in WJ if p["kind"] == "foot"]
+ROCKI = [i for i in range(NC) if mat[i] == "rock" or (i < 48 and P48.names[i] in ("void", "ink", "night", "slate", "stone", "mist", "fog", "rock", "rockL"))]
+def soften(a, k=0.7):
+    """the rock's contrast toward the lawn's: every rock pixel pulled 30 % toward the face's mean rock colour, then the nearest rock or grey"""
+    r = np.isin(a, ROCKI)
+    if not r.any(): return a
+    mu = PAL[a[r]].mean(0); v = mu + k * (PAL[a[r]] - mu)
+    a = a.copy(); a[r] = [nearest(c, ROCKI) for c in v]; return a
+def base(a, seed):
+    """the face stands in the ground: grass grows 4-12 px up its base in smooth lobes with blade tips, in the lower lawn's tone (it
+    covers the bottom outline and squares a cap's rounded foot), and the rock above it darkens a step"""
+    h, w = a.shape; rng = np.random.RandomState(seed + 7); xs = np.arange(w); g = np.zeros(w)
+    for _ in range(max(2, w // 20)):
+        c0, wd, ht = rng.uniform(0, w), rng.uniform(8, 20), rng.uniform(2, 8)
+        g += ht * np.clip(np.cos((xs - c0) / wd * np.pi / 2), 0, None) ** 2
+    g = np.clip(np.round(4 + g + rng.randint(0, 2, w)), 4, 12).astype(int)
+    f = LIPF[(seed + 1) % 2]
+    for x in xs:
+        top = h - g[x]
+        for y in range(max(0, top - 3), top):                          # the rock's foot in the grass's shade
+            if np.isin(a[y, x], ROCKI): a[y, x] = DARK[a[y, x]]
+        for y in range(top, h): a[y, x] = tone(LAWN0 + f[y % 48, x % 48])
+        if rng.rand() < .45:                                             # blades over the rock's foot
+            for t in range(1, rng.randint(2, 6)):
+                if top - t >= 0: a[top - t, x] = gstep(LRAMP[LAWN0], 1 if t < 3 else 2)
+        a[top, x] = gstep(LRAMP[LAWN0], 1)
+    return a
+def foot(a, seed):
+    """a wall's foot baked into the face's bottom rows: a foot strip (grass clumps and pebbles over the rock's base) on every 48 px
+    column, as test map 12 lays one on every cell of a run's bottom edge; v1 draws no foot strips of its own"""
+    h, w = a.shape
+    for k in range(0, w, 48):
+        s_ = FEET[(seed + k // 48) % len(FEET)][:14]; ww = min(48, w - k); seg = a[h - 14:h, k:k + ww]
+        a[h - 14:h, k:k + ww] = np.where(s_[:, :ww] != TR, s_[:, :ww], seg)
+    return a
 for p in WJ:
     a = to_idx(os.path.join(TS, "walls", p["file"])); h, w = a.shape
     if p["kind"] in ("face", "cap"):
+        a = soften(flatten(a))
         a = spill(a, sum(map(ord, p["name"])))
+        a = base(a, sum(map(ord, p["name"])))
         # the key's holes inside a face (moss and vines keyed out): filled with lawn texture,
         # so a face over any ground reads the same
         from scipy import ndimage as nd_
@@ -256,8 +332,8 @@ for p in json.load(open(os.path.join(TS, "props", "props.json")))["pieces"]:
 # captures), and every piece v1 does not draw (shore macros, lobes, beaches, bend, band, wall foot strips, bush, fern, bridge).
 def signed(n, f):
     k = f["kind"]
-    if k in ("ground", "lip", "face", "cap") or (k == "decal"): return True
-    if k == "shore" and f.get("set") == "water": return True
+    if k in ("ground",) or (k == "decal"): return True                # the lip, faces, caps and water quarters were redrawn (level tone, the
+    # foot, the rock's contrast, round shores): candidate until they are signed in the new proof
     if k == "prop" and f.get("type") in ("boulder", "reeds", "flowers"): return True
     return False
 PIECES = [(n, a, dict(f, status="signed") if signed(n, f) else f) for n, a, f in PIECES]

@@ -2,7 +2,7 @@
 
 Water cells carry the whole bank, so the lawn cells beside them stay plain lawn. A water cell is drawn from four 24 px quarters in
 five states each (fill, edgeh, edgev, outer, inner: the same 47-blob scheme as the plateau lips), on the same geometry: on every
-side that meets land the water's edge sits INSET px inside the cell, outer corners are cut on R_OUT, inner corners on R_IN, and the
+side that meets land the water's edge sits INSET px inside the cell, outer corners are cut on R_OUT round the quarter's own far corner, inner corners on R_IN, and the
 straight runs waver by a 24-periodic offset that is 0 at the quarter's ends. Then by distance from that edge:
   land side (the inset margin)   a 10 px sand beach, its outermost 2 px a dark edge where it meets the lawn
   water side                     a 2-3 px wet edge with foam flecks (7 px in 23), no drawn border, a shallow band to 9 px, then the body
@@ -19,7 +19,7 @@ cols = json.load(open(palj))["colours"]; PAL = np.array([[int(c["hex"][k:k + 2],
 near = lambda rgb: int(((PAL - np.array(rgb)) ** 2).sum(1).argmin())
 BODY, SHAL, FOAM, WET = near((29, 104, 136)), near((34, 121, 147)), near((255, 255, 255)), near((219, 238, 229))
 SAND, SAND2, EDGE = near((196, 170, 110)), near((166, 140, 90)), near((60, 48, 36))
-INSET, R_OUT, R_IN = 18, 26, 18
+INSET, R_OUT, R_IN = 14, 10, 14            # the outer corner turns on its own quarter (centre at the quarter's far corner), so it is never cut off
 WAVE = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0]   # one low 1 px swell per quarter: mirrored quarters can't zigzag
 
 def land_mask(state):
@@ -47,7 +47,8 @@ def quarter(quad, state, frame):
             u = x if west else 23 - x; v = y if north else 23 - y; gu, gv = u + 16, v + 16
             if land[gv, gu]:
                 d = int(np.sqrt(((wp - [gv, gu]) ** 2).sum(1).min()))     # distance to the water
-                q[y, x] = -1 if d > 12 else (EDGE if d >= 11 else (SAND if d >= 3 else SAND2))   # a 10 px beach, then the lawn shows
+                bw = 12 + int(round(1.2 * np.sin(2 * np.pi * u / 24) + 1.2 * np.sin(2 * np.pi * v / 24)))   # the bank wavers 10-14 px, the same at every quarter's ends
+                q[y, x] = -1 if d > bw else (EDGE if d >= bw - 1 else (SAND if d >= 3 else SAND2))   # the beach, then the lawn shows
             else:
                 d = int(np.sqrt(((lp - [gv, gu]) ** 2).sum(1).min()))
                 if d <= 2: q[y, x] = FOAM if (gu + gv + 4 * frame) % 23 < 7 and d <= 1 else WET   # a 2 px foam line, broken every 23 px, moving in frame 2
