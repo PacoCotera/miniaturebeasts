@@ -4,7 +4,7 @@
  "quarter": 24,
  "palette": "meadow",
  "paletteFile": "meadow-palette.json",
- "note": "The meadow drop, every piece a candidate. Sheets are 8-bit indexed on meadow-palette.json (index 96 transparent). Built by art/companion-48/tools/build-meadow-drop.py from the tileset on art-terrain-grass.",
+ "note": "The meadow drop, every piece a candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. Built by art/companion-48/tools/build-meadow-drop.py from the tileset on art-terrain-grass.",
  "sheets": {
   "ground": "meadow-ground.png",
   "quarters": "meadow-quarters.png",
