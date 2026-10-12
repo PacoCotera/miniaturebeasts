@@ -1,0 +1,17 @@
+[
+ { "name": "01-lawn", "gen": 2, "seed": 9, "cell": 176, "x": 14, "y": 14, "light": "sun" },
+ { "name": "02-sand", "gen": 2, "seed": 2, "cell": 265, "x": 14, "y": 12, "light": "sun" },
+ { "name": "03-water-edge", "gen": 2, "seed": 1, "cell": 12, "x": 15, "y": 12, "light": "sun" },
+ { "name": "04-plateau-rim", "gen": 2, "seed": 9, "cell": 176, "x": 14, "y": 28, "light": "sun" },
+ { "name": "05-face-and-stair", "gen": 2, "seed": 9, "cell": 176, "x": 12, "y": 4, "light": "sun" },
+ { "name": "06-lawn-storm", "gen": 2, "seed": 9, "cell": 176, "x": 14, "y": 14, "light": "storm" },
+ { "name": "07-lawn-fog", "gen": 2, "seed": 9, "cell": 176, "x": 14, "y": 14, "light": "fog" },
+ { "name": "08-plateau-fog", "gen": 2, "seed": 4, "cell": 32, "x": 12, "y": 3, "light": "fog" },
+ { "name": "09-gen1-cliff", "gen": 1, "seed": 1, "cell": 65, "x": 14, "y": 24, "light": "sun" },
+ { "name": "10-gen1-ford", "gen": 1, "seed": 1, "cell": 28, "x": 7, "y": 16, "light": "sun" },
+ { "name": "11-plateau-l2-stair", "gen": 2, "seed": 4, "cell": 32, "x": 12, "y": 3, "light": "sun" },
+ { "name": "12-plateau-l2-rim", "gen": 2, "seed": 4, "cell": 32, "x": 24, "y": 28, "light": "sun" },
+ { "name": "13-face-and-wall-shadow", "gen": 2, "seed": 2, "cell": 260, "x": 4, "y": 6, "light": "sun" },
+ { "name": "14-side-wall-stair", "gen": 2, "seed": 2, "cell": 260, "x": 4, "y": 16, "light": "sun" },
+ { "name": "15-veil", "gen": 2, "seed": 9, "cell": 176, "x": 14, "y": 14, "light": "veil" }
+]
