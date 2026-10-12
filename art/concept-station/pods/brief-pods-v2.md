@@ -66,7 +66,7 @@ One seed-pod form for every species: body, seam, cap, short stem; the accepted m
 **Corner note, same renderer:** the **puffcap** pod is large and tall, its shell in radial segments, coral with marigold seams and cap, the wide-cap glyph; the **glowtail** pod is small and squat, its shell in overlapping plates, lagoon with marigold plate edges, the bulb-on-a-tail glyph. Only size, proportion, pattern, colour pair and glyph change; the form, seam, stem, material and light are one.
 
 ## 8. The states of the screen
-**Unidentified:** the cap sealed and the glyph hidden, no tabs in the arc, the ring absent from the plate, the bottom line "✓ Identify · 1 ⚡".
+**Unidentified:** the cap sealed and the glyph hidden, no tabs in the arc, the ring absent from the plate, the bottom line "✓ Identify · 1 ◆".
 **Identified, nothing read:** the ring shows only its grey band and glyph, every tab hairline, the page frosted.
 **Partly read with a glint (the candidate):** Coat read and its page lit, the Face tab wearing a star, Movement and Stamina hairline and frosted.
 **Fully read:** every sector of the ring marked, every tab full weight, every tab offering "Detail".
