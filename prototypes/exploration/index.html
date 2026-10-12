@@ -2907,9 +2907,8 @@ function hitFrame() { // a short bright frame on a shield hit; a steady border i
 function tween(o, tx, ty, dur) {
   if (!o) return { x: tx, y: ty, fx: tx, fy: ty, tx, ty, at: NOW, dur };
   if (o.tx !== tx || o.ty !== ty) { o.fx = o.x; o.fy = o.y; o.tx = tx; o.ty = ty; o.at = NOW; o.dur = dur; }
-  if (!motion()) { o.x = o.tx; o.y = o.ty; return o; }
-  const e = Math.floor(clamp(NOW - o.at, 0, o.dur));   // integer: whole ms, whole px toward the target
-  o.x = o.fx + Math.trunc((o.tx - o.fx) * e / o.dur); o.y = o.fy + Math.trunc((o.ty - o.fy) * e / o.dur); return o;
+  const k = motion() ? clamp((NOW - o.at) / o.dur, 0, 1) : 1;
+  o.x = Math.round(o.fx + (o.tx - o.fx) * k); o.y = Math.round(o.fy + (o.ty - o.fy) * k); return o;   // whole pixels, rounded as the frame draws them
 }
 const RT = { key: null, ts: 32, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
