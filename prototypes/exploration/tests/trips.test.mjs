@@ -212,7 +212,7 @@ test("?embed shows the screen alone, fit() stands aside and the width follows a 
   assert.equal(source("EMBED_W"), "const EMBED_W = 450;");
   assert.ok(PAGE.includes("\nlet dprQuery = null;\n"));
   assert.equal(source("armDpr"), "function armDpr() {\n  if (dprQuery) dprQuery.removeEventListener('change', onDpr);\n  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);\n  dprQuery.addEventListener('change', onDpr);\n}");
-  assert.equal(source("onDpr"), "function onDpr() { setEmbedW(); armDpr(); }");
+  assert.equal(source("onDpr"), "function onDpr() { const again = () => { setEmbedW(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }");
   assert.ok(PAGE.includes("\nif (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }\n"));
   const touch = new Proxy({}, { get() { throw new Error("fit() ran under embed"); } });
   for (const [dpr, want] of [[1, "450px"], [2, "450px"], [1.25, "360px"], [3, "450px"], [1.5, "300px"]]) {
@@ -233,8 +233,9 @@ test("?embed shows the screen alone, fit() stands aside and the width follows a 
     const mq = { q, on: new Set(), addEventListener(e, f) { assert.equal(e, "change"); this.on.add(f); }, removeEventListener(e, f) { assert.equal(e, "change"); this.on.delete(f); } };
     queries.push(mq); return mq;
   };
+  const raf = [], timers = [];   // the change event can fire before the new ratio is reported: the width is read again on the next frame and after 100 ms
   const t = load(["EMBED_W", "setEmbedW", "armDpr", "onDpr"], {
-    window: win, dprQuery: null,
+    window: win, dprQuery: null, requestAnimationFrame: (f) => raf.push(f), setTimeout: (f, ms) => { assert.equal(ms, 100); timers.push(f); },
     document: { documentElement: { style: { setProperty: (k, v) => { assert.equal(k, "--embed-w"); set.push(v); } } } },
   });
   t.setEmbedW(); t.armDpr();
@@ -245,8 +246,12 @@ test("?embed shows the screen alone, fit() stands aside and the width follows a 
     assert.equal(live.on.size, 0, "old listener removed at " + dpr);
     assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
     assert.equal(queries.at(-1).on.size, 1);
+    assert.equal(raf.length, 1); assert.equal(timers.length, 1, "one more read on the next frame and one after 100 ms");
+    raf.splice(0).forEach((f) => f()); timers.splice(0).forEach((f) => f());
+    assert.equal(queries.filter((m) => m.on.size).length, 1, "the live listener count stays 1 after the extra calls, at " + dpr);
+    assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
   }
-  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", "(resolution: 1.25dppx)", "(resolution: 2dppx)", "(resolution: 1dppx)"]);
-  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 1], "listeners never pile up");
-  assert.deepEqual(set, ["450px", "360px", "450px", "450px"]);
+  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", ...[1.25, 2, 1].flatMap(d => Array(3).fill(`(resolution: ${d}dppx)`))]);
+  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 0, 0, 0, 0, 0, 0, 1], "listeners never pile up");
+  assert.deepEqual(set, ["450px", ...["360px", "450px", "450px"].flatMap(v => Array(3).fill(v))]);
 });

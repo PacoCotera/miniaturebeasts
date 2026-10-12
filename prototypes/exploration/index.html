@@ -4532,7 +4532,7 @@ function armDpr() {
   dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
   dprQuery.addEventListener('change', onDpr);
 }
-function onDpr() { setEmbedW(); armDpr(); }
+function onDpr() { const again = () => { setEmbedW(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }
 if (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }
 
 const stampEl = document.getElementById('stamp');
