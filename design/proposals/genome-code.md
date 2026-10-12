@@ -1,6 +1,6 @@
 # Genome code: options for the fingerprint's form
 
-**Options memo** from the genome engineer and the game designer, 2026-10-07, for a joint discussion with the owner. The owner reopened the genome ring's form (`decisions.md`, 10-07): is it future-proof as loci, layers and species grow, and does a pixelated circle limit us against a stamp, QR or randomart form? The approval stands for the concept, a scannable code of the real genome, not for the circle. Nothing here is decided. Drawings and numbers come from scripts in [genome-code/](genome-code/), which run the [genome-ring prototype](../../prototypes/genome-ring/)'s codec, renderer, decoder and distortion harness unchanged on the real [species frames](species-frames.md) and on synthetic future species.
+Options for the genome ring's form: is it future-proof as loci, layers and species grow, and does a pixelated circle limit us against a stamp, QR or randomart form? The concept stands, a scannable code of the real genome; the circle is what is in question. Nothing here is decided. Drawings and numbers come from scripts in [genome-code/](genome-code/), which run the [genome-ring prototype](../../prototypes/genome-ring/)'s codec, renderer, decoder and distortion harness unchanged on the real [species frames](species-frames.md) and on synthetic future species.
 
 ## 1. Requirements
 
@@ -14,12 +14,12 @@
 | R6 | Grows with the genome (new loci, new chapters and domains, changed layers) without breaking old prints | "genomes grow" (**Decided** as direction); "rule changes never rewrite creatures"; species-frames §7 |
 | R7 | One scheme from 5 open loci (Loika) to 38 (Tuikis) to 100+ | species-frames §5; research-loop §2 |
 | R8 | Forgery shows but never grants | research-loop §7 (working rule); owner's spoofing worry (09-24) |
-| R9 | Fits the art: the Station's botanical-tome Library, the Caddy's paper, the website | `decisions.md` 10-07 (four vibes); Playdate-style site (09-29) |
+| R9 | Fits the art: the Station's botanical-tome Library, the Caddy's paper, the website | The four vibes; the Playdate-style site |
 | R10 | Monochrome-safe: a thermal printer and an e-paper Caddy | `devices.md` |
-| R11 | Decodes offline: the kit works with no account or internet; frames ship with every reader | `decisions.md` Project, 10-07 |
+| R11 | Decodes offline: the kit works with no account or internet; frames ship with every reader | The project's standalone rule |
 | R12 | A locus need not have two copies: the codec takes copy counts from the foundation | `codec-contract.md` |
-| R13 | A code, not a species art motif; the owner would rather have "something different to a QR" | owner 10-07; 09-24 |
-| R14 | The format is public: the project is open source, so obscurity protects nothing | website, open source visible (09-29) |
+| R13 | A code, not a species art motif, and something different from a QR | The project's direction |
+| R14 | The format is public: the project is open source, so obscurity protects nothing | The website: the source is open |
 
 The short code (`G7F · CD0 · 3H2`) stays the mibi's name and a lookup, not the genome (**Decided**), whatever the form.
 
