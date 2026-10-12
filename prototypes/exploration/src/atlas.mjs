@@ -80,19 +80,24 @@ export function coreMissing(cat) {
 }
 export function coreSet(cat) { return coreMissing(cat).length === 0; }
 
-// The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the five lookup
-// tables the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]). coreRGB and coreTables are the page's own 48. Returns the table's
-// rgb and tables (arrays of length N), or { errors }. coreTables also carries the core names: the page addresses colours by name.
+// The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the lookup tables
+// the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]) and an optional storm table (default: its dark).
+// coreRGB and coreTables are the page's own 48 (coreTables also carries the core names: the page addresses colours by name).
+// A core entry's name, hex, dark, light and dark2 must equal the page's; its fog, fade and storm may differ: the place overrides,
+// which the place view alone draws through. Returns the core-true tables (rgb, dark, light, dark2, fog, fade, the page's own values
+// at 0–47) plus the place tables placeFog, placeFade and placeStorm (the file's values everywhere), all of length N; or { errors }.
 export const PALETTE_MAX = 256;
 export const TABLE_FIELDS = ['dark', 'light', 'dark2', 'fog', 'fade'];
+export const PLACE_OVERRIDES = ['fog', 'fade', 'storm'];
+const PLACE_KEY = { fog: 'placeFog', fade: 'placeFade', storm: 'placeStorm' };
 export function paletteTable(coreRGB, coreTables, file) {
   const entries = file && Array.isArray(file.entries) ? file.entries : null;
   if (!entries) return { errors: ['no entries'] };
   const n = entries.length, errors = [], core = coreRGB.length;
   if (n > PALETTE_MAX) errors.push(n + ' entries (at most ' + PALETTE_MAX + ')');
   if (n < core) errors.push(n + ' entries: the core ' + core + ' are not all there');
-  const rgb = [], seen = new Map(), out = { rgb };
-  for (const f of TABLE_FIELDS) out[f] = [];
+  const rgb = [], seen = new Map(), out = { rgb }, raw = { storm: [] };
+  for (const f of TABLE_FIELDS) { out[f] = []; raw[f] = []; }
   for (let k = 0; k < n; k++) {
     const e = entries[k] || {};
     if (e.i !== k) errors.push('entry ' + k + ': i is ' + JSON.stringify(e.i) + ' (a gap or out of order)');
@@ -102,20 +107,29 @@ export function paletteTable(coreRGB, coreTables, file) {
       if (seen.has(hex)) errors.push('entry ' + k + ': hex ' + hex + ' repeats entry ' + seen.get(hex)); else seen.set(hex, k);
       rgb.push([parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]);
     }
-    for (const f of TABLE_FIELDS) {
-      const v = e[f]; out[f].push(v);
+    for (const f of TABLE_FIELDS.concat(e.storm === undefined ? [] : ['storm'])) {
+      const v = e[f]; raw[f].push(v);
       if (!Number.isInteger(v) || v < 0 || v >= n) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(v) + ' outside 0 … ' + (n - 1));
     }
+    if (e.storm === undefined) raw.storm.push(e.dark);   // the storm's table defaults to dark
+    for (const f of TABLE_FIELDS) out[f].push(k < core && PLACE_OVERRIDES.includes(f) ? coreTables[f][k] : e[f]);
     if (k < core) {
       const c = coreRGB[k], r = rgb[k];
       if (r[0] !== c[0] || r[1] !== c[1] || r[2] !== c[2]) errors.push('entry ' + k + ': hex ' + hex + ' differs from the core colour');
       if (e.name !== coreTables.names[k]) errors.push('entry ' + k + ': name ' + JSON.stringify(e.name) + ' differs from the core name (' + coreTables.names[k] + ')');
-      for (const f of TABLE_FIELDS) if (e[f] !== coreTables[f][k]) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(e[f]) + ' differs from the core table (' + coreTables[f][k] + ')');
+      for (const f of TABLE_FIELDS) if (!PLACE_OVERRIDES.includes(f) && e[f] !== coreTables[f][k]) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(e[f]) + ' differs from the core table (' + coreTables[f][k] + ')');
     }
   }
   for (let k = 0; k < n; k++) {   // dark2 is the dark of the dark, as the page builds its own DARK2
     const d = out.dark[k], dd = Number.isInteger(d) && d >= 0 && d < n ? out.dark[d] : undefined;
     if (dd !== undefined && out.dark2[k] !== dd) errors.push('entry ' + k + ': dark2 ' + JSON.stringify(out.dark2[k]) + ' is not dark[dark[' + k + ']] (' + dd + ')');
   }
+  for (const f of PLACE_OVERRIDES) out[PLACE_KEY[f]] = raw[f];
   return errors.length ? { errors } : out;
+}
+// How many core entries a palette's place tables override, per field (storm against the core's dark): what atlas-check prints.
+export function overrideCounts(table, coreTables) {
+  const o = {}; for (const f of PLACE_OVERRIDES) { const core = f === 'storm' ? coreTables.dark : coreTables[f], t = table[PLACE_KEY[f]]; let c = 0;
+    for (let k = 0; k < core.length; k++) if (t[k] !== core[k]) c++; o[f] = c; }
+  return o;
 }
