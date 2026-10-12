@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // The play-page journey (boards/station-w1-x3-ready.md §6.2): the page that holds the Station and the Companion side by side, played headless. It serves prototypes/ as the sandbox does, opens
-// /sandbox/play/?test in Chromium and proves: A, the layout at 1× (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
+// /sandbox/play/?test in Chromium. There is no save fixture: each context starts a fresh Companion world, and A, B1–B7, C and the short tier seed their crate with `__st.seedCrate("S01", 2, 4101)`; B8 crosses a real
+// Companion crate. It proves: A, the layout at 1× (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
 // the lift; C, the narrow tier; D, the figures it prints (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize; and the short tier at 1280 × 690, where the
 // owner's window sits. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
 //   node prototypes/play/tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
@@ -54,6 +55,14 @@ async function lampIs(page, which, label) {
   for (let i = 0; i < 64; i++) { const a = m.data[i * 4 + 3]; if (a === 255) opaque++; for (let c = 0; c < 3; c++) { const want = Math.round((m.data[i * 4 + c] * a) / 255 + (BAR[c] * (255 - a)) / 255), have = got.data[i * 4 + c]; if (a === 255 ? have !== want : Math.abs(have - want) > 1) bad++; } }
   expect(bad === 0 && opaque === 16, `${label}: the lamp is the ${which} master over the cradle's fill (${opaque} opaque pixels, ${bad} channels off)`);
 }
+// a device's screen on the page against its own capture(): the viewport by CDP Page.captureScreenshot (Playwright's scale "device" ignores a CDP override), the frame's region at (round(x·dpr), round(y·dpr))
+// sized W·k × 600·k, each capture pixel spread over k × k; the count of differing device pixels
+async function frameBad(page, cdp, sel, W, capture) {
+  const r = await box(page, sel), dprv = await page.evaluate(() => window.devicePixelRatio), k = Math.max(1, Math.floor(dprv));
+  const shot = rd(Buffer.from((await cdp.send("Page.captureScreenshot", { format: "png" })).data, "base64")), cap = dataPng(await capture()), x0 = Math.round(r[0] * dprv), y0 = Math.round(r[1] * dprv);
+  let bad = 0; for (let y = 0; y < 600 * k; y++) for (let x = 0; x < W * k; x++) { const a = ((y0 + y) * shot.width + x0 + x) * 4, b = (Math.floor(y / k) * cap.width + Math.floor(x / k)) * 4; if (shot.data[a] !== cap.data[b] || shot.data[a + 1] !== cap.data[b + 1] || shot.data[a + 2] !== cap.data[b + 2]) bad++; }
+  return bad;
+}
 const pixel = async (page, x, y) => { const p = rd(await page.screenshot({ clip: { x, y, width: 1, height: 1 } })); return [...p.data.slice(0, 3)]; };
 const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("src"), dot: !document.getElementById("dockDot").hidden, live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
 const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, { recursive: true }), page.screenshot({ path: path.join(img, name), clip: rect ?? { x: 0, y: 0, width: page.viewportSize().width, height: page.viewportSize().height } })) : null;
@@ -75,12 +84,11 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   await clip(page, "play-wide-away.png");
   await ctx.close();
-  // at dpr 1.25 the Station frame is 819.2 CSS px and its clip at device scale is the 1024 × 600 capture
-  const hi = await open(1920, 1080, { dsf: 1.25 });
-  const w = await hi.page.locator("#fStation").evaluate((el) => getComputedStyle(el).width), r = await box(hi.page, "#fStation");
-  near(r[2], 819.2, "A: the Station frame's width at dpr 1.25", 0.02); near(r[3], 480, "A: its height at dpr 1.25", 0.02);
-  const pimg = rd(await hi.page.screenshot({ clip: { x: r[0], y: r[1], width: r[2], height: r[3] } })), pcap = dataPng(await hi.st().evaluate(() => window.__st.capture()));
-  eq([pimg.width, pimg.height], [1024, 600], "A: the clip at device scale is 1024 × 600"); expect(sameImage(pimg, pcap), "A: and equals __st.capture() at dpr 1.25");
+  // at dpr 1.25 the Station frame is 819.2 CSS px (1024 device px) and both screens equal their captures pixel for pixel
+  const hi = await open(1920, 1080), hcdp = await hi.ctx.newCDPSession(hi.page); await hcdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: 1.25, mobile: false }); await hi.page.waitForTimeout(400);
+  const r = await box(hi.page, "#fStation"); near(r[2], 819.2, "A: the Station frame's width at dpr 1.25", 0.02); near(r[3], 480, "A: its height at dpr 1.25", 0.02);
+  eq(await frameBad(hi.page, hcdp, "#fStation", 1024, () => hi.st().evaluate(() => window.__st.capture())), 0, "A: the Station frame at dpr 1.25: differing device pixels");
+  eq(await frameBad(hi.page, hcdp, "#fCompanion", 450, () => hi.mb().evaluate(() => window.__mb.capture())), 0, "A: the Companion frame at dpr 1.25: differing device pixels");
   await hi.ctx.close();
 }
 
@@ -215,30 +223,52 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await clip(page, "station-standalone-control.png"); await ctx.close();
 }
 
-// ---- D. printed, not asserted (viewport 1920 × 1080, Home idle, the Companion on its map) ----
+// ---- B8. a Companion crate crosses: the Companion's own bay, the Station's save, the control's dot, the dock and the opening (fresh context, 1920 × 1080) ----
 {
-  const { ctx, page, st, mb } = await open(1920, 1080, { motion: true });
-  const cdp = await ctx.newCDPSession(page); await cdp.send("Performance.enable");
-  const heap = await page.evaluate(() => (performance.memory ? performance.memory.usedJSHeapSize : null)), sh = await st().evaluate(() => (performance.memory ? performance.memory.usedJSHeapSize : null)), ch = await mb().evaluate(() => (performance.memory ? performance.memory.usedJSHeapSize : null));
-  const face = await st().evaluate(() => window.__st.face.stats);
-  const m0 = Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]));
-  const n0 = await page.evaluate(() => new Promise((res) => { let n = 0; const t0 = performance.now(); const tick = () => { n++; if (performance.now() - t0 < 3000) requestAnimationFrame(tick); else res(n); }; requestAnimationFrame(tick); }));
-  const m1 = Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]));
-  const task = (m1.TaskDuration - m0.TaskDuration) * 1000;
-  console.log(`D: used JS heap: page ${heap == null ? "n/a" : (heap / 1048576).toFixed(1)} MB · Station frame ${sh == null ? "n/a" : (sh / 1048576).toFixed(1)} MB · Companion frame ${ch == null ? "n/a" : (ch / 1048576).toFixed(1)} MB`);
-  console.log("D: the face: " + JSON.stringify(face));
-  console.log(`D: main-thread time over 3 s idle: ${task.toFixed(0)} ms in ${n0} animation frames = ${(task / n0).toFixed(2)} ms a frame`);
+  const { ctx, page, st, mb } = await open(1920, 1080);
+  const stored = () => page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
+  const id = await mb().evaluate(() => { const S = window.__mb.S, id = "x" + S.wid + "-1"; S.bay.push({ id, n: 1, turn: S.turn, at: Date.now(), e: 3, d: 2, s: 3, pods: [{ id: "q1", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }], met: [0], explored: 5, of: 20, lines: [] }); return id; });
+  await st().evaluate(() => window.__st.addMaterials(0, 0, 0)); await page.waitForTimeout(600);   // the Station writes its save; the storage event makes the Companion save its bay, and the Station reads it
+  expect((await stored()).bay.some((c) => c.id === id), "B8: the stored save's bay holds the crate"); eq((await state(page)).caddy.crates, 1, "B8: the control hears one crate"); eq((await state(page)).dot, true, "B8: the dot shows");
+  await page.click("#dockCtl"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "B8: docked");
+  await st().evaluate(() => window.__st.openBay()); await page.waitForTimeout(600);
+  eq(await mb().evaluate(() => window.__mb.S.bay.length), 0, "B8: the Companion's bay is empty"); eq((await stored()).bay.length, 0, "B8: and the stored bay too");
+  eq(await st().evaluate((i) => [window.__st.ST.accepted.includes(i), window.__st.ST.tray.some((p) => p.id === i + ":q1")], id), [true, true], "B8: the Station accepted the crate and its pod is in a well");
+  eq(await st().evaluate(() => [window.__st.renderErrors, window.__st.faceErrors]), [[], []], "B8: no render or face errors");
   await ctx.close();
 }
 
-// ---- E. a change of device pixel ratio with no resize keeps both screens at whole device pixels ----
+// ---- D. printed, not asserted (viewport 1920 × 1080, Home idle, the Companion on its map): each figure with its bar ----
+{
+  const { ctx, page, st, mb } = await open(1920, 1080, { motion: true, query: "?test&seed=3" });
+  await page.mouse.click(1300, 300); await page.keyboard.press("Enter"); await page.waitForTimeout(900); await page.keyboard.press("Enter"); await page.waitForTimeout(900);   // the Companion on its map
+  const cdp = await ctx.newCDPSession(page); await cdp.send("Performance.enable"); await cdp.send("Runtime.enable");
+  const MB = 1048576, bar = (v, lim, unit = "MB") => `${(v / MB).toFixed(1)} ${unit} against ≤ ${(lim / MB).toFixed(0)} ${unit}: ${v <= lim ? "within" : "over"}`;
+  const heap = await cdp.send("Runtime.getHeapUsage"); console.log(`D: page JavaScript heap (all frames, one isolate): ${bar(heap.usedSize, 192 * MB)} (embedder ${(heap.embedderHeapUsedSize / MB).toFixed(1)} MB, backing store ${(heap.backingStorageSize / MB).toFixed(1)} MB)`);
+  const face = await st().evaluate(() => window.__st.face.stats); console.log(`D: the face's wasm memory: ${bar(face.heap, 64 * MB)}; frames ${face.frames}, props ${face.props}, pictures ${face.pictures}`);
+  const perFrame = async (label) => {
+    const m0 = Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]));
+    const n = await page.evaluate(() => new Promise((res) => { let n = 0; const t0 = performance.now(); const tick = () => { n++; if (performance.now() - t0 < 3000) requestAnimationFrame(tick); else res(n); }; requestAnimationFrame(tick); }));
+    const m1 = Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value])), ms = ((m1.TaskDuration - m0.TaskDuration) * 1000) / n;
+    console.log(`D: main-thread time a frame, ${label}: ${ms.toFixed(2)} ms over ${n} frames against ≤ 12 ms: ${ms <= 12 ? "within" : "over"}`);
+  };
+  await perFrame("unthrottled"); await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 }); await perFrame("CPU throttled 4×"); await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
+  await ctx.close();
+}
+
+// ---- E. a change of device pixel ratio with no resize keeps both screens on whole device pixels (CDP override at a fixed viewport) ----
 {
   const { ctx, page, st, mb } = await open(1920, 1080);
   const cdp = await ctx.newCDPSession(page);
-  for (const [dsf, sW, cW, k] of [[1.25, "819.2px", "360px", 1], [2, "1024px", "450px", 2], [1, "1024px", "450px", 1]]) {
+  for (const dsf of [1.25, 1.5, 1.75, 2, 1]) {
     await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: dsf, mobile: false }); await page.waitForTimeout(400);
-    const w = await st().evaluate(() => [getComputedStyle(document.getElementById("screen")).width, window.devicePixelRatio, document.getElementById("screen").getBoundingClientRect().width]), c = await mb().evaluate(() => [getComputedStyle(document.getElementById("screen")).width, document.getElementById("screen").getBoundingClientRect().width]);
-    near([parseFloat(w[0]), parseFloat(c[0])], [parseFloat(sW), parseFloat(cW)], `E: the computed widths at dpr ${dsf}`, 0.02); near(w[2] * w[1], 1024 * k, `E: the Station frame × dpr at ${dsf} (1024 lp, ${k} device px each)`, 0.05); near(c[1] * w[1], 450 * k, `E: the Companion frame × dpr at ${dsf}`, 0.05);
+    const k = Math.max(1, Math.floor(dsf));
+    for (const [name, sel, W, frame, cap] of [["Station", "#screen", 1024, st, () => st().evaluate(() => window.__st.capture())], ["Companion", "#screen", 450, mb, () => mb().evaluate(() => window.__mb.capture())]]) {
+      const m = await frame().evaluate((q) => { const el = document.querySelector(q); return [parseFloat(getComputedStyle(el).width), el.getBoundingClientRect().width, window.devicePixelRatio]; }, sel);
+      near(m[0], (W * k) / dsf, `E: the ${name}'s computed width at dpr ${dsf}`, 1 / 64 + 1e-6); near(m[1] * dsf, W * k, `E: the ${name}'s rect × dpr at ${dsf}`, dsf / 64 + 1e-6);
+    }
+    eq(await frameBad(page, cdp, "#fStation", 1024, () => st().evaluate(() => window.__st.capture())), 0, `E: the Station's differing device pixels at dpr ${dsf}`);
+    eq(await frameBad(page, cdp, "#fCompanion", 450, () => mb().evaluate(() => window.__mb.capture())), 0, `E: the Companion's differing device pixels at dpr ${dsf}`);
   }
   await ctx.close();
 }

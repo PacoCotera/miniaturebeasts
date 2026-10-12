@@ -18,7 +18,11 @@ function metrics() {
   tier = H >= 800 && W >= 1878 ? "wide" : H >= 800 && W >= 1064 ? "standard" : W >= 1064 && H >= 672 ? "short" : "narrow";
 }
 const px = (lp) => Math.round(lp * k) / dpr + "px";
-const place = (el, x, y, w, h) => { const s = el.style; s.left = px(x); s.top = px(y); if (w != null) s.width = px(w); if (h != null) s.height = px(h); };
+const pxUp = (lp) => Math.ceil(Math.round(lp * k) / dpr * 64) / 64 + "px";   // a size, up to Chromium's next 1/64 CSS px layout unit
+// iframes and shells go by transform with their sizes rounded up to the next layout unit: nested left/top values floor to 1/64 px and would put a device's screen off the whole device pixel
+const place = (el, x, y, w, h) => { const s = el.style;
+  if (el.tagName === "IFRAME" || el.classList.contains("shell")) { s.left = "0px"; s.top = "0px"; s.transform = "translate(" + px(x) + "," + px(y) + ")"; if (w != null) s.width = pxUp(w); if (h != null) s.height = pxUp(h); return; }
+  s.left = px(x); s.top = px(y); if (w != null) s.width = px(w); if (h != null) s.height = px(h); };
 
 // ---- state ----
 let owner = "station", lastDevice = "station", ox = 0, seatOff = 0, benchRaised = false, benchLoaded = false, devOpen = false, keysOpen = false;
