@@ -1,20 +1,19 @@
 # Companion controls: four buttons
 
-**Decided 2026-10-06:** Call's hint lives in the HUD; Call sits above Back as
+Call's hint lives in the HUD; Call sits above Back as
 drawn, pending the bench console; New world is offered only outside an
 expedition. Back's label naming the menu's top entries is a working rule until
 play confirms it.
 
-**Proposal.** A control scheme for the Companion's pad, Confirm, Back and the new
+This page sets out a control scheme for the Companion's pad, Confirm, Back and the new
 Call button, building on [exploration round 2](exploration-round-2.md) §7 and
-[interaction](../interaction.md). Lines marked **Decided** restate owner
-decisions; everything else is a **Proposal**.
+[interaction](../interaction.md).
 
 The goal: a new player, often a child, plays a whole expedition without being
 told how, and never finds a control late. Today the mode list (Wait, Leave, New
 world) sits behind Back, and nothing on screen says so. That is the defect to fix.
 
-**Decided:** a fourth button, **Call**: pulse in a place, pin on the map
+A fourth button, **Call**: pulse in a place, pin on the map
 (1 Energy), call the riding mibi in Companion mode. A button doesn't make an
 action free. Wait exists. The field clock counts actions; no timers. No touch
 shortcuts.
@@ -143,7 +142,7 @@ By press 10 the player has used all four buttons. They have read the words Wait,
 Leave and Send home on screen several times, and were never shown a rule they
 couldn't see on the line or the HUD.
 
-## Decisions for the owner
+## Points to settle
 
 1. **Back's label:** name the menu's top two entries ("← Wait · Send home"), or a
    generic "← menu"?

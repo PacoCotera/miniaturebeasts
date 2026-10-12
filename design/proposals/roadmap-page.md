@@ -1,10 +1,7 @@
 # Roadmap page: layout spec
 
-**Proposal**, 2026-10-09 12:37 (Mexico City), UI/UX designer. **Revised**
-2026-10-09 13:08: the owner passed the structure ("the roadmap is ok") and
-failed the summary table ("i do not know what each circle in each row
-means"); the glance is redesigned to read with no key (§4, The glance), and the
-Station's Next lane is filled from `lvgl-switch.md` §3. For a new public page
+The glance is designed to read with no key (§4, The glance), and the
+Station's Next lane is filled from `lvgl-switch.md` §3. This is the spec for a new public page
 at `website/roadmap/index.html`, served at `/roadmap/`. It renders from
 `website/roadmap.json` (served at `/roadmap.json`), so the page stays current
 when the file changes. Design source: `homepage-spec.md` §3 (type, palette,
@@ -92,7 +89,7 @@ lane position and the lane label all say it. An unknown `status` is skipped (and
 
 **Why it changed.** The first version put one shape-coded dot per item in each
 cell (filled, half, ring, dotted) with a four-line legend under the table. The
-owner, the first reader it was for, could not say what the dots meant: a key
+first reader it was for could not say what the dots meant: a key
 that has to be learnt before the table reads is the failure. The glance must
 say itself to a first-time visitor in one look, with no key.
 
@@ -165,7 +162,7 @@ and `items[]` of `title`, `status`, `text`, `link`. The page fetches
 "The roadmap did not load. Read it on GitHub." linking to `ROADMAP.md`; the same
 line sits in `<noscript>`. Text is inserted as text, never as HTML.
 
-Data revised 2026-10-09 13:08 from `lvgl-switch.md` §3 and §2.10 (public
+Data from `lvgl-switch.md` §3 and §2.10 (public
 wording, player words only):
 
 - Station, Next (was empty): "Home, Rest and Idle on the new face"; "The Cross
@@ -237,9 +234,9 @@ One column, gutter 16, content 358.
 - Targets: every summary is at least 50 px tall and full lane width.
 - No motion.
 
-## 10. Owner decisions (structure only)
+## 10. Settled points (structure only)
 
-**Passed** (owner, 2026-10-09): "the roadmap is ok." The structure below stands;
+**Passed:** the structure. It stands;
 the glance's dots failed and are replaced (§4), which is a wording and layout
 fix inside this spec, not a new structure question.
 

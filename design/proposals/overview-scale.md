@@ -1,6 +1,6 @@
 # Overview map scale: bigger cells
 
-**Proposal**, answering the owner: the overview's cells (16×20 at 26 px in the
+The overview's cells (16×20 at 26 px in the
 450×540 view) are too small. Two mock-ups drawn by the prototype's own `drawMap`
 (the 26 px map offscreen, blitted at an integer scale), palette-clean by
 `offPalette`. Seed 7: expedition 1 after 32 actions (quarters, a pin, the storm)
@@ -108,7 +108,7 @@ puts the whole map one press away. Nothing scrolls, and at tier 2 it becomes
 A's 2× picture anyway. A spends half the view on land out of reach and still
 hides the far map.
 
-## Decisions for the owner
+## Points to settle
 
 1. **Scale:** B (reach view at 3×, 2× at tier 2, whole map one press away), or
    A (2× map that follows the pawn, no control change)?

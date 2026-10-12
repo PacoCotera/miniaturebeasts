@@ -1,6 +1,6 @@
 # Homepage design spec
 
-**Proposal**, owner decisions of 2026-10-06 applied, for the next build of `website/index.html`; accepted graphics
+The spec for the next build of `website/index.html`; accepted graphics
 stay. Visual reference: the v1 pitch (`v1/website/dist/`).
 
 ## 1. Intent
@@ -222,7 +222,7 @@ gutter. Left/right panels stack (left part first). The tree keeps its three
 rows at 76 px portraits. Section 8: picture after copy. Display size bottoms out
 at 2.75rem; nav collapses to the wordmark and the Play button.
 
-## 10. Owner decisions (2026-10-06)
+## 10. Settled points
 
 1. **Typeface:** v1's Helvetica/Arial stack; keep v1's left/right panels.
 2. **Caddy:** its own section (4), and the device strip stays.

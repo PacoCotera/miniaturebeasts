@@ -1,6 +1,6 @@
 # The Station build: the first playable loop
 
-**Decided** (owner, 2026-10-08): the plan, with the three decisions of §8 as recommended. Where it touches how screens are drawn, [lvgl-switch.md](lvgl-switch.md) governs: how a screen is built (§2.1 here, lvgl-switch.md §2), the order the screens move in (§3 here, lvgl-switch.md §3), the checks each screen passes (§5 here, lvgl-switch.md §2.8 and §4) and the screen milestones (§6 here, lvgl-switch.md §4). Written by the technical lead and game design for the owner. It plans the first build of the Station loop on the sandbox: the approved [research loop](research-loop.md), paced by the [research economy](research-economy.md) (loose, for testing), with the decided rules of [the cross](the-cross.md), the stub of [the portrait](the-portrait.md), the painting at Grow of the [art pipeline](art-pipeline.md) v2 and the screens of the [Station style guide](../style-guide/station-screens.md). Loop and mechanics come first; where no master exists, the build shows a placeholder and says so. **Decided** marks owner decisions restated here; everything else is **Proposal**.
+The plan takes the three recommendations of §8. Where it touches how screens are drawn, [lvgl-switch.md](lvgl-switch.md) governs: how a screen is built (§2.1 here, lvgl-switch.md §2), the order the screens move in (§3 here, lvgl-switch.md §3), the checks each screen passes (§5 here, lvgl-switch.md §2.8 and §4) and the screen milestones (§6 here, lvgl-switch.md §4). It plans the first build of the Station loop on the sandbox: the approved [research loop](research-loop.md), paced by the [research economy](research-economy.md) (loose, for testing), with the decided rules of [the cross](the-cross.md), the stub of [the portrait](the-portrait.md), the painting at Grow of the [art pipeline](art-pipeline.md) v2 and the screens of the [Station style guide](../style-guide/station-screens.md). Loop and mechanics come first; where no master exists, the build shows a placeholder and says so.
 
 ## 1. Scope
 
@@ -12,11 +12,11 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 | **Identify** | 1 Data. The seal breaks, the glyph lights; a new species learns its frame and opens its Library page | Research loop §1 |
 | **Read** | One chapter of one pod: 1 Data a trait, half (rounded up) once that chapter was read on an earlier pod of the species, the first read ever free. Pictures: shows, hides, only, asleep, breed to change, sealed. Glint per chapter; Compare free; return a pod for +1 Essence | Research loop §4, §8 |
 | **Create** | Shape each read look among three pictures from the pod's own copies, +1 Data a change; doings breed only; a shape that won't build marks its traits and withholds Grow | Research loop §5 |
-| **Grow** | 2 Energy and 4 Essence (the first founder 2 Energy). The bud takes twenty minutes plus one per shaped trait; **the first bud ever five**; **an instant grow for a price**; unread chapters clear across the wait; a full vivarium refuses before payment | Research economy §5–6 (**Decided**) |
-| **The painting** | At Grow the genome joins the Caddy's queue. The mibi wears the placeholder until its painting lands, at the next fresh draw; offline, a cool lamp and "waiting for the cloud" | Art pipeline §1.1 (**Decided**) |
+| **Grow** | 2 Energy and 4 Essence (the first founder 2 Energy). The bud takes twenty minutes plus one per shaped trait; **the first bud ever five**; **an instant grow for a price**; unread chapters clear across the wait; a full vivarium refuses before payment | Research economy §5–6 |
+| **The painting** | At Grow the genome joins the Caddy's queue. The mibi wears the placeholder until its painting lands, at the next fresh draw; offline, a cool lamp and "waiting for the cloud" | Art pipeline §1.1 |
 | **Vivarium** | **Six bays**, the mibis with you keeping their beds. The vivarium, up close: greet, take with you or bring home, return a mibi to the wild (+2 Essence and a field-guide note) | Research economy §6 |
-| **Cross** | Two adults of one species; refusals before cost; per trait four seeds (switches) or a range picture (blends); kinship from recorded parents, penalty B with A; 2 Energy 4 Essence; the child grows in the bud and is known only where switch parents match | The cross (**Decided**) |
-| **Library** | The tome's spread of sixteen frames; a book per species with its face, places, frame, a tab per chapter, looks found and "more?", the stamp at 120 px, a pinned wish | Style guide, Library (**Decided**) |
+| **Cross** | Two adults of one species; refusals before cost; per trait four seeds (switches) or a range picture (blends); kinship from recorded parents, penalty B with A; 2 Energy 4 Essence; the child grows in the bud and is known only where switch parents match | The cross |
+| **Library** | The tome's spread of sixteen frames; a book per species with its face, places, frame, a tab per chapter, looks found and "more?", the stamp at 120 px, a pinned wish | Style guide, Library |
 | **Sitting (stub)** | A held sitting (the welcome one, or a field guide filled); the vivarium's offer, pose, place, confirm; a crate waits in the sample bay and opens to the mibi in its standard painting in a gilt frame. No portrait is painted | The portrait §1 |
 
 **Out of the first build:** ageing past adult (elders, death; a juvenile still becomes adult after two world turns, as the Companion counts); trading, the signed postmark and the card; the family tree (the Book's panel is an empty stub; only the `parents` field is built); wonders; mutation; the bench trickle and the shelves (the dev limits stand in); a returned mibi's place shedding a pod; the find that opens a sealed chapter (a dev switch opens it); the edit item; painted looks on the Companion page (it keeps species drawings); the portrait job itself.
@@ -89,7 +89,7 @@ A panel under the device, opened by `?dev` or a page button, never a device key.
 
 ## 3. Screens, in build order
 
-The order in which the screens move to the LVGL face, and the spec file each needs first, is [lvgl-switch.md §3](lvgl-switch.md#3-screen-order); the table below says what each screen shows. Each screen follows its decided concept for layout, states and words. Art is the placeholder until the art director's masters exist (**Decided:** engineers do not do art), and the placeholder register lists every stand-in.
+The order in which the screens move to the LVGL face, and the spec file each needs first, is [lvgl-switch.md §3](lvgl-switch.md#3-screen-order); the table below says what each screen shows. Each screen follows its decided concept for layout, states and words. Art is the placeholder until the art director's masters exist (engineers do not do art), and the placeholder register lists every stand-in.
 
 | # | Screen | Built from the decided concept | Placeholder until masters |
 | --- | --- | --- | --- |
@@ -121,7 +121,7 @@ The order in which the screens move to the LVGL face, and the spec file each nee
 
 **The daily limit.** The service holds a hard daily limit on paid calls that no page can raise; the developer panel sets each world's grow cap beneath it (default ten). Over the cap a job waits as capped, the mibi keeps its placeholder, and the job runs the next day. Every call is logged, and the status call shows the day. The prompt version is pinned in the service's configuration and written into each manifest; a new version never repaints a stored set (art pipeline §5).
 
-**Species.** The prompt lab painted the Loika, the Belatz and the Peplos. The Untuva and the Tuikis have not been painted; M3 begins with a small calibration batch of their type specimens and a few individuals, and their jobs stay mock until the owner has seen it.
+**Species.** The prompt lab painted the Loika, the Belatz and the Peplos. The Untuva and the Tuikis have not been painted; M3 begins with a small calibration batch of their type specimens and a few individuals, and their jobs stay mock until it has been seen.
 
 ## 5. Tests
 
@@ -150,7 +150,7 @@ The journey grows with each milestone, so every push to main proves the loop tha
 
 Each milestone pushes to main, passes CI, deploys to the sandbox and is playable from a fresh world. Three prerequisites land in their own homes first: **S1**, the stamp's frames from the workbench registry (before M1); **G1**, the Grow service's output-root flag and the sandbox server's setup (unit, proxy route, Python imaging library, key file; before M3); **W1**, the workbench cross with numbers, kinship and the penalty, tested there (before M4).
 
-| | Ships | The owner sees |
+| | Ships | What is seen |
 | --- | --- | --- |
 | **M1 Read** | Modules and the state model; frames, resolver and stamp imported; the migration; the developer panel with seeds; Pods with Identify, reads, glints, Compare, return | A pod from a walk, or a seed, identified and read chapter by chapter at the decided prices, its stamp filling, pictures of this pod's mibi in placeholder |
 | **M2 Grow** | Create, the bud (five minutes first, then twenty plus shaping, instant grow), Open, six bays, the vivarium, up close, return a mibi | The founder loop end to end in about five minutes: shape, grow, meet; the bays fill and refuse |
@@ -180,5 +180,5 @@ Every screen from here is built on the LVGL face, never on the JavaScript drawin
 The Caddy service on the sandbox server renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle and a daily limit; pods come from the Companion page's save, with dev seeds for testing.
 
 1. **Where the control passes are rendered.** *Recommended:* by the Caddy service on the sandbox server from the genome, with the Station rendering only the placeholder; it reuses the Grow controls as they stand and lets only valid genomes reach the painter. The device build moves it to the Station.
-2. **The real painting service in the first build, or a mock.** *Recommended:* build against the mock through M2, then run the real painter on the sandbox from M3 behind the developer toggle and a daily limit; CI always mocks. The owner sees real paintings land where it matters, at a known run-rate.
+2. **The real painting service in the first build, or a mock.** *Recommended:* build against the mock through M2, then run the real painter on the sandbox from M3 behind the developer toggle and a daily limit; CI always mocks. Real paintings land where it matters, at a known run-rate.
 3. **Where pods come from.** *Recommended:* the Companion page's save is the source, since the loop begins at the dock and the shared save already carries crates; dev seeds are a testing tool beside it, not the source.
