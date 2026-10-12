@@ -106,8 +106,19 @@ def fleck_windows(n, seed):
     return [RES[y - 24:y + 24, x - 24:x + 24] for y, x in got]
 def tone(k): k = np.clip(np.where(k > TOPK, 2 * TOPK - k, k), 0, TOPK); return np.array(LRAMP)[k]
 
+BAY = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]])
+def bayer(h, w): return np.tile(BAY, (h // 4 + 1, w // 4 + 1))[:h, :w]
+def mottle(seed):
+    """three or four greens in loose, irregular patches (owner 00:05: the top is mottled, not one fill): a smoothed noise field split
+    at +-0.7 sigma into a step down or up, faded to nothing 6 px from the tile's sides so tiles still meet on flecks alone; edges
+    dithered on the 4x4 Bayer"""
+    from scipy import ndimage as nd_
+    rng = np.random.RandomState(seed + 77); n = nd_.gaussian_filter(rng.normal(0, 1, (48, 48)), 5); n = (n - n.mean()) / n.std()
+    yy, xx = np.mgrid[0:48, 0:48]; fade = np.clip(np.minimum(np.minimum(yy, 47 - yy), np.minimum(xx, 47 - xx)) / 6.0, 0, 1)
+    n = n * fade; B = bayer(48, 48) / 16.0
+    return np.where(n > 0.7 + 0.3 * B, 1, np.where(n < -0.7 - 0.3 * B, -1, 0))
 def lawn_tile(f, seed):
-    t = tone(LAWN0 + f); rng = np.random.RandomState(seed)
+    t = tone(LAWN0 + f + mottle(seed)); rng = np.random.RandomState(seed)
     def tuft(cy, cx):
         base = t[cy, cx]
         for b in range(rng.randint(3, 6)):
@@ -136,6 +147,17 @@ def add(name, a, **f): PIECES.append((name, a, dict(status="candidate", offset=[
 FL = fleck_windows(8, 1)
 LIPF = fleck_windows(8, 2)[6:]                                    # the lawn texture for the pieces that carry their own lawn (lip, shore margin, spill, holes)
 for k in range(6): add(f"meadow/ground/lawn-{k + 1}", lawn_tile(FL[k], 300 + k), kind="ground", set="lawn", variant=str(k + 1))
+# the cast shadow (owner 00:05: "shadows help you add depth"; light from the upper left): drawn on the LOWER lawn tile beside a raised
+# edge, by the loader's rule (to be ruled): `e` on the tile east of a plateau or face, `s` on the tile south of a face's foot, `es` both,
+# `c` the tile whose only raised neighbour is its north-west. Lawn texture two steps under the lawn, toned by the tile's level like the
+# lawn; transparent beyond; a soft edge dithered over 4 px on the 4x4 Bayer.
+def shadow_piece(state, seed):
+    rng = np.random.RandomState(seed); yy, xx = np.mgrid[0:48, 0:48]; B = bayer(48, 48)
+    we = 14 + np.round(1.5 * np.sin(2 * np.pi * yy / 48)); hs = 22 + np.round(2 * np.sin(2 * np.pi * xx / 48))
+    de = {"e": we - xx, "s": hs - yy, "es": np.maximum(we - xx, hs - yy), "c": 14 - np.hypot(xx, yy)}[state]
+    inside = (de >= 4) | ((de > 0) & (B < de / 4 * 16))
+    a = np.where(inside, tone(LAWN0 - 2 + LIPF[seed % 2][yy % 48, xx % 48]), TR); return a
+for k, st in enumerate(("e", "s", "es", "c")): add(f"meadow/shadow/cast-{st}", shadow_piece(st, 40 + k), kind="shadow", set="cast", state=st)
 WQ = {n: to_idx(os.path.join(TS, "water", n + ".png")) for n in ("q-nw-edgeh-f1", "q-nw-fill-f1")}
 bank = WQ["q-nw-edgeh-f1"]; bk = bank[bank != TR]; bk = bk[np.isin(mat[bk], ["earth", "sand"])]; bv, bc = np.unique(bk, return_counts=True)
 SAND = sorted(bv[np.argsort(-bc)[:2]], key=lambda i: -lum[i]) if len(bv) else [P48.index["sand"]]
@@ -253,6 +275,15 @@ def spill(a, seed):
         a[y0 + d - 1, x] = gstep(up, -2); a[y0 + d, x] = OUTL
         if rng.rand() < .35:
             for t in range(1, rng.randint(2, 7)): a[y0 + d + t, x] = gstep(up, -1) if t < 3 else OUTL
+    ROOT, ROOTL = nearest((86, 60, 40)), nearest((128, 92, 60))         # roots trailing from the turf down the stone (owner's reference)
+    for _ in range(max(1, w // 24)):
+        x = int(rng.uniform(4, w - 4)); col = np.where(a[:, x] != TR)[0]
+        if not len(col): continue
+        y = col[0] + dd[x] + 1; L_ = rng.randint(8, 22)
+        for t in range(L_):
+            if not (0 <= y < h - 10 and 1 <= x < w - 1) or a[y, x] == TR: break
+            if np.isin(a[y, x], ROCKI) or mat[a[y, x]] != "grass": a[y, x] = ROOT; a[y, x - 1] = ROOTL if np.isin(a[y, x - 1], ROCKI) else a[y, x - 1]
+            y += 1; x += int(rng.choice([-1, 0, 0, 0, 1]))
     return a
 def flatten(a):
     """the rock at the lawn's scale: a pixel takes its 3x3 majority colour when that colour holds 5 of the 9 and is the same material
@@ -332,6 +363,11 @@ for p in json.load(open(os.path.join(TS, "stairs", "stairs.json")))["pieces"]:
     add(p["name"], a, **f)
 for p in json.load(open(os.path.join(TS, "props", "props.json")))["pieces"]:
     a = to_idx(os.path.join(TS, "props", p["file"])); h, w = a.shape; f = {k: v for k, v in p.items() if k not in ("name", "file", "px")}
+    if p.get("type") in ("boulder", "reeds", "flowers", "bush", "fern"):        # a contact shadow on the lawn under it, down and right (the light is upper left)
+        a = np.vstack([a, np.full((4, w), TR)]); h += 4; yy, xx = np.mgrid[0:h, 0:w]; B = bayer(h, w)
+        foot = np.where((a[:-4] != TR).any(1))[0].max(); cols = np.where(a[foot] != TR)[0]; cx = (cols.min() + cols.max()) / 2 + 3
+        d = np.hypot((xx - cx) / max(4, 0.42 * w), (yy - foot - 1) / 3.2); sh = ((d < 0.8) | ((d < 1) & (B < (1 - d) / 0.2 * 16))) & (a == TR)
+        a[sh] = tone(LAWN0 - 2 + LIPF[0][yy[sh] % 48, xx[sh] % 48])
     KEY = [P48.index[n] for n in ("magenta", "wine", "plum")]          # the magenta key's residue: on the rim the outline, inside soil
     tp = np.pad(a == TR, 1, constant_values=True); edge = tp[:-2, 1:-1] | tp[2:, 1:-1] | tp[1:-1, :-2] | tp[1:-1, 2:]
     k_ = np.isin(a, KEY); a[k_ & edge] = P48.index["plumD"]; a[k_ & ~edge] = P48.index["soil"]
@@ -349,7 +385,7 @@ def signed(n, f):
 PIECES = [(n, a, dict(f, status="signed") if signed(n, f) else f) for n, a, f in PIECES]
 
 # ---- sheets: shelf-packed by group, at most 1024 wide
-GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/" in n),
+GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/" in n or "/shadow/" in n),
           ("quarters", lambda n: "/lip/" in n or ("/shore/" in n and "water-" in n)),
           ("shore", lambda n: "/shore" in n or "/band/" in n), ("walls", lambda n: any(k in n for k in ("/face/", "/cap/", "/side/", "/foot/"))),
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]

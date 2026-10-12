@@ -47,6 +47,15 @@ for r in range(R):
         v[(r, c)] = k
         if L[r][c] == "s": put(PC[by(kind="ground", set="sand")[0]][1], r * 48, c * 48)
         else: put(toned(PC[lawn[k]][1], level(L[r][c])), r * 48, c * 48)
+# the cast shadow on the lower lawn (proposed loader rule): e = the west neighbour is raised (plateau or face), s = the north neighbour
+# is a face's foot, es = both, c = only the north-west neighbour is raised; toned by the tile's level like the lawn
+raised = lambda r, c: at(r, c) in ("1", "F")
+for r in range(R):
+    for c in range(Cn):
+        if L[r][c] not in (".",): continue
+        e, s_ = raised(r, c - 1), at(r - 1, c) == "F"
+        st = "es" if e and s_ else "e" if e else "s" if s_ else "c" if raised(r - 1, c - 1) else None
+        if st: put(toned(PC[f"meadow/shadow/cast-{st}"][1], 0), r * 48, c * 48)
 OFF = {0: (-1, 0), 1: (-1, 1), 2: (0, 1), 3: (1, 1), 4: (1, 0), 5: (1, -1), 6: (0, -1), 7: (-1, -1)}
 def state(m, q):
     a = m >> (0 if q in ("nw", "ne") else 4) & 1; b = m >> (6 if q in ("nw", "sw") else 2) & 1
