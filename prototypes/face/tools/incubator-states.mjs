@@ -36,6 +36,8 @@ const TIMED = {
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
   "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "ready" },
 };
+// The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
+export const hatched = { name: null };
 export async function incubatorStates(visit, { motion = false, timed = true } = {}) {
   const r = await still(visit); if (motion || !timed) return r;
   const t = await timedStates(visit); return { fails: [...r.fails, ...t.fails] };
@@ -63,7 +65,15 @@ async function timedStates(visit) {
       await page.evaluate(tp.go); await step(tp.at);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
       if (u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
-      await visit("incubator-" + name, page, fail); await step(/moving/.test(name) ? 7000 : 3000);
+      await visit("incubator-" + name, page, fail);
+      if (/^hatch-\d+$/.test(name)) {
+        const h = await page.evaluate(() => { const S = window.__st, m = S.ST.mibis[S.ST.mibis.length - 1], r = S.props?.regions; return { name: m.name, code: m.code, ribbon: r?.ribbon ?? "", shown: r?.code ?? "" }; });
+        if (/BUD/.test(h.code) || /BUD/.test(JSON.stringify(h.shown))) fail(`incubator-${name}: the code is the fixture's BUD: ${h.code}`);
+        hatched.seen ??= h; if (h.name !== hatched.seen.name || h.code !== hatched.seen.code || JSON.stringify(h.shown) !== JSON.stringify(hatched.seen.shown)) fail(`incubator-${name}: the hatch changed name or code across frames: ${JSON.stringify(h)} against ${JSON.stringify(hatched.seen)}`);
+        if (h.ribbon && !h.ribbon.includes(h.name)) fail(`incubator-${name}: the ribbon "${h.ribbon}" does not carry the mibi's name ${h.name}`);
+        hatched.name = h.name;
+      }
+      await step(/moving/.test(name) ? 7000 : 3000);
       await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = null; });
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));

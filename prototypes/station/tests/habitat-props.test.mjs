@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf } from "../src/genome.mjs";
+import { setFrames, frameOf, genomeDigest } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 
@@ -91,7 +91,7 @@ test("the plates: one a chapter in ring order, read / unread / sealed; only an u
 
 test("the Companion module: the set as it will be in its order (an add request waiting shows its lamp), the glyph docked or away; ✓ Take / Bring / Full by the set; the request waiting is read-only", () => {
   const w = world(); dock(w.st); const m = mibis(w, 5), sv = sv0({ carried: [m[1].id] });
-  let b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.state, "docked"); assert.equal(b.props.regions.door.glyph, "frame-companion-solid-16x24"); assert.equal(b.props.regions.door.places[0].picture, `mibi:${m[1].id}:adult:48x48`); assert.equal(b.props.regions.door.places[1], null);
+  let b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.state, "docked"); assert.equal(b.props.regions.door.glyph, "frame-companion-solid-16x24"); assert.equal(b.props.regions.door.places[0].picture, `mibi:${genomeDigest(m[1].genome)}:adult:48x48`); assert.equal(b.props.regions.door.places[1], null);
   assert.equal(b.line.ok, `Take ${m[0].name} with you`); assert.equal(b.line.subject, "goes with you now"); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, true);
   b = build(w, sv, { focus: "door", habId: m[1].id }); assert.equal(b.line.ok, `Bring ${m[1].name} home`); assert.equal(b.line.subject, "comes home now");
   const full = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, full, { focus: "door" }); assert.equal(b.line.ok, null); assert.equal(b.line.subject, "the Companion is full"); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, false);
@@ -136,7 +136,7 @@ test("the strip: a tile a bay, the housed mibis in bay order then the free bays,
 test("the window: the near Vivarium of the light, its master named by habitat.json light.pictures; the resident's picture the mibi at the box; no waiting lamp whatever the painting's state (Grow paints nothing)", () => {
   const { w, sv } = scenes().rest;
   for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }); assert.equal(b.props.regions.glass.picture, `vivarium-near-${light}-544x408`); assert.ok(b.requests.some((r) => r.id === `vivarium-near-${light}-544x408` && r.kind === "slot")); }
-  const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${m.id}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, false);
+  const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${genomeDigest(m.genome)}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, false);
   m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, false); assert.notEqual(x.line.subject, spec.strings.painting);
 });
 
@@ -152,7 +152,7 @@ test("the bottom line: the resident greets (in the meet it names), the name rena
 test("a mibi that grows up changes every picture id from :juvenile: to :adult: with its size unchanged (the resident 304×312, the tiles and the door's places 48×48)", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3); for (const x of m) x.born = w.st.turn;
   const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0({ carried: [m[0].id, m[1].id] });
-  const young = ids(build(w, sv)); assert.ok(young.length >= 5 && young.every((id) => /^mibi:\d+:juvenile:\d+x\d+$/.test(id)), young.join(" "));
+  const young = ids(build(w, sv)); assert.ok(young.length >= 5 && young.every((id) => /^mibi:S\d+-[0-9a-f]{8}:juvenile:\d+x\d+$/.test(id)), young.join(" "));
   assert.ok(young.some((id) => id.endsWith(":juvenile:304x312")) && young.some((id) => id.endsWith(":juvenile:48x48")));
   w.st.turn += w.settings.adultTurns ?? S.JUVENILE_TURNS; for (const x of m) assert.equal(S.mibiStage(w.st, x, w.settings), "adult");
   assert.deepEqual(ids(build(w, sv)), young.map((id) => id.replace(":juvenile:", ":adult:")));

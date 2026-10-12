@@ -6,7 +6,7 @@
 // The rules are state.mjs's, the screens' state is game.mjs's UI, and the key's rule call is intents/*: nothing here decides a rule or a layout.
 import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, podById, mibiById } from "./game.mjs";
 import * as S from "./state.mjs";
-import { frameOf } from "./genome.mjs";
+import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild, mibiPictureId } from "./views/home-props.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
@@ -232,7 +232,7 @@ function habitatFocus(h, target) {
   const a = UI.hab; a.f = target; endMeet(h);
   if (!target.startsWith("tile.")) return;
   const id = +target.slice(5), was = S.mibiById(G.st, a.id), now = S.mibiById(G.st, id); if (!now || id === a.id) return;
-  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? mibiPictureId(mb.id, S.mibiStage(G.st, mb, G.settings), SPECS.habitat.regions.resident.rect.slice(2)) : "");
+  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? mibiPictureId(genomeDigest(mb.genome), S.mibiStage(G.st, mb, G.settings), SPECS.habitat.regions.resident.rect.slice(2)) : "");
   const from = px(was); a.id = id;
   if (from && px(now)) { const e = SPECS.habitat.events.swap; a.prev = from; h.play({ kind: e.kind, target: e.target, from, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prev === from) a.prev = null; }); }
 }
