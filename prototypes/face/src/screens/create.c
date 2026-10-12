@@ -51,14 +51,22 @@ static void build_bench(void) {
 }
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
+static void pic_or(const char *id, int on, const char *asset, int x, int y, int w, int h);
 static void build_pod(int grow) {
   int b[4]; if (!pod_box(b)) return; const char *pic = v_pstr("regions.pod.picture"); if (!has(pic)) return;
-  int dx = 0, dy = 0;
+  int dx = 0, dy = 0, rest = 0;
+  {   /* the contact shadow (as on Pods, specimen.c): pods.json `shadow` widens the class's width by `widen`, `h` tall, centred on the axis and the feet, on the painted layer before the pod; it never travels: shown in shape and nothing read, and in grow until the travel starts (a cut to a zero-size node), never with reduced motion in grow */
+    int sw = b[2] + spec_int("pods", "shadow.widen", 0), sh = spec_int("pods", "shadow.h", 0), at = ci("events.grow.steps.2.at", 300), t = grow_time(), on = !grow || (t >= 0 && t < at);
+    v_region("podShadow", LAYER_PAINTED); pic_or("podShadow", on, v_pstr("regions.podShadow.picture"), ci("regions.pod.axis", 160) - v_half(sw), ci("regions.pod.feet", 408) - v_half(sh), sw, sh);
+  }
   if (grow) {   /* the pod travels from its box to the dome in a straight line, whole pixels, eased: from `travel.at` over `travel.ms`, feet (160, 408) to (864, 296) */
     int at = ci("events.grow.steps.2.at", 300), ms = ci("events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = layout_ease_io(p);
     dx = layout_lerp(0, ck("regions.travel.foot.to", 0) - ck("regions.travel.foot.from", 0), e); dy = layout_lerp(0, ck("regions.travel.foot.to", 1) - ck("regions.travel.foot.from", 1), e);
+    rest = t < 0 || t >= ci("regions.travel.rest.at", 530);   /* from 530 ms (and with reduced motion) the pod rests at the collection class, a step and never interpolated, on the same foot */
   }
-  v_region(grow ? "travel" : "pod", LAYER_PAINTED); v_sprite("pod", pic, b[0] + dx, b[1] + dy, b[2], b[3]);
+  v_region(grow ? "travel" : "pod", LAYER_PAINTED);
+  if (rest && has(v_pstr("regions.pod.dome"))) { int w = ck("regions.travel.rest.size", 0), h = ck("regions.travel.rest.size", 1); v_sprite("pod", v_pstr("regions.pod.dome"), ci("regions.pod.axis", 160) + dx - v_half(w), ci("regions.pod.feet", 408) + dy - h, w, h); }
+  else v_sprite("pod", pic, b[0] + dx, b[1] + dy, b[2], b[3]);
 }
 static void build_origin(void) {
   int r[4]; crect("regions.origin.rect", r); int px = ci("regions.origin.px", 16), pitch = ci("regions.origin.pitch", 20), maxLines = ci("regions.origin.lines", 2), cx = ci("regions.origin.centre", 160), line = 0;
@@ -111,8 +119,8 @@ static void build_traitLine(void) {
   if (cross) line = s + 4;   /* the ✕ is the icon's own node, ahead of the words */
   int tw = changed ? ((v_measure(word, px) + 2 * pad + 7) / 8) * 8 : 0, lw = v_run_width(line, px), bw = doing ? ck("regions.traitLine.breedMark.size", 0) : 0, bg = ci("regions.traitLine.breedMark.gap", 8);
   int total = (tw ? tw + gap : 0) + (cross ? ic : 0) + lw + (bw ? bg + bw : 0), x = cx - v_half(total), tx = r[1] + v_fdiv(r[3] - th, 2);
-  v_region("traitLine", LAYER_CHROME); word_panel("traitLine.tag", x, tx, tw, tw ? th : 0, colr("colours.traitLine.tagFill"), colr("colours.traitLine.tagEdge"));   /* the tag is chrome: a `panel` fill, a 1 px `hairline` edge (zero-size while it is not shown) */
-  v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + pad, cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, colr("colours.traitLine.tagWord")); if (tw) x += tw + gap;
+  v_region("traitLine", LAYER_PAINTED); pic_or("traitLine.tag", tw > 0, v_pstr("regions.traitLine.tag"), x, tx, tw, th);   /* the tag is the signed plate-name-88x24 on the painted layer, drawn at its width (the word's + 16 on the 8 px grid, 88 for "changed"), never stretched */
+  v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + v_half(tw - v_measure(word, px)), cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, colr("colours.traitLine.tagWord")); if (tw) x += tw + gap;
   v_name("traitLine"); pic_or("traitLine.cross", cross, "icon:cross:16", x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px); if (cross) x += ic;
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, ci("regions.traitLine.lineTop", 202) + v_fdiv(20 - v_cap(px), 2), lw, px, colr(clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
   v_name("traitLine"); pic_or("traitLine.breed", bw, breed, x + lw + bg, r[1] + v_fdiv(r[3] - ck("regions.traitLine.breedMark.size", 1), 2), bw ? bw : 28, ck("regions.traitLine.breedMark.size", 1));
@@ -161,8 +169,10 @@ void create_words(void) {
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
   build_founder();
+  picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamberFront.picture"));   /* the tray's rim and floor, over the founder: its ink is rows 310 to 319 only */
   build_roll();
   build_traitLine();
+  picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));   /* the small chamber's front, over the bud and the travelling pod */
   { v_name("leaves"); word_leaves(C, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), 0, v_pint("regions.leaves.full", 0), 0, ci("regions.leaves.max", 48), -1);   /* a leaf the bud will not take is a node with no size */ }
   build_stamp();
   build_code();
