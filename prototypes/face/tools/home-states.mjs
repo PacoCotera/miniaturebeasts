@@ -33,7 +33,7 @@ const SCENES = {
 export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
-  reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.knownIds = []; S.UI.meet = null; Object.assign(S.UI.cargo, { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }); this.persist(); },
+  reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; S.UI.meet = null; Object.assign(S.UI.cargo, { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }); this.persist(); },
   bays(n) { window.__st.settings.bays = n; },
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },
   young(n) { const st = window.__st.ST; const k = st.mibis.length; window.__st.seedAdults("S01", 77, n); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; } },
@@ -42,7 +42,7 @@ export const WORLD = () => ({
   crates(n) { window.__st.SV.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: 1, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })); this.persist(); },
   pods(n) { const S = window.__st; for (let i = 0; i < n; i++) S.seedPod("S01", 3 + i); },
   waiting(n) { const st = window.__st.ST; for (let i = 0; i < n; i++) st.waiting.push({ ...st.tray[i], id: "wait" + i }); },
-  bud(ready) { const st = window.__st.ST; st.bud = { kind: "founder", species: "S01", sp: 0, gs: 5, genome: st.mibis[0]?.genome ?? null, sha: "bud", code: "BUD", start: Date.now() - (ready ? 1e8 : 1000), minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: false, early: false }; },
+  bud(ready) { const S = window.__st, st = S.ST, gs = 5, genome = S.podGenome(S.frameOf("S01"), gs), sha = S.genomeSha(genome); st.bud = { kind: "founder", species: "S01", sp: 0, gs, genome, sha, code: S.nameCode(sha), start: Date.now() - (ready ? 1e8 : 1000), minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: false, early: false }; },
   sitting() { window.__st.ST.sitting = { mibi: window.__st.ST.mibis[0]?.id ?? 1 }; },
   unread(i) { const m = window.__st.ST.mibis[i]; if (m) m.read = []; this.persist(); },
   identified(n) { const S = window.__st; for (const p of S.ST.tray.slice(0, n)) S.readSome(p.id, 0); },

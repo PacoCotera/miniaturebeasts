@@ -101,7 +101,7 @@ test("the window's picture is Idle's painting of the light (no slot of its own),
 test("a mibi that grows up changes every picture id from :juvenile: to :adult: with the tiles' and sleepers' size unchanged and a resident's following its stage (the whole's residents, the sleepers and the tiles)", () => {
   const w = world(); dock(w.st); const m = mibis(w, 4); for (const x of m) x.born = w.st.turn;
   const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0({ carried: [m[2].id, m[3].id] });
-  const young = ids(build(w, sv)); assert.ok(young.length >= 6 && young.every((id) => /^mibi:\d+:juvenile:\d+x\d+$/.test(id)), young.join(" "));
+  const young = ids(build(w, sv)); assert.ok(young.length >= 6 && young.every((id) => /^mibi:S\d+-[0-9a-f]{8}:juvenile:\d+x\d+$/.test(id)), young.join(" "));
   w.st.turn += w.settings.adultTurns ?? S.JUVENILE_TURNS; for (const x of m) assert.equal(S.mibiStage(w.st, x, w.settings), "adult");
   const grown = ids(build(w, sv));
   // every id has the stage swapped; a resident's size is its stage's (home.json sizes: a juvenile's 104×112, an adult's 144×152), the sleepers' and the tiles' size does not change with it
