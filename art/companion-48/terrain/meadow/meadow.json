@@ -191,6 +191,70 @@
    "h": 48
   },
   {
+   "name": "meadow/shadow/cast-c",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shadow",
+   "set": "cast",
+   "state": "c",
+   "sheet": "ground",
+   "x": 539,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/shadow/cast-e",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shadow",
+   "set": "cast",
+   "state": "e",
+   "sheet": "ground",
+   "x": 588,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/shadow/cast-es",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shadow",
+   "set": "cast",
+   "state": "es",
+   "sheet": "ground",
+   "x": 637,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
+   "name": "meadow/shadow/cast-s",
+   "status": "candidate",
+   "offset": [
+    0,
+    0
+   ],
+   "kind": "shadow",
+   "set": "cast",
+   "state": "s",
+   "sheet": "ground",
+   "x": 686,
+   "y": 0,
+   "w": 48,
+   "h": 48
+  },
+  {
    "name": "meadow/decal/grass1-01",
    "status": "signed",
    "offset": [
@@ -201,7 +265,7 @@
    "set": "grass",
    "variant": "grass1-01",
    "sheet": "ground",
-   "x": 539,
+   "x": 735,
    "y": 0,
    "w": 28,
    "h": 35
@@ -217,7 +281,7 @@
    "set": "grass",
    "variant": "grass2-03",
    "sheet": "ground",
-   "x": 568,
+   "x": 764,
    "y": 0,
    "w": 31,
    "h": 34
@@ -233,7 +297,7 @@
    "set": "grass",
    "variant": "grass3-05",
    "sheet": "ground",
-   "x": 600,
+   "x": 796,
    "y": 0,
    "w": 37,
    "h": 30
@@ -249,7 +313,7 @@
    "set": "grass",
    "variant": "grass4-07",
    "sheet": "ground",
-   "x": 638,
+   "x": 834,
    "y": 0,
    "w": 39,
    "h": 25
@@ -265,7 +329,7 @@
    "set": "grass",
    "variant": "grass3-04",
    "sheet": "ground",
-   "x": 678,
+   "x": 874,
    "y": 0,
    "w": 23,
    "h": 14
@@ -281,7 +345,7 @@
    "set": "grass",
    "variant": "grass4-06",
    "sheet": "ground",
-   "x": 702,
+   "x": 898,
    "y": 0,
    "w": 19,
    "h": 14
@@ -297,7 +361,7 @@
    "set": "flowers",
    "variant": "flowers1-17",
    "sheet": "ground",
-   "x": 722,
+   "x": 918,
    "y": 0,
    "w": 19,
    "h": 11
@@ -313,7 +377,7 @@
    "set": "flowers",
    "variant": "flowers2-18",
    "sheet": "ground",
-   "x": 742,
+   "x": 938,
    "y": 0,
    "w": 12,
    "h": 10
@@ -329,7 +393,7 @@
    "set": "tall",
    "variant": "tall1-08",
    "sheet": "ground",
-   "x": 755,
+   "x": 951,
    "y": 0,
    "w": 8,
    "h": 10
@@ -345,7 +409,7 @@
    "set": "flowers",
    "variant": "flowers1-15",
    "sheet": "ground",
-   "x": 764,
+   "x": 960,
    "y": 0,
    "w": 12,
    "h": 9
@@ -361,7 +425,7 @@
    "set": "tall",
    "variant": "tall1-09",
    "sheet": "ground",
-   "x": 777,
+   "x": 973,
    "y": 0,
    "w": 8,
    "h": 9
@@ -377,7 +441,7 @@
    "set": "tall",
    "variant": "tall1-10",
    "sheet": "ground",
-   "x": 786,
+   "x": 982,
    "y": 0,
    "w": 7,
    "h": 8
@@ -393,7 +457,7 @@
    "set": "tall",
    "variant": "tall2-11",
    "sheet": "ground",
-   "x": 794,
+   "x": 990,
    "y": 0,
    "w": 10,
    "h": 8
@@ -409,7 +473,7 @@
    "set": "tall",
    "variant": "tall2-13",
    "sheet": "ground",
-   "x": 805,
+   "x": 1001,
    "y": 0,
    "w": 7,
    "h": 8
@@ -425,7 +489,7 @@
    "set": "grass",
    "variant": "grass1-02",
    "sheet": "ground",
-   "x": 813,
+   "x": 1009,
    "y": 0,
    "w": 9,
    "h": 7
@@ -441,8 +505,8 @@
    "set": "tall",
    "variant": "tall2-12",
    "sheet": "ground",
-   "x": 823,
-   "y": 0,
+   "x": 0,
+   "y": 49,
    "w": 8,
    "h": 7
   },
@@ -457,8 +521,8 @@
    "set": "flowers",
    "variant": "flowers1-14",
    "sheet": "ground",
-   "x": 832,
-   "y": 0,
+   "x": 9,
+   "y": 49,
    "w": 7,
    "h": 6
   },
@@ -473,8 +537,8 @@
    "set": "flowers",
    "variant": "flowers1-16",
    "sheet": "ground",
-   "x": 840,
-   "y": 0,
+   "x": 17,
+   "y": 49,
    "w": 7,
    "h": 5
   },
@@ -3960,7 +4024,7 @@
    "status": "candidate",
    "offset": [
     -63,
-    -112
+    -116
    ],
    "kind": "prop",
    "type": "bush",
@@ -3968,14 +4032,14 @@
    "x": 97,
    "y": 0,
    "w": 174,
-   "h": 160
+   "h": 164
   },
   {
    "name": "meadow/prop/bush-2",
    "status": "candidate",
    "offset": [
     -39,
-    -64
+    -68
    ],
    "kind": "prop",
    "type": "bush",
@@ -3983,14 +4047,14 @@
    "x": 272,
    "y": 0,
    "w": 125,
-   "h": 112
+   "h": 116
   },
   {
    "name": "meadow/prop/fern-1",
    "status": "candidate",
    "offset": [
     -36,
-    -44
+    -48
    ],
    "kind": "prop",
    "type": "fern",
@@ -3998,14 +4062,14 @@
    "x": 398,
    "y": 0,
    "w": 120,
-   "h": 92
+   "h": 96
   },
   {
    "name": "meadow/prop/bush-1",
    "status": "candidate",
    "offset": [
     -21,
-    -31
+    -35
    ],
    "kind": "prop",
    "type": "bush",
@@ -4013,14 +4077,14 @@
    "x": 519,
    "y": 0,
    "w": 89,
-   "h": 79
+   "h": 83
   },
   {
    "name": "meadow/prop/boulder-4",
    "status": "signed",
    "offset": [
     -12,
-    -28
+    -32
    ],
    "kind": "prop",
    "type": "boulder",
@@ -4028,14 +4092,14 @@
    "x": 609,
    "y": 0,
    "w": 71,
-   "h": 76
+   "h": 80
   },
   {
    "name": "meadow/prop/fern-2",
    "status": "candidate",
    "offset": [
     -16,
-    -28
+    -32
    ],
    "kind": "prop",
    "type": "fern",
@@ -4043,14 +4107,14 @@
    "x": 681,
    "y": 0,
    "w": 79,
-   "h": 76
+   "h": 80
   },
   {
    "name": "meadow/prop/reeds-1",
    "status": "signed",
    "offset": [
     -3,
-    -28
+    -32
    ],
    "kind": "prop",
    "type": "reeds",
@@ -4058,14 +4122,14 @@
    "x": 761,
    "y": 0,
    "w": 54,
-   "h": 76
+   "h": 80
   },
   {
    "name": "meadow/prop/reeds-2",
    "status": "signed",
    "offset": [
     -4,
-    -28
+    -32
    ],
    "kind": "prop",
    "type": "reeds",
@@ -4073,14 +4137,14 @@
    "x": 816,
    "y": 0,
    "w": 56,
-   "h": 76
+   "h": 80
   },
   {
    "name": "meadow/prop/fern-3",
    "status": "candidate",
    "offset": [
     -4,
-    -4
+    -8
    ],
    "kind": "prop",
    "type": "fern",
@@ -4088,14 +4152,14 @@
    "x": 873,
    "y": 0,
    "w": 56,
-   "h": 52
+   "h": 56
   },
   {
    "name": "meadow/prop/boulder-3",
    "status": "signed",
    "offset": [
     -7,
-    -3
+    -7
    ],
    "kind": "prop",
    "type": "boulder",
@@ -4103,14 +4167,14 @@
    "x": 930,
    "y": 0,
    "w": 61,
-   "h": 51
+   "h": 55
   },
   {
    "name": "meadow/prop/flowers-2",
    "status": "signed",
    "offset": [
     1,
-    0
+    -4
    ],
    "kind": "prop",
    "type": "flowers",
@@ -4118,14 +4182,14 @@
    "x": 0,
    "y": 288,
    "w": 46,
-   "h": 48
+   "h": 52
   },
   {
    "name": "meadow/prop/boulder-2",
    "status": "signed",
    "offset": [
     2,
-    10
+    6
    ],
    "kind": "prop",
    "type": "boulder",
@@ -4133,14 +4197,14 @@
    "x": 47,
    "y": 288,
    "w": 43,
-   "h": 38
+   "h": 42
   },
   {
    "name": "meadow/prop/flowers-1",
    "status": "signed",
    "offset": [
     2,
-    13
+    9
    ],
    "kind": "prop",
    "type": "flowers",
@@ -4148,14 +4212,14 @@
    "x": 91,
    "y": 288,
    "w": 43,
-   "h": 35
+   "h": 39
   },
   {
    "name": "meadow/prop/boulder-1",
    "status": "signed",
    "offset": [
     7,
-    18
+    14
    ],
    "kind": "prop",
    "type": "boulder",
@@ -4163,7 +4227,7 @@
    "x": 135,
    "y": 288,
    "w": 33,
-   "h": 30
+   "h": 34
   }
  ]
 }
