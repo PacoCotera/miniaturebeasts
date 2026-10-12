@@ -8,7 +8,7 @@ These are the files [`../../tools/build-meadow-drop.py`](../../tools/build-meado
 
 - **Dependencies:**
   - Python 3 with numpy, Pillow and scipy. scipy is used for `ndimage.label`, which finds the enclosed holes in faces and caps.
-  - The tool also imports `pal.py` from the same folder, which reads the Companion page's `PALETTE` from `prototypes/exploration/index.html`.
+  - The tool also imports `pal.py` from the same folder, which reads the signed [`palette/palette.json`](../../palette/palette.json), itself taken from the Companion page's `PALETTE`. Only when that file is missing does it fall back to reading the page.
 
 ## What each input is and how it was made
 

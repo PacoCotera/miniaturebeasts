@@ -10,7 +10,7 @@ Pieces, by the loader's catalogue keys (prototypes/exploration/src/atlas.mjs):
   lawn            6 tiles on b1's lawn ramp at the middle level's tone: b1's own flecks (its lawn less its bands, one 48 px window
                   each), clustered tufts and clover kept 6 px inside the tile, so any tile meets any other
   sand, deep      the pond's bank sand and its body one step down, flat with sparse flecks
-  material.rock   48 px of rock from the 1-wide faces' middle rows (generator 1's cliff band)
+  material.rock   48 px of rock from the 1-wide faces' middle rows (fills the middle of a cliff band, between its top and foot rows)
   decal           the tall grass and flowers decals with their greens moved onto b1's ramp by value
   water           tileset/water's quarters, frames 1 and 2, and its macros, lobes, beaches, bend and band (catalogued as other)
   lip             the 28 quarters: the candidate set's edge geometry (pieces/region) drawn by the plateau-edge rule below on b1's
