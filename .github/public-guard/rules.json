@@ -306,6 +306,9 @@
      "README.md",
      "ROADMAP.md"
     ],
+    "readmeUnder": [
+     "prototypes/"
+    ],
     "excludeBasenames": [
      "docs-standard.md"
     ]
@@ -322,7 +325,8 @@
     "design/style-guide/station-layouts.md",
     "design/style-guide/companion-screens.md",
     "design/style-guide/README.md",
-    "design/style-guide/station-screens.md"
+    "design/style-guide/station-screens.md",
+    "prototypes/"
    ],
    "patterns": [
     [

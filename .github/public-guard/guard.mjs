@@ -28,12 +28,12 @@ const textRules = RULES.rules.filter((r) => r.applies === "text").map((r) => r.i
 const PL = byId["process-label"];
 const plDate = PL ? rx(PL.datePattern) : null;
 
-// process-label: design/**/*.md, README.md and ROADMAP.md, never docs-standard.md; in tree mode only under PL.tree.
+// process-label: design/**/*.md, README.md, ROADMAP.md and prototypes/**/README.md, never docs-standard.md; in tree mode only under PL.tree.
 export function processDoc(file, tree = false) {
   if (!PL) return false;
   const p = PL.paths, base = path.posix.basename(file);
   if (p.excludeBasenames.includes(base)) return false;
-  const inScope = p.files.includes(file) || p.prefixes.some((x) => file.startsWith(x) && file.endsWith(p.suffix));
+  const inScope = p.files.includes(file) || p.prefixes.some((x) => file.startsWith(x) && file.endsWith(p.suffix)) || (p.readmeUnder || []).some((x) => file.startsWith(x) && base === "README.md");
   if (!inScope) return false;
   return !tree || PL.tree.some((t) => file === t || file.startsWith(t.endsWith("/") ? t : t + "/"));
 }
@@ -299,6 +299,7 @@ function selfTest() {
   ok(!pl("![x](img/2026-10-08-a.png)"), "process-label should pass: ![x](img/2026-10-08-a.png)");
   ok(!pl("see `the owner` and [a](notes/2026-10-08.md)"), "process-label should skip inline code and link targets");
   ok(fencedLines("a\n```\nthe owner\n```\nb").has(3) && !fencedLines("a\n```\nx\n```\nb").has(5), "fenced lines");
+  ok(processDoc("prototypes/station/README.md") && !processDoc("prototypes/station/src/x.md") && !processDoc("prototypes/station/NOTES.md"), "process-label covers prototypes/**/README.md only");
   ok(processDoc("design/proposals/x.md") && processDoc("README.md") && processDoc("ROADMAP.md") && !processDoc("design/docs-standard.md") && !processDoc("art/x/README.md") && !processDoc("design/x.txt"), "process-label paths");
   ok(!processDoc("design/proposals/x.md", true), "process-label tree mode only under its path list");
   ok(checkProcess("design/proposals/species-names.md", '| Aulaka | 6 | None. Queries "Aulaka" creature, character, game, brand, genus (2026-10-09): no creature | clear |').length === 0, "process-label honours the allowlist");
