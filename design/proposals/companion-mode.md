@@ -1,9 +1,9 @@
 # Companion mode: the mibi with you
 
-**Proposal** for Companion mode (the Companion at home, between expeditions) and
-choosing who comes along. **Decided** marks restated owner decisions.
+This page covers Companion mode (the Companion at home, between expeditions) and
+choosing who comes along. Points still open are listed at the end.
 
-**Decided:** Companion mode gets a dedicated screen to interact with the active
+Companion mode gets a dedicated screen to interact with the active
 mibi, "think Tamagotchi", and a simpler way to choose who comes along; the Probe
 should be a way to find Energy. Four buttons: pad, Confirm, Back, Call (Call
 calls the riding mibi). Life stages: juveniles ride in the Companion but don't
@@ -35,7 +35,7 @@ with you, large:
 ```
 
 - **The mibi** at about 280×300, HiBit as in the Miniature Lives proof
-  (**Decided** look), slow idle cycle (a still frame under reduced motion).
+  (the settled look), slow idle cycle (a still frame under reduced motion).
 - **Name, stage, one ability line, one status line:** "with you · joins the
   Probe", "with you · too young for the Probe (2 world turns)", or "at home".
 - **Mood, only if bonded.** Bonding and care aren't built, so minimal V1 shows
@@ -47,7 +47,7 @@ with you, large:
 | Button | Does |
 | --- | --- |
 | **Call** | The mibi with you answers: turns, hops to the front, chirps. A juvenile is learning: it sometimes looks the wrong way first. On another mibi's screen, Call brings the view back to the mibi with you, which answers. Free |
-| **Confirm** | One context action. On the mibi with you: "Spend time with Pip", a short species moment (a Loika leans on the glass, an Untuva puffs, a Tuikis glows) and one line from its last expedition ("Pip remembers the meadow"). No reward: waking and idling never award anything (**Working rule**). "Feed" joins only when care exists. On a mibi at home: "Take Moss" (§2) |
+| **Confirm** | One context action. On the mibi with you: "Spend time with Pip", a short species moment (a Loika leans on the glass, an Untuva puffs, a Tuikis glows) and one line from its last expedition ("Pip remembers the meadow"). No reward: waking and idling never award anything (a working rule). "Feed" joins only when care exists. On a mibi at home: "Take Moss" (§2) |
 | **Pad** | Left/right: the previous/next mibi's screen, same layout (looking is free) |
 | **Back** | Up to the roster ("← Mibis") |
 
@@ -85,13 +85,13 @@ doesn't join the Probe. Everyone else is **home**.
 joins the Probe, at the cost of two toggles, two meanings of "along", and a Call
 that must guess whom to call. One slot: one name in the HUD, one answer to
 "who's with me?", one press to change it. Energy and pods stay scarce
-(**Decided**), so players raise few mibis, and the case a second slot covers
+(settled), so players raise few mibis, and the case a second slot covers
 lasts about two world turns per juvenile. If play misses it, "also riding" can
 return later without changing this screen.
 
 ## 3. The Probe finds Energy
 
-No new mechanic. Round 3 (**Decided**) already makes Call the way to find
+No new mechanic. Round 3 already makes Call the way to find
 Energy: places lie under a survey veil, and Call unveils 15×15 tiles. Warm
 stones (+1, at most one per stone per world turn) and storm-charged stones
 (+2/+3) glint when unveiled. The map's bolt sign marks charged stones. Three
@@ -137,7 +137,7 @@ Dot (juvenile) is with you; Pip, a Loika, grows up this world turn. Start: Cargo
 | 7 | Back | Menu: Next expedition (focused), Probe, Cargo, Mibis |
 | 8 | Confirm | Expedition choice. Partner row: "Partner: Pip · calms wary creatures" |
 
-## Decisions for the owner
+## Points for owner review
 
 1. **One slot:** replace *along* + *riding* with a single "with you" mibi (a
    juvenile with you means no expedition partner), or keep two?
