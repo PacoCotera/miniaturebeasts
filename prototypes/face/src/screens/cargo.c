@@ -121,7 +121,8 @@ static void build_opening(int k, int lt) {
     for (int i = 0; i < 3; i++) {
       char want[40]; snprintf(want, sizeof want, "cargo-%s-%dx%d", mat[i], sw, sh); int brought = 0;
       for (int q = 0; q < n; q++) { const char *id = v_pstr(v_fmt("%s.stores.%d", P, q)); if (id && !strcmp(id, want)) brought = 1; }
-      v_name("stores"); slot(v_fmt("stores.%s", mat[i]), want, spec_int(C, v_fmt("regions.stores.places.%s.0", mat[i]), 0), spec_int(C, v_fmt("regions.stores.places.%s.1", mat[i]), 0), sw, sh, brought && lt >= at);
+      v_name(v_fmt("stores.%s", mat[i]));
+      slot(v_fmt("stores.%s", mat[i]), want, spec_int(C, v_fmt("regions.stores.places.%s.0", mat[i]), 0), spec_int(C, v_fmt("regions.stores.places.%s.1", mat[i]), 0), sw, sh, brought && lt >= at);
     } }
   /* a pod travelling: from its place to its well's pod place, a straight line, whole pixels, eased in and out; with reduced motion it stands in its well from its step (the rack) */
   for (int j = 0; j < m; j++) {
