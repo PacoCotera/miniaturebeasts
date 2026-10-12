@@ -1380,7 +1380,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `dome` | 360, 200, 304, 272 | living window, part inside | | standby (empty); the glow |
 | `nest` | 408, 400, 208, 48 | living window, part inside | | lit and plump when empty |
 | `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
-| `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking |
+| `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking: crack-1 then crack-2 over the ready bud |
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
 | `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
 | `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
@@ -1443,7 +1443,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | Chamber (`dome`, `domeFront`) | 304×272 region (the old glass 304×270), back and front; empty, `dome-inside-standby-304x272` (the standby light at the region's size) | Stale: a bell jar; becomes the sheltered chamber with one hooded window, its ink inside the arch |
 | Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte, its foot light `sage` |
-| Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Re-judged against the concept board's bean on moss; the box stays |
+| Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Signed (art director, 963f4eab): the bean on moss |
 | Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 | Carried |
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |

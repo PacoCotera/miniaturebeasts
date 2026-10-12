@@ -120,6 +120,62 @@
    "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "bud-crack-1-128x160": {
+   "file": "pods/bud-crack-1-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "4355c8c9141e8ca85486105adbd22376dfe725816397a5b0e8d77d1ae63bfc75",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-crack-2-128x160": {
+   "file": "pods/bud-crack-2-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "40b180a053aa0e586cfc68827e9861f4de9049193e78bb9d773380ada4d84c1b",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-early-128x160": {
+   "file": "pods/bud-early-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "d501777f1429debef83d1916270ca02b60982fc097ba4b987c484e55504c21ec",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-late-128x160": {
+   "file": "pods/bud-late-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "aa690e07d6b7688b539706d5c68406a51acd099843136cd6311725144e1adbd0",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-ready-128x160": {
+   "file": "pods/bud-ready-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "096fa94f4a37519d2387e0ca137cb62d3e5eb693cfd1d96d5293d3bfa2896d51",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-ready-front-128x160": {
+   "file": "pods/bud-ready-front-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "3e15f90972aea62904fa57af25c3db6f8d53790d4ba998d2a6d6cb4b812982ea",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-shape-S01-112x112": {
+   "file": "pods/bud-shape-S01-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "f4dcc5bef3677ed501e285c15d1542d59e8735049b98d3f9870b2bdf4ffd92b3",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-shape-S03-112x112": {
+   "file": "pods/bud-shape-S03-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "8750760d90d245b729c6a15c49a946cf28c406543e0ad65b95a76cf5d338a764",
+   "signed": "art director, verdict (963f4eab)"
+  },
   "cell-outline-unread-128x160": {
    "file": "pods/cell-outline-unread-128x160.png",
    "w": 128,

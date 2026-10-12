@@ -71,8 +71,8 @@
   "nest": { "rect": [408, 400, 208, 48], "component": "livingWindow", "part": "inside", "asset": "nest-208x48", "empty": "lit and plump, its hollow visible" },
   "bud": {
    "rect": [448, 264, 128, 160], "component": "specimen", "focal": true, "inStates": ["growing", "ready", "hatch"], "centre": [512, 344],
-   "pictures": { "early": "bud-early-128x160 (the wait's first half)", "late": "bud-late-128x160 (the second half, one generic picture)", "ready": "bud-ready-128x160, then the shape, then bud-ready-front-128x160 over it" },
-   "shape": { "rect": [456, 288, 112, 112], "inStates": ["ready", "hatch"], "asset": "bud-shape-{species}-112x112", "ink": [96, 96], "note": "the species' juvenile-proportion silhouette, a compact sitting side pose; one flat soft-edged dark warm shape, no eye, no detail; never curled or foetal, never the individual's render (art director, 2026-10-09 13:28); in hatch only until 600, when bud-crack-1 replaces bud-ready, the shape and bud-ready-front" },
+   "pictures": { "early": "bud-early-128x160 (the wait's first half)", "late": "bud-late-128x160 (the second half, one generic picture)", "ready": "bud-ready-128x160, then the shape, then bud-ready-front-128x160 over it", "crack": "bud-crack-1-128x160 at 600, bud-crack-2-128x160 at 800, each alone over bud-ready-128x160 (overlays); the shape and the front go at 600" },
+   "shape": { "rect": [456, 288, 112, 112], "inStates": ["ready", "hatch"], "asset": "bud-shape-{species}-112x112", "ink": [96, 96], "note": "the species' juvenile-proportion silhouette, a compact sitting side pose; one flat soft-edged dark warm shape, no eye, no detail; never curled or foetal, never the individual's render (art director, 2026-10-09 13:28); in hatch only until 600, when the shape and bud-ready-front go and bud-crack-1 is drawn over bud-ready" },
    "crack": { "assets": ["bud-crack-1-128x160", "bud-crack-2-128x160"], "inStates": ["hatch"] }
   },
   "nestFront": { "rect": [408, 400, 208, 48], "component": "livingWindow", "part": "inside", "asset": "nest-front-208x48", "holds": "only the nest's front rim fibres", "over": "bud", "note": "drawn over the bud as room-cradle-front is over the pod (art director, 2026-10-09 13:47)" },
@@ -84,7 +84,7 @@
   "ribbon": { "rect": [312, 104, 400, 40], "component": "ribbon", "inStates": ["hatch"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "look": "the one ribbon look (cargo.json regions.ribbon)", "lines": 1, "words": "strings.hatchRibbon" },
   "juvenile": { "rect": [360, 160, 304, 312], "component": "specimen", "inStates": ["hatch"], "axis": 512, "feet": 472, "asset": "the new mibi in its standard painting if it has landed, else its placeholder (the stylised rig pass); a juvenile as habitat.json regions.resident.asset (the same id, the stage in it)", "lift": 4, "handoff": "its size, 304×312, is one mibi up close's mibi (144, 80, 304, 312), where the hand-off lands it" }
  },
- "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "nestFront", "domeFront", "base", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
+ "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "bud crack", "nestFront", "domeFront", "base", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
  "notes": {
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. growNow fills every leaf at once and the tabs turn read; the hatch lands on one mibi up close in the meet on the frame of ✓ Open; the wipe is a cut. The leaf fill (props) still steps a row every 3 s. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts. growNow's cut lands every leaf, the tabs and the ready state on the key's frame (up to 162,432 px, a key's frame, not an animation frame)."
  },
@@ -171,9 +171,7 @@
  "placeholders": {
   "rule": "every master this screen names, with its id, size and region. Stale: made or specified for the look the art reset replaced; it stays its region's labelled placeholder, drawn at its size, until the art director's master lands. Carried: unaffected by the reset (creature art, the kit's chrome). No art is made or commissioned by this list",
   "look": "A PH plate is a `stone` fill with a 1 px `mist` edge inside the rect. A PH hollow is a 1 px `stone` edge with no fill. No text, shape or shading. Each id is in the register with status placeholder.",
-  "stale": [
-   { "id": "bud-early-128x160, bud-late-128x160, bud-ready-128x160, bud-crack-1-128x160, bud-crack-2-128x160 (PH plates at bud.rect); bud-ready-front-128x160 (registered, nothing drawn)", "size": [128, 160], "region": "bud", "why": "re-judged against the concept board's bean on moss (no dot, Home's warmth); the box stays" }
-  ],
+  "stale": [],
   "carried": [
    { "id": "bud-shape-S01-112x112 to bud-shape-S16-112x112", "size": [112, 112], "region": "bud.shape", "why": "the species' silhouette, creature art; an empty slot, nothing drawn until placed" },
    { "id": "the juvenile: the new mibi's painting, else its signed juvenile stand-in (mibi-juvenile-<species>-304x312)", "size": [304, 312], "region": "juvenile", "why": "creature art" },
