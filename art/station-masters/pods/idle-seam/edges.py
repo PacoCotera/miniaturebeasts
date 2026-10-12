@@ -15,7 +15,7 @@ for l in ['dawn', 'day', 'dusk', 'night']:
     lo = np.floor(t).astype(int); hi = np.minimum(lo + 1, 4); f = (t - lo)[:, None, None]
     soft = np.stack(stack)[lo, np.arange(B)] * (1 - f) + np.stack(stack)[hi, np.arange(B)] * f
     # the wall's own grain carried across the join: the high-pass of rows 120..135 mirrored upward, fading out over 16 rows
-    hp = a[B:B + 16] - nd.gaussian_filter(a[B:B + 16], (0, 2, 0))
+    hp = np.clip(a[B:B + 16] - nd.gaussian_filter(a[B:B + 16], (0, 2, 0)), -6, 6)   # grain only: the collar's and the fitting's edges are not mirrored (pass 2, QA 10e0343)
     fade = np.clip(1 - np.arange(16) / 16, 0, 1)[:, None, None]
     soft[B - 16:B] += (hp * fade)[::-1]
     x = np.arange(a.shape[1]); m = (np.clip((104 - x) / 24, 0, 1) + np.clip((x - 856) / 24, 0, 1))[None, :, None]
