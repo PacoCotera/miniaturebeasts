@@ -201,3 +201,65 @@ test("the rail refuses a pip that is not 6 × 6: the composed marks are defined 
   f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }); frames(f);
   assert.match(f.errors().join("; "), /a rail pip is 6 × 6/); assert.ok(f.refused() > 0, "the screen is refused");
 });
+
+// ---- Station M1 §2.5, §3: the hatch with a moving set (the close atlas synthesized at 304 × 312; moving-scene.mjs) ----
+import { MOVING as MSETS, sendMoving, atlasPicture } from "./moving-scene.mjs";
+import { setMoving } from "../../station/src/moving.mjs";
+setMoving(MSETS);
+async function hatchMoving({ motion = true, id = "S01" } = {}) {
+  const st = world(); S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); S.read(st, p, frameOf(id).chapters[0].id, settings);
+  assert.ok(S.grow(st, p, {}, settings, T0).ok); const now = T0 + 30 * 60000, r = S.openBud(st, {}, settings, now); assert.ok(r.ok);
+  const b = incubatorBuild({ st, settings, now, ui: { inc: { hatch: { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null } } }, lamp: "", motionSets: true }, incSpec, podsSpec);
+  assert.ok(b.props.regions.juvenile.moving, "the juvenile names its close atlas");
+  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["incubator", incSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0); assert.equal(sendMoving(f), 0, f.errors().join("; "));
+  for (const i of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${i}:16`, withPolicy((x) => standIn(x, [16, 16])));
+  for (const q of PINNED) f.handleOf(q.id, withPolicy((x) => standIn(x, [q.w, q.h])));
+  for (const q of b.requests) f.handleOf(q.id, withPolicy((x) => (q.kind === "moving" ? atlasPicture(x) : standIn(x, sizeOf(q), hollowOf(q)))));
+  f.t = 5000; f.motion = motion; f.build = b;
+  assert.equal(f.props({ screen: "incubator", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); dirty(f, { fullCut: true });
+  const ev = EV.hatch.moving; f.send({ t: "event", kind: "hatch", target: "room", ms: ev.ms, hold: ev.hold, cut: true }); return f;
+}
+const hatchCell = (f) => { const c = f.M._face_test_hatch_cell(), cells = MSETS.S01.juvenile.close.cells; return c === -50 ? "none" : c < 0 ? "dither" : cells[c]; };
+test("the hatch with a moving set (M1 §2.5, R2): the table by face_test_cell: nothing to 1000, the curl's dither-in to 1180, curl, curl·b1 at 1500, the dither to crouch at 2140, crouch at 2320, stand at 2720 and its breath, the first hop at 5120 on [6, 14, 17, 14, 6], stand at 5840; every frame inside 153,600 px", { skip }, async () => {
+  const f = await hatchMoving(), seen = []; let worst = 0, last = null;
+  for (let t = 16; t <= 6400; t += 16) { f.frame((f.t += 16)); worst = Math.max(worst, dirty(f)); const c = hatchCell(f); if (c !== last) { seen.push([t, c]); last = c; } }
+  const at = (ms) => { let c = "none"; for (const [t, x] of seen) if (t <= ms) c = x; return c; };
+  for (const [ms, want] of [[900, "none"], [1090, "dither"], [1300, "curl"], [1800, "curl-b1"], [2200, "dither"], [2500, "crouch"], [2800, "stand"], [3700, "stand-b1"], [4000, "stand-b2"], [5150, "crouch"], [5440, "air"], [5700, "crouch"], [5900, "stand"]]) assert.equal(at(ms), want, `at ${ms} ms: ${JSON.stringify(seen)}`);
+  assert.ok(worst <= 153600, `${worst} px`);
+  console.log(`# the hatch with a moving set: worst frame ${worst} px; ${seen.map(([t, c]) => t + " " + c).join(", ")}`);
+});
+test("the hatch with a moving set, 1000–1180 (motion-spec §2.7a): the curl comes in at n = floor(16·(t−1000)/180) while the crack-2 bud goes out at 16 − n; about half of each at 1090; no cut at 1180", { skip }, async () => {
+  const f = await hatchMoving(), B = incSpec.regions.bud.rect, grab = () => { const out = []; for (let y = B[1]; y < B[1] + B[3]; y++) for (let x = B[0]; x < B[0] + B[2]; x++) out.push(f.pixel(x, y).join()); return out; };
+  let t = 0, whole = null, half = null, halfAt = 0;
+  for (t = 16; t <= 1400; t += 16) {
+    f.frame((f.t += 16)); const c = f.M._face_test_hatch_cell(), n = Math.floor((16 * (t - 1000)) / 180);
+    if (t < 1000 || (t < 1180 && n <= 0)) assert.equal(c, -50, `${t} ms: no curl yet`);
+    else if (t < 1180) assert.equal(c, -1 - n, `${t} ms: the curl at level ${n}`);
+    else assert.ok(c >= 0, `${t} ms: the curl whole, no cut`);
+    if (t >= 976 && t < 1000) whole = grab(); if (!half && t >= 1088) { half = grab(); halfAt = t; }
+  }
+  const gone = grab(), asWhole = half.filter((p, i) => p === whole[i] && p !== gone[i]).length, asGone = half.filter((p, i) => p === gone[i] && p !== whole[i]).length, differ = whole.filter((p, i) => p !== gone[i]).length;
+  assert.ok(differ > 500, "the bud covers its rect before and is gone after");
+  assert.ok(asWhole / differ > 0.3 && asWhole / differ < 0.7, `at ${halfAt} ms the bud shows on ${(asWhole / differ).toFixed(2)} of its pixels`);
+  assert.ok(asGone / differ > 0.3 && asGone / differ < 0.7, `at ${halfAt} ms the bud is gone from ${(asGone / differ).toFixed(2)} of its pixels`);
+  console.log(`# the hatch's crossfade at ${halfAt} ms: the bud on ${(asWhole / differ).toFixed(2)} of its pixels, gone from ${(asGone / differ).toFixed(2)}`);
+});
+test("the hatch with a moving set, the stand-in anchor (motion-spec §2.7a, M1a only): the curl's feet at 424 from 1000 to 2320 with no shadow, the step down to 472 and the shadow's dither-in inside the curl-to-crouch dither, the table's feet from 2320", { skip }, async () => {
+  const f = await hatchMoving(), J = incSpec.regions.juvenile.rect, seen = {}, shadow = {};
+  const at = (lg, id) => (lg?.regions ?? []).find((r) => r.id === id && r.layer === "art")?.rect ?? null;   // the log is read once a sample (a read consumes it)
+  for (let t = 16; t <= 2800; t += 16) { f.frame((f.t += 16)); if ([1104, 1296, 1792, 2192, 2496].includes(t)) { const lg = logOf(f); seen[t] = at(lg, "juvenile"); shadow[t] = at(lg, "juvenile.shadow"); } }
+  for (const t of [1104, 1296, 1792]) assert.equal(shadow[t], null, `${t} ms: no shadow under the anchored stand-in`);
+  for (const t of [2192, 2496]) assert.deepEqual(shadow[t], [J[0], J[1] + J[3] - 24, J[2], 24], `${t} ms: the shadow at 472, coming in with the crouch and then whole`);
+  for (const t of [1104, 1296, 1792]) assert.deepEqual(seen[t], [J[0], 424 - J[3], J[2], J[3]], `${t} ms: the curl's feet at 424`);
+  assert.deepEqual(seen[2192], [J[0], 424 - J[3], J[2], J[1] + J[3] + 2 - (424 - J[3])], "2192 ms: the curl going out at 424 and the crouch coming in at 472 (+2), one region over both");
+  assert.deepEqual(seen[2496], [J[0], J[1] + 2, J[2], J[3]], "2496 ms: the crouch at the table's feet (472, +2)");
+});
+test("the hatch with a moving set, motion off: the cut to its end (the stand)", { skip }, async () => {
+  const f = await hatchMoving({ motion: false }); frames(f); assert.equal(hatchCell(f), "stand");
+});
+test("the S05 hatch (the animator's ruling): at 5120 one step, not a hop: stepa 320, then stand", { skip }, async () => {
+  const f = await hatchMoving({ id: "S05" }), cells = MSETS.S05.juvenile.close.cells, seen = []; let last = null;
+  for (let t = 16; t <= 6300; t += 16) { f.frame((f.t += 16)); const c = f.M._face_test_hatch_cell(), n = c === -50 ? "none" : c < 0 ? "dither" : cells[c]; if (n !== last) { seen.push([t, n]); last = n; } }
+  const step = seen.find(([, n]) => n === "stepa"); assert.ok(step && step[0] >= 5120 && step[0] <= 5136, JSON.stringify(seen)); const after = seen.find(([t, n]) => t > step[0] && n !== "stepa"); assert.equal(after[1], "stand"); assert.ok(after[0] >= 5440 && after[0] <= 5456);
+});

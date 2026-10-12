@@ -25,7 +25,11 @@
   "used": ["listPitch"],
   "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
   "needed": [],
-  "listPitch": "the strip's tiles, by habitat.json regions.tiles.forms: n bays take the form with the smallest upTo at least n"
+  "listPitch": "the strip's tiles, by habitat.json regions.tiles.forms: n bays take the form with the smallest upTo at least n",
+  "travel": { "floorDiv": 3, "capMin": 4, "capDiv": 2, "airborne": 2, "minRest": 25, "note": "G10 (game-design.md, Reconciled): N = the awake, unfocused moving residents; on each group tick a resident whose rest has run out starts, longest rest first, while travelling < max(capMin, ⌈N/capDiv⌉); then, while travelling < ⌈N/floorDiv⌉, one that has rested ≥ minRest ticks starts; ≤ airborne in the air at once; the face reads these for Home, Idle and the whole (one place, one rule)" },
+  "night": { "stir": [250, 500], "afterCurl": 250, "wander": [3000, 4500], "awake": [250, 750], "reach": 200, "note": "G7 in own ticks (80 ms): one stir every stir[0]–stir[1] across the household while one is asleep, never a focused sleeper, never in the afterCurl ticks after its own curl, never the last one twice, none while one wanders; when every resident is asleep, one wakes every wander[0]–wander[1] from the end of the last curl (juveniles first, then adults, never an elder, never the last one twice), travels to 1–2 waypoints each ≤ reach px away, rests breathing until awake[0]–awake[1] after its wake (at least two breaths) and curls where it stands; its rest is never written" },
+  "tickBudget": 148000,
+  "rest": { "windowS": 1800, "nocturnal": ["S03", "S04", "S06", "S16"], "early": { "stages": ["elder"], "species": ["S09", "S11", "S12"] }, "settle": { "diurnal": "20:00", "early": "18:00", "nocturnal": "06:00" }, "wake": { "diurnal": "06:00", "early": "06:00", "nocturnal": "18:00" }, "order": { "settle": ["elder", "juvenile", "adult"], "wake": ["juvenile", "adult", "elder"] }, "note": "the game designer's R1 (Station M1): each sleep group settles and wakes across a windowS window from the light change, one resident at a time, member k of n at window start + ⌊k·W/n⌋ + (seed mod max(1, ⌊W/(2n)⌋)) s; restOf (views/home-props.mjs) is the only reader, the face sees `rest`" }
  },
  "states": ["rest", "empty"],
  "conditions": {
@@ -73,6 +77,7 @@
    "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
    "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
    "lift": 4,
+   "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "lamp": "[x + w/2 + 36, feet − 88, 12, 12]", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither, lamp", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" },
    "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
   },
   "bed": {

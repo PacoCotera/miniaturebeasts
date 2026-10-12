@@ -8,7 +8,8 @@ import { warnWords } from "./goal-words.mjs";
 import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
-import { mibiReq } from "./home-props.mjs";
+import { mibiReq, movingProp, restOf } from "./home-props.mjs";
+const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;   // the residents' seed (home-props.mjs)
 import { habitsOf, placesOf } from "../state.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -33,6 +34,11 @@ export function habitatBuild(m, spec, frame, home) {
   regions.resident = out
     ? { id: sid, name: shown.name, stage, picture: "", waiting: false, out: slot("mark-out-with-companion-64x96", R.resident.out.rect.slice(2), "the out mark") }
     : { id: sid, name: shown.name, stage, picture: mibiReq(req, st, shown, R.resident.rect.slice(2), settings), waiting, out: "" };
+  if (!out) {   // Station M1 §2.6: its seed (the up-close tick's phase), its moving set up close (close and its shadow) and its rest by the household's stagger
+    regions.resident.seed = hash(shown.id);
+    const mv = movingProp(shown, stage, req, m, ["close", "closeShadow"]); if (mv) regions.resident.moving = { set: mv.set, close: mv.close, shadow: mv.closeShadow };
+    if (m.time != null && m.restRules) { const here = S.homeMibis(st, sv); regions.resident.rest = restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: S.mibiStage(st, mb, settings) })), m.time, m.restRules)[sid] ?? "awake"; }
+  }
   regions.nameTag = { text: shown.name };
   regions.meetRibbon = { text: meet ? fill(Sg.meet, { name: shown.name }) : "" };
 

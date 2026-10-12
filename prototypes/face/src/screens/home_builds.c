@@ -52,7 +52,8 @@ void build_module(const char *sp, const char *key, int dy, const char *lampState
 }
 
 int g_tagSlot;   /* the name tag is a slot (the meet ribbon stands in its place): the same nodes at the tag's place with no size */
-int g_tagFlash;   /* the name tag takes the frame's flash (the namer saved a name): the frame's `flash` fill and `flashInk` ink while set */
+int g_tagFlash;
+int g_tagOver;   /* the name tag goes over the box whatever the window's bottom (a resident asleep in place: over its ink box, UI/UX Station M1 item 4) */   /* the name tag takes the frame's flash (the namer saved a name): the frame's `flash` fill and `flashInk` ink while set */
 /* the name tag, for the screen whose spec is `sp` and whose window (Home's glass, the whole's window) is the region `glass`: a panel and the name, h tall (regions.nameTag); its width the name's plus twice the pad rounded up to the 8 px grid, 48 at least,
    the widest the spec's max; centred on the box, 12 px under the ring (top at feet + 24), over the box (top = box.y − lift − 8 − h) when its bottom would pass 8 px above the window's bottom, slid to stay 8 px inside the window. `lift`: the box is the resident's
    as drawn (a sleeper does not lift). Returns the tag's rect in out. */
@@ -61,7 +62,7 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   int tw = v_measure(name, px), w = tw + 2 * pad; w = (w + round - 1) / round * round; if (w < mn) w = mn; if (w > mx) w = mx;
   int gx = sk(sp, v_fmt("%s.rect", glass), 0), gy = sk(sp, v_fmt("%s.rect", glass), 1), gw = sk(sp, v_fmt("%s.rect", glass), 2), gh = sk(sp, v_fmt("%s.rect", glass), 3);
   int x = box[0] + v_half(box[2] - w), feet = box[1] + box[3], y = feet + 24;
-  if (y + h > gy + gh - 8) y = box[1] - lift - 8 - h;   /* the window's bottom less 8: below it the tag goes over the box */
+  if (y + h > gy + gh - 8 || g_tagOver) y = box[1] - lift - 8 - h;   /* the window's bottom less 8: below it the tag goes over the box; a resident asleep in place: always over its ink (UI/UX, M1) */
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   const char *ink = g_tagFlash ? scol("frame", "colours.flashInk") : scol(sp, "colours.nameTag.text");

@@ -4,6 +4,7 @@
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../face.h"
+#include "../screens/moving.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -132,6 +133,7 @@ static int on_asset(const msg_t *m) {
   int slot = slot_of(id);
   if (slot < 0) { for (int i = 0; i < g_nids; i++) if (!g_ids[i][0]) { slot = i; break; } }
   if (slot < 0) { if (g_nids >= prim_asset_limit()) { char b[160]; snprintf(b, sizeof b, "asset %s: the picture table holds %d", id, prim_asset_limit()); return fail(b); } slot = g_nids++; }
+  if (strncmp(id, "moving:", 7) == 0) { char b[200]; if (moving_vet_atlas(id, w, h, b, sizeof b) < 0) return fail(b); }   /* an atlas of a moving set: 1 + n·w wide (M1 §2.2) */
   strcpy(g_ids[slot], id);
   if (!prim_asset(slot, w, h)) { g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: %dx%d is refused", id, w, h); return fail(b); }
   g_has_slice[slot] = 0; g_tile[slot] = 0;

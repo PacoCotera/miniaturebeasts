@@ -17,6 +17,7 @@ const T0 = 1_000_000, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decide
 
 export function validate(v, sc, root = schema, at = "$", out = []) {
   if (sc.$ref) return sc.$ref.endsWith(".json") ? validate(v, namerSchema, namerSchema, at, out) : validate(v, root.$defs[sc.$ref], root, at, out);
+  if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
   if (sc.enum && !sc.enum.includes(v)) { out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(sc.enum)}`); return out; }
   if (sc.type) {
     const ts = [].concat(sc.type), ty = v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v;
@@ -155,4 +156,12 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   assert.ok(young.some((id) => id.endsWith(":juvenile:304x312")) && young.some((id) => id.endsWith(":juvenile:48x48")));
   w.st.turn += w.settings.adultTurns ?? S.JUVENILE_TURNS; for (const x of m) assert.equal(S.mibiStage(w.st, x, w.settings), "adult");
   assert.deepEqual(ids(build(w, sv)), young.map((id) => id.replace(":juvenile:", ":adult:")));
+});
+
+// ---- Station M1 §2.6: one mibi up close with its moving set (close and its shadow), its seed and its rest ----
+import { setMoving } from "../src/moving.mjs";
+{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+test("up close, the resident's seed, moving (the close atlas and its shadow) and rest fit habitat.props.json", () => {
+  for (const name of ["rest", "juvenile"]) { const { w, sv } = scenes()[name], b = build(w, sv, { time: 23 * 3600, restRules: spec.rules?.rest ?? J("vivarium.json").rules.rest, motionSets: true }), r = b.props.regions.resident;
+    assert.deepEqual(validate(b.props, schema), [], name); assert.ok(Number.isInteger(r.seed)); assert.match(r.moving.close, /^moving:(juvenile|adult):S01:close:304x312:species$/); assert.match(r.moving.shadow, /:shadow:304x24$/); assert.equal(r.rest, "asleep"); }
 });

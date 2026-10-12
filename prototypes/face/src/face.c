@@ -136,7 +136,19 @@ char *face_region(void) { return g_region; }
 void face_node_tag(int layer) { prim_tag(layer, g_region); }
 int face_test_node_box(const char *id, int *out) { return prim_node_box(v_id(id), out); }   /* a node of the last scene by its id string: its kind (-1 absent) and box x, y, w, h in out[0..3] */
 #endif
-int face_test_steps(void) { return g_home_steps; }   /* the residents that stepped in the last face_frame */
+int face_test_steps(void) { return g_home_steps; }
+extern int g_mv_offgroup, g_mv_deferred, g_mv_tick_area, g_mv_worst_tick;
+int face_test_offgroup(void) { return g_mv_offgroup; }   /* changes applied off a resident's group tick: 0 */
+int face_test_tick_area(void) { return g_mv_tick_area; }   /* the last household tick's applied area, px */
+int face_test_worst_tick(void) { int w = g_mv_worst_tick; g_mv_worst_tick = 0; return w; }   /* the worst tick area since the last call */
+int face_test_deferred(void) { return g_mv_deferred; }   /* changes deferred by the per-tick budget so far */
+int face_test_cell(int i) { return home_test_cell(i); }   /* resident i's atlas cell shown (−1 − level while it dithers), −100 for a still */
+int face_test_state(int i) { return home_test_state(i); }   /* clip | travelling << 4 | airborne << 5 | asleep << 6 | wanderer << 7 | focused << 8 | phase << 12 */
+int face_test_mv(int i, int field) { return home_test_mv(i, field); }
+int face_test_nap(int i) { return home_test_nap(i); }
+int face_test_close_cell(void) { return habitat_test_cell(); }   /* up close: the close cell shown (−1 − level while it dithers), −100 with no set */
+int face_test_close_lift(void) { return habitat_test_lift(); }
+int face_test_hatch_cell(void) { return incubator_test_cell(); }   /* the hatch: the juvenile's close cell (−50 not shown yet, −1 − level while it dithers) */   /* the residents that stepped in the last face_frame */
 void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
 int face_test_offpalette(void) {
   int bad = 0;
