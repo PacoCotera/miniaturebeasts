@@ -1,12 +1,12 @@
 # Send home and the map trail
 
-Two changes, from build 1e53600: (a) send home
+Two changes are proposed, from build 1e53600: (a) send home
 only from the start or a depot; (b) drop the map trail unless it serves a
 mechanic. Current rules: [play manual](../play-manual.md).
 
 ## (a) Where you can send home
 
-**Send home works only on the start cell or on a lit depot.**
+**Send home would work only on the start cell or on a lit depot.**
 
 **Expedition shape.** It becomes a round trip. The way back is on the map only:
 walking off a place's edge lands on the next map cell, and places are entered
@@ -59,7 +59,7 @@ still needs teaching, and sending home becomes a toll rather than a place.
 
 ## (b) The map trail
 
-**Remove the drawn trail; keep its data.** Quarters already show where
+**The drawn trail would be removed and its data kept.** Quarters already show where
 you have been and signs show what is left, so the trail shows nothing to act on,
 and on 26 px cells it competes with the signs. The data stays for the world-turn
 guard (new things arrive away from where you walked) and for the mibi with you
@@ -70,7 +70,7 @@ across the map.
 **Alternative: trim it to this expedition only** (drop the dim last-expedition
 trail). It costs little, but it keeps clutter for no mechanic.
 
-## Points to settle
+## Points for the owner to settle
 
 1. **Where to send home.** Only from the start cell or a lit depot, with a break
    still sending pods home from anywhere? Or from anywhere for 2 Energy, free
@@ -81,7 +81,7 @@ trail). It costs little, but it keeps clutter for no mechanic.
 3. **Trail.** Remove the drawn trail (data kept for the world turn), with the
    start flag, depots and a direction hint in its place?
 
-**Build scope.** Send home greyed on the map with "Start · N cells" until you
+**Build scope, if both are accepted.** Send home greyed on the map with "Start · N cells" until you
 stand on a send point. Start flag on the map. Depots (about six per world): lit
 for 1 Energy; send home, mending at 1 Energy a bar and shelter on the map.
 Updated Hold full and Explored lines. Drawn trail removed.

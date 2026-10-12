@@ -108,7 +108,7 @@ puts the whole map one press away. Nothing scrolls, and at tier 2 it becomes
 A's 2× picture anyway. A spends half the view on land out of reach and still
 hides the far map.
 
-## Points to settle
+## Points for the owner to settle
 
 1. **Scale:** B (reach view at 3×, 2× at tier 2, whole map one press away), or
    A (2× map that follows the pawn, no control change)?

@@ -7,7 +7,7 @@ play confirms it.
 
 This page sets out a control scheme for the Companion's pad, Confirm, Back and the new
 Call button, building on [exploration round 2](exploration-round-2.md) §7 and
-[interaction](../interaction.md).
+[interaction](../interaction.md). Points 2 to 4 at the end are decided, as stated above; point 1 is a working rule until play confirms it.
 
 The goal: a new player, often a child, plays a whole expedition without being
 told how, and never finds a control late. Today the mode list (Wait, Leave, New
@@ -142,7 +142,7 @@ By press 10 the player has used all four buttons. They have read the words Wait,
 Leave and Send home on screen several times, and were never shown a rule they
 couldn't see on the line or the HUD.
 
-## Points to settle
+## Points behind the scheme
 
 1. **Back's label:** name the menu's top two entries ("← Wait · Send home"), or a
    generic "← menu"?

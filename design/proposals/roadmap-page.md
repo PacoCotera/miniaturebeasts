@@ -89,7 +89,7 @@ lane position and the lane label all say it. An unknown `status` is skipped (and
 
 **Why it changed.** The first version put one shape-coded dot per item in each
 cell (filled, half, ring, dotted) with a four-line legend under the table. The
-first reader it was for could not say what the dots meant: a key
+owner, the first reader it was for, could not say what the dots meant: a key
 that has to be learnt before the table reads is the failure. The glance must
 say itself to a first-time visitor in one look, with no key.
 
@@ -236,7 +236,7 @@ One column, gutter 16, content 358.
 
 ## 10. Settled points (structure only)
 
-**Passed:** the structure. It stands;
+**Passed** by the owner: the structure. It stands;
 the glance's dots failed and are replaced (§4), which is a wording and layout
 fix inside this spec, not a new structure question.
 

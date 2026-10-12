@@ -1,6 +1,6 @@
 # The Station build: the first playable loop
 
-The plan takes the three recommendations of §8. Where it touches how screens are drawn, [lvgl-switch.md](lvgl-switch.md) governs: how a screen is built (§2.1 here, lvgl-switch.md §2), the order the screens move in (§3 here, lvgl-switch.md §3), the checks each screen passes (§5 here, lvgl-switch.md §2.8 and §4) and the screen milestones (§6 here, lvgl-switch.md §4). It plans the first build of the Station loop on the sandbox: the approved [research loop](research-loop.md), paced by the [research economy](research-economy.md) (loose, for testing), with the decided rules of [the cross](the-cross.md), the stub of [the portrait](the-portrait.md), the painting at Grow of the [art pipeline](art-pipeline.md) v2 and the screens of the [Station style guide](../style-guide/station-screens.md). Loop and mechanics come first; where no master exists, the build shows a placeholder and says so.
+The plan holds the three decisions of §8. Where it touches how screens are drawn, [lvgl-switch.md](lvgl-switch.md) governs: how a screen is built (§2.1 here, lvgl-switch.md §2), the order the screens move in (§3 here, lvgl-switch.md §3), the checks each screen passes (§5 here, lvgl-switch.md §2.8 and §4) and the screen milestones (§6 here, lvgl-switch.md §4). It plans the first build of the Station loop on the sandbox: the approved [research loop](research-loop.md), paced by the [research economy](research-economy.md) (loose, for testing), with the decided rules of [the cross](the-cross.md), the stub of [the portrait](the-portrait.md), the painting at Grow of the [art pipeline](art-pipeline.md) v2 and the screens of the [Station style guide](../style-guide/station-screens.md). Loop and mechanics come first; where no master exists, the build shows a placeholder and says so.
 
 ## 1. Scope
 
@@ -117,11 +117,11 @@ The order in which the screens move to the LVGL face, and the spec file each nee
 | Public sandbox | The service would paint any image a page sent, unless it re-rendered to check | Only a valid, buildable genome reaches the painter |
 | Load | The tester's browser, which already renders the placeholder | The sandbox server, about five seconds a mibi (controls and placeholder set, measured) |
 
-**Recommendation: the Caddy service renders the controls from the genome; the Station renders only the placeholder.** Both run the same modules on the same genome, so they agree by construction, and CI checks it. When the Station becomes the device, `controls.mjs` moves to it and the endpoint takes controls beside the genome; one module changes.
+**The Caddy service renders the controls from the genome; the Station renders only the placeholder.** Both run the same modules on the same genome, so they agree by construction, and CI checks it. When the Station becomes the device, `controls.mjs` moves to it and the endpoint takes controls beside the genome; one module changes.
 
 **The daily limit.** The service holds a hard daily limit on paid calls that no page can raise; the developer panel sets each world's grow cap beneath it (default ten). Over the cap a job waits as capped, the mibi keeps its placeholder, and the job runs the next day. Every call is logged, and the status call shows the day. The prompt version is pinned in the service's configuration and written into each manifest; a new version never repaints a stored set (art pipeline §5).
 
-**Species.** The prompt lab painted the Loika, the Belatz and the Peplos. The Untuva and the Tuikis have not been painted; M3 begins with a small calibration batch of their type specimens and a few individuals, and their jobs stay mock until it has been seen.
+**Species.** The prompt lab painted the Loika, the Belatz and the Peplos. The Untuva and the Tuikis have not been painted; M3 begins with a small calibration batch of their type specimens and a few individuals, and their jobs stay mock until the owner has seen it.
 
 ## 5. Tests
 
@@ -150,7 +150,7 @@ The journey grows with each milestone, so every push to main proves the loop tha
 
 Each milestone pushes to main, passes CI, deploys to the sandbox and is playable from a fresh world. Three prerequisites land in their own homes first: **S1**, the stamp's frames from the workbench registry (before M1); **G1**, the Grow service's output-root flag and the sandbox server's setup (unit, proxy route, Python imaging library, key file; before M3); **W1**, the workbench cross with numbers, kinship and the penalty, tested there (before M4).
 
-| | Ships | What is seen |
+| | Ships | The owner sees |
 | --- | --- | --- |
 | **M1 Read** | Modules and the state model; frames, resolver and stamp imported; the migration; the developer panel with seeds; Pods with Identify, reads, glints, Compare, return | A pod from a walk, or a seed, identified and read chapter by chapter at the decided prices, its stamp filling, pictures of this pod's mibi in placeholder |
 | **M2 Grow** | Create, the bud (five minutes first, then twenty plus shaping, instant grow), Open, six bays, the vivarium, up close, return a mibi | The founder loop end to end in about five minutes: shape, grow, meet; the bays fill and refuse |
@@ -179,6 +179,6 @@ Every screen from here is built on the LVGL face, never on the JavaScript drawin
 
 The Caddy service on the sandbox server renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle and a daily limit; pods come from the Companion page's save, with dev seeds for testing.
 
-1. **Where the control passes are rendered.** *Recommended:* by the Caddy service on the sandbox server from the genome, with the Station rendering only the placeholder; it reuses the Grow controls as they stand and lets only valid genomes reach the painter. The device build moves it to the Station.
-2. **The real painting service in the first build, or a mock.** *Recommended:* build against the mock through M2, then run the real painter on the sandbox from M3 behind the developer toggle and a daily limit; CI always mocks. Real paintings land where it matters, at a known run-rate.
-3. **Where pods come from.** *Recommended:* the Companion page's save is the source, since the loop begins at the dock and the shared save already carries crates; dev seeds are a testing tool beside it, not the source.
+1. **Where the control passes are rendered.** The Caddy service renders them on the sandbox server from the genome, with the Station rendering only the placeholder; it reuses the Grow controls as they stand and lets only valid genomes reach the painter. The device build moves it to the Station.
+2. **The real painting service in the first build, or a mock.** The build runs against the mock through M2, then runs the real painter on the sandbox from M3 behind the developer toggle and a daily limit; CI always mocks. The owner sees real paintings land where it matters, at a known run-rate.
+3. **Where pods come from.** The Companion page's save is the source, since the loop begins at the dock and the shared save already carries crates; dev seeds are a testing tool beside it, not the source.

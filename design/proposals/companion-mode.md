@@ -1,7 +1,7 @@
 # Companion mode: the mibi with you
 
 This page covers Companion mode (the Companion at home, between expeditions) and
-choosing who comes along.
+choosing who comes along. Points still open are listed at the end.
 
 Companion mode gets a dedicated screen to interact with the active
 mibi, "think Tamagotchi", and a simpler way to choose who comes along; the Probe
@@ -113,7 +113,7 @@ the place; there "Back" reads wrong.
 
 | Option | For | Against |
 | --- | --- | --- |
-| **A. Keep "Back"** ("one level out") | No change; matches the Station's Back | The doubt stands; in the field it opens rather than goes back |
+| **A. Keep "Back"** ("one level out") | No change; matches the Station's Back | The owner's doubt stands; in the field it opens rather than goes back |
 | **B. Rename to "Menu"** | True in the field | False everywhere else: it closes the menu, leaves Cargo, goes up from Pip's screen to Mibis |
 | **C. Glyph only: ←** | The bottom line already names its effect on every screen ("← Wait · Send home", "← Mibis", "← close"), so the engraving needn't. True on every screen | The bottom-line label becomes load-bearing: no screen may omit it |
 
@@ -137,7 +137,7 @@ Dot (juvenile) is with you; Pip, a Loika, grows up this world turn. Start: Cargo
 | 7 | Back | Menu: Next expedition (focused), Probe, Cargo, Mibis |
 | 8 | Confirm | Expedition choice. Partner row: "Partner: Pip · calms wary creatures" |
 
-## Points to settle
+## Points for the owner to settle
 
 1. **One slot:** replace *along* + *riding* with a single "with you" mibi (a
    juvenile with you means no expedition partner), or keep two?

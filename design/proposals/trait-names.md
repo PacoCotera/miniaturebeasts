@@ -1,6 +1,6 @@
 # Trait names: one word each
 
-**Status: applied, to be seen in action.** The fifteen names are in the species frames (`prototypes/workbench/framework/species.mjs` and `roster.mjs`, frames rebuilt) and the four line changes are in the Pods trait lines (`prototypes/station/src/genome.mjs`), for confirmation once seen in the Station. Trait ids are unchanged.
+**Status: applied, to be seen in action.** The fifteen names are in the species frames (`prototypes/workbench/framework/species.mjs` and `roster.mjs`, frames rebuilt) and the four line changes are in the Pods trait lines (`prototypes/station/src/genome.mjs`), for the owner's and the game designer's confirmation once seen in the Station. Trait ids are unchanged.
 
 ## Why
 
@@ -45,7 +45,7 @@ Checked in all sixteen frames: after the change, no species has two traits with 
 - Kilpo Coat: Colour, Trim, Sheen, Scutes. Shape: Body, Waist, Haunch, Shell.
 - Oskol Shape: Body, Waist, Haunch, Sheaths.
 
-Two close pairs to be aware of: in Untuva's Coat, "Tint" sits beside "Colour" (the body colour) and "Flecks" beside "Spots"; the picture labels make the part obvious (the cap is drawn), but if the cap is preferred named, the only one-word choice is "Cap" for the colour, which this proposal does not recommend. In prose `describe.mjs` writes "span wide cap" and "scutes plated"; those two look strings can drop the repeated word ("wide", "plated" stay) when the copy is next revised.
+Two close pairs to be aware of: in Untuva's Coat, "Tint" sits beside "Colour" (the body colour) and "Flecks" beside "Spots"; the picture labels make the part obvious (the cap is drawn), but if the owner prefers the cap named, the only one-word choice is "Cap" for the colour, which this proposal does not recommend. In prose `describe.mjs` writes "span wide cap" and "scutes plated"; those two look strings can drop the repeated word ("wide", "plated" stay) when the copy is next revised.
 
 Outside this brief, noticed in the frames: Tuikis's "Claws" has the id `feet` and looks "round feet, pads, digging wedges", so the name and the looks disagree. Not changed here.
 
@@ -122,9 +122,9 @@ Method: every proposed word and alternative searched as `"word" creature game ch
 | Specks | **Not offered.** A Ty Beanie Boos elephant named Specks, covered in speckles: too near | Not used | |
 | Curl, Rings | **Not offered as alternatives.** Curlimals (a plush line of animals that curl up) and Lord of the Rings results: near a toy line and a franchise | Not used | |
 
-No name needed to be dropped without a replacement: every proposed word cleared. The two weakest are "Ears" and "Pattern", both plain nouns that also appear in other places; they are the words a reader would expect, and they can be swapped.
+No name needed to be dropped without a replacement: every proposed word cleared. The two weakest are "Ears" and "Pattern", both plain nouns that also appear in other places; they are the words a reader would expect, and the owner can swap them.
 
-## 4. Questions
+## 4. Questions for the owner
 
 1. **Trim for the second pigment slot.** One word for what is "Second colour" in seven species and "Leg colour" in Tuikis. "Trim" is neutral; the cost is that Tuikis loses "leg" (its slot also paints the ears, tail and belly). Recommendation: Trim; Accent as the reserve.
 2. **Dropping "shows" on the Pods lines.** It is the one change that touches a decided example ("stripes · hides spots"). Recommendation: yes, with commas for colour pairs; the alternative is to keep "shows" and shorten the looks harder, which loses facts.

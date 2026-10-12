@@ -1,7 +1,8 @@
 # Decisions to compare
 
-These are two open style-guide decisions, each shown side by side at 1×. The
-pictures exist only to make the choice; neither option is a finished screen.
+These are two style-guide decisions, each shown side by side at 1×. The
+pictures exist only to make the choice; neither option is a finished screen. Both
+are decided; the outcome closes the page.
 
 ## A. Station type: bitmap or smooth
 

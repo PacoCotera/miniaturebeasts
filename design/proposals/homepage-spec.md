@@ -1,6 +1,6 @@
 # Homepage design spec
 
-The spec for the next build of `website/index.html`; accepted graphics
+The spec for the next build of `website/index.html`, with the owner's decisions applied (§10); accepted graphics
 stay. Visual reference: the v1 pitch (`v1/website/dist/`).
 
 ## 1. Intent
