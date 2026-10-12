@@ -14,7 +14,7 @@ The [Station loop](station-loop.md), the [Station layouts](../style-guide/statio
 ## 1. It starts with a pod: the life of one pod
 
 1. **Bay.** The Companion docks and the crate is opened (**Decided:** cargo moves only on docking; the bay holds three crates). The pod rolls into the **pod list**, the column the owner kept, showing its place stamp and an empty ring.
-2. **Identify** (1 Energy, the first pod ever free, **Decided**). The seal on the cap breaks and the species glyph shows. For a new species, its frame (every part the species fixes) is learned once, and its Library page opens. For a known species the frame is filled in at once. The pod's genome ring draws its grey centre band. Each heritable chapter shows as a sector of hairlines: there is something here, and it has not been read yet.
+2. **Identify** (1 Data). The seal on the cap breaks and the species glyph shows. For a new species, its frame (every part the species fixes) is learned once, and its Library page opens. For a known species the frame is filled in at once. The pod's genome ring draws its grey centre band. Each heritable chapter shows as a sector of hairlines: there is something here, and it has not been read yet.
 3. **Read a chapter** (Data). The chapter's sector turns into marks, and its page shows each trait as a picture of this pod's mibi: what it *shows*, and a misty seed for what it *hides* (the seed is from [station-loop.md](station-loop.md), **Decided** as an idea).
 4. **Shape** (optional). For each read trait that can be shaped, the player picks from three pictures drawn from the pod's own two copies. The founder redraws with every change. Untouched and unread traits stay as the pod has them (**Decided**).
 5. **Grow.** One pod becomes one fixed individual (**Decided**). The ring is stamped on the shell and the pod goes into the incubator.
@@ -64,7 +64,7 @@ A genome is not one field to research. It has five kinds of part:
 
 **Costs and pacing.**
 - **Data reads** (**Decided** meaning). A chapter costs **1 Data per trait in it**, and **half (rounded up) once that chapter has been read on any earlier pod of the species** ("the Station knows where to look"). This answers the owner's question about the blue-eyed specimen (owner 10-04): what was learned makes later pods cheaper, and the glint says which pods are worth reading. The very first read ever is free.
-- **Energy runs the machine** (Identify 1, **Decided**). **Essence grows bodies** (founder 2 Energy + 4 Essence, **Decided**; the first founder 2 Energy only, **Built**). Shaping costs **+1 Data per trait changed**, down from 2 per window.
+- **Energy runs the machine.** Identify costs 1 Data. **Essence grows bodies** (founder 2 Energy + 4 Essence; the first founder 2 Energy only). Shaping costs **+1 Data per trait changed**.
 - **Worked numbers.** A first Pip pod costs 4 Data to read fully (5 traits, the first read free). A first pod of the worked 24-trait frame costs 24 Data, and a later one 14. Players read where the glints are, not every page.
 - **Pacing.** This assumes about **3 Data per expedition**. The r7 tester earned 1, and Data starvation was its top problem. The field needs more creature moments, or the walk needs to pay more (**Open**, for the exploration tuning).
 
@@ -72,9 +72,9 @@ A genome is not one field to research. It has five kinds of part:
 
 | Expedition brings | At the Station | Store after |
 | --- | --- | --- |
-| 1: one unknown pod, +3⚡ +3◆ +5❀ | Identify free: **Loika**, new species. The frame is learned and the grey band fills. Read **Coat** free: "shows plain · hides pale". Read **Face** (2◆): "frill crown · hides bare head", "pale eye rings". Shape *only pale* (+1◆). Grow (first founder, 2⚡). The pod's ring was 3/5 read; Movement and Stamina clear during incubation | 1⚡ 0◆ 5❀ |
-| 2: one Loika pod, +4⚡ +3◆ +3❀ | Log it (1⚡): its Face arc glints. Read **Face** at half price (1◆): "only plain eyes", a new look for the field guide. Read **Movement**, the first time on any Loika (1◆): "bursts · hides steady". Grow it unedited (2⚡ 4❀). Two Loikas now live in the vivarium, and a cross becomes possible once both are adults (§5) | 2⚡ 1◆ 4❀ |
-| 3: one unknown pod, +3⚡ +4◆ +2❀ | Identify (1⚡): **Untuva**, new species, 3 chapters. A real choice: grow the Untuva now (2⚡ 4❀), or read Stamina on a Loika (1◆) and keep the 4❀ to cross the two Loikas when they are adults and see what their hidden looks do in a child | 4⚡ 5◆ 6❀ before choosing |
+| 1: one unknown pod, +3⚡ +3◆ +5❀ | Identify (1◆): **Loika**, new species. The frame is learned and the grey band fills. Read **Coat** free: "shows plain · hides pale". Shape *only pale* (+1◆). Grow (first founder, 2⚡). Face waits: "needs ◆ 1 more". The pod's ring was 1/5 read; Face, Movement and Stamina clear during incubation | 1⚡ 1◆ 5❀ |
+| 2: one Loika pod, +4⚡ +3◆ +3❀ | Log it (1◆). Read **Face**, the first time on any Loika (2◆): "only plain eyes", "frill crown · hides bare head", new looks for the field guide. Grow it unedited (2⚡ 4❀). Two Loikas now live in the vivarium, and a cross becomes possible once both are adults (§5) | 3⚡ 1◆ 4❀ |
+| 3: one unknown pod, +3⚡ +4◆ +2❀ | Identify (1◆): **Untuva**, new species, 3 chapters. A real choice: grow the Untuva now (2⚡ 4❀), or read Movement on a Loika pod, the first time on the species (1◆): "bursts · hides steady", and keep the 4❀ to cross the two Loikas when they are adults and see what their hidden looks do in a child | 6⚡ 4◆ 6❀ before choosing |
 
 ## 5. Tinkering: acting on the genome
 
