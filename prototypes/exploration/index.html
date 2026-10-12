@@ -165,7 +165,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 }
 html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
 html.embed body{visibility:hidden}
-html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(--embed-w,450px); height:auto; max-width:none; border-radius:0}
+html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}
 </style>
 </head>
 <body>
@@ -4523,17 +4523,16 @@ function fit() {
 }
 window.addEventListener('resize', fit);
 // ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
-// One function sets the width; a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
-const EMBED_W = 450;
-const setEmbedW = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-w', (EMBED_W * k / d) + 'px'); };
+// One function sets the screen's scale (a whole-pixel screen scaled by a transform); a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
+const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-s', String(k / d)); };
 let dprQuery = null;
 function armDpr() {
   if (dprQuery) dprQuery.removeEventListener('change', onDpr);
   dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
   dprQuery.addEventListener('change', onDpr);
 }
-function onDpr() { const again = () => { setEmbedW(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }
-if (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }
+function onDpr() { setEmbedS(); armDpr(); }
+if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }
 
 const stampEl = document.getElementById('stamp');
 fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {

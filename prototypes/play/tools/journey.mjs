@@ -55,11 +55,11 @@ async function lampIs(page, which, label) {
   for (let i = 0; i < 64; i++) { const a = m.data[i * 4 + 3]; if (a === 255) opaque++; for (let c = 0; c < 3; c++) { const want = Math.round((m.data[i * 4 + c] * a) / 255 + (BAR[c] * (255 - a)) / 255), have = got.data[i * 4 + c]; if (a === 255 ? have !== want : Math.abs(have - want) > 1) bad++; } }
   expect(bad === 0 && opaque === 16, `${label}: the lamp is the ${which} master over the cradle's fill (${opaque} opaque pixels, ${bad} channels off)`);
 }
-// a device's screen on the page against its own capture(): the viewport by CDP Page.captureScreenshot (Playwright's scale "device" ignores a CDP override), the frame's region at (round(x·dpr), round(y·dpr))
+// a device's screen on the page against its own capture(): the viewport by CDP Page.captureScreenshot under an override (Playwright's scale "device" ignores it), by page.screenshot({ scale: "device" }) in a context created at the ratio (cdp null); the frame's region at (round(x·dpr), round(y·dpr))
 // sized W·k × 600·k, each capture pixel spread over k × k; the count of differing device pixels
 async function frameBad(page, cdp, sel, W, capture) {
   const r = await box(page, sel), dprv = await page.evaluate(() => window.devicePixelRatio), k = Math.max(1, Math.floor(dprv));
-  const shot = rd(Buffer.from((await cdp.send("Page.captureScreenshot", { format: "png" })).data, "base64")), cap = dataPng(await capture()), x0 = Math.round(r[0] * dprv), y0 = Math.round(r[1] * dprv);
+  const shot = cdp ? rd(Buffer.from((await cdp.send("Page.captureScreenshot", { format: "png" })).data, "base64")) : rd(await page.screenshot({ scale: "device" })), cap = dataPng(await capture()), x0 = Math.round(r[0] * dprv), y0 = Math.round(r[1] * dprv);
   let bad = 0; for (let y = 0; y < 600 * k; y++) for (let x = 0; x < W * k; x++) { const a = ((y0 + y) * shot.width + x0 + x) * 4, b = (Math.floor(y / k) * cap.width + Math.floor(x / k)) * 4; if (shot.data[a] !== cap.data[b] || shot.data[a + 1] !== cap.data[b + 1] || shot.data[a + 2] !== cap.data[b + 2]) bad++; }
   return bad;
 }
@@ -84,11 +84,11 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   await clip(page, "play-wide-away.png");
   await ctx.close();
-  // at dpr 1.25 the Station frame is 819.2 CSS px (1024 device px) and both screens equal their captures pixel for pixel
-  const hi = await open(1920, 1080), hcdp = await hi.ctx.newCDPSession(hi.page); await hcdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: 1.25, mobile: false }); await hi.page.waitForTimeout(400);
-  const r = await box(hi.page, "#fStation"); near(r[2], 819.2, "A: the Station frame's width at dpr 1.25", 0.02); near(r[3], 480, "A: its height at dpr 1.25", 0.02);
-  eq(await frameBad(hi.page, hcdp, "#fStation", 1024, () => hi.st().evaluate(() => window.__st.capture())), 0, "A: the Station frame at dpr 1.25: differing device pixels");
-  eq(await frameBad(hi.page, hcdp, "#fCompanion", 450, () => hi.mb().evaluate(() => window.__mb.capture())), 0, "A: the Companion frame at dpr 1.25: differing device pixels");
+  // in a context created at dpr 1.25 the Station frame is 819.2 CSS px (1024 device px) and both screens equal their captures pixel for pixel
+  const hi = await open(1920, 1080, { dsf: 1.25 });
+  const r = await box(hi.page, "#fStation"); near(r[2], 819.2, "A: the Station frame's width at dpr 1.25", 1 / 64); near(r[3], 480, "A: its height at dpr 1.25", 0.02);
+  eq(await frameBad(hi.page, null, "#fStation", 1024, () => hi.st().evaluate(() => window.__st.capture())), 0, "A: the Station frame at dpr 1.25: differing device pixels");
+  eq(await frameBad(hi.page, null, "#fCompanion", 450, () => hi.mb().evaluate(() => window.__mb.capture())), 0, "A: the Companion frame at dpr 1.25: differing device pixels");
   await hi.ctx.close();
 }
 
@@ -259,24 +259,41 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await ctx.close();
 }
 
-// ---- E. a change of device pixel ratio with no resize keeps both screens on whole device pixels (CDP override at a fixed viewport) ----
+// ---- E1. a context created at each ratio: both screens are whole CSS pixels scaled to whole device pixels ----
+const screenAt = (frame, W) => frame().evaluate(() => { const el = document.querySelector("#screen"); return [getComputedStyle(el).width, el.getBoundingClientRect().width, window.devicePixelRatio]; });
 {
-  const { ctx, page, st, mb } = await open(1920, 1080);
-  const cdp = await ctx.newCDPSession(page);
   for (const dsf of [1.25, 1.5, 1.75, 2, 1]) {
-    await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: dsf, mobile: false }); await page.waitForTimeout(400);
+    const { ctx, page, st, mb } = await open(1920, 1080, { dsf });
     const k = Math.max(1, Math.floor(dsf));
-    // what each frame reports at this ratio (printed: a frame whose devicePixelRatio lags the override shows here)
-    const rep = async (label) => { const o = {}; for (const [n, f] of [["page", () => page], ["station", st], ["companion", mb]]) o[n] = await f().evaluate(() => ({ dpr: window.devicePixelRatio, mq: window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).matches, embedW: document.documentElement.style.getPropertyValue("--embed-w") })).catch(() => null); console.log(`E: ${label} at ${dsf}: ${JSON.stringify(o)}`); };
-    await rep("reported");
-    for (const [name, sel, W, frame, cap] of [["Station", "#screen", 1024, st, () => st().evaluate(() => window.__st.capture())], ["Companion", "#screen", 450, mb, () => mb().evaluate(() => window.__mb.capture())]]) {
-      const m = await frame().evaluate((q) => { const el = document.querySelector(q); return [parseFloat(getComputedStyle(el).width), el.getBoundingClientRect().width, window.devicePixelRatio]; }, sel);
-      near(m[0], (W * k) / dsf, `E: the ${name}'s computed width at dpr ${dsf}`, 1 / 64 + 1e-6); near(m[1] * dsf, W * k, `E: the ${name}'s rect × dpr at ${dsf}`, dsf / 64 + 1e-6);
+    for (const [name, W, frame] of [["Station", 1024, st], ["Companion", 450, mb]]) {
+      const m = await screenAt(frame);
+      eq(m[0], W + "px", `E1: the ${name}'s computed width at dpr ${dsf}`); near(m[1] * m[2], W * k, `E1: the ${name}'s rect × dpr at ${dsf}`, 0.001);
     }
-    eq(await frameBad(page, cdp, "#fStation", 1024, () => st().evaluate(() => window.__st.capture())), 0, `E: the Station's differing device pixels at dpr ${dsf}`);
-    eq(await frameBad(page, cdp, "#fCompanion", 450, () => mb().evaluate(() => window.__mb.capture())), 0, `E: the Companion's differing device pixels at dpr ${dsf}`);
+    eq(await frameBad(page, null, "#fStation", 1024, () => st().evaluate(() => window.__st.capture())), 0, `E1: the Station's differing device pixels at dpr ${dsf}`);
+    eq(await frameBad(page, null, "#fCompanion", 450, () => mb().evaluate(() => window.__mb.capture())), 0, `E1: the Companion's differing device pixels at dpr ${dsf}`);
+    await ctx.close();
   }
-  await ctx.close();
+}
+
+// ---- E2. a change of ratio with no resize (CDP override at a fixed viewport): only where the override reaches child frames with a change event (Chromium 141 and later) ----
+{
+  const ver = browser.version(), major = parseInt(ver, 10);
+  if (!(major >= 141)) console.log(`E2: skipped on Chromium ${ver} (its override reaches child frames with no change or resize event)`);
+  else {
+    const { ctx, page, st, mb } = await open(1920, 1080);
+    const cdp = await ctx.newCDPSession(page);
+    for (const dsf of [1.25, 1.5, 1.75, 2, 1]) {
+      await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: dsf, mobile: false }); await page.waitForTimeout(400);
+      const k = Math.max(1, Math.floor(dsf));
+      for (const [name, W, frame] of [["Station", 1024, st], ["Companion", 450, mb]]) {
+        const m = await screenAt(frame);
+        near(m[1] * m[2], W * k, `E2: the ${name}'s rect × dpr at ${dsf}`, 0.001);
+      }
+      eq(await frameBad(page, cdp, "#fStation", 1024, () => st().evaluate(() => window.__st.capture())), 0, `E2: the Station's differing device pixels at dpr ${dsf}`);
+      eq(await frameBad(page, cdp, "#fCompanion", 450, () => mb().evaluate(() => window.__mb.capture())), 0, `E2: the Companion's differing device pixels at dpr ${dsf}`);
+    }
+    await ctx.close();
+  }
 }
 
 await browser.close(); server.close();

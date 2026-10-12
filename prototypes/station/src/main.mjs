@@ -125,14 +125,12 @@ function fit() {
   vis.style.width = Math.round(W * s) + "px";
 }
 window.addEventListener("resize", fit);
-// ?embed: one function sets the screen's width at a whole number of physical pixels per device pixel; a media query on the current dpr re-arms itself on every change, and resize stays for the zoom paths that resize
-const EMBED_W = 1024;
-const setEmbedW = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty("--embed-w", (EMBED_W * k / d) + "px"); };
+// ?embed: one function sets the screen's scale so a CSS pixel covers a whole number of device pixels; a media query on the current dpr re-arms itself on every change, and resize stays for the zoom paths that resize
+const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty("--embed-s", String(k / d)); };
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
-// the change event can fire before devicePixelRatio reports the new value (older Chromium): read it again on the next frame and after 100 ms (idempotent), re-arming each time
-function onDpr() { const again = () => { setEmbedW(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }
-if (EMBED) { setEmbedW(); armDpr(); window.addEventListener("resize", setEmbedW); window.removeEventListener("resize", fit); }
+function onDpr() { setEmbedS(); armDpr(); }
+if (EMBED) { setEmbedS(); armDpr(); window.addEventListener("resize", setEmbedS); window.removeEventListener("resize", fit); }
 const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), dockWord = $("dockWord"), dockDot = $("dockDot"), caddyPaper = $("caddyPaper");
 let caddyKey = "";
 const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };

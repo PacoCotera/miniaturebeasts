@@ -280,8 +280,7 @@ frames.station.src = stationUrl; frames.companion.src = companionUrl;
 if (DEV) devOpen = true;
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
-// the change event can fire before devicePixelRatio reports the new value (older Chromium): lay out again on the next frame and after 100 ms (idempotent), re-arming each time
-function onDpr() { const again = () => { layout(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }
+function onDpr() { layout(); armDpr(); }
 armDpr(); window.addEventListener("resize", layout);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
   const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);

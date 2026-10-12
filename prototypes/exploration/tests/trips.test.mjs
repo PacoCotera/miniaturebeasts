@@ -196,35 +196,34 @@ test("End expedition while docked at the start", () => {
   assert.deepEqual(sv().carried, [1, 2]);
 });
 
-// ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, sized to whole physical pixels.
-test("?embed shows the screen alone, fit() stands aside and the width follows a dpr change", () => {
+// ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, scaled to whole physical pixels.
+test("?embed shows the screen alone, fit() stands aside and the scale follows a dpr change", () => {
   assert.ok(PAGE.includes('<title>Companion Field Test</title>\n<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>'));
   for (const rule of [
     "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
     "html.embed body{visibility:hidden}",
-    "html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(--embed-w,450px); height:auto; max-width:none; border-radius:0}",
+    "html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}",
   ]) assert.ok(PAGE.includes(rule + "\n"), rule);
   assert.ok(PAGE.indexOf("html.embed #screen") < PAGE.indexOf("</style>"));
   assert.equal(source("EMBED"), "const EMBED = document.documentElement.classList.contains('embed');");
   assert.match(source("fit"), /^function fit\(\) \{\n  if \(EMBED\) return;\n/);
 
-  // fit() under embed touches nothing; setEmbedW() sets --embed-w to 450·k/dpr px at full precision
-  assert.equal(source("EMBED_W"), "const EMBED_W = 450;");
+  // fit() under embed touches nothing; setEmbedS() sets --embed-s to k/dpr
   assert.ok(PAGE.includes("\nlet dprQuery = null;\n"));
   assert.equal(source("armDpr"), "function armDpr() {\n  if (dprQuery) dprQuery.removeEventListener('change', onDpr);\n  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);\n  dprQuery.addEventListener('change', onDpr);\n}");
-  assert.equal(source("onDpr"), "function onDpr() { const again = () => { setEmbedW(); armDpr(); }; again(); requestAnimationFrame(again); setTimeout(again, 100); }");
-  assert.ok(PAGE.includes("\nif (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }\n"));
+  assert.equal(source("onDpr"), "function onDpr() { setEmbedS(); armDpr(); }");
+  assert.ok(PAGE.includes("\nif (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }\n"));
   const touch = new Proxy({}, { get() { throw new Error("fit() ran under embed"); } });
-  for (const [dpr, want] of [[1, "450px"], [2, "450px"], [1.25, "360px"], [3, "450px"], [1.5, "300px"]]) {
+  for (const [dpr, want] of [[1, "1"], [2, "1"], [1.25, "0.8"], [3, "1"], [1.5, "0.6666666666666666"]]) {
     const set = {};
-    const t = load(["fit", "EMBED_W", "setEmbedW"], {
+    const t = load(["fit", "setEmbedS"], {
       EMBED: true, fitEl: touch, deviceEl: touch, matchMedia: touch,
       window: { devicePixelRatio: dpr, innerHeight: 600 },
       document: { documentElement: { clientWidth: 450, style: { setProperty: (k, v) => { set[k] = v; } } } },
     });
     t.fit();
-    t.setEmbedW(); t.setEmbedW();
-    assert.deepEqual(set, { "--embed-w": want }, "dpr " + dpr);
+    t.setEmbedS(); t.setEmbedS();
+    assert.deepEqual(set, { "--embed-s": want }, "dpr " + dpr);
   }
 
   // a dpr change with no resize: the query for the old dpr fires, the width follows, the old listener goes and a new query is armed
@@ -233,12 +232,11 @@ test("?embed shows the screen alone, fit() stands aside and the width follows a 
     const mq = { q, on: new Set(), addEventListener(e, f) { assert.equal(e, "change"); this.on.add(f); }, removeEventListener(e, f) { assert.equal(e, "change"); this.on.delete(f); } };
     queries.push(mq); return mq;
   };
-  const raf = [], timers = [];   // the change event can fire before the new ratio is reported: the width is read again on the next frame and after 100 ms
-  const t = load(["EMBED_W", "setEmbedW", "armDpr", "onDpr"], {
-    window: win, dprQuery: null, requestAnimationFrame: (f) => raf.push(f), setTimeout: (f, ms) => { assert.equal(ms, 100); timers.push(f); },
-    document: { documentElement: { style: { setProperty: (k, v) => { assert.equal(k, "--embed-w"); set.push(v); } } } },
+  const t = load(["setEmbedS", "armDpr", "onDpr"], {
+    window: win, dprQuery: null,
+    document: { documentElement: { style: { setProperty: (k, v) => { assert.equal(k, "--embed-s"); set.push(v); } } } },
   });
-  t.setEmbedW(); t.armDpr();
+  t.setEmbedS(); t.armDpr();
   for (const dpr of [1.25, 2, 1]) {
     const live = queries.at(-1);
     win.devicePixelRatio = dpr;
@@ -246,12 +244,8 @@ test("?embed shows the screen alone, fit() stands aside and the width follows a 
     assert.equal(live.on.size, 0, "old listener removed at " + dpr);
     assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
     assert.equal(queries.at(-1).on.size, 1);
-    assert.equal(raf.length, 1); assert.equal(timers.length, 1, "one more read on the next frame and one after 100 ms");
-    raf.splice(0).forEach((f) => f()); timers.splice(0).forEach((f) => f());
-    assert.equal(queries.filter((m) => m.on.size).length, 1, "the live listener count stays 1 after the extra calls, at " + dpr);
-    assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
   }
-  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", ...[1.25, 2, 1].flatMap(d => Array(3).fill(`(resolution: ${d}dppx)`))]);
-  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 0, 0, 0, 0, 0, 0, 1], "listeners never pile up");
-  assert.deepEqual(set, ["450px", ...["360px", "450px", "450px"].flatMap(v => Array(3).fill(v))]);
+  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", ...[1.25, 2, 1].map(d => `(resolution: ${d}dppx)`)]);
+  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 1], "listeners never pile up");
+  assert.deepEqual(set, ["1", "0.8", "1", "1"]);
 });
