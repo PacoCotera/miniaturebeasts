@@ -12,6 +12,7 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   for (const id of ["chamber", "chamberFront", "dome", "domeFront", "cradle", "cradleFront", "bud"]) for (const r of got(id)) must(eq(r.rect, R[id].rect), `${id} ${r.rect} is not ${R[id].rect}`);
   for (const r of got("founder")) must(within(r.rect, R.founder.rect), `the founder ${r.rect} leaves ${R.founder.rect}`);
   for (const r of got("pod")) must(within(r.rect, R.pod.rect), `the pod ${r.rect} leaves ${R.pod.rect}`);
+  for (const r of got("podShadow")) must(r.rect[2] === 0 || (within(r.rect, R.podShadow.rect) && r.rect[0] + r.rect[2] / 2 === R.pod.axis && r.rect[1] === R.pod.feet - 7 && r.rect[3] === 14), `the pod's shadow ${r.rect} is not on the foot (${R.pod.axis}, ${R.pod.feet}) inside ${R.podShadow.rect}`);
   for (const r of got("travel")) must(within(r.rect, R.travel.rect), `the travelling pod ${r.rect} leaves the travel rectangle ${R.travel.rect}`);
   for (const r of got("origin")) must(within(r.rect, R.origin.rect), `the origin ${r.rect} leaves ${R.origin.rect}`);
   for (const r of got("roll")) must(within(r.rect, R.roll.rect), `the roll's ${r.layer} ${r.rect} leaves the roll ${R.roll.rect}`);

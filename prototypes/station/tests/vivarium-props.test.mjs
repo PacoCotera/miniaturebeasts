@@ -17,6 +17,7 @@ const T0 = 1_000_000, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decide
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
+  if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
   if (sc.enum && !sc.enum.includes(v)) { out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(sc.enum)}`); return out; }
   if (sc.type) {
     const ts = [].concat(sc.type), ty = v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v;
@@ -106,4 +107,13 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   // every id has the stage swapped; a resident's size is its stage's (home.json sizes: a juvenile's 104×112, an adult's 144×152), the sleepers' and the tiles' size does not change with it
   assert.deepEqual(grown.map((id) => id.replace(/:adult:\d+x\d+$/, "")), young.map((id) => id.replace(/:juvenile:\d+x\d+$/, "")));
   assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
+});
+
+// ---- Station M1 §2.6: residents with moving sets and their rest fit vivarium.props.json ----
+import { setMoving } from "../src/moving.mjs";
+{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+test("the whole's residents with moving sets fit vivarium.props.json: moving and rest (asleep at 23:00, awake at 12:00); with the play gate shut, none", () => {
+  const { w, sv } = scenes().docked, rules = spec.rules.rest;
+  for (const [time, want] of [[23 * 3600, "asleep"], [12 * 3600, "awake"]]) { const b = build(w, sv, { time, restRules: rules, motionSets: true }); assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving?.walk && r.moving?.shadow && r.rest === want)); assert.ok(b.requests.some((q) => q.kind === "moving")); }
+  assert.ok(build(w, sv, { time: 12 * 3600, restRules: rules, motionSets: false }).props.regions.residents.every((r) => !r.moving));
 });

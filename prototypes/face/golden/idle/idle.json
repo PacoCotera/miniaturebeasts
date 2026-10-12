@@ -20,6 +20,10 @@
   "idle-walk-8000ms": {
    "hash": "66922db8",
    "png": "idle-walk-8000ms.png"
+  },
+  "idle-night-pip-60000ms": {
+   "hash": "6f361394",
+   "png": "idle-night-pip-60000ms.png"
   }
  }
 }

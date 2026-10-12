@@ -9,7 +9,7 @@ import { plainRender, BG } from "../../workbench/framework/plain.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
-  { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette; on Home a resident (144×152 or 104×112) and a sleeper (fitted in 96×88) are the same stand-in, standing and never mirrored, with no nap pose; a juvenile shows the art director's signed juvenile stand-in at its size (mibi-juvenile-<species>-<w>x<h>, masters-pods be36e701), so this placeholder is an adult's, an elder's and a founder's", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
+  { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette; on Home a resident (144×152 or 104×112) and a sleeper (fitted in 96×88) are the same stand-in, standing and never mirrored, with no nap pose; a juvenile shows the art director's signed juvenile stand-in at its size (mibi-juvenile-<species>-<w>x<h>, masters-pods be36e701) and an adult or elder its species' signed adult stand when placed (mibi-adult-<species>-<w>x<h>, the adult plan), so this placeholder is Create's founder, and any mibi whose stand-in is not placed", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
   { id: "pod", what: "the pod placeholder sprites: hand-drawn, per size class and state, coloured per species by remap (prototypes/ui/assets/placeholders/pod)", until: "the pod renderer's masters (research-loop.md §6)" },
   { id: "trait-picture", what: "a trait's picture: a close-up of this pod's mibi in the placeholder, cropped around the part the trait names", until: "the Grow painting's close-ups" },
   { id: "seed", what: "the misty seed: the hidden look as a frosted close-up in a pearl", until: "the seed master" },
@@ -28,11 +28,6 @@ export const PLACEHOLDERS = [
   { id: "cargo-bay-992x320", what: "Cargo's bay, 992×320, open and shut: the panel component (panel fill, a bevel top, a hairline edge, a ground inside, no rim and no seals drawn); shut, a PH plate (cargo-bay-shut-976x304) over its inside with no label", until: "the bay masters (open and shut)" },
   { id: "cargo-well-96x128", what: "a rack well, 96×128: a PH hollow, the pod 88×112 at well + (4,8) over it", until: "the rack well master" },
   { id: "founder-304x312", what: "Create's founder, 304×312: the plain renderer's placeholder (the stylised rig pass), frosted where a chapter is unread; with nothing read the whole of it on its own outline; the roll's dither is composed from two of them", until: "the Grow painting and the rig's own placeholder brief" },
-  { id: "create-chamber-400x320", what: "Create's work tray, back: a PH plate (stone, 1 px mist edge) at the chamber's rectangle; stale by the art reset", until: "the work tray master (panel back, enamel rim)" },
-  { id: "create-chamber-front-400x320", what: "Create's work tray, front with its 400×16 floor: registered, nothing drawn (a front plate would cover the founder, the bud and the arriving pod)", until: "the work tray master" },
-  { id: "create-dome-176x224", what: "Create's small chamber, back: a PH plate at the dome's rectangle; stale by the art reset", until: "the Incubator's chamber master, small" },
-  { id: "create-dome-front-176x224", what: "Create's small chamber, front: registered, nothing drawn", until: "the Incubator's chamber master, small" },
-  { id: "bud-small-64x80", what: "Create's busy bud, 64×80: a PH plate at the bud's rectangle, only while another bud grows (the Incubator's buds are other pictures)", until: "the bud master, re-judged with the Incubator's" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
 ];

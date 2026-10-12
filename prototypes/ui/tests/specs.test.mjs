@@ -188,6 +188,10 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   for (const k of ["dome", "leaves", "stamp", "code"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 864, k + " on the right column's axis");
   assert.deepEqual([R.pod.axis, R.pod.feet, R.cradle.rect[1], R.cradle.rect[1] + R.cradle.rect[3]], [160, 408, 408 - 64, 408 + 32], "the dish as on Pods' overview");
   assert.deepEqual(pods.classes.pod.large, R.pod.rect.slice(2), "the pod's region is the largest class");
+  assert.equal(R.podShadow.slice, "pod-{class}-shadow"); assert.deepEqual([pods.shadow.widen, pods.shadow.h], [16, 14], "the shadow is Pods' rule: the class's width + 16, 14 tall");
+  assert.deepEqual(R.travel.to, [R.travel.foot.to[0] - 44, R.travel.foot.to[1] - 112, 88, 112], "the travel ends at the collection class, bottom-centred on the foot"); assert.deepEqual(R.travel.rest.size, pods.classes.pod.collection);
+  assert.ok(inside(R.travel.to, R.dome.rect), "the rest box lies inside the small chamber"); assert.ok(R.travel.to[1] > 183, "its top is under the lamp's last row (183)");
+  assert.deepEqual(R.podShadow.rect, [80, 401, 160, 14]); assert.deepEqual(R.podShadow.rect, [R.pod.axis - (R.pod.rect[2] + 16) / 2, R.pod.feet - 7, R.pod.rect[2] + 16, 14], "the largest class's shadow, on the axis and 7 rows above the feet");
   assert.deepEqual(R.dome.rect, [776, 104, 176, 224]); assert.equal(R.dome.floor, R.bud.foot[1]); assert.ok(R.dome.rect[1] + R.dome.rect[3] + 8 <= R.leaves.rect[1], "the leaves 8 px under the dome");
   assert.ok(R.stamp.rect[0] - (R.founder.rect[0] + R.founder.rect[2]) >= 96, "the stamp 96 px or more from the focal box"); assert.deepEqual(R.stamp.rect.slice(2), [120, 120]);
   assert.equal(R.leaves.component, "leaves"); assert.equal(R.leaves.form, "grid"); assert.ok(!("at" in R.leaves), "Create's grid takes its region's origin");
@@ -199,7 +203,7 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.deepEqual(cr.focus.nothingRead.targets, {}, "nothing read: no target"); assert.ok(STEP_KEYS.every((k) => cr.focus.nothingRead.graph.room[k] === "none"), "nothing read: the arrows do nothing");
   assert.deepEqual([cr.events.roll.kind, cr.events.roll.target, cr.events.roll.hold, cr.events.roll.ms, cr.events.roll.levels], ["dither", "founder", 0, 200, 16]);
   assert.equal(cr.events.grow.hold, cr.events.grow.steps.at(-1).at + cr.events.grow.steps.at(-1).ms); assert.equal(cr.events.grow.ms, cr.events.grow.steps.at(-1).at, "grow plays until the jump's dither; the hold covers the dither");
-  assert.equal(R.bench.slice, "room-bench-stage-create"); assert.equal(R.bench.until, "room-bench-stage-collection");
+  assert.equal(R.bench.slice, "room-bench-stage-create"); assert.equal(R.bench.until, undefined, "signed: no stand-in slice");
   assert.deepEqual(paletteBad(cr.colours), []);
 });
 

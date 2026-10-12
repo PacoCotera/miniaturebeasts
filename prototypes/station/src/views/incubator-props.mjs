@@ -8,7 +8,7 @@ import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot, maxTraits } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
-import { mibiReq } from "./home-props.mjs";
+import { mibiReq, movingProp } from "./home-props.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
@@ -66,6 +66,7 @@ export function incubatorBuild(m, spec, pods) {
   if (state === "hatch") {
     const [jw, jh] = R.juvenile.rect.slice(2);   // the stage the mibi has now is in the id: the meet draws the same picture
     regions.juvenile = { picture: mibiReq(req, st, mb, [jw, jh], settings) };
+    { const mv = movingProp(mb, S.mibiStage(st, mb, settings), req, m, ["close", "closeShadow"]); if (mv) regions.juvenile.moving = { set: mv.set, close: mv.close, shadow: mv.closeShadow }; }   // the hatch's first motion (Station M1 §2.5) for a juvenile with a set
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
 
