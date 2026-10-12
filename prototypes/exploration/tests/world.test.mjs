@@ -674,7 +674,7 @@ function inPlace() {
   return p;
 }
 
-test("C6: the place's Call help is the copywriter's line, 268 px at 2×", () => {
+test("the place's Call help line reads 'Call lifts the veil, lights finds' and is 268 px at 2×", () => {
   const p = world(), s = "Call lifts the veil, lights finds";
   assert.match(PAGE, /fxOnce\('callplace', 'Call lifts the veil, lights finds', 2\)/);
   assert.equal(p.run(`textW(${JSON.stringify(s)}, 2)`), 268);
@@ -728,7 +728,7 @@ test("bottom line in a place: the candidates keep the place name before the take
   // after a Call, drawn: the name and the count stay (the kinds drop first)
   p.key("call"); p.run("S.phase = 'patch'; FX.msg = ''; leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone'];");
   const L2 = p.run("lineFor()"); assert.equal(L2.ok, "Wait");
-  // drawn, in a meadow (the ruling's case, "meadow · not surveyed · 2 to take" at 276 px against 291): the name and the count stay, the kinds drop
+  // drawn, in a meadow ("meadow · not surveyed · 2 to take" is 276 px in the line's tight spacing, textWT, against 291 available): the name and the count stay, the kinds drop
   p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
   const said = p.calls("text").map(c => c.a[0]).join("|");
   assert.match(said, /\|meadow · \|not surveyed · 2 to take$/, "the place name stays: " + said);
