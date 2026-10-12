@@ -269,7 +269,7 @@ GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/"
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
 man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json",
        "note": "The meadow drop: signed where the art director has signed, else candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
-               "Built from the tileset candidates on branch art-terrain-grass by its tools/build-meadow-drop.py; the sources are not on main, so main ships the result only.", "sheets": {}, "pieces": []}
+               "Built by art/companion-48/tools/build-meadow-drop.py from its inputs in art/companion-48/terrain/grass/.", "sheets": {}, "pieces": []}
 done = set()
 for g, pick in GROUPS:
     items = [(n, a, f) for n, a, f in PIECES if n not in done and pick(n)]
