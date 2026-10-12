@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
 import { check, decodePNG, pageRGB, pageTables } from "../tools/atlas-check.mjs";
-import { decodeExact, paletteTable, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, paletteTable, overrideCounts, PLACE_OVERRIDES, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
 
 const CRC = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc = b => { let c = 0xffffffff; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
@@ -167,7 +167,7 @@ test("palette 3: a pixel in neither the core nor the biome set is refused", () =
 });
 test("palette 4: a core entry changed (its hex or a table) is refused", () => {
   assert.match(paletteTable(RGB, TABLES, edit(7, { hex: "#000001" })).errors.join(";"), /entry 7: hex #000001 differs from the core colour/);
-  assert.match(paletteTable(RGB, TABLES, edit(9, { fog: (TABLES.fog[9] + 1) % 48 })).errors.join(";"), /entry 9: fog \d+ differs from the core table/);
+  assert.match(paletteTable(RGB, TABLES, edit(9, { light: (TABLES.light[9] + 1) % 48 })).errors.join(";"), /entry 9: light \d+ differs from the core table/);
   const r = runPal({ pal: edit(3, { dark: (TABLES.dark[3] + 1) % 48 }) });
   assert.match(r.out, /^REFUSED palette meadow \(meadow-palette\.json\): entry 3: dark/m); assert.match(r.out, /^FAIL: /m);
 });
@@ -262,4 +262,46 @@ test("--drop: a levelTone that uses light or dark needs a palette entry with mat
   assert.equal(tone(PAL, ["dark", "none", "light"], false).refused, 0, "only under --drop");
   assert.equal(tone(PAL, ["none", "none", "none"], true).refused, 0, "no tone used");
   assert.equal(tone(grass, ["dark", "none", "light"], true).refused, 0, "grass marked");
+});
+
+// ---- place overrides: a core entry's fog, fade and storm may differ (the place view's own tables); nothing else of a core entry may ----
+const other = (v, n = 48) => (v + 1) % n;
+test("overrides: the set is fog, fade and storm", () => { assert.deepEqual(PLACE_OVERRIDES, ["fog", "fade", "storm"]); });
+test("overrides: a core entry's fog, fade or storm differing is accepted, each alone; the core-true tables keep the page's values and the place tables take the file's", () => {
+  for (const [f, key] of [["fog", "placeFog"], ["fade", "placeFade"], ["storm", "placeStorm"]]) {
+    const base = f === "storm" ? TABLES.dark[9] : TABLES[f][9], v = other(base), t = paletteTable(RGB, TABLES, edit(9, { [f]: v }));
+    assert.equal(t.errors, undefined, f + ": " + String(t.errors));
+    assert.equal(t[key][9], v, f + ": the place table takes the file's value");
+    if (f !== "storm") assert.equal(t[f][9], TABLES[f][9], f + ": the core-true table keeps the page's value");
+    for (const k of [0, 47]) assert.equal(t[key][k], f === "storm" ? TABLES.dark[k] : TABLES[f][k], f + ": the other core entries as the page");
+    for (const g of ["dark", "light", "dark2", "fog", "fade"]) assert.equal(t[g].length, 52); for (const g of ["placeFog", "placeFade", "placeStorm"]) assert.equal(t[g].length, 52);
+  }
+  const t = paletteTable(RGB, TABLES, edit(50, { fog: 49, fade: 48 }));   // a biome entry: both sets carry the file's values
+  assert.equal(t.fog[50], 49); assert.equal(t.placeFog[50], 49); assert.equal(t.fade[50], 48); assert.equal(t.placeFade[50], 48);
+});
+test("overrides: a core entry's name, hex, dark, light or dark2 differing is still refused, each alone", () => {
+  const e9 = PAL.entries[9], cases = { name: "renamed", hex: "#000001", dark: other(e9.dark), light: other(e9.light), dark2: other(e9.dark2) };
+  for (const [f, v] of Object.entries(cases)) {
+    const t = paletteTable(RGB, TABLES, edit(9, { [f]: v })); assert.ok(t.errors, f + " refused");
+    assert.match(t.errors.join(";"), new RegExp("entry 9: " + f), f + ": named in the refusal");
+  }
+});
+test("overrides: storm defaults to dark everywhere; given, it is checked like any table and taken by placeStorm alone", () => {
+  const t = paletteTable(RGB, TABLES, PAL);
+  assert.deepEqual(t.placeStorm, t.dark, "no storm field: the storm's table is dark");
+  assert.deepEqual(t.placeFog, t.fog); assert.deepEqual(t.placeFade, t.fade);
+  assert.equal(t.storm, undefined, "no core-true storm table: the core's storm is its dark");
+  const s = paletteTable(RGB, TABLES, edit(49, { storm: 51 })); assert.equal(s.errors, undefined, String(s.errors));
+  assert.equal(s.placeStorm[49], 51); assert.equal(s.dark[49], PAL.entries[49].dark, "dark stays: the veil, level tone and dark cave keep it");
+  assert.match(paletteTable(RGB, TABLES, edit(49, { storm: 52 })).errors.join(";"), /entry 49: storm 52 outside 0 … 51/);
+  assert.match(paletteTable(RGB, TABLES, edit(3, { storm: -1 })).errors.join(";"), /entry 3: storm -1 outside/);
+});
+test("overrides: atlas-check prints the counts per field, and passes", () => {
+  const z = runPal(); assert.match(z.out, /^place overrides of the core 48: fog 0, fade 0, storm 0$/m);
+  const pal = { biome: "meadow", entries: PAL.entries.map(e => e.i === 2 || e.i === 5 ? Object.assign({}, e, { fog: other(e.fog) }) : e.i === 7 ? Object.assign({}, e, { fade: other(e.fade), storm: other(e.dark) })
+    : e.i === 8 || e.i === 11 ? Object.assign({}, e, { storm: other(e.dark) }) : e.i === 12 ? Object.assign({}, e, { storm: e.dark }) : e) };
+  const r = runPal({ pal }); assert.equal(r.refused, 0, r.out);
+  assert.match(r.out, /^place overrides of the core 48: fog 2, fade 1, storm 3$/m, "a storm equal to its dark is no override"); assert.match(r.out, /^PASS$/m);
+  assert.deepEqual(overrideCounts(paletteTable(RGB, TABLES, pal), TABLES), { fog: 2, fade: 1, storm: 3 });
+  const bad = runPal({ pal: edit(4, { dark2: other(PAL.entries[4].dark2) }) }); assert.match(bad.out, /^REFUSED palette meadow .*entry 4: dark2/m); assert.ok(!/place overrides/.test(bad.out));
 });
