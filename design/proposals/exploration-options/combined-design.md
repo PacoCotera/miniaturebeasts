@@ -97,7 +97,7 @@ expedition ends. Each turn, deterministic rules decide what changes:
 during an expedition. New finds come only from lifting fog and from areas that
 partners open. It's simpler and pushes progress hard. The cost: the landing
 region runs dry early, and a favourite place has no reason to be revisited.
-**World turns.**
+World turns are the design.
 
 ## 3. Generated, then permanent
 

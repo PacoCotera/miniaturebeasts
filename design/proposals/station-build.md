@@ -121,7 +121,7 @@ The order in which the screens move to the LVGL face, and the spec file each nee
 
 **The daily limit.** The service holds a hard daily limit on paid calls that no page can raise; the developer panel sets each world's grow cap beneath it (default ten). Over the cap a job waits as capped, the mibi keeps its placeholder, and the job runs the next day. Every call is logged, and the status call shows the day. The prompt version is pinned in the service's configuration and written into each manifest; a new version never repaints a stored set (art pipeline §5).
 
-**Species.** The prompt lab painted the Loika, the Belatz and the Peplos. The Untuva and the Tuikis have not been painted; M3 begins with a small calibration batch of their type specimens and a few individuals, and their jobs stay mock until the owner has seen it.
+**Species.** The prompt lab painted the Loika, the Belatz and the Peplos. The Untuva and the Tuikis have not been painted; M3 begins with a small calibration batch of their type specimens and a few individuals, and their jobs stay mock until owner review has seen it.
 
 ## 5. Tests
 
