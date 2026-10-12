@@ -728,7 +728,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 
 | Module (`home.json`) | Rectangle | Objects, measured | States |
 | --- | --- | --- | --- |
-| `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (800 + 64i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 928, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
+| `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (808 + 56i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 920, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
 | `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
 | `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber. The hatched mibi's painting on its way: lamp waiting |
 | `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
@@ -813,7 +813,6 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Bed | 192×56 |
 | Cargo's bay, open and shut | 176×72 |
 | Waiting mark | 24×24, `mark-waiting-24` |
-| Rack pod | 24×32, the rack class, rendered at its size |
 | Well | 32×32 |
 | Chamber | 72×72 |
 | Probe in its cradle | 96×72 |
@@ -1052,14 +1051,14 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 | Idle's Vivarium | 1024×568 | Day, dusk and night. Its rows 120 to 560 are the Vivarium's whole |
 | The bed | 192×56 | One |
 | The nap poses | ink at most 96×88, centred on the feet in the sleeper's box | — |
-| Cargo module: the bay | 176×72 | Open and shut |
-| Cargo module: a crate | 48×40 | Walk and sitting |
-| Pods module: a well | 32×32 | One |
-| Incubator module: the chamber | 72×72 | Empty, growing and ready |
-| Probe module: the cradle | 96×72 | Full and empty |
+| Cargo module: the bay | 176×72 | Open and shut; signed, placed |
+| Cargo module: a crate | 48×40 | Walk and sitting; signed, placed; the walk crate is drawn, the sitting crate is not drawn |
+| Pods module: a well | 32×32 | One; signed, placed |
+| Incubator module: the chamber | 72×72 | Empty, growing and ready; signed, placed |
+| Probe module: the cradle | 96×72 | Full and empty; signed, placed |
 | Probe module: a Shield plate | 12×24 | One |
 | Probe module: the sitting frame | 24×32 | One |
-| Library module: the journal | 104×72 | One |
+| Library module: the journal | 104×72 | One; signed, placed |
 | Module lamps | 12×12 | `sprout`, `sky` and `hairline` |
 | Cargo: the bay | 992×320 | Open and shut |
 | Cargo: a crate in the bay | 256×176 | Sealed and sitting |

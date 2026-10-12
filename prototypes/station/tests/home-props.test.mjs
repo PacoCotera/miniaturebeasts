@@ -250,3 +250,13 @@ test("the Probe's context follows the Probe goal wherever it comes from: every g
   assert.equal(S.goalKey(st, sv0()).key, "probe"); assert.equal(pr(), spec.strings.subjects.probe.save);
   st.e = 12; st.d = 4; assert.equal(S.goalKey(st, sv0()).step.key, "fit"); assert.equal(pr(), spec.strings.subjects.probe.fit);
 });
+
+// the rack pod is the host-composed rackpod:<species> picture (home.json regions.pods.pod.picture), never a PH plate
+test("an identified pod in the rack asks for rackpod:S01, an unidentified one for rackpod:unknown; no home-rack-pod-24x32 and no ph request for a pod", () => {
+  const st = world(); dock(st); pod(st, "S01"); pod(st, "S02", 6, false);   // S01 is known; S02's pod is not identified and its species not yet known
+  const b = build(st, sv0()), picks = b.props.regions.pods.wells.map((w) => w.pod).filter(Boolean), reqs = new Map(b.requests.map((r) => [r.id, r]));
+  assert.deepEqual(picks, ["rackpod:S01", "rackpod:unknown"]);
+  for (const id of picks) assert.equal(reqs.get(id).kind, "rackpod");
+  assert.equal(reqs.get("rackpod:S01").species, "S01"); assert.deepEqual(reqs.get("rackpod:S01").size, spec.regions.pods.pod.size); assert.equal(reqs.get("rackpod:unknown").species, null);
+  assert.ok(!b.requests.some((r) => r.id === "home-rack-pod-24x32" || (r.kind === "ph" && /rack-pod/.test(r.id))), "no PH plate for a rack pod");
+});

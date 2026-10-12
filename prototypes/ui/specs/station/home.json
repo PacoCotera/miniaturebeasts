@@ -42,10 +42,10 @@
   },
   "cargo": {
    "rect": [688, 48, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
-   "bay": [112, 8, 176, 72], "crate": [48, 40], "cratePicture": "home-crate-48x40", "crateAt": [0, 16], "pitch": 64, "max": 3,
-   "crateRects": [[800, 72, 48, 40], [864, 72, 48, 40], [928, 72, 48, 40]],
+   "bay": [112, 8, 176, 72], "crate": [48, 40], "cratePicture": "home-crate-48x40", "crateAt": [8, 16], "pitch": 56, "max": 3,
+   "crateRects": [[808, 72, 48, 40], [864, 72, 48, 40], [920, 72, 48, 40]],
    "waiting": { "rect": [876, 80, 24, 24], "asset": "mark-waiting-24", "when": "pods wait in the bay for a free well and no crate waits", "lamp": "off: the waiting mark is never amber; the need lights pods (strings.needs.waitingPods)" },
-   "sittingCrates": { "places": "from the right: the first at 928, a second at 864; walk crates fill from the left; at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "lamp": { "at": [18, 44], "size": [12, 12], "rows": 10, "rule": "under its crate, inside the bay: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when the crate is ready" } },
+   "sittingCrates": { "places": "from the right: the first at 920, a second at 864; walk crates fill from the left; at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "lamp": { "at": [18, 44], "size": [12, 12], "rows": 10, "rule": "under its crate, inside the bay: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when the crate is ready" } },
    "states": {
     "away": { "bay": "shut: the lid, unless a sitting crate is in the bay, which keeps it open", "crates": "sitting crates only", "lamp": "off, or needsYou for a ready sitting crate" },
     "empty": { "bay": "open", "crates": "none", "lamp": "off" },
@@ -56,7 +56,7 @@
   "pods": {
    "rect": [688, 152, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "wells": { "at": [136, 8], "size": [32, 32], "pitch": [48, 40], "cols": 3, "rows": 2, "slots": 6, "rects": [[824, 160, 32, 32], [872, 160, 32, 32], [920, 160, 32, 32], [824, 200, 32, 32], [872, 200, 32, 32], [920, 200, 32, 32]], "order": "rack order: left to right, the top row first" },
-   "pod": { "class": "rack", "size": [24, 32], "at": [4, 0], "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled" },
+   "pod": { "class": "rack", "size": [24, 32], "at": [4, 0], "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled", "picture": "rackpod:{species}", "layers": { "id": "home-rack-pod-{layer}-24x32", "order": ["body","light","shade","accent","pattern","outline"], "fill": {"body":"A","light":"lighter(A)","shade":"darker(A)","accent":"B","pattern":"B","outline":"darkest(A)"}, "pattern": "home-rack-pod-pattern-{name}-24x32, name from shellPattern through pods.json podLayers.patterns; a word with no layer draws none", "colours": "A, B: colourPair[0], [1] .pigment through cross.json colours.pigmentChips; not listed: mist; a pod of no known species: A stone, B fog, no pattern", "ramp": "light lighter[A]; shade darker[A]; outline the last colour of A's darker chain before ink or void, ink where that would be night", "rule": "each layer a 1-bit mask; its on pixels take its fill, in order, later over earlier; transparent outside body; palette-exact, 24×32, never scaled", "by": "art director 2026-10-10 09:45; architect 2026-10-10 09:43" } },
    "star": [12, 12], "starAt": [34, 10], "starNote": "a glint star in the 16 px gap right of its well, 2 px clear of either well"
   },
   "incubator": {
@@ -244,10 +244,6 @@
    "region": "residents and sleepers",
    "show": "the register `mibi` placeholder, standing, unmirrored: a resident at its box size (144×152 or 104×112), a sleeper fitted inside 96×88, centred on footX and bottom-aligned at y 512; a juvenile is the art director's signed stand-in instead, at the same places, standing and unmirrored: mibi-juvenile-<species>-104x112 as a resident, mibi-juvenile-<species>-96x88 as a sleeper"
   },
-  "home-rack-pod-24x32": {
-   "region": "pods",
-   "show": "a PH plate at well + (4,0) for each occupied well, in rack order; nothing for an empty well; the 32×40 well pod is never scaled down"
-  },
-  "empty": "the bay (open or shut), the wells, the chamber, the cradle, the journal, the nap poses and the glass master: nothing drawn, layout unchanged; the lamp, the notice, the top bar and the context line carry that information"
+  "empty": "the nap poses: nothing drawn, layout unchanged; the lamp, the notice, the top bar and the context line carry that information"
  }
 }
