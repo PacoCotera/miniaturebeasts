@@ -5,12 +5,16 @@ import numpy as np
 from PIL import Image
 drop, outp = sys.argv[1:3]
 man = json.load(open(os.path.join(drop, "meadow.json"))); pal = json.load(open(os.path.join(drop, "meadow-palette.json")))
-PAL = np.array([[int(c["hex"][k:k + 2], 16) for k in (1, 3, 5)] for c in pal["colours"]] + [[255, 0, 255]])
-SH = {k: np.array(Image.open(os.path.join(drop, v))) for k, v in man["sheets"].items()}
+PAL = np.array([[int(c["hex"][k:k + 2], 16) for k in (1, 3, 5)] for c in pal["entries"]])
+def sheet(f):
+    im = Image.open(f); a = np.array(im).astype(int); t = im.info.get("transparency", b"")
+    for i in ([t] if isinstance(t, int) else [i for i, al in enumerate(t) if al == 0]): a[a == i] = TR
+    return a
+TR = -1
+SH = {k: sheet(os.path.join(drop, v)) for k, v in man["sheets"].items()}
 PC = {p["name"]: (p, SH[p["sheet"]][p["y"]:p["y"] + p["h"], p["x"]:p["x"] + p["w"]]) for p in man["pieces"]}
 def by(**kw): return sorted([n for n, (p, _) in PC.items() if all(p.get(k) == v for k, v in kw.items())])
 def hsh(*a): return int(hashlib.md5(repr(a).encode()).hexdigest()[:8], 16)
-TR = 96
 L = ["..............",
      "..1111111.....",
      "..1111111.....",
