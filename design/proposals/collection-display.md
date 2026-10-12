@@ -1,8 +1,8 @@
 # The collection display
 
-**Proposal** from the art director and the game designer, 2026-10-08, answering the owner's verdict on the cabinet round ([`library-cabinet`](../../art/concept-station/library-cabinet/README.md)): "not sold on the looks of the boxes, seems too basic … what type of screen, furniture or display is ideal to show a collection of specimens?" Built on the [Station screens](../style-guide/station-screens.md) (Library), the [taxonomy](taxonomy.md) §3–5 and [the portrait](the-portrait.md). Figures in [`collection-display/`](collection-display/): hand-drawn wireframes, layout only.
+Written by the art director and the game designer in answer to an owner verdict on the cabinet round ([`library-cabinet`](../../art/concept-station/library-cabinet/README.md)): "not sold on the looks of the boxes, seems too basic … what type of screen, furniture or display is ideal to show a collection of specimens?" Built on the [Station screens](../style-guide/station-screens.md) (Library), the [taxonomy](taxonomy.md) §3–5 and [the portrait](the-portrait.md). Figures in [`collection-display/`](collection-display/): hand-drawn wireframes, layout only.
 
-**Decided 2026-10-08 (owner).** Unmet species show no cue at all of what they may be: no silhouettes, no shapes in the mist. The space to grow is kept. The Library is a botanical tome in vibe. The book that opens from the collection is accepted and mounts the species portrait as a framed plate.
+Unmet species show no cue at all of what they may be: no silhouettes, no shapes in the mist. The space to grow is kept. The Library is a botanical tome in vibe. The book that opens from the collection is accepted and mounts the species portrait as a framed plate.
 
 ## 1. What the display must do
 
@@ -37,7 +37,7 @@ From the field notebook's index of plates. Unmet: an empty ruled frame with phot
 ## 3. Shortlist: B and E
 
 > **Art director:** E is the tome itself. Index, then plate: the Library is one book and the cabinet stops being a different room.
-> **Game designer:** And the owner looks at it and sees the boxes again, on cream. E is a page of rectangles however good the corners are.
+> **Game designer:** And an owner looks at it and sees the boxes again, on cream. E is a page of rectangles however good the corners are.
 > **Art director:** Fair. B has what the boxes lacked: glass over depth, things standing on a floor, shadows that say "object".
 > **Game designer:** It also plays. A clan is a tray; a cousin widens it by one unit; a drop slides blank mounts in.
 > **Art director:** My worry is pins. Children, pets, a pin through a body.
@@ -58,7 +58,7 @@ From the field notebook's index of plates. Unmet: an empty ruled frame with phot
 - **Strings.** Top bar "Library  T5", a yellow bolt "7", a blue diamond "3", a green drop "2", "Companion away · with Dot". Bottom line "✓ Open · ← Home" | "Tuikis · Stilbera" | "a pod waits in the tray" (the clan trays carry no word). Placed: the names, Pip in Loika's card.
 - **Motion.** The card lifts and grows into the book's framed plate, 300 ms; a newly met species' card slides from the plain tray into its clan's tray at the next visit.
 
-## 5. Decisions for the owner
+## 5. Points for owner review
 
 1. **Is B, the specimen case, the collection display?** Recommended: yes, in the tome's paper, with no pin through any mibi (cards in mounts, pins in tags only).
 2. **What does a met species show?** Recommended: a pencil field sketch on its card and its name pencilled on the tag, since the Companion saw it; inked once found. Alternative: a blank card, pencilled tag only.

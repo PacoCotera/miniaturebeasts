@@ -1,7 +1,7 @@
 # Exploration options
 
-**Proposal.** Three different ways the open map could work, each shown as the
-same expedition. Nothing here is decided. The project lead picks one, a mix, or
+Three different ways the open map could work, each shown as the
+same expedition. Nothing here is decided. An owner ruling picks one, a mix, or
 none; then a rough playable version of the chosen model is built.
 
 The three models differ in what the world is and what the player mainly does:
@@ -41,7 +41,7 @@ The three models differ in what the world is and what the player mainly does:
   events, creatures and supplies appear. Events are visible before they arrive
   (clouds on the horizon, water creeping) and offer a trade: stay for more, at a
   risk you can see.
-- **Damage.** The Probe has three hull marks. A strike or rockfall takes one. At
+- **Damage.** The Probe has three `hull` marks. A strike or rockfall takes one. At
   zero the expedition ends and the cargo goes home as it is: nothing lost,
   nothing more gathered.
 - **What the Station gets.** Send seals the cargo, and the Station accepts it
@@ -212,7 +212,7 @@ how creatures react to pulses, never what's inside a pod.
 4. **The storm arrives.** Echoes jitter and the pulse reaches half as far.
    Lightning shows the whole region as outlines for an instant; faint ridge lines
    stay in the fog. The flash reveals land, never finds. Struck crystals glow on
-   the ridge: two Confirms, +4 Energy, and one hull mark lost to a strike.
+   the ridge: two Confirms, +4 Energy, and one `hull` mark lost to a strike.
 5. The flicker has come closer with each pulse. A mibi with antenna ears walks
    out of the fog, circles the crossing and paws at one spot.
 6. **Sketch.** The player stands there, "Dig". Confirm brings up the pod.
@@ -375,7 +375,7 @@ player tries things on creatures unprompted and can say why the pod appeared. If
 shed triggers turn into recipes within three expeditions, make species and
 individuals vary more, or fall back to B's sensing as the main loop.
 
-## Decisions for the project lead
+## Points for owner review
 
 1. Which model to build as the rough playable: A, B or C.
 2. Whether places are fresh each expedition, can be marked and revisited, or
