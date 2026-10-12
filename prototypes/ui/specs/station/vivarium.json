@@ -38,7 +38,7 @@
   "dock": "Dock while the whole shows: the bed's Companion mark goes and the carried set lies down on it; their tiles' outline glyphs become thumbnails. Lifted: the reverse. Both on the frame of the world event, with no animation"
  },
  "initial": "by the save: no housed mibi, empty; else rest",
- "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window with the bed (the nest alone while docked, the nest and its mark while away, as Home and Idle), the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
+ "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window with the bed (the nest alone while docked, the nest and, away, a frame for each carried mibi and the glyph on its plate, as Home and Idle), the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
  "regions": {
   "stage": {
    "rect": [0, 40, 1024, 522],
@@ -85,10 +85,7 @@
    "component": "livingWindow",
    "build": "withYouBed",
    "clip": "window",
-   "mark": [16, 24],
-   "markPicture": "home-bed-mark-16x24",
-   "markAt": [88, 16],
-   "markRect": [880, 432, 16, 24],
+   "frames": { "size": [56, 56], "pitch": 64, "round": 4, "edge": 1, "thumb": [4, 4, 48, 48], "y": 400, "places": { "1": [860], "2": [828, 892], "3": [796, 860, 924] }, "glyph": { "size": [16, 24], "at": [-24, 30], "plate": { "size": [20, 28], "at": [-26, 28], "round": 4 } }, "rule": "away, frame i of n (carried order): x = centre - 28 + 64 x (i - (n - 1) / 2), y = footY - 56, 56 x 56, the mini 1:1 at (x + 4, y + 4, 48, 48); the glyph plate at (x0 - 26, footY - 28, 20, 28) and the glyph at (x0 - 24, footY - 26, 16, 24), x0 the first frame's x; no frame and no glyph with nobody carried" },
    "sleepers": {
     "max": 3,
     "pose": "nap",
@@ -109,8 +106,8 @@
    },
    "states": {
     "docked": "the nest, then one to three sleepers, the carried set in carried order",
-    "away": "the nest, then its mark (home-bed-mark-16x24) 1:1 at markRect, as Home and Idle",
-    "none": "docked with nobody carried: the nest drawn empty at the bed's rect (its rim `bark`, hollow `soil`, lit rim `sand`), no sleeper and no mark; not a target; also the empty state while docked"
+    "away": "the nest, then one frame for each carried mibi in carried order (soil at opacity 153, a 1 px gold edge, radius 4; its mini, the tile's 48 px picture at the lift, 1:1 at the thumb), then the glyph's plate and the glyph (frames); with nobody carried the nest alone: no frame and no glyph; as Home and Idle",
+    "none": "docked with nobody carried: the nest drawn empty at the bed's rect (its rim `bark`, hollow `soil`, lit rim `sand`), no sleeper and no frame; not a target; also the empty state while docked"
    },
    "note": "Idle's bed (frame.json idle.regions.bed) 80 px higher: the same place in the same painting"
   },
@@ -292,7 +289,7 @@
  "colours": {
   "window": {"back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
-  "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist"},
+  "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "frame": "soil", "frameOpa": 153, "frameEdge": "gold"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "strip": {"fill": "ground", "edge": "hairline"},
   "tile": {"fill": "panel", "free": "hairline"},
@@ -304,7 +301,6 @@
    "Idle's painting 1024×568, dawn, day, dusk and night (frame.json idle; rows 120 to 560 shown here)",
    "the residents at 144×152 and 104×112, and the nap poses (as on Home and Idle)",
    "home-bed-<light>-192x56 (the bed, as on Home and Idle)",
-   "home-bed-mark-16x24 (the bed's mark, away)",
    "frame-companion-outline-16x24 (the out tile's glyph, frame.json marks.companion.away)",
    "the thumbnails 48×48 (the painting or placeholder rendered at that size)",
    "home-lamp-sky-12x12"

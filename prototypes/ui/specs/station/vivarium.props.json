@@ -185,7 +185,8 @@
      "required": [
       "state",
       "picture",
-      "mark",
+      "carried",
+      "glyph",
       "sleepers"
      ],
      "additionalProperties": false,
@@ -200,7 +201,27 @@
       "picture": {
        "type": "string"
       },
-      "mark": {
+      "carried": {
+       "type": "array",
+       "maxItems": 3,
+       "items": {
+        "type": "object",
+        "required": [
+         "id",
+         "picture"
+        ],
+        "additionalProperties": false,
+        "properties": {
+         "id": {
+          "type": "string"
+         },
+         "picture": {
+          "type": "string"
+         }
+        }
+       }
+      },
+      "glyph": {
        "type": "string"
       },
       "sleepers": {

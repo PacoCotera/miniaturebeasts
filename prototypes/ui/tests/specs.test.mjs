@@ -405,12 +405,17 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   assert.deepEqual(paletteBad(hab.colours), []);
 });
 
+// the away bed's frames (station-vivarium-polish, option D): frame i of n at x = centre - 28 + 64 (i - (n - 1) / 2), y = footY - 56, 56 x 56; the glyph's plate at (x0 - 26, footY - 28, 20, 28) and the glyph at (x0 - 24, footY - 26, 16, 24); three span 184 px inside the 192 px nest
+const bedFrames = (bed) => { const F = bed.frames, S = bed.sleepers; assert.deepEqual([F.size, F.pitch, F.round, F.edge, F.thumb], [[56, 56], 64, 4, 1, [4, 4, 48, 48]]); assert.equal(F.y, S.footY - 56);
+  for (const n of [1, 2, 3]) { const xs = F.places[n]; assert.equal(xs.length, n); xs.forEach((x, i) => assert.equal(x, S.centre - 28 + 64 * (i - (n - 1) / 2), `frame ${i} of ${n}`)); }
+  assert.ok(F.places[3][0] >= bed.rect[0] && F.places[3][2] + 56 <= bed.rect[0] + bed.rect[2], "three frames inside the nest");
+  assert.deepEqual([F.glyph.size, F.glyph.at, F.glyph.plate.size, F.glyph.plate.at, F.glyph.plate.round], [[16, 24], [-24, 30], [20, 28], [-26, 28], 4]); };
 test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip is one mibi up close's; its focus graph plays its vectors with ui/focus.mjs", () => {
   const vv = rd("../specs/station/vivarium.json"), hab = rd("../specs/station/habitat.json"), R = vv.regions, B = boxesOf("18-vivarium-whole.svg"), A = boxesOf("18a-vivarium-whole-away.svg"), E = boxesOf("18b-vivarium-whole-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
   assert.deepEqual(vv.regions.tiles.forms, hab.regions.tiles.forms, "the whole's strip is one mibi up close's: the same forms"); lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
   for (const set of [B, A, E]) { is(R.window.rect, "window", set); is(R.strip.rect, "strip", set); }
-  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); is(R.bed.rect, "the bed on the empty whole (the nest alone, docked)", E); assert.ok(!E.has(R.bed.markRect.join(",")), "no Companion mark on the empty whole while docked");
+  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.rect, "the bed on the empty whole (the nest alone, docked)", E); bedFrames(R.bed); assert.deepEqual(vv.colours.bed, { rim: "bark", hollow: "soil", light: "sand", frame: "soil", frameOpa: 153, frameEdge: "gold" }, "the frames: soil at 153, a gold edge; no teal, no mark");   // the away frames by the signed formula (the wireframes 18a still draw the retired mark)
   // the same place as Idle, 80 px higher; the strip where one mibi up close has it
   const I = frame.idle.regions, off = I.vivarium.theWhole.rows[0] - I.vivarium.theWhole.at[1];
   assert.deepEqual(R.window.rect, I.vivarium.theWhole.at); assert.deepEqual(R.window.ground, [I.vivarium.ground[0], I.vivarium.ground[1] - off, ...I.vivarium.ground.slice(2)]);
@@ -547,14 +552,14 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
   for (const k of ["bezel", "glass", "bed"]) is(R[k].rect, k);
   assert.deepEqual([R.bezel.rect[0] + R.bezel.inset, R.bezel.rect[1] + R.bezel.inset, R.bezel.rect[2] - 2 * R.bezel.inset, R.bezel.rect[3] - 2 * R.bezel.inset], R.glass.rect, "the 8 px bezel");
   assert.ok(inside(R.glass.ground, R.glass.rect) && inside(R.glass.foot, R.glass.rect) && R.glass.ground[1] + R.glass.ground[3] === R.glass.foot[1], "the ground band, then the foot, inside the glass");
-  // the bed: one to three sleepers 48 apart, centred on the bed, inside the glass; the Companion mark centred while away
+  // the bed: one to three sleepers 48 apart, centred on the bed, inside the glass; away, the carried set's frames centred on it
   const S = R.bed.sleepers, G = R.glass.rect; assert.equal(S.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(S.footY, R.bed.rect[1] + 40);
   for (const [n, xs] of Object.entries(S.places)) { assert.equal(xs.length, +n); xs.forEach((x, i) => assert.equal(x, S.centre + S.pitch * (i - (n - 1) / 2))); for (const x of xs) { assert.ok(inside([x - 72, S.footY - 152, 144, 152], G), "an adult sleeper inside the glass"); assert.ok(inside([x - 52, S.footY - 112, 104, 112], G)); } }
   assert.deepEqual(S.rects["3 adults"], S.places[3].map((x) => [x - 72, S.footY - 152, 144, 152])); for (const r of S.rects["3 adults"]) is(r, "sleeper", E);
   // the nap pose's ink: at most 96×88, centred and on the feet; three fill the bed's width, 16 px or more inside the glass; no asleep mark
   assert.deepEqual(S.ink.max, [96, 88]); assert.deepEqual(S.ink.rects[3], S.places[3].map((x) => [x - 48, S.footY - 88, 96, 88])); for (const r of S.ink.rects[3]) { is(r, "nap ink", E); assert.ok(r[0] >= G[0] + 16 && r[0] + r[2] <= G[0] + G[2] - 16, "16 px inside the glass"); }
   assert.deepEqual([S.ink.rects[3][0][0], S.ink.rects[3][2][0] + 96], [R.bed.rect[0], R.bed.rect[0] + R.bed.rect[2]], "three on the 192 px bed"); assert.ok(!("asleepMark" in S) && S.mark === null);
-  assert.deepEqual(R.bed.markRect, [R.bed.rect[0] + R.bed.markAt[0], R.bed.rect[1] + R.bed.markAt[1], ...R.bed.mark]); assert.equal(R.bed.markRect[0] + 8, S.centre); is(R.bed.markRect, "Companion mark", A);
+  bedFrames(R.bed); assert.equal(home.colours.bed.frameEdge, "gold"); assert.ok(!("mark" in home.colours.bed));   // the away frames by the signed formula (the wireframe 01c still draws the retired mark)
   assert.deepEqual([R.knob.rect[0] + 16 - 24, R.knob.rect[1] + 4 - 12, ...R.knob.target], [616, 536, 48, 24]);
   // the column: five modules 320×88 on a 104 pitch; each its word, its lamp and its objects box; the objects clear of the word
   const mods = ["cargo", "pods", "incubator", "probe", "library"], at = (m, o) => [m.rect[0] + o[0], m.rect[1] + o[1], o[2], o[3]];
@@ -651,7 +656,7 @@ test("Idle is the Vivarium's whole without the frame: one painting, the bed and 
   const w = V.theWhole; assert.equal(w.rows[1] - w.rows[0], w.at[3], "the whole's window is a 1:1 part of the painting"); assert.equal(V.ground[1] - w.rows[0] + w.at[1], 296, "its ground band where the whole's is");
   const S = R.bed.sleepers; assert.equal(R.bed.rect[1] + R.bed.rect[3], V.foot[1], "the bed on the ground band's foot"); assert.equal(S.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(S.footY, R.bed.rect[1] + 40);
   for (const [n, xs] of Object.entries(S.places)) xs.forEach((x, i) => { assert.equal(x, S.centre + S.pitch * (i - (n - 1) / 2)); assert.ok(x - 72 >= 16 && x + 72 <= 1008, "an adult sleeper 16 px inside the screen"); });
-  assert.equal(R.bed.markRect[0] + 8, S.centre); assert.ok(inside(R.resident.walk.ground, V.ground));
+  bedFrames(R.bed); assert.ok(inside(R.resident.walk.ground, V.ground));
   assert.deepEqual(S.ink.rects[3], S.places[3].map((x) => [x - 48, S.footY - 88, 96, 88])); assert.deepEqual([S.ink.rects[3][0][0], S.ink.rects[3][2][0] + 96], [R.bed.rect[0], R.bed.rect[0] + R.bed.rect[2]]);
   for (const x of S.places[2]) assert.ok(B.has([x - 48, S.footY - 88, 96, 88].join(",")), "two sleepers' nap ink in the wireframe"); assert.ok(!("asleepMark" in S) && S.mark === null, "no asleep mark");
   assert.deepEqual(I.strings.out, { 1: "{name} is out with the Companion", 2: "two mibis are with the Companion", 3: "three mibis are with the Companion" });

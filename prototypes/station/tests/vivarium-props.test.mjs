@@ -61,15 +61,15 @@ test("the whole's props validate against vivarium.props.json in every scene, nam
 test("every mibi at home walks (a seed each, in bay order), the docked carried set sleeps on the bed, an out mibi is only a tile; a tile a bay, housed first then free", () => {
   const S0 = scenes();
   { const { w, sv } = S0.docked, b = build(w, sv).props, R = b.regions;
-    assert.equal(b.state, "rest"); assert.equal(R.residents.length, 5); assert.ok(R.residents.every((p) => Number.isInteger(p.seed) && p.seed !== 0)); assert.equal(R.bed.state, "docked"); assert.equal(R.bed.sleepers.length, 2); assert.equal(R.bed.mark, "");
+    assert.equal(b.state, "rest"); assert.equal(R.residents.length, 5); assert.ok(R.residents.every((p) => Number.isInteger(p.seed) && p.seed !== 0)); assert.equal(R.bed.state, "docked"); assert.equal(R.bed.sleepers.length, 2); assert.deepEqual([R.bed.carried, R.bed.glyph], [[], ""]);
     assert.equal(R.tiles.items.length, 8); assert.deepEqual(R.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "housed", "housed", "housed", "free"]); assert.ok(R.tiles.items[0].picture.startsWith("mibi:")); }
   { const { w, sv } = S0.away, b = build(w, sv).props, R = b.regions;
-    assert.equal(R.residents.length, 5, "the carried two are not in the window"); assert.equal(R.bed.state, "away"); assert.equal(R.bed.sleepers.length, 0); assert.ok(R.bed.mark.length, "the Companion's mark on the bed");
+    assert.equal(R.residents.length, 5, "the carried two are not in the window"); assert.equal(R.bed.state, "away"); assert.equal(R.bed.sleepers.length, 0); assert.equal(R.bed.carried.length, 2, "a frame for each carried mibi"); assert.equal(R.bed.glyph, "frame-companion-outline-16x24", "the Companion's glyph on the bed");
     assert.deepEqual(R.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "housed", "out", "out", "free"]); assert.equal(R.tiles.items[5].picture, "", "an out tile shows the glyph, not a thumbnail"); assert.equal(R.tiles.glyph, "frame-companion-outline-16x24"); }
   { const { w, sv } = S0.noneCarried, b = build(w, sv).props; assert.equal(b.regions.bed.state, "none"); assert.equal(b.regions.residents.length, 3); }
   { const { w, sv } = S0.twelve, b = build(w, sv).props; assert.equal(b.regions.residents.length, 12); assert.equal(b.regions.tiles.items.length, 12); }
-  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 6); assert.deepEqual([b.regions.bed.state, b.regions.bed.mark, b.regions.bed.sleepers.length], ["none", "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
-  { const { w, sv } = S0.emptyAway, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.bed.state, "away"); assert.ok(b.regions.bed.mark.length, "the nest and its mark while away"); assert.equal(b.regions.tiles.glyph, "frame-companion-outline-16x24"); }
+  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 6); assert.deepEqual([b.regions.bed.state, b.regions.bed.carried.length, b.regions.bed.glyph, b.regions.bed.sleepers.length], ["none", 0, "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
+  { const { w, sv } = S0.emptyAway, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.bed.state, "away"); assert.deepEqual([b.regions.bed.carried, b.regions.bed.glyph], [[], ""], "away with nobody carried: the nest alone, no frame and no glyph"); assert.equal(b.regions.tiles.glyph, "frame-companion-outline-16x24"); }
 });
 
 test("the targets are the residents in bay order (sleepers in their bays' places) then the tiles; the ring starts on the mibi last seen up close (its resident, else its tile), else the first resident, else the first tile, else the room", () => {
@@ -116,4 +116,15 @@ test("the whole's residents with moving sets fit vivarium.props.json: moving and
   const { w, sv } = scenes().docked, rules = spec.rules.rest;
   for (const [time, want] of [[23 * 3600, "asleep"], [12 * 3600, "awake"]]) { const b = build(w, sv, { time, restRules: rules, motionSets: true }); assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving?.walk && r.moving?.shadow && r.rest === want)); assert.ok(b.requests.some((q) => q.kind === "moving")); }
   assert.ok(build(w, sv, { time: 12 * 3600, restRules: rules, motionSets: false }).props.regions.residents.every((r) => !r.moving));
+});
+
+// ---- the away bed (station-vivarium-polish, option D): the frames carry the carried set; a carried mibi never walks in the window while away (programme lead, 18:42) ----
+test("the whole, away with 1, 2 and 3 carried: a frame each in carried order with the tile's own 48 px picture, the glyph; no carried mibi among the residents or on the bed as a sleeper", () => {
+  for (const n of [1, 2, 3]) {
+    const w = world(); dock(w.st, false); const m = mibis(w, 6), sv = sv0({ carried: m.slice(0, n).map((x) => x.id) }), b = build(w, sv), R = b.props.regions, ids = S.carriedIds(w.st, sv).map(String);
+    assert.deepEqual(validate(b.props, schema), []); assert.deepEqual(R.bed.carried.map((c) => c.id), ids, `${n}: carried order`); assert.equal(R.bed.glyph, "frame-companion-outline-16x24");
+    assert.ok(!R.residents.some((r) => ids.includes(r.id)), `${n}: no carried mibi walks`); assert.deepEqual(R.bed.sleepers, []);
+    const dockedTiles = build(w, sv, { docked: true }).props.regions.tiles.items;   // the tile the mibi showed while docked, the same request
+    for (const c of R.bed.carried) assert.equal(c.picture, dockedTiles.find((t) => t.id === c.id).picture, `${c.id}: the mini is its tile's picture`);
+  }
 });

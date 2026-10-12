@@ -74,3 +74,14 @@ test("Idle's residents with moving sets fit idle.props.json: moving and rest; th
   const b = idleBuild({ st, sv, settings, docked: true, light: "night", time: 23 * 3600, restRules: rules, motionSets: true }, frame);
   assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving && r.rest === "asleep")); assert.ok(b.props.regions.bed.sleepers.every((s) => s.moving?.nap));
 });
+
+// ---- the away bed (station-vivarium-polish, option D): Idle's bed is the whole's; a carried mibi never walks on Idle while away (programme lead, 18:42) ----
+test("Idle away with 1, 2 and 3 carried: a frame each in carried order and the glyph, the same bed as Home's; no carried mibi among the residents or on the bed as a sleeper; nobody carried: the nest alone", () => {
+  for (const n of [1, 2, 3]) {
+    const st = world(); st.dock = { docked: false, at: T0 }; adults(st, 5); const sv = sv0({ carried: st.mibis.slice(0, n).map((m) => m.id) }), b = build(st, sv), R = b.props.regions, ids = S.carriedIds(st, sv).map(String);
+    assert.deepEqual(R.bed.carried.map((c) => c.id), ids, `${n}: carried order`); assert.equal(R.bed.glyph, "frame-companion-outline-16x24"); assert.ok(b.requests.some((q) => q.id === R.bed.glyph), "Idle requests the glyph (it loads only its own pictures)");
+    assert.ok(!R.residents.some((r) => ids.includes(r.id)), `${n}: no carried mibi walks`); assert.deepEqual(R.bed.sleepers, []);
+    const h = homeBuild({ st, sv, settings, docked: false, ui: {}, focus: null, light: "day" }, home, frame).props.regions; assert.deepEqual(R.bed, h.bed, "Idle's bed is Home's");
+  }
+  const st = world(); st.dock = { docked: false, at: T0 }; adults(st, 3); const bed = build(st, sv0()).props.regions.bed; assert.deepEqual([bed.state, bed.carried, bed.glyph], ["away", [], ""]);
+});

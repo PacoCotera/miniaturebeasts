@@ -62,10 +62,44 @@ test("Home's props validate against home.props.json in every scene, name no rect
   }
 });
 
+// ---- the away bed (station-vivarium-polish, option D; the game designer's minis, 754a6d9) ----
+const awayWorld = (n, adults = 4) => { const st = world(); dock(st, false); st.devWorld = true; S.seedAdults(st, "S01", 5, adults, settings); return { st, sv: sv0({ carried: st.mibis.slice(0, n).map((m) => m.id) }) }; };
+test("away, the bed carries a frame for each carried mibi in carried order (carriedIds), its mini the tile's 48 px picture, and the glyph; nobody carried: the nest alone, no glyph; docked: unchanged", () => {
+  for (const n of [1, 2, 3]) {
+    const { st, sv } = awayWorld(n), b = build(st, sv), bed = b.props.regions.bed, ids = S.carriedIds(st, sv).map(String);
+    assert.deepEqual(validate(b.props, schema), []); assert.equal(bed.state, "away"); assert.deepEqual(bed.carried.map((c) => c.id), ids, `${n} carried: the frames in carried order`);
+    for (const c of bed.carried) { const mb = S.mibiById(st, Number(c.id)) ?? S.mibiById(st, c.id), r = b.requests.find((q) => q.id === c.picture); assert.ok(r && r.kind === "mibi" && r.mibi === mb.id && JSON.stringify(r.size) === "[48,48]" && r.stage === S.mibiStage(st, mb, settings), `${c.id}: the tile's request at 48 (stage from st.turn)`); }
+    assert.equal(bed.glyph, "frame-companion-outline-16x24"); assert.ok(b.requests.some((q) => q.id === bed.glyph), "the glyph is requested (Idle loads only its own pictures)");
+    assert.ok(!b.props.regions.residents.some((r) => ids.includes(r.id)), `${n} carried: no carried mibi walks among the residents`); assert.deepEqual(bed.sleepers, [], "and none sleeps on the bed while away");
+  }
+  { const { st, sv } = awayWorld(0), bed = build(st, sv).props.regions.bed; assert.deepEqual([bed.state, bed.carried, bed.glyph], ["away", [], ""], "away with nobody carried: the nest alone, no frame and no glyph"); }
+  { const sc = scenes(), bed = build(sc.docked.st, sc.docked.sv).props.regions.bed; assert.equal(bed.state, "docked"); assert.equal(bed.sleepers.length, 2); assert.deepEqual([bed.carried, bed.glyph], [[], ""], "docked: unchanged, the set asleep, no frame"); }
+});
+test("gate 1: away, a juvenile's mini stays the picture its tile showed at the lift (the juvenile stand-in), even after the Companion's turn passes the adult turn", () => {
+  const { st, sv } = awayWorld(1, 2), mb = st.mibis[0]; mb.born = st.turn;   // a juvenile at the lift
+  const before = build(st, sv).props.regions.bed.carried[0].picture; assert.equal(S.mibiStage(st, mb, settings), "juvenile");
+  sv.turn = st.turn + (settings.adultTurns ?? 99) + 5;   // the Companion's clock runs on; the Station's st.turn does not
+  const after = build(st, sv), r = after.requests.find((q) => q.id === after.props.regions.bed.carried[0].picture);
+  assert.equal(after.props.regions.bed.carried[0].picture, before, "the same picture id"); assert.equal(r.stage, "juvenile", "the juvenile stand-in, never the adult");
+});
+test("gate 2: at the dock, no frame, and the sleeper in the adult picture", () => {
+  const { st, sv } = awayWorld(1, 2), mb = st.mibis[0]; mb.born = st.turn; sv.turn = st.turn + (settings.adultTurns ?? 99) + 5;
+  assert.ok(S.dockKey(st, sv, settings, T0 + 1000).docked, "docked");
+  const b = build(st, sv), bed = b.props.regions.bed, r = b.requests.find((q) => q.id === bed.sleepers[0]?.picture);
+  assert.deepEqual([bed.state, bed.carried, bed.glyph], ["docked", [], ""], "no frame and no glyph"); assert.equal(bed.sleepers[0].stage, "adult"); assert.equal(r.stage, "adult", "the sleeper in the adult picture");
+});
+test("gate 3: a queued \"come home\" while away keeps the frame until the dock (the set as it is, never the projected set)", () => {
+  const { st, sv } = awayWorld(2), mb = st.mibis[0];
+  assert.ok(S.carryHome(st, sv, mb).ok, "come home queued"); assert.ok(!S.projectCarried(st, sv).includes(mb.id), "projected without it");
+  assert.deepEqual(build(st, sv).props.regions.bed.carried.map((c) => c.id), [String(st.mibis[0].id), String(st.mibis[1].id)], "both frames stay until the dock");
+  const add = awayWorld(1); assert.ok(S.carryAdd(add.st, add.sv, add.st.mibis[3]).ok, "take along queued"); assert.equal(build(add.st, add.sv).props.regions.bed.carried.length, 1, "a queued take along adds no frame before the dock");
+});
+test("gate 4: once marks are built, away with m = 2 the mini's id equals the docked tile's id before the lift (never the m = 0 id)", { skip: "marks are not built yet (station-vivarium-polish, the game designer's gate 4)" }, () => {});
+
 test("residents at home walk (a seed each), the carried set sleeps on the bed (a seed each too: its breath's phase, Station M1 §2.6), the bed is a PH plate in every state", () => {
   const sc = scenes(), d = build(sc.docked.st, sc.docked.sv).props.regions;
-  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.ok(d.bed.sleepers.every((s) => s.seed > 0)); assert.notDeepEqual(d.bed.sleepers.map((s) => s.seed), d.residents.map((r) => r.seed)); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
-  const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "home-bed-mark-16x24", "away: the bed shows its mark"); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
+  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.ok(d.bed.sleepers.every((s) => s.seed > 0)); assert.notDeepEqual(d.bed.sleepers.map((s) => s.seed), d.residents.map((r) => r.seed)); assert.equal(d.bed.state, "docked"); assert.deepEqual([d.bed.carried, d.bed.glyph], [[], ""], "docked: no frame and no glyph on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
+  const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.deepEqual(a.bed.carried.map((c) => c.id), [String(sc.away.st.mibis[0].id)], "away: a frame for the carried mibi"); assert.match(a.bed.carried[0].picture, /:48x48$|-48x48$|48x48/); assert.equal(a.bed.glyph, "frame-companion-outline-16x24", "away: the Companion's glyph"); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
   const n = build(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
   const seeds = d.residents.map((r) => r.seed), again = build(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed); assert.deepEqual(again, seeds, "the seed is the mibi's, the same every time");
 });

@@ -24,7 +24,7 @@ export function paintingOf(req, frame, light) {
 export function idleBuild(m, frame) {
   const I = frame.idle, R = I.regions, requests = [], req = (r) => { requests.push(r); return r.id; };
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, Placeholders on Idle)" });
-  const lw = livingOf(m, R, req, ph, frame.light);
+  const lw = livingOf(m, R, req, ph, frame.light, frame.regions.marks.companion.away);
   const vivarium = { picture: paintingOf(req, frame, m.light) };
   return { props: { idle: true, regions: { vivarium, residents: lw.residents, bed: lw.bed }, frame: { idle: { line: idleLine(m, I) } } }, requests };
 }

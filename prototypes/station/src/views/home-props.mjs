@@ -29,7 +29,7 @@ export function wordsOf(need, spec) {
   return { notice, action: fill(N.action, vals) };
 }
 
-// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state, its picture by the light and, away, its mark. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
+// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state, its picture by the light and, away, the carried set's frames and the Companion's glyph. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
 // The light of an hour (frame.json light.from: [[start hour, light], …]): a light runs until the next start, the last wraps midnight. The hour is the host's; a view never reads a clock.
 export function lightAt(hour, L) {
   const from = [...L.from].sort((a, b) => a[0] - b[0]), at = from.filter(([h]) => h <= hour).at(-1) ?? from.at(-1);
@@ -62,7 +62,7 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 
-export function livingOf(m, R, req, ph, L) {
+export function livingOf(m, R, req, ph, L, glyphId = "") {
   const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
@@ -74,9 +74,12 @@ export function livingOf(m, R, req, ph, L) {
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
-    mark: docked ? "" : ph(R.bed.markPicture, R.bed.mark),   // away only: the Companion's mark (home-bed-mark-16x24), 1:1 over the bed
+    // away only (station-vivarium-polish, option D): a frame for each mibi the Companion holds (carriedIds, never the projected set), its mini the picture its tile showed at the lift (mibiReq at 48: the stage from st.turn, the mark from the last dock); the glyph only when someone is carried
+    carried: docked ? [] : carried.slice(0, 3).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => ({ id: String(mb.id), picture: mibiReq(req, st, mb, R.bed.frames.thumb.slice(2), settings) })),
+    glyph: "",
     sleepers,
   };
+  if (bed.carried.length && glyphId) bed.glyph = req({ kind: "slot", id: glyphId, master: glyphId, size: R.bed.frames.glyph.size, until: "the Companion's away mark (frame.json regions.marks.companion.away)" });   // requested so Idle, which loads only its own pictures, has it too
   return { residents, sleepers, bed };
 }
 
@@ -89,7 +92,7 @@ export function homeBuild(m, spec, frame) {
   const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod && !need.soft ? "needsYou" : null);
 
   // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
-  const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, frame.light);
+  const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, frame.light, frame.regions.marks.companion.away);
   const { residents, sleepers, bed } = lw;
   // the modules
   const crates = docked ? S.bayCrates(st, sv).length : 0;

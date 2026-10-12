@@ -14,7 +14,7 @@ export function vivariumBuild(m, spec, frame, home) {
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, The Vivarium: the whole)" });
   const carried = S.carriedIds(st, sv), housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), out = (mb) => carried.includes(mb.id) && !docked;   // out: with the Companion, away
   const state = housed.length ? "rest" : "empty";
-  const L = frame.light, lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, L);
+  const L = frame.light, lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, L, frame.regions.marks.companion.away);
   const bayOf = new Map(housed.map((mb, i) => [String(mb.id), i]));
   const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));   // the walkers in bay order: the face steps them in this order
   const regions = {
