@@ -846,6 +846,9 @@ const flatLay = (base, edits) => { const tiles = new Array(W.PW * W.PH).fill(bas
 const POND = [[5, 5], [6, 5], [5, 6], [6, 6]].map(([x, y]) => [x, y, T_.WATER]);
 test("water beside sand: the sand-margin quarters on a water tile with a sand orthogonal neighbour, the sand-margin macro when a side tile is sand, not the corner", () => {
   const cat = SYN(), ids = (lay, x, y, fr = 0) => A.placeLayers(lay, 7, cat, fr, null).tiles[y * W.PW + x].layers.map(l => l.id);
+  // the catalogue keeps the margins apart: set water and the lawn macros, set water-sand and the sand-margin macros, never mixed
+  for (const q of ["nw", "ne", "se", "sw"]) { for (const st of ["fill", "edgeh", "edgev", "outer", "inner"]) { assert.ok(cat.water[q][st].length === 2 && cat.water[q][st].every(p => p.set === "water"), q + st); assert.ok(cat.waterSand[q][st].length === 2 && cat.waterSand[q][st].every(p => p.set === "water-sand"), q + st + " sand"); }
+    for (const r of [42, 60]) { assert.ok(cat.waterMacro[q][r].length === 2 && cat.waterMacro[q][r].every(p => p.set == null), q + r); assert.ok(cat.waterMacroSand[q][r].length === 2 && cat.waterMacroSand[q][r].every(p => p.set === "sand-margin"), q + r + " sand"); } }
   // a single water tile, sand to its east: all four quarters from the water-sand set; with no sand it keeps the lawn-margin set; STEP and DEEP follow
   for (const wt of [T_.WATER, T_.STEP, T_.DEEP]) {
     const sandy = ids(flatLay(T_.GRASS, [[5, 5, wt], [6, 5, T_.SAND]]), 5, 5).filter(id => /^t\/water/.test(id)), plain = ids(flatLay(T_.GRASS, [[5, 5, wt]]), 5, 5).filter(id => /^t\/(water|deep)/.test(id));
