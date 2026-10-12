@@ -7,7 +7,8 @@
 //   Any other PNG form is refused and named; each sheet's form is printed. A gAMA, iCCP, cHRM or sRGB chunk refuses the sheet.
 // - Palette: each manifest's `palette`; absent or "core48" is the page's 48 colours, any other name loads <name>-palette.json
 //   beside the manifest and checks it with paletteTable (the core 48 and their tables as on the page, no gap in i, no repeated
-//   hex, every table index in range, at most 256 entries). All manifests name the same palette. With --drop, a sheet's PLTE
+//   hex, every table index in range, dark2 the dark of its dark (dark[dark[i]]), at most 256 entries). All manifests name the
+//   same palette. With --drop, a sheet's PLTE
 //   may hold only colours in that palette, used or not.
 // - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
