@@ -16,7 +16,7 @@ Pieces, by the catalogue's keys (§4.2):
   lip             the 28 quarters: the candidate set's edge geometry (pieces/region) drawn by test map 12's plateau-edge rule on b1's
                   ramp (outline, lit rim, two shade steps beyond, a ragged fringe); transparent where the lawn is untouched
   face, cap, side, foot strips, stairs, props: tileset/walls, stairs and props, mapped to the 96 by test map 12's own nearest rule
-Every piece is `candidate`. Sheets are 8-bit indexed: PLTE the 96 colours in order, magenta's slot (44, used by no piece) transparent through tRNS, no colour chunks.
+Pieces are `signed` or `candidate` by signed() below. Sheets are 8-bit indexed: PLTE the 96 colours in order, magenta's slot (44, used by no piece) transparent through tRNS, no colour chunks.
 usage: python3 -I build-meadow-drop.py OUT_DIR PROOF_DIR"""
 import json, os, sys
 import numpy as np
@@ -243,13 +243,24 @@ for p in json.load(open(os.path.join(TS, "props", "props.json")))["pieces"]:
     k_ = np.isin(a, KEY); a[k_ & edge] = P48.index["plumD"]; a[k_ & ~edge] = P48.index["soil"]
     PIECES.append((p["name"], a, dict(status="candidate", offset=[(48 - w) >> 1, 48 - h], **f)))
 
+# ---- the art director's signature (2026-10-11 22:2x): the pieces seen at 1x in a place composed by §4.3 (proof/drop-place) or
+# reviewed on their sheet with a settled v1 role. Still candidate: side columns and stairs (not yet composed), material.rock (A1
+# captures), and every piece v1 does not draw (shore macros, lobes, beaches, bend, band, wall foot strips, bush, fern, bridge).
+def signed(n, f):
+    k = f["kind"]
+    if k in ("ground", "lip", "face", "cap") or (k == "decal"): return True
+    if k == "shore" and f.get("set") == "water": return True
+    if k == "prop" and f.get("type") in ("boulder", "reeds", "flowers"): return True
+    return False
+PIECES = [(n, a, dict(f, status="signed") if signed(n, f) else f) for n, a, f in PIECES]
+
 # ---- sheets: shelf-packed by group, at most 1024 wide
 GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/" in n),
           ("quarters", lambda n: "/lip/" in n or ("/shore/" in n and "water-" in n)),
           ("shore", lambda n: "/shore" in n or "/band/" in n), ("walls", lambda n: any(k in n for k in ("/face/", "/cap/", "/side/", "/foot/"))),
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
 man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json",
-       "note": "The meadow drop, every piece a candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
+       "note": "The meadow drop: signed where the art director has signed, else candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
                "Built by art/companion-48/tools/build-meadow-drop.py from the tileset on art-terrain-grass.", "sheets": {}, "pieces": []}
 done = set()
 for g, pick in GROUPS:
