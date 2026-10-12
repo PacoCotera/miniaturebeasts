@@ -51,3 +51,13 @@ The first cut left magenta key residue under S13's feet and belly (1,163 px at 3
 - **Sign:** signed beside the juvenile at 1×; the whole-screen sign follows.
 
 The adult line stands at 8.14 of 16 MXN: S03 a (refused) 0.54, S03 b 3.83, S02 a 3.77.
+
+## S03's value pass (programme lead's note: the adult read nearly white mint, flat, low in contrast), 0 MXN
+
+The mint is canon, so the hue is kept and the values drop. `value-pass.py` moves only the coat, weighted softly at its edges. The coat is the pale, low-saturation pixels with a green-cyan hue. Each is taken to OKLab, where:
+- its lightness is mapped from the coat's own percentiles (5, 50, 95) onto 0.62, 0.76 and 0.88;
+- its chroma is lifted ×1.9, capped at 0.10.
+
+The body's lowest 30 % then shades a further 0 to 12 %. The teal, the bulb and the face stay the juvenile's. The coat's median luminance falls from 0.92 to 0.70 on the adult and from 0.85 to 0.67 on the juvenile.
+
+Two earlier tries were discarded: a plain RGB scale greyed the coat, and mapping the whole picture crushed the ears to black. The adult and juvenile go through the same pass, so the two stages still match. Signed beside S02 at 1× on the day glass: `S03-value-vivarium-1x.png` (S02 adult, S03 adult, S03 juvenile, S02 juvenile). All eight files: 0 px magenta. They are in slices/ with manifest and status entries; the whole-screen sign follows in builder 2's captures.

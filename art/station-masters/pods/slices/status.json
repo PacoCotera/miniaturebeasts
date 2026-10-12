@@ -3548,23 +3548,23 @@
  },
  "mibi-adult-S03-304x312": {
   "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S03 adult stand"
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S03-144x152": {
   "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S03 adult stand"
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S03-96x88": {
   "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S03 adult stand"
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S03-48x48": {
   "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S03 adult stand"
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S02-304x312": {
   "status": "signed",
@@ -3585,5 +3585,25 @@
   "status": "signed",
   "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
   "note": "fix 1b fallback: S02 adult stand"
+ },
+ "mibi-juvenile-S03-304x312": {
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+ },
+ "mibi-juvenile-S03-104x112": {
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+ },
+ "mibi-juvenile-S03-96x88": {
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+ },
+ "mibi-juvenile-S03-48x48": {
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
  }
 }
