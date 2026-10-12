@@ -359,13 +359,27 @@ UI/UX designer, 2026-10-11 23:56, step 0 of the Station's global fix plan, after
 3. **No flat-box stand-in on a golden.** Some stand-ins are a flat fill, an outline or an unpainted plate: the register's lavender `placeholder` plates, flat roll fills, `standIn` edge boxes, a `colours.*StandIn` fill. Such a stand-in is never drawn in a frame that is goldened, captured for a review or shown to the owner. The region stays with no size. A stand-in the art director has signed as a picture (named in the register with its signer, such as the juvenile stand-in) is art, not a box, and may be placed. Which creature renderings may stand in is the art director's question, not this rule's.
 4. **Placeholder slots show nothing until their art lands.** The "Placeholders on …" tables give the size each master is painted at. They are not things to draw. A slot whose picture is not a signed master (register status `placeholder` without the art director's stand-in signature) draws nothing. The layout does not move to fill the gap, as `create.c` already does for a picture the host has not sent. When the master lands, it is placed 1:1 at the slot's rect, and the rect does not change for it.
 
-5. **An adult without its signed stand draws nothing** (UI/UX designer, 2026-10-12 00:03, for fix 1, at the Station lead's request). An adult or elder is drawn only from its species' signed stand, `mibi-adult-SNN-WxH`, placed 1:1 at the size the screen asks for. Today only S01 (Pip) has stands. Any other adult is never drawn as the rig (`pictures.mjs`, kind `mibi`, today's fallback), as Pip, as a silhouette, as a lamp or as a box. Where it would stand, the player sees this:
-   - **Living windows** (Home's vivarium, the Vivarium's whole, Idle, the with-you bed): the mibi is absent. It has no sprite, shadow, feet ring, name tag, focus target or waiting lamp, and it takes no walk slot or bed place. The others are placed as if it were not there.
-   - **Lists of mibis** (the bay strip on the whole and up close, Cross's partner faces, the Sitting's cards, the Library guide's "Carried by" names): it has no item. The list packs the others by its own pitch rule. A list with no items left follows rule 2.
-   - **One mibi up close** (Habitat, every state): its main object is missing, so the state is not composed (rule 1) and the screen is never opened on that mibi. No jump, tile or name leads to it.
-   - **Juveniles are not covered by this rule.** They keep the art director's signed juvenile stand-ins.
-   - **For the builder.** In `pictures.mjs`, kind `mibi`: an adult or elder with no placed `mibi-adult-SNN-WxH` registers an empty slot, never `mibiArt`. The screen's props leave that mibi out of every resident, tile and target list, so nothing keeps a node for it. A golden or review capture may show a non-S01 adult only by its absence.
-   - **Depends on the game designer.** This ruling assumes the other species' adults are dev seeds only, as the global fix plan says (fix 1a), so a player's save never holds one. If the game designer rules that players can own them before their stands land, a mibi vanishing from the player's own Vivarium is a game question. It goes back to the game designer and the art director, and this rule then only says what the screen draws.
+5. **An adult without its signed stand stands as its species' juvenile** (UI/UX designer, 2026-10-12 00:09; supersedes this rule as written at 00:03, commit 000a9f9c, after the game designer's ruling that a mibi the player owns is never absent, internal `boards/station-unread-chapters.md` §4, 2fdd615; the creative director's conditions for the interim, relayed by the Station lead at 00:09: never scaled, kept in its own box, growing up not staged as a reveal). An adult or elder the player owns keeps its list entry, name, bay, tile, targets and actions on every screen. Its picture is the best that exists, in this order: (1) its species' signed adult stand, `mibi-adult-SNN-WxH`; (2) its species' signed juvenile stand, `mibi-juvenile-SNN-WxH`, at the size below; (3) the host's stand-in from its own genome (`mibiArt`, the rig) at the adult's size. Every picture is a signed master placed 1:1 or the rig at its own size: nothing is scaled, nothing fills the rest of an adult rect, and no state, motion or mark marks the moment a real adult stand replaces the juvenile.
+   - **The anchor is the feet.** Each place keeps the adult's feet point (footX, footY): the box's bottom-centre. The juvenile master is placed bottom-centred on that same point, at x = footX − w ÷ 2, y = footY − h. Measured on `masters-pods` (all 64 juvenile masters, S01 to S16): every one is ink-centred within 1 px and stands on a fixed foot gap (6 px at 304×312 and 104×112, 2 px at 96×88, 2 to 4 px at 48×48), the gap the juveniles already stand on; so the frame's bottom edge is the feet line, with no per-species offset.
+   - **Each place, the size that fills it, and the rect** (adult rect → juvenile master, 1:1):
+
+     | Place | Adult rect | Juvenile master | Juvenile rect | Rest of the adult rect |
+     | --- | --- | --- | --- | --- |
+     | Home, residents (ground band 24, 300, 640, 228) | (footX − 72, footY − 152, 144, 152) | `-104x112` | (footX − 52, footY − 112, 104, 112): the adult box + (20, 40) | nothing |
+     | Home, sleepers (feet y 512) | ink (footX − 48, 424, 96, 88) | `-96x88` | (footX − 48, 424, 96, 88) | — |
+     | Idle, residents (feet in 16, 376, 992, 176) | (footX − 72, footY − 152, 144, 152) | `-104x112` | (footX − 52, footY − 112, 104, 112) | nothing |
+     | Idle, sleepers (feet y 536) | ink (footX − 48, 448, 96, 88) | `-96x88` | (footX − 48, 448, 96, 88) | — |
+     | Vivarium whole, residents (feet in 16, 296, 992, 176) | (footX − 72, footY − 152, 144, 152) | `-104x112` | (footX − 52, footY − 112, 104, 112) | nothing |
+     | Vivarium whole, sleepers (feet y 456) | ink (footX − 48, 368, 96, 88) | `-96x88` | (footX − 48, 368, 96, 88) | — |
+     | One mibi up close (Habitat, every state), axis 296, feet 392 | (144, 80, 304, 312) | `-304x312` | (144, 80, 304, 312) | — |
+     | The Sitting's face and the guide's face, 304×312 | the face's rect | `-304x312` | the face's rect | — |
+     | Rosters: bay tiles, the Companion's places, Cross's heads | the 48×48 rect | `-48x48` | the 48×48 rect | — |
+
+     There is no 144×152 juvenile; the 104×112 stays in its box and is never blown up to 144×152. Up close, the 304×312 juvenile is the juvenile's own painted up-close size, the one it hatched at (the hand-off), so the adult reads as the same creature it was, not a smaller one: it is the signed master at that size, not a scaled 104×112. (If the creative director's "its 104×112 box" was meant to hold up close too, the rect is (244, 280, 104, 112) on axis 296, feet 392, with nothing in the rest; that would put a 104 px figure under the 300×310 focal minimum, so this spec does not use it without the creative director's word.)
+   - **What follows the drawn box, not the adult's.** In the living windows the mibi's box is the juvenile's 104×112: its feet ring (box width + 16 = 120 by 24), its 4 px lift, its hit target, its waiting lamp 12×12 at the drawn box's top right ((footX + 40, footY − 112)), and its name tag's over-the-resident fallback (top = box.y − 4 − 32). The feet point, the walk band, the draw order by the feet's y, the bed places and the tag's top at feet + 24 do not change. Up close and in rosters every rect is unchanged.
+   - **Shown as a stand-in, never hidden.** The waiting lamp stays on it until its adult stand lands, and its context reads "its painting is on its way" after the stage word ("an adult Untuva"); the stage word and the card ("your Loika, adult") still say adult. No other mark.
+   - **The genome stand-in is the last resort.** Every species S01 to S16 has a signed juvenile stand at 304×312, 104×112, 96×88 and 48×48 (measured above), so no S01 to S16 adult reaches step 3. It stays only for a species with no juvenile stand; then the rig is drawn at the adult's own rect (144×152, 96×88 ink, 304×312, 48×48), feet on the same point, and it is a picture, not a flat box (rule 3). A golden or review capture of S01 to S16 never shows it.
+   - **For the builder.** `pictures.mjs`, kind `mibi` (main, line 81): for an adult or elder, take `mibi-adult-SNN-WxH` when placed; else `mibi-juvenile-SNN-<w'>x<h'>` with 144×152 → 104×112 and every other size unchanged, registered at its own size; else `mibiArt` at w×h. The screen places the returned picture bottom-centred on the feet point and takes its size as the resident's box. No scaling path exists.
 
 **How the gate checks it.** At 1×, on every golden of the screen, the reviewer names the main object and finds it drawn at its rect. Every other drawn rectangle must map to a region that holds content. A flat fill, outline or dotted box that holds no content fails the screen, wherever it sits.
 
@@ -843,7 +857,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Thing | Pixel size |
 | --- | --- |
 | Vivarium (Home's glass) | 640×488 |
-| Residents, sleepers | 144×152 adult or elder; a sleeper in its nap pose. A juvenile is not a placeholder: its signed stand-in, mibi-juvenile-<species>-104x112, and asleep -96x88 |
+| Residents, sleepers | 144×152 adult or elder; a sleeper in its nap pose. A juvenile is not a placeholder: its signed stand-in, mibi-juvenile-<species>-104x112, and asleep -96x88. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) |
 | Bed | 192×56 |
 | Cargo's bay, open and shut | 176×72 |
 | Waiting mark | 24×24, `mark-waiting-24` |
@@ -1055,7 +1069,7 @@ The Vivarium only, one painting a light (dawn, day, dusk, night), the warm key l
 | Thing | Pixel size |
 | --- | --- |
 | Vivarium | 1024×568, a painting per light |
-| Residents, sleepers | 144×152 adult; a juvenile is its signed stand-in, mibi-juvenile-<species>-104x112 |
+| Residents, sleepers | 144×152 adult; a juvenile is its signed stand-in, mibi-juvenile-<species>-104x112. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) |
 | Bed | 192×56 |
 
 ---
@@ -1764,9 +1778,9 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 | `mark-out-with-companion-64x96` | 64×96 | `resident.out` | The mibi's place, kept: the Companion's outline standing on the ground | yes |
 | `room-vivarium-stage-habitat` | 1024×522 | up close's `stage` | The device's housing round the window, the card and the modules | — |
 | `heart-full-24` | 24×24 | the card's heart | A small painted enamel heart | — |
-| The mibi | 304×312 | `resident` | Its standard painting, else its placeholder; a juvenile's, its signed stand-in mibi-juvenile-<species>-304x312 | — |
+| The mibi | 304×312 | `resident` | Its standard painting, else its placeholder; a juvenile's, its signed stand-in mibi-juvenile-<species>-304x312. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) | — |
 | Residents, sleepers, the bed | 144×152, 104×112, 192×56 | the whole | As on Home and Idle | — |
-| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48; a juvenile, its signed stand-in mibi-juvenile-<species>-48x48, 1:1 | — |
+| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48; a juvenile, its signed stand-in mibi-juvenile-<species>-48x48, 1:1. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) | — |
 | `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
 | `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
 | `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
