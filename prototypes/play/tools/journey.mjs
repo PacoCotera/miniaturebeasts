@@ -281,7 +281,7 @@ const screenAt = (frame, W) => frame().evaluate(() => { const el = document.quer
   if (!(major >= 141)) console.log(`E2: skipped on Chromium ${ver} (its override reaches child frames with no change or resize event)`);
   else {
     const { ctx, page, st, mb } = await open(1920, 1080);
-    const cdp = await ctx.newCDPSession(page);
+    const cdp = await ctx.newCDPSession(page), failsBefore = fails.length;
     for (const dsf of [1.25, 1.5, 1.75, 2, 1]) {
       await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: dsf, mobile: false }); await page.waitForTimeout(400);
       const k = Math.max(1, Math.floor(dsf));
@@ -292,6 +292,7 @@ const screenAt = (frame, W) => frame().evaluate(() => { const el = document.quer
       eq(await frameBad(page, cdp, "#fStation", 1024, () => st().evaluate(() => window.__st.capture())), 0, `E2: the Station's differing device pixels at dpr ${dsf}`);
       eq(await frameBad(page, cdp, "#fCompanion", 450, () => mb().evaluate(() => window.__mb.capture())), 0, `E2: the Companion's differing device pixels at dpr ${dsf}`);
     }
+    if (fails.length === failsBefore) console.log("E2: ok (5 ratios)");
     await ctx.close();
   }
 }

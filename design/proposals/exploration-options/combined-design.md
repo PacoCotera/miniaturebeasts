@@ -1,14 +1,14 @@
 # Exploration: combined design
 
-**Proposal, partly decided.** Since this was written, the project lead decided:
+This design is partly decided. Settled:
 world turns (§2); any visible cell can be a starting point, and placing the pawn
 reveals its neighbours, so a new game starts with nine cells (this replaces the
 single landing); and the rough playable is a browser mockup.
 
 This turns the exploration decisions into one design: models A and
 B combined, a permanent world, the action clock, optional partners, seed-pods and
-no capture. Lines marked **Decided** restate those decisions. Everything else is
-a proposal until approved.
+no capture. The decided points are the three above, the optional partner (§5)
+and the prototype scope (§8); everything else is a proposal until approved.
 
 ## 1. The experience
 
@@ -97,7 +97,7 @@ expedition ends. Each turn, deterministic rules decide what changes:
 during an expedition. New finds come only from lifting fog and from areas that
 partners open. It's simpler and pushes progress hard. The cost: the landing
 region runs dry early, and a favourite place has no reason to be revisited.
-**Recommended: world turns.**
+**World turns.**
 
 ## 3. Generated, then permanent
 
@@ -142,13 +142,13 @@ what it senses or can do. Slots are limited, and a mod can be removed and reused
 | Walking (baseline) | Land in your cell and its neighbours; signs within the Probe's sweep | Crossing a ridge reveals the valley beside it |
 | Research | Signs tied to what you've learned | Identifying a species makes its tracks show wherever land is revealed. Learning what makes it shed shows where its pods are likely. Studying a cave crystal shows cave mouths across known land and opens Deep ground |
 | Partner | Its senses, while it's with you; what it reveals stays | Big ears hear deep beats underground. A glowing partner lifts fog around you at Night. A keen nose picks up tracks in neighbouring fog |
-| Items | Found in patches; used once or kept | Tapping a survey cairn reveals the land for several cells around. A lantern seed, once planted, lights a cell's fog for good. A storm glass shows where the next strikes will land |
+| Items | Found in patches; used once or kept | Tapping a survey `cairn` reveals the land for several cells around. A lantern seed, once planted, lights a cell's fog for good. A storm glass shows where the next strikes will land |
 | Probe tier | How far the sweep reaches, how far you can range, how deep you can detect | Tier 1: sweep 1 cell, range 6 cells from the landing. Tier 2: sweep 2, range 10, deep beats appear as "?". Tier 3: deep beats are resolved |
 | Mod | A chosen specialty | A water lens shows underwater cells and finds. Heat sense shows creature signs in fog. An echo filter makes pod beats stand out |
 
 ## 5. Partner gates
 
-**Decided:** a partner is optional and gates higher tiers. Without one, the player
+A partner is optional and gates higher tiers. Without one, the player
 still explores.
 
 **Proposed rule:** a gate is an obstacle you can see. Each gate matches an
@@ -259,8 +259,7 @@ earlier pod, bonded with it and raised it.
 
 ## 8. Prototype scope
 
-The smallest build that tests this, with tokens instead of creature art
-(**Decided**).
+The smallest build that tests this, with tokens instead of creature art.
 
 **What it includes:**
 - **World map:** 16×20 cells generated from a seed, with a hand-made 3×3 landing.

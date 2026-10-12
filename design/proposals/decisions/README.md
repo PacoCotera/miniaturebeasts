@@ -1,7 +1,8 @@
 # Decisions to compare
 
-**Proposal.** These are two open style-guide decisions, each shown side by side at 1×. The
-pictures exist only to make the choice; neither option is a finished screen.
+These are two style-guide decisions, each shown side by side at 1×. The
+pictures exist only to make the choice; neither option is a finished screen. Both
+are decided; the outcome closes the page.
 
 ## A. Station type: bitmap or smooth
 
@@ -38,4 +39,4 @@ lilac token in both. Files: [32 px](tile-size-32.png), [48 px](tile-size-48.png)
   author; the place grid, view and veil code change; and the Station and Companion sprites
   come closer in size.
 
-**Decided 2026-10-07:** 48 px tiles; the smooth face (Inter) on the Station.
+The Station uses 48 px tiles and the smooth face (Inter).

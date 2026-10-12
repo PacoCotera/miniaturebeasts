@@ -1,7 +1,6 @@
 # UI kit: art direction for the rebuild
 
-**Proposal** for the owner's approval before engineering rebuilds the screens. It answers the
-2026-10-07 decision that the prototypes' UI art is not acceptable even for a first playthrough.
+The prototypes' UI art is not acceptable even for a first playthrough; this kit is the art direction for the rebuilt screens.
 It applies [art direction](../art-direction.md) (Miniature Lives: rounded, tactile, directional
 light, expressive eyes, saturated playful colour) to every screen, and takes the layouts of
 [companion-controls](companion-controls.md) and [station-layouts](../style-guide/station-layouts.md) as given.
@@ -82,7 +81,7 @@ brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DAR
 dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no ground drawn
 under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
-**Station palette: 62 colours** (**Working rule**). The numbers live in
+**Station palette: 62 colours** (the working rule). The numbers live in
 [`prototypes/ui/palettes/station.json`](../../prototypes/ui/palettes/station.json), which the Station build took when it renamed its colour uses per the migration table below; this section
 shows them and their roles. It is the one palette of the Station's **art layer**: the chrome,
 the pixel art the build draws (material icons, lamps, pips, the glint, the leaf timer, Shield
@@ -226,7 +225,7 @@ drawn clouds), Pin, Battery, Radio; states: hollow bolt, Shield gone, free pod s
 | Veil edge | static 16 px Bayer fade; lifting swaps baked tile variants, no per-pixel work |
 | Counter tick | +1 per 90 ms, 260 ms flash |
 
-**The pod's layers** (the art director's layer rule, 2026-10-09). One painted pod serves every species: each size class (`large`, `medium`, `small`, `collection`, `list`) is a set of signed layers on one origin, recoloured in the page by the species' colour pair, A (first) and B (second). Composited bottom to top:
+**The pod's layers** (the art director's layer rule). One painted pod serves every species: each size class (`large`, `medium`, `small`, `collection`, `list`) is a set of signed layers on one origin, recoloured in the page by the species' colour pair, A (first) and B (second). Composited bottom to top:
 
 | Layer | Id | Convention | Role |
 | --- | --- | --- | --- |
@@ -280,8 +279,8 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
 - **Companion reach view**, matched to the approved concept: only explored and seen cells show
   ground (78 px, cut from real tiles; seen cells faded, unsurveyed quarters dotted); everything
   else is one lavender cloud bank of big heaps built from the hand-drawn pieces, each lit
-  (V4/N6) on the side facing the island so the land sits in a bright pocket, shaded (N4) below,
-  darkening away from it, lapping unevenly over the pocket's edge. The rain is one diagonal
+  (V4/N6) on the side facing the island so the land sits in a bright patch, shaded (N4) below,
+  darkening away from it, lapping unevenly over that patch's edge. The rain is one diagonal
   sheet of pale streaks over darker cloud at the left, with a straight soft edge and no cells
   under it. Signs are 24 px: paw tracks, signal rings, bolt, pin, white pips; the pawn carries a
   2 px dark silhouette. Range, flag, outpost, a gated cave, the inset.

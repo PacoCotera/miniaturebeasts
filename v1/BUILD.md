@@ -30,11 +30,11 @@ Build commands and CI packaging are in [native](native/README.md); source,
 executable and presenter must match one committed revision. Save worlds and their
 sidecars outside release bundles and back them up together. The
 [release guide](native/UPDATER.md) separates tested bytes from persistent state;
-[deployment changelog](CHANGELOG.md) separates hosting and native activation.
+deployment changelog separates hosting and native activation.
 
 Hosting `/`, `/genome/` and `/sandbox/` does not replace the native game binary or
 reset saves. The [guided authoring proof](prototype/generator-workbench/evidence/guided-authoring/README.md)
-records its separate host behavior. [Status](STATUS.md) identifies implementation
+records its separate host behavior. Status identifies implementation
 and delivery evidence; buildability does not settle open product designs.
 
 Before hardware investment, the [connected software proof](specs/devices.md#software-proof-before-hardware-investment)

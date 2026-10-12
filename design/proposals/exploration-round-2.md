@@ -1,13 +1,12 @@
 # Exploration, round 2: purpose, stakes and progress
 
-**Decided 2026-10-06:** all seven decisions below were taken as recommended
+All seven points below stand
 (materials, prices, Shield, breaking keeps pods, Call, reach and hold, fog bank).
 The numbers stay open to tuning after play.
 
-**Proposal.** This builds on the [combined design](exploration-options/combined-design.md)
+This builds on the [combined design](exploration-options/combined-design.md)
 and the round-3 rough playable (`prototypes/exploration/`). It answers seven
-questions raised by the first owner play and the round-2 playtest. Lines marked
-**Decided** restate owner decisions; everything else is a **Proposal**.
+questions raised by the first owner play and the round-2 playtest.
 
 The target is an expedition where choices matter: what you gather has a purpose,
 staying out is a gamble, the map opens up through progress rather than by
@@ -56,10 +55,10 @@ cells from the start, has 3 shield and carries 2 pods.
 
 ## 2. Materials
 
-**Decided:** supplies stay in the field and are needed for research. **Decided:**
-three broad building blocks, whole units, fungible only within a class.
+Supplies stay in the field and are needed for research.
+Three broad building blocks, whole units, fungible only within a class.
 
-**Proposal: keep Energy, Data and Essence.** Change where each comes from, so
+**Keep Energy, Data and Essence.** Change where each comes from, so
 each one means something in genetics. **Energy** powers machines, **Data** is what the Station reads a genome
 against, and **Essence** is what a body is grown from.
 
@@ -78,7 +77,7 @@ about three or four expeditions. A pod that can't be afforded waits at the
 Station and says what it needs ("needs 2 more Essence"), which gives the next
 expedition a purpose.
 
-**Proposal: humming stones stop giving Data.** A stone has no genome to read.
+**Humming stones stop giving Data.** A stone has no genome to read.
 They can stay as scenery, or be cut.
 
 **Why this fits genomics.** Bigger bodies need more Essence. Complex genomes need
@@ -95,10 +94,10 @@ beyond a possible pod.
 
 ## 3. Stakes: the storm gamble
 
-**Decided:** staying in a storm is a real gamble with higher odds of damage.
+Staying in a storm is a real gamble with higher odds of damage.
 Player pins cost something.
 
-**Proposal: rename "hull" to "Shield".** It reads like a game, a child knows what
+**Rename `hull` to "Shield".** It reads like a game, a child knows what
 losing a shield means, and it ties to Energy, because Energy recharges it. The
 three bars get a shield icon and the word "Shield" the first time.
 
@@ -144,11 +143,11 @@ pushes players to bank every single pod, which shortens expeditions.
 
 ## 4. Fog and map progress
 
-**Decided:** Probe range limits how far an expedition reaches, and that is a
+Probe range limits how far an expedition reaches, and that is a
 reason to upgrade. Any seen cell can be a start. Fog lifts through research,
 partners, items, Probe tiers and mods.
 
-**Proposal: range is measured from the expedition's start.** A dotted square
+**Range is measured from the expedition's start.** A dotted square
 shows the edge on the map. Stepping past it bumps: "Edge of the Probe's range ·
 tier 2 reaches further". Starts stay free, so each expedition pushes the frontier
 outward by about range + 1 cells from known land.
@@ -168,7 +167,7 @@ the map in one expedition is no longer possible.
 **What lifts fog beyond walking:**
 - **Lightning.** A strike on the map lights its cell for good, even in fog: one
   more reason to stay out in a storm.
-- **Survey cairn** (an item in a place). Climbing it reveals land for 3 cells
+- **Survey `cairn`** (an item in a place). Climbing it reveals land for 3 cells
   around that cell, beyond range. You can see it but not reach it yet, so it
   gives the next expedition a destination.
 - **Partner senses.** A glowing partner lifts one extra ring at Night; a keen
@@ -182,7 +181,7 @@ would need camps.
 
 ## 5. Knowing where you stand
 
-**Proposal: four cell states on the map,** told apart by shape as well as colour:
+**Four cell states on the map,** told apart by shape as well as colour:
 
 | State | Looks like | Means |
 | --- | --- | --- |
@@ -195,7 +194,7 @@ would need camps.
   inside it has found nothing hidden. Calling is how you check.
 - **Signs on cleared cells disappear,** which removes most of the clutter.
 
-**Proposal: a minimal view of cargo and discoveries.**
+**A minimal view of cargo and discoveries.**
 - **HUD, always shown:** the shield bars; two pod outlines, filled with each
   pod's shell mark as you take pods; and the Energy number, because Energy is
   spent in the field. Data and Essence float "+2" when they change; their totals
@@ -205,7 +204,7 @@ would need camps.
   recorded, and one line, "In reach: 6 visited · 2 cleared · 3 seen". No log
   screen.
 
-**Proposal: signs explain themselves.**
+**Signs explain themselves.**
 - **One picture per thing, and only five signs** on the map: paw (tracks); beat
   (a slow pulse, often a pod; today's "antenna with waves"); bolt (storm charge);
   pin; and the gate's own shape (narrow hole, fast water, deep "?"). Rings
@@ -223,16 +222,16 @@ a mode and costs presses for something the line can do for free.
 
 ## 6. Going home
 
-**Decided:** the field clock counts actions; no timers and no time sinks.
+The field clock counts actions; no timers and no time sinks.
 
-**Proposal: an expedition ends when staying stops paying.** Five pressures, none
+**An expedition ends when staying stops paying.** Five pressures, none
 of them a clock:
 
 1. **A full hold.** Tier 1 carries 2 pods. A third pod is turned away without
    being lost ("Hold full · swap, or send home"). Materials cap at 20 of each.
 2. **Range.** Inside a 5×5 area, everything in reach gets visited and cleared.
    When nothing is left, the line says so: "Everything in reach is explored".
-3. **Nothing refills.** **Decided:** the world turns once per expedition. New
+3. **Nothing refills.** The world turns once per expedition. New
    finds arrive only then, and the line says "Nothing new until the world turns".
 4. **Banking.** What you carry is lost if the Probe breaks. The more you hold,
    the stronger the pull to send it home.
@@ -252,10 +251,10 @@ timer in all but name, and it punishes looking around.
 
 ## 7. The fourth button: Call
 
-**Decided:** a fourth button only if it is also useful in Companion mode, and a
+A fourth button only if it is also useful in Companion mode, and a
 button doesn't make an action free.
 
-**Proposal: add Call,** a whistle-shaped button beside Back and Confirm. It
+**Add Call,** a whistle-shaped button beside Back and Confirm. It
 always means "send a signal", and things answer it.
 
 | Where | What Call does | Cost |
@@ -275,7 +274,7 @@ mode gains nothing.
 
 ## 8. Pulse, creatures and partners
 
-**Proposal: keep the pulse as Call, with felt effects.**
+**Keep the pulse as Call, with felt effects.**
 - **Hidden finds glint** (buried pods, charged stones) and stay outlined until
   taken. Before, they glinted once and were easy to lose.
 - **It completes the count,** so the map can mark the cell cleared (§5).
@@ -289,7 +288,7 @@ mode gains nothing.
 down. It is simpler, but loses the lure, the partner command and the deliberate
 "check if anything's hidden".
 
-**Proposal: approach and feeding without a partner.**
+**Approach and feeding without a partner.**
 - **How you move matters.** Creeping (tap) never startles a creature unless you
   step next to it; walking (hold) startles anything within its notice range.
 - **A warning before flight.** A creature shows "!" for one action before it
@@ -305,11 +304,11 @@ down. It is simpler, but loses the lure, the partner command and the deliberate
 - **What feeding earns:** Data (§2), and for an Untuva a chance of a pod after
   its meal. Pressing the fruit for Essence is the other choice.
 
-**Partners by life stage.** **Decided:** juveniles ride in the Companion but
+**Partners by life stage.** Juveniles ride in the Companion but
 don't join Probe expeditions; adults help; elders keep helping with shifted
 strengths and weaknesses.
 
-| Stage | On an expedition | Proposal |
+| Stage | On an expedition | Design |
 | --- | --- | --- |
 | Juvenile | Rides in the Companion, not the Probe | Learns to answer Call in Companion mode. A riding juvenile changes nothing in the Probe |
 | Adult | Full partner | Its species ability (dig, calm, sniff) at full strength. Comes on Call |
@@ -318,7 +317,7 @@ strengths and weaknesses.
 ## 9. Fog bank
 
 Today the fog bank only changes the picture: it dims the place and stops the map
-sweep. **Proposal: make it the storm's opposite, a safe event that trades
+sweep. **It becomes the storm's opposite, a safe event that trades
 sight for closeness.**
 
 - **Cover.** Inside the bank, creatures notice you 2 tiles later (as now), and
@@ -345,24 +344,24 @@ storm-only. It saves build and tuning time and keeps the playtest focused on the
 storm gamble. The cost is less variety between expeditions, and nothing to show
 Essence as its own weather event yet.
 
-## Decisions for the owner
+## The seven points
 
 1. **Materials.** Keep Energy, Data and Essence, with Data coming from creature
-   moments you cause and humming stones retired as a source? Or keep today's
-   sources and only add sinks?
-2. **Station prices.** Should hatching a founder cost 4 Essence and 3 Energy, so
-   an unaffordable pod waits and says what it needs?
-3. **Shield.** Rename "hull" to "Shield", let 3 Energy patch 1 bar in the field,
-   and show storm odds as 1–3 bolts (1 in 12, then 1 in 6 in the open)?
-4. **Breaking.** Does a broken Probe lose every unit of Energy, Data and Essence
-   carried but keep pods, with no repair cost? Or does it also lose one pod?
+   moments you cause and humming stones retired as a source, not keeping today's
+   sources and only adding sinks.
+2. **Station prices.** Hatching a founder costs 4 Essence and 3 Energy, so
+   an unaffordable pod waits and says what it needs.
+3. **Shield.** Rename `hull` to "Shield", let 3 Energy patch 1 bar in the field,
+   and show storm odds as 1–3 bolts (1 in 12, then 1 in 6 in the open).
+4. **Breaking.** A broken Probe loses every unit of Energy, Data and Essence
+   carried but keeps pods, with no repair cost, and does not also lose one pod.
 5. **Fourth button.** Add Call: pulse in a place, a pin for 1 Energy on the map,
-   and calling the riding mibi in Companion mode? Or no button, with pins in the
-   mode list?
+   and calling the riding mibi in Companion mode, not no button with pins in the
+   mode list.
 6. **Reach and hold.** Tier 1 reaches 2 cells from the start and carries 2 pods
-   (tier 2: 4 cells, 3 pods). Is that the right size for an expedition?
+   (tier 2: 4 cells, 3 pods). That is the right size for an expedition.
 7. **Fog bank.** Make it a safe cover event (wary creatures approachable, dew for
-   Essence, sight and Call cut to 3 tiles), or cut it for this round?
+   Essence, sight and Call cut to 3 tiles), not cut for this round.
 
 ## Build scope for the next prototype round
 
@@ -373,7 +372,7 @@ Essence as its own weather event yet.
   identifying, hatching and the tier 2 upgrade; unaffordable pods wait.
 - **Storm.** Bolts on the HUD; stray strikes at 1 in 12 and 1 in 6 in the open,
   none in shelter; +3 charge at the peak; lightning reveals map cells. Shield
-  replaces hull, with a 3-Energy patch. A break loses carried materials, keeps pods.
+  replaces `hull`, with a 3-Energy patch. A break loses carried materials, keeps pods.
 - **Range and tiers.** A range square from the start with an edge bump. Tiers 1
   and 2 as in the table; the tier 2 upgrade reads the deep "?".
 - **Map states.** Seen, visited-with-pips and cleared (needs a Call); five signs

@@ -1,6 +1,6 @@
 # Name screen: intellectual-property check of the names in use
 
-**Proposal** (2026-10-07) for the owner. Read-only screen of every name in `design/`, `website/index.html`, `prototypes/exploration`, `prototypes/station` and `art/*/README.md` (origin/main at 2529702), plus the names proposed in `design/proposals/taxonomy.md` (not yet committed). **This is a web screen, not legal clearance.** It reads only what a web search surfaces: no trademark register was searched directly, so pending filings, unregistered use and other countries' registers are invisible to it.
+A read-only screen of every name in `design/`, `website/index.html`, `prototypes/exploration`, `prototypes/station` and `art/*/README.md` (origin/main at 2529702), plus the names proposed in `design/proposals/taxonomy.md` (not yet committed). **This is a web screen, not legal clearance.** It reads only what a web search surfaces: no trademark register was searched directly, so pending filings, unregistered use and other countries' registers are invisible to it.
 
 **Verdicts.** *Clear*: ordinary word or no notable collision. *Caution*: the same name is a known creature, character, item, product or term in a game, franchise, book, film or toy line. *Conflict*: distinctive name that identifies a well-known property. **Searches** (about 65 run, several names per query when plain): cr creature, mon monster game, pk Pokémon, vg video game character, toy, gm "<name> game", tm trademark, app, bk book, gen general or plain-word check.
 

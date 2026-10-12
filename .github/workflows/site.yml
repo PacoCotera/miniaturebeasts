@@ -14,8 +14,8 @@ permissions:
   contents: write
 
 concurrency:
-  # a pull request's runs queue by number and a new push cancels the older run; a main run, a dispatch and a deploy share one group and are never cancelled
-  group: ${{ github.event_name == 'pull_request' && format('sandbox-pr-{0}', github.event.pull_request.number) || 'sandbox' }}
+  # one group per workflow and ref: a pull request's runs (refs/pull/N/merge) queue and a new push cancels the older one; main's runs and deploys queue on main's ref and are never cancelled; a dispatch on a branch queues on that branch and no longer shares main's group
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -67,17 +67,17 @@ jobs:
            if(/type=[\"']module[\"']/.test(m[1])){const t=path.join(tmp,(n++)+'.mjs');fs.writeFileSync(t,m[2]);execFileSync(process.execPath,['--check',t],{stdio:'inherit'});}else new Function(m[2]);}}
           console.log('scripts parse')" $(find _site -name '*.html')
       - name: Playwright's Chromium (cached by the Playwright version)
-        # The browser download was the one step whose time varied (30 s to 2 m 35 s). The key's 1.49.1 moves with playwright@1.49.1 below.
+        # The browser download was the one step whose time varied (30 s to 2 m 35 s). The key's 1.56.1 moves with playwright@1.56.1 below.
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/pw
-          key: playwright-1.49.1-chromium-ubuntu-24.04-${{ runner.arch }}
+          key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
       - name: Smoke-test in a browser
         run: |
           set -euo pipefail
           (cd _site && python3 -m http.server 8000 >/dev/null 2>&1 &)
           sleep 1
-          npm --prefix "$RUNNER_TEMP" install --silent playwright@1.49.1
+          npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
           # split and timed, so a slow run says which part was slow
           time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null
           time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
