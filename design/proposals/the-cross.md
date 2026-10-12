@@ -1,14 +1,14 @@
 # The cross: how two mibis make a child
 
-**Proposal** from game design with the genome engineer, 2026-10-08. It gives the minimal cross of the approved [research loop](research-loop.md) (§5, decision 5) its rules, on the [species frames](species-frames.md) and the [taxonomy](taxonomy.md) (§2 trunk and branch, §4 same-species breeding). **Decided** marks owner decisions restated here; everything else is **Proposal**. Numbers are illustrations unless marked.
+It gives the minimal cross of the [research loop](research-loop.md) (§5, decision 5) its rules, on the [species frames](species-frames.md) and the [taxonomy](taxonomy.md) (§2 trunk and branch, §4 same-species breeding). Numbers are illustrations unless marked.
 
-**Decided 2026-10-08:** continuous loci **blend** (the child sits between its parents with a small spread); switch loci are **Mendelian** (a dominant copy shows, a recessive one hides, sleeping looks can wake); inheritance is **independent per trait**, because this is a breeding game; **mutation is not in the first build** and may come later as an event during incubation, breeding or exploration; mibis will **age and die**, but not today; **the more removed the parents' genomes, the better the cross**, and **inbreeding inflicts a penalty**, whose form is still to be designed (§5, decision 1).
+Continuous loci **blend** (the child sits between its parents with a small spread); switch loci are **Mendelian** (a dominant copy shows, a recessive one hides, sleeping looks can wake); inheritance is **independent per trait**, because this is a breeding game; **mutation is not in the first build** and may come later as an event during incubation, breeding or exploration; mibis will **age and die**, but not today; **the more removed the parents' genomes, the better the cross**, and **inbreeding inflicts a penalty**, whose form is still to be designed (§5, decision 1).
 
-**Decided 2026-10-08, on this proposal:** the three decisions of §8, as recommended. **The penalty** is **B, what hides surfaces, with A, the narrowing spread, as its second half** (§5): in a close cross, hidden copies and sleeping looks surface more, and the blend's spread narrows with kinship. **Relatedness** is **pedigree kinship** from recorded parents, with **genome identity as the fallback** where a parent is unknown (§4); this adds a **parents field to the save** from the first cross. **A blended child carries both copies equal to the drawn value** (§1). The consequences listed under §8 ("What this changes once decided") now apply.
+The three decisions of §8 are taken. **The penalty** is **B, what hides surfaces, with A, the narrowing spread, as its second half** (§5): in a close cross, hidden copies and sleeping looks surface more, and the blend's spread narrows with kinship. **Relatedness** is **pedigree kinship** from recorded parents, with **genome identity as the fallback** where a parent is unknown (§4); this adds a **parents field to the save** from the first cross. **A blended child carries both copies equal to the drawn value** (§1). The consequences listed under §8 ("What this changes once decided") now apply.
 
 ## 1. The rules, per kind of part
 
-A cross takes two adults of one species and makes one child, a new individual with real parents (**Decided**). Every heritable locus is crossed on its own, with no linkage between traits, and nothing else is.
+A cross takes two adults of one species and makes one child, a new individual with real parents. Every heritable locus is crossed on its own, with no linkage between traits, and nothing else is.
 
 | Kind of part | Rule |
 | --- | --- |
@@ -19,7 +19,7 @@ A cross takes two adults of one species and makes one child, a new individual wi
 | **Locked part** | **Identical in both parents, never crossed.** The child takes the frame's pair. A parent whose locked pair differs is not this species, and the pair is refused (§3) |
 | **Sealed chapter** | Its loci are **inherited and act from birth**, by the rules above. They are **unreadable until the find**: the child's ring keeps the notch, and the forecast shows the chapter shut, with no seeds |
 
-Mutation has no place in these rules today. When it comes, it is an **event** with its own picture (a flicker in the incubator, a strange pod, a storm), never a hidden roll inside a cross, so a surprise look always has a story the player saw (**Decided** direction).
+Mutation has no place in these rules today. When it comes, it is an **event** with its own picture (a flicker in the incubator, a strange pod, a storm), never a hidden roll inside a cross, so a surprise look always has a story the player saw.
 
 Continuous copies are a change for the workbench: today a ratio is two named alleles blended by `copy-mean` (`small` 0.24, `large` 0.32), so a copy is a word. Under blending a copy is a **number in the locus range**, and the catalogue's named alleles become the **bins** the player sees as looks (*thin rings · between · wide pale rings*), as species-frames §1 already treats them. A pod's wild copies are still drawn from the pool's named values.
 
@@ -36,7 +36,7 @@ The detail view, free and one press away, may show the quarters as counts and th
 
 ## 3. Viability and eligibility
 
-The child is **validated whole**, built by the rig against its frame before anything is spent, as every founder is (**Decided:** every offspring is viable). A child that cannot be built never exists; the cross is not re-rolled, the Cross screen marks the clashing traits and offers no Grow button, as Create does for a shape that won't grow. With one draw per trait, most pairs give a buildable child nearly always; the frame checks (200 random individuals from the pools, all built) say which species need watching.
+The child is **validated whole**, built by the rig against its frame before anything is spent, as every founder is (every offspring is viable). A child that cannot be built never exists; the cross is not re-rolled, the Cross screen marks the clashing traits and offers no Grow button, as Create does for a shape that won't grow. With one draw per trait, most pairs give a buildable child nearly always; the frame checks (200 random individuals from the pools, all built) say which species need watching.
 
 **Ineligible pairs are refused before cost**, on the pick itself, with no seeds drawn:
 
@@ -69,7 +69,7 @@ Three candidate forms. Each is worked on the same two pairs of Loikas: **two wil
 | **B. What hides, surfaces** | At each switch locus where the child would carry one hidden copy, with chance 2 × kinship it takes that hidden copy twice instead. Sleeping parts wake with their switch | Markings `off/on` × `off/on`: one in four pale | Half of the carrier outcomes turn pale: about two in four pale, and as often a bare head where the crest would have shown. Good and bad surface alike | More of the four seeds show the hidden look, and the sleeping bud opens on them; the child's ring has more matched spokes than its parents' |
 | **C. Weaker doings** | Each doing's shown value moves toward its weak end by a fraction equal to the kinship, after the blend. The genes are unchanged; the body is | Efficiency as drawn | Efficiency drawn at 0.75 loses a quarter of its distance to 0.6, landing near 0.71; drive and reserve likewise: the child tires sooner and runs slower than either parent | The doings' seeds droop (a resting posture, a slower stride); in the vivarium the child visibly tires first. Nothing on the ring, since nothing in the genes changed |
 
-**Recommended: B, with A as its second half.** B is genetic and heritable, it is the lesson in one picture (a close cross brings out what the parents hide, the lovely and the ugly), and it is the same mechanism the game already teaches: sleeping looks can wake. A makes the long-term cost real for breeders chasing a wish: a closed line can only average itself, so new wild pods stay worth bringing home. C is the truest to life and the least fair: it punishes the mibi, not the breeder, and the child has done nothing. If the owner wants it, it belongs with ageing, as a shorter life, not a weaker one.
+**Recommended: B, with A as its second half.** B is genetic and heritable, it is the lesson in one picture (a close cross brings out what the parents hide, the lovely and the ugly), and it is the same mechanism the game already teaches: sleeping looks can wake. A makes the long-term cost real for breeders chasing a wish: a closed line can only average itself, so new wild pods stay worth bringing home. C is the truest to life and the least fair: it punishes the mibi, not the breeder, and the child has done nothing. If it is wanted, it belongs with ageing, as a shorter life, not a weaker one.
 
 ## 6. Worked examples
 
@@ -107,12 +107,12 @@ Breed the brightest child back to Ember and kinship is 1/4: under A the glow sto
 
 **The first Station build:** the Cross screen with its pick, eligibility refusals and the four-seed and range-picture forecast; the cross itself with blending and independent assortment; the **parents field in the save** from the first cross, because kinship cannot be recovered later; the stamp overlay on the pick, with shared spokes lit, as the relatedness picture. The penalty ships as soon as its form is decided, which can be after the screen, but not after the first saved cross.
 
-## 8. Decisions for the owner
+## 8. Decisions
 
-All three **Decided 2026-10-08** as recommended.
+All three follow the recommendations below.
 
-1. **The penalty's form.** *Recommended:* **B, what hides surfaces, with A, the narrowing spread, as its second half.** C is set aside for ageing, as a shorter life. **Decided.**
-2. **Relatedness.** *Recommended:* **pedigree kinship** from the save's parents field, with genome identity as the fallback where a parent is unknown and as the picture in the stamp overlay. This unparks the parents field of the family tree, and nothing else of it. **Decided.**
-3. **The blended child's two copies.** *Recommended:* **both equal to the drawn value**, so a blend hides nothing and the ring's two tracks match at that spoke. The alternative keeps one nudged copy per parent and shows their mean, which keeps the tracks different and pins the child near the midpoint. **Decided.**
+1. **The penalty's form.** *Recommended:* **B, what hides surfaces, with A, the narrowing spread, as its second half.** C is set aside for ageing, as a shorter life.
+2. **Relatedness.** *Recommended:* **pedigree kinship** from the save's parents field, with genome identity as the fallback where a parent is unknown and as the picture in the stamp overlay. This unparks the parents field of the family tree, and nothing else of it.
+3. **The blended child's two copies.** *Recommended:* **both equal to the drawn value**, so a blend hides nothing and the ring's two tracks match at that spoke. The alternative keeps one nudged copy per parent and shows their mean, which keeps the tracks different and pins the child near the midpoint.
 
-**What this changes, now decided (2026-10-08):** research-loop §7 and family-tree §1, where a child "shares one of each parent's two marks at every spoke" and the stamp verifies lineage at 100 percent, hold for switches only; at a blended spoke the child's marks sit between its parents', and the stamp check becomes a range check there. Research-loop §4's "known where both parents' copies were the same" holds for switches; a blended trait is known only when read. Taxonomy §3's genotype counts per species (a Loika's 243) become counts of bins. `species.mjs` `crossIndividuals` and the frame checks take continuous copies.
+**What this changes, now decided:** research-loop §7 and family-tree §1, where a child "shares one of each parent's two marks at every spoke" and the stamp verifies lineage at 100 percent, hold for switches only; at a blended spoke the child's marks sit between its parents', and the stamp check becomes a range check there. Research-loop §4's "known where both parents' copies were the same" holds for switches; a blended trait is known only when read. Taxonomy §3's genotype counts per species (a Loika's 243) become counts of bins. `species.mjs` `crossIndividuals` and the frame checks take continuous copies.
