@@ -30,15 +30,19 @@ out, proof = sys.argv[1:3]; os.makedirs(out, exist_ok=True); os.makedirs(proof, 
 P48 = palmod.load()
 cols = json.load(open(os.path.join(G, "mockup", "b1", "biome-meadow.json")))["colours"]
 hx = lambda h: tuple(int(h[k:k + 2], 16) for k in (1, 3, 5))
+assert len(cols) == 96 and all(cols[i]["hex"] == P48.hexes[i] for i in range(48))
+# fog (C5): four neutral greys after b1's set, the fog's targets only (no source maps to them), so meadow fog never reads lavender
+FOG_RAMP = ["#6f7a72", "#98a39a", "#c3cbc3", "#e3e8e1"]
+cols = cols + [{"index": 96 + k, "hex": h, "set": "meadow", "material": "fog"} for k, h in enumerate(FOG_RAMP)]
 PAL = np.array([hx(c["hex"]) for c in cols]); NC = len(PAL); TR = NC          # transparent while building; written as magenta's slot (44)
-assert NC == 96 and all(cols[i]["hex"] == P48.hexes[i] for i in range(48))
+NSRC = 96                                                          # the colours sources map to (the fog greys are excluded)
 CORE_G = ["pine", "forest", "leaf", "grass", "sprout", "lime"]
 mat = np.array([c.get("material", "grass" if c.get("name") in CORE_G else "core") for c in cols])
 lum = 0.2126 * PAL[:, 0] + 0.7152 * PAL[:, 1] + 0.0722 * PAL[:, 2]
 
 # ---- the palette's tables
 def nearest(rgb, among=None):
-    s = np.arange(NC) if among is None else np.array(among); q = PAL[s]
+    s = np.arange(NSRC) if among is None else np.array(among); q = PAL[s]
     d = (q[:, 0] - rgb[0]) ** 2 * 3 + (q[:, 1] - rgb[1]) ** 2 * 4 + (q[:, 2] - rgb[2]) ** 2 * 2
     return int(s[np.argmin(d)])
 RAMP = {}
@@ -58,13 +62,15 @@ def gstep(i, k):
 DARK = [P48.dark[i] if i < 48 else gstep(i, -1) if mat[i] == "grass" else rstep(i, -1) for i in range(NC)]
 LIGHT = [P48.light[i] if i < 48 else gstep(i, 1) if mat[i] == "grass" else rstep(i, 1) for i in range(NC)]
 def mix(target, t, i): tr = PAL[P48.index[target]]; return PAL[i] + (tr - PAL[i]) * t
-FOG = [P48.fog[i] if i < 48 else nearest(mix("bone", .62, i)) for i in range(NC)]
+FOGT = np.array(hx(FOG_RAMP[-1]), float); FOGI = list(range(96, 100))
+FOG = [P48.fog[i] if i < 48 else nearest(PAL[i] + (FOGT - PAL[i]) * .62, FOGI + [i, LIGHT[i], LIGHT[LIGHT[i]]]) if i < 96
+       else FOGI[min(3, FOGI.index(i) + 1)] for i in range(NC)]   # toward #e3e8e1 at .62, among the fog greys and the entry's own lighter steps
 FADE = [P48.fade[i] if i < 48 else nearest(mix("stone", .5, i)) for i in range(NC)]
 
 def to_idx(path_or_img):
     im = Image.open(path_or_img) if isinstance(path_or_img, str) else path_or_img
     a = np.asarray(im.convert("RGBA")); rgb = a[..., :3].reshape(-1, 1, 3).astype(int)
-    i = ((rgb - PAL[None]) ** 2).sum(-1).argmin(1).reshape(a.shape[:2])          # nearest colour, plain RGB distance
+    i = ((rgb - PAL[None, :NSRC]) ** 2).sum(-1).argmin(1).reshape(a.shape[:2])   # nearest colour, plain RGB distance (b1's 96 only)
     return np.where(a[..., 3] > 127, i, TR)
 
 # ---- b1's lawn ramp: its seven commonest lawn tones, dark to light, and the lit tone they centre on
@@ -164,9 +170,21 @@ for k, st in enumerate(("e", "s", "es", "c")): add(f"meadow/shadow/cast-{st}", s
 WQ = {n: to_idx(os.path.join(TS, "water", n + ".png")) for n in ("q-nw-edgeh-f1", "q-nw-fill-f1")}
 bank = WQ["q-nw-edgeh-f1"]; bk = bank[bank != TR]; bk = bk[np.isin(mat[bk], ["earth", "sand"])]; bv, bc = np.unique(bk, return_counts=True)
 SAND = sorted(bv[np.argsort(-bc)[:2]], key=lambda i: -lum[i]) if len(bv) else [P48.index["sand"]]
-rs = np.random.RandomState(9); sd = np.full((48, 48), SAND[0])
-for _ in range(26): y, x = rs.randint(48), rs.randint(47); sd[y, x] = SAND[-1]; sd[y, x + 1] = SAND[-1] if rs.rand() < .5 else sd[y, x + 1]
-add("meadow/ground/sand-1", sd, kind="ground", set="sand", variant="1")
+PEB, PEBL = nearest((122, 98, 72)), nearest((214, 196, 160))
+def sand_tex(seed):
+    """sand with grain (C5: the rock field read flat tan): a smoothed field in two sand tones, a fine grain of the darker, and a few
+    pebbles (a dark body, a lit top-left pixel), none within 3 px of the tile's sides so tiles meet on grain alone"""
+    from scipy import ndimage as nd_
+    rs = np.random.RandomState(seed); n = nd_.gaussian_filter(rs.normal(0, 1, (48, 48)), 4); n = (n - n.mean()) / n.std()
+    yy, xx = np.mgrid[0:48, 0:48]; fade = np.clip(np.minimum(np.minimum(yy, 47 - yy), np.minimum(xx, 47 - xx)) / 5.0, 0, 1)
+    sd = np.where(n * fade > 0.5 + 0.3 * bayer(48, 48) / 16, SAND[-1], SAND[0])
+    g = rs.rand(48, 48) < .07; sd[g] = SAND[-1]
+    for _ in range(rs.randint(3, 6)):
+        y, x = rs.randint(4, 43), rs.randint(4, 43); w, h = rs.randint(2, 4), rs.randint(1, 3)
+        sd[y:y + h, x:x + w] = PEB; sd[y, x] = PEBL
+    return sd
+for k in range(2): add(f"meadow/ground/sand-{k + 1}", sand_tex(9 + k), kind="ground", set="sand", variant=str(k + 1))
+SANDTEX = sand_tex(9)
 WFILL = WQ["q-nw-fill-f1"]; wv, wc = np.unique(WFILL, return_counts=True); WB = int(wv[np.argmax(wc)])
 for k in range(2):
     rd = np.random.RandomState(20 + k); dp = np.full((48, 48), DARK[WB])
@@ -192,11 +210,41 @@ for f in sorted(os.listdir(os.path.join(G, "decals"))):
 for p in json.load(open(os.path.join(TS, "water", "water.json")))["pieces"]:
     f = {k: v for k, v in p.items() if k not in ("name", "file", "px")}
     a = to_idx(os.path.join(TS, "water", p["file"]))
-    if p["kind"] == "shore":
-        f["set"] = "water"
-        # the page draws a water tile's quarters with no ground under them: the land margin beyond the bank is lawn here, never a hole
-        yy, xx = np.nonzero(a == TR); a[yy, xx] = tone(LAWN0 + LIPF[1][yy % 48, xx % 48])
+    if p["kind"] != "band":                                               # every water piece (quarters, macros, lobes, beaches, the bend)
+        if p["kind"] == "shore": f["set"] = "water"
+        # the page draws a water tile's quarters with no ground under them: the land margin beyond the bank is lawn here, never a hole;
+        # beside sand the same quarter takes its margin in sand (set water-sand, the loader's choice when the land neighbour is sand)
+        yy, xx = np.nonzero(a == TR); b = a.copy()
+        a[yy, xx] = tone(LAWN0 + LIPF[1][yy % 48, xx % 48]); b[yy, xx] = SANDTEX[yy % 48, xx % 48]
+        add(p["name"].replace("/water-", "/water-sand-"), b, **dict(f, set="water-sand" if p["kind"] == "shore" else "sand-margin"))
     add(p["name"], a, **f)
+
+# ---- sand quarters (for the loader's sandShore rule: the sand's own cell carries its edge, as water's does): the lawn outside a
+# wavering edge 10 px inside each side that meets other ground, corners turning inside their quarter (outer r 14, inner r 10), a
+# darker rim on the sand, blades of the lawn leaning over it. Kind shore, set sand, frame 1 (sand does not move).
+def sand_quarter(quad, state, seed):
+    north = quad in ("nw", "ne"); west = quad in ("nw", "sw"); IN = 10
+    yy, xx = np.mgrid[0:24, 0:24]; U = np.where(west, xx, 23 - xx); V = np.where(north, yy, 23 - yy)
+    wv = lambda t: np.round(1.0 * np.sin(2 * np.pi * t / 24))
+    if state == "fill": land = np.zeros((24, 24), bool)
+    elif state == "edgeh": land = V < IN + wv(U)
+    elif state == "edgev": land = U < IN + wv(V)
+    elif state == "outer": land = (V < IN + wv(U)) | (U < IN + wv(V)) | ((U < 24) & (V < 24) & (np.hypot(U - 24, V - 24) > 24 - IN))
+    else: land = np.hypot(U, V) < IN
+    q = sand_tex(seed)[:24, :24].copy() if quad == "nw" else sand_tex(seed)[(0 if north else 24):(24 if north else 48), (0 if west else 24):(24 if west else 48)].copy()
+    from scipy import ndimage as nd_
+    rim = ~land & nd_.binary_dilation(land, iterations=1); q[rim] = PEB
+    lawn_ = tone(LAWN0 + LIPF[1][:24, :24]); q = np.where(land, lawn_, q)
+    rng = np.random.RandomState(seed + 5); edge = land & nd_.binary_dilation(~land, iterations=1)
+    for y, x in zip(*np.where(edge)):
+        if rng.rand() < .4:
+            dy, dx = (1 if north else -1) * int(state in ("edgeh", "outer")), (1 if west else -1) * int(state in ("edgev", "outer"))
+            y2, x2 = y + dy, x + dx
+            if 0 <= y2 < 24 and 0 <= x2 < 24 and not land[y2, x2]: q[y2, x2] = gstep(LRAMP[LAWN0], 1)
+    return q
+for qi, qd in enumerate(("nw", "ne", "se", "sw")):
+    for st in ("fill", "edgeh", "edgev", "outer", "inner"):
+        add(f"meadow/shore/sand-{qd}-{st}-f1", sand_quarter(qd, st, 60 + qi), kind="shore", set="sand", quad=qd, state=st, frame=1)
 
 # ---- lip quarters: the candidate geometry by the plateau-edge rule (outline, lit rim, two shade steps beyond, a fringe)
 def grow(m, n):

@@ -30,9 +30,9 @@ L = ["..................",
      "....11111FF.......",
      "....FFFFF.........",
      "....FFFFF.....www.",
-     "........wwwwwwwww.",
-     "........wwwwwwwww.",
-     "........wwwwwwwww."]
+     "..........wwwwwww.",
+     ".....ssss.wwwwwww.",
+     ".....ssssswwwwwww."]
 R, Cn = len(L), len(L[0]); img = np.full((R * 48, Cn * 48), -1)
 at = lambda r, c: L[r][c] if 0 <= r < R and 0 <= c < Cn else None
 def level(ch): return 1 if ch == "1" else 0
@@ -45,7 +45,12 @@ for r in range(R):
         k = hsh("lawn", r, c) % len(lawn)
         while (c > 0 and k == v[(r, c - 1)]) or (r > 0 and k == v[(r - 1, c)]): k = (k + 1) % len(lawn)
         v[(r, c)] = k
-        if L[r][c] == "s": put(PC[by(kind="ground", set="sand")[0]][1], r * 48, c * 48)
+        if L[r][c] == "s":                                               # sand by the sandShore rule: its quarters by its land mask (land = neither sand nor water)
+            m = sum(1 << i for i, (dy, dx) in {0: (-1, 0), 1: (-1, 1), 2: (0, 1), 3: (1, 1), 4: (1, 0), 5: (1, -1), 6: (0, -1), 7: (-1, -1)}.items() if at(r + dy, c + dx) not in ("s", "w", None))
+            for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "se": (24, 24), "sw": (24, 0)}.items():
+                a_ = m >> (0 if q in ("nw", "ne") else 4) & 1; b_ = m >> (6 if q in ("nw", "sw") else 2) & 1; d_ = m >> {"ne": 1, "se": 3, "sw": 5, "nw": 7}[q] & 1
+                st_ = "outer" if a_ and b_ else "edgeh" if a_ else "edgev" if b_ else "inner" if d_ else "fill"
+                put(toned(PC[f"meadow/shore/sand-{q}-{st_}-f1"][1], 0), r * 48 + y, c * 48 + x)
         else: put(toned(PC[lawn[k]][1], level(L[r][c])), r * 48, c * 48)
 # the cast shadow on the lower lawn (proposed loader rule): e = the west neighbour is raised (plateau or face), s = the north neighbour
 # is a face's foot, es = both, c = only the north-west neighbour is raised; toned by the tile's level like the lawn
@@ -75,13 +80,17 @@ for r in range(R - 1):
             ra, rb = {"nw": ((r - 1, c + 1), (r + 1, c - 1)), "ne": ((r - 1, c), (r + 1, c + 2)), "sw": ((r + 2, c + 1), (r, c - 1)), "se": ((r + 2, c), (r, c + 2))}[q]
             if not W_(*side_r) and not W_(*side_c) and not W_(*ra) and not W_(*rb) and not (set(blk) & macro_cells):
                 rad = (60, 42)[(7 * r + 3 * c) & 1]; names = by(kind="shore-macro", quad=q, radius=rad, frame=1) or by(kind="shore-macro", quad=q, frame=1)
-                if names: put(toned(PC[names[0]][1], 0), r * 48, c * 48); macro_cells |= set(blk)
+                if names:
+                    sandy = any(at(y_ + dy, x_ + dx) == "s" for (y_, x_) in blk for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)))   # a macro's margin is one ground: sand only if a side meets sand
+                    nm = names[0].replace("/water-", "/water-sand-") if sandy else names[0]
+                    put(toned(PC[nm][1], 0), r * 48, c * 48); macro_cells |= set(blk)
 for r in range(R):
     for c in range(Cn):
         ch = L[r][c]
         if ch == "w" and (r, c) not in macro_cells:
             m = sum(1 << i for i, (dy, dx) in OFF.items() if not W_(r + dy, c + dx))
-            for q, (y, x) in QXY.items(): put(toned(PC[by(kind="shore", set="water", quad=q, state=state(m, q), frame=1)[0]][1], 0), r * 48 + y, c * 48 + x)
+            sandy = any(at(r + dy, c + dx) == "s" for dy, dx in OFF.values())   # a land neighbour that is sand: the quarters with a sand margin
+            for q, (y, x) in QXY.items(): put(toned(PC[by(kind="shore", set="water-sand" if sandy else "water", quad=q, state=state(m, q), frame=1)[0]][1], 0), r * 48 + y, c * 48 + x)
         if ch == "1":
             m = sum(1 << i for i, (dy, dx) in OFF.items() if at(r + dy, c + dx) not in ("1", None))
             for q, (y, x) in QXY.items():

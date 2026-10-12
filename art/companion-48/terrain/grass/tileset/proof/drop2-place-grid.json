@@ -9,9 +9,9 @@
   "....11111FF.......",
   "....FFFFF.........",
   "....FFFFF.....www.",
-  "........wwwwwwwww.",
-  "........wwwwwwwww.",
-  "........wwwwwwwww."
+  "..........wwwwwww.",
+  ".....ssss.wwwwwww.",
+  ".....ssssswwwwwww."
  ],
  "levelTone": [
   "dark",
@@ -870,14 +870,14 @@
    "shadow": "s"
   },
   "9,8": {
-   "cell": "w",
+   "cell": ".",
    "lawn": "meadow/ground/lawn-4",
-   "shadow": null
+   "shadow": "s"
   },
   "9,9": {
-   "cell": "w",
+   "cell": ".",
    "lawn": "meadow/ground/lawn-5",
-   "shadow": null
+   "shadow": "c"
   },
   "9,10": {
    "cell": "w",
@@ -945,27 +945,27 @@
    "shadow": null
   },
   "10,5": {
-   "cell": ".",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-3",
    "shadow": null
   },
   "10,6": {
-   "cell": ".",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-4",
    "shadow": null
   },
   "10,7": {
-   "cell": ".",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-6",
    "shadow": null
   },
   "10,8": {
-   "cell": "w",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-2",
    "shadow": null
   },
   "10,9": {
-   "cell": "w",
+   "cell": ".",
    "lawn": "meadow/ground/lawn-3",
    "shadow": null
   },
@@ -1035,27 +1035,27 @@
    "shadow": null
   },
   "11,5": {
-   "cell": ".",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-6",
    "shadow": null
   },
   "11,6": {
-   "cell": ".",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-1",
    "shadow": null
   },
   "11,7": {
-   "cell": ".",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-2",
    "shadow": null
   },
   "11,8": {
-   "cell": "w",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-5",
    "shadow": null
   },
   "11,9": {
-   "cell": "w",
+   "cell": "s",
    "lawn": "meadow/ground/lawn-4",
    "shadow": null
   },
@@ -1101,13 +1101,13 @@
   }
  },
  "macros": [
-  "10,8",
-  "10,9",
+  "10,10",
+  "10,11",
   "8,15",
   "8,16",
+  "9,10",
+  "9,11",
   "9,15",
-  "9,16",
-  "9,8",
-  "9,9"
+  "9,16"
  ]
 }
