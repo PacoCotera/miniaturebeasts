@@ -3529,5 +3529,21 @@
  "mibi-adult-S01-48x48": {
   "status": "new",
   "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
+ },
+ "mibi-juvenile-S01-304x312": {
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+ },
+ "mibi-juvenile-S01-104x112": {
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+ },
+ "mibi-juvenile-S01-96x88": {
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+ },
+ "mibi-juvenile-S01-48x48": {
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
  }
 }

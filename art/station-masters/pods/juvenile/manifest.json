@@ -4,32 +4,36 @@
    104,
    112
   ],
-  "sha256": "8c9904c79b3df2d3945e88895cc5b1dde716116f32365ad7c857842f5841253e",
-  "signed_in": "art director, juvenile stand-ins re-export (2026-10-11): shadows and magenta specks"
+  "sha256": "06eaddd2d88a702b564588910783fd0214d13b9fff7d6aabba182336300a405b",
+  "signed_in": "candidate: regraded toward Pip's charcoal (fix 1a, the CD's gap ruling 00:00); the art director signs it beside Pip in builder 2's whole-screen captures",
+  "replaces": "sha256 8c9904c79b3d (the teal juvenile, signed 2026-10-11)"
  },
  "mibi-juvenile-S01-304x312": {
   "size": [
    304,
    312
   ],
-  "sha256": "75f95d5ad2a71d860f7f883c6198d5aa5c98624dd4a47bb445ceb6af3923563b",
-  "signed_in": "art director, juvenile stand-ins re-export (2026-10-11): shadows and magenta specks"
+  "sha256": "e4712cfb89e32a4452fc5dfa80f1fd8995197afd0520b7c9d06754ef25f86603",
+  "signed_in": "candidate: regraded toward Pip's charcoal (fix 1a, the CD's gap ruling 00:00); the art director signs it beside Pip in builder 2's whole-screen captures",
+  "replaces": "sha256 75f95d5ad2a7 (the teal juvenile, signed 2026-10-11)"
  },
  "mibi-juvenile-S01-48x48": {
   "size": [
    48,
    48
   ],
-  "sha256": "7cc5b8ec5cc7eb7df9c067b8b31efb598827420e7059c760280cd548ec9ee750",
-  "signed_in": "art director, juvenile stand-ins re-export (2026-10-11): shadows and magenta specks"
+  "sha256": "1467283119992de92cfc0d99f866835066714eaab45ffbc6e9887374ffb4df88",
+  "signed_in": "candidate: regraded toward Pip's charcoal (fix 1a, the CD's gap ruling 00:00); the art director signs it beside Pip in builder 2's whole-screen captures",
+  "replaces": "sha256 7cc5b8ec5cc7 (the teal juvenile, signed 2026-10-11)"
  },
  "mibi-juvenile-S01-96x88": {
   "size": [
    96,
    88
   ],
-  "sha256": "8c8f333662818e58780bd28ff71e27979c110949212f16573c677fa6bc2f54a4",
-  "signed_in": "art director, juvenile stand-ins re-export (2026-10-11): shadows and magenta specks"
+  "sha256": "0e4d6c6fc9a81a68d612bebbd62578f3b35ce036536a434d3b1cbf23fcf2c845",
+  "signed_in": "candidate: regraded toward Pip's charcoal (fix 1a, the CD's gap ruling 00:00); the art director signs it beside Pip in builder 2's whole-screen captures",
+  "replaces": "sha256 8c8f33366281 (the teal juvenile, signed 2026-10-11)"
  },
  "mibi-juvenile-S02-104x112": {
   "size": [

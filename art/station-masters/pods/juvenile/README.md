@@ -67,3 +67,14 @@ All 64 files are re-cut from the same paintings (no new request) by `guides/cut-
 - **Magenta specks:** body pixels with the ground's magenta cast are removed on the edge and repainted from their neighbours
   inside. What remains of magenta hue is the creatures' own colour (S03's pink pads, S16's lavender).
 - `manifest.json` carries the new hashes. Signed again at 1×.
+
+## S01 regraded toward Pip (fix 1a; the creative director's gap ruling, 2026-10-12 00:00), 0 MXN
+
+S01's body is locked charcoal and Pip is canonical, so the young Loika must read as the same animal as the grown one. `regrade-S01.py` moves each colour group of the signed teal juvenile onto Pip's own colour, by hand rule with no generation. Each pixel's luminance is mapped from its group's percentiles in the juvenile onto Pip's, so the juvenile's painting and shading are kept. The groups:
+- teal body → Pip's charcoal, including the body's grey-teal and grey-green lights;
+- iris → Pip's amber;
+- beak and feet → Pip's cream-tan;
+- leaves → Pip's olive, a step brighter;
+- the cream belly, the eye whites and the shadow are unchanged.
+
+All four sizes: 0 px magenta. Proof: `S01-regrade-vivarium-1x.png` (the regraded 104 beside Pip at 144 and 96 on the day glass; the old teal juvenile on the back rock for comparison). The status is candidate until the art director signs it beside Pip in builder 2's whole-screen captures. The files are in slices/ with manifest and status entries (new).
