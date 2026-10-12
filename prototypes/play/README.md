@@ -12,7 +12,7 @@ Three same-origin documents in one page, and the page's own chrome around them:
 | Companion | `../exploration/?embed` (plus `&seed=<n>` and `&dev=1` as given) | 450 × 600 |
 | Bench | `../workbench/`, set the first time the bench is shown | the bench container |
 
-`?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: one lp is `k / devicePixelRatio` CSS pixels with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change, and nothing is scaled. The play page applies the same rule to every edge it places.
+`?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: each screen keeps its whole CSS size (1024 and 450 px) and is scaled by `k / devicePixelRatio` with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change; on the page one lp is `k / devicePixelRatio` CSS pixels. The play page applies the same rule to every edge it places.
 
 **The save.** The devices cross the save exactly as between two tabs: each writes its own part of `mb-save-v8` and hears the other through the `storage` event, which fires between same-origin frames unchanged. **The shell never reads or writes the save.** The Station frame computes the Caddy's state and posts it; the shell shows it.
 

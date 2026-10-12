@@ -226,7 +226,7 @@ test("?embed shows the screen alone, fit() stands aside and the scale follows a 
     assert.deepEqual(set, { "--embed-s": want }, "dpr " + dpr);
   }
 
-  // a dpr change with no resize: the query for the old dpr fires, the width follows, the old listener goes and a new query is armed
+  // a dpr change with no resize: the query for the old dpr fires, the scale follows, the old listener goes and a new query is armed
   const set = [], queries = [], win = { devicePixelRatio: 1 };
   win.matchMedia = q => {
     const mq = { q, on: new Set(), addEventListener(e, f) { assert.equal(e, "change"); this.on.add(f); }, removeEventListener(e, f) { assert.equal(e, "change"); this.on.delete(f); } };
