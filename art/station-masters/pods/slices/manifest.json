@@ -13938,5 +13938,57 @@
   "status": "signed",
   "signed_in": "art director, 10-11",
   "status_note": "0 magenta px; named by the copywriter (Stripes: faint stripes, between, bold stripes; 8402eae)"
+ },
+ "mibi-adult-S01-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
+  "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 304x312 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
+  "sha256": "5c143f8fb40a350fb540e13dd759db50ea5e8e9d0eae7b0960dc096928663976",
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
+ },
+ "mibi-adult-S01-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
+  "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 144x152 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
+  "sha256": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
+ },
+ "mibi-adult-S01-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
+  "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 96x88 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
+  "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542",
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
+ },
+ "mibi-adult-S01-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
+  "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 48x48 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
+  "sha256": "1163284a198d623c8f0bc2f1266856a0a2b30d09dbda5a7feb735d9a3411d96a",
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  }
 }
