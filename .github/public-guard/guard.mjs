@@ -356,7 +356,7 @@ function selfTest() {
   ok(fencedLines("a\n```\nthe owner\n```\nb").has(3) && !fencedLines("a\n```\nx\n```\nb").has(5), "fenced lines");
   ok(processDoc("prototypes/station/README.md") && !processDoc("prototypes/station/src/x.md") && !processDoc("prototypes/station/NOTES.md"), "process-label covers prototypes/**/README.md only");
   ok(processDoc("design/proposals/x.md") && processDoc("README.md") && processDoc("ROADMAP.md") && !processDoc("design/docs-standard.md") && !processDoc("art/x/README.md") && !processDoc("design/x.txt"), "process-label paths");
-  ok(!processDoc("design/proposals/x.md", true), "process-label tree mode only under its path list");
+  ok(!processDoc("design/other/x.md", true), "process-label tree mode only under its path list");
   ok(checkProcess("design/proposals/species-names.md", '| Aulaka | 6 | None. Queries "Aulaka" creature, character, game, brand, genus (2026-10-09): no creature | clear |').length === 0, "process-label honours the allowlist");
   covered.add("process-label");
   ok(checkMessage("Fix\n\nCo-Authored-By: someone").length === 1 && checkMessage("Fix the guard").length === 0, "commit trailers");
