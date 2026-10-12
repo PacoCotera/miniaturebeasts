@@ -65,7 +65,8 @@ NAMES = [cols[i].get("name") or f"{cols[i]['material']}-{i}" for i in range(NC)]
 assert len(set(c["hex"] for c in cols)) == NC
 with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
     fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
-             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i])}) for i in range(NC)) + " ] }\n")
+             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i]),
+             "material": str(mat[i])}) for i in range(NC)) + " ] }\n")   # material: "grass" marks the colours the level tone moves (grass only)
 
 def to_idx(path_or_img):
     im = Image.open(path_or_img) if isinstance(path_or_img, str) else path_or_img
