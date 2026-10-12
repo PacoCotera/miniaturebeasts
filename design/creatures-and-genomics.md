@@ -121,7 +121,9 @@ Every locus is one of four kinds, named by who changes it:
 3. **Inherited-only.** Only breeding changes it: a child takes its copies from
    its parents, and nothing else moves them.
 4. **Self-changing.** The mibi changes it, within its own life, in the manner
-   of epigenetics: neither the player nor a cross does.
+   of epigenetics. The change is kept beside the copies, never inherited: the
+   copies still pass in a cross, and only the change made in life is not passed
+   on.
 
 By default every look is configurable and every doing is inherited-only. A
 species may set a trait apart, with the reason kept in its frame: the Tuikis's

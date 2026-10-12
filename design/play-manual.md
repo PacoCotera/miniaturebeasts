@@ -165,6 +165,8 @@ Once you have identified a species, facing one tells you its diet ("Loika · eat
 
 When a creature does something **because of you** (eats your fruit, or settles because you kept still), you earn **Data**: +1, or +2 the first time ever you see that species do that, and for your first moment with each species on an expedition. Each creature gives Data once per expedition. Just looking earns nothing.
 
+An expedition earns **2, 4, 6 or 8 Data** for a starter, early, mid or late place (2 × the tier of the highest place you entered), and only if it explored something and did not break. Creature moments bring that yield in early and never past it; the rest arrives when you end the expedition. The Walk with a mibi brings no Data. At the Station's bench, a resident watched for 60 seconds gives +1 Data and a same-species pair compared on Cross gives +1, up to 2 a day by the Station's calendar date.
+
 ### Shedding
 
 Creatures sometimes leave things behind. A **Loika** shaking itself dry after rain leaves a tuft of fur (+1 Essence). An **Untuva** after a full meal, a **Tuikis** that feels safe or curls up out of the rain, or a Loika shaking dry may **shed a pod**.
@@ -216,7 +218,7 @@ You can carry up to 20 of each. Essence never turns into Energy.
 | Material | Where it comes from | What it buys |
 | --- | --- | --- |
 | **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), growing a mibi (2), mending the Shield at the Station (1 a bar), the tier 2 Probe (12) |
-| **Data** | Creature moments you cause (+1, or +2 for a first) | Identifying a pod (1), studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
+| **Data** | Expeditions (2, 4, 6 or 8 by place), brought in early by creature moments you cause (+1, or +2 for a first); the bench, 2 a day | Identifying a pod (1), reading a chapter (1 a trait), each change when you shape a mibi (1), the tier 2 Probe (4) |
 | **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1), returning a pod to the wild (+1) | Growing a mibi (4) |
 
 ## 8. Ending an expedition: the sealed bay and the Station
@@ -248,26 +250,24 @@ Expeditions start only when the Companion is **lifted** from its dock. On the St
 
 ### At the Station
 
-This section follows the Station page as built. The next Station build reads a pod a **chapter** at a time instead of window by window, and draws its fingerprint as the **genome ring**; this section changes with that build ([research loop](proposals/research-loop.md)).
-
 The lamp on Home's bench rests the screen (the vivarium plays alone); any press wakes it and acts. The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Vivarium**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
-1. **Identify** a pod (1 Data). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
-2. **Study** a window (2 Data; the first study of each species is free). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the Untuva's colour opens with a tier 2 Probe). A window you studied stays open for good.
-3. **Glints.** Once you have studied a window on one pod of a species, later pods of that species twinkle with a star on each window where they hold a look you haven't seen yet. No star means nothing new there.
-4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; windows studied on both that differ pulse.
-5. **Shape a founder** (Create). The new mibi shows large; frosted windows stay a surprise. On a studied window, ↑ ↓ choose among what **this pod** carries: as it is, the hidden look through and through, or the shown look through and through. A pod that shows a look through and through can't give another. Each change costs 2 Data.
-6. **Grow it** (2 Energy + 4 Essence, plus 2 Data per change; your very first founder costs 2 Energy only). The fingerprint stamps the pod, its **code** appears (like `G7F · CD0 · 3H2`), and the pod goes into the incubator.
-7. **The incubator** grows it in **real minutes**, one leaf per minute: 20, plus 1 for each change. Your first mibi ever takes 5 minutes. A founder's frosted windows clear one by one while it grows. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in the vivarium, up close, where ✓ takes it with you.
+1. **Identify** a pod (1 Data). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then the pod shows every **chapter** its species has (Coat, Face, Movement and so on), each unread until you read it. A sealed chapter shows shut, with the find that opens it.
+2. **Read** a chapter (1 Data per trait in it, half, rounded up, once that chapter has been read on the species; the first read ever, in the whole game, is free). For each trait the page shows the look that shows, then the one that hides: only that look (both copies the same), a blend of the two looks, the shown look plus what sleeps under it, or, for a doing, a mark reading "breed to change". A trait with two rings is inherited-only: it is passed on **only through families**. The Untuva's sealed chapter is Character; it opens with a crystal dug up where an Untuva partner sniffs out a buried pod. A chapter you have read is free to look at again.
+3. **Glints.** A glint is per chapter: when a chapter was read on an earlier pod of the species and this pod holds a look the species has not shown yet, that chapter twinkles with a star. It says where, never what. No star means nothing new there.
+4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; traits that differ in chapters read on both pods pulse.
+5. **Shape a founder** (Create). The new mibi shows large; unread chapters stay a surprise. On a shapeable look in a chapter you have read, ↑ ↓ choose among what **this pod** carries: as the pod is, its first copy twice, or its second copy twice. A pod whose two copies are the same can't give another, and a doing can never be changed. Each change costs 1 Data, plus 1 minute on the bud.
+6. **Grow it** (2 Energy + 4 Essence, plus 1 Data per change; your very first founder pays no Essence). The genome stamp, which holds the chapters you have read only, is pressed on the pod, its **code** appears (9 characters, like `G7F CD0 3H2`), and the pod goes into the incubator.
+7. **The incubator** grows it in **real minutes**, one leaf per minute: 20, plus 1 for each change. Your first mibi ever takes 5 minutes. A founder's unread chapters clear one by one while it grows, and it opens known in every chapter except a sealed one still shut. A bud you bred keeps its unread chapters. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in the vivarium, up close, where ✓ takes it with you.
 8. **Return to the wild** (the garden gate beside the tray): ✓, then ✓ again, frees the cup and gives +1 Essence. The pod goes back to where it came from the next time you dock.
 
-**The fingerprint** is a round whorl with one petal per window. Its ridges come from the mibi's genome, so no two look alike; a petal lights in its colours when you study that window. It shows on the pod, at Create, on the incubator, in the Library and in the vivarium, up close.
+**The genome stamp** is a small label: square cells in a size series, the chapters as blocks, a border and glyph for the species, round perforations, and the clan on the border. Unread and sealed chapters are never in it, and the glint is never on the stamp. The specimen is the spotlight; reading progress is the ring around the pod. Where the stamp appears is the UI designer's call.
 
 | At the Station | Price |
 | --- | --- |
 | Identify a pod | 1 Data |
-| Study one window | 2 Data (the first of each species: free) |
+| Read a chapter | 1 Data a trait; half once read on the species; the first read ever free |
 | Grow a mibi | 2 Energy + 4 Essence (your first: 2 Energy only) |
-| Change a window when shaping it | +2 Data each |
+| Change a look when shaping it | +1 Data each |
 | Mend the Shield | 2 plates free at every dock, then 1 Energy a plate (a broken Probe: free) |
 | Tier 2 Probe (Probe bench, two presses) | 12 Energy + 4 Data |
 | Return a pod to the wild | gives +1 Essence |
@@ -322,7 +322,7 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | ← | End expedition (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
-**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Data · study a window 2 Data · grow a mibi 2 Energy + 4 Essence (+2 Data per change) · mend at the Station 1 Energy a plate beyond two free · tier 2 Probe 12 Energy + 4 Data · return a pod +1 Essence.
+**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Data · read a chapter 1 Data a trait (half once read on the species; the first read ever free) · grow a mibi 2 Energy + 4 Essence (+1 Data per change) · mend at the Station 1 Energy a plate beyond two free · tier 2 Probe 12 Energy + 4 Data · return a pod +1 Essence.
 
 **Stones**: plain grey · warm: an amber ring around it and an amber dot on top · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
 
@@ -330,6 +330,6 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 
 **Shelter** from stray strikes: overhang, cave, lit outpost (within 3 tiles). Not trees, not wood cells on the map. A fog bank is calm: no strikes inside.
 
-**Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time).
+**Gains**: storm stone +2 (+3 at the peak) · warm stone +1 · dew +1 Essence · pressed fruit +2 Essence · tuft +1 Essence · a creature moment +1 Data (+2 the first time) · an expedition 2, 4, 6 or 8 Data by place.
 
 **Odds**: stray strike per action in the open under rain: 2 bolts 1 in 20 (5%), 3 bolts 1 in 10 (10%), never two hits within six actions, and the first hit of a pass is a warned strike. None under an overhang, in a cave, beside a lit outpost or in a fog bank; trees give no protection. In play the screen says only "stray strikes can hit you in the open" (strong) and "strikes more likely" (peak); the exact odds are here and on the Probe screen. Shield: 3 bars (tier 1), 4 bars (tier 2). A break seals nothing: the pods fall where it broke (skull on the map) and carried materials are lost.

@@ -66,7 +66,7 @@ A genome is not one field to research. It has five kinds of part:
 - **Data reads.** A chapter costs **1 Data per trait in it**, and **half (rounded up) once that chapter has been read on any earlier pod of the species** ("the Station knows where to look"). This answers an owner question about the blue-eyed specimen: what was learned makes later pods cheaper, and the glint says which pods are worth reading. The very first read ever is free.
 - **Energy runs the machine.** Identify costs 1 Data. **Essence grows bodies** (founder 2 Energy + 4 Essence; the first founder 2 Energy only). Shaping costs **+1 Data per trait changed**.
 - **Worked numbers.** A first Pip pod costs 4 Data to read fully (5 traits, the first read free). A first pod of the worked 24-trait frame costs 24 Data, and a later one 14. Players read where the glints are, not every page.
-- **Pacing.** This assumes about **3 Data per expedition**. The r7 tester earned 1, and Data starvation was its top problem. The field needs more creature moments, or the walk needs to pay more (**Open**, for the exploration tuning).
+- **Pacing.** Data income is tiered 2 / 4 / 6 / 8 by place ([research-economy](research-economy.md) §2), plus the bench trickle, 2 a day. The r7 tester earned 1, and Data starvation was its top problem.
 
 **The first three pods** (Pip as the starter Loika, with its real five open traits; the Untuva's chapters are illustrative):
 
@@ -207,7 +207,7 @@ Items marked "salvage" come from earlier project notes outside this repository.
 
 ## 11. Decisions for the owner
 
-1. **Chapters are the research unit.** One read covers one chapter of one pod and gives both copies of every trait in it, at 1 Data per trait, half on later pods of the species, with the field raised to about 3 Data per expedition. *Recommended.*
+1. **Chapters are the research unit.** One read covers one chapter of one pod and gives both copies of every trait in it, at 1 Data per trait, half on later pods of the species, with the field yield later tiered ([research-economy](research-economy.md) §3). *Recommended.*
 2. **The genome split.** Locked frame learned once per species, heritable parts read per individual. Default rule: looks shapeable at creation, doings only by breeding, with each species allowed to override. This generalizes the bounded trial, which was explicitly not to be generalized, so it is the owner's call. *Recommended as the default.*
 3. **The genome ring replaces the whorl** as the fingerprint: centre band, two tracks, hairlines for unread parts. Scanning shows and never grants. The short code stays as the name. *Recommended.*
 4. **Pods from one renderer** with species parameters (size, proportion, pattern family, colour pair, glyph). An individual's genes never show on the shell. *Recommended.*

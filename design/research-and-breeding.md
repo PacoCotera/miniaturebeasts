@@ -310,7 +310,6 @@ means:
 
 - The prices and waits of the finished game. The values in this document are
   set low so the whole loop can be played through quickly.
-- How much Data an expedition yields, by kind of place.
 - How deep a family line must be to earn a sitting.
 - Editing a copy with a rare item.
 - Wonders: how the player finds the combined traits a species can show

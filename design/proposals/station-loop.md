@@ -105,7 +105,6 @@ A minimal same-species cross and wishes are in the first Station build: tinkerin
 One resident large, the others in a strip below (pad left/right). It shows the mibi, its name, stage, species, ability, its ring, and its chapters as the Library knows them. Actions, all free except a cross:
 - ✓ **Spend time:** a short moment with it (as on the Companion).
 - **Take with you:** it moves into the Companion while the Companion is docked (or at the next dock); the one with you comes home. Not during an expedition.
-- **Bond (minimal V1):** a one-time, deliberate choice that marks the mibi with a small heart and lets it be with you and help as a partner. No needs or meters until care is designed (only bonded mibis need care; bonding never gates breeding).
 - **Cross:** on an adult, opens Cross with this mibi as the first parent (above).
 
 ### Probe bench (from Home): mend and upgrade
@@ -135,9 +134,9 @@ The devices may have no connection while the Companion is away; cargo is not tel
 
 All rewards for going out, never penalties for staying home, and none timed:
 - **Expeditions only undocked.** Lifting the Companion opens the expedition choice (sealed consignments aboard or not); docked, it shows the mibi with you asleep and "Lift to explore".
-- **The walk.** Once per world turn, undocked, Companion mode offers "✓ Walk with Dot": a short scene of five or so presses in the last place you explored, where the mibi does one thing its species does (digs, sniffs, calms a creature) and you get one creature moment: +1 Data (+2 the first time). Capped at one a turn, so there is nothing to grind and nothing missed.
+- **The walk.** Once per world turn, undocked, Companion mode offers "✓ Walk with Dot": a short scene of five or so presses in the last place you explored, where the mibi does one thing its species does (digs, sniffs, calms a creature). It brings no Data. Capped at one a turn, so there is nothing to grind and nothing missed.
 - **Skill comes from use.** Each expedition where the partner's ability is actually used gives a skill notch (three in all, shown as marks on its card): a Loika calms from one tile further, a Tuikis digs a second burrow, an Untuva sniffs wider. Learning changes behaviour, never genes. Docked or at home, skill stays as it is.
-- **Bond is earned out.** Bond (§1 the vivarium, up close) is offered after the mibi's first expedition or walk with you.
+- **Bond is earned out.** A bonded mibi shows a small heart on its card. The bond is earned only by Tends on the Companion (three for now), never in the vivarium. Being with you needs no bond (up to 3 are carried); leading the Probe needs an adult, not a bond; bonding is optional and never needed for breeding.
 - **Memories.** The places and moments it shared go home at the dock and fill its page in the vivarium, up close, and Library: a keepsake, and the first lineage record.
 
 ## 4. Economy
@@ -158,7 +157,7 @@ All rewards for going out, never penalties for staying home, and none timed:
 
 **Room.** The tray holds 6 pods and the vivarium 4 residents (plus the one with you) at the start, so pods stay precious and the collection stays small (no multitude of mibis). A full tray turns a pod away without breaking its seal, and the Cargo preview warns first. *"4 residents" is superseded:* **six bays** at the start ([research-economy](research-economy.md) §6); a player keeps as many mibis as the vivarium holds, and **the number of vivariums is the gate**; later direction, vivariums as living, self-stabilising ecosystems. The prices in this section are the testing economy; the real one will be dearer.
 
-**Data income.** These prices assume about **3 Data per expedition**: the field needs more creature moments, or the walk must pay more (**Open**, for the exploration tuning).
+**Data income.** Tiered 2 / 4 / 6 / 8 by place ([research-economy](research-economy.md) §2), plus the bench trickle, 2 a day.
 
 **Repeat samples are worth:** a different hand of variants (the reason to read), a glint that says which chapter is worth reading, a cheaper read of a chapter already read on the species, a second partner with a different gait, +1 Essence if returned, and a parent.
 
@@ -209,7 +208,7 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 3. **Prices and room:** 6 pod cups and 4 vivarium places to start; a pod can be returned to the wild for +1 Essence. **Changed (research loop):** shaping costs +1 Data per trait changed. **Changed:** six vivarium places; the number of vivariums is the gate (§4).
 4. **Incubation time:** real minutes, shown growing on the always-on Station. **Changed:** minutes by species and genome complexity, as the rule in §1. **Changed:** twenty minutes plus one per shaped trait, the first bud five, an instant grow for a cost (§1).
 5. **The sealed hold:** End expedition seals the cargo; it transfers only on docking; the world turns when the expedition ends, not at the dock, and not after an expedition that explored nothing. There is no forced return; a sealed bay holds three consignments (§2).
-6. **Reasons to go out:** expeditions only undocked, one walk per world turn (+1 Data), skill notches from using an ability, bond offered after a first outing.
+6. **Reasons to go out:** expeditions only undocked, one walk per world turn, skill notches from using an ability, a bond earned by three Tends on the Companion; walks never bond.
 7. **A separate Station prototype page** at 1024×600 sharing the save with the Companion page (§9).
 8. **The research loop** ([research-loop.md](research-loop.md) §11), approved in full: chapters as the research unit; a locked species frame and heritable parts, with looks shapeable and doings by breeding as the default each species may override; the genome ring; pods from one renderer with species parameters; a minimal same-species cross and wishes in the first Station build.
 
