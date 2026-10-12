@@ -2240,6 +2240,10 @@ const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low c
      FADE = mixLUT('stone', .5);
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
+// The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
+const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
+const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE];
+REMAP.id = 0; REMAP_PLACE.id = 1;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
 
@@ -2296,10 +2300,10 @@ class PB {
   // A canvas of this buffer through a lookup table, optionally mirrored or thinned to a checkerboard.
   // veil: the survey veil, baked once per tile and light level: one step darker (DARK) plus a 4×4 Bayer dot of night.
   canvas(rm, flip, chk, veil) {
-    const key = (rm || 0) * 4 + (flip ? 2 : 0) + (chk ? 1 : 0) + (veil ? 100 : 0); let cv = this.cache.get(key);
+    const set = RT.remap, key = (rm || 0) * 4 + (flip ? 2 : 0) + (chk ? 1 : 0) + (veil ? 100 : 0) + set.id * 1000; let cv = this.cache.get(key);
     if (cv) return cv;
     cv = document.createElement('canvas'); cv.width = this.w; cv.height = this.h;
-    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h), lut = REMAP[rm || 0];
+    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h), lut = set[rm || 0];
     for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) {
       let c = this.p[y * this.w + (flip ? this.w - 1 - x : x)]; if (c < 0 || (chk && (x + y) % 2)) continue;
       if (lut) c = lut[c];
@@ -2836,6 +2840,8 @@ function atlasInstall(list, table, levelTone) {
     RGB[i] = table.rgb[i].slice(); HEX[i] = '#' + table.rgb[i].map(v => v.toString(16).padStart(2, '0')).join('');
     DARK[i] = table.dark[i]; LIGHT[i] = table.light[i]; DARK2[i] = table.dark2[i]; FOGLUT[i] = table.fog[i]; FADE[i] = table.fade[i]; TINT[i] = i; LEVEL_LIGHT[i] = i;
     LIGHT_GRASS[i] = table.lightGrass[i]; DARK_GRASS[i] = table.darkGrass[i]; }
+  for (let i = 0; i < RGB.length; i++) { PLACE_STORM[i] = table && table.placeStorm ? table.placeStorm[i] : DARK[i]; PLACE_FOG[i] = table && table.placeFog ? table.placeFog[i] : FOGLUT[i]; PLACE_FADE[i] = table && table.placeFade ? table.placeFade[i] : FADE[i]; }
+  PLACE_STORM.length = PLACE_FOG.length = PLACE_FADE.length = RGB.length;
   ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
   for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
 }
@@ -3015,7 +3021,7 @@ function tween(o, tx, ty, dur) {
   o.x = o.fx + (o.tx - o.fx) * k; o.y = o.fy + (o.ty - o.fy) * k;
   o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position the camera and the map pawn read; x, y stay exact (a retarget starts from them, and the floored overlays take them)
 }
-const RT = { key: null, ts: 32, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
+const RT = { key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
 function viewBg(col) {
   if (col != null) { R(0, VIEW_Y, SCR_W, VIEW_H, col); return; }
@@ -3408,10 +3414,10 @@ function edgeFade(mask, n) { // per pixel: how far (0..1) toward the darker leve
   EDGE_FADE.set(fk, f); return f;
 }
 function edgeTile(pbKey, pb, L, mask) {
-  const n = pb.w, key = pbKey + '|' + L + '|' + mask + '|' + n; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  const n = pb.w, key = pbKey + '|' + L + '|' + mask + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
   const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = edgeFade(mask, n);
-  const pk = lv => RGB.map((_, c) => { const q = RGB[REMAP[lv] ? REMAP[lv][c] : c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }), a = pk(L), b = pk(L + 1);
+  const pk = lv => RGB.map((_, c) => { const q = RGB[RT.remap[lv] ? RT.remap[lv][c] : c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }), a = pk(L), b = pk(L + 1);
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const o = y * n + x, c = pb.p[o]; if (c < 0) continue;
     u[o] = (f[o] > (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16 ? b : a)[c]; }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
@@ -3426,25 +3432,42 @@ function fogFade(mask, n) { const fk = mask + '|' + n; let f = FOG_FADE.get(fk);
     f[y * n + x] = t * .9; }
   FOG_FADE.set(fk, f); return f; }
 function fogEdgeTile(pbKey, pb, L, mask, veil) {
-  const n = pb.w, key = 'f' + pbKey + '|' + L + '|' + mask + (veil ? 'v' : '') + '|' + n; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  const n = pb.w, key = 'f' + pbKey + '|' + L + '|' + mask + (veil ? 'v' : '') + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
-  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = fogFade(mask, n), lut = REMAP[L];
+  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = fogFade(mask, n), lut = RT.remap[L], fogT = RT.remap[3];
   const pk = c => { const q = RGB[c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; };
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const o = y * n + x, c = pb.p[o]; if (c < 0) continue;
     const b = BAYER[(y & 3) * 4 + (x & 3)], lc = lut ? lut[c] : c;
-    u[o] = pk(f[o] > (b + .5) / 16 ? FOGLUT[c] : veil ? (b < 4 ? C.night : DARK[lc]) : lc); }
+    u[o] = pk(f[o] > (b + .5) / 16 ? fogT[c] : veil ? (b < 4 ? C.night : DARK[lc]) : lc); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
 // The same for the survey veil: an unveiled tile beside veiled ones fades into the veil's dots at the shared sides.
 function veilEdgeTile(pbKey, pb, L, mask) {
-  const n = pb.w, key = 'v' + pbKey + '|' + L + '|' + mask + '|' + n; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  const n = pb.w, key = 'v' + pbKey + '|' + L + '|' + mask + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
-  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = edgeFade(mask, n), lut = REMAP[L];
+  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = edgeFade(mask, n), lut = RT.remap[L];
   const pk = c => { const q = RGB[c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; };
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const o = y * n + x; let c = pb.p[o]; if (c < 0) continue; if (lut) c = lut[c];
     const b = BAYER[(y & 3) * 4 + (x & 3)]; u[o] = pk(f[o] > (b + .5) / 16 ? (b < 4 ? C.night : DARK[c]) : c); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
+// At 48 px the veil and fog edges fade by coverage: a pixel takes the far side when enough of a 5 × 5 sample grid around it (±24 px,
+// 12 px apart) falls on far-side tiles. The tile's own state is bit 8 of the mask, its neighbours bits 0–7 (N, NE, E, SE, S, SW, W, NW).
+const COVER = new Map(), NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+function coverFar(m9) { let f = COVER.get(m9); if (f) return f; f = new Uint8Array(48 * 48);
+  const far = (dx, dy) => dx === 0 && dy === 0 ? (m9 >> 8) & 1 : (m9 >> NB9.findIndex(([a, b]) => a === dx && b === dy)) & 1;
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0;
+    for (const oy of [-24, -12, 0, 12, 24]) for (const ox of [-24, -12, 0, 12, 24]) c += far(Math.floor((x + ox) / 48), Math.floor((y + oy) / 48));
+    f[y * 48 + x] = 32 * c > (2 * BAYER[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; }
+  COVER.set(m9, f); return f; }
+// A 48 px edge canvas: each opaque pixel through near(c, x, y) or far(c, x, y), by the coverage of mask m9 (or by pick for the storm step).
+function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; let cv = EDGE_TILE.get(k); if (cv) return cv;
+  cv = document.createElement('canvas'); cv.width = cv.height = 48;
+  const cg = cv.getContext('2d'), id = cg.createImageData(48, 48), u = new Uint32Array(id.data.buffer);
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const o = y * 48 + x, c = pb.p[o]; if (c < 0) continue;
+    const q = RGB[pick(x, y) ? far(c, x, y) : near(c, x, y)]; u[o] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
+  cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
+const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
 function drawPatch(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
@@ -3452,6 +3475,7 @@ function drawPatch(t) {
   else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, o = sprOff(ts);
+  if (ts === 48) RT.remap = REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
   const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
@@ -3493,6 +3517,19 @@ function drawPatch(t) {
       g.drawImage(m ? edgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L, m) : tileCanvas(lay, i, L, fr), W(tx * ts), H(ty * ts));
       continue; }
     const L0 = tileLight(tx, ty), i = ty * PW + tx, uv = uvAt(tx, ty);
+    if (ts === 48) {   // coverage fades for the fog and the veil, the 6 px storm step beside the band
+      const pb = tileFor(i), key = keyFor(i), set = RT.remap, m9 = farTest => { let m = farTest(tx, ty) ? 256 : 0; NB9.forEach(([dx, dy], b) => { if (farTest(tx + dx, ty + dy)) m |= 1 << b; }); return m; };
+      if (fogged) { const fm = m9((x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y));
+        if (fm && fm !== 511) { const nl = overcast ? 1 : 0, f = coverFar(fm);
+          g.drawImage(edge48('F' + key + '|' + fm + '|' + nl + (uv ? '' : 'v'), pb, (x, y) => f[y * 48 + x], (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
+      if (L0 !== 3) { const vm = m9((x, y) => !uvAt(x, y));
+        if (vm && vm !== 511) { const f = coverFar(vm), lut = set[L0];
+          g.drawImage(edge48('V' + key + '|' + vm + '|' + L0, pb, (x, y) => f[y * 48 + x], c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y)), W(tx * ts), H(ty * ts)); continue; } }
+      if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
+        if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => { const d = side === 'W' ? x : 47 - x; return d < 6 && BAYER[(y & 3) * 4 + (x & 3)] * 7 < (6 - d) * 16; },
+          (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }
+      g.drawImage(pb.canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
+    }
     if (fogged && L0 !== 3) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && fk(tx - 1, ty - 1)) m |= 16; if (!u && !r && fk(tx + 1, ty - 1)) m |= 32; if (!d && !r && fk(tx + 1, ty + 1)) m |= 64; if (!d && !l && fk(tx - 1, ty + 1)) m |= 128;
@@ -3598,7 +3635,7 @@ function drawPatch(t) {
   if (fogged) { const d = motion() ? Math.floor(t * 9) : 0, pl = RT.plScr, keep = (sightR(lay) + 1.5) * ts;   // drifting texture on the fogged area only, never over what you see
     for (let i = 0; i < 6; i++) { const h = hash(9, i), px = ((h % 600) + d * (1 + i % 2)) % 600 - 96, py = VIEW_Y + 20 + (h >>> 12) % 460;
       if (pl && Math.max(Math.abs(px + 48 - pl.x) - 48, 0) ** 2 + Math.max(Math.abs(py + 24 - pl.y) - 24, 0) ** 2 < keep * keep) continue; blit(puffArt(i % 2 ? 3 : 2), px, py); } }
-  g.restore();
+  g.restore(); RT.remap = REMAP;
 }
 function drawCreature(c, x, y, pose, t, rm, cue) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
@@ -4384,7 +4421,7 @@ function lineFor() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
-  RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
+  RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
