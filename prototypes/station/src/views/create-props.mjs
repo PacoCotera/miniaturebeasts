@@ -34,8 +34,8 @@ export function createBuild(m, spec, pods) {
   const f = clamp(cr.f, 0, Math.max(0, list.length - 1)), cur = list[f] ?? null, genome = S.founderGenome(p, cr.choices);
   const regions = {};
 
-  // the bench: the Create master, until it lands the collection's
-  regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Create stage master"), slot(req, R.bench.until, R.bench.rect, "the room master")] };
+  // the bench: the Create stage master
+  regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Create stage master")] };
 
   // the rail: one tab a chapter, a pip a trait (filled, hollow, a changed diamond or a clash cross); the open tab is the focused trait's chapter, its pip lifted
   const open = cur ? fr.chapters.findIndex((c) => c === cur.c) : -1, rail = railOf(m, pods, p, fr.chapters, req, open, null);
@@ -58,7 +58,7 @@ export function createBuild(m, spec, pods) {
 
   // the trait line: the focused trait and its chosen look; the changed tag (chrome), the clash cross or the breed mark (the mark is named in every state: the face keeps its node)
   const T = spec.strings.traitLine, breedPic = slot(req, "mark-breed-28x16", [0, 0, ...R.traitLine.breedMark.size], "the breed mark master");
-  let line = { text: T.none, changed: false, breed: breedPic, doing: false, clash: false };
+  let line = { text: T.none, changed: false, breed: breedPic, doing: false, clash: false, tag: ph("plate-name-88x24", [88, 24]) };
   if (cur) {
     const opts = S.rollOptions(p, cur.t.id), choice = cr.choices[cur.t.id] || 0, own = traitState(fr, cur.t, genome), name = cur.t.name;
     if (cr.clash.includes(cur.t.id)) line = { ...line, text: fill(T.clash, { Trait: name }), clash: true };
@@ -71,14 +71,16 @@ export function createBuild(m, spec, pods) {
   regions.traitLine = line;
 
   // the work tray, the founder, the pod and its dish, the origin, the small chamber
-  regions.chamber = { back: ph("create-chamber-400x320", R.chamber.rect.slice(2), false, stale) };
+  regions.chamber = { back: ph("chamber-back-400x320", R.chamber.rect.slice(2), false, stale) };
+  regions.chamberFront = { picture: ph("chamber-front-400x320", R.chamberFront.rect.slice(2), false, stale) };
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
   regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }) };
   regions.cradle = { front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };   // the dish itself is Create's own stage's (until it lands); its near lip is registered and not drawn while the spec says `until`
   regions.origin = S.podOriginLines(p);
-  regions.dome = { back: ph("create-dome-176x224", R.dome.rect.slice(2), false, stale) };
+  regions.dome = { back: ph("dome-small-back-176x224", R.dome.rect.slice(2), false, stale) };
+  regions.domeFront = { picture: ph("dome-small-front-176x224", R.domeFront.rect.slice(2), false, stale) };
   regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2), false, stale), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
 
   // the leaves the bud will take, every one empty: the minutes it will grow

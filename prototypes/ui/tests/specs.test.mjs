@@ -199,7 +199,7 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.deepEqual(cr.focus.nothingRead.targets, {}, "nothing read: no target"); assert.ok(STEP_KEYS.every((k) => cr.focus.nothingRead.graph.room[k] === "none"), "nothing read: the arrows do nothing");
   assert.deepEqual([cr.events.roll.kind, cr.events.roll.target, cr.events.roll.hold, cr.events.roll.ms, cr.events.roll.levels], ["dither", "founder", 0, 200, 16]);
   assert.equal(cr.events.grow.hold, cr.events.grow.steps.at(-1).at + cr.events.grow.steps.at(-1).ms); assert.equal(cr.events.grow.ms, cr.events.grow.steps.at(-1).at, "grow plays until the jump's dither; the hold covers the dither");
-  assert.equal(R.bench.slice, "room-bench-stage-create"); assert.equal(R.bench.until, "room-bench-stage-collection");
+  assert.equal(R.bench.slice, "room-bench-stage-create"); assert.equal(R.bench.until, undefined, "signed: no stand-in slice");
   assert.deepEqual(paletteBad(cr.colours), []);
 });
 

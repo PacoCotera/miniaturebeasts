@@ -32,11 +32,6 @@ export const PLACEHOLDERS = [
   { id: "crate-open-384x256", what: "the crate closer, open: a PH plate (the same plate)", until: "the crate closer masters" },
   { id: "cargo-well-96x128", what: "a rack well, 96×128: a PH hollow, the pod 88×112 at well + (4,8) over it", until: "the rack well master" },
   { id: "founder-304x312", what: "Create's founder, 304×312: the plain renderer's placeholder (the stylised rig pass), frosted where a chapter is unread; with nothing read the whole of it on its own outline; the roll's dither is composed from two of them", until: "the Grow painting and the rig's own placeholder brief" },
-  { id: "create-chamber-400x320", what: "Create's work tray, back: a PH plate (stone, 1 px mist edge) at the chamber's rectangle; stale by the art reset", until: "the work tray master (panel back, enamel rim)" },
-  { id: "create-chamber-front-400x320", what: "Create's work tray, front with its 400×16 floor: registered, nothing drawn (a front plate would cover the founder, the bud and the arriving pod)", until: "the work tray master" },
-  { id: "create-dome-176x224", what: "Create's small chamber, back: a PH plate at the dome's rectangle; stale by the art reset", until: "the Incubator's chamber master, small" },
-  { id: "create-dome-front-176x224", what: "Create's small chamber, front: registered, nothing drawn", until: "the Incubator's chamber master, small" },
-  { id: "bud-small-64x80", what: "Create's busy bud, 64×80: a PH plate at the bud's rectangle, only while another bud grows (the Incubator's buds are other pictures)", until: "the bud master, re-judged with the Incubator's" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
 ];

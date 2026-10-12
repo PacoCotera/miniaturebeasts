@@ -109,10 +109,10 @@ test("a clash is a 2 px red edge inside the chosen picture, the line red with it
   assert.ok(b.props.regions.roll.clash); assert.equal(b.props.regions.traitLine.changed, false); assert.match(b.props.regions.traitLine.text, /^✕ /); assert.equal(b.props.regions.traitLine.clash, true);
   for (const [x, y] of [[c[0], c[1] + 30], [c[0] + 1, c[1] + 30], [c[0] + 60, c[1]], [c[0] + 60, c[1] + 1], [c[0] + 60, c[1] + 71], [c[0] + 126, c[1] + 30], [c[0] + 127, c[1] + 30]]) assert.ok(red(f, x, y), `red at ${x}, ${y}`);
   assert.ok(!red(f, c[0] + 2, c[1] + 30) && !red(f, c[0] + 60, c[1] + 2) && !red(f, c[0] + 60, c[1] + 69), "the edge is 2 px, inside the picture"); assert.ok(pixelIs(f, c[0] + 60, c[1] + 30, b.props.regions.roll.pictures[1]));
-  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "chrome"), words = lg.type.filter((x) => x.region === "traitLine");
+  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "painted"), words = lg.type.filter((x) => x.region === "traitLine");
   assert.deepEqual([t.rect[2], t.rect[3], t.rect[1]], [88, 24, 200], "the tag: 88 wide, 24 tall, at the line's top"); assert.equal(words.length, 2, "the tag's word and the line"); assert.ok(words.some((x) => x.text === "changed"));
-  const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.equal(ty.rect[0], t.rect[0] + 8, "the tag's word is 8 px inside the tag"); assert.ok(Math.abs((t.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 1, "the group (tag, 8 px, the line) is centred on 512");
-  assert.deepEqual(g.pixel(t.rect[0] + 4, t.rect[1] + 12).join(), rgbOf("panel").join(), "the tag is a `panel` fill"); assert.deepEqual(g.pixel(t.rect[0], t.rect[1] + 12).join(), rgbOf("hairline").join(), "with a 1 px `hairline` edge");
+  const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.equal(ty.rect[0], t.rect[0] + 11, "the tag's word is centred on the plate, 11 px inside it"); assert.equal(t.rect[2], 88, "the tag is the plate at its own width, 88, never stretched"); assert.ok(Math.abs((t.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 1, "the group (tag, 8 px, the line) is centred on 512");
+  assert.equal(n.props.regions.traitLine.tag, "plate-name-88x24"); assert.ok(pixelIs(g, t.rect[0] + 4, t.rect[1] + 12, n.props.regions.traitLine.tag), "the tag is the signed plate-name-88x24, on the painted layer");
 });
 
 
@@ -139,7 +139,8 @@ test("while the grow event holds (1080 ms): the face sends no intent but room:<x
 
 // ---- the founder's dither (events.roll) ----
 async function rolled(motion = true) {
-  const a = scene({ read: 2, f: 1 }), b = scene({ read: 2, f: 1, roll: 1 }), f = await start(a, { motion, t0: 1000 });
+  const a = scene({ read: 2, f: 1 }), b = scene({ read: 2, f: 1, roll: 1 }); for (const x of [a, b]) x.props.regions.chamberFront.picture = "";   // the tray's front is a flat stand-in over its whole rectangle here, which would hide the founder the dither probes
+  const f = await start(a, { motion, t0: 1000 });
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
   assert.notEqual(a.props.regions.founder.picture, b.props.regions.founder.picture); const t0 = f.t;
   f.send({ t: "event", kind: "dither", target: "founder", from: a.props.regions.founder.picture, ms: EV.roll.ms, hold: EV.roll.hold });
@@ -210,14 +211,14 @@ test("no refresh redraws more than a quarter of the screen while the pod travels
 
 
 // ---- the chrome the words draw, and the fronts that are not drawn ----
-test("the changed pip is a `bone` diamond, the clash pip a `red` cross, both drawn by the rail as chrome (the rows of the ruling); the focused trait's pip stands 2 px higher; the work tray's and the small chamber's fronts are not drawn", { skip }, async () => {
+test("the changed pip is a `bone` diamond, the clash pip a `red` cross, both drawn by the rail as chrome (the rows of the ruling); the focused trait's pip stands 2 px higher; the work tray's and the small chamber's fronts are drawn at their rects", { skip }, async () => {
   const CX = [2, 1, 0, 0, 1, 2], CW = [2, 4, 6, 6, 4, 2], find = (f, y0, y1, test) => { for (let y = y0; y < y1; y++) for (let x = 100; x < 940; x++) if (test(x, y)) return [x, y]; return null; };
   const is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
   const diamond = (f, x, y) => CX.every((cx, r) => is(f, x + cx, y + r, "bone") && is(f, x + cx + CW[r] - 1, y + r, "bone") && !is(f, x + cx + CW[r], y + r, "bone"));
   const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f);
   assert.ok(find(f, 60, 80, (x, y) => diamond(f, x, y)), "a bone diamond among the pips"); 
   const lifted = find(f, 60, 80, (x, y) => diamond(f, x, y)); assert.equal(lifted[1], 69, "the focused trait's pip: y 71 − 2");
-  assert.equal(region(lg, "chamberFront"), null); assert.equal(region(lg, "domeFront"), null);
+  assert.deepEqual(region(lg, "chamberFront")?.rect, R.chamberFront.rect, "the tray's front is drawn at its rect"); assert.deepEqual(region(lg, "domeFront")?.rect, R.domeFront.rect, "the small chamber's front is drawn at its rect");
   const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, 60, 80, (x, y) => [0, 1, 2, 3, 4, 5].every((k) => is(g, x + k, y + k, "red") && is(g, x + 5 - k, y + k, "red"))), "a red cross where the pip was");
 });
 test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 36), the verb and the price in mist; a short one has its verb at the same x", { skip }, async () => {

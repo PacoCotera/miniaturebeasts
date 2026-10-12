@@ -1144,7 +1144,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 | --- | --- | --- |
 | Rail | The frame's rail states; a changed pip a `bone` diamond, a clash ✕ `red` | The kit's states; amber is for needs only |
 | Roll | Picture ground `ground`; notches `bone`; a clash's 2 px edge `red`; the ring `focus` | As the chapter page's cells; the ring is the focus's alone |
-| Trait line | Line `bone`; a clash `red`; the tag `plate-name-88x24` (to be cut) with its word `bone` | A readout; the tag is the kit's small plate |
+| Trait line | Line `bone`; a clash `red`; the tag `plate-name-88x24` (signed, art director, 5238569a) with its word `bone` | A readout; the tag is the kit's small plate |
 | Work tray (`chamber`) | Back `panel`, rim `enamel`, floor `enamel` with a `bevel` edge; no glass edge, no highlight | A tray in the housing around the one warm thing |
 | Founder | Its own colours; unread parts `frostS` with a `frostD` texture | As Pods' unread frost |
 | Origin | `mist` | Context, quiet |
@@ -1168,7 +1168,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | Pod | 88, 232, 144, 176 | The pod by its species' size class, bottom-centred on (160, 408), as on Pods |
 | Dish | 48, 344, 224, 96 | Painted in Create's own stage, `room-cradle-front` registering at (48, 344); until it lands, nothing is drawn |
 | Origin | 40, 456, 240, 40 | 16 px `mist`, at most two lines, centred on x 160 |
-| Small chamber (`dome`) | 776, 104, 176, 224 | The Incubator's chamber, small and empty; its floor at y 296. While a bud grows its glow shows here (a 64×80 bud at 832, 216) and Grow is refused |
+| Small chamber (`dome`) | 776, 104, 176, 224 | The Incubator's chamber, small and empty; its floor at y 274. While a bud grows its glow shows here (a 64×80 bud at 832, 194) and Grow is refused |
 | Leaves to grow | 768, 336, 192, 48 | The word `leaves`, form grid: 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48), all empty: one per minute it will take, 20 plus one a change, the first founder 5 whatever is shaped |
 | **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box; x 804 centres it on the column's axis, 4 px off the grid, as Home's juvenile and the medium pod are |
 | Code | 776, 525, 176, 25 | The line box 525 to 545, baseline 541, a 1 px `hairline` rule at y 549, 8 px from the baseline to the rule (off the grid for that clearance); at Grow the code prints here, centred on x 864, in three groups with spaces ("K7Q 4MX P2D"). 176 wide: the widest code, "WWW WWW WWW", is 152 px |
@@ -1178,10 +1178,10 @@ The rail is centred across the top. The roll sits under it, the trait line under
 
 | Region (`create.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
-| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-create`, to be commissioned; until then `room-bench-stage-collection`) | | — |
+| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-create`, signed, art director, 528b73d5) | | — |
 | `rail` | 96, 40, 832, 40 | chapter rail (rules `railCompaction`, `slantTabs`) | | open tab: the focused trait's chapter (none when nothing is read); pips read, unread, changed, clash, focused (lifted 2 px) |
 | `roll` | 296, 88, 432, 104 | build `roll` | shape, grow | roll (three pictures, notches) or single (one picture, no notches); chosen 0, 1 or 2; clash edge |
-| `traitLine` | 296, 200, 432, 24 | text, build `traitLine` (its tag a panel) | | as the pod is; changed (the tag); clash (red, the inline ✕); doing; one look; nothing read ("it grows as the pod is") |
+| `traitLine` | 296, 200, 432, 24 | text, build `traitLine` (its tag the signed `plate-name-88x24`) | | as the pod is; changed (the tag); clash (red, the inline ✕); doing; one look; nothing read ("it grows as the pod is") |
 | `chamber` | 312, 232, 400, 320 | living window, part inside | | — |
 | `founder` | 360, 240, 304, 312 | specimen (focal) | | frosted where unread; nothing read, the frost follows its own outline, every look frosted; the roll's dither |
 | `chamberFront` | 312, 232, 400, 320 | living window, part frame | | — |
@@ -1189,7 +1189,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | `cradle`, `cradleFront` | 48, 344, 224, 96 | specimen, parts cradle and cradleFront | | — |
 | `origin` | 40, 456, 240, 40 | text | | — |
 | `dome`, `domeFront` | 776, 104, 176, 224 | living window, parts inside and frame | | empty; busy (the bud) |
-| `bud` | 832, 216, 64, 80 | specimen | | only while another bud grows |
+| `bud` | 832, 194, 64, 80 | specimen | | only while another bud grows |
 | `leaves` | 768, 336, 192, 48 | leaves, form grid | | the count of minutes, every leaf empty |
 | `stamp` | 804, 400, 120, 120 | stamp label | | live: the read and changed chapters; grow: printing |
 | `code` | 776, 525, 176, 25 | text, with its rule | | blank; grow: the code |
@@ -1250,13 +1250,13 @@ With `motion: false` both jump to their ends.
 | Roll close-ups | 128×72, `roll-{species}-{trait}-{look}-128x72` | Carried |
 | Pod | the species' size class: 144×176, 120×152 or 104×128 (the signed pod sprites) | Carried; checked with Pods |
 | Dish | 224×96 (`room-cradle-front`, Pods' signed lip; the nest is the stage's) | Painted in Create's own stage |
-| Work tray (`chamber`) | 400×320, its floor 400×16 | Stale: specified as glass; becomes a tray in the housing |
-| Small chamber (`dome`) | 176×224; a busy bud 64×80, `bud-small-64x80` | Stale: a small bell jar; becomes the Incubator's chamber, small. The bud is re-judged with the Incubator's |
+| Work tray (`chamber`) | 400×320, its floor 400×16: `chamber-back-400x320`, `chamber-front-400x320` | Signed (art director, 72561d74) |
+| Small chamber (`dome`) | 176×224, `dome-small-back-176x224` and `dome-small-front-176x224`; a busy bud 64×80, `bud-small-64x80` | Signed (art director, 72561d74 for the chamber, 963f4eab for the bud) |
 | Notches | 12×6 | Carried |
 | Leaves | 8×12, `leaf-empty-8x12` and `leaf-full-8x12`: the Incubator's leaf at the small size | Re-judged with the Incubator's leaf |
 | Changed pip, clash pip | 6×6, `pip-changed-6x6` (a diamond), `pip-clash-6x6` | Carried |
-| Changed tag | 88×24, `plate-name-88x24`, to be cut | Carried |
-| Stage | 1024×522, `room-bench-stage-create`, to be commissioned (until then `room-bench-stage-collection`) | Stale: the dark glass bench; becomes the work tray's stage |
+| Changed tag | 88×24, `plate-name-88x24` | Signed (art director, 5238569a) |
+| Stage | 1024×522, `room-bench-stage-create` | Signed (art director, 528b73d5): the work tray's stage |
 | Stamp | on the 120 label | Carried |
 
 ---

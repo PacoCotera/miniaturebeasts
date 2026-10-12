@@ -111,8 +111,8 @@ static void build_traitLine(void) {
   if (cross) line = s + 4;   /* the ✕ is the icon's own node, ahead of the words */
   int tw = changed ? ((v_measure(word, px) + 2 * pad + 7) / 8) * 8 : 0, lw = v_run_width(line, px), bw = doing ? ck("regions.traitLine.breedMark.size", 0) : 0, bg = ci("regions.traitLine.breedMark.gap", 8);
   int total = (tw ? tw + gap : 0) + (cross ? ic : 0) + lw + (bw ? bg + bw : 0), x = cx - v_half(total), tx = r[1] + v_fdiv(r[3] - th, 2);
-  v_region("traitLine", LAYER_CHROME); word_panel("traitLine.tag", x, tx, tw, tw ? th : 0, colr("colours.traitLine.tagFill"), colr("colours.traitLine.tagEdge"));   /* the tag is chrome: a `panel` fill, a 1 px `hairline` edge (zero-size while it is not shown) */
-  v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + pad, cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, colr("colours.traitLine.tagWord")); if (tw) x += tw + gap;
+  v_region("traitLine", LAYER_PAINTED); pic_or("traitLine.tag", tw > 0, v_pstr("regions.traitLine.tag"), x, tx, tw, th);   /* the tag is the signed plate-name-88x24 on the painted layer, drawn at its width (the word's + 16 on the 8 px grid, 88 for "changed"), never stretched */
+  v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + v_fdiv(tw - v_measure(word, px), 2), cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, colr("colours.traitLine.tagWord")); if (tw) x += tw + gap;
   v_name("traitLine"); pic_or("traitLine.cross", cross, "icon:cross:16", x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px); if (cross) x += ic;
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, ci("regions.traitLine.lineTop", 202) + v_fdiv(20 - v_cap(px), 2), lw, px, colr(clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
   v_name("traitLine"); pic_or("traitLine.breed", bw, breed, x + lw + bg, r[1] + v_fdiv(r[3] - ck("regions.traitLine.breedMark.size", 1), 2), bw ? bw : 28, ck("regions.traitLine.breedMark.size", 1));
@@ -161,8 +161,10 @@ void create_words(void) {
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
   build_founder();
+  picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamberFront.picture"));   /* the tray's rim and floor, over the founder: its ink is rows 310 to 319 only */
   build_roll();
   build_traitLine();
+  picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));   /* the small chamber's front, over the bud and the travelling pod */
   { v_name("leaves"); word_leaves(C, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), 0, v_pint("regions.leaves.full", 0), 0, ci("regions.leaves.max", 48), -1);   /* a leaf the bud will not take is a node with no size */ }
   build_stamp();
   build_code();
