@@ -149,7 +149,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 - **Light.** The warm daylight from above onto the pod's dish; a read page lit warm from inside; the rail and the rings in the device's panels.
 - **Palette.** Pods from one renderer: the species' colour pair and shell pattern, the place's dust or moss; frost, the veil over what is unread; seeds pearl with a ghost inside; the collection ring read `bone`, unread `bevel`.
 - **Type.** Inter: the pod's name 20 px medium on its plate; the origin 16 px ("Found on the rock field, as a Tuikis felt safe."; the pattern is in [Station layouts](station-layouts.md), Words on Pods); the page heading 20 px medium; one word per chapter and one word per trait, 16 px.
-- **Chrome.** `✓ Identify   ⚡ 1`, `✓ Read Coat   ◆ 3`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild   ❀ +1`, `✓ Open the guide` on the figure; the way back `← Home`, `← Pods` or the pod's name.
+- **Chrome.** `✓ Identify   ◆ 1`, `✓ Read Coat   ◆ 3`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild   ❀ +1`, `✓ Open the guide` on the figure; the way back `← Home`, `← Pods` or the pod's name.
 - **This pod, the species.** On the overview, "this pod" under the pod's marks and "the species" under the figure, once identified. The ring starts on the pod with `✓ Shape a founder`; the figure is a side trip one ▶ away, and ✓ on it opens the species' guide: a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The seal breaks and the glyph lights in about 2 s; a read wipes the page's frost in 2 s and the tab's pips fill; the page turns in 200 ms; glints 2 Hz.
 
