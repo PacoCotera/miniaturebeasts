@@ -24,8 +24,11 @@ for k in ['stepA', 'stepB']:
     i = int(np.argmin(cost[:, -1])); cut = np.zeros(304, int)
     for j in range(303, -1, -1): cut[j] = R0 + i; i = back[i, j]
     zone = np.arange(312)[:, None] < cut[None, :]
+    # the planted paws on pass's foot row (the animator, ed4f4d5): the legs, below the seam only, rise by the step's paw offset
+    ps = int(np.where(bs.any(1))[0].max()); pt = int(np.where((T2[..., 3] == 255).any(1))[0].max()); lift = pt - ps
+    if lift > 0: T2 = np.concatenate([T2[lift:], np.zeros_like(T2[:lift])], 0)
     out = T2.copy(); out[zone] = S[zone]                                   # above the seam: pass exactly (every pixel, alpha included)
     Image.fromarray(out).save(f'{K}/juv-S05-{k}-locked-304x312.png')
-    log[k] = {'shift': [int(dx), int(dy)], 'px differing from pass above row 256 (belly - 6)': int((out[:R0] != S[:R0]).any(-1).sum()), 'px differing rows 236 to the belly line': int((out[236:BELLY] != S[236:BELLY]).any(-1)[zone[236:BELLY]].sum()), 'px differing above the seam': int((out[zone] != S[zone]).any(-1).sum())}
+    log[k] = {'shift': [int(dx), int(dy)], 'legs lifted px': int(lift), 'lowest paw row': int(np.where((out[..., 3] == 255).any(1))[0].max()), 'px differing from pass above row 256 (belly - 6)': int((out[:R0] != S[:R0]).any(-1).sum()), 'px differing rows 236 to the belly line': int((out[236:BELLY] != S[236:BELLY]).any(-1)[zone[236:BELLY]].sum()), 'px differing above the seam': int((out[zone] != S[zone]).any(-1).sum())}
 Image.fromarray(S).save(f'{K}/juv-S05-pass-locked-304x312.png')
 json.dump(log, open(f'{K}/torso-lock-b.json', 'w'), indent=1); print(json.dumps(log))
