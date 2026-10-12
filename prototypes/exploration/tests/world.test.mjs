@@ -8,10 +8,12 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
-import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS } from "../tools/world-vectors.mjs";
+import * as V from "../src/view.mjs";
+import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
 const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
+const VIEW_SRC = readFileSync(new URL("../src/view.mjs", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
 const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
 const vectorOf = seed => VECTORS.gens["1"].seeds.find(s => s.seed === seed);
@@ -19,8 +21,8 @@ const vectorOf = seed => VECTORS.gens["1"].seeds.find(s => s.seed === seed);
 // The page in a sandbox, as in freeze.test.mjs: the module script with its import bound to the real module's exports.
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
-const MODS = { world: W, atlas: A };
+// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
+const MODS = { world: W, view: V, atlas: A };
 const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
 const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
 const SCRIPT = MODULE.replace(IMPORT_RE, "");
@@ -193,6 +195,23 @@ test("generator 2: the key list is complete, generator 1's G gains no field, and
   assert.equal(W.depotCells(G, 7), G.depots.set, "the eager outposts are the memo");
 });
 
+// ---- src/view.mjs: the place camera and coordinates (C2a §3, §8.2) ----
+test("view: src/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
+  assert.deepEqual(VECTORS.view.map(c => c.name), VIEW_CASES.map(c => c.name), "the case list");
+  for (const c of VECTORS.view) assert.deepEqual(V[c.fn](...viewArgs(V, c.args)), c.out, c.name);
+  const at = n => VECTORS.view.find(c => c.name === n).out;
+  assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
+  assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
+});
+test("view: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+  const code = VIEW_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
+  assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  assert.equal((code.match(/\bimport\b/g) || []).length, 1, "one import");
+  const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
+  for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
+});
 test("generator 2 is integer only, by source", () => {
   const a = MODULE_SRC.indexOf("// ---- generator 2 (integer only) ----\n"), b = MODULE_SRC.indexOf("// ---- end generator 2 ----\n");
   assert.ok(a > 0 && b > a, "the generator 2 markers");
