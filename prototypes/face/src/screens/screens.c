@@ -6,6 +6,7 @@
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
 #include "../layout/layout.h"
+#include "moving.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -70,6 +71,7 @@ static int vet_ring(const char *screen, const char *name, char *err, int cap) {
 }
 int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0; }
 int screens_vet_spec(const char *screen, char *err, int cap) {
+  if (strcmp(screen, "moving") == 0) return moving_load(err, cap);   /* the moving sets (M1 §2.2): checked whole, refused with the reason */
   { char kind[16]; if (spec_str(screen, "kind", kind, sizeof kind) > 0 && strcmp(kind, "overlay") == 0 && spec_len(screen, "over") <= 0) { snprintf(err, (size_t)cap, "spec %s: an overlay lists the screens it opens over (over)", screen); return -1; } }
   for (int i = 0, n = spec_len(screen, "targets"); i < n; i++) { char key[48], dummy[2]; if (spec_member(screen, "targets", i, key, sizeof key, dummy, sizeof dummy) && vet_ring(screen, key, err, cap) < 0) return -1; }
   /* a focus graph that cannot be walked is refused at load, with the parser's reason (§2.6.1): focus.graph when the spec has one, else (a spec with states) every focus.<state> */
@@ -100,6 +102,7 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
+    if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
     if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
@@ -174,4 +177,4 @@ void screens_key(int code) {
   if (strcmp(to, cur) == 0) return;
   v_focus_set(to); draw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
 }
-int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && home_tick(now); }
+int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && (home_tick(now) || habitat_tick(now) || incubator_tick(now)); }

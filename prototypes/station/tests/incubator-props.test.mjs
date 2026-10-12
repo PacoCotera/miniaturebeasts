@@ -16,6 +16,7 @@ const schema = JSON.parse(readFileSync(path.join(path.resolve(path.dirname(fileU
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("incubator.json"), pods = J("pods.json");
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
+  if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
   if ("const" in sc && v !== sc.const) out.push(`${at}: ${JSON.stringify(v)} is not ${JSON.stringify(sc.const)}`);
   if (sc.enum && !sc.enum.includes(v)) { out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(sc.enum)}`); return out; }
   if (sc.type) { const ts = [].concat(sc.type), ty = v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v; if (!ts.includes(ty) && !(ty === "integer" && ts.includes("number"))) { out.push(`${at}: a ${ty}, wanted ${ts.join(" or ")}`); return out; } }
@@ -81,6 +82,16 @@ test("the hatch's juvenile and the meet's resident are one picture, for adultTur
   }
 });
 
+// ---- Station M1 §2.6: the hatch's juvenile with its moving set ----
+import { setMoving } from "../src/moving.mjs";
+{ const J2 = (f) => JSON.parse(readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), f), "utf8")), ix = J2("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J2(`moving/${id}.json`); setMoving(sets); }
+test("the hatch's juvenile names its close atlas and shadow when its set may play, and fits incubator.props.json", () => {
+  const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); assert.ok(S.grow(st, p, {}, settings, T0).ok);
+  const r = S.openBud(st, {}, settings, T0 + 3600000); assert.ok(r.ok); const hatch = { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null };
+  const b = incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: true }, spec, pods);
+  assert.deepEqual(validate(b.props, schema), []); assert.deepEqual(b.props.regions.juvenile.moving, { set: "S01", close: "moving:juvenile:S01:close:304x312:species", shadow: "moving:juvenile:S01:shadow:304x24" });
+  assert.equal(incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: false }, spec, pods).props.regions.juvenile.moving, undefined, "the play gate shut: none");
+});
 test("the ready bud's front is requested as a slot of bud-ready-front-128x160 at the bud's rect (nothing drawn until placed); the other five bud pictures stay placeholders", () => {
   const { st, p } = world(); assert.ok(S.grow(st, p, {}, settings, T0).ok);
   const e = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 + 10_000), B = e.props.regions.bud;

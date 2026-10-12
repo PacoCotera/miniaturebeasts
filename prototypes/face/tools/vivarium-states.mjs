@@ -50,6 +50,13 @@ async function walk(visit) {
     await enter(page, SCENES.twelve); await step(40); await step(8000);
     const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, n: window.__st.props?.regions?.residents?.length })); if (u.screen !== "vivarium" || u.n !== 12) fail("vivarium-walk-8000ms: " + JSON.stringify(u));
     await visit("vivarium-walk-8000ms", page, fail);
+    // Station M1: the moving household on its stand-in cells under the developer switch (S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1), the Station time noon, 8000 ms in
+    await page.evaluate(() => { const w = window.__world, S = window.__st; w.reset(); w.bays(12); w.adults(6); w.young(5); const st = S.ST, k = st.mibis.length; S.seedAdults("S05", 9, 1); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; }
+      S.settings.motionSets = true; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.hab.id = null; S.UI.viv.f = "tile." + st.mibis[0].id; S.goto("vivarium"); S.UI.viv.f = "tile." + st.mibis[0].id; });
+    await step(40); await step(8000);
+    { const m = await page.evaluate(() => ({ screen: window.__st.UI.screen, moving: (window.__st.props?.regions?.residents ?? []).filter((r) => r.moving).length })); if (m.screen !== "vivarium" || m.moving !== 12) fail("vivarium-moving-8000ms: " + JSON.stringify(m)); }
+    await visit("vivarium-moving-8000ms", page, fail);
+    await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = null; });
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };

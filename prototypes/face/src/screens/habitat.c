@@ -11,6 +11,7 @@
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
 #include "../layout/layout.h"
+#include "moving.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,8 +51,101 @@ static void build_ring_under(const char *cur) {
   int r[4]; hrect("regions.resident.rect", r); v_region("focus", LAYER_CHROME);
   word_focusRing("focus", r, S, "focus.targets.resident.ring", fcol("colours.ring"));   /* the feet ring: under the creature, as on Home */
 }
+/* ---- up close with a moving set (Station M1 §2.4): the resident from the close atlas at the rect and its shadow at the feet (drawn before the feet ring, build_moving_shadow); its own 80 ms tick from the screen's first frame, at the seed's phase; awake the breath, asleep the asleep loop;
+   Greet the set's hops (events.moment), a sleeper's Greet wake, hops, curl (events.moment.asleep); dithers 16 levels over 180 ms; the blink (an adult with a blink cell) every 4–9 s for 2 ticks at rest; never mirrored. ---- */
+static uint32_t g_ht0; static int g_hhave, g_hlast_tick = -1; static uint32_t g_hbreath0, g_hmoment_end; static int g_hmoment_on; static char g_hid[24];
+static unsigned g_bs; static long g_bnext; static int g_bseeded;   /* the blink's LCG and its next tick */
+void habitat_hidden(void) { g_hhave = 0; }
+static const mv_stage_t *close_set(void) {
+  const char *set = v_pstr("regions.resident.moving.set"), *atlas = v_pstr("regions.resident.moving.close"), *stg = v_pstr("regions.resident.stage"); if (!*set || !has(atlas)) return NULL;
+  const mv_stage_t *ms = moving_stage(set, !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT); int r[4]; hrect("regions.resident.rect", r);
+  return ms && ms->cw == r[2] && ms->ch == r[3] ? ms : NULL;
+}
+static int loop_at(const mv_loop_t *l, int t) { int p = 0; for (int i = 0; i < l->n; i++) p += l->ms[i] / 80; if (p <= 0) return l->cell[0]; t %= p; for (int i = 0; i < l->n; i++) { int d = l->ms[i] / 80; if (t < d) return l->cell[i]; t -= d; } return l->cell[0]; }
+static int loop_len(const mv_loop_t *l) { int p = 0; for (int i = 0; i < l->n; i++) p += l->ms[i] / 80; return p > 0 ? p : 1; }
+/* the frame of the moving resident at the face's time: its close cell (by name), lift, dy, a dither (from, to, level; from NULL is clear) and shadow-75 */
+typedef struct { const char *cell, *dfrom, *dto; int lift, dy, dl, ddf, ddt, sh75; } close_t;
+/* the step up close (closeStep, the animator's S05 ruling): crouch, the step cell, then stand; NULL outside it */
+static const char *close_step(const mv_stage_t *S0, int dt) { if (dt < 0 || !S0->cstep_ms || dt >= S0->cstep_crouch + S0->cstep_ms) return NULL; return dt < S0->cstep_crouch ? "crouch" : S0->ccell[S0->cstep_cell]; }
+static void close_frame(const mv_stage_t *S0, close_t *f, int scale_n, int scale_d) {
+  memset(f, 0, sizeof *f); uint32_t now = anim_now(); int asleep = !strcmp(v_pstr("regions.resident.rest"), "asleep"), seed = v_pint("regions.resident.seed", 0), motion = v_pbool("motion", 1);
+  const char *stand = "stand", *curl = "curl";
+  if (!motion) { f->cell = asleep ? curl : stand; return; }   /* motion off: stand, or curl when asleep */
+  anim_state_t t; int moment = anim_get(ANIM_MOMENT, "resident", &t);
+  if (moment && !g_hmoment_on) g_hmoment_on = 1;
+  if (!moment && g_hmoment_on) { g_hmoment_on = 0; g_hbreath0 = now; g_hmoment_end = now; }   /* after a moment the breath starts again from b0 */
+  int dither = S0->close_dither_ms > 0 ? S0->close_dither_ms : 180;
+  if (moment) {
+    int e = t.elapsed, h0 = spec_int(S, "events.moment.placeholder.hops.0", 0), h1 = spec_int(S, "events.moment.placeholder.hops.1", 900);
+    if (asleep && t.ms == spec_int(S, "events.moment.asleep.ms", 2880)) {   /* a sleeper's Greet: wake (dither, crouch 400, stand), the hops, crouch 320, dither, curl */
+      int wcr = S0->wake_crouch ? S0->wake_crouch : 400, hops0 = dither + wcr, hopEnd = hops0 + h1 + (S0->chop_nlift ? S0->chop_crouch + S0->chop_nlift * 80 + S0->chop_land : S0->cstep_crouch + S0->cstep_ms), ccr = S0->curl_crouch ? S0->curl_crouch : 320;
+      if (e < dither) { f->cell = "crouch"; f->dy = 2; f->dl = 16 * e / dither; f->dfrom = curl; f->dto = "crouch"; f->ddt = 2; if (f->dl < 1) f->dl = 1; return; }
+      if (e < hops0) { f->cell = "crouch"; f->dy = 2; return; }
+      if (e < hopEnd) { const char *c = stand; int up = 0, sh = 0; if (S0->chop_nlift) { if (!moving_close_hop(S0, e - hops0 - h0, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh)) moving_close_hop(S0, e - hops0 - h1, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh); } else c = close_step(S0, e - hops0 - h0) ? close_step(S0, e - hops0 - h0) : close_step(S0, e - hops0 - h1) ? close_step(S0, e - hops0 - h1) : stand; f->cell = c; f->lift = up; f->sh75 = sh; return; }
+      if (e < hopEnd + ccr) { f->cell = "crouch"; f->dy = 2; return; }
+      if (e < hopEnd + ccr + dither) { f->cell = curl; f->dl = 16 * (e - hopEnd - ccr) / dither; if (f->dl < 1) f->dl = 1; f->dfrom = "crouch"; f->ddf = 2; f->dto = curl; return; }
+      f->cell = curl; return;
+    }
+    if (!asleep) { const char *c = stand; int up = 0, sh = 0;   /* Greet: the hops at 0 and 900 ms of the moment */
+      if (S0->chop_nlift && (moving_close_hop(S0, e - h0, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh) || moving_close_hop(S0, e - h1, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh))) { f->cell = c; f->lift = up; f->sh75 = sh; return; }
+      if (!S0->chop_nlift && S0->cstep_ms) { const char *st = close_step(S0, e - h0); if (!st) st = close_step(S0, e - h1); if (st) { f->cell = st; return; } }   /* a set with no hop up close (S05): the eager step, twice, on the hop's schedule */
+      f->cell = stand; return; }
+  }
+  int tick = (int)((now - g_hbreath0) / 80u);
+  if (asleep) { f->cell = S0->ccell[0]; int c = loop_at(&S0->asleep, tick + (g_hbreath0 == g_ht0 ? seed % loop_len(&S0->asleep) : 0)); f->cell = S0->wcell[c]; return; }
+  int c = loop_at(&S0->breathe, tick + (g_hbreath0 == g_ht0 ? seed % loop_len(&S0->breathe) : 0)); f->cell = S0->wcell[c];
+  if (S0->blink_ms > 0 && moving_close_cell(S0, "blink") >= 0) {   /* the blink: every blink[1]–blink[2] ms (seeded) for blink[0] ms, awake, at rest, never in a moment */
+    long at = (long)((now - g_ht0) / 80u), lo = S0->blink_lo / 80, hi = S0->blink_hi / 80, len = S0->blink_ms / 80;
+    if (!g_bseeded) { g_bseeded = 1; g_bs = (unsigned)seed ^ 0x9e3779b9u; g_bs = g_bs * 1664525u + 1013904223u; g_bnext = lo + (long)((g_bs >> 16) % (unsigned)(hi - lo + 1)); }
+    while (at >= g_bnext + len) { g_bs = g_bs * 1664525u + 1013904223u; g_bnext += lo + (long)((g_bs >> 16) % (unsigned)(hi - lo + 1)); }
+    if (at >= g_bnext && at < g_bnext + len) f->cell = "blink";
+  }
+}
+int habitat_tick(uint32_t now) {   /* a moving resident's 80 ms tick is due: draw again */
+  if (strcmp(v_pstr("screen"), "habitat") != 0 || !g_hhave || !v_pbool("motion", 1) || !v_pstr("regions.resident.moving.set")[0]) return 0;
+  int k = (int)((now - g_ht0) / 80u); if (k == g_hlast_tick) return 0; g_hlast_tick = k; return 1;
+}
+int habitat_test_cell(void) { const mv_stage_t *S0 = close_set(); if (!S0) return -100; close_t f; close_frame(S0, &f, 1, 1); return f.dl ? -1 - f.dl : moving_close_cell(S0, f.cell); }   /* test hook: the close cell shown (−1 − level while it dithers) */
+int habitat_test_lift(void) { const mv_stage_t *S0 = close_set(); if (!S0) return -100; close_t f; close_frame(S0, &f, 1, 1); return f.lift; }
+static void close_now(const mv_stage_t *S0, const int r[4], close_t *f) {   /* this frame's close cell: its own tick from the screen's first frame (and a new mibi's), the hop scaled to the window */
+  { const char *id = v_pstr("regions.resident.id"); if (!g_hhave || strcmp(g_hid, id)) { g_hhave = 1; g_ht0 = anim_now(); g_hbreath0 = g_ht0; g_hmoment_end = 0; g_hmoment_on = 0; g_bseeded = 0; snprintf(g_hid, sizeof g_hid, "%s", id); } }
+  int glass[4]; hrect("regions.glass.rect", glass); int room = r[1] - glass[1], apex = 0; for (int i = 0; i < S0->chop_nlift; i++) if (S0->chop_lift[i] > apex) apex = S0->chop_lift[i];
+  int sn = 1, sd = 1; if (apex > room && apex > 0) { sn = room > 0 ? room : 0; sd = apex; }   /* the hop scales down to fit the window above the figure, never clipped */
+  close_frame(S0, f, sn, sd);
+}
+/* the moving resident's shadow at its feet, never lifted, drawn before the feet ring (UI/UX Q8: the walkers' order, glass, shadow, ring, resident); a mibi without a set keeps its baked shadow */
+static void build_moving_shadow(void) {
+  const mv_stage_t *S0 = close_set(); if (!S0) return;
+  const char *shadow = v_pstr("regions.resident.moving.shadow"); char sh[96]; snprintf(sh, sizeof sh, "%s", shadow); if (!has(sh)) return;
+  int r[4]; hrect("regions.resident.rect", r); close_t f; close_now(S0, r, &f);
+  v_name("resident.shadow"); v_sprite_window("resident.shadow", sh, 1 + (f.sh75 ? 1 : 0) * S0->scw, 0, r[0], r[1] + r[3] - S0->sch, S0->scw, S0->sch);
+}
+static int build_moving_resident(const char *cur, int r[4], int lift) {
+  const mv_stage_t *S0 = close_set(); if (!S0) return 0;
+  const char *atlas = v_pstr("regions.resident.moving.close"); char at[96]; snprintf(at, sizeof at, "%s", atlas);
+  close_t f; close_now(S0, r, &f);
+  int y = r[1] - lift - f.lift + f.dy;
+  v_region("resident", LAYER_ART);
+  char from[96] = ""; int level = 16; anim_state_t t; const char *pic = v_pstr("regions.resident.picture");
+  if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "resident", &t) && t.from_id[0] && t.ms > 0 && wire_has_asset(t.from_id)) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }   /* the swap: from the old mibi's picture to this cell */
+  int ci = moving_close_cell(S0, f.cell); if (ci < 0) ci = 0;
+  if (from[0]) { v_name("resident"); v_sprite_hidden("resident.pic", at, r[0], y); v_dither_window("resident.dither", from, 0, 0, at, 1 + ci * S0->cw, 0, level, r[0], y, r[2], r[3]); }
+  else if (f.dl) {
+    int a = f.dfrom ? moving_close_cell(S0, f.dfrom) : -1, b = moving_close_cell(S0, f.dto); int D = f.ddf > f.ddt ? f.ddf : f.ddt, hh = r[3] - (f.ddf > f.ddt ? f.ddf - f.ddt : f.ddt - f.ddf);
+    v_name("resident"); v_sprite_hidden("resident.pic", at, r[0], y);
+    v_dither_window("resident.dither", a >= 0 ? at : NULL, a >= 0 ? 1 + a * S0->cw : 0, D - f.ddf, at, 1 + b * S0->cw, D - f.ddt, f.dl, r[0], r[1] - lift + D, r[2], hh);
+  } else { v_name("resident"); v_sprite_window("resident.pic", at, 1 + ci * S0->cw, 0, r[0], y, r[2], r[3]); }
+  (void)pic; (void)cur;
+  return 1;
+}
 static void build_resident(const char *cur) {
   int r[4], lp[4]; hrect("regions.resident.rect", r); hrect("regions.resident.lamp.rect", lp);
+  if (build_moving_resident(cur, r, strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0)) {
+    int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0); const char *pic = v_pstr("regions.resident.picture");
+    if (has(pic)) v_sprite_hidden("resident.out", pic, r[0], r[1]);
+    v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting);
+    return;
+  }
   const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0);
   char from[96] = ""; int level = 16; anim_state_t t;
   if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "resident", &t) && t.from_id[0] && t.ms > 0 && wire_has_asset(t.from_id) && has(pic)) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }   /* the swap: the old mibi cross-dithers to the new in 16 levels */
@@ -213,6 +307,7 @@ void habitat_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   build_stage();
   word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0);
+  build_moving_shadow();
   build_ring_under(cur);
   build_resident(cur);
   build_tag();

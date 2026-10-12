@@ -122,3 +122,63 @@ test("a light change is a cut: Idle redraws the whole of its painting at most (5
     const a = dirty(f); assert.ok(a <= 581632, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
   }
 });
+
+// ---- Station M1 §3: Idle with moving sets (moving-scene.mjs: stand-in atlases synthesized at the slot sizes) ----
+import { movingScene, bootScene, resend, runFrames, STATE, CLIP, rule2Run } from "./moving-scene.mjs";
+for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
+  test(`MOVING (M1 §3): Idle with twelve moving residents and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}: no frame over 153,600 px, no overflow, at most six changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
+    const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 })); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    const r = runFrames(f, 30000, { cadence });
+    assert.ok(r.worst <= 153600, `a frame redrew ${r.worst} px`); assert.ok(r.steps <= 6, `${r.steps} changed in a frame`); assert.equal(r.offgroup, 0); assert.ok(r.worstTick <= 148000, `a tick of ${r.worstTick} px`); assert.equal(f.invOverflows(), 0);
+    console.log(`# Idle (moving, cadence ${cadence.join("/")}): worst frame ${r.worst} px, worst tick ${r.worstTick} px, ${r.deferred} deferred`);
+  });
+}
+test("determinism and motion off on Idle (M1 §3): two faces walk alike; with motion off nothing is redrawn over 10 s", { skip }, async () => {
+  const run = async () => { const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 })); runFrames(f, 8000); return f.hash(); };
+  assert.equal(await run(), await run());
+  const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 }), { motion: false }); assert.equal(runFrames(f, 10000).worst, 0);
+});
+test("rule 2 on Idle (M1 §3): six adult walkers at 5 px a tick on one group tick with the bed sleepers breathing: the tick stays inside 148,000 px and the budget defers, deterministically", { skip }, async () => {
+  const a = await rule2Run("idle"), b = await rule2Run("idle");
+  assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`); assert.ok(a.r.deferred > 0, "the budget deferred changes"); assert.equal(a.hash, b.hash, "deterministic"); assert.equal(a.r.deferred, b.r.deferred);
+  console.log(`# rule 2 (Idle): worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
+});
+// the bound of one hopping resident's frame (the architect's Q5): (cell w + the most it travels in a tick) × (cell h + the lift cap a tick, 12) + (cell w + that travel) × 16 for its shadow node; the travel is the hop's over its air ticks, rounded up
+import { MOVING as MSETS } from "./moving-scene.mjs";
+const hopBound = (stage) => { const s = MSETS.S01[stage], [w, h] = s.walk.size, t = Math.ceil(s.hop.travel / s.hop.lift.length); return (w + t) * (h + 12) + (w + t) * 16; };
+const HOP_BOX = hopBound("adult");
+test("the G7 bound (the architect's Q5): 27,720 px for an adult, 15,680 for a juvenile, from the formula", () => { assert.equal(hopBound("adult"), 27720); assert.equal(hopBound("juvenile"), 15680); });
+test("G7 night (M1 §3, game designer R3): Pip alone, asleep, 6 min 10 s: 7–18 stirs 20–40 s apart and none while Pip wanders, none within 20 s of its last curl; a wanderer wakes, travels at most 200 px, rests and curls; no frame over one adult hop box and its shadow; the face asks for a few frames a second", { skip }, async () => {
+  const f = await bootScene(movingScene("idle", { adults: 1, time: 23 * 3600 })), M = f.M;
+  const stirs = [], wanders = []; let prev = { clip: CLIP.asleep, wanderer: false }, worst = 0, drawn = 0, frames = 0, wakeAt = null, curlEnd = 0, travelled = 0, wander = null;
+  runFrames(f, 370000, { each: (t, s) => {
+    frames++; if (M._face_dirty_count()) drawn++; worst = Math.max(worst, s);
+    const st = STATE(M._face_test_state(0)), x = M._face_test_mv(0, 0), feet = M._face_test_mv(0, 1);
+    if (st.clip === CLIP.stir && prev.clip !== CLIP.stir) { assert.ok(!st.wanderer, "no stir while Pip wanders"); assert.ok(t - curlEnd >= 20000 || curlEnd === 0, `a stir ${t - curlEnd} ms after its curl`); stirs.push(t); }
+    if (st.wanderer && !prev.wanderer) { wander = { t, x, feet, max: 0, rested: false }; }
+    if (wander && st.wanderer) { wander.max = Math.max(wander.max, Math.abs(x - wander.x), Math.abs(feet - wander.feet)); if (st.clip === CLIP.rest) wander.rested = true; }
+    if (wander && !st.wanderer && prev.wanderer) { wanders.push(wander); wander = null; }
+    if (prev.clip === CLIP.curl && st.clip !== CLIP.curl) curlEnd = t;
+    prev = st;
+  } });
+  void wakeAt; void travelled;
+  const gaps = stirs.slice(1).map((t, i) => t - stirs[i]);
+  assert.ok(stirs.length >= 7 && stirs.length <= 18, `${stirs.length} stirs`); for (const g of gaps) assert.ok(g >= 20000 - 80 && g <= 40000 + 80, `stirs ${g} ms apart`);
+  assert.ok(gaps.filter((g) => g > 40080).length <= wanders.length + 1, "a stir waits only while Pip wanders or after its curl");
+  assert.ok(wanders.length >= 1, "a wanderer"); for (const w of wanders) { assert.ok(w.max <= 200 * 2, `it wandered ${w.max} px`); assert.ok(w.rested, "it rested"); }
+  assert.ok(worst <= HOP_BOX, `a frame of ${worst} px`); assert.ok(drawn / 370 <= 15, `${(drawn / 370).toFixed(1)} frames a second`);
+  console.log(`# G7 night: ${stirs.length} stirs ${Math.min(...gaps)}–${Math.max(...gaps)} ms apart, ${wanders.length} wanderer${wanders.length > 1 ? "s" : ""} (${wanders.map((w) => w.max + " px").join(", ")}), worst frame ${worst} px, ${(drawn / 370).toFixed(2)} frames drawn a second`);
+});
+test("asleep spots (UI/UX item 11): at night no sleeper's ground point lies in another's spot, and no waypoint (a wanderer's included) lands in another's spot", { skip }, async () => {
+  const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 4, time: 23 * 3600 })), M = f.M, w = (i) => (i < 6 ? 144 : 104);
+  const spot = (i) => { const fx = M._face_test_mv(i, 0) + w(i) / 2, feet = M._face_test_mv(i, 1); return [fx - 56, feet - 12, 112, 24]; }, meets = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
+  const inSpot = (i, j) => { const p = spot(j), gx = M._face_test_mv(i, 0) + w(i) / 2, gf = M._face_test_mv(i, 1); return gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]; };
+  for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) if (i !== j) assert.ok(!inSpot(i, j), `resident ${i}'s ground point lies in ${j}'s spot at screen show`); void meets;
+  runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 10; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
+    for (let j = 0; j < 10; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
+});
+test("no stir begins on a focused sleeper (game designer R4; the living window's code on Home's glass, where the ring is)", { skip }, async () => {
+  const f = await bootScene(movingScene("home", { adults: 3, time: 23 * 3600, focus: "resident:0" })); let s1 = 0; const p = [0, 0, 0];
+  runFrames(f, 90000, { each: () => { const a = STATE(f.M._face_test_state(0)); assert.notEqual(a.clip, CLIP.stir, "the focused sleeper never stirs"); for (const i of [1, 2]) { const b = STATE(f.M._face_test_state(i)); if (b.clip === CLIP.stir && p[i] !== CLIP.stir) s1++; p[i] = b.clip; } } });
+  assert.ok(s1 >= 2, "the stirs went to the others: " + s1);
+});

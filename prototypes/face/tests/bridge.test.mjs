@@ -289,3 +289,50 @@ test("an overlay is refused whole, the previous props stay: not an object, no id
   spec("both", { kind: "overlay", over: ["habitat"], regions: {} }); refused({ id: "both" }, /the screen habitat does not list the overlay both/);
   refused({ id: "ghost" }, /the face has no binding table for the overlay ghost/);
 });
+
+// ---- Station M1 §2.1, §2.2: the moving sets' loader and its refusals, an atlas's width, the windowed bayerPick ----
+import { MOVING } from "./moving-scene.mjs";
+const mutated = (fn) => { const m = JSON.parse(JSON.stringify(MOVING)); fn(m); return m; };
+test("the moving spec (M1 §2.2): a good set loads; each refusal raises its error and the spec is refused whole", { skip }, async () => {
+  const f = await boot(); assert.equal(f.send({ t: "spec", screen: "moving", json: MOVING }), 0, f.errors().join("; "));
+  const cases = [
+    ["a hold on the walk part not a multiple of 80", (m) => { m.S01.juvenile.breathe[0][1] = 870; }, /multiple of 80/],
+    ["a key not in the part's cells", (m) => { m.S01.juvenile.breathe[1][0] = "stand-b9"; }, /not in the part's cells/],
+    ["an unknown clip", (m) => { m.S01.juvenile.dance = { ms: 80 }; }, /unknown clip dance/],
+    ["more walk cells than the cap", (m) => { m.S01.juvenile.walk.cells.push(...Array.from({ length: 6 }, (_, i) => "x" + i)); }, /the cap is 16/],
+    ["more close cells than 8", (m) => { m.S01.adult.close.cells.push("x"); }, /the cap is 8/],
+    ["more nap cells than 2", (m) => { m.S01.juvenile.nap.cells.push("stand"); }, /the cap is 2/],
+    ["a walk over 5 px a tick", (m) => { m.S05.juvenile.walkCycle.stride = 16; }, /passes 5/],
+    ["a stage with both hop and walkCycle", (m) => { m.S05.juvenile.walk.cells.push("air"); m.S05.juvenile.walk.mirror.pop(); m.S05.juvenile.hop = JSON.parse(JSON.stringify(m.S01.juvenile.hop)); }, /both hop and walkCycle/],
+    ["the clip the gait names missing", (m) => { delete m.S05.juvenile.walkCycle; }, /the gait walk needs the clip walkCycle, which the stage lacks/],
+    ["a gait other than hop or walk", (m) => { m.S05.gait = "walkCycle"; }, /gait is "hop" or "walk"/],
+    ["a walkCycle key not in the walk part's cells", (m) => { m.S05.juvenile.walkCycle.cycle[1][0] = "stepz"; }, /walkCycle.cycle: the key stepz/],
+    ["a lift that changes by more than 12 px a tick", (m) => { m.S01.juvenile.hop.lift = [6, 19, 16, 14, 6]; }, /changes by 13 px/],
+    ["a lift whose apex passes the juvenile's 24", (m) => { m.S01.juvenile.hop.lift = [8, 20, 26, 20, 8]; }, /apex 26 px passes the cap of 24/],
+    ["an elder tempo that is not a fraction", (m) => { m.S01.elder.tempo = [5]; }, /fraction/],
+  ];
+  for (const [what, fn, re] of cases) { assert.equal(f.send({ t: "spec", screen: "moving", json: mutated(fn) }), -1, what); const e = f.errors(); assert.match(e.join("; "), re, what); }
+  assert.equal(f.send({ t: "spec", screen: "moving", json: MOVING }), 0, "the good set loads again");
+});
+test("a moving atlas (M1 §1.2): its width is 1 + n·w for its set's cells, or it is refused", { skip }, async () => {
+  const f = await boot(); assert.equal(f.send({ t: "spec", screen: "moving", json: MOVING }), 0);
+  assert.equal(f.send({ t: "asset", id: "moving:juvenile:S01:walk:104x112:species", w: 1 + 11 * 104, h: 112, policy: "art", status: "placeholder" }), -1); assert.match(f.errors().join(), /is 1145 px, the set says 12 cells/);
+  assert.equal(f.send({ t: "asset", id: "moving:juvenile:S01:walk:104x112:species", w: 1 + 12 * 104, h: 112, policy: "art", status: "placeholder" }), 0, f.errors().join());
+  assert.equal(f.send({ t: "asset", id: "moving:adult:S01:shadow:144x16", w: 1 + 2 * 144, h: 16, policy: "art", status: "placeholder" }), 0);
+});
+test("bayerPick with windows (M1 §2.1): the pick between two w × h windows of larger pictures, a window inside its asset; from -1 is clear, to -1 is clear (never both); the six-token form is unchanged", { skip }, async () => {
+  const f = await boot(); frames(f, 2);
+  const block = (rgb, w, h) => () => { const d = new Uint8ClampedArray(w * h * 4); for (let i = 0; i < w * h; i++) { const x = i % w; const c = x < w / 2 ? rgb[0] : rgb[1]; d.set([...rgbOf(c), 255], i * 4); } return { w, h, data: d, policy: "art", status: "placeholder" }; };
+  const a = f.handleOf("t:atlasA", block(["clay", "ice"], 9, 4)), b = f.handleOf("t:atlasB", block(["mist", "bark"], 9, 4));   // two cells of 4 × 4 after a 1 px column: the left cell clay (A) / mist (B), the right ice / bark
+  const node = (ops) => [{ id: "bg", kind: "rect", rect: [0, 0, 1024, 600], colour: "ground" }, { id: "d", kind: "composed", rect: [300, 300, 4, 4], ops }];
+  assert.deepEqual(f.scene(node([["bayerPick", a, b, 16, 0, 0, 5, 0, 1, 0]]), env), []); frames(f); assert.equal(f.refused(), 0); assert.deepEqual(f.pixel(301, 301), rgbOf("mist"), "level 16: all `to`, its window at x 1 (the left cell)");
+  f.scene(node([["bayerPick", a, b, 0, 0, 0, 5, 0, 1, 0]]), env); frames(f); assert.deepEqual(f.pixel(301, 301), rgbOf("ice"), "level 0: all `from`, its window at x 5 (the right cell)");
+  f.scene(node([["bayerPick", -1, b, 0, 0, 0, 0, 0, 1, 0]]), env); frames(f); assert.deepEqual(f.pixel(301, 301), rgbOf("ground"), "from -1: clear, the ground shows");
+  f.scene(node([["bayerPick", a, b, 8, 0, 0, 6, 0, 1, 0]]), env); frames(f); assert.equal(f.refused(), 1, "a window past its asset is refused");
+  // to -1 is clear (a dither-out, motion-spec §2.7a): `from` keeps exactly the pixels a dither-in at the same level leaves
+  const at8 = (from, to) => { f.scene(node([["bayerPick", from, to, 8, 0, 0, 5, 0, 1, 0]]), env); frames(f); const o = []; for (let y = 300; y < 304; y++) for (let x = 300; x < 304; x++) o.push(f.pixel(x, y).join()); return o; };
+  const inn = at8(-1, b), out = at8(a, -1), ground = rgbOf("ground").join();
+  assert.equal(inn.filter((p) => p === ground).length, 8, "a dither-in at 8: half clear"); assert.equal(out.filter((p) => p === ground).length, 8, "a dither-out at 8: half clear");
+  inn.forEach((p, i) => assert.ok((p === ground) !== (out[i] === ground), `pixel ${i}: in the dither-in or the dither-out, never both or neither`));
+  f.scene(node([["bayerPick", -1, -1, 8, 0, 0, 0, 0, 0, 0]]), env); frames(f); assert.equal(f.refused(), 1, "from and to both clear is refused");
+});

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Station Field Test</title>
+<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <meta name="description" content="Miniature Beasts Station build (M1 Read): a simulated 1024×600 Station screen on the real species frames, sharing its save with the Companion page. Dock, open the crates, identify a pod, read its chapters, compare and return.">
 <style>
 /* ===== The device's type is not a web font: the face draws Inter from the fonts compiled into it from the OFL sources in ../ui/fonts/; the surround uses the system's fonts. ===== */
@@ -102,9 +103,6 @@ body{
 .caddy .slot .comp{position:absolute; left:18px; top:-26px; width:40px; height:64px; border-radius:9px; background:linear-gradient(160deg,#ddd4c1,#b3a790); box-shadow:0 3px 6px rgba(0,0,0,.35); transition:top .25s, opacity .25s}
 .caddy .slot .comp::after{content:""; position:absolute; left:6px; top:7px; width:28px; height:34px; border-radius:4px; background:#1a1c1f}
 .caddy.lifted .slot .comp{top:-70px; opacity:0}
-.caddy .k.dock{position:absolute; left:266px; top:26px; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle at 40% 30%,#6c7480,#454b54); box-shadow:0 4px 0 #24282d, inset 0 1px 0 rgba(255,255,255,.2); color:#eef0f2; font:600 11px/1.1 var(--font-ui); letter-spacing:.08em}
-.caddy .k.dock.is-down{transform:translateY(3px); box-shadow:0 1px 0 #24282d}
-.caddy-note{font:500 13px/1.4 var(--font-ui); color:var(--muted); max-width:300px}
 
 /* ===== Debug strip (not part of play) ===== */
 .debug{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; font:500 13px/1.3 var(--font-ui); color:var(--muted)}
@@ -146,6 +144,24 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
 .dev-out, #devOut{font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace; background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; white-space:pre-wrap; color:var(--ink); max-height:320px; overflow:auto; margin:8px 0 0}
 #devOut[hidden]{display:none}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+.dock-ctl{position:relative; width:168px; height:32px; flex:none; border-radius:6px; border:1px solid #3d434b; background:#1d232b; color:#c6c4d8; font:500 16px/1 Inter,var(--font-ui); cursor:pointer; padding:0; text-align:left}
+.dock-ctl:hover{border-color:#565c63}
+.dock-ctl:active,.dock-ctl.is-pressed{background:#0c0a12}
+.dock-ctl:active>*,.dock-ctl.is-pressed>*{transform:translateY(1px)}
+.dock-ctl:focus-visible{outline:2px solid #ffe6ad; outline-offset:2px}
+.dock-ctl .mark{position:absolute; left:11px; top:3px; width:16px; height:24px; image-rendering:pixelated}
+.dock-ctl .word{position:absolute; left:35px; top:7px}
+.dock-ctl .hint{position:absolute; right:11px; top:10px; font-size:12px; color:#8d8aa6}
+.dock-ctl .dot{position:absolute; left:25px; top:1px; width:6px; height:6px; border-radius:50%; background:#ffa83f}
+.dock-ctl .dot[hidden]{display:none}
+.dock-ctl[aria-disabled="true"]{cursor:default}
+.dock-ctl[aria-disabled="true"] .word,.dock-ctl[aria-disabled="true"] .hint{color:#5d5974}
+.dock-ctl[aria-disabled="true"]:hover{border-color:#3d434b}
+.dock-ctl[aria-disabled="true"]:active>*{transform:none}
+.dock-ctl[aria-disabled="true"]:active{background:#1d232b}
+html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
+html.embed body{visibility:hidden}
+html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}
 </style>
 </head>
 <body>
@@ -180,9 +196,8 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
       <div class="caddy" id="caddy" aria-label="Caddy (prototype)">
         <div class="paper" id="caddyPaper">Caddy</div>
         <div class="slot"><div class="comp" title="Companion"></div></div>
-        <button class="k dock" data-key="dock" id="dockKey" aria-label="Dock or lift the Companion">DOCK</button>
       </div>
-      <div class="caddy-note" id="caddyNote">The Caddy is not a Station key: <kbd>D</kbd> or its round key docks or lifts the Companion.</div>
+      <button class="dock-ctl" id="dockCtl" type="button" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" width="16" height="24" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint">D</span></button>
     </div>
     <div class="debug" aria-label="Developer tools (not part of play)">
       <button class="btn" id="devBtn" type="button" aria-pressed="false">Developer tools</button>
@@ -198,8 +213,8 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
 
   <aside class="panel" aria-label="Playtest notes">
     <h1>Station Field Test</h1>
-    <p class="lede">The Station on its own face: a simulated 1024×600 Station screen on the real species frames. Home, Cargo, Pods, Create, the Incubator, Idle and the Vivarium's whole are built; one mibi up close, the Library and the Probe say that they are not built yet. It shares one save with the Companion page in this browser.</p>
-    <div class="pair">Explore on the <a href="../exploration/">Companion page</a>, end the expedition, then dock here.</div>
+    <p class="lede">The Station on its own face: a simulated 1024×600 Station screen on the real species frames. Home, Cargo, Pods, Create, the Incubator, Idle, the Vivarium (whole and up close), the Library and the Probe bench are built; Cross, a species' Book and the sitting are not built yet. It shares one save with the Companion page in this browser.</p>
+    <div class="pair">Explore on the <a href="../exploration/">Companion page</a>, end the expedition, then dock here with the Dock control or <kbd>D</kbd>. The <a href="../play/">play page</a> shows both devices side by side.</div>
     <details id="howTo">
       <summary>How to play</summary>
       <ul>
@@ -207,7 +222,7 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange key: <b>Confirm</b>. It does exactly what the bottom line names after ✓, with its price.</li>
         <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view, to the screen above; on Home nothing happens.</li>
         <li>The four middle keys switch views and never spend: <kbd>H</kbd> Home, <kbd>R</kbd> Research (the pods), <kbd>L</kbd> Library, <kbd>B</kbd> Vivarium.</li>
-        <li><kbd>D</kbd> or the Caddy's key: <b>Dock</b> or <b>Lift</b> the Companion (prototype only; it is not a Station key).</li>
+        <li>The Dock control beside the Caddy, or <kbd>D</kbd>: <b>Dock</b> or <b>Lift</b> the Companion. The Caddy is not a Station key; on the play page it is <kbd>Shift</kbd>+<kbd>D</kbd>.</li>
         <li>After a minute without a press the screen goes idle; any press wakes it and does nothing else.</li>
       </ul>
     </details>
@@ -215,12 +230,12 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
       <summary>What to try</summary>
       <ol>
         <li>On the <a href="../exploration/">Companion page</a>, explore and <b>End expedition</b>: the hold is sealed into a crate in the Companion's bay (three at most), and the world turns.</li>
-        <li>Here, press <kbd>D</kbd> to dock. On Home, ✓ <b>Open Cargo</b>, then ✓ <b>Open the bay</b>: each crate opens in turn and its pods go to the rack.</li>
+        <li>Here, dock with the Dock control or <kbd>D</kbd>. On Home, ✓ <b>Open Cargo</b>, then ✓ <b>Open the bay</b>: each crate opens in turn and its pods go to the rack.</li>
         <li><kbd>R</kbd> Research: ✓ <b>Identify</b> a pod (1 Data, always). The seal breaks, the species shows, its chapters rise as a rail and its stamp appears on the label with every chapter as hairlines.</li>
         <li>↑ to a chapter, ✓ <b>Read</b> it (1 Data a trait; half, rounded up, once that chapter was read on an earlier pod of the species; the first read ever is free). Its page shows each trait as a picture of this pod's mibi: shows X · hides Y, only X, asleep, or breed to change. The stamp's sector fills.</li>
         <li>A star on a chapter is a <b>glint</b>: this pod carries a look the species has not shown yet. ✓ on another identified pod of the same species <b>compares</b> the two, free. The hatch under the wells <b>returns</b> a pod to the wild for +1 Essence (✓ twice).</li>
-        <li>On an identified pod, ✓ <b>Shape a founder</b> opens Create: <kbd>↑</kbd><kbd>↓</kbd> roll a read trait among its three pictures, then ✓ <b>Grow it</b>, at the price the bottom line names. The bud grows in the Incubator a leaf a minute (five minutes the first time, then twenty plus one per shaped trait), or ✓ <b>Grow now</b> for a price. When it is ready, ✓ <b>Open</b>; the new mibi, up close, is not built yet.</li>
-        <li>Without a Companion world, the developer panel (<code>?dev</code>) seeds a crate: dock (<kbd>D</kbd>), then <b>Open the crates</b> in the panel.</li>
+        <li>On an identified pod, ✓ <b>Shape a founder</b> opens Create: <kbd>↑</kbd><kbd>↓</kbd> roll a read trait among its three pictures, then ✓ <b>Grow it</b>, at the price the bottom line names. The bud grows in the Incubator a leaf a minute (five minutes the first time, then twenty plus one per shaped trait), or ✓ <b>Grow now</b> for a price. When it is ready, ✓ <b>Open</b>: the young mibi steps out, and you meet it up close.</li>
+        <li>Without a Companion world, the developer panel (<code>?dev</code>) seeds a crate: dock with the Dock control or <kbd>D</kbd>, then <b>Open the crates</b> in the panel.</li>
       </ol>
     </details>
   </aside>

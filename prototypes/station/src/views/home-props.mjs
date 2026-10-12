@@ -4,6 +4,7 @@
 // Runs in Node, tested there (tests/home-props.test.mjs); the shape is home.props.json. Sitting crates and the Cargo screen are L2.2's second PR (cargo.json); here the bay's crates are the walk crates.
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
+import { movingIds, playable } from "../moving.mjs";
 import { goalWords } from "./goal-words.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
@@ -35,14 +36,41 @@ export function lightAt(hour, L) {
   return at[1];
 }
 
+// The rest (Station M1 §2.6, the game designer's R1): awake or asleep by the Station time, a pure function over the whole household. Each sleep group settles and wakes across a window (rules.windowS) that opens at its light change, one
+// resident at a time in the window's order (settle: elder, juvenile, adult; wake: juvenile, adult, elder; inside a stage by seed, then id): member k of n flips at window start + ⌊k·W/n⌋ + (seed mod max(1, ⌊W/(2n)⌋)) s.
+// Groups: nocturnal (rules.nocturnal, every stage), early (every elder and rules.early.species, every stage), diurnal (the rest). The diurnal 06:00 wake window holds the diurnal and early groups together.
+// here: [{ id, seed, species, stage }]; time: seconds of the day; rules: vivarium.json rules.rest. Returns { <id>: "awake" | "asleep" }.
+const secOf = (hhmm) => { const [h, mm] = hhmm.split(":").map(Number); return h * 3600 + mm * 60; };
+export function restOf(here, time, rules) {
+  const W = rules.windowS, out = {}, groupOf = (r) => (rules.nocturnal.includes(r.species) ? "nocturnal" : rules.early.stages.includes(r.stage) || rules.early.species.includes(r.species) ? "early" : "diurnal");
+  const flips = {};   // id -> { settle, wake } in seconds of the day
+  const rank = (dir, start, members) => {
+    const order = rules.order[dir], n = members.length, slot = Math.max(1, Math.floor(W / (2 * n)));
+    members.slice().sort((a, b) => order.indexOf(a.stage) - order.indexOf(b.stage) || a.seed - b.seed || String(a.id).localeCompare(String(b.id)))
+      .forEach((r, k) => { (flips[r.id] ??= {})[dir] = (start + Math.floor(k * W / n) + (r.seed % slot)) % 86400; });
+  };
+  for (const dir of ["settle", "wake"]) {
+    const byStart = new Map(); for (const r of here) { const t = secOf(rules[dir][groupOf(r)]); if (!byStart.has(t)) byStart.set(t, []); byStart.get(t).push(r); }
+    for (const [t, members] of byStart) rank(dir, t, members);
+  }
+  for (const r of here) { const { settle, wake } = flips[r.id], t = ((time % 86400) + 86400) % 86400; out[r.id] = (settle <= wake ? t >= settle && t < wake : t >= settle || t < wake) ? "asleep" : "awake"; }   // asleep from the settle flip to the wake flip, wrapping midnight
+  return out;
+}
+// A resident's moving set (Station M1 §2.2): { set, walk, shadow } when its species and stage have one and it may play (every cell a placed master, or the developer's "Motion sets (stand-ins)", or the face tests); else "" (a still, main's walk)
+export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
+  const sp = S.speciesOf(mb), I = movingIds(sp, stage, mb.look ?? "species"); if (!I || !(m.motionSets || playable(sp, stage))) return "";   // named by the mibi's look (layer-bake §7): `species` until the bake slot gives mibis a look
+  const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
+}
+
 export function livingOf(m, R, req, ph, L) {
   const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings);
   const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: false, ...extra }; };
-  const residents = here.map((mb) => person(mb, { seed: hash(mb.id) }));
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => person(mb, { seed: 0, nap: true })) : [];
+  const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
+  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, p.stage, req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
+  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, p.stage, req, m, ["nap"]); if (mv) p.moving = mv; return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
@@ -61,7 +89,7 @@ export function homeBuild(m, spec, frame) {
   const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod && !need.soft ? "needsYou" : null);
 
   // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
-  const lw = livingOf({ st, sv, settings, docked, light: m.light }, R, req, ph, frame.light);
+  const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, frame.light);
   const { residents, sleepers, bed } = lw;
   // the modules
   const crates = docked ? S.bayCrates(st, sv).length : 0;

@@ -27,6 +27,7 @@
   "amber": "nothing on one mibi up close is amber: no module, tile, count, heart or notch is a need. The notice is the frame's (what needs the player anywhere)",
   "out": "a mibi out with the Companion is still up close: its place in the window is empty but for the out mark, its name, card, chapters and modules as at home; its chapters can be read while it is out (research is knowledge kept at the Station). Greet needs the mibi here, so it has no greet",
   "notches": "the skill notches are the mibi's skill as filled notches only, one to three, on the card; none drawn at zero; never an empty notch, never a figure; they show here and nowhere else on the Station (not in the Library or the Book)",
+  "cut.hatch": "the one exception (UI/UX, Station M1 \"Hatch cutting key\"): from the hold to the hand-off of a hatch with a moving set (incubator.json events.hatch.moving) the first key cuts to the meet and does nothing else: ✓ opens no namer, ← does not leave, the pad does not move the ring or end the meet, a room key is used up; the Dock is not a cutting key",
   "cut": "UI designer, 2026-10-10 02:29: a cutting press also acts. An event with `cut: true` (the moment) ends on the first key after its hold: the event jumps to its end on that frame and the key then does what it does, as on any other frame (✓ its action, ← back, the pad moves the ring, a coloured key its section). One press is never spent on skipping; the hold already keeps a reflexive double press from acting",
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The moment (and its placeholder hops), read, release, back and swap are cuts; the meet lands at once; the namer's flash is a cut",
   "carriedDocked": "a carried mibi while the Companion is docked is in state rest: greet, Cross, Portrait, Bring home and its plates as for any mibi at home; Wild is refused (strings.wildBlocks.withYou) and the watch never runs on it",
@@ -342,6 +343,8 @@
    "hold": 300,
    "cut": true,
    "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice (placeholder). Rewards nothing and shows nothing like a reward. Input is held 300 ms; the first key after the hold cuts the moment to its end, and that key then does what it does (notes.cut)",
+   "asleep": { "ms": 2880, "hold": 300, "cut": true, "do": "a sleeper with a moving set (Station M1 §2.4): wake (16-level dither 180, crouch 400, stand), the hops at 0 and 900 of the hops, crouch 320, dither 180, curl" },
+   "moving": "with a moving set: hops at 0 and 900 ms (placeholder.hops), each crouch 160, air 400 (the set's closeHop.lift on 80 ms ticks: adult and juvenile [8, 20, 24, 20, 8], elder [6, 14, 17, 14, 6], scaled down to fit when the rect leaves under 24 px above the figure, never clipped), crouch 160, stand; shadow-75 on air ticks 2 to 4",
    "placeholder": {
     "hops": [0, 900],
     "ms": 400,
@@ -359,6 +362,7 @@
   },
   "meet": {
    "kind": "meet",
+   "afterCut": "after the hatch's cutting key (incubator.json events.hatch.moving) the meet's moment holds input 300 ms: during it ✓, ← and the pad are dropped and a room key is kept; the first key after it is the meet's first press, as below. After a normal hand-off the hold stays 0 (UI/UX, Station M1 \"Hatch cutting key\")",
    "target": "resident",
    "ms": 0,
    "hold": 0,
