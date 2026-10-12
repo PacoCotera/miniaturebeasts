@@ -1050,6 +1050,24 @@ test("48 px storm: the 6 px of the lit tile beside the band step by the Bayer ru
   for (let i = 0; i < 2304; i++) { const c = bt.p[i]; if (c < 0) continue; n++; if (px[(by + ((i / 48) | 0)) * W_ + bx + (i % 48)] === storm[c]) dk++; }
   assert.ok(dk > n * 0.97, "a band tile is fully dark: " + dk + " of " + n);
 });
+test("48 px fog edge: in the storm's band the clear side takes the band's dark (PLACE_STORM), as 32 px does, and outside the band it is lit", () => {
+  const p = place48(7, 176, 14, 14, "S.exp.fog = { x: 176 % MW + .5, y: Math.floor(176 / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 }; S.exp.storm = { x: (176 % MW) - 3 - 1.25, dir: 1, w: 3, v: .25, t: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
+  assert.equal(p.run("RT.ts"), 48); assert.equal(p.run("sightR(layout(S.exp.patch.key))"), 4);
+  const storm = p.run("PLACE_STORM"), darkW = Math.ceil((3 - 1.25) * 1.5) * 48; assert.equal(darkW, 144);
+  const inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y), seen = { band: 0, lit: 0 };
+  for (let ty = 11; ty <= 17; ty++) for (let tx = 8; tx <= 20; tx++) {
+    if (!inS(tx, ty)) continue; let m = 256 * 0; for (const [b, [dx, dy]] of [[0, [0, -1]], [1, [1, -1]], [2, [1, 0]], [3, [1, 1]], [4, [0, 1]], [5, [-1, 1]], [6, [-1, 0]], [7, [-1, -1]]]) if (far(tx + dx, ty + dy)) m |= 1 << b;
+    if (!m) continue;
+    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), f = p.run("coverFar(" + m + ")"), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y, band = tx * 48 + 24 - cam.x < darkW;
+    if (sx < 0 || sx + 48 > W_) continue;
+    const lay = p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return false; } return true; })()`);
+    if (!lay) continue;
+    for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0 || f[y * 48 + x]) continue;   // the clear side
+      assert.equal(px[(sy + y) * W_ + sx + x], band ? storm[c] : c, "tile " + tx + "," + ty + " pixel " + x + "," + y); }
+    seen[band ? "band" : "lit"]++; }
+  assert.ok(seen.band >= 2 && seen.lit >= 2, "fog-edge tiles checked: " + JSON.stringify(seen));
+});
 test("place overrides: in a 48 px place in fog a core colour takes the file's fog value; the core's own table is untouched and a core canvas never mixes with a place canvas", () => {
   const OVER = { 6: { fog: 20 } };   // the synthetic ground piece's core colour (index 6) fogs to 20 in places
   const p = place48(7, 9, 14, 14, "", OVER), lay0 = p.run("(() => { const l = layout(S.exp.patch.key); return Array.from(l.tiles); })()");

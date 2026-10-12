@@ -3500,8 +3500,10 @@ function drawPatch(t) {
   const pu = FX.pulse && FX.pulse.key === P.key && FX.pulse.lifted && motion() && NOW - FX.pulse.at < CALL_MS ? FX.pulse : null, puR = pu ? pu.r * (NOW - pu.at) / CALL_MS : 0;
   const shown = (x, y) => unveiled(P.key, x, y) && !(pu && pu.lifted.has(y * PW + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
   const see = (x, y) => inS(x, y) && shown(x, y);   // the survey veil hides what stands on a tile until a Call
-  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; if (overcast) return 1;
+  // a tile's light without the fog: 1 under the storm or inside the approaching band's columns, else 0 (the fog edge's clear side takes this)
+  const clearLight = (tx, ty) => { if (overcast) return 1;
     if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
+  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : 0;
   // overlays (canopies, roofs) take the veil like the tiles under them; beyond fog sight the fog table
@@ -3526,7 +3528,7 @@ function drawPatch(t) {
     if (ts === 48) {   // coverage fades for the fog and the veil, the 6 px storm step beside the band
       const pb = tileFor(i), key = keyFor(i), set = RT.remap, m9 = farTest => { let m = farTest(tx, ty) ? 256 : 0; NB9.forEach(([dx, dy], b) => { if (farTest(tx + dx, ty + dy)) m |= 1 << b; }); return m; };
       if (fogged) { const fm = m9((x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y));
-        if (fm && fm !== 511) { const nl = overcast ? 1 : 0, f = coverFar(fm);
+        if (fm && fm !== 511) { const nl = clearLight(tx, ty), f = coverFar(fm);
           g.drawImage(edge48('F' + key + '|' + fm + '|' + nl + (uv ? '' : 'v'), pb, (x, y) => f[y * 48 + x], (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
       if (L0 !== 3) { const vm = m9((x, y) => !uvAt(x, y));
         if (vm && vm !== 511) { const f = coverFar(vm), lut = set[L0];
