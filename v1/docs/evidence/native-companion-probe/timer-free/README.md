@@ -29,7 +29,7 @@ the saved unread state and discloses no connector/direction. Send review starts
 on Keep cargo. The native ownership/HTTP journey separately checked explicit
 Send, Lab acceptance once, zero current Companion cargo and separate history.
 
-Focused game-design, UX and art assessments consumed the actual choice, result,
+Focused game design, UX and art assessments consumed the actual choice, result,
 capacity rejection and corrected Moss frames. The technical boundary and native
 quantity/ownership checks also pass. Back recovery was exercised; these checks
 do not establish every unseen branch, human enjoyment, balance or hardware use.

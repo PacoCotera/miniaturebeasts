@@ -69,6 +69,22 @@ const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
 await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
 await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
+// The page's clock, real until held: __hold() freezes performance.now() and queues requestAnimationFrame; __step(ms) runs the queued frames at 40 ms steps (as face/tools/station-page.mjs VIRTUAL_CLOCK); __release() resumes real time from where it stopped (no jump forward or back). The hold is at the last frame's own timestamp, so the face's first step is exactly 40 ms whatever the frame phase was
+await page.addInitScript(() => {
+  const realNow = performance.now.bind(performance), realRaf = window.requestAnimationFrame.bind(window); let held = false, t = 0, off = 0, q = [], last = null, pend = new Set();
+  performance.now = () => (held ? t : realNow() + off);
+  window.requestAnimationFrame = (cb) => {
+    if (held) { q.push(cb); return 0; }
+    const rec = { cb }; pend.add(rec);
+    return (rec.id = realRaf((ts) => { if (!pend.delete(rec)) return; last = ts + off; cb(last); }));
+  };
+  const realCancel = window.cancelAnimationFrame.bind(window);
+  window.cancelAnimationFrame = (id) => { for (const r of pend) if (r.id === id) pend.delete(r); realCancel(id); };   // a cancelled frame leaves the pending set too
+  window.__hold = () => { if (!held) { t = last ?? realNow() + off; held = true; for (const r of pend) q.push(r.cb); pend.clear(); } return t; };   // a frame requested but not yet run is queued now: whenever the real frame would have come
+  window.__step = (ms) => { const end = t + ms; while (t < end) { t = Math.min(end, t + 40); const run = q; q = []; for (const cb of run) cb(t); } return t; };
+  window.__release = () => { if (!held) return; off = t - realNow(); held = false; const run = q; q = []; for (const cb of run) window.requestAnimationFrame(cb); };
+});
+const hold = () => page.evaluate(() => window.__hold()), stepClock = (ms) => page.evaluate((m) => window.__step(m), ms), release = () => page.evaluate(() => window.__release());
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 // The page draws with the face and nothing else: the type is Inter in the face, no font is loaded by the page, no request leaves the page's origin, and the canvas text API is never called.
@@ -381,11 +397,13 @@ await hpressC("down", 300);
   await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
-await hpressC("confirm", 150);   // ✓ Grow it: the stamp prints (0 to 300 ms), the code appears at 300, the pod travels (300 to 900); input is held 1080 ms
+await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(600);   // ✓ Grow it, then exactly 600 ms of frames: the stamp printed, the code shown at 300, the pod mid-travel
+{ const m = await said(), u = await ui(), l = await line(); cur.push({ key: "confirm", said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
 { const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code), "✓ Grow it: the screen grows and holds input, the code is the screen's: " + JSON.stringify([p.state, p.regions.code])); }
 await frameShot("page-create-grow", true);
 await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);   // the held keys, one after the other without waiting: the hold is real time (1080 ms) and the jump is at 900
 { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "create" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
+await stepClock(600); await release();   // 1200 ms in: past the hold and past the jump at 900
 s = await st();
 expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
@@ -693,7 +711,7 @@ expect((await st()).tray.length === 0 && !(await sv()).seed, "a fresh world: no 
 await page.keyboard.press("KeyD"); await page.waitForTimeout(250);
 expect(/no world yet/.test(await page.evaluate(() => window.__st.msg)), "docking without a world says so");
 for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"]) { await page.keyboard.press(k); await page.waitForTimeout(200); }
-await page.waitForTimeout(300); await shot("page-fresh");
+await page.waitForTimeout(300); await hold(); await stepClock(1200); await frameShot("page-fresh", true); await release();   // the last screen change's dither and any arrival are over: the 1024×600 frame itself
 await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500); await frameShot("page-vivarium-empty", true);   // a fresh world's whole: nobody lives here yet, the bays free
 { const p = await props(); expect(p.screen === "vivarium" && p.state === "empty" && p.frame.line.subject === "nobody lives here yet" && !p.frame.line.ok && p.focus.cur === "room", "page-vivarium-empty: a fresh world's whole is empty, the ring on nothing, no ✓ cap: " + JSON.stringify([p.state, p.frame.line, p.focus.cur])); }
 // The Library spread on the face (slot L: library-spread): a fresh world first (Home's Library module opens the spread with the ring on S01, sixteen empty frames), then a world with found, met and unmet frames: the pad walks spread.focus.graph, ✓ on a met or an unmet
