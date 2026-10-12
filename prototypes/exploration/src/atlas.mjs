@@ -1,4 +1,4 @@
-// The Companion's 48 px places, from the art director's meadow set (plans/companion/c2a-48px-spec.md §4). Pure and integer only:
+// The Companion's 48 px places, from the art director's meadow set. Pure and integer only:
 // no page state, DOM, storage, clock, randomness, drawing or float. It reads names from the catalogue, never from file names, so
 // meadow.json can rename a piece without a code change. C2a M1 holds what tools/atlas-check.mjs shares with the page: the exact
 // colour decode (§4.5), the catalogue (§4.2) and the core set; the per-tile layers (§4.3) come in M3.

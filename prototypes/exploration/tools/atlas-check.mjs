@@ -1,4 +1,4 @@
-// The art director's loader check for a 48 px terrain drop (plans/companion/c2a-48px-spec.md §5.1): run on the drop before its PR
+// The art director's loader check for a 48 px terrain drop: run on the drop before its PR
 // is opened, and its output quoted in the PR. It refuses what the page's loader would refuse, with the same rules:
 //   node prototypes/exploration/tools/atlas-check.mjs [--drop] <meadow.json> [more.json ...]
 // --drop is the mode whose output the art director quotes in the drop PR: any sheet that is not 8-bit indexed fails.
