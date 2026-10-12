@@ -253,5 +253,6 @@ test("with reduced motion the containers are the same props step, a cut at 800 m
   f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2);
   const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); };
   stage(799); assert.deepEqual(shownStores(f, b0), []); stage(800); assert.deepEqual(shownStores(f, b0), ["data"]);
+  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores"); assert.equal(st.length, 1, "the one container is logged as stores"); assert.deepEqual(st[0].rect, R.stores.places.data); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores", layer: "art", rect: [200, 320, 48, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
   const r = scene({ ...OPEN, state: "report" }), g = await start(r); logOf(g); assert.deepEqual(shownStores(g, r), [], "the report has no containers");
 });

@@ -7,7 +7,7 @@
 <text x="512" y="83" font-size="20" fill="#f1ebdf" text-anchor="middle" font-weight="500">First crate home</text>
 <rect x="296.5" y="120.5" width="431" height="271" fill="#d9cfb8" stroke="#222" stroke-width="1.5"/>
 <path d="M336 160h352v184h-352z" fill="#3a414b"/>
-<text x="324" y="118" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 296,120 432×272</text>
+<text x="300" y="134" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 296,120 432×272</text>
 <rect x="364.5" y="152.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="3 2"/>
 <rect x="468.5" y="152.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
 <rect x="572.5" y="152.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
@@ -24,6 +24,10 @@
 <rect x="632.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
 <rect x="744.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
 <text x="188" y="556" font-size="8" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">pod 88×112 at well + (4, 8)</text>
+<rect x="184.5" y="320.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+<rect x="240.5" y="320.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+<rect x="736.5" y="320.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+<text x="184" y="316" font-size="8" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">containers 48×64, feet on 384, from 800 ms</text>
 <path d="M408 264L568 416" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="440.5" y="280.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="712" y="136" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the travel 176,104 672×440:</text>
