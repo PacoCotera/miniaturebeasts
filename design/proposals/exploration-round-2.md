@@ -347,8 +347,8 @@ Essence as its own weather event yet.
 ## The seven points
 
 1. **Materials.** Keep Energy, Data and Essence, with Data coming from creature
-   moments you cause and humming stones retired as a source, not keeping today's
-   sources and only adding sinks.
+   moments you cause and humming stones retired as a source. Today's sources are not kept with
+   only sinks added.
 2. **Station prices.** Hatching a founder costs 4 Essence and 3 Energy, so
    an unaffordable pod waits and says what it needs.
 3. **Shield.** Rename `hull` to "Shield", let 3 Energy patch 1 bar in the field,
@@ -356,12 +356,12 @@ Essence as its own weather event yet.
 4. **Breaking.** A broken Probe loses every unit of Energy, Data and Essence
    carried but keeps pods, with no repair cost, and does not also lose one pod.
 5. **Fourth button.** Add Call: pulse in a place, a pin for 1 Energy on the map,
-   and calling the riding mibi in Companion mode, not no button with pins in the
-   mode list.
+   and calling the riding mibi in Companion mode. The alternative of no button, with
+   pins in the mode list, is not taken.
 6. **Reach and hold.** Tier 1 reaches 2 cells from the start and carries 2 pods
    (tier 2: 4 cells, 3 pods). That is the right size for an expedition.
 7. **Fog bank.** Make it a safe cover event (wary creatures approachable, dew for
-   Essence, sight and Call cut to 3 tiles), not cut for this round.
+   Essence, sight and Call cut to 3 tiles). It is not cut for this round.
 
 ## Build scope for the next prototype round
 

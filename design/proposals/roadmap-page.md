@@ -148,7 +148,7 @@ disclosure pattern:
   link "Read on GitHub", Caption 700, underlined.
 - Link target: `https://github.com/PacoCotera/miniaturebeasts/` + `tree/main/`
   when `link` ends in `/`, else `blob/main/`, + `link`. Every link in the
-  current file (28 distinct paths) resolves on `main` (checked 2026-10-09 13:08).
+  current file (28 distinct paths) resolves on `main` (checked against main).
 - **Open all** (toolbar): opens every card; label becomes "Close all";
   `aria-pressed` follows. Not persisted.
 

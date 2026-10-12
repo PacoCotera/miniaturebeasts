@@ -97,7 +97,7 @@ The Companion calls nothing; it learns at the dock.
 | **Card renderer** | One layout, three outputs: the website page at the postmark's link, the phone and Companion version, the Caddy print at 203 dpi; drawn from the archive, never from the Station |
 | **Screens** | Home's sitting slot; the vivarium's offer; the sitting screen's three steps; the bay's flat crate and its lamp; the Companion's notice and card; the cabinet's face choice |
 
-## 7. Decisions for the owner
+## 7. Decisions for owner review
 
 The owner took all three as set out below.
 
