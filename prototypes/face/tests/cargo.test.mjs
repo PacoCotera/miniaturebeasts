@@ -246,6 +246,9 @@ test("the containers stand at their places from 800 ms, one for each material th
 test("a crate that brought all three shows all three; the 800 ms cut redraws at most 12288 px (the dirty test above holds the worst refresh to a quarter of the screen)", { skip }, async () => {
   const b = scene({ ...OPEN, podsEach: 2 }), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
   f.frame(t0 + 760); dirty(f); f.frame(t0 + 800); const add = dirty(f); assert.deepEqual(shownStores(f, b), MATS); assert.ok(add <= 12288, `the 800 frame redrew ${add} px`);
+  { const lg = logOf(f) ?? (f.frame(t0 + 800), logOf(f)); f.frame(t0 + 900); const lg2 = logOf(f) ?? lg, st = lg2.regions.filter((r) => r.id === "stores"); assert.ok(st.length >= 1, "the containers are logged");
+    assert.deepEqual(departures(lg2, cargoSpec, frameSpec, "opening"), [], "all three shown: their span is not a departure");
+    assert.ok(departures({ regions: [{ id: "stores", layer: "painted", rect: [184, 320, 640, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a span that is not the places' is a departure"); }
   console.log(`# Cargo's containers: the 800 ms cut redraws ${add} px`);
 });
 test("with reduced motion the containers are the same props step, a cut at 800 ms, and none shows at 799; in the report none shows", { skip }, async () => {
