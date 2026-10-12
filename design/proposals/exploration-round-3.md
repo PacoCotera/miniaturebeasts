@@ -160,8 +160,8 @@ or Call"), never "Nothing here".
 
 ## The five points
 
-1. **Energy.** Warm stones (+1 per world turn) with prices unchanged, not free
-   identification.
+1. **Energy.** Warm stones (+1 per world turn) with prices unchanged. Free
+   identification is not taken.
 2. **Survey.** Veiled places; Call unveils 15×15; cleared means all four
    quarters surveyed, drawn in quarters on the overview (tick removed).
 3. **Completion.** Reach dot grid, "Surveyed N of M", Wait reporting changes,
