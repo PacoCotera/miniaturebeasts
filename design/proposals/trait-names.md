@@ -1,6 +1,6 @@
 # Trait names: one word each
 
-**Status: applied, to be seen in action.** The fifteen names are in the species frames (`prototypes/workbench/framework/species.mjs` and `roster.mjs`, frames rebuilt) and the four line changes are in the Pods trait lines (`prototypes/station/src/genome.mjs`), for the owner's and the game designer's confirmation once seen in the Station. Trait ids are unchanged.
+**Status: applied, to be seen in action.** The fifteen names are in the species frames (`prototypes/workbench/framework/species.mjs` and `roster.mjs`, frames rebuilt) and the four line changes are in the Pods trait lines (`prototypes/station/src/genome.mjs`), for owner and game designer confirmation once seen in the Station. Trait ids are unchanged.
 
 ## Why
 

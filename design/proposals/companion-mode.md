@@ -137,7 +137,7 @@ Dot (juvenile) is with you; Pip, a Loika, grows up this world turn. Start: Cargo
 | 7 | Back | Menu: Next expedition (focused), Probe, Cargo, Mibis |
 | 8 | Confirm | Expedition choice. Partner row: "Partner: Pip · calms wary creatures" |
 
-## Points for the owner to settle
+## Points for owner review
 
 1. **One slot:** replace *along* + *riding* with a single "with you" mibi (a
    juvenile with you means no expedition partner), or keep two?

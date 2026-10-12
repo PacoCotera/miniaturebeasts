@@ -1,6 +1,6 @@
 # Species and clan names
 
-It names the sixteen species and sixteen clans of [taxonomy](taxonomy.md) §3 (codes S01–S16, C01–C16). It follows the §5 rules of that document, the naming decisions (English experience; invented, Latin, Greek or less-heard roots; no Spanish diminutives; clean room) and the method of the [name screen](name-screen.md). The second and third passes swap every name that carried a caution or collided in search. Nothing here is picked yet, and the codes stay in the frames until the owner chooses.
+It names the sixteen species and sixteen clans of [taxonomy](taxonomy.md) §3 (codes S01–S16, C01–C16). It follows the §5 rules of that document, the naming decisions (English experience; invented, Latin, Greek or less-heard roots; no Spanish diminutives; clean room) and the method of the [name screen](name-screen.md). The second and third passes swap every name that carried a caution or collided in search. Nothing here is picked yet, and the codes stay in the frames until an owner choice.
 
 ## The voice
 

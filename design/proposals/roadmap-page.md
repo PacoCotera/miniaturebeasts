@@ -236,7 +236,7 @@ One column, gutter 16, content 358.
 
 ## 10. Settled points (structure only)
 
-**Passed** by the owner: the structure. It stands;
+**Passed** by owner review: the structure. It stands;
 the glance's dots failed and are replaced (§4), which is a wording and layout
 fix inside this spec, not a new structure question.
 

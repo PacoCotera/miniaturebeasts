@@ -70,7 +70,7 @@ across the map.
 **Alternative: trim it to this expedition only** (drop the dim last-expedition
 trail). It costs little, but it keeps clutter for no mechanic.
 
-## Points for the owner to settle
+## Points for owner review
 
 1. **Where to send home.** Only from the start cell or a lit depot, with a break
    still sending pods home from anywhere? Or from anywhere for 2 Energy, free
