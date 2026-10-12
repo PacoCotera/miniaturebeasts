@@ -1,6 +1,6 @@
 /* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json): the words that draw each of its states (empty, growing, ready, hatch) in draw order, from the `incubator` spec and the props' regions, the frame's
    words after (screens.c). bench, rail, the leaves on their two arcs, the chamber's back, the nest, the bud (and the ready bud's shape), the nest's front, the window's front, the base (its master carries the plaque plate and the foot
-   light) with its plaque word, the base's waiting lamp, the juvenile, the stamp label, the code and the ribbon. No ring in any state: ✓ acts on the room. The ready bud's front is registered and not drawn (incubator.json placeholders).
+   light) with its plaque word, the base's waiting lamp, the juvenile, the stamp label, the code and the ribbon. No ring in any state: ✓ acts on the room. The ready bud's front is drawn over the shape; the cracks are drawn over the ready bud.
    The events: `growNow` (the leaves still to fill turn whole one by one over its length, in the leaves word), `wipe` (a tab turns read, its pips filling, in the rail word) and `hatch` (a still beat: the chamber stays as it stands, its
    window open with no pane, and nothing moves; the bud keeps its ready picture and shape until the crack at 600, opens at 800 and goes at 1000, the juvenile stands at 1000 over the chamber, the ribbon shows at 1200, the juvenile steps
    out at 1400 and 1800; the hand-off at 2600 is the host's).
@@ -53,17 +53,25 @@ static void build_bench(void) {
 }
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
-/* the bud: its five pictures and the ready shape are always nodes, one shown by the state (and the hatch's time): the wait's first half, the second, ready (with the shape), the crack at 600, the opening at 800, nothing at 1000 */
+/* the bud: its five pictures, the ready shape and the ready front are always nodes, in this draw order (early, late, ready, shape, front, crack1, crack2); the state and the hatch's time show some of them: early, late, ready with its shape
+   and its front (and in the hatch until 600), at 600 crack1 over ready (the shape and the front go), at 800 crack2 alone over ready, nothing at 1000 */
 static void build_bud(int t) {
   if (spec_len("props", "regions.bud") < 0) return;
   int r[4], s[4]; crect("regions.bud.rect", r); crect("regions.bud.shape.rect", s); const char *stage = v_pstr("regions.bud.stage");
   int a1 = ci("events.hatch.steps.2.at", 600), a2 = ci("events.hatch.steps.3.at", 800), a3 = ci("events.hatch.steps.4.at", 1000);
-  const char *which = strcmp(stage, "early") == 0 ? "early" : strcmp(stage, "late") == 0 ? "late" : "ready";
-  if (t >= a3) which = ""; else if (t >= a2) which = "crack2"; else if (t >= a1) which = "crack1";
-  static const char *K[5] = { "early", "late", "ready", "crack1", "crack2" };
-  for (int i = 0; i < 5; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", K[i])); const char *id = v_fmt("bud.%s", K[i]);
-    if (has(pic) && strcmp(which, K[i]) == 0) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : v_pstr("regions.bud.ready"), r[0], r[1]); }
-  { const char *pic = v_pstr("regions.bud.shape"); int on = has(pic) && strcmp(which, "ready") == 0 && (strcmp(stage, "ready") == 0 || strcmp(stage, "hatch") == 0);   /* ready, and in the hatch until the crack at 600 */ v_name("bud"); if (on) v_sprite("bud.shape", pic, s[0], s[1], s[2], s[3]); else v_sprite_hidden("bud.shape", has(pic) ? pic : v_pstr("regions.bud.ready"), s[0], s[1]); }
+  int gone = t >= a3, c2 = !gone && t >= a2, c1 = !gone && !c2 && t >= a1;
+  int early = !gone && !c1 && !c2 && strcmp(stage, "early") == 0, late = !gone && !c1 && !c2 && strcmp(stage, "late") == 0;
+  int ready = !gone && (c1 || c2 || (strcmp(stage, "early") != 0 && strcmp(stage, "late") != 0));
+  int front = ready && !c1 && !c2 && (strcmp(stage, "ready") == 0 || strcmp(stage, "hatch") == 0);   /* the shape and the front: ready, and in the hatch until the crack at 600 */
+  const char *fb = v_pstr("regions.bud.ready");
+  static const char *K[3] = { "early", "late", "ready" }; const int on3[3] = { early, late, ready };
+  for (int i = 0; i < 3; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", K[i])); const char *id = v_fmt("bud.%s", K[i]);
+    if (has(pic) && on3[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
+  { const char *pic = v_pstr("regions.bud.shape"); v_name("bud"); if (has(pic) && front) v_sprite("bud.shape", pic, s[0], s[1], s[2], s[3]); else v_sprite_hidden("bud.shape", has(pic) ? pic : fb, s[0], s[1]); }
+  { const char *pic = v_pstr("regions.bud.front"); v_name("bud"); if (has(pic) && front) v_sprite("bud.front", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("bud.front", has(pic) ? pic : fb, r[0], r[1]); }
+  static const char *C[2] = { "crack1", "crack2" }; const int onc[2] = { c1, c2 };
+  for (int i = 0; i < 2; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", C[i])); const char *id = v_fmt("bud.%s", C[i]);
+    if (has(pic) && onc[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
 }
 static void build_base(void) {
   picture("base", "base", "regions.base.rect", v_pstr("regions.base.picture"));
