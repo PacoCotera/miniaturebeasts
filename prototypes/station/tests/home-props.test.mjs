@@ -19,6 +19,7 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
+  if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
   if (sc.enum && !sc.enum.includes(v)) { out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(sc.enum)}`); return out; }
   if (sc.type) {
     const ts = [].concat(sc.type), ty = v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v;
@@ -61,9 +62,9 @@ test("Home's props validate against home.props.json in every scene, name no rect
   }
 });
 
-test("residents at home walk (a seed each), the carried set sleeps on the bed (no seed), the bed is a PH plate in every state", () => {
+test("residents at home walk (a seed each), the carried set sleeps on the bed (a seed each too: its breath's phase, Station M1 §2.6), the bed is a PH plate in every state", () => {
   const sc = scenes(), d = build(sc.docked.st, sc.docked.sv).props.regions;
-  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.deepEqual(d.bed.sleepers.map((s) => s.seed), [0, 0]); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
+  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.ok(d.bed.sleepers.every((s) => s.seed > 0)); assert.notDeepEqual(d.bed.sleepers.map((s) => s.seed), d.residents.map((r) => r.seed)); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
   const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "home-bed-mark-16x24", "away: the bed shows its mark"); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
   const n = build(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
   const seeds = d.residents.map((r) => r.seed), again = build(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed); assert.deepEqual(again, seeds, "the seed is the mibi's, the same every time");
@@ -149,6 +150,35 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
 
+// ---- Station M1 §2.6, the game designer's R1: the rest, a household function of the Station time ----
+import { restOf } from "../src/views/home-props.mjs";
+import { setMoving } from "../src/moving.mjs";
+{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+const REST = J("vivarium.json").rules.rest, hm = (h, m = 0, s = 0) => h * 3600 + m * 60 + s;
+test("restOf (R1): the worked example: four diurnal residents settle across the 20:00 window one at a time (J1 20:01:40, J2 20:07:30, A1 20:15:50, A2 20:22:55) and wake at the same offsets from 06:00", () => {
+  const here = [{ id: "J1", seed: 100, species: "S01", stage: "juvenile" }, { id: "J2", seed: 900, species: "S01", stage: "juvenile" }, { id: "A1", seed: 50, species: "S01", stage: "adult" }, { id: "A2", seed: 7000, species: "S01", stage: "adult" }];
+  const flips = { J1: hm(20, 1, 40), J2: hm(20, 7, 30), A1: hm(20, 15, 50), A2: hm(20, 22, 55) };
+  assert.deepEqual(Object.values(restOf(here, hm(19, 59, 59), REST)), ["awake", "awake", "awake", "awake"], "19:59:59 all awake");
+  for (const [id, t] of Object.entries(flips)) { assert.equal(restOf(here, t - 1, REST)[id], "awake", `${id} a second before its flip`); assert.equal(restOf(here, t, REST)[id], "asleep", `${id} at its flip`); const w = t - hm(20) + hm(6); assert.equal(restOf(here, w - 1, REST)[id], "asleep"); assert.equal(restOf(here, w, REST)[id], "awake", `${id} wakes at the same offset from 06:00`); }
+  assert.deepEqual(Object.values(restOf(here, hm(20, 30), REST)), ["asleep", "asleep", "asleep", "asleep"], "20:30 all asleep"); assert.deepEqual(Object.values(restOf(here, hm(5, 59, 59), REST)), ["asleep", "asleep", "asleep", "asleep"], "05:59:59 asleep");
+  assert.deepEqual(Object.values(restOf(here, hm(6, 30), REST)), ["awake", "awake", "awake", "awake"], "06:30 all diurnal awake");
+});
+test("restOf (R1): an elder settles in the 18:00 window and wakes last in the 06:00 window; S16 sleeps by day (asleep at 06:30, awake at 18:30); a household of one flips in its first 900 s; a household of twelve flips at least 75 s apart", () => {
+  const E = { id: "E", seed: 12345, species: "S01", stage: "elder" }, here = [{ id: "J1", seed: 100, species: "S01", stage: "juvenile" }, E];
+  const off = E.seed % 900; assert.equal(restOf(here, hm(18) + off - 1, REST).E, "awake"); assert.equal(restOf(here, hm(18) + off, REST).E, "asleep", "the elder alone in the 18:00 window");
+  const wake = (id, list) => { for (let t = hm(6); t < hm(6, 31); t++) if (restOf(list, t, REST)[id] === "awake") return t; return null; }; assert.ok(wake("E", here) > wake("J1", here), "the elder wakes after the juvenile");
+  const n = [{ id: "N", seed: 77, species: "S16", stage: "adult" }]; assert.equal(restOf(n, hm(6, 30), REST).N, "asleep"); assert.equal(restOf(n, hm(18, 30), REST).N, "awake");
+  const one = [{ id: "P", seed: 31337, species: "S01", stage: "adult" }]; let t1 = null; for (let t = hm(20); t < hm(20, 30); t++) if (restOf(one, t, REST).P === "asleep") { t1 = t; break; } assert.ok(t1 - hm(20) < 900, "a household of one flips in its first 900 s");
+  const twelve = Array.from({ length: 12 }, (_, i) => ({ id: "M" + i, seed: (i * 7919 + 13) % 65521, species: "S01", stage: i < 5 ? "juvenile" : "adult" })), at = {};
+  for (let t = hm(20); t <= hm(20, 30); t++) { const r = restOf(twelve, t, REST); for (const m of twelve) if (at[m.id] == null && r[m.id] === "asleep") at[m.id] = t; }
+  const times = Object.values(at).sort((a, b) => a - b); assert.equal(times.length, 12); for (let i = 1; i < times.length; i++) assert.ok(times[i] - times[i - 1] >= 75, `flips ${times[i] - times[i - 1]} s apart`);
+});
+test("Home's residents with moving sets fit home.props.json: moving (the walk and its shadow; a bed sleeper its nap) and rest", () => {
+  const sc = scenes(), b = build(sc.docked.st, sc.docked.sv, { time: hm(23), restRules: REST, motionSets: true });
+  assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving && r.moving.walk && r.rest === "asleep"), "each resident names its walk atlas, asleep at 23:00");
+  assert.ok(b.props.regions.bed.sleepers.every((s) => s.moving && s.moving.nap), "the sleepers name their nap atlas");
+  const off = build(sc.docked.st, sc.docked.sv, { time: hm(12), restRules: REST, motionSets: false }); assert.ok(off.props.regions.residents.every((r) => !r.moving), "the play gate: no moving set without its masters or the developer switch");
+});
 // ---- the goal in the notice zone (frame.json strings.goal; station-x10-economy.md) ----
 const G = frameSpec.strings.goal;
 test("the goal: a soft need gives its notice to the goal, the room's ✓ keeps the need's action; a first-group need keeps the zone", () => {

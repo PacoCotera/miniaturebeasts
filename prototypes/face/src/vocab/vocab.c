@@ -47,6 +47,14 @@ int v_dither(const char *id, const char *fromAsset, const char *toAsset, int lev
   v_layer(prim_asset_layer_of(th)); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
 }
 
+/* The same pick between two windows of the picture's size (two cells of an atlas; M1 §2.1): `fromAsset` NULL or "" is clear (a dither-in from nothing). */
+int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, const char *toAsset, int tsx, int tsy, int level, int x, int y, int w, int h) {
+  int fh = fromAsset && *fromAsset ? wire_asset_slot(fromAsset) : -1, th = toAsset && *toAsset ? wire_asset_slot(toAsset) : -1;   /* NULL from: a dither-in from clear; NULL to: a dither-out to clear */
+  if ((fromAsset && *fromAsset && fh < 0) || (toAsset && *toAsset && th < 0) || (fh < 0 && th < 0)) return 0;
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "[[\"bayerPick\",%d,%d,%d,%d,%d,%d,%d,%d,%d]]", fh, th, level, x, y, fsx, fsy, tsx, tsy);
+  v_layer(prim_asset_layer_of(th >= 0 ? th : fh)); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
+}
+
 /* the icon a glyph stands for, and the length of its UTF-8 */
 static const char *icon_of(const char *p, int *len) {
   static const struct { const char *g; const char *name; } T[] = { { "\xe2\x9a\xa1", "energy" }, { "\xe2\x97\x86", "data" }, { "\xe2\x9d\x80", "essence" }, { "\xe2\x9c\x95", "cross" } };

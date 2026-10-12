@@ -106,3 +106,11 @@ export const projectCarried = () => S.projectCarried(G.st, G.sv);
 export const homeMibis = () => S.homeMibis(G.st, G.sv);
 export const mibiById = (id) => S.mibiById(G.st, id);
 export const podById = (id) => S.podById(G.st, id);
+
+// --- the Station time (Station M1 §2.6): the developer's "Station time" (hh:mm, or a scene's running clock) or the clock, in seconds of the day; it drives both the light and the rest ---
+export const stationClock = { scene: null };   // a scene's clock: { from: seconds of the day, at: page ms, rate: Station seconds per page second }
+export function stationSeconds() {
+  const sc = stationClock.scene; if (sc) return Math.floor(sc.from + (performance.now() - sc.at) / 1000 * sc.rate) % 86400;
+  const t = G.settings.stationTime; if (t && /^\d{2}:\d{2}$/.test(t)) { const [hh, mm] = t.split(":").map(Number); return hh * 3600 + mm * 60; }
+  const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
+}

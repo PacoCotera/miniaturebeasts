@@ -16,8 +16,8 @@ export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0,
 // The mibi's chapter ids in ring order: the plate a target names.
 const chapterAt = (m, target) => frameOf(S.speciesOf(m))?.chapters[+target.slice(6)];
 // A way into one mibi up close (the whole's resident or tile, the hatch, Home's ✓ Meet): the first draw after a refusal at the dock says it once (events.refused).
-export function enter(h) {
-  const sh = shown(h); if (sh && h.ui.meet != null && String(h.ui.meet) === String(sh.id)) play(h, "moment", { hold: 0 });   // the meet plays its moment once (habitat.json events.meet); input is not held
+export function enter(h, o = {}) {
+  const sh = shown(h); if (sh && h.ui.meet != null && String(h.ui.meet) === String(sh.id)) play(h, "moment", { hold: o.meetHold ?? 0 });   // the meet plays its moment once (habitat.json events.meet); input is not held, but after the hatch's cutting key 300 ms (events.meet)
   const r = S.seenCarryRefusal(h.st, h.sv); if (!r) return;
   const m = S.mibiById(h.st, r.id); if (m) { h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name })); h.save(); }
 }
@@ -36,7 +36,8 @@ export function intent(h, target, verb) {
   a.f = target;
   if (target === "resident" || target.startsWith("tile.")) {
     if (meet) { openNamer(h, m, "meet"); return; }
-    play(h, "moment");   // Greet: the species' moment, the placeholder's two hops until a moving set lands; nothing rewarded, nothing said
+    if (h.ui.hab.asleep) { const e = h.specs.habitat.events.moment, a = e.asleep; h.play({ kind: e.kind, target: e.target, ms: a.ms, hold: h.motion() ? a.hold : 0, ...(a.cut ? { cut: true } : {}) }); }   // a sleeper's Greet (Station M1 §2.4): wake, the hops, curl again
+    else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said
   }
   else if (target === "name") openNamer(h, m, "rename");
   else if (target === "species") { openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library

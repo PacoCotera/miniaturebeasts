@@ -2,12 +2,17 @@
 // the meet); ← goes Home. The screen's own state is `h.ui.inc.hatch` while the hatch holds: { mibi, species, code, read } of the bud that was opened (the rule has already made the mibi and emptied the chamber).
 import * as S from "../state.mjs";
 import { knownChapters } from "../views/incubator-props.mjs";
+import { plays } from "../moving.mjs";
 
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
 export function choosePod(h) {
   if (!h.st.tray.length || S.bayFull(h.st, h.settings)) return null;
   const i = h.st.tray.findIndex((q) => q.idd); return i >= 0 ? i : 0;
 }
+// The hatch's cutting key (UI/UX "Hatch cutting key"): on a hatch with a moving set, the first key after the hold and before its end only lands the meet: ✓ opens no namer, ← does not leave, the pad does not end the meet, a room key is used up.
+// The face ends its event at that key (its `done`) or the host's kept room key does at the hold's end; the Dock is not a cutting key.
+export const cuttingHatch = (h) => { const hh = h.ui.inc?.hatch; return !!(hh && hh.cuttable && !hh.over); };
+export function landHatch(h) { const hh = h.ui.inc?.hatch; if (hh && hh.land) hh.land(); }
 export function intent(h, target, verb) {
   if (verb === "back") { if (h.ui.inc.hatch) return; h.ui.home.f = "incubator"; h.goto("home"); return; }   // ← Home with the ring on Home's Incubator module
   if (verb !== "confirm") return;
@@ -18,9 +23,12 @@ export function intent(h, target, verb) {
   const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
   if (S.budReady(h.st, h.settings, h.now())) {
     const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-    const ev = spec.events.hatch, id = r.mibi.id; h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind }; h.save();
-    const over = () => { h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "resident"; h.goto("habitat"); };   // the hatch is over: meet the mibi, the ring on the resident (habitat.json focus.targets.resident)
-    if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, over); } else over();   // reduced motion: a cut, the meet on the frame of ✓
+    // a juvenile with a moving set (Station M1 §2.5, R2, R5): the longer hatch, held to the stand (to the stand after the first hop on a save's first hatch, bud.firstEver, kept on the hatch: the bud is cleared at the hand-off), then a key cuts to the meet
+    const moving = plays(B.species, "juvenile", h.settings.motionSets), ev = moving ? spec.events.hatch.moving : spec.events.hatch, id = r.mibi.id, hold = moving && B.firstEver ? ev.firstHold : ev.hold;
+    h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind, moving, hold, cuttable: moving && !!ev.cut, over: false }; h.save();
+    const over = (cut = false) => { const hh = h.ui.inc.hatch; if (!hh || hh.over) return; hh.over = true; h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "resident"; h.goto("habitat", 0, cut ? { cut: true, meetHold: spec.events.hatch.moving.cutMeetHold ?? 300 } : {}); };   // the hatch is over: meet the mibi, the ring on the resident (habitat.json focus.targets.resident); a cut landing draws no dither and the meet holds input 300 ms
+    h.ui.inc.hatch.land = () => over(true);
+    if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold, ...(moving && ev.cut ? { cut: true } : {}) }); h.at(ev.ms, () => over(false)); } else over();   // reduced motion: a cut, the meet on the frame of ✓
     return r;
   }
   const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "" };

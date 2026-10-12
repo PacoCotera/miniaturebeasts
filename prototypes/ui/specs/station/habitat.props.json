@@ -215,6 +215,47 @@
       },
       "out": {
        "type": "string"
+      },
+      "seed": {
+       "type": "integer",
+       "description": "Station M1 §2.4: the up-close tick's seeded phase"
+      },
+      "moving": {
+       "oneOf": [
+        {
+         "enum": [
+          ""
+         ]
+        },
+        {
+         "type": "object",
+         "required": [
+          "set",
+          "close",
+          "shadow"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "set": {
+           "type": "string"
+          },
+          "close": {
+           "type": "string"
+          },
+          "shadow": {
+           "type": "string"
+          }
+         }
+        }
+       ],
+       "description": "Station M1 §2.2: \"\" or the close atlas of its moving set and its shadow"
+      },
+      "rest": {
+       "enum": [
+        "awake",
+        "asleep"
+       ],
+       "description": "Station M1 §2.6: by restOf (the rest stagger) from the Station time"
       }
      }
     },

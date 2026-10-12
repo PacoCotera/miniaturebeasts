@@ -1,6 +1,10 @@
 // Check 1 for one mibi up close (lvgl-switch.md §4): every region the face's log says it drew, against the rectangles habitat.json gives it (and namer.json's while the namer is open). `departures` returns the list of departures, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: habitat.json; namer: namer.json; state: "rest" | "meet" | "out"; cur: the ring; n: the bays (the tiles drawn); open: the namer is open.
 import { listPitch } from "../../ui/specs/derive.mjs";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+// the moving sets' highest up-close hop (Station M1 §2.4, the animator's closeHop): a resident with a set lifts by it, and its crouch drops 2 px
+const MV = new URL("../../ui/specs/station/moving/", import.meta.url), MOVING_LIFT = Math.max(0, ...JSON.parse(readFileSync(fileURLToPath(new URL("index.json", MV)), "utf8")).sets.flatMap((id) => { const s = JSON.parse(readFileSync(fileURLToPath(new URL(id + ".json", MV)), "utf8")); return [s.juvenile, s.adult, s.elder].flatMap((st) => st?.closeHop?.lift ?? []); }));
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const grow = (r, k) => [r[0] - k, r[1] - k, r[2] + 2 * k, r[3] + 2 * k];
@@ -14,8 +18,8 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   for (const r of [...got("glass", "chrome"), ...got("glass", "painted")]) if (r.rect[2] > 0) must(within(r.rect, R.glass.rect), `the glass ${r.rect} leaves ${glass}`);
   for (const r of got("glass", "painted")) must(eq(r.rect, glass), `the near Vivarium ${r.rect} is not the glass ${glass}`);
   // the resident: the mibi at the box (lifted by its focus lift and at most the hop's), the out mark in its rect; neither while the other
-  const box = R.resident.rect, lift = R.resident.lift + 4;
-  for (const r of [...got("resident", "art"), ...got("resident", "painted")]) { if (state === "out") must(eq(r.rect, R.resident.out.rect), `the out mark ${r.rect} is not ${R.resident.out.rect}`); else if (r.rect[2] > 0) must(r.rect[0] === box[0] && r.rect[2] === box[2] && r.rect[1] <= box[1] && r.rect[1] >= box[1] - lift && r.rect[3] === box[3], `the mibi ${r.rect} is not its box ${box} (lifted up to ${lift})`); }
+  const box = R.resident.rect, lift = R.resident.lift + Math.max(4, MOVING_LIFT);   // the placeholder's hop (4) or a moving set's (its closeHop)
+  for (const r of [...got("resident", "art"), ...got("resident", "painted")]) { if (state === "out") must(eq(r.rect, R.resident.out.rect), `the out mark ${r.rect} is not ${R.resident.out.rect}`); else if (r.rect[2] > 0) must(r.rect[0] === box[0] && r.rect[2] === box[2] && r.rect[1] <= box[1] + 2 && r.rect[1] >= box[1] - lift && r.rect[3] <= box[3] && r.rect[1] + r.rect[3] <= box[1] + box[3] + 2, `the mibi ${r.rect} is not its box ${box} (lifted up to ${lift})`); }
   // the name tag (rest, out) or the meet ribbon (meet), in the tag's slot; the tag's top is the feet + 24 and its bottom inside the glass by 16
   const tag = got("nameTag", "chrome").filter((r) => r.rect[2] > 2)[0], rib = got("meetRibbon", "chrome").filter((r) => r.rect[2] > 2)[0];
   must(state === "meet" ? !!rib && !tag : !!tag && !rib, `the ${state} state draws ${state === "meet" ? "the meet ribbon and no tag" : "the name tag and no ribbon"}`);
