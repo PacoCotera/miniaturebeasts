@@ -70,12 +70,20 @@ export function cargoBuild(m, spec, home, frame) {
 }
 
 // The report card's rows as the face sets them, from what the opening made (c.run.report, in words): the heading, one row a crate, what was gathered, the Probe, and the world's turn.
+// The card never passes maxHeight (cargo.json regions.report.height): when the goal rows would take it past, the world lines drop from the last until it fits.
+function trimWorld(rp, spec) {
+  if (!rp.world) return null; const R = spec.regions.report, rowH = R.rows.h, goal = rp.goal ? R.goal.gapAbove + rowH * (1 + (rp.meanwhile ? 1 : 0)) : 0;
+  const base = R.rows.first + R.gathered.gapAbove + rowH + R.pad, fixed = base + rowH * (rp.crates.length + (rp.probe ? 1 : 0)) + goal;
+  let n = rp.world.lines.length; while (n > 0 && fixed + R.world.gapAbove + rowH + rowH * n > R.maxHeight) n--;
+  return n ? { lead: rp.world.lead, lines: rp.world.lines.slice(0, n) } : null;
+}
 function reportOf(rp, spec, ph) {
   const S1 = spec.regions.report, icon = S1.crates.podIcon;
   const podIcon = ph(`icon-pod-${icon}`, [icon, icon]), shieldIcon = ph(`icon-shield-${S1.probe.plateIcon}`, [S1.probe.plateIcon, S1.probe.plateIcon]);
   return {
     heading: rp.heading, podIcon, shieldIcon,
     crates: rp.crates.map((r) => ({ lead: r.lead, pods: r.pods, text: r.text, reach: r.reach })),
-    gathered: rp.gathered, probe: rp.probe, world: rp.world,
+    gathered: rp.gathered, probe: rp.probe, world: trimWorld(rp, spec),
+    goal: rp.goal ? { lead: spec.strings.report.goal.lead, ...rp.goal } : null, meanwhile: rp.goal && rp.meanwhile ? { lead: spec.strings.report.goal.meanwhileLead, ...rp.meanwhile } : null,
   };
 }

@@ -5,6 +5,7 @@
 import * as S from "../state.mjs";
 import { ribbonOf, leadOf, reachWord } from "../views/cargo-props.mjs";
 import { toPods } from "./home.mjs";
+import { goalWords, meanwhileWords } from "../views/goal-words.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
@@ -21,7 +22,7 @@ export const openingHold = (spec, n) => n * spec.events.opening.perCrate + spec.
 const walkOrdinals = (plays) => { let w = 0; return plays.map((p) => (p.c.dev ? -1 : w++)); };
 
 // The report's rows in words, from the crates that opened and the dock's mend (cargo.json regions.report, strings.report): one row for each of the first three crates opened, what every crate gathered, the Probe, and the lines of the last walk crate.
-function reportOf(spec, plays, settings, mend, st) {
+function reportOf(spec, plays, settings, mend, st, sv, frameSpec) {
   const T = spec.strings.report, R = spec.regions.report, podMax = R.crates.podMax, walk = walkOrdinals(plays);
   const crates = plays.slice(0, R.crates.max).map((p, k) => {
     const n = p.ids.length;   // the pods that landed, never the crate's raw contents (a pod of no species is not opened)
@@ -38,7 +39,9 @@ function reportOf(spec, plays, settings, mend, st) {
   const lastWalk = plays.findLast((p) => !p.c.dev), lines = (lastWalk?.c.lines || []).slice(0, R.world.max);
   const world = lines.length ? { lead: T.world, lines } : null;
   const newPods = plays.reduce((a, p) => a + p.ids.filter((id) => st.tray.some((q) => q.id === id)).length, 0);
-  return { heading: T.heading, crates, gathered, probe, world, newPods };
+  // the goal after the crates: goalKey's step in Home's words, and the read to suggest while the step is a wait
+  const g = frameSpec ? S.goalKey(st, sv, settings) : null, goal = g ? goalWords(g, S.docked(st), frameSpec) : null, meanwhile = g && goal ? meanwhileWords(g.meanwhile, spec) : null;
+  return { heading: T.heading, crates, gathered, probe, world, newPods, goal, meanwhile };
 }
 
 // ✓ Open the bay: the rule opens every crate at once; the host then plays them one at a time (events.opening): the arrival (the face's clock), the counters and the turn as the top bar shows them, and, with reduced motion, each step as a cut at its time.
@@ -51,7 +54,7 @@ export function openBay(h) {
   const plays = r.plays.slice(0, OPENING_MAX), n = plays.length, walk = walkOrdinals(plays);
   // the well each pod went to: its place in the rack, or -1 when it waits in the bay
   const crates = plays.map((p, k) => ({ ribbon: ribbonOf(spec, p.c, walk[k]), dev: !!p.c.dev, gained: { e: p.gained.e, d: p.gained.d, s: p.gained.s }, pods: p.ids.map((id) => ({ id, well: st.tray.findIndex((q) => q.id === id) })) }));
-  c.run = { crates, report: reportOf(spec, r.plays, h.settings, c.mend, st) }; c.mend = null;
+  c.run = { crates, report: reportOf(spec, r.plays, h.settings, c.mend, st, h.sv, h.specs.frame) }; c.mend = null;
   c.state = "opening"; c.crate = 0; c.at = 0; c.shown = { ...before };
   h.play({ kind: "arrival", target: "crate", ms: openingMs(spec, n), hold: openingHold(spec, n) });
   h.play({ kind: "dither", target: "stage", ms: T.dither });

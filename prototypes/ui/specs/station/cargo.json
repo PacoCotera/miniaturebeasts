@@ -45,7 +45,8 @@
    "probe": { "plateIcon": 16, "platePitch": 20, "from": "the dock's mend { free, paid, broke } (state.mjs dockKey), kept in Cargo's UI state from the dock until the report: free or broke (a break is mended free) reads strings.report.mendedFree, paid reads strings.report.mendedPaid with ⚡ and the plates paid for; no mend, no row. It is not in the save: a reload loses it, and the report then has no Probe row" },
    "world": { "gapAbove": 16, "max": 3, "bullet": [16, 10, 4, 4], "lineAt": 32, "from": "the last walk crate opened (dev crates carry no lines)" },
    "reach": { "thresholds": "r = explored/of: below 1/3 underThird; 1/3 to below 2/3 underTwoThirds; 2/3 to below 1 underAll; explored ≥ of all; of = 0 (a crate with no map) says nothing" },
-   "height": "104 + 24 × (crates + probe row) + (world lines ? 40 + 24 × lines : 0)",
+   "goal": { "gapAbove": 8, "rowH": 24, "lead": [16, 128], "content": [152, 392], "when": "goalKey (frame.json strings.goal) is not null, computed after the crates", "meanwhile": "directly under (+24), only when the step is goOut, findPod, bud or short and goalKey's meanwhile is not null: strings.report.goal.meanwhileLead, then strings.report.goal.meanwhile (or .meanwhileGlint) with {species} and {chapter}, then the ◆ icon and the read's price", "text": "the goal row's content is the same strings.goal.step.* words and icons as Home's; a name too wide for 392 px with its icons falls back to the nameless sibling (props `plain`)" },
+   "height": "104 + 24 × (crates + probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), never past maxHeight 320: when the card would pass 320 the world lines drop from the last until it fits",
    "full": { "heading": 88, "crates": [128, 152, 176], "gathered": 208, "probe": 232, "world": 272, "lines": [296, 320, 344], "bottom": 384 }
   }
  },
@@ -108,7 +109,7 @@
   "report": {
    "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "devCrate": "Developer crate", "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
    "reach": { "underThird": "a first look around", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
-   "gathered": "Gathered", "topUp": "with the top-up", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned"
+   "gathered": "Gathered", "topUp": "with the top-up", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned", "goal": { "lead": "Next", "meanwhileLead": "While you wait", "meanwhile": "read {chapter} on the {species} pod", "meanwhileGlint": "{chapter} glints on the {species} pod", "content": "frame.json strings.goal.step.*, the same words and icons as Home's" }
   }
  },
  "placeholders": {

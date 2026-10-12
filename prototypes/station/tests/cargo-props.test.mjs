@@ -8,6 +8,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, speciesIndex } from "../src/genome.mjs";
+import { traitLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import { cargoBuild, reachWord, ribbonOf } from "../src/views/cargo-props.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
@@ -119,7 +120,7 @@ test("the report: a row a crate with its pods and its reach in words, what was g
   assert.equal(r.heading, "Home from the field");
   assert.deepEqual(r.crates.map((c) => [c.lead, c.pods, c.text, c.reach]), [["First crate", 3, "", "a first look around"], ["Second crate", 0, "no pods", "all the land explored"], ["Third crate", 0, "many pods", ""]]);
   assert.deepEqual([r.gathered.lead, r.gathered.e, r.gathered.d, r.gathered.s, r.gathered.top], ["Gathered", "+9", "+9", "+12", ""], "economy decided: no top-up");
-  assert.deepEqual(r.probe, { lead: "Probe", plates: 3, text: "mended for ⚡ 2" }); assert.deepEqual(r.world, { lead: "Meanwhile, the world turned", lines: ["The mist burned off", "A pond filled", "The wood stirred"] });
+  assert.deepEqual(r.probe, { lead: "Probe", plates: 3, text: "mended for ⚡ 2" }); assert.deepEqual(r.world, { lead: "Meanwhile, the world turned", lines: ["The mist burned off", "A pond filled"] }, "the goal row took the third line (the card never passes 320)");
   assert.ok(["See the new pods", "See the new pod", "Done"].includes(b.line.ok)); assert.equal(b.line.back, "Cargo"); assert.equal(b.line.subject, "what came home");
   assert.deepEqual(b.props.regions.crates, undefined, "the bay is emptied under the card");
   assert.equal(reported(world(), sv0([crate(1, 1)]), { free: 0, paid: 0, broke: false, spent: 0 }).props.regions.report.probe, null, "no mend, no row");
@@ -167,6 +168,24 @@ test("the Probe row's price is the Energy the plates cost: free when the economy
   const h = { st, sv, settings: free, ui, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
   INTENTS.cargo.intent(h, "room", "confirm"); h.timers.forEach((t) => t.fn());
   assert.deepEqual(cargoBuild({ st, sv, settings: free, docked: true, ui }, spec, home, frameSpec).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });
+});
+
+// ---- the goal rows (cargo.json regions.report.goal; station-x10-economy.md) ----
+test("the report's goal row names the next step after the crates; the meanwhile row only for the wait steps and only when a read can be paid; the card never passes 320", () => {
+  const st = world(), [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
+  const lk = { id: "kept", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 9, k: null, n: 0, idd: 1, read: [], fresh: 0, genome: null }; st.tray.push(lk); st.bud = { kind: "founder", species: "S03", start: Date.now() + 1e9, minutes: 5 };
+  const sv = sv0([crate(1, 3, { explored: 4, of: 20 }), crate(2, 0, { explored: 20, of: 20 }), crate(3, 12, { of: 0, lines: ["The mist burned off", "A pond filled", "The wood stirred"] })]);
+  const r = reported(st, sv, { free: 1, paid: 2, broke: false, spent: 2 }).props.regions.report;
+  assert.deepEqual(r.goal, { lead: "Next", text: "wait for the bud", icons: "", plain: "" }); assert.ok(r.meanwhile, "the bud is a wait: a read to suggest"); assert.equal(r.meanwhile.lead, "While you wait"); assert.match(r.meanwhile.text, / on the Loika pod$/);
+  assert.equal(r.world.lines.length, 1, "3 crates + the Probe + the goal and meanwhile rows leave one world line: the card is 320 tall");
+  // no read can be paid: no meanwhile row
+  const st2 = world(), [d2] = S.seedAdults(st2, "S01", 5, 1, settings).mibis; d2.name = "Dot"; st2.tray.push({ ...lk, id: "k2" }); st2.bud = st.bud; st2.readEver = true; st2.d = 0;
+  const r2 = reported(st2, sv0([crate(1, 1, { d: 0 })])).props.regions.report; assert.ok(r2.goal); assert.equal(r2.meanwhile, null);
+  // a step that is not a wait (identify): a goal row and no meanwhile row
+  const st3 = world(), [d3] = S.seedAdults(st3, "S01", 5, 1, settings).mibis; d3.name = "Dot"; const r3 = reported(st3, sv0([crate(1, 1)])).props.regions.report;
+  assert.equal(r3.goal.text, "identify the Loika pod"); assert.equal(r3.meanwhile, null);
+  // no goal: no row (two adults, the guide complete, nothing named)
+  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); { const fr = frameOf("S01"); st4.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st4, "S01", t.id, traitLooks(fr, t)); } st4.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(S.goalKey(st4, sv0()), null); assert.equal(reported(st4, sv0([crate(1, 0)])).props.regions.report.goal, null);
 });
 // the haul's containers (cargo.json regions.stores): a material's container only when the crate brought it (gained > 0, the report's Gathered figure), whatever the mend spent
 const openedWith = (st, sv, stg) => {

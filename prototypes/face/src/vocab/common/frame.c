@@ -157,6 +157,15 @@ void word_bottomLine(void) {
     int lamp[4] = { right - run.width - fi("regions.need.lampGap") - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
     v_name("need"); fs("regions.marks.lamp12.needsYou", a, sizeof a);
     mark("line.need.lamp", a, lamp);   /* the signed amber lamp (home-lamp-amber-12x12), 1:1; no code-drawn lamp */
+  } else if (spec_str(P, "frame.line.goal.text", s, sizeof s) > 0) {
+    /* the goal (frame.json strings.goal): in the notice zone, mist, no lamp, when no need holds. The words, then the materials a short step lacks (20 px each); a name too wide for the zone with its icons falls back to `plain`
+       (the key's nameless sibling), the face's own sum. */
+    char icons[24] = "", plain[V_STR] = ""; spec_str(P, "frame.line.goal.icons", icons, sizeof icons); spec_str(P, "frame.line.goal.plain", plain, sizeof plain);
+    int nr[4]; rect_of("regions.need.rect", nr); int right = fi("regions.need.right"), px = fi("regions.need.px"), ni = 0;
+    for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* the three icons are each one three-byte sequence beginning 0xe2 */
+    const char *words = (v_run_width(s, px) + 20 * ni > nr[2] && plain[0]) ? plain : s;
+    char full[V_STR + 32]; snprintf(full, sizeof full, "%s%s%s", words, ni ? " " : "", ni ? icons : "");
+    v_region("need", LAYER_TYPE); colour("subject", c); v_run("line.goal", full, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
   }
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {

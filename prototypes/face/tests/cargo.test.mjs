@@ -205,20 +205,21 @@ test("reduced motion: the arrival is at its end at once, so the host stages the 
 });
 
 // ---- the report card's height rule ----
-test("the report card is 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) tall at (232, 72), 560 wide, at most 312: the rule at every combination, its bottom 16 px above the rack at the fullest", { skip }, async () => {
+test("the report card is 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0) tall at (232, 72), 560 wide, at most 320: the rule at every combination, world lines dropped from the last until it fits", { skip }, async () => {
   for (const [crates, mend, lines] of [[1, null, 0], [1, { free: 0, paid: 1, broke: false, spent: 1 }, 0], [2, null, 1], [2, { free: 1, paid: 0, broke: false, spent: 0 }, 2], [3, null, 3], [3, { free: 0, paid: 2, broke: false, spent: 2 }, 3]]) {
     const b = scene({ crates, open: true, state: "report", mend, lines: ["a", "b", "c"].slice(0, lines), podsEach: 2 }), f = await start(b), lg = logOf(f), card = region(lg, "report", "chrome");
-    const h = 104 + 24 * (crates + (mend ? 1 : 0)) + (lines ? 40 + 24 * lines : 0);
-    assert.deepEqual(card.rect, [232, 72, 560 + SHADOW[0], h + SHADOW[1]], `${crates} crates, ${mend ? "a Probe row" : "no Probe row"}, ${lines} lines`); assert.ok(card.rect[1] + h <= 384, "its bottom is at 384 at most");
+    const rp = b.props.regions.report, nl = rp.world ? rp.world.lines.length : 0, h = 104 + 24 * (crates + (mend ? 1 : 0)) + (nl ? 40 + 24 * nl : 0) + (rp.goal ? 8 + 24 * (1 + (rp.meanwhile ? 1 : 0)) : 0);
+    assert.ok(nl <= lines && (nl === lines || h + (nl ? 24 : 64) > 320), "lines drop only to fit");
+    assert.deepEqual(card.rect, [232, 72, 560 + SHADOW[0], h + SHADOW[1]], `${crates} crates, ${mend ? "a Probe row" : "no Probe row"}, ${nl} lines, ${rp.goal ? "a goal row" : "no goal"}`); assert.ok(h <= 320, "at most 320");
     assert.deepEqual(departures(lg, cargoSpec, frameSpec, "report"), []);
   }
 });
 test("the report card rows sit on the spec's y: the crates' pod icons at 128, 152, 176 (+ 4), Gathered's icons at 208, the Probe's plates at 232, the world's bullets at 296, 320, 344 (+ 10)", { skip }, async () => {
-  const b = scene({ crates: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["a", "b", "c"], podsEach: 2 }), f = await start(b), lg = logOf(f), I = R.report.rows.iconAt, B = R.report.world.bullet;
+  const b = scene({ crates: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["a", "b", "c"], podsEach: 2 }), f = await start(b), lg = logOf(f), I = R.report.rows.iconAt, B = R.report.world.bullet, nl = b.props.regions.report.world.lines.length;
   assert.deepEqual(region(lg, "report.pods").rect, [232 + 152, 128 + I, 2 * 20 - 4, 24 * 2 + 16], "two pod icons a row on a 20 px pitch from x 384, three rows from y 128 on a 24 px pitch");
   assert.deepEqual(region(lg, "report.gathered", "art").rect.slice(1, 2), [208 + I], "Gathered at 208"); assert.equal(region(lg, "report.gathered", "art").rect[3], 16);
   assert.deepEqual(region(lg, "report.probe", "art").rect.slice(0, 2), [232 + 152, 232 + I], "the Probe's plates (and the ⚡ of its words) at 232");
-  assert.deepEqual(region(lg, "report.world", "chrome").rect, [232 + B[0], 296 + B[1], B[2], 24 * 2 + B[3]], "three bullets from y 296 on a 24 px pitch");
+  assert.deepEqual(region(lg, "report.world", "chrome").rect, [232 + B[0], 296 + B[1], B[2], 24 * (nl - 1) + B[3]], "the bullets from y 296 on a 24 px pitch (the lines that fit)");
   for (const id of ["report.heading", "report.crate", "report.gathered", "report.probe", "report.world"]) assert.ok(region(lg, id, "type"), id + " has its words");
 });
 

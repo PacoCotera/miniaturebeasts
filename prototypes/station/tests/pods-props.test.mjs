@@ -139,7 +139,7 @@ test("the bottom line's three slots: no dots, the centre fits 24 characters, one
   assert.equal(line("pod").subject, "sealed until identified");
   S.skipIdentify(st, p); assert.equal(line("pod").subject, S.spName(p) + " is unread");
   st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, S.spName(p) + " is partly read");
-  st.d = 0; st.readEver = true; const l1 = lineOf(open(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })); assert.equal(l1.need, "needs more ◆"); assert.equal(l1.dim, true);
+  st.d = 0; st.readEver = true; const l1 = lineOf(open(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })); assert.equal(l1.need, "needs more ◆: watch your mibis"); assert.equal(l1.dim, true);
 });
 test("a sealed tab's subject is '<chapter> is sealed'; the hatch's is 'Back to the <place>'", () => {
   const st = stock(["S02"], 11), p = st.tray[0]; S.skipRead(st, p, settings);
