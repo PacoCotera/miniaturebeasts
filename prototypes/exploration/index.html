@@ -488,7 +488,7 @@ function fxOnce(key, textMsg, pri, local) {
   FX.notes.push({ text: textMsg, pri: pri == null ? 2 : pri, once: key, local: !!local }); composeMsg();
 }
 function settleOnce() {
-  for (const n of FX.notes) if (n.once && FX.msg.includes(n.text) && !onceDone(n.once, n.local)) {
+  for (const n of FX.notes) if (n.once && shownMsg().includes(n.text) && !onceDone(n.once, n.local)) {   // spent only when it is drawn: the place's Call hint is filtered off every other screen
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once); }
 }
 const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // species names are proper nouns: never lower-cased

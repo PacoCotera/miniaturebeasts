@@ -819,3 +819,20 @@ test("the place's Call hint takes the message box only when it is alone: it neve
   assert.equal(p.run("FX.msg"), h, "alone, the hint shows");
   assert.equal(p.run(`wrapText(${JSON.stringify(h)}, 400, 2).length`), 1, "on one line");
 });
+
+test("the place's Call hint is spent only when it is drawn: skipped while another message holds the box or off the place, then shown once, then never again", () => {
+  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer", spent = () => p.run("S.found.includes('callplace')");
+  const put = (ph, ...texts) => p.run(`S.phase = ${JSON.stringify(ph)}; FX.notes = ${JSON.stringify(texts.map(t => t === h ? { text: t, pri: 2, once: "callplace", local: false } : { text: t, pri: 2 }))}; composeMsg(); settleOnce();`);
+  assert.equal(spent(), false);
+  put("patch", c, h); assert.equal(p.run("FX.msg"), c, "another message holds the box"); assert.equal(spent(), false, "skipped in the place: not spent");
+  put("cargo", h); assert.equal(p.run("shownMsg()"), ""); assert.equal(spent(), false, "not drawn on another screen: not spent");
+  put("probe", c, h); assert.equal(spent(), false);
+  put("patch", h); assert.equal(p.run("FX.msg"), h); assert.equal(spent(), true, "drawn in the place: spent");
+  p.run("FX.notes = []; S.phase = 'patch'; fxOnce('callplace', CALL_HINT, 2);"); assert.equal(p.run("FX.notes.length"), 0, "never queued again");
+  // and in play: the hint is held behind the arrival lines, shown on a later action, and shown once
+  const q = world(); q.key("confirm"); q.key("confirm"); q.key("confirm"); assert.equal(q.run("S.phase"), "patch");
+  assert.equal(q.run("S.found.includes('callplace')"), false, "the arrival lines hold the box: the hint is not spent");
+  let shown = 0, was = false;
+  for (let i = 0; i < 30; i++) { q.key(i < 2 ? "call" : ["left", "right", "up", "down"][i % 4]); const now = q.run("FX.msg === CALL_HINT"); if (now && !was) shown++; was = was || q.run("S.found.includes('callplace')"); }
+  assert.equal(shown, 1, "shown once, on a later action, and never again"); assert.equal(q.run("S.found.includes('callplace')"), true);
+});
