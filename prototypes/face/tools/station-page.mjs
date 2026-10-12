@@ -35,5 +35,6 @@ export async function openStation({ motion = true, clock = false } = {}) {
   await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
   const step = (ms) => page.evaluate((m) => window.__step(m), ms);
   if (clock) await step(200);
+  await page.evaluate(() => window.__st.forgetMibiPictures?.());   // the fixture's boot world (the Companion away, mibi 1 carried) may draw a mini of its mibi 1: the scenes' worlds reuse that id, so its picture goes before them (after the virtual clock's first step, when a clocked page first draws)
   return { page, fails, fail, step, close: async () => { await browser.close(); server.close(); } };
 }

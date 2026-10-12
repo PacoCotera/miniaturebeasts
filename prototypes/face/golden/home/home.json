@@ -14,11 +14,11 @@
    "png": "home-goal-docked.png"
   },
   "home-goal-away": {
-   "hash": "bf92d0e8",
+   "hash": "ac915259",
    "png": "home-goal-away.png"
   },
   "home-away": {
-   "hash": "d8aa0a0a",
+   "hash": "d50d0261",
    "png": "home-away.png"
   },
   "home-waiting": {
@@ -50,7 +50,7 @@
    "png": "home-probe-docked.png"
   },
   "home-probe-away": {
-   "hash": "87a2f5d9",
+   "hash": "667b8150",
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
