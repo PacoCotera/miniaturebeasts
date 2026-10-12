@@ -28,7 +28,7 @@ node prototypes/ui/tools/warp-field.mjs --landmarks lm.json --stand stand.png --
 
 ```
 node prototypes/ui/tools/tier2-test.mjs --out dir [] \
-  --set s04-304x312 --stand <path|ref@sha:path> --landmarks lm.json [--picture name] [--base-stand 304-stand] [--painted-down p --painted-up p] [--field-down f.png --field-up g.png] [--pair-ids a,b]
+  --set s04-304x312 --stand <path|ref@sha:path> --landmarks lm.json [--with lm2.json:<down|up>] [--picture name] [--base-stand 304-stand] [--painted-down p --painted-up p] [--field-down f.png --field-up g.png] [--pair-ids a,b]
   [--set ... one per size]
 ```
 
@@ -41,6 +41,12 @@ The warp with the head layer: the head (composite inside the mask) is split off;
 Writes per set: the 1x PNGs (painted down, warped down, stand, warped up, painted up), the field maps and the head mask, a contact sheet per set and one for all, `measures.csv`, and `vivarium-pair-<size>-<down|middle>-<middle|up>.apng` for the three pairings: two Hiljans side by side, 10 s at 1x on #D6CEBE, breathing b0 b1 b2 b1 with the animator's holds and copy B offset (`breathPair`). b1 and b2 are baked from each warped stand (the field reused by id; a step is never warped on its own).
 
 A picture block named for the size with a suffix (`stand-104x112-exaggerated`, selected with `--picture`) is a placed variant: it renders one extra breathing pair, `vivarium-pair-<size>-exaggerated-down-up.apng`, and a block that says `M5a: "not applied..."` skips M5a (a field deliberately beyond the painted ends).
+
+**Stacking a second blend: `--with <landmarks>:<down|up>`**, an option of the `--set` before it. The set's own `--landmarks` is blend 1, run at down, middle (the stand) and up as before; `--with` adds blend 2 fixed at the given end (leaving it out leaves blend 2 at its middle). Three runs (blend 2 at down, middle, up) give the nine combinations. The second blend must be on the same key: the same species and stage, a byte-equal head mask and the same zero rows, or the run is refused (a `field` row `FAIL (refused)`). Each layer is added as r(t·d) and the picture is sampled once (method rule 6); the sum of the two fields is held to the same bounds and gradient limits as one field (a `field` row `<end> + <blend2>-<end2> sum max |d| px / stretch / shear`), and a refused sum fails that end. The matrix's middle cell becomes the stand under blend 2 alone (`<size>-stand-with-<blend2>-<end2>.png`); every base the measures compare against stays the unwarped stand. M8 warps both layers, and the breath bake's warped belly line takes both `db` terms (each rounded). The second blend's map and the file's sha256 are recorded.
+
+**Head touch** (an `M3` row, always on, wherever the run has a head mask): on the body layer alone (warped, the head not drawn) the 8-connected components at alpha > 110; the largest by pixels is the body (a tie goes to the first in raster order), every other is an extra. An extra's distance is the smallest r for which it meets the head mask dilated by r (square dilation); it passes when it is within the reach, **6 at 304x312, 3 at 144x152, 2 at 104x112 and 96x88** (the animator's ruling: 6 px scaled by the figure scale, rounded, floor 2). The row is `warped-<end> body layer: extra components vs the head mask (reach <r> px)`; the unwarped stand's is information. When an end has an extra, `<size>-warped-<end>-body-extras.png` outlines it, yellow within the reach and red over it.
+
+**The lift row**: every run prints `lift`, `the lift table unchanged` (satisfied by construction): the face applies a hop's lift at draw time as a whole-pixel cell offset, and the warp never reads it, for any species.
 
 Opaque means alpha > 110.
 

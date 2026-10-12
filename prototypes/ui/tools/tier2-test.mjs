@@ -6,12 +6,14 @@
 // marked `override` and gives no verdict.
 //
 //   node prototypes/ui/tools/tier2-test.mjs --out dir
-//     --set s04-304 --stand <path|ref@sha:path> --landmarks lm.json [--picture name] [--painted-down p] [--painted-up p] [--field-down f.png --field-up g.png] [--pair-ids a,b]
+//     --set s04-304 --stand <path|ref@sha:path> --landmarks lm.json [--with lm2.json:<down|up>] [--picture name] [--painted-down p] [--painted-up p] [--field-down f.png --field-up g.png] [--pair-ids a,b]
+//       --with stacks a second blend of the same key (same species, stage, head mask and zero rows) fixed at that end on the set's own blend; the layers are summed before the one sample and the sum is checked
 //     --set s04-104 ...                                    (one --set per size; the options after a --set belong to it)
 //     overrides: --head-mask png  --shadow-rows y0-y1  --belly-y N  --amplitude k  --no-check  --band y0-y1  --holds b0,b1,b2,b1back  --phase-ms N  --seconds N
 //   A source is a file path, or `<ref>@<sha>:<path>` read read-only with `git show` (masters-pods is a branch of this repository: `git fetch origin masters-pods` first). Each source's SHA-256 goes in the CSV and must match the JSON's.
 // Measures (the definitions are in prototypes/ui/README.md): M1 determinism, M2 palette, M3 silhouette (relative, two thresholds), M4 outline, M5 fit to the painted end and M5a to the measured profile,
-// M6 readable at walker size, M7 warp time, M8 motion (changed pixels outside the moving band, with and without the warp).
+// M6 readable at walker size, M7 warp time, M8 motion (changed pixels outside the moving band, with and without the warp); the head-touch check (an M3 row, always on: the body layer alone's extra
+// components against the head mask, reach 6 px at 304x312, 3 at 144x152, 2 at 104x112 and 96x88); the lift row (the lift table is applied at draw time and never read by the warp).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -19,7 +21,7 @@ import { deflateSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { encodePNG, decodePNG } from "../png.mjs";
-import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legStrain, bellyColumns, rha, quantT, sha256, chunk, pickPicture, figureBbox, bboxMapping } from "./warp-field.mjs";
+import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legStrain, bellyColumns, rha, quantT, sha256, chunk, pickPicture, figureBbox, bboxMapping, dilate, HEAD_ZONE } from "./warp-field.mjs";
 
 export const OPAQUE = 110;                                 // alpha > 110 is opaque (the animator's measure for the topline)
 export const M5_LIMITS = { "304x312": { iou: 0.95, profile: 2 }, "104x112": { iou: 0.93, profile: 1 } };
@@ -78,6 +80,23 @@ export function warp(img, layers, { headMask = null, drawHead = true, stats = nu
   out.shadow = img.shadow ?? null; return out;
 }
 
+// The head-touch check (the animator's ruling of 18:46): on a body layer alone (warped, the head not drawn), the 8-connected opaque components (alpha > 110); the one with the most pixels is the
+// body (a tie goes to the first in raster order), every other is an extra. An extra's distance is the smallest r in 0..reach for which it meets the head mask dilated by r (the square dilation, the same
+// Chebyshev reach as HEAD_ZONE); otherwise null (more than the reach). Returns { extras: [{ box, d, pixels }], reach }.
+export function headTouch(img, headMask, reach = HEAD_ZONE) {
+  const { w, h } = img, m = opaqueMask(img), label = new Uint8Array(w * h), comps = [];
+  for (let i = 0; i < w * h; i++) if (m[i] && !label[i]) {
+    const stack = [i], px = []; label[i] = 1; const box = [w, h, 0, 0];
+    while (stack.length) { const k = stack.pop(), x = k % w, y = (k / w) | 0; px.push(k); box[0] = Math.min(box[0], x); box[1] = Math.min(box[1], y); box[2] = Math.max(box[2], x); box[3] = Math.max(box[3], y);
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nx = x + dx, ny = y + dy; if ((dx || dy) && nx >= 0 && ny >= 0 && nx < w && ny < h && m[ny * w + nx] && !label[ny * w + nx]) { label[ny * w + nx] = 1; stack.push(ny * w + nx); } } }
+    comps.push({ box, px });
+  }
+  let main = 0; comps.forEach((c, k) => { if (c.px.length > comps[main].px.length) main = k; });
+  const reach_ = []; for (let r = 0; r <= reach; r++) reach_.push(dilate(headMask, w, h, r));
+  const extras = comps.filter((_, k) => k !== main).map((c) => { let d = null; for (let r = 0; r <= reach && d === null; r++) if (c.px.some((k) => reach_[r][k])) d = r; return { box: c.box, d, pixels: c.px.length }; });
+  return { extras, reach };
+}
+export const HEAD_TOUCH_REACH = { "304x312": 6, "144x152": 3, "104x112": 2, "96x88": 2 };   // the animator's ruling: 6 px at 304, scaled by the figure scale and rounded with a floor of 2
 // The b-step bake (the animator's `breathBake`): row copies per column, no resampling, no new pixels. yb(x) is the belly line at x (Int32Array), rows y >= yb unchanged.
 // b1: out(x, y) = in(x, y + 1) for y < yb - 1, row yb - 1 keeps itself (one row doubled at the belly line). b2: a second 1 px lift for the rows above ym = round((ytop + yb) / 2),
 // ytop = the column's first ink row (alpha > 0) of the picture being baked (the warped stand for a warped step); ym is never within 8 px of yb (ym = min(ym, yb - 8)). Rows shifted in
@@ -99,7 +118,7 @@ export function bakeStep(img, n, yb) {
 }
 // The breath pair's band is derived, never given: in each column the rows above the belly line.
 // The warped belly line for a breath bake on a belly-moving warp: yb'(x) = yb(x) + r(t * db(x)) at t = 1 (the same line for a bellyFixed blend).
-export const warpedBelly = (yb, f) => yb.map((v, x) => v + rha(f.legDb?.[x] ?? 0));
+export const warpedBelly = (yb, f, g = null) => yb.map((v, x) => v + rha(f.legDb?.[x] ?? 0) + (g ? rha(g.legDb?.[x] ?? 0) : 0));   // g: a second blend stacked on the first, each db rounded on its own as the warp rounds each layer
 export const aboveBellyBand = (w, h, yb) => { const m = new Uint8Array(w * h); for (let x = 0; x < w; x++) for (let y = 0; y < Math.min(h, yb[x]); y++) m[y * w + x] = 1; return m; };
 
 // The warp's input is the cut key: the body alpha binarised (255 or 0), the painted shadow split off into its own layer, which is not warped and stays on the ground under the warped feet.
@@ -308,6 +327,34 @@ export function runSet(set0, opts = {}) {
       else throw new Error(`set ${set.name}: give --landmarks or --field-${e}`);
     } catch (err) { refused[e] = err.message; row(size, "field", e, err.message, "", "FAIL (refused)"); }
   }
+  // a second blend stacked on the first (--with <landmarks>:<down|up>): blend 2 fixed at that end, on the same key; the layers are summed before the one sample (method rule 6)
+  let wInfo = null, fieldW = null;
+  if (set.with) {
+    const i = set.with.lastIndexOf(":"), wpath = set.with.slice(0, i), end2 = set.with.slice(i + 1);
+    if (!lm) throw new Error(`set ${set.name}: --with needs --landmarks`);
+    if (!["down", "up"].includes(end2)) throw new Error(`set ${set.name}: --with ${set.with}: the end word is down or up`);
+    const lm2 = JSON.parse(readFileSync(wpath, "utf8")); wInfo = { path: wpath, end2, lm2, blend2: lm2.blend ?? "blend2" };
+    row(size, "input", `--with ${wInfo.blend2}-${end2} landmarks sha256`, sha256(readFileSync(wpath)), "", "info");
+    try {
+      if (lm2.species !== lm.species || lm2.stage !== lm.stage) throw new Error(`--with: ${lm2.species} ${lm2.stage} is not ${lm.species} ${lm.stage}: the two blends are on one key`);
+      fieldW = buildField(lm2, end2, stand.w, stand.h, { picture: set.picture ?? null, overrides: ov, ink, mapping });
+      const f1 = fields.down ?? fields.up;
+      if (f1) {
+        const sameMask = (!f1.headMask && !fieldW.headMask) || (f1.headMask && fieldW.headMask && Buffer.compare(Buffer.from(encodeMask(f1.headMask, stand.w, stand.h)), Buffer.from(encodeMask(fieldW.headMask, stand.w, stand.h))) === 0);
+        if (!sameMask) throw new Error("--with: the head mask of the second blend is not byte-equal to the first's: the two blends share one key's head");
+        if (JSON.stringify(f1.zeroRows) !== JSON.stringify(fieldW.zeroRows)) throw new Error("--with: the zero rows of the second blend are not the first's: the two blends share one key's feet");
+      }
+    } catch (err) { for (const e of ENDS) refused[e] = err.message; fieldW = null; row(size, "field", `with ${wInfo.blend2}-${end2}`, err.message, "", "FAIL (refused)"); for (const e of ENDS) delete fields[e]; }
+    if (fieldW) { const fb2 = encodeField(fieldW); files.set(`${set.name}/${idBase}-map-warp-${wInfo.blend2}-${end2}-${size}.png`, fb2); row(size, "field", `with ${wInfo.blend2}-${end2} map sha256`, sha256(fb2), "", "info"); }
+  }
+  // the sum of the two layers per end, held to the same checks as one field; a refusal on the sum fails that end
+  const eff = { ...fields };
+  if (fieldW) for (const e of ENDS) if (fields[e]) {
+    const f1 = fields[e], n = f1.dx.length, sum = { ...f1, dx: new Int8Array(n), dy: new Int8Array(n), legDb: f1.legDb ? f1.legDb.map((v, x) => v + (fieldW.legDb?.[x] ?? 0)) : null };
+    for (let i = 0; i < n; i++) { sum.dx[i] = f1.dx[i] + fieldW.dx[i]; sum.dy[i] = f1.dy[i] + fieldW.dy[i]; }
+    try { checkField(sum); eff[e] = sum; } catch (err) { refused[e] = err.message; row(size, "field", `${e} + ${wInfo.blend2}-${wInfo.end2} sum`, err.message, "", "FAIL (refused)"); delete fields[e]; delete eff[e]; }
+  }
+  const LAY = (e) => (fieldW ? [{ field: fields[e], t: 1 }, { field: fieldW, t: 1 }] : [{ field: fields[e], t: 1 }]);
   const live = ENDS.filter((e) => fields[e]), headMask = live.length ? fields[live[0]].headMask : null, headSource = live.length ? fields[live[0]].headSource : "none";
   if (Object.keys(refused).length) status.push("field refused: " + Object.keys(refused).join(", "));
   if (!headMask) status.push("head unmasked");
@@ -320,17 +367,20 @@ export function runSet(set0, opts = {}) {
   for (const e of ENDS) {
     if (set[`painted-${e}`]) { const b = load(`painted-${e}`); painted[e] = decodeImage(b); row(size, "input", `painted-${e} sha256`, sha256(b), "", "info"); if (set[`painted-${e}-shadow`]) { const sb = load(`painted-${e}-shadow`); painted[e].shadow = decodeImage(sb); row(size, "input", `painted-${e} shadow sha256`, sha256(sb), "", "info"); } }
     if (!fields[e]) continue;
-    warped[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, stats });
-    wbody[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, drawHead: false });
+    warped[e] = warp(stand, LAY(e), { headMask, stats });
+    wbody[e] = warp(stand, LAY(e), { headMask, drawHead: false });
     const fb = encodeField(fields[e]); files.set(`${set.name}/${idBase}-map-warp-${blendId}-${SIDE[e]}-${size}.png`, fb); row(size, "field", `${e} map sha256`, sha256(fb), "", "info");
   }
-  const matrix = [painted.down ?? null, warped.down ?? null, stand, warped.up ?? null, painted.up ?? null], names = ["painted-down", "warped-down", "stand", "warped-up", "painted-up"];
+  const standCell = fieldW ? warp(stand, [{ field: fieldW, t: 1 }], { headMask }) : stand;                       // with a second blend the middle of the matrix is the stand under that blend alone; every base below stays the unwarped stand
+  const matrix = [painted.down ?? null, warped.down ?? null, standCell, warped.up ?? null, painted.up ?? null], names = ["painted-down", "warped-down", fieldW ? `stand-with-${wInfo.blend2}-${wInfo.end2}` : "stand", "warped-up", "painted-up"];
   matrix.forEach((img, i) => { if (img) files.set(`${set.name}/${size}-${names[i]}.png`, png(img)); });
 
   const standS0 = silhouette(flat(stand), 0), standS1 = silhouette(stand, OPAQUE), sil0 = standS1, out0 = outlineIrregular(stand), headEdge = headMask ? (() => { for (let x = 0; x < stand.w; x++) for (let y = 0; y < stand.h; y++) if (headMask[y * stand.w + x]) return x; return stand.w; })() : stand.w;
   row(size, "M3", "stand strict counts", `${sil0.components} comp, ${sil0.holes} holes, ${sil0.orphans} orphans`, "info");
   row(size, "M4", "stand irregular", out0.irregular, "", "info");
   const L5 = M5_LIMITS[size], sil = (s) => `${s.components} comp, ${s.holes} holes, ${s.orphans} orphans`;
+  if (headMask) { const reach = HEAD_TOUCH_REACH[size] ?? HEAD_ZONE, ht = headTouch(stand, headMask, reach); row(size, "M3", `stand body layer: extra components vs the head mask (reach ${reach} px)`, ht.extras.length ? `${ht.extras.length} extra: ${ht.extras.map((x) => (x.d === null ? `> ${reach}` : x.d)).join(", ")}` : "0 extra", "", "info"); }
+  else row(size, "M3", "stand body layer: extra components vs the head mask", "n/a (head unmasked)", "", "info");
   for (const e of live) {
     const nc = newColours(flat(stand), flat(warped[e])); row(size, "M2", `warped-${e}`, nc, 0, nc === 0 ? "pass" : "FAIL");
     const s = silhouette(warped[e]), sb = silhouette(wbody[e]);
@@ -339,6 +389,10 @@ export function runSet(set0, opts = {}) {
     const gate = (img, base, what) => { const c = silhouette(img, OPAQUE), ok = c.components <= base.components && c.holes <= base.holes && c.orphans <= base.orphans; row(size, "M3", what, `alpha>110 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `<= the unwarped ${base.components}/${base.holes}/${base.orphans}`, ok ? "pass" : "FAIL"); };
     gate(warped[e], standS1, `warped-${e} not worse than its own unwarped picture (alpha>110 gates)`);
     gate(wbody[e], standS1, `warped-${e} body layer alone, not worse than the unwarped body layer (alpha>110 gates)`);
+    if (headMask) { const reach = HEAD_TOUCH_REACH[size] ?? HEAD_ZONE, ht = headTouch(wbody[e], headMask, reach), dv = (d) => (d === null ? `> ${reach}` : d), bad = ht.extras.some((x) => x.d === null);
+      row(size, "M3", `warped-${e} body layer: extra components vs the head mask (reach ${reach} px)`, ht.extras.length ? `${ht.extras.length} extra: ${ht.extras.map((x) => dv(x.d)).join(", ")}` : "0 extra", `each <= ${reach}`, bad ? "FAIL" : "pass");
+      if (ht.extras.length) files.set(`${set.name}/${size}-warped-${e}-body-extras.png`, png(outlineBoxes(outlineBoxes(flat(wbody[e]), ht.extras.filter((x) => x.d !== null).map((x) => x.box), [255, 200, 0]), ht.extras.filter((x) => x.d === null).map((x) => x.box), [255, 0, 0])));   // an extra in reach in yellow, over it in red
+    } else row(size, "M3", `warped-${e} body layer: extra components vs the head mask`, "n/a (head unmasked)", "", "n/a");
     const report = (img, what) => { const c = silhouette(flat(img), 0); row(size, "M3", what, `alpha>0 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `the unwarped ${standS0.components}/${standS0.holes}/${standS0.orphans}`, "report"); };
     report(warped[e], `warped-${e} alpha>0 counts`); report(wbody[e], `warped-${e} body layer alpha>0 counts`);
     const fresh = [["alpha>0", 0], ["alpha>110", OPAQUE]].flatMap(([lab, thr]) => newRegions(silhouetteRegions(flat(stand), thr), silhouetteRegions(flat(warped[e]), thr), Math.ceil(fields[e].maxD) + 1).map((r) => ({ ...r, lab })));
@@ -347,8 +401,9 @@ export function runSet(set0, opts = {}) {
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
     if (fields[e].zeroRows?.length) { const z = fields[e].zeroRows[0][0], a = flat(stand), b = flat(warped[e]); let n = 0; for (let i = z * stand.w * 4; i < stand.w * stand.h * 4; i++) if (a.data[i] !== b.data[i]) n++; row(size, "feet", `changed pixel values in the feet and shadow rows (row ${z} down), warped vs stand (${e})`, n, 0, n === 0 ? "pass" : "FAIL"); }
-    const ls = legStrain(fields[e]), lsFixed = fields[e].bellyFixed; row(size, "legs", `leg strain (max |db| / (z0 - yb)) (${e})`, ls, lsFixed ? 0 : 0.25, lsFixed ? (ls === 0 ? "pass" : "FAIL") : (ls <= 0.25 + 1e-9 ? "pass" : "FAIL"));
+    const ls = legStrain(eff[e]), lsFixed = fields[e].bellyFixed && !fieldW; row(size, "legs", `leg strain (max |db| / (z0 - yb)) (${e})`, ls, lsFixed ? 0 : 0.25, lsFixed ? (ls === 0 ? "pass" : "FAIL") : (ls <= 0.25 + 1e-9 ? "pass" : "FAIL"));   // with a second blend the leg strain is the sum's
     row(size, "field", `${e} max |d| px / stretch / shear`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxStretch.toFixed(3)} / ${fields[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
+    if (fieldW) row(size, "field", `${e} + ${wInfo.blend2}-${wInfo.end2} sum max |d| px / stretch / shear`, `${eff[e].maxD.toFixed(2)} / ${eff[e].maxStretch.toFixed(3)} / ${eff[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
     const notApplied = typeof info?.pic.M5a === "string" && info.pic.M5a.startsWith("not applied"), prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;
     if (notApplied) row(size, "M5a", e, info.pic.M5a, "", "n/a");
     else if (lm?.toplineProfile && headMask && (prof304 || scaled)) {
@@ -374,7 +429,7 @@ export function runSet(set0, opts = {}) {
     for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDeltaOver(ends[a], ends[b], cols).mean; row(size, "M6", `${kind} ${label} (mean over the moved columns)`, d, M6_MIN, label === "down-up" ? (d >= M6_MIN ? "pass" : "FAIL") : `info (${d >= M6_MIN ? "above" : "below"} the bar; only down-up gates)`); }
   } else row(size, "M6", "only at 104x112 and 144x152", "", "", "n/a");
   // M7
-  for (const e of live) { const ms = warpMs(stand, fields[e], headMask); row(size, "M7", `warp ms per picture (${e}; a clock reading)`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }
+  for (const e of live) { const ms = warpMs(stand, eff[e], headMask); row(size, "M7", `warp ms per picture (${e}; a clock reading)`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }
   // M8. A breath pair (stand and its baked b1 / b2) needs no band in the JSON: the band is derived, the rows above the belly line in each column. The baked step is baked from the warped
   // stand (the field reused by id, never warped on its own). A cycle pair (paths, or a `belly-down` or mask band) comes from the JSON.
   const yb = live.length ? fields[live[0]].bellyY : null;
@@ -382,7 +437,7 @@ export function runSet(set0, opts = {}) {
     const band = aboveBellyBand(stand.w, stand.h, yb);
     for (const n of [1, 2]) {
       const plain = changedOutside(stand, bakeStep(stand, n, yb), band);
-      for (const e of live) { const wa = warp(stand, [{ field: fields[e], t: 1 }], { headMask }), ybw = warpedBelly(yb, fields[e]), w2 = changedOutside(wa, bakeStep(wa, n, ybw), aboveBellyBand(stand.w, stand.h, ybw)); row(size, "M8", `stand-b${n} ${e}: changed outside the rows above the belly line, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL"); }
+      for (const e of live) { const wa = warp(stand, LAY(e), { headMask }), ybw = warpedBelly(yb, fields[e], fieldW), w2 = changedOutside(wa, bakeStep(wa, n, ybw), aboveBellyBand(stand.w, stand.h, ybw)); row(size, "M8", `stand-b${n} ${e}: changed outside the rows above the belly line, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL"); }
     }
   } else row(size, "M8", "stand-b1, stand-b2", "no belly line in the landmarks", "", "n/a");
   const pairs = lm ? (lm.pairs ?? []).filter((p) => (set["pair-ids"] ? set["pair-ids"].split(",").includes(p.id) : p.id.startsWith(lm.species + "-"))) : [];
@@ -408,7 +463,7 @@ export function runSet(set0, opts = {}) {
       const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null, locked = (p.locked ?? from?.locked) === true, cycled = p.band === "belly-down" || (typeof p.band === "string" && p.band.endsWith(".countingRule.movingBand")) || p.cycle === true, verdict = (ok) => (!cycled || locked ? (ok ? "pass" : "FAIL") : "unlocked: no verdict");   // the lock gate is for cycled pairs only; a held-key pair needs none
       if (cycled && !locked) status.push("unlocked pair: no verdict");
       row(size, "M8", `${p.id} absolute §0 test (unwarped): changed outside the band (only legs and tail change)`, plain, 0, verdict(plain === 0));
-      for (const e of live) { const L = [{ field: fields[e], t: 1 }], w2 = changedOutside(warp(a, L, { headMask }), warp(b, L, { headMask }), bandMask); row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, verdict(w2 <= plain)); }
+      for (const e of live) { const L = LAY(e), w2 = changedOutside(warp(a, L, { headMask }), warp(b, L, { headMask }), bandMask); row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, verdict(w2 <= plain)); }
     } catch (err) { if (err.unreadable) row(size, "M8", p.id, err.message, "", "n/a"); else throw err; }
   }
   // the Vivarium pair: the animator's holds and offset from the landmarks (overrides only by flag); b1 and b2 baked from each warped stand
@@ -417,14 +472,14 @@ export function runSet(set0, opts = {}) {
   else if (!yb) row(size, "pair", "b-steps", "no belly line: no APNG", "", "n/a");
   else {
     row(size, "pair", "holds b0/b1/b2/b1back ms, offset ms, seconds", `${holds.join("/")}, ${offsetMs}, ${totalMs / 1000}`, "", "info");
-    const set3 = (img, line) => [img, bakeStep(img, 1, line), bakeStep(img, 2, line)], copy = { down: warped.down && set3(warped.down, warpedBelly(yb, fields.down)), middle: set3(stand, yb), up: warped.up && set3(warped.up, warpedBelly(yb, fields.up)) };
+    const set3 = (img, line) => [img, bakeStep(img, 1, line), bakeStep(img, 2, line)], copy = { down: warped.down && set3(warped.down, warpedBelly(yb, fields.down, fieldW)), middle: set3(standCell, fieldW ? warpedBelly(yb, { legDb: null }, fieldW) : yb), up: warped.up && set3(warped.up, warpedBelly(yb, fields.up, fieldW)) };
     const exag = /exaggerated/.test(info?.name ?? "");                                  // a variant block: one extra pair, down against up
     for (const [l, r] of exag ? [["down", "up"]] : [["down", "middle"], ["middle", "up"], ["down", "up"]]) if (copy[l] && copy[r]) {
       const v = vivariumPair(copy[l], copy[r], { holds, offsetMs, totalMs, bg }); files.set(`${set.name}/vivarium-pair-${size}-${exag ? "exaggerated-" : ""}${l}-${r}.apng`, v.bytes);
       if (v.delays.some((d) => d % 80)) row(size, "pair", `${l}|${r} frame delays`, "not all multiples of 80 ms", "", "note");
     }
   }
-  if (lm?.species === "S01") row(size, "hop", "the hop's lift table unchanged", "the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it", "", "satisfied by construction");
+  row(size, "lift", "the lift table unchanged", "the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it", "", "satisfied by construction");
   files.set(`${set.name}/contact-${size}.png`, png(contactSheet([matrix], bg)));
   if (unpinned.length) status.push(`unpinned input (plain path, no expected sha256): ${unpinned.join(", ")}`);
   const uniq = [...new Set(status)];
@@ -457,9 +512,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     else if (k === "shadow-rows") ov.shadowRows = [v.split("-").map(Number)];
     else if (k === "belly-y") ov.bellyY = +v; else if (k === "amplitude") ov.amplitude = +v;
     else if (k === "band") ov.band = v; else if (k === "holds") ov.holds = v; else if (k === "phase-ms") ov.phaseMs = +v; else if (k === "seconds") ov.seconds = +v;
-    else if (!cur) { console.error(`--${k} comes after a --set`); process.exit(2); } else cur[k] = v;
+    else if (!cur) { console.error(`--${k} comes after a --set`); process.exit(2); }
+    else if (k === "with" && !["down", "up"].includes(v.slice(v.lastIndexOf(":") + 1))) { console.error(`--with <landmarks>:<down|up>: the end word is down or up ("${v}")`); process.exit(2); }
+    else cur[k] = v;
   }
-  if (!g.out || !sets.length || sets.some((s) => !s.stand)) { console.error("usage: tier2-test.mjs --out dir --set name --stand src --landmarks lm.json [options]; see the header of this file"); process.exit(2); }
+  if (!g.out || !sets.length || sets.some((s) => !s.stand)) { console.error("usage: tier2-test.mjs --out dir --set name --stand src --landmarks lm.json [--with lm2.json:<down|up>] [options]; see the header of this file"); process.exit(2); }
   try {
     const { rows, files } = runAll(sets, { overrides: ov, bg: g.bg ? hex(g.bg) : undefined });
     for (const [k, v] of files) { const f = path.join(g.out, k); mkdirSync(path.dirname(f), { recursive: true }); writeFileSync(f, v); }

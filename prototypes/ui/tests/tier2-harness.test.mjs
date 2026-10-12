@@ -266,3 +266,72 @@ test("the counting rule: moving band is y >= bellyLine(x) - 12 or the tail box; 
   const rows = runAll([{ name: "cnt", stand: standFile, landmarks: lf }]).rows, abs = rows.find((x) => /FX-cnt absolute/.test(x.item));
   assert.equal(abs.value, "1", "an alpha difference of 1 counts"); assert.equal(abs.result, "FAIL");
 });
+
+// ---- phase B: the head-touch check, a second blend stacked with --with, the lift row for any species ----
+import { headTouch } from "../tools/tier2-test.mjs";
+const blob = (x, y, size = 2) => ({ x, y, size });
+function touchImg(extras = [], smallFirst = false) {
+  const im = blank(40, 40), put = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) im.data.set([200, 100, 50, 255], (y * 40 + x) * 4); };
+  put(20, 10, 35, 30);                                                                  // the main body, 16 x 21
+  for (const b of extras) put(b.x, b.y, b.x + b.size - 1, b.y + b.size - 1);
+  if (smallFirst) put(30, 0, 31, 1);                                                    // a small piece that comes first in raster order
+  return im;
+}
+const headBlock = (() => { const m = new Uint8Array(40 * 40); for (let y = 15; y <= 24; y++) for (let x = 0; x <= 9; x++) m[y * 40 + x] = 1; return m; })();
+test("head touch: an extra component 5 px from the head mask is at d = 5 and passes the reach 6; at 7 px it is over the reach", () => {
+  const near = headTouch(touchImg([blob(14, 18)]), headBlock, 6);                      // its x 14 is 5 px from the mask's last column 9
+  assert.equal(near.extras.length, 1); assert.equal(near.extras[0].d, 5); assert.ok(near.extras.every((x) => x.d !== null && x.d <= 6));
+  const far = headTouch(touchImg([blob(16, 18)]), headBlock, 6);                       // 7 px away
+  assert.equal(far.extras.length, 1); assert.equal(far.extras[0].d, null, "more than the reach");
+  assert.equal(headTouch(touchImg([blob(12, 18)]), headBlock, 2).extras[0].d, null, "the same blob at 3 px is over a reach of 2 (104 and 96)");
+});
+test("head touch: no extra reads 0 extra; the main component is the largest, never the first found", () => {
+  assert.equal(headTouch(touchImg(), headBlock, 6).extras.length, 0);
+  const t = headTouch(touchImg([], true), headBlock, 6);
+  assert.equal(t.extras.length, 1, "the small first piece is the extra, the large body the main"); assert.deepEqual(t.extras[0].box, [30, 0, 31, 1]); assert.equal(t.extras[0].pixels, 4);
+});
+test("the run writes the head-touch row on the body layer alone for each end, and the stand's as information", () => {
+  const r = runAll([set]), rows = r.rows.filter((x) => /body layer: extra components vs the head mask/.test(x.item));
+  assert.equal(rows.length, 3, "the stand (info) and both ends"); assert.ok(rows.some((x) => x.item.startsWith("stand") && x.result === "info"));
+  for (const x of rows.filter((y) => y.item.startsWith("warped"))) { assert.equal(x.value, "0 extra"); assert.match(x.limit, /^each <= 2$/); assert.equal(x.result, "pass"); }
+});
+// stacking: the second blend is the same file with another id; at the same end it doubles each step, at the opposite end it cancels
+const lm2File = path.join(tmp, "lm2.json"), lm2 = JSON.parse(JSON.stringify(landmarks)); lm2.blend = "second"; writeFileSync(lm2File, JSON.stringify(lm2));
+test("stacking: two layers warped together are the bytes of one field whose steps are each layer's rounded displacement summed", () => {
+  const img = fixture(), f1 = buildField(landmarks, "up", 104, 112), f2 = buildField(lm2, "down", 104, 112), n = 104 * 112, sum = { w: 104, h: 112, dx: new Int8Array(n), dy: new Int8Array(n) };
+  for (let i = 0; i < n; i++) { sum.dx[i] = rha(f1.dx[i]) + rha(f2.dx[i]); sum.dy[i] = rha(f1.dy[i]) + rha(f2.dy[i]); }
+  const a = warp(img, [{ field: f1, t: 1 }, { field: f2, t: 1 }], { headMask: f1.headMask }), b = warp(img, [{ field: sum, t: 1 }], { headMask: f1.headMask });
+  assert.deepEqual([...a.data], [...b.data]);
+});
+test("stacking: a pair that each pass the check alone but whose sum is over the stretch 0.25 is refused with the sum's message; the opposite ends cancel and pass", () => {
+  const same = runAll([{ ...set, name: "st-same", with: `${lm2File}:down` }]), sumRow = same.rows.find((x) => x.measure === "field" && /down \+ second-down sum/.test(x.item));
+  assert.ok(sumRow && sumRow.result === "FAIL (refused)" && /stretch 0\.500 px\/px is over 0\.25/.test(sumRow.value), "the sum is refused");
+  assert.ok(same.rows.some((x) => x.measure === "field" && x.item === "down max |d| px / stretch / shear") === false, "that end has no measures: it is refused");
+  assert.ok(same.rows.some((x) => x.item === "up max |d| px / stretch / shear" && x.result === "pass"), "the end that passes alone is still measured");
+  assert.match(same.rows.find((x) => x.measure === "run").value, /field refused: down/);
+  const opp = runAll([{ ...set, name: "st-opp", with: `${lm2File}:up` }]), ok = opp.rows.find((x) => x.item === "down + second-up sum max |d| px / stretch / shear");
+  assert.ok(ok && ok.result === "pass");
+});
+test("stacking: --with on landmarks of another head mask, other zero rows or another species is refused; the end word is down or up", () => {
+  const bad = (edit, name) => { const l = JSON.parse(JSON.stringify(landmarks)); l.blend = "other"; edit(l); const f = path.join(tmp, name + ".json"); writeFileSync(f, JSON.stringify(l)); const r = runAll([{ ...set, name, with: `${f}:down` }]); return r.rows.find((x) => x.result === "FAIL (refused)" && /with other-down/.test(x.item)); };
+  assert.match(bad((l) => { l.pictures["stand-104x112"].headMaskPolygon = [[80, 38], [100, 38], [100, 60], [80, 60]]; }, "bad-head")?.value ?? "", /head mask/);
+  assert.match(bad((l) => { l.pictures["stand-104x112"].fieldZeroRows = [97, 111]; }, "bad-rows")?.value ?? "", /zero rows/);
+  assert.match(bad((l) => { l.species = "OTHER"; }, "bad-species")?.value ?? "", /not FX juvenile|one key/);
+  assert.throws(() => runAll([{ ...set, name: "bad-end", with: `${lm2File}:middle` }]), /down or up/);
+});
+test("stacking: the stand cell is written as the stand under the second blend alone; every base stays the unwarped stand (M2 reads 0 new colours)", () => {
+  const r = runAll([{ ...set, name: "st-cell", with: `${lm2File}:up` }]);
+  assert.ok(r.files.has("st-cell/104x112-stand-with-second-up.png") && !r.files.has("st-cell/104x112-stand.png"), "the middle of the matrix is the stand with the second blend");
+  assert.ok(r.files.has("st-cell/mibi-juvenile-FX-stand-map-warp-second-up-104x112.png"), "the second blend's map is written");
+  for (const x of r.rows.filter((y) => y.measure === "M2")) assert.equal(x.value, "0");
+  assert.ok(r.rows.find((x) => x.measure === "input" && /--with second-up landmarks sha256/.test(x.item)), "the second file is recorded");
+  assert.equal(r.rows.find((x) => x.measure === "M1").result, "pass", "two runs with --with give the same bytes (M1)");
+});
+test("the lift row is present for landmarks of any species, not only S01", () => {
+  const r = runAll([set]), lift = r.rows.filter((x) => x.measure === "lift");
+  assert.equal(lift.length, 1); assert.equal(lift[0].item, "the lift table unchanged"); assert.equal(lift[0].result, "satisfied by construction");
+});
+test("stacking: the order of the layers does not change a byte (blend 1 down with blend 2 up equals blend 2 up with blend 1 down)", () => {
+  const a = runAll([{ ...set, name: "swap-a", with: `${lm2File}:up` }]), b = runAll([{ ...set, name: "swap-b", landmarks: lm2File, with: `${lmFile}:down` }]);
+  assert.ok(a.files.get("swap-a/104x112-warped-down.png").equals(b.files.get("swap-b/104x112-warped-up.png")), "blend 1 down + blend 2 up is blend 2 up + blend 1 down");
+});
