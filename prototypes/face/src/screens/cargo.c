@@ -116,6 +116,13 @@ static void build_opening(int k, int lt) {
     v_name("crate"); const char *pic = v_pstr(v_fmt("%s.pods.%d.picture", P, j));
     if (*pic) slot(v_fmt("crate.pod.%d", j), pic, px[j], py[j], pw, ph, in[j]);
   }
+  /* the haul's containers (regions.stores): one for each material this crate brought, from the counters' step (a cut, also with reduced motion) to the end of the opening; the nodes are stable, a step shows or hides one; the travelling pods below draw over them */
+  { static const char *mat[3] = { "energy", "data", "essence" }; int sw = ck("regions.stores.size", 0), sh = ck("regions.stores.size", 1), at = ci("events.opening.crate.3.at", 800), n = v_plen(v_fmt("%s.stores", P));
+    for (int i = 0; i < 3; i++) {
+      char want[40]; snprintf(want, sizeof want, "cargo-%s-%dx%d", mat[i], sw, sh); int brought = 0;
+      for (int q = 0; q < n; q++) { const char *id = v_pstr(v_fmt("%s.stores.%d", P, q)); if (id && !strcmp(id, want)) brought = 1; }
+      v_name("stores"); slot(v_fmt("stores.%s", mat[i]), want, spec_int(C, v_fmt("regions.stores.places.%s.0", mat[i]), 0), spec_int(C, v_fmt("regions.stores.places.%s.1", mat[i]), 0), sw, sh, brought && lt >= at);
+    } }
   /* a pod travelling: from its place to its well's pod place, a straight line, whole pixels, eased in and out; with reduced motion it stands in its well from its step (the rack) */
   for (int j = 0; j < m; j++) {
     int well = v_pint(v_fmt("%s.pods.%d.well", P, j), -1), start = pod_start(j); if (well < 0) continue;

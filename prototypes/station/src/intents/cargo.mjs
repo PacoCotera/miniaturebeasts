@@ -1,7 +1,7 @@
 // Cargo's intents (cargo.json: the keys, the line, events.opening, handoff): the rule call behind ✓ and ← in the bay and the report, the opening's timeline, and the report that follows it. Cargo has no targets: the ring is on nothing,
 // the pad does nothing in the bay, and every key but ✓ and ← only closes the report. The pad's moves are the face's (there are none).
 //   h.ui.cargo: { state: "bay" | "opening" | "report", crate, at, mend, run, shown }
-//   run: what ✓ Open the bay made, in the order the crates opened: { crates: [ { ribbon, pods: [ { id, well } ], dev } ], report }; shown: the counters and the turn as the top bar shows them while the crates open
+//   run: what ✓ Open the bay made, in the order the crates opened: { crates: [ { ribbon, pods: [ { id, well } ], dev, gained: { e, d, s } } ], report }; shown: the counters and the turn as the top bar shows them while the crates open
 import * as S from "../state.mjs";
 import { ribbonOf, leadOf, reachWord } from "../views/cargo-props.mjs";
 import { toPods } from "./home.mjs";
@@ -50,7 +50,7 @@ export function openBay(h) {
   // what plays: at most nine crates (the hold stays under 30000 ms); the rest are taken in by the rule and the counters and the turn reach their final values at the end
   const plays = r.plays.slice(0, OPENING_MAX), n = plays.length, walk = walkOrdinals(plays);
   // the well each pod went to: its place in the rack, or -1 when it waits in the bay
-  const crates = plays.map((p, k) => ({ ribbon: ribbonOf(spec, p.c, walk[k]), dev: !!p.c.dev, pods: p.ids.map((id) => ({ id, well: st.tray.findIndex((q) => q.id === id) })) }));
+  const crates = plays.map((p, k) => ({ ribbon: ribbonOf(spec, p.c, walk[k]), dev: !!p.c.dev, gained: { e: p.gained.e, d: p.gained.d, s: p.gained.s }, pods: p.ids.map((id) => ({ id, well: st.tray.findIndex((q) => q.id === id) })) }));
   c.run = { crates, report: reportOf(spec, r.plays, h.settings, c.mend, st) }; c.mend = null;
   c.state = "opening"; c.crate = 0; c.at = 0; c.shown = { ...before };
   h.play({ kind: "arrival", target: "crate", ms: openingMs(spec, n), hold: openingHold(spec, n) });
