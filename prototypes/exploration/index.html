@@ -2023,16 +2023,17 @@ function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ?
   return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
 function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
 function bayLine() { const n = S.bay.length; return !n ? '' : isDocked() ? DOCK_TEXT.bay(n) : n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer'; }
-// What a hold seals, in words, from its contents: "two pods" + `join` + "supplies", either alone ("two pods", or `alone` for supplies only).
-function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0, sup = !!(h.e || h.d || h.s), pods = n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') : '';
-  return pods && sup ? pods + join + 'supplies' : pods || alone; }
+// What a hold seals, in words, from its contents: "two pods" + `join` + "supplies", or `alone` ("supplies") when no pod is in it. Every crate carries the walk's Data, so the pods-only form is never shown.
+function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; return n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + join + 'supplies' : alone; }
 // The Cargo screen's preview of what End expedition will do.
 function sealPreview() {
   const ex = S.exp, out = [];
   if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
-  if (holdEmpty(ex.cargo)) { out.push('An empty hold · no crate this time'); out.push('you still earn the place’s Data'); }
+  // what End will seal: the hold plus the field yield still to come (End adds it before it seals)
+  const h = Object.assign({}, ex.cargo), top = Math.max(0, walkYield(ex) - (ex.dField || 0)); h.d = Math.min(CAP, (h.d || 0) + top);
+  if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
   else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
-  else { out.push('Seals ' + sealedWords(ex.cargo, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
+  else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
     out.push('The Station opens it when you dock'); }
   if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
@@ -4155,7 +4156,7 @@ function drawSealed(t) {
   else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; L('The world waits · nothing is sealed.', C.fog); L('Your finds stay in the hold.', C.fog); y += 10; }
   else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + sealedWords(r.sealed, ' and ', 'supplies'), C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
   else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
-  else { text(clipText('Hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('No crate this time.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); y += 10; }
+  else { text(clipText('Hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in

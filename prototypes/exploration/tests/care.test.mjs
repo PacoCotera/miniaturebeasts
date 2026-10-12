@@ -677,30 +677,32 @@ test("End expedition after a break: the pods line in the copywriter's words (19:
   for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
     assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
 });
-test("End expedition, Sealed: the trip line is built from what was sealed (pods only, supplies only, both)", () => {
-  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2] } }, []).at("Expedition 4 · two pods"), "pods only");
-  assert.ok(sealed({ sealed: { id: "c0", pods: [1] } }, []).at("Expedition 4 · one pod"), "one pod only");
-  assert.ok(sealed({ sealed: { id: "c0", pods: [], e: 2 } }, []).at("Expedition 4 · supplies"), "supplies only");
-  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "both");
-  assert.ok(!sealed({ sealed: { id: "c0", pods: [1], s: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
+test("End expedition, Sealed: the trip line is built from what was sealed (pods and supplies, or supplies only)", () => {
+  assert.ok(sealed({ sealed: { id: "c0", pods: [], d: 2 } }, []).at("Expedition 4 · supplies"), "supplies only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1], d: 2 } }, []).at("Expedition 4 · one pod and supplies"), "one pod and supplies");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "two pods and supplies");
+  assert.ok(!sealed({ sealed: { id: "c0", pods: [1], d: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
 });
-test("End expedition, empty hold: 'No crate this time.' and the yield line under it; no yield, no line", () => {
-  const y = { data: 6, tier: 3, moments: 2 }, d = sealed({ empty: true, yield: y }, []), line = d.at("No crate this time.");
-  assert.ok(line, "the copy"); assert.equal(d.at("+6 Data · mid place · 2 moments").y, line.y + 24, "the yield right under it");
-  assert.ok(!sealed({ empty: true }, []).said.some(q => /Data ·/.test(q.str)), "no yield: no line");
-  assert.ok(!d.said.some(q => /Nothing to seal/.test(q.str)));
-  assert.equal(sealed({ empty: true, yield: y }, []).crates[0].y, 114 + 24, "the crates move down one line");
+test("End expedition, the hold-empty branch (an old save): main's line, and no yield line even when one is passed", () => {
+  const d = sealed({ empty: true, yield: { data: 0, tier: 0, moments: 0 } }, []);
+  assert.ok(d.at("Nothing to seal this time."), "main's line");
+  assert.ok(!d.said.some(q => /Data ·|No crate|crate this time/.test(q.str)), "no yield line, no new string");
+  assert.equal(d.crates[0].y, 114, "the crates stay where they were");
 });
 test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
   assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
 });
-test("Cargo's preview: an empty hold, and the seal line built from what will be sealed", () => {
-  const run = (cargo, bay = []) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
-    vm.createContext({ S: { exp: { cargo, stats: { calls: 1 }, shield: 3, smax: 3 }, bay }, BAY: 3, NUM_WORD: ["no", "one", "two", "three"] }));
-  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["An empty hold · no crate this time", "you still earn the place’s Data"]);
-  assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods · crate 1 of 3");
-  assert.equal(run({ e: 1, d: 0, s: 0, pods: [] })[0], "Seals the supplies · crate 1 of 3");
+test("Cargo's preview predicts End: the hold plus the yield still to come, always a seal when an explored walk has room", () => {
+  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, stats: { calls: 1 }, shield: 3, smax: 3, dField }, bay }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["Seals the supplies · crate 1 of 3", "The Station opens it when you dock"], "an empty hold still seals the walk's Data");
+  assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
   assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
+  assert.equal(run({ e: 0, d: 6, s: 0, pods: [] }, [], 6, 6)[0], "Seals the supplies · crate 1 of 3", "the yield already in the hold");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])), ["Bay full · your finds stay in the hold", "dock to free it"], "bay full, hold empty: the bay-full lines");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [], 0)), [], "an old save with no yield and no hold: no line");
+  for (const o of [run({ e: 0, d: 0, s: 0, pods: [] }), run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])]) assert.ok(!o.some(l => /no crate|you still earn/.test(l)));
+  assert.doesNotMatch(source("sealPreview"), /no crate|you still earn/);
 });
 test("Cargo, no creature met: the moments line moves under 'No creatures met yet', to (24, 208)", () => {
   assert.match(source("drawCargo"), /ex\.met\.length \? 180 : 24, ex\.met\.length \? 196 : 208/);
