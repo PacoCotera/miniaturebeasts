@@ -173,7 +173,7 @@
   "look": "A PH plate is a `stone` fill with a 1 px `mist` edge inside the rect. A PH hollow is a 1 px `stone` edge with no fill. No text, shape or shading. Each id is in the register with status placeholder.",
   "stale": [],
   "carried": [
-   { "id": "bud-shape-S01-112x112 to bud-shape-S16-112x112", "size": [112, 112], "region": "bud.shape", "why": "the species' silhouette, creature art; an empty slot, nothing drawn until placed" },
+   { "id": "bud-shape-S01-112x112 to bud-shape-S16-112x112", "size": [112, 112], "region": "bud.shape", "why": "the species' silhouette, creature art; S01 and S03 are placed, the other fourteen are empty slots, nothing drawn until placed" },
    { "id": "the juvenile: the new mibi's painting, else its signed juvenile stand-in (mibi-juvenile-<species>-304x312)", "size": [304, 312], "region": "juvenile", "why": "creature art" },
    { "id": "the waiting lamp, home-lamp-sky-12x12", "size": [12, 12], "region": "base.lamp", "why": "the kit's lamp" },
    { "id": "the stamp label, the ribbon, the rail's tab fills", "size": null, "region": "stamp, ribbon, rail", "why": "the frame's and the kit's" }
