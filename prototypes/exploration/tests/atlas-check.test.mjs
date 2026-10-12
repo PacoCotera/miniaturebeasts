@@ -1,4 +1,4 @@
-// tools/atlas-check.mjs, the art director's loader check (c2a-48px-spec.md §5.1), on PNGs and manifests made here: the forms it
+// tools/atlas-check.mjs, the art director's loader check, on PNGs and manifests made here: the forms it
 // takes and refuses, the chunks that refuse a sheet, exact palette colours only, and the core set from src/atlas.mjs.
 import { test } from "node:test";
 import assert from "node:assert/strict";

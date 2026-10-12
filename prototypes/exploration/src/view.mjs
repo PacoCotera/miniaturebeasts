@@ -1,4 +1,4 @@
-// The Companion's place view (plans: C2a §3): tile size, the centred camera, the visible range, tile and screen coordinates, the
+// The Companion's place view (C2a): tile size, the centred camera, the visible range, tile and screen coordinates, the
 // sprite anchor, and the two tests the edge cues use. Pure and integer only: no page state, DOM, clock, storage, randomness, float,
 // rounding to nearest or square root. Inputs are integers (the caller rounds the tween); division is Math.floor on integers.
 import { PW, PH } from './world.mjs';
