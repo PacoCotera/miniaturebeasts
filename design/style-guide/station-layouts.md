@@ -879,8 +879,8 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
-| `crate` | 320, 104, 384, 256 | The crate closer, centred on 512, 8 px under the ribbon: sealed, opening (the tag torn, the lid lifting), open (its fitted cut-outs) |
-| Its pods | 88×112, 104 apart on y 184 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
+| `crate` | 296, 120, 432, 272 | The crate closer, the whole case, centred on 512, 24 px under the ribbon and 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
+| Its pods | 88×112, 104 apart on y 152 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
 | `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
 | `rack` | as in the bay | A well stays empty until its pod lands |
 
@@ -940,7 +940,7 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 | --- | --- |
 | Bay, open and shut | 992×320 |
 | Crate in the bay | 256×176, `crate-sealed-256x176`, `crate-sitting-256x176` |
-| Crate closer | 384×256, sealed, opening and open |
+| Crate closer | 432×272, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
 | Well | 96×128 |
 | Waiting mark | 24×24, `mark-waiting-24` |
@@ -1058,7 +1058,7 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 | Module lamps | 12×12 | `sprout`, `sky` and `hairline` |
 | Cargo: the bay | 992×320 | Open and shut |
 | Cargo: a crate in the bay | 256×176 | Sealed and sitting |
-| Cargo: the crate closer | 384×256 | Sealed, opening and open |
+| Cargo: the crate closer | 432×272 | Sealed, opening and open |
 | Cargo: a rack well | 96×128 | One |
 | The room marks | 24×24 | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`, in [`art/device-buttons/marks/`](../../art/device-buttons/marks/) |
 

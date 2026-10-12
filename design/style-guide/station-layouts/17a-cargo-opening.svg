@@ -5,13 +5,13 @@
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
 <rect x="208.5" y="56.5" width="607" height="39" fill="#2f6f73" stroke="#5fc9c0" stroke-width="1"/>
 <text x="512" y="83" font-size="20" fill="#f1ebdf" text-anchor="middle" font-weight="500">First crate home</text>
-<rect x="320.5" y="104.5" width="383" height="255" fill="#d9cfb8" stroke="#222" stroke-width="1.5"/>
+<rect x="296.5" y="120.5" width="431" height="271" fill="#d9cfb8" stroke="#222" stroke-width="1.5"/>
 <path d="M336 160h352v184h-352z" fill="#3a414b"/>
-<text x="324" y="118" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 320,104 384×256</text>
-<rect x="364.5" y="184.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="3 2"/>
-<rect x="468.5" y="184.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
-<rect x="572.5" y="184.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
-<text x="364" y="310" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">three places 104 apart</text>
+<text x="324" y="118" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 296,120 432×272</text>
+<rect x="364.5" y="152.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="468.5" y="152.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
+<rect x="572.5" y="152.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
+<text x="364" y="278" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">three places 104 apart</text>
 <rect x="176.5" y="400.5" width="671" height="143" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="844" y="396" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">rack 176,400 672×144 · six wells 96×128 on a 112 pitch, as Pods' collection</text>
 <rect x="184.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
@@ -24,8 +24,8 @@
 <rect x="632.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
 <rect x="744.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
 <text x="188" y="556" font-size="8" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">pod 88×112 at well + (4, 8)</text>
-<path d="M408 296L568 416" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<rect x="440.5" y="296.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="2 2"/>
+<path d="M408 264L568 416" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="440.5" y="280.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="712" y="136" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the travel 176,104 672×440:</text>
 <text x="712" y="148" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">each pod to its well, 600 ms,</text>
 <text x="712" y="160" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">150 ms apart, whole pixels</text>

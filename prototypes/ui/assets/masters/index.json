@@ -295,6 +295,41 @@
    "sha256": "08178e9744f4eb41f6ec21dc6efbd32f324cb68fcf9ad07df80b99472cceb792",
    "signed": "art director (home hand masters, 942821f6, #112)"
   },
+  "crate-open-432x272": {
+   "file": "pods/crate-open-432x272.png",
+   "w": 432,
+   "h": 272,
+   "sha256": "d01bb748fd122e6bbce9f2ecaf2764c71f4a0694900d0e601bb275849e80a4c4",
+   "signed": "art director, verdict (87d6a9a9)"
+  },
+  "crate-opening-432x272": {
+   "file": "pods/crate-opening-432x272.png",
+   "w": 432,
+   "h": 272,
+   "sha256": "0e6f7d6ca896b32c7ae0888100003c858c4967961c30490e1baa48afa0a13ccd",
+   "signed": "art director, verdict (87d6a9a9)"
+  },
+  "crate-sealed-256x176": {
+   "file": "pods/crate-sealed-256x176.png",
+   "w": 256,
+   "h": 176,
+   "sha256": "fbbad4302e2f5d06828667bb43272327d6524fee304b20a9cf67a9d18424a419",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "crate-sealed-432x272": {
+   "file": "pods/crate-sealed-432x272.png",
+   "w": 432,
+   "h": 272,
+   "sha256": "b8c3476801552ffefae81636e04d13571ee8b96f55ccf6b814be2eeaca3669e6",
+   "signed": "art director, verdict (87d6a9a9)"
+  },
+  "crate-sitting-256x176": {
+   "file": "pods/crate-sitting-256x176.png",
+   "w": 256,
+   "h": 176,
+   "sha256": "0f003e5f0ea23d2919d7d49111ed3680c9bcacdbc928412939c8a69a62dcabb8",
+   "signed": "art director, verdict (963f4eab)"
+  },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
    "w": 16,
