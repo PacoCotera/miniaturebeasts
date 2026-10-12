@@ -65,7 +65,8 @@ NAMES = [cols[i].get("name") or f"{cols[i]['material']}-{i}" for i in range(NC)]
 assert len(set(c["hex"] for c in cols)) == NC
 with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
     fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
-             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i])}) for i in range(NC)) + " ] }\n")
+             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i]),
+             "material": str(mat[i])}) for i in range(NC)) + " ] }\n")   # material: "grass" marks the colours the level tone moves (grass only)
 
 def to_idx(path_or_img):
     im = Image.open(path_or_img) if isinstance(path_or_img, str) else path_or_img
@@ -237,12 +238,12 @@ def spill(a, seed):
     lobe *= np.clip(np.minimum(xs, w - 1 - xs) / 8.0, 0, 1)
     dd = np.clip(np.round(10 + lobe + rng.randint(-1, 2, w)), 9, 24).astype(int)
     f = LIPF[seed % 2]; f = np.concatenate([f, f[:, ::-1]] * (w // 96 + 1), 1)
-    up = LRAMP[LAWN0 + 1]                                           # the plateau's tone: the turf is the upper lawn carried over
+    up = LRAMP[LAWN0]                                               # the plateau's lawn, untoned: the page tones a face by its upper level (grass only)
     for x, d in zip(xs, dd):
         col = np.where(a[:, x] != TR)[0]
         if not len(col): continue
         y0 = col[0]; d = min(d, h - 8)
-        for y in range(y0, y0 + d): a[y, x] = tone(LAWN0 + 1 + f[y % 48, x])
+        for y in range(y0, y0 + d): a[y, x] = tone(LAWN0 + f[y % 48, x])
         for y in range(y0 + d - 4, y0 + d - 1): a[y, x] = gstep(a[y, x], 1)
         a[y0 + d - 1, x] = gstep(up, -2); a[y0 + d, x] = OUTL
         if rng.rand() < .35:
@@ -281,11 +282,11 @@ def base(a, seed):
         top = h - g[x]
         for y in range(max(0, top - 3), top):                          # the rock's foot in the grass's shade
             if np.isin(a[y, x], ROCKI): a[y, x] = DARK[a[y, x]]
-        for y in range(top, h): a[y, x] = tone(LAWN0 + f[y % 48, x % 48])
+        for y in range(top, h): a[y, x] = tone(LAWN0 - 1 + f[y % 48, x % 48])      # the ground below: one step under the plateau, before the face's tone
         if rng.rand() < .45:                                             # blades over the rock's foot
             for t in range(1, rng.randint(2, 6)):
-                if top - t >= 0: a[top - t, x] = gstep(LRAMP[LAWN0], 1 if t < 3 else 2)
-        a[top, x] = gstep(LRAMP[LAWN0], 1)
+                if top - t >= 0: a[top - t, x] = gstep(LRAMP[LAWN0 - 1], 1 if t < 3 else 2)
+        a[top, x] = gstep(LRAMP[LAWN0 - 1], 1)
     return a
 def foot(a, seed):
     """a wall's foot baked into the face's bottom rows: a foot strip (grass clumps and pebbles over the rock's base) on every 48 px
