@@ -1,6 +1,6 @@
 # Companion 48 px redraw: brief and plan
 
-Art-directed, and owner review judges the result. The tiles are 48 px, the frame is 32/532/36, Mibi is 7×9 with the 48 colours ([ui-kit §6](ui-kit.md)), and the look is Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
+Art-directed, and owner review judges the result. The tiles are 48 px ([decisions](decisions/README.md) B), the frame is 32/532/36, Mibi is 7×9 with the 48 colours ([ui-kit §6](ui-kit.md)), and the look is Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
 
 ## 1. The brief
 
