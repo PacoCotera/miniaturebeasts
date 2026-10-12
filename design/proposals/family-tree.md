@@ -1,12 +1,12 @@
 # The family tree in the Library book
 
-**Parked (owner, 2026-10-08).** Research and generation come first; the family tree is developed once there is enough bred data to experiment with. Nothing here is decided, and the decisions below are not open for answer yet.
+**On hold.** Research and generation come first; the family tree is developed once there is enough bred data to experiment with. Nothing here is decided, and the points below are not open for answer yet.
 
-**Proposal** from game design and graphic design, 2026-10-08, answering the owner's direction that the book must show a mibi's lineage (`design/style-guide/station-screens.md`, Library). It covers what lineage data exists, how the tree is drawn in the book's right panel and on a full page, how it stays readable without text, what the Companion shows, and three decisions. Numbers are illustrations unless marked.
+Written by game design and graphic design in answer to an owner direction that the book must show a mibi's lineage (`design/style-guide/station-screens.md`, Library). It covers what lineage data exists, how the tree is drawn in the book's right panel and on a full page, how it stays readable without text, what the Companion shows, and three points for owner review. Numbers are illustrations unless marked.
 
 ## 1. What lineage data exists
 
-- **Design says it should exist.** Every individual keeps "its founder origin or actual parents, and where each inherited copy came from" (**Working rule**, `creatures-and-genomics.md`, Identity). A founder has no parents: its pod is its origin. A crossed child has two real parents and takes one copy of every heritable part from each (**Decided**).
+- **Design says it should exist.** Every individual keeps "its founder origin or actual parents, and where each inherited copy came from" (a working rule, `creatures-and-genomics.md`, Identity). A founder has no parents: its pod is its origin. A crossed child has two real parents and takes one copy of every heritable part from each.
 - **The save does not record it yet.** The Station prototype's mibi record carries only its pod of origin (`from: {podId, place, how}`), and its lineage is "a list per species, pod → mibi" with families out of scope (`prototypes/station/README.md`). There is no parent field.
 - **The stamp does not carry it, and should not.** The stamp encodes the genome and a 47-bit header; the optional 64-bit postmark is reserved for a signature the cloud writes and checks (`genome-stamp/README.md`). Two parent codes would need about 90 bits, so the postmark cannot hold them, and spending it on parents would leave nothing to sign. The stamp proves lineage another way: at every locus the child's copy 1 is one of the mother's two and its copy 2 one of the father's, verified from prints at 100% (`genome-stamp` results). The stamp is the evidence; the save is the record.
 
@@ -46,7 +46,7 @@ A mibi gone from the vivarium (returned, died, traded away) keeps its place, dra
 
 Nothing in the first build. The tree is a Library thing, and the Companion has no Library. Later, the with-you mibi's card may show its two parents as 48 px tokens, nothing more: a tree needs the Station's width.
 
-## 5. Decisions for the owner
+## 5. Points for owner review
 
 1. **Where lineage lives.** *Recommended:* in the save, as two parent entries with stamp snapshots; the stamp stays as it is and the postmark stays a signature. *Alternative:* parents in the stamp, which costs a size step per mibi and gives up the signed postmark.
 2. **The node.** *Recommended:* portraits in the panel with the stamp on the focused mibi only; portraits and stamps together on the full page. *Alternative:* stamps everywhere, which is honest and dull at 300 px.

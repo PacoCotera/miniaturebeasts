@@ -1,8 +1,8 @@
 # Outposts: lit period, going out, banking
 
-**Proposal.** This answers the owner's suggestions from build b99e2a5. It builds
-on [send home and the trail](send-home-and-trail.md) and on these **Decided**
-rules (2026-10-06): send home only from the start or a lit outpost; a break
+This answers owner suggestions from build b99e2a5. It builds
+on [send home and the trail](send-home-and-trail.md) and on these
+rules: send home only from the start or a lit outpost; a break
 sends nothing home (pods drop under a skull); an outpost is lit for 1 Energy and
 shelters, mends and sends; Energy stays scarce; the field clock counts actions,
 with no timers; the world is permanent, and the guard places new things away
@@ -10,7 +10,7 @@ from where the player just was.
 
 ## 1. The lit period
 
-**Proposal: an outpost stays lit for 3 world turns.** That is the expedition you
+**An outpost stays lit for 3 world turns.** That is the expedition you
 light it on plus the next two.
 - While lit, you can send, shelter and mend as often as you like.
 - The light never changes during an expedition. It burns down only when the
@@ -28,7 +28,7 @@ sends.
 
 ## 2. When it goes out
 
-**Proposal: it goes dark and can be relit for 1 Energy, for another 3 turns.**
+**It goes dark and can be relit for 1 Energy, for another 3 turns.**
 - **Map memory.** A found outpost stays where it was found. The map shows a dark
   hut, and permanence holds.
 - **World-turn guard.** Unaffected: nothing new appears.
@@ -49,7 +49,7 @@ sends.
 
 ## 3. Banking at an outpost
 
-**Proposal: no banking.** Sending from an outpost ends the expedition, just like
+**No banking.** Sending from an outpost ends the expedition, just like
 sending from the start. Every send is one world turn.
 
 **What this preserves:**
@@ -58,7 +58,7 @@ sending from the start. Every send is one world turn.
   ends.
 - **The hold.** Two pods at tier 1 stays a real limit. Banking would make
   capacity meaningless.
-- **The world turn.** Still exactly one per expedition (**Decided**). New finds
+- **The world turn.** Still exactly one per expedition. New finds
   arrive only when you end.
 - **The storm gamble.** What you carry stays at stake. Banking before each push
   would empty the bet, and with breaks now dropping pods, the pod risk too.
@@ -73,7 +73,7 @@ stay in the hold, and there is no world turn.
 
 ## 4. Reading the remaining light
 
-**Proposal: the light is read from the flame's size, plus words at two
+**The light is read from the flame's size, plus words at two
 moments.**
 - **On the map.** The outpost's sign shows a flame in three sizes: full (3
   turns left), half (2), ember (1). Out is a dark hut. Size carries it, not
@@ -83,14 +83,14 @@ moments.**
   when 1 turn is left, and "has gone out" when it is dark.
 - **Nothing shrinks during an expedition** (§1).
 
-## Decisions for the owner
+## The three points
 
 1. **Lit period.** 3 world turns per lighting (unchanged within an expedition),
-   or 40 actions within the current expedition?
-2. **Going out.** Relight a dark outpost for 1 Energy, or let it fall to ruin
-   while a new one arrives elsewhere at the world turn?
-3. **Banking.** Does every send from an outpost end the expedition (no banking),
-   or can it bank materials once per outpost without ending?
+   not 40 actions within the current expedition.
+2. **Going out.** Relight a dark outpost for 1 Energy, not letting it fall to ruin
+   while a new one arrives elsewhere at the world turn.
+3. **Banking.** Every send from an outpost ends the expedition (no banking), not banking
+   materials once per outpost without ending.
 
 **Build scope.** Outposts light for 3 world turns, counted down at each turn;
 a three-size flame sign, or a dark hut once out; ✓ "Relight · 1 Energy";

@@ -1,12 +1,12 @@
 # Exploration, round 3: energy, survey and reading the world
 
-**Decided 2026-10-06:** all five decisions below were taken as recommended, with
+All five points below stand, with
 one condition on Energy: warm stones must not be abundant. Energy stays a
 sought-for resource, and Energy and pods both stay somewhat scarce, so a player
 does not end up with a multitude of mibis.
 
-**Proposal**, building on the decided and built [round 2](exploration-round-2.md),
-after the owner's second play and playtest r4. **Decided** marks owner decisions.
+Builds on the decided and built [round 2](exploration-round-2.md),
+after the second owner play and playtest r4.
 
 ## 1. A worked moment
 
@@ -27,11 +27,11 @@ Energy comes from storm-struck stones. Prices: hatching 2 + 4 Essence, a pin 1, 
 problem:** a calm expedition yields 0–3 Energy, so pods wait and pins never
 happen.
 
-**Proposal: warm stones.**
+**Warm stones.**
 - **The trickle.** At each world turn, every stone lightning didn't strike gains
   a warm charge of 1 (never more): sun is a condition, like rain. It glints on
   Call like a charged stone; drawing it (Confirm) gives +1. Nothing refills
-  within an expedition (**Decided**).
+  within an expedition.
 - **Yield.** A calm expedition finds 3–5 Energy in reach: enough to identify pods
   and pin once or twice. Storms stay the big payout (+2 or +3 per strike,
   restruck: 8–15 per expedition), so tier 2 and shield patches remain storm
@@ -46,13 +46,13 @@ sink, and calm expeditions still yield nothing for pins.
 
 ## 3. Clearing a cell: Call as the survey
 
-**Proposal: the owner's sub-cell fog, made into a rule.**
+**Owner's sub-cell fog, made into a rule.**
 - **The veil.** A place starts under a light veil, drawn with the existing fog
   table and 4×4 dither. Terrain shows through. Creatures, bushes and dew stay
   visible; hidden finds (buried pods, charged and warm stones) can't be found
   until unveiled.
 - **Call unveils** every tile within 7 tiles of you: a 15×15 square, matching
-  its ring. In a fog bank it reaches 3 tiles (**Decided:** Call is shortened
+  its ring. In a fog bank it reaches 3 tiles (Call is shortened
   there). Walking never unveils. A place of 28×32 tiles takes 4–6 well-placed
   Calls.
 - **Quarters and clearing.** A place has four quarters of 14×16 tiles. A quarter
@@ -75,9 +75,9 @@ stays a one-off check and "cleared" stays an abstract word.
 
 ## 4. Completion and time
 
-**Decided:** the field clock counts actions; no timers, no time sinks.
+The field clock counts actions; no timers, no time sinks.
 
-**Proposal: completion as a picture.**
+**Completion as a picture.**
 - **A reach grid in the HUD corner:** one dot per reachable cell in range (5×5
   at tier 1, 9×9 at tier 2; 2 px dots, 1 px gaps). Hollow is unsurveyed, filled
   is surveyed, your cell is framed, and gated cells get no dot. "Everything in
@@ -85,7 +85,7 @@ stays a one-off check and "cleared" stays an abstract word.
 - **Totals.** Cargo reads "Surveyed 7 of 21 in reach"; the menu loses the
   action count.
 
-**Proposal: time shows through things that move, never a counter.**
+**Time shows through things that move, never a counter.**
 Wait says what changed ("The storm edges east · the Loika grazes again"), or
 "Nothing is moving here", which ends pointless waiting honestly. Storm and fog
 bank show their heading as ◀ or ▶ beside the bolts, and the map's edge triangle
@@ -99,7 +99,7 @@ a timer in all but name and reads as "the day is ending".
 
 ## 5. Place edges
 
-**Proposal: walking off an edge steps onto the neighbouring map cell** (one map
+**Walking off an edge steps onto the neighbouring map cell** (one map
 action), with the map in view and the pawn facing the way you walked. One
 Confirm goes down into the next place, from the matching side. Past the range
 edge or into an obstacle, you stay put with the usual bump line. No minimap:
@@ -116,18 +116,18 @@ is real generator work, and a minimap becomes necessary.
 
 ## 6. Fog of war and day/night
 
-**Decided:** the fog bank is safe cover (creeping never startles, dew fills,
+The fog bank is safe cover (creeping never startles, dew fills,
 sweep and signs off, Call shortened). Night is an expedition type that needs a
 glowing partner.
 
-**Proposal: the fog bank limits sight in a place to 4 tiles.**
+**The fog bank limits sight in a place to 4 tiles.**
 Beyond 4 tiles the terrain takes the fog table, and creatures, pods and fruit
 aren't drawn (the prototype already dims sprites there; make it hide them). It
 mirrors cover: they notice you late, you see them late. A Tuikis partner
 widens sight to 6 tiles. Rain, storm and fog in one cell stays possible, and
 stray strikes stay off inside the bank.
 
-**Proposal: no day/night cycle.** Night stays an expedition type you choose. It
+**No day/night cycle.** Night stays an expedition type you choose. It
 will reuse the same sight rule (3 tiles, 6 with a glowing partner) and add
 nocturnal routines later. A cycle within an expedition is a clock (§4). A cycle
 across world turns makes Night a matter of luck instead of choice and partner.
@@ -138,7 +138,7 @@ burrow).
 
 ## 7. Creature intent
 
-**Proposal: four bubbles, each explained once in the line when first seen.**
+**Four bubbles, each explained once in the line when first seen.**
 
 | Bubble | Means | What to do |
 | --- | --- | --- |
@@ -147,7 +147,7 @@ burrow).
 | Fruit | It eats what you carry | Offer it, or put it down and back off |
 | **…** and pips | Settling | Keep still (Wait) |
 
-**Proposal: diet shows before a fruit is wasted.**
+**Diet shows before a fruit is wasted.**
 When a fruit drops, the line names who eats it ("A fruit drops · Untuvas eat
 these", or "· no one here eats fruit"). While you carry fruit, eaters in view
 show the fruit bubble for one action. Facing a non-eater gives "Tuikis don't
@@ -158,18 +158,18 @@ or Call"), never "Nothing here".
 
 **Cost.** One bubble sprite (about 11×13) and line text; `eats` already exists.
 
-## Decisions for the owner
+## The five points
 
-1. **Energy.** Warm stones (+1 per world turn) with prices unchanged, or free
-   identification?
+1. **Energy.** Warm stones (+1 per world turn) with prices unchanged, not free
+   identification.
 2. **Survey.** Veiled places; Call unveils 15×15; cleared means all four
-   quarters surveyed, drawn in quarters on the overview (tick removed)?
+   quarters surveyed, drawn in quarters on the overview (tick removed).
 3. **Completion.** Reach dot grid, "Surveyed N of M", Wait reporting changes,
-   no day-part clock?
+   no day-part clock.
 4. **Edges.** Walking off a place steps onto the next map cell (no seamless
-   crossing, no minimap)?
+   crossing, no minimap).
 5. **Sight.** Fog bank sight of 4 tiles; Night a later expedition type; no
-   day/night cycle?
+   day/night cycle.
 
 ## Build scope for the next prototype round
 
