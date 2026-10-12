@@ -263,6 +263,9 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   for (const dsf of [1.25, 1.5, 1.75, 2, 1]) {
     await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1920, height: 1080, deviceScaleFactor: dsf, mobile: false }); await page.waitForTimeout(400);
     const k = Math.max(1, Math.floor(dsf));
+    // what each frame reports at this ratio (printed: a frame whose devicePixelRatio lags the override shows here)
+    const rep = async (label) => { const o = {}; for (const [n, f] of [["page", () => page], ["station", st], ["companion", mb]]) o[n] = await f().evaluate(() => ({ dpr: window.devicePixelRatio, mq: window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).matches, embedW: document.documentElement.style.getPropertyValue("--embed-w") })).catch(() => null); console.log(`E: ${label} at ${dsf}: ${JSON.stringify(o)}`); };
+    await rep("reported");
     for (const [name, sel, W, frame, cap] of [["Station", "#screen", 1024, st, () => st().evaluate(() => window.__st.capture())], ["Companion", "#screen", 450, mb, () => mb().evaluate(() => window.__mb.capture())]]) {
       const m = await frame().evaluate((q) => { const el = document.querySelector(q); return [parseFloat(getComputedStyle(el).width), el.getBoundingClientRect().width, window.devicePixelRatio]; }, sel);
       near(m[0], (W * k) / dsf, `E: the ${name}'s computed width at dpr ${dsf}`, 1 / 64 + 1e-6); near(m[1] * dsf, W * k, `E: the ${name}'s rect × dpr at ${dsf}`, dsf / 64 + 1e-6);
