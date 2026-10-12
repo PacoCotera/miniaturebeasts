@@ -59,14 +59,12 @@ LIGHT = [P48.light[i] if i < 48 else gstep(i, 1) if mat[i] == "grass" else rstep
 def mix(target, t, i): tr = PAL[P48.index[target]]; return PAL[i] + (tr - PAL[i]) * t
 FOG = [P48.fog[i] if i < 48 else nearest(mix("bone", .62, i)) for i in range(NC)]
 FADE = [P48.fade[i] if i < 48 else nearest(mix("stone", .5, i)) for i in range(NC)]
-json.dump({"name": "meadow", "note": "The meadow's 8-bit set: the core 48 at 0-47 exactly as the page's PALETTE, DARK_OF, LIGHT_OF, "
-           "FOGLUT and FADE, then b1's 48 meadow colours (mockup/b1/biome-meadow.json, approved with b1). Meadow entries: dark and light "
-           "one step along the saturated lawn ramp for the greens (test map 12's steps), along their own material's ramp by value for the rest; fog and fade by the page's mixLUT rule over all 96. Index 96 in the sheets "
-           "is transparent and is not a colour.",
-           "colours": [{"index": i, "name": cols[i].get("name"), "hex": cols[i]["hex"], "set": cols[i]["set"],
-                        **({"material": cols[i]["material"]} if "material" in cols[i] else {})} for i in range(NC)],
-           "dark": DARK, "light": LIGHT, "dark2": [DARK[d] for d in DARK], "fog": FOG, "fade": FADE},
-          open(os.path.join(out, "meadow-palette.json"), "w"), indent=1)
+DARK2 = [DARK[d] for d in DARK]
+NAMES = [cols[i].get("name") or f"{cols[i]['material']}-{i}" for i in range(NC)]
+assert len(set(c["hex"] for c in cols)) == NC
+with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # c2a-48px-spec §4.6: one entry per index, one per line
+    fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
+             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i])}) for i in range(NC)) + " ] }\n")
 
 def to_idx(path_or_img):
     im = Image.open(path_or_img) if isinstance(path_or_img, str) else path_or_img
