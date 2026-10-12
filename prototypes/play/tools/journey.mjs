@@ -106,6 +106,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "place"); await page.waitForTimeout(700); await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "map"); await page.waitForTimeout(300);
   const walk = () => mb().evaluate(() => { const e = window.__mb.S.exp; return { start: e.start, pos: e.pos, face: e.face }; }), w0 = await walk();
   eq([w0.face, w0.pos === w0.start], ["down", true], "B2: before D the Companion faces down at its start");
+  expect(await mb().evaluate((p) => window.__mb.canStep(p, "right"), w0.pos), "B2: the step to the right is open from the start (the precondition)");
   await mb().evaluate(() => { window.__heard = []; window.addEventListener("keydown", (e) => window.__heard.push((e.shiftKey ? "Shift+" : "") + e.code)); });
   await page.keyboard.press("d"); await page.waitForTimeout(400);
   const w1 = await walk(); eq([w1.face, w1.pos], ["right", w0.start + 1], "B2: after D the Companion faces right, one step on");
@@ -181,7 +182,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   const { ctx, page, st, mb } = await open(1280, 690);
   eq(await page.evaluate(() => __play.tier), "short", "S: the tier at 1280 × 690");
   const sb = await box(page, "#fStation"), cb = await box(page, "#fCompanion"); eq([sb[2], sb[3], cb[2], cb[3]], [1024, 600, 450, 600], "S: both frames at 1:1");
-  eq(sb.slice(0, 2), [20, 56], "S: the Station frame"); expect(cb[0] + cb[2] > 1280 || cb[0] < 1280, "S: the Companion frame starts on the page");
+  eq(sb.slice(0, 2), [20, 56], "S: the Station frame");
   const sImg = rd(await page.screenshot({ clip: { x: sb[0], y: sb[1], width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
   expect(sameImage(sImg, sCap), "S: the Station frame is pixel-equal to its capture");
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
@@ -190,6 +191,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "S: the control docks once");
   await page.click("#tabCompanion"); await page.waitForTimeout(400);
   const cb2 = await box(page, "#fCompanion"); eq([cb2[0], cb2[2], cb2[3]], [1280 - 1546 + 1068 + 8, 450, 600], "S: the Companion focused: the row panned by W − R");
+  const cImg = rd(await page.screenshot({ clip: { x: cb2[0], y: cb2[1], width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
+  expect(sameImage(cImg, cCap), "S: the Companion frame is pixel-equal to its capture (the Station's check, applied to the Companion once it is panned into view)");
   await clip(page, "play-short-companion.png");
   await ctx.close();
 }
