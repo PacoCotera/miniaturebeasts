@@ -17,7 +17,7 @@ It replaces the "trait window" unit of the [Station loop](station-loop.md) with 
 2. **Identify** (1 Data). The seal on the cap breaks and the species glyph shows. For a new species, its frame (every part the species fixes) is learned once, and its Library page opens. For a known species the frame is filled in at once. The pod's genome ring draws its grey centre band. Each heritable chapter shows as a sector of hairlines: there is something here, and it has not been read yet.
 3. **Read a chapter** (Data). The chapter's sector turns into marks, and its page shows each trait as a picture of this pod's mibi: what it *shows*, and a misty seed for what it *hides* (the seed is from [station-loop.md](station-loop.md)).
 4. **Shape** (optional). For each read trait that can be shaped, the player picks from three pictures drawn from the pod's own two copies. The founder redraws with every change. Untouched and unread traits stay as the pod has them.
-5. **Grow.** One pod becomes one fixed individual. The ring is stamped on the shell and the pod goes into the incubator.
+5. **Grow.** One pod becomes one fixed individual. The stamp prints on its label and the pod goes into the incubator.
 6. **Incubate** (real minutes). Unread chapters clear one by one as the embryo grows. This was the best moment in the r7 playtest. By the end, a founder's ring is whole.
 7. **Meet.** Open is a press. The juvenile steps into the vivarium carrying its ring, its name-code and its pod's story.
 

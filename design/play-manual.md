@@ -260,7 +260,7 @@ The lamp on Home's bench rests the screen (the vivarium plays alone); any press 
 7. **The incubator** grows it in **real minutes**, one leaf per minute: 20, plus 1 for each change. Your first mibi ever takes 5 minutes. A founder's unread chapters clear one by one while it grows, and it opens known in every chapter except a sealed one still shut. A bud you bred keeps its unread chapters. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in the vivarium, up close, where ✓ takes it with you.
 8. **Return to the wild** (the garden gate beside the tray): ✓, then ✓ again, frees the cup and gives +1 Essence. The pod goes back to where it came from the next time you dock.
 
-**The genome stamp** is a small label: square cells in a size series, the chapters as blocks, a border and glyph for the species, round perforations, and the clan on the border. Unread and sealed chapters are never in it, and the glint is never on the stamp. The specimen is the spotlight; reading progress is the ring around the pod. Where the stamp appears is still open.
+**The genome stamp** is a small label: square cells in a size series, the chapters as blocks, a border and glyph for the species, round perforations, and the clan on the border. Unread and sealed chapters are never in it, and the glint is never on the stamp. The specimen is the spotlight; reading progress is the ring around the pod.
 
 | At the Station | Price |
 | --- | --- |
