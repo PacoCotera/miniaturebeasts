@@ -142,7 +142,7 @@ test("every light of frame.light.from has its pictures on both screens and its b
 test("a mibi that grows up changes every picture id from :juvenile: to :adult: with the sleepers' size unchanged and a resident's following its stage (the residents and the sleepers on the bed)", () => {
   const st = world(); dock(st); S.seedAdults(st, "S01", 5, 4, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
   const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] });
-  const young = ids(build(st, sv)); assert.ok(young.length >= 4 && young.every((id) => /^mibi:\d+:juvenile:\d+x\d+$/.test(id)), young.join(" "));
+  const young = ids(build(st, sv)); assert.ok(young.length >= 4 && young.every((id) => /^mibi:S\d+-[0-9a-f]{8}:juvenile:\d+x\d+$/.test(id)), young.join(" "));
   st.turn += settings.adultTurns ?? S.JUVENILE_TURNS; for (const m of st.mibis) assert.equal(S.mibiStage(st, m, settings), "adult");
   const grown = ids(build(st, sv));
   // every id has the stage swapped; a resident's size is its stage's (home.json sizes: a juvenile's 104×112, an adult's 144×152), the sleepers' and the tiles' size does not change with it
@@ -249,4 +249,11 @@ test("the Probe's context follows the Probe goal wherever it comes from: every g
   st.probe = { tier: 1, shield: 3, smax: 3 }; st.e = 3; st.d = 0; const pr = () => build(st, sv0(), { focus: "probe" }).line.subject;
   assert.equal(S.goalKey(st, sv0()).key, "probe"); assert.equal(pr(), spec.strings.subjects.probe.save);
   st.e = 12; st.d = 4; assert.equal(S.goalKey(st, sv0()).step.key, "fit"); assert.equal(pr(), spec.strings.subjects.probe.fit);
+});
+
+test("a picture id is keyed by the genome, not the mibi id: two worlds with the same mibi id and different genomes give different picture ids, the same genome the same id", () => {
+  const mk = (gs) => { const st = world(); dock(st); S.seedAdults(st, "S01", gs, 1, settings); st.mibis[0].paint = { state: "landed" }; return st; };
+  const a = mk(5), b = mk(6), c = mk(5), ids = (st) => build(st, sv0({ carried: [st.mibis[0].id] })).requests.filter((r) => r.kind === "mibi").map((r) => r.id);
+  assert.equal(a.mibis[0].id, b.mibis[0].id); assert.notEqual(a.mibis[0].genome && JSON.stringify(a.mibis[0].genome.loci), JSON.stringify(b.mibis[0].genome.loci));
+  assert.notDeepEqual(ids(a), ids(b)); assert.deepEqual(ids(a), ids(c));
 });

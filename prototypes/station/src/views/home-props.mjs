@@ -3,7 +3,7 @@
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), need (the notice's key and its action) }.
 // Runs in Node, tested there (tests/home-props.test.mjs); the shape is home.props.json. Sitting crates and the Cargo screen are L2.2's second PR (cargo.json); here the bay's crates are the walk crates.
 import * as S from "../state.mjs";
-import { frameOf } from "../genome.mjs";
+import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable } from "../moving.mjs";
 import { standLook } from "../stands.mjs";
 import { goalWords } from "./goal-words.mjs";
@@ -12,11 +12,11 @@ const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
-// A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<id>:<juvenile|adult|elder>:<w>x<h>
-export const mibiPictureId = (id, stage, [w, h]) => `mibi:${id}:${stage}:${w}x${h}`;
+// A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
+export const mibiPictureId = (digest, stage, [w, h]) => `mibi:${digest}:${stage}:${w}x${h}`;
 // An adult or elder without its signed stand takes its species' juvenile stand, 1:1 in its own size (stands.mjs, station-layouts.md Composed states, rule 5): the picture is named by the stage and size it is drawn at.
 export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.mibiStage(st, mb, settings), size);
-export const mibiReq = (req, st, mb, size, settings) => { const { stage, size: drawn } = lookOf(st, mb, size, settings); return req({ kind: "mibi", id: mibiPictureId(mb.id, stage, drawn), mibi: mb.id, stage, species: S.speciesOf(mb), size: drawn }); };
+export const mibiReq = (req, st, mb, size, settings) => { const { stage, size: drawn } = lookOf(st, mb, size, settings); return req({ kind: "mibi", id: mibiPictureId(genomeDigest(mb.genome), stage, drawn), mibi: mb.id, stage, species: S.speciesOf(mb), size: drawn }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
