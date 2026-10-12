@@ -89,6 +89,43 @@ for y in range(32):
 for x in range(9, 15): im.putpixel((x, 27), H('bark'))
 save('home-sitting-24x32', im)
 
+# The sitting frames, 48x40 (held, portrait, empty) and the 32x24 card: matte card frames in the sand housing, lit from the
+# top left. Where two listed rules meet on one pixel (the lit/shade and ring/recess corners), the rule listed first wins,
+# as in home-sitting-24x32 above.
+def card_frame(w, h, rules, default):
+    im = img(w, h)
+    for y in range(h):
+        for x in range(w):
+            c = default
+            for test, col in rules:
+                if test(x, y): c = col; break
+            im.putpixel((x, y), H(c))
+    return im
+def rect(x0, y0, x1, y1): return lambda x, y: x0 <= x <= x1 and y0 <= y <= y1
+def anyof(*ts): return lambda x, y: any(t(x, y) for t in ts)
+def frame48(window, shadow, ring, tick, walls=()):
+    rules = [(anyof(rect(0, 0, 47, 0), rect(0, 39, 47, 39), rect(0, 0, 0, 39), rect(47, 0, 47, 39)), 'bark'),
+             (anyof(rect(1, 1, 1, 38), rect(1, 1, 46, 1)), 'sand'),
+             (anyof(rect(46, 1, 46, 38), rect(1, 38, 46, 38)), 'clay')]
+    if tick: rules.append((rect(21, 36, 26, 36), 'bark'))
+    rules.append((anyof(rect(3, 3, 3, 34), rect(3, 3, 44, 3)), ring[0]))
+    rules.append((anyof(rect(44, 3, 44, 34), rect(3, 34, 44, 34)), ring[1]))
+    rules += list(walls)
+    if shadow: rules.append((anyof(rect(4, 4, 43, 4), rect(4, 4, 4, 33)), shadow))
+    rules.append((rect(4, 4, 43, 33), window))
+    return card_frame(48, 40, rules, 'enamel')
+save('sitting-frame-held-48x40', frame48('ground', None, ('sand', 'clay'), True))
+save('sitting-frame-portrait-48x40', frame48('bone', 'enamel', ('sand', 'clay'), True))
+save('sitting-frame-empty-48x40', frame48('enamel', None, ('bark', 'bark'), False,
+     walls=[(anyof(rect(4, 4, 43, 4), rect(4, 4, 4, 33)), 'clay'), (anyof(rect(4, 33, 43, 33), rect(43, 4, 43, 33)), 'sand')]))
+save('home-sitting-32x24', card_frame(32, 24, [
+    (anyof(rect(0, 0, 31, 0), rect(0, 23, 31, 23), rect(0, 0, 0, 23), rect(31, 0, 31, 23)), 'bark'),
+    (anyof(rect(1, 1, 1, 22), rect(1, 1, 30, 1)), 'sand'),
+    (anyof(rect(30, 1, 30, 22), rect(1, 22, 30, 22)), 'clay'),
+    (anyof(rect(3, 2, 3, 21), rect(3, 2, 28, 2)), 'sand'),
+    (anyof(rect(28, 2, 28, 21), rect(3, 21, 28, 21)), 'clay'),
+    (rect(4, 3, 27, 20), 'ground')], 'enamel'))
+
 # The crate 48x40: the one crate look (the signed Home bay crates, the art director's ruling): a sage moulded field case
 # (metal), a handle on top, two sand latches (enamel, lit sand, shade clay), dark rubber corners (deepTeal), an orange
 # seal tag across the lid seam; lit enamel top edges from the top left, bevel shade lower right, hairline seams.
