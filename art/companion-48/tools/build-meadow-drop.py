@@ -440,7 +440,7 @@ GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/"
           ("quarters", lambda n: "/lip/" in n or ("/shore/" in n and "water-" in n)),
           ("shore", lambda n: "/shore" in n or "/band/" in n), ("walls", lambda n: any(k in n for k in ("/face/", "/cap/", "/side/", "/foot/"))),
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
-man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json",
+man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json", "levelTone": ["dark", "none", "light"],
        "note": "The meadow drop: signed where the art director has signed, else candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
                "Built by art/companion-48/tools/build-meadow-drop.py from its inputs in art/companion-48/terrain/grass/.", "sheets": {}, "pieces": []}
 done = set()
