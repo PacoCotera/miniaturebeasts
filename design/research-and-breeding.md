@@ -36,7 +36,7 @@ gives fuller pages and more looks to find, never more buttons.
 
 ## Identify
 
-Identifying a pod costs 1 Energy, and the first pod ever is free. The seal breaks
+Identifying a pod costs 1 Data. The seal breaks
 and the species shows. The first identified pod of a species teaches the player
 that species for good: what it fixes is known from then on, and its page opens
 in the Library. An identified pod can be grown straight away, unread.
