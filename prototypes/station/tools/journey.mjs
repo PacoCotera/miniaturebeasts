@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // The Station's journey (station-build.md §5), headless: serves prototypes/ as the sandbox does, loads a v8 fixture save, and plays the Station on the LVGL face (the page in test mode, ?test):
 // the fixture migrated, a Loika crate seeded, Dock, the crates opened through the developer hook, Pods by keys and intents (identify, read, compare, return), Create, Grow, the bud, the mibi and the
-// Caddy's painting through the intents of the screens the face does not draw yet (M2 to M4: the rules, not the screens), every not-built screen's room keys and ←, Idle's wake, the save round trip.
+// Cross through the intents of the screens the face does not draw yet (M2 to M4: the rules, not the screens; Grow and Cross paint nothing, so no call reaches the Caddy service), every not-built screen's room keys and ←, Idle's wake, the save round trip.
 // Fails on any page error, any error the face sent, any canvas text call or any request outside the page's origin. Screenshots go to img/; each point records what tools/checks.mjs reads.
 // The milestones whose screens are not on the face are listed from journey-pending/ on every run.
 //   node tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
@@ -30,9 +30,10 @@ const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-journey-"));
 let caddy = createApp({ dataDir: caddyData, painter: "mock", mockDelay: 1, tickMs: 200 });
 let caddyServer = createServer((req, res) => caddy.handle(req, res));
 await new Promise((r) => caddyServer.listen(0, "127.0.0.1", r)); caddy.start();
-let caddyPort = caddyServer.address().port, caddyUp = true;
+let caddyPort = caddyServer.address().port, caddyUp = true, caddyGrowCalls = 0;   // the /grow calls the page made: none, since Grow and Cross paint nothing
 const server = createServer((req, res) => {
   if (req.url.startsWith("/caddy-api/")) {
+    if (req.url.includes("/grow")) caddyGrowCalls++;
     if (!caddyUp) { res.writeHead(502); res.end("the Caddy service is down"); return; }
     const up = http.request({ host: "127.0.0.1", port: caddyPort, path: req.url, method: req.method, headers: req.headers }, (r2) => { res.writeHead(r2.statusCode, r2.headers); r2.pipe(res); });
     up.on("error", () => { res.writeHead(502); res.end(); }); req.pipe(up); return;
@@ -396,12 +397,9 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on t
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-create.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`create steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
-// the hand-off: the genome went to the Caddy service and is queued under its hash; the outbox is empty
-// the page flushes at Grow and polls every thirty seconds; a slow runner can miss a short wait, so the journey also asks the client to flush through its test hook, for up to twenty seconds
-for (let i = 0; i < 20 && (await st()).outbox.length; i++) { await page.evaluate(() => window.__st.caddy.flush()).catch(() => {}); await page.waitForTimeout(1000); }
-if ((await st()).outbox.length) fail("the outbox did not flush to the Caddy service within twenty seconds, flushing once a second");
-s = await st(); expect(s.bud.paint && ["sent", "queued", "painting", "done"].includes(s.bud.paint.state), "the bud's job is with the service: " + JSON.stringify(s.bud.paint));
-expect(caddy.state.jobs.length === 1 && caddy.state.jobs[0].sha === s.bud.sha, "one job queued under the genome's hash");
+// Grow paints nothing (decisions 10-11 14:17): the mibi is drawn from its layers, nothing joins the outbox and no job reaches the Caddy service
+s = await st(); expect(s.outbox.length === 0, "Grow leaves the outbox empty: " + JSON.stringify(s.outbox));
+expect(caddy.state.jobs.length === 0 && caddyGrowCalls === 0, "no job and no /grow call reached the Caddy service");
 await page.waitForTimeout(1600);
 // R2. The Incubator (slot R, journey-incubator.json): the bud grows (21 leaves, ✓ Grow now); Grow now plays growNow (input held 400 ms) and the bud is ready (✓ Open); Open hatches it (input held 2780 ms: the pad, ✓ and ← do nothing)
 // and hands off to the new mibi up close, in the meet, the ring on the resident (← there reads Vivarium)
@@ -426,19 +424,10 @@ expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 &&
   const u = await ui(), p = await props(), l = p.frame.line;
   cur.push({ screen: u.screen, state: p.state, ring: p.focus.cur, ribbon: p.regions.meetRibbon.text, tag: p.focus.targets.some((t) => t.id === "name"), ok: l.ok, subject: l.subject, back: l.back, waiting: p.regions.resident.waiting });
   expect(p.screen === "habitat" && p.state === "meet" && p.focus.cur === "resident" && p.regions.meetRibbon.text === "Meet Moss" && !p.focus.targets.some((t) => t.id === "name"), "vivarium-meet: the hatch lands in the meet up close: the ribbon in the tag's place (not a target), the ring on the resident: " + JSON.stringify([p.state, p.focus.cur, p.regions.meetRibbon.text]));
-  expect(l.ok === "Name Moss" && l.back === "Vivarium", "vivarium-meet: ✓ Name Moss, ← Vivarium: " + JSON.stringify(l));
-  { const was = await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id), w = m.paint; m.paint = { state: "sent" }; return w; }, fig.id); await page.waitForTimeout(500);   // its painting on its way: the placeholder and its waiting lamp (the mock may already have painted it)
-    const q = await props(); expect(q.regions.resident.waiting === true && q.frame.line.subject === "its painting is on its way", "vivarium-meet: while its painting is on its way the placeholder shows with its lamp, the context says so: " + JSON.stringify([q.regions.resident.waiting, q.frame.line.subject]));
-    await frameShot("page-meet-placeholder", true); await page.evaluate(([id, w]) => { window.__st.ST.mibis.find((x) => x.id === id).paint = w; }, [fig.id, was]); await page.waitForTimeout(300); } }
-// the mock paints within a second; the page polls and fetches the set; it lands at a fresh draw (a screen change), never mid-draw
-for (let i = 0; i < 40 && caddy.state.jobs[0].state !== "done"; i++) await page.waitForTimeout(200);
-expect(caddy.state.jobs[0].state === "done", "the mock painted the set: " + caddy.state.jobs[0].state);
-await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(500);
-const fetched = await page.evaluate((sha) => ({ pending: window.__st.caddy.pending().includes(sha), landed: window.__st.caddy.landed(sha) }), fig.sha);
-expect(fetched.pending || fetched.landed, "the set is fetched: " + JSON.stringify(fetched));
-// the meet again (a fresh draw: the painting lands there, never mid-draw), the painting landed: page-meet differs from page-meet-placeholder; then the namer over it
+  expect(l.ok === "Name Moss" && l.back === "Vivarium", "vivarium-meet: ✓ Name Moss, ← Vivarium: " + JSON.stringify(l)); }
+// the meet again (a fresh draw), then the namer over it
 { await page.evaluate((id) => { const U = window.__st.UI; U.meet = id; U.hab.id = id; U.hab.f = "resident"; window.__st.goto("vivarium"); window.__st.goto("habitat"); }, fig.id); await page.waitForTimeout(600);
-  const p = await props(); expect(p.state === "meet" && p.regions.resident.waiting === false, "page-meet: the meet with its painting landed: " + JSON.stringify([p.state, p.regions.resident.waiting])); await frameShot("page-meet", true); }
+  const p = await props(); expect(p.state === "meet" && p.regions.resident.waiting === false, "page-meet: the meet, no waiting lamp: " + JSON.stringify([p.state, p.regions.resident.waiting])); await frameShot("page-meet", true); }
 const npress = async (k, ms = 250) => { await said(); await press(k, ms); const m = await said(), u = await ui(), p = await props(), o = p.overlay, l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state, ring: o ? o.focus.cur : p.focus.cur, field: o ? o.regions.field.name + "|" + o.regions.field.state : null, page: o ? o.regions.keys.page : null, ok: l.ok ?? null, back: l.back ?? null }); return { u, p, o }; };
 const nint = async (target, verb = "confirm", ms = 150) => { await said(); await intent({ screen: "namer", target, verb }, ms); const m = await said(), p = await props(), o = p.overlay; cur.push({ intent: target + ":" + verb, said: m, state: p.state, field: o ? o.regions.field.name + "|" + o.regions.field.state : null, say: o ? o.regions.say.text + "|" + o.regions.say.tone : null }); return { p, o }; };
 { stepOf("vivarium-namer");
@@ -464,7 +453,6 @@ const nint = async (target, verb = "confirm", ms = 150) => { await said(); await
   { const p = await props(); expect(!p.overlay && p.regions.nameTag.text === "Moss" && p.focus.cur === "name", "vivarium-namer: the name stands (Moss, as the rest of the journey knows it), the ring on the name: " + JSON.stringify([!!p.overlay, p.regions.nameTag.text, p.focus.cur])); }
   await press("home", 300); }
 await press("home", 400);
-expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), fig.sha)), "landed at the next fresh draw (Home)");
 // the empty Incubator offers ✓ Choose a pod (a pod in the rack and a bay free): a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod
 stepOf("incubator-empty");
 await page.evaluate(() => { window.__st.seedPod("S01", 4); window.__st.goto("incubator"); }); await page.waitForTimeout(600);
@@ -480,7 +468,6 @@ await hpressI("back", 400);
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-incubator.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`incubator steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
-s = await st(); expect(s.mibis.find((m) => m.id === fig.id).paint?.state === "landed", "Moss's paint state is landed");
 // fill the bays: Grow is refused before payment; return a mibi frees a bay for +2 Essence
 await page.evaluate(() => window.__st.seedAdults("S01", 77, 4));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 6, "six bays taken");
@@ -490,24 +477,15 @@ const adult = s.mibis.find((m) => m.name !== "Moss" && m.name !== "Dot");
 const s2 = (await st()).s; await page.evaluate((id) => window.__st.returnMibi(id), adult.id);   // the rule, to free a bay for what follows; the gate by keys is vivarium-card
 s = await st(); expect(s.s === s2 + 2 && s.mibis.find((m) => m.id === adult.id).released && s.releases.at(-1).id === adult.id, "returned for +2 Essence and released");
 await press("home", 200);
-// 13. the service stops: Grow still works, the genome waits in the outbox and the lamp says waiting for the cloud; the service returns and the painting lands
+// 13. Grow with the service down: it works as it always does and paints nothing, so nothing waits and nothing is queued
 caddyUp = false;
 await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
 await press("research", 300);
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
 await press("confirm", 400); await press("confirm", 1300);
-s = await st(); expect(s.bud && s.outbox.length === 1, "offline: the genome waits in the outbox");
-await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(300);
-expect((await page.evaluate(() => window.__st.caddy.state.online)) === false, "the client knows the service is down");
+s = await st(); expect(s.bud && s.outbox.length === 0, "Grow paints nothing: the outbox stays empty");
 await page.evaluate(() => window.__st.skipBud("ready")); await intent({ screen: "incubator", target: "", verb: "confirm" }, 300); await page.waitForTimeout(3200);
-s = await st(); const later = s.mibis.at(-1);
-caddyUp = true;
-for (let i = 0; i < 20; i++) { await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(300); if (!(await st()).outbox.length) break; }   // wake the client through its hook until it has sent, up to six seconds
-s = await st(); expect(s.outbox.length === 0, "the outbox went when the service answered (polled every 300 ms for up to six seconds)");
-for (let i = 0; i < 40 && !caddy.state.jobs.some((j) => j.sha === later.sha && j.state === "done"); i++) await page.waitForTimeout(200);
-await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(400);
 await press("home", 300);
-expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), later.sha)), "the second painting landed after the service returned");
 // M4. Cross: free a bay, pair Dot with an unrelated adult Loika, see four seeds for the switches and a range for the blends at kinship 0; then siblings at a quarter
 s = await st(); const adults = await adultIds(), adult2 = s.mibis.find((m) => !m.released && m.name !== "Dot" && m.name !== "Moss" && m.name !== "Pebble" && adults.includes(m.id));
 await page.evaluate((id) => window.__st.returnMibi(id), adult2.id);   // the rule, to free a bay
@@ -540,8 +518,6 @@ expect(child.read.length < 4, "the child is known only where the switch parents 
 expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [child.id, dot.id])) === 0.25, "child and parent: kinship a quarter");
 // reading the child on the Vivarium's card
 const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id), fr = window.__st.frameOf(m.species); return fr.chapters.findIndex((c) => !m.read.includes(c.id)); }, child.id);
-// The child's painting lands on the Caddy mock's clock, which a slower runner reaches later (the first look's subject reads the painting): the step starts with it landed, as the journey does elsewhere, so its trace never depends on the clock.
-await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id); m.paint = { state: "landed" }; }, child.id);
 { stepOf("vivarium-card");
   await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.meet = null; U.viv.f = null; window.__st.goto("home"); }, child.id); await page.waitForTimeout(300);   // the child's meet ended with a first press, off this step
   const hp = async (k, ms = 250) => { await said(); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 5000 }).catch(() => {}); await press(k, ms);   // a key pressed in a hold is dropped: wait the hold out first (a slower runner holds longer)
@@ -788,6 +764,7 @@ await assertFace("the fresh world");
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);
+expect(caddy.state.jobs.length === 0 && caddyGrowCalls === 0, "the whole journey: Grow and Cross painted nothing, no /grow call and no job reached the Caddy service: " + JSON.stringify([caddy.state.jobs.length, caddyGrowCalls]));
 await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
 // The milestones whose screens are not on the face yet: their steps are listed from journey-pending/ on every run and run when the screen is built (lvgl-switch.md §4).

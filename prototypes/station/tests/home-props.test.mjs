@@ -187,3 +187,9 @@ test("goalWords: a name too wide falls back to the nameless sibling of the four 
   for (const goal of [{ key: "cross", names: ["Dot", "Moss"], step: { key: "cross" } }, { key: "firstPod", step: { key: "goOut" } }, { key: "pair", name: "Dot", species: "S01", step: { key: "identify", species: "S01" } }]) assert.equal(face(goal).plain, "", goal.key);
   assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆ ⚡", from: "fieldAndBench" } }).text, "go out and watch for more"); assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆", from: "bench" } }).icons, "◆");
 });
+test("a mibi with no painting changes nothing on Home: the Incubator is empty with its lamp off and nobody waits (Grow paints nothing)", () => {
+  const { st, sv } = scenes().docked; assert.ok(st.mibis.every((m) => !m.paint), "no mibi has a painting");
+  const r = build(st, sv).props.regions;
+  assert.equal(r.incubator.state, "empty"); assert.equal(r.incubator.lamp, "off");
+  assert.ok(r.residents.every((p) => p.waiting === false) && r.bed.sleepers.every((p) => p.waiting === false), "no person has waiting: true");
+});

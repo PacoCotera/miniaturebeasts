@@ -10,8 +10,6 @@ const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
-// A painting that has not landed is on its way: the waiting lamp of a resident, and the Incubator's.
-const paintWaiting = (mibi) => !mibi.paint || ["queued", "painting", "capped", "sent"].includes(mibi.paint.state);
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<id>:<juvenile|adult|elder>:<w>x<h>
 export const mibiPictureId = (id, stage, [w, h]) => `mibi:${id}:${stage}:${w}x${h}`;
 export const mibiReq = (req, st, mb, size, settings) => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(mb.id, stage, size), mibi: mb.id, stage, species: S.speciesOf(mb), size }); };
@@ -42,7 +40,7 @@ export function livingOf(m, R, req, ph, L) {
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings);
-  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: paintWaiting(mb), ...extra }; };
+  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: false, ...extra }; };
   const residents = here.map((mb) => person(mb, { seed: hash(mb.id) }));
   const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => person(mb, { seed: 0, nap: true })) : [];
   const bed = {
@@ -82,12 +80,11 @@ export function homeBuild(m, spec, frame) {
   });
   const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well", R.pods.wells.size), wells };
   const bud = st.bud, ready = S.budReady(st, settings);
-  const painting = !bud && st.mibis.length > 0 && paintWaiting(st.mibis[st.mibis.length - 1]) && !st.mibis[st.mibis.length - 1].released;
-  const incState = !bud ? (painting ? "painting" : "empty") : ready ? "ready" : "growing";
+  const incState = !bud ? "empty" : ready ? "ready" : "growing";
   const L = S.budLeaves(st, settings, m.now, R.incubator.leaves.max, 20), total = L.total;
   const incubator = {
-    state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : incState === "painting" ? "waiting" : "off"),
-    chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}`, R.incubator.chamber.slice(2)),
+    state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
+    chamber: slot(`home-chamber-${incState}`, R.incubator.chamber.slice(2)),
     leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: L.full, filling: L.rows, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;

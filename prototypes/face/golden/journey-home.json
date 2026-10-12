@@ -492,7 +492,7 @@
     "screen": "habitat",
     "focus": "resident.1",
     "ok": "Greet Dot",
-    "subject": "its painting is on its way",
+    "subject": "an adult Loika",
     "idle": false
    },
    {
@@ -508,7 +508,7 @@
     "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "its painting is on its way",
+    "subject": "an adult Loika, asleep",
     "idle": false
    },
    {

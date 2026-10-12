@@ -9,88 +9,84 @@
    "hash": "6df7d0ad",
    "png": "habitat-meet.png"
   },
-  "habitat-meet-placeholder": {
-   "hash": "c343c344",
-   "png": "habitat-meet-placeholder.png"
-  },
   "habitat-out": {
-   "hash": "e59c538e",
+   "hash": "7197f68a",
    "png": "habitat-out.png"
   },
   "habitat-card": {
-   "hash": "a2a806c9",
+   "hash": "830777e7",
    "png": "habitat-card.png"
   },
   "habitat-plate": {
-   "hash": "394d6c00",
+   "hash": "0bd573a8",
    "png": "habitat-plate.png"
   },
   "habitat-door": {
-   "hash": "b8d6259f",
+   "hash": "a7b71510",
    "png": "habitat-door.png"
   },
   "habitat-door-away": {
-   "hash": "edd51efb",
+   "hash": "1a5a507e",
    "png": "habitat-door-away.png"
   },
   "habitat-cross": {
-   "hash": "e7ce6ab8",
+   "hash": "be32a6fb",
    "png": "habitat-cross.png"
   },
   "habitat-portrait": {
-   "hash": "f99b49d9",
+   "hash": "045f1242",
    "png": "habitat-portrait.png"
   },
   "habitat-wild-armed": {
-   "hash": "7532520a",
+   "hash": "3931a642",
    "png": "habitat-wild-armed.png"
   },
   "habitat-tile": {
-   "hash": "89d5e1c1",
+   "hash": "ab310971",
    "png": "habitat-tile.png"
   },
   "habitat-twelve": {
-   "hash": "c5fdb643",
+   "hash": "5d40e3af",
    "png": "habitat-twelve.png"
   },
   "habitat-docked-dawn": {
-   "hash": "e107fb69",
+   "hash": "3cf1d134",
    "png": "habitat-docked-dawn.png"
   },
   "habitat-docked-day": {
-   "hash": "74ce9377",
+   "hash": "79542ee8",
    "png": "habitat-docked-day.png"
   },
   "habitat-docked-dusk": {
-   "hash": "6254551f",
+   "hash": "023b418c",
    "png": "habitat-docked-dusk.png"
   },
   "habitat-docked-night": {
-   "hash": "eda9a85d",
+   "hash": "8b22b1a6",
    "png": "habitat-docked-night.png"
   },
   "habitat-namer": {
-   "hash": "312436a1",
+   "hash": "56b9b7ec",
    "png": "habitat-namer.png"
   },
   "habitat-namer-typed": {
-   "hash": "9ad1f842",
+   "hash": "ee6ef5a1",
    "png": "habitat-namer-typed.png"
   },
   "habitat-namer-accents": {
-   "hash": "4d977d2e",
+   "hash": "8916578f",
    "png": "habitat-namer-accents.png"
   },
   "habitat-namer-refused": {
-   "hash": "9f81a58b",
+   "hash": "9f2b20ee",
    "png": "habitat-namer-refused.png"
   },
   "habitat-namer-empty": {
-   "hash": "33bb6730",
+   "hash": "60610e49",
    "png": "habitat-namer-empty.png"
   },
   "habitat-namer-full": {
-   "hash": "971bb6f8",
+   "hash": "9f191353",
    "png": "habitat-namer-full.png"
   }
  }

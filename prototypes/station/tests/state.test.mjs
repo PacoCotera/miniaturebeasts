@@ -256,14 +256,14 @@ test("Create: a read look-trait rolls among three pictures from the pod's own co
   assert.deepEqual(S.clashTraits(p, { "eye-rings": 1, crown: 0 }, () => ["always"]), ["eye-rings"], "when no single revert fixes it, every changed trait is marked");
 });
 
-test("Grow: validated and paid once; the first bud ever five minutes, then twenty plus one per shaped trait; the pod leaves the rack; the genome waits in the outbox", () => {
+test("Grow: validated and paid once; the first bud ever five minutes, then twenty plus one per shaped trait; the pod leaves the rack; Grow paints nothing, so the outbox stays empty", () => {
   const { st } = readPod([crate(1, [loikaPod(1, 11), loikaPod(2, 12)])]);
   const [a, b] = st.tray;
   assert.match(S.growBlock(st, { ...a, idd: 0 }, {}, settings), /identify/);
   const r = S.grow(st, a, { "eye-rings": 1 }, settings, 1000);
   assert.equal(r.ok, true); assert.equal(st.e, 18); assert.equal(st.s, 20); assert.equal(st.d, 19);
   assert.equal(st.bud.minutes, 5, "the first bud ever: five minutes"); assert.equal(st.bud.firstEver, true); assert.deepEqual(st.bud.shaped, ["eye-rings"]);
-  assert.equal(st.tray.length, 1); assert.equal(st.outbox.length, 1); assert.equal(st.outbox[0].sha, st.bud.sha); assert.match(st.bud.code, /^[0-9A-Z]{9}$/);
+  assert.equal(st.tray.length, 1); assert.deepEqual(st.outbox, [], "Grow paints nothing (decisions 10-11 14:17)"); assert.match(st.bud.code, /^[0-9A-Z]{9}$/);
   assert.match(S.growBlock(st, b, {}, settings), /busy/);
   assert.equal(S.budProgress(st, settings, 1000 + 2.5 * 60000), 0.5); assert.equal(S.budReady(st, settings, 1000 + 5 * 60000), true);
   assert.equal(S.budChapterKnown(st, "coat", settings, 1000), true, "a read chapter is known from the start");
@@ -644,4 +644,14 @@ test("a returned pod is the same individual: from a Companion crate it lands wit
   S.openBay(st, sv, settings, 2000);
   const back = st.tray.find((t) => t.id === "x5:r1");
   assert.deepEqual(back.genome, genome); assert.equal(back.idd, 0); assert.deepEqual(back.read, []);
+});
+
+test("Grow and Cross leave the outbox empty (the Caddy is called only for the sitting), and normalize drops an old Grow entry and keeps a sitting's", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 11), loikaPod(2, 12)])]);
+  assert.equal(S.grow(st, st.tray[0], {}, settings, 1000).ok, true); assert.deepEqual(st.outbox, [], "Grow");
+  const x = readPod([crate(1, [loikaPod(1, 21)])]).st, [a, b] = S.seedAdults(x, "S01", 31, 2, settings).mibis;
+  let seed = 7; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
+  assert.equal(S.doCross(x, null, a, b, settings, 1000, rng).ok, true); assert.deepEqual(x.outbox, [], "Cross");
+  x.outbox = [{ sha: "old", species: "S01", genome: {}, at: 1 }, { sitting: true, sha: "portrait" }]; S.normalize(x);
+  assert.deepEqual(x.outbox, [{ sitting: true, sha: "portrait" }], "an old Grow entry never goes; a sitting's stays");
 });

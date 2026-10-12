@@ -1,5 +1,5 @@
 // One mibi up close in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `habitat-rest` (an adult at home, the ring on it), `habitat-meet` (the new mibi, the meet ribbon in
-// the tag's place), `habitat-meet-placeholder` (the same while its painting is on its way: the placeholder and the waiting lamp), `habitat-out` (the mibi out with the Companion while it is away: the out mark, the ring on the name), `habitat-card` (a
+// the tag's place), `habitat-out` (the mibi out with the Companion while it is away: the out mark, the ring on the name), `habitat-card` (a
 // bonded bred mibi: the heart, three notches, where it came from, plates read and unread), `habitat-plate` (the ring on an unread plate), `habitat-door` (the Companion's set, a request waiting), `habitat-door-away`, `habitat-cross` (partners, one out
 // while the Companion is away), `habitat-portrait` (a sitting held), `habitat-wild-armed`, `habitat-tile` (the ring on a tile), `habitat-twelve` (twelve compact tiles), `habitat-docked-dawn|day|dusk|night` (the four lights, for the art director)
 // and the namer over it: `habitat-namer` (the meet's first ✓: Fig selected, the ring on Done), `habitat-namer-typed`, `habitat-namer-accents`, `habitat-namer-refused`, `habitat-namer-empty`, `habitat-namer-full`.
@@ -11,7 +11,6 @@ import { WORLD } from "./home-states.mjs";
 const SCENES = {
   rest: { shown: 0, f: "resident", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
   meet: { shown: 0, f: "resident", state: "meet", meet: true, set: (w) => { w.bays(8); w.adults(4); } },
-  "meet-placeholder": { shown: 0, f: "resident", state: "meet", meet: true, set: (w) => { w.bays(8); w.adults(4); window.__st.ST.mibis[0].paint = { state: "sent" }; } },
   out: { shown: 0, f: "name", state: "out", set: (w) => { w.bays(8); w.adults(4); w.carry([0]); w.away(); } },
   card: { shown: 1, f: "plate.0", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[1], fr = window.__st.frameOf("S01"); m.bonded = true; m.notches = 3; m.mem = "pond"; m.from = { ...m.from, of: [window.__st.ST.mibis[0].name, window.__st.ST.mibis[2].name] }; m.read = fr.chapters.filter((c, i) => i !== 0 && !c.sealed).map((c) => c.id); } },
   plate: { shown: 0, f: "plate.1", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[0], fr = window.__st.frameOf("S01"); m.read = fr.chapters.filter((c, i) => i !== 1 && !c.sealed).map((c) => c.id); window.__st.ST.d = 9; } },

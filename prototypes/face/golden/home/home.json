@@ -45,10 +45,6 @@
    "hash": "2d2d0089",
    "png": "home-incubator-ready.png"
   },
-  "home-incubator-painting": {
-   "hash": "b12966af",
-   "png": "home-incubator-painting.png"
-  },
   "home-probe-docked": {
    "hash": "b0f0cb54",
    "png": "home-probe-docked.png"
@@ -82,11 +78,11 @@
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
-   "hash": "61d59254",
+   "hash": "17fd1df1",
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "8e816ec3",
+   "hash": "cbd56f59",
    "png": "home-sleeper-focused.png"
   },
   "home-knob-pressed": {
