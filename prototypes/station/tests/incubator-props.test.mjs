@@ -80,3 +80,11 @@ test("the hatch's juvenile and the meet's resident are one picture, for adultTur
     const a = inc.requests.find((x) => x.id === inc.props.regions.juvenile.picture), b = hab.requests.find((x) => x.id === hab.props.regions.resident.picture); assert.deepEqual(a, b, "one request");
   }
 });
+
+test("the ready bud's front is requested as a slot of bud-ready-front-128x160 at the bud's rect (nothing drawn until placed); the other five bud pictures stay placeholders", () => {
+  const { st, p } = world(); assert.ok(S.grow(st, p, {}, settings, T0).ok);
+  const e = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 + 10_000), B = e.props.regions.bud;
+  assert.equal(B.front.split(":")[0], "bud-ready-front-128x160"); assert.deepEqual(validate(e.props, schema), []);
+  const front = e.requests.find((r) => r.id.startsWith("bud-ready-front-128x160")); assert.ok(front, "the front is requested"); assert.equal(front.kind, "slot"); assert.deepEqual(front.size, [128, 160]);
+  for (const id of ["early", "late", "ready", "crack1", "crack2"]) assert.ok(B[id], `${id} is a picture of the bud`);
+});

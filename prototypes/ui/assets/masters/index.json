@@ -120,6 +120,62 @@
    "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "bud-crack-1-128x160": {
+   "file": "pods/bud-crack-1-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "4355c8c9141e8ca85486105adbd22376dfe725816397a5b0e8d77d1ae63bfc75",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-crack-2-128x160": {
+   "file": "pods/bud-crack-2-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "40b180a053aa0e586cfc68827e9861f4de9049193e78bb9d773380ada4d84c1b",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-early-128x160": {
+   "file": "pods/bud-early-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "d501777f1429debef83d1916270ca02b60982fc097ba4b987c484e55504c21ec",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-late-128x160": {
+   "file": "pods/bud-late-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "aa690e07d6b7688b539706d5c68406a51acd099843136cd6311725144e1adbd0",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-ready-128x160": {
+   "file": "pods/bud-ready-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "096fa94f4a37519d2387e0ca137cb62d3e5eb693cfd1d96d5293d3bfa2896d51",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-ready-front-128x160": {
+   "file": "pods/bud-ready-front-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "3e15f90972aea62904fa57af25c3db6f8d53790d4ba998d2a6d6cb4b812982ea",
+   "signed": "art director, verdict (963f4eab)"
+  },
+  "bud-shape-S01-112x112": {
+   "file": "pods/bud-shape-S01-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "f4dcc5bef3677ed501e285c15d1542d59e8735049b98d3f9870b2bdf4ffd92b3",
+   "signed": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)"
+  },
+  "bud-shape-S03-112x112": {
+   "file": "pods/bud-shape-S03-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "8750760d90d245b729c6a15c49a946cf28c406543e0ad65b95a76cf5d338a764",
+   "signed": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)"
+  },
   "cell-outline-unread-128x160": {
    "file": "pods/cell-outline-unread-128x160.png",
    "w": 128,
@@ -726,29 +782,29 @@
    "file": "vivarium/idle-vivarium-dawn-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "4f1938a8b44c8143dd05768e7027deeeb505b9a4f08a06af6f3d0aad176749eb",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "85339315261725963e6d8cb0da4a824c845a52b71f5bf8710a98f087964c3798",
+   "signed": "art director, Idle seam fix (masters-pods b758a617)"
   },
   "idle-vivarium-day-1024x568": {
    "file": "vivarium/idle-vivarium-day-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "40c5570eb7eb4c2b3d29159c9befbe0a6813ae1b623d97e1f4f8018d75a3f4bb",
+   "signed": "art director, Idle seam fix (masters-pods b758a617)"
   },
   "idle-vivarium-dusk-1024x568": {
    "file": "vivarium/idle-vivarium-dusk-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "7ada21cecddfa145ca9a46dde1fdce6d4a74173b3dca1937ecddaa59d2e72366",
+   "signed": "art director, Idle seam fix (masters-pods b758a617)"
   },
   "idle-vivarium-night-1024x568": {
    "file": "vivarium/idle-vivarium-night-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "3dd1077137c080904691b283088b6def18be9f3b71876ec8ab49a46532dde9ab",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "fd1cafcf07d3845eb9555fb42d6f5ec7ed445236c0b11266e8bc0c8171d35ee5",
+   "signed": "art director, Idle seam fix (masters-pods b758a617)"
   },
   "leaf-empty-16x20": {
    "file": "pods/leaf-empty-16x20.png",
