@@ -7315,10 +7315,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "6edb22d9daa417831dc615144b7c799a2391f3621cb6b3f7a26bcfb3e7ee866c",
+  "sha256": "54794e1e801050d00f71d27bd7b5da5b687d4a4c7466e0f0570f5520beaf2400",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the pass 61 verdict crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the pass 61 verdict crop so the looks match",
+  "defringed": "magenta key residue removed, 38 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-plain-144x176": {
   "size": [
@@ -7328,10 +7329,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "f81181478e18cbe2ed4fe218b0601483b1b1f59f6c3422a017e0d767d85c90ea",
+  "sha256": "d1e2608e003341196d0bdeeaa7c3a96036373c9471269ab465da03c4de92b48d",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-plain-104x160": {
   "size": [
@@ -7341,10 +7343,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "852c63b0c8a0bb6011b1d4eab82e35c84c9bd2ebc0a85512217069844c9e836b",
+  "sha256": "02a01a9b237286510ab24dee35d8f8e0fe5f3d1a164365e40babcb0e251e33f1",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-plain-104x96": {
   "size": [
@@ -7354,10 +7357,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "baac0d1234f5bb53c4e067ab62dea4f825298f44c4e6e6553aa7574bf61f02b5",
+  "sha256": "3ca8ba4a2ffb383cdaede43281fe612f5a5cec166dfc5c3a6b8f6874bbdd092b",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-plain-104x64": {
   "size": [
@@ -7367,10 +7371,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "22b7858d6fad76f2de60e02b2b5b9cd8286462ee7c0a90e643de46a0cb77e616",
+  "sha256": "91d5e74aaca4c8bcc553105d2aa9023b103fe8b2752587b3aea280359ab9efc1",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 4 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-128x160": {
   "size": [
@@ -7380,10 +7385,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "929e9474da7a44c171c784c1781c0f842e99945d41ecb4b8b3fb735784dbddea",
+  "sha256": "0a5f497bb7652d4c44718b372b09584fb4514f5d08c6213bbff5fb3478c87fae",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the pass 60 verdict crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the pass 60 verdict crop so the looks match",
+  "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "size": [
@@ -7393,10 +7399,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "e91b978f11c10367bf1bdaf3635c848878c5c2b16277d4b65fe709108c100f3d",
+  "sha256": "62e475adc2173d4c608ed31d9841ec9c6a587dbac261c1f0e1a48bffa4fab519",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 26 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-104x160": {
   "size": [
@@ -7406,10 +7413,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "f33fa2946756c4914fd7f11c6d63d5ffd07bee5334e9ce9495b7594f3438d10a",
+  "sha256": "2d2a51a64ca9452719346c03ef41be8d144a2d0124e3f3cfa2f7ac515ac5fded",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-104x96": {
   "size": [
@@ -7419,10 +7427,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "ac2b02a9ad5d29903469c57e35896f8541354674e9ad8cd56f897ad3d58e5eb1",
+  "sha256": "6f6823890fb03c8c2d7639b4c5ce44736c50479e3bb7582fdb7710bcd2f73afa",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-104x64": {
   "size": [
@@ -7432,10 +7441,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "9252289fc4c0c8f53a9045a4bb14936bf235f49f30bd9fcf90c3d4a469da1348",
+  "sha256": "352b1b6182e2bb350ecfd825b1014dd59a31e9c7483f6699225c3aa82fe55d6a",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match",
+  "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-eyes-between-small-and-large-128x160": {
   "size": [
@@ -10931,10 +10941,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "b2a6b6ccd974c7bae8d2e553f4450d2789c6c3b3f231a53d3d1d512105401c63",
+  "sha256": "5044150dc5e8aed7d435afbca8bae3f75d757f3d66d7e82f96166436c1dc79aa",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-128x160": {
   "size": [
@@ -10944,10 +10955,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "1426c8d1f60dc962f24283108c6df5e35b8709ff53a6c1f4746cd270b04a6ae5",
+  "sha256": "138004f9b13521b9cdaff2301e8c37130f9b11aa533ed1ca9f928a67d8726ade",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 21 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-104x160": {
   "size": [
@@ -10957,10 +10969,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "56f8ef485b62a17b4952b898e35d22c1d160c2ac19673ca567e8ea4ddaf231cb",
+  "sha256": "45a95fa1405e5cb6ae172fc4593c93ccc6eb4ccb0d38ae9c2332e6fcbb926624",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-104x96": {
   "size": [
@@ -10970,10 +10983,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "2d38fe4ca83d0ab7f2becd86c08dd4d3cdb39a4972a6e225e435473501e618f0",
+  "sha256": "6030c383038548bb6b90409e85f8ad5ae285557dea414c7ba529f1c8fc005409",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-104x64": {
   "size": [
@@ -10983,10 +10997,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "8f8cf08c8132f44969bf52dad57e4f12aa2fcffb022f392924e42adf1ecd1ad4",
+  "sha256": "e10a2dcd4c0c652f4b02218154e2b4743ce96de952572536e103448623385da5",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 9 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S01-crown-bare-head-128x72": {
   "size": [
@@ -10996,10 +11011,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "137d78bcf5e7d69417a28e4e042be10c1870c3a14da8fe6a01516f5d3c3437b4",
+  "sha256": "31bb61c2b97dc7ff288d32f7666564b84dffc6e0102ca49e8c74b09de986c9cf",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S01-crown-leaf-crest-128x72": {
   "size": [
@@ -11009,10 +11025,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "bda637863e7d47e4c5c5514c8e7ee0dabe8afa130d175bc2e5f9512092cdfd4f",
+  "sha256": "fa8a9fab783bb4f9574f07c355b1c1d5b76ec5500f8ab240397a09e63534047f",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-eyes-thin-rings-144x176": {
   "size": [
@@ -11217,10 +11234,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "d53a451b03ac1fc27edb0534ffdfe074af7ac13e6d6de1cd77482697486afa53",
+  "sha256": "e06c2896d81acd5c1a57566d0b85b4cd51425f8995293687d511e974452dffdf",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-eyes-wide-pale-rings-104x64": {
   "size": [
@@ -11256,10 +11274,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "fa4acb15aff24472cceb5de3001193905cc4271dc5283324cdaec6e573462381",
+  "sha256": "63c2f1e3c14a9455b9163c1226633534593f04ce8f7ce704129555fdb1ee3edd",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-pale-patches-144x176": {
   "size": [
@@ -11269,10 +11288,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "e903e53bde8d987e69fc671cd5adfd359ea4ee4c69b40b9a0e7d37701345d656",
+  "sha256": "aee68886f7a3653181fe392f3c158a084b29d6626e9efd42f4cda718f797010c",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 29 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-pale-patches-128x160": {
   "size": [
@@ -11282,10 +11302,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "e7270b42e771c88dd48c8fd898ad7b9b4b18f1de2942078e8eb111d2e51db76d",
+  "sha256": "bbee805379cf21d613fb86d3c9eb59fecf21ca37efa79acdc12d0ac7ed4c470e",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-pale-patches-104x160": {
   "size": [
@@ -11295,10 +11316,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0a73f396b59ce3fcb95c14a5f70c86875f34693eba05a752c1453e67ced4efc4",
+  "sha256": "54a974d0c2b16aeeba3d8a2657457a9c084e5c6e64c152ec45cd412f4ecef32c",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 13 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-pale-patches-104x96": {
   "size": [
@@ -11308,10 +11330,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "efe19418c1745aa59bf4ad1858441b75b65746c6542260007be01d2403c6a22f",
+  "sha256": "776b528932295b42c911d8714caf8d84591dc11905729cef6dc98c541fc54656",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 12 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-pale-patches-104x64": {
   "size": [
@@ -11321,10 +11344,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "36c42d41b7ecd1fe3ff6fd68ecd04298e17c7f407b4cbb9528d8f31cc1fd53ce",
+  "sha256": "17e617aa9ce9b8ccca67d10dffc43d1b1d7d74c808b39d46ca9e81772564cd5b",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S01-markings-pale-patches-128x72": {
   "size": [
@@ -11334,10 +11358,11 @@
   "rect": null,
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "b361e807e7a4432aee3fa2effaf30af611f75abd970757482c35b531d582ed85",
+  "sha256": "7762115cbe78ca70bb14891852289fdde913a4dc7a8eaa2709eecdbc43138987",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-plain-144x176": {
   "size": [
@@ -11347,10 +11372,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "09db89cbc2b1430ebdf95b626e12603b59ecce85b0496e63406b2144acde3101",
+  "sha256": "dc126370156cb26231d0ce774deff3e93bbd9307f7ce5cbb8b68a420a90aef1a",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 152 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-plain-128x160": {
   "size": [
@@ -11360,10 +11386,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "2d8aed807ad45a3f674d0f8b7269c12b1c329bd76f603746a7a0ee31d0c67267",
+  "sha256": "f470f0a8060ee8632df53866d620de65740c2954c104f54b43324a048ed07b6e",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 127 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-plain-104x160": {
   "size": [
@@ -11373,10 +11400,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "cf25ea27e644ee2b30622f2b2eb4ca445499e99f93ebfaf84c0e51dcfde164b0",
+  "sha256": "acde09476b98a05352fb40c3cdc15f48292f373cdeef5292a5e1fe1b4cde6d87",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 95 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-plain-104x96": {
   "size": [
@@ -11386,10 +11414,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "03aeed72a2af8a25cd77c538b2bf67bf1c67385b8eeb39bef9c212cc330dfa93",
+  "sha256": "43ab53eeea46be8ac529abeda15abc4b8a47fe4881bfdc74cda20dff74ca9ee4",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 59 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-plain-104x64": {
   "size": [
@@ -11399,10 +11428,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "ae9084298e344c584e27ebd78ec70c34171de31bd44d34f1e42168c17f18ac6a",
+  "sha256": "291ea76c150140e7d650535f205ff88164600c4227c188fabc61558ab8f86ab5",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 38 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-markings-plain-128x72": {
   "size": [
@@ -11412,10 +11442,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "5557d8224c7a5473c5464fa6547390dcc5c93ac297f9a03e2364ab87ef4276a8",
+  "sha256": "a79c8e753a64f42bd7d17ab6cc5d824b46c19e235a1f29dcf1d07963e0bad84e",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 44 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-144x176": {
   "size": [
@@ -11425,10 +11456,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "c9b9bbdccd0b562dc4504d8c243cfad5f0cbbec3b70de56020cb701738d387a1",
+  "sha256": "517e0505df771753ed28418742722428fd9e8d70ba8797a40cd7f25bc7d06451",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 158 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-128x160": {
   "size": [
@@ -11438,10 +11470,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "4edc6337f6573fbe3428452acc2d103de54a0826863a2d4d8a2f55f6ed129975",
+  "sha256": "f244595ea2e28971116b2d50da3d1a9c617d177961bd2791ae13dfd26aff8d55",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 119 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-104x160": {
   "size": [
@@ -11451,10 +11484,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "e7e6b80004ceeadfa91fa1e59f5934d975072492dbf22aeedb7db3795dd50393",
+  "sha256": "b27769c9ae01fffbfb21a3bc254821425250a6956ee1fc1b5938899f90f31f64",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 87 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-104x96": {
   "size": [
@@ -11464,10 +11498,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "9042c19d559d30c6923a3a8f93ad36650886e567a542fa68ac366494401b27ee",
+  "sha256": "ad769fe98d9d682c8badba474af1632c121207517709b4479236339086c647ee",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 82 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-104x64": {
   "size": [
@@ -11477,10 +11512,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "bf9938d595e834f7be991f73ed42aded7573149702d311921881073f1884baa3",
+  "sha256": "2ecbc38d4c27fa9cbfc73425db834090fd7279a2dcafccda0b0a28deffe2a959",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 36 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-markings-stripes-128x72": {
   "size": [
@@ -11490,10 +11526,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "8a32b778b07d7ae54ada35bc78ede4721ba062b73063ab2349f0a5628fcb3197",
+  "sha256": "cb9e27a0235c0db1152f8755534a6a7c0cd19dd5c53b6b03ffb3a366f1426d10",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 50 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-spots-144x176": {
   "size": [
@@ -11503,10 +11540,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "3a6776a8df50184101c43b83a48a8a9fa81827a5f26d675aa2dea97913fa02df",
+  "sha256": "fdafaa305e22df562066e63f0b0153b1aaace559431f629bbb6bb7c10b9a1d22",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 171 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-spots-128x160": {
   "size": [
@@ -11516,10 +11554,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "498c5a9cd8fd33a693eb2f61bc888def5c01a48c40a188556a68eb921f636b64",
+  "sha256": "3e53ece1f3dcb98f426fc8429dfb1747ec8dbc1ff831729b1bf1f77a10a91797",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 132 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-spots-104x160": {
   "size": [
@@ -11529,10 +11568,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "318c59c152a6eeb1abbb0be9a861228f50e4e4968086eaba7065626359825863",
+  "sha256": "bbbb75a15697d1403f7b0cdfed70d33551259d21920ef4e98695f75a1e4559cc",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 103 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-spots-104x96": {
   "size": [
@@ -11542,10 +11582,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0173b8fb96843b283c4f6a0683f25f785e7b6984da6ae21e8aceb421e635784b",
+  "sha256": "c77a1671ab3fcbbadfea1c2830b393acb3a8f52cb37c6503e98f9792e4c24a8f",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 78 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-spots-104x64": {
   "size": [
@@ -11555,10 +11596,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "2239c1c3e945d1ea83b12e38344a739d375df8c9f95cb31ae623ab7b64084c41",
+  "sha256": "566f615929a9e599abd5bc3cf41ad935cc81aee717a122ad9dd4dfb5f3239a52",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 44 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-markings-spots-128x72": {
   "size": [
@@ -11568,10 +11610,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "b70472b3c21ddb827e0c178943f8aec72f0918caa3208d64b9a38046a22d377b",
+  "sha256": "5548e6b45284d61d3e9e65745c1331af598ee461ce153a8b647737c06c574671",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 55 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-and-spots-144x176": {
   "size": [
@@ -11581,10 +11624,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "1b8cd830ca5a678a2d67232354f555ea6d83ba9e1e2702b0ae0b55148abe248e",
+  "sha256": "0cb10a72b74419ba27fdbfaf81e02b574b18ec8c06d0e1618561bc620d32c5c4",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 184 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-and-spots-128x160": {
   "size": [
@@ -11594,10 +11638,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0bdb5ed6473fa65afecd8c2e350d8de54a29af8cbe55dae7165d24f23e9bdc8f",
+  "sha256": "dd2a426c07813bf18a2d7b4d4eb767855a89b93a4f257856816745587e74d017",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 139 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-and-spots-104x160": {
   "size": [
@@ -11607,10 +11652,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "447d8865ac53e67662a33887c769940c83f0a4e2b0c9b62e007b3bb1aed056bb",
+  "sha256": "ae80fd0ea37d899ed175ddb67be132355a9415de3c9e2bca72c00387f628921b",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 115 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-and-spots-104x96": {
   "size": [
@@ -11620,10 +11666,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "76807f6d8e1891239a80ee83c28da4539ac3d587a0eb00d843b81b2f0a695d97",
+  "sha256": "b90924cb579700d5ff44a57c5c62ab09aa0e8f35958cead39400578fcf30892b",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 76 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-and-spots-104x64": {
   "size": [
@@ -11633,10 +11680,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "039c92559b4310efa2e3e46ec812c77cf24037f545cb6cbe17b9d93eb996199b",
+  "sha256": "b131b93fd32cc372fe44e046c2451211aa88aaecba9685d956c71e2826cfda18",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 42 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-markings-stripes-and-spots-128x72": {
   "size": [
@@ -11646,10 +11694,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "c369bf8a07daba2cb367c84c508d00a1326af7143fd219fcbb569ad364bab94f",
+  "sha256": "944f1dec6e522878325d98fa230ee2fea12180db283baa0fd659d1cec529b3ff",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 59 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-low-crest-144x176": {
   "size": [
@@ -11659,10 +11708,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "8ac1dc04275d44195ce961c0b26f582eb2d7c0eb2659ec78e8d8baa527fd0bcc",
+  "sha256": "9ed178a75508309b6bce005cce0a69b37aec7beec12060a49a35ec86a7a3e56d",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 58 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-low-crest-128x160": {
   "size": [
@@ -11672,10 +11722,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "1d61a35921f3f6e53a9c4181a11c2c31c64539f624eceb331c57b278a60f1e10",
+  "sha256": "c4130b3d5e061e64969e7b5e3c9d70e1df36f4c09375042d62289b24c56a28b4",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 35 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-low-crest-104x160": {
   "size": [
@@ -11685,10 +11736,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "9b57c98640d1b61a8c58e332cdb0d2d64ae05904e830abe1e18037fd1cdf3825",
+  "sha256": "c1b793034554183e3b59253039d5469e5353825d973e39894d9c537dead4d902",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-low-crest-104x96": {
   "size": [
@@ -11698,10 +11750,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "5529cfe93ae2917adcd427eb3c7101edf2c90e942a5067c865bb32f457070dd4",
+  "sha256": "9d33a275160af8c5a6938115ffd2f8373c515578c41ef55f5efeca833638b4d8",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 29 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-low-crest-104x64": {
   "size": [
@@ -11711,10 +11764,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "7383d474e78644c080b9d274bd5910085bdd948a04a857874daf97af193a7f10",
+  "sha256": "fb701ef3d791558d471b5a88140a78b3bc7a77a2faf227476f33141009770579",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-crest-low-crest-128x72": {
   "size": [
@@ -11724,10 +11778,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "4f79c031d1e600033cb87bbcc3e8ebd09d5de8de68c62e7abfcc02090d91a7b5",
+  "sha256": "2cef9de07bb7771203d5d726e9b4a97ec46092fcb5a5f5ca1655007a901f838c",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 30 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-between-144x176": {
   "size": [
@@ -11737,10 +11792,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "a684cb682106f70979eab953715df6af41fdf13f5c9bfe6bfd06b29d1bd7fd11",
+  "sha256": "087090d9a05173c98859b116a958d5db16d961d2c07ff720cb0abc30cea818f6",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 76 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-between-128x160": {
   "size": [
@@ -11750,10 +11806,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "131f18dbd8acb2797d836fde79c42bd0d00a6c57e86af728bd9fe841a2940654",
+  "sha256": "ea59ad2de5dce960af5299dc105e817fe1e9538e263074b09d149529d098c666",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 61 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-between-104x160": {
   "size": [
@@ -11763,10 +11820,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "2c9d282367e76eb43519b92e769f9aa322c5ede7b903250969c175c2a6e57aca",
+  "sha256": "14aa7f27d44625d253cba1dc56ba162bbbd2fd4ddde24aee04f609fab9267c22",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 51 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-between-104x96": {
   "size": [
@@ -11776,10 +11834,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "bdda4e03434dff547fd67ae927f8338b8d60d2b4cfb436f0af896f3e1b23af02",
+  "sha256": "bdcc036e1a9e964ed7f14facdc50d921fde3e710cc7e6abc932ec28aa4217027",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 32 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-between-104x64": {
   "size": [
@@ -11789,10 +11848,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "8d539837a1d6c721f56c415831b5d700ae1caf1f8f66fcbc2a9cd9d217e1693d",
+  "sha256": "a394e29b310c67bebc9682014b63f554413882cb6ddf29de353c94bb82d0ea26",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 25 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-crest-between-128x72": {
   "size": [
@@ -11802,10 +11862,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0b21e7b35d4b8b0761b627af91b9ed64e11417222cb50d08cf2448e40c513600",
+  "sha256": "3fcb7a3a4117b955982985688695f1753ff470836105a1c00f4c0f1aed6fdc99",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 39 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-tall-crest-144x176": {
   "size": [
@@ -11815,10 +11876,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "702d749d5033c4972932e78a6a3bfea4bbc77a9e9ddfb651360ceb4bdc796abc",
+  "sha256": "7c8198a673d616ca56ca323f0e24923a4b1ef035f0965ac1550c4049ab653484",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 96 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-tall-crest-128x160": {
   "size": [
@@ -11828,10 +11890,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0cba1cec81b9500046fd7710ae89ae346a1fcac3ec5afbf13b8a63968b012839",
+  "sha256": "dc0575d6adc9bfe453da6090481e3feaa1d920dd8bd79be3858171f6b8d088c3",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 72 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-tall-crest-104x160": {
   "size": [
@@ -11841,10 +11904,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "c7e3321007bc0821cabbfa6717227c86da3eff8666712199bd69678dd332c15e",
+  "sha256": "5fce1bc4a08c529231b7d7732aa45c1424aa95cd74157efc39d18730494ede56",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 65 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-tall-crest-104x96": {
   "size": [
@@ -11854,10 +11918,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "f2e04f510b06e7ec3846c2187a656a0c294ad96568e95a66ec023363adca3b2e",
+  "sha256": "25521db2e3c97c44584817809e02bbf814aeca82b35861a830d98ea1a3cade4a",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 34 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-tall-crest-104x64": {
   "size": [
@@ -11867,10 +11932,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "fc8a9fa6d596dba0ea762e9bd744eca2c514343f3630c1ebef87ce54d5dd47c6",
+  "sha256": "9385ad85a5aa8bd151ec1c9f416d58a22856e89655d045bca30c5f54e02c6c11",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 38 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S03-crest-tall-crest-128x72": {
   "size": [
@@ -11880,10 +11946,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "dab4c05811a5c8f6a7f98381c665a0ab1be80ca5fcdbd29162fa2221f6f9af32",
+  "sha256": "0c050e164f1b7a0dd1d4e72514f342688a5ea292dc015fd961420978541a9c11",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 34 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bare-144x176": {
   "size": [
@@ -11893,10 +11960,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "857e4c9280191d89979df767d1760ad499c1706370a151746e9a16fedb81bdf1",
+  "sha256": "bdea978dc767cb586566cd168f5cd854ee9552440dfafa3e4d8ba8d726938fa7",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bare-128x160": {
   "size": [
@@ -11906,10 +11974,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "bc7ecdfb958cbfe6611e693ae99dc2af9df7722c127cc1421ce5c05c5f9325fa",
+  "sha256": "ff3f9c020837758c8f5e8fc0d297cb24922bad301b31494beeb50ecdc7e3e855",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 27 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bare-104x160": {
   "size": [
@@ -11919,10 +11988,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "c5cfffd952989f8f00f0243658bccfd6b946ba39867e929ea6544f83cff4abfd",
+  "sha256": "ceae60a7978fcd5090cf3555e31ed6e2d634f162f8c698902783fec7081a5cf4",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 14 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bare-104x96": {
   "size": [
@@ -11932,10 +12002,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "5563c6214d81adbe3dc65f67479b5081f5532b81d60ef3133515903a9932f4a6",
+  "sha256": "e96258d803f4bbdf2df22992f886510ee4c61f7acd1f48e5f2903fa9d18fafb9",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bare-104x64": {
   "size": [
@@ -11945,10 +12016,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "c4b1768134590c42e78dedb06bcec78d4fea1be237ececd15e24fca4b1c88d2a",
+  "sha256": "bd597153571a8808be07e514dc014a985ecacf6904130dadaeba898cb69c0812",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-spots-bare-128x72": {
   "size": [
@@ -11958,10 +12030,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0fa5b759152e45bb384c67c8964bf9101b664aff9e0df96bf14dc730823d6f10",
+  "sha256": "c6f21e564d4bf2cc43616e33ea532e05c0f647bbb955348bdaad8b6049833cc8",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-144x176": {
   "size": [
@@ -11971,10 +12044,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "2ce18dc6249f7c31d2c70b7231da2ad667024a1e07ad8dc6e6d91fffb356a801",
+  "sha256": "3d5640dc20dac1e015ffe27cfa529a5b9a37fddd8765bf4f2dce08bbf72c72bc",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 30 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-128x160": {
   "size": [
@@ -11984,10 +12058,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "24193766ba0dca06e7bea14f6b77acb4d4735fe847a717a09f572efe4c9832d6",
+  "sha256": "d2cecc7c8a0d6a9212880badf4d6b473c48a940b1e3f0c920d8d8906a606eec8",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-104x160": {
   "size": [
@@ -11997,10 +12072,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "1cf66378fe732dbf83de11472d79acf094bea34e2d510b013faaad145952d202",
+  "sha256": "076d2eb1704689f0c009a3e9d49d1c304a9c77a0566a6e46bfb84f94cde0f2e5",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 15 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-104x96": {
   "size": [
@@ -12010,10 +12086,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "6f55757ba21a20949412d503da1d747485193ba559b7cd2937faf820baa38843",
+  "sha256": "ae8bb7cd099a9864bbcc069216105d5b04ad2148015fc99062a94b6fdfcb63cd",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 2 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-104x64": {
   "size": [
@@ -12023,10 +12100,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "f2b888b815504999b6766b19cd79db169ec4654a9db0ffdc0331d00124946f8c",
+  "sha256": "097a28e59963c0b63ad36ce2a94c8393eb57abd5b90f9e925aa40ab7c9f3b6af",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-spots-bands-128x72": {
   "size": [
@@ -12036,10 +12114,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "ac1d672484d28915637b1f14bafef5f0cd10076fcb090c770edcd5ac29700d76",
+  "sha256": "decf154c7acaf0006c9d4ebb55cc5d98d5b75a96f679d8144a1ed096c375c0e6",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-spots-144x176": {
   "size": [
@@ -12049,10 +12128,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "5e4a87c0d93149f1ed80954a20ed8929524939f37579420b5a008f8d652bb231",
+  "sha256": "2a18087ed4a66533286eb81ab47eb34ee27e87c3217e35c846f206f2c0febcd7",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 27 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-spots-128x160": {
   "size": [
@@ -12062,10 +12142,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "09aed602276ec35994a94dd117357bf9025f0825ea37636dfbd57b87875147ef",
+  "sha256": "1885871e33cac541c6686cc5c073037f409f429e2448fc8e2bdb03c3081f8aa5",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 16 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-spots-104x160": {
   "size": [
@@ -12075,10 +12156,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "458de39f2bac65856f2cc232abd5d55c9e2eb33824c6c152c30c7b86a7735d0d",
+  "sha256": "37a914752de04df018020101545ce1af4057e7b12bf78f6c420771f3cdce44b6",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-spots-104x96": {
   "size": [
@@ -12088,10 +12170,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "c255529bb193b937bb94b1f260b133419373ab6d8d3b035c4900cea59bfc6406",
+  "sha256": "d0fa6463f077b84c6f0a3cd20ceffc130e00b1c41a0c0b10b76766af2b82b737",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-spots-104x64": {
   "size": [
@@ -12101,10 +12184,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "92237a61e5672d9ed74233160f3c019f8bf8beb229cf04079b4da435fd4be8cd",
+  "sha256": "6fddcfa26fe226cb8df482b7c17ac041b87bd0c3873bdbee986bee748eb0f2b7",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 2 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-spots-spots-128x72": {
   "size": [
@@ -12114,10 +12198,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "9ce46f180deefa47ad8e48dfbb01208df072d9454feda96c197aee5e985d8a6f",
+  "sha256": "df700c44940cc7ace6919f2f55d53f137c8af285dbe327037d3886cc654c8f91",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 4 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-and-spots-144x176": {
   "size": [
@@ -12127,10 +12212,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "cfa42339cb3f6826ea03d228b024132dbaca70c928b673225c9e63145455fc86",
+  "sha256": "d2c67b700a54957fbad47e3cbeef94d98c61b1d104a919eaf7020dba6345c8cb",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-and-spots-128x160": {
   "size": [
@@ -12140,10 +12226,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "80c2a6b160483d2d5da030ae369b2ff91bad33e55080aebb5e4b58d79b6412b0",
+  "sha256": "efbee845c6e205815ad6a8b4ad5e4466c995b22c78ab6038d1c180e9183e10a7",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 12 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-and-spots-104x160": {
   "size": [
@@ -12153,10 +12240,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "d9d2d402a686f782e752ef51d8beb94004508a32e70ff46413de8934adb6d0d5",
+  "sha256": "529a4f15e414e8fe4ff8429acc611bfdd730aa5e48b535918d411793f9886219",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-and-spots-104x96": {
   "size": [
@@ -12166,10 +12254,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "d2d98da281aed5dbd6439c86e0b0b72d29b686069be503cb4b4f4ea625edf0c3",
+  "sha256": "54aa40c58e308b61156a222c08f162acebd9cc331ed9483d4eb62f58abcaebb3",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-and-spots-104x64": {
   "size": [
@@ -12179,10 +12268,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "ab732b882d669f745651e552fc3f0d9d1c385756d4c6e17d80fa1c1c9c8cee45",
+  "sha256": "277faed9b72131378efe45063b9cb9a34c6764a468774c980bd656d29f42a5a4",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-spots-bands-and-spots-128x72": {
   "size": [
@@ -12192,10 +12282,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "cd76ae65f7182906a62f9373723eb7a9ed018cbbf3029f946425c722412f377b",
+  "sha256": "4ec10533a6b4a6808312d9260f07461ed173d2103aa5a38aca4b1291b949f4a6",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-small-cap-144x176": {
   "size": [
@@ -12205,10 +12296,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "9a74b5d7fe364a4b8de908a2d0e5c490b8431281f08eb4deea88a1832d70aefa",
+  "sha256": "6af4fff0ac50ae6f5bf97d1bf7f80d605d4ffbd568fb5d2a7f2a96ee4b3188fd",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 49 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-small-cap-128x160": {
   "size": [
@@ -12218,10 +12310,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "cd88ec9c5ed2f0ea8387c94be33fa20597199890354e0fc6acb7ce8a9546f45e",
+  "sha256": "0ccb696c472f13b9bdeee73ee378e6eb70bea8488fc99870de58123d6ca5fbf1",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-small-cap-104x160": {
   "size": [
@@ -12231,10 +12324,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "03edb6667af75e5a570a3970ca1150150583ffdc330daef7e388bec1890407e2",
+  "sha256": "f64bcb5e1705f9f0b2087fe1cb72fe931f5808e31ebacfcc6a5c39b6c882f5da",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-small-cap-104x96": {
   "size": [
@@ -12244,10 +12338,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "349fdc13b5e2e152093f83f768b51e85f0ca1a475c1899a956e6b9f3474b04f9",
+  "sha256": "34c890d4c7931f2daaa7ca05d781e3f087c601f2c61d27aac92a4b92a51c174a",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-small-cap-104x64": {
   "size": [
@@ -12257,10 +12352,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "426a936901361519eb505d2ed54f1a6d3235c0b208dc3b4d61b2fe640853f199",
+  "sha256": "92505cb30ab61c188400385daae5ddea7982232d17049ffb3999259f07ae5338",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 12 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-span-small-cap-128x72": {
   "size": [
@@ -12270,10 +12366,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "15cdf855a77535964c859a973fb88b47c60a64cf53a4c46581c13beed918f3b9",
+  "sha256": "581af446cf0c9312f883693b21df7ed3f55d28cf622ad0cd1727b7535336f97c",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-between-144x176": {
   "size": [
@@ -12283,10 +12380,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "9162e0305e9345199ed5342f8b1c6207a592ad7f6fae1e4280d2a7cf31f77dc2",
+  "sha256": "debd08ae04816a72cf8a8b3f425a0f28551da265b561bcc5c04e1d91fbb1d13f",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 43 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-between-128x160": {
   "size": [
@@ -12296,10 +12394,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "3b6e3c9ccaf2c26bde857caf2b6be0310e1a8ca375b3210ee74afbde1946b081",
+  "sha256": "dca807c04c0662fc4b20ba92a82455d570d66c927d843bbdab6c47155ed16368",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-between-104x160": {
   "size": [
@@ -12309,10 +12408,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "7640fa964e38fcf49de6f1a10f7c09d375de1cca3498fe071e67241654c1c802",
+  "sha256": "e90d91715f1a05febdc72b3635c43a9398994a75cf729f55246584063625b755",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-between-104x96": {
   "size": [
@@ -12322,10 +12422,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "ef98cb932d20875f268da414593b2d2b78654af521ce1389a83ea0c393453cbc",
+  "sha256": "01191207fedbcf56daa160458e97952b8db563c6715c0d91bc2169be0313b495",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-between-104x64": {
   "size": [
@@ -12335,10 +12436,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "e2a6b18b4831640d114e67ef284f6cd2af6a26e067a5f27a27354349886507ed",
+  "sha256": "d13c54f423caf75030b18c021c21bb7b7b05211201ae982b6a555e7b2c3b1916",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-span-between-128x72": {
   "size": [
@@ -12348,10 +12450,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "7ad74f057084613386b0ae3c482e33baf3180b2db85851c6583c4ebda24d0cb9",
+  "sha256": "92ef7b52345edbb4087cc9f17db0cf5abde6ebe7ab25012573a3ce06eaf43f17",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 20 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-wide-cap-144x176": {
   "size": [
@@ -12361,10 +12464,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "310f29a47306d11a491bd4c8a2bdb2371a6680b2f839fa5818d1c41300739ad7",
+  "sha256": "261a2acf596ccc9a7d61115ceaa374dae8c2927442ece2e9ca5416e4371fa64a",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-wide-cap-128x160": {
   "size": [
@@ -12374,10 +12478,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "2ef7a569f3f9d2bf7e0d06624a007dd93ba89a9a6b23d51074957a1122ae870e",
+  "sha256": "6463c5553d90daa61d6f70df700a193af574628a3b40a94cde867a5fe2577014",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-wide-cap-104x160": {
   "size": [
@@ -12387,10 +12492,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "ce367eed3d40283678ac05471991eb8b271157135cb0216a4da8a00ec98ba873",
+  "sha256": "eb8a2b8bfa68f397889087ce1a5acf0809278ca431e6550ec3fc44a960c3fd28",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-wide-cap-104x96": {
   "size": [
@@ -12400,10 +12506,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "3b0d7faa70ba6b9f023ca4c042f188b0dd6f665a0c6ab9b510a106d1b738a231",
+  "sha256": "2b48f65682e375b49d5387231983247ec96c9ebcc2f231cfd368815ad35c1ab8",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 20 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-wide-cap-104x64": {
   "size": [
@@ -12413,10 +12520,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "5eb613d180bce318fabcd1d1e6418a3131ac02724bb5cd48da14bcbabd78344b",
+  "sha256": "8c7b8fdbb85bd8119b633726b5587a42a567cd038e47f9c0f4b73eaf6f399518",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-span-wide-cap-128x72": {
   "size": [
@@ -12426,10 +12534,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "0e1514dc3157fc503db7838c47be2262026470b002f37bcaeb3558367427d9c0",
+  "sha256": "bc10a711b01b4088cef4512fae70888e2fe4670ae0d53eb7bb3564776032efc3",
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing"
+  "status_note": "one sheet per trait: every look in the same framing",
+  "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-tail-short-thin-144x176": {
   "size": [
@@ -12452,10 +12561,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "a5c229750c1ca8238c1e386ab54c9c28109c8f10e45e265d6e4cdd9f1255a8f7",
+  "sha256": "9e54a9a8e05a5762c88ccf4be2de16b62e25fe789361d940249901313a4248bf",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-tail-short-thin-104x160": {
   "size": [
@@ -12829,10 +12939,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "b0e9496720fb7a98005f518abf8e31a8268c68be88ddaa9bcb7fda348997068d",
+  "sha256": "dccff3b84aefaeb326af157dfb6bfb1ccb2247a9d8d4dcd806e17fcb48cc02e7",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-carriage-curls-up-128x160": {
   "size": [
@@ -12842,10 +12953,11 @@
   "rect": null,
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "be8ac39312192d1a6ea73f16a2fc6fbca2e6beea2a4d29285149de8ae0d37990",
+  "sha256": "cafabbc8b48907a5c06a95c849badb54182e64f15c0a90aa606bfaccb43a92cc",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-carriage-curls-up-104x160": {
   "size": [
@@ -13375,10 +13487,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "552905d090e82f4ebb8610b7381bc14aa3cc7e5eb5c4d99d9a94944cd3abf452",
+  "sha256": "a75aa196464c7e6642edcc22eaecf3a527271d9ed6ce2eb5e399171debdbdc62",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 45 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-bare-128x160": {
   "size": [
@@ -13388,10 +13501,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "9739e161c4a7958a06a149d4cbcc2646d43eff95c936a12e3b0ad37519cf8d90",
+  "sha256": "109d98717793ec33410860ed910613b7893718f90ef813c6934de624f749799d",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 29 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-bare-104x160": {
   "size": [
@@ -13401,10 +13515,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "5cd695011675a57861b3f9ac11100612048409a5b030fc9f0c6a8632e705b528",
+  "sha256": "db46a630bd92407aaf80183438cde1a11242243a6423cdd49349c867473ac6f9",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 27 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-bare-104x96": {
   "size": [
@@ -13414,10 +13529,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "8b6cdd8d8085002d4f3a30e0384c82ea36f031fa7d56a7af5691315a383130ab",
+  "sha256": "32be711eac36f81816c34cf81a1a411aef9a4bbf7409963edc93d58e3da1153c",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-bare-104x64": {
   "size": [
@@ -13427,10 +13543,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "93dd1ee8e2cac88ec23cd60253724553705c99b3e3939dcf2a51b55d985a79c8",
+  "sha256": "02cd0b36d4bd948e0e38d01eeeac66aaf1ece01f798f7e6e111d8b80e644e481",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-flecks-bare-128x72": {
   "size": [
@@ -13440,10 +13557,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "6f1a9d1ae21be207c5ca64ce1a310bea75297e1e97b940466ae1789c13487769",
+  "sha256": "759b634bd60e7ae9562169c140d117562a62d8a394293d42682b2b043268ed60",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-spots-144x176": {
   "size": [
@@ -13453,10 +13571,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "e558401576c49039545a4cf526dfc78eb318452d34eb4f55491b479d7d2fc3d3",
+  "sha256": "5850498e9ebc86cc54c2fff2f0033426b353a1a0e656b00e531f2f0510528f1f",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 53 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-spots-128x160": {
   "size": [
@@ -13466,10 +13585,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "3926a2acd5d55447ac62aea86efcc7db50d68bf1499f5772a6ceb76ec04eedc5",
+  "sha256": "c995ce3ea306f9fdb1e6d745081923ad7bf62920447a2f131103e5a316dee715",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-spots-104x160": {
   "size": [
@@ -13479,10 +13599,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "cb97cc4311f36283dd1cec1a505ba764fcba92aafbc435ed14668382dd49b5ef",
+  "sha256": "43f82dc59ac69aa973fe12dfe15f76605ee4e45ea4d1f866d79146e2cdbfe288",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-spots-104x96": {
   "size": [
@@ -13492,10 +13613,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "adf3ac1b84593af5b25978c4375136370c32f51e174479b0ec2d058e480e16d1",
+  "sha256": "77025420c95f92657f853b2e68f4629590b5b981916955aa0967d51d1e48313a",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-spots-104x64": {
   "size": [
@@ -13505,10 +13627,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "b94a689fb8918d0ad96dd019c16bca62bfc6adadd37120a162e10861479f5a72",
+  "sha256": "d38e30877a41c07630f3e64722eb01d15ac312de0f42565f0af257e89eb7aa69",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 3 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-flecks-spots-128x72": {
   "size": [
@@ -13518,10 +13641,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "fd48aefd2998a5688513f6653b561fd09cffad5fe38551fe9f4c4df639548e76",
+  "sha256": "64856f4f638f4ac6f0435e190f2d2b42eded34a3d3366fa17f410b4be08050e7",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 3 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-short-straight-144x176": {
   "size": [
@@ -13531,10 +13655,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "2bc97bad7fb07f99bc70ace9c552596df6d5a5578c036f263dd11593e7fcb56e",
+  "sha256": "08696008cc9307979331be7bb4a6a7e57f6444f5c4f2377903c6b0e70368807a",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 41 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-short-straight-128x160": {
   "size": [
@@ -13544,10 +13669,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "ef958326c51fc27418f24ad69766ab936b2ba2f4487d461c9e610232a3eb1ef3",
+  "sha256": "dcc6a46ed8ab0e144688f6467fa5a459a99169d8e3e45ed8ff168fd01e2c5076",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 30 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-short-straight-104x160": {
   "size": [
@@ -13557,10 +13683,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "ec1a62eff2023213732dc72f38659382d4a72996de4228508016060f6953e53b",
+  "sha256": "cae6ef6045841a6224a804a3c4f25863cb10b07d22d48d74e968df93db85362f",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 25 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-short-straight-104x96": {
   "size": [
@@ -13570,10 +13697,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "bf001630bc9ffd4ade430204eb06eb7c9d5b329b4134cebf0f141d2bcf4378d8",
+  "sha256": "b2807da8bca73e022c0292abe8daf100b6f69871fb01d042cb892bcd2700aed3",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 23 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-short-straight-104x64": {
   "size": [
@@ -13583,10 +13711,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "98db9953b0623beb884ff68f69ef31993f52c9afb9ea84196dea44f4f285fd9c",
+  "sha256": "c22f465a7bc670f882bab506b9c8009372ae118aaebc1a414c67bfdcd37ee0be",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-fluff-short-straight-128x72": {
   "size": [
@@ -13596,10 +13725,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "bc38a1bcf622344fff0a78ac940697fc9fb49b04021415f3e2fa04d3a9082b5f",
+  "sha256": "763f0205ccbb6dc7add02b86f28b82eb04d571850cabdd8bc9bcfb549f80267e",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-long-swept-144x176": {
   "size": [
@@ -13609,10 +13739,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "8ca83dad82f46894e34fe513a6117b24150a16b55e89e7ac71a46b4e8a19360d",
+  "sha256": "2a4452b7ab90feaf0ba3adc7e9d0ba4096f1780d0c3bc0d8a967321d8ec5aaf6",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 68 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-long-swept-128x160": {
   "size": [
@@ -13622,10 +13753,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "911f69b938df36e3700caacdae59b8b846ffdd0c20dc2d67cf7ceaa30e1d1a76",
+  "sha256": "4b152befaf6d1e2110a4800fda5014a2056431e0ad82e987070a83dc3b3ccbf4",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 58 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-long-swept-104x160": {
   "size": [
@@ -13635,10 +13767,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "fd368a8516249dd98a633c7afe2967c510e51de48b5034cffed661759c8813d0",
+  "sha256": "76c5b6f751771b299594bd260de388a974016a71e13c5b3e9861204ef67b4698",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 38 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-long-swept-104x96": {
   "size": [
@@ -13648,10 +13781,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "81ee557727407a7a563148e34b9a620177709c3882cdc47fdef0f03c108ad4fc",
+  "sha256": "8f579515f961f84af542abdb32eb52c6f908ea542d9548d88846166a8773f9c4",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-long-swept-104x64": {
   "size": [
@@ -13661,10 +13795,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "8ad844c9537b4e145499c73ed0f471148b1173b3748049f5f2a6839a5fb4a6f9",
+  "sha256": "60ab46d33ac10f45bf8a803df4fde1a8faa4dd04b5b56f3abdb1ab1c8fb34f9e",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S02-fluff-long-swept-128x72": {
   "size": [
@@ -13674,10 +13809,11 @@
   "rect": null,
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "ceffab3fedf93ee6fd7e88141d44ecfe116b7c14ec1ec3ca77cdd1ecd79b07d0",
+  "sha256": "b1a93af37f235c50e8d5983acf22dd59a6eb2c8375fc854a7c03e21109c30668",
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
-  "status_note": "one sheet per pair of traits: every look in the same framing"
+  "status_note": "one sheet per pair of traits: every look in the same framing",
+  "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S04-stripes-between-144x176": {
   "size": [
