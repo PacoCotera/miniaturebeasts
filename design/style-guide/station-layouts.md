@@ -46,7 +46,7 @@ This section is the Station's structure: which screens exist, their levels from 
 - **"{name}" and "{pod}"** are the mibi's and the pod's own names, as the way back already names a pod. A name wider than the way back's word room (68 px) reads "Back".
 - **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium".
 - **The Incubator as the bridge.** Research leads in (Create, Cross, an empty Incubator's pod), and the Vivarium leads out (the hatch ends in the meet, one mibi up close). It is reached from Home's column and by those jumps, and its title keeps the Research mark.
-- **The dock's cargo moment is Cargo.** The Caddy's Dock is never a Station key. Docking brings the crates into the bay: Home's Cargo module lights amber, the notice names the crates, and ✓ on the room or the module opens Cargo. The moment itself keeps its name, the arrival: the ribbon, each crate opening and the report card play on Cargo's whole stage ([Cargo](#cargo)). The crates' pods land in the rack, so Pods' collection shows them after.
+- **The dock's cargo moment is Cargo.** The Caddy's Dock is never a Station key. Docking brings the crates into the bay: Home's Cargo module lights amber, the notice names the crates, and ✓ on the room or the module opens Cargo. The moment itself keeps its name, the arrival: the ribbon, each crate opening and the report card play on Cargo's whole stage ([Cargo](#cargo)). The crates' pods land in the rack, so Pods' collection shows them after. Docked from the play page while the Companion or the bench has the keys, the Station lands where it can be seen: Pods, the Incubator, the Vivarium, one mibi up close with the namer shut, the Library and the Probe bench go to Home with the ring on the room; Home and Cargo play their own arrival; Create or Cross with an unpaid choice, the namer and the Sitting stay where they are, with the plate. A lift never moves the screen (`frame.json` `navigation.dock`).
 
 ### The frame on every screen
 
@@ -785,7 +785,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Vivarium key | The Vivarium's whole, the ring on the mibi last seen up close |
 | Research key | Pods' collection, the ring on the pod that most needs you |
 | Library key | The Library's spread, the ring on the frame it was last on |
-| Dock (the Caddy's) | A world event, never a Station key. The top bar's Companion returns, the crates slide into Cargo, the carried set lies down on the bed, the notice names the crates; no message plate. Dock again lifts the Companion: the bay shuts (a cut), the bed shows the Companion mark |
+| Dock (the Caddy's) | A world event, never a Station key. The top bar's Companion returns, the crates slide into Cargo, the carried set lies down on the bed, the notice names the crates; no message plate. Home stays where it is, the same from the play page. Dock again lifts the Companion: the bay shuts (a cut), the bed shows the Companion mark |
 
 **Coming back.** ← from a section lands on Home with the ring on what leads back to it: Cargo, Pods, the Incubator, the Probe and the Library on their modules; the Vivarium's whole on the panel. A coloured key or a jump into Home lands on the room.
 
@@ -1616,7 +1616,7 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 | ✓ on a resident or a tile | `✓ Look at Bean`: the 180 ms screen transition to that mibi up close, the ring on it (on its name when it is out) |
 | ← | Home, the ring on the vivarium panel |
 | The Vivarium key | On the whole, the ring back on the mibi last seen up close |
-| Dock | Cuts: the bed's Companion mark goes and the carried set lies down; their tiles' glyphs become thumbnails. Lifted, the reverse |
+| Dock | Cuts: the bed's Companion mark goes and the carried set lies down; their tiles' glyphs become thumbnails. Lifted, the reverse. From the play page while another device has the keys, it lands on Home (see [The screen map](#the-screen-map)) |
 
 | Focus | ✓ and its verb | Context |
 | --- | --- | --- |
