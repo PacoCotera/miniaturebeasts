@@ -18,7 +18,7 @@ The loop the player feels: **cargo lands → a pod is identified → its chapter
 
 ### Home (Home key): the vivarium
 
-The always-on view. Two thirds of the width is the vivarium: a lit glass terrarium where residents live their species' routines (wander, eat, nap, react to each other). The right third is the bench, drawn as objects: the **pod tray** (one cup per pod, shells in their place colours), the **incubator** (an bud glowing through its shell), and the **Probe cradle** (Shield bars, tier).
+The always-on view. Two thirds of the width is the vivarium: a lit glass terrarium where residents live their species' routines (wander, eat, nap, react to each other). The right third is the bench, drawn as objects: the **pod tray** (one cup per pod, shells in their place colours), the **incubator** (a bud glowing through its shell), and the **Probe cradle** (Shield bars, tier).
 
 ```
  .------------------------------------------------------------------------.
