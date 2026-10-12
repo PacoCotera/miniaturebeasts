@@ -19,3 +19,15 @@ Placement waits on the adult hook slot (pictures.mjs:74, the architect's spec).
 ## Re-cut after the programme lead's 1× note (15:02), 0 MXN
 
 The first cut left magenta key residue under S13's feet and belly (1,163 px at 304×312), with smaller amounts on S09 (182) and S16 (28). My sign missed it. The cut now removes body pixels whose green sits far below their red and blue (under 0.6×, i.e. magenta and its painted shadow; S16's lilac skin keeps more green). Such pixels in the lower half become the shadow, and the 2 px edge is defringed. Re-cut from the raws. **Measured: 0 magenta pixels on S09, S13 and S16 at 304×312, 144×152 and 96×88.** Re-signed at 1× on #D6CEBE (`adult-round1-1x.png`).
+
+## S01 is Pip (fix 1a of the Station global fix plan), 0 MXN
+
+`cut-pip.py` makes S01's four stands from the accepted Pip, `art/miniature-lives/assets/rich-plain-300x310.png`. No generation; the plan's "S01 = Pip, placed 1:1".
+
+- **Body:** alpha 192 and up, one component, holes filled, made opaque with its own colour. The soft edge is un-premultiplied so it doesn't grey.
+- **Shadow:** Pip's soft painted shadow under the feet becomes the house shadow (#1e1a22 at alpha 110), as on the other adults. 2,482 px of stray soft specks are dropped.
+- **Sizes:** 304×312 at 1:1 (Pip is 289 px tall, under the 296 cap). The ground row is on 305, as the other adults stand, so Pip sits at (−6, 9) rather than the plan's (−5, −2). Then 144×152 (×0.4737), 96×88 (×0.276) and 48×48 (refit to 44), each by the family's fit in `cut-adults.py`.
+- **Checks:** 0 px of magenta at every size. Alpha is 0, 110 or 255 at 304 and 48, with the family's graded shadow at 144 and 96.
+- **Proofs:** `S01-pip-sizes-1x.png` (the four sizes on #D6CEBE) and `S01-pip-vivarium-1x.png` (144 and 96 on the day glass beside the signed S01 juvenile at 104).
+- **Signature:** candidate until the art director signs it in builder 2's whole-screen captures (the fix plan's gate).
+- **Known look:** the S01 juvenile stand-in is teal and cream, and Pip, the canonical adult, is charcoal and cream. A Loika darkens as it grows, until the coat layers carry each mibi's own colour.
