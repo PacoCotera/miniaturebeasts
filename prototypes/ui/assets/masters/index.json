@@ -1261,6 +1261,34 @@
    "sha256": "12920d916e647e00fc37823a11d2d7777118730628d3b107043c08740ea2534d",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "mibi-adult-S01-144x152": {
+   "file": "pods/mibi-adult-S01-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-304x312": {
+   "file": "pods/mibi-adult-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "5c143f8fb40a350fb540e13dd759db50ea5e8e9d0eae7b0960dc096928663976",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-48x48": {
+   "file": "pods/mibi-adult-S01-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "1163284a198d623c8f0bc2f1266856a0a2b30d09dbda5a7feb735d9a3411d96a",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-96x88": {
+   "file": "pods/mibi-adult-S01-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
    "w": 128,
