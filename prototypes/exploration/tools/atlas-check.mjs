@@ -5,7 +5,11 @@
 // Several manifests merge as the page's ATLAS_URLS do: every manifest's pieces, the last one winning on a duplicate name.
 // - Decode: each sheet (or a piece's own `file`) with node:zlib: 8-bit indexed (PLTE, tRNS for alpha) or 8-bit RGBA, non-interlaced.
 //   Any other PNG form is refused and named; each sheet's form is printed. A gAMA, iCCP, cHRM or sRGB chunk refuses the sheet.
-// - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the page's 48-colour RGB table.
+// - Palette: each manifest's `palette`; absent or "core48" is the page's 48 colours, any other name loads <name>-palette.json
+//   beside the manifest and checks it with paletteTable (the core 48 and their tables as on the page, no gap in i, no repeated
+//   hex, every table index in range, at most 256 entries). All manifests name the same palette. With --drop, a sheet's PLTE
+//   may hold only colours in that palette, used or not.
+// - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
 //   stand-in, and the statuses. Exit 1 on any refusal or missing core key. Reads files only; writes nothing.
@@ -14,13 +18,30 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { inflateSync } from "node:zlib";
-import { decodeExact, catalogue, coreMissing, QUADS, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, catalogue, coreMissing, paletteTable, QUADS, LIP_STATES } from "../src/atlas.mjs";
 
 // The page's palette, read from index.html as the tests read it (the page's own PALETTE, HEX and RGB declarations).
 export function pageRGB() {
   const page = readFileSync(new URL("../index.html", import.meta.url), "utf8");
   const pal = page.match(/^const PALETTE = \[$[\s\S]*?^\];$/m)[0], hex = page.match(/^const HEX = .*$/m)[0], rgb = page.match(/^const RGB = .*$/m)[0];
   return vm.runInContext(pal + "\n" + hex + "\n" + rgb + "\n;RGB.map(c => c.slice())", vm.createContext({}));
+}
+// The page's five lookup tables over the core 48 (DARK, LIGHT, DARK2, FOGLUT, FADE), read the same way: its own declarations, run.
+export function pageTables() {
+  const page = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  const pal = page.match(/^const PALETTE = \[$[\s\S]*?^\];$/m)[0], darkOf = page.match(/^const DARK_OF = \{[\s\S]*?\};$/m)[0], lightOf = page.match(/^const LIGHT_OF = \{[\s\S]*?\};$/m)[0];
+  const a = page.indexOf("const C = {}; PALETTE.forEach("), b = page.indexOf("\n", page.indexOf("     FADE = mixLUT("));
+  const core = page.slice(a, b);
+  return vm.runInContext([pal, darkOf, lightOf, core, ";({ dark: DARK.slice(), light: LIGHT.slice(), dark2: DARK2.slice(), fog: FOGLUT.slice(), fade: FADE.slice() })"].join("\n"), vm.createContext({}));
+}
+// The palette a manifest names: absent or "core48" is the page's 48; any other name loads <name>-palette.json beside the manifest.
+export function loadPalette(name, dir) {
+  const RGB = pageRGB();
+  if (name == null || name === "core48") return { name: "core48", rgb: RGB, n: RGB.length, biome: 0 };
+  const file = path.join(dir, name + "-palette.json");
+  let json; try { json = JSON.parse(readFileSync(file, "utf8")); } catch (e) { return { name, file, errors: ["cannot read " + path.basename(file) + ": " + e.message] }; }
+  const t = paletteTable(RGB, pageTables(), json);
+  return t.errors ? { name, file, errors: t.errors } : { name, file, rgb: t.rgb, n: t.rgb.length, biome: t.rgb.length - RGB.length, table: t };
 }
 
 const FORBIDDEN = ["gAMA", "iCCP", "cHRM", "sRGB"];
@@ -61,7 +82,7 @@ export function decodePNG(buf) {
     const k = out[i]; if (k >= n) throw new Error("index " + k + " outside PLTE (" + n + " entries) at " + (i % w) + "," + Math.floor(i / w));
     rgba[i * 4] = plte[k * 3]; rgba[i * 4 + 1] = plte[k * 3 + 1]; rgba[i * 4 + 2] = plte[k * 3 + 2]; rgba[i * 4 + 3] = trns && k < trns.length ? trns[k] : 255;
   }
-  return { w, h, rgba, form: "8-bit indexed" };
+  return { w, h, rgba, form: "8-bit indexed", plte };
 }
 
 const isInt = v => Number.isInteger(v) && v >= 0;
@@ -120,18 +141,29 @@ export function incompleteKinds(cat) {
 const noStandIn = cat => (cat.face.w1.length && cat.material.rock.length ? [] : incompleteKinds(cat));
 
 export function check(files, log = console.log, { drop = false } = {}) {
-  const RGB = pageRGB(), of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
-  const merged = new Map(), images = new Map(); let refused = 0;
+  const merged = new Map(), images = new Map(), mans = []; let refused = 0;
+  for (const f of files) {
+    try { mans.push({ f, dir: path.dirname(f), man: JSON.parse(readFileSync(f, "utf8")) }); } catch (e) { log("REFUSED manifest " + f + ": " + e.message); refused++; }
+  }
+  // the palette: every manifest names the same one; pieces decode against it (the page's 48 when it cannot be read)
+  const names = [...new Set(mans.map(m => m.man.palette == null ? "core48" : m.man.palette))];
+  let pal = loadPalette(names.length === 1 ? names[0] : null, mans.length ? mans[0].dir : ".");
+  if (names.length > 1) { log("REFUSED palette: the manifests name different palettes (" + names.join(", ") + ")"); refused++; }
+  else if (pal.errors) { log("REFUSED palette " + pal.name + " (" + path.basename(pal.file) + "): " + pal.errors.join("; ")); refused++; pal = loadPalette(null); }
+  else log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
+  const RGB = pal.rgb, of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
   const image = file => {
     if (!images.has(file)) {
       let img; try { img = decodePNG(readFileSync(file)); } catch (e) { img = { err: e.message }; }
       if (drop && !img.err && img.form !== "8-bit indexed") img = { err: img.form + " (--drop takes 8-bit indexed only)", form: img.form };
+      if (drop && !img.err && img.plte) {   // every PLTE entry, used or not, exactly in the table
+        const off = []; for (let k = 0; k < img.plte.length / 3; k++) { const v = img.plte[k * 3] << 16 | img.plte[k * 3 + 1] << 8 | img.plte[k * 3 + 2]; if (!of.has(v)) off.push(k + " #" + v.toString(16).padStart(6, "0")); }
+        if (off.length) img = { err: off.length + " PLTE entr" + (off.length === 1 ? "y" : "ies") + " not in the palette (" + off.slice(0, 4).join(", ") + (off.length > 4 ? ", …" : "") + ")", form: img.form };
+      }
       images.set(file, img);
     }
     return images.get(file); };
-  for (const f of files) {
-    const dir = path.dirname(f); let man;
-    try { man = JSON.parse(readFileSync(f, "utf8")); } catch (e) { log("REFUSED manifest " + f + ": " + e.message); refused++; continue; }
+  for (const { f, dir, man } of mans) {
     log("manifest " + f + ": " + (man.pieces || []).length + " pieces");
     for (const p of man.pieces || []) {
       if (typeof p.name === "string" && merged.has(p.name)) log("  " + p.name + ": replaced by the later entry");
@@ -169,7 +201,7 @@ export function check(files, log = console.log, { drop = false } = {}) {
   log("blocking kinds with no stand-in: " + (blocked.length ? blocked.join(", ") : "none") + " (stand-in: face.w1 " + cat.face.w1.length + ", material.rock " + cat.material.rock.length + ")");
   log("statuses: " + status.candidate + " candidate, " + status.signed + " signed");
   log(refused || missing.length ? "FAIL: " + refused + " refused, " + missing.length + " core keys missing" : "PASS");
-  return { refused, missing, blocked, status, cat };
+  return { refused, missing, blocked, status, cat, palette: pal };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -6,8 +6,8 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
-import { check, decodePNG, pageRGB } from "../tools/atlas-check.mjs";
-import { decodeExact, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
+import { check, decodePNG, pageRGB, pageTables } from "../tools/atlas-check.mjs";
+import { decodeExact, paletteTable, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
 
 const CRC = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc = b => { let c = 0xffffffff; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
@@ -115,4 +115,88 @@ test("--drop: every sheet's form is printed, and a sheet that is not 8-bit index
     const e = dir(); writeFileSync(path.join(e, "s.png"), srgb); writeFileSync(path.join(e, "m.json"), JSON.stringify({ sheets: { s: "s.png" }, pieces: [piece("x/srgb")] }));
     const q2 = quiet(); assert.equal(check([path.join(e, "m.json")], q2.log, { drop }).refused, 1); assert.match(q2.lines.join("\n"), /REFUSED x\/srgb: sheet s\.png: carries sRGB/);
   }
+});
+
+// ---- the biome palette: the core 48 unchanged, then the biome's own entries with their five tables ----
+const TABLES = pageTables(), FIELDS = ["dark", "light", "dark2", "fog", "fade"];
+const hexOf = c => "#" + c.map(v => v.toString(16).padStart(2, "0")).join("");
+// A fixture meadow: four colours off the core, their tables by the page's mixLUT rule over the whole table (the nearest entry, by its
+// weighted distance, to the colour mixed toward a target): dark toward void, light toward white, dark2 the dark of the dark,
+// fog toward bone at .62, fade toward stone at .5.
+const MEADOW = ["#3a773b", "#418338", "#2b3b34", "#1d6888"].map(h => [1, 3, 5].map(k => parseInt(h.slice(k, k + 2), 16)));
+function fixturePalette() {
+  const rgb = RGB.concat(MEADOW), near = (r, g, b) => { let best = 0, bd = Infinity; rgb.forEach(([R, G, B], i) => { const d = (R - r) ** 2 * 3 + (G - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; };
+  const mix = (c, t, k) => near(c[0] + (t[0] - c[0]) * k, c[1] + (t[1] - c[1]) * k, c[2] + (t[2] - c[2]) * k), at = h => RGB.findIndex(c => hexOf(c) === h);
+  const [VOID, WHITE, BONE, STONE] = ["#0c0a12", "#ffffff", "#f1ebdf", "#5d5974"].map(h => RGB[at(h)]);   // the page's void, white, bone and stone
+  const entries = RGB.map((c, i) => ({ i, name: "core-" + i, hex: hexOf(c), ...Object.fromEntries(FIELDS.map(f => [f, TABLES[f][i]])) }));
+  MEADOW.forEach((c, j) => { const i = 48 + j, dark = mix(c, VOID, .35);
+    entries.push({ i, name: "meadow-" + j, hex: hexOf(c), dark, light: mix(c, WHITE, .3), dark2: dark >= 48 ? mix(MEADOW[dark - 48], VOID, .35) : TABLES.dark[dark], fog: mix(c, BONE, .62), fade: mix(c, STONE, .5) }); });
+  return { biome: "meadow", entries };
+}
+// An indexed sheet on the fixture: index 0 transparent, then core colours and the four meadow colours (48–51).
+const PAL = fixturePalette(), PAL_RGB = PAL.entries.map(e => MEADOW.concat(RGB).find(c => hexOf(c) === e.hex));
+const MEADOW_SHEET = () => png(4, 2, [0, 1, 48, 49, 50, 51, 5, 6], { plte: PAL_RGB, trns: [0] });
+function runPal({ pieces = CORE, files = { "s.png": MEADOW_SHEET() }, palette = "meadow", pal = PAL, drop = false, extra = null } = {}) {
+  const d = dir(); for (const [f, b] of Object.entries(files)) writeFileSync(path.join(d, f), b);
+  if (pal) writeFileSync(path.join(d, "meadow-palette.json"), JSON.stringify(pal));
+  const man = { biome: "meadow", tile: 48, quarter: 24, sheets: { s: "s.png" }, pieces }; if (palette !== null) man.palette = palette;   // null: no palette field
+  writeFileSync(path.join(d, "meadow.json"), JSON.stringify(man)); const list = [path.join(d, "meadow.json")];
+  if (extra) { writeFileSync(path.join(d, "more.json"), JSON.stringify(extra)); list.push(path.join(d, "more.json")); }
+  const q = quiet(); return Object.assign(check(list, q.log, { drop }), { out: q.lines.join("\n") });
+}
+const edit = (k, patch) => ({ biome: "meadow", entries: PAL.entries.map(e => e.i === k ? Object.assign({}, e, patch) : e) });
+
+test("palette: the page's tables are read from index.html, 48 each, dark2 the dark of the dark", () => {
+  assert.ok(MEADOW.every(c => !RGB.some(k => hexOf(k) === hexOf(c))), "the fixture's meadow colours are off the core");
+  for (const f of FIELDS) assert.equal(TABLES[f].length, 48, f);
+  assert.ok(TABLES.dark.every((d, i) => TABLES.dark2[i] === TABLES.dark[d]));
+  assert.ok(FIELDS.every(f => TABLES[f].every(v => Number.isInteger(v) && v >= 0 && v < 48)));
+});
+test("palette 1: a valid biome palette passes paletteTable and the check, with its summary", () => {
+  const t = paletteTable(RGB, TABLES, PAL); assert.equal(t.errors, undefined, String(t.errors));
+  assert.equal(t.rgb.length, 52); assert.deepEqual(t.rgb[49], MEADOW[1]); for (const f of FIELDS) assert.equal(t[f].length, 52);
+  const r = runPal(); assert.equal(r.refused, 0, r.out); assert.match(r.out, /^palette meadow \(meadow-palette\.json\): 52 entries, 4 biome entries, the core 48 and every table ok$/m); assert.match(r.out, /^PASS$/m);
+});
+test("palette 2: a pixel off the core but in the biome set is accepted", () => {
+  const r = runPal({ pieces: CORE.concat(piece("x/meadow", { x: 2, y: 0, w: 2, h: 1 })) }); assert.equal(r.refused, 0, r.out); assert.match(r.out, /ok x\/meadow 2×1/);
+});
+test("palette 3: a pixel in neither the core nor the biome set is refused", () => {
+  const off = png(2, 1, [...MEADOW[0], 255, 1, 2, 3, 255], { ctype: 6 });
+  const r = runPal({ pieces: CORE.concat(piece("x/off", { sheet: undefined, file: "off.png" })), files: { "s.png": MEADOW_SHEET(), "off.png": off } });
+  assert.equal(r.refused, 1, r.out); assert.match(r.out, /REFUSED x\/off: 1 off-palette px, first at 1,0 \(#010203\)/);
+});
+test("palette 4: a core entry changed (its hex or a table) is refused", () => {
+  assert.match(paletteTable(RGB, TABLES, edit(7, { hex: "#000001" })).errors.join(";"), /entry 7: hex #000001 differs from the core colour/);
+  assert.match(paletteTable(RGB, TABLES, edit(9, { fog: (TABLES.fog[9] + 1) % 48 })).errors.join(";"), /entry 9: fog \d+ differs from the core table/);
+  const r = runPal({ pal: edit(3, { dark: (TABLES.dark[3] + 1) % 48 }) });
+  assert.match(r.out, /^REFUSED palette meadow \(meadow-palette\.json\): entry 3: dark/m); assert.match(r.out, /^FAIL: /m);
+});
+test("palette 5: 257 entries are refused", () => {
+  const big = { biome: "meadow", entries: PAL.entries.concat(Array.from({ length: 257 - 52 }, (_, j) => ({ i: 52 + j, name: "x" + j, hex: "#" + (0x100000 + j).toString(16), dark: 0, light: 0, dark2: 0, fog: 0, fade: 0 }))) };
+  assert.equal(big.entries.length, 257); assert.deepEqual(paletteTable(RGB, TABLES, big).errors, ["257 entries (at most 256)"]);
+  assert.match(runPal({ pal: big }).out, /REFUSED palette meadow .*257 entries \(at most 256\)/);
+});
+test("palette 6: a table index out of range is refused", () => {
+  assert.match(paletteTable(RGB, TABLES, edit(50, { fade: 52 })).errors.join(";"), /entry 50: fade 52 outside 0 … 51/);
+  assert.match(paletteTable(RGB, TABLES, edit(48, { light: -1 })).errors.join(";"), /entry 48: light -1 outside/);
+  assert.match(runPal({ pal: edit(51, { dark2: 99 }) }).out, /REFUSED palette meadow .*entry 51: dark2 99 outside 0 … 51/);
+});
+test("palette 7: --drop refuses a sheet whose PLTE holds an entry off the palette, used or not", () => {
+  const extraEntry = png(4, 2, [0, 1, 48, 49, 50, 51, 5, 6], { plte: PAL_RGB.concat([[1, 2, 3]]), trns: [0] });   // entry 52, used by no pixel
+  const loose = runPal({ files: { "s.png": extraEntry } }); assert.equal(loose.refused, 0, loose.out);
+  const strict = runPal({ files: { "s.png": extraEntry }, drop: true });
+  assert.ok(strict.refused > 0); assert.match(strict.out, /REFUSED \S*s\.png: 1 PLTE entry not in the palette \(52 #010203\)/);
+  assert.equal(runPal({ drop: true }).refused, 0, "the fixture sheet passes --drop");
+});
+test("palette 8: no palette (or core48) is the page's 48: a meadow colour is refused as before", () => {
+  for (const palette of [null, "core48"]) {
+    const r = runPal({ palette, pal: null, pieces: CORE.concat(piece("x/meadow", { x: 2, y: 0, w: 2, h: 1 })) });
+    assert.match(r.out, /^palette core48: 48 entries, 0 biome entries, the page's 48$/m); assert.match(r.out, /REFUSED x\/meadow: 2 off-palette px/);
+  }
+});
+test("palette: an i gap, a repeated hex, and manifests naming different palettes are refused", () => {
+  assert.match(paletteTable(RGB, TABLES, edit(50, { i: 53 })).errors.join(";"), /entry 50: i is 53/);
+  assert.match(paletteTable(RGB, TABLES, edit(51, { hex: "#3A773B" })).errors.join(";"), /entry 51: hex #3a773b repeats entry 48/);
+  const r = runPal({ extra: { palette: "core48", sheets: { s: "s.png" }, pieces: [] } });
+  assert.match(r.out, /^REFUSED palette: the manifests name different palettes \(meadow, core48\)$/m); assert.ok(r.refused > 0);
 });

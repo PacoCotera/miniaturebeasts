@@ -79,3 +79,38 @@ export function coreMissing(cat) {
   return out;
 }
 export function coreSet(cat) { return coreMissing(cat).length === 0; }
+
+// The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the five lookup
+// tables the page draws through (dark, light, dark2, fog, fade). coreRGB and coreTables are the page's own 48. Returns the table's
+// rgb and tables (arrays of length N), or { errors }.
+export const PALETTE_MAX = 256;
+export const TABLE_FIELDS = ['dark', 'light', 'dark2', 'fog', 'fade'];
+export function paletteTable(coreRGB, coreTables, file) {
+  const entries = file && Array.isArray(file.entries) ? file.entries : null;
+  if (!entries) return { errors: ['no entries'] };
+  const n = entries.length, errors = [], core = coreRGB.length;
+  if (n > PALETTE_MAX) errors.push(n + ' entries (at most ' + PALETTE_MAX + ')');
+  if (n < core) errors.push(n + ' entries: the core ' + core + ' are not all there');
+  const rgb = [], seen = new Map(), out = { rgb };
+  for (const f of TABLE_FIELDS) out[f] = [];
+  for (let k = 0; k < n; k++) {
+    const e = entries[k] || {};
+    if (e.i !== k) errors.push('entry ' + k + ': i is ' + JSON.stringify(e.i) + ' (a gap or out of order)');
+    const hex = typeof e.hex === 'string' ? e.hex.toLowerCase() : '';
+    if (!/^#[0-9a-f]{6}$/.test(hex)) { errors.push('entry ' + k + ': hex ' + JSON.stringify(e.hex)); rgb.push([0, 0, 0]); }
+    else {
+      if (seen.has(hex)) errors.push('entry ' + k + ': hex ' + hex + ' repeats entry ' + seen.get(hex)); else seen.set(hex, k);
+      rgb.push([parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]);
+    }
+    for (const f of TABLE_FIELDS) {
+      const v = e[f]; out[f].push(v);
+      if (!Number.isInteger(v) || v < 0 || v >= n) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(v) + ' outside 0 … ' + (n - 1));
+    }
+    if (k < core) {
+      const c = coreRGB[k], r = rgb[k];
+      if (r[0] !== c[0] || r[1] !== c[1] || r[2] !== c[2]) errors.push('entry ' + k + ': hex ' + hex + ' differs from the core colour');
+      for (const f of TABLE_FIELDS) if (e[f] !== coreTables[f][k]) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(e[f]) + ' differs from the core table (' + coreTables[f][k] + ')');
+    }
+  }
+  return errors.length ? { errors } : out;
+}
