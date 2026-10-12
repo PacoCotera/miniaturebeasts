@@ -177,17 +177,17 @@ Items marked "salvage" come from earlier project notes outside this repository.
 - The sample's "unique genetic bitmap", revealed at opening (salvage), as the ring at Identify.
 - One study settling several facts, and the question-to-finding idea (salvage).
 - "Unknown, not locked" (salvage): here "locked" means species-fixed only.
-- Crystal-gated loci, as sealed chapters (owner 09-27).
-- Selective breeding, as crosses and wishes (owner 09-24).
+- Crystal-gated loci, as sealed chapters.
+- Selective breeding, as crosses and wishes.
 - ceil(log2) bit packing and shared-catalogue mode (`codec-contract.md`), as the ring's payload.
 - The `#G` code as a lookup, not a genome (`art-template.md`).
-- No QR, and the spoofing worry (owner 09-24).
+- No QR, and the spoofing worry.
 - The editing item (salvage).
 - From the r7 playtest: Data starvation, nothing to shape, misread words, the petals felt like progress, and the incubator reveal was the best moment.
 
 **Dropped:**
-- Trait windows, which don't scale (owner).
-- Whorl petals with hash ridges, which don't encode the genome (owner).
+- Trait windows, which don't scale.
+- Whorl petals with hash ridges, which don't encode the genome.
 - Full decoding before creation, the old v1 gate, which contradicts the decided unedited founder.
 - Research that steers synthesis (model B, salvage), superseded by the decided fixed genome.
 - Per-topic purchases, a checklist.
