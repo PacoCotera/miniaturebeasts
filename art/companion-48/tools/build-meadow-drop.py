@@ -1,21 +1,21 @@
-"""The meadow drop: the indexed sheets, meadow.json and meadow-palette.json in art/companion-48/terrain/meadow/ (c2a-48px-spec §4.1,
-§5.1), from the tileset candidates on test map 12's look.
+"""The meadow drop: the indexed sheets, meadow.json and meadow-palette.json in art/companion-48/terrain/meadow/ (the
+loader's manifest, checked by prototypes/exploration/tools/atlas-check.mjs --drop), from the tileset candidates in terrain/grass/.
 
-Palette. b1's approved meadow set (mockup/b1/biome-meadow.json): the core 48 at 0-47, unchanged, then the meadow's 48 (decisions
-2026-10-10 19:49, 8-bit per-biome sets). meadow-palette.json carries each entry's DARK, LIGHT, DARK2, FOG and FADE index: the core
+Palette. b1's approved meadow set (mockup/b1/biome-meadow.json): the core 48 at 0-47, unchanged, then the meadow's 48 (8-bit
+indexed colour in per-biome sets, design/proposals/technical-architecture.md). meadow-palette.json carries each entry's DARK, LIGHT, DARK2, FOG and FADE index: the core
 48 exactly as the page's tables, the meadow entries one step along their own material's ramp (DARK, LIGHT) and by the page's mixLUT
 rule (FOG toward bone at .62, FADE toward stone at .5, the 3/4/2 weighted nearest colour over all 96).
 
-Pieces, by the catalogue's keys (§4.2):
+Pieces, by the loader's catalogue keys (prototypes/exploration/src/atlas.mjs):
   lawn            6 tiles on b1's lawn ramp at the middle level's tone: b1's own flecks (its lawn less its bands, one 48 px window
                   each), clustered tufts and clover kept 6 px inside the tile, so any tile meets any other
   sand, deep      the pond's bank sand and its body one step down, flat with sparse flecks
   material.rock   48 px of rock from the 1-wide faces' middle rows (generator 1's cliff band)
   decal           the tall grass and flowers decals with their greens moved onto b1's ramp by value
   water           tileset/water's quarters, frames 1 and 2, and its macros, lobes, beaches, bend and band (catalogued as other)
-  lip             the 28 quarters: the candidate set's edge geometry (pieces/region) drawn by test map 12's plateau-edge rule on b1's
+  lip             the 28 quarters: the candidate set's edge geometry (pieces/region) drawn by the plateau-edge rule below on b1's
                   ramp (outline, lit rim, two shade steps beyond, a ragged fringe); transparent where the lawn is untouched
-  face, cap, side, foot strips, stairs, props: tileset/walls, stairs and props, mapped to the 96 by test map 12's own nearest rule;
+  face, cap, side, foot strips, stairs, props: tileset/walls, stairs and props, mapped to the 96 by nearest colour (to_idx);
                   a face's or cap's enclosed key holes filled with the lawn that showed through them
 Pieces are `signed` or `candidate` by signed() below. Sheets are 8-bit indexed: PLTE the 96 colours in order, magenta's slot (44, used by no piece) transparent through tRNS, no colour chunks.
 usage: python3 -I build-meadow-drop.py OUT_DIR PROOF_DIR"""
@@ -54,7 +54,7 @@ def gstep(i, k):
         if mat[i] != "grass": return i
         i = min(G_ORDER, key=lambda g: abs(lum[g] - lum[i]))
     j = G_ORDER.index(i); return G_ORDER[max(0, min(len(G_ORDER) - 1, j + k))]
-# the meadow's greens step along the saturated lawn ramp (test map 12's GS), every other material along its own ramp by value
+# the meadow's greens step along the saturated lawn ramp (gstep), every other material along its own ramp by value
 DARK = [P48.dark[i] if i < 48 else gstep(i, -1) if mat[i] == "grass" else rstep(i, -1) for i in range(NC)]
 LIGHT = [P48.light[i] if i < 48 else gstep(i, 1) if mat[i] == "grass" else rstep(i, 1) for i in range(NC)]
 def mix(target, t, i): tr = PAL[P48.index[target]]; return PAL[i] + (tr - PAL[i]) * t
@@ -63,17 +63,17 @@ FADE = [P48.fade[i] if i < 48 else nearest(mix("stone", .5, i)) for i in range(N
 DARK2 = [DARK[d] for d in DARK]
 NAMES = [cols[i].get("name") or f"{cols[i]['material']}-{i}" for i in range(NC)]
 assert len(set(c["hex"] for c in cols)) == NC
-with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # c2a-48px-spec §4.6: one entry per index, one per line
+with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
     fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
              "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i])}) for i in range(NC)) + " ] }\n")
 
 def to_idx(path_or_img):
     im = Image.open(path_or_img) if isinstance(path_or_img, str) else path_or_img
     a = np.asarray(im.convert("RGBA")); rgb = a[..., :3].reshape(-1, 1, 3).astype(int)
-    i = ((rgb - PAL[None]) ** 2).sum(-1).argmin(1).reshape(a.shape[:2])          # test map 12's own rule (tileset-map.py to_idx)
+    i = ((rgb - PAL[None]) ** 2).sum(-1).argmin(1).reshape(a.shape[:2])          # nearest colour, plain RGB distance
     return np.where(a[..., 3] > 127, i, TR)
 
-# ---- b1's lawn ramp, as tileset-map.py reads it
+# ---- b1's lawn ramp: its seven commonest lawn tones, dark to light, and the lit tone they centre on
 B1 = to_idx(os.path.join(G, "mockup", "b1", "scene-1x.png"))
 lawn = mat[B1] == "grass"
 vals, cnts = np.unique(B1[lawn], return_counts=True); medl = np.median(lum[B1[lawn]])
@@ -82,7 +82,7 @@ LRAMP = sorted(vals[np.argsort(-cnts)[:7]], key=lambda i: lum[i]); LB = LRAMP.in
 LIX = {t: k for k, t in enumerate(LRAMP)}
 def ls(i, k): return LRAMP[max(0, min(len(LRAMP) - 1, LIX[i] + k))] if i in LIX else gstep(i, k)
 OUTL = nearest((24, 52, 30)); BODY, SHAL = nearest((29, 104, 136)), nearest((34, 121, 147))
-LAWN0 = LB - 1                                                    # the middle level's tone (test map 12's LTONE[1])
+LAWN0 = LB - 1                                                    # the middle level's tone, one step under b1's lit lawn
 def boxavg(a, k):
     p = np.pad(a, k, mode="edge"); cs = p.cumsum(0).cumsum(1); cs = np.pad(cs, ((1, 0), (1, 0)))
     n = 2 * k + 1; return (cs[n:, n:] - cs[:-n, n:] - cs[n:, :-n] + cs[:-n, :-n]) / n ** 2
@@ -162,7 +162,7 @@ for p in json.load(open(os.path.join(TS, "water", "water.json")))["pieces"]:
     if p["kind"] == "shore": f["set"] = "water"
     add(p["name"], to_idx(os.path.join(TS, "water", p["file"])), **f)
 
-# ---- lip quarters: the candidate geometry by test map 12's edge rule
+# ---- lip quarters: the candidate geometry by the plateau-edge rule (outline, lit rim, two shade steps beyond, a fringe)
 def grow(m, n):
     m = m.copy()
     for _ in range(n): m[1:] |= m[:-1]; m[:-1] |= m[1:]; m[:, 1:] |= m[:, :-1]; m[:, :-1] |= m[:, 1:]
@@ -201,7 +201,7 @@ for qi, q in enumerate(("nw", "ne", "se", "sw")):
 
 # ---- walls, stairs, props
 def spill(a, seed):
-    """test map 12's turf over a wall's top: the lawn carried 9-24 px down in lobes, a lit lip, its shaded underside, the dark line
+    """the plateau's turf over a wall's top: the lawn carried 9-24 px down in lobes, a lit lip, its shaded underside, the dark line
     and hanging blades. The lobes fall to 10 px within 8 px of each side, so any face meets any other."""
     h, w = a.shape; rng = np.random.RandomState(seed); xs = np.arange(w); lobe = np.zeros(w)
     for _ in range(max(1, w // 30)):
@@ -225,7 +225,7 @@ for p in WJ:
     a = to_idx(os.path.join(TS, "walls", p["file"])); h, w = a.shape
     if p["kind"] in ("face", "cap"):
         a = spill(a, sum(map(ord, p["name"])))
-        # the key's holes inside a face (moss and vines keyed out): filled with the lawn they showed in test map 12 and the proof,
+        # the key's holes inside a face (moss and vines keyed out): filled with lawn texture,
         # so a face over any ground reads the same
         from scipy import ndimage as nd_
         lab, n = nd_.label(a == TR); edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]])))
@@ -236,7 +236,7 @@ for p in WJ:
     if f["kind"] == "side":
         end = p.get("end"); ox = 48 - w if p["side"] == "w" else 0
         f["offset"] = [ox, 24 if end == "foot" else 0]; f["end"] = end or "none"; f.pop("cells", None) if end != "tail" else None
-    elif p["kind"] == "foot": f["offset"] = [0, 48 - h + 2]                    # the strip breaks the wall's bottom edge (tileset-map.py)
+    elif p["kind"] == "foot": f["offset"] = [0, 48 - h + 2]                    # the strip breaks the wall's bottom edge, 2 px under it
     f["variant"] = str(p.get("variant", ""))
     PIECES.append((p["name"], a, dict(status="candidate", offset=f.pop("offset", [0, 0]), **f)))
 for p in json.load(open(os.path.join(TS, "stairs", "stairs.json")))["pieces"]:
@@ -251,8 +251,8 @@ for p in json.load(open(os.path.join(TS, "props", "props.json")))["pieces"]:
     k_ = np.isin(a, KEY); a[k_ & edge] = P48.index["plumD"]; a[k_ & ~edge] = P48.index["soil"]
     PIECES.append((p["name"], a, dict(status="candidate", offset=[(48 - w) >> 1, 48 - h], **f)))
 
-# ---- the art director's signature (2026-10-11 22:2x): the pieces seen at 1x in a place composed by §4.3 (proof/drop-place) or
-# reviewed on their sheet with a settled v1 role. Still candidate: side columns and stairs (not yet composed), material.rock (A1
+# ---- the art director's signature: the pieces seen at 1x in a place composed by the loader's tile rules, or
+# reviewed on their sheet with a settled v1 role. Still candidate: side columns and stairs (not yet composed), material.rock (its cliff-band
 # captures), and every piece v1 does not draw (shore macros, lobes, beaches, bend, band, wall foot strips, bush, fern, bridge).
 def signed(n, f):
     k = f["kind"]
@@ -285,7 +285,7 @@ for g, pick in GROUPS:
     for (px, py), (n, a, f) in zip(pos, items):
         sheet[py:py + a.shape[0], px:px + a.shape[1]] = a; done.add(n)
         man["pieces"].append({"name": n, **f, "sheet": g, "x": px, "y": py, "w": int(a.shape[1]), "h": int(a.shape[0])})
-    KEYI = P48.index["magenta"]; assert not (sheet == KEYI).any()      # transparent is magenta's slot, unused by every piece (§4.6: PLTE all in the table)
+    KEYI = P48.index["magenta"]; assert not (sheet == KEYI).any()      # transparent is magenta's slot, unused by every piece (every PLTE entry is in the table)
     sheet[sheet == TR] = KEYI
     im = Image.fromarray(sheet, "P"); im.putpalette([v for c in PAL for v in c])
     im.save(os.path.join(out, f"meadow-{g}.png"), transparency=bytes([255] * KEYI + [0] + [255] * (NC - KEYI - 1)))
