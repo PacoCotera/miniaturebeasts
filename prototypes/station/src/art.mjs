@@ -6,6 +6,10 @@ import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, sh
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
 import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
 import { plainRender, BG } from "../../workbench/framework/plain.mjs";
+import { resolveIndividual } from "../../workbench/framework/resolve.mjs";
+import { buildBody } from "../../workbench/framework/rig.mjs";
+import { validateBody } from "../../workbench/framework/validate.mjs";
+import { LOCI } from "../../workbench/framework/catalogue.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
@@ -50,11 +54,25 @@ export const baseArt = () => art("base", () => { const pb = new PB(70, 10); pb.r
 
 // ---------- The mibi placeholder: the plain renderer on the genome, quantised ----------
 const BUILT = new Map();
-export function builtOf(frame, genome) {
-  const k = genomeDigest(genome); let b = BUILT.get(k);
-  if (!b) { try { b = buildIndividual(frame, genome); } catch (e) { b = { error: e.message }; } BUILT.set(k, b); }
+// `read`: the chapter ids read so far (a Set or an array), or undefined for every chapter read, the mibi's own values. While Glow is unread its emission is drawn at none, and while Charge is unread its phase at
+// the look "solid"; once read, the mibi's own value. The genome is never changed: the override is on the resolved values the rig draws from.
+export function builtOf(frame, genome, read) {
+  const hide = read === undefined ? [] : [!has(read, "glow") && "glow", !has(read, "charge") && "charge"].filter(Boolean), k = genomeDigest(genome) + (hide.length ? "~" + hide.join("+") : ""); let b = BUILT.get(k);
+  if (!b) {
+    try {
+      if (!hide.length) b = buildIndividual(frame, genome);
+      else {
+        const resolved = resolveIndividual(frame, genome), v = resolved.values; resolved.species = frame.species.id;
+        if (hide.includes("glow") && "appearance.emission-brightness" in v) v["appearance.emission-brightness"] = 0;
+        if (hide.includes("charge") && "physiology.phase" in v) v["physiology.phase"] = LOCI.get("physiology.phase").alleles.find((a) => a.id === "solid").value;
+        const scene = buildBody(resolved); b = { resolved, scene, validation: validateBody(scene) };
+      }
+    } catch (e) { b = { error: e.message }; }
+    BUILT.set(k, b);
+  }
   return b;
 }
+const has = (read, id) => (read instanceof Set ? read.has(id) : read.includes(id));
 // The cast shadow of the plain pass lies on the segment from the ground to its shade; those pixels are cleared.
 const isShadow = (r, g, b) => { const t = (BG[0] - r) / 50; return t > 0.02 && t < 1 && Math.abs(g - (BG[1] - 55 * t)) <= 3 && Math.abs(b - (BG[2] - 60 * t)) <= 3; };
 function renderPB(scene, camera, device) {
@@ -106,6 +124,23 @@ const PART_OF = [
   [/leg|feet|foot|stride|pace|gait|waddle|turning|weave/, ["leg", "ray", "foot-skirt"]], [/tail/, ["tail", "tail-bulb"]], [/wing|fin|flap/, ["flap", "fin"]], [/cap/, ["cap"]], [/shell/, ["shell", "wing-case"]],
 ];
 const partsFor = (traitId) => (PART_OF.find(([re]) => re.test(traitId)) || [null, null])[1];
+// Where an unread chapter shows on the founder (technical, Fix 1b part 2): "body" the whole body; a list of groups, each a list of part names (a part matches itself and its "-" children: "tail" covers tail-bulb; S14's
+// foot-skirt is Shape, not the leg group); null a chapter that draws nothing (the doings, and Glow and Charge, which change the emission and the phase instead). An unknown chapter id throws, as policyOf does.
+export const UNREAD_REGION = { coat: "body", shape: "body", face: [["head", "muzzle", "beak", "eye", "ear", "crown", "horn", "antenna"]], "legs-tail": [["leg", "ray"], ["tail"]], movement: null, stamina: null, character: null, glow: null, charge: null };
+const regionOf = (id) => { if (!Object.hasOwn(UNREAD_REGION, id)) throw new Error(`chapter ${id} is in no unread-region row (station/src/art.mjs UNREAD_REGION): the programme lead places a new chapter`); return UNREAD_REGION[id]; };
+// How a founder is drawn for the chapters read so far: "ghost" when nothing is read; "veil" over the union of the unread looks' groups (the whole body when Coat or Shape is unread, which wins); otherwise "clear" (only doings, Glow or Charge
+// unread). `boxes` are the groups to veil: [{ whole: true }] for the body, else [{ parts }] per group; with a scene and camera (`view`) each also carries its pixel box from partBox. It draws nothing.
+export function treatmentOf(frame, read, view = null) {
+  const ids = frame.chapters.map((c) => c.id), readIds = [...read];
+  for (const id of [...ids, ...readIds]) regionOf(id);
+  if (!readIds.length) return { mode: "ghost", boxes: [] };
+  const unread = ids.filter((id) => !readIds.includes(id)).map(regionOf).filter(Boolean);
+  if (!unread.length) return { mode: "clear", boxes: [] };
+  const groups = unread.includes("body") ? null : unread.flat().filter((g, i, a) => a.findIndex((h) => h.join() === g.join()) === i);
+  const boxes = groups ? groups.map((parts) => ({ parts })) : [{ whole: true }];
+  if (view) for (const bx of boxes) Object.assign(bx, partBox(view.scene, view.camera, bx.parts ?? null));
+  return { mode: "veil", boxes };
+}
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 // The box (in image pixels) the named parts occupy under a camera; the whole body when none match.
 function partBox(scene, camera, parts) {
