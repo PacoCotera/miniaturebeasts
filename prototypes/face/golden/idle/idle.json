@@ -2,23 +2,23 @@
  "_note": "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "idle-docked": {
-   "hash": "9c327959",
+   "hash": "41963817",
    "png": "idle-docked.png"
   },
   "idle-away": {
-   "hash": "ed82cf2d",
+   "hash": "762c9903",
    "png": "idle-away.png"
   },
   "idle-none": {
-   "hash": "722184fa",
+   "hash": "d2d10c18",
    "png": "idle-none.png"
   },
   "idle-empty": {
-   "hash": "ead2661a",
+   "hash": "621def38",
    "png": "idle-empty.png"
   },
   "idle-walk-8000ms": {
-   "hash": "c6ab552f",
+   "hash": "3017f171",
    "png": "idle-walk-8000ms.png"
   }
  }

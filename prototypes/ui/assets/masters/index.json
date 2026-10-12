@@ -726,29 +726,29 @@
    "file": "vivarium/idle-vivarium-dawn-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "4f1938a8b44c8143dd05768e7027deeeb505b9a4f08a06af6f3d0aad176749eb",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "a5644197a3eb3d095f78fae3fcd8758b867e276cb9d705c888cc0cd9ab81227a",
+   "signed": "art director, Idle seam fix (masters-pods ebed6b4e)"
   },
   "idle-vivarium-day-1024x568": {
    "file": "vivarium/idle-vivarium-day-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "9997fdb57d4369ef7a5f62b1d6e592127dbe4318ccd2a0b77ade74be4c4f5e7c",
+   "signed": "art director, Idle seam fix (masters-pods ebed6b4e)"
   },
   "idle-vivarium-dusk-1024x568": {
    "file": "vivarium/idle-vivarium-dusk-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "b622799abfc5bad71055fb6de9a1cfa2a1e0c3a5957d83c68c76b39caaa8d518",
+   "signed": "art director, Idle seam fix (masters-pods ebed6b4e)"
   },
   "idle-vivarium-night-1024x568": {
    "file": "vivarium/idle-vivarium-night-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "3dd1077137c080904691b283088b6def18be9f3b71876ec8ab49a46532dde9ab",
-   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+   "sha256": "76e3c911c8e6462a628bf035417bac5e0d31a81db3f5628b3badd869f006a43e",
+   "signed": "art director, Idle seam fix (masters-pods ebed6b4e)"
   },
   "leaf-empty-16x20": {
    "file": "pods/leaf-empty-16x20.png",
