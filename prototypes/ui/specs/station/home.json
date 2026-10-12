@@ -172,7 +172,7 @@
   "vivarium": "the Vivarium's whole, the ring on the mibi last seen up close",
   "research": "Pods, the collection, the ring on the pod that most needs the player",
   "library": "the Library's spread, the ring on the frame it was last on",
-  "dock": "the Caddy's Dock, a world event: the Companion returns in the top bar, the crates slide into the Cargo module (events.crateIn), the bed fills with the carried set and the notice names the crates. No message plate. Dock again lifts the Companion: the bay shuts (a cut), the bed empties and its mark shows"
+  "dock": "Landing per frame.json navigation.dock; then the Caddy's Dock, a world event: the Companion returns in the top bar, the crates slide into the Cargo module (events.crateIn), the bed fills with the carried set and the notice names the crates. No message plate. Dock again lifts the Companion: the bay shuts (a cut), the bed empties and its mark shows"
  },
  "line": {
   "rule": "the bottom line for each focus: the action (✓ and its verb), the context (mist, at most six words, the only part that may end in …), the notice (the most pressing need, strings.needs, amber with its lamp, the same wherever the ring is) and no way back",

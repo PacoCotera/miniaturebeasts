@@ -165,7 +165,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 }
 html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
 html.embed body{visibility:hidden}
-html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(--embed-w,450px); height:auto; max-width:none; border-radius:0}
+html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}
 </style>
 </head>
 <body>
@@ -235,6 +235,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(
     <div class="observer">
       <div class="obs-row"><button class="switch" id="obsToggle" aria-pressed="false" aria-controls="obs"><span class="track"></span>Observer</button>
         <button class="btn" id="resetGame" type="button">Reset game</button></div>
+      <p class="obs-note" id="resetNote" hidden>Reset game erases this save and starts fresh</p>
       <div class="reset-ask" id="resetAsk" hidden role="alertdialog" aria-labelledby="resetQ"><span id="resetQ">Erase this world and start fresh?</span>
         <button class="btn btn-danger" id="resetYes" type="button">Erase and start fresh</button><button class="btn" id="resetNo" type="button">Keep playing</button></div>
       <div class="obs" id="obs" hidden>
@@ -682,23 +683,27 @@ function carryApply(S, st) {
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
+// A new world's fields, before its life is placed: newWorld starts from them, and load() fills from them what a save lacks.
+function worldFields(seed, gen) {
+  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
+    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
+    phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
+    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
+}
 function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   const gen = NEW_GEN;
   G = genWorld(seed, gen);
-  S = { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
-    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
-    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
-    phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
-    exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
+  S = worldFields(seed, gen);
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
-  if (window.__mbResetting || RT.readOnly) return;   // a reset is reloading, or the save is from a newer page: nothing may write it
+  if (window.__mbResetting || RT.readOnly || RT.bootHold) return;   // a reset is reloading, the save is read-only, or the loaded save has not drawn yet: nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
@@ -724,6 +729,12 @@ function migrate7(o) {
   if (s.phase === 'station') s.phase = 'setup';
   return s;
 }
+// Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report, the Station's part).
+function idsIn(o, out = new Set()) {
+  if (Array.isArray(o)) for (const v of o) idsIn(v, out);
+  else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
+  return out;
+}
 function load() {
   const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
@@ -733,7 +744,17 @@ function load() {
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
     dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
-    layoutCache.clear(); G = genWorld(S.seed, gen); indexCreatures(); return true;
+    // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
+    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods is the world's life,
+    // regenerated below without any pod the save already holds (as itself, or as the Station's crate id + ':' + pod id),
+    // and a missing or invalid nextId is counted from the pod ids the save holds.
+    const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
+    const held = id => ids.some(x => x === id || x.endsWith(':' + id));
+    const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
+    layoutCache.clear(); G = genWorld(S.seed, gen);
+    if (noPods) S.pods = genLife(S.seed).pods.filter(p => !held(p.id));
+    if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
+    indexCreatures(); return true;
   } catch (e) { dropOld(); return false; }
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
@@ -4275,7 +4296,7 @@ function lineFor() {
 }
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
-  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // S is null here: nothing that reads it runs
+  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
@@ -4528,17 +4549,16 @@ function fit() {
 }
 window.addEventListener('resize', fit);
 // ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
-// One function sets the width; a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
-const EMBED_W = 450;
-const setEmbedW = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-w', (EMBED_W * k / d) + 'px'); };
+// One function sets the screen's scale (a whole-pixel screen scaled by a transform); a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
+const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-s', String(k / d)); };
 let dprQuery = null;
 function armDpr() {
   if (dprQuery) dprQuery.removeEventListener('change', onDpr);
   dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
   dprQuery.addEventListener('change', onDpr);
 }
-function onDpr() { setEmbedW(); armDpr(); }
-if (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }
+function onDpr() { setEmbedS(); armDpr(); }
+if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }
 
 const stampEl = document.getElementById('stamp');
 fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {
@@ -4599,7 +4619,7 @@ function energyText() {
   return 'in reach: ' + w + ' warm stones (' + wf + ' unveiled) · ' + k + ' storm-charged (' + kf + ' unveiled) · drawn from warm this expedition ' + (ex.stats.warm || 0);
 }
 function onStateChanged() {
-  if (!obsEl || obsEl.hidden || !S) return;
+  if (!obsEl || obsEl.hidden || !S || RT.readOnly) return;
   const ex = S.exp;
   document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started';
   document.getElementById('oTurn').textContent = wTurn();
@@ -4652,16 +4672,19 @@ copyBtn.addEventListener('click', () => {
 
 // ===================== 18. Boot =====================
 // A save from a newer page stays as stored: the page reads nothing from it, writes nothing and ignores input.
+// A loaded save that cannot be shown is kept the same way, with its own line and the page's line beside Reset game.
 function readOnlyNewer() { RT.readOnly = true; }
+function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getElementById('resetNote').hidden = false; }
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
-  text('This page is out of date · reload to play', 225, 289, C.bone, 2, 'center');
+  text(RT.broken ? 'This save can’t be shown · kept untouched' : 'This page is out of date · reload to play', 225, 289, C.bone, 2, 'center');
   R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
-if (ld === true && S.exp && S.exp.beaconView) setTimeout(beaconDone, 0);   // reloaded mid-sweep: back beside the beacon
-if (ld === true && S.exp && S.exp.caveDue) setTimeout(digDone, 0);   // reloaded before the dug burrow's entry: into the cave
+RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
+if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
+if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
 // The side panel's two sections start collapsed on every load.
 for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
@@ -4671,7 +4694,6 @@ for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
   no.addEventListener('click', back);
   yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
-if (!RT.readOnly) { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup'; }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
 window.addEventListener('storage', e => {
@@ -4681,8 +4703,12 @@ window.addEventListener('storage', e => {
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
   save();   // save() re-reads the Station's part, syncs, and writes ours back unchanged otherwise
 });
-save();
-if (!RT.readOnly && S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
+// A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup';
+  if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
+  catch (e) { console.error(e); readOnlyBroken(); } }
+else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
+RT.bootHold = false; save();
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
 fit();

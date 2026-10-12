@@ -754,3 +754,10 @@ test("the Probe bench's plate places, a table a tier: as many as the tier's Shie
     assert.equal(places[0][0] + (places.at(-1)[0] + P.plate[0] - places[0][0]) / 2, axis, `tier ${t} centred on ${axis}`);
   }
 });
+
+test("frame.navigation.dock: the screens a Dock from the play page leaves where they are, each a screen the Station goes to, and the namer stays", () => {
+  const d = frame.navigation.dock;
+  assert.deepEqual(d.stays, ["home", "cargo", "create", "cross", "sitting"]);
+  for (const id of d.stays) assert.ok(id in frame.strings.titles, id + " is a screen the Station goes to (it has a title)");
+  assert.equal(d.namerStays, true); assert.match(d.rule, /Lift never navigates/);
+});

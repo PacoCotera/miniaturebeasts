@@ -275,7 +275,7 @@
   "back": "Home, the ring on the vivarium panel (home.json, ← from a section)",
   "vivarium": "on the whole, the ring back by focus.entry.vivariumKey",
   "room": "as everywhere (frame.json navigation.roomKeys)",
-  "dock": "the Caddy's Dock, a world event: events.dock; no message plate"
+  "dock": "the Caddy's Dock, a world event: events.dock; no message plate; from the play page without the keys: lands on Home (frame.json navigation.dock)"
  },
  "bottomLine": {
   "resident": {"action": "strings.look", "context": "strings.resident; a sleeper strings.sleeper; while the placeholder is drawn, strings.painting"},

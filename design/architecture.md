@@ -129,6 +129,9 @@ complete in software.
   intent table, drawn by the face's C words. Rules are pure functions. The
   layout numbers have one home, the spec file. The LVGL face is the only face;
   nothing is drawn in JavaScript.
+- **Play page.** The sandbox plays the Station and the Companion side by side
+  on one page, with the Caddy's Dock as a control on it. The page is sandbox
+  only: each device page still runs alone, and nothing on it ships.
 
 The layers, contracts and milestones are
 [technical-architecture.md](proposals/technical-architecture.md); the face is
@@ -142,4 +145,5 @@ The layers, contracts and milestones are
 - Trades, loans, gifts, how nearby kits recognise each other, and rewards for
   scanning.
 - The cloud layer beyond brokering paintings: its services, accounts and sync.
-- The link that carries crates from the Companion to the Station at the dock.
+- The hardware link that carries crates from the Companion to the Station at
+  the dock. In the sandbox, the play page's Dock control stands in for it.
