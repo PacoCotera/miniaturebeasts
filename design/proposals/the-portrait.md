@@ -107,7 +107,7 @@ The owner took all three as set out below.
 
 ## 8. Rules for the build
 
-**Rules for the build (M6).** These answer the open rules for M6 and are rulings inside the points above; the questions that change the game's feel or economy wait for the owner and are marked so.
+**Rules for the build (M6).** These answer the open rules for M6 and are rulings inside the points above; the questions that change the game's feel or economy wait for an owner ruling and are marked so.
 
 - **Habits.** A habit is one of the species' routine acts, the states its behaviour runs through (creatures and genomics, "Behavior"). It is **watched** in two ways: at the bench, when a resident is kept in focus for a minute of its routine (the bench trickle's watch, research economy §4), the habit it was doing is recorded; and on a walk, when the mibi with the player does its act (a Tuikis digs a burrow or glows, a Loika calms a creature, an Untuva sniffs out a pod), the habit comes home with the crate and is recorded at the dock. A juvenile with you records the habit the Companion saw it do. The ids live in the species frame as a short `habits` list; for the first three: **Loika** `shake-dry`, `calm`, `sleep-curled`; **Untuva** `sniff`, `puff`, `sleep-curled`; **Tuikis** `dig`, `glow`, `sleep-curled`. A later species gets its list with its frame.
 - **Places.** A place is a map cell's place, as the book's place stamps show it. The pod's place counts from birth; every place the mibi entered while with the player is recorded at the dock (`recordWalk`, once per place).
