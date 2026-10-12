@@ -21,13 +21,14 @@
 <rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
 <text x="690" y="60" font-size="11" fill="#222">Stamina</text>
 <rect x="719.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
-<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
-<text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
-<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the window</text>
-<rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
-<text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
+<rect x="804.5" y="256.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="808" y="270" font-size="10" fill="#222">STAMP label 120</text>
+<text x="808" y="281" font-size="9" fill="#777">804,256 120×120</text>
+<text x="808" y="294" font-size="9" fill="#777">140 from the window</text>
+<rect x="776.5" y="381.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="776" y1="405.5" x2="952" y2="405.5" stroke="#3c4b57" stroke-width="1"/>
+<text x="864" y="397" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+<text x="864" y="416" font-size="9" fill="#777" text-anchor="middle">code 776,381 176×25</text>
 <line x1="668" y1="300" x2="668" y2="96" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
 <text x="674" y="200" font-size="9" fill="#2b6cb0">window swings up on its hinge,</text>
 <text x="674" y="211" font-size="9" fill="#2b6cb0">3 slices in 0–600 ms (placeholder:</text>

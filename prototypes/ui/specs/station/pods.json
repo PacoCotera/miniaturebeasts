@@ -360,8 +360,9 @@
     ]
    },
    "stampCase": {
+    "offGrid": "x on the shared stamp slot (frame.json regions.stampSlot): the label at 804 centres on the right column's axis 864, 4 px off the grid, as on Create",
     "rect": [
-     856,
+     788,
      384,
      152,
      152
@@ -373,8 +374,9 @@
     "note": "owner, 2026-10-08: the small label inside a dim, unlit glass case, where the concept's case stands"
    },
    "stampCaseFront": {
+    "offGrid": "x on the shared stamp slot (frame.json regions.stampSlot): the label at 804 centres on the right column's axis 864, 4 px off the grid, as on Create",
     "rect": [
-     856,
+     788,
      384,
      152,
      152
@@ -388,12 +390,15 @@
    },
    "stamp": {
     "rect": [
-     872,
+     804,
      400,
      120,
      120
     ],
-    "component": "stampLabel"
+    "component": "stampLabel",
+    "offGrid": "x on the shared stamp slot (frame.json regions.stampSlot): the label at 804 centres on the right column's axis 864, 4 px off the grid, as on Create",
+    "look": "stampCase",
+    "slot": "frame.json regions.stampSlot: the label where Create has it, so it does not move from Pods to Create; the case 16 px a side (788, 384, 152, 152); was 872, 400 in the case at 856, 384. UI/UX designer, 2026-10-11 23:59, fix 4 of the global fix plan: the stamp is a small label, never the brightest element on screen; its case look is the art director's hook stampCase (frame.json regions.stampSlot)"
    },
    "ribbon": {
     "rect": [
@@ -1282,7 +1287,8 @@
   },
   "stampLabel": {
    "fill": "bone",
-   "edge": "slate"
+   "edge": "slate",
+   "note": "interim until the art director signs the stampCase look (frame.json regions.stampSlot); a screen showing the interim bone card does not pass its gate"
   },
   "diff": {
    "note": "painted into compare-mark-differs-12x12 (aqua on a 1 px ink keyline, the master's own); the build fills nothing",

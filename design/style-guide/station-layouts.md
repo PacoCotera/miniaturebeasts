@@ -274,9 +274,18 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
 
 ### The stamp label (one rule, every screen that shows it)
 
-- **The label is 120×120**, a bone-coloured plate with a 1 px slate edge, and the stamp is centred on it.
+- **The label is 120×120**, and the stamp is centred on it. Its look (the case: fill, edge, light, glass, and the code's ink and rule) is the art director's hook `stampCase` (`frame.json regions.stampSlot.look`). It is never a white card. Until that look is signed, the specs keep the bone plate with a slate edge as an interim, and no screen that shows the interim passes its gate.
+- **One slot** (UI/UX designer, 2026-10-12 00:02, fix 4 of the Station global fix plan). The label is at (804, 400, 120, 120) on the right column's axis 864. The code's line box is (776, 525, 176, 25), with its baseline at 541 and a 1 px rule at y 549 from x 776 to 952. The label stays in the same place from screen to screen, so it is not noticed fresh on each:
+  | Screen | Label | Code | Why |
+  | --- | --- | --- | --- |
+  | Pods, overview | (804, 400, 120, 120), case (788, 384, 152, 152) | none | the slot; was 872, 400 in the case at 856, 384 |
+  | Create | (804, 400, 120, 120) | (776, 525, 176, 25), baseline 541, rule 549 | the slot, unchanged; `nothingRead` draws no label |
+  | Incubator (growing, ready, hatch) | (804, 256, 120, 120) | (776, 381, 176, 25), baseline 397, rule y 405, x 776 to 952 | raised 144: the stage's painted cable and right gauges fill x 746 to 954, y 414 to 527 (measured on `incubator-empty`). The label takes 804, 400 if the art director's stage clears that band. It was 840, 296, with its code at 808, 424 on the cable |
+  | One mibi up close (Habitat: rest, meet, out) | (872, 64, 120, 120), in the card | the card's own line (608, 160) | the slot would land on the Cross and Wild modules; the rect stays and the look demotes it. No asset: nothing drawn |
+  | Book | (832, 112, 120, 120) | none | the page's label; outside fix 4 |
+- **Never the brightest element.** At 1×, the label rect's mean and its 95th-percentile relative luminance are each below the same measures of the state's main object ([Every state composed](#every-state-composed-one-rule-every-screen)). On main 0a46bf1c the label measured a mean of 59 to 76 % and a p95 of 100 %, against the main object's mean of 20 to 34 % and p95 of 40 to 80 % (Create, Incubator, Pods overview, up close). It was the brightest thing on every one of those screens.
 - **The stamp is drawn on whole-pixel cells.** For a stamp of N modules (N + 2 with its quiet margin), the cell is the largest whole number of pixels that keeps the stamp within 104 px: `cell = floor(104 / (N + 2))`, never less than 2. For example, 21 modules give 23 × 4 = 92 px and 49 modules give 51 × 2 = 102 px.
-- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. One exception, on Pods only: the label stands on a small, dim, matte plate in the housing at the right, the label plus 16 px a side; the plate has no light, glow or beam of its own.
+- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. On Pods the label stands in its case, the label plus 16 px a side. The case has no light, glow or beam of its own.
 - **It reads fifth or later** on every screen.
 
 ### The chapter rail (Pods, Create, Incubator)
@@ -498,8 +507,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Where it came from | place picture 600, 120, 64, 64 (`place-<place>-64x64`, a new master painted from the same painting at 64, never scaled); sentence 680, 128, 328, 40 | The origin sentence ([Words on Pods](#words-on-pods)), "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits |
 | Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | The ring is the master `ring-kin-56x56`, placed 1:1; the pod is the 40×48 list class. Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred |
-| Stamp case and front glass | 856, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`) |
-| **Stamp label** | 872, 400, 120, 120 | Small, at the edge; 544 px from the pod's box. Appears at Identify |
+| Stamp case and front glass | 788, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`) |
+| **Stamp label** | 804, 400, 120, 120 | Small, on the shared stamp slot (The stamp label); 476 px from the pod's box. Appears at Identify |
 | Ribbon ("New species") | 680, 128, 328, 40 | In the origin sentence's rectangle, 6 s, the read tab's cool look |
 
 **C · Chapter page**
@@ -1387,8 +1396,8 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Base | 344, 456, 336, 96 | The sand housing, not wood; the chamber stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
 | Plaque | 448, 496, 128, 32 | One word, 16 px, centred on x 512, its line box 502 to 522 |
 | Waiting lamp | 652, 506, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
-| **Stamp label** | 840, 296, 120, 120 | 176 px from the chamber window |
-| Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446; three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
+| **Stamp label** | 804, 256, 120, 120 | 140 px from the chamber window; the shared slot raised clear of the cable and gauges (The stamp label) |
+| Code | 776, 381, 176, 25 | 16 px, centred on x 864, line box 381 to 405, baseline 397, a 1 px rule at y 405 from x 776 to 952 (the shared slot, as Create); three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
 | Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; 304×312 is the size of one mibi up close's mibi, where the hand-off lands it ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
 
@@ -1406,8 +1415,8 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
 | `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
 | `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
-| `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
-| `code` | 808, 424, 184, 24 | text | growing, ready, hatch | — |
+| `stamp` | 804, 256, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
+| `code` | 776, 381, 176, 25 | text | growing, ready, hatch | — |
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
 | `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting, else its signed juvenile stand-in; the step lift |
 
