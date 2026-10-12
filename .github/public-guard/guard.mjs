@@ -56,7 +56,7 @@ export function internalRefs(text) {
   const out = [], pub = PUBLIC_NAMES();
   for (const re of irRules) for (const h of matches(re, text)) out.push({ ...h, part: "a" });
   for (const m of text.matchAll(sectionRe)) if (!/^v\d+$/i.test(m[1]) && !pub.has(m[1].toLowerCase().replace(/\.md$/, ""))) out.push({ index: m.index, text: m[0], part: "b-section" });
-  for (const m of text.matchAll(mdNameRe)) if (!pub.has(m[1].toLowerCase()) && !pub.has(m[1].toLowerCase().slice(0, -3))) out.push({ index: m.index, text: m[1], part: "b-name" });
+  for (const m of text.matchAll(mdNameRe)) if (!pub.has(m[1].toLowerCase())) out.push({ index: m.index, text: m[1], part: "b-name" });
   if (nameHashes.size) for (const m of text.matchAll(tokenRe)) {
     const t = m[1].toLowerCase(); let h = memoHash.get(t); if (h === undefined) memoHash.set(t, (h = hashName(t)));
     if (nameHashes.has(h)) out.push({ index: m.index, text: m[1], part: "c" });
@@ -307,10 +307,10 @@ export const FIXTURES = [
   { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as ruled (decisions 10-11 14:17)", pass: "// the 10-11 grid" },
   { rule: "internal-ref", file: "design/x.md", hit: "the record is in decisions.md", pass: "## Owner decisions (2026-10-08)" },
   { rule: "internal-ref", file: "design/x.md", hit: "(decisions, 2026-10-08 19:49)", pass: "the owner's decision 2026-10-08" },
-  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// c2a-48px-spec §4.1", pass: "// lvgl-switch.md §2.2" },
-  { rule: "internal-ref", file: "design/x.md", hit: "see station-x10-economy.md", pass: "see ROADMAP.md" },
-  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// station-w1-x3-ready.md §6.2", pass: "// Research-loop §7" },
-  { rule: "internal-ref", file: "design/x.md", hit: "motion-spec §3", pass: "art-pipeline.md v2 §3" },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// zz-selftest-spec §4.1", pass: "// lvgl-switch.md §2.2" },
+  { rule: "internal-ref", file: "design/x.md", hit: "see zz-selftest-doc.md", pass: "see ROADMAP.md" },
+  { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// zz-selftest-doc.md §6.2", pass: "// Research-loop §7" },
+  { rule: "internal-ref", file: "design/x.md", hit: "zz-selftest-spec §3", pass: "art-pipeline.md v2 §3" },
   { rule: "internal-ref", file: "design/x.md", hit: "the zz-selftest-name note", pass: "the home-props view" },
   { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as in decisions.md", pass: 'const s = "decisions 10-11 14:17 in a string";' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: 'const apiToken = "q8Zr2mXv91";', pass: "const key = process.env.GEMINI_API_KEY;" },
