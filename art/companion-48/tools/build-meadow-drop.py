@@ -152,11 +152,14 @@ for k in range(6): add(f"meadow/ground/lawn-{k + 1}", lawn_tile(FL[k], 300 + k),
 # `c` the tile whose only raised neighbour is its north-west. Lawn texture two steps under the lawn, toned by the tile's level like the
 # lawn; transparent beyond; a soft edge dithered over 4 px on the 4x4 Bayer.
 def shadow_piece(state, seed):
-    rng = np.random.RandomState(seed); yy, xx = np.mgrid[0:48, 0:48]; B = bayer(48, 48)
-    we = 14 + np.round(1.5 * np.sin(2 * np.pi * yy / 48)); hs = 22 + np.round(2 * np.sin(2 * np.pi * xx / 48))
-    de = {"e": we - xx, "s": hs - yy, "es": np.maximum(we - xx, hs - yy), "c": 14 - np.hypot(xx, yy)}[state]
-    inside = (de >= 4) | ((de > 0) & (B < de / 4 * 16))
-    a = np.where(inside, tone(LAWN0 - 2 + LIPF[seed % 2][yy % 48, xx % 48]), TR); return a
+    """a broad band (the owner's reference: about a quarter of the block east, the cliff's own height south, within a tile): two lawn
+    steps down in its core, one step down in its outer 6 px dithered on the 4x4 Bayer, then nothing"""
+    yy, xx = np.mgrid[0:48, 0:48]; B = bayer(48, 48)
+    we = 18 + np.round(1.5 * np.sin(2 * np.pi * yy / 48)); hs = 30 + np.round(2 * np.sin(2 * np.pi * xx / 48))
+    de = {"e": we - xx, "s": hs - yy, "es": np.maximum(we - xx, hs - yy), "c": 18 - np.hypot(xx, yy)}[state]
+    f = LIPF[seed % 2][yy % 48, xx % 48]
+    core = de >= 6; soft = (de > 0) & ~core & (B < de / 6 * 16)
+    return np.where(core, tone(LAWN0 - 2 + f), np.where(soft, tone(LAWN0 - 1 + f), TR))
 for k, st in enumerate(("e", "s", "es", "c")): add(f"meadow/shadow/cast-{st}", shadow_piece(st, 40 + k), kind="shadow", set="cast", state=st)
 WQ = {n: to_idx(os.path.join(TS, "water", n + ".png")) for n in ("q-nw-edgeh-f1", "q-nw-fill-f1")}
 bank = WQ["q-nw-edgeh-f1"]; bk = bank[bank != TR]; bk = bk[np.isin(mat[bk], ["earth", "sand"])]; bv, bc = np.unique(bk, return_counts=True)
@@ -235,16 +238,16 @@ for qi, q in enumerate(("nw", "ne", "se", "sw")):
         f = np.pad(LIPF[qi % 2][oy:oy + 24, ox:ox + 24], P_, mode="wrap")
         low, up = tone(LAWN0 + f), tone(LAWN0 + 1 + f)                # the ground below, and the plateau one step up the ramp (the page draws its lawn through LIGHT)
         img = np.where(~m, low, -1)                                     # outside the edge: the lower lawn, opaque, so the plateau tile shows the level change
-        beyond = grow(m, 12) & ~grow(m, 2) & ~m; img[beyond] = [gstep(v, -1) for v in low[beyond]]
-        near2 = grow(m, 5) & ~grow(m, 2) & ~m; img[near2] = [gstep(v, -2) for v in low[near2]]
-        outl = grow(m, 2) & ~m; img[outl] = OUTL
+        beyond = grow(m, 12) & ~grow(m, 1) & ~m; img[beyond] = [gstep(v, -1) for v in low[beyond]]
+        near2 = grow(m, 5) & ~grow(m, 1) & ~m; img[near2] = [gstep(v, -2) for v in low[near2]]
+        outl = grow(m, 1) & ~m; img[outl] = OUTL                          # a 1 px line under the turf (the owner's reference has no hard rim)
         def nb(dy, dx): return np.roll(np.roll(m, dy, 0), dx, 1)
         rim = m & ~(nb(4, 0) & nb(0, 4) & nb(0, -4) & nb(-4, 0)); img[rim] = [gstep(v, 2) for v in up[rim]]
         e1 = m & ~(nb(1, 0) & nb(0, 1) & nb(0, -1) & nb(-1, 0)); img[e1] = [gstep(v, 1) for v in img[e1]]
         rng = np.random.RandomState(1000 + qi * 10 + len(s))
         ry, rx = np.where(e1)
         for yb, xb in zip(ry, rx):
-            if rng.rand() > .35: continue
+            if rng.rand() > .6: continue                                # the turf hangs over its edge in a ragged fringe of blades
             dy = -1 if not m[max(0, yb - 1), xb] else (1 if not m[min(m.shape[0] - 1, yb + 1), xb] else 0)
             dx = -1 if not m[yb, max(0, xb - 1)] else (1 if not m[yb, min(m.shape[1] - 1, xb + 1)] else 0)
             if dy == 0 and dx == 0: continue
