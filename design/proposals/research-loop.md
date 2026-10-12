@@ -1,6 +1,6 @@
 # The research loop
 
-The [Station loop](station-loop.md), the [Station layouts](../style-guide/station-layouts.md), the [Station style guide](../style-guide/station-screens.md), [creatures and genomics](../creatures-and-genomics.md) and [the game](../game.md) carry this design. The genome stamp's printability and scanability are still to be tested, and its art may be refined.
+The [Station loop](station-loop.md), the [Station layouts](../style-guide/station-layouts.md), the [Station style guide](../style-guide/station-screens.md), [creatures and genomics](../creatures-and-genomics.md) and [the game](../game.md) carry this design. Its art may be refined.
 
 It replaces the "trait window" unit of the [Station loop](station-loop.md) with one that scales to the real genome, and sets what each step of the loop must let the player see and do. Numbers are illustrations unless marked. Sources are cited by path so the lineage of each idea can be checked.
 
@@ -8,7 +8,7 @@ It replaces the "trait window" unit of the [Station loop](station-loop.md) with 
 - *"Many loci, expressions and alleles":* research is read in **chapters** (Coat, Face, Shape, Legs & tail, Movement, Stamina, Temperament…), each a page of several traits, each trait a group of loci. The 114 loci of the authoring genome become 57 locked parts learned once per species and 57 heritable parts in 7 chapters and 24 traits (§3–4). More loci make the chapters fuller; there are never more buttons.
 - *The pod list:* kept. Each pod gets a ring that fills as its chapters are read (§4).
 - *Distinct pod looks:* pods come from one renderer with four parameters taken from the species, so every species gets a distinct pod and nobody draws one by hand (§6).
-- *The fingerprint:* it becomes a **genome stamp**, a scannable code that stores the real copies. Members of a species share its border, and a child shares one of each parent's two marks at every switch. Unread chapters are left out. A device can scan it (§7).
+- *The fingerprint:* it becomes a **genome stamp**, a scannable code that stores the real copies. Members of a species share its border, and a child shares one of each parent's two marks at every switch. Unread and sealed chapters show as empty blocks. A device can scan it (§7).
 - *Design the loop first:* §8 is the brief that every screen is judged against.
 
 ## 1. It starts with a pod: the life of one pod
@@ -17,7 +17,7 @@ It replaces the "trait window" unit of the [Station loop](station-loop.md) with 
 2. **Identify** (1 Data). The seal on the cap breaks and the species glyph shows. For a new species, its frame (every part the species fixes) is learned once, and its Library page opens. For a known species the frame is filled in at once. The progress ring around the pod appears, empty; it fills as its chapters are read.
 3. **Read a chapter** (Data). The chapter's sector turns into marks, and its page shows each trait as a picture of this pod's mibi: what it *shows*, and a misty seed for what it *hides* (the seed is from [station-loop.md](station-loop.md)).
 4. **Shape** (optional). For each read trait that can be shaped, the player picks from three pictures drawn from the pod's own two copies. The founder redraws with every change. Untouched and unread traits stay as the pod has them.
-5. **Grow.** One pod becomes one fixed individual. The stamp prints on its label and the pod goes into the incubator.
+5. **Grow.** One pod becomes one fixed individual. The stamp is pressed and the pod goes into the incubator.
 6. **Incubate** (real minutes). Unread chapters clear one by one as the bud grows. This was the best moment in the r7 playtest. By the end, a founder is fully known.
 7. **Meet.** Open is a press. The juvenile steps into the vivarium carrying its stamp, its name-code and its pod's story.
 
@@ -104,7 +104,7 @@ Every pod comes from **one renderer**, the way every creature comes from its gen
   - **proportion**, squat or tall, from body length to height;
   - **shell pattern family**, from covering and symmetry: fur gives soft ribs, scales give overlapping plates, skin gives smooth dots, radial plans give segments;
   - **colour pair**, two signature pigments from the species' pool;
-  - **glyph**, the 5×5 mirrored mark at the stamp's centre.
+  - **glyph**, the 5×5 mirrored mark in the stamp's top-left corner.
 - **Varies by pod:** only the dust or moss of its place of origin, kept from the decided "place colours".
 - An unidentified pod shows its shell but its cap is sealed. Identify breaks the seal and shows the glyph. A pod that has no species yet is still a valid pod, just a quiet grey one.
 

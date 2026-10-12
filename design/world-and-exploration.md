@@ -323,7 +323,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
   short sight and nocturnal routines); the rest of the three to five V1 types and
   about ten kinds of event.
 - **Items, mods and Probe tier 3**; a clearer look for charged stones; bonded
-  care on the active mibi screen (no needs or meters until care is designed).
+  care on the active mibi screen (care has no needs or meters).
 
 ## What was rejected
 

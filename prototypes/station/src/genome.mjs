@@ -126,7 +126,7 @@ export function quantizeGenome(frame, genome) {
 // The key a genome's painting is stored under: the SHA-256 it was painted as (before any move onto the step).
 export const paintKey = (genome) => genome.origin?.was?.sha ?? genomeSha(genome);
 // The mibi's name-code: eight base-32 characters of the genome's SHA-256, shown in threes (the short
-// code stays as a lookup, never the genome: research-loop.md §7). It is a name, not the genome: the
+// code stays as a lookup, never the genome: design/creatures-and-genomics.md, Codes). It is a name, not the genome: the
 // shareable code that carries the genome is the stamp code (stampCode).
 const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 export function nameCode(sha) {

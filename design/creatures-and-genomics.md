@@ -312,7 +312,7 @@ It is not a QR code and no ordinary scanner reads it.
 
 From the outside in:
 
-- **Perforation:** a dot on every other cell of the outer ring. These are the
+- **Perforation:** a dot on every other cell of the outer edge. These are the
   timing marks.
 - **Frame:** one solid square line, which the reader finds first.
 - **Species border:** pairs of dark and light cells drawn from the species'
@@ -386,3 +386,5 @@ never rewrites a living mibi. A child is built on its species' current frame.
 - Combined traits: traits that combine into emergent ones; for example,
   movement, energy and environment together shape a kind of locomotion, vision
   or metabolism.
+- A scanned stamp opening the mibi's public page, and certified lineage
+  through the cloud.

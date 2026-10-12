@@ -64,18 +64,34 @@ The pod's founder preview in the middle redraws with each read chapter and keeps
 
 **Repeat pods.** A second pod of a known species is a different individual: a different hand of variants. Three things make it worth having without drowning:
 - **A glint, per chapter.** Logging a later pod of a species puts a star on each chapter where *this* pod holds a look the species has not shown yet in that chapter. It says "new here", never what. Pods with no glint are visibly ordinary, and a player can return them.
-- **Compare.** The pad's up/down puts a second pod of the same species beside the first, pages and stamps aligned; differing traits pulse (the Station compares). It is free.
+- **Compare.** The pad's up/down puts a second pod of the same species beside the first, pages aligned; differing traits pulse (the Station compares). It is free.
 - **Never paid twice.** A chapter read on a pod stays read forever, even after the pod is used (findings survive).
 
 ### The genome stamp
 
-The fingerprint is a **genome stamp**, a scannable code of the real copies, so it makes a genome pretty, tangible and shareable without a letter of genetics. Its layout and payload are in [creatures and genomics](../creatures-and-genomics.md#the-genome-stamp). It holds the chapters read and nothing else, and a child's stamp repeats one copy from each parent. The short code (`G7F CD0 3H2`) stays as the mibi's name, a lookup and not the genome. Where the stamp appears:
-- **Pods:** the progress ring around each pod fills as its chapters are read.
+The fingerprint is a **genome stamp**, a scannable code of the real copies, so it makes a genome pretty, tangible and shareable without a letter of genetics. Its layout and payload are in [creatures and genomics](../creatures-and-genomics.md#the-genome-stamp). It holds the chapters read and nothing else, and a child's stamp repeats one copy from each parent at every switch locus. The short code (`G7F CD0 3H2`) stays as the mibi's name, a lookup and not the genome. Where the stamp appears:
+- **Pods:** the stamp on its small label beside the pod (the progress ring around the pod is separate).
 - **Create:** the choices flip with each roll; on commit the stamp is pressed and the code appears, the moment the individual becomes fixed.
 - **Incubator:** a founder's unread chapters clear one by one; it steps out fully known.
 - **Library and Vivarium:** every mibi card and lineage entry carries its stamp and code; two mibis are told apart at a glance, and a child's stamp lines up with its parents'.
 - **Caddy card** (later): the printed stamp and code; scanning shows and never grants.
-- **Lineage:** each mibi of the species as a small portrait with its stamp, linked to its pod (expedition, place, date) or to its two parents. Founders have no parents; the line begins at the pod.
+
+### Create and Incubate
+
+Create shows the founder large, the chapters around it, and the cost.
+- Unread chapters stay misty: "a surprise". Read traits show their drawing. Each read, shapeable trait rolls among three pictures drawn from the pod's own two copies: as the pod is, only the hidden look, only the shown look (stripes hiding spots · only spots · only stripes), and the founder redraws. A pod with only stripes offers no spots, whatever the Library knows. A combination that can't be built marks the clashing traits and offers no Grow.
+- Cost: **2 Energy + 4 Essence** (to tune), **+1 Data per trait changed**. The bottom line always reads the total.
+- ✓ "Review" shows one card: the founder, what was changed, what stays a surprise, the cost. ✓ again creates; ← goes back to choosing. Two presses, as for a Shield patch.
+
+The pod moves into the incubator. The bud (a life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every founder grown is fully known. **Incubation minutes** (they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. *The rule by body and chapters is superseded* by [research-economy](research-economy.md) §5: twenty minutes plus one per shaped trait; **the first bud ever five minutes**; **an instant grow for a cost**; all timers under a developer-tools toggle for testing, loose for now and tightened later. The incubator shows the minutes left, and the Station shows the bud while the Companion is away. When ready, ✓ "Open" (deliberate) and the juvenile steps into the vivarium with a name ("Fig · Tuikis · juvenile"). One incubator in V1.
+
+### Library (Library key): species and lineage
+
+A shelf of species cards: known species bright, met-but-unidentified ones as silhouettes, and empty slots that admit more exist. A species page is its **field guide**:
+- **The frame:** what the species fixes, shown once.
+- **Looks found:** one page per chapter, every look seen in a read pod or a mibi as a small picture per trait, with a dotted "more?". The guide is complete when every look the species can carry has been seen. It is knowledge, not material: it never puts a variant into a pod.
+- **Where and how:** the places its pods came from and the moments that shed them (the habit notes the stand-in calls studies move here, free).
+- **Lineage:** each mibi of the species as a small portrait with its ring, linked to its pod (expedition, place, date) or to its two parents. Founders have no parents; the line begins at the pod.
 - **Wishes:** the dream mibis pinned for this species (below).
 
 ### Cross and Wish
@@ -177,7 +193,7 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 1. ✓ Research opens on the new pod: the pod labelled "Unknown", with "Found on the rock field, as a creature felt safe.". Line: "✓ Identify · 1 ◆".
 2. ✓ The seal breaks; the Tuikis glyph shows. "New species · Tuikis". Its frame is learned; the progress ring around the pod appears, empty.
 3. Pad → the Coat arc. "✓ Read Coat · 3 ◆".
-4. ✓ The page turns: stripes on the flank with a seed holding spots ("shows stripes · hides spots"), "only teal", "short fur". The Coat sector fills; the preview redraws with stripes.
+4. ✓ The page turns: stripes on the flank with a seed holding spots ("shows stripes · hides spots"), "only teal", "short fur". The Coat arc of the progress ring fills; the preview redraws with stripes.
 5. ← to the pod, pad to "Create". ✓ Create opens: founder large, three chapters misty, markings showing stripes.
 6. Pad ▼: only spots. The founder redraws spotted. Line: "✓ Review · 2 ⚡ 4 ❀ 1 ◆".
 7. ✓ The review card: spotted; three chapters of surprises; the cost.
@@ -202,7 +218,7 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 
 - **Cargo and docking:** End expedition on the Companion page seals the hold as a consignment in the bay in the shared save (with its expedition id, three at most) and turns the world (with the nothing-explored guard); the Companion page shows the crate count and keeps expeditions open. A **Dock** action on the Station page (a depicted Caddy beside the Station, its own key) docks the Companion: the Station accepts each consignment once, in order, plays one arrival each, mends, and marks it accepted; the Companion page clears the bay when it sees the marks. A reload never accepts twice. **Lift** (the same key) undocks; the Companion page offers expeditions and the walk only while lifted. The Companion page's own Station screen goes.
 - **Genomes:** each pod gets a seeded genome at spawn from its **species frame on the authoring catalogue** (the 114-pair genome), starting with Pip's five open traits (pale, crown, eye rings, drive, efficiency) in Coat, Face, Movement and Stamina; looks shapeable, doings by breeding.
-- **Fingerprint:** the genome stamp encoded from the real copies against the species' pinned definition, with the short code; unread chapters left out. Print and scan tests come with the encoder.
+- **Fingerprint:** the genome stamp encoded from the real copies against the species' pinned definition, with the short code; unread and sealed chapters as empty blocks. Print and scan tests come with the encoder.
 - **Art:** pods from the one renderer with species parameters, residents and screens from the art director's masters (engineers do not do art). No code-drawn art reaches owner review.
 - **Screens:** Home with the arrival, Pods with identify, read, compare and return, Create with review, the incubator, Cross and Wish, Library (field guide, where-found, lineage, wishes), the vivarium, up close (spend time, take with you, bond, cross), Probe bench, the idle fade.
 - **Rules:** §4 prices and room; the glint per chapter; the cross forecast; mend standing choice; take-with-you applied at the dock; the walk and skill notches on the vivarium card.
