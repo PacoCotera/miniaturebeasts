@@ -18,13 +18,13 @@ The loop the player feels: **cargo lands → a pod is identified → its chapter
 
 ### Home (Home key): the vivarium
 
-The always-on view. Two thirds of the width is the vivarium: a lit glass terrarium where residents live their species' routines (wander, eat, nap, react to each other). The right third is the bench, drawn as objects: the **pod tray** (one cup per pod, shells in their place colours), the **incubator** (an embryo glowing through its shell), and the **Probe cradle** (Shield bars, tier).
+The always-on view. Two thirds of the width is the vivarium: a lit glass terrarium where residents live their species' routines (wander, eat, nap, react to each other). The right third is the bench, drawn as objects: the **pod tray** (one cup per pod, shells in their place colours), the **incubator** (an bud glowing through its shell), and the **Probe cradle** (Shield bars, tier).
 
 ```
  .------------------------------------------------------------------------.
  | Home   T5            ⚡ 9  ◆ 4  ❀ 6         Companion away · 16:05     |
  |  .----------- vivarium ------------.   pod tray  ( )(o)(o)( )( )( )   |
- |  |   Moss naps     Bean digs       |   incubator  [ embryo, 2 min ]   |
+ |  |   Moss naps     Bean digs       |   incubator  [ bud,    2 min ]   |
  |  |        ~ Dot's bed: with you ~  |   Probe      ▮▮▯  tier 1         |
  |  '---------------------------------'                                 |
  | ✓ Look at Bean        an Untuva pod waits · needs 2 Essence    ←     |

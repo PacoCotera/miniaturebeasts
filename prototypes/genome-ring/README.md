@@ -1,3 +1,5 @@
+**Superseded** by the genome stamp: see [The genome stamp](../../design/creatures-and-genomics.md#the-genome-stamp).
+
 **Retired.** The ring's circumference-bound capacity and its thin radial bars did not survive the first real phone scan; the genome code is now the [genome stamp](../genome-stamp/README.md). This prototype stays as the origin of the codec, the CRC-16, the distortion harness and the scan page.
 
 # Genome ring: print and scan test
