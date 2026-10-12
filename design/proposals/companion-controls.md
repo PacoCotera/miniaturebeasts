@@ -145,8 +145,8 @@ couldn't see on the line or the HUD.
 ## Points behind the scheme
 
 1. **Back's label:** name the menu's top two entries ("← Wait · Send home"), or a
-   generic "← menu"?
+   generic "← menu"? Working rule: the top two entries, until play confirms it.
 2. **Call's hint:** in the HUD's top right, matching its upper position, or on
-   the bottom line as a third item (leaving less room for place and signs)?
-3. **Call's position:** above Back, left of Confirm, or below Confirm?
-4. **New world:** only between expeditions, or kept in every menu as today?
+   the bottom line as a third item (leaving less room for place and signs)? In the HUD; the bottom-line option is not taken.
+3. **Call's position:** above Back, left of Confirm, or below Confirm? Above Back, as drawn, pending the bench console.
+4. **New world:** only between expeditions, or kept in every menu as today? Only between expeditions.
