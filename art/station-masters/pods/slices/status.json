@@ -3545,5 +3545,25 @@
  "mibi-juvenile-S01-48x48": {
   "status": "new",
   "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+ },
+ "mibi-adult-S03-304x312": {
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S03 adult stand"
+ },
+ "mibi-adult-S03-144x152": {
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S03 adult stand"
+ },
+ "mibi-adult-S03-96x88": {
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S03 adult stand"
+ },
+ "mibi-adult-S03-48x48": {
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S03 adult stand"
  }
 }

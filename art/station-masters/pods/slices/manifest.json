@@ -14178,5 +14178,57 @@
   "status": "new",
   "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
   "status_note": "0 px magenta"
+ },
+ "mibi-adult-S03-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 304x312",
+  "sha256": "238362b91d82a21dfe872b0cf6b9016d4d384f27366b60fb02d9d4738151ab72",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S03-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 144x152",
+  "sha256": "981ef693475c51a6346bb2177933c4fa8829776a0b3201f00139be32a0d4e792",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S03-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 96x88",
+  "sha256": "933a36ce7fc2597077d64459793cd6c65f9e677b67ea04231125698933feda11",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
+ },
+ "mibi-adult-S03-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
+  "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 48x48",
+  "sha256": "7238cd64369a74d75c5dc20a750875f5f085bb24c6ee5fa2d8172c7f34325e23",
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
  }
 }

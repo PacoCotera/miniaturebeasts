@@ -31,3 +31,12 @@ The first cut left magenta key residue under S13's feet and belly (1,163 px at 3
 - **Proofs:** `S01-pip-sizes-1x.png` (the four sizes on #D6CEBE) and `S01-pip-vivarium-1x.png` (144 and 96 on the day glass beside the signed S01 juvenile at 104).
 - **Signature:** candidate until the art director signs it in builder 2's whole-screen captures (the fix plan's gate).
 - **Known look:** the S01 juvenile stand-in is teal and cream, and Pip, the canonical adult, is charcoal and cream. A Loika darkens as it grows, until the coat layers carry each mibi's own colour.
+
+## S03 (2026-10-12), the S09/S13/S16 recipe
+
+- **Request a, refused:** the first request (`mibi-adult-S03-a`) was refused by the model's filter (PROHIBITED_CONTENT; 0.54 MXN, no image). It was not reworded or retried. By the programme lead's word, S03 was made by the recipe that had passed for S09, S13 and S16.
+- **Request b, signed:** `mibi-adult-S03-b`, 3.83 MXN. Inputs were the rig and the silhouette only, with no juvenile image and no young or grown wording, and the bare base asked for: a plain mint-white coat, a teal head and ears, a short antenna, and a short tail with its bulb unlit.
+  - Cut by `cut-adults.py`: 0 magenta at every size.
+  - Then `match-juvenile.py S03 teal,gold` moved the head and the bulb onto the signed juvenile's teal and gold, keeping the painting's shading. The coat was already the juvenile's mint and was left alone. A mint pass made it bluer, so it was dropped.
+  - Proof: `S03-vivarium-1x.png` (the juvenile at 104, the adult at 144 and 96, on the day glass).
+  - Signed beside the juvenile at 1×; the whole-screen sign follows in builder 2's captures.

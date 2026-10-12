@@ -1,0 +1,20 @@
+[
+ {
+  "name": "mibi-adult-S03-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S03-304x312.png",
+    "The adult of this species (project-owned rig render): its body plan, proportions and colours only, a crude 3D blockout to be painted over: a long low four-legged animal with a pale body, a teal head and a long thin tail."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S03-128x160-clear.png",
+    "The species' signed silhouette (project-owned): the adult's outline."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a slender four-legged animal with a pale mint-white body and legs, a soft teal head with round teal ears, and a thin tail. Keep its body plan, proportions and colours, but NOT the blockout's geometry. It has a FACE: two large round teal eyes with a pale highlight, a small calm mouth, and a single short thin antenna on top of the head. This is the species' BARE BASE picture: a plain pale mint-white coat with NO spots, NO patches and NO stripes (the teal only on the head and ears); a SHORT thin tail ending in a small round pale gold bulb that is UNLIT (no glow, no light). Soft, rounded, living forms; slim legs with small rounded paws, never slabs or blocks. Matte painterly rendering like a children's book, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view from the front left, facing the viewer, calm, standing at rest on all four legs. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ }
+]
