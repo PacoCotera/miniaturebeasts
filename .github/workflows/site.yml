@@ -14,8 +14,8 @@ permissions:
   contents: write
 
 concurrency:
-  # a pull request's runs queue by number and a new push cancels the older run; a main run, a dispatch and a deploy share one group and are never cancelled
-  group: ${{ github.event_name == 'pull_request' && format('sandbox-pr-{0}', github.event.pull_request.number) || 'sandbox' }}
+  # one group per workflow and ref: a pull request's runs (refs/pull/N/merge) queue and a new push cancels the older one; main's runs and deploys queue on main's ref and are never cancelled; a dispatch on a branch queues on that branch and no longer shares main's group
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
