@@ -2909,7 +2909,7 @@ function tween(o, tx, ty, dur) {
   if (o.tx !== tx || o.ty !== ty) { o.fx = o.x; o.fy = o.y; o.tx = tx; o.ty = ty; o.at = NOW; o.dur = dur; }
   const k = motion() ? clamp((NOW - o.at) / o.dur, 0, 1) : 1;
   o.x = o.fx + (o.tx - o.fx) * k; o.y = o.fy + (o.ty - o.fy) * k;
-  o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position every drawing reads (x, y stay exact, so a retarget starts from them)
+  o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position the camera and the map pawn read; x, y stay exact (a retarget starts from them, and the floored overlays take them)
 }
 const RT = { key: null, ts: 32, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
@@ -3352,7 +3352,7 @@ function drawPatch(t) {
   const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
-  RT.plScr = { x: W(RT.pl.rx) + (ts >> 1), y: H(RT.pl.ry) + (ts >> 1) };
+  RT.plScr = { x: W(RT.pl.x) + (ts >> 1), y: H(RT.pl.y) + (ts >> 1) };
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
@@ -3430,17 +3430,17 @@ function drawPatch(t) {
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(nr.rx), SY(nr.ry), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(nr.x), SY(nr.y), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * ts, live.pt.y * ts, ex.pt.elder ? 220 : 150); const rp = RT.pt;
-    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(rp.rx), SY(rp.ry), t);
-      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(rp.rx) + 16, y: SY(rp.ry), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(rp.rx) + 11, SY(rp.ry) - 9); } }); }
+    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(rp.x), SY(rp.y), t);
+      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(rp.x) + 16, y: SY(rp.y), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(rp.x) + 11, SY(rp.y) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   items.push({ y: RT.pl.y + 5, d: () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    blit(playerArt(P.dir, pose, f2), SX(RT.pl.rx) + bx, SY(RT.pl.ry));
-    if (ex.carry) blit(FRUIT(), SX(RT.pl.rx + 10) + bx, SY(RT.pl.ry - 6)); } });
+    blit(playerArt(P.dir, pose, f2), SX(RT.pl.x) + bx, SY(RT.pl.y));
+    if (ex.carry) blit(FRUIT(), SX(RT.pl.x + 10) + bx, SY(RT.pl.y - 6)); } });
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
   // the partner's name tag: above it, with a pointer down to it, shifted sideways so it never covers the player
   if (RT.tag) { const tg = RT.tag, w = textW(tg.name, 2) + 10, pl = RT.plScr; let nx = tg.x - Math.round(w / 2), ny = tg.y - 26;
