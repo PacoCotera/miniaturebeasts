@@ -168,7 +168,7 @@
   },
   "surprise": { "one": "{Chapter} stays a surprise", "more": "{n in words} surprises to come", "all": "all of it stays a surprise", "budget": "208 px at 16 px, the context zone" },
   "founder": "{a/an} {Species}, fully known",
-  "notices": { "busy": "a bud is already growing", "noBay": "no bay free", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)" },
+  "notices": { "busy": "a bud is already growing", "noBay": "no bay free", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)", "shortFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" } },
   "by": "copywriter, 2026-10-09 13:27"
  },
  "placeholders": {

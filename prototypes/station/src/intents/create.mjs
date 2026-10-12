@@ -20,7 +20,8 @@ export function intent(h, target, verb) {
   }
   else if (verb === "confirm") {
     const block = S.growBlockKey(h.st, p, cr.choices, h.settings, cr.clash); if (block && (block.key === "busy" || block.key === "noBay" || block.key === "clash")) return;   // blocked: ✓ does nothing, no plate (the bottom line says why); only short keeps its plate
-    const r = S.grow(h.st, p, cr.choices, h.settings, h.now()); if (!r.ok) { h.say(r.msg); return r; }
+    const r = S.grow(h.st, p, cr.choices, h.settings, h.now());
+    if (!r.ok) { h.say(block && block.key === "short" ? h.specs.create.strings.notices.shortFrom[block.from].replace("{icons}", block.short) : r.msg); return r; }   // a short ✓: the plate names the notice's words (where the shortfall comes from)
     const ev = spec.events.grow, motion = h.motion ? h.motion() : true;
     cr.grown = { code: r.bud.code, cost: r.cost, pod: p }; h.ui.pods.cur = null; h.save();
     const jump = () => { h.ui.create = null; h.goto("incubator"); };   // Grow it is a jump: the Incubator, growing; ← there reads Home

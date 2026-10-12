@@ -18,6 +18,10 @@ export async function podsStates(visit) {
   try {
     await go(pods[0], "place.0", "collection"); await at("collection", { screen: "pods", view: "collection", focus: "place.0" });
     await go(pods[0], "pod", "overview"); await at("overview, unidentified", { view: "overview", focus: "pod" });
+    // the warning before a spend: the goal's next step (identify one pod, then grow) is payable now and Identify here would leave it short, so the line warns; the ◆ is set to exactly what the two need, then given back
+    const kept = await page.evaluate(async () => { const S = await import("/station/src/state.mjs"), s = window.__st, st = s.ST, was = { e: st.e, d: st.d, s: st.s }, g = S.growCost(st, {}, s.settings), i = S.identifyCost(st, s.settings); st.e = Math.max(st.e, g.e); st.s = Math.max(st.s, g.s); st.d = i + g.d; return was; });
+    await go(pods[0], "pod", "overview"); await at("overview, identify warns", { view: "overview", focus: "pod" });
+    await page.evaluate((was) => { Object.assign(window.__st.ST, was); }, kept);
     await page.evaluate((ids) => { for (const id of ids) window.__st.skipRead(id); }, pods);
     await go(pods[0], "pod", "overview"); await at("overview, identified, pod focused", { view: "overview", focus: "pod" });
     await go(pods[0], "kin.0", "overview"); await at("overview, kin focused", { view: "overview", focus: "kin.0", cmp: false });
