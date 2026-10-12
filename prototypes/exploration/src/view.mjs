@@ -37,3 +37,25 @@ export function edgePoint(box, ax, ay, bx, by) {
   const take = (nn, dd, s) => { if (dd > 0 && (side === null || nn * d < n * dd)) { n = nn; d = dd; side = s; } };
   if (dx > 0) take(box.x1 - ax, dx, 'E'); if (dx < 0) take(ax - box.x0, -dx, 'W'); if (dy > 0) take(box.y1 - ay, dy, 'S'); if (dy < 0) take(ay - box.y0, -dy, 'N');
   return { x: ax + divRound(dx * n, d), y: ay + divRound(dy * n, d), side }; }
+
+// The 48 px place's edge rules, carried as pure integer functions (the C port reads these, not the page).
+export const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];   // the 4 × 4 ordered-dither matrix, row-major (equal to the page's BAYER)
+
+// The coverage fade of a 48 px edge tile, one byte for each pixel (row-major, 0 near, 1 far). `m9` is the far-side state of the tile and its 8
+// neighbours: bit 8 the tile itself, bits 0–7 its neighbours N, NE, E, SE, S, SW, W, NW. A pixel goes far when enough of the 5 × 5 samples around it
+// (±24 px, 12 px apart) fall on far tiles: 32·c > (2·BAYER + 1)·25. No memo here (the caller keeps one).
+const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+export function coverFar(m9) {
+  const f = new Uint8Array(48 * 48), far = (dx, dy) => { if (dx === 0 && dy === 0) return (m9 >> 8) & 1; for (let b = 0; b < 8; b++) if (NB9[b][0] === dx && NB9[b][1] === dy) return (m9 >> b) & 1; return 0; };
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0;
+    for (let oy = -24; oy <= 24; oy += 12) for (let ox = -24; ox <= 24; ox += 12) c += far(Math.floor((x + ox + 48) / 48) - 1, Math.floor((y + oy + 48) / 48) - 1);
+    f[y * 48 + x] = 32 * c > (2 * BAYER4[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; }
+  return f; }
+
+// The 6 px step beside the approaching storm's band at 48: `d` is the pixel's distance from the lit tile's side next to the band (0–47); the pixel takes
+// the storm table when d < 6 and BAYER·7 < (6 − d)·16.
+export function stormStep(d, x, y) { return d < 6 && BAYER4[(y & 3) * 4 + (x & 3)] * 7 < (6 - d) * 16; }
+
+// The band's dark columns at 48 for a gap still to close: n = 20·(3 − gap) in twentieths of a column (gap < 3, a multiple of 0.05);
+// STORM_K[48] = 7/5 so columns = ceil(7n/100). 32 px keeps main's float rule in the page.
+export function stormCols48(n) { return Math.floor((7 * n + 99) / 100); }

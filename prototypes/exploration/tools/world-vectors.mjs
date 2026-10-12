@@ -166,9 +166,17 @@ export const VIEW_CASES = [
     ({ name: "edgePoint to " + bx + "," + by, fn: "edgePoint", args: [{ box: "ON_SCREEN" }, 225, 298, bx, by] })),
   ...[[4, 5], [5, 0], [0, -6]].map(([dx, dy]) =>   // the pawn on tile (13, 15) with the camera at (423, 478): its centre at (225, 298)
     ({ name: "tileOnScreen " + dx + "," + dy, fn: "tileOnScreen", args: [{ view: [48, 0, 32, 450, 532] }, { x: 423, y: 478 }, 13 + dx, 15 + dy, { box: "ON_SCREEN" }] })),
+  // the 48 px edge rules: the coverage of a tile by its 9-bit far mask (the FNV of its 2304 bytes), the 6 px storm step over the 4 × 4 Bayer cell for each distance, the band's columns
+  ...[0x100, 0x001, 0x002, 0x0ff, 0x1fe, 0x180].map(m => ({ name: "coverFar " + m.toString(16), fn: "coverFar", args: [m], digest: true })),
+  ...[0, 1, 2, 3, 4, 5, 6].map(d => ({ name: "stormStep d=" + d, fn: "stormStep", each: Array.from({ length: 16 }, (_, i) => [d, i & 3, i >> 2]) })),
+  { name: "stormCols48 over the gap 2.75 to 0", fn: "stormCols48", each: Array.from({ length: 12 }, (_, i) => [20 * (3 - (11 - i) / 4)]) },
 ];
 export function viewArgs(V, args) { return args.map(a => a && a.view ? V.viewOf(...a.view) : a && a.box ? V[a.box] : a); }
-export function viewVectors(V) { return VIEW_CASES.map(c => ({ ...c, out: V[c.fn](...viewArgs(V, c.args)) })); }
+// A case's output: the call's value; `each` is a list of argument lists (booleans as 0 and 1); `digest` is the FNV of a byte array.
+export function viewOut(V, c) { const call = a => V[c.fn](...viewArgs(V, a));
+  if (c.each) return c.each.map(a => { const r = call(a); return r === true ? 1 : r === false ? 0 : r; });
+  const r = call(c.args); return c.digest ? fnv(Array.from(r).join(",")) : r; }
+export function viewVectors(V) { return VIEW_CASES.map(c => ({ ...c, out: viewOut(V, c) })); }
 
 // The synthetic catalogue: every list the layers read, with no corner-in and no shadow piece so the fallbacks run.
 const SP = (name, kind, w, h, more = {}) => ({ name, status: "signed", kind, w, h, offset: [0, 0], ...more });

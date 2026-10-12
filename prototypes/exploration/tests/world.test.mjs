@@ -9,7 +9,7 @@ import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
-import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
+import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, viewOut, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
 const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
@@ -199,7 +199,7 @@ test("generator 2: the key list is complete, generator 1's G gains no field, and
 // ---- src/view.mjs: the place camera and coordinates ----
 test("view: src/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
   assert.deepEqual(VECTORS.view.map(c => c.name), VIEW_CASES.map(c => c.name), "the case list");
-  for (const c of VECTORS.view) assert.deepEqual(V[c.fn](...viewArgs(V, c.args)), c.out, c.name);
+  for (const c of VECTORS.view) assert.deepEqual(viewOut(V, c), c.out, c.name);
   const at = n => VECTORS.view.find(c => c.name === n).out;
   assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
   assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
@@ -344,11 +344,15 @@ test("view: pure and integer only, by source; its only import is ./world.mjs; no
   for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
 test("the storm's dark band: at a fractional gap, 32 px keeps main's columns and 48 px takes STORM_K[48]", () => {
-  assert.match(MODULE, /darkW = Math\.ceil\(\(3 - gap\) \* STORM_K\[ts\]\) \* ts;/, "drawPatch's band");
+  assert.match(MODULE, /darkW = \(ts === 48 \? stormCols48\(Math\.round\(\(3 - gap\) \* 20\)\) : Math\.ceil\(\(3 - gap\) \* STORM_K\[ts\]\)\) \* ts;/, "drawPatch's band");
   const p = page(), K = p.run("STORM_K"), gaps = Array.from({ length: 12 }, (_, i) => i / 4), cols = ts => gaps.map(g => Math.ceil((3 - g) * K[ts]));
+  assert.equal(K[32], 2.4); assert.equal(K[48], 1.4, "the ratio 7/5");
   assert.deepEqual(cols(32), gaps.map(g => Math.ceil((3 - g) * 2.4)), "main's formula at 32");
   assert.deepEqual(cols(32), [8, 7, 6, 6, 5, 5, 4, 3, 3, 2, 2, 1]);
-  assert.deepEqual(cols(48), [5, 5, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1]);
+  assert.deepEqual(cols(48), [5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1]);
+  assert.deepEqual(gaps.map(g => V.stormCols48(Math.round((3 - g) * 20))), cols(48), "the integer form ceil(7n/100) agrees with the float ratio at every quarter step");
+  assert.deepEqual(gaps.slice().reverse().map(g => V.stormCols48(Math.round((3 - g) * 20))), [1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5], "from gap 2.75 down to 0");
+  assert.deepEqual(Array.from({ length: 41 }, (_, i) => V.stormCols48(i)).map((c, n) => c === Math.ceil(n * 7 / 100)), Array(41).fill(true));
   for (const g of [0.2, 0.45, 1.65, 2.95]) assert.ok(Number.isInteger(Math.ceil((3 - g) * K[48])) && Math.ceil((3 - g) * K[32]) > 0, "a whole number of columns at gap " + g);
 });
 test("generator 2 is integer only, by source", () => {
@@ -1008,7 +1012,9 @@ test("48 px edges: the coverage fade equals its formula for every 8-neighbour ma
     for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0; for (const oy of [-24, -12, 0, 12, 24]) for (const ox of [-24, -12, 0, 12, 24]) c += far(Math.floor((x + ox) / 48), Math.floor((y + oy) / 48));
       f[y * 48 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
   assert.deepEqual(Array.from(p.run("BAYER")), BAYER_);
+  assert.deepEqual(V.BAYER4, BAYER_, "view.mjs's matrix is the page's");
   for (const m of [0, 2, 3, 6, 7, 14, 28, 56, 129, 256, 257, 280, 340, 420, 510, 511, 85, 170]) assert.deepEqual(Array.from(p.run("coverFar(" + m + ")")), Array.from(want(m)), "mask " + m);
+  for (const m of [0, 2, 129, 256, 511]) assert.deepEqual(Array.from(V.coverFar(m)), Array.from(p.run("coverOf(" + m + ")")), "the page memoises the module's rule, mask " + m);
   const f = p.run("coverFar(2)");   // only the NE neighbour far
   const q = []; for (let y = 0; y < 24; y++) for (let x = 24; x < 48; x++) q.push(f[y * 48 + x]);
   assert.ok(q.some(v => v === 1) && q.some(v => v === 0), "the NE quadrant is part far, part near: a rounded patch");

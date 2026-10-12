@@ -270,7 +270,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { viewOf, camAt, visTiles, sprOff } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, coverFar, stormStep, stormCols48 } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
@@ -2953,7 +2953,7 @@ function fogEdgeArt(m) { return art('fe' + m, () => { const pb = new PB(CELL, CE
     if (d === 0 || (d === 1 && (x + y) % 2 === 0) || (d === 2 && (x % 2 === 0 && y % 2 === 0))) pb.set(x, y, C.night); }
   return pb; }); }
 // Ordered-dither overlays (Bayer 4×4): the only way this screen shows "partly see-through".
-const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+const BAYER = BAYER4;
 function ditherArt(w, h, col, level) { return art('dz' + w + 'x' + h + col + level, () => { const pb = new PB(w, h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < level) pb.set(x, y, C[col]); return pb; }); }
 // The veil over an unsurveyed quarter of a visited map cell: 13×13 of Bayer dots in night, phased to the screen grid.
@@ -3408,7 +3408,7 @@ function caveLight(lay, live, P) {
 // The 4x4 Bayer pattern is baked into the variant through the same LUTs; variants are built on first use and cached.
 // Every builder works on the tile's own size, n = pb.w (32 today), and caches by (mask, n); the fade stays 16 px wide.
 const FADE_W = 16, EDGE_FADE = new Map(), EDGE_TILE = new Map();
-const STORM_K = { 32: 2.4, 48: 1.5 };   // the approaching storm's dark columns per column of gap still to close, per tile size (the gap is fractional)
+const STORM_K = { 32: 2.4, 48: 1.4 };   // 48 is the ratio 7/5, taken as stormCols48 in integers;   // the approaching storm's dark columns per column of gap still to close, per tile size (the gap is fractional)
 function edgeFade(mask, n) { // per pixel: how far (0..1) toward the darker level, strongest at the borders
   const fk = mask + '|' + n; let f = EDGE_FADE.get(fk); if (f) return f; f = new Float32Array(n * n);
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { let t = 0;
@@ -3460,12 +3460,7 @@ function veilEdgeTile(pbKey, pb, L, mask) {
 // At 48 px the veil and fog edges fade by coverage: a pixel takes the far side when enough of a 5 × 5 sample grid around it (±24 px,
 // 12 px apart) falls on far-side tiles. The tile's own state is bit 8 of the mask, its neighbours bits 0–7 (N, NE, E, SE, S, SW, W, NW).
 const COVER = new Map(), NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
-function coverFar(m9) { let f = COVER.get(m9); if (f) return f; f = new Uint8Array(48 * 48);
-  const far = (dx, dy) => dx === 0 && dy === 0 ? (m9 >> 8) & 1 : (m9 >> NB9.findIndex(([a, b]) => a === dx && b === dy)) & 1;
-  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0;
-    for (const oy of [-24, -12, 0, 12, 24]) for (const ox of [-24, -12, 0, 12, 24]) c += far(Math.floor((x + ox) / 48), Math.floor((y + oy) / 48));
-    f[y * 48 + x] = 32 * c > (2 * BAYER[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; }
-  COVER.set(m9, f); return f; }
+const coverOf = m9 => { let f = COVER.get(m9); if (!f) COVER.set(m9, f = coverFar(m9)); return f; };   // src/view.mjs's rule, memoised
 // A 48 px edge canvas: each opaque pixel through near(c, x, y) or far(c, x, y), by the coverage of mask m9 (or by pick for the storm step).
 function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; let cv = EDGE_TILE.get(k); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = 48;
@@ -3493,7 +3488,7 @@ function drawPatch(t) {
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
-    if (gap >= 0 && gap < 3) { darkW = Math.ceil((3 - gap) * STORM_K[ts]) * ts; darkLeft = st.dir > 0; } }
+    if (gap >= 0 && gap < 3) { darkW = (ts === 48 ? stormCols48(Math.round((3 - gap) * 20)) : Math.ceil((3 - gap) * STORM_K[ts])) * ts; darkLeft = st.dir > 0; } }
   const lightAt = lay.cave ? caveLight(lay, live, P) : null;
   // fog bank: sight is 4 tiles (6 with a glowing partner); beyond it the land takes the fog table and nothing else shows
   const sight = sightR(lay), inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
@@ -3528,13 +3523,13 @@ function drawPatch(t) {
     if (ts === 48) {   // coverage fades for the fog and the veil, the 6 px storm step beside the band
       const pb = tileFor(i), key = keyFor(i), set = RT.remap, m9 = farTest => { let m = farTest(tx, ty) ? 256 : 0; NB9.forEach(([dx, dy], b) => { if (farTest(tx + dx, ty + dy)) m |= 1 << b; }); return m; };
       if (fogged) { const fm = m9((x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y));
-        if (fm && fm !== 511) { const nl = clearLight(tx, ty), f = coverFar(fm);
+        if (fm && fm !== 511) { const nl = clearLight(tx, ty), f = coverOf(fm);
           g.drawImage(edge48('F' + key + '|' + fm + '|' + nl + (uv ? '' : 'v'), pb, (x, y) => f[y * 48 + x], (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
       if (L0 !== 3) { const vm = m9((x, y) => !uvAt(x, y));
-        if (vm && vm !== 511) { const f = coverFar(vm), lut = set[L0];
+        if (vm && vm !== 511) { const f = coverOf(vm), lut = set[L0];
           g.drawImage(edge48('V' + key + '|' + vm + '|' + L0, pb, (x, y) => f[y * 48 + x], c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y)), W(tx * ts), H(ty * ts)); continue; } }
       if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
-        if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => { const d = side === 'W' ? x : 47 - x; return d < 6 && BAYER[(y & 3) * 4 + (x & 3)] * 7 < (6 - d) * 16; },
+        if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => stormStep(side === 'W' ? x : 47 - x, x, y),
           (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }
       g.drawImage(pb.canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
     }
