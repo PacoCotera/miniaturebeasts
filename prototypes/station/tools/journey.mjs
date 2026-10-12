@@ -76,8 +76,10 @@ await page.addInitScript(() => {
   window.requestAnimationFrame = (cb) => {
     if (held) { q.push(cb); return 0; }
     const rec = { cb }; pend.add(rec);
-    return realRaf((ts) => { if (!pend.delete(rec)) return; last = ts + off; cb(last); });
+    return (rec.id = realRaf((ts) => { if (!pend.delete(rec)) return; last = ts + off; cb(last); }));
   };
+  const realCancel = window.cancelAnimationFrame.bind(window);
+  window.cancelAnimationFrame = (id) => { for (const r of pend) if (r.id === id) pend.delete(r); realCancel(id); };   // a cancelled frame leaves the pending set too
   window.__hold = () => { if (!held) { t = last ?? realNow() + off; held = true; for (const r of pend) q.push(r.cb); pend.clear(); } return t; };   // a frame requested but not yet run is queued now: whenever the real frame would have come
   window.__step = (ms) => { const end = t + ms; while (t < end) { t = Math.min(end, t + 40); const run = q; q = []; for (const cb of run) cb(t); } return t; };
   window.__release = () => { if (!held) return; off = t - realNow(); held = false; const run = q; q = []; for (const cb of run) window.requestAnimationFrame(cb); };
