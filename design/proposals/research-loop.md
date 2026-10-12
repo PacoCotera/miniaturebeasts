@@ -167,34 +167,34 @@ This is a brief for the art director: the art director draws the renderer's mast
 
 ## 9. Where this comes from
 
-Paths marked "salvage" are under `miniaturebeasts-internal/history/salvage-2026-10-05/`: `notes/.tmp/` for notes, and `checkouts/publication--critter-lab-core-v1/files/` for `design/` and `docs/` files (the older `docs/screens.md` and `docs/genetics.md` are in the `worktree-*` checkouts). Owner dates are from `history/owner-direction-2026-10-05.md`.
+Items marked "salvage" come from earlier project notes outside this repository.
 
 **Carried forward:**
 - The Pip proof's three kinds (class invariant, fixed, variable) and its 17-fact manifest, as *locked*, *heritable* and *fully researched*. Sources: `v1/prototype/genetics/report.md`, `v1/native/selected-lab/V1.md`.
 - Copies stay when their owner is off, as *switched off* and *sleeping*. Sources: `v1/design/anatomical-source-prototype/compositional-contract.md`, `v1/prototype/generator-workbench/evidence/diversity-diagnosis/locus-coverage.md`.
 - Domains as a filing system, as chapters (`creatures-and-genomics.md`).
 - The genome field: regions that unfold in place (`art/references/genome-field/`).
-- The sample's "unique genetic bitmap", revealed at opening (salvage `docs/screens.md`, owner 09-25), as the ring at Identify.
-- One study settling several facts, and the question-to-finding idea (salvage `research-game-proposal.md`).
-- "Unknown, not locked" (owner 09-27, `research-game-model.md`): here "locked" means species-fixed only.
+- The sample's "unique genetic bitmap", revealed at opening (salvage), as the ring at Identify.
+- One study settling several facts, and the question-to-finding idea (salvage).
+- "Unknown, not locked" (salvage): here "locked" means species-fixed only.
 - Crystal-gated loci, as sealed chapters (owner 09-27).
 - Selective breeding, as crosses and wishes (owner 09-24).
 - ceil(log2) bit packing and shared-catalogue mode (`codec-contract.md`), as the ring's payload.
 - The `#G` code as a lookup, not a genome (`art-template.md`).
 - No QR, and the spoofing worry (owner 09-24).
-- The editing item (`genome-starter-content.md`).
+- The editing item (salvage).
 - From the r7 playtest: Data starvation, nothing to shape, misread words, the petals felt like progress, and the incubator reveal was the best moment.
 
 **Dropped:**
 - Trait windows, which don't scale (owner).
 - Whorl petals with hash ridges, which don't encode the genome (owner).
 - Full decoding before creation, the old v1 gate, which contradicts the decided unedited founder.
-- Research that steers synthesis (model B, salvage `docs/genetics.md`), superseded by the decided fixed genome.
+- Research that steers synthesis (model B, salvage), superseded by the decided fixed genome.
 - Per-topic purchases, a checklist.
-- Separate signal and point ledgers (`research-game-model.md`): too many currencies.
-- One unresolved-pod slot (`sample-loop-alternatives.md`), which conflicts with the decided six cups.
-- Essence as a reading medium (`visual-genome-game-brief.md`), which conflicts with the decided meanings.
-- Incubation as preparing a first home (`probe-bench-review.md`), superseded by the decided real minutes.
+- Separate signal and point ledgers (salvage): too many currencies.
+- One unresolved-pod slot (salvage), which conflicts with the decided six cups.
+- Essence as a reading medium (salvage), which conflicts with the decided meanings.
+- Incubation as preparing a first home (salvage), superseded by the decided real minutes.
 
 ## 10. What this changes
 
