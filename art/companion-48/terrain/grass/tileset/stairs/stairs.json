@@ -1,0 +1,113 @@
+{
+ "biome": "meadow",
+ "tile": 48,
+ "source": "b1 scene (lower stair, x 258-371, y 445-685)",
+ "pieces": [
+  {
+   "name": "meadow/stair/wide2x1-1",
+   "file": "wide2x1-1.png",
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "S",
+   "variant": 1
+  },
+  {
+   "name": "meadow/stair/wide2x1-2",
+   "file": "wide2x1-2.png",
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "S",
+   "variant": 2
+  },
+  {
+   "name": "meadow/stair/landing-l",
+   "file": "landing-l.png",
+   "kind": "landing",
+   "cells": [
+    1,
+    1
+   ]
+  },
+  {
+   "name": "meadow/stair/landing-r",
+   "file": "landing-r.png",
+   "kind": "landing",
+   "cells": [
+    1,
+    1
+   ]
+  },
+  {
+   "name": "meadow/stair/foot-l",
+   "file": "foot-l.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    1
+   ]
+  },
+  {
+   "name": "meadow/stair/foot-r",
+   "file": "foot-r.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    1
+   ]
+  },
+  {
+   "name": "meadow/stair/top2x1",
+   "file": "top2x1.png",
+   "kind": "stair",
+   "cells": [
+    2,
+    1
+   ],
+   "facing": "N"
+  },
+  {
+   "name": "meadow/stair/apron-top-l",
+   "file": "apron-top-l.png",
+   "kind": "apron-top",
+   "cells": [
+    1,
+    1
+   ]
+  },
+  {
+   "name": "meadow/stair/apron-top-r",
+   "file": "apron-top-r.png",
+   "kind": "apron-top",
+   "cells": [
+    1,
+    1
+   ]
+  },
+  {
+   "name": "meadow/stair/side2x2-e",
+   "file": "side2x2-e.png",
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "E"
+  },
+  {
+   "name": "meadow/stair/side2x2-w",
+   "file": "side2x2-w.png",
+   "kind": "stair",
+   "cells": [
+    2,
+    2
+   ],
+   "facing": "W"
+  }
+ ]
+}

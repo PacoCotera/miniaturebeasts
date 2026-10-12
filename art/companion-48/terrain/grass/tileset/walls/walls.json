@@ -1,0 +1,729 @@
+{
+ "biome": "meadow",
+ "tile": 48,
+ "sources": [
+  "meadow-src-walls-a1.jpg",
+  "meadow-src-walls-a2.jpg",
+  "meadow-src-walls-a3.jpg"
+ ],
+ "pieces": [
+  {
+   "name": "meadow/cap/wall-cap-w-a",
+   "file": "wall-cap-w-a.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "a"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-a",
+   "file": "wall-cap-e-a.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "a"
+  },
+  {
+   "name": "meadow/face/wall-3x2-a0",
+   "file": "wall-3x2-a0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "a0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-a3",
+   "file": "wall-3x2-a3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "a3"
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-b",
+   "file": "wall-cap-w-b.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "b"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-b",
+   "file": "wall-cap-e-b.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "b"
+  },
+  {
+   "name": "meadow/face/wall-3x2-b0",
+   "file": "wall-3x2-b0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "b0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-b3",
+   "file": "wall-3x2-b3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "b3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-b6",
+   "file": "wall-2x2-b6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "b6"
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-c",
+   "file": "wall-cap-w-c.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "c"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-c",
+   "file": "wall-cap-e-c.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "c"
+  },
+  {
+   "name": "meadow/face/wall-3x2-c0",
+   "file": "wall-3x2-c0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "c0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-c3",
+   "file": "wall-3x2-c3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "c3"
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-d",
+   "file": "wall-cap-w-d.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "variant": "d"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-d",
+   "file": "wall-cap-e-d.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "variant": "d"
+  },
+  {
+   "name": "meadow/face/wall-3x2-d0",
+   "file": "wall-3x2-d0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-d3",
+   "file": "wall-3x2-d3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-d6",
+   "file": "wall-2x2-d6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "d6"
+  },
+  {
+   "name": "meadow/face/wall-3x2-d8",
+   "file": "wall-3x2-d8.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d8"
+  },
+  {
+   "name": "meadow/face/wall-3x2-d11",
+   "file": "wall-3x2-d11.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "d11"
+  },
+  {
+   "name": "meadow/face/wall-3x2-e0",
+   "file": "wall-3x2-e0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-e3",
+   "file": "wall-3x2-e3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-e6",
+   "file": "wall-2x2-e6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "e6"
+  },
+  {
+   "name": "meadow/face/wall-3x2-e8",
+   "file": "wall-3x2-e8.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e8"
+  },
+  {
+   "name": "meadow/face/wall-3x2-e11",
+   "file": "wall-3x2-e11.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "e11"
+  },
+  {
+   "name": "meadow/face/wall-2x2-e14",
+   "file": "wall-2x2-e14.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "e14"
+  },
+  {
+   "name": "meadow/face/wall-2x2-e16",
+   "file": "wall-2x2-e16.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "e16"
+  },
+  {
+   "name": "meadow/face/wall-3x2-f0",
+   "file": "wall-3x2-f0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-f3",
+   "file": "wall-3x2-f3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-f6",
+   "file": "wall-2x2-f6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "f6"
+  },
+  {
+   "name": "meadow/face/wall-3x2-f8",
+   "file": "wall-3x2-f8.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f8"
+  },
+  {
+   "name": "meadow/face/wall-3x2-f11",
+   "file": "wall-3x2-f11.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "f11"
+  },
+  {
+   "name": "meadow/face/wall-3x2-g0",
+   "file": "wall-3x2-g0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-g3",
+   "file": "wall-3x2-g3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-g6",
+   "file": "wall-2x2-g6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "g6"
+  },
+  {
+   "name": "meadow/face/wall-3x2-g8",
+   "file": "wall-3x2-g8.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g8"
+  },
+  {
+   "name": "meadow/face/wall-3x2-g11",
+   "file": "wall-3x2-g11.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "g11"
+  },
+  {
+   "name": "meadow/face/wall-3x2-h0",
+   "file": "wall-3x2-h0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-h3",
+   "file": "wall-3x2-h3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-h6",
+   "file": "wall-2x2-h6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "h6"
+  },
+  {
+   "name": "meadow/face/wall-3x2-h8",
+   "file": "wall-3x2-h8.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h8"
+  },
+  {
+   "name": "meadow/face/wall-3x2-h11",
+   "file": "wall-3x2-h11.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "h11"
+  },
+  {
+   "name": "meadow/face/wall-1x2-h14",
+   "file": "wall-1x2-h14.png",
+   "kind": "face",
+   "cells": [
+    1,
+    2
+   ],
+   "variant": "h14"
+  },
+  {
+   "name": "meadow/face/wall-3x2-i0",
+   "file": "wall-3x2-i0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i0"
+  },
+  {
+   "name": "meadow/face/wall-3x2-i3",
+   "file": "wall-3x2-i3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i3"
+  },
+  {
+   "name": "meadow/face/wall-2x2-i6",
+   "file": "wall-2x2-i6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    2
+   ],
+   "variant": "i6"
+  },
+  {
+   "name": "meadow/face/wall-3x2-i8",
+   "file": "wall-3x2-i8.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i8"
+  },
+  {
+   "name": "meadow/face/wall-3x2-i11",
+   "file": "wall-3x2-i11.png",
+   "kind": "face",
+   "cells": [
+    3,
+    2
+   ],
+   "variant": "i11"
+  },
+  {
+   "name": "meadow/face/wall-1x2-i14",
+   "file": "wall-1x2-i14.png",
+   "kind": "face",
+   "cells": [
+    1,
+    2
+   ],
+   "variant": "i14"
+  },
+  {
+   "name": "meadow/foot/foot-1",
+   "file": "foot-1.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 1
+  },
+  {
+   "name": "meadow/foot/foot-2",
+   "file": "foot-2.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 2
+  },
+  {
+   "name": "meadow/foot/foot-3",
+   "file": "foot-3.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 3
+  },
+  {
+   "name": "meadow/foot/foot-4",
+   "file": "foot-4.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 4
+  },
+  {
+   "name": "meadow/side/side-w-1",
+   "file": "side-w-1.png",
+   "kind": "side",
+   "side": "w",
+   "px": [
+    44,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 1
+  },
+  {
+   "name": "meadow/side/side-w-2",
+   "file": "side-w-2.png",
+   "kind": "side",
+   "side": "w",
+   "px": [
+    44,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 2
+  },
+  {
+   "name": "meadow/side/side-w-3",
+   "file": "side-w-3.png",
+   "kind": "side",
+   "side": "w",
+   "px": [
+    44,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 3
+  },
+  {
+   "name": "meadow/side/side-w-top",
+   "file": "side-w-top.png",
+   "kind": "side-end",
+   "side": "w",
+   "px": [
+    44,
+    24
+   ],
+   "end": "top"
+  },
+  {
+   "name": "meadow/side/side-w-foot",
+   "file": "side-w-foot.png",
+   "kind": "side-end",
+   "side": "w",
+   "px": [
+    44,
+    24
+   ],
+   "end": "foot"
+  },
+  {
+   "name": "meadow/side/side-w-tail",
+   "file": "side-w-tail.png",
+   "kind": "side-end",
+   "side": "w",
+   "px": [
+    44,
+    96
+   ],
+   "end": "tail",
+   "cells": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "meadow/side/side-e-1",
+   "file": "side-e-1.png",
+   "kind": "side",
+   "side": "e",
+   "px": [
+    36,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 1
+  },
+  {
+   "name": "meadow/side/side-e-2",
+   "file": "side-e-2.png",
+   "kind": "side",
+   "side": "e",
+   "px": [
+    36,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 2
+  },
+  {
+   "name": "meadow/side/side-e-3",
+   "file": "side-e-3.png",
+   "kind": "side",
+   "side": "e",
+   "px": [
+    36,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 3
+  },
+  {
+   "name": "meadow/side/side-e-top",
+   "file": "side-e-top.png",
+   "kind": "side-end",
+   "side": "e",
+   "px": [
+    36,
+    24
+   ],
+   "end": "top"
+  },
+  {
+   "name": "meadow/side/side-e-foot",
+   "file": "side-e-foot.png",
+   "kind": "side-end",
+   "side": "e",
+   "px": [
+    36,
+    24
+   ],
+   "end": "foot"
+  },
+  {
+   "name": "meadow/side/side-e-tail",
+   "file": "side-e-tail.png",
+   "kind": "side-end",
+   "side": "e",
+   "px": [
+    36,
+    96
+   ],
+   "end": "tail",
+   "cells": [
+    0,
+    2
+   ]
+  }
+ ]
+}
