@@ -86,7 +86,7 @@ body{
 .dpad::before{content:""; position:absolute; inset:-8px; border-radius:50%; background: radial-gradient(circle, rgba(70,58,40,.25), rgba(70,58,40,0) 70%)}
 .dpad .hub{position:absolute; left:44px; top:44px; width:44px; height:44px; background:var(--charcoal); }
 .dpad .hub::after{content:""; position:absolute; left:14px; top:14px; width:16px; height:16px; border-radius:50%; background: radial-gradient(circle at 40% 35%, #3d4146, #24272a)}
-.dpad .key{width:44px; height:44px; background: linear-gradient(180deg,#3a3d42,var(--charcoal)); box-shadow: 0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12)}
+.dpad .key{width:44px; height:44px; background: linear-gradient(180deg,#3a3d42,#2e3136); box-shadow: 0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12)}
 .dpad .key svg{width:16px; height:16px; fill:#f4f1ec}
 .dpad .up{left:44px; top:0; border-radius:8px 8px 0 0}
 .dpad .down{left:44px; top:88px; border-radius:0 0 8px 8px}
@@ -195,7 +195,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
         </div>
       </div>
     </div>
-    <div class="stamp" id="stamp">build …</div>
+    <div class="stamp" id="stamp" hidden>build …</div>
   </div>
 
   <aside class="panel" aria-label="Playtest notes">
@@ -4572,7 +4572,7 @@ fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw ne
 }).catch(() => { stampEl.textContent = 'local build'; });
 
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
-function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
+function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; stampEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
 // Developer: the Data step (the tier multiplier). Typing in the field keeps the keys; Enter or leaving it applies.
 const devStepEl = document.getElementById('devStep'), devLadderEl = document.getElementById('devLadder');
