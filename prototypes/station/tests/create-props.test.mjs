@@ -101,8 +101,8 @@ test("the bottom line: ✓ Grow it and the price with ◆ a change (the first fo
   { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
   { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.bud.busy, true); }
   { const k = make("S01", 3, 2); for (let i = 0; i < 12; i++) k.st.mibis.push({ id: 100 + i, bay: i, released: false }); L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.noBay]); }
-  { const k = make("S01", 3, 2); k.st.s = 1; L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked, L.need], [true, "❀", undefined, "needs more ❀"]); }
-  { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.deepEqual([L.dim, L.short, L.need], [true, "⚡ ❀", "needs more ⚡ ❀"]); }
+  { const k = make("S01", 3, 2); k.st.s = 1; L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked, L.need], [true, "❀", undefined, "needs ❀: go out or return pods"]); }
+  { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.deepEqual([L.dim, L.short, L.need], [true, "⚡ ❀", "needs more ⚡ ❀: go out"]); }
   { const k = make("S01", 3, 2); k.cr.f = roll; k.cr.choices = { [list[roll].t.id]: 1 }; k.cr.clash = [list[roll].t.id]; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.clash]); }
   { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, Sg.notices.busy, "busy before short"); assert.equal(k.build().line.short, undefined, "blocked is never beside short"); }
 });
