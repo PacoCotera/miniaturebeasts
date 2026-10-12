@@ -1,6 +1,6 @@
 # The research loop
 
-The [Station loop](station-loop.md), the [Station layouts](../style-guide/station-layouts.md), the [Station style guide](../style-guide/station-screens.md), [creatures and genomics](../creatures-and-genomics.md) and [the game](../game.md) carry this design. The genome ring's printability and scanability are still to be tested, and its art may be refined.
+The [Station loop](station-loop.md), the [Station layouts](../style-guide/station-layouts.md), the [Station style guide](../style-guide/station-screens.md), [creatures and genomics](../creatures-and-genomics.md) and [the game](../game.md) carry this design. The genome stamp's printability and scanability are still to be tested, and its art may be refined.
 
 It replaces the "trait window" unit of the [Station loop](station-loop.md) with one that scales to the real genome, and sets what each step of the loop must let the player see and do. Numbers are illustrations unless marked. Sources are cited by path so the lineage of each idea can be checked.
 
@@ -8,18 +8,18 @@ It replaces the "trait window" unit of the [Station loop](station-loop.md) with 
 - *"Many loci, expressions and alleles":* research is read in **chapters** (Coat, Face, Shape, Legs & tail, Movement, Stamina, Temperament…), each a page of several traits, each trait a group of loci. The 114 loci of the authoring genome become 57 locked parts learned once per species and 57 heritable parts in 7 chapters and 24 traits (§3–4). More loci make the chapters fuller; there are never more buttons.
 - *The pod list:* kept. Each pod gets a ring that fills as its chapters are read (§4).
 - *Distinct pod looks:* pods come from one renderer with four parameters taken from the species, so every species gets a distinct pod and nobody draws one by hand (§6).
-- *The fingerprint:* it becomes a **genome ring**, a round code that stores the real copies. Members of a species share its centre band, and a child shares one of each parent's two marks at every spoke. Unread parts show as hairlines. A device can scan it (§7).
+- *The fingerprint:* it becomes a **genome stamp**, a scannable code that stores the real copies. Members of a species share its border, and a child shares one of each parent's two marks at every switch. Unread chapters are left out. A device can scan it (§7).
 - *Design the loop first:* §8 is the brief that every screen is judged against.
 
 ## 1. It starts with a pod: the life of one pod
 
-1. **Bay.** The Companion docks and the crate is opened (cargo moves only on docking; the bay holds three crates). The pod rolls into the **pod list**, the column owner kept, showing its place stamp and an empty ring.
-2. **Identify** (1 Data). The seal on the cap breaks and the species glyph shows. For a new species, its frame (every part the species fixes) is learned once, and its Library page opens. For a known species the frame is filled in at once. The pod's genome ring draws its grey centre band. Each heritable chapter shows as a sector of hairlines: there is something here, and it has not been read yet.
+1. **Bay.** The Companion docks and the crate is opened (cargo moves only on docking; the bay holds three crates). The pod rolls into the **pod list**, the column owner kept, showing its place stamp and an empty progress ring.
+2. **Identify** (1 Data). The seal on the cap breaks and the species glyph shows. For a new species, its frame (every part the species fixes) is learned once, and its Library page opens. For a known species the frame is filled in at once. The progress ring around the pod appears, empty; it fills as its chapters are read.
 3. **Read a chapter** (Data). The chapter's sector turns into marks, and its page shows each trait as a picture of this pod's mibi: what it *shows*, and a misty seed for what it *hides* (the seed is from [station-loop.md](station-loop.md)).
 4. **Shape** (optional). For each read trait that can be shaped, the player picks from three pictures drawn from the pod's own two copies. The founder redraws with every change. Untouched and unread traits stay as the pod has them.
 5. **Grow.** One pod becomes one fixed individual. The stamp prints on its label and the pod goes into the incubator.
-6. **Incubate** (real minutes). Unread chapters clear one by one as the embryo grows. This was the best moment in the r7 playtest. By the end, a founder's ring is whole.
-7. **Meet.** Open is a press. The juvenile steps into the vivarium carrying its ring, its name-code and its pod's story.
+6. **Incubate** (real minutes). Unread chapters clear one by one as the bud grows. This was the best moment in the r7 playtest. By the end, a founder is fully known.
+7. **Meet.** Open is a press. The juvenile steps into the vivarium carrying its stamp, its name-code and its pod's story.
 
 From here, research gets deeper across many **pods** (glints, comparing, reading the chapters with something new), across **individuals** (crossing two of them, reading the child), and across **species** (the Library's field guide, sealed chapters, new species with more chapters).
 
@@ -33,7 +33,7 @@ A genome is not one field to research. It has five kinds of part:
 
 | Kind | What it is | Who knows it, and when | Worked frame on the 114-pair authoring genome | Pip proof |
 | --- | --- | --- | --- | --- |
-| **Locked** (species frame) | What makes a Loika a Loika: the body plan's switches, plus every copy a switched-off part still carries (wings off, so the wing copies are fixed too) | Learned **once per species** at the first Identify and kept in the Library. It shows as the ring's grey centre band | 57: 31 body-plan switches and 26 parts the frame switches off | 12: 9 fixed modules and 3 fixed loci (charcoal, cream, amber) |
+| **Locked** (species frame) | What makes a Loika a Loika: the body plan's switches, plus every copy a switched-off part still carries (wings off, so the wing copies are fixed too) | Learned **once per species** at the first Identify and kept in the Library. It is the stamp's species border | 57: 31 body-plan switches and 26 parts the frame switches off | 12: 9 fixed modules and 3 fixed loci (charcoal, cream, amber) |
 | **Heritable · looks** | Visible traits that differ between individuals and pass to children | Read **per pod**, chapter by chapter. Shapeable at creation once read | 44 in Coat, Face, Shape, and Legs & tail | 3: pale, crown, eye rings |
 | **Heritable · doings** | Movement, stamina and temperament | Read per pod. **Change only by breeding** | 13 in Movement, Stamina and Temperament | 2: drive, efficiency |
 | **Sleeping** | Heritable copies whose switch is off in *this individual* (the five marking parts of a plain coat) | Read with their chapter and drawn as "asleep". They can wake in a child | 5, inside Coat | none |
@@ -55,12 +55,12 @@ A genome is not one field to research. It has five kinds of part:
 **A read** (one press, about two seconds, never a wait) reads **one chapter of one pod**. It gives **both copies of every locus in that chapter**, drawn per trait as *shows X*, *shows X · hides Y* or *only X*. It replaces "through and through", which the r7 tester read as "pure". Sleeping parts are drawn asleep, as in "markings asleep: bands, if they wake". One read can settle several facts. Things already known are never charged again.
 
 **Fully researched**, at three levels:
-- **Pod:** every chapter that is not sealed has been read. A sealed chapter keeps a notch in the ring until it is opened.
+- **Pod:** every chapter that is not sealed has been read. A sealed chapter keeps a notch in the progress ring until it is opened.
 - **Individual:** a founder inherits its pod's reads, and a shaped trait is known by definition. Incubation clears the rest, so every founder you grow is fully known. A **bred child** is known only where the Station can be sure, which is where both parents' copies were the same. Everywhere else it shows "one of these" until that chapter is read. That makes reading children a real job, and it teaches heredity without a lesson. "Known where the parents match" holds for **switch loci only**; a blended (continuous) trait is known only when read, because of the spread ([the cross](the-cross.md) §1–2).
 - **Species:** the Library's **field guide** is complete when every look the species can carry has been seen in a read pod or a mibi. The worked frame has 133 looks across its 57 parts, counted from the catalogue's alleles (the earlier 124 was an estimate), and the field guide shows them as pictures per trait with a dotted "more?". Seeing every look of a species is a long-term goal. Spotting wonders, the combined traits the owner wants (**Open:** their rules), comes later.
   *For the build:* the looks a field guide counts are the **frame's own player words** for each trait, the same words a read gives. A blend's looks are its bins, and its in-between bin is **one** look ("between"), part of "more?" until seen; the catalogue's pair labels ("between short and stub", "off/on", every two-colour pair) are never looks. Where the read falls back to them (the Tuikis's eyes, snout, build, legs and feet; both markings; the two-colour coats), the frame or `describe.lookOf` is fixed in the workbench, and a check holds every trait's enumeration to its frame's looks. The guide is complete only with the sealed chapter's looks seen ([the portrait](the-portrait.md) §8).
 
-**The progress ring on the pod list.** Around each pod in the list, the centre fills when the pod is identified (the frame is known), then one arc per chapter, sized by its trait count, fills when that chapter is read. A star on an arc is the glint, one per chapter: this pod holds a look the species has not shown yet in that chapter. A notch marks a sealed arc. Progress = traits read ÷ traits in chapters that are not sealed. It is shown only as the ring, with no digits (`design/style-guide/station-layouts.md`, the frame: numbers only beside an icon).
+**The progress ring on the pod list.** Around each pod in the list, one arc per chapter, sized by its trait count, fills when that chapter is read. A star on an arc is the glint, one per chapter: this pod holds a look the species has not shown yet in that chapter. A notch marks a sealed arc. Progress = traits read ÷ traits in chapters that are not sealed. It is shown only as the ring, with no digits (`design/style-guide/station-layouts.md`, the frame: numbers only beside an icon).
 
 **Costs and pacing.**
 - **Data reads.** A chapter costs **1 Data per trait in it**, and **half (rounded up) once that chapter has been read on any earlier pod of the species** ("the Station knows where to look"). This answers an owner question about the blue-eyed specimen: what was learned makes later pods cheaper, and the glint says which pods are worth reading. The very first read ever is free.
@@ -93,7 +93,7 @@ The owner says this is the core: "research the genome, tinker with it." Reading 
 - **"Only spots" means the mibi can pass on only spots.** The forecast for a cross shows the cost of that choice.
 - **A cross is the gamble.** The child might wake a sleeping look, or might not. Ineligible pairs are refused before anything is spent, and a child that cannot be built never exists (every offspring is viable).
 
-**How a child finds it without the words.** Every trait is a **pair**: one look shows and one may hide. The pair is drawn as the two halves of the trait's picture and as the two tracks of the ring. A parent passes **one half of each pair**. The child learns this from three things: the founder redraws on every roll; a plain mother and a plain father have a spotted baby; and two rings line up at the Station. Detailed genetics stays a free page for anyone who wants it.
+**How a child finds it without the words.** Every trait is a **pair**: one look shows and one may hide. The pair is drawn as the two halves of the trait's picture and as the two copies in the stamp. A parent passes **one half of each pair**. The child learns this from three things: the founder redraws on every roll; a plain mother and a plain father have a spotted baby; and two stamps line up at the Station. Detailed genetics stays a free page for anyone who wants it.
 
 ## 6. Pods as a system, not bespoke art
 
@@ -104,7 +104,7 @@ Every pod comes from **one renderer**, the way every creature comes from its gen
   - **proportion**, squat or tall, from body length to height;
   - **shell pattern family**, from covering and symmetry: fur gives soft ribs, scales give overlapping plates, skin gives smooth dots, radial plans give segments;
   - **colour pair**, two signature pigments from the species' pool;
-  - **glyph**, the 5×5 mirrored mark at the ring's centre.
+  - **glyph**, the 5×5 mirrored mark at the stamp's centre.
 - **Varies by pod:** only the dust or moss of its place of origin, kept from the decided "place colours".
 - An unidentified pod shows its shell but its cap is sealed. Identify breaks the seal and shows the glyph. A pod that has no species yet is still a valid pod, just a quiet grey one.
 
@@ -112,41 +112,7 @@ This is a brief for the art director: the art director draws the renderer's mast
 
 ## 7. The genome fingerprint as a code: the genome ring
 
-| Need | SSH randomart | Barcode | Spotify code | QR | Bespoke grid | **Ring** |
-| --- | --- | --- | --- | --- | --- | --- |
-| Encodes the real genotype | no (a hash) | ID only | ID only | yes | yes | **yes** |
-| Same species looks alike | no | no | no | no (masked) | partly | **yes** (band, glyph, sectors) |
-| Parent and child share most of it | no | no | no | no | yes | **yes**, track by track |
-| Readable at Station size, prints on paper | yes | yes | yes | yes | yes | **yes**, monochrome-safe |
-| Revealed as research proceeds | no | no | no | breaks decoding | yes | **yes**, hairline sectors |
-| A device can scan it | no | yes | needs a server | yes | yes | **yes**: notch, timing marks, check |
-
-**Recommendation: the ring.** It keeps the decided round fingerprint, makes it true, and answers an owner wish for "something different to a QR" and an owner worry about spoofed codes.
-- **Centre:** the species glyph.
-- **Grey band:** the locked frame, 62 marks, the same for every member.
-- **Two coloured tracks:** one spoke per heritable part. The inner track holds one copy (from the mother, or the pod's first copy) and the outer track holds the other. A long or short bar marks which look; a part with 3 or more looks takes 2 to 4 spokes.
-- **Sectors:** one per chapter, clockwise from the notch.
-- **Outer dashes:** species number, version and a check.
-- **Payload:** the worked frame needs 69 marks per track. That is 138 heritable bits and 40 header bits: the codec's own packing (one bit per two-look copy) against the species' pinned definition (`v1/prototype/generator-workbench/codec-contract.md`).
-- **Reader marks** (tested in `prototypes/genome-ring/`):
-  - a solid **rim** around the dashes, which finds the ring and sets its outer radius;
-  - a solid **timing circle** between the tracks, with **one tick per slot**, which corrects perspective and finds every spoke;
-  - a **notch** of 3 empty slots at 12 o'clock, which sets where the ring starts and its direction;
-  - a **40-bit header** (species 12, version 4, read mask 8, **CRC-16**), repeated around the outer dashes and read by vote. The CRC covers the header and every spoke shown.
-- **Size:** a 300 px Station ring gives about 8 px a spoke, and the Caddy can print the same ring if its paper allows about 300 dots (printer **Open**).
-- **The short code stays** (`G7F · CD0 · 3H2`) as the mibi's name, a lookup and not the genome (`art-template.md`).
-
-![Genome rings drawn from the real catalogue](research-loop/genome-ring.svg)
-
-*Five rings drawn from the 114-pair catalogue. Two pods of a species share 56% of marks. Their child shares 69% and 61% with them, and at every spoke one of its two marks is one of each parent's. The other species differs in band, sectors and glyph.*
-
-The lineage reading of the ring ("at every spoke one of its two marks is one of each parent's"; Verify lineage below) holds for **switch spokes only**. At a blended spoke the child's two marks are equal and sit between its parents', so the lineage check there is a range check ([the cross](the-cross.md) §8).
-
-**What the scan is for in play.** Scanning **shows and never grants**: a forged ring can show a mibi but never makes one.
-- **Compare:** overlay two rings, and the spokes that differ pulse.
-- **Trade:** see exactly what you would get before agreeing (consent rules).
-- **Verify lineage:** the Station checks the child's tracks against both parents' rings.
-- **Website and cloud:** a scanned ring opens the mibi's public page. Certified lineage would need the cloud's signature (**Open**). Per [the portrait](the-portrait.md) §1, §3, the signature is the **postmark**, signed by the cloud when a mibi sits for its **portrait** (the unique cloud-painted render, earned with a sitting); a plain mibi's stamp carries an unsigned postmark and its scan shows and grants nothing; only portrayed mibis trade.
+The fingerprint is the genome stamp, a scannable code of the real copies. Its layout and reading rules are in [creatures and genomics](../creatures-and-genomics.md#the-genome-stamp), and its codes in [Codes](../creatures-and-genomics.md#codes).
 
 ## 8. The loop, step by step: the brief screens are judged against
 
@@ -156,10 +122,10 @@ The lineage reading of the ring ("at every spoke one of its two marks is one of 
 | Pod list | Every pod at a glance: place stamp, species glyph or seal, progress ring, glint, what it waits for. The current pod is marked | Pods, reads, glints, prices | Digits of progress, locus counts |
 | Identify | The seal breaks and the species shows. A new species opens its Library page with the frame | Species, frame | Individual traits before a read |
 | Read | The chapters as arcs and as pages. Which chapters glint, what each read costs, and the result as pictures: shows, hides, only, asleep | Copies of the read chapter, species gallery | Letters (Pp), ratios, guesses for unread parts, "locked" used for "unknown" |
-| Compare | Two pods or mibis of a species side by side. The rings and pages line up and the differences pulse. Free | Both genomes as read | Unread parts of either |
+| Compare | Two pods or mibis of a species side by side. The pages line up and the differences pulse. Free | Both genomes as read | Unread parts of either |
 | Shape | The founder large. Roll each shapeable trait among three pictures, and see the total price and what stays a surprise | Pod copies, permissions, validity | A look the pod lacks, any locked part as choosable |
 | Incubate | The embryo grows, unread chapters clear, and the leaves count the time | Minutes, remaining reads | A different individual |
-| Meet | The mibi steps out: its name, its ring, its story | The individual | A founder: nothing hidden, it is fully known |
+| Meet | The mibi steps out: its name, its stamp, its story | The individual | A founder: nothing hidden, it is fully known |
 | Cross, Wish | Pick two adults, see the forecast seeds per trait, pin a wish | Both parents, eligibility, field guide | Odds as numbers on the child-facing view, any promise |
 | Library | The field guide per species: frame, looks found, "more?", lineage, wishes | Species knowledge | Ownership implied by knowledge |
 
@@ -174,12 +140,12 @@ Items marked "salvage" come from earlier project notes outside this repository.
 - Copies stay when their owner is off, as *switched off* and *sleeping*. Sources: `v1/design/anatomical-source-prototype/compositional-contract.md`, `v1/prototype/generator-workbench/evidence/diversity-diagnosis/locus-coverage.md`.
 - Domains as a filing system, as chapters (`creatures-and-genomics.md`).
 - The genome field: regions that unfold in place (`art/references/genome-field/`).
-- The sample's "unique genetic bitmap", revealed at opening (salvage), as the ring at Identify.
+- The sample's "unique genetic bitmap", revealed at opening (salvage), as the stamp at Identify.
 - One study settling several facts, and the question-to-finding idea (salvage).
 - "Unknown, not locked" (salvage): here "locked" means species-fixed only.
 - Crystal-gated loci, as sealed chapters.
 - Selective breeding, as crosses and wishes.
-- ceil(log2) bit packing and shared-catalogue mode (`codec-contract.md`), as the ring's payload.
+- ceil(log2) bit packing and shared-catalogue mode (`codec-contract.md`), as the stamp's payload.
 - The `#G` code as a lookup, not a genome (`art-template.md`).
 - No QR, and the spoofing worry.
 - The editing item (salvage).
@@ -198,10 +164,10 @@ Items marked "salvage" come from earlier project notes outside this repository.
 
 ## 10. What this changes
 
-- **station-loop.md §1:** "trait windows" become chapters and traits; "a study is one window, 2 Data" becomes one chapter at 1 Data per trait, half on later pods; the glint becomes per chapter; the whorl becomes the genome ring; incubation's "+1 minute per window beyond three" becomes per chapter beyond three.
+- **station-loop.md §1:** "trait windows" become chapters and traits; "a study is one window, 2 Data" becomes one chapter at 1 Data per trait, half on later pods; the glint becomes per chapter; the whorl becomes the genome stamp; incubation's "+1 minute per window beyond three" becomes per chapter beyond three.
 - **station-loop.md §4:** the study price changes, "+2 Data per window changed" becomes +1 per trait, and the Data-income dependency is added.
-- **station-loop.md §6 and §9:** a minimal cross and wishes move into scope; the placeholder genomes ("4 windows") become species frames on the authoring catalogue, starting with Pip's five traits; the fingerprint spec becomes the ring.
-- **station-screens.md:** the pod list column stays and gains the progress ring; the "arc of four windows" and "The trait window" become chapter arcs and pages; "The fingerprint" becomes the ring; the Library's per-window sticker slots become one page per chapter; Create rolls traits; the words change to *only X* and *breed to change*.
+- **station-loop.md §6 and §9:** a minimal cross and wishes move into scope; the placeholder genomes ("4 windows") become species frames on the authoring catalogue, starting with Pip's five traits; the fingerprint spec becomes the stamp.
+- **station-screens.md:** the pod list column stays and gains the progress ring; the "arc of four windows" and "The trait window" become chapter arcs and pages; "The fingerprint" becomes the stamp; the Library's per-window sticker slots become one page per chapter; Create rolls traits; the words change to *only X* and *breed to change*.
 - **Also:** `design/style-guide/station-screens.md` (Pods, Library), `design/creatures-and-genomics.md` (research and fingerprint lines, once decided), and `design/play-manual.md` when it is built.
 - **Stays decided:** a Station the player drives; Identify for 1 Data; the founder price; one pod, one founder; shaping only researched, permitted traits with the pod's own copies; incubation in real minutes by species; the sealed bay and no forced return; glint, free compare, never paid twice, findings survive; six cups; the separate 1024×600 page; a fingerprint and a code exist.
 
@@ -209,6 +175,6 @@ Items marked "salvage" come from earlier project notes outside this repository.
 
 1. **Chapters are the research unit.** One read covers one chapter of one pod and gives both copies of every trait in it, at 1 Data per trait, half on later pods of the species, with the field yield later tiered ([research-economy](research-economy.md) §3). *Recommended.*
 2. **The genome split.** Locked frame learned once per species, heritable parts read per individual. Default rule: looks shapeable at creation, doings only by breeding, with each species allowed to override. This generalizes the bounded trial, which was explicitly not to be generalized, so it is the owner's call. *Recommended as the default.*
-3. **The genome ring replaces the whorl** as the fingerprint: centre band, two tracks, hairlines for unread parts. Scanning shows and never grants. The short code stays as the name. *Recommended.*
+3. **The genome stamp replaces the whorl as the fingerprint:** a scannable code of the real copies, read chapters only. Scanning shows and never grants. The short code stays as the name. *Recommended.*
 4. **Pods from one renderer** with species parameters (size, proportion, pattern family, colour pair, glyph). An individual's genes never show on the shell. *Recommended.*
 5. **Tinkering in the first Station build:** a minimal same-species cross with forecast seeds, and wishes, pulled forward from "deliberately out". *Recommended*, because tinkering is the core.

@@ -78,7 +78,7 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 **What was changed so that neither week starves nor saturates:**
 - **Data per walk is tiered, 2 / 4 / 6 / 8,** in place of the flat "about 3 per expedition" the research loop assumed (the r7 tester got 1). At 3 a walk a mid species completes in only 68 percent of two-week runs, with 50 pod-days of glints waiting: r7's starvation. At 5 it is day 10, a day short. At 8 nothing waits and Data piles up from day 7. Six is the number.
 - **The bench trickle is capped at 2.** Three behaves like one more from the field; two keeps it a quarter of a mid day.
-- **The walk's own +1 Data** (station-loop §3) folds into the field yield, since the walk now is the expedition.
+- **The Walk with a mibi brings no Data of its own;** an expedition's Data is its field yield (§2).
 - **Prices unchanged.** Half price on later pods turns the week: the first mid pod would cost 24 whole and gets two chapters on its day; by day 4 a glinting chapter costs 2.
 - At the other tiers: an early species (10 traits, 54 looks) at 4 a walk completes on day 6 for 27 Data; a late one (30 traits, 164 looks) at 8 a walk on day 10 to 12, right for a species behind a gate.
 

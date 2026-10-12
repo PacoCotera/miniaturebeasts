@@ -363,7 +363,7 @@ The stamp's tests, print sheet and scan page are in
 ## Codes
 
 Every mibi has a **name code**: nine characters from the genome's digest, the
-last a check character, shown in threes (for example `G7F · CD0 · 3H2`). It is
+last a check character, shown in threes with spaces (for example `G7F CD0 3H2`). It is
 a name and a lookup, not the genome.
 
 The **stamp code** is the stamp's own bytes written as text. It can be shared
