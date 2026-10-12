@@ -114,7 +114,7 @@ How a mibi's painting is made is in the [art pipeline](../proposals/art-pipeline
 - Validation checks the silhouette, every part, the slot colours and the markings inside their fields. A painting that fails gets one named retry; after that the rig placeholder stands.
 - The small sizes are derived from the Station painting, never painted small: the 280×300 Companion resident, the 48 px token, and the idle and walk frames.
 - A painting is never regenerated silently. The painter's id is part of its cache key, and nothing hidden is carried in the manifest or the controls.
-- Each species' pieces (faces, materials, token) are painted once per species, never per mibi.
+- Each species' pieces (faces and materials, with the generic token for a silhouette not yet met) are painted once per species, never per mibi.
 
 ### Figures in documents
 

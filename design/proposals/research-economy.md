@@ -98,7 +98,7 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 A bud grows **twenty minutes plus one minute per shaped trait**, replacing the rule by body size and chapter count (station-loop §1); a cross incubates the same.
 
-**Meanwhile** the bench carries on: other pods are read and residents watched (the trickle's minutes and the bud's are the same minutes), and the bud's unread chapters clear across the wait, one every few minutes. The Station is always on: a player who leaves finds the bud ready at the next bench; Open waits for a press; a cargo never shortens it; one incubator, so one bud at a time.
+**Meanwhile** the bench carries on: other pods are read and residents watched (the trickle's minutes and the bud's are the same minutes), and a founder bud's unread chapters clear across the wait, one every few minutes. The Station is always on: a player who leaves finds the bud ready at the next bench; Open waits for a press; a cargo never shortens it; one incubator, so one bud at a time.
 
 **The generation budget.** Twenty minutes is the art pipeline's latency budget (v2 §2): at 20–105 seconds a call the full unique set of four calls fits with retries at one and five minutes, so a connected kit opens a unique juvenile almost every time. One incubator, one or two buds a day in practice and six to ten bays bound the spend at about 40–60 mibis a kit-year, the pipeline's cost assumption. Returning a mibi and growing another costs twenty minutes, 2 Energy and a net 2 Essence, so a render is never free to churn; the Caddy's monthly call cap is the backstop.
 

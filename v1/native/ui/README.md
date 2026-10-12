@@ -3,7 +3,7 @@
 `native/ui` turns copied permitted device views into retained LVGL screens. The
 selected game supplies facts and semantic focus; host or ESP-IDF adapters supply
 display sinks and asset backing. This module cannot access game/save authority
-or invoke gameplay commands. Player-facing labels follow [Miniature Beasts naming](../../BRANDING.md); native Station headers use the compact device name. Start with the [architecture](../../specs/architecture.md#native-ui-foundation)
+or invoke gameplay commands. Player-facing labels follow [Miniature Beasts naming](../../BRANDING.md); native Station headers use the compact device name. Start with the [architecture](../../../design/architecture.md#software)
 for the ecosystem boundary and [native build guide](../README.md) to compile it.
 
 The portable families are Cargo/Send/Discard/Finish, Probe and residents/visits,
@@ -192,7 +192,7 @@ Shared margins, palette, font hierarchy, framing and focus styles belong in them
 tokens. Images use retained Gemini source pixels at native size with verified
 alpha/channel conversion; no framework default skin or magnified coarse sprite
 establishes HiBit quality. Current retained images are fixture/reference evidence.
-Future creature detail follows the [algorithmic pipeline](../../specs/architecture.md#creature-production-pipeline),
+Future creature detail follows the [algorithmic pipeline](../../../design/architecture.md#creature-art),
 with general style grammar and native-size generator calibration. Layout and
 craft are separate gates; no per-creature manual master is required.
 
@@ -218,7 +218,7 @@ are reused. Original references and extraction provenance remain retained in the
 [asset manifest](../selected-lab/asset-manifest.json). Native rendering uses retained widgets,
 copied presentation facts and source art. It is not a full-screen screenshot. Host scaling does not establish physical readability.
 
-All known Companion screen families and the complete Dock family use the shared [LVGL UI integration](../../specs/architecture.md#native-ui-foundation).
+All known Companion screen families and the complete Dock family use the shared [LVGL UI integration](../../../design/architecture.md#software).
 Retained widget trees, shared layout/theme, source-exact native resource sprites
 and a Vera glyph adapter belong to the host context; game/view state stays in the
 Kit. The [Companions preview](../../docs/evidence/native-companion-resident-preview/README.md)

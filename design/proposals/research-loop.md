@@ -18,7 +18,7 @@ It replaces the "trait window" unit of the [Station loop](station-loop.md) with 
 3. **Read a chapter** (Data). The chapter's sector turns into marks, and its page shows each trait as a picture of this pod's mibi: what it *shows*, and a misty seed for what it *hides* (the seed is from [station-loop.md](station-loop.md)).
 4. **Shape** (optional). For each read trait that can be shaped, the player picks from three pictures drawn from the pod's own two copies. The founder redraws with every change. Untouched and unread traits stay as the pod has them.
 5. **Grow.** One pod becomes one fixed individual. The ring is stamped on the shell and the pod goes into the incubator.
-6. **Incubate** (real minutes). Unread chapters clear one by one as the embryo grows. This was the best moment in the r7 playtest. By the end, the mibi's ring is whole.
+6. **Incubate** (real minutes). Unread chapters clear one by one as the embryo grows. This was the best moment in the r7 playtest. By the end, a founder's ring is whole.
 7. **Meet.** Open is a press. The juvenile steps into the vivarium carrying its ring, its name-code and its pod's story.
 
 From here, research gets deeper across many **pods** (glints, comparing, reading the chapters with something new), across **individuals** (crossing two of them, reading the child), and across **species** (the Library's field guide, sealed chapters, new species with more chapters).
@@ -56,7 +56,7 @@ A genome is not one field to research. It has five kinds of part:
 
 **Fully researched**, at three levels:
 - **Pod:** every chapter that is not sealed has been read. A sealed chapter keeps a notch in the ring until it is opened.
-- **Individual:** a founder inherits its pod's reads, and a shaped trait is known by definition. Incubation clears the rest, so every mibi you grow is fully known. A **bred child** is known only where the Station can be sure, which is where both parents' copies were the same. Everywhere else it shows "one of these" until that chapter is read. That makes reading children a real job, and it teaches heredity without a lesson. "Known where the parents match" holds for **switch loci only**; a blended (continuous) trait is known only when read, because of the spread ([the cross](the-cross.md) §1–2).
+- **Individual:** a founder inherits its pod's reads, and a shaped trait is known by definition. Incubation clears the rest, so every founder you grow is fully known. A **bred child** is known only where the Station can be sure, which is where both parents' copies were the same. Everywhere else it shows "one of these" until that chapter is read. That makes reading children a real job, and it teaches heredity without a lesson. "Known where the parents match" holds for **switch loci only**; a blended (continuous) trait is known only when read, because of the spread ([the cross](the-cross.md) §1–2).
 - **Species:** the Library's **field guide** is complete when every look the species can carry has been seen in a read pod or a mibi. The worked frame has 133 looks across its 57 parts, counted from the catalogue's alleles (the earlier 124 was an estimate), and the field guide shows them as pictures per trait with a dotted "more?". Seeing every look of a species is a long-term goal. Spotting wonders, the combined traits the owner wants (**Open:** their rules), comes later.
   *For the build:* the looks a field guide counts are the **frame's own player words** for each trait, the same words a read gives. A blend's looks are its bins, and its in-between bin is **one** look ("between"), part of "more?" until seen; the catalogue's pair labels ("between short and stub", "off/on", every two-colour pair) are never looks. Where the read falls back to them (the Tuikis's eyes, snout, build, legs and feet; both markings; the two-colour coats), the frame or `describe.lookOf` is fixed in the workbench, and a check holds every trait's enumeration to its frame's looks. The guide is complete only with the sealed chapter's looks seen ([the portrait](the-portrait.md) §8).
 
@@ -159,7 +159,7 @@ The lineage reading of the ring ("at every spoke one of its two marks is one of 
 | Compare | Two pods or mibis of a species side by side. The rings and pages line up and the differences pulse. Free | Both genomes as read | Unread parts of either |
 | Shape | The founder large. Roll each shapeable trait among three pictures, and see the total price and what stays a surprise | Pod copies, permissions, validity | A look the pod lacks, any locked part as choosable |
 | Incubate | The embryo grows, unread chapters clear, and the leaves count the time | Minutes, remaining reads | A different individual |
-| Meet | The mibi steps out: its name, its ring, its story | The individual | Nothing hidden: it is fully known |
+| Meet | The mibi steps out: its name, its ring, its story | The individual | A founder: nothing hidden, it is fully known |
 | Cross, Wish | Pick two adults, see the forecast seeds per trait, pin a wish | Both parents, eligibility, field guide | Odds as numbers on the child-facing view, any promise |
 | Library | The field guide per species: frame, looks found, "more?", lineage, wishes | Species knowledge | Ownership implied by knowledge |
 
