@@ -16,10 +16,10 @@ This document turns the prize render into the thing a player meets, and sets out
 
 | Step | Screen and what is chosen | Bottom line |
 | --- | --- | --- |
-| 1. Choose the mibi | The vivarium, up close, the resident in its corner. A mibi already portrayed shows its portrait instead of the offer | `✓ Portray Fig · 1 sitting · ← Home` |
+| 1. Choose the mibi | The vivarium, up close, the resident in its corner. A mibi already portrayed shows its portrait instead of the offer | `✓ Portray Fig   one sitting each, ever   ← Vivarium` |
 | 2. Choose the pose | The sitting screen opens: the vivarium's light, Fig on a plain stage. Beside it, one small picture per habit the player has watched it do (dig, glow, puff, sleep curled), in the standard look. The pad walks them; Fig acts out the focused one | `✓ This pose · ← Fig` |
 | 3. Choose the place | The places Fig has been, as the book's place stamps (the place its pod came from, and every place it walked to with the Companion). The focused stamp washes the stage behind Fig in that place's colours | `✓ This place · ← pose` |
-| 4. Look and confirm | Fig in the pose, in the place, drawn plain, with the gilt frame around it. One line: "One sitting each, ever". First ✓ arms (the frame lights), second ✓ begins | `✓ Begin the sitting · 1 sitting · ← place` |
+| 4. Look and confirm | Fig in the pose, in the place, drawn plain, with the gilt frame around it. One line: "One sitting each, ever". First ✓ arms (the frame lights), second ✓ begins | `✓ Portray Fig   one sitting each, ever   ← Place`, armed `✓ Again: portray Fig` |
 
 A juvenile may sit; later stages are painted ahead of each change (v2 §5). A mibi needs a watched habit and a place, so one fresh from the bud is offered nothing yet ("Fig needs a walk first").
 
@@ -57,7 +57,7 @@ Each family names five things: the act, the token, the result, the card, and the
 
 | Family | Register | Act | Token | Result | Card | ✓ cap | Status line |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **A. Sitting** | a painter's studio | sitting | a sitting | portrait | portrait card | `✓ Portray Fig · 1 sitting` | "Fig's portrait · on its way" |
+| **A. Sitting** | a painter's studio | sitting | a sitting | portrait | portrait card | `✓ Portray Fig` | "Fig's portrait · on its way" |
 | **B. Study** | naturalist's field work | study | a folio | study | folio | `✓ Draw Fig · 1 folio` | "Fig's study · being drawn" |
 | **C. Unveiling** | a museum | unveiling | a pedestal | showpiece | placard | `✓ Unveil Fig · 1 pedestal` | "Fig's showpiece · being hung" |
 | **D. Pressing** | pressing a flower | pressing | a press | pressing | pressed card | `✓ Press Fig · 1 press` | "Fig is in the press" |
