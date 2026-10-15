@@ -37,8 +37,8 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - `S02/c-token-S02-alert-32x32.png` sha256 `c60bdf85036b7636513250c49d29961c34bdd3cba0e4525b4dc88b22d32bc0c5`
 - `S02/c-token-S02-eat-f0-32x32.png` sha256 `7afedb1bfade2ce7ba8ca97d0f35e97cb8c7506e0b34106751577175342e5c2d`
 - `S02/c-token-S02-eat-f1-32x32.png` sha256 `f516fd1e885c0470e8114faabb7b6bcb54323bf09141e0f84ddb7ec6342a29f7`
-- `S02/c-token-S02-flee-32x32.png` sha256 `72181867c9f4e3c35fbbd4c37c068543d344aa567914e7ee1cbe25d53d65e2f5`
-- `S02/c-token-S02-huddle-32x32.png` sha256 `68d1eb305b9603a50fc18774d2d86b00730c4959676882e408516899c3a0c4ef` (grounded 10-15)
+- `S02/c-token-S02-flee-32x32.png` sha256 `e633b40e257fdf62830c1b1e310b86d2d5c5992b898248a502a9af4e47b7f961`
+- `S02/c-token-S02-huddle-32x32.png` sha256 `af14fec42ec265a6cfa9865b974c6e7e05a7d55ce2ef986424334286a41eea7b` (grounded 10-15)
 - `S02/c-token-S02-idle-32x32.png` sha256 `9a633d709e1d419262fc02214bf76e180a09f253e29db28397ed6b661e7ab3d9`
 - `S02/c-token-S02-shake-f0-32x32.png` sha256 `38d9a3e481fc55284c13351525032bbfb947fe12b605a530f0b4fd9242e35456`
 - `S02/c-token-S02-shake-f1-32x32.png` sha256 `327f8d68a89a7d95397ab0a2be34f8bec12baa82edd1bff4d58f73a4084ae0bc`
@@ -63,3 +63,4 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - S03: the antenna stalk is drawn in teal, not ink, so on the dark stage the bulb stays joined to the head.
 - S01: the toes are solid bone pads, not bone and night alternating, so at 8× they read as toes, not a row of dots.
 - No other pixel changed. The hashes above are updated.
+- X31 also: S02 flee and huddle were cut flat at the box's right edge (the front end). One body column is taken out of the middle and the front end closed with its ink outline at x 31.
