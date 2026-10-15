@@ -1048,8 +1048,8 @@
    "file": "pods/leaf-empty-16x20.png",
    "w": 16,
    "h": 20,
-   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "6f40440f3a15ba5f86419ac5d16c2bcd8930dcfe803d78a085bb8e9afe5b627c",
+   "signed": "named with --ids"
   },
   "leaf-empty-8x12": {
    "file": "pods/leaf-empty-8x12.png",

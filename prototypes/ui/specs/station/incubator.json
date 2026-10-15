@@ -162,7 +162,7 @@
   "bud": { "bean": "peach", "light": "cream", "edge": "rust", "late": "blush", "shape": "bark", "note": "the bud pictures' colours, never a drawn glow" },
   "base": { "fill": "enamel", "light": "sand", "shade": "bevel", "edge": "hairline", "footLight": "sage", "plate": "painted in base-336x96 (#92846d)", "plateEdge": "hairline", "note": "the sand housing, matte, lit as Home's rest knob is (was lit frost); the foot light sage, a quiet alive-and-working line, never frost, never amber (art director, 2026-10-10 01:44)" },
   "plaque": { "empty": "ink", "growing": "ink", "ready": "ink", "floor": "4.5:1 on the painted plate (16 px, weight 400); ink 4.81:1" },
-  "leaves": { "full": "sage", "vein": "sageD", "empty": "sageD", "note": "the empty leaf is painted in leaf-empty-16x20: sageD #5d7a5f, one flat unlit fill, 1.43:1 on the wall (art director, masters-pods cf3b0ac6; fix 6 A1)" },
+  "leaves": { "full": "sage", "vein": "sageD", "empty": "sageD", "note": "the empty leaf: sageD #5d7a5f, one flat unlit fill painted in leaf-empty-16x20, no outline or vein; 1.43:1 on the wall, under the full leaf's 2.70:1 (art director, fix 6 A1, masters-pods cf3b0ac6)" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
   "code": "bone",
   "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" }
