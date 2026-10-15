@@ -3659,12 +3659,12 @@
    152,
    152
   ],
-  "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
-  "made": "the Pods room set, the redo (pass 95): the small dim unlit matte stamp plate set into the housing, painted (pods-plate.jpg), cut at (856, 344); the pods are placed by the renderer, never painted in",
-  "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
-  "status": "signed",
+  "src": "stamp-case/make-stamp-case.py, 0 MXN",
+  "made": "fix 4 stampCase: the case moulded into the sage housing, a dim well, lit top-left rim, rubber corners (stamp-case/README.md, 001bcd51); replaces the earlier grey plate case",
+  "sha256": "793516357cb1670cc85cd4bb93be6c5a6c0c3f46d92d840f687883d09ab77544",
+  "status": "new",
   "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status_note": "new (10-15), replaces sha256 d66b6979e11b\u2026: the art director signs in the whole-screen Pods capture"
  },
  "ring-well-empty-80x80": {
   "size": [
@@ -3906,12 +3906,12 @@
    152,
    152
   ],
-  "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
-  "made": "the Pods room set, the redo (pass 95): the plate's rim only (RGBA 152x152, the opening transparent, no glass); the pods are placed by the renderer, never painted in",
-  "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
-  "status": "signed",
+  "src": "stamp-case/make-stamp-case.py, 0 MXN",
+  "made": "fix 4 stampCase: the case's front glass, ground #1d232b at 48 %, no sheen (pods.json stampCaseFront)",
+  "sha256": "fa704f60934f6e18cb598fb391e0370da6feb09f7d7ea2597b5e4513071e3f16",
+  "status": "new",
   "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status_note": "new (10-15), replaces sha256 22758728f9d6\u2026: the art director signs in the whole-screen Pods capture"
  },
  "trait-picture-frame-144x176": {
   "size": [
@@ -5091,12 +5091,12 @@
    1024,
    522
   ],
-  "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
-  "made": "the Pods room set, the redo (pass 95): the overview stage: the floor with ONE fitted egg-shaped nest (about 150x96, uniformly scaled) on the pod axis x 256, the stamp plate at (856, 344) and a plain warm slate panel at the right; composed from three Pro paintings; the pods are placed by the renderer, never painted in",
-  "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038",
-  "status": "signed",
+  "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-overview and room-bench-stage, 0 MXN",
+  "made": "fix 5 Pods P-A2: the overview's stage with its grey plate and the old stamp case gone; the floor runs to the right wall (fix 4 places the stamp case at 788,384)",
+  "sha256": "df56a679983ec39eb7444ef9807d9424f19ca8f97a7199a6f587f7556f49b172",
+  "status": "new",
   "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status_note": "new (10-15), replaces sha256 e5558c15acd3\u2026: the art director signs in the whole-screen Pods capture"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5109,12 +5109,12 @@
    1024,
    522
   ],
-  "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
-  "made": "the Pods room set, the redo (pass 95): the chapter stage: the floor with the nest on the axis x 216 and a warm matte slate page panel to the right (424, 72, 584, 440); composed; the pods are placed by the renderer, never painted in",
-  "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf",
-  "status": "signed",
+  "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage, 0 MXN",
+  "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out)",
+  "sha256": "d1b7a8c7e6d45b64694f8f8d61276b37850a3f5f96c990a4670a2dbd307ca5c5",
+  "status": "new",
   "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status_note": "new (10-15), replaces sha256 823b2601475d\u2026: the art director signs in the whole-screen Pods capture"
  },
  "ring-collection-idle-176x176": {
   "size": [

@@ -1095,9 +1095,8 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-stamp-case-152x152": {
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status": "new",
+  "note": "10-15 recut, replaces d66b6979e11b"
  },
  "ring-well-empty-80x80": {
   "status": "signed",
@@ -1165,9 +1164,8 @@
   "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "room-stamp-case-152x152-front": {
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status": "new",
+  "note": "10-15 recut, replaces 22758728f9d6"
  },
  "trait-picture-frame-144x176": {
   "status": "withdrawn",
@@ -1545,14 +1543,12 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-overview": {
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status": "new",
+  "note": "10-15 recut, replaces e5558c15acd3"
  },
  "room-bench-stage-chapter": {
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status": "new",
+  "note": "10-15 recut, replaces 823b2601475d"
  },
  "ring-collection-idle-176x176": {
   "status": "signed",
