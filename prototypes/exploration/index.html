@@ -2472,68 +2472,65 @@ function wrapText(str, maxW, s) {
 }
 function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
 
-// ---------- Creature tokens (procedural pixel art; facing right; feet near y = 28·s) ----------
-function buildCreature(sp, pose, fr, s) {
-  s = s || 1; const pb = new PB(32 * s, 32 * s), k = spOf(sp).col;
-  const E = (x, y, rx, ry, c, o) => pb.ell(x * s, y * s, rx * s, ry * s, C[c], o && o.sh ? Object.assign({}, o, { sh: o.sh.map(n => C[n]) }) : o);
-  const Rr = (x, y, w, h, c) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), C[c]);
-  const Pp = (pts, c) => pb.poly(pts.map(([x, y]) => [x * s, y * s]), C[c]);
-  const sh = { sh: [k.light, k.shade] };
-  if (sp === 0) { // Loika: long ears, round body, puff tail
-    const ear = { idle: -.32, alert: -.08, approach: -.08, flee: -1.05, huddle: -1.35, shake: -.7, eat: -.4, glow: -.32 }[pose] ?? -.32;
-    const by = pose === 'huddle' ? 22 : pose === 'flee' ? 21.5 : 21, brx = pose === 'flee' ? 10 : pose === 'huddle' ? 9.6 : 9, bry = pose === 'huddle' ? 6.4 : pose === 'flee' ? 6.6 : 7.2;
-    const earAt = (bx, byy, a) => [bx + Math.sin(a) * 6.5, byy - Math.cos(a) * 6.5];
-    const [e1x, e1y] = earAt(12, by - 5, ear - .12), [e2x, e2y] = earAt(16, by - 6, ear + .1);
-    E(e1x, e1y, 2.5, 7, k.shade, { rot: ear - .12 });
-    E(e2x, e2y, 2.6, 7.2, k.body, { rot: ear + .1, sh: [k.light, k.shade] }); E(e2x, e2y + .5, 1.1, 5, 'pink', { rot: ear + .1 });
-    E(6, by + 1, 2.7, 2.7, 'bone', { sh: ['white', 'fog'] });
-    E(15, by, brx, bry, k.body, sh);
-    E(17, by + 3, 4.6, 2.8, k.light);
-    E(10, 28.2, 2.6, 1.3, k.shade); E(19, 28.2, 2.6, 1.3, k.shade);
-    const ey = pose === 'eat' ? by - 2 : by - 4;
-    Rr(19, ey, 2, 3, 'void'); Rr(19, ey, 1, 1, 'white'); Rr(21, ey + 4, 2, 1, 'pink'); Rr(24, ey + 2, 1, 1, 'pink');
-    if (pose === 'eat') Rr(23, ey + 5, 2, fr ? 1 : 2, 'plumD');
-    pb.outline();
-    if (pose === 'shake') for (const [x, y] of fr ? [[2, 14], [28, 13], [4, 25], [27, 24], [15, 6]] : [[3, 18], [29, 18], [7, 9], [24, 9], [1, 26]]) { Rr(x, y, 1, 2, 'ice'); Rr(x, y, 1, 1, 'white'); }
-  } else if (sp === 1 && (pose === 'curl' || pose === 'settle')) { // Tuikis settling: lowers, then curls into a ball, tail round the front
-    const curl = pose === 'curl';
-    if (!curl) for (let t = 0; t <= 1.001; t += .08) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 3 + t * t * 6, y = (1 - t) ** 2 * 24 + 2 * (1 - t) * t * 25 + t * t * 18; E(x, y, 1.8, 1.8, k.body); }
-    if (!curl) E(6, 16.5, 3, 3, 'gold', { sh: ['yellow', 'bark'] });
-    E(16, curl ? 23 : 24, curl ? 9.5 : 8.5, curl ? 6.5 : 4.4, k.body, sh);
-    Rr(12, curl ? 18 : 21, 2, 1, k.shade); Rr(16, curl ? 17 : 21, 2, 1, k.shade);
-    if (curl) { Pp([[19, 18], [20.5, 14], [22, 18]], k.body); E(21.5, 21, 4.5, 4, k.body, sh); Rr(22, 21, 2, 1, k.dark);
-      for (let t = 0; t <= 1.001; t += .1) E(8 + t * 14, 27.5 - Math.sin(t * Math.PI) * 1.2, 1.6, 1.6, k.shade);
-      E(23.5, 26, 2.4, 2.4, 'gold', { sh: ['yellow', 'bark'] }); }
-    else { Pp([[21, 18], [22.5, 13], [24.5, 17.5]], k.body); Pp([[25, 17.5], [27.5, 13], [28.5, 18]], k.body); E(24, 21, 5, 4.4, k.body, sh);
-      Rr(25.5, 20, 2, 1, k.dark); Rr(28, 22, 1, 1, k.dark); }
-    pb.outline();
-  } else if (sp === 1) { // Tuikis: low body, tail ending in a glowing bulb
-    const up = pose === 'alert' || pose === 'approach' ? -1 : 0, flee = pose === 'flee';
-    for (let t = 0; t <= 1.001; t += .08) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 2 + t * t * 4, y = (1 - t) ** 2 * 22 + 2 * (1 - t) * t * 22 + t * t * 12; E(x, y, 1.8, 1.8, k.body); }
-    E(4, 10, 3.4, 3.4, 'yellow', { sh: ['cream', 'gold'] });
-    E(16, 23, flee ? 9.5 : 8.5, flee ? 4.4 : 5, k.body, sh);
-    Rr(13, 19, 2, 1, k.shade); Rr(17, 19, 2, 1, k.shade);
-    Pp([[20, 15 + up], [21.5, 9 + up], [23.5, 14 + up]], k.body); Pp([[24, 14 + up], [26.5, 8.5 + up], [27.5, 14 + up]], k.body);
-    E(23.5, 18 + up, 5.2, 4.7, k.body, sh);
-    Rr(25, 17 + up, 2, 2, k.dark); Rr(25, 17 + up, 1, 1, 'white'); Rr(28, 19 + up, 1, 1, k.dark);
-    Rr(11, 27, 2, 2, k.shade); Rr(19, 27, 2, 2, k.shade);
-    pb.outline();
-    if (pose === 'glow' || pose === 'nest') { const r0 = fr ? 4.6 : 5.6, r1 = fr ? 7 : 8;
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 14; x++) { const d = Math.hypot(x + .5 - 4, y + .5 - 10); if (d > r0 && d < r1 && (x + y) % 2 === 0 && pb.get(x * s, y * s) < 0) Rr(x, y, 1, 1, 'cream'); } }
-  } else { // Untuva: round body under a wide spotted cap
-    const big = pose === 'eat' && fr;
-    E(16, 22, 7.6, 6.8, k.body, sh);
-    E(16, 15.5, 11.5, 7, 'amber', { sh: ['cream', 'orange'], clip: (x, y) => y < 16.5 * s });
-    Rr(6, 16, 20, 1, 'rust');
-    E(10.5, 11.5, 1.7, 1.4, 'bone'); E(17, 9.5, 2.1, 1.6, 'bone'); E(22.5, 12.5, 1.5, 1.2, 'bone');
-    Rr(16, 19, 2, 2, k.dark); Rr(16, 19, 1, 1, 'white'); Rr(20, 19, 2, 2, k.dark); Rr(20, 19, 1, 1, 'white');
-    Rr(14, 23, big ? 3 : 2, big ? 2 : 1, 'pink'); if (pose === 'eat') Rr(19, 24, 2, 1, k.dark);
-    E(12, 28.2, 2.4, 1.3, k.shade); E(20, 28.2, 2.4, 1.3, k.shade);
-    pb.outline();
-  }
+// ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
+// Copied from art/companion-48/species/ (S01 = page species 0, S03 = 1, S02 = 2; the files' sha256 are in the page's test), one
+// picture per string over the 48 colours in PALETTE order: a letter is a colour (A–Z, a–v: index 0–47), '.' is clear, a number
+// after a letter is the run length (none: 1), read left to right, row by row. Nothing is recoloured, scaled or redrawn here:
+// the token is the signed picture; the cards and the stage show it at a whole number of pixels per pixel (upArt).
+const RUN_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv';
+const SPECIES_ART = [
+  { // S01 Loika
+    idle: '.80O3.28OR3O.27OQR3O.2O.19O5Q2R3O2RO.17OQR3OPQ2R2QR3O.16OPQR2P3Q2RPQR2O.16OQPQ3OP2QRPQ2O.18OQP4O2PQPD2B.19OQC3D8B.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B3.11B2CEDC3Io2CBCD4CIoB.9BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7BD5C6DC2DC2J5B.7BECD4C10JHJ4B.8BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BHCHB.2BHCHBHCHB.2BHCHCB.8B5.2B9.2B6.5',
+    alert: '.16O3.28OR3O.27OQR3O.3O.17O4.OQ2R3.O2RO.15OQR3.OPQ2R2.QR3O.14OQR3.OPQ2R2.QR3O.14OPQR2.P3Q2R.PQR2O.14OQPQ2.QOP2QR.PQ2O.16OQP2.P2O2PQ.PD2B.18OQC3D8B.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B3.11B2CEDC3Io2CBCD4CIoB.9BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7BD5C6DC2DC2J5B.7BECD4C10JHJ4B.8BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BC3B.2BC3BC3B.2BC4B.8BHCHB.2BHCHBHCHB.2BHCHCB.8B5.2B9.2B6.5',
+    flee: '.111O3.28OR3O.28OQR3O.2O.19O5Q2R3O2RO.17OQR3OPQ2R2QR3O.16OPQR2P3Q2RPQR2O.17OQPQ3OP2QRPQ2O.18OQP4O2PQPD2B.18OQ3C3D8B.16BD3CD10CB.14BEC5DC2D5CBCB.11B3DC9D5B3.9B2CEDC5Io2CBCD4CIoB.7BE3DC6onAB3D4CnAB.6BD4C7o3C3D4Co2B.5BED4C7DC7JH4B.5BD5C8DC2DC2J5B.5BECD4C12JHJ4B.6BDC2D2C2D5C2DC2J6B.7BDC6D6C3JH2J4B.7BDC7D6CJ2HJ5B.7BD3C5D6CJ8B.6BD4CDC3D6CJ8CB.5BDCD2C3DC2D5CJ8CB.5BC5DCDC2D5C2J7DB.5BCD2C2BCDC5D2C3K5C3B.4BDC3B3DC3B4DC3B3DC4B.BHCHCB.BHCHCB.6BHCHCB.BHCHCHB15.2B15',
+    huddle: '.367O5.O5.19ORQP2O2RQP2QO.18OQO3RQPO5D2B.16BD3CO5D5CB.14BEC5DC2D5CBCB.11B3DC9D5B3.9B2CEDC9BCD4C3B.7BE3DC6onAB3D4CnAB.6BD4C7o3C3D4Co2B.5BED4C7DC7JH4B.5BD5C8DC2DC2J5B.5BECD4C12JHJ4B.6BDC2D2C2D5C2DC2J6B.7BDC6D6C3JH2J4B.7BDC7D6CJ2HJ5B.7BD3C5D6CJ8B.6BD4CDC3D6CJ8CB.5BDCD2C3DC2D5CJ8CB.5BC5DCDC2D5C2J7DB.5BCD2C2BCDC5D2C3K5C3B.4B28.2',
+    shake0: '.81O3.28OR3O.26OQR3O.2O.19O5Q2R3O2RO.17OQR3OPQ2R2QR3O.16OPQR2P3Q2RPQR2O.15OQPQ3OP2QRPQ2O.15I.2OQP4O2PQPD2BI.14Y.3OQC3D8Y.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B3.11B2CEDC3Io2CBCD4CIoB.9BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7ID5C6DC2DC2J5B.2I.4BYCD4C10JHJ4B.3Y.4BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7IC5DCDC2D3C2J7DB.7YCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BHCHB.2BHCHBHCHB.2BHCHCB.8B5.2B9.2B6.6',
+    shake1: '.79O3.28OR3O.28OQR3O.2O.19O5Q2R3O2RO.17OQR3IPQ2R2QR3O.16OPQR2YP2Q2RPQR2O.17OQPQ3OP2QRPQ2O.18OQP4O2PQPD2B.19OQC3D8B.18BDCD10CB.16BEC3DC2D5CBCB.13B3DC7D5B2I.5I.5B2CEDC3Io2CBCD4CIYB.4Y.4BE3DC4onAB3D4CnAB.8BD4C5o3C3D4Co2B.7BED4C5DC7JH4B.7BD5C6DC2DC2J5B.7BECD4C10JHJ4B.8BDC2D2C2D3C2DC2J6B.9BDC6D4C3JH2J4B.9BDC7D4CJ2HJ5B.9BD3C5D4CJ8B.8BD4CDC3D4CJ8CI.7BICD2C3DC2D3CJ8CY.7BYC4DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BHCHB.2BHCHBHCHB.2BHCHCB.8B5.2B9.2B6.4',
+    eat0: '.144O3.28OR3O.23O.3OQR3O.2O.18OQO4Q2R3O2RO.17OPR3OPQ2R2QR3O.16OQ2R2P3Q2RPQR2O.17OPQ3OP2QRPQ2O.19QP4O2PQPD2B.19OQC3D8B.17B2DCD10CB.12B5EC3DC2D5CBCB.10BE2CED2C7D5B3.9BD3EDC4Io2CBCD4CIoB.7BED4C5onAB3D4CnAB.7BD5C5o3C3D4Co2B.6BECD4C5DC7JH4B.6BDC2D3C6DC2DC2J5B.7BDC6DC8JHJ4B.2d2.4BDC6D3C2DC2J4C3.3d2.4BD3C5D3C3JH2J4B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BHCHB.2BHCHBHCHB.2BHCHCB.8B5.2B9.2B6.5',
+    eat1: '.144O3.28OR3O.23O.3OQR3O.2O.18OQO4Q2R3O2RO.17OPR3OPQ2R2QR3O.16OQ2R2P3Q2RPQR2O.17OPQ3OP2QRPQ2O.19QP4O2PQPD2B.19OQC3D8B.17B2DCD10CB.12B5EC3DC2D5CBCB.10BE2CED2C7D5B3.9BD3EDC4Io2CBCD4CIoB.7BED4C5onAB3D4CnAB.7BD5C5o3C3D4Co2B.6BECD4C5DC7JH4B.6BDC2D3C6DC2DC2J5B.7BDC6DC8JHJ4B.8BDC6D3C2DC2J6B.3d2.4BD3C5D3C3JH2J4B.8BD4CDC3D4CJ8CB.7BDCD2C3DC2D3CJ8CB.7BC5DCDC2D3C2J7DB.7BCD2C2BCDC3D2C3K5C3B.6B2DC2B4DC2BDC2B4DC3B2.7BC3B.2BC3BC3B.2BC4B.8BHCHB.2BHCHBHCHB.2BHCHCB.8B5.2B9.2B6.5',
+    mini: '.18O.9O2RO2.6OQ4RO.5OROD2CB.4B2D4H2B.2BD2CDnAJ2B.2BD2CD2CJ2B.BDC2D2C2JB.2BD5C2DB.2BCD2CDCD2B.3B3DCB4.2',
+  },
+  { // S03 Tuikis
+    idle: '.83B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.6B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB3aZBbaB2.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
+    alert: '.51B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.6B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8BcbB2a2B2cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
+    flee: '.117B.30BcB.30B.4B2.19B4.3B.2Bc2B.15B3c4B3cB2c2acB.14B3c3bc9ZB.13Bc6b6a2c2ZB.4B5.5B3ca2b6a2Z2B.5Brq2B.8Bcab2IBb2IBZB.6Bq2pB.9Bcb2B2baB2ZB.6Bqp2B.10Bcb2a5cB.6B2pB2.10Bcba5ZcB.7BpB11.Bcba3Z3B.10Bc10Bc2ba2Z2B2.12Bcb8c2b2a2ZB.13Bc2b12a2ZB.13Bcb12a3ZB.13Bcb3ab4ab3a3ZB.13Bcb2a8b2a2Z2B.13Bca5Z4a5ZB.14BcaZ2aZ4Ba2Z2aZB.14BbaBaZB5aZBbaB2.14BbaBaZB.3BaZBbaB.14BbaBaZB.5BaZBbaB.12BbaBaZB.7BaZBbaB.11BbaBaZB.7BaZBbaB.11BbaBaZB.7BaZBbaB.10BbaBaZB.9BaZBbaB.9B7.9B7.7',
+    huddle: '.373B.30BcB.30B.4B2.19B4.3B.2Bc2B.15B3c4B3cB2c2acB.14B3c3bc9ZB.13Bc6b6a2c2ZB.4B5.5B3ca2b6a2Z2B.5Brq2B.8Bcab2Z2b2Z3B.6Bq2pB.9Bcb2B2baB2ZB.6Bqp2B.10Bcb2a5cB.6B2pB2.10Bcba5ZcB.7BpB11.Bcba3Z3B.10Bc10Bc2ba2Z2B2.12Bcb8c2b2a2ZB.13Bc2b12a2ZB.13Bcb12a3ZB.13Bcb3ab4ab3a3ZB.13Bcb2a8b2a2Z2B.13Bca5Z4a5ZB.14BcaZ2aZ4Ba2Z2aZB.9',
+    shake0: '.84B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.4B5.I.3Bca2b6a2ZIB.7Brq2B.Y.4Bcab2IBb2IBZY.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.14IBcb10a3ZB.8I.5YBcb3ab2ab3a3ZB.8Y.6Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB3aZBbaB2.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.14I.2BbaBaZB.BaZBbaB.14Y.2BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.13',
+    shake1: '.82B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc3IB3cB2c2acB.16Bc3Yc9ZB.15Bc4b6a2c2ZB.8B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.I.5I.BpB9.Bcba3Z3B.2Y.5Y.3Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB3aZBbaB2.16BbaBaZB.BaZBbaB.6I.8I.BbaBaZB.BaZBbaB.6Y.8Y.BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.11',
+    eat0: '.147B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc4B3cB2c2acB.6B5.5Bc3bc9ZB.6Brq2B.4Bc4b6a2c2ZB.6Bq2pB.5Bca2b6a2Z2B.7Bqp2B.6Bcab2IBb2IBZB.8B2pB2.7Bcb2B2baB2ZB.9BpB9.Bcb2a5cB.11Bc8B2cba5ZB2.12Bcb6c2b2a2ZB.5d2.8Bc2b10a2ZB.5d2.8Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
+    eat1: '.147B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc4B3cB2c2acB.6B5.5Bc3bc9ZB.6Brq2B.4Bc4b6a2c2ZB.6Bq2pB.5Bca2b6a2Z2B.7Bqp2B.6Bcab2IBb2IBZB.8B2pB2.7Bcb2B2baB2ZB.9BpB9.Bcb2a5cB.11Bc8B2cba5ZcB.12Bcb6c2b2a2ZB.15Bc2b10a2ZB.5d2.8Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZB.16BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17BbaBaZB.BaZBbaB.17B7.B7.12',
+    curl: '.401B4.28Bc2B.19B10c2B.17B3c7B5.16B2c3b5ac2B2.16B2c2b8a2cB2.14B2c2b10IBcB2.13Bb13B2aZB.13Bb14a2ZB.13Bb14a2ZB.13Bb14a2ZB.13Bab12a3ZB.13Ba2b10a4ZB.13BZa2b8a4Z2B.13B2Za3b4a5Z2B2.14B2Za10Z2B7.11B2Z2a6Z2a5rq2B.11Ba16q2pB.11B3Z14qp2B.11B21.6',
+    settle: '.339B.30BcB.30B.4B2.19B4.3B.2Bc2B.17Bc4B3cB2c2acB.16Bc3bc9ZB.15Bc4b6a2c2ZB.6B5.5Bca2b6a2Z2B.7Brq2B.6Bcab2IBb2IBZB.8Bq2pB.7Bcb2B2baB2ZB.8Bqp2B.8Bcb2a5cB.8B2pB2.8Bcba5ZcB.9BpB9.Bcba3Z3B.12Bc8Bc2ba2Z2B2.14Bcb6c2b2a2ZB.15Bc2b10a2ZB.15Bcb10a3ZB.15Bcb3ab2ab3a3ZB.15Bcb2a6b2a2Z2B.15Bca5Z2a5ZB.16BcaZ2aZ2Ba2Z2aZBb2.14B16.11',
+    mini: '.5rq.10qp.5B4.2p.B5c2B.2p.Bc2B2cZB3pB2cZB4c6B3.2Bcb3aZB.4Bb2IbaZB.4BabBacZB.4BZa3c2B.4B2Z4B2.5B6.3',
+  },
+  { // S02 Untuva
+    idle: '.178B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.15BJ3L12B.14B2N15B.10B4L10IBL3IB2.9BL10M4B2M2NB3.8BL10M10N2LB.6BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5BL4M18N3B.4BL4M18N4B.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.5',
+    alert: '.146B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.15BJ3L12B.14B2N15B.10B4L10IBL3IB2.9BL10M4B2M2NB3.8BL10M5B2M3B2LB.6BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5BL4M18N3B.4BL4M18N4B.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.5',
+    flee: '.211B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.14B2J3L12B2.12B2MN15MB.8B4L12IBL3IB2.7BL12M4B2M2NB3.6BL12M10N2L.5BL9M12N4L.4BL6M18N2L.4BL5M19N3.4BL4M20N3.3BL4M20N4.3BL4M20N4.3BL4M19N5.2BL4M20N4B.BL5M19N5B.BL5M18N5B.2BL4N2M16N6B.3BL3N2M15N6B.5B4L3N11M2N5B.6B4MN2BMN3B7MN2BMN3B.5BMN2BMN3B.9BMN2BMN3.4B12.5B11',
+    huddle: '.339B7.23B2J7B2.20BJ11B2.15BMBJ5K5J4B2.12B3J4K9J2B2.8B4L2BJ3L12B2.7BL7N9B2N3B3.6BL12M10N2L.5BL9M12N4L.4BL6M18N2L.4BL5M19N3.4BL4M20N3.3BL4M20N4.3BL4M20N4.3BL4M19N5.2BL4M20N4B.BL5M19N5B.BL5M18N5B.2BL4N2M16N6B.3BL3N2M15N6B.5B4L3N11M2N5B.6B26.3',
+    shake0: '.179B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.8I.6BJ4K5IK3J2B.8Y.4BMBJ3L6YL5B.12B2M2N13B.10B4L10IBL3IB2.9BL10M4B2M2NB3.8BL10M10N2LB.6BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5IL4M18N3I.4BYL3M18N4Y.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5IL3N2M13N6B.6YB4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.6',
+    shake1: '.177B7.23IBJ7B2.20BYJ10B2.17BJ5K5J4B.15BJ4K9J2B.15BJ3L12BMB.14B2N13M2B.10B4L10IBL3IB2.9BL10M4B2M2NIB2.3I.4BL10M10YNLB.2Y.3BL9M10N4LB.5BL6M16N2LB.5BL5M17N3B.5BL4M18N3B.4BL4M18N4B.4BL4M18N4B.4BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N3INB.4BLIL2N2M14N4YNB.5BYL2N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.4',
+    eat0: '.241B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.10B.4BJ3L12B.9BLB5N15B.8BL15IBL3IB2.7BL12M4B2M2NB3.6BL12M10N2LB.5BL6ML3M10N4LB.5BL5M17N2LB.4BL4M19N3Bd2.2BL4M19N3Bd2.2BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.6',
+    eat1: '.241B7.23B2J7B2.20BJ11B2.17BJ5K5J4B.15BJ4K9J2B.10B.4BJ3L12B.9BLB5N15B.8BL15IBL3IB2.7BL12M4B2M2NB3.6BL12M10N2LB.5BL6ML3M10N4LB.5BL5M17N2LB.4BL4M19N3B.4BL4M19N3Bd2.2BL4M17N5B.3BL4M18N4B.3BL5M17N5B.3BL5M16N5B.4BL4N2M14N6B.5BL3N2M13N6B.7B4L3N9M2N5B.8B5MN2BMN2B4MN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12BMN2BMN2B.2BMN2BMN2B.12B9.2B9.6',
+    mini: '.30B4.7BJ4B.5BJ2K2LJB.B4L5B3L4N5LB2L3M2IMNBNB2L2M3BMNBNBL3M4N3B.B2L2N6B.2BL2N5B.2',
+  },
+];
+function tokenPB(rle, w) {
+  const pb = new PB(w, w); let i = 0;
+  for (const [, ch, n] of rle.matchAll(/([.A-Za-z])(\d*)/g)) { const k = n ? +n : 1; if (ch !== '.') pb.p.fill(RUN_LETTERS.indexOf(ch), i, i + k); i += k; }
   return pb;
 }
-function creatureArt(sp, pose, fr, s) { return art('cr' + sp + pose + (fr ? 1 : 0) + 's' + (s || 1), () => buildCreature(sp, pose, fr, s)); }
+// The signed token for a species and pose (fr: the shake and eat frames), or null where the masters have no picture of it:
+// approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null.
+function tokenOf(sp, pose, fr) {
+  const t = SPECIES_ART[sp]; if (!t) return null;
+  const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
+  return t[n] && n !== 'mini' ? art('tk' + sp + n, () => tokenPB(t[n], 32)) : null;
+}
+const miniArt = sp => SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : null;
+
+// A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
+function creatureArt(sp, pose, fr, s) { const t = tokenOf(sp, pose, fr) || tokenOf(sp, 'idle', 0); return (s || 1) === 1 ? t : upArt('tk' + sp + pose + (fr ? 1 : 0), t, s); }
 
 // The pawn: a small explorer in a hooded orange wetsuit, cream face opening, dark belt with a lantern at the hip.
 // Rounded torso: narrow shoulders, a waist under the chest, a round hip line; walk frames lift one leg and swing the arms.
@@ -2749,7 +2746,7 @@ const ICON = {
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
   wave: () => art('i-wave', () => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
   burrow: (lit) => art('i-burrow' + lit, () => { const pb = new PB(16, 14); pb.ell(8, 12, 7.5, 9, lit ? C.clay : C.stone, { clip: (x, y) => y < 13 }); pb.ell(8, 13, 4, 7, lit ? C.void : C.night, { clip: (x, y) => y < 13 }); pb.rect(0, 13, 16, 1, lit ? C.bark : C.slate); if (lit) pb.rect(7, 10, 2, 2, C.yellow); return pb; }),
-  mini: (sp) => art('i-mini' + sp, () => { const k = spOf(sp).col, pb = new PB(12, 12); pb.ell(6, 6.5, 4.6, 4.4, C[k.body], { sh: [C[k.light], C[k.shade]] }); pb.rect(7, 5, 1, 2, C.void); pb.outline(() => C.orange); return pb; }),
+  mini: (sp) => miniArt(sp),
   tick: (col) => art('i-tick' + col, () => { const pb = new PB(11, 9); for (const [x, y] of [[0, 4], [1, 5], [2, 6], [3, 7], [4, 6], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1], [10, 0]]) pb.rect(x, y, 1, 2, C[col]); pb.outline(() => C.ink); return pb; }),
   pip: () => art('i-pip', () => { const pb = new PB(5, 5); pb.rect(1, 1, 3, 3, C.white); pb.outline(() => C.ink); return pb; }),
   call: (col) => art('i-call' + col, () => { const pb = new PB(14, 14), c = C[col]; pb.rect(0, 6, 2, 2, c);
@@ -3964,7 +3961,8 @@ function card(x, y, w, h, sel, enabled) {
   if (sel) { panel(x + 1, y + 1, w - 2, h - 2, enabled ? C.paper : C.slate, C.orange); brackets(x - 6, y - 6, w + 12, h + 12, C.amber); }
 }
 function weatherIcon(x, y, lit) { blit(ICON.cloud(lit ? 1 : 0), x - 15, y - 14); blit(ICON.bolt(lit ? 'yellow' : 'mist'), x - 2, y); }
-const silhouette = sp => art('sil' + sp, () => { const a = creatureArt(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate; return pb; });
+const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate;   // the signed idle's own alpha, filled slate
+  return pb; });
 // The expedition choice: a status strip, two expedition cards with living icons, the partner as a card, and a
 // world preview (the whole-map inset with the last start flagged).
 function drawSetup(t) {
@@ -4291,7 +4289,6 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
   return pb; }); }
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
 const bigArt = (sp, pose, fr) => upArt('cr' + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr), BIG);
-const haloArt = () => art('halo', () => { const pb = new PB(300, 220); pb.ell(150, 110, 148, 108, C.cream, { chk: 1 }); return pb; });
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
 // A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
@@ -4346,7 +4343,6 @@ function drawActive(t) {
     const L = RT.look; if (!L || L.id !== m.id || RT.lookN !== RT.frameN - 1 || h) RT.look = { id: m.id, at: NOW, n: (L ? L.n : 0) + 1 };
     RT.lookN = RT.frameN;
     if (!h && !sp) { const o = lookOut(hash(S.seed, 'look', m.id, RT.look.n), NOW - RT.look.at); flip = o.flip; if (o.on) { pose = 'alert'; fr = 0; } } }
-  if (sp && m.sp === 1) blit(haloArt(), 75, 60);   // a Tuikis glows
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
