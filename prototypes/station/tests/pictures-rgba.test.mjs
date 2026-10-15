@@ -102,3 +102,12 @@ import { policyOf as policyOfPortrait } from "../../ui/asset-policy.mjs";
     dropPortraitSources(); dropAsset(id);
   });
 }
+
+// ---- ruling (c): the Portrait picture's test card (face/tools/portrait-fixture.mjs) ----
+import { portraitFixture } from "../../face/tools/portrait-fixture.mjs";
+test("the Portrait test card: it derives to 40×30 with the rim, the four quadrants and none of the red outside the crop; its source injects and is byte-identical on a second run", async () => {
+  const fx = portraitFixture(), d = derivePortrait(fx), at = (x, y) => [...d.rgba().slice((y * 40 + x) * 4, (y * 40 + x) * 4 + 3)];
+  assert.deepEqual([d.w, d.h], [40, 30]); assert.deepEqual(at(0, 0), [24, 24, 24]); assert.deepEqual(at(1, 1), [200, 72, 64]); assert.deepEqual(at(38, 1), [72, 168, 80]); assert.deepEqual(at(1, 28), [64, 88, 200]); assert.deepEqual(at(38, 28), [232, 200, 104]);
+  const px = d.rgba(); for (let i = 0; i < px.length; i += 4) assert.ok(!(px[i] === 255 && px[i + 1] === 0 && px[i + 2] === 0), "no red from outside the crop");
+  const digest = await digestOf(fx); assert.deepEqual(injectPortraitSource(digest, fx), { ok: true, digest }); const a = Buffer.from(portraitSource(digest).rgba()); assert.deepEqual(injectPortraitSource(digest, portraitFixture()), { ok: true, digest }); assert.ok(a.equals(Buffer.from(portraitSource(digest).rgba())));
+});

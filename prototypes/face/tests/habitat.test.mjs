@@ -29,6 +29,7 @@ function scene(o = {}) {
   const settings = cfg(o.bays ?? 8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: !o.away, at: T0 };
   S.seedAdults(st, "S01", 5, o.adults ?? 4, settings); for (const m of st.mibis) m.paint = { state: "landed" };
   if (o.waiting) st.mibis[0].paint = { state: "sent" };
+  if (o.portrait) { st.sitting = { source: "dev", key: null, at: 0 }; if (o.portrait === "portrayed") st.mibis[0].portrait = { state: "delivered", ...(o.digest ? { digest: o.digest } : {}) }; }   // a sitting held; portrayed: its portrait came, with its picture when the digest is named
   if (o.bonded) { st.mibis[0].bonded = true; st.mibis[0].notches = 3; }
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
   const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, armed: !!o.armed };
@@ -210,4 +211,23 @@ test("S05 up close (the animator's ruling): no hop: an eager step twice on the h
   for (let t = 0; t <= 1900; t += 20) { f.frame((f.t += 20)); const c = f.M._face_test_close_cell(), name = c < 0 ? "dither" : cells[c]; if (name !== last) { tr.push([t, name, f.M._face_test_close_lift()]); last = name; } }
   const steps = tr.filter((x) => x[1] === "stepa"); assert.equal(steps.length, 2, JSON.stringify(tr)); assert.ok(tr.every((x) => x[2] === 0), "lift 0"); assert.ok(Math.abs(steps[1][0] - steps[0][0] - 900) <= 20, "the steps 900 ms apart");
   const cr = tr.find((x) => x[1] === "crouch"); assert.ok(steps[0][0] - cr[0] >= 140 && steps[0][0] - cr[0] <= 180, "crouch 160 first");
+});
+
+test("the Portrait picture: one node after the frame, at 920,316 resting and 920,314 lifted, 0x0 when there is none (ruling (c))", { skip }, async () => {
+  const D = "0123456789abcdef", id = `portrait:${D}:40x30`, colour = (i) => Array.from(standIn(i, [1, 1]).data.slice(0, 3)), win = (dy) => [[920, 316 + dy], [959, 345 + dy], [940, 330 + dy]];
+  const reg = (lg, layer) => lg.regions.find((r) => r.id === "portrait" && r.layer === layer && r.rect[2] > 0);
+  const objects = {};
+  for (const [focus, dy] of [["resident", 0], ["portrait", -2]]) {
+    const b = scene({ portrait: "portrayed", digest: D, focus }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    assert.equal(b.props.regions.portrait.picture, id); assert.deepEqual(reg(lg, "painted").rect, [920, 316 + dy, 40, 30]); assert.deepEqual(reg(lg, "art").rect, [916, 312 + dy, 48, 40]);
+    assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
+    objects[focus] = f.objects(); f.pass(3); for (const [x, y] of win(dy)) assert.deepEqual(f.pixel(x, y), colour(id), `the picture shows at ${x},${y} (drawn after the frame)`);
+    assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40"), "the frame's rail beside the window");
+  }
+  for (const [o, focus] of [[{ portrait: "portrayed" }, "resident"], [{ portrait: "held" }, "portrait"], [{}, "resident"]]) {
+    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
+    const dy = focus === "portrait" ? -2 : 0, fr = b.props.regions.portrait.frame.id ?? b.props.regions.portrait.frame; f.pass(3); assert.deepEqual(f.pixel(940, 330 + dy), colour(fr), "the frame's own window shows"); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
+  }
+  const b = scene({ portrait: "portrayed", digest: D, focus: "resident" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false); };
+  assert.match(bad((c) => { reg(c, "painted").rect[0] += 1; })[0], /portrait/, "proved to fail on a moved picture");
 });
