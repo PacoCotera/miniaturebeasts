@@ -14735,5 +14735,29 @@
   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
   "status": "new",
   "status_note": "new: the art director signs in the whole-screen Pods overview capture"
+ },
+ "trait-S01-drive-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-air-304x312, one scale for both plates, 0 MXN",
+  "made": "fix 5 Pods P-A4: the doing-trait plate for Drive (Movement): Pip mid-hop, grounded on its own shadow at row 152, transparent around; no look suffix",
+  "sha256": "c5302efbc3e91026b845aaaa9fc871e2fa1d1ae17ff11ab5f8cfdcc6c709d479",
+  "status": "new",
+  "status_note": "new: signed in the whole-screen Pods chapter capture"
+ },
+ "trait-S01-efficiency-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-curl-304x312, one scale for both plates, 0 MXN",
+  "made": "fix 5 Pods P-A4: the doing-trait plate for Efficiency (Stamina): Pip curled to sleep, grounded on its own shadow at row 152, transparent around; no look suffix",
+  "sha256": "ff10c5e59b5761212ec2f7135db7227939b48b97921c3b66906fe24373170cc0",
+  "status": "new",
+  "status_note": "new: signed in the whole-screen Pods chapter capture"
  }
 }

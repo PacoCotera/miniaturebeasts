@@ -4912,5 +4912,13 @@
  "mibi-halo-empty-128x160": {
   "status": "new",
   "note": "fix 5 Pods P-A3"
+ },
+ "trait-S01-drive-128x160": {
+  "status": "new",
+  "note": "fix 5 Pods P-A4"
+ },
+ "trait-S01-efficiency-128x160": {
+  "status": "new",
+  "note": "fix 5 Pods P-A4"
  }
 }
