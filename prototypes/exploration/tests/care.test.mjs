@@ -677,9 +677,6 @@ test("End expedition after a break: the pods line in the copywriter's words (19:
   for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
     assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
 });
-test("Cargo, no creature met: the moments line moves under 'No creatures met yet', to (24, 208)", () => {
-  assert.match(source("drawCargo"), /ex\.met\.length \? 180 : 24, ex\.met\.length \? 196 : 208/);
-});
 test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
   assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
 });

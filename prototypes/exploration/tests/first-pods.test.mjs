@@ -293,6 +293,17 @@ test("the Probe: no legend rows and no odds; the signs met are pictures in the o
   p.key("back"); assert.equal(p.S.phase, "menu");
 });
 
+test("Cargo shows the hold as pictures: no 'empty', no cap below 16, no explored-count line", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const said = () => p.run("__t = []; drawCargo(0); __t.join('|')");
+  let t = said();
+  assert.ok(!/empty|\/20|Explored|creature moment|In the hold/.test(t), t);
+  p.run("S.exp.cargo.e = 16;"); assert.ok(said().includes("/20"), "the cap shows from 16");
+  p.run("S.exp = null; S.phase = 'cargo'; S.hold = { e: 0, d: 0, s: 0, pods: [] };"); t = said();
+  assert.ok(!/empty|\/20|In the hold/.test(t), t);
+});
+
 test("control hints lead the bottom line's middle and are spent once it shows them", () => {
   const p = page();
   p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.found.push('mapintro'); FX.notes = []; FX.sign = null; FX.msg = '';");
