@@ -5,12 +5,13 @@ import assert from "node:assert/strict";
 import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";
 import { registerAsset, asset, dropAsset } from "../../ui/assets.mjs";
-import { beamArt, UNREAD_REGION, treatmentOf, builtOf } from "../src/art.mjs";
+import { beamArt, UNREAD_REGION, treatmentOf, builtOf, founderArt, drawnDigest, mibiArt } from "../src/art.mjs";
 import { typeSpecimen, genomeDigest } from "../../workbench/framework/species.mjs";
 import { fitCamera } from "../../workbench/framework/raster.mjs";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { standLook, juvenileSize } from "../src/stands.mjs";
+import { treat, UNKNOWN } from "../src/unknown.mjs";
 import { homeBuild, mibiPictureOf } from "../src/views/home-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
@@ -92,13 +93,13 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
 
   test("nothing read is a ghost; everything read is clear", () => {
     const fr = frameOf("S15");
-    assert.deepEqual(treatmentOf(fr, []), { mode: "ghost", boxes: [] });
-    assert.deepEqual(treatmentOf(fr, new Set(allBut(fr))), { mode: "clear", boxes: [] });
+    assert.deepEqual(treatmentOf(fr, []), { mode: "ghost", boxes: [], groups: [], luma: false });
+    assert.deepEqual(treatmentOf(fr, new Set(allBut(fr))), { mode: "clear", boxes: [], groups: [], luma: false });
   });
 
   test("Movement, Stamina, Character, Glow and Charge unread draw nothing: clear (Movement traits draw nothing)", () => {
     for (const [s, ids] of [["S15", ["movement"]], ["S13", ["movement", "stamina", "character"]], ["S16", ["glow", "charge", "character"]]]) {
-      const fr = frameOf(s); assert.deepEqual(treatmentOf(fr, allBut(fr, ...ids)), { mode: "clear", boxes: [] }, s);
+      const fr = frameOf(s); assert.deepEqual(treatmentOf(fr, allBut(fr, ...ids)), { mode: "clear", boxes: [], groups: [], luma: false }, s);
     }
   });
 
@@ -196,5 +197,61 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
       const tile = (m) => v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(m.id)).picture);
       assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 48]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 48]]);
     });
+  });
+}
+
+// ---- Fix 1b part 1: the calm unknown (unknown.mjs), against the numbers of unknown-proof.py (masters-pods 71968ccc) on a synthetic 14×12 picture ----
+{
+  const W = 14, H = 12, inBody = (x, y) => ((x - 7) / 5.5) ** 2 + ((y - 6) / 4.5) ** 2 <= 1, rgba = new Uint8ClampedArray(W * H * 4);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; for (let c = 0; c < 3; c++) rgba[i + c] = (x * 37 + y * 91 + c * 53 + x * y * 7) % 256; rgba[i + 3] = inBody(x, y) ? 255 : 0; }
+  const pic = { w: W, h: H, rgba: () => rgba }, PTS = [[7, 6], [6, 4], [3, 3], [2, 5], [12, 6], [7, 2], [8, 10], [9, 8], [5, 3], [1, 1]];
+  const px = (p, x, y) => [...p.rgba().slice((y * W + x) * 4, (y * W + x) * 4 + 3)], at = (p) => PTS.map(([x, y]) => px(p, x, y));
+  test("ghost (nothing read): GHOST plus 0.22 of the luma contrast about the body's mean, no hue, alpha unchanged, a 2 px top-left rim at 50 %; the oracle's numbers", () => {
+    const g = treat(pic, { mode: "ghost" });
+    assert.deepEqual(at(g), [[93, 102, 118], [114, 123, 139], [128, 138, 153], [119, 128, 144], [79, 88, 104], [112, 122, 137], [83, 92, 108], [83, 92, 108], [115, 124, 140], [135, 188, 241]]);
+    assert.deepEqual([...g.rgba()].filter((_, i) => i % 4 === 3), [...rgba].filter((_, i) => i % 4 === 3), "alpha unchanged"); assert.deepEqual([g.w, g.h], [W, H]);
+    const [a, b, c] = px(g, 6, 4); assert.deepEqual([b - a, c - b], [UNKNOWN.GHOST[1] - UNKNOWN.GHOST[0], UNKNOWN.GHOST[2] - UNKNOWN.GHOST[1]], "one grey-blue tone: the same offset in every channel, no hue kept");
+    let rim = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (inBody(x, y) && !(x >= 2 && y >= 2 && inBody(x - 2, y - 2))) rim++; assert.equal(rim, 28, "the rim pixels: those whose (x-2, y-2) neighbour is outside the body");
+    assert.deepEqual(px(g, 7, 2), [112, 122, 137], "a rim pixel is half RIM");
+  });
+  test("a veil on one part: an ellipse on the box grown 4 px, 6 px feather, clipped to the body, VEIL at 60 % into the picture's own colour; outside the body untouched", () => {
+    const v = treat(pic, { mode: "veil", boxes: [[4, 3, 7, 6]] });
+    assert.deepEqual(at(v), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [162, 61, 96], [75, 101, 132], [162, 75, 108], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
+    assert.deepEqual(px(v, 7, 6), [94, 120, 151], "the centre: 0.4 × the picture + 0.6 × VEIL"); assert.deepEqual(px(v, 1, 1), px(pic, 1, 1), "outside the body: as it is");
+  });
+  test("where two part veils overlap the weight is the largest, never the sum", () => {
+    const one = treat(pic, { mode: "veil", boxes: [[4, 3, 7, 6]] }), both = treat(pic, { mode: "veil", boxes: [[4, 3, 7, 6], [7, 5, 10, 8]] });
+    assert.deepEqual(at(both), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [149, 74, 104], [75, 101, 132], [156, 80, 111], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
+    assert.deepEqual(px(both, 7, 6), px(one, 7, 6), "inside both: the same as inside one, not a double veil"); assert.notDeepEqual(px(both, 12, 6), px(one, 12, 6), "the second ellipse adds its own place");
+  });
+  test("the whole body (Shape unread): the full alpha at weight 0.6 × alpha, the picture's colour kept; Coat unread: its own luma (grey) under the veil", () => {
+    const shape = treat(pic, { mode: "veil", boxes: "body" }), coat = treat(pic, { mode: "veil", boxes: "body", luma: true });
+    assert.deepEqual(at(shape), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [149, 74, 104], [75, 101, 132], [156, 80, 111], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
+    assert.deepEqual(at(coat).slice(0, 9), [[112, 117, 127], [98, 103, 113], [151, 156, 166], [117, 122, 132], [87, 92, 102], [93, 98, 108], [93, 99, 108], [94, 99, 109], [102, 108, 117]]); assert.deepEqual(px(coat, 1, 1), px(pic, 1, 1));
+    const [r, g, b] = px(coat, 6, 4), off = (v, c) => v - UNKNOWN.VEIL[c] * UNKNOWN.VEIL_WEIGHT; assert.ok(Math.abs(off(r, 0) - off(g, 1)) <= 1 && Math.abs(off(g, 1) - off(b, 2)) <= 1, "no hue: the same grey under the veil in every channel");
+  });
+  test("a clear treatment is the picture as it is; an unknown mode throws; the same bytes twice", () => {
+    assert.deepEqual([...treat(pic, { mode: "clear" }).rgba()], [...rgba]); assert.throws(() => treat(pic, { mode: "frost" }), /frost/);
+    assert.deepEqual([...treat(pic, { mode: "ghost" }).rgba()], [...treat(pic, { mode: "ghost" }).rgba()]);
+  });
+}
+
+// ---- Fix 1b part 1: the founder drawn through the treatment (art.mjs founderArt, treatmentOf's id groups) ----
+{
+  const frames = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames"), frameOf = (sp) => JSON.parse(readFileSync(path.join(frames, `species-${sp}.json`), "utf8"));
+  const without = (fr, ...ids) => fr.chapters.map((c) => c.id).filter((id) => !ids.includes(id));
+  test("the id's groups: Coat unread is the whole body in luma (coat), Shape alone the whole body (body), a look's parts face, leg and tail; the doings none", () => {
+    const fr = frameOf("S09"), g = (...ids) => { const t = treatmentOf(fr, without(fr, ...ids)); return [t.mode, t.groups, t.luma]; };
+    assert.deepEqual(g("coat"), ["veil", ["coat"], true]); assert.deepEqual(g("shape"), ["veil", ["body"], false]); assert.deepEqual(g("coat", "shape", "face"), ["veil", ["coat"], true], "the whole body wins over a part");
+    assert.deepEqual(g("face"), ["veil", ["face"], false]); assert.deepEqual(g("legs-tail"), ["veil", ["leg", "tail"], false]); assert.deepEqual(g("face", "legs-tail"), ["veil", ["face", "leg", "tail"], false]);
+    assert.deepEqual(g("movement", "stamina"), ["clear", [], false]);
+  });
+  test("founderArt: clear is the palette's own rig; ghost and veil are the treatment's pixels on the rig's alpha; unread Glow and Charge are drawn at none and solid and are in the drawn digest", () => {
+    const fr = frameOf("S01"), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id), [w, h] = [304, 312], base = mibiArt(fr, g, w, h, "portrait");
+    assert.deepEqual([...founderArt(fr, g, all, w, h).rgba()], [...base.rgba()], "clear: the rig as it is");
+    const ghost = founderArt(fr, g, [], w, h), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3); assert.deepEqual(a(ghost), a(base), "alpha unchanged"); assert.notDeepEqual([...ghost.rgba()], [...base.rgba()]);
+    const coat = founderArt(fr, g, all.filter((c) => c !== "coat"), w, h); assert.deepEqual(a(coat), a(base)); assert.notDeepEqual([...coat.rgba()], [...base.rgba()]);
+    const s16 = frameOf("S16"), g16 = typeSpecimen(s16), r16 = s16.chapters.map((c) => c.id);
+    assert.equal(drawnDigest(s16, g16, r16), genomeDigest(g16)); assert.equal(drawnDigest(s16, g16, r16.filter((c) => c !== "glow" && c !== "charge")), genomeDigest(g16) + "~gc"); assert.equal(drawnDigest(fr, g, []), genomeDigest(g), "a frame with neither chapter: the genome's own");
   });
 }

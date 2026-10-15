@@ -120,7 +120,7 @@ test("the founder's picture follows the choices (the roll's dither runs from the
   const was = m.build().props.regions.founder.picture; assert.equal(was, founderPicture(m.p, {}, size).id); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 };
   const now = m.build().props.regions.founder.picture; assert.notEqual(now, was); assert.match(now, /^founder:S01:/); assert.ok(now.length < 96);
   const a = m.build().props.regions.stamp.asset; m.cr.choices = {}; assert.notEqual(m.build().props.regions.stamp.asset, a, "a changed look redraws the stamp");
-  const n = make("S01", 3, 0); assert.match(n.build().props.regions.founder.picture, /:all:/);
+  const n = make("S01", 3, 0); assert.match(n.build().props.regions.founder.picture, /^founder:S01:[^:]+:ghost:304x312$/, "nothing read: the ghost"); assert.match(m.build().props.regions.founder.picture, /^founder:S01:[^:]+:clear:304x312$/, "only the doings unread: clear");
 });
 
 // the pod's contact shadow (create.json regions.podShadow; Pods' rule): a slot of the class's shadow master at the class's width + 16, named in every state

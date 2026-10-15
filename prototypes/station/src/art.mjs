@@ -10,6 +10,7 @@ import { resolveIndividual } from "../../workbench/framework/resolve.mjs";
 import { buildBody } from "../../workbench/framework/rig.mjs";
 import { validateBody } from "../../workbench/framework/validate.mjs";
 import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { treat } from "./unknown.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
@@ -57,7 +58,7 @@ const BUILT = new Map();
 // `read`: the chapter ids read so far (a Set or an array), or undefined for every chapter read, the mibi's own values. While Glow is unread its emission is drawn at none, and while Charge is unread its phase at
 // the look "solid"; once read, the mibi's own value. The genome is never changed: the override is on the resolved values the rig draws from.
 export function builtOf(frame, genome, read) {
-  const hide = read === undefined ? [] : [!has(read, "glow") && "glow", !has(read, "charge") && "charge"].filter(Boolean), k = genomeDigest(genome) + (hide.length ? "~" + hide.join("+") : ""); let b = BUILT.get(k);
+  const hide = hiddenOf(frame, read), k = genomeDigest(genome) + (hide.length ? "~" + hide.join("+") : ""); let b = BUILT.get(k);
   if (!b) {
     try {
       if (!hide.length) b = buildIndividual(frame, genome);
@@ -73,6 +74,10 @@ export function builtOf(frame, genome, read) {
   return b;
 }
 const has = (read, id) => (read instanceof Set ? read.has(id) : read.includes(id));
+// the chapters whose effect is not drawn yet: Glow and Charge, while the frame has them and they are unread
+const hiddenOf = (frame, read) => (read === undefined ? [] : ["glow", "charge"].filter((id) => frame.chapters.some((c) => c.id === id) && !has(read, id)));
+// the genome as drawn: its digest, with the unread Glow and Charge marked (their emission and phase are not the mibi's own while unread)
+export const drawnDigest = (frame, genome, read) => { const hide = hiddenOf(frame, read); return genomeDigest(genome) + (hide.length ? "~" + hide.map((c) => c[0]).join("") : ""); };
 // The cast shadow of the plain pass lies on the segment from the ground to its shade; those pixels are cleared.
 const isShadow = (r, g, b) => { const t = (BG[0] - r) / 50; return t > 0.02 && t < 1 && Math.abs(g - (BG[1] - 55 * t)) <= 3 && Math.abs(b - (BG[2] - 60 * t)) <= 3; };
 function renderPB(scene, camera, device) {
@@ -133,14 +138,16 @@ const regionOf = (id) => { if (!Object.hasOwn(UNREAD_REGION, id)) throw new Erro
 export function treatmentOf(frame, read, view = null) {
   const ids = frame.chapters.map((c) => c.id), readIds = [...read];
   for (const id of [...ids, ...readIds]) regionOf(id);
-  if (!readIds.length) return { mode: "ghost", boxes: [] };
-  const unread = ids.filter((id) => !readIds.includes(id)).map(regionOf).filter(Boolean);
-  if (!unread.length) return { mode: "clear", boxes: [] };
-  const groups = unread.includes("body") ? null : unread.flat().filter((g, i, a) => a.findIndex((h) => h.join() === g.join()) === i);
+  if (!readIds.length) return { mode: "ghost", boxes: [], groups: [], luma: false };
+  const unreadIds = ids.filter((id) => !readIds.includes(id)), unread = unreadIds.map(regionOf).filter(Boolean);
+  if (!unread.length) return { mode: "clear", boxes: [], groups: [], luma: false };
+  const whole = unread.includes("body"), luma = unreadIds.includes("coat");   // Coat unread draws the body's own luma under the veil; Shape unread keeps its colour
+  const groups = whole ? null : unread.flat().filter((g, i, a) => a.findIndex((h) => h.join() === g.join()) === i);
   const boxes = groups ? groups.map((parts) => ({ parts })) : [{ whole: true }];
   if (view) for (const bx of boxes) Object.assign(bx, partBox(view.scene, view.camera, bx.parts ?? null));
-  return { mode: "veil", boxes };
+  return { mode: "veil", boxes, groups: whole ? [luma ? "coat" : "body"] : groups.map((g) => GROUP_TOKEN[g[0]]), luma };
 }
+const GROUP_TOKEN = { head: "face", leg: "leg", tail: "tail" };   // the id's names of the part groups
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 // The box (in image pixels) the named parts occupy under a camera; the whole body when none match.
 function partBox(scene, camera, parts) {
@@ -304,20 +311,20 @@ export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {
 export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
 
-// ---------- The founder on Create: the placeholder, misty wherever a chapter is unread ----------
-// Frost covers the parts the unread traits name; a whole-body trait unread frosts the whole body lightly.
-export function mistyArt(frame, genome, mistyTraitIds, w, h) {
-  const key = "mist" + genomeDigest(genome) + ":" + [...mistyTraitIds].sort().join(",") + ":" + w + "x" + h;
+// ---------- The founder on Create: its own colours, calm where a chapter is unread (Fix 1b part 1, unknown.mjs) ----------
+// The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
+// ghost of nothing read. A part group with no part on this body veils nothing.
+export function founderArt(frame, genome, read, w, h) {
+  const t = treatmentOf(frame, read), b = builtOf(frame, genome, read), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h;
   return art(key, () => {
-    const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p);
-    if (!mistyTraitIds.length) return pb;
-    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return pb;
-    const camera = fitCamera(b.scene, "portrait", [w, h], 0.06), boxes = mistyTraitIds.map((id) => partBox(b.scene, camera, partsFor(id)));
-    const whole = boxes.some((bx) => bx.whole);
-    pb.map((c, x, y) => { const inBox = boxes.some((bx) => !bx.whole && x >= bx.x0 - 4 && x <= bx.x1 + 4 && y >= bx.y0 - 4 && y <= bx.y1 + 4);
-      if (inBox) return bay(x, y) < 7 ? C.frost : bay(x, y) < 14 ? C.frostD : C.frostS;
-      if (whole && bay(x, y) < 4) return C.frostD; return c; });
-    return pb;
+    const ok = !b.error && b.validation.status === "valid", base = ok ? renderPB(b.scene, fitCamera(b.scene, "portrait", [w, h], 0.06), "station") : blobArt(w, h);
+    if (t.mode === "clear") return base;
+    let boxes = "body";
+    if (t.groups.length && !t.luma && t.groups[0] !== "body") {
+      const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, partsOf = { face: UNREAD_REGION.face[0], leg: ["leg", "ray"], tail: ["tail"] };
+      boxes = !ok ? [] : t.groups.map((g) => partsOf[g]).filter((parts) => b.scene.nodes.some((n) => parts.some((q) => (n.part ?? n.id) === q || (n.part ?? n.id).startsWith(q + "-")))).map((parts) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
+    }
+    return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
   });
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
@@ -325,8 +332,6 @@ export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb
 
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });
 
-// A whole body under frost: the child to be on the Cross screen, never a promise.
-export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }
 
 // A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). 
 export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
