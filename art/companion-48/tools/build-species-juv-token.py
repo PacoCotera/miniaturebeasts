@@ -1,5 +1,6 @@
 """Juvenile variant of build-species-token.py (the adult tool is untouched): the juvenile idle at --h px high, feet on row 31, and the mini at --hmini px high, from the juvenile stand.
-usage: python3 -I build-species-juv-token.py STAND S0n OUT --flip --ramps S0n --h N --hmini M
+usage: python3 -I build-species-juv-token.py STAND S0n OUT [--flip] --ramps S0n --h N --hmini M [--strip-shadow]
+(S01 h 23 hmini 8, no --flip; S02 h 21 hmini 7, --flip; S03 h 25 hmini 10, --flip --strip-shadow)
 (derived from) C0: a species' 32 px Companion token and 12 px mini on the core 48, from its signed juvenile stand-in (the Station's canon), in place of
 the page's code-drawn creature (index.html buildCreature, i-mini). The idle is the stand reduced once by area into the token's box
 (feet on row 30, centred, facing the page's way), snapped to the core 48 by the page's 3/4/2 nearest colour among the species' own
@@ -12,7 +13,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pal
 P = pal.load()
 src, sp, out = sys.argv[1:4]; flip = "--flip" in sys.argv; ramps_opt = sys.argv[sys.argv.index("--ramps") + 1] if "--ramps" in sys.argv else "S01"; os.makedirs(out, exist_ok=True)
-a = Image.open(src).convert("RGBA"); arr = np.asarray(a); body = arr[..., 3] == 255
+a = Image.open(src).convert("RGBA")
+if "--strip-shadow" in sys.argv:                                         # S03's stand has a grey ground shadow under its feet: its low-chroma pixels below row 262 go, and only the largest piece stays
+    from scipy import ndimage as nd0
+    q = np.asarray(a).astype(int).copy(); mx, mn, Lq = q[..., :3].max(-1), q[..., :3].min(-1), q[..., :3].mean(-1)
+    q[(mx - mn < 22) & (Lq < 200) & (np.arange(q.shape[0])[:, None] > 262) & (q[..., 3] > 0)] = 0
+    lab0, n0 = nd0.label(q[..., 3] > 0, structure=np.ones((3, 3))); sz0 = nd0.sum(q[..., 3] > 0, lab0, range(1, n0 + 1)); q[lab0 != 1 + int(np.argmax(sz0))] = 0
+    a = Image.fromarray(q.astype(np.uint8), "RGBA")
+arr = np.asarray(a); body = arr[..., 3] == 255
 ys, xs = np.where(body); crop = a.crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
 if flip: crop = crop.transpose(Image.FLIP_LEFT_RIGHT)
 RAMP_SETS = {"S01": {"body": ["ink", "night", "slate", "stone"], "cream": ["clay", "sand", "paper", "bone"], "leaf": ["pine", "forest", "leaf", "grass"], "amber": ["rust", "orange", "amber"]},
