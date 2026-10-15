@@ -1476,6 +1476,20 @@ test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Wa
   }
 });
 
+test("juvenile Loika's Tend paws are drawn 6 source rows (48 px) lower than the adult's, in y only; the adult's, the Tuikis' sparks and the Untuva's ring are unchanged", () => {
+  const pawY = (sp, adult, st) => { const p = X26.world([X26.mib(1, "Kit", sp, adult ? { grownTurn: 0 } : {})], [1]); p.run("S.ui.aId = 1");
+    p.run(`var __p = []; (() => { const real = stagePawY; stagePawY = j => { const y = real(j); __p.push([j, y]); return y; }; })();`);
+    p.run("FX.moment = { id: 1, at: 0 }"); p.draw("active", 700); return plain(p.run("__p")); };
+  assert.deepEqual(pawY(0, true), [[false, 78], [false, 78]], "the adult Loika's two paws: y 78, as before");
+  assert.deepEqual(pawY(0, false), [[true, 126], [true, 126]], "the juvenile Loika's paws: y 78 + 48");
+  assert.equal(p0().run("LOIKA_JUV_PAW_DROP"), 6 * 8, "6 source rows at 8x");
+  for (const sp of [1, 2]) for (const adult of [true, false]) assert.deepEqual(pawY(sp, adult), [], "no paws for species " + sp);
+  assert.match(source("drawActive"), /for \(const px of \[250, 300\]\) blit\(upArt\('paw', ICON\.paw\('blush'\), 3\), px, stagePawY\(st === 'juvenile'\)\)/, "x stays 250 and 300; y by the chip");
+  assert.match(source("drawActive"), /R\(225 \+ Math\.round\(Math\.cos\(a\) \* r \* 1\.2\) - 4, 178 \+ Math\.round\(Math\.sin\(a\) \* r \* \.8\) - 4, 8, 8, C\.fog\)/, "the Untuva ring is as it was");
+  assert.match(source("drawActive"), /\[\[90, 88\], \[340, 118\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks are as they were");
+});
+function p0() { return X1.page(); }
+
 test("juvenile pictures at the sites: setup card and faces, header mini, roster, stage, look-out and the Walk's side tokens ask for the juvenile exactly when the mibi is one", () => {
   // setup: Dot (Tuikis, juvenile) alone rides: its card at 2×, no ring; its face plate; with Pip (Loika, grown) the partner card is Pip's, an adult picture
   let p = X26.world([dot()], [1]); let d = p.draw("setup");
