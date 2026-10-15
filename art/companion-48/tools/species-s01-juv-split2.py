@@ -1,7 +1,7 @@
-"""The C0 S01 juvenile Companion tokens, COLOUR-SPLIT pass (the AD, 10-15 05:25, so they match the Station juvenile; made from species-s01-juv-clean.py, which is kept as the signed round 3). Silhouette, eyes and snout knob unchanged;
-the head is charcoal only on the crown (rows 12 to 15); from row 16 the cheeks, chin and throat are cream (paper lit top-left, bone, sand shade); the body has a charcoal saddle 3 to 4 px deep from its top edge at each column,
-nape to rump, everything below cream (sides, belly, haunch, legs); the toe pads are sand on row 30, ink on row 31. The signed snout knob pixels (rows 16 to 18, x 23 to 26) are stamped from the signed idle.
-usage: python3 -I species-s01-juv-split.py SIGNED_IDLE.png OUT_DIR
+"""The C0 S01 juvenile Companion tokens, COLOUR SPLIT 2 (the AD, 10-15 05:32; made from species-s01-juv-clean.py, which reproduces the signed round 3 d0208a72 byte for byte and is kept). The head, muzzle, chin, throat and bib
+are the signed round 3 exactly; the body is charcoal down to row 23 at every column (back, upper flank, upper haunch; the chest bib of round 3, x 15 on from row 22, stays) with one row of slate at row 23 as the soft edge, no ink between;
+the body's lower band, rows 24 to 28, is cream (bone lit top-left, paper, sand shade bottom-right); the legs are cream (rows 29 to 30) with sand toe pads on row 30 and ink on row 31. The rows are the body layer's,
+so they move with each pose's body. usage: python3 -I species-s01-juv-split2.py OUT_DIR
 (earlier docstring) The C0 S01 juvenile Companion tokens, round 2 (the AD's direction art/companion-48/species/S01/juv-direction/ @ 3f0a3a81): the silhouette is the AD's target mask (idle-silhouette-32x32.txt:
 a big round head, cols 9 to 27 and rows 12 to 21, with a 2 px snout bump, sitting forward over a round body hump, cols 2 to 23 and rows 18 to 28, no neck; the crest, two leaves, rooted on the crown;
 four stubby legs). The head and the body are two layers (each with its own ink outline, the head's drawn over the body's), so the poses move the head on the body. Tones (the Pip regrade, a charcoal body):
@@ -33,22 +33,20 @@ def tone(m, a, cream_fn, put_cream):
             t, b = tl(m, y, x), br(m, y, x)
             if cream_fn(x, y): put(a, x, y, 'D' if (b <= 1 or put_cream(x, y)) else ('B' if t == 1 else 'P'))
             else: put(a, x, y, 'T' if t == 1 else ('S' if t == 2 else 'N'))
-SNOUT = {}                                                         # the signed idle's knob pixels (x 23 to 26, y 16 to 18), stamped from the signed file in __main__
 def head_layer():
     m = mask_of(HEAD); a = np.full((H, W), -1)
-    tone(m, a, lambda x, y: y >= 16, lambda x, y: False)             # charcoal on the crown only (rows 12 to 15); cheeks, chin and throat cream
+    tone(m, a, lambda x, y: (y >= 17 and x >= 19) or (y == 16 and x >= 26) or (y >= 19 and x >= 17), lambda x, y: y == 17 and x >= 26)
     for j, r in enumerate(["WAA", "AOV", "AAA"]):
         for i, ch in enumerate(r): put(a, 20 + i, 14 + j, ch)       # the near eye (21,15)
     for j, r in enumerate(["WA", "OV", "AA"]):
         for i, ch in enumerate(r): put(a, 15 + i, 14 + j, ch)       # the far eye (15 to 16, 14 to 16)
-    for (x, y), c in SNOUT.items(): a[y, x] = c
-    for x in (22, 23): put(a, x, 18, 'N')                            # the mouth line, kept
+    for x in range(22, 26): put(a, x, 18, 'N')                       # the mouth: one night line under the snout
     return a, m
 def body_layer():
     m = mask_of(BODY); a = np.full((H, W), -1)
-    top = {x: min(y for y in range(H) if m[y, x]) for x in range(W) if m[:, x].any()}
-    depth = lambda x: 3 if (x <= 4 or x >= 15) else 4
-    tone(m, a, lambda x, y: x >= 10 or y > top[x] + depth(x) - 1, lambda x, y: False)    # a charcoal saddle along the back, nape to rump (from x 10 on the head covers the back, the throat stays cream); everything below is cream
+    tone(m, a, lambda x, y: (x >= 15 and y >= 22) or y >= 24, lambda x, y: False)   # the chest bib as signed; charcoal down to row 23, cream rows 24 to 28
+    for x in range(W):
+        if m[23, x] and not (x >= 15) and a[23, x] != IDX['ink']: put(a, x, 23, 'S')   # one row of slate as the soft edge between the charcoal and the cream
     return a, m
 def legs_on(a, top=29):
     for x0, x1 in LEGS:
@@ -70,6 +68,10 @@ def compose(dx=0, dy=0, bdy=0, legs=True):
     for y in range(H):                                               # one ink outline round the body and head (not under the crest, where the leaves meet the crown)
         for x in range(W):
             if U[y, x] and outline_of(U)[y, x]: put(a, x, y, 'I')
+    # the AD's face fix (10-15 04:51; the cream across rows 17 to 19 read as an open duck's beak): the snout is a knob, the cheek and chin are charcoal, the bib starts at the throat; in idle
+    # coordinates, shifted by the pose's head offset
+    for x, y, c in [(24, 16, 'P'), (25, 16, 'P'), (26, 16, 'I')] + [(x, 17, 'N') for x in range(19, 23)] + [(x, 18, 'N') for x in range(19, 24)] + [(24, 18, 'D'), (25, 18, 'D'), (26, 18, 'I')] + [(17, 19, 'N'), (18, 19, 'N')]:
+        put(a, x + dx, y + dy, c)
     if legs: legs_on(a)
     return a
 def idle(): return compose()
@@ -83,7 +85,7 @@ def eat(k):
     else:
         for x, y in ((28, 21), (29, 21)): put(a, x, y, 'p')             # the bit 2 x 1, the mouth closed
     return a
-MINI = ["............", "............", "............", ".....e.e....", "....elgle...", "...ITTSSSI..", "..ITSSSOVSI.", ".ITSBPPPPPPI", ".ISSPPPPPDI.", ".ISNPPPPPPI.", ".IDPPPPDPDI.", "..IIIIIIII.."]   # a charcoal crown and back line, cream below, the snout a knob
+MINI = ["............", "............", "............", ".....e.e....", "....elgle...", "...ITTSSSI..", "..ITSSSOVSI.", ".ITSSSSSSPPI", ".ISSSSSSNDI.", ".ISSSSSSPPI.", ".IDPPPPDPDI.", "..IIIIIIII.."]   # charcoal top half (a slate row as the edge), the cream lower band and legs, sand pads
 def mini():
     a = np.full((12, 12), -1)
     for y, r in enumerate(MINI):
@@ -91,10 +93,7 @@ def mini():
             if c != '.': put(a, x, y, c)
     return a
 if __name__ == "__main__":
-    signed, out = sys.argv[1:3]; os.makedirs(out, exist_ok=True)
-    sg = load(signed)
-    for y in range(16, 19):
-        for x in range(23, 27): SNOUT[(x, y)] = sg[y, x]
+    out = sys.argv[1]; os.makedirs(out, exist_ok=True)
     for name, a in (("idle", idle()), ("alert", alert()), ("huddle", huddle()), ("eat-f0", eat(0)), ("eat-f1", eat(1))):
         save(a, os.path.join(out, "c-token-S01-juv-%s-32x32.png" % name))
-    save(mini(), os.path.join(out, "c-mini-S01-juv-12x12.png")); print("S01 juvenile colour split: crown charcoal, saddle charcoal, cream below")
+    save(mini(), os.path.join(out, "c-mini-S01-juv-12x12.png")); print("S01 juvenile round 2: the AD's silhouette, four poses, the mini")
