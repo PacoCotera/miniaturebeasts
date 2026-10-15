@@ -339,9 +339,8 @@ test("the Probe screen mid-expedition reads the Probe the expedition set out wit
   p.run("__t = []; drawProbe(0);");
   const t = p.run("__t");
   assert.ok(t.includes("tier 1"), "tier 1 in the top bar");
-  assert.ok(t.includes("Reaches 2 cells each way · 2 pods"));
-  assert.ok(t.includes("Shield is whole"), "Shield is whole at 3 of 3");
-  p.run("S.exp.shield = 2; __t = []; drawProbe(0);");
+  assert.ok(!t.some(l => /Reaches|Shield is whole|%/.test(String(l))), "no legend rows, no odds");
+  p.run("S.exp.shield = 2; S.exp.cargo.e = 3; __t = []; drawProbe(0);");
   assert.ok(p.run("__t").includes(p.run("DOCK_TEXT.probe")), "docked and hurt: the Station mends it");
 });
 
@@ -374,7 +373,7 @@ test("bayLine(): the docked variant while docked, today's line undocked", () => 
 });
 
 // ---- the game designer's ruling on hints while docked (QA D1) ----
-test("docked: no one-time hint shows or is spent; after Lift the first press shows the Call hint and spends it", () => {
+test("docked: no one-time hint shows or is spent; after Lift a step shows no Call sign, the first Call press does and spends it", () => {
   const CALL = "Call lifts the veil: finds show";
   const { p, st } = begin();
   p.key("right"); p.key("down"); p.key("right");
@@ -384,17 +383,21 @@ test("docked: no one-time hint shows or is spent; after Lift the first press sho
     p.key("confirm"); if (p.S.phase === "patch") { inPlace = true; break; }
   }
   assert.ok(inPlace, "in a place");
-  assert.equal(p.S.found.includes("callplace"), false, "the Call hint not yet spent");
+  p.run("S.found = S.found.filter(k => k !== 'callintro' && k !== 'met:call'); FX.notes = []; FX.msg = ''; FX.sign = null;");   // the entry's sign was shown on arrival; take it back so the dock rule is what is measured
+  assert.equal(p.S.found.includes("callintro"), false, "the Call sign not yet spent");
   dock(p, st);
   p.key("back"); assert.equal(p.S.phase, "menu");
   p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo");
   p.key("back"); p.key("back"); assert.equal(p.S.phase, "patch");
-  assert.equal(p.S.found.includes("callplace"), false, "not spent while docked");
+  assert.equal(p.S.found.includes("callintro"), false, "not spent while docked");
   assert.notEqual(p.run("FX.msg"), CALL, "the Call hint does not show while docked");
+  p.key("call"); assert.notEqual(p.run("FX.msg"), CALL, "a Call press while docked shows no Call sign"); assert.equal(p.S.found.includes("callintro"), false, "and spends nothing");
   lift(p, st);
   p.key("left"); assert.equal(p.S.phase, "patch");
-  assert.equal(p.run("FX.msg"), CALL, "the first press after Lift shows the Call hint");
-  assert.equal(p.S.found.includes("callplace"), true, "and spends it");
+  assert.notEqual(p.run("FX.msg"), CALL, "a step after Lift shows no Call sign"); assert.equal(p.S.found.includes("callintro"), false);
+  p.key("call");
+  assert.equal(p.run("FX.msg"), CALL, "the first Call press in a place shows it");
+  assert.equal(p.S.found.includes("callintro"), true, "and spends it");
 });
 
 // ---- C2a §8.3: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----
@@ -416,4 +419,72 @@ test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a plac
       { id: 2, name: 'Pip', sp: 1, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1, 2];
       S.phase = 'active'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
     frozenBy(p, "the active screen with a cut due"); }
+});
+
+// ---- a save that cannot be shown: the device's way out is two presses, and the old save is kept whole ----
+test("a broken save: ✓ arms, ✓ again keeps the old bytes under its own key and starts a new world; any other key does nothing", () => {
+  const kind = "broken";
+  const old = JSON.stringify({ v: 8, seed: 5, note: "old bytes " + kind });
+  const p = page({}); p.store[p.KEY] = old;
+  p.run(kind === "broken" ? "readOnlyBroken()" : "readOnlyNewer()");
+  for (const k of ["up", "left", "right", "down", "back", "call"]) { p.key(k); assert.equal(p.run("RT.readOnly"), true, k); assert.equal(p.store[p.KEY], old, "untouched"); }
+  assert.equal(p.run("FX.bumpAt"), p.clock.t, "refused with the bump");
+  p.key("confirm"); assert.equal(p.run("RT.armNew"), 1); assert.equal(p.store[p.KEY], old);
+  p.key("down"); assert.equal(p.run("RT.armNew"), 0, "another key clears the arm");
+  p.key("confirm"); p.key("confirm");
+  assert.equal(p.run("RT.readOnly"), false); assert.equal(p.store[Object.keys(p.store).find(k => k.startsWith("mb-save-kept-"))], old, "the old save, byte for byte");
+  assert.notEqual(p.store[p.KEY], old); assert.equal(p.S.phase, "setup"); assert.ok(!p.S.st, "a fresh Station");
+  // a second move keeps both
+  p.store[p.KEY] = old + "2"; p.run("readOnlyBroken()"); p.key("confirm"); p.key("confirm"); assert.equal(Object.keys(p.store).filter(k => k.startsWith("mb-save-kept-")).length, 2);
+});
+
+// ---- load() keeps what it cannot use: the "can't be shown" screen, never a silent new world over the bytes ----
+test("unusable stored bytes boot to the can't-be-shown screen and stay byte for byte; ✓ ✓ keeps them under their own key and starts a new world", () => {
+  for (const bad of ["{not json", "[]", '{"v":8}', '{"v":8,"seed":"x"}', '{"v":3,"seed":1}', "null0"]) {
+    const q = page({ "mb-save-v8": bad });
+    assert.equal(q.run("RT.readOnly"), true, bad); assert.equal(q.run("RT.broken"), true, bad); assert.equal(q.store["mb-save-v8"], bad, "boot wrote nothing: " + bad);
+    for (const k of ["up", "left", "back", "call", "down"]) { q.key(k); assert.equal(q.store["mb-save-v8"], bad, k); }
+    q.key("confirm"); q.key("confirm");
+    const kept = Object.keys(q.store).filter(k => k.startsWith("mb-save-kept-"));
+    assert.equal(kept.length, 1); assert.equal(q.store[kept[0]], bad, "byte for byte"); assert.equal(q.run("RT.readOnly"), false); assert.notEqual(q.store["mb-save-v8"], bad);
+  }
+});
+test("a save that throws while it loads is kept; a newer version goes to the newer screen; a v7 save never moves over bytes; an empty store starts at once", () => {
+  const throws = JSON.stringify({ v: 8, seed: 1, cr: [], mibis: [], gen: 2, bay: 5, st: { wid: 1 }, pods: null, trips: {}, carried: 7, found: 3, exp: 4 });
+  const q = page({ "mb-save-v8": throws }); if (q.run("RT.broken")) assert.equal(q.store["mb-save-v8"], throws);
+  const n = page({ "mb-save-v8": JSON.stringify({ v: 9, seed: 1, cr: [], mibis: [] }) }); assert.equal(n.run("RT.readOnly"), true); assert.equal(n.run("!!RT.broken"), false);
+  const v7 = JSON.stringify({ v: 7, seed: 3 }), b = page({ "mb-save-v8": "{not json", "mb-exploration-v7": v7 });
+  assert.equal(b.run("RT.broken"), true); assert.equal(b.store["mb-save-v8"], "{not json"); assert.equal(b.store["mb-exploration-v7"], v7, "the v7 save is not migrated over it");
+  const e = page({});
+  assert.ok(!e.run("!!RT.readOnly") && e.S && e.S.phase === "setup", "an empty store starts a new world with no screen");
+  // two moves leave two kept saves, each with its own bytes
+  const t = page({ "mb-save-v8": "{one" }); t.key("confirm"); t.key("confirm");
+  t.store["mb-save-v8"] = "{two"; t.run("readOnlyBroken()"); t.key("confirm"); t.key("confirm");
+  const kept = Object.keys(t.store).filter(k => k.startsWith("mb-save-kept-")).map(k => t.store[k]).sort();
+  assert.deepEqual(kept, ["{one", "{two"]);
+});
+
+test("a v8 save that throws while it loads leaves every stored key untouched", () => {
+  const raw = JSON.stringify({ v: 8, seed: 1, cr: [], mibis: [{}], gen: 2, carried: [9], bay: [null], pods: [null] });
+  const writes = [], init = { "mb-save-v8": raw, "mb-exploration-v1": "{}", "mb-exploration-v6": "{}", "mb-exploration-v7": "{}" };
+  const store = new Proxy({ ...init }, { set: (o, k, v) => { writes.push("set:" + k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push("rm:" + k); delete o[k]; return true; } });
+  const p = page(store);
+  if (p.run("RT.broken")) { assert.deepEqual(writes, [], "boot wrote and removed nothing"); for (const k of Object.keys(init)) assert.equal(p.store[k], init[k], k); }
+  // force the throw: a save that parses and has the shape, then fails inside the loader
+  const w2 = [], s2 = new Proxy({ ...init }, { set: (o, k, v) => { w2.push("set:" + k); o[k] = v; return true; }, deleteProperty: (o, k) => { w2.push("rm:" + k); delete o[k]; return true; } });
+  const q = page(s2); w2.length = 0; for (const k of Object.keys(init)) q.store[k] = init[k]; w2.length = 0; q.run("S = null; RT.readOnly = false; RT.broken = false; migrateCarried = () => { throw new Error('no'); }; globalThis.__r = load();");
+  assert.equal(q.run("__r"), "broken"); assert.deepEqual(w2, [], "nothing written or removed on the way to the broken screen");
+});
+
+test("a newer save: ✓ reloads in one press, no arm, no new world; the save is never written or moved", () => {
+  const old = JSON.stringify({ v: 9, seed: 5, cr: [], mibis: [] });
+  const p = page({ "mb-save-v8": old });
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("!!RT.broken"), false);
+  p.run("globalThis.__rl = 0; location = { reload: () => { __rl++; } };");
+  for (const k of ["up", "down", "left", "right", "back", "call"]) { p.key(k); assert.equal(p.run("__rl"), 0, k); assert.equal(p.run("RT.armNew || 0"), 0); }
+  assert.equal(p.run("FX.bumpAt"), p.clock.t, "refused with the bump");
+  p.key("confirm"); assert.equal(p.run("__rl"), 1, "one press reloads"); p.key("confirm"); assert.equal(p.run("__rl"), 2);
+  assert.equal(p.store["mb-save-v8"], old, "never written"); assert.ok(!Object.keys(p.store).some(k => k.startsWith("mb-save-kept")), "never moved"); assert.equal(p.run("RT.readOnly"), true);
+  p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }");
+  const t = p.run("__said.join('|')"); assert.ok(t.includes("Newer save · untouched · reload plays it") && !/new world|out of date/i.test(t), t);
 });

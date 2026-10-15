@@ -135,7 +135,8 @@ test("a save from a newer generator (gen 3) is read-only: load() says 'newer', b
   assert.equal(p.run("S"), null, "nothing was read into the page");
   assert.equal(p.run("load()"), "newer");
   p.run("var saves = 0; const save0 = save; save = function () { saves++; return save0.apply(this, arguments); };");
-  for (const k of ["up", "down", "left", "right", "confirm", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  for (const k of ["up", "down", "left", "right", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  // Confirm is the device's way out (two presses start a new world and keep this save): freeze.test.mjs
   p.run("render(1); frame(1000)");
   assert.equal(p.run("saves"), 0, "nothing called save()");
   assert.equal(p.run("S"), null, "input started no world");
@@ -535,7 +536,7 @@ test("generator 2 play: stairs and aprons take no pods, creatures or slabs; plac
     const pb = p.run(`tilePB(layout(S.exp.patch.key), ${i}, 0)`); assert.ok(pb.w === 32 && pb.h === 32 && pb.p.every(v => v >= 0 && v < 48), `tile ${i}`); }
   assert.ok(kinds.has(TERR.STAIR) && kinds.has(TERR.FOOT));
   // each piece is in the register, under its TERR name, as a 32 px stand-in
-  const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32).map(a => a.id).join()");
+  const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32 && !a.id.startsWith('c-')).map(a => a.id).join()");
   assert.equal(reg, Object.keys(TERR).filter(k => k !== "NONE").join());
 });
 
@@ -674,11 +675,10 @@ function inPlace() {
   return p;
 }
 
-test("the place's Call help line reads 'Call lifts the veil: finds show' and is 260 px at 2×", () => {
-  const p = world(), s = "Call lifts the veil: finds show";
-  assert.match(PAGE, /const CALL_HINT = 'Call lifts the veil: finds show'/); assert.match(PAGE, /fxOnce\('callplace', CALL_HINT, 2\)/);
-  assert.equal(p.run(`textW(${JSON.stringify(s)}, 2)`), 260);
-  assert.doesNotMatch(PAGE, /The teal CALL button/);
+test("the Call sign's line reads 'Call lifts the veil: finds show' and is 260 px at 2×", () => {
+  const p = world(), l = "Call lifts the veil: finds show";
+  assert.equal(p.run("SIGN_LINE.call"), l); assert.equal(p.run(`textW(${JSON.stringify(l)}, 2)`), 260);
+  assert.doesNotMatch(PAGE, /The teal CALL button|CALL_HINT|shownMsg/);
 });
 
 test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Expedition 999; Weather's bolt 4 px before the note", () => {
@@ -702,23 +702,8 @@ test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Exp
   assert.doesNotMatch(PAGE, /dotted: storm start/);
 });
 
-test("Probe legend: the four stone tiles on grass; the strike tile draws the plain stone under its outline", () => {
-  const p = world();
-  p.run("S.phase = 'probe'"); p.rec("panel"); p.clear(); p.run("scr.px().fill(-1); render(0)");
-  const rec = p.run("__rec"), grass = p.run("C.grass"), sand = p.run("C.sand");
-  const tiles = rec.filter(c => c.n === "panel" && c.a[1] === 442 && c.a[2] === 34 && c.a[3] === 34);
-  assert.deepEqual([...tiles.map(c => c.a[0])], [50, 154, 258, 362]);
-  assert.ok(tiles.every(c => c.a[4] === grass && c.a[4] !== sand), "grass, not sand");
-  // the strike tile (362, 442): inside the 2 px outline, the plain stone's pixels; the outline itself in yellow, drawn over it
-  const st = sprite(p, "stoneArt(0, false, 0)", 363, 443, (x, y) => x >= 2 && y >= 2 && x < 30 && y < 30);
-  assert.ok(st.n > 100 && st.off === 0, `the plain stone at (x + 1, y + 1) under the outline (${st.off} of ${st.n} differ)`);
-  const f = p.run("scr").px(), SW = p.run("SCR_W"), yel = p.run("C.yellow");
-  for (const [x, y] of [[363, 443], [394, 443], [363, 474], [394, 474], [378, 443], [363, 458]]) assert.equal(f[y * SW + x], yel, `outline at ${x},${y}`);
-  const pl = sprite(p, "stoneArt(0, false, 0)", 51, 443); assert.equal(pl.off, 0, "the plain tile as built");
-});
-
 test("bottom line in a place: the candidates keep the place name before the take kinds go; after a Call the name stays with Wait · Leave", () => {
-  const p = inPlace();
+  const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
   p.run("leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone']; S.exp.patch && (curLay().land = curLay().land);");
   const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
   assert.equal(L.ok, "Wait"); assert.equal(L.back, "Leave");
@@ -801,52 +786,17 @@ test("Cargo's bottom line: a crate with room, the finds in the hold with the bay
   assert.match(PAGE, /'shows what it does'/);
 });
 
-test("the place's Call hint is drawn only in the place view: every other screen's message leaves it out", () => {
-  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
-  p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'probe';`); assert.equal(p.run("shownMsg()"), c);
-  p.run(`FX.msg = ${JSON.stringify(h + " · " + c)};`); assert.equal(p.run("shownMsg()"), c);
-  p.run(`FX.msg = ${JSON.stringify(h)};`); assert.equal(p.run("shownMsg()"), "");
-  for (const ph of ["probe", "cargo", "menu", "sealed", "map", "mibis", "worldmap", "active"]) { p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = ${JSON.stringify(ph)};`); assert.equal(p.run("shownMsg()"), c, ph); }
-  p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'patch';`); assert.equal(p.run("shownMsg()"), c + " · " + h, "the place keeps it");
-});
-
-test("the place's Call hint takes the message box only when it is alone: it never joins, widens or grows another message", () => {
-  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
-  p.run(`FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace' }, { text: ${JSON.stringify(c)}, pri: 2, once: 'mark?' }]; composeMsg();`);
-  assert.equal(p.run("FX.msg"), c, "the other message alone, the hint waits");
-  p.run(`FX.notes = [{ text: ${JSON.stringify(c)}, pri: 2 }, { text: ${JSON.stringify(h)}, pri: 2, once: 'callplace' }]; composeMsg();`); assert.equal(p.run("FX.msg"), c);
-  p.run(`FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace' }]; composeMsg();`);
-  assert.equal(p.run("FX.msg"), h, "alone, the hint shows");
-  assert.equal(p.run(`wrapText(${JSON.stringify(h)}, 400, 2).length`), 1, "on one line");
-});
-
-test("the place's Call hint is spent only when it is drawn: skipped while another message holds the box or off the place, then shown once, then never again", () => {
-  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer", spent = () => p.run("S.found.includes('callplace')");
-  const put = (ph, ...texts) => p.run(`S.phase = ${JSON.stringify(ph)}; FX.notes = ${JSON.stringify(texts.map(t => t === h ? { text: t, pri: 2, once: "callplace", local: false } : { text: t, pri: 2 }))}; composeMsg(); settleOnce();`);
-  assert.equal(spent(), false);
-  put("patch", c, h); assert.equal(p.run("FX.msg"), c, "another message holds the box"); assert.equal(spent(), false, "skipped in the place: not spent");
-  put("cargo", h); assert.equal(p.run("shownMsg()"), ""); assert.equal(spent(), false, "not drawn on another screen: not spent");
-  put("probe", c, h); assert.equal(spent(), false);
-  put("patch", h); assert.equal(p.run("FX.msg"), h); assert.equal(spent(), true, "drawn in the place: spent");
-  p.run("FX.notes = []; S.phase = 'patch'; fxOnce('callplace', CALL_HINT, 2);"); assert.equal(p.run("FX.notes.length"), 0, "never queued again");
-  // and in play: the hint is held behind the arrival lines, shown on a later action, and shown once
+test("the Call sign never joins another message; it is spent only when it is drawn (not while the swap chooser covers the box), shown once, and never again", () => {
+  const p = world(), l = "Call lifts the veil: finds show", c = "? · curious · it will come closer", spent = () => p.run("S.found.includes('callintro')");
+  p.run(`S.phase = 'patch'; FX.notes = []; fxSign('call'); fxMsg(${JSON.stringify(c)}, 2); settleOnce();`);
+  assert.equal(p.run("FX.msg"), l, "the sign alone; the other message waits"); assert.equal(p.run("FX.sign.sign"), "call"); assert.equal(spent(), true, "drawn in the place: spent");
+  p.run("S.found = S.found.filter(k => k !== 'callintro' && k !== 'met:call'); FX.notes = []; S.ui.swap = { sel: 0 }; fxSign('call'); settleOnce();");
+  assert.equal(spent(), false, "the chooser covers the box: not spent");
+  p.run("S.ui.swap = null; settleOnce();"); assert.equal(spent(), true, "spent once drawn");
+  p.run("FX.notes = []; fxSign('call');"); assert.equal(p.run("FX.notes.length"), 0, "never queued again");
+  // in play: the first place shows it once
   const q = world(); q.key("confirm"); q.key("confirm"); q.key("confirm"); assert.equal(q.run("S.phase"), "patch");
-  assert.equal(q.run("S.found.includes('callplace')"), false, "the arrival lines hold the box: the hint is not spent");
   let shown = 0, was = false;
-  for (let i = 0; i < 30; i++) { q.key(i < 2 ? "call" : ["left", "right", "up", "down"][i % 4]); const now = q.run("FX.msg === CALL_HINT"); if (now && !was) shown++; was = was || q.run("S.found.includes('callplace')"); }
-  assert.equal(shown, 1, "shown once, on a later action, and never again"); assert.equal(q.run("S.found.includes('callplace')"), true);
-});
-
-test("the place's Call hint is not spent while the swap chooser covers the message box: one test for 'the box is drawn' in shownMsg, settleOnce and drawMessage", () => {
-  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
-  p.rec("text");
-  p.run(`S.phase = 'patch'; S.ui.swap = { sel: 0 }; FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace', local: false }]; composeMsg();`);
-  assert.equal(p.run("FX.msg"), h, "the hint is composed");
-  assert.equal(p.run("shownMsg()"), "", "the chooser covers the box");
-  p.run("settleOnce()"); assert.equal(p.run("S.found.includes('callplace')"), false, "not spent while covered");
-  p.clear(); p.run("drawMessage()"); assert.ok(!p.calls("text").some(c2 => c2.a[0] === h), "and not drawn");
-  p.run(`FX.notes = [{ text: ${JSON.stringify(c)}, pri: 2 }]; composeMsg();`); assert.equal(p.run("shownMsg()"), "", "any message: the chooser has the space");
-  p.run(`S.ui.swap = null; FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace', local: false }]; composeMsg(); settleOnce();`);
-  assert.equal(p.run("S.found.includes('callplace')"), true, "spent once drawn");
-  p.clear(); p.run("drawMessage()"); assert.ok(p.calls("text").some(c2 => c2.a[0] === h), "drawn without the chooser");
+  for (let i = 0; i < 30; i++) { q.key(["left", "right", "up", "down"][i % 4]); const now = q.run("FX.msg === SIGN_LINE.call"); if (now && !was) shown++; was = was || now; }
+  assert.ok(shown <= 1 && q.run("S.found.includes('callintro')") === true, "shown at most once more, and spent");
 });
