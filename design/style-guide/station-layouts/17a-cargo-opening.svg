@@ -7,12 +7,9 @@
 <text x="1006" y="44" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bay 16,48 992×320 (the painted bay, 1:1)</text>
 <path d="M24 64h976v174h-976z" fill="#7f8a85"/>
 <path d="M24 240h976v112h-976z" fill="#c7c1ad"/>
-<rect x="416.5" y="56.5" width="191" height="39" fill="#6b4a2f" stroke="#d89b14" stroke-width="1"/>
-<text x="512" y="83" font-size="20" fill="#f1ebdf" text-anchor="middle" font-weight="500">First crate home</text>
-<text x="612" y="52" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">ribbon 416,56 192×40: words + 32, up to 8, centred on 512</text>
 <rect x="296.5" y="72.5" width="431" height="271" fill="#d9cfb8" stroke="#222" stroke-width="1.5"/>
 <path d="M336 112h352v184h-352z" fill="#3a414b"/>
-<text x="300" y="86" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 296,72 432×272</text>
+<text x="300" y="312" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 296,72 432×272</text>
 <rect x="296.5" y="325.5" width="431" height="23" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="359" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">shadow 296,325 432×24</text>
 <rect x="364.5" y="104.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="3 2"/>
@@ -37,12 +34,15 @@
 <rect x="240.5" y="329.5" width="47" height="13" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="736.5" y="272.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
 <rect x="736.5" y="329.5" width="47" height="13" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="184" y="268" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">containers 48×64, feet on 336, from 800 ms</text>
+<text x="32" y="268" font-size="8" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">containers 48×64, feet on 336, from 800 ms</text>
 <path d="M408 216L568 408" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="440.5" y="240.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="712" y="100" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the travel 176,72 672×472:</text>
 <text x="712" y="112" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">each pod to its well, 600 ms,</text>
 <text x="712" y="124" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">in well order</text>
+<rect x="416.5" y="56.5" width="191" height="39" fill="#6b4a2f" stroke="#d89b14" stroke-width="1"/>
+<text x="512" y="83" font-size="20" fill="#f1ebdf" text-anchor="middle" font-weight="500">First crate home</text>
+<text x="24" y="46" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">ribbon 416,56 192×40: words + 32, up to 8, centred on 512</text>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
 <text x="48" y="27" font-size="20" fill="#222" font-weight="500">Cargo</text>

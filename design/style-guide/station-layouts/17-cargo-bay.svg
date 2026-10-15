@@ -9,17 +9,17 @@
 <path d="M24 240h976v112h-976z" fill="#c7c1ad"/>
 <rect x="224.5" y="120.5" width="255" height="175" fill="#d9cfb8" stroke="#222" stroke-width="1.5"/>
 <path d="M340 192h24v32h-24z" fill="#f0661a"/>
-<text x="352" y="282" font-size="10" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">sealed</text>
+<text x="352" y="248" font-size="10" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">sealed</text>
 <text x="228" y="116" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate 224,120 256×176</text>
 <rect x="224.5" y="270.5" width="255" height="23" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="352" y="304" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">shadow 224,270 256×24</text>
 <rect x="544.5" y="120.5" width="255" height="175" fill="#d9cfb8" stroke="#222" stroke-width="1.5"/>
 <path d="M660 192h24v32h-24z" fill="#f0661a"/>
-<text x="672" y="282" font-size="10" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">sealed</text>
+<text x="672" y="248" font-size="10" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">sealed</text>
 <text x="548" y="116" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate 544,120 256×176</text>
 <rect x="544.5" y="270.5" width="255" height="23" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="672" y="304" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">shadow 544,270 256×24</text>
-<text x="512" y="112" font-size="9" fill="#ddd" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">crates centred as a group on 512, a 320 pitch by count; feet on y 282</text>
+<text x="512" y="100" font-size="9" fill="#ddd" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">crates centred as a group on 512, a 320 pitch by count; feet on y 282</text>
 <rect x="16.5" y="384.5" width="991" height="167" fill="#c9d0c6" stroke="#444" stroke-width="1"/>
 <text x="1000" y="398" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">rack 16,384 992×168 · the painted insert: six fitted wells 96×128 on a 112 pitch, as Pods' collection</text>
 <rect x="184.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
