@@ -1,7 +1,7 @@
 // Create in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `create-nothingRead`, `create-shape` (a trait read, as the pod is), `create-shape-changed`
 // (a rolled look: the tag, the diamond pip), `create-shape-clash` (the red edge, the ✕ in the line and on the pip, no ✓ cap), `create-shape-doing` (breed to change, the breed mark), `create-shape-onelook`, `create-shape-short` (the dimmed ✓,
 // the short figure amber), `create-shape-busy` (a bud in the small chamber, Grow blocked), `create-shape-first` (the first founder: five leaves), and with motion on at exact instants of the face's clock: the roll's dither
-// halfway (`create-roll-100`) and the grow event (`create-grow-150` the stamp printing, `create-grow` at 600 ms the pod travelling behind the work tray, `create-grow-end` at 890 ms, the travel over and the jump still to come; `create-grow-nothing`, Grow from nothing read 20 ms in: a cut, the whole stamp from the first frame).
+// halfway (`create-roll-100`) and the grow event (`create-grow-150` the stamp printing, `create-grow` at 450 ms the pod travelling behind the work tray, `create-grow-end` at 890 ms, the travel over and the jump still to come; `create-grow-nothing`, Grow from nothing read 20 ms in: a cut, the whole stamp from the first frame).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -22,6 +22,8 @@ const SCENES = {
   "shape-onelook": { want: "shape", set: (w) => { w.shape("S01", 4, 4); w.at(0); } },
   "shape-short":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); const st = window.__st.ST; st.s = 1; st.e = 9; w.persist(); } },
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },
+  "shape-samelook": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },   // S01 Crown, the pod's leaf crest hiding bare head (genome seed 3), the crest chosen: "Crown: leaf crest, hides nothing" (fix 5 Create)
+  "shape-sealed":  { want: "shape", set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // one S02 pod, every readable chapter read, its sealed chapter shut: "all read, Character sealed"
   "shape-first":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.ST.firstMibi = true; } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${CREATE.toString()})`]);
@@ -29,7 +31,7 @@ const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign
 const TIMED = {
   "roll-100":   { scene: "shape", go: () => window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }), at: 100 },
   "grow-150":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 150, want: "grow" },
-  "grow":       { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 600, want: "grow" },
+  "grow":       { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 450, want: "grow" },   // 450 ms: the pod passes behind the tray's left edge (fix 5 Create)
   "grow-end":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 890, want: "grow" },
   "grow-nothing": { scene: "nothingRead", go: () => window.__st.press("confirm"), at: 20, want: "grow" },
 };

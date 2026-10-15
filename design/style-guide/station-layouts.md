@@ -279,13 +279,13 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
   | Screen | Label | Code | Why |
   | --- | --- | --- | --- |
   | Pods, overview | (804, 400, 120, 120), case (788, 384, 152, 152) | none | the slot; was 872, 400 in the case at 856, 384 |
-  | Create | (804, 400, 120, 120) | (776, 525, 176, 25), baseline 541, rule 549 | the slot, unchanged; `nothingRead` draws no label |
+  | Create | (804, 336, 120, 120), in its case (788, 320, 152, 152) | (776, 481, 176, 25), baseline 497, rule 505 | raised 64 so the small chamber, the case and the code read as one column (fix 5 Create); `nothingRead` draws the pod's stamp |
   | Incubator (growing, ready, hatch) | (804, 256, 120, 120) | (776, 381, 176, 25), baseline 397, rule y 405, x 776 to 952 | raised 144: the stage's painted cable and right gauges fill x 746 to 954, y 414 to 527 (measured on `incubator-empty`). The label takes 804, 400 if the art director's stage clears that band. It was 840, 296, with its code at 808, 424 on the cable |
   | One mibi up close (Habitat: rest, meet, out) | (872, 64, 120, 120), in the card | the card's own line (608, 160) | the slot would land on the Cross and Wild modules; the rect stays and the look demotes it. No asset: nothing drawn |
   | Book | (832, 112, 120, 120) | none | the page's label; outside fix 4 |
 - **Never the brightest element.** At 1×, the label rect's mean and its 95th-percentile relative luminance are each below the same measures of the state's main object ([Every state composed](#every-state-composed-one-rule-every-screen)). On main 0a46bf1c the label measured a mean of 59 to 76 % and a p95 of 100 %, against the main object's mean of 20 to 34 % and p95 of 40 to 80 % (Create, Incubator, Pods overview, up close). It was the brightest thing on every one of those screens.
 - **The stamp is drawn on whole-pixel cells.** For a stamp of N modules (N + 2 with its quiet margin), the cell is the largest whole number of pixels that keeps the stamp within 104 px: `cell = floor(104 / (N + 2))`, never less than 2. For example, 21 modules give 23 × 4 = 92 px and 49 modules give 51 × 2 = 102 px.
-- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. On Pods the label stands in its case, the label plus 16 px a side. The case has no light, glow or beam of its own.
+- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. On Pods and Create the label stands in its case, the label plus 16 px a side. The case has no light, glow or beam of its own.
 - **It reads fifth or later** on every screen.
 
 ### The chapter rail (Pods, Create, Incubator)
@@ -353,7 +353,7 @@ UI/UX designer, 2026-10-11 23:56, step 0 of the Station's global fix plan, after
 2. **An empty region draws nothing.** A region with nothing to show keeps its node with no size (w 0, h 0, as Grow keeps its nodes, [lvgl-switch.md §2.2](../proposals/lvgl-switch.md)). It never draws an empty frame, an outline, a dashed or dotted box, a bare panel, a dark well, a bare label plate, or a caption standing for the absent thing. An empty state that the design shows as an object is not an empty region: the empty dish, the shut journal, the dark chamber and the shut bay are objects, drawn from their masters. Retired by this rule, to be removed from each spec at its screen's gate:
    - the bay strip's free bay as a `dash` outline (the vivarium, up close and the whole);
    - the up-close Companion module's empty dark slots;
-   - the bare stamp label with no stamp (Create `nothingRead`, `habitat.json regions.stamp.until`);
+   - the bare stamp label with no stamp (`habitat.json regions.stamp.until`);
    - Pods' place tiles beside the collection rings (removed, fix 6);
    - Home's module object boxes in their empty states, until each empty object is painted.
 3. **No flat-box stand-in on a golden.** Some stand-ins are a flat fill, an outline or an unpainted plate: the register's lavender `placeholder` plates, flat roll fills, `standIn` edge boxes, a `colours.*StandIn` fill. Such a stand-in is never drawn in a frame that is goldened, captured for a review or shown to the owner. The region stays with no size. A stand-in the art director has signed as a picture (named in the register with its signer, such as the juvenile stand-in) is art, not a box, and may be placed. Which creature renderings may stand in is the art director's question, not this rule's.

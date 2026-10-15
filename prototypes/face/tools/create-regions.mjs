@@ -21,7 +21,10 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   for (const r of got("founderShadow")) must(within(r.rect, R.founderShadow.rect), `the founder's shadow ${r.rect} leaves ${R.founderShadow.rect}`);
   for (const r of got("action")) { const z = frame.regions.action.rect; must(r.rect[0] >= z[0] && r.rect[0] + r.rect[2] <= z[0] + z[2] && r.rect[1] >= 566 && r.rect[1] + r.rect[3] <= 594, `the Grow line's ${r.layer} ${r.rect} leaves the action zone ${z} across x, or y 566 to 594 (a text box's line sits 2 px above the zone)`); }   // the wait is the price's last group: the whole action ends at x <= 392
   for (const r of got("stamp.plate", "painted")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
-  for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
+  for (const r of [...got("stampImage", "painted"), ...got("stampImage", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
+  for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stampCase.rect), `the stamp ${r.rect} leaves its case ${R.stampCase.rect}`);   // the case (788, 320, 152, 152) holds the label and the stamp; the case is drawn in every state (fix 5 Create C1)
+  must(got("stamp", "painted").some((r) => eq(r.rect, R.stampCase.rect)), `the stamp case is not drawn at ${R.stampCase.rect}`);
+  must(R.stamp.rect[0] >= R.stampCase.rect[0] && R.stamp.rect[1] >= R.stampCase.rect[1] && R.stamp.rect[0] + R.stamp.rect[2] <= R.stampCase.rect[0] + R.stampCase.rect[2] && R.stamp.rect[1] + R.stamp.rect[3] <= R.stampCase.rect[1] + R.stampCase.rect[3], "the label lies inside its case");
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
   { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 8, R.roll.rect[1], R.roll.rect[2] + 16, R.roll.rect[3]]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
   // what each state draws, and what it does not

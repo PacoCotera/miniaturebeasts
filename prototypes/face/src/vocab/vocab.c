@@ -179,8 +179,11 @@ void v_focus_set(const char *id) { if (id) { snprintf(g_focus_override, sizeof g
 const char *v_focus_cur(void) { return g_has_override ? g_focus_override : v_pstr("focus.cur"); }
 const char *v_focus_cur_at(const char *path) { return g_has_override ? g_focus_override : v_pstr(path); }
 
-void v_plate(const char *id, const char *namePath, int w, int x, int y) {
-  char series[48], p[200]; snprintf(p, sizeof p, "%s.plate.series", namePath); spec_str("pods", p, series, sizeof series); snprintf(p, sizeof p, "%s.plate.h", namePath); int h = spec_int("pods", p, 24);
+void v_plate(const char *id, const char *namePath, int w, int x, int y) { v_plate_in("pods", id, namePath, w, x, y); }
+int v_silhouette_box(const char *from, const char *to, int out[4]) { int fh = wire_asset_slot(from), th = wire_asset_slot(to); out[0] = out[1] = out[2] = out[3] = 0; return fh < 0 || th < 0 ? -1 : prim_asset_alpha_box(fh, th, out); }
+int v_change_box(const char *from, const char *to, int out[4]) { int fh = wire_asset_slot(from), th = wire_asset_slot(to); out[0] = out[1] = out[2] = out[3] = 0; return fh < 0 || th < 0 ? -1 : prim_asset_diff_box(fh, th, out); }
+void v_plate_in(const char *spec, const char *id, const char *namePath, int w, int x, int y) {
+  char series[48], p[200]; snprintf(p, sizeof p, "%s.plate.series", namePath); spec_str(spec, p, series, sizeof series); snprintf(p, sizeof p, "%s.plate.h", namePath); int h = spec_int(spec, p, 24);
   char asset[96]; snprintf(asset, sizeof asset, "%s-%dx%d", series, w, h);
   if (!v_sprite(id, asset, x, y, w, h)) { char b[140]; snprintf(b, sizeof b, "word: the name plate %.60s is not on the face", asset); v_error(b); prim_refuse(); }
 }

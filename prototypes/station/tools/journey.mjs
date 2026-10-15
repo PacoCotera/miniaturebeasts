@@ -397,13 +397,13 @@ await hpressC("down", 300);
   await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
-await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(600);   // ✓ Grow it, then exactly 600 ms of frames: the stamp printed, the code shown at 300, the pod mid-travel
+await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Grow it, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
 { const m = await said(), u = await ui(), l = await line(); cur.push({ key: "confirm", said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
-{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code), "✓ Grow it: the screen grows and holds input, the code is the screen's: " + JSON.stringify([p.state, p.regions.code])); }
+{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code) && p.frame.line.ok == null && p.frame.line.price == null && p.frame.line.back == null && p.frame.line.subject === "it goes to the Incubator", "✓ Grow it: the screen grows and holds input, the code is the screen's, the line is Growing (no ✓, price or way back): " + JSON.stringify([p.state, p.regions.code, p.frame.line])); }
 await frameShot("page-create-grow", true);
 await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);   // the held keys, one after the other without waiting: the hold is real time (1080 ms) and the jump is at 900
 { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "create" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
-await stepClock(600); await release();   // 1200 ms in: past the hold and past the jump at 900
+await stepClock(750); await release();   // 450 + 750 = 1200 ms in: past the hold and past the jump at 900
 s = await st();
 expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");

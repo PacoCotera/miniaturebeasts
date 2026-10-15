@@ -41,6 +41,7 @@ for (const screen of run) {
     if (!check) { mkdirSync(dir, { recursive: true }); writeFileSync(path.join(dir, got[name].png), Buffer.from(a.png.split(",")[1], "base64")); }
     console.log(name.padEnd(34) + " " + a.hash);
   });
+  if (screen === "create" && got["create-roll-100"] && got["create-shape-changed"] && got["create-roll-100"].hash !== got["create-shape-changed"].hash) fails.push("create-roll-100 must equal create-shape-changed on the rig: every roll is a cut (fix 5 Create C8), the half-way frame is the new picture whole");
   if (!check) { if (!fails.length) { writeFileSync(file, JSON.stringify({ _note: note + ": the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.", states: got }, null, 1) + "\n"); console.log("wrote " + Object.keys(got).length + " goldens to " + dir); } }
   else if (!existsSync(file)) fails.push("no goldens at " + file);
   else { const have = JSON.parse(readFileSync(file, "utf8")).states; for (const [n, g] of Object.entries(have)) if (!got[n]) { fails.push(n + " was not drawn"); console.error("FAIL " + n + " was not drawn"); } else if (got[n].hash !== g.hash) { fails.push(n); console.error(`FAIL ${n}: ${got[n].hash}, golden ${g.hash}`); } for (const n of Object.keys(got)) if (!have[n]) { fails.push(n); console.error("FAIL " + n + " has no golden"); } }
