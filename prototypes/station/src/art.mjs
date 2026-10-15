@@ -6,6 +6,11 @@ import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, sh
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
 import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
 import { plainRender, BG } from "../../workbench/framework/plain.mjs";
+import { resolveIndividual } from "../../workbench/framework/resolve.mjs";
+import { buildBody } from "../../workbench/framework/rig.mjs";
+import { validateBody } from "../../workbench/framework/validate.mjs";
+import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { treat } from "./unknown.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
@@ -50,11 +55,29 @@ export const baseArt = () => art("base", () => { const pb = new PB(70, 10); pb.r
 
 // ---------- The mibi placeholder: the plain renderer on the genome, quantised ----------
 const BUILT = new Map();
-export function builtOf(frame, genome) {
-  const k = genomeDigest(genome); let b = BUILT.get(k);
-  if (!b) { try { b = buildIndividual(frame, genome); } catch (e) { b = { error: e.message }; } BUILT.set(k, b); }
+// `read`: the chapter ids read so far (a Set or an array), or undefined for every chapter read, the mibi's own values. While Glow is unread its emission is drawn at none, and while Charge is unread its phase at
+// the look "solid"; once read, the mibi's own value. The genome is never changed: the override is on the resolved values the rig draws from.
+export function builtOf(frame, genome, read) {
+  const hide = hiddenOf(frame, read), k = genomeDigest(genome) + (hide.length ? "~" + hide.join("+") : ""); let b = BUILT.get(k);
+  if (!b) {
+    try {
+      if (!hide.length) b = buildIndividual(frame, genome);
+      else {
+        const resolved = resolveIndividual(frame, genome), v = resolved.values; resolved.species = frame.species.id;
+        if (hide.includes("glow") && "appearance.emission-brightness" in v) v["appearance.emission-brightness"] = 0;
+        if (hide.includes("charge") && "physiology.phase" in v) v["physiology.phase"] = LOCI.get("physiology.phase").alleles.find((a) => a.id === "solid").value;
+        const scene = buildBody(resolved); b = { resolved, scene, validation: validateBody(scene) };
+      }
+    } catch (e) { b = { error: e.message }; }
+    BUILT.set(k, b);
+  }
   return b;
 }
+const has = (read, id) => (read instanceof Set ? read.has(id) : read.includes(id));
+// the chapters whose effect is not drawn yet: Glow and Charge, while the frame has them and they are unread
+const hiddenOf = (frame, read) => (read === undefined ? [] : ["glow", "charge"].filter((id) => frame.chapters.some((c) => c.id === id) && !has(read, id)));
+// the genome as drawn: its digest, with the unread Glow and Charge marked (their emission and phase are not the mibi's own while unread)
+export const drawnDigest = (frame, genome, read) => { const hide = hiddenOf(frame, read); return genomeDigest(genome) + (hide.length ? "~" + hide.map((c) => c[0]).join("") : ""); };
 // The cast shadow of the plain pass lies on the segment from the ground to its shade; those pixels are cleared.
 const isShadow = (r, g, b) => { const t = (BG[0] - r) / 50; return t > 0.02 && t < 1 && Math.abs(g - (BG[1] - 55 * t)) <= 3 && Math.abs(b - (BG[2] - 60 * t)) <= 3; };
 function renderPB(scene, camera, device) {
@@ -106,6 +129,26 @@ const PART_OF = [
   [/leg|feet|foot|stride|pace|gait|waddle|turning|weave/, ["leg", "ray", "foot-skirt"]], [/tail/, ["tail", "tail-bulb"]], [/wing|fin|flap/, ["flap", "fin"]], [/cap/, ["cap"]], [/shell/, ["shell", "wing-case"]],
 ];
 const partsFor = (traitId) => (PART_OF.find(([re]) => re.test(traitId)) || [null, null])[1];
+// Where an unread chapter shows on the founder (technical, Fix 1b part 2): "body" the whole body; a list of groups, each a list of part names (a part matches itself and its "-" children: "tail" covers tail-bulb; S14's
+// foot-skirt is Shape, not the leg group); null a chapter that draws nothing (the doings, and Glow and Charge, which change the emission and the phase instead). An unknown chapter id throws, as policyOf does.
+export const UNREAD_REGION = { coat: "body", shape: "body", face: [["head", "muzzle", "beak", "eye", "ear", "crown", "horn", "antenna"]], "legs-tail": [["leg", "ray"], ["tail"]], movement: null, stamina: null, character: null, glow: null, charge: null };
+const regionOf = (id) => { if (!Object.hasOwn(UNREAD_REGION, id)) throw new Error(`chapter ${id} is in no unread-region row (station/src/art.mjs UNREAD_REGION): the programme lead places a new chapter`); return UNREAD_REGION[id]; };
+// How a founder is drawn for the chapters read so far: "ghost" when nothing is read; "veil" over the unread looks: Coat unread the whole body in its luma (id group coat, which wins a tie with Shape), Shape unread the whole body (body); the whole body
+// absorbs the part groups, so a group is never named beside it; otherwise the part groups of the unread looks (face, leg, tail) in their declared order, not the frame's chapter order. Otherwise "clear" (only doings, Glow or Charge unread). `boxes` are what
+// to veil: [{ whole: true }] for the body, else [{ parts }] per group. With the drawn body's `scene` a group with no part on it leaves the id (S07 and S15 have no tail, S01 no tail part), and with no group left the treatment is clear. It draws nothing.
+const PART_GROUPS = [["face", UNREAD_REGION.face[0]], ["leg", UNREAD_REGION["legs-tail"][0]], ["tail", UNREAD_REGION["legs-tail"][1]]];   // the part groups' tokens and parts, in the order the id names them
+const hasPart = (scene, parts) => scene.nodes.some((n) => { const q = n.part ?? n.id; return parts.some((p) => q === p || q.startsWith(p + "-")); });
+export function treatmentOf(frame, read, scene = null) {
+  const ids = frame.chapters.map((c) => c.id), readIds = [...read];
+  for (const id of [...ids, ...readIds]) regionOf(id);
+  if (!readIds.length) return { mode: "ghost", boxes: [], groups: [], luma: false };
+  const unreadIds = ids.filter((id) => !readIds.includes(id)), unread = unreadIds.map(regionOf).filter(Boolean);
+  if (!unread.length) return { mode: "clear", boxes: [], groups: [], luma: false };
+  if (unread.includes("body")) { const luma = unreadIds.includes("coat"); return { mode: "veil", boxes: [{ whole: true }], groups: [luma ? "coat" : "body"], luma }; }   // Coat wins a tie with Shape: its colour is never drawn
+  const wanted = new Set(unread.flat().map((g) => PART_GROUPS.find(([, parts]) => parts.join() === g.join())[0])), groups = PART_GROUPS.filter(([tok, parts]) => wanted.has(tok) && (!scene || hasPart(scene, parts)));
+  if (!groups.length) return { mode: "clear", boxes: [], groups: [], luma: false };
+  return { mode: "veil", boxes: groups.map(([, parts]) => ({ parts })), groups: groups.map(([tok]) => tok), luma: false };
+}
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 // The box (in image pixels) the named parts occupy under a camera; the whole body when none match.
 function partBox(scene, camera, parts) {
@@ -269,20 +312,16 @@ export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {
 export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
 
-// ---------- The founder on Create: the placeholder, misty wherever a chapter is unread ----------
-// Frost covers the parts the unread traits name; a whole-body trait unread frosts the whole body lightly.
-export function mistyArt(frame, genome, mistyTraitIds, w, h) {
-  const key = "mist" + genomeDigest(genome) + ":" + [...mistyTraitIds].sort().join(",") + ":" + w + "x" + h;
+// ---------- The founder on Create: its own colours, calm where a chapter is unread (Fix 1b part 1, unknown.mjs) ----------
+// The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
+// ghost of nothing read. A part group with no part on this body veils nothing.
+export function founderArt(frame, genome, read, w, h) {
+  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h;
   return art(key, () => {
-    const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p);
-    if (!mistyTraitIds.length) return pb;
-    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return pb;
-    const camera = fitCamera(b.scene, "portrait", [w, h], 0.06), boxes = mistyTraitIds.map((id) => partBox(b.scene, camera, partsFor(id)));
-    const whole = boxes.some((bx) => bx.whole);
-    pb.map((c, x, y) => { const inBox = boxes.some((bx) => !bx.whole && x >= bx.x0 - 4 && x <= bx.x1 + 4 && y >= bx.y0 - 4 && y <= bx.y1 + 4);
-      if (inBox) return bay(x, y) < 7 ? C.frost : bay(x, y) < 14 ? C.frostD : C.frostS;
-      if (whole && bay(x, y) < 4) return C.frostD; return c; });
-    return pb;
+    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = ok ? renderPB(b.scene, camera, "station") : blobArt(w, h);
+    if (t.mode === "clear") return base;
+    const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
+    return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
   });
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
@@ -290,8 +329,6 @@ export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb
 
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });
 
-// A whole body under frost: the child to be on the Cross screen, never a promise.
-export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }
 
 // A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). 
 export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);

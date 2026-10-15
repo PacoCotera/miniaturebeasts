@@ -44,7 +44,8 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y) {
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h) {
   int fh = wire_asset_slot(fromAsset), th = wire_asset_slot(toAsset); if (fh < 0 || th < 0) return 0;
   snprintf(prim_ops(), (size_t)prim_ops_size(), "[[\"bayerPick\",%d,%d,%d,%d,%d]]", fh, th, level, x, y);
-  v_layer(prim_asset_layer_of(th)); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
+  int lf = prim_asset_layer_of(fh), lt = prim_asset_layer_of(th); v_layer(lf > lt ? lf : lt);   /* the higher layer of the two pictures (painted over art): a pick that draws pixels of the painted one is painted for the whole of the dither */
+  prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
 }
 
 /* The same pick between two windows of the picture's size (two cells of an atlas; M1 §2.1): `fromAsset` NULL or "" is clear (a dither-in from nothing). */

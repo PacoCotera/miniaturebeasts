@@ -156,6 +156,20 @@ test("the founder's dither: the old picture to the new in 16 Bayer levels over 2
   f.frame(t0 + 210); assert.ok(pixelIs(f, x0 + 41, y0 + 61, b) && pixelIs(f, x0 + 42, y0 + 62, b), "the new picture whole at the end"); assert.equal(f.poll("done")?.kind, "dither");
   const lg = logOf(f); assert.ok(lg.regions.every((r) => r.id !== "founder" || r.layer === "art" || r.layer === "painted"), "no opacity: pictures only"); assert.deepEqual(f.errors(), []);
 });
+test("the founder's dither is on the higher layer of its two pictures: an art picture dithering to a painted one is painted (pass 3 only), never the art layer of the new picture alone (Fix 1b part 1)", { skip }, async () => {
+  const a = scene({ read: 2, f: 1 }), b = scene({ read: 2, f: 1, roll: 1 }); for (const x of [a, b]) x.props.regions.chamberFront.picture = "";
+  const f = await start(a, { motion: true, t0: 1000 }), from = a.props.regions.founder.picture, to = b.props.regions.founder.picture; assert.notEqual(from, to);
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r), r.hollow), ...(i === to ? { policy: "painted", status: "master" } : {}) })));
+  const layer = (lg) => lg.regions.filter((r) => r.id === "founder").map((r) => r.layer), t0 = f.t;
+  f.send({ t: "event", kind: "dither", target: "founder", from, ms: EV.roll.ms, hold: EV.roll.hold }); assert.equal(f.props({ screen: "create", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; "));
+  f.frame(t0 + 100); assert.deepEqual(layer(logOf(f)), ["painted"], "mid-dither: painted (from art to painted)");
+  f.frame(t0 + 210); assert.deepEqual(layer(logOf(f)), ["painted"], "the dither's end: the new picture alone, still painted");
+  const c = scene({ read: 2, f: 1, roll: 0 }); c.props.regions.chamberFront.picture = ""; const g = await start(c, { motion: true, t0: 1000 }); g.send({ t: "event", kind: "dither", target: "founder", from: to, ms: EV.roll.ms, hold: EV.roll.hold });
+  for (const r of b.requests) g.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r), r.hollow), ...(i === to ? { policy: "painted", status: "master" } : {}) })));
+  g.handleOf(c.props.regions.founder.picture, withPolicy((i) => ({ ...standIn(i, R.founder.rect.slice(2)), policy: "art" })));   // the new picture is art, the old one painted
+  assert.equal(g.props({ screen: "create", ...c.props, motion: true, frame: frameProps(c.line) }), 0, g.errors().join("; ")); g.frame(g.t + 100); assert.deepEqual(layer(logOf(g)), ["painted"], "from a painted picture to an art one: painted too (the higher of the two)");
+  assert.deepEqual(f.errors(), []);
+});
 test("the founder's dither is a cut with reduced motion: the new picture at once, the event done on the frame", { skip }, async () => {
   const { b, f, t0 } = await rolled(false); f.frame(t0 + 16); assert.ok(pixelIs(f, R.founder.rect[0] + 41, R.founder.rect[1] + 61, b)); assert.equal(f.poll("done")?.kind, "dither"); assert.deepEqual(f.errors(), []);
 });
