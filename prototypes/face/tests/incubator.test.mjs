@@ -195,14 +195,6 @@ test("growNow with motion on: the props show the bud as it was until 400, then t
   assert.equal(f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame(t0 + 400); const a = area(f);
   console.log(`# the Incubator's growNow, ready at 400 (motion on): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 153600, `dirty ${a}`); assert.deepEqual(f.errors(), []);
 });
-test("the rail refuses a pip that is not 6 × 6: the composed marks are defined at 6, and the error says so", { skip }, async () => {
-  const b = scene({ minutes: 2 }), f = await start(b), bad = JSON.parse(JSON.stringify(frameSpec));
-  bad.regions.rail.pip.size = 8; assert.equal(f.send({ t: "spec", screen: "frame", json: bad }), 0);
-  const b2 = scene({ minutes: 13.2 }); for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
-  f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }); frames(f);
-  assert.match(f.errors().join("; "), /a rail pip is 6 × 6/); assert.ok(f.refused() > 0, "the screen is refused");
-});
-
 // ---- Station M1 §2.5, §3: the hatch with a moving set (the close atlas synthesized at 304 × 312; moving-scene.mjs) ----
 import { MOVING as MSETS, sendMoving, atlasPicture } from "./moving-scene.mjs";
 import { setMoving } from "../../station/src/moving.mjs";

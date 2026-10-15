@@ -292,7 +292,7 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
 
 The rail is the same object on all three bench screens. It hangs from the top bar at the same height on each and moves only sideways.
 
-As the plate draws it, the tabs hang from the top bar and touch along their slants.
+As the plate draws it, the tabs hang from the top bar's rule inside the rail's well, cut into the housing's top bezel (fix 2 F11; `plate-rail-well-{w}x48`, 1:1 at (x0 − 8, 40), to y 88), and touch along their slants; the open tab is a cream label plate; the 6 × 6 pips are gone but on Create (fix 11).
 
 - **Where it hangs.** Every tab's top edge is the top bar's bottom rule, y 40, and its bottom edge is y 80: tabs are 40 tall. The rail is the one region that meets the top bar; the stage's 48 px start does not apply to it. Its region is (x0, 40, 832, 40).
 - **The slant.** A tab is a parallelogram whose two sides lean the same way, 16 px over its 40 px height: the bottom edge sits 16 px right of the top edge, as on the plate. A tab of width w (the width of its top edge, and of every row of it) at x has the box (x, 40, w + 16, 40); its sides are the lines x + 16 (y − 40) / 40 and x + w + 16 (y − 40) / 40.
@@ -1795,7 +1795,7 @@ The measurements of one mibi up close stand; these change, and why:
 - **The state empty goes** to the whole: one mibi up close always shows one mibi, and the last release lands on the whole, empty.
 - **A state out** for a mibi out with the Companion: its chapters can be read while it is out, so its page must open; the out mark keeps its place, and there is no greet.
 - **The skill notches** join the card, on the code's row; the code's box narrows from 248 to 152, which still holds the widest code.
-- **The Companion module shows the carried set while away too**, with the outline glyph, and its free places as dashed outlines: the set must read when Take and Bring are chosen away.
+- **The Companion module shows the carried set while away too**, with the outline glyph, and its free places as the well alone (fix 2: `plate-well-48x48` in every state, no dash): the set must read when Take and Bring are chosen away.
 - **The title reads Vivarium**; the frame's Companion zone shows three faces.
 - The near painting is named as a master, so the glass is no longer a flat stand-in by default.
 
@@ -2656,7 +2656,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Panel | `panel` fill, `hairline` edge, `bevel` top row, drop shadow `void` at (+2, +3) | The report card's look: an instrument readout standing over the scene |
+| Panel | `plate-device-416x424` 1:1, no fill, edge, bevel row or drop shadow (fix 2 F1, F8); the name field `plate-well-328x48` | Was the report card's look (`panel`, `hairline`, `bevel`, `void` shadow at +2, +3); now cut from the device's housing |
 | Field | Inside `ground`, edge `hairline`; the name `bone` | A recess, as the rack's wells, so the name reads as something held |
 | Selection | `tealD` behind the name | The cool look of the ribbon: selected, not warned |
 | Caret | `bone`, 2×28, steady | Plain, the same colour as the name |
@@ -2691,7 +2691,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 
 | Region (`namer.json`) | Rectangle | Word or build | States it shows |
 | --- | --- | --- | --- |
-| `panel` | 592, 48, 416, 424 | panel, build `namer` (with its shadow) | — |
+| `panel` | 592, 48, 416, 424 | `plate-device-416x424`, build `namer` (no shadow, fix 2) | — |
 | `field` | 636, 64, 328, 48 | panel and text, build `nameField` | selected (the selection, no caret); typed (the caret after the name); empty (the caret at the start) |
 | `say` | 636, 120, 328, 24 | text | empty; a reason in `mist`; a refusal in `amber` for 4000 ms |
 | `keys` | 636, 160, 328, 184 | panel and text, build `keyGrid` | each key: drawn or not by the page; its character in the grid's case; focused (lifted 2 px); dimmed while the field is full |

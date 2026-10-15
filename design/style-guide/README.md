@@ -33,6 +33,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 
 - **1024×600, used to the full.** Native resolution everywhere. Never a scaled-up Companion screen or upscaled tokens.
 - **Painted light on the painted layer:** one key light from the top left, soft cast shadows, correct form shading, painted gradients. No dither bands and no flat fills in a painting.
+- **Device plates for modules, cards, the strip and the namer (fix 2):** Home's modules, Habitat's card and modules, the strip and its tile wells, the namer, the Probe's two modules and Compare's two pages are plates cut from the housing (`plate-device-*`, `plate-well-*`), placed 1:1 on the painted layer, never a fill. No plate picture, no plate.
 - **Flat panels on the art layer:** the device's panels (bars, panels, panes, tabs and rings) are flat fills with one bevel of light and 1 px hairlines, never dithered and never painted. The layers are in [Station screens, Palette and layers](station-screens.md#palette-and-layers).
 - **Field gear that keeps life going.** The Station is the Companion's sibling, made by the same maker; both dock into the Caddy. The screen is the Station's own face, never a picture of a room with a device in it.
 - **Rugged, matte, handled.** Sage and sand housing, dark rubber, screws, engraved marks; powder-coat, rubber, moulded polymer, canvas, braided hose, paper. Inside the frame, dark matte slate panels and cream type; orange for the action.

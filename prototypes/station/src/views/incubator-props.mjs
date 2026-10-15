@@ -7,7 +7,7 @@ import * as S from "../state.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
-import { slot, maxTraits } from "./pods-props.mjs";
+import { slot } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
 import { mibiReq, movingProp } from "./home-props.mjs";
 
@@ -30,12 +30,12 @@ export function incubatorBuild(m, spec, pods) {
 
   // the bud being shown: the one in the chamber, or while the hatch plays the one that was opened (the rule has emptied the chamber)
   const species = hatch ? hatch.species : B?.species, fr = species ? frameOf(species) : null, kind = hatch ? hatch.kind : B?.kind, readIds = hatch ? hatch.read : B?.read;
-  // the rail: a tab a chapter, read once the bud knows it (a founder's clears across the wait), its pips filled with it; a sealed chapter still shut shows unread
+  // the rail: a tab a chapter, read once the bud knows it (a founder's clears across the wait), a sealed chapter still shut shows unread
   if (fr) {
     const known = hatch ? fr.chapters.filter((c) => (readIds || []).includes(c.id) || (kind !== "cross" && !(c.sealed && !settings.sealedOpen))).map((c) => c.id) : gs ? gs.known : knownChapters(st, B, settings, now);
     regions.rail = { focused: null, open: -1, star: req({ kind: "star", id: "star:12" }), tabs: fr.chapters.map((c) => {
-      const isKnown = known.includes(c.id), n = Math.min(c.traits.length, maxTraits(pods.regions.chapter.page));
-      return { id: c.id, word: c.name, state: isKnown ? "read" : "unread", pips: n, filled: isKnown ? n : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${c.id}:${isKnown ? "read" : "unread"}:24`, chapter: c.id, state: isKnown ? "read" : "unread" }) };
+      const isKnown = known.includes(c.id);
+      return { id: c.id, word: c.name, state: isKnown ? "read" : "unread", glint: false, emblem: req({ kind: "emblem", id: `emblem:${c.id}:${isKnown ? "read" : "unread"}:24`, chapter: c.id, state: isKnown ? "read" : "unread" }) };
     }) };
   }
   // the leaves (growing and ready): empty outlines, the full leaf, the filling one by its rows

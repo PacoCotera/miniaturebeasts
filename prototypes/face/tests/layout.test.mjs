@@ -39,3 +39,16 @@ test("the rack, the kin, the name plate, the message plate and the stamp", () =>
   assert.deepEqual(platePosition(frame.regions.plate, 1, 100, null), [512 - 66, 550 - 36, 132, 36]); assert.equal(platePosition(frame.regions.plate, 1, 100, [400, 500, 200, 50])[1], 112);
   assert.equal(stampCell(5), 14); assert.equal(stampCell(60), 2);
 });
+
+test("fix 2 F11: the rail's well, for every run of 1 to 12 tabs with one open and with none, is one of the 18 signed widths, ends at y 88 inside x 61 to 954, and holds every tab and the focused tab's ring box", async () => {
+  const { railWells } = await import("../../ui/specs/derive.mjs"), R = frame.regions.rail, ids = new Set(railWells(R)); assert.equal(ids.size, 18);
+  for (let n = 1; n <= 12; n++) for (const open of [0, Math.floor(n / 2), -1]) {
+    if (open < 0 && n <= R.fullUpTo) continue;
+    const t = slantTabs(R, n, open, "centred"), well = [t.x0 - 8, 40, t.run + 16, 48];
+    assert.ok(ids.has(`plate-rail-well-${well[2]}x48`), `${n} tabs, open ${open}: ${well[2]} is one of the 18`);
+    assert.ok(well[0] >= 61 && well[0] + well[2] <= 954 && well[1] + well[3] === 88, `${n} tabs: the well ${well} lies inside x 61 to 954 and ends at y 88`);
+    for (const tab of t.tabs) { const ring = [tab.rect[0] - 4, 42, tab.rect[2] + 24, 42];
+      assert.ok(tab.rect[0] >= well[0] && tab.rect[0] + tab.rect[2] + R.slant <= well[0] + well[2] && tab.rect[1] >= 40 && tab.rect[1] + tab.rect[3] <= 88, `${n} tabs: a tab leaves its well`);
+      assert.ok(ring[0] >= well[0] && ring[0] + ring[2] <= well[0] + well[2] && ring[1] + ring[3] <= 88, `${n} tabs: the focused ring ${ring} leaves the well ${well}`); }
+  }
+});

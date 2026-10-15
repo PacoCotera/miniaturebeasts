@@ -1,7 +1,7 @@
 {
  "$comment": "The props of the Incubator (lvgl-switch.md §2.1): what views/incubator-props.mjs gives the face, beside the frame's. Props name what, never where: the state, counts, strings, flags and asset ids; no rectangle, no measure, no layout rule, no colour (the words read those from incubator.json and the palette). From growing on every part is named in every state, whether or not it shows, so the face keeps its nodes (§2.2); the empty state names only the chamber, the base and the plaque. The ready bud's front is registered and never named here; the base master carries the plaque plate and the foot light.",
  "$defs": {
-  "tab": { "type": "object", "required": ["id", "word", "state", "pips", "filled", "glint", "emblem"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read"] }, "pips": { "type": "integer" }, "filled": { "type": "integer" }, "glint": { "type": "boolean" }, "emblem": { "type": "string" } } },
+  "tab": { "type": "object", "required": ["id", "word", "state", "glint", "emblem"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read"] }, "glint": { "type": "boolean" }, "emblem": { "type": "string" } } },
   "pic": { "type": "string" }
  },
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,

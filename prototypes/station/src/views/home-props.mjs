@@ -88,6 +88,7 @@ export function livingOf(m, R, req, ph, L) {
 export function homeBuild(m, spec, frame) {
   const { st, sv, settings } = m, requests = [], req = (r) => { requests.push(r); return r.id; };
   const R = spec.regions, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
+  const plate = () => slot("plate-device-320x88", [320, 88], "the device plate (fix 2: the module's plate, placed 1:1)");   // each module's plate: a slot, drawn once the master is placed and nothing before (rule 4, F6)
   const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
   // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
@@ -100,7 +101,7 @@ export function homeBuild(m, spec, frame) {
   const crates = docked ? S.bayCrates(st, sv).length : 0;
   const cargoState = !docked ? "away" : crates ? "crates" : st.waiting.length ? "waiting" : "empty";
   const cargo = {
-    state: cargoState, crates: Math.min(crates, R.cargo.max), lamp: lampOf("cargo") ?? "off",
+    plate: plate(), state: cargoState, crates: Math.min(crates, R.cargo.max), lamp: lampOf("cargo") ?? "off",
     bay: slot(`home-bay-${cargoState === "away" ? "shut" : "open"}-176x72`, R.cargo.bay.slice(2)),
     crate: ph(`home-crate-${R.cargo.crate.join("x")}`, R.cargo.crate), waiting: cargoState === "waiting" ? req({ kind: "waiting", id: "waiting:24" }) : "",
   };
@@ -111,23 +112,23 @@ export function homeBuild(m, spec, frame) {
     const sp = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.speciesOf(q) : null;
     return { pod: req({ kind: "rackpod", id: `rackpod:${sp ?? "unknown"}`, species: sp, size: podSize }), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
   });
-  const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
+  const pods = { plate: plate(), lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
   const bud = st.bud, ready = S.budReady(st, settings);
   const incState = !bud ? "empty" : ready ? "ready" : "growing";
   const incubator = {
-    state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
+    plate: plate(), state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
     chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}-72x72`, R.incubator.chamber.slice(2)),
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;
   const probe = {
-    state: docked ? "docked" : "away", lamp: lampOf("probe") ?? (docked ? "well" : "off"),
+    plate: plate(), state: docked ? "docked" : "away", lamp: lampOf("probe") ?? (docked ? "well" : "off"),
     cradle: slot(`home-cradle-${docked ? "full" : "empty"}-96x72`, R.probe.cradle.slice(2)),
     shields: { count: pr ? Math.min(pr.smax, R.probe.shields.count) : 0, whole: pr ? Math.min(pr.shield, pr.smax) : 0, wholePicture: ph(R.probe.shields.pictures.whole, R.probe.shields.size), gonePicture: ph(R.probe.shields.pictures.gone, R.probe.shields.size, true) },
     frame: held ? ph(R.probe.slotPicture, R.probe.slot.slice(2)) : "",
   };
   const found = st.knownIds.length;
-  const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal-104x72", R.library.journal.slice(2)) };
+  const library = { plate: plate(), state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal-104x72", R.library.journal.slice(2)) };
 
   const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library };
 

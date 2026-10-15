@@ -438,7 +438,7 @@
      "h": 16
     }
    ],
-   "hash": "eed04a53"
+   "hash": "faf5b233"
   },
   {
    "state": "overview",
@@ -586,7 +586,7 @@
      "h": 16
     }
    ],
-   "hash": "be0a8ea6"
+   "hash": "f27af0e6"
   },
   {
    "state": "overview",
@@ -735,7 +735,7 @@
      "h": 16
     }
    ],
-   "hash": "c69ad225"
+   "hash": "f45e6665"
   },
   {
    "state": "overview",
@@ -937,8 +937,8 @@
     },
     {
      "id": "figure:S01:0/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1006,7 +1006,7 @@
      "h": 16
     }
    ],
-   "hash": "ee3c2bec"
+   "hash": "866f7528"
   },
   {
    "state": "overview",
@@ -1202,8 +1202,8 @@
     },
     {
      "id": "figure:S02:0/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1276,7 +1276,7 @@
      "h": 16
     }
    ],
-   "hash": "1a0810d7"
+   "hash": "8d4d89c7"
   },
   {
    "state": "overview",
@@ -1489,8 +1489,8 @@
     },
     {
      "id": "figure:S01:0/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1568,7 +1568,7 @@
      "h": 16
     }
    ],
-   "hash": "82dee69a"
+   "hash": "6579ef16"
   },
   {
    "state": "overview",
@@ -1760,8 +1760,8 @@
     },
     {
      "id": "figure:S01:2/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1834,7 +1834,7 @@
      "h": 16
     }
    ],
-   "hash": "f75a390b"
+   "hash": "453c5213"
   },
   {
    "state": "overview",
@@ -2040,8 +2040,8 @@
     },
     {
      "id": "figure:S04:2/5",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -2119,7 +2119,7 @@
      "h": 16
     }
    ],
-   "hash": "af13edee"
+   "hash": "d0428f52"
   },
   {
    "state": "overview",
@@ -2334,8 +2334,8 @@
     },
     {
      "id": "figure:S08:2/6",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -2418,7 +2418,7 @@
      "h": 16
     }
    ],
-   "hash": "68faea15"
+   "hash": "aafe28d5"
   },
   {
    "state": "overview",
@@ -2616,8 +2616,8 @@
     },
     {
      "id": "figure:S02:3/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -2700,7 +2700,7 @@
      "h": 16
     }
    ],
-   "hash": "26ad0e94"
+   "hash": "7cf72658"
   },
   {
    "state": "overview",
@@ -2917,8 +2917,8 @@
     },
     {
      "id": "figure:S06:5/5",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -3001,7 +3001,7 @@
      "h": 16
     }
    ],
-   "hash": "340b4c85"
+   "hash": "ef4fe321"
   },
   {
    "state": "overview",
@@ -3202,8 +3202,8 @@
     },
     {
      "id": "figure:S01:2/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -3276,7 +3276,7 @@
      "h": 16
     }
    ],
-   "hash": "56d9d44f"
+   "hash": "453c5213"
   },
   {
    "state": "chapter",
@@ -3523,7 +3523,7 @@
      "h": 16
     }
    ],
-   "hash": "ef8c84f5"
+   "hash": "0a85a007"
   },
   {
    "state": "chapter",
@@ -3813,7 +3813,7 @@
      "h": 16
     }
    ],
-   "hash": "cd57b1f8"
+   "hash": "d1c2e946"
   },
   {
    "state": "chapter",
@@ -4092,7 +4092,7 @@
      "h": 16
     }
    ],
-   "hash": "8cf67905"
+   "hash": "263265a6"
   },
   {
    "state": "chapter",
@@ -4437,7 +4437,7 @@
      "h": 16
     }
    ],
-   "hash": "2277ebaf"
+   "hash": "cdde4df3"
   },
   {
    "state": "chapter",
@@ -4772,7 +4772,7 @@
      "h": 16
     }
    ],
-   "hash": "38b4b79f"
+   "hash": "5cabac75"
   },
   {
    "state": "chapter",
@@ -5043,7 +5043,7 @@
      "h": 16
     }
    ],
-   "hash": "d73f8578"
+   "hash": "9c934ace"
   },
   {
    "state": "chapter",
@@ -5304,7 +5304,7 @@
      "h": 16
     }
    ],
-   "hash": "a176208e"
+   "hash": "e12735dc"
   },
   {
    "state": "compare",
@@ -5545,7 +5545,7 @@
      "h": 16
     }
    ],
-   "hash": "49ec3352"
+   "hash": "48f1e84c"
   },
   {
    "state": "compare",
@@ -5787,7 +5787,7 @@
      "h": 16
     }
    ],
-   "hash": "8cca7c4f"
+   "hash": "638a8e6c"
   },
   {
    "state": "compare",
@@ -6027,7 +6027,7 @@
      "h": 16
     }
    ],
-   "hash": "de7d10e4"
+   "hash": "1c5693e2"
   },
   {
    "state": "overview",
@@ -6239,8 +6239,8 @@
     },
     {
      "id": "figure:S01:0/4",
-     "w": 128,
-     "h": 160
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -6318,7 +6318,7 @@
      "h": 16
     }
    ],
-   "hash": "6d30c9e4"
+   "hash": "90424930"
   },
   {
    "state": "collection",

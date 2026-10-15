@@ -1264,12 +1264,12 @@ const JUV_S = { 0: "S01", 1: "S03", 2: "S02" };   // page species -> the studio'
 const juvFile = (sp, n) => JUV_S[sp] + "/" + (n === "mini" ? "c-mini-" + JUV_S[sp] + "-juv-12x12.png" : "c-token-" + JUV_S[sp] + "-juv-" + (n === "eat0" ? "eat-f0" : n === "eat1" ? "eat-f1" : n) + "-32x32.png");
 // species, piece, file, and the file's sha256
 const JUV_SHA = {   // the three signed sets (2026-10-15), as listed in the species README
-  "S01/c-token-S01-juv-alert-32x32.png": "d1b25fa4d0d729bade653c4cef854fa09559619f33c3eecd85890b9ca35bf13c",
-  "S01/c-token-S01-juv-eat-f0-32x32.png": "af4bb10e4bd7c204d626b4616de558fd3ca9e95c3b83fc479a432bf42c16427a",
-  "S01/c-token-S01-juv-eat-f1-32x32.png": "2816cfc2828eb2af2c98d3e11a172f5f9b24aaf79f275a0e2b3b90f68b091e38",
-  "S01/c-token-S01-juv-huddle-32x32.png": "928fe6c1f93408286158eb20b2beb00d9c9411b396fa0e18f58e62a6010f804d",
-  "S01/c-token-S01-juv-idle-32x32.png": "e5bc39970893c8aa98ce8044e8bc785d4b79aafa0b5012a124bd074f14c2806d",
-  "S01/c-mini-S01-juv-12x12.png": "9652b9804c8cc5eb7970a380cc22dc5a2f50271b0da5f3b15b68d319a4c69426",
+  "S01/c-token-S01-juv-alert-32x32.png": "7022efcd1c8e82366dcfcbb65db8c389be7420a85dbb9b58a01cef5477a4ac38",
+  "S01/c-token-S01-juv-eat-f0-32x32.png": "2384169adb835c9b21be41e4c21b69d228348be737dacb5e13ffcd68035b302b",
+  "S01/c-token-S01-juv-eat-f1-32x32.png": "4e98ee5bf2f61e4e0c3e5e103982ac0087f8e5932d6c22b3c57bdd68ce9e3776",
+  "S01/c-token-S01-juv-huddle-32x32.png": "2dca942b119c5cf8ace0eeebf41d18fe2e99de706370b4f28459d5e981e2973d",
+  "S01/c-token-S01-juv-idle-32x32.png": "a4f58a151938777b51aca14a0c68e85e9837960af65602b3a93f725928737831",
+  "S01/c-mini-S01-juv-12x12.png": "120a929393140ef4dd10a6ec1c77390c998fb668a3e5dbfa60ef98068c96fb73",
   "S02/c-token-S02-juv-alert-32x32.png": "797c55cb99c442d72e403a9b7c731c8df6d31a45e539c2eba461d6d1c6078fb2",
   "S02/c-token-S02-juv-eat-f0-32x32.png": "16917dec7d62ef50da428d8f19af2386a97543443f3c2c7b86b2c5dc8ae03f49",
   "S02/c-token-S02-juv-eat-f1-32x32.png": "ccf48be513b8ea4a448ce64b4fad7af1fc963a028d6bc654d87d222397ec72b0",

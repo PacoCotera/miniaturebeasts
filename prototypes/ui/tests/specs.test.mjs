@@ -46,7 +46,7 @@ test("the pod overview: the pod first and largest, the figure beside it suggesti
   assert.deepEqual(B.origin.rect, [680, 128, 264, 40], "the origin sentence ends on the floor, not on the wall");
   for (const [k, r] of Object.entries({ pod, figure: f, caption: B.figure.caption.rect, originPicture: B.originPicture.rect, origin: B.origin.rect, hatch: B.hatch.rect, ...Object.fromEntries(kin.map((r, i) => ["kin" + i, r])), name: B.name.rect })) assert.ok(onFloor(r), `P1: ${k} ${r} lies on the case's floor`);
   const regions = [B.shelf.rect, f, B.originPicture.rect, B.origin.rect, ...kin, B.hatch.rect, ca, B.name.rect];
-  for (const [i, r] of regions.entries()) for (const q of regions.slice(i + 1)) assert.ok(apart(r, q), `regions apart: ${r} and ${q}`);
+  for (const [i, r] of regions.entries()) for (const q of regions.slice(i + 1)) assert.ok(apart(r, q) || [r, q].some((x) => x === B.figure.rect) && [r, q].some((x) => x === B.shelf.rect), `regions apart: ${r} and ${q}`);   // GB1 C1: the figure (392, 240, 144, 152) may overlap the slab's right 8 px: it stands on the pod's feet line
   assert.deepEqual(B.ribbon.rect, B.origin.rect); assert.equal(B.bench.slice, "room-bench-stage-overview"); assert.equal(B.bench.pool[0], axis); assert.equal(pods.regions.chapter.bench.pool[0], pods.regions.chapter.pod.axis); assert.equal(B.kin.ring, "ring-kin-56x56");
 });
 
@@ -57,13 +57,13 @@ test("the chapter page: the pod's room shrunk to the pod and the dish, the page 
   for (const [k, g] of Object.entries(pg.grid)) { const n = Number(k.split("-").at(-1)), low = Math.max(...g.cells.map((c) => c[1] + c[3])); assert.ok(low <= pageSize(pg, n)[1], "the page holds its cells"); }
   // the page's one rule (the open page, no pane): columns are the count up to four, then half the count rounded up; width 8 + 144 per column; 232 for one row, 440 for two
   for (let n = 1; n <= 8; n++) { const cols = n <= 4 ? n : Math.ceil(n / 2); assert.deepEqual(pageSize(pg, n), [8 + 144 * cols, n <= 4 ? 232 : 440], `${n} traits`); }
-  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((n) => pageSize(pg, n)[0]), [152, 296, 440, 584, 440, 440, 584, 584]); assert.deepEqual(pageSize(pg, 0), [152, 232], "a shut chapter is the one-trait size"); assert.deepEqual(pg.sealedFind, [32, 84, 112, 112]);
+  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((n) => pageSize(pg, n)[0]), [152, 296, 440, 584, 440, 440, 584, 584]); assert.deepEqual(pageSize(pg, 0), [152, 232], "a shut chapter is the one-trait size"); assert.deepEqual(pg.sealedFind, [392, 256, 112, 112]); assert.deepEqual(pg.sealedFindWell, { id: "plate-well-120x120", at: [388, 252] }, "GB1 D1: the find in its well, absolute");
   // P4: the origin by the pod's frame; the widest page ends at 944 on the floor, a one-row frame stands its pictures on the pod's feet line, a two-row frame starts at y 88
-  assert.deepEqual(pg.originX, { 1: 576, 2: 504, 3: 432, 4: 360 }); assert.deepEqual(pg.originY, { 1: 184, 2: 88 });
-  for (const cols of [1, 2, 3, 4]) { const w = 8 + 144 * cols, x = pg.originX[cols]; assert.ok(onFloor([x, pg.originY[1], w, 232]), `the ${cols}-column page is on the floor`); assert.equal(x + w / 2, 652, `the ${cols}-column page is centred right of the pod's room`); }
+  assert.deepEqual(pg.originX, { 1: 360, 2: 360, 3: 360, 4: 360 }, "GB1 D1: cells start at x 384 for every count"); assert.deepEqual(pg.originY, { 1: 184, 2: 96 }, "P.y 232 (one row), 144 and 344 (two)"); assert.equal(pg.x, 384); assert.deepEqual(pg.rowsY, { 1: [232], 2: [144, 344] });
+  for (const cols of [1, 2, 3, 4]) { const w = 8 + 144 * cols, x = pg.originX[cols]; assert.ok(onFloor([x, pg.originY[1], w, 232]), `the ${cols}-column page is on the floor`); }
   for (const rows of [1, 2]) assert.ok(onFloor([pg.originX[4], pg.originY[rows], 584, rows === 1 ? 232 : 440]), `the ${rows}-row page is on the floor`);
-  assert.equal(pg.originY[1] + pg.grid["1-4"].cells[0][1] + pg.grid["1-4"].picture[1], C.pod.feet, "one row: the pictures stand on the pod's feet line"); assert.equal(pg.originY[2] + 6, 94); assert.equal(pg.originY[2] + 36, 124);
-  assert.match(pg.frameRule, /largest grid/); assert.match(pg.cell.fillWhen, /crop placed/); assert.deepEqual([pg.cell.doingLine.px, pg.cell.doingLine.wrap, pg.cell.doingLine.lines, pg.cell.doingLine.line, pg.cell.doingLine.align, pg.cell.doingLine.colour], [16, 140, 2, 20, "centre", "line"]); assert.equal(pods.colours.page.line, "fog"); assert.match(pg.doingPicture, /no look suffix/);
+  assert.equal(pg.originY[1] + pg.grid["1-4"].cells[0][1] + pg.grid["1-4"].picture[1], C.pod.feet, "one row: the pictures stand on the pod's feet line"); assert.equal(pg.originY[2] + pg.headingTwo[1], 94, "two rows: the heading at (384, 94)"); assert.equal(pg.originY[2] + pg.ruleTwo[1], 124, "two rows: the rule at y 124"); assert.equal(pg.originY[1] + pg.heading[1], 190, "one row: the heading at y 190"); assert.equal(pg.originY[1] + pg.rule.at[1], 220, "one row: the rule at y 220");
+  assert.match(pg.frameRule, /largest grid/); assert.match(pg.cell.fillWhen, /never: the well.s floor is the tone/); assert.deepEqual([pg.cell.doingLine.px, pg.cell.doingLine.wrap, pg.cell.doingLine.lines, pg.cell.doingLine.line, pg.cell.doingLine.align, pg.cell.doingLine.colour], [16, 140, 2, 20, "centre", "line"]); assert.equal(pods.colours.page.line, "fog"); assert.match(pg.doingPicture, /no look suffix/);
   assert.deepEqual(Object.keys(pg.grid), ["1-4", "5-6", "7-8"]); assert.equal(pg.unread.picture, null); assert.deepEqual(pg.newMark.size, [6, 6]);
 });
 
@@ -797,6 +797,26 @@ test("frame.navigation.dock: the screens a Dock from the play page leaves where 
   assert.deepEqual(d.stays, ["home", "cargo", "create", "cross", "sitting"]);
   for (const id of d.stays) assert.ok(id in frame.strings.titles, id + " is a screen the Station goes to (it has a title)");
   assert.equal(d.namerStays, true); assert.match(d.rule, /Lift never navigates/);
+});
+
+test("fix 2: every region that names a device plate names the plate's own size as its rectangle (placed 1:1, never scaled), the plate is a painted-family picture, and the retired fill roles are gone", async () => {
+  const { policyOf } = await import("../asset-policy.mjs");
+  const names = ["home", "habitat", "vivarium", "namer"], specs = Object.fromEntries(names.map((n) => [n, rd(`../specs/station/${n}.json`)]));
+  let seen = 0;
+  for (const [n, s] of Object.entries(specs)) for (const [k, r] of Object.entries(s.regions)) {
+    if (!r || typeof r !== "object" || typeof r.plate !== "string") continue;
+    const m = /^plate-(?:device|well)-(\d+)x(\d+)$/.exec(r.plate); assert.ok(m, `${n}.${k}.plate is a kit id: ${r.plate}`);
+    assert.deepEqual([+m[1], +m[2]], r.rect.slice(2), `${n}.${k}: the plate is its rectangle's size`); assert.equal(policyOf(r.plate, "master"), "painted", `${r.plate} is painted`); seen++;
+  }
+  assert.ok(seen >= 14, "five Home modules, the card, four modules, the strip twice, the namer's panel and field: " + seen);
+  for (const [n, k] of [["habitat", "strip"], ["habitat", "tile"], ["habitat", "door"], ["vivarium", "strip"], ["vivarium", "tile"], ["habitat", "card"]]) assert.ok(!specs[n].colours[k]?.fill && !specs[n].colours[k]?.recess && !specs[n].colours[k]?.free, `${n}.colours.${k} keeps no fill role`);
+  for (const [n, s] of Object.entries(specs)) assert.ok(!s.colours.module?.fill && !s.colours.panel?.shadow && !s.colours.panel?.fill, `${n}: no module fill, panel fill or shadow`);
+});
+
+test("fix 2 F11: the rail sits in its well (frame.json regions.rail.well, painted, before the tabs, 48 tall at y 40) and the open tab's word and pip are ink on its cream plate; the 6 × 6 pips are not drawn but by Create", () => {
+  const rail = rd("../specs/station/frame.json").regions.rail;
+  assert.equal(rail.well.id, "plate-rail-well-{w}x48"); assert.equal(rail.well.y, 40); assert.equal(rail.well.h, 48); assert.equal(rail.well.layer, "painted"); assert.equal(rail.well.order, "before the tabs");
+  assert.equal(rail.states.open.word, "ink"); assert.equal(rail.states.open.pip, "ink"); assert.match(rail.pip.draw, /none on Pods, the Incubator and Compare/);
 });
 
 // ---- fix 5, the Incubator (boards/station-fix5-incubator-probe-spec.md I1 to I3) ----

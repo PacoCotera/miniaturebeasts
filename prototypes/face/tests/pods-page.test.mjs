@@ -13,7 +13,7 @@ import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { podsProps } from "../../station/src/views/pods-props.mjs";
-import { pageFrame, pageOrigin } from "../../ui/specs/derive.mjs";
+import { pageFrame, pageOrigin, pageGrid } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods");
@@ -50,7 +50,7 @@ const chapterIndex = (fr, id) => fr.chapters.findIndex((c) => c.id === id);
 
 test("a read cell is a well (GB1 D1): the well first at P − (4, 4), no flat ground rect at P in any state; the crop 1:1 at P inside it, or the well alone", { skip }, async () => {
   const sc = scene("S01", { ci: 1 }), cells = podsProps(sc.m, podsSpec, frameSpec).props.regions.page.cells, cell = cells[0];
-  assert.match(cell.crop, /^trait-S01-/, "the cell asks for its crop"); assert.equal(cell.well, "plate-well-136x168", "and for its well");
+  assert.match(cell.crop, /^trait-S01-/, "the cell asks for its crop"); assert.match(cell.well, /^plate-well-136x168/, "and for its well");
   const crops = cells.map((c) => c.crop), bare = await draw(sc, { without: crops }), full = await draw(sc);
   assert.deepEqual(at(bare.lg, "page.cell", "chrome"), [], "no flat tone where the crop is not placed"); assert.ok(bare.lg.type.some((t) => t.region === "page.cell" && t.text === cell.name), "the name line still shows");
   assert.deepEqual(at(full.lg, "page.cell", "chrome"), [], "no flat ground rect under a placed crop either: the well's floor is the tone");
@@ -61,12 +61,12 @@ test("a read cell is a well (GB1 D1): the well first at P − (4, 4), no flat gr
 
 test("the sealed find draws no flat tone behind it; with no find picture the heading shows and nothing is drawn at the find (P3)", { skip }, async () => {
   const sc = scene("S02", { ci: 3 }), fr = sc.fr, ch = fr.chapters[3]; assert.ok(ch.sealed, "S02's fourth chapter is the shut one (Character)");
-  const props = podsProps(sc.m, podsSpec, frameSpec).props.regions.page; assert.equal(props.sealedFind, true); assert.equal(props.sealedWell, "plate-well-120x120"); assert.ok(!("frame" in props), "GB1: no frame in the props");
+  const props = podsProps(sc.m, podsSpec, frameSpec).props.regions.page; assert.equal(props.sealedFind, true); assert.match(props.sealedWell, /^plate-well-120x120/); assert.ok(!("frame" in props), "GB1: no frame in the props");
   const find = (await draw(sc, { extra: [] })).body.requests.find((r) => /^find-/.test(r.id) || /^find-/.test(r.master ?? "")); assert.ok(find, "the chapter asks for its find picture by its kind");
   const shown = await draw(sc, { extra: [find.id] }), none = await draw(sc, { without: [find.id] });
   assert.deepEqual(at(shown.lg, "page.seal").map((r) => r.layer === "chrome" ? r.rect : null).filter(Boolean).length <= 1, true);
   assert.deepEqual(at(shown.lg, "page.seal")[0].rect, [388, 252, 120, 120], "the find at (392, 256, 112, 112) in its well at (388, 252): the painted union");
-  assert.deepEqual(at(shown.lg, "page.seal").length, 1, "the picture alone: no tone rectangle beside it"); assert.deepEqual(at(none.lg, "page.seal"), [], "an unsigned find draws nothing");
+  assert.deepEqual(at(shown.lg, "page.seal").length, 1, "the picture alone: no tone rectangle beside it"); assert.deepEqual(at(none.lg, "page.seal").map((r) => r.rect), [[388, 252, 120, 120]], "an unsigned find draws nothing: the well alone");
   assert.ok(none.lg.type.some((t) => t.region === "page" && t.text === ch.name), "the heading still shows");
 });
 

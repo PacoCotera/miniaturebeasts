@@ -43,7 +43,7 @@ export function podsBuild(m, spec) {
   view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
   if (view.mode === "chapter") {
     const ch = chapters[ci];
-    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, null), pane: null };
+    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, null), plate: "" };
   } else {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
@@ -64,12 +64,12 @@ export function podsBuild(m, spec) {
 export const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
 
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
-export function railOf(m, spec, cur, chapters, req, open, focused) {
+export function railOf(m, spec, cur, chapters, req, open, focused, withPips = false) {   // fix 11 (F11b): no pips on the props but Create's, which draws its marks by them
   if (!cur.idd || !chapters.length) return null;
   const { st, settings } = m;
   return { focused, open, star: req({ kind: "star", id: "star:12" }), tabs: chapters.map((c) => {
     const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, maxTraits(spec.regions.chapter.page));
-    return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? n : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
+    return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", ...(withPips ? { pips: n, filled: read ? n : 0 } : {}), glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
   }) };
 }
 
@@ -170,13 +170,14 @@ function compareView(view, m, spec, req) {
   const chs = fr.chapters, ci = clamp(c.ci, 0, chs.length - 1), ch = chs[ci], diff = S.compareDiff(st, A, B) || [];
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
-    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, ids, key), pane: region.pane };
+    const page = pageView(m, spec, p, fr, ch, null, region, req, ids, key), h = region.heightByCount ? region.heightByCount[Math.min(Math.max(page.count, 1), 6)] ?? region.rect[3] : region.rect[3];
+    page.plate = req({ kind: "slot", id: region.plate.replace("{h}", h), master: region.plate.replace("{h}", h), size: [region.rect[2], h], until: "the device plate (fix 2: placed 1:1)" });
     page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }) };
     return page;
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
-  view.rail = { focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
+  view.rail = { focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: S.cap(S.spName(A)), subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.bench = [slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the room master without a cone"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // Compare stands on the plain case; the withdrawn compare stage is not placed (fix 5)
   view.targets = targetsOf(view, st, spec, A);   // Compare's targets are its rail's tabs

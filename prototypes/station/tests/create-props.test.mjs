@@ -62,7 +62,7 @@ test("the state: nothing read with no chapter read (no roll, the ring on the roo
   const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p, minutes: r.bud.minutes }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
   assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'");
   assert.ok(g.line.ok === null && g.line.back === null && g.line.price == null && g.line.need === "", "grow: the line is Growing, no action, price or way back, an empty right slot (fix 5 C6)"); assert.equal(g.line.subject, spec.strings.growing); assert.deepEqual([g.line.dim, g.line.blocked, g.line.short], [undefined, undefined, undefined]);
-  assert.equal(g.props.regions.roll.shown, false, "grow: the roll keeps its nodes with no size"); assert.equal(g.props.regions.roll.pictures.length, 3, "the roll pictures stay requested in grow"); assert.deepEqual(g.props.focus, { cur: "room", targets: [] }, "grow: no ring"); assert.equal(g.props.regions.rail.open, -1); assert.ok(g.props.regions.rail.tabs.every((t) => t.lift === -1), "no tab open and no pip lifted"); assert.deepEqual([g.props.regions.traitLine.text, g.props.regions.traitLine.changed], ["", false], "no trait line in grow, the tag included");
+  assert.equal(g.props.regions.roll.shown, false, "grow: the roll keeps its nodes with no size"); assert.equal(g.props.regions.roll.pictures.length, 3, "the roll pictures stay requested in grow"); assert.deepEqual(g.props.focus, { cur: "room", targets: [] }, "grow: no ring"); assert.equal(g.props.regions.rail.open, -1); assert.ok(g.props.regions.rail.tabs.every((t) => !("lift" in t)), "no tab open and no lift (fix 11: the lift is retired)"); assert.deepEqual([g.props.regions.traitLine.text, g.props.regions.traitLine.changed], ["", false], "no trait line in grow, the tag included");
   assert.equal(b.props.regions.roll.shown, true); assert.equal(a.props.regions.traitLine.text, "", "nothingRead: no trait line"); assert.equal(a.line.subject, "it grows as the pod is", "nothingRead: the sentence moves to the context");
   assert.equal(createPod(m.st, m.cr).id, m.p.id, "the pod is the screen's own once it has left the rack");
 });
@@ -110,12 +110,12 @@ test("the bottom line: ✓ Grow it and the price with ◆ a change (the first fo
   { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, Sg.notices.busy, "busy before short"); assert.equal(k.build().line.short, undefined, "blocked is never beside short"); }
 });
 
-test("the rail: a tab a chapter, the open tab the focused trait's chapter with its pip lifted, a pip a trait filled, hollow, changed or clash; nothing read opens none", () => {
+test("the rail: a tab a chapter, the open tab the focused trait's chapter, one mark a tab (a clash cross over a changed diamond, else none; fix 11), no pips and no lift; nothing read opens none", () => {
   const m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr); m.cr.f = 1; let rail = m.build().props.regions.rail;
-  assert.deepEqual(rail.tabs.map((t) => t.state), ["read", "read", "unread", "unread"]); assert.equal(rail.open, fr.chapters.findIndex((c) => c === list[1].c)); assert.equal(rail.tabs[rail.open].lift, list[1].c.traits.indexOf(list[1].t)); assert.deepEqual(rail.tabs.filter((t, i) => i !== rail.open).map((t) => t.lift), [-1, -1, -1]);
-  assert.deepEqual(rail.tabs[2].marks, ["hollow"]); assert.ok(rail.tabs.every((t) => t.glint === false)); assert.equal(rail.focused, null);
-  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 2 }; rail = m.build().props.regions.rail; const tab = rail.tabs[fr.chapters.findIndex((c) => c === list[roll].c)];
-  assert.equal(tab.marks[list[roll].c.traits.indexOf(list[roll].t)], "changed"); m.cr.clash = [list[roll].t.id]; assert.equal(m.build().props.regions.rail.tabs.find((t) => t.marks.includes("clash")) != null, true);
+  assert.deepEqual(rail.tabs.map((t) => t.state), ["read", "read", "unread", "unread"]); assert.equal(rail.open, fr.chapters.findIndex((c) => c === list[1].c));
+  assert.ok(rail.tabs.every((t) => t.glint === false && t.mark === "" && !("pips" in t) && !("marks" in t) && !("lift" in t))); assert.equal(rail.focused, null);
+  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 2 }; rail = m.build().props.regions.rail; const ci = fr.chapters.findIndex((c) => c === list[roll].c);
+  assert.equal(rail.tabs[ci].mark, "changed"); m.cr.clash = [list[roll].t.id]; assert.equal(m.build().props.regions.rail.tabs[ci].mark, "clash", "clash over changed");
 });
 
 test("the founder's picture follows the choices (the roll's dither runs from the old id to the new); the stamp and the cells follow what is read and changed; nothing read is one picture whatever the looks", () => {

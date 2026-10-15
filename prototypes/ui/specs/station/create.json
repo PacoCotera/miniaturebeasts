@@ -41,7 +41,7 @@
    "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "focusable": false, "glint": false,
    "open": "shape: the focused trait's chapter (frame.json rail.states.open); nothingRead: none",
    "tabs": { "read": "a read chapter", "unread": "a chapter not read: it stays a surprise", "sealed": "as on Pods", "open": "the focused trait's chapter" },
-   "pips": { "read": "filled", "unread": "hollow", "changed": "a 6×6 `bone` diamond, pip-changed-6x6 (art director, 2026-10-09 13:28)", "clash": "the 6×6 ✕ pip-clash-6x6 in place of the pip", "focused": "the focused trait's pip lifted 2 px: y 69 to 75 (was 71 to 77); no ring", "focusedLift": 2 }
+   "mark": { "size": [12, 12], "at": "pipsCentre − 6, 68", "clash": "red ✕, 2 px strokes", "changed": "bone diamond", "order": "clash over changed", "else": "no size", "note": "fix 11, gate batch 1: one mark per chapter; the per-trait pips and the focused lift are retired" }
   },
   "roll": {
    "rect": [296, 88, 432, 104], "build": "roll", "inStates": ["shape"], "grow": "every roll node kept with no size from t 0; the pictures stay requested (fix 5 Create C7)", "composition": ["sprite: a picture per look", "sprite: notch up", "sprite: notch down"],
@@ -186,7 +186,7 @@
    { "id": "the founder's placeholder (the stylised rig pass)", "size": [304, 312], "region": "founder", "why": "creature art" },
    { "id": "roll-{species}-{trait}-{look}-128x72, a doing roll-{species}-{trait}-128x72", "size": [128, 72], "region": "roll", "why": "cut from the mibi paintings" },
    { "id": "the pod sprites by size class", "size": [144, 176], "region": "pod", "why": "the pod renderer's; checked against the concept board's Pods frame with Pods, not here" },
-   { "id": "pip-changed-6x6, pip-clash-6x6, the notches 12×6, the stamp label", "size": null, "region": "rail, traitLine, roll, stamp", "why": "the kit's chrome; drawn by the words as chrome rects, never a PH plate or register picture" }
+   { "id": "the rail's 12×12 marks, the notches 12×6, the stamp label", "size": null, "region": "rail, traitLine, roll, stamp", "why": "the kit's chrome; drawn by the words as chrome rects, never a PH plate or register picture" }
   ]
  }
 }

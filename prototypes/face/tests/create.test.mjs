@@ -264,15 +264,17 @@ test("no refresh redraws more than a quarter of the screen while the pod travels
 
 
 // ---- the chrome the words draw, and the fronts that are not drawn ----
-test("the changed pip is a `bone` diamond, the clash pip a `red` cross, both drawn by the rail as chrome (the rows of the ruling); the focused trait's pip stands 2 px higher; the work tray's and the small chamber's fronts are drawn at their rects", { skip }, async () => {
-  const CX = [2, 1, 0, 0, 1, 2], CW = [2, 4, 6, 6, 4, 2], find = (f, y0, y1, test) => { for (let y = y0; y < y1; y++) for (let x = 100; x < 940; x++) if (test(x, y)) return [x, y]; return null; };
-  const is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
-  const diamond = (f, x, y) => CX.every((cx, r) => is(f, x + cx, y + r, "bone") && is(f, x + cx + CW[r] - 1, y + r, "bone") && !is(f, x + cx + CW[r], y + r, "bone"));
+test("the rail's mark: one 12 × 12 composed mark a tab (fix 11), a `bone` diamond for a changed trait, a `red` cross for a clash, none otherwise, on the AD's pixel reference; no 6 × 6 pip, no lift; the work tray's and the small chamber's fronts are drawn at their rects", { skip }, async () => {
+  const DW = [2, 4, 6, 8, 10, 12, 12, 10, 8, 6, 4, 2], is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
+  const find = (f, test) => { for (let y = 60; y < 84; y++) for (let x = 100; x < 940; x++) if (test(x, y)) return [x, y]; return null; };
+  const diamond = (f, x, y) => DW.every((w, r) => is(f, x + (12 - w) / 2, y + r, "bone") && is(f, x + (12 - w) / 2 + w - 1, y + r, "bone") && !is(f, x + (12 - w) / 2 + w, y + r, "bone") || false) && is(f, x + 5, y, "bone") && is(f, x + 6, y + 11, "bone");
+  const cross = (f, x, y) => { for (let r = 0; r < 12; r++) for (let c = 0; c < 12; c++) if ((Math.abs(c - r) <= 1 || Math.abs(c + r - 11) <= 1) !== is(f, x + c, y + r, "red")) return false; return true; };
   const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f);
-  assert.ok(find(f, 60, 80, (x, y) => diamond(f, x, y)), "a bone diamond among the pips"); 
-  const lifted = find(f, 60, 80, (x, y) => diamond(f, x, y)); assert.equal(lifted[1], 69, "the focused trait's pip: y 71 − 2");
+  const hit = find(f, (x, y) => diamond(f, x, y)); assert.ok(hit, "a bone diamond: the changed chapter's mark"); assert.equal(hit[1], 68, "the mark's top is y 68, at the tab's foot (80)");
+  assert.ok(b.props.regions.rail.tabs.every((t) => ["clash", "changed", ""].includes(t.mark) && !("pips" in t) && !("lift" in t)), "one mark a tab, no pips, no lift");
   assert.deepEqual(region(lg, "chamberFront")?.rect, R.chamberFront.rect, "the tray's front is drawn at its rect"); assert.deepEqual(region(lg, "domeFront")?.rect, R.domeFront.rect, "the small chamber's front is drawn at its rect");
-  const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, 60, 80, (x, y) => [0, 1, 2, 3, 4, 5].every((k) => is(g, x + k, y + k, "red") && is(g, x + 5 - k, y + k, "red"))), "a red cross where the pip was");
+  const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, (x, y) => cross(g, x, y)), "a red cross, the pixels |x - y| <= 1 and |x + y - 11| <= 1");
+  const clean = await start(scene({ read: 2, f: 1 })); assert.ok(!find(clean, (x, y) => diamond(clean, x, y)) && !find(clean, (x, y) => cross(clean, x, y)), "a clean chapter draws no mark");
 });
 test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 36), the verb and the price in mist; a short one has its verb at the same x", { skip }, async () => {
   const ground = (f, x, y) => f.pixel(x, y).join() === f.pixel(8, 585).join(), blocked = await start(scene({ read: 2, f: 1, busy: true })), short = await start(scene({ read: 2, f: 1, short: true }));
