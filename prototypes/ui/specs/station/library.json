@@ -145,7 +145,7 @@
   },
   "placeholders": {
    "_note": "labelled stand-ins the build places until each master is signed; entered in the placeholder register at these sizes",
-   "library-stage-spread-1024x522": "flat: the stage in `ground`, the boards in `bark`, each page `paper` with a 1 px `clay` edge, each frame a 1 px `bark` outline with a `sand` mat band 8 px inside, the caption rules 1 px `clay`; the margin bands and the marker as 1 px dashed `clay` outlines",
+   "library-stage-spread-1024x522": "flat: the stage in `ground`, the boards in `bark`, each page `paper` with a 1 px `clay` edge, each frame a 1 px `bark` outline with a `sand` mat band 8 px inside, the caption rules 1 px `clay`; the margin bands and the marker are not drawn: no outline stands for a part the painted stage will carry (fix 6)",
    "spread-plate-{SNN}-80x96": "the code rig's type specimen at 80×96 for all sixteen",
    "spread-study-{SNN}-80x96": "the index pass in `stone` line on `paper`",
    "spread-gilt-corner-16x16": "a 16×16 `clay` L, 4 px thick, along the top and right edges",

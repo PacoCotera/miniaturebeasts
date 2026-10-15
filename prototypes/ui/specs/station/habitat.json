@@ -298,14 +298,14 @@
     "thumb": {"full": [52, 0, 48, 48], "compact": [12, 0, 48, 48]},
     "outGlyph": [16, 24],
     "name": null,
-    "free": "a composed `dash` outline round the tile's box, 1 px `hairline`, dash [2, 2]; nothing in it, not a target",
+    "free": "nothing drawn: the node keeps its box with no ops (Every state composed, 2); not a target",
     "away": "each mibi with you (up to three) while the Companion is away: the outline Companion glyph 16×24 in place of its thumbnail, centred where the thumbnail stands; it stays a target, and focusing it shows that mibi in state out"
    },
    "count": "one tile a bay (state.bayCount, 0 to 12): the housed mibis in bay order, then the free bays",
    "states": {
     "shown": "the mibi up close: fill `hairline`, one step up (with its outline glyph when it is out)",
     "housed": "fill `panel`",
-    "free": "the dashed outline",
+    "free": "nothing drawn",
     "away": "the outline glyph, one tile for each mibi with you"
    }
   }

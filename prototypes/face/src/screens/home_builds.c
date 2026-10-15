@@ -92,11 +92,12 @@ void build_restKnob(int focused) {
    tile lift. Writes the focused tile's box to box. */
 void build_bayStrip(const char *sp, const char *cur, int box[4]) {
   int r[4], n = v_plen("regions.tiles.items"); if (!v_spec_rect(sp, "regions.strip.rect", r)) r[0] = r[1] = r[2] = r[3] = 0; if (box) box[0] = box[1] = box[2] = box[3] = 0;
-  v_region("strip", LAYER_CHROME); word_panel("strip", r[0], r[1], r[2], r[3], scol(sp, "colours.strip.fill"), scol(sp, "colours.strip.edge"));
+  int any = 0; for (int i = 0; i < n; i++) { const char *st = v_pstr(v_fmt("regions.tiles.items.%d.state", i)); if (strcmp(st, "housed") == 0 || strcmp(st, "out") == 0) any = 1; }
+  v_region("strip", LAYER_CHROME); word_panel("strip", r[0], r[1], any ? r[2] : 0, any ? r[3] : 0, scol(sp, "colours.strip.fill"), scol(sp, "colours.strip.edge"));   /* no housed or out tile: the panel has no size (Every state composed, rule 2: no bare panel) */
   char fk[48]; if (n > 12 || layout_list_form(sp, "regions.tiles", n, fk, sizeof fk) < 0) { v_error("word: the bay strip holds twelve bays at most, and its forms must hold this many"); return; }
   int tx = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
   int gw = sk(sp, "regions.tiles.tile.outGlyph", 0), gh = sk(sp, "regions.tiles.tile.outGlyph", 1), lift = si(sp, "focus.targets.tile.lift", 2);
-  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = scol(sp, "colours.tile.fill"), *dash = scol(sp, "colours.tile.free"), *shownFill = scol(sp, "colours.tile.shown");
+  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = scol(sp, "colours.tile.fill"), *shownFill = scol(sp, "colours.tile.shown");
   for (int i = 0; i < n; i++) {
     char P[64]; snprintf(P, sizeof P, "regions.tiles.items.%d", i);
     const char *id = v_pstr(v_fmt("%s.id", P)), *state = v_pstr(v_fmt("%s.state", P)), *pic = v_pstr(v_fmt("%s.picture", P));
@@ -110,10 +111,7 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     if (housed && *pic) v_sprite(nm, pic, x + tx, y + ty, tw, th); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
     snprintf(nm, sizeof nm, "tile.%d.glyph", i);
     if (out) v_sprite(nm, glyph, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
-    snprintf(nm, sizeof nm, "tile.%d.free", i);
-    { char ops[256]; int k = 0;
-      if (free_) k = snprintf(ops, sizeof ops, "[[\"dash\",0,0,%d,\"h\",2,2,\"%s\"],[\"dash\",0,%d,%d,\"h\",2,2,\"%s\"],[\"dash\",0,0,%d,\"v\",2,2,\"%s\"],[\"dash\",%d,0,%d,\"v\",2,2,\"%s\"]]", w, dash, h - 1, w, dash, h, dash, w - 1, h, dash);
-      else k = snprintf(ops, sizeof ops, "[]");
-      (void)k; snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(nm), FN_COMPOSED, x, y, w, h, 0, 0, 0); }
+    snprintf(nm, sizeof nm, "tile.%d.free", i);   /* a free bay draws nothing: the node keeps its box with no ops (fix 6, N7) */
+    snprintf(prim_ops(), (size_t)prim_ops_size(), "[]"); prim_node(v_id(nm), FN_COMPOSED, x, y, w, h, 0, 0, 0);
   }
 }

@@ -79,7 +79,7 @@ for (const [name, o] of Object.entries(SCENES)) {
     assert.equal(lg.regions.some((r) => r.id === "nameTag"), /^resident\./.test(b.props.focus.cur), "the name tag stands only on a resident or a sleeper");
   });
 }
-test("the tiles stand on listPitch's forms: up to six bays 152 wide on a 160 pitch, seven to twelve 72 wide on an 80 pitch; a free bay is a dashed outline, a tile out the glyph, a tile in the thumbnail", { skip }, async () => {
+test("the tiles stand on listPitch's forms: up to six bays 152 wide on a 160 pitch, seven to twelve 72 wide on an 80 pitch; a free bay draws nothing, a tile out the glyph, a tile in the thumbnail", { skip }, async () => {
   for (const [bays, adults, w] of [[6, 4, 152], [8, 5, 72], [12, 12, 72], [1, 1, 152]]) {
     const b = scene({ bays, adults }), f = await start(b), lg = logOf(f), items = Array.from({ length: bays }, (_, i) => listPitch(R.tiles, bays, i));
     assert.equal(items[0][2], w); for (let i = 0; i < bays; i++) assert.deepEqual(lg.regions.find((r) => r.id === `tile.${i}` && r.layer === "chrome").rect, items[i], `${bays} bays: tile ${i}`);
