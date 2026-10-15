@@ -117,8 +117,10 @@ def frame48(window, shadow, ring, tick, walls=()):
     return card_frame(48, 40, rules, 'enamel')
 save('sitting-frame-held-48x40', frame48('ground', None, ('sand', 'clay'), True))
 save('sitting-frame-portrait-48x40', frame48('bone', 'enamel', ('sand', 'clay'), True))
-save('sitting-frame-empty-48x40', frame48('enamel', None, ('bark', 'bark'), False,
-     walls=[(anyof(rect(4, 4, 43, 4), rect(4, 4, 4, 33)), 'clay'), (anyof(rect(4, 33, 43, 33), rect(43, 4, 43, 33)), 'sand')]))
+# empty (recut 10-15, gate batch 1: the CD read the flat enamel window as a plain tan box): the window is an empty recess, the
+# kit's construction at this size: a panel floor, the shade (void) inside the top and left walls, a lit lip (bevel) bottom and right.
+save('sitting-frame-empty-48x40', frame48('panel', None, ('bark', 'bark'), False,
+     walls=[(anyof(rect(4, 4, 43, 4), rect(4, 4, 4, 33)), 'void'), (anyof(rect(4, 33, 43, 33), rect(43, 4, 43, 33)), 'bevel')]))
 save('home-sitting-32x24', card_frame(32, 24, [
     (anyof(rect(0, 0, 31, 0), rect(0, 23, 31, 23), rect(0, 0, 0, 23), rect(31, 0, 31, 23)), 'bark'),
     (anyof(rect(1, 1, 1, 22), rect(1, 1, 30, 1)), 'sand'),
