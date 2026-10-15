@@ -3475,29 +3475,29 @@
   "note": "withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12"
  },
  "crate-sealed-256x176": {
-  "status": "signed",
-  "signed_in": "art director, verdict (963f4eab)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 49.1, mean R-B 21.0, sat 22 against home-bay-shut 48.0/13.5/18.5 (band L* +-4, mean R-B +-8); the whole sealed case, 8 px clear"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
  },
  "crate-sitting-256x176": {
-  "status": "signed",
-  "signed_in": "art director, verdict (963f4eab)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 48.0, mean R-B 19.8, sat 27; the whole case with a matte brass plate on the lid, the tag smear gone"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
  },
  "crate-open-432x272": {
-  "status": "signed",
-  "signed_in": "art director, verdict (87d6a9a9)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 44.9, mean R-B 14.1, sat 21.2, 0.0 percent above L* 70; the lid off, its three cut-outs at region x 68/172/276, top 32, feet 144, under the pods at screen y 152"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
  },
  "crate-sealed-432x272": {
-  "status": "signed",
-  "signed_in": "art director, verdict (87d6a9a9)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 49.0, mean R-B 15.0, sat 19.6, 0.5 percent above L* 70, against home-bay-shut 48.0/13.2/18.5 (band L* +-4, mean R-B +-8); the whole case inside the ruled region (296,120,432,272), 8 px clear"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
  },
  "crate-opening-432x272": {
-  "status": "signed",
-  "signed_in": "art director, verdict (87d6a9a9)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 48.2, mean R-B 14.8, sat 19.5, 0.7 percent above L* 70; the lid lifting inside the rect, its lit lip and gap shadow, the tag torn"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
  },
  "cargo-energy-48x64": {
   "status": "signed",
@@ -3514,106 +3514,1299 @@
   "signed_in": "art director, the haul trio (owner's yes)",
   "note": "signed (art director) at 1x, opaque pixels: L* 49.3, mean R-B 5.9, sat 28.5, 0.0 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED (a painting, cut and graded, hand-touched); the sealed sample tube in a light cage, the green one continuous liquid (one hoop above it)"
  },
- "mibi-adult-S01-304x312": {
+ "crate-sitting-48x40": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "home-crate-48x40": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S01-crown-bare-head-144x176": {
   "status": "new",
-  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-bare-head-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-bare-head-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-bare-head-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-bare-head-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S01-crown-bare-head-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "roll-S01-crown-leaf-crest-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S01-eyes-thin-rings-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-thin-rings-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-thin-rings-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-thin-rings-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-thin-rings-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S01-eyes-thin-rings-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S01-eyes-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S01-eyes-between-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S01-eyes-wide-pale-rings-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-wide-pale-rings-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-wide-pale-rings-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-wide-pale-rings-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-wide-pale-rings-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S01-eyes-wide-pale-rings-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "roll-S01-markings-plain-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S01-markings-pale-patches-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-pale-patches-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-pale-patches-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-pale-patches-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-pale-patches-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S01-markings-pale-patches-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-markings-plain-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-plain-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-plain-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-plain-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-plain-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-markings-plain-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-markings-stripes-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-markings-stripes-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-markings-spots-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-spots-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-spots-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-spots-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-spots-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-markings-spots-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-markings-stripes-and-spots-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-and-spots-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-and-spots-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-and-spots-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-markings-stripes-and-spots-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-markings-stripes-and-spots-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-crest-low-crest-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-low-crest-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-low-crest-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-low-crest-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-low-crest-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-crest-low-crest-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-crest-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-crest-between-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-crest-tall-crest-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-tall-crest-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-tall-crest-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-tall-crest-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-crest-tall-crest-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-crest-tall-crest-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-spots-bare-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bare-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bare-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bare-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bare-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-spots-bare-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-spots-bands-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-spots-bands-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-spots-spots-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-spots-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-spots-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-spots-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-spots-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-spots-spots-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-spots-bands-and-spots-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-and-spots-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-and-spots-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-and-spots-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-spots-bands-and-spots-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-spots-bands-and-spots-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-span-small-cap-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-small-cap-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-small-cap-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-small-cap-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-small-cap-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-span-small-cap-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-span-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-span-between-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-span-wide-cap-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-wide-cap-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-wide-cap-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-wide-cap-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-span-wide-cap-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-span-wide-cap-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-tail-short-thin-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-short-thin-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-short-thin-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-short-thin-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-short-thin-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-tail-short-thin-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-tail-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-tail-between-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-tail-long-thick-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-long-thick-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-long-thick-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-long-thick-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-tail-long-thick-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-tail-long-thick-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-carriage-hangs-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-hangs-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-hangs-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-hangs-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-hangs-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-carriage-hangs-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-carriage-straight-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-straight-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-straight-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-straight-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-straight-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-carriage-straight-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-carriage-curls-up-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-curls-up-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-curls-up-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-curls-up-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-carriage-curls-up-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-carriage-curls-up-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-claws-round-feet-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-round-feet-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-round-feet-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-round-feet-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-round-feet-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-claws-round-feet-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-claws-pads-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-pads-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-pads-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-pads-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-pads-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-claws-pads-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-claws-digging-wedges-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-digging-wedges-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-digging-wedges-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-digging-wedges-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-claws-digging-wedges-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-claws-digging-wedges-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-scales-few-fine-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-few-fine-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-few-fine-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-few-fine-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-few-fine-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-scales-few-fine-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-scales-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-scales-between-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S03-scales-many-coarse-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-many-coarse-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-many-coarse-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-many-coarse-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S03-scales-many-coarse-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S03-scales-many-coarse-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-flecks-bare-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-bare-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-bare-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-bare-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-bare-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-flecks-bare-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-flecks-spots-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-spots-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-spots-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-spots-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-flecks-spots-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-flecks-spots-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-fluff-short-straight-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-short-straight-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-short-straight-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-short-straight-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-short-straight-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-fluff-short-straight-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S02-fluff-long-swept-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-long-swept-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-long-swept-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-long-swept-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S02-fluff-long-swept-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S02-fluff-long-swept-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S04-stripes-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S04-stripes-between-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "bud-shape-S01-112x112": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "bud-shape-S03-112x112": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S04-stripes-faint-stripes-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-faint-stripes-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-faint-stripes-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-faint-stripes-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-faint-stripes-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S04-stripes-faint-stripes-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "trait-S04-stripes-bold-stripes-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-bold-stripes-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-bold-stripes-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-bold-stripes-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S04-stripes-bold-stripes-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "roll-S04-stripes-bold-stripes-128x72": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "mibi-adult-S01-304x312": {
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S01-144x152": {
-  "status": "new",
-  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S01-96x88": {
-  "status": "new",
-  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S01-48x48": {
-  "status": "new",
-  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S01-304x312": {
-  "status": "new",
-  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S01-104x112": {
-  "status": "new",
-  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S01-96x88": {
-  "status": "new",
-  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S01-48x48": {
-  "status": "new",
-  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S03-304x312": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S03-144x152": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S03-96x88": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S03-48x48": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S02-304x312": {
-  "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S02 adult stand"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S02-144x152": {
-  "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S02 adult stand"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S02-96x88": {
-  "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S02 adult stand"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-adult-S02-48x48": {
-  "status": "signed",
-  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
-  "note": "fix 1b fallback: S02 adult stand"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S03-304x312": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S03-104x112": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S03-96x88": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "mibi-juvenile-S03-48x48": {
-  "status": "signed",
-  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
-  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "cargo-bay-992x320": {
-  "status": "signed",
-  "signed_in": "art director, the Cargo bay read (e3a50bdf)",
-  "note": "fix 5 AR1: moved into slices, unchanged"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
  },
  "cargo-bay-shut-976x304": {
-  "status": "signed",
-  "signed_in": "art director, the Cargo bay read (e3a50bdf)",
-  "note": "fix 5 AR1: moved into slices, unchanged"
+  "status": "unclassified",
+  "signed_in": null,
+  "note": ""
+ },
+ "crate-shadow-256x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the Cargo fix 5 shadow (AR2b, AR3), hand-coded: #1e1a22, a horizontal ellipse, core alpha 110, (1 - d)^1.5, the outer 4 px dithered on the 4x4 Bayer; awaiting the art director's judgement (not signed)"
+ },
+ "crate-shadow-432x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the Cargo fix 5 shadow (AR2b, AR3), hand-coded: #1e1a22, a horizontal ellipse, core alpha 110, (1 - d)^1.5, the outer 4 px dithered on the 4x4 Bayer; awaiting the art director's judgement (not signed)"
+ },
+ "cargo-store-shadow-48x14": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 139: the Cargo fix 5 shadow (AR2b, AR3), hand-coded: #1e1a22, a horizontal ellipse, core alpha 110, (1 - d)^1.5, the outer 4 px dithered on the 4x4 Bayer; awaiting the art director's judgement (not signed)"
  }
 }
