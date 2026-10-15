@@ -246,6 +246,90 @@ for qi, qd in enumerate(("nw", "ne", "se", "sw")):
     for st in ("fill", "edgeh", "edgev", "outer", "inner"):
         add(f"meadow/shore/sand-{qd}-{st}-f1", sand_quarter(qd, st, 60 + qi), kind="shore", set="sand", quad=qd, state=st, frame=1)
 
+# ---- drop 2 (AD brief 2026-10-12): the light patch, the deeper pond centre, the ford stones. Hand-coded here, only from the palette's
+# entries and the helpers above (tone, LIGHT, DARK, bayer, LIPF); candidate until the art director signs.
+import hashlib
+from scipy import ndimage as nd2
+def h2(*a): return int(hashlib.md5(repr(a).encode()).hexdigest()[:8], 16)
+QOFF = {"nw": (0, 0), "ne": (24, 0), "se": (24, 24), "sw": (0, 24)}
+def wave2(t): return np.round(1.5 * np.sin(2 * np.pi * t / 24) + 1.0 * np.sin(2 * np.pi * t / 12 + 1))
+def land_mask(quad, state, IN):
+    """sand_quarter's geometry with this drop's wave: land = the part outside the wavering edge IN px inside each side that meets other ground"""
+    north = quad in ("nw", "ne"); west = quad in ("nw", "sw")
+    yy, xx = np.mgrid[0:24, 0:24]; U = np.where(west, xx, 23 - xx); V = np.where(north, yy, 23 - yy)
+    if state == "fill": return np.zeros((24, 24), bool)
+    if state == "edgeh": return V < IN + wave2(U)
+    if state == "edgev": return U < IN + wave2(V)
+    if state == "outer": return (V < IN + wave2(U)) | (U < IN + wave2(V)) | ((U < 24) & (V < 24) & (np.hypot(U - 24, V - 24) > 24 - IN))
+    return np.hypot(U, V) < IN
+def inside_d(land):
+    """the distance of each non-land pixel from the land (scipy's edt of ~land); a quarter with no land is all far inside"""
+    return nd2.distance_transform_edt(~land) if land.any() else np.full(land.shape, 99.0)
+# A. the light patch: the lawn's texture one step up on the lit pixels, a soft pool with a dithered 6 px edge, no mottle
+for qi, qd in enumerate(("nw", "ne", "se", "sw")):
+    ox, oy = QOFF[qd]
+    for st in ("fill", "edgeh", "edgev", "outer", "inner"):
+        land = land_mask(qd, st, 10); d = inside_d(land); B = bayer(24, 24)
+        lit = (d >= 6) | ((d > 0) & (d < 6) & (B < d / 6 * 16))
+        lt = tone(LAWN0 + 1 + LIPF[0][oy:oy + 24, ox:ox + 24])         # the cell's own 48 px of lawn texture, so the four quarters read as one pool
+        add(f"meadow/light/{qd}-{st}", np.where(lit, lt, TR), kind="light", quad=qd, state=st)
+# B1. the pond's centre: deep-1/2 through DARK once, every second fleck dropped by hash (a calmer centre than the margin)
+for k in range(2):
+    dpk = [a for n, a, f in PIECES if n == f"meadow/ground/deep-{k + 1}"][0]
+    core = np.vectorize(lambda i: DARK[i])(dpk); fl = dpk == WB; lab, nl = nd2.label(fl)
+    for j in range(1, nl + 1):
+        ys, xs = np.nonzero(lab == j)
+        if h2("core-fleck", k, int(ys.min()), int(xs.min())) & 1: core[lab == j] = DARK[DARK[WB]]
+    add(f"meadow/ground/core-{k + 1}", core, kind="ground", set="core", variant=str(k + 1))
+# B2. the core's edge: this drop's wave with IN 8; core inside, the water fill of the same frame outside, a 4 px Bayer band, no foam, no outline
+COREG = [a for n, a, f in PIECES if n == "meadow/ground/core-1"][0]
+for fr in (1, 2):
+    for qd in ("nw", "ne", "se", "sw"):
+        wf = [a for n, a, f in PIECES if n == f"meadow/shore/water-{qd}-fill-f{fr}"][0]; ox, oy = QOFF[qd]
+        for st in ("fill", "edgeh", "edgev", "outer", "inner"):
+            land = land_mask(qd, st, 8); d = inside_d(land); B = bayer(24, 24)
+            isc = (d >= 4) | ((d > 0) & (d < 4) & (B < d / 4 * 16))
+            add(f"meadow/core-edge/{qd}-{st}-f{fr}", np.where(isc, COREG[oy:oy + 24, ox:ox + 24], wf), kind="shore", set="core", quad=qd, state=st, frame=fr)
+# C. the ford stones: a flat irregular oval in the water, lit top-left, shaded lower right, outlined in the DARK of its own edge pixel,
+# a glint, a broken foam ring at the waterline, a 2 px crescent of dark water under it. FORD_ROCK is the stone's body, lit and shade.
+FORD_ROCK, FORD_LIT, FORD_SHADE = nearest((130, 129, 118)), nearest((164, 153, 159)), nearest((92, 86, 75))   # the meadow's warm greys (the core's rock/rockL/stone are lavender)
+MOSS, GLINT = P48.index["leaf"], P48.index["ice"]
+def ford(seed):
+    W, Hh = 20, 14; cx, cy = 9.5 + (seed % 2) * .5, 6.0; rs = np.random.RandomState(seed + 900)
+    ph = rs.uniform(0, 6.28, 3); yy, xx = np.mgrid[0:Hh, 0:W]; ang = np.arctan2((yy - cy) / .6, xx - cx)
+    rr = 7.2 + 0.7 * np.sin(2 * ang + ph[0]) + 0.5 * np.sin(3 * ang + ph[1]) + 0.25 * np.sin(5 * ang + ph[2])
+    body = np.hypot((xx - cx), (yy - cy) / .6) <= rr
+    er = nd2.binary_erosion(body, structure=np.ones((3, 3), bool), border_value=0)
+    a = np.full((Hh, W), TR); edge = body & ~er
+    ys = np.nonzero(er.any(1))[0]; top = ys.min()
+    a[er] = FORD_ROCK
+    lit = er & (yy <= top + 1) & (xx <= cx + 1); a[lit] = FORD_LIT
+    shade = er & ((xx - cx) / 7.0 + (yy - cy) / 3.5 > .85); a[shade] = FORD_SHADE
+    if seed % 3 == 2:                                                   # moss on one stone in three: 2 px side by side on the body
+        ok = er & np.roll(er, -1, 1) & (a == FORD_ROCK) & np.roll(a == FORD_ROCK, -1, 1) & (yy >= cy) & (xx < cx)
+        my, mx = np.nonzero(ok); j = h2("moss", seed) % len(my); a[my[j], mx[j]] = MOSS; a[my[j], mx[j] + 1] = MOSS
+    for y, x in zip(*np.nonzero(edge)):                                 # the outline: the DARK of each edge pixel (its own body colour), never void
+        base = FORD_LIT if (y <= top + 1 and x <= cx + 1) else FORD_SHADE if ((x - cx) / 7.0 + (y - cy) / 3.5 > .85) else FORD_ROCK
+        a[y, x] = DARK[base]
+    gy, gx = np.nonzero((a == FORD_LIT)); gi = np.lexsort((gx, gy))[0]
+    a[gy[gi] + 1 if gy[gi] + 1 < Hh and a[gy[gi] + 1, gx[gi]] != TR else gy[gi], gx[gi] + 1] = GLINT
+    a[gy[gi], gx[gi] + 2] = GLINT if a[gy[gi], gx[gi] + 2] == FORD_LIT else a[gy[gi], gx[gi] + 2]
+    cres = np.zeros_like(body)                                          # the underside: 2 px crescent below the stone, one px in at each end
+    for x in range(W):
+        col = np.nonzero(body[:, x])[0]
+        if len(col):
+            y0 = col.max()
+            for t in (1, 2):
+                if y0 + t < Hh and (x - cx) ** 2 < (rr.mean() - 1.5 * t) ** 2: cres[y0 + t, x] = True
+    a[cres & (a == TR)] = DARK[WB]
+    ring = nd2.binary_dilation(body) & ~body & ~cres & (a == TR)
+    for y, x in zip(*np.nonzero(ring)):
+        if h2("foam", seed, y, x) % 10 < 6: a[y, x] = GLINT
+    return a
+for sd in (1, 2, 3):
+    fa = ford(sd); ph_, pw_ = fa.shape; add(f"meadow/prop/ford-{sd}", fa, kind="prop", type="ford", variant=str(sd))
+    PIECES[-1][2]["offset"] = [(48 - pw_) >> 1, 48 - ph_]
+
 # ---- lip quarters: the candidate geometry by the plateau-edge rule (outline, lit rim, two shade steps beyond, a fringe)
 def grow(m, n):
     m = m.copy()
@@ -437,7 +521,7 @@ PIECES = [(n, a, dict(f, status="signed") if signed(n, f) else f) for n, a, f in
 
 # ---- sheets: shelf-packed by group, at most 1024 wide
 GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/" in n or "/shadow/" in n),
-          ("quarters", lambda n: "/lip/" in n or ("/shore/" in n and "water-" in n)),
+          ("quarters", lambda n: "/lip/" in n or ("/shore/" in n and "water-" in n) or "/light/" in n or "/core-edge/" in n),
           ("shore", lambda n: "/shore" in n or "/band/" in n), ("walls", lambda n: any(k in n for k in ("/face/", "/cap/", "/side/", "/foot/"))),
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
 man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json", "levelTone": ["dark", "none", "light"],

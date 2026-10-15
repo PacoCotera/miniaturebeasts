@@ -97,6 +97,25 @@ for r in range(R):
                 s = state(m, q)
                 if at(r, c + (1 if q in ("ne", "se") else -1)) == "F" and s in ("outer", "edgev"): s += "0"
                 put(toned(PC[f"meadow/lip/lip-{q}-{s}"][1], 0), r * 48 + y, c * 48 + x)
+# drop 2: the light patch on the plateau, the deeper centre of the pond with its edge, the ford stones (only when the drop carries them)
+if "meadow/light/nw-fill" in PC:
+    inner = sorted((r, c) for r in range(R) for c in range(Cn) if L[r][c] == "1" and all(at(r + dy, c + dx) == "1" for dy, dx in OFF.values()))
+    lit = set(sorted(inner, key=lambda t: (t[0] + t[1], t[0]))[:max(1, round(len(inner) / 3))])      # about a third of the plateau's top, to its top-left, one cell in from every rim
+    for (r, c) in sorted(lit):
+        m = sum(1 << i for i, (dy, dx) in OFF.items() if (r + dy, c + dx) not in lit)
+        for q, (y, x) in QXY.items(): put(toned(PC[f"meadow/light/{q}-{state(m, q)}"][1], 1), r * 48 + y, c * 48 + x)
+    GRID["light"] = sorted(f"{r},{c}" for r, c in lit)
+if "meadow/ground/core-1" in PC:
+    core = {(r, c) for r in range(R) for c in range(Cn) if L[r][c] == "w" and all(W_(r + dy, c + dx) for dy, dx in OFF.values())}
+    for (r, c) in sorted(core):
+        put(PC[f"meadow/ground/core-{1 + hsh('core', r, c) % 2}"][1], r * 48, c * 48)
+        m = sum(1 << i for i, (dy, dx) in OFF.items() if (r + dy, c + dx) not in core)
+        for q, (y, x) in QXY.items():
+            if state(m, q) != "fill": put(PC[f"meadow/core-edge/{q}-{state(m, q)}-f1"][1], r * 48 + y, c * 48 + x)
+    GRID["core"] = sorted(f"{r},{c}" for r, c in core)
+if "meadow/prop/ford-1" in PC:
+    for k, c in enumerate((14, 15, 16)):                                  # across the pond's narrow arm: the three water cells of row 8
+        p_, a_ = PC[f"meadow/prop/ford-{k + 1}"]; put(a_, 8 * 48 + (48 - p_["h"]) // 2, c * 48 + (48 - p_["w"]) // 2)
 caps_w, caps_e = by(kind="cap", side="w"), by(kind="cap", side="e"); w3, w2, w1 = by(kind="face", cells=[3, 2]), by(kind="face", cells=[2, 2]), by(kind="face", cells=[1, 2])
 for r in range(R):
     if "F" not in L[r]: continue
