@@ -3,7 +3,7 @@
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), need (the notice's key and its action) }.
 // Runs in Node, tested there (tests/home-props.test.mjs); the shape is home.props.json. Sitting crates and the Cargo screen are L2.2's second PR (cargo.json); here the bay's crates are the walk crates.
 import * as S from "../state.mjs";
-import { frameOf } from "../genome.mjs";
+import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable } from "../moving.mjs";
 import { goalWords } from "./goal-words.mjs";
 
@@ -11,9 +11,9 @@ const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
-// A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<id>:<juvenile|adult|elder>:<w>x<h>
-export const mibiPictureId = (id, stage, [w, h]) => `mibi:${id}:${stage}:${w}x${h}`;
-export const mibiReq = (req, st, mb, size, settings) => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(mb.id, stage, size), mibi: mb.id, stage, species: S.speciesOf(mb), size }); };
+// A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
+export const mibiPictureId = (digest, stage, [w, h]) => `mibi:${digest}:${stage}:${w}x${h}`;
+export const mibiReq = (req, st, mb, size, settings) => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(genomeDigest(mb.genome), stage, size), mibi: mb.id, stage, species: S.speciesOf(mb), size }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's

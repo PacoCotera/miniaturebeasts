@@ -14,7 +14,7 @@
    "png": "home-goal-docked.png"
   },
   "home-goal-away": {
-   "hash": "bf92d0e8",
+   "hash": "b0f99002",
    "png": "home-goal-away.png"
   },
   "home-away": {
@@ -78,15 +78,15 @@
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
-   "hash": "1f32f26d",
+   "hash": "8d95b394",
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "6ec06011",
+   "hash": "2abc0931",
    "png": "home-sleeper-focused.png"
   },
   "home-moving-asleep": {
-   "hash": "f6008b36",
+   "hash": "777b6a8a",
    "png": "home-moving-asleep.png"
   },
   "home-knob-pressed": {
