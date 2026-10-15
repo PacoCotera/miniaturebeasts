@@ -2,7 +2,7 @@
  "_note": "The Library spread: the wireframe scene (ring on a found frame), a fresh world, the ring over a portrayed and complete frame (gilt and seal), and the Book not built after a tick on a found frame: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "library-spread": {
-   "hash": "13ca5357",
+   "hash": "f417347f",
    "png": "library-spread.png"
   },
   "library-spread-empty": {
@@ -10,12 +10,12 @@
    "png": "library-spread-empty.png"
   },
   "library-spread-complete": {
-   "hash": "57051cac",
+   "hash": "c0c6c720",
    "png": "library-spread-complete.png"
   },
-  "library-book": {
-   "hash": "17dcfaf4",
-   "png": "library-book.png"
+  "library-book-shut": {
+   "hash": "2d9f4d44",
+   "png": "library-book-shut.png"
   }
  }
 }

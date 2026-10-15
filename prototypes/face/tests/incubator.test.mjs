@@ -64,7 +64,7 @@ const area = (f, o) => dirty(f, o);
 
 const colourIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
 const SC = {
-  "empty (a pod in the rack)": { pod: true }, "growing, the first half": { minutes: 2 }, "growing, the second half": { minutes: 13.2 }, "ready": { minutes: 30 }, "ready, the waiting lamp": { minutes: 30, lamp: incSpec.strings.painting },
+  "empty (a pod in the rack)": { pod: true }, "growing, the first half": { minutes: 2 }, "growing, the second half": { minutes: 13.2 }, "ready": { minutes: 30 }, "ready, the waiting lamp": { minutes: 30, lamp: "waiting" },
   "the hatch's end state": { minutes: 30, open: true },
 };
 for (const [name, o] of Object.entries(SC)) {
@@ -150,7 +150,7 @@ test("the hatch: the bud is the ready picture with its shape and its front until
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
 test("the hatch's waiting lamp: home-lamp-sky-12x12 at its rect while the painting is on its way, a node with no size otherwise", { skip }, async () => {
-  const on = scene({ minutes: 30, lamp: incSpec.strings.painting }), off = scene({ minutes: 30 });
+  const on = scene({ minutes: 30, lamp: "waiting" }), off = scene({ minutes: 30 });
   assert.equal(on.props.regions.lamp.on, true); assert.equal(off.props.regions.lamp.on, false); assert.equal(on.props.regions.lamp.picture, off.props.regions.lamp.picture);
   const f = await start(on), lg = logOf(f); assert.deepEqual(region(lg, "lamp").rect, R.base.lamp.rect.length === 4 ? R.base.lamp.rect : null);
   const g = await start(off); assert.equal(logOf(g).regions.some((r) => r.id === "lamp" && r.rect[2] > 0), false);
