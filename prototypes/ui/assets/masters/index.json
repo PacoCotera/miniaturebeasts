@@ -404,8 +404,8 @@
    "file": "pods/chamber-back-400x320.png",
    "w": 400,
    "h": 320,
-   "sha256": "1461315c826094795877827f277003fc8c9a1607baa10d53d3802ec641536228",
-   "signed": "art director, verdict (72561d74)"
+   "sha256": "a4c77d5a04034b55ec616f72be5b59cdcbbaea6d10b51b285085c96b8cdffce1",
+   "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
   },
   "chamber-front-400x320": {
    "file": "pods/chamber-front-400x320.png",
@@ -4430,8 +4430,8 @@
    "file": "pods/room-bench-stage-create.png",
    "w": 1024,
    "h": 522,
-   "sha256": "209f9fda09c7f3f1a32cb47e3d1e33bf2f9ea7237dca521e0f7f16f9e8c26d2d",
-   "signed": "art director, verdict (528b73d5)"
+   "sha256": "d48e37b576f13f4f3bcedc347b2cdb7d35b39d33953d85ec7dd8ed6ed26a5a29",
+   "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
   },
   "room-bench-stage-incubator": {
    "file": "pods/room-bench-stage-incubator.png",
@@ -4460,6 +4460,13 @@
    "h": 96,
    "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a",
    "signed": "art director, Pods room verdict (README fa105365)"
+  },
+  "room-cradle-front-create-224x96": {
+   "file": "pods/room-cradle-front-create-224x96.png",
+   "w": 224,
+   "h": 96,
+   "sha256": "7c933d3da94332df0d0ace023bbf4064ad2e55fbcb186cb37560cfb00764cc80",
+   "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
   },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",
