@@ -11,7 +11,7 @@
  "stateRule": "bay: the whole, the crates sealed in the bay (or none). opening: from ✓ Open the bay until the last crate has opened, one crate at a time, input held (events.opening). report: from the last crate's end until the next press, then the bay (the shut door when it holds nothing, the waiting pods on the open bay when pods wait). A region with `inStates` exists only in those states",
  "conditions": { "away": "the Companion is not in the Caddy: no walk crates; the door is shut unless a sitting crate or a waiting pod is in the bay, and a ready sitting crate opens as docked", "docked": "the door follows what the bay holds (R2): one sealed crate per crate the Companion brought, at most three, or a waiting pod, with the door open; with nothing, the door is shut" },
  "regions": {
-  "bay": { "rect": [16, 48, 992, 320], "build": "bay", "inStates": ["bay", "opening", "report"], "inside": [24, 56, 976, 304], "slices": { "open": "cargo-bay-992x320", "shut": "cargo-bay-shut-976x304" }, "door": [24, 56, 976, 304], "rule": "R2: open when it holds a walk crate, a ready sitting crate or a waiting pod, and in the opening; shut when it holds nothing, and in the report; each change a cut. The open bay is the painting, drawn 1:1; the door goes 1:1 over it. The back wall runs from y 64 to about 238, the floor from about 240 to 352, its lip to 356, the rim 8 px (measured; nothing is placed by them but the feet lines)", "states": { "shut": "the door: nothing held, or the report", "open": "the painting: a walk crate, a ready sitting crate or a waiting pod, and the opening" } },
+  "bay": { "rect": [16, 48, 992, 320], "build": "bay", "inStates": ["bay", "opening", "report"], "inside": [24, 56, 976, 304], "slices": { "open": "cargo-bay-992x320", "shut": "cargo-bay-shut-976x304", "report": "cargo-bay-shut-report-976x304" }, "door": [24, 56, 976, 304], "rule": "R2: open when it holds a walk crate, a ready sitting crate or a waiting pod, and in the opening; shut when it holds nothing, and in the report; in the report the door is slices.report (GB-R6); each change a cut. The open bay is the painting, drawn 1:1; the door goes 1:1 over it. The back wall runs from y 64 to about 238, the floor from about 240 to 352, its lip to 356, the rim 8 px (measured; nothing is placed by them but the feet lines)", "states": { "shut": "the door: nothing held, or the report", "open": "the painting: a walk crate, a ready sitting crate or a waiting pod, and the opening" } },
   "crates": {
    "rect": [64, 120, 896, 176], "build": "crates", "inStates": ["bay"],
    "crate": [256, 176], "pitch": 320, "max": 3,
@@ -38,8 +38,9 @@
   "stores": { "rect": [184, 272, 600, 64], "build": "crates", "part": "stores", "inStates": ["opening"], "size": [48, 64], "feetY": 336, "places": { "energy": [184, 272, 48, 64], "data": [240, 272, 48, 64], "essence": [736, 272, 48, 64] }, "shadow": { "slice": "cargo-store-shadow-48x14", "at": [0, 57], "size": [48, 14], "offGrid": "centred on 336", "when": "with its container" }, "pictures": { "energy": "cargo-energy-48x64", "data": "cargo-data-48x64", "essence": "cargo-essence-48x64" }, "show": "a material's container only when this crate brought it: play.gained.k > 0 (state.mjs openBay, what the crate carried with the top-up, before any mend), the same figure as the report's Gathered row; the dock's mend is the Probe row's, never the containers'", "at": "a cut at 800 ms with the counter tick, also with reduced motion; until the crate's end", "order": "travelling pods draw over the containers", "digits": "none", "rule": "presentation only: no capacity, never kept (game designer 11:35)" },
   "travel": { "rect": [176, 72, 672, 472], "build": "crates", "part": "travel", "inStates": ["opening"], "pod": { "class": "collection", "size": [88, 112] }, "from": "its place in the open crate", "to": "its well's pod place: well + (4, 8)", "path": "a straight line, whole pixels, eased in and out; nothing is scaled; a pod never leaves this rectangle", "ease": "in-out: p = min(1000, t·1000/600); e = p·p·(3000 − 2p)/1000000 (64-bit); pos = from + (to − from)·e/1000, integer division truncating toward zero; at p = 1000 exactly to" },
   "report": {
-   "rect": [232, 64, 560, 288], "maxHeight": 288, "build": "reportCard", "inStates": ["report"], "pad": 16, "y": "64 + 8 × floor((288 − h) / 16)", "slice": "cargo-report-plate-560x{h}", "heights": "128 to 288 by 8", "plate": "a plate set into the shut bay door, the stamp case's construction (AR5): the rim and shade are painted; the face draws no fill, edge, top rule or shadow", "noDigits": "but beside a material icon",
-   "heading": { "at": [16, 16], "h": 32, "px": 20, "capTop": 9, "baseline": 23 },
+   "rect": [232, 64, 560, 288], "maxHeight": 288, "build": "reportCard", "inStates": ["report"], "pad": 16, "y": "64 + 8 × floor((288 − h) / 16)", "slice": "cargo-report-plate-560x{h}", "heights": "128 to 288 by 8", "plate": "a plate set into the door's plain sage panel (GB-R6), the fix 2 kit's construction: a 1 px hairline, a 5 px sage bezel lit top left, the inner shade, a lit lip; the heading on a cream label plate (AR5r): the rim and shade are painted; the face draws no fill, edge, top rule or shadow", "noDigits": "but beside a material icon",
+   "label": { "slice": "label-plate-cream-216x32", "at": [12, 12], "size": [216, 32], "text": "heading", "textAt": "+12 inside the label, centred on its height" },
+   "heading": { "at": [24, 12], "h": 32, "px": 20, "capTop": 9, "baseline": 23 },
    "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "capTop": 6, "baseline": 18, "lead": [16, 128], "content": 152, "px": 16 },
    "crates": { "max": 3, "podIcon": 16, "podPitch": 20, "podMax": 8, "reachAt": 328, "rows": "the first three crates opened, one row each; later crates get no row; Gathered adds up every crate" },
    "gathered": { "gapAbove": 8, "icon": 16, "gap": 4, "between": 24 },
@@ -48,7 +49,7 @@
    "reach": { "thresholds": "r = explored/of: below 1/3 underThird; 1/3 to below 2/3 underTwoThirds; 2/3 to below 1 underAll; explored ≥ of all; of = 0 (a crate with no map) says nothing" },
    "goal": { "gapAbove": 8, "rowH": 24, "lead": [16, 128], "content": [152, 392], "when": "goalKey (frame.json strings.goal) is not null, computed after the crates", "meanwhile": "directly under (+24), only when the step is goOut, findPod, bud or short and goalKey's meanwhile is not null: strings.report.goal.meanwhileLead, then strings.report.goal.meanwhile (or .meanwhileGlint) with {species} and {chapter}, then the ◆ icon and the read's price", "text": "the goal row's content is the same strings.goal.step.* words and icons as Home's; a name too wide for 392 px with its icons falls back to the nameless sibling (props `plain`)" },
    "height": "104 + 24 × (crates + probe row) + (world lines ? 32 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), never past maxHeight 288 (a multiple of 8, from 128): when the plate would pass 288 the world lines drop from the last until it fits",
-   "full": { "heading": 80, "crates": [120, 144, 168], "gathered": 200, "probe": 224, "world": 256, "lines": [280], "goal": 312, "bottom": 352, "at": "h 288, y 64" }
+   "full": { "heading": 76, "crates": [120, 144, 168], "gathered": 200, "probe": 224, "world": 256, "lines": [280], "goal": 312, "bottom": 352, "at": "h 288, y 64" }
   }
  },
  "notes": {
@@ -96,7 +97,7 @@
  "colours": {
   "crate": { "body": "metal", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },
   "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" },
-  "report": { "heading": "bone", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel", "contrast": { "bone": 7, "mist": 4.5, "note": "measured on the plate floor behind each row box, at 1×" } }
+  "report": { "heading": "ink", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel", "contrast": { "bone": 7, "mist": 4.5, "note": "measured on the plate floor behind each row box, at 1×" } }
  },
  "strings": {
   "title": "Cargo",
@@ -115,6 +116,7 @@
   "bay": "the signed masters cargo-bay-992x320 and cargo-bay-shut-976x304 (masters-pods)",
   "rack": "cargo-rack-992x168: the insert; draws nothing until placed",
   "report": "cargo-report-plate-560x128 to 560x288 by 8; draws nothing until placed",
+  "reportDoor": "cargo-bay-shut-report-976x304 and label-plate-cream-216x32: draw nothing until signed (rule 4)",
   "shadows": "crate-shadow-256x24, crate-shadow-432x24 and cargo-store-shadow-48x14: draw nothing until placed",
   "pod": "88×112, the collection class",
   "ribbon": "608×40, the ribbon word",

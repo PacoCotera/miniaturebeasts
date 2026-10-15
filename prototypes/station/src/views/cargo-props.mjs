@@ -41,7 +41,7 @@ export function cargoBuild(m, spec, home, frame) {
   // the bay (R1, R2): the signed painting in every state; its door goes over it when the bay holds nothing, and always in the report. The bay holds a walk crate while docked, or a pod waiting for a well, docked or away
   const crates = state === "bay" ? walkCrates(st, sv, docked).slice(0, R.crates.max) : [];
   const holds = state === "opening" || (state === "bay" && (crates.length > 0 || st.waiting.length > 0)), shut = !holds;
-  regions.bay = { state: shut ? "shut" : "open", open: slot(R.bay.slices.open, R.bay.rect.slice(2), "the signed bay (cargo.json bay)"), door: shut ? slot(R.bay.slices.shut, R.bay.door.slice(2), "the signed bay door (cargo.json bay)") : "" };
+  regions.bay = { state: shut ? "shut" : "open", open: slot(R.bay.slices.open, R.bay.rect.slice(2), "the signed bay (cargo.json bay)"), door: shut ? slot(state === "report" ? R.bay.slices.report : R.bay.slices.shut, R.bay.door.slice(2), state === "report" ? "the report door: the shut door with its plain sage panel (GB-R6)" : "the signed bay door (cargo.json bay)") : "" };
   if (state === "bay") {
     regions.crates = { places: crates.map(() => ph(`crate-sealed-${R.crates.crate.join("x")}`, R.crates.crate)), shadow: slot(R.crates.shadow.slice, R.crates.shadow.size) };
     if (st.waiting.length) regions.waitingPods = { pods: st.waiting.slice(0, R.waitingPods.max).map(podPic), shadow: slot(R.waitingPods.shadow.slice, R.waitingPods.shadow.size) };   // the pods themselves on the floor, oldest first; the context counts all
@@ -88,7 +88,7 @@ function reportOf(rp, spec, ph, slot) {
   const S1 = spec.regions.report, icon = S1.crates.podIcon, world = trimWorld(rp, spec), h = Math.min(reportHeight(rp, world, spec), S1.maxHeight);
   const podIcon = ph(`icon-pod-${icon}`, [icon, icon]), shieldIcon = ph(`icon-shield-${S1.probe.plateIcon}`, [S1.probe.plateIcon, S1.probe.plateIcon]);
   return {
-    plate: slot(S1.slice.replace("{h}", h), [S1.rect[2], h], "the signed report plate of this height (cargo.json report)"), heading: rp.heading, podIcon, shieldIcon,
+    plate: slot(S1.slice.replace("{h}", h), [S1.rect[2], h], "the signed report plate of this height (cargo.json report)"), label: slot(S1.label.slice, S1.label.size, "the cream label plate (GB-R6)"), heading: rp.heading, podIcon, shieldIcon,
     crates: rp.crates.map((r) => ({ lead: r.lead, pods: r.pods, text: r.text, reach: r.reach })),
     gathered: rp.gathered, probe: rp.probe, world,
     goal: rp.goal ? { lead: spec.strings.report.goal.lead, ...rp.goal } : null, meanwhile: rp.goal && rp.meanwhile ? { lead: spec.strings.report.goal.meanwhileLead, ...rp.meanwhile } : null,

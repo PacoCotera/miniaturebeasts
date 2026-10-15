@@ -891,7 +891,7 @@ The player sees how much came home, opens it with one press, watches each crate'
 | **The ribbon** | Which crate this is, in words |
 | **The pods travelling** from the crate to their wells | The hand-off to Pods, seen |
 | The top bar's counters and turn, ticking | What was gathered; that the world turned |
-| **The report plate**, set into the shut door | What came home, in one look, for the player who looked away |
+| **The report plate**, set into the door's plain sage panel (the kit's construction; its heading on a cream label plate, GB-R6) | What came home, in one look, for the player who looked away |
 
 **Not drawn:** a beam or a glow; anything of the field; digits but beside a material icon.
 
@@ -900,7 +900,7 @@ The player sees how much came home, opens it with one press, watches each crate'
 1. **The crates** in the bay, centred as a group on 512, each on its contact shadow; or the pods waiting on the floor; or, when the bay holds nothing, the door.
 2. **The rack** at the foot, the painted insert under the bay with a 16 px seam.
 3. While opening: **the ribbon** (fitted to its words), then **the crate** on the floor, then **the pods** on their way down.
-4. **The report plate** on the bay's door, last.
+4. **The report plate** on the bay's door (`cargo-bay-shut-report-976x304`, the shut door with a plain sage panel), last; its heading on `label-plate-cream-216x32`.
 
 ### 4. Art direction
 
