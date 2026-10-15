@@ -3751,7 +3751,7 @@ function drawTop(title, right, cs) {
 // Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
 // The conditions cluster for the bottom line's middle: storm bolts (1–3) with its heading, the fog bank with its drift.
 function lineWx() {
-  const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return null;
+  const ex = S && S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return null;
   const lvl = stormLevel(), fog = fogNear(); if (!lvl && !fog) return null;
   return { lvl, dir: ex.storm ? ex.storm.dir : 0, fog, fdir: fog ? ex.fog.dx : 0 };
 }
@@ -4556,7 +4556,7 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
-  if (RT.readOnly) return;   // a save from a newer page: input is ignored
+  if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
@@ -4847,11 +4847,26 @@ copyBtn.addEventListener('click', () => {
 // A loaded save that cannot be shown is kept the same way, with its own line and the page's line beside Reset game.
 function readOnlyNewer() { RT.readOnly = true; }
 function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getElementById('resetNote').hidden = false; }
+// The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole in one slot (a newer one replaces an older one) and starts a new world.
+// Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
+const KEPT_KEY = 'mb-save-kept';
 function drawNewer() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
-  text(RT.broken ? 'This save can’t be shown · kept untouched' : 'This page is out of date · reload to play', 225, 289, C.bone, 2, 'center');
-  R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
+  const bx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;
+  text(RT.broken ? 'This save can’t be shown · kept untouched' : 'This page is out of date · reload to play', 225 + bx, 289, C.bone, 2, 'center');
+  if (RT.armNew) text('The mibis stay with the old save', 225 + bx, 311, C.amber, 2, 'center');
+  drawLine({ ok: RT.armNew ? 'Confirm: new world' : 'Start a new world', ctx: '', back: '' });
+}
+function actReadOnly(k) {
+  NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  if (k !== 'confirm') { RT.armNew = 0; FX.bumpAt = NOW; return; }
+  if (!RT.armNew) { RT.armNew = 1; return; }
+  let raw = null;
+  try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { localStorage.setItem(KEPT_KEY, raw); if (localStorage.getItem(KEPT_KEY) !== raw) throw new Error('not kept'); } }
+  catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
+  RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
+  newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)

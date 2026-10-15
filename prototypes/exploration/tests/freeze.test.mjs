@@ -417,3 +417,19 @@ test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a plac
       S.phase = 'active'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
     frozenBy(p, "the active screen with a cut due"); }
 });
+
+// ---- a save that cannot be shown: the device's way out is two presses, and the old save is kept whole ----
+for (const kind of ["broken", "newer"]) test(`a ${kind} save: ✓ arms, ✓ again keeps the old bytes in one slot and starts a new world; any other key does nothing`, () => {
+  const old = JSON.stringify({ v: 8, seed: 5, note: "old bytes " + kind });
+  const p = page({}); p.store[p.KEY] = old;
+  p.run(kind === "broken" ? "readOnlyBroken()" : "readOnlyNewer()");
+  for (const k of ["up", "left", "right", "down", "back", "call"]) { p.key(k); assert.equal(p.run("RT.readOnly"), true, k); assert.equal(p.store[p.KEY], old, "untouched"); }
+  assert.equal(p.run("FX.bumpAt"), p.clock.t, "refused with the bump");
+  p.key("confirm"); assert.equal(p.run("RT.armNew"), 1); assert.equal(p.store[p.KEY], old);
+  p.key("down"); assert.equal(p.run("RT.armNew"), 0, "another key clears the arm");
+  p.key("confirm"); p.key("confirm");
+  assert.equal(p.run("RT.readOnly"), false); assert.equal(p.store["mb-save-kept"], old, "the old save, byte for byte");
+  assert.notEqual(p.store[p.KEY], old); assert.equal(p.S.phase, "setup"); assert.ok(!p.S.st, "a fresh Station");
+  // a newer move replaces an older one
+  p.store[p.KEY] = old + "2"; p.run("readOnlyBroken()"); p.key("confirm"); p.key("confirm"); assert.equal(p.store["mb-save-kept"], old + "2");
+});

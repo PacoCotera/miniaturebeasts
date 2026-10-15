@@ -134,7 +134,8 @@ test("a save from a newer generator (gen 3) is read-only: load() says 'newer', b
   assert.equal(p.run("S"), null, "nothing was read into the page");
   assert.equal(p.run("load()"), "newer");
   p.run("var saves = 0; const save0 = save; save = function () { saves++; return save0.apply(this, arguments); };");
-  for (const k of ["up", "down", "left", "right", "confirm", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  for (const k of ["up", "down", "left", "right", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  // Confirm is the device's way out (two presses start a new world and keep this save): freeze.test.mjs
   p.run("render(1); frame(1000)");
   assert.equal(p.run("saves"), 0, "nothing called save()");
   assert.equal(p.run("S"), null, "input started no world");
