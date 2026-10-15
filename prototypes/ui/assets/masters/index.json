@@ -3828,8 +3828,8 @@
    "file": "pods/ring-hatch-80x56.png",
    "w": 80,
    "h": 56,
-   "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
-   "signed": "art director, Pods room verdict (README fa105365)"
+   "sha256": "c92bc7aee08d1830309a9baf86bf3b4c44f81709e254c0c1395c50c4ab987d9b",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "ring-kin-56x56": {
    "file": "pods/ring-kin-56x56.png",
@@ -3849,8 +3849,8 @@
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
-   "sha256": "d1b7a8c7e6d45b64694f8f8d61276b37850a3f5f96c990a4670a2dbd307ca5c5",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "9f85f063acce661b8f55563700e6f1dfeacad7ed60002783af8f9fe7f0dfddd0",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
@@ -3884,8 +3884,8 @@
    "file": "pods/room-bench-stage-overview.png",
    "w": 1024,
    "h": 522,
-   "sha256": "df56a679983ec39eb7444ef9807d9424f19ca8f97a7199a6f587f7556f49b172",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "3581670aa531fb6f525f66985e52fdf3e5ce00e11e8565873e0ffe4c3847bd55",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "room-bench-stage-probe": {
    "file": "pods/room-bench-stage-probe.png",
@@ -4492,64 +4492,64 @@
    "file": "pods/trait-S03-claws-digging-wedges-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "16da24b3e30b8f0b815201ae8830dc21f1afa8dbc4104ae4952decd8d1373755",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "20e625d5b70dc964f2a50564cb5c81d6b9859530e485bff034e2aa229483d019",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-digging-wedges-104x96": {
    "file": "pods/trait-S03-claws-digging-wedges-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "30d1c713ecad64b6ffb2a3eddbe4e539223847309894274f30ae1f287f9c947c",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "6645f47c1bac7d789bdd19bd8838bb0c56de9a03d47e3eba93dced1105b8aa43",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-digging-wedges-128x160": {
    "file": "pods/trait-S03-claws-digging-wedges-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "cce67fac57fe49b071734705971678cd3e7c9dfb9afad99efd9532708ef74109",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "c2f091b580f17181f0d3f3a1f9a1da57e239899bedb8fdddcc2da9bb5ed51971",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-pads-104x160": {
    "file": "pods/trait-S03-claws-pads-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "b7971035aedb8a896ab3b6bfd0001e1210bfee917c467b31a8656a3c70ca8533",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "1d346bb407d5cbb716370a51d57f5aabd6d5f0eb65134e2a35b113a5f4975c4e",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-pads-104x96": {
    "file": "pods/trait-S03-claws-pads-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "be3ef9792f56c8280b356aed7dcd75ad48e7e7f1fd654d840e0a81b798c48ee6",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "0c87d44abbbd9f73f5e5f89c34c394be444b117dc28ecc3f916a13639b3e7cb5",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-pads-128x160": {
    "file": "pods/trait-S03-claws-pads-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "515d2dc650092e22222ea4fd72c7c733215b4df41e94d11c8b9758062b5ce248",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "4013ca229ba14ecf8196c40db400f808612f2ec0655eb452108ec5b871e244ae",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-round-feet-104x160": {
    "file": "pods/trait-S03-claws-round-feet-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "71f39fb48bb2edda18f500f7b6c638bbc9e51a1ed8eaa2429020af84c67ee78b",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "6bc64c0ef0a011e9f8f77e813831be2065623b85980a1c48b674a6c9b5655b9c",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-round-feet-104x96": {
    "file": "pods/trait-S03-claws-round-feet-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "80126cf32f9ff013eba07bb862345c24893df3bd9a20980e67bf1ba06ec9e8bf",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "8c4e41aa1539d46cd4bf39993016dd913e2768bfc9ea63cce5527899d477fb4a",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-claws-round-feet-128x160": {
    "file": "pods/trait-S03-claws-round-feet-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "078775db23d4e03edc7669cf98ab8de9b4a1a9366a553c711a88729cb13b768d",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "2a5a2e5af9201d31c2e4893b4bf1b6b7a0627360958f2ee0c9830341904fd0c0",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-crest-between-104x160": {
    "file": "pods/trait-S03-crest-between-104x160.png",
@@ -4702,64 +4702,64 @@
    "file": "pods/trait-S03-scales-between-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "f73a6360ebaa43b87ecd39d5485dc938c4581ae490910176871be09a0ea81a66",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "56ca9957ae014bb43469d5d5b568548e58c1a618461c0feadfbd98455207520f",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-between-104x96": {
    "file": "pods/trait-S03-scales-between-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "61fb78635421ce6219c46a1f44fd096bdab980ee65412270b5e838b608fa8ea8",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "3edf3e13eded0e7f0a7442bdb55d244b10a83399b9586a7397d1f621f4dabca8",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-between-128x160": {
    "file": "pods/trait-S03-scales-between-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "b4a1aaf6459159f88c891ab9c85147ecf04cf4c9315e95b9bcd89cc71a041b80",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "1c5b9dd06927c18339a3966f30b4ad1dc901c39a8ce918a7928acfcdc5b88027",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-few-fine-104x160": {
    "file": "pods/trait-S03-scales-few-fine-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "d804490708314ceb6036033e158511ebfa44f9d5b46f80c3b670c48591592f99",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "8574f15edcc932c688ba1c13b7f5086952409123b7b0c59eacf637a4805c503d",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-few-fine-104x96": {
    "file": "pods/trait-S03-scales-few-fine-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "d37b081190c5fa418276626e3d4dade84e4cd4d743ad7a0222e7e65702b8fb5f",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "81186022e7fbeaf83362de4712e4cf31207e059e1c641a75fc3a73ced00c2807",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-few-fine-128x160": {
    "file": "pods/trait-S03-scales-few-fine-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "98e365e34de411d72fe3f9cbf648f4f244275178ae97dbec675868bdbd553701",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "341c1dcf6f277fe62b980c9b0d0896bf7902b5ea9fefb2046ba24c207342605c",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-many-coarse-104x160": {
    "file": "pods/trait-S03-scales-many-coarse-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "93e0aa6ec8c5aa48ad01f0a703e30a0991508d95bbd4b3bfa576e34725a5b817",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "7ecb417c05a32aee10bc80f737d0f6414fc6345882deb72547a0a4c83a4bf32d",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-many-coarse-104x96": {
    "file": "pods/trait-S03-scales-many-coarse-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "440defcf10d2b89f4799998bc666e43686efd2b04533a164727f03a9c5858084",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "8b8cdd7da5331e430cd74f43ce63df788373215f7f6696931d65d79e3c9bb0a6",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-scales-many-coarse-128x160": {
    "file": "pods/trait-S03-scales-many-coarse-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "7ae760f0b07f4b3c239a456ed60e32833e2142493b7bbea158edd16a9152385d",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "a50b6a247e1c6f12ec442f871cee02f4872d13ce8c976ecd85bdb5fe3312e523",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "trait-S03-tail-between-104x160": {
    "file": "pods/trait-S03-tail-between-104x160.png",
