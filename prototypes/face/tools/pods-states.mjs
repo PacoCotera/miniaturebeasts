@@ -4,10 +4,9 @@ import { openStation } from "./station-page.mjs";
 
 export async function podsStates(visit) {
   const { page, fails, fail, close } = await openStation();
-  await page.evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.evaluate(() => window.__st.act("dock")); await page.waitForTimeout(300);
-  const before = await page.evaluate(() => window.__st.ST.tray.map((p) => p.id));   // the fixture save's own pods (it holds an S01 pod already)
+  const crateId = await page.evaluate(() => window.__st.seedCrate("S01", 2, 4101).crate.id); await page.evaluate(() => window.__st.act("dock")); await page.waitForTimeout(300);
   await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300)
-  const pods = await page.evaluate((before) => window.__st.ST.tray.filter((p) => p.species === "S01" && !before.includes(p.id) && p.id.startsWith("dev-")).map((p) => p.id), before);   // the two just opened, by id, not by tray order (the opening also brings the save's own waiting pod, so the dev crate's ids are the filter) (a fresh crate of two pods of one species, as journey.mjs compareShot does)
+  const pods = await page.evaluate((crateId) => window.__st.ST.tray.filter((p) => p.id.startsWith(crateId + ":")).map((p) => p.id), crateId);   // the dev crate's own pods, by its id (openBay names them crate:pod); the save's bay crate opens with it
   if (pods.length !== 2) fail("no two pods of one species in the rack");
   const ui = () => page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, cur: window.__st.UI.pods.cur, focus: window.__st.UI.pods.focus.cur, cmp: !!window.__st.UI.pods.cmp }));
   const at = async (name, want) => {
@@ -22,6 +21,7 @@ export async function podsStates(visit) {
     // the warning before a spend (frame.json goalWarn): the goal here is S01's (the save's own S01 pods are unidentified), so identifying a pod of the goal's own species is its step and warns of nothing; a pod of ANOTHER species is not, so
     // with the ◆ set to exactly what identify and the goal's grow need, Identify here would leave the grow short and the line warns. The pod is seeded for this state and taken out again; the ◆ is given back
     const warnId = await page.evaluate(() => window.__st.seedPod("S04", 4101).pod.id);
+    if (!(await page.evaluate((id) => window.__st.ST.tray.some((p) => p.id === id), warnId))) fail("identify warns: the S04 pod did not land in the rack");
     const kept = await page.evaluate(async () => { const S = await import("/station/src/state.mjs"), s = window.__st, st = s.ST, was = { e: st.e, d: st.d, s: st.s }, g = S.growCost(st, {}, s.settings), i = S.identifyCost(st, s.settings); st.e = Math.max(st.e, g.e); st.s = Math.max(st.s, g.s); st.d = i + g.d; return was; });
     await go(warnId, "pod", "overview"); await at("overview, identify warns", { view: "overview", focus: "pod" });
     { const need = await page.evaluate(() => window.__st.check().log.type.filter((t) => t.region === "need").map((t) => t.text).join(" ")); if (!need.trim()) fail("overview, identify warns: the right slot is empty, so the warning did not fire"); }
