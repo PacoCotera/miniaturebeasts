@@ -303,7 +303,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     if (strcmp(lv_label_get_text(o), g_text) != 0) lv_label_set_text(o, g_text);
     if (n->a != a) lv_obj_set_style_text_font(o, f, 0);
   }
-  if (n->fresh || n->x != px || n->y != py) lv_obj_set_pos(o, px, py);
+  if (n->fresh || n->x != px || n->y != py) { if (n->born && in_clip) lv_obj_set_pos(o, x, y); else lv_obj_set_pos(o, px, py); }   /* a clip's child born this frame stands on the nursery at its screen place, so moving it into its clip invalidates its own box, not the box at its clip-relative place */
   if (n->fresh || n->w != w || n->h != h) {
     if (kind == FN_TEXT) lv_obj_set_size(o, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     else lv_obj_set_size(o, w, h);
@@ -353,7 +353,7 @@ static void move_to(lv_obj_t *obj, int32_t idx) {
 void prim_end(void) {
   for (int again = 1; again;) { again = 0; for (int i = 0; i < g_n; i++) if (!g_o[i].seen) { drop(i); again = 1; break; } }
   { int any = 0; for (int i = 0; i < g_n; i++) if (g_o[i].born) any = 1;   /* the new root nodes have their places and sizes: they join the screen, and only now is anything invalidated */
-    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); g_o[i].born = 0; } } }
+    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); if (c) lv_obj_set_pos(g_o[i].obj, g_o[i].x, g_o[i].y); g_o[i].born = 0; } } }
   /* draw order is child order: put each object at its place in the sequence the page sent, among its siblings (the screen's, or its clip's) */
   int root = 0; for (int i = 0; i < g_n; i++) g_o[i].child_k = 0;
   for (int k = 0; k < g_nseq; k++) {

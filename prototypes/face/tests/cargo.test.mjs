@@ -137,9 +137,21 @@ test("a crate's shadow is kept with no size while it slides and is whole at its 
   f.frame(t0 + total + 20); for (let i = 0; i < 3; i++) assert.deepEqual(nb(`crates.${i}.shadow`), at(i)); assert.deepEqual(f.errors(), []);
   const still = await start(scene({ crates: 3 }), { motion: false, t0: 1000, node: true }), ns = mk(still); for (let i = 0; i < 3; i++) assert.deepEqual(ns(`crates.${i}.shadow`), at(i), `reduced motion: crate ${i}'s shadow whole on the Dock frame`);
 });
-test("the crates' arrival (the Dock, three crates) redraws at most a quarter of the screen a refresh, at frames every 40 ms and every 16 ms through 1,100 ms; the worst value is printed", { skip }, async () => {
-  const worst = async (step) => { const f = await start(scene({ crates: 3 }), { t0: 1000 }); logOf(f); dirty(f); const t0 = f.t, M = f.M; f.send({ t: "event", kind: "arrival", target: "crates", ms: 1000, hold: 0 }); let w = 0; for (let t = step; t <= 1100; t += step) { f.frame(t0 + t); w = Math.max(w, dirty(f)); } return w; };
-  const ws = {}; for (const step of [40, 16]) { const w = ws[step] = await worst(step); console.log(`# Cargo's crateIn, frames every ${step} ms: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); } for (const step of [40, 16]) { const w = ws[step]; assert.ok(w <= 153600, `crateIn (${step} ms): dirty ${w} px (${(100 * w / 614400).toFixed(1)}%), over a quarter of the screen`); }
+// The Dock as the host plays it: the bay shut (away), then on one frame the docked props (the door opens as a cut, R2) and events.crateIn; the host then stages the line's drawn count at 250, 500 and 1000 ms (intents/cargo.mjs cratesIn).
+// The Dock frame is a props change, held to Cargo's ruled ceiling (303,454 px); every later frame is an animation frame, held to 25%.
+test("the crates' arrival (a Dock from the shut bay, three crates): the Dock frame is a cut ≤ 303,454 px; every later refresh through 1,100 ms, the line's staged count included, redraws at most a quarter of the screen, at frames every 40 and 16 ms; the worst values are printed", { skip }, async () => {
+  const shown = (f, b) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); };
+  const run = async (step) => {
+    const f = await start(scene({ crates: 3, away: true }), { t0: 1000 }), b = scene({ crates: 3 }), at = (drawn) => shown(f, { ...buildOf(b.st, b.sv, cargoUI({ drawn })) }); dirty(f);
+    at(1); f.send({ t: "event", kind: "arrival", target: "crates", ms: EV.crateIn.each.ms + 2 * EV.crateIn.each.stagger, hold: 0 }); const t0 = f.t; f.frame(t0); const dock = dirty(f);
+    const stage = [[250, 2], [500, 3], [1000, null]]; let w = 0, k = 0;
+    for (let t = step; t <= 1100; t += step) { while (k < stage.length && stage[k][0] <= t) at(stage[k++][1]); f.frame(t0 + t); w = Math.max(w, dirty(f)); }
+    assert.deepEqual(f.errors(), []); return { dock, w };
+  };
+  for (const step of [40, 16]) {
+    const { dock, w } = await run(step); console.log(`# Cargo's crateIn, frames every ${step} ms: the Dock cut ${dock} px (${(100 * dock / 614400).toFixed(1)}%), worst slide refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`);
+    assert.ok(dock <= 303454, `the Dock cut redrew ${dock} px`); assert.ok(w <= 153600, `crateIn (${step} ms): dirty ${w} px (${(100 * w / 614400).toFixed(1)}%), over a quarter of the screen`);
+  }
 });
 
 // ---- one crate opening, at the instants of its steps ----

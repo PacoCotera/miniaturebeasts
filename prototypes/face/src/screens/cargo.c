@@ -76,10 +76,10 @@ static void build_crates(void) {
   int n = v_plen("regions.crates.places"), max = ci("regions.crates.max", 3), in[4]; if (n > max) n = max; crect("regions.bay.inside", in);
   const char *shadow = v_pstr("regions.crates.shadow"); int sx = ck("regions.crates.shadow.at", 0), sy = ck("regions.crates.shadow.at", 1), sw = ck("regions.crates.shadow.size", 0), sh = ck("regions.crates.shadow.size", 1);
   anim_state_t t; int arriving = anim_get(ANIM_ARRIVAL, "crates", &t), each = ci("events.crateIn.each.ms", 500), stagger = ci("events.crateIn.each.stagger", 250), from = spec_int(C, "events.crateIn.each.from.1", -64);
-  int ys[8], shown[8], landed[8], sent = 0;
+  int ys[8], shown[8], landed[8], sent = 0;   /* a crate not yet in waits with no size where its slide starts (y = place + from), so showing it redraws its first box only, not its landed box too */
   for (int i = 0; i < n; i++) {
     int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); int y = r[1]; shown[i] = 1; landed[i] = 1;
-    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) { shown[i] = 0; landed[i] = 0; } else { int p = e >= each ? 1000 : e * 1000 / each; landed[i] = p == 1000; y = p == 1000 ? r[1] : r[1] + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; } }
+    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) { shown[i] = 0; landed[i] = 0; y = r[1] + from; } else { int p = e >= each ? 1000 : e * 1000 / each; landed[i] = p == 1000; y = p == 1000 ? r[1] : r[1] + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; } }
     ys[i] = y;
     /* the nodes this place sends inside the clip, as the loop below sends them: the shadow's slot, the crate (a node is sent only for a picture the host has) */
     if (has(shadow)) sent++; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) sent++;
