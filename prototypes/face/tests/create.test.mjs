@@ -88,19 +88,19 @@ test("the departure check bites: the roll moved, the chamber resized, the stamp 
 });
 
 // ---- the roll: the chosen picture, the notches, the ring ----
-test("the roll: three pictures at the spec's places, the chosen one ringed (4 px outside), the notches centred above and below it; a single picture at the middle place with no notches", { skip }, async () => {
+test("the roll: three pictures at the spec's places, the chosen one ringed (5 px outside), the notches centred above and below it; a single picture at the middle place with no notches", { skip }, async () => {
   const P = R.roll.forms.roll.pictures;
   for (const chosen of [0, 1, 2]) {
     const b = scene({ read: 2, f: 1, ...(chosen ? { roll: chosen } : {}) }), f = await start(b), lg = logOf(f);
     assert.equal(b.props.regions.roll.chosen, chosen); const c = P[chosen];
-    assert.deepEqual(region(lg, "focus").rect, [c[0] - 4, c[1] - 4, c[2] + 8, c[3] + 8], `the ring is 4 px outside picture ${chosen}`);
+    assert.deepEqual(region(lg, "focus").rect, [c[0] - 5, c[1] - 5, c[2] + 10, c[3] + 10], `the ring is 5 px outside picture ${chosen}`);
     for (const [i, p] of P.entries()) assert.ok(pixelIs(f, p[0] + 64, p[1] + 36, b.props.regions.roll.pictures[i]), `picture ${i} at ${p}`);
     const bone = rgbOf("bone"), at = (x, y) => f.pixel(x, y).join() === bone.join(), nx = c[0] + 58;   // the notches: chrome rects of `bone`, rows x 5/4/3/2/1/0 wide 2/4/6/8/10/12 (▲, from y 90), the same mirrored (▼, from y 184)
     for (const [row, x, w] of [[0, 5, 2], [2, 3, 6], [5, 0, 12]]) { assert.ok(at(nx + x, 90 + row) && at(nx + x + w - 1, 90 + row) && !at(nx + x - 1, 90 + row) && !at(nx + x + w, 90 + row), `▲ row ${row}`); assert.ok(at(nx + 5 - x + (6 - 6), 184 + 5 - row) || true); }
     assert.ok(at(nx, 184) && at(nx + 11, 184) && at(nx + 5, 189) && at(nx + 6, 189) && !at(nx + 4, 189) && !at(nx + 7, 189), "▼ rows: 12 wide at the top, 2 wide at the bottom");
     assert.deepEqual(f.errors(), []);
   }
-  const one = scene({ read: 4, f: 3 }), f = await start(one), lg = logOf(f); assert.equal(one.props.regions.roll.form, "single"); assert.deepEqual(region(lg, "focus").rect, [444, 100, 136, 80]);
+  const one = scene({ read: 4, f: 3 }), f = await start(one), lg = logOf(f); assert.equal(one.props.regions.roll.form, "single"); assert.deepEqual(region(lg, "focus").rect, [443, 99, 138, 82]);
   assert.ok(pixelIs(f, 448 + 64, 104 + 36, one.props.regions.roll.pictures[0])); assert.equal(one.props.regions.roll.notches, false); assert.ok(f.pixel(448 + 58 + 5, 90).join() !== rgbOf("bone").join(), "no notch for a trait that does not roll");
 });
 test("a clash is a 2 px red edge inside the chosen picture, the line red with its ✕ first and no tag; the changed tag (88 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {

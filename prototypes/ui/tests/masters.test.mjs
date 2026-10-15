@@ -74,3 +74,16 @@ test("--status places signed, placeholder, held and new slices flagged in the in
   assert.deepEqual(Object.keys(after), ["page-pane-8x4"], "the held and the withdrawn leave the index"); assert.ok(!existsSync(path.join(root, "pods/room-shelf.png")), "and their files");
   assert.deepEqual(check(root), []);
 });
+
+// fix 14: a creature picture stands on the ground its ring lies on. Every placed mibi-* master (but the halos, a glow and no creature standing) has a footprint: ink in its lowest rows at alpha 128 or more.
+test("every placed mibi-* master has a footprint (fix 14, FR4); a halo is no creature", async () => {
+  const { decodePNG } = await import("../png.mjs"), { measureFoot } = await import("../assets.mjs"), root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../assets/masters");
+  const idx = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters; let n = 0;
+  for (const [id, m] of Object.entries(idx)) {
+    if (!id.startsWith("mibi-")) continue;
+    const png = decodePNG(readFileSync(path.join(root, m.file))), foot = measureFoot(id, { w: png.width, h: png.height, rgba: () => png.data });
+    if (id.startsWith("mibi-halo-")) { assert.equal(foot, null, id + ": a halo has no footprint"); continue; }
+    n++; assert.ok(foot && foot[2] >= 1 && foot[1] <= png.height && foot[0] + foot[2] <= png.width, `${id} has a footprint: ${foot}`);
+  }
+  assert.ok(n >= 60, "the creature masters were measured: " + n);
+});

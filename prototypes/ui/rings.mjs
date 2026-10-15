@@ -68,3 +68,43 @@ export function footprintRing(foot, drawn, mirrored = false, cellW = drawn[2], t
   const [fx, feetY, w] = foot, x = mirrored ? cellW - fx - w : fx, fh = footprintHeight(w, tokens);
   return [drawn[0] + x - 5, drawn[1] + feetY - (fh + 10) / 2, w + 10, fh + 10];
 }
+
+// ---- fix 14: the focus ring as the face composes it (lvgl-switch.md §2.2): three bands (key, core, key) outside the object, each band's outer shape the previous band's inner shape ----
+// `T` is frame.json focus.ring. `drawn` is the object's rect as the screen drew it (lifted where it lifts); `o`: { ground: "default" | "paper", foot: [x, feetY, w] and mirrored for a footprint, light: the footprint's light weight, tabTop }.
+// Returns { x, y, w, h, kind, ops, nine? }: the ring's box and its bands as ops { band: "key" | "core", shape: "round" | "ellipse" | "tab", x, y, w, h, width, radius, ... } in the ring's own pixels. Pure, integers only.
+export function focusRingOps(shape, drawn, T, o = {}) {
+  const b = T.bands.map((k) => k.w), reach = T.reach, ground = o.ground ?? "default", hasKey = T.colours[ground].key != null, ins = [0, b[0], b[0] + b[1]], band = (k) => (k === 1 ? "core" : "key");
+  const ellipse = (x, y, w, h, insets = ins, widths = b) => ({ x, y, w, h, kind: "composed", ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "ellipse", x: insets[k], y: insets[k], w: w - 2 * insets[k], h: h - 2 * insets[k], width: widths[k], radius: 0 })) });
+  if (shape === "oval") return ellipse(drawn[0] - reach, drawn[1] - reach, drawn[2] + 2 * reach, drawn[3] + 2 * reach);
+  if (shape === "footprint") {
+    const [fx, feetY, w] = o.foot, x = o.mirrored ? drawn[2] - fx - w : fx, fh = footprintHeight(w, T.shapes.footprint), W = w + 10, H = fh + 10;
+    return o.light ? ellipse(drawn[0] + x - 5, drawn[1] + feetY - H / 2, W, H, T.shapes.footprint.light.insets, T.shapes.footprint.light.widths) : ellipse(drawn[0] + x - 5, drawn[1] + feetY - H / 2, W, H);
+  }
+  if (shape === "tab") {
+    const t = T.shapes.tab, tabTop = o.tabTop ?? 40, body = drawn[2], W = body + 2 * t.outside[0] + t.slant, H = t.bottom[0] - t.top[0];
+    return { x: drawn[0] - t.outside[0], y: t.top[0], w: W, h: H, kind: "composed", ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "tab", x: t.outside[0] - t.outside[k], y: t.top[k] - t.top[0], body, width: b[k], slant: t.slant, outside: t.outside[k], top: t.top[k], slantTo: t.slantTo, bottom: t.bottom[k], radius: t.radius[k], tabTop })) };
+  }
+  if (shape.circle !== undefined) {
+    const c = shape.circle, rho = c === "box" ? (drawn[2] >> 1) + reach : c.r + reach, ox = c === "box" ? drawn[0] + (drawn[2] >> 1) : drawn[0] + c.centre[0], oy = c === "box" ? drawn[1] + (drawn[3] >> 1) : drawn[1] + c.centre[1];
+    return ellipse(ox - rho, oy - rho, 2 * rho, 2 * rho);
+  }
+  const r = shape.rect, chip = shape.chip ?? 0, R = r + reach, S = 2 * R + 4, x = drawn[0] - chip - reach, y = drawn[1] - reach, w = drawn[2] + 2 * chip + 2 * reach, h = drawn[3] + 2 * reach;
+  if (w < 2 * R || h < 2 * R) throw new Error(`focus ring refused: a ring box ${w}x${h} under 2R (${2 * R}) on an axis`);
+  return { x, y, w, h, kind: "nine", R, S, ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "round", x: ins[k], y: ins[k], w: S - 2 * ins[k], h: S - 2 * ins[k], width: b[k], radius: R - ins[k] })) };
+}
+// A ring's pixels: an array w*h of 0 (none), 1 (key) or 2 (core), the bands drawn in order. A nine-slice is its S x S source expanded (corners 1:1, the middle tiled).
+export function ringRaster(ring) {
+  const paint = (px, W, H, op) => {
+    let m, ox = op.x, oy = op.y, mw = op.w, mh = op.h;
+    if (op.shape === "tab") { const t = tabRingMask(op.body, { tab: { slant: op.slant, outside: op.outside, top: op.top, slantTo: op.slantTo, bottom: op.bottom, radiusBottom: op.radius }, width: op.width, tabTop: op.tabTop }); m = t.mask; mw = t.w; mh = t.h; }
+    else m = ringMask(op.w, op.h, op.width, op.radius, op.shape);
+    for (let y = 0; y < mh; y++) for (let x = 0; x < mw; x++) if (m[y * mw + x] && ox + x < W && oy + y < H) px[(oy + y) * W + ox + x] = op.band === "core" ? 2 : 1;
+  };
+  if (ring.kind === "nine") {
+    const { S, R, w, h } = ring, src = new Uint8Array(S * S); for (const op of ring.ops) paint(src, S, S, op);
+    const px = new Uint8Array(w * h), mid = S - 2 * R;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const sx = x < R ? x : x >= w - R ? S - (w - x) : R + ((x - R) % mid), sy = y < R ? y : y >= h - R ? S - (h - y) : R + ((y - R) % mid); px[y * w + x] = src[sy * S + sx]; }
+    return px;
+  }
+  const px = new Uint8Array(ring.w * ring.h); for (const op of ring.ops) paint(px, ring.w, ring.h, op); return px;
+}

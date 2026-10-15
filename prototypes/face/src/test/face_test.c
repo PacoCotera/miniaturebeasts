@@ -110,8 +110,8 @@ static void ring_vectors(const char *dir) {
   char path[512]; snprintf(path, sizeof path, "%s/rings.json", dir); long len; char *js = slurp(path, &len);
   if (!js) { check(0, "rings.json", "cannot read"); return; }
   if (spec_load("rings", js, (size_t)len) < 0) { check(0, "rings.json", spec_error()); free(js); return; }
-  prim_palette_clear(); prim_palette_add("focus", 0xffe6ad);
-  int n = spec_len("rings", "cases"), bad = 0; uint8_t *mask = (uint8_t *)malloc(1024 * 600), *px = (uint8_t *)malloc(64 * 64 * 4);
+  prim_palette_clear(); prim_palette_add("focus", 0xffe6ad); prim_palette_add("void", 0x0c0a12);
+  int n = spec_len("rings", "cases"), bad = 0; uint8_t *mask = (uint8_t *)malloc(1024 * 600), *px = (uint8_t *)malloc(64 * 64 * 4), *big = (uint8_t *)malloc(256 * 256 * 4), *roles = (uint8_t *)malloc(256 * 256), *ex = (uint8_t *)malloc(512 * 256);
   uint8_t src[20 * 20]; ring_mask(src, 20, 20, 2, 6, 0);
   for (int c = 0; c < n; c++) {
     char p[64], op[16], want[80], got[65]; int ok = 0;
@@ -132,6 +132,16 @@ static void ring_vectors(const char *dir) {
       int w = I("w"), h = I("h"); uint8_t *e = (uint8_t *)malloc((size_t)w * h);
       for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) { int sx = x < 8 ? x : x >= w - 8 ? 20 - (w - x) : 8 + (x - 8) % 4, sy = y < 8 ? y : y >= h - 8 ? 20 - (h - y) : 8 + (y - 8) % 4; e[y * w + x] = src[sy * 20 + sx]; }
       mask_sha(e, (size_t)w * h, got); ok = strcmp(got, want) == 0; free(e);
+    } else if (strcmp(op, "cased") == 0) {   /* the cased ring (fix 14): its three ops composed give the roles (0 none, 1 key, 2 core) the oracle gives; a nine-slice source expands to its ring box (insets R, the middle tiled) */
+      char kind[12], ops[800]; snprintf(p, sizeof p, "cases.%d.kind", c); spec_str("rings", p, kind, sizeof kind); snprintf(p, sizeof p, "cases.%d.ops", c); spec_str("rings", p, ops, sizeof ops);
+      int nine = strcmp(kind, "nine") == 0, w = I("w"), h = I("h"), S = I("S"), R = I("R"), pw = nine ? S : w, ph = nine ? S : h;
+      ok = pw <= 256 && ph <= 256 && w * h <= 512 * 256; if (ok) { memset(big, 0, (size_t)pw * ph * 4); ok = prim_compose(big, pw, ph, ops) >= 1; }
+      if (ok) {
+        for (int i = 0; i < pw * ph; i++) { const uint8_t *q = big + i * 4; uint32_t rgb = ((uint32_t)q[2] << 16) | ((uint32_t)q[1] << 8) | q[0]; roles[i] = q[3] != 255 ? 0 : rgb == 0xffe6ad ? 2 : 1; }
+        if (nine) { for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) { int sx = x < R ? x : x >= w - R ? S - (w - x) : R + (x - R) % (S - 2 * R), sy = y < R ? y : y >= h - R ? S - (h - y) : R + (y - R) % (S - 2 * R); ex[y * w + x] = roles[sy * S + sx]; } mask_sha(ex, (size_t)w * h, got); }
+        else mask_sha(roles, (size_t)w * h, got);
+        ok = strcmp(got, want) == 0;
+      }
     } else if (strcmp(op, "refuse") == 0) {
       char ops[400]; snprintf(p, sizeof p, "cases.%d.ops", c); spec_str("rings", p, ops, sizeof ops); memset(px, 0, 64 * 64 * 4); ok = prim_compose(px, 64, 64, ops) < 0;
     }
@@ -139,7 +149,7 @@ static void ring_vectors(const char *dir) {
     if (!ok) { bad++; char d[100]; snprintf(d, sizeof d, "case %d (%s)", c, op); check(0, "rings", d); } else checks++;
   }
   printf("rings: %d cases, %d differ\n", n, bad);
-  free(mask); free(px); free(js);
+  free(mask); free(px); free(big); free(roles); free(ex); free(js);
 }
 /* the metrics (metrics.json, made from the table of the compiled fonts): lv_text_get_width gives the width the table sums, for every Station string at 16, 20 and 28 px */
 static void metrics_vectors(const char *dir) {

@@ -30,7 +30,7 @@ export function departures(log, spec, props, cur) {
     for (const r of got(key)) must(within(r.rect, page.rect), `${key} (${r.layer}) ${r.rect} leaves the page ${page.rect}`);
   }
   { const target = props.focus.targets.findIndex((t) => t.id === cur), rings = got("focus"); must(rings.length === 1 && target >= 0, `one ring on the focused frame (${rings.length} drawn, ${cur})`);
-    if (rings.length === 1 && target >= 0) { const f = listPitch(R[target < 8 ? "leftPage" : "rightPage"].places, 8, target % 8), want = [f[0] - 4, f[1] - 4, f[2] + 8, f[3] + 8]; must(eq(rings[0].rect, want), `the ring ${rings[0].rect} is not ${want} (the frame outset 4)`); } }
+    if (rings.length === 1 && target >= 0) { const f = listPitch(R[target < 8 ? "leftPage" : "rightPage"].places, 8, target % 8), want = [f[0] - 5, f[1] - 5, f[2] + 10, f[3] + 10]; must(eq(rings[0].rect, want), `the ring ${rings[0].rect} is not ${want} (the frame outset 5)`); } }
   return out;
 }
 

@@ -21,7 +21,7 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
-  { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 8, R.roll.rect[1], R.roll.rect[2] + 16, R.roll.rect[3]]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
+  { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 5, R.roll.rect[1] - 5, R.roll.rect[2] + 10, R.roll.rect[3] + 10]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
   // what each state draws, and what it does not
   must(rolled || (got("roll").length === 0 && got("focus").length === 0), "nothing read: no roll and no ring");
   must(!rolled || got("roll").length > 0, "the roll is drawn");
