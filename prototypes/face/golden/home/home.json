@@ -9,6 +9,18 @@
    "hash": "01c74cda",
    "png": "home-docked.png"
   },
+  "home-docked-dawn": {
+   "hash": "96549afa",
+   "png": "home-docked-dawn.png"
+  },
+  "home-docked-dusk": {
+   "hash": "7aeffc27",
+   "png": "home-docked-dusk.png"
+  },
+  "home-docked-night": {
+   "hash": "384c8b13",
+   "png": "home-docked-night.png"
+  },
   "home-goal-docked": {
    "hash": "a0010aa2",
    "png": "home-goal-docked.png"

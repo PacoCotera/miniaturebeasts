@@ -34,7 +34,7 @@
    "png": "vivarium-empty-away.png"
   },
   "vivarium-docked-dawn": {
-   "hash": "881938c2",
+   "hash": "617376af",
    "png": "vivarium-docked-dawn.png"
   },
   "vivarium-docked-day": {
@@ -42,11 +42,11 @@
    "png": "vivarium-docked-day.png"
   },
   "vivarium-docked-dusk": {
-   "hash": "ce5801f3",
+   "hash": "9ab6b9a0",
    "png": "vivarium-docked-dusk.png"
   },
   "vivarium-docked-night": {
-   "hash": "297a574c",
+   "hash": "549fb7dc",
    "png": "vivarium-docked-night.png"
   },
   "vivarium-walk-8000ms": {
