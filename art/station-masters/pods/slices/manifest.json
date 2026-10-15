@@ -10797,10 +10797,10 @@
   "rect": null,
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sealed Cargo crate for the bay's places, 256x176: the whole sealed crate reduced uniformly into the box with 8 px clear on every side (never enlarged) (pass 122) (fringe cleaned in pass 139: 894 of 1865 edge pixels, two passes)",
-  "sha256": "27b530f2ce0b38639aa59956654f128a5f778838ad74aca941e46754144a15e1",
+  "sha256": "071a4b591c838a76a5d8521f7b84ae7c0b6a581459506aea29b1001d220f7765",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15): the art director's recut (crate-recut/recut-crates.py) removed the baked source shadow on the right, specks and the pale halo; replaces 27b530f2ce0b\u2026; signed in the whole Cargo capture"
  },
  "crate-sitting-256x176": {
   "size": [
@@ -10810,10 +10810,10 @@
   "rect": null,
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sitting Cargo crate, 256x176: the whole sealed crate (8 px clear on every side) with the tag painted out (the handle part from its mirror image) and a small matte brass plate (gold frame, a panel inside, 48x32, lit from the top left) on the lid instead; replaces the old teal crate-sitting-80x56 look (pass 122) (fringe cleaned in pass 139: 894 of 1865 edge pixels, two passes)",
-  "sha256": "078442f4b5106d07350d888ca6d6c93f6672bb7d36f4814cf65f09a50893d841",
+  "sha256": "a83fbf87442b52446607f7b39fc5383b7ce76e12e5dd16925c9ed86cd0f12b3a",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15): the art director's recut (crate-recut/recut-crates.py) removed the baked source shadow on the right, specks and the pale halo; replaces 078442f4b510\u2026; signed in the whole Cargo capture"
  },
  "crate-open-432x272": {
   "size": [
@@ -10823,10 +10823,10 @@
   "rect": null,
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale) (pass 122) (fringe cleaned in pass 139: 987 of 2199 edge pixels, two passes)",
-  "sha256": "058df985e86981ae28ac33c928f7153871988d042fc99db02cd1a1bb5b39ae61",
+  "sha256": "f2db8bbbb51a457b6074d079eed891387f1aee1d97ebcdc07d8a5d8586dd5c7c",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15): the art director's recut (crate-recut/recut-crates.py) removed the baked source shadow on the right, specks and the pale halo; replaces 058df985e869\u2026; signed in the whole Cargo capture"
  },
  "crate-sealed-432x272": {
   "size": [
@@ -10836,10 +10836,10 @@
   "rect": null,
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel (pass 122) (fringe cleaned in pass 139: 1895 of 3461 edge pixels, two passes)",
-  "sha256": "f51b92292612775674ea58325397feea04a4b206da7e1a723589c96aaad8ca74",
+  "sha256": "9ab374686299190efc45442ed7f10d1adc4be00c4d0a258cad726afa938b1815",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15): the art director's recut (crate-recut/recut-crates.py) removed the baked source shadow on the right, specks and the pale halo; replaces f51b92292612\u2026; signed in the whole Cargo capture"
  },
  "crate-opening-432x272": {
   "size": [
@@ -10849,10 +10849,10 @@
   "rect": null,
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122) (fringe cleaned in pass 139: 2238 of 3472 edge pixels, two passes)",
-  "sha256": "a2ae9a22e0db5de7b93ff618bd62bf446f87fac582b7449ab5398b8f9b305b60",
+  "sha256": "3bfd530cd7d337dea716f80c141921ff5dd4b07c329cd6bf5a63fcd6da7a93ee",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15): the art director's recut (crate-recut/recut-crates.py) removed the baked source shadow on the right, specks and the pale halo; replaces a2ae9a22e0db\u2026; signed in the whole Cargo capture"
  },
  "cargo-energy-48x64": {
   "size": [

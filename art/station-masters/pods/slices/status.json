@@ -3467,28 +3467,23 @@
  },
  "crate-sealed-256x176": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "note": "fix 5 AR2, the art director's recut"
  },
  "crate-sitting-256x176": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "note": "fix 5 AR2, the art director's recut"
  },
  "crate-open-432x272": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "note": "fix 5 AR2, the art director's recut"
  },
  "crate-sealed-432x272": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "note": "fix 5 AR2, the art director's recut"
  },
  "crate-opening-432x272": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 139: the fringe cleaned by hand-coded rule (AR2a: edge pixels more than 25 percent darker than their opaque neighbours take the neighbours' mean, two passes, alpha unchanged); same id and size; awaiting the art director's judgement (not signed)"
+  "note": "fix 5 AR2, the art director's recut"
  },
  "cargo-energy-48x64": {
   "status": "signed",
