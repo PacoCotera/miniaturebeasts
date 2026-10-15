@@ -445,3 +445,49 @@ test("the 'Swapped ·' box shows alone; a pending sign or held line comes on the
   assert.equal(p.run("FX.sign && FX.sign.sign"), "storm", "its own box on the next action"); assert.ok(!/Swapped/.test(p.run("FX.msg")));
   assert.ok(p.S.found.includes("hudstorm"), "spent once drawn");
 });
+
+// ---- S5: the card's tile takes the view's light (fog, the storm's dark columns) and shows what still stands on it ----
+function litPlace() {
+  const p = page();
+  p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__rm = []; globalThis.__n = { stone: 0, bush: 0, canopy: [] };"
+    + "const c0 = PB.prototype.canvas; PB.prototype.canvas = function (rm) { __rm.push(rm); return c0.apply(this, arguments); };"
+    + "const s0 = stoneArt; stoneArt = function () { __n.stone++; return s0.apply(this, arguments); }; const b0 = bushArt; bushArt = function () { __n.bush++; return b0.apply(this, arguments); };"
+    + "const k0 = canopyArt; canopyArt = function (v) { __n.canopy.push(v); return k0.apply(this, arguments); }; unveiled = () => true;");
+  return p;
+}
+const lit = (p, a) => { p.run(`__rm = []; __n.stone = 0; __n.bush = 0; __n.canopy = []; PIC.warn(0, 0, ${JSON.stringify(a)})`); return { rm: p.run("__rm[0]"), stone: p.run("__n.stone"), bush: p.run("__n.bush"), canopy: p.run("__n.canopy.join()") }; };
+test("S5 in fog: a lit tile beyond the fog's sight is the fog fill with no stone; within sight it is the view's own light and the stone", () => {
+  const p = litPlace(), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
+  p.run(`const c = layout('${P.key}').cell, q = cxy(c); S.exp.fog = { x: q.x + .5, y: q.y + .5, r: 3, dx: 0, dy: 0, at: 0 }; layout('${P.key}').feats.push({ kind: 'k', id: 'zf', x: ${P.x + 9}, y: ${P.y}, ch: 0 }, { kind: 'k', id: 'zn', x: ${P.x + 1}, y: ${P.y}, ch: 0 });`);
+  assert.equal(p.run("fogActive() && inFog(layout(S.exp.patch.key).cell)"), true);
+  const far = lit(p, { key: P.key, x: P.x + 9, y: P.y }); assert.equal(far.rm, 3, "the fog table"); assert.equal(far.stone, 0, "no stone the view hides");
+  const near = lit(p, { key: P.key, x: P.x + 1, y: P.y }); assert.equal(near.rm, 0, "within sight: the view's light"); assert.equal(near.stone, 1);
+});
+test("S5 in the storm's darkened column: the lit tile takes light 1, equal to the view's tile light", () => {
+  const p = litPlace(), P = p.run("({ key: S.exp.patch.key })");
+  p.run(`const c = layout('${P.key}').cell % MW; S.exp.fog = null; S.exp.storm = { x: c - 3 - 1, w: 3, dir: 1, v: .25, t: 0 }; stormCovers = () => false; stormRain = () => false;`);
+  const f = p.run(`placeLightFn(S.exp.patch, layout('${P.key}'))`); const dark = [], clear = [];
+  for (let x = 0; x < p.run("PW"); x++) (p.run(`placeLightFn(S.exp.patch, layout('${P.key}')).light(${x}, 5)`) === 1 ? dark : clear).push(x);
+  assert.ok(dark.length && clear.length, "both a dark column and a clear one");
+  assert.equal(lit(p, { key: P.key, x: dark[0], y: 5 }).rm, 1); assert.equal(lit(p, { key: P.key, x: clear[clear.length - 1], y: 5 }).rm, 0);
+});
+test("S5 shows what is still on the lit tile: a bush only when the view draws it, and a canopy in the variant the view draws", () => {
+  const p = litPlace(), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
+  p.run(`layout('${P.key}').feats.push({ kind: 'b', id: 'zb', x: ${P.x + 2}, y: ${P.y} });`);
+  assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 1, "seen: the bush");
+  p.run("unveiled = () => false;"); assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 0, "under the veil: no bush");
+  p.run("unveiled = () => true;");
+  // a trunk two tiles away: its canopy reaches the lit tile; the checkerboard variant when the pawn is beside the trunk
+  const tx = P.x + 5, ty = P.y;
+  p.run(`{ const lay = layout('${P.key}'), g0 = lay.tiles[${P.y} * PW + ${P.x}]; for (let k = 0; k < lay.tiles.length; k++) if (lay.tiles[k] === T.TRUNK) lay.tiles[k] = g0; lay.tiles[${ty} * PW + ${tx}] = T.TRUNK; }`);
+  assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "0", "whole leaves");
+  p.run(`S.exp.patch.x = ${tx + 1}; S.exp.patch.y = ${ty};`); assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "1", "thinned to the checkerboard beside the trunk");
+});
+test("the setup strip: the turn and tier, then the Probe's plates as the top bar draws them; no Shield digits, no sealed count, always mist", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const said = () => { p.run("__t = []; drawSetup(0);"); return p.run("__t.join('|')"); };
+  const t = said(); assert.ok(t.includes("World · turn 1 · Probe tier 1"), t); assert.ok(!/Shield \d|\d+\/\d+|sealed · |· \d+ sealed/.test(t.split("|").filter(x => /World/.test(x)).join()), "the strip has no digits for plates and no sealed tail");
+  p.run("S.shield = 1;"); said();
+  assert.equal(p.run("(() => { const s = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier, w = textW(s, 2) + 12 + 27, x0 = Math.round(225 - w / 2); return x0 > 14 && x0 + w < 436; })()"), true, "inside the screen at tier 1");
+});

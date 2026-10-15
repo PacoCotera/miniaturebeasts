@@ -3872,12 +3872,50 @@ function tileInView(px, py, x, y) {
   try { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, c = camAt(v, px * ts, py * ts);
     return x * ts >= c.x && (x + 1) * ts <= c.x + SCR_W && y * ts >= c.y && (y + 1) * ts <= c.y + VIEW_H; } catch (e) { return true; }
 }
-// The lit tile as the place draws it, without what moves: the tile's own art with the view's light and veil, the stone on it only where the view draws one, then the 2 px outline.
+// The lit tile as the place draws it on that frame, without the things that move (rain, drifting fog, the pawn, creatures, outlines that blink):
+// the tile at the view's light and veil, the marks and props still on it, the part of a canopy or roof over it, a pod lying on it, then the 2 px outline.
+function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyond sight, an overcast storm, the storm's darkened columns), as drawPatch gives it
+  const ex = S.exp, v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, cam = RT.pl ? camAt(v, RT.pl.rx, RT.pl.ry) : camAt(v, P.x * ts, P.y * ts);
+  const col = lay.cell % MW, fogged = !lay.cave && inFog(lay.cell), overcast = !lay.cave && stormCovers(col), sight = sightR(lay);
+  const inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
+  let darkW = 0, darkLeft = true;
+  if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
+    if (gap >= 0 && gap < 3) { darkW = Math.ceil((3 - gap) * STORM_K[ts]) * ts; darkLeft = st.dir > 0; } }
+  const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return 1;
+    if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
+  return { ts, light, inS, see: (x, y) => inS(x, y) && unveiled(P.key, x, y) };
+}
 function warnPicPlace(x0, y0, a) {
-  const lay = layout(a.key), i = a.y * PW + a.x, cell = lay.cell % MW, over = !lay.cave && stormCovers(cell), L = over ? 1 : 0, uv = unveiled(a.key, a.x, a.y);
+  const ex = S.exp, P = ex.patch, lay = layout(a.key), live = ex.live[a.key] || { fr: [], tf: [], cr: [] }, { ts, light, inS, see } = placeLightFn(P, lay), o = sprOff(ts);
+  const i = a.y * PW + a.x, L = light(a.x, a.y), uv = unveiled(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox, Y = sy => y0 + sy - oy;
+  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip();
   g.drawImage(tilePB(lay, i, 0).canvas(L, false, false, L !== 3 && !uv), x0, y0);
-  const f = lay.feats.find(q => q.kind === 'k' && q.x === a.x && q.y === a.y);
-  if (f && uv && inSight(a.x, a.y)) { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); blit(wm ? stoneArt(0, false, 0, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0), x0, y0); }
+  const here = (x, y) => x === a.x && y === a.y;
+  for (const f of lay.feats) { if (!here(f.x, f.y) || (!'gxim'.includes(f.kind) && !see(f.x, f.y))) continue;   // ground marks
+    if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0 + o.x, y0 + o.y);
+    else if (f.kind === 'e') blit(NEST(), x0 + o.x, y0 + o.y); else if (f.kind === 'm') blit(mushArt(0), x0 + o.x, y0 + o.y);
+    else if (f.kind === 'd') blit(CRACK(), x0 + o.x, y0 + o.y); else if (f.kind === 'x') blit(exitArt(0), x0 + o.x, y0 + o.y);
+    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0 + o.x, y0 + o.y);
+    else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + o.x + 9, y0 + o.y + 8, L); }
+    else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + o.x + 8 + (k % 4) * 5, y0 + o.y + 18 + (k >> 2) * 4, 3, 1); } }
+  for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
+    let art;
+    if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
+    else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
+    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, 0, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0); }
+    blit(art, x0 + o.x, y0 + o.y); }
+  for (const f of live.tf) if (here(f.x, f.y) && see(f.x, f.y)) blit(ICON.tuft(), x0 + o.x + 9, y0 + o.y + 16);
+  for (const f of live.fr) if (here(f.x, f.y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) blit(FRUIT(), x0 + o.x + 10, y0 + o.y + 14);
+  // canopies and roofs over the tile, in the variant the view draws (thinned to a checkerboard when something is beneath)
+  const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
+  const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
+    g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
+  for (let k = 0; k < PW * PH; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % PW, ty = (k / PW) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
+    over(canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
+  for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
+    over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
+  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1, q.sp), x0 + o.x + 8, y0 + o.y + 8);
+  g.restore();
   R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
 }
 const PIC = {
@@ -3926,9 +3964,12 @@ const silhouette = sp => art('sil' + sp, () => { const a = creatureArt(sp, 'idle
 function drawSetup(t) {
   viewBg();
   drawTop('Expedition ' + S.expN, '');
-  const fr = motion() ? Math.floor(t * 2) % 2 : 0, shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield, hurt = shN < tierOf().shield;
-  const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier + ' · Shield ' + Math.max(0, shN) + '/' + tierOf().shield + (S.bay.length ? ' · ' + S.bay.length + ' sealed' : '');
-  text(clipText(strip, 420, 2), SCR_W / 2, 40, hurt ? C.amber : C.mist, 2, 'center');
+  const fr = motion() ? Math.floor(t * 2) % 2 : 0, shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield;
+  // the strip: the world's turn and the Probe's tier, then the Probe's plates as the top bar draws them (a lost plate is an outline), centred as one group
+  { const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier, m = tierOf().shield, w = textW(strip, 2) + 12 + 9 * m - 1, x0 = Math.round(SCR_W / 2 - w / 2), p0 = x0 + textW(strip, 2) + 12;
+    text(strip, x0, 40, C.mist);
+    for (let k = 0; k < m; k++) R(p0 + 9 * k, 42, 8, 14, C.void);
+    shieldBars(p0 + 1, 43, Math.max(0, shN), m, 6, 12); }
   // while a message shows, the message box takes the view's foot and neither panel is drawn
   if (!FX.msg && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 517, C.mint, 2, 'center'); }
   else if (!FX.msg && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' crate' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
