@@ -19,7 +19,7 @@
   "strip": "the same strip, at the same rectangle and with the same tile forms, as one mibi up close (habitat.json regions.strip and tiles): going one level closer or back keeps the strip and the ring's tile where they stood",
   "nothing else": "no card, no modules, no stamp, no words in the window but the focused resident's name tag; nothing is amber",
   "residents": "every mibi at home walks; the carried set sleeps on the bed while the Companion is docked (each sleeper a resident target, with no lift); while it is away, the bed shows the Companion mark and the carried mibis are only on the strip, each tile with the outline glyph",
-  "paintingLands": "a painting that lands while its mibi is on screen waits for the next fresh draw (the whole opened again, a wake): never a swap in view"
+  "pictureLands": "a mibi is drawn from its species' picture for its stage and nothing waits for a painting; a picture that lands while the whole shows (a species' signed stand, or a mibi's portrait after its sitting) appears at the next fresh draw (the whole opened again, a wake): never a swap in view"
  },
  "rules": {
   "used": ["listPitch"],
@@ -75,9 +75,8 @@
    "juvenile": [104, 112],
    "walk": {"ground": [16, 296, 992, 176], "keepOut": [752, 320, 256, 152], "box": "box.x 16..1008−w, feetY 296..471", "keepOutRule": "a box meets K exactly when box.x + w > 752 and feetY > 320, in every bed state; K is the sleepers' tags and nap ink: left 840 − 88 (the widest tag on the leftmost place), top 336 − 16 (the sleepers' tag top, less 16 so a walker's tag, feet + 24 to + 48, stays above the nap ink at 368)", "start": "box.x 16 + r mod (993 − w), feetY 296 + r mod 176; redrawn while it meets keepOut, up to 8 draws; fallback box.x 16 with the last feetY", "waypoint": "the same draw; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "rule": "each walks with its feet in the band, as on Idle 80 px higher; its keep-out reaches the sleepers' tags (Idle shows none)"},
    "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
-   "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
    "lift": 4,
-   "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "lamp": "[x + w/2 + 36, feet − 88, 12, 12]", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither, lamp", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" },
+   "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" },
    "props": "per resident: mibi id, stage, painting or placeholder, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
   },
   "bed": {
@@ -158,7 +157,7 @@
    "noShown": "the whole shows no mibi up close, so no tile is `shown`: the ring is the only highlight"
   }
  },
- "drawOrder": ["stage", "window", "residents and the bed (by the feet's y)", "resident lamps", "nameTag", "strip", "tiles", "ring", "frame (top bar, bottom line)", "message plate"],
+ "drawOrder": ["stage", "window", "residents and the bed (by the feet's y)", "nameTag", "strip", "tiles", "ring", "frame (top bar, bottom line)", "message plate"],
  "events": {
   "look": {
    "kind": "dither",
@@ -291,7 +290,6 @@
  },
  "colours": {
   "window": {"back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
-  "waitingLamp": {"fill": "sky", "rim": "void"},
   "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "strip": {"fill": "ground", "edge": "hairline"},
@@ -306,8 +304,7 @@
    "home-bed-<light>-192x56 (the bed, as on Home and Idle)",
    "home-bed-mark-16x24 (the bed's mark, away)",
    "frame-companion-outline-16x24 (the out tile's glyph, frame.json marks.companion.away)",
-   "the thumbnails 48×48 (the painting or placeholder rendered at that size)",
-   "home-lamp-sky-12x12"
+   "the thumbnails 48×48 (the painting or placeholder rendered at that size)"
   ]
  },
  "strings": {

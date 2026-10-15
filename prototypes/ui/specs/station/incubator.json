@@ -100,7 +100,7 @@
     { "at": 800, "do": "the crack opens (bud-crack-2)" },
     { "at": 1000, "do": "the bud goes; the juvenile stands in its box on the base (a cut), in its painting or its placeholder" },
     { "at": 1200, "do": "the ribbon shows the new mibi's words" },
-    { "at": 1400, "ms": 200, "lift": [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]], "do": "the juvenile steps out: `lift` ([ms into the step, px above its feet line 472]), each a cut, whole pixels, no ease; the ribbon and the base's lamp stay (the meet's hop at half its period, habitat.json events.moment.placeholder; UI designer, 2026-10-10 09:15)" },
+    { "at": 1400, "ms": 200, "lift": [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]], "do": "the juvenile steps out: `lift` ([ms into the step, px above its feet line 472]), each a cut, whole pixels, no ease; the ribbon stays (the meet's hop at half its period, habitat.json events.moment.placeholder; UI designer, 2026-10-10 09:15)" },
     { "at": 1800, "ms": 200, "lift": "the same table as the step at 1400", "do": "a second step, the same table" },
     { "at": 2600, "ms": 180, "do": "the screen transition (16-level Bayer dither) to one mibi up close, in the meet (handoff)" }
    ],
@@ -120,7 +120,7 @@
      { "at": 5840, "do": "stand, breathing from b0" },
      { "at": 6400, "ms": 180, "do": "the hand-off (the 180 ms screen dither), unless a key cut it" }
     ],
-    "cut.rule": "UI/UX \"Hatch cutting key\": from the hold to 6400 the first key only lands the meet, drawn as a cut with no dither (the ring on resident at [136, 380, 320, 24], the meet ribbon at [144, 416, 304, 40], no name tag, the bottom line's action strings.name, the resident's waiting lamp only while its placeholder is drawn); ✓ opens no namer, ← does not leave, the pad does not end the meet, a room key (pressed after the hold, or kept from it) is used up; the Dock is not a cutting key. After a cut landing the meet's moment holds input cutMeetHold ms; after a normal hand-off it holds none"
+    "cut.rule": "UI/UX \"Hatch cutting key\": from the hold to 6400 the first key only lands the meet, drawn as a cut with no dither (the ring on resident at [136, 380, 320, 24], the meet ribbon at [144, 416, 304, 40], no name tag, the bottom line's action strings.name); ✓ opens no namer, ← does not leave, the pad does not end the meet, a room key (pressed after the hold, or kept from it) is used up; the Dock is not a cutting key. After a cut landing the meet's moment holds input cutMeetHold ms; after a normal hand-off it holds none"
    }
   }
  },

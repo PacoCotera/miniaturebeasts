@@ -14,7 +14,7 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0) {
   for (const r of got("window", "chrome")) must(eq(r.rect, win), `the window's plates ${r.rect} are not the window ${win}`);   // edge to edge, no bezel
   for (const r of got("window", "painted")) must(eq(r.rect, win), `the window's painting ${r.rect} is not ${win}`);
   must(got("window", "painted").length === 0 || got("window", "chrome").length === 0, "the window's plates show under the light's painting");
-  for (const id of ["resident", "bed", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, win), `${id} (${r.layer}) ${r.rect} leaves the window ${win}`);   // clipped to the window
+  for (const id of ["resident", "bed"]) for (const r of got(id)) must(within(r.rect, win), `${id} (${r.layer}) ${r.rect} leaves the window ${win}`);   // clipped to the window
   { const w = R.resident.walk.ground; for (const r of [...got("resident", "art"), ...got("resident", "painted")]) must(r.rect[0] >= w[0] && r.rect[0] + r.rect[2] <= w[0] + w[2] && r.rect[1] + r.rect[3] >= w[1] && r.rect[1] + r.rect[3] <= w[1] + w[3] + 1, `the residents ${r.rect} leave the walk ground ${w}`); }
   { const b = R.bed.rect, k = R.bed.markRect, pics = [...got("bed", "art"), ...got("bed", "painted")];   // the nest exactly at its rect, the Companion's mark exactly at its own; the sleepers within the nap's height above the bed
     must(pics.some((r) => eq(r.rect, b)), `the bed is not drawn exactly at ${b}`);

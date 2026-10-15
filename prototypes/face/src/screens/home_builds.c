@@ -20,19 +20,13 @@ static int si(const char *sp, const char *p, int d) { return spec_int(sp, p, d);
 static int sk(const char *sp, const char *base, int k) { return spec_int(sp, v_fmt("%s.%d", base, k), 0); }
 static const char *scol(const char *sp, const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(sp, p, o, 24); return o; }
 
-/* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids are one table, frame.json regions.marks.lamp12; one node whichever state it is. A picture the host has not sent leaves a node of no size. */
+/* a lamp: the signed 12 × 12 picture of the state (off, well, needsYou), the ids are one table, frame.json regions.marks.lamp12; one node whichever state it is. A picture the host has not sent leaves a node of no size. */
 const char *home_lamp_pic(const char *state) {
   static char b[4][96]; static int k; char *o = b[k++ & 3]; spec_str("frame", v_fmt("regions.marks.lamp12.%s", *state ? state : "off"), o, 96); return o;
 }
 static void lamp(const char *id, int x, int y, const char *state) {
   const char *pic = home_lamp_pic(state);
   if (*pic) v_sprite(id, pic, x, y, 12, 12); else v_sprite_hidden(id, home_lamp_pic("off"), x, y);
-}
-
-/* a waiting lamp on a resident or a sleeper: home-lamp-sky-12x12, steady; not shown, the same node with no size, so the order of the glass never changes kind */
-void build_waitingLamp(const char *id, int x, int y, int shown) {
-  if (shown) { lamp(id, x, y, "waiting"); return; }
-  v_sprite_hidden(id, home_lamp_pic("waiting"), x, y);
 }
 
 /* the module of the screen whose spec is `sp`: a panel (fill, bevel top, hairline edge), its engraved word at the spec's offset and its lamp (a module whose spec says `"lamp": null` has none, and no lamp node); the objects are the screen's. `dy` is the
