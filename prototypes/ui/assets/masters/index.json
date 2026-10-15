@@ -4801,8 +4801,8 @@
    "file": "pods/sitting-frame-empty-48x40.png",
    "w": 48,
    "h": 40,
-   "sha256": "ddea353f6c547e8f8662e7ed73123959286dc1302ace8e85ca59603ffe3d94fa",
-   "signed": "named with --ids"
+   "sha256": "17467000042f8881ad4e75234ba5c3dc4deb15698471999f0cd416889f4250c5",
+   "signed": "station lead's brief (Habitat GB2): the art director's recut of the empty sitting frame, masters-sitting-frames 2f5e5779 (the window an empty recess)"
   },
   "sitting-frame-held-48x40": {
    "file": "pods/sitting-frame-held-48x40.png",

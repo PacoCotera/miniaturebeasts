@@ -157,6 +157,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
   assert.ok(mean(L) < mean(M), `${screen}: label mean ${mean(L).toFixed(3)} is not under the main object's ${mean(M).toFixed(3)}`);
   assert.ok(pct(L, 95) < pct(M, 95), `${screen}: label p95 ${pct(L, 95).toFixed(3)} is not under the main object's ${pct(M, 95).toFixed(3)}`);
   const contrast = (pct(inner, 95) + 0.05) / (pct(inner, 5) + 0.05); assert.ok(contrast >= 4.11, `${screen}: the stamp's cells read at ${contrast.toFixed(2)}, under 4.11`);
+  if (screen === "habitat") { assert.ok(mean(L) < 0.079, `habitat: label mean ${mean(L).toFixed(3)} is not under 0.079 (GB2: the label in its well)`); assert.ok(pct(L, 95) < 0.192, `habitat: label p95 ${pct(L, 95).toFixed(3)} is not under 0.192`); }
   const cap = screen === "create" ? 115 : 111;   // Create keeps the outer cap (art director, CA2); the others their own 111
   assert.ok(srgbMean(img, label) <= cap, `${screen}: the label's sRGB mean ${srgbMean(img, label).toFixed(1)} is over ${cap} (the outer cap is 115)`);
 });

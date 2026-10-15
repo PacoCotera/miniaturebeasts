@@ -191,7 +191,7 @@
    "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
    "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
   },
-  "stamp": {"rect": [872, 64, 120, 120], "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424},
+  "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424},
   "plates": {
    "rect": [608, 200, 376, 40],
    "component": "list",
@@ -620,7 +620,7 @@
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
   "card": {"species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
-  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
+  "stampLabel": {"k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "Habitat GB2 (art director's ruling): the label's plate is the signed plate-well-120x120 at (872, 64), the C5 well with its ground floor, drawn 1:1; the stamp is printed in it as before, multiplied in linear light by k × warm (art director, masters-pods 001bcd51), centred; the 1 px #3d434b edge is dropped, the well's own hairline replaces it; no fill, light, glow, frame or pane of its own"},
   "module": {"word": "metal"},
   "faceRing": "bevel",
   "faceRingAway": "stone"
