@@ -3609,7 +3609,7 @@ function drawPatch(t) {
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
   if (ts === 48) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
-  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
+  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
@@ -3752,7 +3752,7 @@ const TAG = { h: 20, ptr: 5, margin: 4, view: { x0: 6, y0: 38, x1: 444, y1: 558 
 const tagTop = sp => { const top = pb => { for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if (pb.p[y * pb.w + x] >= 0) return y; return pb.h; };
   return spOf(sp).other ? 0 : Math.min(top(creatureArt(sp, 'idle', 0)), top(creatureArt(sp, 'idle', 1))); };   // the bob only moves it down
 function tagSpot(tg, k) {
-  const ex = S.exp, P = ex.patch, live = ex.live[P.key], ts = k.ts, o = k.o, h2 = ts >> 1, M = TAG.margin, n = TAG.ptr, w = textW(tg.name, 2) + 10;
+  const ex = S.exp, P = ex.patch, live = ex.live[P.key], lay = layout(P.key), ts = k.ts, o = k.o, h2 = ts >> 1, M = TAG.margin, n = TAG.ptr, w = textW(tg.name, 2) + 10;
   const X = tg.x - 16 - o.x, Y = tg.y - o.y;   // the partner's cell on screen
   const zx1 = Math.max(ts - 1, o.x + 29) + M, zy1 = Math.max(ts - 1, o.y + 33) + M;   // the zone's far column and row (the ring is 28×11 at sprite + (2, 23))
   const at = (px, py, pw, ph, nx, ny) => ({ ptr: { x: X + px, y: Y + py, w: pw, h: ph }, panel: { x: X + nx, y: Y + ny, w, h: TAG.h } });
@@ -3760,11 +3760,17 @@ function tagSpot(tg, k) {
   const spots = [below(0), at(zx1 + 1, h2 - 1, n, 2, zx1 + 1 + n, h2 - (TAG.h >> 1)), at(-M - n, h2 - 1, n, 2, -M - n - w, h2 - (TAG.h >> 1)),
     at(h2 - 1, H0 - M - n, 2, n, h2 - (w >> 1), H0 - M - n - TAG.h)];
   for (let d = TAG.slide; d <= (w >> 1) - TAG.slideIn; d += TAG.slide) spots.push(below(d), below(-d));
-  // what a tag may not cover: other creatures' and the pawn's clear zones, the warned cell, the message box, the edge tabs
+  // what a tag may not cover: other creatures' and the pawn's clear zones, the finds' zones, the warned cell, the message box, the edge tabs
   const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
   const block = [];
   for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(k.PX(r)), k.H(k.PY(r)), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
   block.push(zone(k.W(k.PX(RT.pl)), k.H(k.PY(RT.pl)), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
+  // a find the view draws (a pod, a stone, the crack, a lime pod, fruit on the ground): its cell, its pixels outside the cell, and the margin; the seen crack's ring reaches past the cell
+  const fz = (x, y, seenCrack) => block.push(seenCrack ? (ts === 48 ? zone(k.W(x * ts), k.H(y * ts), 0, 0, ts, 55) : zone(k.W(x * ts), k.H(y * ts), -6, -6, 39, 39)) : zone(k.W(x * ts), k.H(y * ts), 0, 0, ts, ts));
+  for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0 && k.see(p.x, p.y)) fz(p.x, p.y);
+  for (const f of lay.feats) { const q = featPos(P.key, f);
+    if (f.kind === 'k' && k.see(q.x, q.y)) fz(q.x, q.y); else if (f.kind === 'd' && k.see(f.x, f.y)) fz(f.x, f.y, live.seen.d); else if (f.kind === 'i' && k.inS(f.x, f.y)) fz(f.x, f.y); }
+  for (const f of live.fr) if (k.see(f.x, f.y) || (f.put && k.inS(f.x, f.y))) fz(f.x, f.y);
   if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
   const m = msgRect(); if (m) block.push(m);
   for (const t of edgeTabs()) block.push(tabRect(t));

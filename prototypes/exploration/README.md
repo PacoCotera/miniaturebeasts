@@ -187,7 +187,7 @@ The words and the layout are those of [`companion-screens.md`](../../design/styl
 
 ## The partner in a place
 
-- Your partner stands on a 2 px bright teal ring with a 1 px dark outline (wild creatures never have one) and shows a small name tag above it, with a pointer down to it, for the first 3 actions in each place and for 3 actions after each Call. The tag is drawn after every sprite and takes the first clear of five positions (below, right, left, above, then below slid sideways), refusing other creatures, the player, the warned tile, the message box and any edge tab; if none is clear it is not drawn. The HUD token sits on the same ring.
+- Your partner stands on a 2 px bright teal ring with a 1 px dark outline (wild creatures never have one) and shows a small name tag above it, with a pointer down to it, for the first 3 actions in each place and for 3 actions after each Call. The tag is drawn after every sprite and takes the first clear of five positions (below, right, left, above, then below slid sideways), refusing other creatures, the player, any find drawn in that frame (a pod, a stone, the crack, a lime pod or fruit on the ground: its cell and 4 px), the warned tile, the message box and any edge tab, so it never covers a find; if none is clear it is not drawn. The HUD token sits on the same ring.
 
 ## Partners by life stage
 

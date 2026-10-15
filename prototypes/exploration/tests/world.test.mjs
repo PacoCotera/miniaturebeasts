@@ -1340,8 +1340,53 @@ for (const ts of [32, 48]) {
     const zone = { x: c.x - 4, y: c.y - 4, w: ts + 8, h: zy1 + 5 }, meets = r => r.x < zone.x + zone.w && zone.x < r.x + r.w && r.y < zone.y + zone.h && zone.y < r.y + r.h;
     assert.ok(!meets(s.ptr) && !meets(s.panel), "outside the clear zone");
   });
+
+  test(`cues at ${ts}: the name tag refuses a find (a pod, a stone, fruit, the crack) as it refuses a creature, never draws over one, and is not drawn when all five positions are refused`, () => {
+    const p = cuePlace(ts, { partner: true }), h2 = ts >> 1;
+    p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; curLive().pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = 9; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);");
+    const o = js(p, `sprOff(${ts})`), zx1 = Math.max(ts - 1, o.x + 29) + 4, H = o.y + p.run("tagTop(0)");
+    const cell = () => { const pl = js(p, "RT.plScr"); return { x: pl.x - h2, y: pl.y - h2 + 3 * ts }; };   // the partner, 3 below the pawn
+    const pod = (x, y, out) => `S.pods.push({ k: S.exp.patch.key, x: ${x}, y: ${y}, h: 0, g: 0, sp: 0, id: 'f${x}_${y}', out: ${out ? 1 : 0} });`;
+    const stone = (x, y) => `layout(S.exp.patch.key).feats.push({ kind: 'k', id: 'zs${x}', x: ${x}, y: ${y} });`;
+    const spot = () => { frameOf(p); return js(p, "SPOT"); };
+    const cellPx = (f, c, dx, dy) => { const r = []; for (let y = -2; y < ts + 2; y++) for (let x = -2; x < ts + 2; x++) r.push(f[(c.y + dy * ts + y) * 450 + c.x + dx * ts + x]); return r; };
+    const finds = [];   // [dx, dy] of each find relative to the partner's cell
+    const sameWithoutTag = (s) => { const c = cell(), f = Int16Array.from(p.run("scr").px()); p.run("S.exp.ptTagUntil = 0;"); frameOf(p); const g = Int16Array.from(p.run("scr").px()); p.run("S.exp.ptTagUntil = 9;");
+      for (const [dx, dy] of finds) assert.deepEqual(cellPx(f, c, dx, dy), cellPx(g, c, dx, dy), "find at " + dx + "," + dy + ": its pixels do not change with the tag"); };
+    // 1: a pod on the cell below (outlined, as a Call or the partner's nose leaves it): the tag goes right
+    p.run(pod(14, 17, true)); finds.push([0, 1]); let s = spot(), c = cell();
+    assert.equal(s.panel.x - c.x, zx1 + 6, "a pod below: right, the panel's left edge at col " + (zx1 + 6)); assert.deepEqual(s.ptr, { x: c.x + zx1 + 1, y: c.y + h2 - 1, w: 5, h: 2 }); sameWithoutTag(s);
+    // 2: and a creature right, a stone left: above
+    p.run(crt(1, 15, 16, "idle") + stone(13, 16)); finds.push([-1, 0]); s = spot(); c = cell();
+    if (ts === 48) assert.deepEqual([s.ptr.y - c.y, s.panel.y - c.y], [H - 9, H - 29], "a pod below, a creature right, a stone left: above");
+    else assert.equal(s, null, "at 32 the creature's zone also meets the panel above");   // a 40 px name is wider than the 32 px cell
+    sameWithoutTag(s);
+    // 3: a tab over position 1 and a pod on the cell to the right: left
+    p.run("curLive().cr = []; S.pods = []; layout(S.exp.patch.key).feats.length = 0;"); finds.length = 0;
+    p.run(`edgeTabs = () => [{ kind: '!', cx: RT.plScr.x, cy: RT.plScr.y + 3 * ${ts} + ${Math.max(ts - 1, o.y + 33) + 4 + 12} - ${h2}, side: 'S', id: 'x' }];` + pod(15, 16, false)); finds.push([1, 0]);
+    s = spot(); c = cell(); assert.equal(s.panel.x + s.panel.w - 1 - c.x, -10, "a tab below and a pod right: left"); sameWithoutTag(s);
+    // 4: a fruit on the cell above as well as the rest: no tag
+    p.run("edgeTabs = () => [];" + pod(14, 17, true) + crt(1, 15, 16, "idle") + stone(13, 16) + "curLive().fr.push({ x: 14, y: 15, put: 1 });"); finds.push([0, 1], [-1, 0], [0, -1]);
+    assert.equal(spot(), null, "all five refused: no tag"); sameWithoutTag(null);
+    // and it comes back when one clears
+    p.run("curLive().fr.length = 0; curLive().cr = [];"); assert.ok(spot(), "a position clears: the tag is back");
+    // the zone's size at 48: a find on the diagonal cell leaves a 40 px name below, and refuses a wider one
+    if (ts === 48) { p.run("S.pods = []; layout(S.exp.patch.key).feats.length = 0; curLive().cr = [];" + pod(15, 17, false)); s = spot(); c = cell();
+      assert.equal(s.panel.y - c.y, Math.max(ts - 1, o.y + 33) + 4 + 6, "a 40 px name: still below"); p.run("S.exp.pt.name = 'Bramblewick';"); s = spot(); c = cell();
+      assert.notEqual(s.panel.y - c.y, Math.max(ts - 1, o.y + 33) + 4 + 6, "a wide name: not below over the diagonal find"); }
+  });
 }
 
+test("the name tag in a cave at 32 px keeps off a seen crack's whole ring: its zone is 53 by 53 from 10 px outside the cell", () => {
+  const p = cuePlace(32, { partner: true });
+  p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; S.phase = 'patch'; enterCave(); S.phase = 'patch'; RT.key = null; RT.pl = null;");
+  assert.equal(p.run("curLay().cave"), true);
+  p.run("{ const P = S.exp.patch, L = curLive(); P.x = 14; P.y = 13; L.cr = []; L.fr = []; L.pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = S.exp.actions + 9; L.seen.d = 1; curLay().feats.push({ kind: 'd', id: 'zd', x: 14, y: 17 }); S.veil[P.key] = new Array(PH).fill(0x0fffffff); FX.msg = ''; }");
+  frameOf(p); const s = js(p, "SPOT"), pl = js(p, "RT.plScr"), cx = pl.x - 16, cy = pl.y - 16 + 3 * 32, zone = { x: cx - 10, y: cy + 32 - 10, w: 53, h: 53 };
+  const meets = r => r.x < zone.x + zone.w && zone.x < r.x + r.w && r.y < zone.y + zone.h && zone.y < r.y + r.h;
+  assert.ok(s, "a tag is drawn (right or left)"); assert.ok(!meets(s.ptr) && !meets(s.panel), "clear of the crack's zone");
+  assert.ok(s.panel.y - cy < 32 + 4 + 6, "and not below it");
+});
 test("the send hint in a place names the way, never a count, at all seven sites; over the reach view it keeps the count", () => {
   const p = cuePlace(48), DIG = /\d/;
   // a place two cells from the start, no lit outpost: End expedition is far
