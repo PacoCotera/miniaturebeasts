@@ -47,7 +47,7 @@
     "roll": { "pictures": [[304, 104, 128, 72], [448, 104, 128, 72], [592, 104, 128, 72]], "order": ["as the pod is", "only the first copy", "only the second copy"], "orderNote": "the trait state's hiddenChoice gives which copy is the hidden look where it applies; any choice but the first costs 1 ◆ and 1 minute, \"only the shown look\" too (game designer, 2026-10-09 13:27)", "notches": true },
     "single": { "pictures": [[448, 104, 128, 72]], "notches": false, "when": "a doing (Tuikis Claws: \"breed to change\"), a trait the pod carries one look of, or a trait that cannot be shaped" }
    },
-   "picture": { "size": [128, 72], "gap": 16, "ground": "colours.roll.ground", "asset": "roll-{species}-{trait}-{look}-128x72", "recut": "derived.roll pictures (art director, 2026-10-09 13:28)", "partInside": [16, 9, 96, 54] },
+   "picture": { "size": [128, 72], "gap": 16, "ground": "colours.roll.ground", "asset": "roll-{species}-{trait}-{look}-128x72; a doing: roll-{species}-{trait}-128x72, one per trait, the same for every value (Pods P7)", "placed": "a place whose picture is not a placed master draws nothing: no ground, no ring, no clash edge, no notches (Every state composed 2–4; Pods P2)", "recut": "derived.roll pictures (art director, 2026-10-09 13:28)", "partInside": [16, 9, 96, 54] },
    "chosen": "the picture of the trait's choice (0, 1 or 2); single: the one picture",
    "notch": { "size": [12, 6], "x": "the chosen picture's x + 58", "up": 90, "down": 184, "gap": "4 px outside the ring" },
    "ring": { "shape": "round", "box": "4 px outside the chosen picture: (x − 4, 100, 136, 80)" },
@@ -99,7 +99,7 @@
   "shape": {
    "initial": "roll", "fallback": "none",
    "graph": { "roll": { "stepper": ["left", "right", "up", "down"] } },
-   "targets": { "roll": { "group": "roll", "shape": "round", "box": "the chosen picture's rectangle (regions.roll.target)", "lift": 0, "note": "the ring never leaves the roll, so it does not lift" } },
+   "targets": { "roll": { "group": "roll", "shape": "round", "box": "the chosen picture's rectangle (regions.roll.target)", "lift": 0, "note": "the ring never leaves the roll, so it does not lift; no ring while the chosen picture is not placed (rule 2)" } },
    "stepper": "architect, 2026-10-09 13:24: a stepper key sends intent `step:<key>`, the ring stays and no focus message goes; refused at load: an empty list, a duplicate or unknown key, a stepper key with an edge in the group, axis horizontal with left or right, axis vertical with up or down, order with up or down"
   },
   "keys": {
@@ -136,7 +136,7 @@
  "colours": {
   "rail": { "changed": "bone", "clash": "red", "note": "the tabs' fills, words and pips are frame.json rail.states" },
   "roll": { "ground": "ground", "notch": "bone", "clashEdge": "red" },
-  "traitLine": { "line": "bone", "clash": "red", "tagWord": "bone" },
+  "traitLine": { "line": "bone", "clash": "bone", "tagWord": "bone" },
   "chamber": { "back": "panel", "rim": "enamel", "floor": "enamel", "floorEdge": "bevel", "note": "art reset: a work tray in the housing; no glass edge, no highlight (was back ground, glass edge frostD, highlight frost)" },
   "founder": { "frost": "frostS", "frostTexture": "frostD" },
   "origin": "mist",
@@ -173,7 +173,7 @@
   ],
   "carried": [
    { "id": "the founder's placeholder (the stylised rig pass)", "size": [304, 312], "region": "founder", "why": "creature art" },
-   { "id": "roll-{species}-{trait}-{look}-128x72", "size": [128, 72], "region": "roll", "why": "cut from the mibi paintings" },
+   { "id": "roll-{species}-{trait}-{look}-128x72, a doing roll-{species}-{trait}-128x72", "size": [128, 72], "region": "roll", "why": "cut from the mibi paintings" },
    { "id": "the pod sprites by size class", "size": [144, 176], "region": "pod", "why": "the pod renderer's; checked against the concept board's Pods frame with Pods, not here" },
    { "id": "pip-changed-6x6, pip-clash-6x6, the notches 12×6, the stamp label", "size": null, "region": "rail, traitLine, roll, stamp", "why": "the kit's chrome; drawn by the words as chrome rects, never a PH plate or register picture" }
   ]

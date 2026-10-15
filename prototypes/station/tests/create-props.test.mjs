@@ -68,8 +68,8 @@ test("the roll: three pictures in the order as the pod is, only the first copy, 
   const m = make("S01", 3, 4), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
   list.forEach(({ t }, f) => {
     m.cr.f = f; const r = m.build().props.regions.roll, opts = S.rollOptions(m.p, t.id);
-    if (opts.length > 1) { assert.equal(r.form, "roll"); assert.equal(r.pictures.length, 3); assert.deepEqual(r.pictures, opts.map((o) => `roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${o.look.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72`)); }
-    else { assert.equal(r.form, "single"); assert.equal(r.pictures.length, 1); assert.equal(r.chosen, 0); }
+    if (opts.length > 1) { assert.equal(r.form, "roll"); assert.equal(r.pictures.length, 3); assert.deepEqual(r.pictures, opts.map((o) => `roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${o.look.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72:128x72`)); }
+    else { assert.equal(r.form, "single"); assert.equal(r.pictures.length, 1); assert.equal(r.chosen, 0); if (t.nature === "doing") assert.deepEqual(r.pictures, [`roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72:128x72`], "a doing: one plate a trait, the same for every value (Pods P7)"); }
     assert.equal(r.notches, opts.length > 1, "the notches only while the trait rolls");
   });
 });

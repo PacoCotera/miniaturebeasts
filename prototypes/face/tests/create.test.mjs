@@ -48,13 +48,13 @@ function standIn(id, size, hollow = false) { const [w, h] = size, d = new Uint8C
 const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const PINNED = pinnedPictures(podsSpec, frameSpec);
 
-async function start(b, { motion = true, t0 = 0, noWait = false } = {}) {
+async function start(b, { motion = true, t0 = 0, noWait = false, skip = [] } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["create", createSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   if (!noWait) f.handleOf("icon-wait-16", withPolicy((i) => standIn(i, [16, 16])));   // a test-only stand-in for the signed master: the wait's picture (fix 6 A3)
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  for (const r of b.requests) if (!skip.includes(r.id)) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));   // skip: a picture the host does not have (an unplaced master)
   f.t = t0; f.motion = motion; f.build = b;
   const rc = f.props({ screen: "create", ...b.props, motion, frame: frameProps(b.line) }); f.initErrors = f.errors(); assert.equal(rc, 0, f.initErrors.join("; ")); frames(f); return f;   // initErrors: what the first build said (reading errors() drains it)
 }
@@ -104,7 +104,7 @@ test("the roll: three pictures at the spec's places, the chosen one ringed (4 px
   const one = scene({ read: 4, f: 3 }), f = await start(one), lg = logOf(f); assert.equal(one.props.regions.roll.form, "single"); assert.deepEqual(region(lg, "focus").rect, [444, 100, 136, 80]);
   assert.ok(pixelIs(f, 448 + 64, 104 + 36, one.props.regions.roll.pictures[0])); assert.equal(one.props.regions.roll.notches, false); assert.ok(f.pixel(448 + 58 + 5, 90).join() !== rgbOf("bone").join(), "no notch for a trait that does not roll");
 });
-test("a clash is a 2 px red edge inside the chosen picture, the line red with its ✕ first and no tag; the changed tag (88 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {
+test("a clash is a 2 px red edge inside the chosen picture, the line bone with its red ✕ first and no tag; the changed tag (88 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {
   const red = (f, x, y) => f.pixel(x, y).join() === rgbOf("red").join();
   const b = scene({ read: 2, f: 1, roll: 1, clash: true }), f = await start(b), c = R.roll.forms.roll.pictures[1];
   assert.ok(b.props.regions.roll.clash); assert.equal(b.props.regions.traitLine.changed, false); assert.match(b.props.regions.traitLine.text, /^✕ /); assert.equal(b.props.regions.traitLine.clash, true);
@@ -291,4 +291,15 @@ test("grow: the shadow stands at 0 and 299 ms, is a cut to no size at 300, 600 a
   assert.deepEqual(f.errors(), []);
   const b = scene({ read: 2, f: 1, roll: 1, grown: true, motion: false }), g = await start(b, { motion: false }); g.send({ t: "event", kind: "grow", target: "pod", ms: EV.grow.ms, hold: EV.grow.hold }); frames(g, 2);
   assert.ok(!shadowOf(logOf(g)), "no shadow with reduced motion in grow");
+});
+
+test("a roll picture that is not a placed master draws nothing at its place: no ground, no ring, no clash edge, no notches; a placed doing plate is drawn at (448, 104, 128, 72) with the ring (Every state composed 2-4, Pods P2)", { skip }, async () => {
+  const b = scene(SCENES["shape, a doing"]), pic = b.props.regions.roll.pictures[0]; assert.equal(b.props.regions.roll.form, "single"); assert.match(pic, /^roll-S01-[a-z-]+-128x72:128x72$/, "a doing: one plate a trait, no look in the id");
+  const bare = logOf(await start(b, { skip: [pic] })) ?? null, f0 = await start(b, { skip: [pic] }); frames(f0); const lg0 = logOf(f0);
+  for (const [id, layer] of [["roll", "art"], ["roll", "painted"], ["focus", undefined]]) assert.equal(region(lg0, id, layer), null, `unplaced: no ${id} ${layer ?? ""}`); void bare;
+  assert.deepEqual(region(lg0, "roll", "chrome").rect, [506, 90, 12, 100], "unplaced: no ground and no edge; only the two empty notch pictures (12 × 6 boxes that draw nothing) are left in the roll region, as for a trait that does not roll")
+  const f1 = await start(b); frames(f1); const lg1 = logOf(f1); { const r1 = region(lg1, "roll", "chrome").rect; assert.ok(r1[0] <= 448 && r1[1] <= 104 && r1[0] + r1[2] >= 448 + 128 && r1[1] + r1[3] >= 104 + 72, `placed: the ground at the roll's one place (the region ${r1})`); } assert.ok(region(lg1, "focus"), "placed: the ring"); assert.deepEqual(f1.errors(), []);
+  // the clash edge and the notches follow the picture too: a clash on an unplaced picture draws no edge
+  const c = scene({ read: 2, f: 1, roll: 1, clash: true }), cp = c.props.regions.roll.pictures[1], fc = await start(c, { skip: [cp] }); frames(fc); const lgc = logOf(fc);
+  { const g = R.roll.forms.roll.pictures[1]; assert.notDeepEqual(fc.pixel(g[0] + 20, g[1] + 1), rgbOf("red"), "an unplaced chosen picture has no clash edge"); assert.ok(!region(lgc, "focus"), "an unplaced chosen picture has no ring"); void lgc; }
 });
