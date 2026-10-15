@@ -3408,10 +3408,10 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (688, 71, 912, 229)",
   "made": "the Pods room set (pass 93): the closed gasketed service hatch in the housing's sage; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "c92bc7aee08d1830309a9baf86bf3b4c44f81709e254c0c1395c50c4ab987d9b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): H1, the art director's recut under the same id (hatch-sprig/make-hatch-sprig.py): the wild's leaf sprig in low relief in the centred 24x24 (plate 28, 16), all else the signed plate pixel for pixel; one master for shut and armed; replaces 7484bf22296d\u2026; signed in the Pods gate captures"
  },
  "page-pane-256x440": {
   "size": [
