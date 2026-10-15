@@ -105,7 +105,7 @@
   "newPods": { "one": "See the new pod", "few": "See the new pods" },
   "done": "Done",
   "subjects": { "crates": "{count} sealed crates", "cratesOne": "a sealed crate", "empty": "the bay is empty", "away": "the bay is shut", "waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well", "opening": "the bay is opening", "report": "what came home" },
-  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); every dev crate reads dev; the land's reach is on the report card" },
+  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); a developer crate reads like any later crate (Another crate home) and is not counted; the land's reach is on the report card" },
   "report": {
    "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
    "reach": { "underThird": "some of the land explored", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
