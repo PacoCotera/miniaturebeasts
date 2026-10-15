@@ -3619,5 +3619,9 @@
  "cargo-rack-992x168": {
   "status": "new",
   "note": "fix 5 AR4; signed in the whole Cargo capture"
+ },
+ "cargo-report-plate-560x288": {
+  "status": "new",
+  "note": "fix 5 AR5 master"
  }
 }

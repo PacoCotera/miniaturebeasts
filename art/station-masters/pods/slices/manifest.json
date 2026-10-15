@@ -14387,5 +14387,22 @@
   "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
   "status": "new",
   "status_note": "new: the art director signs in the whole Cargo capture at 1x (fix 5 spec 9)"
+ },
+ "cargo-report-plate-560x288": {
+  "size": [
+   560,
+   288
+  ],
+  "rect": [
+   232,
+   64,
+   560,
+   288
+  ],
+  "src": "cut by hand (cargo-report/make-report-plate.py): the stamp case's construction (room-stamp-case-152x152, 001bcd51) at 560 wide, its sage from the signed shut door, 0 MXN",
+  "made": "fix 5 AR5 master: a dim well moulded into the sage door, an 8 px bevelled moulding lit top-left and shaded lower-right, dark rubber corners, a quiet ground #1d232b floor (bone 13.2:1, mist 4.7:1), no glass, no sheen, no text; the 20 shorter heights are derived from it",
+  "sha256": "102a4e7e982641186891b55ddce272a85b1cc1ece6e1189ac42764d085ac5e3f",
+  "status": "new",
+  "status_note": "new: the art director signs the 21-height set on a 1x sheet and at the golden heights in Cargo captures"
  }
 }
