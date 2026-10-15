@@ -166,17 +166,30 @@ export const VIEW_CASES = [
     ({ name: "edgePoint to " + bx + "," + by, fn: "edgePoint", args: [{ box: "ON_SCREEN" }, 225, 298, bx, by] })),
   ...[[4, 5], [5, 0], [0, -6]].map(([dx, dy]) =>   // the pawn on tile (13, 15) with the camera at (423, 478): its centre at (225, 298)
     ({ name: "tileOnScreen " + dx + "," + dy, fn: "tileOnScreen", args: [{ view: [48, 0, 32, 450, 532] }, { x: 423, y: 478 }, 13 + dx, 15 + dy, { box: "ON_SCREEN" }] })),
-  // the 48 px edge rules: a tile's quarters from its own bit and its 8-neighbour mask (nw 1, ne 2, sw 4, se 8), the dither of a quarter by its 9-bit mask (the FNV of
-  // its 576 bytes, and of all 512 tables in order), the 6 px storm step over the 4 × 4 Bayer cell for each distance, the band's columns
+  // the 48 px edge rules: a tile's quarters from its own bit and its 8-neighbour mask (nw 1, ne 2, sw 4, se 8), the dither of an eighth by its 9-bit mask (the FNV of
+  // its 144 bytes, and of all 512 tables in order), the eighth grid of a tile shape (the FNV of its bytes), the 6 px storm step over the 4 × 4 Bayer cell for each
+  // distance, the band's columns
   { name: "quarterFar", fn: "quarterFar", each: [[0, 0x00], [0, 0x01], [0, 0x05], [0, 0x15], [0, 0x55], [0, 0x41], [0, 0x11], [0, 0xff], [1, 0x00], [1, 0xff]] },
-  ...[0x000, 0x100, 0x1ff, 0x0e0, 0x0c1, 0x002, 0x1fe].map(m => ({ name: "coverQ " + m.toString(16), fn: "coverQ", args: [m], digest: true })),
-  { name: "coverQ all 512", fn: "coverQ", each: Array.from({ length: 512 }, (_, m) => [m]), digest: true },
+  ...[0x000, 0x100, 0x1ff, 0x0e0, 0x0c1, 0x002, 0x1fe].map(m => ({ name: "coverE " + m.toString(16), fn: "coverE", args: [m], digest: true })),
+  { name: "coverE all 512", fn: "coverE", each: Array.from({ length: 512 }, (_, m) => [m]), digest: true },
+  ...[["sight 4 at 14,16", { disc: [14, 16, 4] }], ["sight 6 at 14,16", { disc: [14, 16, 6] }], ["sight 4 at 1,1", { disc: [1, 1, 4] }], ["sight 6 at 1,1", { disc: [1, 1, 6] }],
+    ["a Call of 11 at 3,3", { disc: [3, 3, 11] }], ["a corridor 1 wide", { band: [12, 1] }], ["a corridor 5 wide", { band: [12, 5] }], ["a lone tile", { band: [12, 1], rows: [10, 1] }]]
+    .map(([n, shape]) => ({ name: "eighthGrid " + n, fn: "eighthGrid", shape, digest: true })),
   ...[0, 1, 2, 3, 4, 5, 6].map(d => ({ name: "stormStep d=" + d, fn: "stormStep", each: Array.from({ length: 16 }, (_, i) => [d, i & 3, i >> 2]) })),
   { name: "stormCols48 over the gap 2.75 to 0", fn: "stormCols48", each: Array.from({ length: 12 }, (_, i) => [20 * (3 - (11 - i) / 4)]) },
 ];
 export function viewArgs(V, args) { return args.map(a => a && a.view ? V.viewOf(...a.view) : a && a.box ? V[a.box] : a); }
 // A case's output: the call's value; `each` is a list of argument lists (booleans as 0 and 1); `digest` is the FNV of a byte array.
-export function viewOut(V, c) { const call = a => V[c.fn](...viewArgs(V, a));
+// A tile shape for eighthGrid on the 28 × 32 place: `disc` [cx, cy, r] is the near tiles with 4·d² ≤ (2r + 1)² (the sight rule); `band` [x, n] is n near columns from x,
+// optionally only `rows` [y, m] rows from y; the rest is far.
+export function shapeFar(shape, w = 28, h = 32) { const far = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let near;
+    if (shape.disc) { const [cx, cy, r] = shape.disc; near = 4 * ((x - cx) ** 2 + (y - cy) ** 2) <= (2 * r + 1) ** 2; }
+    else near = x >= shape.band[0] && x < shape.band[0] + shape.band[1] && (!shape.rows || (y >= shape.rows[0] && y < shape.rows[0] + shape.rows[1]));
+    far[y * w + x] = near ? 0 : 1; }
+  return far; }
+export function viewOut(V, c) { if (c.shape) return fnv(Array.from(V.eighthGrid(shapeFar(c.shape), 28, 32)).join(","));
+  const call = a => V[c.fn](...viewArgs(V, a));
   if (c.each && c.digest) return fnv(c.each.map(a => Array.from(call(a)).join(",")).join(";"));
   if (c.each) return c.each.map(a => { const r = call(a); return r === true ? 1 : r === false ? 0 : r; });
   const r = call(c.args); return c.digest ? fnv(Array.from(r).join(",")) : r; }

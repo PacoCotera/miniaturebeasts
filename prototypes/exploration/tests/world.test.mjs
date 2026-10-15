@@ -1006,43 +1006,74 @@ test("golden frames at 48: a place with a south face and a stair, a generator 1 
 
 // ---- the edges at 48: coverage fades, the storm step, the place's own tables ----
 const BAYER_ = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-// The quarter rule from its definition, independent of src/view.mjs: whether each pixel of tile (tx, ty) takes the far side, given far(x, y) over tiles (off the place: not far).
+// The eighth rule from its definition, independent of src/view.mjs: brute force over a 12 px grid with the exact disc (a far eighth within 8 cells keeps a cell out of the core,
+// a core cell within 8 opens it), cut-only, and the quarter look for a near tile the opening empties. `far(x, y)` is the tile far bit (off the place: not far).
 const NB8_ = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
-function wantFar(far, tx, ty) {
-  const guard = (x, y) => far(x, y - 1) && far(x + 1, y) && far(x, y + 1) && far(x - 1, y);
-  const farQ = (x, y, qx, qy) => far(x, y) || (!guard(x, y) && far(x, y + (qy ? 1 : -1)) && far(x + (qx ? 1 : -1), y));
-  const q = (qx, qy) => farQ(tx + (qx >> 1), ty + (qy >> 1), qx & 1, qy & 1) ? 1 : 0, out = new Uint8Array(2304);
+function refGrid(far, w = 28, h = 32, noFallback = false) {
+  const tf = new Uint8Array(w * h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tf[y * w + x] = far(x, y) ? 1 : 0;
+  const EW = 4 * w, EH = 4 * h, E0 = (x, y) => tf[(y >> 2) * w + (x >> 2)], within = (x, y, f) => { for (let dy = -8; dy <= 8; dy++) for (let dx = -8; dx <= 8; dx++) { if (dx * dx + dy * dy > 64) continue; const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < EW && Y < EH && f(X, Y)) return true; } return false; };
+  const core = new Uint8Array(EW * EH), out = new Uint8Array(EW * EH);
+  for (let y = 0; y < EH; y++) for (let x = 0; x < EW; x++) core[y * EW + x] = !E0(x, y) && !within(x, y, (X, Y) => E0(X, Y) === 1) ? 1 : 0;
+  for (let y = 0; y < EH; y++) for (let x = 0; x < EW; x++) out[y * EW + x] = E0(x, y) || !within(x, y, (X, Y) => core[Y * EW + X] === 1) ? 1 : 0;
+  const emptied = [];
+  for (let ty = 0; ty < h; ty++) for (let tx = 0; tx < w; tx++) { if (tf[ty * w + tx]) continue; let all = true; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) if (!out[(4 * ty + j) * EW + 4 * tx + i]) all = false;
+    if (!all) continue; emptied.push([tx, ty]); if (noFallback) continue;
+    const f = (x, y) => x >= 0 && y >= 0 && x < w && y < h && tf[y * w + x] === 1, guard = f(tx, ty - 1) && f(tx + 1, ty) && f(tx, ty + 1) && f(tx - 1, ty);
+    for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) out[(4 * ty + j) * EW + 4 * tx + i] = !guard && f(tx + (i >> 1 ? 1 : -1), ty) && f(tx, ty + (j >> 1 ? 1 : -1)) ? 1 : 0; }
+  out.emptied = emptied; return out; }
+// Whether each pixel of tile (tx, ty) takes the far side, by the 5 × 5 samples (±6 px, 3 px apart) over the eighth grid G of refGrid.
+function wantFar(G, tx, ty) {
+  const e = (ex, ey) => ex >= 0 && ey >= 0 && ex < 112 && ey < 128 ? G[ey * 112 + ex] : 0, out = new Uint8Array(2304);
   for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0;
-    for (const oy of [-12, -6, 0, 6, 12]) for (const ox of [-12, -6, 0, 6, 12]) c += q(Math.floor((x + ox) / 24), Math.floor((y + oy) / 24));
+    for (const oy of [-6, -3, 0, 3, 6]) for (const ox of [-6, -3, 0, 3, 6]) c += e(4 * tx + Math.floor((x + ox) / 12), 4 * ty + Math.floor((y + oy) / 12));
     out[y * 48 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; }
   return out; }
 const noPuffs = p => p.run("puffArt = () => new PB(1, 1)");   // the fog's drifting texture is drawn over the fogged area
-test("48 px edges: a quarter's dither (all 512 masks) equals its definition; a straight boundary, a rounded corner, whole near and far quarters", () => {
-  const want = m => { const far = (dx, dy) => dx === 0 && dy === 0 ? (m >> 8) & 1 : (m >> NB8_.findIndex(([a, b]) => a === dx && b === dy)) & 1, f = new Uint8Array(576);
-    for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) { let c = 0; for (const oy of [-12, -6, 0, 6, 12]) for (const ox of [-12, -6, 0, 6, 12]) c += far(Math.floor((x + ox) / 24), Math.floor((y + oy) / 24));
-      f[y * 24 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
+test("48 px edges: an eighth's dither (all 512 masks) equals its definition; a straight boundary, a rounded corner, whole near and far eighths", () => {
+  const want = m => { const far = (dx, dy) => dx === 0 && dy === 0 ? (m >> 8) & 1 : (m >> NB8_.findIndex(([a, b]) => a === dx && b === dy)) & 1, f = new Uint8Array(144);
+    for (let y = 0; y < 12; y++) for (let x = 0; x < 12; x++) { let c = 0; for (const oy of [-6, -3, 0, 3, 6]) for (const ox of [-6, -3, 0, 3, 6]) c += far(Math.floor((x + ox) / 12), Math.floor((y + oy) / 12));
+      f[y * 12 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
   assert.deepEqual(V.BAYER4, BAYER_);
-  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(V.coverQ(m)), Array.from(want(m)), "mask " + m);
-  assert.equal(V.coverQ(7), V.coverQ(7), "the table is built once");
-  assert.ok(V.coverQ(0).every(v => v === 0) && V.coverQ(511).every(v => v === 1));
-  const w = V.coverQ(0xe0);   // the west column of quarters far, the quarter itself near: from 12 px in, every pixel is near
-  for (let y = 0; y < 24; y++) for (let x = 12; x < 24; x++) assert.equal(w[y * 24 + x], 0, "inside the near quarter at " + x + "," + y);
-  assert.ok(w.some(v => v === 1) && w.slice(0, 24 * 24).some((v, i) => (i % 24) < 12 && v === 0), "the dither lies across the boundary, one quarter wide");
-  const c = V.coverQ(0x002);   // only the NE quarter far: a rounded patch gathering at the corner
-  let corner = 0; for (let y = 0; y < 6; y++) for (let x = 18; x < 24; x++) corner += c[y * 24 + x]; assert.ok(corner > 0 && corner < 36, "far pixels gather at the corner: " + corner); assert.equal(c[23 * 24], 0);
+  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(V.coverE(m)), Array.from(want(m)), "mask " + m);
+  assert.equal(V.coverE(7), V.coverE(7), "the table is built once");
+  assert.ok(V.coverE(0).every(v => v === 0) && V.coverE(511).every(v => v === 1));
+  const w = V.coverE(0xe0);   // the west column of eighths far, the eighth itself near: from 6 px in, every pixel is near
+  for (let y = 0; y < 12; y++) for (let x = 6; x < 12; x++) assert.equal(w[y * 12 + x], 0, "inside the near eighth at " + x + "," + y);
+  assert.ok(w.some(v => v === 1) && w.some((v, i) => (i % 12) < 6 && v === 0), "the dither lies across the boundary, one eighth wide");
+  const c = V.coverE(0x002);   // only the NE eighth far: a rounded patch gathering at the corner
+  let corner = 0; for (let y = 0; y < 3; y++) for (let x = 9; x < 12; x++) corner += c[y * 12 + x]; assert.ok(corner > 0 && corner < 9, "far pixels gather at the corner: " + corner); assert.equal(c[11 * 12], 0);
+});
+test("48 px edges: the eighth grid equals its definition on random shapes and the sight discs; it is cut-only; a thin region falls back to the quarter look; a disc loses at most 8 of a tile's 16 eighths", () => {
+  let seed = 12345; const rnd = () => (seed = (Math.imul(seed, 1103515245) + 12345) >>> 0) / 4294967296;
+  const shapes = [], blob = (n, k) => { const cx = Array.from({ length: k }, () => [rnd() * 28, rnd() * 32, 1.5 + rnd() * 4]); return (x, y) => !cx.some(([a, b, r]) => (x - a) ** 2 + (y - b) ** 2 <= r * r); };
+  for (let n = 0; n < 6; n++) shapes.push(blob(n, 2 + n));
+  shapes.push((x, y) => Math.hypot(x - 14, y - 16) > 4.5, (x, y) => Math.hypot(x - 14, y - 16) > 6.5, (x, y) => Math.hypot(x - 1, y - 1) > 6.5, (x, y) => x < 12 || x > 12, (x, y) => x < 12 || x > 16, (x, y) => !(x === 12 && y === 10));
+  for (const far of shapes) {
+    const tf = new Uint8Array(896); for (let y = 0; y < 32; y++) for (let x = 0; x < 28; x++) tf[y * 28 + x] = far(x, y) ? 1 : 0;
+    const got = V.eighthGrid(tf, 28, 32), want = refGrid(far);
+    assert.deepEqual(Array.from(got), Array.from(want));
+    for (let ty = 0; ty < 32; ty++) for (let tx = 0; tx < 28; tx++) if (tf[ty * 28 + tx]) for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) assert.equal(got[(4 * ty + j) * 112 + 4 * tx + i], 1, "a hidden tile's eighths are all far"); }
+  const count = (far, tx, ty, grid) => { let n = 0; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) n += grid[(4 * ty + j) * 112 + 4 * tx + i]; return n; };
+  for (const [sight, cx, cy] of [[4, 14, 16], [6, 14, 16], [4, 1, 1], [6, 1, 1]]) { const far = (x, y) => 4 * ((x - cx) ** 2 + (y - cy) ** 2) > (2 * sight + 1) ** 2, g = refGrid(far); let centre = 0;
+    for (let ty = 0; ty < 32; ty++) for (let tx = 0; tx < 28; tx++) if (!far(tx, ty)) { assert.ok(count(far, tx, ty, g) <= 8, "sight " + sight + ": tile " + tx + "," + ty + " loses at most 8 eighths"); if (g[(4 * ty + 1) * 112 + 4 * tx + 1] || g[(4 * ty + 2) * 112 + 4 * tx + 2]) centre++; }
+    assert.equal(g.emptied.length, 0, "no tile of the disc is emptied"); }
+  const col = n => (x, y) => !(x >= 12 && x < 12 + n), one = refGrid(col(1), 28, 32, true), five = refGrid(col(5), 28, 32, true);
+  assert.ok(one.emptied.length === 32 && five.emptied.length === 0, "a corridor 1 wide is emptied by the opening, 5 wide keeps every tile: " + one.emptied.length + ", " + five.emptied.length);
+  const fb = V.eighthGrid(Uint8Array.from({ length: 896 }, (_, k) => col(1)(k % 28, (k / 28) | 0) ? 1 : 0), 28, 32);   // the fallback: a 1-wide corridor takes quarterFar's look (here: all near)
+  for (let ty = 0; ty < 32; ty++) for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) assert.equal(fb[(4 * ty + j) * 112 + 48 + i], 0, "a corridor tile draws near by its quarters");
 });
 test("48 px edges: a quarter of a tile is far where its tile is far, or where both sides meeting at its corner are far unless the tile is boxed in (a lone tile stays whole)", () => {
   for (let m8 = 0; m8 < 256; m8++) for (const own of [0, 1]) { const q = V.quarterFar(own, m8), bit = b => (m8 >> b) & 1, boxed = bit(0) && bit(2) && bit(4) && bit(6);
     const want = own ? 15 : boxed ? 0 : (bit(0) & bit(6)) | ((bit(0) & bit(2)) << 1) | ((bit(4) & bit(6)) << 2) | ((bit(4) & bit(2)) << 3);
     assert.equal(q, want, "own " + own + " m8 " + m8); }
 });
-test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the quarter rule says; a lone unveiled tile draws whole", () => {
+test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the eighth rule says; a lone unveiled tile falls back to its quarters and draws whole", () => {
   const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).svy = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); unveilRound(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
-  const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !uv(x, y);
+  const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !uv(x, y), G = refGrid(far);
   let checked = 0, edge = 0;
   for (let ty = 10; ty <= 16; ty++) for (let tx = 10; tx <= 18; tx++) {   // whole tiles in view, above the message box
-    const f = wantFar(far, tx, ty), mixed = f.some(v => v) && f.some(v => !v);
+    const f = wantFar(G, tx, ty), mixed = f.some(v => v) && f.some(v => !v);
     if (Math.max(Math.abs(tx - 14), Math.abs(ty - 14)) <= 1) continue;   // the pawn and what it faces
     if (p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return true; } return false; })()`)) continue;   // a reed or a canopy draws over it
     if (p.run(`layout('${key}').tiles[${ty * 28 + tx}] === T.WATER`)) continue;
@@ -1059,24 +1090,24 @@ test("48 px edges: a veiled column beside the lifted view draws each pixel on th
   assert.equal(lone.run(`unveiled('${lkey}', 16, 12)`), true); assert.equal(lone.run(`unveiled('${lkey}', 15, 12) || unveiled('${lkey}', 17, 12) || unveiled('${lkey}', 16, 11) || unveiled('${lkey}', 16, 13)`), false);
   const lpb = lone.run(`tile48(layout('${lkey}'), ${12 * 28 + 16}, 0)`), lx = 16 * 48 - lcam.x, ly = vy + 12 * 48 - lcam.y; let whole = 0, n = 0;
   let centre = 0; for (let i = 0; i < 2304; i++) { const c = lpb.p[i]; if (c < 0) continue; n++; const same = lpx[(ly + ((i / 48) | 0)) * W_ + lx + (i % 48)] === c; if (same) whole++; const x = i % 48, y = (i / 48) | 0; if (x >= 12 && x < 36 && y >= 12 && y < 36 && !same) centre++; }
-  assert.equal(centre, 0, "the lone unveiled tile keeps its centre clear (the guard); only the 12 px of dither at its sides are veiled"); assert.ok(whole > n * 0.6, "and most of it: " + whole + " of " + n);
+  assert.equal(centre, 0, "the lone unveiled tile keeps its centre clear (the fallback to the quarter look); only the 6 px of dither at its sides are veiled"); assert.ok(whole > n * 0.6, "and most of it: " + whole + " of " + n);
 });
-test("48 px fog: every pixel of every fog-edge tile in view equals the quarter rule over the sight disc; a tile out of sight has no near quarter, and no clear pixel lies on the far side of the rule", () => {
+test("48 px fog: every pixel of every fog-edge tile in view equals the eighth rule over the sight disc; a tile out of sight has no clear pixel more than 6 px in", () => {
   const p = place48(7, 176, 14, 14, "S.exp.fog = { x: 176 % MW + .5, y: Math.floor(176 / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].tf.length = 0; S.exp.live[S.exp.patch.key].fr.length = 0; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   noPuffs(p); frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
   assert.equal(p.run("RT.ts"), 48); assert.equal(p.run("sightR(layout(S.exp.patch.key))"), 4);
-  const fog = p.run("PLACE_FOG"), inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y);
+  const fog = p.run("PLACE_FOG"), inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y), G = refGrid(far);
   let edge = 0, pixels = 0;
   for (let ty = 0; ty < 32; ty++) for (let tx = 0; tx < 28; tx++) { const sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y; if (sx < 0 || sx + 48 > W_ || sy < vy || sy + 48 > 480) continue;   // above the message box
    
     if (Math.max(Math.abs(tx - 14), Math.abs(ty - 14)) <= 1) continue;   // the pawn and what it faces
-    const f = wantFar(far, tx, ty); if (f.some(v => v) && f.some(v => !v)) edge++;
+    const f = wantFar(G, tx, ty); if (f.some(v => v) && f.some(v => !v)) edge++;
     if (p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return true; } return false; })()`)) continue;
     const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`);
     for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0) continue;
       assert.equal(px[(sy + y) * W_ + sx + x], f[y * 48 + x] ? fog[c] : c, "tile " + tx + "," + ty + " pixel " + x + "," + y); pixels++; }
-    // clear ground never lies more than 12 px into a tile the rule hides (the dither's reach), and a tile in sight keeps its centre
-    if (!inS(tx, ty)) for (let y = 12; y < 36; y++) for (let x = 12; x < 36; x++) assert.equal(f[y * 48 + x], 1, "a hidden tile's centre is fogged: " + tx + "," + ty); }
+    // clear ground never lies more than 6 px into a tile the rule hides (the dither's reach)
+    if (!inS(tx, ty)) for (let y = 6; y < 42; y++) for (let x = 6; x < 42; x++) assert.equal(f[y * 48 + x], 1, "a hidden tile's centre is fogged: " + tx + "," + ty); }
   assert.ok(edge > 12 && pixels > 20000, "fog-edge tiles " + edge + ", pixels " + pixels);
 });
 test("48 px storm: the 6 px of the lit tile beside the band step by the Bayer rule, the pixel beyond them is lit, band tiles are dark", () => {
@@ -1115,9 +1146,9 @@ test("48 px fog edge: in the storm's band the clear side takes the band's dark (
   frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
   assert.equal(p.run("RT.ts"), 48); assert.equal(p.run("sightR(layout(S.exp.patch.key))"), 4);
   const storm = p.run("PLACE_STORM"), darkW = Math.ceil((3 - 1.25) * 1.5) * 48; assert.equal(darkW, 144);
-  const inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y), seen = { band: 0, lit: 0 };
+  const inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y), G = refGrid(far), seen = { band: 0, lit: 0 };
   for (let ty = 11; ty <= 17; ty++) for (let tx = 8; tx <= 20; tx++) {
-    if (!inS(tx, ty)) continue; const f = wantFar(far, tx, ty); if (!f.some(v => v)) continue;
+    if (!inS(tx, ty)) continue; const f = wantFar(G, tx, ty); if (!f.some(v => v)) continue;
     const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y, band = tx * 48 + 24 - cam.x < darkW;
     if (sx < 0 || sx + 48 > W_) continue;
     const lay = p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return false; } return true; })()`);

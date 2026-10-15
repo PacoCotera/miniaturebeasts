@@ -82,7 +82,7 @@ function proof(pngFile, gridFile) {
 if (flag("proof")) proof(arg("proof-png"), arg("proof-grid"));
 
 // ---------- the whole-place set ----------
-// Each scene: the generator, seed and cell (the place), the pawn's tile, the light (sun, storm, fog, veil), a label.
+// Each scene: the generator, seed and cell (the place), the pawn's tile, the light (sun, storm, overcast, fog, fog6 for fog with a glowing partner, veil), a label.
 // Places were chosen from the worlds' own layouts: the first of each kind that shows what the view is for.
 const SCENES = JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), "capture-48.scenes.json"), "utf8"));
 const only = arg("only") ? new Set(arg("only").split(",")) : null;
@@ -111,7 +111,8 @@ for (const sc of SCENES) {
       const col = s.cell % MW;
       if (s.light === 'storm') ex.storm = { x: col - 3 - (s.gap == null ? 1.25 : s.gap), dir: 1, w: 3, v: .25, t: 0 };
       if (s.light === 'overcast') ex.storm = { x: col - 1, dir: 1, w: 3, v: .25, t: 0 };
-      if (s.light === 'fog') ex.fog = { x: col + .5, y: Math.floor(s.cell / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 };
+      if (s.light === 'fog6') ex.pt = { sp: 1, name: 'Tuikis' };   // a glowing partner: sight 6
+      if (s.light === 'fog' || s.light === 'fog6') ex.fog = { x: col + .5, y: Math.floor(s.cell / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 };
       if (s.level != null) { G.level[lay.cell] = s.level; lay.l48 = null; }
       FX.msg = null; FX.hints = {}; for (const k of Object.keys(S.found || {})) {} RT.key = null; ${ts32 ? "placeTs = () => 32;" : ""} return key; })()`); }, { s, ts32 });
   await setup(sc, false); await page.waitForTimeout(1500);
