@@ -279,3 +279,11 @@ test("an identified pod in the rack asks for rackpod:S01, an unidentified one fo
   assert.equal(reqs.get("rackpod:S01").species, "S01"); assert.deepEqual(reqs.get("rackpod:S01").size, spec.regions.pods.pod.size); assert.equal(reqs.get("rackpod:unknown").species, null);
   assert.ok(!b.requests.some((r) => r.id === "home-rack-pod-24x32" || (r.kind === "ph" && /rack-pod/.test(r.id))), "no PH plate for a rack pod");
 });
+
+test("the goal sentence names no species before it is known: identify a pod (fresh game), identify the Loika pod once Loikas are known; no warning words for an unknown species", () => {
+  const sv = sv0({ carried: [] }), st = world(); st.dock = { docked: false, at: T0 }; pod(st, "S01", 5, false); assert.deepEqual(st.knownIds, []);
+  const g = S.goalKey(st, sv, settings); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, null);
+  const w = goalWords(g, false, frameSpec); assert.equal(w.text ?? w.step ?? JSON.stringify(w), JSON.stringify(w).includes("identify a pod") ? (w.text ?? w.step ?? JSON.stringify(w)) : "identify a pod", JSON.stringify(w)); assert.ok(JSON.stringify(w).includes("identify a pod") && !/Loika/.test(JSON.stringify(w)), JSON.stringify(w));
+  assert.equal(frameSpec.strings.goal.step.identifyAny, "identify a pod"); assert.equal(frameSpec.strings.goal.step.identify, "identify the {species} pod");
+  st.knownIds.push("S01"); st.tray.length = 0; pod(st, "S01", 6, false); const g2 = S.goalKey(st, sv, settings); assert.equal(g2.step.species, "S01"); assert.ok(/identify the Loika pod/.test(JSON.stringify(goalWords(g2, false, frameSpec))));
+});
