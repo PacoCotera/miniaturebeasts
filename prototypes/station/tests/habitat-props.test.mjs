@@ -111,7 +111,7 @@ test("Cross: a face a partner (an adult or an elder of the species), a partner o
 test("Wild: shut, ajar once armed, its context from the rules (a young, a bonded, a carried mibi stays) and the price ❀ +2 on the line", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
   let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, "❀ +2"); assert.equal(b.line.subject, "goes back to the wild");
-  b = build(w, sv, { focus: "wild", armed: true }); assert.equal(b.props.regions.wild.state, "armed"); assert.equal(b.props.regions.wild.gate, "gate-wild-open-48x48"); assert.equal(b.line.ok, `Again: return ${m[0].name}`); assert.equal(b.props.focus.armed, "wild");
+  b = build(w, sv, { focus: "wild", armed: true }); assert.equal(b.props.regions.wild.state, "armed"); assert.equal(b.props.regions.wild.gate, "gate-wild-open-48x48:48x48"); assert.equal(b.line.ok, `Again: return ${m[0].name}`); assert.equal(b.props.focus.armed, "wild");
   m[0].bonded = true; b = build(w, sv, { focus: "wild", armed: true }); assert.equal(b.props.regions.wild.state, "shut", "a block disarms"); assert.equal(b.line.subject, "a bonded mibi stays"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
 });
 

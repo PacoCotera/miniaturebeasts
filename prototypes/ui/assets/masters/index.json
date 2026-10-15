@@ -225,6 +225,27 @@
    "sha256": "e156b1f2b90d15eec36da296fac058efe14e3e651c3e24577d0e2b7c9dc854c3",
    "signed": "art director, verdict (72561d74)"
   },
+  "chapter-plate-read-40x40": {
+   "file": "pods/chapter-plate-read-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "01399fcf562404f2ba6831a7dbf97c3d7882a982128cfd31032da86c2538af8e",
+   "signed": "named with --ids"
+  },
+  "chapter-plate-sealed-40x40": {
+   "file": "pods/chapter-plate-sealed-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "8c1b3687d57b127f71021a3e57128a324f043a9fcb6e879b53eac5874f0f63f7",
+   "signed": "named with --ids"
+  },
+  "chapter-plate-unread-40x40": {
+   "file": "pods/chapter-plate-unread-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "35633c7e700eab12071e78a743c9d04bed08ab90c0ab9434f32be558f9210b0f",
+   "signed": "named with --ids"
+  },
   "clan-roundel-C01-12x12": {
    "file": "pods/clan-roundel-C01-12x12.png",
    "w": 12,
@@ -701,6 +722,20 @@
    "sha256": "545ae9c79dbc56250c44f28f2e66b172c05ee383eee1048b6c4ca7c48f80f92f",
    "signed": "art director (frame bars, #112 78b6bfbc)"
   },
+  "gate-wild-open-48x48": {
+   "file": "pods/gate-wild-open-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "22aa57453638a881909bf67cb6244b1bf8336aa082e06ece5f4febab5a8c6bb6",
+   "signed": "named with --ids"
+  },
+  "gate-wild-shut-48x48": {
+   "file": "pods/gate-wild-shut-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "23627459f292a4feb102e1f13142d1c5c134ba10ee2ae88fb27e9927abc1f1e5",
+   "signed": "named with --ids"
+  },
   "glint-star-12x12": {
    "file": "pods/glint-star-12x12.png",
    "w": 12,
@@ -1071,6 +1106,13 @@
    "h": 16,
    "sha256": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mark-guide-16": {
+   "file": "pods/mark-guide-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
+   "signed": "named with --ids"
   },
   "mark-line-only-16x8": {
    "file": "pods/mark-line-only-16x8.png",

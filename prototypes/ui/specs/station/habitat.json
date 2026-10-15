@@ -621,7 +621,7 @@
   "faceRingAway": "stone"
  },
  "masters": {
-  "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`). The portrait's picture, portrait:<d16>:40x30, is derived on the Station, not a master (the architect's ruling).",
+  "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`). The portrait's picture, portrait:<d16>:40x30, is derived on the Station, not a master (the architect's ruling). Until signed, gate-wild-*, chapter-plate-* and mark-guide-16 are empty slots that draw nothing (rule 3; fix 3c-habitat)",
   "new": [
    {
     "id": "vivarium-near-{dawn,day,dusk,night}-544x408",

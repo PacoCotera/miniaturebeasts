@@ -42,7 +42,8 @@ const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const SIZES = { "frame-companion-outline-16x24": [16, 24], "frame-companion-solid-16x24": [16, 24], "home-lamp-sky-12x12": [12, 12], "home-lamp-hairline-12x12": [12, 12], "home-lamp-sprout-12x12": [12, 12], "home-lamp-amber-12x12": [12, 12], "frame-lamp-8-stone": [8, 8], "heart-full-24": [24, 24], "notch-skill-16x24": [16, 24], "mark-out-with-companion-64x96": [64, 96], "face-loika-24": [24, 24], "face-loika-24-away": [24, 24] };
 const sizeOf = (r) => Array.isArray(r.size) ? r.size : typeof r.size === "number" ? [r.size, r.size] : r.kind === "emblem" ? [24, 24] : [16, 16];
-const push = (f, b, over = {}) => { const props = { screen: "habitat", ...b.props, motion: f.motion, frame: frameProps(b.line), ...over }; for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r)))); for (const [id, sz] of Object.entries(SIZES)) f.handleOf(id, withPolicy((i) => standIn(i, sz))); return f.props(props); };
+let UNSIGNED = null;   // ids whose master is not placed: no picture is handed to the face for them (fix 3c-habitat)
+const push = (f, b, over = {}) => { const props = { screen: "habitat", ...b.props, motion: f.motion, frame: frameProps(b.line), ...over }; for (const r of b.requests) if (!UNSIGNED?.has(r.id)) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r)))); for (const [id, sz] of Object.entries(SIZES)) f.handleOf(id, withPolicy((i) => standIn(i, sz))); return f.props(props); };
 async function start(b, { motion = true, t0 = 0 } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["habitat", spec], ["namer", namerSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
@@ -222,7 +223,7 @@ test("the Portrait picture: one node after the frame, at 920,316 resting and 920
     assert.equal(b.props.regions.portrait.picture, id); assert.deepEqual(reg(lg, "painted").rect, [920, 316 + dy, 40, 30]); assert.deepEqual(reg(lg, "art").rect, [916, 312 + dy, 48, 40]);
     assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
     objects[focus] = f.objects(); f.pass(3); for (const [x, y] of win(dy)) assert.deepEqual(f.pixel(x, y), colour(id), `the picture shows at ${x},${y} (drawn after the frame)`);
-    assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40"), "the frame's rail beside the window");
+    assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40:48x40"), "the frame's rail beside the window");
   }
   for (const [o, focus] of [[{ portrait: "portrayed" }, "resident"], [{ portrait: "held" }, "portrait"], [{}, "resident"]]) {
     const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
@@ -230,4 +231,15 @@ test("the Portrait picture: one node after the frame, at 920,316 resting and 920
   }
   const b = scene({ portrait: "portrayed", digest: D, focus: "resident" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false); };
   assert.match(bad((c) => { reg(c, "painted").rect[0] += 1; })[0], /portrait/, "proved to fail on a moved picture");
+});
+
+test("fix 3c-habitat: with no Wild gate, chapter plate or guide mark master placed nothing is drawn at the gate (916,416), the plates' grounds (608+48i,200) or the guide mark; with them, each is drawn", { skip }, async () => {
+  const drawn = (lg, id) => lg.regions.filter((r) => r.id === id && (r.layer === "art" || r.layer === "painted") && r.rect[2] > 0);   // the picture layers (the emblems on the plates are art too, 24 high; a ground is 40)
+  try {
+    const b = scene({ focus: "resident" }), ids = new Set(b.requests.filter((r) => r.kind === "slot" && /^(gate-wild|chapter-plate|mark-guide)/.test(r.id)).map((r) => r.id)); assert.ok(ids.size >= 3, [...ids].join());
+    UNSIGNED = ids; const f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []);
+    assert.deepEqual(drawn(lg, "wild"), [], "no gate at 916,416"); assert.deepEqual(drawn(lg, "speciesLine"), [], "no guide mark"); assert.ok(drawn(lg, "plates").every((r) => r.rect[3] < 40), "no plate ground at 608+48i,200: only the emblems");
+    UNSIGNED = null; const g = await start(scene({ focus: "resident" })), lg2 = logOf(g);
+    assert.deepEqual(drawn(lg2, "wild").map((r) => r.rect), [[916, 416, 48, 48]], "the gate, placed"); assert.ok(drawn(lg2, "plates").some((r) => r.rect[1] === 200 && r.rect[3] === 40), "the plates' grounds, placed"); assert.deepEqual(drawn(lg2, "speciesLine").map((r) => r.rect[2] + "x" + r.rect[3]), ["16x16"], "the guide mark, placed");
+  } finally { UNSIGNED = null; }
 });
