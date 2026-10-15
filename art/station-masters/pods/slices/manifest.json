@@ -14718,5 +14718,22 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+ },
+ "mibi-halo-empty-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": [
+   400,
+   232,
+   128,
+   160
+  ],
+  "src": "cut by hand (halo-empty/make-halo-empty.py) from the signed halo set's mist colour, 0 MXN",
+  "made": "fix 5 Pods P-A3: the empty halo before Identify, the halo's soft mist alone in one quiet upright oval (alpha at most 50, against the figures' 107-115), no silhouette",
+  "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
+  "status": "new",
+  "status_note": "new: the art director signs in the whole-screen Pods overview capture"
  }
 }

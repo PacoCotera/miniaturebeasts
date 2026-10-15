@@ -4908,5 +4908,9 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+ },
+ "mibi-halo-empty-128x160": {
+  "status": "new",
+  "note": "fix 5 Pods P-A3"
  }
 }
