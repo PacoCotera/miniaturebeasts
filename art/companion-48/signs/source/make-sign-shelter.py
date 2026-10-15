@@ -1,5 +1,5 @@
 # The shelter sign picture: 32x32 on the core 48, from meadow/face/wall-1x2-h14 rect (8,0,32,32), hand-remapped; underside and open space added.
-# usage: python3 -I make-s6.py MEADOW_WALLS_PNG PALETTE_JSON OUT_DIR
+# usage: python3 -I make-sign-shelter.py MEADOW_WALLS_PNG PALETTE_JSON OUT_DIR
 import sys, json
 from PIL import Image
 walls, palf, out = sys.argv[1:4]
