@@ -462,3 +462,15 @@ test("a save that throws while it loads is kept; a newer version goes to the new
   const kept = Object.keys(t.store).filter(k => k.startsWith("mb-save-kept-")).map(k => t.store[k]).sort();
   assert.deepEqual(kept, ["{one", "{two"]);
 });
+
+test("a v8 save that throws while it loads leaves every stored key untouched", () => {
+  const raw = JSON.stringify({ v: 8, seed: 1, cr: [], mibis: [{}], gen: 2, carried: [9], bay: [null], pods: [null] });
+  const writes = [], init = { "mb-save-v8": raw, "mb-exploration-v1": "{}", "mb-exploration-v6": "{}", "mb-exploration-v7": "{}" };
+  const store = new Proxy({ ...init }, { set: (o, k, v) => { writes.push("set:" + k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push("rm:" + k); delete o[k]; return true; } });
+  const p = page(store);
+  if (p.run("RT.broken")) { assert.deepEqual(writes, [], "boot wrote and removed nothing"); for (const k of Object.keys(init)) assert.equal(p.store[k], init[k], k); }
+  // force the throw: a save that parses and has the shape, then fails inside the loader
+  const w2 = [], s2 = new Proxy({ ...init }, { set: (o, k, v) => { w2.push("set:" + k); o[k] = v; return true; }, deleteProperty: (o, k) => { w2.push("rm:" + k); delete o[k]; return true; } });
+  const q = page(s2); w2.length = 0; for (const k of Object.keys(init)) q.store[k] = init[k]; w2.length = 0; q.run("S = null; RT.readOnly = false; RT.broken = false; migrateCarried = () => { throw new Error('no'); }; globalThis.__r = load();");
+  assert.equal(q.run("__r"), "broken"); assert.deepEqual(w2, [], "nothing written or removed on the way to the broken screen");
+});

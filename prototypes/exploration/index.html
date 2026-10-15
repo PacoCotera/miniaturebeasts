@@ -854,7 +854,7 @@ function load() {
     if (s.v !== SAVE_V) return 'broken';
     if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
-    dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
+    S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
     // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods is the world's life,
@@ -866,7 +866,7 @@ function load() {
     layoutCache.clear(); G = genWorld(S.seed, gen);
     if (noPods) S.pods = genLife(S.seed).pods.filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
-    indexCreatures(); return true;
+    indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
   } catch (e) { S = null; return 'broken'; }   // it would not load: kept as it is
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
