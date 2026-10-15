@@ -101,15 +101,6 @@ def crest_put(a, c, dy=0, dx=0, tilt=0, extra=0, spread=0):
             if c[r, x] < 0: continue
             xx = x + dx + sh + (-spread if x <= 14 else (spread if x >= 21 else 0))
             if 0 <= xx < W and 0 <= y + dy < H: a[y + dy, xx] = c[r, x]
-def legs_draw(a, shifts, rows=(28, 29, 30), wide=0):
-    for (x0, x1), d in zip(LEGS, shifts):
-        top, mid, bot = rows
-        for y in (top, mid) if bot - top > 1 else (top,):
-            put(a, x0 - 1 + d - wide, y, 'I'); put(a, x1 + 1 + d + wide, y, 'I')
-            for x in range(x0 + d - wide, x1 + d + wide + 1): put(a, x, y, 'S' if (x == x0 + d - wide and y == top) else 'N')
-        put(a, x0 - 1 + d - wide, bot, 'I'); put(a, x1 + 1 + d + wide, bot, 'I')
-        for x in range(x0 + d - wide, x1 + d + wide + 1): put(a, x, bot, 'B' if (x - (x0 + d - wide)) % 2 == 0 else 'N')
-        for x in range(x0 - 1 + d - wide, x1 + 2 + d + wide): put(a, x, bot + 1, 'I')
 def between_legs_outline(a, y, spans):
     for x in range(W):
         if a[y - 1, x] >= 0 and a[y, x] < 0 and not any(x0 - 1 <= x <= x1 + 1 for x0, x1 in spans): a[y, x] = IDX['ink']
@@ -121,10 +112,21 @@ def alert(I):
     return a
 def flee(I):
     a = np.full((H, W), -1)
-    body = insert_cols(I[10:28], 13, 2)[:, :W]                     # 2 px longer
-    a[11:11 + body.shape[0]] = body
-    legs_draw(a, (-2, -2, 2, 2), rows=(29, 30, 30), wide=0)        # the back feet 2 px back, the front feet 2 px forward (the stretch moved them), the legs stubby
-    between_legs_outline(a, 29, [(x0 + d, x1 + d) for (x0, x1), d in zip(LEGS, (-2, -2, 2, 2))])
+    body = insert_cols(I[10:28], 13, 2)[:, :W]                     # 2 px longer (the cream throat and belly stretch with it)
+    a[11:11 + body.shape[0]] = body                                # 1 px lower: the belly's bottom on row 28
+    # the legs splayed: the back legs 3 px further back, the front legs 3 px further forward (the stretch has already put the front ones 2 px on), each one a stubby charcoal leg
+    # leaning out over its two rows (half the shift on the upper row, all of it on the toes' row)
+    sh = [(-1, -3), (-1, -3), (2 + 1, 2 + 3), (2 + 1, 2 + 3)]
+    for (x0, x1), (u, d) in zip(LEGS, sh):
+        w = 1                                                      # the splayed legs are a pixel broader: stretched, not thin
+        for y, dd in ((29, u),):
+            put(a, x0 - 1 + dd, y, 'I'); put(a, x1 + 1 + dd + w, y, 'I')
+            for x in range(x0 + dd, x1 + 1 + dd + w): put(a, x, y, 'S' if x == x0 + dd else 'N')
+        put(a, x0 - 1 + d, 30, 'I'); put(a, x1 + 1 + d + w, 30, 'I')
+        for x in range(x0 + d, x1 + 1 + d + w): put(a, x, 30, 'B' if (x - (x0 + d)) % 2 == 0 else 'N')
+        for x in range(min(x0 - 1 + u, x0 - 1 + d), max(x1 + 2 + u, x1 + 2 + d) + w): put(a, x, 31, 'I')
+    for x in range(W):                                             # the belly's bottom outline between the legs
+        if a[28, x] >= 0 and a[29, x] < 0: a[29, x] = IDX['ink']
     crest_put(a, crest_of(I), dy=1, dx=1, tilt=-2)                  # swept back: the tips 2 px toward the tail
     return a
 def huddle(I):
@@ -180,10 +182,16 @@ def mini_from(base):
             elif v in {nm(n) for n in ("orange", "amber", "rust", "white")}: a[y, x] = nm('night')
     for x, y in ((6, 6), (7, 6)): a[y, x] = nm('night')
     put(a, 6, 6, 'O'); put(a, 7, 6, 'V')                          # one 1 px orange eye and its void pupil toward the snout
+    for x, y in ((8, 7), (9, 7), (8, 8), (9, 8), (8, 11)):        # the snout: a 2 x 2 paper block at the head's front, 1 px of bone on top, a 1 px paper chin under it
+        if a[y, x] >= 0 and not (y == 8 and x == 9): put(a, x, y, 'N')
+    for x, y in ((8, 6), (9, 6), (8, 7), (9, 7)): put(a, x, y, 'P')
+    for x in (8, 9): put(a, x, 5, 'B')
+    put(a, 8, 8, 'P'); put(a, 8, 11, 'I')
     return a
 if __name__ == "__main__":
     base_dir, out = sys.argv[1:3]; os.makedirs(out, exist_ok=True)
-    I = idle_from(load(os.path.join(base_dir, "c-token-S01-idle-32x32.png")))
+    if len(sys.argv) > 3: I = load(sys.argv[3]); I[18, 27] = IDX['ink']     # the art director's approved idle; the outline's one missing pixel at the muzzle's corner is closed
+    else: I = idle_from(load(os.path.join(base_dir, "c-token-S01-idle-32x32.png")))
     for name, a in (("idle", I), ("alert", alert(I)), ("flee", flee(I)), ("huddle", huddle(I)), ("shake-f0", shake(I, 0)), ("shake-f1", shake(I, 1)), ("eat-f0", eat(I, 0)), ("eat-f1", eat(I, 1))):
         save(a, os.path.join(out, "c-token-S01-%s-32x32.png" % name))
     save(mini_from(load(os.path.join(base_dir, "c-mini-S01-12x12.png"))), os.path.join(out, "c-mini-S01-12x12.png"))
