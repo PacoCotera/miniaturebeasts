@@ -479,7 +479,8 @@ function composeMsg() {
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
   const sg = n.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign))[0], plain = n.filter(x => !x.sign);
   if (sg && !plain.some(x => x.pri > sg.pri)) { FX.sign = sg; FX.msg = sg.text; for (const x of plain) if (!x.once) FX.held.push(x); return; }
-  for (const x of plain) { if (out.includes(x.text)) continue; const t = out ? out + ' · ' + x.text : x.text;
+  for (const x of plain) { if (out.includes(x.text)) continue; if (out && x.once && !plain[0].once) continue;   // a one-time line never joins a plain note: it waits, unspent, for its own action
+    const t = out ? out + ' · ' + x.text : x.text;
     if (out && (typeof wrapText !== 'function' || wrapText(t, 400, 2).length > 2)) { if (!x.once) FX.held.push(x); continue; } out = t; }   // shown on the next action instead
   FX.msg = out;
 }
@@ -1660,7 +1661,7 @@ function takePod(p, leave) {
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
   ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 3); }
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));

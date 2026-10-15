@@ -434,3 +434,14 @@ test("the lost plate flashes the core red for 700 ms in the HUD, and no digit ba
   for (const a of [0, 1500, 4000]) { p.run(`NOW = 1000 + ${a}; __pn = []; S.exp.actions = S.exp.hitAt + 2; drawHUD();`); assert.ok(!p.run("__pn.includes('4,35,112,22')"), "no badge at +" + a); }
   assert.ok(/R\(x \+ pl\.i \* 9 \+ 1, 11, 4, 10, C\[LOSS_FLASH\]\)/.test(p.run("drawHUD.toString()")) && /a < 700/.test(p.run("drawHUD.toString()")), "the fill only, for 700 ms");
 });
+
+test("the 'Swapped ·' box shows alone; a pending sign or held line comes on the next action as its own box, spent only when drawn", () => {
+  const p = page();
+  p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); S.found.push('callintro', 'backplace', 'mapintro'); S.exp.storm = { x: 0, w: 3, dir: 1, v: .25, t: 0 }; stormLevel = () => 1; FX.notes = []; FX.sign = null; FX.msg = '';");
+  p.run("fxSign('storm', 1); fxOnce('rider', 'Pip rides along until it’s grown', 2, true); fxMsg('Swapped · Unknown pod left here', 4); settleOnce();");
+  assert.equal(p.run("FX.msg"), "Swapped · Unknown pod left here", "exactly the Swapped text");
+  assert.equal(p.run("FX.sign"), null); assert.ok(!p.S.found.includes("hudstorm"), "the sign is not spent"); assert.ok(!p.run("S.exp.once && S.exp.once.rider"), "nor the held line");
+  p.key("left");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "storm", "its own box on the next action"); assert.ok(!/Swapped/.test(p.run("FX.msg")));
+  assert.ok(p.S.found.includes("hudstorm"), "spent once drawn");
+});
