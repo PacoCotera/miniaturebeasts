@@ -10,7 +10,9 @@ The floor's luminance matches today's panel (#2b3038, relative luminance 0.029),
 
 `make-device-plate.py W H OUT [--well]` makes any size. The ids:
 - `plate-device-<w>x<h>`: a plate.
-- `plate-well-<w>x<h>`: a recess with no bezel, for slots set into a plate (pose tiles, companion slots).
+- `plate-well-<w>x<h>`: a recess with no bezel, for slots set into a plate (pose tiles, companion slots); `-shown` is the well one step up (--shown).
+
+`plate-device-408x440` is superseded by fix 5's Compare sizes: not placed.
 
 A size not listed below is a new id. Ask the AD; it is cut in minutes and signed in its capture.
 
@@ -26,7 +28,9 @@ A size not listed below is a new id. Ask the AD; it is cut in minutes and signed
 | Habitat | namer panel (592, 48, 416, 424) | `plate-device-416x424` |
 | Habitat | pose tiles (152×48), companion slots (48×48) | `plate-well-152x48`, `plate-well-48x48` |
 | Probe | Mend switch module (fix 5 P4: 312×128); Upgrade slot module (312×248) | `plate-device-312x128`, `plate-device-312x248` |
-| Pods | Compare panes A and B (176 / 600, 112, 408, 440) | `plate-device-408x440` (×2) |
+| Pods | Compare pages A and B (96 / 520, 112, 408, h; fix 5) | `plate-device-408x300` (1–3 traits), `plate-device-408x416` (4–6) |
+| Habitat, Vivarium | compact tiles (72×48); shown tiles | `plate-well-72x48`; `plate-well-152x48-shown`, `plate-well-72x48-shown` (one step up, x1.89) |
+| Habitat | namer field (636, 64, 328, 48) | `plate-well-328x48` |
 
 **Not in the kit:**
 - Library's Book shell. It is a painted book (its boards), not a plate: a separate AD piece.

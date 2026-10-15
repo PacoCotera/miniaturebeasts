@@ -15001,5 +15001,83 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "plate-device-408x300": {
+  "size": [
+   408,
+   300
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py",
+  "made": "fix 2, Pods Compare page plate for 1-3 traits",
+  "sha256": "6d122b6acb9ec78f603a64049f4a0c6723abfda72fa2c4ae5b1e4a3076fb92bc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "plate-device-408x416": {
+  "size": [
+   408,
+   416
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py",
+  "made": "fix 2, Pods Compare page plate for 4-6 traits",
+  "sha256": "7efa8a1daf4e5f98b4399c628083dfd9fab5f01d9fe58225b8f603a991e31c18",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "plate-well-72x48": {
+  "size": [
+   72,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py --well",
+  "made": "fix 2, the compact tile well (7-12 bays)",
+  "sha256": "ae2a94179e4c1dfa0b542e181246cfec2d123ba81512d7d27d23629983cb3d32",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "plate-well-152x48-shown": {
+  "size": [
+   152,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py --well --shown",
+  "made": "fix 2, the shown full tile well, one step up (x1.89 luminance)",
+  "sha256": "efd42aca554e0404c2d8fa4a35a979363596378ab219e8cd0d016494a56d8664",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "plate-well-72x48-shown": {
+  "size": [
+   72,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py --well --shown",
+  "made": "fix 2, the shown compact tile well, one step up",
+  "sha256": "0e9702c101d82a0d60171b6f5c7fc15782df47eae49f199ba156afd255e69e88",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "plate-well-328x48": {
+  "size": [
+   328,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py --well",
+  "made": "fix 2, the namer name field well",
+  "sha256": "a494a9d2c2d27ecb026b93b1c8904edf9b8421cd283aac5bc120b14f9970b121",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
  }
 }

@@ -6,7 +6,9 @@ stretch of the signed wall), graded down so the floor's mean luminance matches t
 walls, a 1 px lit lip on the bottom and right. Matte; no gloss, no glow. Any size; the id is plate-device-<w>x<h>.
 The well variant (--well, id plate-well-<w>x<h>) is the same recess with no bezel, for the slots set into a plate (pose
 tiles, companion slots): the hairline, the floor 15 % darker, the inner shade and the lit lip.
-usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well]"""
+The shown well (--well --shown, id plate-well-<w>x<h>-shown) is the well one step up: its floor x 1.89 in luminance (measured), the step
+today's hairline tile gives over the panel ((61,67,75) over (43,48,56)); never lit, gold or teal.
+usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]]"""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -26,13 +28,13 @@ def rrect_sd(W, H, x0, y0, x1, y1, r):
     d_corner = r - np.hypot(xx - cx, yy - cy)
     return np.where(inside_core, d_edge, d_corner)
 
-def plate(W, H, bezel=5, radius=6, well=False):
+def plate(W, H, bezel=5, radius=6, well=False, shown=False):
     st = np.asarray(Image.open(STAGE).convert('RGB')).astype(float)
     wall = st[120:184, 650:778]                                     # the flattest bare stretch of the signed wall (low-frequency sd 0.9)
     grain = np.clip(wall - nd.gaussian_filter(wall, (5, 5, 0)), -6, 6)
     gt = np.tile(grain, (H // grain.shape[0] + 2, W // grain.shape[1] + 2, 1))[:H, :W]
     wall_mean = lin(wall.reshape(-1, 3).mean(0))
-    floor = wall_mean * (0.029 / Y(wall_mean)) * (0.85 if well else 1)   # the wall's own hue at today's panel luminance
+    floor = wall_mean * (0.029 / Y(wall_mean)) * (0.85 if well else 1) * (1.89 if shown else 1)   # the wall's own hue at today's panel luminance
     if well: bezel = 1
     sage_mid, sage_shade = lin((136, 142, 112)), lin((98, 102, 79))   # the housing's sage ramp, measured on the signed stage
     outer = rrect_sd(W, H, 0, 0, W, H, radius)
@@ -65,4 +67,4 @@ if __name__ == "__main__":
     W, H, out = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
     bz = int(sys.argv[sys.argv.index('--bezel') + 1]) if '--bezel' in sys.argv else 5
     rd = int(sys.argv[sys.argv.index('--radius') + 1]) if '--radius' in sys.argv else 6
-    plate(W, H, bz, rd, '--well' in sys.argv).save(out)
+    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv).save(out)
