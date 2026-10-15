@@ -114,11 +114,9 @@ export function homeBuild(m, spec, frame) {
   const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
   const bud = st.bud, ready = S.budReady(st, settings);
   const incState = !bud ? "empty" : ready ? "ready" : "growing";
-  const L = S.budLeaves(st, settings, m.now, R.incubator.leaves.max, 20), total = L.total;
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
     chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}-72x72`, R.incubator.chamber.slice(2)),
-    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: L.full, filling: L.rows, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;

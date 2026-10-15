@@ -22,7 +22,7 @@ test("Pods in three states: the collection's six places, rings, labels and the w
   for (const [i, r] of places.entries()) for (const q of places.slice(i + 1)) assert.ok(apart(r, q), "places apart");
   const pl = places[0], ring = [pl[0] + A.ring.centre[0] - A.ring.outer, pl[1] + A.ring.centre[1] - A.ring.outer, 2 * A.ring.outer, 2 * A.ring.outer];
   assert.ok(inside(ring, pl), "the ring inside its place"); assert.ok(A.pod.size[1] <= 2 * (A.ring.outer - A.ring.band), "the pod inside the ring's opening");
-  for (const k of ["place", "grow", "glint"]) assert.ok(inside([pl[0] + A[k].at[0], pl[1] + A[k].at[1], A[k].at[2], A[k].at[3]], pl), k + " inside its place");
+  for (const k of ["grow", "glint"]) assert.ok(inside([pl[0] + A[k].at[0], pl[1] + A[k].at[1], A[k].at[2], A[k].at[3]], pl), k + " inside its place");
   assert.ok(apart(A.waiting.rect, places[3]) && A.waiting.rect[1] + A.waiting.rect[3] <= 552, "the waiting mark under the places");
   assert.deepEqual(pods.classes.pod.collection, [88, 112]);
   assert.ok(!("selected" in A.ring.masters)); assert.equal(A.ring.masters.closed, "ring-collection-closed-176x176"); assert.equal(A.ring.focus.radius, A.ring.outer + 4); assert.equal(A.glint.slice, "glint-star-12x12"); assert.deepEqual(A.ring.slice, [8, 0, 176, 176]); assert.equal(A.ring.slice[0] + 88, A.ring.centre[0]); assert.equal(A.ring.slice[1] + 88, A.ring.centre[1]); assert.ok(!("collectionRing" in pods.colours), "the build draws no arcs"); assert.ok(!("ringRead" in pods.colours), "one home for the ring's colours");
@@ -257,7 +257,7 @@ test("the Incubator spec file agrees with the Incubator wireframes, region by re
   assert.equal(inc.events.hatch.hold, inc.events.hatch.steps.at(-1).at + inc.events.hatch.steps.at(-1).ms); assert.equal(inc.events.hatch.ms, 2600);
   assert.equal(inc.handoff.to, "habitat"); assert.equal(frame.navigation.jumps.find((j) => j.from === "incubator" && j.action === "Open").to, "habitat");
   const choose = frame.navigation.jumps.find((j) => j.from === "incubator" && j.state === "empty"); assert.deepEqual([choose.action, choose.to, choose.view], [inc.strings.choose, "pods", "collection"]);
-  assert.equal(inc.colours.plaque.empty, "ink", "the plaque word is ink on the painted plate"); assert.notEqual(inc.colours.plaque.empty, "mist", "the empty plaque invites, never mist"); assert.notEqual(inc.colours.bud.shape, "amber"); assert.equal(inc.colours.leaves.empty, "metal");
+  assert.equal(inc.colours.plaque.empty, "ink", "the plaque word is ink on the painted plate"); assert.notEqual(inc.colours.plaque.empty, "mist", "the empty plaque invites, never mist"); assert.notEqual(inc.colours.bud.shape, "amber"); assert.equal(inc.colours.leaves.empty, "sageD", "the empty leaf: one flat sageD, the art director's value (fix 6 A1)");
   assert.deepEqual(R.nestFront.rect, R.nest.rect); const DO = inc.drawOrder; assert.ok(DO.indexOf("bud front") < DO.indexOf("nestFront") && DO.indexOf("nestFront") < DO.indexOf("domeFront"), "the nest's front rim over the bud, under the glass's front (art director, 2026-10-09 13:47)"); assert.equal(DO.indexOf("bud crack"), DO.indexOf("bud front") + 1, "the crack steps are drawn right after the front: over the ready bud");
   assert.equal(R.bench.slice, "room-bench-stage-incubator"); assert.equal(R.bench.until, undefined, "signed: no stand-in slice");
   assert.deepEqual(paletteBad(inc.colours), []);
@@ -574,8 +574,7 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
   const W = R.pods.wells, wells = Array.from({ length: W.slots }, (_, i) => [R.pods.rect[0] + W.at[0] + W.pitch[0] * (i % W.cols), R.pods.rect[1] + W.at[1] + W.pitch[1] * Math.floor(i / W.cols), ...W.size]);
   assert.deepEqual(wells, W.rects); for (const w of wells) { within(w, "pods"); is(w, "well", C); const star = [w[0] + R.pods.starAt[0], w[1] + R.pods.starAt[1], ...R.pods.star]; within(star, "pods"); assert.ok(wells.every((v) => apart(star, v)), "the glint clear of every well"); assert.ok(inside([w[0] + R.pods.pod.at[0], w[1] + R.pods.pod.at[1], ...R.pods.pod.size], w), "the pod in its well"); }
   // Incubator: the chamber, then the leaves 16 px on; forty leaves on the grid inside their box
-  const L = R.incubator.leaves; assert.deepEqual(at(R.incubator, R.incubator.chamber), R.incubator.chamberRect); assert.deepEqual(at(R.incubator, L.at), L.rect); within(R.incubator.chamberRect, "incubator"); within(L.rect, "incubator"); is(L.rect, "leaves", C); is(R.incubator.chamberRect, "chamber", C);
-  assert.equal(L.rect[0] - (R.incubator.chamberRect[0] + R.incubator.chamberRect[2]), 16); assert.ok((L.perRow - 1) * L.pitch + L.leaf[0] <= L.rect[2] && (L.rows - 1) * L.rowPitch + L.leaf[1] <= L.rect[3], "the grid inside its box"); assert.ok(L.max <= L.perRow * L.rows && L.max >= 38, "the grid holds the longest bud"); assert.equal(L.component, "leaves"); assert.equal(L.form, "grid");
+  // Incubator: the chamber (Home's card carries no leaf grid since fix 6 N2)
   // Probe: the cradle, the plates 16 px on, the sitting frame 16 px under them
   const P = R.probe, plates = Array.from({ length: P.shields.count }, (_, i) => [P.rect[0] + P.shields.at[0] + P.shields.pitch * i, P.rect[1] + P.shields.at[1], ...P.shields.size]);
   assert.deepEqual(plates, P.shields.rects); assert.deepEqual(at(P, P.cradle), P.cradleRect); assert.deepEqual(at(P, P.slot), P.slotRect); for (const r of [P.cradleRect, P.slotRect, ...plates]) { within(r, "probe"); is(r, "probe part", C); }

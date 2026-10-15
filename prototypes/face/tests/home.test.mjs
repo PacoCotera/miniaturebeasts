@@ -207,15 +207,6 @@ test("a walking resident keeps its box in 32..656−w and its feet in 300..527, 
   withFocus(f, "room"); let moves = false; for (let i = 0; i < 600; i++) { f.frame(5000 + (t += 40)); if (pos() !== p0) { moves = true; break; } } assert.ok(moves, "and walks on when focus leaves");
 });
 
-test("Home's filling leaf: the empty leaf whole, over it the full picture clipped from the bottom to p = floor(rows × 12 / 20) rows (the leaf after the full ones); the other leaves whole or empty", { skip }, async () => {
-  const b = scene({ bud: 8.5 }), L = b.props.regions.incubator.leaves, R = homeSpec.regions.incubator.leaves, f = await start(b);
-  assert.ok(L.total === 20 && L.full === 8 && L.filling >= 5 && L.filling <= 12, JSON.stringify(L)); const p = Math.floor(L.filling * 12 / 20), i = L.full, x = R.rect[0] + R.pitch * (i % R.perRow), y = R.rect[1] + R.rowPitch * Math.floor(i / R.perRow);
-  const col = (id) => { const k = hash(id); return [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)].join(); }, at = (px, py) => f.pixel(px, py).join();
-  for (let r = 0; r < 12; r++) assert.equal(at(x + 4, y + r), r >= 12 - p ? col(L.fullPicture) : col(L.emptyPicture), `the filling leaf, row ${r} of 12 (p = ${p})`);
-  for (let k = 0; k < L.total; k++) if (k !== i) { const kx = R.rect[0] + R.pitch * (k % R.perRow), ky = R.rect[1] + R.rowPitch * Math.floor(k / R.perRow); assert.equal(at(kx + 4, ky + 6), k < L.full ? col(L.fullPicture) : col(L.emptyPicture), `leaf ${k}`); }
-  assert.deepEqual(f.errors(), []);
-});
-
 // a light change (the developer's, or the hour) is a cut, like a screen change: the glass, the bed and the residents' sprites take the next light on one refresh, under its own ceiling (the glass 640 × 488), not the 153,600 of an animation
 test("a light change is a cut: Home redraws the whole of its glass at most (312,320 px), every pair of lights", { skip }, async () => {
   const LIGHTS = ["dawn", "day", "dusk", "night"];

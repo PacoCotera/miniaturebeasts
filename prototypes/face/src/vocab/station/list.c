@@ -1,6 +1,6 @@
 /* The list word (Pods' collection, station-layouts.md Pods §5 A), ported from components/list.mjs: every rack place on the 3 x 2 grid, each the progress ring
-   (the studio's masters in layers), the pod in the ring, the name on its plate, the find, the can-grow mark and the glint star; an empty place is the empty ring. Then the waiting mark.
-   Spec: `pods` regions.collection. Props: regions.list { places: [ { empty, ringLayers: [ids] } | { ringLayers, pod, name, plate (the series), find, grow, glint } ], waiting }.
+   (the studio's masters in layers), the pod in the ring, the name on its plate, the can-grow mark and the glint star; an empty place is the empty ring. Then the waiting mark.
+   Spec: `pods` regions.collection. Props: regions.list { places: [ { empty, ringLayers: [ids] } | { ringLayers, pod, name, plate (the series), grow, glint } ], waiting }.
    A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. */
 #include "../vocab.h"
 #include "../words.h"
@@ -49,8 +49,6 @@ void word_list(void) {
       if (strcmp(cl, "place") == 0) { if (nx + pw > r[0] + r[2]) nx = r[0] + r[2] - pw; if (nx < r[0]) nx = r[0]; } }
     v_region("place.name", LAYER_PAINTED); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
     v_region("place.name", LAYER_TYPE); v_text(v_fmt("%s.name", pid), text, nx + v_half(pw - tw), ny + v_fdiv(nh - v_cap(npx), 2), tw, npx, name);
-    const char *find = v_pstr(v_fmt("%s.find", P));
-    if (*find) { v_region("place.find", LAYER_PAINTED); v_sprite(v_fmt("%s.find", pid), find, r[0] + sa(C ".place.at", 0, 0), r[1] + sa(C ".place.at", 1, 0), sa(C ".place.at", 2, 0), sa(C ".place.at", 3, 0)); }
     const char *grow = v_pstr(v_fmt("%s.grow", P));
     if (*grow) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.grow", pid), grow, r[0] + sa(C ".grow.at", 0, 0), r[1] + sa(C ".grow.at", 1, 0), sa(C ".grow.at", 2, 0), sa(C ".grow.at", 3, 0)); }
     const char *glint = v_pstr(v_fmt("%s.glint", P));

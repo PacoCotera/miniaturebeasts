@@ -540,7 +540,6 @@ static void pods_objects(int dy) {
 static void incubator_objects(int dy) {
   v_name("incubator");
   put("incubator.chamber", v_pstr("regions.incubator.chamber"), "regions.incubator.chamberRect", dy);
-  word_leaves(H, "regions.incubator.leaves", v_pstr("regions.incubator.leaves.emptyPicture"), v_pstr("regions.incubator.leaves.fullPicture"), v_pint("regions.incubator.leaves.total", 0), v_pint("regions.incubator.leaves.rows", 0), v_pint("regions.incubator.leaves.full", 0), dy, 0, v_pint("regions.incubator.leaves.filling", 0));
 }
 static void probe_objects(int dy) {
   v_name("probe");

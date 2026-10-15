@@ -99,7 +99,7 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 | Rest knob | 624, 544, 32, 8 | Put the Station on Idle | `knob`; `✓ Rest` |
 | Cargo module | 688, 48, 320, 88 | The crates in the bay; amber while they wait | `cargo`; `✓ Open the bay` |
 | Pods module | 688, 152, 320, 88 | The rack's six wells, the glints | `pods`; ✓ to Pods' collection |
-| Incubator module | 688, 256, 320, 88 | The dome and its leaves | `incubator`; ✓ to the Incubator |
+| Incubator module | 688, 256, 320, 88 | The chamber, its state in its picture | `incubator`; ✓ to the Incubator |
 | Probe module | 688, 360, 320, 88 | The Probe, its Shield plates, the sitting slot | `probe`; ✓ to the Probe bench |
 | Library module | 688, 464, 320, 88 | The field journal | `library`; ✓ to the Library's spread |
 
@@ -345,7 +345,7 @@ UI/UX designer, 2026-10-11 23:56, step 0 of the Station's global fix plan, after
    - the bay strip's free bay as a `dash` outline (the vivarium, up close and the whole);
    - the up-close Companion module's empty dark slots;
    - the bare stamp label with no stamp (Create `nothingRead`, `habitat.json regions.stamp.until`);
-   - Pods' place tiles beside the collection rings;
+   - Pods' place tiles beside the collection rings (removed, fix 6);
    - Home's module object boxes in their empty states, until each empty object is painted.
 3. **No flat-box stand-in on a golden.** Some stand-ins are a flat fill, an outline or an unpainted plate: the register's lavender `placeholder` plates, flat roll fills, `standIn` edge boxes, a `colours.*StandIn` fill. Such a stand-in is never drawn in a frame that is goldened, captured for a review or shown to the owner. The region stays with no size. A stand-in the art director has signed as a picture (named in the register with its signer, such as the juvenile stand-in) is art, not a box, and may be placed. Which creature renderings may stand in is the art director's question, not this rule's.
 4. **Placeholder slots show nothing until their art lands.** The "Placeholders on …" tables give the size each master is painted at. They are not things to draw. A slot whose picture is not a signed master (register status `placeholder` without the art director's stand-in signature) draws nothing. The layout does not move to fill the gap, as `create.c` already does for a picture the host has not sent. When the master lands, it is placed 1:1 at the slot's rect, and the rect does not change for it.
@@ -383,7 +383,7 @@ UI/UX designer, 2026-10-11 23:56, step 0 of the Station's global fix plan, after
 
 ### The vocabulary (closed)
 
-The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as a grid by pitch on Home's Incubator module and Create, or as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
+The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
 
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's five modules, the vivarium's five and the Probe bench's two are the modules; on the vivarium, up close a module has no lamp.
 - **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the up-close window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
@@ -445,7 +445,6 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | --- | --- | --- |
 | A | **Every rack place**, in rack order; an empty place is an empty well | The whole collection at a glance |
 | A | **Each pod's identity**: the sealed cap or the lit glyph, and the name label (the species, or "Unknown") | What it is |
-| A | **Its origin as a place picture** | Where it came from, without words |
 | A | **Its progress as the concept's ring**: one arc per chapter, filled when read, closed when every chapter is read | How far it is read, without digits |
 | A | **The glint star**; **one can-grow mark**, only where the ring and the seal do not already say what it can do | Where something new waits; what it can do |
 | A | **Pods waiting beyond the rack**: one quiet mark | That more are in the bay, never a number |
@@ -462,7 +461,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | C | **The page**: every trait of the chapter at once | The knowledge itself, as pictures |
 | All | **The bottom line** | The one action and its price; the context; the notice; the way back |
 
-**Not drawn:** a well column on B or C; place stamps beside a list; a page beside the pod on the overview.
+**Not drawn:** a well column on B or C; place stamps beside a list; a place picture beside a ring (the overview carries the origin); a page beside the pod on the overview.
 
 ### 3. Placement
 
@@ -498,7 +497,6 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Ring | slice place + (8, 0, 176, 176), centred on place + (96, 88); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: `ring-collection-idle-176x176`, an empty place's ring and the base under the arcs; for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin; and when every chapter is read, the continuous band `ring-collection-closed-176x176` in place of the track and segments. There is no selected ring: the focus ring marks the focused place. The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline`; the build draws no arc |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph |
 | Name label | centred on place + (96, 184), hugging, kept inside the place, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
-| Place picture | place + (200, 40, 48, 48) | The origin as a picture: `place-<place>-48x48` |
 | Can-grow mark | place + (216, 104, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it |
 | Glint star | place + (148, 16, 12, 12) | `glint-star-12x12`, on the ring's band at its top right |
 | Waiting beyond the rack | 16, 528, 24, 24 | `mark-waiting-24`. One quiet mark, never a number |
@@ -739,7 +737,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Lamps | 12×12, the signed picture of the state, frame.json `regions.marks.lamp12`: off `home-lamp-hairline-12x12`, well `home-lamp-sprout-12x12`, waiting `home-lamp-sky-12x12`, needs you `home-lamp-amber-12x12` | The kit's lamp roles |
 | Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
-| Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
+| Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside) | The bridge from research to the Vivarium |
 | Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting the matte sitting frame, `home-sitting-24x32` | The Probe as the project's Probe art draws it, never a needle |
 | Library | The field journal: cover `bark`, page edge `sand`; the glint `yellow` | The worn expedition volume |
 | Bed | A low nest: rim `bark`, hollow `soil`, lit rim `sand` | Inside the warm field |
@@ -769,7 +767,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | --- | --- | --- | --- |
 | `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (808 + 56i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 920, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
 | `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
-| `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber. The hatched mibi's painting on its way: lamp waiting |
+| `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72 | Empty: the chamber's empty picture, lamp off. Growing: the chamber's growing picture (the bud's glow), lamp well. Ready: the chamber's ready picture (lit full), amber. The hatched mibi's painting on its way: lamp waiting |
 | `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
 | `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72 | No species found: the journal shut, lamp off. Otherwise the journal, lamp well |
 
@@ -1376,7 +1374,7 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
 - **The bud** grows in two pictures, the first half of the wait and the second (one generic `bud-late-128x160`, with no drift toward the species' hue).
 - **Ready:** the chamber's light comes up full and the species' shape is visible inside the bud. Nothing steps out until the player opens it. The shape is the species' juvenile-proportion silhouette from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat, soft-edged, dark warm shape with no eye and no detail; its ink at most 96×96 (measured at alpha ≥ 128), centred in its 112×112 box. `bud-ready-128x160` is drawn behind it and `bud-ready-front-128x160` over it.
-- **The leaf:** one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, an outline in `metal`. The same drawing at 8×12 is the small leaf of Create and Home.
+- **The leaf:** one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, the leaf's own silhouette in one flat, unlit fill, no outline and no vein.
 - **Empty invites:** a standby light inside (a soft warm pool on the bed, about half the growing glow); the clean window; the base's foot light on, as in every state; the nest lit and plump with its hollow visible; the plaque word in `fog`.
 - **Calm:** only the glow and the filling leaf move.
 
@@ -1389,7 +1387,7 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 | Bud (placeholder) | Bean `peach`, lit `cream`, edge `rust`; late `blush`; the ready shape `bark` | The one warm thing; the shape a dark warm silhouette, never amber |
 | Base | `enamel`, matte, lit `sand`, shade `bevel`, edge `hairline`; the foot light `sage`, a quiet line that says it is alive and working; the plaque's plate `panel` with a `hairline` edge | The sand housing |
 | Plaque | growing `fog`, ready `bone`, empty `fog` | Ready is the brightest word, for across a table; empty never recedes to `mist` |
-| Leaves | Full `sage` with a `sageD` vein; empty an outline in `metal`; the current leaf `sage` rows from its foot | The palette's leaf timer |
+| Leaves | Full `sage` with a `sageD` vein; empty the leaf's flat silhouette (the art director's value); the current leaf `sage` rows from its foot | The palette's leaf timer |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role |
 | Stamp label, code | `bone` label with a `slate` edge; code `bone` | A readout |
 | Ribbon | Fill `tealD`, rim `aqua`, words `bone` | The one ribbon look, as on Home and Pods |
@@ -1488,7 +1486,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte, its foot light `sage` |
 | Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Signed (art director, 963f4eab): the bean on moss |
 | Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 (measured at alpha ≥ 128) | S01 and S03 are placed (signed, art director at 1x, masters-pods 8c3b6a7b); S02 and S04–S16 are empty slots, nothing drawn until placed |
-| Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
+| Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | The arcs stay; the empty leaf repainted as a flat silhouette (fix 6, A1) |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |
 | Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
