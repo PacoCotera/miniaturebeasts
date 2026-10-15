@@ -26,3 +26,9 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - `S01/c-token-S01-shake-f0-32x32.png` sha256 `8e106a6a919f0ea346f2c17c9e411a9e84cc542c94460b2cc30ef56ca51d0df7`
 - `S01/c-token-S01-shake-f1-32x32.png` sha256 `99f8fb0f248bb45385b6051dc0ca38881a771862e468e477b4eed3c01fb2c126`
 - `S01/c-mini-S01-12x12.png` sha256 `0e058cc4df269a52406afaa1e9847d991677b0efb8a0c1086a0a6d7259dddb02`
+
+**S02 Untuva and S03 Tuikis status (candidate, for the art director's read; nothing signed):**
+- Both come from the adult 144x152 slices with `tools/build-species-token.py ... --flip --ramps S02|S03` (the new `--ramps` option; S01's defaults are unchanged: S02 body soil/bark/clay and cap clay/sand/paper, S03 coat tealD/teal/aqua and bulb gold/yellow/cream, eyes ink with a white catch-light) and are then cleaned in place by `tools/species-s02-clean.py` and `tools/species-s03-clean.py` (shared helpers in `tools/species_common.py`): the silhouette and outline are the base's; the tones, the cap and its brim shadow row, the eyes, the legs, the tail's bulb and the ears are edited by coordinates; the poses and the minis are drawn from each idle.
+- S02 (8 + mini): idle, alert, flee (body 2 px longer, stubby legs splayed 3 px), huddle (the cap pulled down over the eyes, which become a 1 px line), shake-f0/f1 (the cap swings opposite), eat-f0/f1.
+- S03 (10 + mini): the same eight (slender legs 2 px wide; flee with the legs stretched, not splayed) plus settle (lowered, legs folded) and curl (a ball, the tail wrapped round the front, the bulb resting on top, yellow only).
+- Sheets: `S02/sheet-S02-candidate.png` and `S03/sheet-S03-candidate.png`: every piece at 8x on ink, at 1x on a 48 px lawn tile beside the pawn (the 48 px frame stands in for c-pawn-32), and S01's, S02's and S03's idles side by side at 1x. Checks: atlas-check ok on a one-piece manifest per file; alpha only 0 and 255; no void anywhere.

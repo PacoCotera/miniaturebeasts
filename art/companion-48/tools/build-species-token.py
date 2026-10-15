@@ -9,11 +9,14 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pal
 P = pal.load()
-src, sp, out = sys.argv[1:4]; flip = "--flip" in sys.argv; os.makedirs(out, exist_ok=True)
+src, sp, out = sys.argv[1:4]; flip = "--flip" in sys.argv; ramps_opt = sys.argv[sys.argv.index("--ramps") + 1] if "--ramps" in sys.argv else "S01"; os.makedirs(out, exist_ok=True)
 a = Image.open(src).convert("RGBA"); arr = np.asarray(a); body = arr[..., 3] == 255
 ys, xs = np.where(body); crop = a.crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
 if flip: crop = crop.transpose(Image.FLIP_LEFT_RIGHT)
-RAMPS = {"body": ["ink", "night", "slate", "stone"], "cream": ["clay", "sand", "paper", "bone"], "leaf": ["pine", "forest", "leaf", "grass"], "amber": ["rust", "orange", "amber"]}
+RAMP_SETS = {"S01": {"body": ["ink", "night", "slate", "stone"], "cream": ["clay", "sand", "paper", "bone"], "leaf": ["pine", "forest", "leaf", "grass"], "amber": ["rust", "orange", "amber"]},
+             "S02": {"body": ["soil", "bark", "clay"], "cap": ["clay", "sand", "paper"]},                       # Untuva: the body soil (shade), bark (mid), clay (lit); the cap clay, sand, paper
+             "S03": {"body": ["tealD", "teal", "aqua"], "gold": ["gold", "yellow", "cream"]}}                    # Tuikis: the coat tealD, teal, aqua; the bulb and tail tip gold, yellow, cream
+RAMPS = RAMP_SETS[ramps_opt]
 def token(W, H, feet, maxw, maxh, outline=True):
     sc = min(maxw / crop.width, maxh / crop.height); w, h = max(1, round(crop.width * sc)), max(1, round(crop.height * sc))
     pm = np.asarray(crop).astype(float); pm[..., :3] *= pm[..., 3:] / 255.0
@@ -24,8 +27,10 @@ def token(W, H, feet, maxw, maxh, outline=True):
     # each part onto its own ramp of the core 48, by luminance (a plain nearest colour turns charcoal plum and leaves brown)
     import colorsys
     hsv = np.array([colorsys.rgb_to_hsv(*(c / 255)) for c in flat]); L = flat @ [.2126, .7152, .0722]
-    RAMPS = {"body": ["ink", "night", "slate", "stone"], "cream": ["clay", "sand", "paper", "bone"], "leaf": ["pine", "forest", "leaf", "grass"], "amber": ["rust", "orange", "amber"]}
-    part = np.where((hsv[:, 0] > .15) & (hsv[:, 0] < .45) & (hsv[:, 1] > .3), "leaf", np.where((hsv[:, 0] < .12) & (hsv[:, 1] > .45) & (L > 60), "amber", np.where(L > 120, "cream", "body")))
+    RAMPS = RAMP_SETS[ramps_opt]
+    if ramps_opt == "S02": part = np.where(L > 150, "cap", "body")                                      # the cap is the light shape on top; the bun is brown
+    elif ramps_opt == "S03": part = np.where((hsv[:, 0] > .08) & (hsv[:, 0] < .2) & (hsv[:, 1] > .3), "gold", "body")   # the bulb and the tail tip are the yellow
+    else: part = np.where((hsv[:, 0] > .15) & (hsv[:, 0] < .45) & (hsv[:, 1] > .3), "leaf", np.where((hsv[:, 0] < .12) & (hsv[:, 1] > .45) & (L > 60), "amber", np.where(L > 120, "cream", "body")))
     out = []
     for c, pt, l in zip(flat, part, L):
         r = [P.index[n] for n in RAMPS[pt]]; rl = np.array([P.rgb[i] @ [.2126, .7152, .0722] for i in r]); out.append(r[int(np.argmin(np.abs(rl - l)))])
@@ -45,7 +50,7 @@ def token(W, H, feet, maxw, maxh, outline=True):
             else:
                 for dy in (0, 1):
                     for dx in (0, 1): c[min(H - 1, Y + dy), min(W - 1, X + dx)] = P.index["ink"]
-                c[Y, X + (1 if flip else 0)] = P.index["bone"]
+                c[Y, X + (1 if flip else 0)] = P.index["white" if ramps_opt != "S01" else "bone"]
     if outline:                                                          # the palette's outline rule, on the transparent side of each edge pixel
         o = c.copy(); dark = np.array(P.dark)
         for y in range(H):
