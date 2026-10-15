@@ -4106,5 +4106,124 @@
    "thoughtsTokenCount": 205,
    "totalTokenCount": 2411
   }
+ },
+ {
+  "tag": "wave1-S09-colour try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.228368,
+  "mxn": 4.5674,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:26:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 844,
+   "candidatesTokenCount": 1482,
+   "thoughtsTokenCount": 407,
+   "totalTokenCount": 2733
+  }
+ },
+ {
+  "tag": "wave1-S09-fluff-sheen try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.220302,
+  "mxn": 4.406,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:27:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1071,
+   "candidatesTokenCount": 1415,
+   "thoughtsTokenCount": 403,
+   "totalTokenCount": 2889
+  }
+ },
+ {
+  "tag": "wave1-S09-feathers-tufts try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.195602,
+  "mxn": 3.912,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:27:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1081,
+   "candidatesTokenCount": 1355,
+   "thoughtsTokenCount": 257,
+   "totalTokenCount": 2693
+  }
+ },
+ {
+  "tag": "wave1-S09-trim try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20976,
+  "mxn": 4.1952,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:27:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 780,
+   "candidatesTokenCount": 1407,
+   "thoughtsTokenCount": 328,
+   "totalTokenCount": 2515
+  }
+ },
+ {
+  "tag": "wave1-S04-fluff try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181482,
+  "mxn": 3.6296,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:28:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 441,
+   "candidatesTokenCount": 1312,
+   "thoughtsTokenCount": 193,
+   "totalTokenCount": 1946
+  }
+ },
+ {
+  "tag": "wave1-S09-fluff-tufts-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.216372,
+  "mxn": 4.3274,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:29:14Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1206,
+   "candidatesTokenCount": 1397,
+   "thoughtsTokenCount": 386,
+   "totalTokenCount": 2989
+  }
+ },
+ {
+  "tag": "wave1-S04-fluff-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20382,
+  "mxn": 4.0764,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T11:29:35Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 750,
+   "candidatesTokenCount": 1370,
+   "thoughtsTokenCount": 316,
+   "totalTokenCount": 2436
+  }
  }
 ]
