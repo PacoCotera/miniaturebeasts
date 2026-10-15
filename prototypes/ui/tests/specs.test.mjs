@@ -799,6 +799,26 @@ test("frame.navigation.dock: the screens a Dock from the play page leaves where 
   assert.equal(d.namerStays, true); assert.match(d.rule, /Lift never navigates/);
 });
 
+test("fix 2: every region that names a device plate names the plate's own size as its rectangle (placed 1:1, never scaled), the plate is a painted-family picture, and the retired fill roles are gone", async () => {
+  const { policyOf } = await import("../asset-policy.mjs");
+  const names = ["home", "habitat", "vivarium", "namer"], specs = Object.fromEntries(names.map((n) => [n, rd(`../specs/station/${n}.json`)]));
+  let seen = 0;
+  for (const [n, s] of Object.entries(specs)) for (const [k, r] of Object.entries(s.regions)) {
+    if (!r || typeof r !== "object" || typeof r.plate !== "string") continue;
+    const m = /^plate-(?:device|well)-(\d+)x(\d+)$/.exec(r.plate); assert.ok(m, `${n}.${k}.plate is a kit id: ${r.plate}`);
+    assert.deepEqual([+m[1], +m[2]], r.rect.slice(2), `${n}.${k}: the plate is its rectangle's size`); assert.equal(policyOf(r.plate, "master"), "painted", `${r.plate} is painted`); seen++;
+  }
+  assert.ok(seen >= 14, "five Home modules, the card, four modules, the strip twice, the namer's panel and field: " + seen);
+  for (const [n, k] of [["habitat", "strip"], ["habitat", "tile"], ["habitat", "door"], ["vivarium", "strip"], ["vivarium", "tile"], ["habitat", "card"]]) assert.ok(!specs[n].colours[k]?.fill && !specs[n].colours[k]?.recess && !specs[n].colours[k]?.free, `${n}.colours.${k} keeps no fill role`);
+  for (const [n, s] of Object.entries(specs)) assert.ok(!s.colours.module?.fill && !s.colours.panel?.shadow && !s.colours.panel?.fill, `${n}: no module fill, panel fill or shadow`);
+});
+
+test("fix 2 F11: the rail sits in its well (frame.json regions.rail.well, painted, before the tabs, 48 tall at y 40) and the open tab's word and pip are ink on its cream plate; the 6 × 6 pips are not drawn but by Create", () => {
+  const rail = rd("../specs/station/frame.json").regions.rail;
+  assert.equal(rail.well.id, "plate-rail-well-{w}x48"); assert.equal(rail.well.y, 40); assert.equal(rail.well.h, 48); assert.equal(rail.well.layer, "painted"); assert.equal(rail.well.order, "before the tabs");
+  assert.equal(rail.states.open.word, "ink"); assert.equal(rail.states.open.pip, "ink"); assert.match(rail.pip.draw, /none on Pods, the Incubator and Compare/);
+});
+
 // ---- fix 5, the Incubator (boards/station-fix5-incubator-probe-spec.md I1 to I3) ----
 test("the Incubator's paint zones lie inside the wall, clear of the keep-clear zones and of every leaf of both arcs; every state names its main object; the hatch word is one word that fits the plate (fix 5 I1-I3)", async () => {
   const { leafArc } = await import("../specs/derive.mjs"), inc = rd("../specs/station/incubator.json"), R = inc.regions, WALL = [70, 64, 882, 484], B = R.bench;

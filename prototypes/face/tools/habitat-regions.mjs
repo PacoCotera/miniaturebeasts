@@ -26,7 +26,8 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   if (tag) { must(tag.rect[3] === R.nameTag.h && tag.rect[1] === box[1] + box[3] + 24, `the name tag ${tag.rect} is not ${R.nameTag.h} tall with its top at the feet + 24`); must(tag.rect[2] % R.nameTag.round === 0 && tag.rect[2] >= R.nameTag.min && tag.rect[2] <= R.nameTag.max, `the tag is ${tag.rect[2]} wide`); must(within(tag.rect, grow(glass, -8)) , `the tag ${tag.rect} is not 8 px inside the glass`); }
   if (rib) must(eq(rib.rect, R.meetRibbon.rect), `the meet ribbon ${rib.rect} is not ${R.meetRibbon.rect}`);
   // the card and what stands on it
-  for (const r of got("card", "chrome")) must(eq(r.rect, R.card.rect), `the card ${r.rect} is not ${R.card.rect}`);
+  for (const r of got("card", "painted")) must(eq(r.rect, R.card.rect), `the card's plate ${r.rect} is not ${R.card.rect}`);   // fix 2 F1: the card is its plate, a painted node at the rect; no chrome fill
+  must(!got("card", "chrome").length, "the card draws no fill, edge or bevel row (fix 2 F1)");
   for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of got("stamp", "painted")) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
   for (const id of ["speciesLine", "story", "code"]) for (const r of got(id, "type")) if (r.rect[2] > 0) must(within(r.rect, R[id].rect), `${id} ${r.rect} leaves ${R[id].rect}`);
@@ -37,7 +38,7 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   void np;
   // the four modules: the panel at the spec's rectangle (lifted by the lift while the ring is on it); their words and objects inside
   for (const m of ["door", "portrait", "cross", "wild"]) {
-    const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m, "chrome").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
+    const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m + ".plate", "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
     must(ps.length >= 1 && ps.every((r) => eq(r.rect, [rect[0], rect[1] - lifted, rect[2], rect[3]]) || (lifted && eq(r.rect, rect))), `the ${m} module is not at ${rect} (lifted ${lifted})`);
     for (const r of regions.filter((x) => x.id === m && x.rect[2] > 0 && x.layer !== "chrome")) must(within(r.rect, [rect[0], rect[1] - 2, rect[2], rect[3] + 2]), `the ${m} module's ${r.layer} ${r.rect} leaves it`);
     if (m === "portrait") {   // the frame (art) at rect + frame.at and its size; the picture (painted) at rect + frame.at + frame.picture.at and its size (ruling (c)), both lifted with the ring
@@ -48,14 +49,15 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
       }
     }
   }
-  for (const r of got("strip", "chrome")) must(eq(r.rect, R.strip.rect), `the strip ${r.rect} is not ${R.strip.rect}`);
+  for (const r of got("strip", "painted")) must(r.rect[2] === 0 || eq(r.rect, R.strip.rect), `the strip's plate ${r.rect} is not ${R.strip.rect}`);
+  must(!got("strip", "chrome").length, "the strip draws no fill or edge (fix 2 F1)");
   if (n > 0) {   // a region a tile (tile.<i>): its box is the list's pitch at its place, lifted by the spec's lift while the ring is on it (one tile at most)
     const items = Array.from({ length: n }, (_, i) => listPitch(R.tiles, n, i)), lift = spec.focus.targets.tile.lift; let lifted = 0;
     for (let i = 0; i < n; i++) {
-      const parts = regions.filter((r) => r.id === `tile.${i}`); if (!parts.length) { out.push(`tile ${i} is not drawn`); continue; }
+      const plateOrChrome = (x) => x.layer === "chrome" || x.layer === "painted", parts = regions.filter((r) => r.id === `tile.${i}`); if (!parts.length) { out.push(`tile ${i} is not drawn`); continue; }
       for (const r of parts) {
-        const base = items[i], up = r.layer === "chrome" ? r.rect[1] === base[1] - lift : parts.some((x) => x.layer === "chrome" && x.rect[1] === base[1] - lift), box2 = up ? [base[0], base[1] - lift, base[2], base[3]] : base;
-        if (r.layer === "chrome") { if (up) lifted++; must(eq(r.rect, box2) || r.rect[2] === 0, `tile ${i} ${r.rect} is not its place on the pitch ${base}`); } else must(within(r.rect, box2) || r.rect[2] === 0, `tile ${i}'s ${r.layer} ${r.rect} leaves the tile`);
+        const base = items[i], up = plateOrChrome(r) ? r.rect[1] === base[1] - lift : parts.some((x) => plateOrChrome(x) && x.rect[1] === base[1] - lift), box2 = up ? [base[0], base[1] - lift, base[2], base[3]] : base;
+        if (plateOrChrome(r)) { if (up && r.layer === "chrome") lifted++; must(eq(r.rect, box2) || r.rect[2] === 0, `tile ${i} ${r.rect} is not its place on the pitch ${base}`); } else must(within(r.rect, box2) || r.rect[2] === 0, `tile ${i}'s ${r.layer} ${r.rect} leaves the tile`);
       }
     }
     must(lifted <= 1, "more than one tile is lifted"); must(!regions.some((r) => r.id.startsWith("tile.") && Number(r.id.slice(5)) >= n), "a tile past the bays is drawn");
@@ -63,7 +65,8 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   // the namer: its panel and shadow at the spec's rectangle (the shadow a 2 × 3 offset), the field, the say line, the keys on their rectangles, no habitat ring while it is open
   if (open) {
     const N = namer.regions, P = N.panel.rect;
-    for (const r of got("panel", "chrome")) must(within(r.rect, [P[0], P[1], P[2] + N.panel.shadow[0], P[3] + N.panel.shadow[1]]), `the namer's panel ${r.rect} leaves ${P} and its shadow`);
+    for (const r of got("panel", "painted")) must(eq(r.rect, P), `the namer's plate ${r.rect} is not ${P} (no shadow, fix 2 F8)`);
+    must(!got("panel", "chrome").length, "the namer's panel draws no fill, edge, bevel row or shadow (fix 2 F1, F8)");
     for (const id of ["field", "say"]) for (const r of regions.filter((x) => x.id === id && x.rect[2] > 0)) must(within(r.rect, N[id].rect), `the namer's ${id} (${r.layer}) ${r.rect} leaves ${N[id].rect}`);
     for (const [id, m] of [["shift", N.shift], ["space", N.space], ["page", N.page], ["suggest", N.suggest], ["done", N.done]]) for (const r of got(id, "chrome")) must(within(r.rect, [m.rect[0], m.rect[1] - 2, m.rect[2], m.rect[3] + 2]), `the namer's ${id} ${r.rect} leaves ${m.rect}`);
     for (const r of got("keys", "chrome")) { const i = N.keys.columns * Math.round((r.rect[1] + (r.rect[1] % 2) - N.keys.at[1]) / N.keys.pitch) + Math.round((r.rect[0] - N.keys.at[0]) / N.keys.pitch); void i; must(within(r.rect, [N.keys.rect[0], N.keys.rect[1] - 2, N.keys.rect[2], N.keys.rect[3] + 2]), `a key ${r.rect} leaves the grid ${N.keys.rect} (lifted 2 px while the ring is on it)`); }

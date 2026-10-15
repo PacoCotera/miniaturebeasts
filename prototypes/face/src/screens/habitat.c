@@ -175,7 +175,7 @@ static void build_tag(void) {
 static void card_sprite(const char *id, const char *pic, int x, int y, int w, int h) { v_name("card"); if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), x, y); }
 static void build_card(void) {
   int c[4]; hrect("regions.card.rect", c);
-  v_region("card", LAYER_CHROME); word_panel("card", c[0], c[1], c[2], c[3], colr("colours.card.fill"), colr("colours.card.edge")); v_rect("card.top", c[0] + 1, c[1] + 1, c[2] - 2, 1, colr("colours.card.top"));
+  { const char *pl = v_pstr("regions.card.plate"); v_region("card", LAYER_PAINTED); if (*pl) v_sprite("card", pl, c[0], c[1], c[2], c[3]); }   /* fix 2 F1: the card is its device plate, 1:1, the region's first node; no picture, no plate (F6) */
   card_sprite("card.heart", v_pstr("regions.card.heart"), c[0] + hk("regions.card.heart.at", 0), c[1] + hk("regions.card.heart.at", 1), hk("regions.card.heart.size", 0), hk("regions.card.heart.size", 1));
   int n = v_pint("regions.card.notches.count", 0); if (n > 3) n = 3; const char *np = v_pstr("regions.card.notches.picture"); int nw = hk("regions.card.notches.notch", 0), nh = hk("regions.card.notches.notch", 1);
   for (int i = 0; i < 3; i++) { int x = i < n ? hk(v_fmt("regions.card.notches.places.%d.%d", n, i), 0) : 0, y = i < n ? hk(v_fmt("regions.card.notches.places.%d.%d", n, i), 1) : 0; if (i < n) card_sprite(v_fmt("card.notch.%d", i), np, x, y, nw, nh); else card_sprite(v_fmt("card.notch.%d", i), "", 0, 0, 0, 0); }
@@ -223,11 +223,8 @@ static void build_chapterPlates(const char *cur) {
 }
 
 /* ---- the modules: the one `module` build with no lamp (build_module), and each module's objects, lifted with it ---- */
-static void dash_box(const char *id, int x, int y, int w, int h, int free_, const char *col) {
-  char ops[300];
-  if (free_) snprintf(ops, sizeof ops, "[[\"dash\",1,1,%d,\"h\",2,2,\"%s\"],[\"dash\",1,%d,%d,\"h\",2,2,\"%s\"],[\"dash\",1,1,%d,\"v\",2,2,\"%s\"],[\"dash\",%d,1,%d,\"v\",2,2,\"%s\"]]", w - 2, col, h - 2, w - 2, col, h - 2, col, w - 2, h - 2, col);
-  else snprintf(ops, sizeof ops, "[]");
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);   /* the same node a free place or not: empty ops are a clear picture */
+static void free_node(const char *id, int x, int y, int w, int h) {   /* a free place is the well alone, no dash (fix 2 F4): the node keeps its box with no ops */
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "[]"); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
 }
 static void door_objects(int dy) {
   int r[4]; hrect("regions.door.rect", r); int pw = hk("regions.door.places.size", 0), ph = hk("regions.door.places.size", 1), gx = hk("regions.door.glyph.at", 0), gy = hk("regions.door.glyph.at", 1), gw = hk("regions.door.glyph.size", 0), gh = hk("regions.door.glyph.size", 1);
@@ -237,10 +234,10 @@ static void door_objects(int dy) {
     int x = r[0] + hk(v_fmt("regions.door.places.at.%d", i), 0), y = r[1] + dy + hk(v_fmt("regions.door.places.at.%d", i), 1);
     char P[48]; snprintf(P, sizeof P, "regions.door.places.%d", i); int some = spec_len("props", P) >= 0 && v_pstr(v_fmt("%s.picture", P))[0];
     const char *pic = some ? v_pstr(v_fmt("%s.picture", P)) : "";
-    v_region("door", LAYER_CHROME); v_rect(v_fmt("door.recess.%d", i), x, y, pw, ph, colr("colours.door.recess"));   /* the place's recess: a ground the mibi stands in, or nothing in it */
+    { const char *wl = v_pstr(v_fmt("%s.well", P)); v_region("door", LAYER_PAINTED); if (*wl) v_sprite(v_fmt("door.recess.%d", i), wl, x, y, pw, ph); }   /* the place is its well in every state (fix 2 F4): the mibi stands in it, or the well alone */
     v_name("door"); if (has(pic)) v_sprite(v_fmt("door.place.%d", i), pic, x, y, pw, ph); else v_sprite_hidden(v_fmt("door.place.%d", i), glyph[0] ? glyph : v_pstr("regions.glass.picture"), x, y);
     v_name("door"); if (some && v_pbool(v_fmt("%s.waiting", P), 0) && has(lampPic)) v_sprite(v_fmt("door.lamp.%d", i), lampPic, x + hk("regions.door.places.lampAt", 0), y + hk("regions.door.places.lampAt", 1), 8, 8); else v_sprite_hidden(v_fmt("door.lamp.%d", i), v_pstr("regions.glass.picture"), x, y);
-    v_region("door", LAYER_CHROME); dash_box(v_fmt("door.free.%d", i), x, y, pw, ph, !some, colr("colours.tile.free"));
+    v_region("door", LAYER_CHROME); free_node(v_fmt("door.free.%d", i), x, y, pw, ph);
   }
 }
 static void portrait_objects(int dy) {

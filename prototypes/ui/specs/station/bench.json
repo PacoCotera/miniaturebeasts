@@ -138,7 +138,7 @@
   "back": "Home"
  },
  "colours": {
-  "module": { "fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal" },
+  "module": { "word": "metal" },
   "lamp": { "off": "frame.json regions.marks.lamp12.off", "on": "frame.json regions.marks.lamp12.well" }
  },
  "masters": {

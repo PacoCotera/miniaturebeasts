@@ -18,7 +18,6 @@ static int has(const char *s) { return s && *s; }
 static int si(const char *base, const char *key, int dflt) { return spec_int(S, v_fmt("%s.%s", base, key), dflt); }
 static int sa(const char *base, const char *key, int k, int dflt) { return spec_int(S, v_fmt("%s.%s.%d", base, key, k), dflt); }
 static int sexists(const char *base, const char *key) { return spec_raw(S, v_fmt("%s.%s", base, key), NULL) != NULL; }
-static int snull(const char *base, const char *key) { const char *r = spec_raw(S, v_fmt("%s.%s", base, key), NULL); return r && strncmp(r, "null", 4) == 0; }
 static void colour(const char *name, char *out, int cap) { spec_str(S, v_fmt("colours.page.%s", name), out, cap); }
 static void layer(const char *id, int x, int y, int w, int h, const char *asset) { if (has(asset)) v_sprite(id, asset, x, y, w, h); }
 
@@ -31,15 +30,11 @@ void word_page(const char *key) {
   int n = v_pint(v_fmt("%s.count", P), cells_n), size[2];
   if (!compare && sexists(base, "originX") && v_pint(v_fmt("%s.frame.cols", P), 0) > 0) { int o[2]; layout_page_origin(S, base, v_pint(v_fmt("%s.frame.cols", P), 1), v_pint(v_fmt("%s.frame.rows", P), 1), o); rx = o[0]; ry = o[1]; }   /* the open page: the pod's frame picks the origin, so the heading never moves as the rail steps (fix 5 P4) */
   if (spec_len(S, v_fmt("%s.sizeByCount", base)) >= 0 || spec_len(S, v_fmt("%s.heightByCount", base)) >= 0) layout_page_size(S, base, n, size); else { size[0] = sa(rectBase, "rect", 2, 0); size[1] = sa(rectBase, "rect", 3, 0); }
-  char heading[24], nameC[24], lineC[24], lineEmptyC[24], wipeC[24], cellC[24], ruleC[24], paneC[24], edgeC[24];
-  colour("heading", heading, sizeof heading); colour("name", nameC, sizeof nameC); colour("line", lineC, sizeof lineC); colour("lineEmpty", lineEmptyC, sizeof lineEmptyC); colour("wipe", wipeC, sizeof wipeC); colour("cell", cellC, sizeof cellC); colour("rule", ruleC, sizeof ruleC); colour("pane", paneC, sizeof paneC); colour("edge", edgeC, sizeof edgeC);
+  char heading[24], nameC[24], lineC[24], lineEmptyC[24], wipeC[24], cellC[24], ruleC[24];
+  colour("heading", heading, sizeof heading); colour("name", nameC, sizeof nameC); colour("line", lineC, sizeof lineC); colour("lineEmpty", lineEmptyC, sizeof lineEmptyC); colour("wipe", wipeC, sizeof wipeC); colour("cell", cellC, sizeof cellC); colour("rule", ruleC, sizeof ruleC);
   char reg[24], cellReg[24]; snprintf(reg, sizeof reg, "%s", compare ? key : "page"); snprintf(cellReg, sizeof cellReg, "page.cell");
-  /* the pane: the open page has none; Compare's is the nine-slice master at the height the count gives, else a plain panel */
-  if (!snull(base, "pane")) {
-    char pane[96]; snprintf(pane, sizeof pane, "%s", v_pstr(v_fmt("%s.pane", P))); int slot = has(pane) ? wire_asset_slot(pane) : -1, ins[4], tile = 0;
-    if (slot >= 0 && wire_asset_nine(slot, ins, &tile)) { v_region(reg, LAYER_PAINTED);   /* the pane is a painted master */ prim_node(v_id(v_fmt("%s.pane", key)), FN_NINE, rx, ry, size[0], size[1], ((uint32_t)ins[0] << 24) | ((uint32_t)ins[1] << 16) | ((uint32_t)ins[2] << 8) | (uint32_t)ins[3], slot, tile); }
-    else if (sexists(base, "pane")) { v_region(reg, LAYER_CHROME); word_panel(key, rx, ry, size[0], size[1], paneC, edgeC); }
-  }
+  /* the plate: the open page has none; Compare's page is its device plate (fix 2 F1), 1:1 at the page's rect, its first node; no picture, no plate (F6) */
+  { const char *pl = v_pstr(v_fmt("%s.plate", P)); v_region(reg, LAYER_PAINTED); if (*pl) { v_sprite(v_fmt("%s.pane", key), pl, rx, ry, size[0], size[1]); } }
   int H0 = sa(base, "heading", 0, 0), H1 = sa(base, "heading", 1, 0), hasH = sexists(base, "heading");
   const char *pod = v_pstr(v_fmt("%s.heading.pod", P));
   if (has(pod) && hasH) {   /* Compare: the pod (the list class) and the marks that say who it is */

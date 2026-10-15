@@ -11,6 +11,7 @@ import { habitatShown } from "../trickle.mjs";
 import { mibiReq, movingProp, restOf } from "./home-props.mjs";
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;   // the residents' seed (home-props.mjs)
 import { habitsOf, placesOf } from "../state.mjs";
+import { listForm } from "../../../ui/specs/derive.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
 import { doorOpen } from "../nav.mjs";
 
@@ -29,6 +30,8 @@ export function habitatBuild(m, spec, frame, home) {
   const state = out ? "out" : meet ? "meet" : "rest";
   const stage = S.mibiStage(st, shown, settings), stageWord = home.strings.stages[stage] ?? stage, species = S.spName(shown), fr = frameFor(shown), sid = String(shown.id);
   const waiting = false;
+  const plate = (w, h) => slot(`plate-device-${w}x${h}`, [w, h], "the device plate (fix 2: placed 1:1)");
+  const well = (name) => slot(name, name.match(/(\d+)x(\d+)/).slice(1).map(Number), "the device well (fix 2: placed 1:1)");
 
   const regions = {};
   regions.stage = { room: [slot("room-vivarium-stage-habitat", R.stage.rect.slice(2), "the up-close stage master")] };
@@ -49,6 +52,7 @@ export function habitatBuild(m, spec, frame, home) {
   const story = (from.of && from.of.length === 2 ? [fill(Sg.story.bred[0], { A: from.of[0] }), fill(Sg.story.bred[1], { B: from.of[1] })] : [fill(Sg.story.founder[0], { place: place(from.g) })]).concat(shown.mem ? [fill(Sg.story.memory, { place: place(shown.mem) })] : []).slice(0, 3);
   const sz = stampSizing(fr, shown.genome), read = fr.chapters.filter((c) => (shown.read || []).includes(c.id)).map((c) => c.id);   // the stamp of the chapters read: never an unread or a shut sealed one (the Incubator hatch's form, so the meet keeps the hatch's picture)
   regions.card = {
+    plate: plate(416, 208),
     heart: shown.bonded ? slot("heart-full-24", R.card.heart.size, "the heart master") : "",
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
     species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "slot", id: "mark-guide-16:16x16", master: "mark-guide-16", size: [16, 16], until: "the guide mark master (AD G1)" }) },
@@ -65,27 +69,30 @@ export function habitatBuild(m, spec, frame, home) {
   regions.plates = { items: plates };
 
   // the Companion module: the set as it will be, in its order; an add request waiting shows its lamp
-  const places = proj.slice(0, 3).map((id) => { const mb = S.mibiById(st, id); return mb ? { picture: mibiReq(req, st, mb, [48, 48], settings), waiting: !carried.includes(id) } : null; });
+  const places = proj.slice(0, 3).map((id) => { const mb = S.mibiById(st, id); return mb ? { picture: mibiReq(req, st, mb, [48, 48], settings), waiting: !carried.includes(id), well: well("plate-well-48x48") } : null; });
   while (places.length < 3) places.push(null);
-  regions.door = { state: !proj.length ? "none" : docked ? "docked" : "away", glyph: docked ? frame.regions.marks.companion.docked : frame.regions.marks.companion.away, places, lamp: frame.regions.marks.lamp8.away };
+  for (let i = 0; i < 3; i++) if (!places[i]) places[i] = { picture: "", waiting: false, well: well("plate-well-48x48") };   // fix 2 F4: a free place is the well alone
+  regions.door = { plate: plate(272, 96), state: !proj.length ? "none" : docked ? "docked" : "away", glyph: docked ? frame.regions.marks.companion.docked : frame.regions.marks.companion.away, places, lamp: frame.regions.marks.lamp8.away };
 
   // the Portrait module
   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
-  regions.portrait = { state: pst, frame: req({ kind: "slot", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40:48x40`, master: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, size: [48, 40], until: "the sitting frame master (AD, candidates)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
+  regions.portrait = { plate: plate(136, 96), state: pst, frame: req({ kind: "slot", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40:48x40`, master: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, size: [48, 40], until: "the sitting frame master (AD, candidates)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
 
   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);
   const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : "adult";
-  regions.cross = { state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
+  regions.cross = { plate: plate(272, 96), state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
 
   // the Wild module: shut at rest, ajar once armed
   const wildBlock = S.returnMibiBlock(st, sv, shown), armed = !!m.armed && !wildBlock;
-  regions.wild = { state: armed ? "armed" : "shut", gate: req({ kind: "slot", id: `gate-wild-${armed ? "open" : "shut"}-48x48:48x48`, master: `gate-wild-${armed ? "open" : "shut"}-48x48`, size: [48, 48], until: "the gate master (AD W1)" }) };
+  regions.wild = { plate: plate(136, 96), state: armed ? "armed" : "shut", gate: req({ kind: "slot", id: `gate-wild-${armed ? "open" : "shut"}-48x48:48x48`, master: `gate-wild-${armed ? "open" : "shut"}-48x48`, size: [48, 48], until: "the gate master (AD W1)" }) };
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);
-  const tiles = housed.slice(0, n).map((mb) => { const away = S.isAway(st, sv, mb); return { id: String(mb.id), state: away ? "out" : "housed", shown: mb.id === shown.id, picture: away ? "" : mibiReq(req, st, mb, [48, 48], settings) }; });
-  while (tiles.length < n) tiles.push({ id: "", state: "free", shown: false, picture: "" });
+  const form = listForm(R.tiles, n).name, tw = form === "full" ? 152 : 72;
+  const tiles = housed.slice(0, n).map((mb) => { const away = S.isAway(st, sv, mb), isShown = mb.id === shown.id; return { id: String(mb.id), state: away ? "out" : "housed", shown: isShown, picture: away ? "" : mibiReq(req, st, mb, [48, 48], settings), well: well(`plate-well-${tw}x48${isShown ? "-shown" : ""}`) }; });
+  while (tiles.length < n) tiles.push({ id: "", state: "free", shown: false, picture: "", well: "" });
+  regions.strip = { plate: n ? plate(992, 64) : "" };
   regions.tiles = { glyph: frame.regions.marks.companion.away, items: tiles };
 
   // the focus: every target of the state in the graph's groups; the plate a chapter still to read is enabled, the door and the modules as their rules say

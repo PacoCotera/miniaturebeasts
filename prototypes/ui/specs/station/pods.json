@@ -1027,12 +1027,13 @@
      ]
     }
    },
-   "pane": "page-pane-256x440",
+   "plate": "plate-device-408x{h}",
+   "plateNote": "fix 2 F1: Compare's page is its device plate (plate-device-408x300 or -408x416 by heightByCount), placed 1:1 at the page's rect, the region's first node; the face draws no fill, edge or nine-slice. No plate picture, no plate (F6)",
    "nameGap": 8,
    "nameLine": 20,
    "podAt": [
     12,
-    4
+    6
    ],
    "podNote": "the 40×48 list class, centred where the 32×40 pod was (its centre at (32, 28) on the page)",
    "who": {
@@ -1337,8 +1338,6 @@
    "changed": "amber"
   },
   "page": {
-   "pane": "deep",
-   "edge": "slate",
    "heading": "bone",
    "name": "bone",
    "line": "fog",
@@ -1347,7 +1346,7 @@
    "cell": "ground",
    "rule": "hairline",
    "unreadDots": "bevel",
-   "note": "pane and edge are Compare's pages only; the chapter page has no pane (regions.chapter.page.open). The cell's tone is `ground` (one step lighter than the old card's mean, the crops' ground keyed to it); the stand-in word and its `mist` are withdrawn"
+   "note": "the pane and edge roles retire with fix 2 (Compare's page is its device plate); the chapter page has no pane (regions.chapter.page.open). The cell's tone is `ground` (one step lighter than the old card's mean, the crops' ground keyed to it); the stand-in word and its `mist` are withdrawn"
   },
   "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.75, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own; on Pods k is 0.75 and the case (back and front glass) is the signed slices"},
   "diff": {

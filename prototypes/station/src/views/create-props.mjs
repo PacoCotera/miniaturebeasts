@@ -39,14 +39,13 @@ export function createBuild(m, spec, pods) {
   // the bench: the Create stage master
   regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Create stage master")] };
 
-  // the rail: one tab a chapter, a pip a trait (filled, hollow, a changed diamond or a clash cross); the open tab is the focused trait's chapter, its pip lifted
+  // the rail: one tab a chapter and one 12 × 12 mark a tab: a clash cross when a trait of the chapter clashes, else a changed diamond when one is changed, else none (fix 11); the open tab is the focused trait's chapter (nothing is open while it grows, fix 5 C7)
   const open = cur && !grown ? fr.chapters.findIndex((c) => c === cur.c) : -1, rail = railOf(m, pods, p, fr.chapters, req, open, null);
   rail.focused = null;
   rail.tabs.forEach((tab, i) => {
-    const c = fr.chapters[i], read = p.read.includes(c.id), n = tab.pips;
+    const c = fr.chapters[i];
     tab.glint = false;
-    tab.marks = c.traits.slice(0, n).map((t) => (!read ? "hollow" : cr.clash.includes(t.id) ? "clash" : cr.choices[t.id] ? "changed" : "filled"));
-    tab.lift = cur && !grown && cur.c === c ? Math.min(c.traits.indexOf(cur.t), n - 1) : -1;   // grow: nothing is focused, no tab is open and no pip lifted (fix 5 C7)
+    tab.mark = c.traits.some((t) => cr.clash.includes(t.id)) ? "clash" : c.traits.some((t) => cr.choices[t.id]) ? "changed" : "";
   });
   regions.rail = rail;   // the changed and clash pips are the words' chrome rects (create.json: the kit's chrome), never pictures
 

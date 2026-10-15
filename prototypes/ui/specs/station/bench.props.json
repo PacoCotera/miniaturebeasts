@@ -100,6 +100,7 @@
     "switch": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "lamp",
       "count",
@@ -107,6 +108,9 @@
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "off",
@@ -135,11 +139,15 @@
     "slot": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "lamp"
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "dim",

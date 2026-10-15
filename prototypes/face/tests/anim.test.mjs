@@ -55,12 +55,12 @@ test("the ribbon shows from its `from` and not before; the same event again star
   at(f, 1400); lg = logOf(f); assert.ok(lg.type.some((t) => t.text === "New species")); assert.ok(!lg.regions.some((r) => r.id === "origin"));
   send(f, { kind: "ribbon", target: pod, ms: 7400, from: 1400 }); at(f, 100); lg = logOf(f); assert.ok(!lg.type.some((t) => t.text === "New species"), "starting over"); void text;
 });
-test("Read fills the pips ceil(p * n) over the event, then the end state", { skip }, async () => {
-  const c = find("overview", /a read wipe in progress/), f = await start(c), chap = c.events[0].target, tabs = c.props.regions.rail.tabs, ti = tabs.findIndex((t) => t.id === chap), n = tabs[ti].pips;
-  assert.ok(n >= 2 && tabs[ti].filled === n && tabs[ti].state === "read");
-  const seen = new Set(); send(f, { kind: "wipe", target: chap, ms: 2000, hold: 2000 });
-  for (let ms = 0; ms <= 2000; ms += 100) { at(f, ms); seen.add(f.hash()); }
-  assert.equal(seen.size, n + 1, `${n} pips fill in ${n} steps (and the empty tab before)`); assert.equal(msgs(f, "done").length, 1);
+test("Read plays its event and ends on the read tab: the rail's 6 × 6 pips are gone (fix 11), so the wipe changes no frame and says done once at its end", { skip }, async () => {
+  const c = find("overview", /a read wipe in progress/), f = await start(c), chap = c.events[0].target, tabs = c.props.regions.rail.tabs, ti = tabs.findIndex((t) => t.id === chap);
+  assert.equal(tabs[ti].state, "read");
+  send(f, { kind: "wipe", target: chap, ms: 2000, hold: 2000 }); const start0 = f.hash();
+  for (let ms = 0; ms <= 2000; ms += 100) { at(f, ms); assert.equal(f.hash(), start0, `no pip fills at ${ms} ms`); }
+  assert.equal(msgs(f, "done").length, 1);
 });
 test("the plate shows while its event plays (4 s) and goes", { skip }, async () => {
   const c = find("overview", /a message over the pod/), f = await start(c); const quiet = f.hash();

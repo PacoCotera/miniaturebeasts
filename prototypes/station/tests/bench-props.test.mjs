@@ -70,16 +70,17 @@ test("the state, the plates and the cradle follow the dock and the tier; away dr
   b = build(world({ docked: false, noProbe: true })); assert.equal(b.props.state, "away"); assert.equal(b.props.regions.switch.count, 3, "a fresh world's Probe is tier 1: three plates");
 });
 
+const noPlate = ({ plate, ...r }) => { assert.match(plate, /^plate-device-\d+x128$/); return r; };   // fix 2: the module's plate follows its rect
 test("the switch: its count is the tier's plates, its whole the dock's floor or all; the lamp is well when on", () => {
-  let b = build(world({ mendFull: false })); assert.deepEqual(b.props.regions.switch, { state: "off", lamp: "off", count: 3, whole: S.DOCK_MEND_FLOOR });
-  b = build(world({ mendFull: true })); assert.deepEqual(b.props.regions.switch, { state: "on", lamp: "well", count: 3, whole: 3 });
-  b = build(world({ tier: 2, shield: 4, mendFull: false })); assert.deepEqual(b.props.regions.switch, { state: "off", lamp: "off", count: 4, whole: S.DOCK_MEND_FLOOR });
+  let b = build(world({ mendFull: false })); assert.deepEqual(noPlate(b.props.regions.switch), { state: "off", lamp: "off", count: 3, whole: S.DOCK_MEND_FLOOR });
+  b = build(world({ mendFull: true })); assert.deepEqual(noPlate(b.props.regions.switch), { state: "on", lamp: "well", count: 3, whole: 3 });
+  b = build(world({ tier: 2, shield: 4, mendFull: false })); assert.deepEqual(noPlate(b.props.regions.switch), { state: "off", lamp: "off", count: 4, whole: S.DOCK_MEND_FLOOR });
   b = build(world({ tier: 2, shield: 4, mendFull: true })); assert.deepEqual([b.props.regions.switch.count, b.props.regions.switch.whole], [4, 4]);
   b = build(world({ docked: false, mendFull: true })); assert.equal(b.props.regions.switch.state, "on", "set at any time: away too");
 });
 
 test("the slot, in order: fitted at tier 2; dim away; ready (armed after the first ✓) when affordable; else dim; the lamp off only when dim", () => {
-  const sl = (st, ui) => build(st, ui).props.regions.slot;
+  const sl = (st, ui) => { const { plate, ...r } = build(st, ui).props.regions.slot; assert.match(plate, /^plate-device-\d+x248$/); return r; };   // fix 2: the plate follows the module's rect
   assert.deepEqual(sl(world({ tier: 2, shield: 4 })), { state: "fitted", lamp: "well" }); assert.deepEqual(sl(world({ docked: false, tier: 2, shield: 4 })), { state: "fitted", lamp: "well" });
   assert.deepEqual(sl(world({ docked: false })), { state: "dim", lamp: "off" });
   assert.deepEqual(sl(world({})), { state: "ready", lamp: "well" }); assert.deepEqual(sl(world({}), { f: null, arm: 1, install: false }), { state: "armed", lamp: "well" });
