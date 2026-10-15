@@ -8,7 +8,9 @@ The well variant (--well, id plate-well-<w>x<h>) is the same recess with no beze
 tiles, companion slots): the hairline, the floor 15 % darker, the inner shade and the lit lip.
 The shown well (--well --shown, id plate-well-<w>x<h>-shown) is the well one step up: its floor x 1.89 in luminance (measured), the step
 today's hairline tile gives over the panel ((61,67,75) over (43,48,56)); never lit, gold or teal.
-usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]]"""
+--floor RRGGBB sets the floor's tone outright (the wall's grain kept) for a plate whose text was cleared on another floor;
+--sage R,G,B sets the bezel's mid sage (the shade keeps the housing ramp's ratio) for a plate set into another sage surface.
+usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]] [--floor RRGGBB] [--sage R,G,B]"""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -28,15 +30,17 @@ def rrect_sd(W, H, x0, y0, x1, y1, r):
     d_corner = r - np.hypot(xx - cx, yy - cy)
     return np.where(inside_core, d_edge, d_corner)
 
-def plate(W, H, bezel=5, radius=6, well=False, shown=False):
+def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage=None):
     st = np.asarray(Image.open(STAGE).convert('RGB')).astype(float)
     wall = st[120:184, 650:778]                                     # the flattest bare stretch of the signed wall (low-frequency sd 0.9)
     grain = np.clip(wall - nd.gaussian_filter(wall, (5, 5, 0)), -6, 6)
     gt = np.tile(grain, (H // grain.shape[0] + 2, W // grain.shape[1] + 2, 1))[:H, :W]
     wall_mean = lin(wall.reshape(-1, 3).mean(0))
     floor = wall_mean * (0.029 / Y(wall_mean)) * (0.85 if well else 1) * (1.89 if shown else 1)   # the wall's own hue at today's panel luminance
+    if floor_hex: floor = lin([int(floor_hex.lstrip('#')[i:i + 2], 16) for i in (0, 2, 4)])
     if well: bezel = 1
     sage_mid, sage_shade = lin((136, 142, 112)), lin((98, 102, 79))   # the housing's sage ramp, measured on the signed stage
+    if sage: sage_shade = lin(np.array(sage, float) * np.array((98, 102, 79)) / (136, 142, 112)); sage_mid = lin(sage)
     outer = rrect_sd(W, H, 0, 0, W, H, radius)
     inner = rrect_sd(W, H, bezel, bezel, W - bezel, H - bezel, max(radius - bezel // 2, 2))
     yy, xx = np.mgrid[0:H, 0:W] + .5
@@ -67,4 +71,6 @@ if __name__ == "__main__":
     W, H, out = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
     bz = int(sys.argv[sys.argv.index('--bezel') + 1]) if '--bezel' in sys.argv else 5
     rd = int(sys.argv[sys.argv.index('--radius') + 1]) if '--radius' in sys.argv else 6
-    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv).save(out)
+    fl = sys.argv[sys.argv.index('--floor') + 1] if '--floor' in sys.argv else None
+    sg = [float(v) for v in sys.argv[sys.argv.index('--sage') + 1].split(',')] if '--sage' in sys.argv else None
+    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv, fl, sg).save(out)

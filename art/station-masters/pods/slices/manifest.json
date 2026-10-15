@@ -14387,11 +14387,11 @@
    560,
    288
   ],
-  "src": "cut by hand (cargo-report/make-report-plate.py): the stamp case's construction (room-stamp-case-152x152, 001bcd51) at 560 wide, its sage from the signed shut door, 0 MXN",
-  "made": "fix 5 AR5 master: a dim well moulded into the sage door, an 8 px bevelled moulding lit top-left and shaded lower-right, dark rubber corners, a quiet ground #1d232b floor (bone 13.2:1, mist 4.7:1), no glass, no sheen, no text; the 20 shorter heights are derived from it",
-  "sha256": "102a4e7e982641186891b55ddce272a85b1cc1ece6e1189ac42764d085ac5e3f",
+  "src": "device-plate/make-device-plate.py 560 288 --floor 1c222a --sage 121.7,133.2,109.9 (the fix 2 kit, cut from the signed housing; its sage the report door's plain panel), 0 MXN",
+  "made": "gate batch 1 AR5r master, replacing fix 5 AR5's raised moulding: the fix 2 kit's construction set into the report door's sage panel (1 px hairline, 5 px sage bezel lit from the top left, inner shade top and left, lit lip bottom and right), no raised rim, no rubber corners; floor #1c222a with the wall's grain (bone 13.5:1, mist 4.82:1 mean, 4.58:1 at the brightest floor pixel); the 20 shorter heights are derived from it",
+  "sha256": "95cdc98970b6e0b3f3944a4f8e4d32f828cdc54d5f98a4f443030b178dfbe9eb",
   "status": "new",
-  "status_note": "new: the art director signs the 21-height set on a 1x sheet and at the golden heights in Cargo captures",
+  "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
   "signed_in": null
  },
  "icon-wait-16": {
@@ -14453,11 +14453,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 128 rows: 160 rows removed from the well floor (rows 88-247 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "e718529b10b8fa4026a0f1d518bf8d375a000ee9335fa0ae7516c87ff2d64cf7",
+  "made": "the Cargo report plate at 128 rows: 160 rows removed from the well floor (rows 88-247 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "3e646744ab219f55130824206c1dd4a4bd2fb94fce8c2e84c1f3f8886fa43eb7",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x136": {
   "size": [
@@ -14466,11 +14466,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 136 rows: 152 rows removed from the well floor (rows 92-243 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "48a1fca2a72ac573c55a12796b3150270521b722bf5f1398f85b7143e4805d24",
+  "made": "the Cargo report plate at 136 rows: 152 rows removed from the well floor (rows 92-243 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "35778a3b75904d00e23786b93ffa196dffff3eb97a63578e01276adc410e0247",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x144": {
   "size": [
@@ -14479,11 +14479,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 144 rows: 144 rows removed from the well floor (rows 96-239 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "d8c12c299a0605b773c522badaec165ff6e27776fff5d8117e461cc5d160ca1f",
+  "made": "the Cargo report plate at 144 rows: 144 rows removed from the well floor (rows 96-239 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "f65e42b373213c80941baec11d6c7b9ebd89323f96de08343caa002c4402513d",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x152": {
   "size": [
@@ -14492,11 +14492,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 152 rows: 136 rows removed from the well floor (rows 100-235 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "a4a1141c5892964a8727a90d6659b6db0f10c5c6a95bf810bd798dba46d30c94",
+  "made": "the Cargo report plate at 152 rows: 136 rows removed from the well floor (rows 100-235 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "46a2806a0c3d3c6f1b96f636a1deaf943117728a9e456d980b4f04c18aa4a3ac",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x160": {
   "size": [
@@ -14505,11 +14505,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 160 rows: 128 rows removed from the well floor (rows 104-231 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "4f6311cea8bcaa379d2bfffb7959f36ee126ec3962168aa773661d807eafd7cd",
+  "made": "the Cargo report plate at 160 rows: 128 rows removed from the well floor (rows 104-231 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "6d04d2a7eb42592ea2c6ce17a3f339d6b90267c2d6787a02ffedfde3cd978331",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x168": {
   "size": [
@@ -14518,11 +14518,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 168 rows: 120 rows removed from the well floor (rows 108-227 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "8278f498498c8bb52532b194771c0bb77cf6840e1cd71cdac905360bae46d87d",
+  "made": "the Cargo report plate at 168 rows: 120 rows removed from the well floor (rows 108-227 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "ad3c44af84bdd7552420fa73958e3c6b779e4f5f94033a45aca40bd56f8df7cf",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x176": {
   "size": [
@@ -14531,11 +14531,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 176 rows: 112 rows removed from the well floor (rows 112-223 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "d19a740561f4913a919980269e58854b0b7f8ec139b43358ea86157573c5152b",
+  "made": "the Cargo report plate at 176 rows: 112 rows removed from the well floor (rows 112-223 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "48740e1e961c6220fcd44bec1d54ececf8d5ddb4a81cb7a62a030d1a3a37de26",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x184": {
   "size": [
@@ -14544,11 +14544,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 184 rows: 104 rows removed from the well floor (rows 116-219 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "b7bc23a5431fb43afa3e2b4534c4cda66e02aa550192800f6c6c5ab46c402991",
+  "made": "the Cargo report plate at 184 rows: 104 rows removed from the well floor (rows 116-219 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "b6199c4fdd26d55a8c930f15270286ae437d2441281648a7a6dbe19be86029b5",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x192": {
   "size": [
@@ -14557,11 +14557,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 192 rows: 96 rows removed from the well floor (rows 120-215 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "8be3bb7f184ab491a74f478b9b81e76659eb595d9431f48803cfdba098d41742",
+  "made": "the Cargo report plate at 192 rows: 96 rows removed from the well floor (rows 120-215 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "45d9c6afe0fa259e619097ad01094b7659e2bed344f18206b57fc63e3bbfd43f",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x200": {
   "size": [
@@ -14570,11 +14570,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 200 rows: 88 rows removed from the well floor (rows 124-211 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "166b7935fb74daf3357a4bc0238ea2ab34bd3d36d9709d181ff3e3d537793fce",
+  "made": "the Cargo report plate at 200 rows: 88 rows removed from the well floor (rows 124-211 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "c92b33aeba742708092921997df7b0ce1c3cd6fa9b0a54edb5c24321bc84b6a0",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x208": {
   "size": [
@@ -14583,11 +14583,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 208 rows: 80 rows removed from the well floor (rows 128-207 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "e25b73f6d244896d5a14986f002d6052b490095d5f3af353bb093ec70ec9ed17",
+  "made": "the Cargo report plate at 208 rows: 80 rows removed from the well floor (rows 128-207 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "79f42234480106b8a5d8856a12bfe00ec44b0e7782df20be6f3a6d6b2277e90a",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x216": {
   "size": [
@@ -14596,11 +14596,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 216 rows: 72 rows removed from the well floor (rows 132-203 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "309da9ab5bdcad28a17a65304f41380ef57b9b33781484434e8c39e9f903adf9",
+  "made": "the Cargo report plate at 216 rows: 72 rows removed from the well floor (rows 132-203 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "db42b40aa9a290472563536a633e8231e49807460b38c0cee9dcacb069ea29af",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x224": {
   "size": [
@@ -14609,11 +14609,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 224 rows: 64 rows removed from the well floor (rows 136-199 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "a5e4471562d51cfbec3b1bf3683967e1a7423f7ddca5323797af43314759a23f",
+  "made": "the Cargo report plate at 224 rows: 64 rows removed from the well floor (rows 136-199 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "99fa1bde6f72a9282435652776f13951f17420be438121c2c00e33678caa599f",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x232": {
   "size": [
@@ -14622,11 +14622,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 232 rows: 56 rows removed from the well floor (rows 140-195 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "9662727d1167834dab97c5e1507ee1bf2a923816acbb67316f61d1f3f994d0d0",
+  "made": "the Cargo report plate at 232 rows: 56 rows removed from the well floor (rows 140-195 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "42a813a7a0441ca742ef1629923d4f10d67c274bd1208240194c9d427f38693b",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x240": {
   "size": [
@@ -14635,11 +14635,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 240 rows: 48 rows removed from the well floor (rows 144-191 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "4024e1e22db12ea94060c98968328295d863d8dc5585078454497ed9a20924d7",
+  "made": "the Cargo report plate at 240 rows: 48 rows removed from the well floor (rows 144-191 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "3f18210322810849e9c0198896108e47beddebd3bac53ae754bd60f1f719b80d",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x248": {
   "size": [
@@ -14648,11 +14648,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 248 rows: 40 rows removed from the well floor (rows 148-187 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "d4d238081cc5789c92e783461266366524b67bd42cfe6f1aaebe67bba1c67a82",
+  "made": "the Cargo report plate at 248 rows: 40 rows removed from the well floor (rows 148-187 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "8f7adf6002151f41f6093103a80a0fcb9023b3b7de77f414652c7fb4f8462a59",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x256": {
   "size": [
@@ -14661,11 +14661,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 256 rows: 32 rows removed from the well floor (rows 152-183 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "81e468333034ed629594636ad075d8afa9314976df6fd0c97c73164fa58eeedf",
+  "made": "the Cargo report plate at 256 rows: 32 rows removed from the well floor (rows 152-183 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "8ccb851adecd7d7676697c7438bd06d5dc29b753a6738bb0a3c774375c682170",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x264": {
   "size": [
@@ -14674,11 +14674,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 264 rows: 24 rows removed from the well floor (rows 156-179 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "ce171933a1fb1075e7332ecc26faa3fd90cfb26ed09b5b372beac0d742f01682",
+  "made": "the Cargo report plate at 264 rows: 24 rows removed from the well floor (rows 156-179 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "ced022b5e3de25b03166e64792481e5fc5ff02cc21bf55c913f5cec1b87ff77b",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x272": {
   "size": [
@@ -14687,11 +14687,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 272 rows: 16 rows removed from the well floor (rows 160-175 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "9523eff7087bcb59b88f41dcb281d38d1efbf9c58d753b623f9861c4f517b720",
+  "made": "the Cargo report plate at 272 rows: 16 rows removed from the well floor (rows 160-175 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "63b50e12910b0b7c9b248a1bda841a695dddab897d4e0b9ae47ffebbaca10333",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "cargo-report-plate-560x280": {
   "size": [
@@ -14700,11 +14700,11 @@
   ],
   "rect": null,
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
-  "made": "the Cargo report plate at 280 rows: 8 rows removed from the well floor (rows 164-171 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (pass 140)",
-  "sha256": "70e485ec5bb9e5c37ab701954e82282331404789ca4be0f76c3d4d22b54c262a",
+  "made": "the Cargo report plate at 280 rows: 8 rows removed from the well floor (rows 164-171 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
+  "sha256": "744077b1c57cbe90b2b872bf27c5bafe6683d1c0ddade5d7a718e950fdc9552c",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
+  "signed_in": null
  },
  "mibi-halo-empty-128x160": {
   "size": [
@@ -15171,5 +15171,36 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the Create retake"
+ },
+ "cargo-bay-shut-report-976x304": {
+  "size": [
+   976,
+   304
+  ],
+  "rect": [
+   24,
+   56,
+   976,
+   304
+  ],
+  "src": "cut by hand from the signed cargo-bay-shut-976x304 (cargo-report/recut/make-report-door.py), 0 MXN",
+  "made": "gate batch 1 AR6: the shut door for the report state; between slice x 200 and 776 the slats end at an 8 px moulded frame lit from the top left, round one plain sage panel (the slats' own face tone, the door's light kept); roll box and sill untouched; no text",
+  "sha256": "1bc1ffad77c64ec3b854f2730e55b197ab909f5cc70ba4dedac3599d1c77c2de",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
+  "signed_in": null
+ },
+ "label-plate-cream-216x32": {
+  "size": [
+   216,
+   32
+  ],
+  "rect": null,
+  "src": "cargo-report/recut/make-label-cream.py 216 32, 0 MXN",
+  "made": "gate batch 1 AR7: the board's cream label plate (concept board frame 1, measured cream (229, 220, 203)), matte, r 3, a 1 px darker edge, lit top and left arris, shaded bottom and right; no gold, no text; ink reads at 13:1",
+  "sha256": "48757b73c248bd31ed7385788d53c948097a408d951cbe1971dbdcc0a694deda",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
+  "signed_in": null
  }
 }
