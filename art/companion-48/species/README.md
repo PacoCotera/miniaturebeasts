@@ -108,3 +108,11 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `af4bb10e4bd7c204d626b4616de558fd3ca9e95c3b83fc479a432bf42c16427a`
 - `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `2816cfc2828eb2af2c98d3e11a172f5f9b24aaf79f275a0e2b3b90f68b091e38`
 - `S01/c-mini-S01-juv-12x12.png` sha256 `9652b9804c8cc5eb7970a380cc22dc5a2f50271b0da5f3b15b68d319a4c69426`
+
+**S01 juvenile olive crest (candidate; the AD's 06:00 pass from the signed X31(a), 26d1bcaf, which stays in its history):** the crest keeps its two-leaf sprout shape and moves one step darker onto Pip's olive on the core 48 (forest fill, leaf specks, pine outline; grass dropped); only the crest pixels change, in all 5 poses and the mini; made by `tools/species-s01-juv-olive.py`; review sheet `S01/sheet-S01-juv-olive-candidate.png` (third tile: the Station's regraded juvenile, masters-pods 02f6f1b8). It rides a later strings PR.
+- `S01/c-token-S01-juv-idle-32x32.png` sha256 `a4f58a151938777b51aca14a0c68e85e9837960af65602b3a93f725928737831`
+- `S01/c-token-S01-juv-alert-32x32.png` sha256 `7022efcd1c8e82366dcfcbb65db8c389be7420a85dbb9b58a01cef5477a4ac38`
+- `S01/c-token-S01-juv-huddle-32x32.png` sha256 `2dca942b119c5cf8ace0eeebf41d18fe2e99de706370b4f28459d5e981e2973d`
+- `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `2384169adb835c9b21be41e4c21b69d228348be737dacb5e13ffcd68035b302b`
+- `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `4e98ee5bf2f61e4e0c3e5e103982ac0087f8e5932d6c22b3c57bdd68ce9e3776`
+- `S01/c-mini-S01-juv-12x12.png` sha256 `120a929393140ef4dd10a6ec1c77390c998fb668a3e5dbfa60ef98068c96fb73`
