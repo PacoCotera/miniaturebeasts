@@ -27,7 +27,7 @@ controls. No touch or click shortcut replaces them, even on touch-capable screen
 | **Pad** | Moves. On the map a tap is one cell and a hold keeps walking; in a place a tap creeps one step and a hold walks; in menus it moves the focus |
 | **✓ Confirm** (the largest) | Does exactly what the bottom line names: go down, take, shake, push, offer, light. Facing nothing in a place it **waits one action** ("✓ Wait"); the menu's Wait stays |
 | **← key** | Engraved with the ← glyph only ("Back" stays its internal name). Opens the menu in the field and closes a screen elsewhere; the bottom line names what it opens on every screen |
-| **))) Call** (teal, ring texture, no engraving) | Sends a signal and things answer: in a place a pulse that lifts the veil (1 action); on the map a pin (1 Energy); at home the mibi with you answers (free). It never opens or closes anything |
+| **))) Call** (teal, ring texture, no engraving) | Sends a signal and things answer: in a place a pulse (Call lifts the veil: finds show; 1 action); on the map a pin (1 Energy); at home the mibi with you answers (free). It never opens or closes anything |
 
 - **Shell layout:** Call directly above the ← key, both left of a larger Confirm
   (**Decided**, until the bench console says otherwise).

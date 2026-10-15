@@ -161,11 +161,11 @@ Names are the **copywriter's** job, not game design's. The owner has approved th
 - **The experience is in English.** Roots are **invented, Latin, Greek, or from less-heard languages** (Nahuatl, Basque, Finnish, Old Norse, Quechua and the like, for sound and sense, never a living trademark). No diminutives and no suffix that sounds childish ("the -ín and -ito make it sound childish").
 - **Two or three syllables**, easy to say in English, **distinct by eye and by ear**: no two species, or two clans, share a first syllable or an ending. Clans share a pattern that reads as a group without a childish ending.
 - **Each name states its root, source language, meaning and why it fits** the species' look, habit or habitat, and names only what every member has (no open trait's look, no colour unless it is locked).
-- **Nothing reads wrong in English or Spanish**: a native speaker from Mexico reads every name for meaning and slang (the owner's lesson from the Spanish round: a root must point at the species, never at something else).
+- **Nothing reads wrong in English or Spanish**: a native speaker from Mexico reads every name for meaning and slang (an owner's lesson from the Spanish round: a root must point at the species, never at something else).
 - **Clearance, a Working rule:** every candidate is searched on the web before anyone picks it (as a creature, monster, game, character, Pokémon, species, toy and brand), is rejected if it is or sounds like an existing creature, character, item, card or brand, and is checked against common nouns that would confuse a search. The search, result and verdict are recorded per name; about one candidate in four fails, so the copywriter proposes spares.
 - A shipped name never changes. Individuals: the player names a pet; a new mibi starts with a short name drawn from its creation, never its genome; the short code (`G7F · CD0 · 3H2`) is the lookup.
 
-**The temperament chapter's name.** *Nature* is Pokémon's per-individual stat modifier, and the owner was not sure about *Ways*. Of three words searched as Pokémon terms, *recommended:* **Character** (short, every child knows it; Pokémon's "Characteristic" is a different word); the others were *Temperament* (exact, but long on a tab, and Spanish Pokémon has an ability *Temperamental*) and *Humor* (a child reads "funny"). This document uses Character. The research docs' *misty seed* (an exact Pokémon item) becomes the **sleeping bud** (searched: no item).
+**The temperament chapter's name.** *Nature* is Pokémon's per-individual stat modifier, and an owner was not sure about *Ways*. Of three words searched as Pokémon terms, *recommended:* **Character** (short, every child knows it; Pokémon's "Characteristic" is a different word); the others were *Temperament* (exact, but long on a tab, and Spanish Pokémon has an ability *Temperamental*) and *Humor* (a child reads "funny"). This document uses Character. The research docs' *misty seed* (an exact Pokémon item) becomes the **sleeping bud** (searched: no item).
 
 ## 6. Traits as a vocabulary
 
@@ -208,7 +208,7 @@ Per the [art pipeline](art-pipeline.md) v2, *the parts library below is supersed
 - **`design/style-guide/station-screens.md`, Library:** the shelf groups by clan, a clan plate over its species.
 - **The website** keeps "families" for kin; "clan" never appears there until the game uses it.
 
-## 9. Decisions for the owner
+## 9. Decisions for owner review
 
 The owner has settled, one line each: the growing genome (§2); the four levels (§3); one roster for every kit; **16 species in V1** as a Station grid with **seasonal drops** about every three months; the first 16 **very different**, with cat-, fox- and raccoon-like mammals, **at most two insect-like** kinds, **more big animals**, and the slug, plant and lightning kind as the strange ones; **hidden silhouettes**; **Compare** on living mibis; the **clean room**; names by the **copywriter**.
 

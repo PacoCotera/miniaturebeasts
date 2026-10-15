@@ -67,5 +67,5 @@ fit without clipping. No blocking correction remains in this family.
 CI186 passed native and existing target jobs; the Companion job still checks
 the legacy scaffold plus the current shared Dock UI, not current Companion UI.
 These reviews do not approve full HiBit art, game enjoyment,
-all-device target builds or physical controls. The [architecture coverage](../../../specs/architecture.md#native-ui-foundation)
+all-device target builds or physical controls. The [architecture coverage](../../../../design/architecture.md#software)
 is authoritative for remaining migration gates.

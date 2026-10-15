@@ -16,16 +16,16 @@ This document turns the prize render into the thing a player meets, and sets out
 
 | Step | Screen and what is chosen | Bottom line |
 | --- | --- | --- |
-| 1. Choose the mibi | The vivarium, up close, the resident in its corner. A mibi already portrayed shows its portrait instead of the offer | `✓ Portray Fig · 1 sitting · ← Home` |
+| 1. Choose the mibi | The vivarium, up close, the resident in its corner. A mibi already portrayed shows its portrait instead of the offer | `✓ Portray Fig   one sitting each, ever   ← Vivarium` |
 | 2. Choose the pose | The sitting screen opens: the vivarium's light, Fig on a plain stage. Beside it, one small picture per habit the player has watched it do (dig, glow, puff, sleep curled), in the standard look. The pad walks them; Fig acts out the focused one | `✓ This pose · ← Fig` |
 | 3. Choose the place | The places Fig has been, as the book's place stamps (the place its pod came from, and every place it walked to with the Companion). The focused stamp washes the stage behind Fig in that place's colours | `✓ This place · ← pose` |
-| 4. Look and confirm | Fig in the pose, in the place, drawn plain, with the gilt frame around it. One line: "One sitting each, ever". First ✓ arms (the frame lights), second ✓ begins | `✓ Begin the sitting · 1 sitting · ← place` |
+| 4. Look and confirm | Fig in the pose, in the place, drawn plain, with the gilt frame around it. One line: "One sitting each, ever". First ✓ arms (the frame lights), second ✓ begins | `✓ Portray Fig   one sitting each, ever   ← Place`, armed `✓ Again: portray Fig` |
 
 A juvenile may sit; later stages are painted ahead of each change (v2 §5). A mibi needs a watched habit and a place, so one fresh from the bud is offered nothing yet ("Fig needs a walk first").
 
 **The wait.** Fig does not leave; it lives as before. The frame leaves the slot and travels to the sample bay module, where a flat crate silhouette sits behind the bay door with its lamp slowly filling, never a clock or digits. The sitting takes **a few hours** (three for testing, under the developer toggle with every timer): longer than a bud, short enough to arrive the same day. The wait covers the painting and the pipeline's retries; a failure only makes the crate later. Offline, the crate waits behind the door until the kit is connected, and says so ("waiting for the cloud").
 
-**The delivery.** The crate arrives in the bay like cargo. Home's bay lamp turns amber: `✓ Open the bay · 1 crate`. The seal breaks, a flat crate slides out, its lid lifts and the portrait stands on the stage in its frame: Fig, in its pose, in its place. A ribbon: "Fig's portrait". One press later, `✓ Look at Fig` opens the vivarium, up close, where Fig is drawn fresh in its painted set (the swap happens at a fresh draw, never while on screen, as v2 §3). *This replaces the incubator's "fourth state" in the [Station screens](../style-guide/station-screens.md) guide:* the prize comes to the dock, not to the chamber.
+**The delivery.** The crate arrives in the bay like cargo. Home's bay lamp turns amber: `✓ Open the bay`, with "a sealed crate" in the context line. The seal breaks, a flat crate slides out, its lid lifts and the portrait stands on the stage in its frame: Fig, in its pose, in its place. A ribbon: "Fig's portrait". One press later, `✓ Look at Fig` opens the vivarium, up close, where Fig is drawn fresh in its painted set (the swap happens at a fresh draw, never while on screen, as v2 §3). *This replaces the incubator's "fourth state" in the [Station screens](../style-guide/station-screens.md) guide:* the prize comes to the dock, not to the chamber.
 
 **What changes afterwards.**
 
@@ -57,7 +57,7 @@ Each family names five things: the act, the token, the result, the card, and the
 
 | Family | Register | Act | Token | Result | Card | ✓ cap | Status line |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **A. Sitting** | a painter's studio | sitting | a sitting | portrait | portrait card | `✓ Portray Fig · 1 sitting` | "Fig's portrait · on its way" |
+| **A. Sitting** | a painter's studio | sitting | a sitting | portrait | portrait card | `✓ Portray Fig` | "Fig's portrait · on its way" |
 | **B. Study** | naturalist's field work | study | a folio | study | folio | `✓ Draw Fig · 1 folio` | "Fig's study · being drawn" |
 | **C. Unveiling** | a museum | unveiling | a pedestal | showpiece | placard | `✓ Unveil Fig · 1 pedestal` | "Fig's showpiece · being hung" |
 | **D. Pressing** | pressing a flower | pressing | a press | pressing | pressed card | `✓ Press Fig · 1 press` | "Fig is in the press" |
@@ -97,7 +97,7 @@ The Companion calls nothing; it learns at the dock.
 | **Card renderer** | One layout, three outputs: the website page at the postmark's link, the phone and Companion version, the Caddy print at 203 dpi; drawn from the archive, never from the Station |
 | **Screens** | Home's sitting slot; the vivarium's offer; the sitting screen's three steps; the bay's flat crate and its lamp; the Companion's notice and card; the cabinet's face choice |
 
-## 7. Decisions for the owner
+## 7. Decisions for owner review
 
 The owner took all three as set out below.
 

@@ -48,7 +48,7 @@ Where each piece is made, when, what it is and what it costs.
 
 The player presses Grow. From that press to Open are the **incubation minutes** (station-loop §1: small 2, medium 3, large 4, +1 per chapter beyond three, +1 per trait changed; the first mibi ever 1). That is the latency budget.
 
-*The gate changes:* Grow no longer starts a generation job. Step 1 (the rig renders the standard look, on screen within a second) is the whole flow for every mibi; steps 2–5 run only when the player **spends a jewel** on a mibi (earned by a research item, or from the paid tier's monthly allowance), and the jewel's wait is its own, not the incubation's. *The words:* the gate is the **sitting**: `✓ Portray Fig · 1 sitting` on the vivarium, up close, with the pose and place chosen in the ceremony ([the portrait](the-portrait.md) §1); the job runs for a few hours and the portrait lands in the sample bay as a crate, never in the incubator. The incubation minutes are now [research-economy](research-economy.md) §5 (twenty plus one per shaped trait; the first bud ever five; an instant grow for a cost). The latency reasoning below stands for the jewel's job and is otherwise *superseded*.
+*The gate changes:* Grow no longer starts a generation job. Step 1 (the rig renders the standard look, on screen within a second) is the whole flow for every mibi; steps 2–5 run only when the player **spends a jewel** on a mibi (earned by a research item, or from the paid tier's monthly allowance), and the jewel's wait is its own, not the incubation's. *The words:* the gate is the **sitting**: `✓ Portray Fig` on the vivarium, up close, with the pose and place chosen in the ceremony ([the portrait](the-portrait.md) §1); the job runs for a few hours and the portrait lands in the sample bay as a crate, never in the incubator. The incubation minutes are now [research-economy](research-economy.md) §5 (twenty plus one per shaped trait; the first bud ever five; an instant grow for a cost). The latency reasoning below stands for the jewel's job and is otherwise *superseded*.
 
 **The standard painting.** *The gate changes back:* Grow starts the standard painting for every mibi (§1.1), and steps 1–5 are the flow again. Step 1 shows the **placeholder**, not a finished look; steps 2–5 bring the painting (three-quarter and side, one retry) inside the bud's twenty minutes on a connected kit, and later on an offline one. The sitting is a second, separate job for the portrait. The bud and the daily grow cap bound how many jobs a day can start.
 
@@ -166,11 +166,11 @@ The daily grow cap behind the developer toggle bounds the worst day; the bud (on
 2. **Full unique sets (cut-off A)** for all eighteen; three stages for six of them. Every call in the manifest with its cost and time.
 3. **The small sizes both ways.** Per individual, the Companion resident and the token (a) down-rendered from the unique Station set by the Station's rule and (b) generic per species, the type specimen's small sizes remapped to the individual's pool values, beside (c) painted at size.
 4. **Side by side at device size** on true-size screens at 1×: the Companion at 450×600 with each version in the resident view and as a token in a reach view among the species' others; the Station at 1024×600 with the resident in the vivarium beside its plain version. Each sheet carries that version's cost per mibi and per kit-year.
-5. **Two blind checks** with the owner and two testers: *match* (find this mibi's Companion version among its species' five from its Station version) and *tell apart* (which two tokens are different individuals). A size where generic is matched as often as unique is below the cut-off.
+5. **Two blind checks** with owner review and two testers: *match* (find this mibi's Companion version among its species' five from its Station version) and *tell apart* (which two tokens are different individuals). A size where generic is matched as often as unique is below the cut-off.
 6. **Latency and validation.** Time per call and batch against the budget per size class; the validator's scores and rejections, so the threshold rests on evidence.
-7. **The plain version beside everything,** so the owner sees what an offline kit plays.
+7. **The plain version beside everything,** so owner review sees what an offline kit plays.
 
-**Owner review A:** the sheets, the tallies, the costs; the owner names the cut-off and says whether the plain version is good enough to be the offline game.
+**Owner review A:** the sheets, the tallies, the costs; owner review names the cut-off and says whether the plain version is good enough to be the offline game.
 
 **The standard painting.** Review A is held: owner review saw the stage 1 sheets and set the bar at the Loika painted with Gemini. *The cut-off question is closed:* the painting is the standard for every mibi, down to the derived Companion and token (the trial's derived token was the better 48 px picture in all three species); the plain version is the placeholder, not the offline game. What stage 1 still owes: the side view, the three stages, the validator's index and slot checks, and the token clean-up test that could earn Retro Diffusion back.
 
@@ -215,7 +215,7 @@ Superseded: plates per level, the parts library per plan, the runtime compositor
 | Clean room with no person per individual | intellectual property | a fixed template, project-owned references only; a periodic owner sheet of random renders |
 | Genomes and renders leave the kit | privacy, terms | digests, not genomes, in the request; the archive under the kit's account; the service's data terms checked in stage 1 |
 
-## 13. Decisions for the owner
+## 13. Decisions for owner review
 
 1. **The hub's work split.** The Caddy brokers, stores and archives. The Station, being the Pi, renders the controls and the plain version, validates and derives; this part is proposed and waits for owner review. The Station as broker too would spare the Caddy its card but leave the renders on the device replaced first.
 2. **The cut-off** is closed: the painting is the standard, everything smaller is derived from it (§1.1). The earlier plan tested cut-off B first (unique down to the Companion resident, token generic), with A as the control and C as the saving.

@@ -60,7 +60,7 @@ Not screened: the 20 generated Spanish names (Saltarín, Colaluz, Gorropompón..
 | genome stamp, genome ring | tm, gm | Only an abandoned GENO-STAMP mark (2002); ring is retired | Clear (2) |
 | meadow, pond edge, rock field, wood, cave, burrow, Deep ground, Weather, Night, Waterside | gen, gm | Plain; "Deep Ground" is not a named place in a known game | Clear (10) |
 
-Not searched individually (ordinary words): postmark, glyph, tome, consignment, habitat, expedition, Head home, Send home, Wait, Identify, Create, Cross, Hatch. "vybronic" in the species notes is the owner's quotation, not a game name.
+Not searched individually (ordinary words): postmark, glyph, tome, consignment, habitat, expedition, Head home, Send home, Wait, Identify, Create, Cross, Hatch. "vybronic" in the species notes is an owner's quotation, not a game name.
 
 ## 5. Chapter names
 
