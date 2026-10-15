@@ -55,7 +55,7 @@ export function podsBuild(m, spec) {
     view.kin = kin.map((q) => ({ id: q.id, ring: req({ kind: "kinring", id: `kinring:${R.kin.first[2]}`, size: R.kin.first[2], band: R.kin.band }), pod: req({ kind: "pod", id: `pod:${S.speciesOf(q)}:i:${R.kin.pod.join("x")}`, species: S.speciesOf(q), state: "identified", size: R.kin.pod }) }));
     view.hatch = req({ kind: "hatch", id: `hatch:${R.hatch.rect.slice(2).join("x")}`, size: R.hatch.rect.slice(2) });
   }
-  view.line = lineOf(m, spec, cur, chapters, ci, view, m.frameSpec);
+  view.line = ownLine(lineOf(m, spec, cur, chapters, ci, view, m.frameSpec));
   view.targets = targetsOf(view, st, spec, cur);
   return view;
 }
@@ -137,7 +137,7 @@ function collectionView(view, m, spec, req) {
   view.bench = [slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the collection's room master"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];
   view.list = { places, waiting: st.waiting.length ? req({ kind: "waiting", id: "waiting:24" }) : null };
   view.rail = null; view.page = null; view.stamp = null; view.specimen = null;
-  view.line = lineOf(m, spec, S.podById(st, ui.cur), [], 0, view, m.frameSpec);
+  view.line = ownLine(lineOf(m, spec, S.podById(st, ui.cur), [], 0, view, m.frameSpec));
   view.targets = targetsOf(view, st, spec, S.podById(st, ui.cur));
   return view;
 }
@@ -190,12 +190,14 @@ function compareView(view, m, spec, req) {
 }
 
 // The bottom line (station-layouts.md, "Words on Pods"): the left slot's action, its price as a number and an icon (nothing for free, and a half price is the lower number),
-// and where ← goes; the centre slot's short sentence on the focused thing, "<name> is <state>"; the right slot's one amber sentence, empty when nothing is new.
+// and where ← goes; the centre slot's short sentence on the focused thing, "<name> is <state>"; the right slot's one amber sentence about the pod on screen, `""` (empty) when it has none, so the host's station-wide notice never fills it (fix 5 P8).
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
 const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
 // What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
 const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
 const priceOf = (cost, icon) => (cost ? icon + " " + cost : "");   // the icon before its figure
+// Pods never takes the frame's notice: with no line of its own the right slot is empty (fix 5 P8)
+const ownLine = (l) => ({ ...l, need: l.need ?? "" });
 function lineOf(m, spec, p, chapters, ci, view, frame) {
   const { st, settings, ui, docked } = m, warn = (price, act) => (frame ? warnWords(st, m.sv, settings, frame, price, act) : null), f = m.focus ?? (view.mode === "collection" ? null : "pod"), Sg = spec.strings, glintOf = (q) => (q && S.podGlints(st, q) ? Sg.glintPod : null);
   const state = (q) => {
@@ -221,7 +223,7 @@ function lineOf(m, spec, p, chapters, ci, view, frame) {
     const states = b === null ? Sg.states.read : b.startsWith("sealed") ? Sg.states.sealed : Sg.states.unread, subject = fill(Sg.subjectIs, { name: word, state: states });
     if (view.mode === "overview") return { ok: "Open " + word, back, subject, need: here };   // ✓ on a tab opens its page, free (the read and its price are on the page)
     if (b === null) return { back, subject, need: here };
-    if (b.startsWith("sealed")) return { back, subject };
+    if (b.startsWith("sealed")) return { back, subject, need: here };
     const cost = S.readCost(st, p, ch.id, settings);
     return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: (b && /^needs/.test(b) ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : blockNeed(b, Sg)) ?? (b === "" ? warn({ d: cost }, { key: "read", pod: p }) : null) ?? here };
   }
