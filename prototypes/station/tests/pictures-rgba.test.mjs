@@ -66,3 +66,39 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
   assert.equal(atlasIsMaster(id), true, "every nap cell placed: the nap atlas is a master"); assert.equal(playable("S05", "juvenile"), false, "the set plays only when every atlas is");
   assert.throws(() => compose(id, src, [{ layer: "x" }]), /layers are composed in the bake slot/);
 });
+
+// ---- the portrait's picture (derive.mjs, portrait-source.mjs, the "portrait" kind). PROVISIONAL: the art director signs the reducer's rule once, on real portraits ----
+import { derivePortrait } from "../src/derive.mjs";
+import { portraitSource, injectPortraitSource, dropPortraitSources, landPortrait, digestOf } from "../src/portrait-source.mjs";
+import { registerPictures } from "../src/pictures.mjs";
+import { policyOf as policyOfPortrait } from "../../ui/asset-policy.mjs";
+{
+  const OW = 528, OH = 392, opening = (fn) => { const a = new Uint8ClampedArray(OW * OH * 4); for (let y = 0; y < OH; y++) for (let x = 0; x < OW; x++) { const [r, g, b] = fn(x, y), i = (y * OW + x) * 4; a[i] = r; a[i + 1] = g; a[i + 2] = b; a[i + 3] = 255; } return a; };
+  const px = (p, x, y) => [...p.rgba().slice((y * 40 + x) * 4, (y * 40 + x) * 4 + 4)], inCrop = (x, y) => x >= 4 && x < 524 && y >= 1 && y < 391;
+  test("derive (provisional): flat 13×13 blocks give exactly their colour at 40×30, alpha 255", () => {
+    const d = derivePortrait(opening((x, y) => (inCrop(x, y) ? [Math.floor((x - 4) / 13) * 6, Math.floor((y - 1) / 13) * 8, 200] : [0, 0, 0]))); assert.deepEqual([d.w, d.h, d.rgba().length], [40, 30, 4800]);
+    for (const [x, y] of [[0, 0], [1, 0], [39, 29], [17, 12]]) assert.deepEqual(px(d, x, y), [x * 6, y * 8, 200, 255], `${x},${y}`);
+  });
+  test("derive (provisional): rounding half up at (sum + 84) / 169: a block sum of 84 rounds down, 85 rounds up", () => {
+    const at = (n) => derivePortrait(opening((x, y) => (x === 4 && y === 1 ? [n, n, n] : [0, 0, 0]))).rgba()[0];   // one sample of the first block carries the whole sum
+    assert.equal(at(84), 0); assert.equal(at(85), 1); assert.equal(at(253), 1); assert.equal(at(254), 2, "the next step up: (254 + 84) / 169 = 2");
+  });
+  test("derive (provisional): a red border outside the crop (4, 1, 520, 390) never reaches the output", () => {
+    const d = derivePortrait(opening((x, y) => (inCrop(x, y) ? [10, 20, 30] : [255, 0, 0]))); for (let i = 0; i < 4800; i += 4) assert.deepEqual([...d.rgba().slice(i, i + 3)], [10, 20, 30]);
+  });
+  test("derive (provisional): a wrong size or any alpha below 255 is refused, an error and never a picture; two runs are byte-identical", () => {
+    const ok = opening(() => [1, 2, 3]); assert.match(derivePortrait(ok, 527, 392).error, /528×392/); assert.match(derivePortrait(new Uint8ClampedArray(10)).error, /bytes/);
+    const t = new Uint8ClampedArray(ok); t[(200 * OW + 100) * 4 + 3] = 254; const r = derivePortrait(t); assert.match(r.error, /opaque/); assert.equal(r.rgba, undefined);
+    assert.deepEqual([...derivePortrait(ok).rgba()], [...derivePortrait(ok).rgba()]);
+  });
+  test("the portrait kind: no source is an empty slot, a source that arrives fills it (40×30, derived, painted); the id is the digest's, the source is not kept", async () => {
+    const digest = "00112233445566778899aabbccddeeff", id = `portrait:${digest.slice(0, 16)}:40x30`, req = [{ kind: "portrait", id, digest, size: [40, 30] }];
+    registerPictures(req, {}); assert.deepEqual([assetEntry(id).status, assetEntry(id).w, assetEntry(id).h], ["empty", 40, 30], "no source: an empty slot");
+    assert.equal(injectPortraitSource(digest, opening(() => [90, 80, 70])).ok, true); registerPictures(req, {});
+    const e = assetEntry(id); assert.deepEqual([e.status, e.w, e.h, e.until], ["derived", 40, 30, null]); const p = asset(id); assert.deepEqual([...p.rgba().slice(0, 4)], [90, 80, 70, 255]); assert.equal(policyOfPortrait(id, e.status), "painted");
+    assert.equal(portraitSource(digest).rgba().length, 4800, "only the 4.8 KB result is kept");
+    const bad = "ffffffffffffffff0000000000000000"; assert.equal(injectPortraitSource(bad, new Uint8ClampedArray(OW * OH * 4)).error.includes("opaque"), true); assert.equal(portraitSource(bad), null, "a refused source keeps nothing");
+    const m = { portrait: { state: "delivered" } }, src = opening((x, y) => [x & 255, y & 255, 9]), r = await landPortrait(m, src); assert.equal(m.portrait.digest, r.digest); assert.equal(r.digest, await digestOf(src)); assert.match(r.digest, /^[0-9a-f]{16}$/); assert.ok(portraitSource(r.digest));
+    dropPortraitSources(); dropAsset(id);
+  });
+}

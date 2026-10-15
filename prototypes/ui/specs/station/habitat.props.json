@@ -418,7 +418,8 @@
      "type": "object",
      "required": [
       "state",
-      "frame"
+      "frame",
+      "picture"
      ],
      "additionalProperties": false,
      "properties": {
@@ -431,6 +432,9 @@
        ]
       },
       "frame": {
+       "type": "string"
+      },
+      "picture": {
        "type": "string"
       }
      }

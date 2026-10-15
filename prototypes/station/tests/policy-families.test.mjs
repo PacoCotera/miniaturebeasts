@@ -80,3 +80,7 @@ test("a juvenile mibi takes the art director's juvenile stand-in at its size whe
   dropAsset(ADULT); dropAsset("mibi:3:adult:304x312"); dropAsset("mibi:3:elder:304x312");
   clear();
 });
+
+test("a portrait the Station derives is a painted picture at either status (its averaged colours leave the palette)", () => {
+  for (const st of ["placeholder", "derived", "master"]) assert.equal(policyOf("portrait:0123456789abcdef:40x30", st), "painted", st);
+});

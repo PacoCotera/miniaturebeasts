@@ -69,7 +69,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Portrait module
   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
-  regions.portrait = { state: pst, frame: req({ kind: "ph", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-32x48`, size: [32, 48], hollow: false, until: "the sitting frame master (not signed)" }) };
+  regions.portrait = { state: pst, frame: req({ kind: "ph", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-32x48`, size: [32, 48], hollow: false, until: "the sitting frame master (not signed)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
 
   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);
