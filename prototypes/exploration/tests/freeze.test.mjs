@@ -341,7 +341,7 @@ test("the Probe screen mid-expedition reads the Probe the expedition set out wit
   assert.ok(t.includes("tier 1"), "tier 1 in the top bar");
   assert.ok(t.includes("Reaches 2 cells each way · 2 pods"));
   assert.ok(t.includes("Shield is whole"), "Shield is whole at 3 of 3");
-  p.run("S.exp.shield = 2; __t = []; drawProbe(0);");
+  p.run("S.exp.shield = 2; S.exp.cargo.e = 3; __t = []; drawProbe(0);");
   assert.ok(p.run("__t").includes(p.run("DOCK_TEXT.probe")), "docked and hurt: the Station mends it");
 });
 
@@ -375,7 +375,7 @@ test("bayLine(): the docked variant while docked, today's line undocked", () => 
 
 // ---- the game designer's ruling on hints while docked (QA D1) ----
 test("docked: no one-time hint shows or is spent; after Lift the first press shows the Call hint and spends it", () => {
-  const CALL = "The teal CALL button pulses: it lifts the veil and finds things";
+  const CALL = "Call lifts the veil: finds show";
   const { p, st } = begin();
   p.key("right"); p.key("down"); p.key("right");
   let inPlace = false;
@@ -384,17 +384,18 @@ test("docked: no one-time hint shows or is spent; after Lift the first press sho
     p.key("confirm"); if (p.S.phase === "patch") { inPlace = true; break; }
   }
   assert.ok(inPlace, "in a place");
-  assert.equal(p.S.found.includes("callplace"), false, "the Call hint not yet spent");
+  p.run("S.found = S.found.filter(k => k !== 'callintro' && k !== 'met:call'); FX.notes = []; FX.msg = ''; FX.sign = null;");   // the entry's sign was shown on arrival; take it back so the dock rule is what is measured
+  assert.equal(p.S.found.includes("callintro"), false, "the Call sign not yet spent");
   dock(p, st);
   p.key("back"); assert.equal(p.S.phase, "menu");
   p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo");
   p.key("back"); p.key("back"); assert.equal(p.S.phase, "patch");
-  assert.equal(p.S.found.includes("callplace"), false, "not spent while docked");
+  assert.equal(p.S.found.includes("callintro"), false, "not spent while docked");
   assert.notEqual(p.run("FX.msg"), CALL, "the Call hint does not show while docked");
   lift(p, st);
   p.key("left"); assert.equal(p.S.phase, "patch");
   assert.equal(p.run("FX.msg"), CALL, "the first press after Lift shows the Call hint");
-  assert.equal(p.S.found.includes("callplace"), true, "and spends it");
+  assert.equal(p.S.found.includes("callintro"), true, "and spends it");
 });
 
 // ---- C2a §8.3: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----

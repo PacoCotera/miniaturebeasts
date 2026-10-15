@@ -231,8 +231,8 @@ test(`6. gettable in play: calm, start at glint 0, walk in, Call, dig up fa and 
 });
 
 // ---- the Untuva meal hint (copywriter's cmp.hint.untuvaMeal) ----
-const KNOWN = "A well-fed Untuva may drop a pod · put the fruit down, back off three tiles";
-const UNKNOWN = "A well-fed round creature may drop a pod · put the fruit down, back off three tiles";
+const KNOWN = "Well fed, Untuvas may drop pods";
+const UNKNOWN = "Well fed, these may drop pods";
 function withUntuva(known) {
   const p = page();
   p.run(`newWorld(3); TEST.calm = true; ${known ? "S.known.push(2);" : ""} startExpedition('weather', G.spawns[0]); enterPatch(); S.found.push('callintro', 'backplace');`);
@@ -250,11 +250,30 @@ test("the Untuva meal hint: the unknown variant names no species, the known one 
     assert.ok(put()); step();   // empty-handed: no hint
     assert.ok(!p.run("FX.msg").includes(want));
     assert.ok(put()); p.run("S.exp.carry = 'fruit'"); step();   // fruit in hand, an Untuva in sight
-    if (!p.run("FX.msg").includes(want)) step();   // a line too full for both (the fruit bubble's first help) shows it on the next action
+    if (!p.run("FX.msg").includes(want)) step();   // a sign that outranked it (the fruit bubble's) shows it on the next action
+    if (!p.run("FX.msg").includes(want)) step();
     assert.ok(p.run("FX.msg").includes(want), `shown: ${p.run("FX.msg")}`);
+    assert.ok(p.run("FX.sign && FX.sign.sign") === "untuva", "a sign: one picture and one line");
     assert.ok(!p.run("FX.msg").includes(other));
     if (!known) assert.ok(!/Untuva/.test(p.run("FX.msg")), "the unknown variant never names the species");
     assert.ok(p.S.found.includes("cmp.hint.untuvaMeal"), "spent once shown");
     for (let i = 0; i < 4; i++) { put(); p.run("S.exp.carry = 'fruit'"); step(); assert.ok(!p.run("FX.msg").includes(want), "never again"); }
   }
+});
+
+// ---- signs: one picture and one line, one at a time; the Probe lists the ones met ----
+test("a sign never joins another sign or a note; the one that loses keeps its flag and shows at its next trigger", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]);");
+  assert.equal(p.run("FX.msg"), "Your start · end the expedition here");
+  assert.equal(p.run("FX.sign.sign"), "start");
+  p.run("FX.notes = []; FX.sign = null; fxSign('call'); fxSign('storm', 1); fxSign('fog'); fxMsg('A plain note', 1);");
+  assert.equal(p.run("FX.sign.sign"), "storm", "priority 3 ties break to the hazards first");
+  assert.equal(p.run("FX.msg"), "More bolts, more strikes · ▶ east", "no join");
+  assert.ok(p.run("FX.held.some(n => n.text === 'A plain note')"), "a plain note waits one action");
+  p.run("settleOnce();");
+  assert.ok(p.S.found.includes("hudstorm") && !p.S.found.includes("callintro") && !p.S.found.includes("fogbank"), "only the shown sign is spent");
+  assert.ok(p.S.found.includes("met:storm"), "and it joins the Probe");
+  assert.ok(p.run("SIGN_RANK.slice(0, 5).join()") === "shield,bank,shelter,warn,storm", "hazards first");
+  assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("textW")(d.line(1), 2) <= 340), "every line fits its 340 px slot");
 });
