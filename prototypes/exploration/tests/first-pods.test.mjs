@@ -292,3 +292,12 @@ test("the Probe: no legend rows and no odds; the signs met are pictures in the o
   for (const t of p.run("TILES")) { const n = typeof t.name === "function" ? t.name() : t.name; assert.ok(p.run("textWT")(n, 2) <= 200 && !/%|\d/.test(n.replace("tier 2", "")), n); }
   p.key("back"); assert.equal(p.S.phase, "menu");
 });
+
+test("control hints lead the bottom line's middle and are spent once it shows them", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.found.push('mapintro'); FX.notes = []; FX.sign = null; FX.msg = '';");
+  p.key("left"); p.key("right");   // an action on the map
+  assert.ok(p.S.found.includes("callmap"), "spent when shown");
+  assert.ok(p.run("textWT('CALL here drops a pin', 2)") <= 190, "the signed short form fits the map's middle");
+  p.key("confirm"); if (p.S.phase === "patch") { assert.ok(p.S.found.includes("backplace")); assert.ok(!/Leave is first/.test(p.run("FX.msg")), "not in the message box"); }
+});

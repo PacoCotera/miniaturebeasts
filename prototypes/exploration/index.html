@@ -1432,7 +1432,7 @@ function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
-  if (x < 0 || y < 0 || x >= PW || y >= PH) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge of the place · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
+  if (x < 0 || y < 0 || x >= PW || y >= PH) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
   const o = occupant(key, x, y, 'player');
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
@@ -1471,7 +1471,7 @@ function crossEdge(dir) {
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos); transition();
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
   mapStep(dir);
-  fxHint('edgewalk', 'Onto the next cell · ✓ goes down into it', 2);
+  fxHint('edgewalk', 'Next cell · ✓ goes down', 2);
 }
 function gateBump() {
   const fresh = addPin(G.gate, 'burrow'), pt = S.exp.pt;
@@ -4379,9 +4379,9 @@ function mapContext() {
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
   if (S.phase === 'patch') fxSign('call');   // in a place and not yet told (arrival, or the first press after a dock)
-  if (S.phase === 'map') fxHint('callmap', 'CALL here drops a pin for 1 Energy', 1);
+  if (S.phase === 'map') fxHint('callmap', 'CALL here drops a pin', 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
-  if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', '))) again removes it', 1);
+  if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', 'Your pin · ))) takes it away', 1);
   if (stormLevel()) fxSign('storm', ex.storm.dir);
   if (fogNear()) fxSign('fog');
 }
