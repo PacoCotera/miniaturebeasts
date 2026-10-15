@@ -76,7 +76,8 @@ for (x, y) in ((6, 16), (5, 17), (7, 17), (6, 18), (10, 17), (11, 17)): im.putpi
 for (x, y) in ((1, 5), (0, 6), (0, 7), (0, 8), (1, 9)): im.putpixel((x, y), H('mist'))   # the strap loop on the left side
 save('home-bed-mark-16x24', im)
 
-# The sitting frame 24x32: a matte card frame in the sand housing, the portrait window dark.
+# The sitting frame 24x32 (withdrawn 10-15, replaced by home-sitting-32x24 below; still written so its rule stays reproducible):
+# a matte card frame in the sand housing, the portrait window dark.
 im = img(24, 32)
 for y in range(32):
     for x in range(24):

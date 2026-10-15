@@ -27,7 +27,7 @@ The art-layer pieces of Home, the Vivarium card and the Library spread, hand-pla
 | `home-shield-whole-12x24` | 12×24 | a whole Shield plate: white, fog shade, bevel edge, a centre seam |
 | `home-shield-lost-12x24` | 12×24 | a lost Shield plate: a stone outline |
 | `home-bed-mark-16x24` | 16×24 | the bed's Companion mark: the handheld's silhouette with its strap loop, a 1 px mist outline |
-| `home-sitting-24x32` | 24×32 | the held sitting: a matte card frame in the sand housing, the portrait window dark |
+| `home-sitting-24x32` | 24×32 | **withdrawn** (10-15): the old upright sitting card, replaced by the landscape `home-sitting-32x24` (sitting frames are landscape, the window 40×30 on the 48×40 frames); kept on disk for history, never placed |
 | `sitting-frame-held-48x40` | 48×40 | the held sitting frame: a matte card frame in the sand housing, lit from the top left, a sand/clay fillet ring, the window dark (ground), a bark label tick |
 | `sitting-frame-portrait-48x40` | 48×40 | the portrait sitting frame: as held, the window bone with an enamel inner shadow on its top and left |
 | `sitting-frame-empty-48x40` | 48×40 | the empty sitting frame: as held, the ring a debossed bark line, no tick, an enamel window with clay top/left and sand bottom/right recess walls |

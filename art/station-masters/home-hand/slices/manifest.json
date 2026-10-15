@@ -87,7 +87,8 @@
   "src": "typed by hand (source/home_marks.py)",
   "made": "the held sitting: a matte card frame in the sand housing, the portrait window dark",
   "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
-  "status": "signed"
+  "status": "withdrawn",
+  "status_note": "withdrawn (art director, 10-15): replaced by home-sitting-32x24, the landscape card; never placed again"
  },
  "home-crate-48x40": {
   "size": [
@@ -457,7 +458,8 @@
   "src": "typed by hand (source/home_marks.py)",
   "made": "the held sitting frame: a matte card frame in the sand housing, lit from the top left, a sand/clay fillet ring, the window dark (ground), a bark label tick",
   "sha256": "e36f2be8826b38c096103ecfccd3ba61e92326bf34c1e571ae9041354b027857",
-  "status": "new"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:05: the sitting-frame captures (public station-sitting-frames 8588eb65, station/img/sitting-frames: home-probe-sitting, habitat-portrait-none, -portrait, -painting), placed byte for byte"
  },
  "sitting-frame-portrait-48x40": {
   "size": [
@@ -467,7 +469,8 @@
   "src": "typed by hand (source/home_marks.py)",
   "made": "the portrait sitting frame: as held, the window bone with an enamel inner shadow on its top and left",
   "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
-  "status": "new"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:05: the sitting-frame captures (public station-sitting-frames 8588eb65, station/img/sitting-frames: home-probe-sitting, habitat-portrait-none, -portrait, -painting), placed byte for byte"
  },
  "sitting-frame-empty-48x40": {
   "size": [
@@ -477,7 +480,8 @@
   "src": "typed by hand (source/home_marks.py)",
   "made": "the empty sitting frame: as held, the ring a debossed bark line, no tick, an enamel window with clay top/left and sand bottom/right recess walls",
   "sha256": "ddea353f6c547e8f8662e7ed73123959286dc1302ace8e85ca59603ffe3d94fa",
-  "status": "new"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:05: the sitting-frame captures (public station-sitting-frames 8588eb65, station/img/sitting-frames: home-probe-sitting, habitat-portrait-none, -portrait, -painting), placed byte for byte"
  },
  "home-sitting-32x24": {
   "size": [
@@ -487,6 +491,7 @@
   "src": "typed by hand (source/home_marks.py)",
   "made": "the held sitting card, landscape: a matte card frame in the sand housing, a sand/clay ring, a dark ground window, no tick",
   "sha256": "80ba90b17fa0df1a87d974cbbd88ca2d78b7911d48cafe88a6a915efca039298",
-  "status": "new"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:05: the sitting-frame captures (public station-sitting-frames 8588eb65, station/img/sitting-frames: home-probe-sitting, habitat-portrait-none, -portrait, -painting), placed byte for byte"
  }
 }
