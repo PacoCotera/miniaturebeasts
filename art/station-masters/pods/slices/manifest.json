@@ -14370,5 +14370,22 @@
   "status": "signed",
   "signed_in": "art director, the Cargo bay read (concepts/cargo-bay/README.md, e3a50bdf)",
   "status_note": "signed (art director) at 1x; moved into slices for fix 5 AR1 (10-15), unchanged"
+ },
+ "cargo-rack-992x168": {
+  "size": [
+   992,
+   168
+  ],
+  "rect": [
+   16,
+   384,
+   992,
+   168
+  ],
+  "src": "cut by hand (cargo-rack/make-cargo-rack.py) from the signed cargo-bay-992x320 (its floor's paint and front lip) and crate-open-432x272 (its fitted foam), 0 MXN",
+  "made": "fix 5 AR4: the device's sage strip under the Cargo bay, with six fitted foam wells at (168 + 112 i, 24, 96, 128), lit lower-right lips, shaded top-left walls, dark foam floors; no labels, lamps, text or gold",
+  "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
+  "status": "new",
+  "status_note": "new: the art director signs in the whole Cargo capture at 1x (fix 5 spec 9)"
  }
 }

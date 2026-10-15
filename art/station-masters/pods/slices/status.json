@@ -3615,5 +3615,9 @@
   "status": "signed",
   "signed_in": "art director, the Cargo bay read (e3a50bdf)",
   "note": "fix 5 AR1: moved into slices, unchanged"
+ },
+ "cargo-rack-992x168": {
+  "status": "new",
+  "note": "fix 5 AR4; signed in the whole Cargo capture"
  }
 }
