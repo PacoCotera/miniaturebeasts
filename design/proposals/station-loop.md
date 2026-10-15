@@ -72,7 +72,7 @@ The pod's founder preview in the middle redraws with each read chapter and keeps
 The fingerprint is a **genome ring**, a round code that stores the real copies, so it makes a genome pretty, tangible and shareable without a letter of genetics. The species glyph sits at the centre; a grey band holds the locked frame, the same for every member; two coloured tracks hold the two copies, one spoke per heritable part; one sector per chapter runs clockwise from a notch; outer dashes carry the species, version and a check. Unread parts are hairlines, so the ring fills as knowledge does. Spec and payload: [research loop](research-loop.md) §7. Printability and scanability are still to be tested, and the art may be refined. The short code (`G7F · CD0 · 3H2`) stays as the mibi's name, a lookup and not the genome. Where the ring appears:
 - **Pods:** Identify draws the band and hairline sectors; each read fills its chapter's sector.
 - **Create:** spokes flip with each roll; on commit the ring is stamped on the shell and the code appears, the moment the individual becomes fixed.
-- **Incubator:** unread sectors fill as their chapters clear; the mibi steps out with its ring whole.
+- **Incubator:** unread sectors fill as their chapters clear; a founder steps out with its ring whole.
 - **Library and Vivarium:** every mibi card and lineage entry carries its ring and code; two mibis are told apart at a glance, and a child's ring lines up with its parents'.
 - **Caddy card** (later): the printed ring and code; scanning shows and never grants.
 
@@ -83,7 +83,7 @@ Create shows the founder large, the chapters around it, and the cost.
 - Cost: **2 Energy + 4 Essence** (to tune), **+1 Data per trait changed**. The bottom line always reads the total.
 - ✓ "Review" shows one card: the founder, what was changed, what stays a surprise, the cost. ✓ again creates; ← goes back to choosing. Two presses, as for a Shield patch.
 
-The pod moves into the incubator. The embryo (a life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every mibi grown is fully known. **Incubation minutes** (they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. *The rule by body and chapters is superseded* by [research-economy](research-economy.md) §5: twenty minutes plus one per shaped trait; **the first bud ever five minutes**; **an instant grow for a cost**; all timers under a developer-tools toggle for testing, loose for now and tightened later. The incubator shows the minutes left, and the Station shows the embryo while the Companion is away. When ready, ✓ "Open" (deliberate) and the juvenile steps into the vivarium with a name ("Fig · Tuikis · juvenile"). One incubator in V1.
+The pod moves into the incubator. The embryo (a life stage) glows through the shell, and as it grows the unread chapters clear one by one: the surprises reveal themselves while you wait, so the wait has a purpose, and every founder grown is fully known. **Incubation minutes** (they vary by species and genome complexity): the species' base by body (small 2, medium 3, large 4 minutes) + 1 minute per chapter beyond three + 1 per trait changed at creation. The first mibi ever takes 1 minute. A cargo arriving does not shorten it. *The rule by body and chapters is superseded* by [research-economy](research-economy.md) §5: twenty minutes plus one per shaped trait; **the first bud ever five minutes**; **an instant grow for a cost**; all timers under a developer-tools toggle for testing, loose for now and tightened later. The incubator shows the minutes left, and the Station shows the embryo while the Companion is away. When ready, ✓ "Open" (deliberate) and the juvenile steps into the vivarium with a name ("Fig · Tuikis · juvenile"). One incubator in V1.
 
 ### Library (Library key): species and lineage
 
@@ -198,7 +198,7 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 5. ← to the pod, pad to "Create". ✓ Create opens: founder large, three chapters misty, markings showing stripes.
 6. Pad ▼: only spots. The founder redraws spotted. Line: "✓ Review · 2 ⚡ 4 ❀ 1 ◆".
 7. ✓ The review card: spotted; three chapters of surprises; the cost.
-8. ✓ Created. The ring is stamped on the shell, the pod settles into the incubator; the embryo glows; the misty chapters clear one by one as it grows. Home shows it on the bench.
+8. ✓ Created. The ring is stamped on the shell, the pod settles into the incubator; the embryo glows; a founder's misty chapters clear one by one as it grows. Home shows it on the bench.
 9. When the incubator glows ready, Home key, pad to the incubator: "✓ Open". ✓ A spotted Tuikis steps into the vivarium: "Fig · Tuikis · juvenile".
 10. Vivarium key shows Fig large. "✓ Spend time", and Fig answers.
 
@@ -222,6 +222,6 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 - **Fingerprint:** the genome ring encoded from the real copies against the species' pinned definition, with the short code; unread parts as hairlines. Print and scan tests come with the encoder.
 - **Art:** pods from the one renderer with species parameters, residents and screens from the art director's masters (engineers do not do art). No code-drawn art reaches owner review.
 - **Screens:** Home with the arrival, Pods with identify, read, compare and return, Create with review, the incubator, Cross and Wish, Library (field guide, where-found, lineage, wishes), the vivarium, up close (spend time, take with you, bond, cross), Probe bench, the idle fade.
-- **Rules:** §4 prices and room; the glint per chapter; the cross forecast; mend standing choice; take-with-you applied at the dock; the walk and skill notches on the Companion page.
+- **Rules:** §4 prices and room; the glint per chapter; the cross forecast; mend standing choice; take-with-you applied at the dock; the walk and skill notches on the vivarium card.
 - **Debug strip** under the screen (not part of play): add materials, finish incubation (minutes follow the §1 rule), show genomes, reset.
 - **Out:** everything in §6, and a side-by-side two-device harness (later, if testers need it).
