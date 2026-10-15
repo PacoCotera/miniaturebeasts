@@ -84,11 +84,13 @@ test("the departure check bites: a crate off its place, the rack moved, a ribbon
   const b = scene({ crates: 2 }), f = await start(b), lg = logOf(f), bad = (fn, state = "bay") => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, cargoSpec, frameSpec, state); };
   assert.deepEqual(departures(lg, cargoSpec, frameSpec, "bay"), []);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "crates" && r.layer !== "chrome").rect[0] = 8; })[0], /leave the bay's inside/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "rack" && r.layer === "chrome").rect[1] = 380; })[0], /rack's panel/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "rack" && r.layer !== "chrome").rect[1] = 380; })[0], /leave the rack/);
+  assert.match(bad((c) => { c.regions.push({ id: "rack", layer: "chrome", rect: [16, 384, 992, 168] }); })[0], /the rack is the painted insert/);
   assert.match(bad((c) => { c.regions.push({ id: "ribbon", layer: "chrome", rect: [208, 56, 600, 40] }); })[0], /ribbon/);
+  assert.match(bad((c) => { c.regions.push({ id: "bay", layer: "art", rect: [16, 48, 992, 300] }); })[0], /is not the painting/);
   assert.match(bad((c) => { c.regions.push({ id: "travel", layer: "art", rect: [100, 104, 88, 112] }); }, "opening").join("; "), /travel rectangle/);
-  assert.match(bad((c) => { c.regions.push({ id: "report", layer: "chrome", rect: [232, 72, 562, 131] }); })[0], /report card shows only in the report/);
-  assert.match(bad((c) => { c.regions = c.regions.filter((r) => r.id !== "rack"); })[0], /the rack is drawn/, "every rack node at 0 size leaves no rack in the log, and that is a departure");
+  assert.match(bad((c) => { c.regions.push({ id: "report", layer: "art", rect: [232, 64, 560, 288] }); })[0], /report plate shows only in the report/);
+  assert.match(bad((c) => { c.regions = c.regions.filter((r) => r.id !== "rack"); })[0], /the rack insert is drawn/, "every rack node at 0 size leaves no rack in the log, and that is a departure");
 });
 
 // ---- the keys ----
@@ -113,7 +115,7 @@ test("while the crates open (events.opening holds crates × 3000 + 200): the fac
 
 // ---- the crates slide in on the Dock (events.crateIn) ----
 test("the crates slide in (events.crateIn): each from 64 px above over 500 ms, 250 ms apart, eased out, clipped to the bay's inside; each stands on its place when its time is up", { skip }, async () => {
-  const ev = EV.crateIn.each, inside = R.bay.inside, places = R.crates.places, total = ev.ms + 2 * ev.stagger;
+  const ev = EV.crateIn.each, inside = R.bay.inside, places = R.crates.byCount[3], total = ev.ms + 2 * ev.stagger;
   const f = await start(scene({ crates: 3 }), { t0: 1000 }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crates", ms: total, hold: 0 });
   const crates = (ms) => { f.frame(t0 + ms); const lg = logOf(f); return lg.regions.find((r) => r.id === "crates" && r.layer !== "chrome")?.rect ?? null; };
   assert.deepEqual(crates(0), [places[0][0], places[0][1] + EV.crateIn.each.from[1], places[0][2], places[0][3]], "at 0 the first crate is 64 px above its place (the top of the inside), the others not yet in");
@@ -133,10 +135,10 @@ async function opening(o, lts) {   // a face with the arrival playing and a way 
 // p = min(1000, t·1000/600) in integers, e = p·p·(3000 − 2p)/1000000, and pos = from + (to − from)·e/1000 truncating toward zero (cargo.json regions.travel.ease)
 const ease = (p) => { p = Math.min(1000, Math.floor(p)); return Math.floor(p * p * (3000 - 2 * p) / 1000000); }, lerp = (a, b, e) => a + Math.trunc((b - a) * e / 1000);
 test("one crate opening (events.opening.crate): sealed at 0, the tag torn at 200 and open at 500, the ribbon from 500, its pods in their places once it is open", { skip }, async () => {
-  const { b, f, at } = await opening(OPEN), c = b.props.regions.opening.crates[0], cx = 332, cy = 120;   // a point of the crate not under a pod
-  let lg = at(100); assert.ok(pixelIs(f, cx, cy, c.sealed), "sealed at 100"); assert.equal(region(lg, "ribbon"), null, "no ribbon before 500"); assert.equal(region(lg, "crate", "art")?.rect.join(), R.crate.rect.join(), "only the crate closer, no pod yet");
+  const { b, f, at } = await opening(OPEN), c = b.props.regions.opening.crates[0], cx = 332, cy = 72;   // a point of the crate not under a pod
+  let lg = at(100); assert.ok(pixelIs(f, cx, cy, c.sealed), "sealed at 100"); assert.equal(region(lg, "ribbon"), null, "no ribbon before 500"); assert.equal(region(lg, "crate", "art")?.rect.join(), [R.crate.rect[0], R.crate.rect[1], R.crate.rect[2], R.crate.shadow.rect[1] + R.crate.shadow.rect[3] - R.crate.rect[1]].join(), "only the crate closer and its shadow, no pod yet");
   lg = at(300); assert.ok(pixelIs(f, cx, cy, c.opening), "the tag torn, the lid lifting, at 300");
-  lg = at(520); assert.ok(pixelIs(f, cx, cy, c.open), "open at 500"); assert.deepEqual(region(lg, "ribbon", "chrome").rect, R.ribbon.rect, "the ribbon shows from 500"); assert.equal(region(lg, "ribbon", "type").rect.length, 4);
+  lg = at(520); assert.ok(pixelIs(f, cx, cy, c.open), "open at 500"); assert.deepEqual(region(lg, "ribbon", "chrome").rect, [416, 56, 192, 40], "the ribbon shows from 500, fitted to its words (First crate home: 157 + 32, up to 8 = 192, centred on 512)"); assert.equal(region(lg, "ribbon", "type").rect.length, 4);
   const place = (j, m) => R.crate.pods.places[m][j]; for (const j of [0, 1, 2]) assert.ok(pixelIs(f, place(j, 3)[0] + 44, place(j, 3)[1] + 56, c.pods[j].picture), `pod ${j} stands at ${place(j, 3)}`);
   assert.deepEqual(f.errors(), []);
 });
@@ -205,22 +207,24 @@ test("reduced motion: the arrival is at its end at once, so the host stages the 
 });
 
 // ---- the report card's height rule ----
-test("the report card is 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0) tall at (232, 72), 560 wide, at most 320: the rule at every combination, world lines dropped from the last until it fits", { skip }, async () => {
+test("the report plate is 104 + 24 × (crates + Probe row) + (world lines ? 32 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0) tall at (232, 64 + 8 × floor((288 − h) / 16)), 560 wide, at most 288: the rule at every combination, world lines dropped from the last until it fits", { skip }, async () => {
   for (const [crates, mend, lines] of [[1, null, 0], [1, { free: 0, paid: 1, broke: false, spent: 1 }, 0], [2, null, 1], [2, { free: 1, paid: 0, broke: false, spent: 0 }, 2], [3, null, 3], [3, { free: 0, paid: 2, broke: false, spent: 2 }, 3]]) {
-    const b = scene({ crates, open: true, state: "report", mend, lines: ["a", "b", "c"].slice(0, lines), podsEach: 2 }), f = await start(b), lg = logOf(f), card = region(lg, "report", "chrome");
-    const rp = b.props.regions.report, nl = rp.world ? rp.world.lines.length : 0, h = 104 + 24 * (crates + (mend ? 1 : 0)) + (nl ? 40 + 24 * nl : 0) + (rp.goal ? 8 + 24 * (1 + (rp.meanwhile ? 1 : 0)) : 0);
-    assert.ok(nl <= lines && (nl === lines || h + (nl ? 24 : 64) > 320), "lines drop only to fit");
-    assert.deepEqual(card.rect, [232, 72, 560 + SHADOW[0], h + SHADOW[1]], `${crates} crates, ${mend ? "a Probe row" : "no Probe row"}, ${nl} lines, ${rp.goal ? "a goal row" : "no goal"}`); assert.ok(h <= 320, "at most 320");
+    const b = scene({ crates, open: true, state: "report", mend, lines: ["a", "b", "c"].slice(0, lines), podsEach: 2 }), f = await start(b), lg = logOf(f), plate = region(lg, "report", "art");
+    const rp = b.props.regions.report, nl = rp.world ? rp.world.lines.length : 0, h = 104 + 24 * (crates + (mend ? 1 : 0)) + (nl ? 32 + 24 * nl : 0) + (rp.goal ? 8 + 24 * (1 + (rp.meanwhile ? 1 : 0)) : 0), y = 64 + 8 * Math.floor((288 - h) / 16);
+    assert.ok(nl <= lines && (nl === lines || h + (nl ? 24 : 56) > 288), "lines drop only to fit");
+    assert.equal(rp.plate, `cargo-report-plate-560x${h}`, "the view and the face agree on h");
+    assert.deepEqual(plate.rect, [232, y, 560, h], `${crates} crates, ${mend ? "a Probe row" : "no Probe row"}, ${nl} lines, ${rp.goal ? "a goal row" : "no goal"}`); assert.ok(h <= 288 && h % 8 === 0, "at most 288, a multiple of 8");
     assert.deepEqual(departures(lg, cargoSpec, frameSpec, "report"), []);
   }
 });
-test("the report card rows sit on the spec's y: the crates' pod icons at 128, 152, 176 (+ 4), Gathered's icons at 208, the Probe's plates at 232, the world's bullets at 296, 320, 344 (+ 10)", { skip }, async () => {
-  const b = scene({ crates: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["a", "b", "c"], podsEach: 2 }), f = await start(b), lg = logOf(f), I = R.report.rows.iconAt, B = R.report.world.bullet, nl = b.props.regions.report.world.lines.length;
-  assert.deepEqual(region(lg, "report.pods").rect, [232 + 152, 128 + I, 2 * 20 - 4, 24 * 2 + 16], "two pod icons a row on a 20 px pitch from x 384, three rows from y 128 on a 24 px pitch");
-  assert.deepEqual(region(lg, "report.gathered", "art").rect.slice(1, 2), [208 + I], "Gathered at 208"); assert.equal(region(lg, "report.gathered", "art").rect[3], 16);
-  assert.deepEqual(region(lg, "report.probe", "art").rect.slice(0, 2), [232 + 152, 232 + I], "the Probe's plates (and the ⚡ of its words) at 232");
-  assert.deepEqual(region(lg, "report.world", "chrome").rect, [232 + B[0], 296 + B[1], B[2], 24 * (nl - 1) + B[3]], "the bullets from y 296 on a 24 px pitch (the lines that fit)");
-  for (const id of ["report.heading", "report.crate", "report.gathered", "report.probe", "report.world"]) assert.ok(region(lg, id, "type"), id + " has its words");
+test("the report plate's rows sit on the spec's y from its top: the crates' pod icons at +56, +80, +104 (+ 4), Gathered's icons at +136, the Probe's plates at +160, the world's bullets at +216 (+ 10)", { skip }, async () => {
+  const b = scene({ crates: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["a", "b", "c"], podsEach: 2 }), f = await start(b), lg = logOf(f), I = R.report.rows.iconAt, B = R.report.world.bullet, nl = b.props.regions.report.world?.lines.length ?? 0;
+  const y0 = region(lg, "report", "art").rect[1];
+  assert.deepEqual(region(lg, "report.pods").rect, [232 + 152, y0 + 56 + I, 2 * 20 - 4, 24 * 2 + 16], "two pod icons a row on a 20 px pitch from x 384, three rows from +56 on a 24 px pitch");
+  assert.deepEqual(region(lg, "report.gathered", "art").rect.slice(1, 2), [y0 + 136 + I], "Gathered at +136"); assert.equal(region(lg, "report.gathered", "art").rect[3], 16);
+  assert.deepEqual(region(lg, "report.probe", "art").rect.slice(0, 2), [232 + 152, y0 + 160 + I], "the Probe's plates (and the ⚡ of its words) at +160");
+  if (nl) assert.deepEqual(region(lg, "report.world", "chrome").rect, [232 + B[0], y0 + 216 + B[1], B[2], 24 * (nl - 1) + B[3]], "the bullets from +216 on a 24 px pitch (the lines that fit)");
+  for (const id of ["report.heading", "report.crate", "report.gathered", "report.probe"]) assert.ok(region(lg, id, "type"), id + " has its words");
 });
 
 // ---- the dirty area ----
@@ -259,6 +263,6 @@ test("with reduced motion the containers are the same props step, a cut at 800 m
   f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2);
   const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); };
   stage(799); assert.deepEqual(shownStores(f, b0), []); stage(800); assert.deepEqual(shownStores(f, b0), ["data"]);
-  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores.data"); assert.equal(st.length, 1, "the one container is logged as stores.data"); assert.deepEqual(st[0].rect, R.stores.places.data); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: [200, 320, 48, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
+  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores.data"); assert.equal(st.length, 1, "the one container is logged as stores.data"); assert.deepEqual(st[0].rect, [R.stores.places.data[0], R.stores.places.data[1], 48, R.stores.shadow.at[1] + R.stores.shadow.size[1]], "the container and its shadow under it (feet 336, the shadow centred on them)"); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: [200, 272, 48, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
   const r = scene({ ...OPEN, state: "report" }), g = await start(r); logOf(g); assert.deepEqual(shownStores(g, r), [], "the report has no containers");
 });

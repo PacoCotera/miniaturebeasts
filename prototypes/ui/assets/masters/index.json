@@ -183,6 +183,20 @@
    "sha256": "2e68b3c526f406a9c1cbe6442d13c56f8316a47a4c0a255295482d4230aeb355",
    "signed": "art director, verdict (963f4eab)"
   },
+  "cargo-bay-992x320": {
+   "file": "pods/cargo-bay-992x320.png",
+   "w": 992,
+   "h": 320,
+   "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-bay-shut-976x304": {
+   "file": "pods/cargo-bay-shut-976x304.png",
+   "w": 976,
+   "h": 304,
+   "sha256": "28c5bd98e365f724763dd2a71a23d0a83b9c1d0d78500834a9f5a3067ee32582",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
   "cargo-data-48x64": {
    "file": "pods/cargo-data-48x64.png",
    "w": 48,
@@ -203,6 +217,167 @@
    "h": 64,
    "sha256": "78288e63687cef819586b77e0adb8c74a9a578f31611d899c88c6c0608648bc9",
    "signed": "art director, haul containers (owner's yes 10-10 12:02; masters-pods b758a617)"
+  },
+  "cargo-rack-992x168": {
+   "file": "pods/cargo-rack-992x168.png",
+   "w": 992,
+   "h": 168,
+   "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x128": {
+   "file": "pods/cargo-report-plate-560x128.png",
+   "w": 560,
+   "h": 128,
+   "sha256": "e718529b10b8fa4026a0f1d518bf8d375a000ee9335fa0ae7516c87ff2d64cf7",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x136": {
+   "file": "pods/cargo-report-plate-560x136.png",
+   "w": 560,
+   "h": 136,
+   "sha256": "48a1fca2a72ac573c55a12796b3150270521b722bf5f1398f85b7143e4805d24",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x144": {
+   "file": "pods/cargo-report-plate-560x144.png",
+   "w": 560,
+   "h": 144,
+   "sha256": "d8c12c299a0605b773c522badaec165ff6e27776fff5d8117e461cc5d160ca1f",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x152": {
+   "file": "pods/cargo-report-plate-560x152.png",
+   "w": 560,
+   "h": 152,
+   "sha256": "a4a1141c5892964a8727a90d6659b6db0f10c5c6a95bf810bd798dba46d30c94",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x160": {
+   "file": "pods/cargo-report-plate-560x160.png",
+   "w": 560,
+   "h": 160,
+   "sha256": "4f6311cea8bcaa379d2bfffb7959f36ee126ec3962168aa773661d807eafd7cd",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x168": {
+   "file": "pods/cargo-report-plate-560x168.png",
+   "w": 560,
+   "h": 168,
+   "sha256": "8278f498498c8bb52532b194771c0bb77cf6840e1cd71cdac905360bae46d87d",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x176": {
+   "file": "pods/cargo-report-plate-560x176.png",
+   "w": 560,
+   "h": 176,
+   "sha256": "d19a740561f4913a919980269e58854b0b7f8ec139b43358ea86157573c5152b",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x184": {
+   "file": "pods/cargo-report-plate-560x184.png",
+   "w": 560,
+   "h": 184,
+   "sha256": "b7bc23a5431fb43afa3e2b4534c4cda66e02aa550192800f6c6c5ab46c402991",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x192": {
+   "file": "pods/cargo-report-plate-560x192.png",
+   "w": 560,
+   "h": 192,
+   "sha256": "8be3bb7f184ab491a74f478b9b81e76659eb595d9431f48803cfdba098d41742",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x200": {
+   "file": "pods/cargo-report-plate-560x200.png",
+   "w": 560,
+   "h": 200,
+   "sha256": "166b7935fb74daf3357a4bc0238ea2ab34bd3d36d9709d181ff3e3d537793fce",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x208": {
+   "file": "pods/cargo-report-plate-560x208.png",
+   "w": 560,
+   "h": 208,
+   "sha256": "e25b73f6d244896d5a14986f002d6052b490095d5f3af353bb093ec70ec9ed17",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x216": {
+   "file": "pods/cargo-report-plate-560x216.png",
+   "w": 560,
+   "h": 216,
+   "sha256": "309da9ab5bdcad28a17a65304f41380ef57b9b33781484434e8c39e9f903adf9",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x224": {
+   "file": "pods/cargo-report-plate-560x224.png",
+   "w": 560,
+   "h": 224,
+   "sha256": "a5e4471562d51cfbec3b1bf3683967e1a7423f7ddca5323797af43314759a23f",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x232": {
+   "file": "pods/cargo-report-plate-560x232.png",
+   "w": 560,
+   "h": 232,
+   "sha256": "9662727d1167834dab97c5e1507ee1bf2a923816acbb67316f61d1f3f994d0d0",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x240": {
+   "file": "pods/cargo-report-plate-560x240.png",
+   "w": 560,
+   "h": 240,
+   "sha256": "4024e1e22db12ea94060c98968328295d863d8dc5585078454497ed9a20924d7",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x248": {
+   "file": "pods/cargo-report-plate-560x248.png",
+   "w": 560,
+   "h": 248,
+   "sha256": "d4d238081cc5789c92e783461266366524b67bd42cfe6f1aaebe67bba1c67a82",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x256": {
+   "file": "pods/cargo-report-plate-560x256.png",
+   "w": 560,
+   "h": 256,
+   "sha256": "81e468333034ed629594636ad075d8afa9314976df6fd0c97c73164fa58eeedf",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x264": {
+   "file": "pods/cargo-report-plate-560x264.png",
+   "w": 560,
+   "h": 264,
+   "sha256": "ce171933a1fb1075e7332ecc26faa3fd90cfb26ed09b5b372beac0d742f01682",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x272": {
+   "file": "pods/cargo-report-plate-560x272.png",
+   "w": 560,
+   "h": 272,
+   "sha256": "9523eff7087bcb59b88f41dcb281d38d1efbf9c58d753b623f9861c4f517b720",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x280": {
+   "file": "pods/cargo-report-plate-560x280.png",
+   "w": 560,
+   "h": 280,
+   "sha256": "70e485ec5bb9e5c37ab701954e82282331404789ca4be0f76c3d4d22b54c262a",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x288": {
+   "file": "pods/cargo-report-plate-560x288.png",
+   "w": 560,
+   "h": 288,
+   "sha256": "102a4e7e982641186891b55ddce272a85b1cc1ece6e1189ac42764d085ac5e3f",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-store-shadow-48x14": {
+   "file": "pods/cargo-store-shadow-48x14.png",
+   "w": 48,
+   "h": 14,
+   "sha256": "2eda8ac44d6c299b6216a81b79d771d1d7ff5f97f57d34078d9dc688305aaf68",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "cell-outline-unread-128x160": {
    "file": "pods/cell-outline-unread-128x160.png",
@@ -341,36 +516,50 @@
    "file": "pods/crate-open-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "d01bb748fd122e6bbce9f2ecaf2764c71f4a0694900d0e601bb275849e80a4c4",
-   "signed": "art director, verdict (87d6a9a9)"
+   "sha256": "058df985e86981ae28ac33c928f7153871988d042fc99db02cd1a1bb5b39ae61",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-opening-432x272": {
    "file": "pods/crate-opening-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "0e6f7d6ca896b32c7ae0888100003c858c4967961c30490e1baa48afa0a13ccd",
-   "signed": "art director, verdict (87d6a9a9)"
+   "sha256": "a2ae9a22e0db5de7b93ff618bd62bf446f87fac582b7449ab5398b8f9b305b60",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "fbbad4302e2f5d06828667bb43272327d6524fee304b20a9cf67a9d18424a419",
-   "signed": "art director, verdict (963f4eab)"
+   "sha256": "27b530f2ce0b38639aa59956654f128a5f778838ad74aca941e46754144a15e1",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "b8c3476801552ffefae81636e04d13571ee8b96f55ccf6b814be2eeaca3669e6",
-   "signed": "art director, verdict (87d6a9a9)"
+   "sha256": "f51b92292612775674ea58325397feea04a4b206da7e1a723589c96aaad8ca74",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-shadow-256x24": {
+   "file": "pods/crate-shadow-256x24.png",
+   "w": 256,
+   "h": 24,
+   "sha256": "66d96f23a2ba898be2e979bd9b57f27ca3170fd4fc6f2d132aac9a665aefcd19",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-shadow-432x24": {
+   "file": "pods/crate-shadow-432x24.png",
+   "w": 432,
+   "h": 24,
+   "sha256": "cbe08ca20fcc35315d37102fe5f355af5589a7510390551d68ff2486af09f808",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-sitting-256x176": {
    "file": "pods/crate-sitting-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "0f003e5f0ea23d2919d7d49111ed3680c9bcacdbc928412939c8a69a62dcabb8",
-   "signed": "art director, verdict (963f4eab)"
+   "sha256": "078442f4b5106d07350d888ca6d6c93f6672bb7d36f4814cf65f09a50893d841",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",

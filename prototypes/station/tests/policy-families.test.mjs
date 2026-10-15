@@ -55,6 +55,13 @@ test("every picture Pods asks for, in every state of every species, is in a laye
   assert.deepEqual(unknown, []); assert.ok(seen.size > 40, "the walk found the pictures: " + seen.size);
 });
 
+test("Cargo's painted pieces (fix 5, the art director's table), the founder's shadow and the portrait's 40×30 are painted; the wait icon is art; a height off the plate's 128 to 288 is in no family", () => {
+  const painted = ["cargo-bay-992x320", "cargo-rack-992x168", "crate-shadow-256x24", "crate-shadow-432x24", "cargo-store-shadow-48x14", "founder-shadow-224x14", "portrait:S01:40x30", ...[128, 136, 200, 280, 288].map((h) => `cargo-report-plate-560x${h}`)];
+  for (const id of painted) assert.equal(policyOf(id, "master"), "painted", id), assert.equal(policyOf(id, "placeholder"), "painted", id + " as a placeholder");
+  assert.equal(policyOf("icon-wait-16"), "art"); assert.equal(policyOf("cargo-bay-shut-976x304", "placeholder"), "art", "the door moves with its master"); assert.equal(policyOf("cargo-bay-shut-976x304", "master"), "painted");
+  assert.throws(() => policyOf("cargo-report-plate-560x300"), /no layer family/); assert.throws(() => policyOf("crate-shadow-300x24"), /no layer family/);
+});
+
 test("the bed of a light is a painted picture; the one bed of old is in no family", () => {
   for (const l of ["dawn", "day", "dusk", "night"]) assert.equal(policyOf(`home-bed-${l}-192x56`, "master"), "painted");
   assert.throws(() => policyOf("home-bed-192x56"), /no layer family/);

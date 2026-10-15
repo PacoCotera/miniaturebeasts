@@ -31,9 +31,12 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
     // the crates slide into the Cargo module (home.json events.crateIn), one after another, while Home shows; docked on another screen they are in the bay when Home next shows
     const n = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.home.regions.cargo.max), each = h.specs.home.events.crateIn.each;
     if (n && h.ui.screen === "home") h.play({ kind: "arrival", target: "cargo", ms: each.ms + each.stagger * (n - 1) });
-    // docked while Cargo's bay shows: the lid opens (a cut, the props) and the crates slide in from 64 px above (cargo.json events.crateIn), hold 0
+    // docked while Cargo's bay shows: the door opens (a cut, the props) and the crates slide in from 64 px above (cargo.json events.crateIn), hold 0
     const bay = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.cargo.regions.crates.max), ci = h.specs.cargo.events.crateIn.each;
-    if (bay && h.ui.screen === "cargo" && h.ui.cargo.state === "bay") h.play({ kind: "arrival", target: "crates", ms: ci.ms + ci.stagger * (bay - 1), hold: 0 });
+    if (bay && h.ui.screen === "cargo" && h.ui.cargo.state === "bay") {
+      h.play({ kind: "arrival", target: "crates", ms: ci.ms + ci.stagger * (bay - 1), hold: 0 });
+      if (h.motion()) { h.ui.cargo.drawn = 1; for (let i = 1; i < bay; i++) h.at(i * ci.stagger, () => { h.ui.cargo.drawn = i + 1; }); h.at(ci.ms + ci.stagger * (bay - 1), () => { h.ui.cargo.drawn = null; }); }   // the line counts the crates drawn: a crate counts from the frame its slide starts (cargo.json line.bay); with reduced motion every crate is in on the Dock frame
+    }
   }
   if (h.ui.screen !== "home" && h.ui.screen !== "cargo") h.say(r.msg);   // on Home and Cargo the Dock key leaves no plate (home.json keys.dock, cargo.json keys.dock): the top bar, the bed, the bay and the line say it; a refusal (above) shows its plate
   if (h.ui.screen === "bench") { const b = h.ui.bench; b.arm = 0; if (!r.docked && b.f === "plates") b.f = "switch"; }   // a cut to the new state: lifted, the plates are gone from the bench and the ring moves to the switch; docked, the ring stays

@@ -11,8 +11,8 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + 
 
 // One crate's steps in ms from its start (events.opening.crate): the lid, the ribbon, the counters, the first pod's travel and the pods' stagger, the turn. Read from the spec, not kept here.
 export function stepsOf(spec) {
-  const ev = spec.events.opening, [dither, lid, ribbon, counters, travel, turn] = ev.crate;
-  return { perCrate: ev.perCrate, lid: lid.at, ribbon: ribbon.at, counters: counters.at, travel: travel.at, stagger: travel.each, travelMs: travel.ms, turn: turn.at, dither: dither.ms, end: ev.end.ms };
+  const ev = spec.events.opening, [cut, lid, ribbon, counters, travel, turn] = ev.crate;
+  return { perCrate: ev.perCrate, lid: lid.at, ribbon: ribbon.at, counters: counters.at, travel: travel.at, stagger: travel.each, travelMs: travel.ms, turn: turn.at, cut: cut.ms, end: ev.end.ms };
 }
 // The opening's length and hold for n crates: crates × 3000 + 180 and + 200 (events.opening.byCrates: the host sends whole ms), for at most nine (hold ≤ 30000, lvgl-switch.md §2.7).
 export const OPENING_MAX = 9;
@@ -57,10 +57,9 @@ export function openBay(h) {
   c.run = { crates, report: reportOf(spec, r.plays, h.settings, c.mend, st, h.sv, h.specs.frame) }; c.mend = null;
   c.state = "opening"; c.crate = 0; c.at = 0; c.shown = { ...before };
   h.play({ kind: "arrival", target: "crate", ms: openingMs(spec, n), hold: openingHold(spec, n) });
-  h.play({ kind: "dither", target: "stage", ms: T.dither });
   plays.forEach((p, k) => {
     const t0 = k * T.perCrate;
-    if (k) h.at(t0, () => { c.crate = k; c.at = 0; h.play({ kind: "dither", target: "stage", ms: T.dither }); });
+    if (k) h.at(t0, () => { c.crate = k; c.at = 0; });   // a cut to the next closer, sealed (cargo.json events.opening.crate: R8)
     const gain = (key) => p.gained[key] - (key === "e" ? p.spent : 0);
     h.at(t0 + T.counters, () => { for (const key of ["e", "d", "s"]) c.shown[key] += gain(key); });
     h.at(t0 + T.turn, () => { c.shown.turn = p.turnTo; });
@@ -69,11 +68,11 @@ export function openBay(h) {
       for (const at of points) h.at(t0 + at, () => { c.crate = k; c.at = at; });
     }
   });
-  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; h.play({ kind: "dither", target: "stage", ms: T.end }); });
+  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; });   // a cut to the report: the door shut, the plate on it (R8)
   h.save(); return r;
 }
 
-// the report closes: the bay shows, emptied (the crates are accepted); the card's rows go with it
+// the report closes: the bay shows (the crates are accepted): the shut door when it holds nothing, the waiting pods on the open bay when pods wait; the plate's rows go with it
 export function closeReport(h) { const c = h.ui.cargo; if (c.state === "report") { c.state = "bay"; c.run = null; } }
 
 // `target`: "room" (Cargo has no other); `verb`: confirm | back | pad (any of the four directions, in the report only) | room:<key> (the frame's).
