@@ -827,38 +827,39 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 
 Cargo is the section where the Companion's crates open after the dock: the arrival. It takes the whole stage, under Home, with Home's mark. The numbers live in `prototypes/ui/specs/station/cargo.json`.
 
-<img src="station-layouts/17-cargo-bay.png" width="1024" alt="Cargo's bay: two sealed crates, the third place empty, the rack below">
+<img src="station-layouts/17-cargo-bay.png" width="1024" alt="Cargo's bay: two sealed crates centred as a group on the painted bay, the rack insert below">
 
-*17. Cargo, the bay: two sealed crates, the third place empty, the rack the pods will land in; `✓ Open the bay`, `← Home`. 1×, measured ([SVG](station-layouts/17-cargo-bay.svg)).*
+*17. Cargo, the bay: two sealed crates centred as a group on the painted bay, each on its contact shadow, the rack insert the pods will land in; `✓ Open the bay`, `← Home`. 1×, measured ([SVG](station-layouts/17-cargo-bay.svg)).*
 
 ### 1. Purpose
 
-The player sees how much came home, opens it with one press, watches each crate's pods go to the rack, and reads in one card what came home and what the world did meanwhile. **Reads first:** how many crates are in the bay. Nothing opens without a press.
+The player sees how much came home, opens it with one press, watches each crate's pods go to the rack, and reads in one plate what came home and what the world did meanwhile. Every state is a composition of the device's own painted parts: the bay, its door, the crate on its floor, the plate on its door and the rack's insert; nothing is a flat field. **Reads first:** how many crates are in the bay. Nothing opens without a press.
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **The bay** and its **crates**, sealed, at most three | How much came home, before anything opens |
-| **The rack**, the six wells | Where the pods go: the same wells, in the same order, as Pods' collection |
+| **The bay** (painted) and its **crates**, sealed, at most three, or its **door** when it holds nothing | How much came home, before anything opens |
+| **Pods waiting** for a well, on the bay's floor | The pods themselves, not a mark |
+| **The rack**, the painted insert with six fitted wells | Where the pods go: the same wells, in the same order, as Pods' collection |
 | **One crate, closer**, opening | One crate's arrival is one event |
 | **The ribbon** | Which crate this is, in words |
 | **The pods travelling** from the crate to their wells | The hand-off to Pods, seen |
 | The top bar's counters and turn, ticking | What was gathered; that the world turned |
-| **The report card** | What came home, in one look, for the player who looked away |
+| **The report plate**, set into the shut door | What came home, in one look, for the player who looked away |
 
 **Not drawn:** a beam or a glow; anything of the field; digits but beside a material icon.
 
 ### 3. Placement
 
-1. **The crates** in the bay, top, centred.
-2. **The rack** at the foot, centred.
-3. While opening: **the ribbon**, then **the crate**, then **the pods** on their way down.
-4. **The report card** over the empty bay, last.
+1. **The crates** in the bay, centred as a group on 512, each on its contact shadow; or the pods waiting on the floor; or, when the bay holds nothing, the door.
+2. **The rack** at the foot, the painted insert under the bay with a 16 px seam.
+3. While opening: **the ribbon** (fitted to its words), then **the crate** on the floor, then **the pods** on their way down.
+4. **The report plate** on the bay's door, last.
 
 ### 4. Art direction
 
-The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
+The device's own painted parts, one key light top left: the bay is the signed painting (its back wall, its floor and lip, an 8 px rim) and its door `cargo-bay-shut-976x304`; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag, each on a contact shadow; the rack one painted insert, the sage strip with six fitted wells; the report a plate set into the door, built like the stamp case (a dim well, a lit top-left rim, a shaded lower-right, dark rubber corners), `bone` at least 7:1 and `mist` at least 4.5:1 on its floor. The ribbon is the one ribbon look (`bark`, `gold` edge, `bone` words); gold belongs to the ribbon. Nothing on Cargo's stage is amber, and the stage ground shows only its seams (16 px or less).
 
 ### 5. Composition
 
@@ -866,38 +867,38 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | Region (`cargo.json`) | Rectangle | Notes |
 | --- | --- | --- |
-| `bay` | 16, 48, 992, 320 | Inside 24, 56, 976, 304: open, the floor; away, the lid shut across it |
-| `crates` | 64, 120, 896, 176 | Three places 256×176 on a 320 pitch at x 64, 384, 704, centred on 512; a walk crate per place left to right in the order they open; a sitting crate from the right (704, then 384), walk crates first, at most three shown (more than three is developer only: the first three in the bay's order, walk crates first, and no others; the context line counts them all), its 12×12 fill lamp under it at (place x + 122, 304); an empty place shows the floor. Away, the lid is shut unless a sitting crate is in the bay |
-| `waiting` | 968, 328, 24, 24 | The waiting mark, while pods wait in the bay for a free well |
-| `rack` | 176, 400, 672, 144 | Six wells 96×128 on a 112 pitch from (184, 408), centred on 512; in each, its pod at the collection class 88×112 at well + (4, 8), or nothing |
+| `bay` | 16, 48, 992, 320 | The signed painting `cargo-bay-992x320`, 1:1, in every state (R1). The door `cargo-bay-shut-976x304` goes 1:1 at (24, 56, 976, 304) when the bay holds nothing, and always in the report (R2); each change of the door is a cut. Open when it holds a walk crate, a ready sitting crate or a waiting pod; the opening is open |
+| `crates` | by count, inside 64, 120, 896, 176 | n = min(walk crates, 3) places 256×176 on a 320 pitch centred on 512: one at 384; two at 224, 544; three at 64, 384, 704; y 120. Fixed by n on the Dock frame (crates sliding in never re-centre); a walk crate per place left to right in the order they open, sitting crates after them, at most three shown (more than three is developer only: the first three; the context line counts them all). Feet on y 282; the contact shadow `crate-shadow-256x24` at (place x, 270) from the frame its crate has landed. Its 12×12 fill lamp for a sitting crate at (place x + 122, 304) |
+| `waitingPods` | 352, 168, 320, 120 | While pods wait for a well, in the bay state: the first three, oldest first, 88×112 collection pods, feet on 280, axes 512; 460, 564; 408, 512, 616, each on `pod-collection-shadow` at (axis − 52, 273); the context line counts all. The mark leaves Cargo (it stays on Home's module) |
+| `rack` | 16, 384, 992, 168 | The painted insert `cargo-rack-992x168`, 1:1, 16 px under the bay. Six wells 96×128 on a 112 pitch from (184, 408), centred on 512, painted in; in each, its pod at the collection class 88×112 at well + (4, 8), or nothing. The face draws no panel, rule or well |
 
 **One crate opening.**
 
 <table><tr>
 <td valign="top"><img src="station-layouts/17a-cargo-opening.png" width="480" alt="One crate opening"><br><em>17a. The first crate, closer and open, its three pods, one on its way to its well; the ribbon; input held. 1×, measured (<a href="station-layouts/17a-cargo-opening.svg">SVG</a>).</em></td>
-<td valign="top"><img src="station-layouts/17b-cargo-report.png" width="480" alt="The report card at its fullest"><br><em>17b. The report card at its fullest, 232, 72, 560×312, over the empty bay; the new pods in the rack; <code>✓ See the new pods</code>, <code>← Cargo</code>. 1×, measured (<a href="station-layouts/17b-cargo-report.svg">SVG</a>).</em></td>
+<td valign="top"><img src="station-layouts/17b-cargo-report.png" width="480" alt="The report plate at its fullest"><br><em>17b. The report plate at its fullest, 232, 64, 560×288, set into the shut door; the new pods in the rack; <code>✓ See the new pods</code>, <code>← Cargo</code>. 1×, measured (<a href="station-layouts/17b-cargo-report.svg">SVG</a>).</em></td>
 </tr></table>
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
-| `crate` | 296, 120, 432, 272 | The crate closer, the whole case, centred on 512, 24 px under the ribbon and 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
-| Containers | 48×64 at (184, 320), (240, 320), (736, 320), feet on 384, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end dither; the travelling pods draw over them; no digits, never kept |
-| Its pods | 88×112, 104 apart on y 152 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
-| `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
-| `rack` | as in the bay | A well stays empty until its pod lands |
+| `ribbon` | 208, 56, 608, 40 as the bound; the width fits its words (words + 32, up to 8, at least 160) centred on 512 | 20 px medium, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third and a developer crate (uncounted) "Another crate home"; a sitting crate "Fig's portrait". It shows from 500 ms, 8 px above the pods' boxes. A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
+| `crate` | 296, 72, 432, 272 | The crate closer, the whole case, centred on 512, standing on the floor (feet 337) with `crate-shadow-432x24` at (296, 325) in every step, 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
+| Containers | 48×64 at (184, 272), (240, 272), (736, 272), feet on 336, each with `cargo-store-shadow-48x14` at y 329, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end; the travelling pods draw over them; no digits, never kept |
+| Its pods | 88×112, 104 apart on y 104 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
+| `travel` | 176, 72, 672, 472 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
+| `rack` | as in the bay | A well stays empty until its pod lands; the bay is open and drawn in the opening |
 
-**The report.** The card at (232, 72, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), at most 320; its bottom at 384, 16 px above the rack. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
+**The report.** The plate `cargo-report-plate-560x{h}` at (232, 64 + 8 × floor((288 − h) / 16), 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 32 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), a multiple of 8 from 128 to 288, centred on the door's middle; at its fullest its bottom is 352, 8 px inside the door and 32 px above the rack. The plate is 21 exact heights cut from one signed master. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
 
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
-| Heading | 88, 32 tall | — | "Home from the field", 20 px medium |
-| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Developer crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "a first look around", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
-| Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
-| Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
-| The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
+| Heading | 80, 32 tall | — | "Home from the field", 20 px medium |
+| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 120, 144, 168 | "First crate", "Second crate", "Third crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "some of the land explored", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
+| Gathered | 200 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon |
+| Probe, when it was mended at the dock | 224 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
+| The world, when it turned | 256, lines from 280 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
 
-**The report's goal rows.** After the world block, a goal row (lead "Next") names the step `goalKey` gives, and a meanwhile row (lead "While you wait") the read to spend the wait on, with its ◆ price, when the step is a wait. The card is h + (a goal ? 8 + 24 × (1 + meanwhile) : 0) tall, at most 320: world lines drop from the last until it fits.
+**The report's goal rows.** After the world block, a goal row (lead "Next") names the step `goalKey` gives, and a meanwhile row (lead "While you wait") the read to spend the wait on, with its ◆ price, when the step is a wait. The plate is h + (a goal ? 8 + 24 × (1 + meanwhile) : 0) tall, at most 288: world lines drop from the last until it fits (the fullest goldened report keeps one world line, at 288).
 
 **The Probe row's source.** The row comes from the dock's mend, `{ free, paid, broke }`: free plates or a break (a break is mended free) read "mended free"; plates paid for read "mended for" and their price; no mend, no row. Cargo keeps the mend in its UI state from the dock until the report. It is not in the save: after a reload the report has no Probe row.
 
@@ -905,20 +906,20 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | ms | What plays |
 | --- | --- |
-| 0 | The dither, 180 ms, 16 levels, from the bay (or the crate before) to this crate closer, sealed |
+| 0 | A cut to this crate closer, sealed, on the open bay (no dither, no veil) |
 | 200 | The seal tag tears and the lid lifts, 300 ms: sealed, opening, open, its pods in their places |
 | 500 | The ribbon shows this crate's words (a cut) |
 | 800 | The counters tick this crate's materials |
 | 1200 | Each pod travels to its well, 600 ms, 150 ms apart, in well order; a pod with no free well stays in the crate |
 | 1650 | The world turn jumps to the crate's turn |
-| 3000 | The next crate; after the last, the dither back to the bay, empty, with the report card over it |
+| 3000 | A cut to the next crate; after the last, a cut to the report: the door shut, the plate on it; it stands still for the last 180 ms and the hold's 200 |
 
 The opening plays crates × 3000 + 180 ms and holds input crates × 3000 + 200 ms: one crate 3180 and 3200, two 6180 and 6200, three 9180 and 9200; in play at most three. The opening covers 1 to 9 crates (the hold at most 30000 ms); with ten or more (developer only) it plays the first nine, the rest are taken in, and the counters and the turn reach their final values at the end. With reduced motion each step is a cut at its time; the pace and the hold are the same, since each crate's words, materials and turn are read in turn.
 
 ### 6. Interactions
 
 <table><tr>
-<td valign="top"><img src="station-layouts/17c-cargo-shut.png" width="480" alt="Cargo with the Companion away"><br><em>17c. Away: the bay shut, no ✓, <code>← Home</code>. 1×, measured (<a href="station-layouts/17c-cargo-shut.svg">SVG</a>).</em></td>
+<td valign="top"><img src="station-layouts/17c-cargo-shut.png" width="480" alt="Cargo with the Companion away"><br><em>17c. Nothing in the bay (away, or docked and empty): the door shut over the painted bay, no ✓, <code>← Home</code>. 1×, measured (<a href="station-layouts/17c-cargo-shut.svg">SVG</a>).</em></td>
 <td valign="top"><img src="station-layouts/17d-cargo-nav.png" width="480" alt="The way through Cargo"><br><em>17d. The way through Cargo: Dock, Home's module, the bay, each crate, the report, the jump to Pods. 1× (<a href="station-layouts/17d-cargo-nav.svg">SVG</a>).</em></td>
 </tr></table>
 
@@ -927,15 +928,16 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 | State | ✓ | Context | Notice | ← |
 | --- | --- | --- | --- | --- |
 | The bay, crates ready to open (walk crates while docked; a ready sitting crate, docked or away) | `✓ Open the bay`: the opening | "two sealed crates", "a sealed crate" | The most pressing need after the crates | "Home", the ring on the Cargo module |
-| The bay, empty | none | "the bay is empty"; pods waiting "two pods wait for a well" | The notice | "Home" |
-| The bay, away | none | "the bay is shut" | The notice | "Home" |
+| Pods waiting for a well, docked or away | none | "two pods wait for a well" (before the away line: the open bay shows them) | The notice | "Home" |
+| The bay, empty (the door shut) | none | "the bay is empty" | The notice | "Home" |
+| The bay, away (the door shut) | none | "the bay is shut" | The notice | "Home" |
 | Opening | none (input held) | "the bay is opening" | none | none (it waits) |
-| Report | `✓ See the new pods` (one pod: `✓ See the new pod`), a jump to Pods' collection with the ring on the pod that most needs you; with no new pod, `✓ Done`, the card closes | "what came home" | none | "Cargo": the card closes, the bay shows, empty |
+| Report | `✓ See the new pods` (one pod: `✓ See the new pod`), a jump to Pods' collection with the ring on the pod that most needs you; with no new pod, `✓ Done`, the card closes | "what came home" | none | "Cargo": the plate closes, the door shows (or the waiting pods on the open bay) |
 
 - **Any key on the report** closes the card and does what it does: ✓ above, ← and the pad only close it, a coloured key closes it and opens its section. No press is swallowed.
 - **A coloured key during the opening** waits until the report shows.
-- **Dock while the bay shows:** the lid opens (a cut) and the crates slide in from 64 px above, 500 ms each, 250 ms apart. Lifted: the lid shuts (a cut). During the opening a lift waits for the report.
-- **The hand-off to Pods.** Each pod lands in a rack well, the Station's six; Pods' collection shows the same pods in the same wells, new until identified. A pod with no free well waits in the bay (the waiting mark here and on Home's Cargo module) and lands, oldest first, as a well frees.
+- **Dock while the bay shows:** the door opens (a cut) and the crates slide in from 64 px above, 500 ms each, 250 ms apart; the context line counts the crates drawn (a crate counts from the frame its slide starts). Lifted: the door shuts (a cut) when the bay then holds nothing. During the opening a lift waits for the report.
+- **The hand-off to Pods.** Each pod lands in a rack well, the Station's six; Pods' collection shows the same pods in the same wells, new until identified. A pod with no free well waits in the bay (standing on its floor here, the waiting mark on Home's Cargo module) and lands, oldest first, as a well frees.
 
 **Home's Cargo module, before and after.** Before: the bay open, one small sealed crate per crate, the lamp amber, the notice "two crates wait in the bay". After: the bay open and empty, the lamp off; the waiting mark while pods wait for a well, the lamp still off (the need lights Pods).
 
@@ -943,11 +945,11 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 
 | Thing | Pixel size |
 | --- | --- |
-| Bay, open and shut | 992×320 |
+| Bay, open and shut (placed, `cargo-bay-992x320` and `cargo-bay-shut-976x304`) | 992×320 and 976×304 |
 | Crate in the bay | 256×176, `crate-sealed-256x176`, `crate-sitting-256x176` |
 | Crate closer | 432×272, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
-| Well | 96×128 |
+| Rack insert, placed (`cargo-rack-992x168`), report plate, 21 heights (`cargo-report-plate-560x128` to `560x288`), contact shadows (`crate-shadow-256x24`, `crate-shadow-432x24`, `cargo-store-shadow-48x14`) | 992×168; 560×128 to 288; 256×24, 432×24, 48×14 |
 | Waiting mark | 24×24, `mark-waiting-24` |
 
 ---
@@ -1064,7 +1066,9 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 | Cargo: the bay | 992×320 | Open and shut |
 | Cargo: a crate in the bay | 256×176 | Sealed and sitting |
 | Cargo: the crate closer | 432×272 | Sealed, opening and open |
-| Cargo: a rack well | 96×128 | One |
+| Cargo: the rack insert | 992×168 | One |
+| Cargo: the report plate | 560×128 to 560×288 | 21 heights |
+| Cargo: contact shadows | 256×24, 432×24, 48×14 | One each |
 | The room marks | 24×24 | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`, in [`art/device-buttons/marks/`](../../art/device-buttons/marks/) |
 
 ---
