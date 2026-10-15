@@ -253,52 +253,56 @@ from scipy import ndimage as nd2
 def h2(*a): return int(hashlib.md5(repr(a).encode()).hexdigest()[:8], 16)
 QOFF = {"nw": (0, 0), "ne": (24, 0), "se": (24, 24), "sw": (0, 24)}
 def wave2(t): return np.round(1.5 * np.sin(2 * np.pi * t / 24) + 1.0 * np.sin(2 * np.pi * t / 12 + 1))
-def land_mask(quad, state, IN):
+def land_mask(quad, state, IN, wave=None):
     """sand_quarter's geometry with this drop's wave: land = the part outside the wavering edge IN px inside each side that meets other ground"""
+    wave = wave or wave2
     north = quad in ("nw", "ne"); west = quad in ("nw", "sw")
     yy, xx = np.mgrid[0:24, 0:24]; U = np.where(west, xx, 23 - xx); V = np.where(north, yy, 23 - yy)
     if state == "fill": return np.zeros((24, 24), bool)
-    if state == "edgeh": return V < IN + wave2(U)
-    if state == "edgev": return U < IN + wave2(V)
-    if state == "outer": return (V < IN + wave2(U)) | (U < IN + wave2(V)) | ((U < 24) & (V < 24) & (np.hypot(U - 24, V - 24) > 24 - IN))
+    if state == "edgeh": return V < IN + wave(U)
+    if state == "edgev": return U < IN + wave(V)
+    if state == "outer": return (V < IN + wave(U)) | (U < IN + wave(V)) | ((U < 24) & (V < 24) & (np.hypot(U - 24, V - 24) > 24 - IN))
     return np.hypot(U, V) < IN
 def inside_d(land):
     """the distance of each non-land pixel from the land (scipy's edt of ~land); a quarter with no land is all far inside"""
     return nd2.distance_transform_edt(~land) if land.any() else np.full(land.shape, 99.0)
-# A. the light patch: the lawn's texture one step up on the lit pixels, a soft pool with a dithered 6 px edge, no mottle
+# A. the light patch as a MASK (AD round 1): every quarter carries one index, lime, meaning "lit", transparent elsewhere, the same
+# geometry and Bayer edge; the proof place (and the loader's light map) lifts the lawn under each lime pixel by LIGHT[]
+LIMEI = P48.index["lime"]
 for qi, qd in enumerate(("nw", "ne", "se", "sw")):
-    ox, oy = QOFF[qd]
     for st in ("fill", "edgeh", "edgev", "outer", "inner"):
         land = land_mask(qd, st, 10); d = inside_d(land); B = bayer(24, 24)
         lit = (d >= 6) | ((d > 0) & (d < 6) & (B < d / 6 * 16))
-        lt = tone(LAWN0 + 1 + LIPF[0][oy:oy + 24, ox:ox + 24])         # the cell's own 48 px of lawn texture, so the four quarters read as one pool
-        add(f"meadow/light/{qd}-{st}", np.where(lit, lt, TR), kind="light", quad=qd, state=st)
-# B1. the pond's centre: deep-1/2 through DARK once, every second fleck dropped by hash (a calmer centre than the margin)
+        add(f"meadow/light/{qd}-{st}", np.where(lit, LIMEI, TR), kind="light", quad=qd, state=st)
+# B1. the pond's centre (AD round 1): the body water-81 #0c4972 (one step under the pond's #135375, blue), water-84 #1d6888 flecks
+# at half the pond's density (every second deep fleck dropped by hash)
+CORE_BODY = nearest((12, 73, 114)); assert PAL[CORE_BODY].tolist() == [12, 73, 114]
 for k in range(2):
     dpk = [a for n, a, f in PIECES if n == f"meadow/ground/deep-{k + 1}"][0]
-    core = np.vectorize(lambda i: DARK[i])(dpk); fl = dpk == WB; lab, nl = nd2.label(fl)
+    core = np.full((48, 48), CORE_BODY); lab, nl = nd2.label(dpk == WB)
     for j in range(1, nl + 1):
         ys, xs = np.nonzero(lab == j)
-        if h2("core-fleck", k, int(ys.min()), int(xs.min())) & 1: core[lab == j] = DARK[DARK[WB]]
+        if not h2("core-fleck", k, int(ys.min()), int(xs.min())) & 1: core[lab == j] = WB
     add(f"meadow/ground/core-{k + 1}", core, kind="ground", set="core", variant=str(k + 1))
-# B2. the core's edge: this drop's wave with IN 8; core inside, the water fill of the same frame outside, a 4 px Bayer band, no foam, no outline
+# B2. the core's edge (AD round 1): the boundary 16 px inside the core cell's open side, a wave of +-4 px at 2 cycles per 24, a 6 px Bayer band;
+# core inside, the water fill of the same frame outside, no foam, no outline
 COREG = [a for n, a, f in PIECES if n == "meadow/ground/core-1"][0]
 for fr in (1, 2):
     for qd in ("nw", "ne", "se", "sw"):
         wf = [a for n, a, f in PIECES if n == f"meadow/shore/water-{qd}-fill-f{fr}"][0]; ox, oy = QOFF[qd]
         for st in ("fill", "edgeh", "edgev", "outer", "inner"):
-            land = land_mask(qd, st, 8); d = inside_d(land); B = bayer(24, 24)
-            isc = (d >= 4) | ((d > 0) & (d < 4) & (B < d / 4 * 16))
+            land = land_mask(qd, st, 16, lambda t: np.round(4 * np.sin(2 * np.pi * t / 12))); d = inside_d(land); B = bayer(24, 24)
+            isc = (d >= 6) | ((d > 0) & (d < 6) & (B < d / 6 * 16))
             add(f"meadow/core-edge/{qd}-{st}-f{fr}", np.where(isc, COREG[oy:oy + 24, ox:ox + 24], wf), kind="shore", set="core", quad=qd, state=st, frame=fr)
 # C. the ford stones: a flat irregular oval in the water, lit top-left, shaded lower right, outlined in the DARK of its own edge pixel,
 # a glint, a broken foam ring at the waterline, a 2 px crescent of dark water under it. FORD_ROCK is the stone's body, lit and shade.
 FORD_ROCK, FORD_LIT, FORD_SHADE = nearest((130, 129, 118)), nearest((164, 153, 159)), nearest((92, 86, 75))   # the meadow's warm greys (the core's rock/rockL/stone are lavender)
 MOSS, GLINT = P48.index["leaf"], P48.index["ice"]
 def ford(seed):
-    W, Hh = 20, 14; cx, cy = 9.5 + (seed % 2) * .5, 6.0; rs = np.random.RandomState(seed + 900)
-    ph = rs.uniform(0, 6.28, 3); yy, xx = np.mgrid[0:Hh, 0:W]; ang = np.arctan2((yy - cy) / .6, xx - cx)
-    rr = 7.2 + 0.7 * np.sin(2 * ang + ph[0]) + 0.5 * np.sin(3 * ang + ph[1]) + 0.25 * np.sin(5 * ang + ph[2])
-    body = np.hypot((xx - cx), (yy - cy) / .6) <= rr
+    W, Hh = 20, 14; cx, cy = 9.5, 5.6; rs = np.random.RandomState(seed + 900)
+    ph = rs.uniform(0, 6.28, 3); yy, xx = np.mgrid[0:Hh, 0:W]; ang = np.arctan2((yy - cy) / .68, xx - cx)
+    rr = 8.0 + 0.6 * np.sin(2 * ang + ph[0]) + 0.5 * np.sin(3 * ang + ph[1]) + 0.25 * np.sin(5 * ang + ph[2])
+    body = np.hypot((xx - cx), (yy - cy) / .68) <= rr
     er = nd2.binary_erosion(body, structure=np.ones((3, 3), bool), border_value=0)
     a = np.full((Hh, W), TR); edge = body & ~er
     ys = np.nonzero(er.any(1))[0]; top = ys.min()
