@@ -1,4 +1,4 @@
-"""The meadow drop's proof: a place composed from the drop the way c2a-48px-spec §4.3 composes it (lawn non-repeat, lip and shore states by the shared
+"""The meadow drop's proof: a place composed from the drop the way the Companion's place loader composes it (lawn non-repeat, lip and shore states by the shared
 rule, face runs with caps, tall grass decals, a plateau tile's lawn through LIGHT), indexed on meadow-palette.json. usage: compose.py DROP OUT_PREFIX"""
 import json, sys, os, hashlib
 import numpy as np
@@ -9,7 +9,7 @@ PAL = np.array([[int(c["hex"][k:k + 2], 16) for k in (1, 3, 5)] for c in pal["en
 GR = np.array([c.get("mat") == "grass" for c in pal["entries"]])
 TONE = {"none": np.arange(len(GR)), "light": np.where(GR, [c["light"] for c in pal["entries"]], np.arange(len(GR))),
         "dark": np.where(GR, [c["dark"] for c in pal["entries"]], np.arange(len(GR)))}
-LEVEL_TONE = ["dark", "none", "light"]                                   # meadow.json levelTone, the model agreed for M3 (art director 23:55)
+LEVEL_TONE = ["dark", "none", "light"]                                   # meadow.json levelTone
 def toned(a, level):
     t = TONE[LEVEL_TONE[max(0, level)]]; return np.where(a >= 0, t[np.clip(a, 0, None)], a)
 def sheet(f):
