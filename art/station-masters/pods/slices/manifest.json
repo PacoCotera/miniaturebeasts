@@ -15436,5 +15436,57 @@
   "status": "new",
   "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
+ },
+ "plate-well-136x168": {
+  "size": [
+   136,
+   168
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 136 168 --well --floor 1d232b --flat (the fix 2 kit)",
+  "made": "gate batch 1 C5 (D1), Pods chapter-page cells and Compare 1-2 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
+  "sha256": "700652b7023ad217be6e19c8c264148f19d200d07456066de138016f9c7e94fc",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "signed_in": null
+ },
+ "plate-well-120x120": {
+  "size": [
+   120,
+   120
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 120 120 --well --floor 1d232b --flat (the fix 2 kit)",
+  "made": "gate batch 1 C5 (D1), the sealed find at (388, 252): the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
+  "sha256": "8fb2ad32e18fa70a3d0861300a3d71df0d67441ef61dd9169f8230cd990e4426",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "signed_in": null
+ },
+ "plate-well-112x168": {
+  "size": [
+   112,
+   168
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 112 168 --well --floor 1d232b --flat (the fix 2 kit)",
+  "made": "gate batch 1 C5 (D1), Compare 3 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
+  "sha256": "7bec12230770ecf27785451eb37718c676d29f9abc6ecc67bc4b9b306fe9ab9f",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "signed_in": null
+ },
+ "plate-well-112x104": {
+  "size": [
+   112,
+   104
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 112 104 --well --floor 1d232b --flat (the fix 2 kit)",
+  "made": "gate batch 1 C5 (D1), Compare 4-6 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
+  "sha256": "20cb709a34c7c9ea1e4abb0f4933c71306be54a86ae2d2948b50e66c45e2efaf",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "signed_in": null
  }
 }

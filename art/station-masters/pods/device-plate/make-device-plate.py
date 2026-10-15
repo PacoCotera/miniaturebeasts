@@ -12,7 +12,9 @@ today's hairline tile gives over the panel ((61,67,75) over (43,48,56)); never l
 --sage R,G,B sets the bezel's mid sage (the shade keeps the housing ramp's ratio) for a plate set into another sage surface.
 --open-top cuts the plate into the housing's top bezel, open to the top bar: no top wall, no top hairline, square top corners, no
 inner shade from the top (the rail's well, fix 2 F11: plate-rail-well-<w>x48).
-usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]] [--floor RRGGBB] [--sage R,G,B] [--open-top]"""
+--flat keeps the floor exactly the --floor tone away from the walls (no grain, no fall): for wells whose keyed crops must meet the
+floor with no seam (Pods chapter cells, Compare, the sealed find; gate batch 1 C5, floor ground #1d232b).
+usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]] [--floor RRGGBB] [--sage R,G,B] [--open-top] [--flat]"""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -32,7 +34,7 @@ def rrect_sd(W, H, x0, y0, x1, y1, r):
     d_corner = r - np.hypot(xx - cx, yy - cy)
     return np.where(inside_core, d_edge, d_corner)
 
-def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage=None, open_top=False):
+def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage=None, open_top=False, flat=False):
     st = np.asarray(Image.open(STAGE).convert('RGB')).astype(float)
     wall = st[120:184, 650:778]                                     # the flattest bare stretch of the signed wall (low-frequency sd 0.9)
     grain = np.clip(wall - nd.gaussian_filter(wall, (5, 5, 0)), -6, 6)
@@ -59,11 +61,11 @@ def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage
     # the well: the floor, an inner shade on the top and left walls, a 1 px lit lip bottom and right
     dist_top = (yy - bezel) if not open_top else np.full_like(yy, 99.0); dist_left = xx - bezel
     shade = 1 - 0.55 * np.exp(-np.clip(np.minimum(dist_top, dist_left), 0, None) / 2.2)
-    wellc = floor * shade[..., None] * (1.07 - 0.14 * (xx / W * .5 + yy / H * .5))[..., None]
+    wellc = floor * shade[..., None] * (np.ones_like(xx) if flat else (1.07 - 0.14 * (xx / W * .5 + yy / H * .5)))[..., None]
     lip = (inner > 0) & (inner <= 1.0) & ((xx > W - bezel - 2) | (yy > H - bezel - 2))
     wellc[lip] = sage_mid * 0.55
     rgb = np.where((inner > 0)[..., None], wellc, bez)
-    out = srgb(rgb) + gt * np.where((inner > 0), 0.55, 0.35)[..., None]
+    out = srgb(rgb) + gt * np.where((inner > 0), 0.0 if flat else 0.55, 0.35)[..., None]
     hair = (outer > 0) & (outer <= 1.0); out[hair] = (61, 67, 75)
     a = np.clip(outer + 0.5, 0, 1) * 255
     img = np.zeros((H, W, 4)); img[..., :3] = np.clip(np.round(out), 0, 255); img[..., 3] = np.round(a)
@@ -76,4 +78,4 @@ if __name__ == "__main__":
     rd = int(sys.argv[sys.argv.index('--radius') + 1]) if '--radius' in sys.argv else 6
     fl = sys.argv[sys.argv.index('--floor') + 1] if '--floor' in sys.argv else None
     sg = [float(v) for v in sys.argv[sys.argv.index('--sage') + 1].split(',')] if '--sage' in sys.argv else None
-    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv, fl, sg, '--open-top' in sys.argv).save(out)
+    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv, fl, sg, '--open-top' in sys.argv, '--flat' in sys.argv).save(out)

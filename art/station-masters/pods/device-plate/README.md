@@ -38,3 +38,8 @@ A size not listed below is a new id. Ask the AD; it is cut in minutes and signed
 - Cargo's bay floor and report plate, already signed (AR1, AR5).
 
 **Proofs at 1×** (`proof/`): Home's column and Habitat's right column on their current goldens, with each panel's content lifted back over the plate.
+
+**Gate batch 1 C5 (D1).** `plate-well-136x168` (the chapter-page cells and Compare with 1–2 traits), `plate-well-120x120` (the sealed find), `plate-well-112x168` (Compare, 3 traits) and `plate-well-112x104` (Compare, 4–6 traits) are each drawn at P − (4, 4).
+- They are made with `--well --floor 1d232b --flat`.
+- `--flat` holds the floor at exactly `ground` (29, 35, 43), with no grain and no fall, so the keyed crops sit in it with no seam.
+- Without the switch, the kit is byte-identical.
