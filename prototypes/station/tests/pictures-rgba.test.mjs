@@ -420,3 +420,13 @@ test("the Portrait test card: it derives to 40×30 with the rim, the four quadra
   const px = d.rgba(); for (let i = 0; i < px.length; i += 4) assert.ok(!(px[i] === 255 && px[i + 1] === 0 && px[i + 2] === 0), "no red from outside the crop");
   const digest = await digestOf(fx); assert.deepEqual(injectPortraitSource(digest, fx), { ok: true, digest }); const a = Buffer.from(portraitSource(digest).rgba()); assert.deepEqual(injectPortraitSource(digest, portraitFixture()), { ok: true, digest }); assert.ok(a.equals(Buffer.from(portraitSource(digest).rgba())));
 });
+
+test("Create founder A (interim): with the species' placed adult master the founder is that one flat picture, clear when everything is read, and the same calm treatment over it otherwise (ghost: alpha unchanged, no hue); never the rig", () => {
+  const w = 304, h = 312, d = new Uint8ClampedArray(w * h * 4); for (let y = 40; y < 290; y++) for (let x = 60; x < 250; x++) { const i = (y * w + x) * 4; d[i] = 40 + (x % 90); d[i + 1] = 120 + (y % 60); d[i + 2] = 60; d[i + 3] = 255; }
+  const painted = { w, h, rgba: () => d }, fr = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/species-S01.json"), "utf8")), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id);
+  const clear = founderArt(fr, g, all, w, h, painted), rig = founderArt(fr, g, all, w, h);
+  assert.deepEqual([...clear.rgba()], [...d], "clear: the painted picture as it is, to the pixel"); assert.notDeepEqual([...clear.rgba()], [...rig.rgba()], "and not the rig");
+  const ghost = founderArt(fr, g, [], w, h, painted), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3);
+  assert.deepEqual(a(ghost), a(clear), "nothing read: the body alone is greyed, the alpha is unchanged"); assert.notDeepEqual([...ghost.rgba()], [...d]);
+  assert.equal(founderArt(fr, g, all, w, h, painted), founderArt(fr, g, all, w, h, painted), "cached per picture");
+});
