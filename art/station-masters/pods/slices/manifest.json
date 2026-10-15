@@ -7282,12 +7282,12 @@
    24,
    16
   ],
-  "src": "geometry and typed dots",
-  "made": "the asleep mark: a slim crescent (bone, a white lit edge upper left, a 1 px ink keyline) with a short dotted arc of four dots beneath; no Z's, no face; at P.x + P.w - 32, P.y + 8",
-  "sha256": "ae714dc2e8583f348ce682f5865e4baa35cab0d27f9afa718a7fb77275e7bdff",
-  "status": "signed",
-  "signed_in": "pass 38 verdict",
-  "status_note": ""
+  "src": "marks/fix11/make-asleep-glyph.py, typed by rule in the name-line family's colours",
+  "made": "fix 11 (10-15): the asleep mark redrawn: a full crescent moon 13 x 13 (bone rim lit top left, fog face, mist on the inner curve, frostS shaded rim), three fog sleep dots rising to its right; no ink keyline, no white, no Z's; replaces pass 38's slim crescent, which read as a pointer at 1x",
+  "sha256": "9e3296786edbf527d372744555ea086317328a475c08ee100dd0128dfe701406",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "redrawn 10-15 by the art director at 0 MXN (same id and size, top 2); signed in the Pods chapter-page captures"
  },
  "mark-breed-28x16": {
   "size": [
