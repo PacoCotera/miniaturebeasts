@@ -158,3 +158,39 @@ test("Compare's need line follows the spec's strings: here, in another chapter, 
     assert.equal(l.need, !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere, `chapter ${ci}`);
   }
 });
+
+// ---- fix 5 (station-fix5-pods-spec.md §8) ----
+import { pageFrame } from "../../ui/specs/derive.mjs";
+test("a chapter page's props carry the pod's frame, the same for every chapter of the pod (P4); Compare's is its own count", () => {
+  for (const id of SPECIES) {
+    const fr = frameOf(id), want = pageFrame(fr.chapters.map((c) => (c.sealed ? 1 : Math.min(c.traits.length, 8))));
+    const st = readSome(rich([id, id]), 0);
+    for (let ci = 0; ci < fr.chapters.length; ci++) assert.deepEqual(podsProps(model(st, { focus: `rail.${ci}`, ui: { view: "chapter", ci } }), spec, frameSpec).props.regions.page.frame, want, `${id} chapter ${ci}`);
+  }
+  const whole = readSome(rich(["S01", "S01"]), 0); readSome(whole, 1);
+  const cmp = podsProps(model(whole, { focus: null, ui: { view: "overview", cmp: { a: whole.tray[0].id, b: whole.tray[1].id, ci: 1 } } }), spec, frameSpec).props.regions;
+  assert.deepEqual(cmp.pageA.frame, pageFrame([cmp.pageA.cells.length])); assert.equal(cmp.pageA.frame.cols, 2);
+});
+
+test("a doing trait's cell is flagged, asks for its one plate with no look suffix, and carries its value as its line; a look keeps its look in its id (P7)", () => {
+  const st = readSome(rich(["S01", "S01"]), 0), fr = frameOf("S01"), ci = fr.chapters.findIndex((c) => c.traits.some((t) => t.nature === "doing"));
+  const body = podsProps(model(st, { focus: `rail.${ci}`, ui: { view: "chapter", ci } }), spec, frameSpec), cells = body.props.regions.page.cells;
+  for (const c of cells) { const t = fr.chapters[ci].traits.find((x) => x.name === c.name); assert.equal(!!c.doing, t.nature === "doing", c.name); if (c.doing) { assert.match(c.crop, /^trait-S01-[a-z]+-128x160:128x160$/, "no look suffix"); assert.equal(c.lines.length, 1); } }
+  assert.ok(cells.some((c) => c.doing)); assert.ok(body.requests.some((r) => r.master === "trait-S01-drive-128x160"));
+  const look = podsProps(model(st, { focus: "rail.0", ui: { view: "chapter", ci: 0 } }), spec, frameSpec).props.regions.page.cells.find((c) => c.crop);
+  assert.match(look.crop, /^trait-S01-[a-z]+-[a-z-]+-\d+x\d+:\d+x\d+$/, "a look's id keeps its look"); assert.ok(!look.doing);
+  const un = podsProps(model(rich(["S01", "S01"]), { focus: `rail.${ci}`, ui: { view: "chapter", ci } }), spec, frameSpec).props.regions.page.cells.find((c) => c.name === "Drive");
+  assert.deepEqual([un.frost, un.lines, !!un.doing, un.crop], [true, [], false, undefined], "an unread doing: the outline, no value");
+});
+
+test("Compare stands on the plain case: its bench is the collection's room and the room, never the withdrawn compare stage (fix 5)", () => {
+  const whole = readSome(rich(["S01", "S01"]), 0); readSome(whole, 1);
+  const body = podsProps(model(whole, { focus: null, ui: { view: "overview", cmp: { a: whole.tray[0].id, b: whole.tray[1].id, ci: 0 } } }), spec, frameSpec);
+  assert.deepEqual(body.props.regions.bench.room, ["room-bench-stage-collection:1024x522", "room-bench-stage:1024x522"]); assert.ok(!body.requests.some((r) => /compare/.test(r.master ?? r.id)));
+});
+
+test("the overview's kin are at most five (fix 5): a pod of a full rack of six has five kin", () => {
+  assert.equal(spec.regions.overview.kin.max, 5);
+  const st = rich(["S01", "S01", "S01", "S01", "S01", "S01"]); readSome(st, 0);
+  assert.equal(podsProps(model(st, { focus: "rail.0", ui: { view: "overview" } }), spec, frameSpec).props.regions.kin.length, 5);
+});

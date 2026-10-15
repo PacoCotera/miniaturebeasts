@@ -80,3 +80,7 @@ test("a juvenile mibi takes the art director's juvenile stand-in at its size whe
   dropAsset(ADULT); dropAsset("mibi:3:adult:304x312"); dropAsset("mibi:3:elder:304x312");
   clear();
 });
+
+test("the stamp label's dimmed plate and the stamp are painted pictures (fix 4)", () => { assert.equal(policyOf("stamp-plate-120-k20", "placeholder"), "painted"); assert.equal(policyOf("stamp-plate-120-k75", "master"), "painted"); assert.equal(policyOf("stamp:abc:1,2:92:k20", "placeholder"), "painted"); });
+
+test("a doing trait's plate (one a trait, no look suffix) is a painted picture, by the existing trait family (fix 5 P7)", () => { for (const id of ["trait-S01-drive-128x160", "trait-S01-efficiency-128x160", "trait-S03-carriage-straight-104x96"]) { assert.equal(policyOf(id, "master"), "painted", id); assert.equal(policyOf(id, "placeholder"), "painted", id); } });

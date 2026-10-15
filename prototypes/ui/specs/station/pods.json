@@ -5,8 +5,8 @@
  "frame": "frame.json",
  "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. Laid out the concept's way round (UI designer, 2026-10-08): the wells at the far left, the page left of the pod on Compare's columns, the pod on its frosted dish under the cone of light, its name and origin under it, the stamp label at the right; was the page at the right (528, 112, 480, 440) and the stamp under the pod (176, 432), the pod on (344, 312), the cradle 224×40. After the art director's second verdict (UI designer, 2026-10-08): the dish (600, 328, 224, 96) with its near lip on the same rectangle (was 600, 352, 224, 72); the rail hanging from y 40, 40 tall, by frame.rail (was 176, 48, 832, 56); the origin in bone (was mist); the page opening on one large picture (Picture) with the grid as its second state; the focus graph gains the page (list.right was pod, pod.left was list.current). After the art director's fourth check (UI designer, 2026-10-08): the pod classes 144×176, 120×152, 104×128 (were 160×192, 136×168, 112×144) on the foot line y 392 (was 400) in the bowl's dip; the Picture state a portrait 200×280 in a 232×312 frame, 16 px inset (was 376×312); the name's plate hugging the word (name.plate). The owner's decision (2026-10-08): the name label at 20 px medium, its text rectangle (600, 440, 224, 24) and its plate 24 tall, at least 80 (were 28 px, 224×32, plate 32 tall, at least 96). After the art director's pass-6 verdict (UI designer, 2026-10-08): the shelf slab (592, 368, 240, 72) under the dish; the name (600, 456, 224, 24) and the origin and ribbon (600, 496, 224, 40), 16 px lower (were at y 440 and 480); the origin has no plate; the rail's ring in the `focus` role (was `cream`). After the owner's rulings on the composite (UI designer, 2026-10-08): the well column 112 (was 160) with 80×80 ring slices, the 32×48 list pod and a circular focus; no place stamps in the list; the page (152, 112, 256, 440) (was 176, 112, 408, 440) with the portrait 192×272 in a 224×304 frame and a two-column grid; the pod's room 408 to 856 with the axis x 632 (was 712); the slab 288 wide; the caption (origin) 8 px under the name; the stamp case (856, 232, 152, 152) and the label (872, 248) (were 848, 144, 176, 328 and 888, 248); the rail's state colours, one fill, word and pip colour per state. After the game designer's answer (2026-10-08; the owner asked): the page is one state, every trait at once by the grid for one to eight traits, each cell the picture, 4 px, the one-word name; no Picture state, no trait marks, no page focus (list.right is the pod again, pod.left the well). The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6). Restructured (UI designer, 2026-10-09, the owner's decision on the wireframes): three states, collection (A), pod overview (B) and chapter page (C), with no well column; regions and focus graphs per state. Was one screen with the well column (list, well, hatch at 16, 488), the pod on the axis x 632, the page (152, 112, 256, 440) and the rail at x 152.",
  "derived": {
-  "compare grid for one or two traits": "derived, UI designer to confirm: the document gives Compare's grid for three to six traits only; one and two are Read's cells and pictures scaled to the page's 408 px (pictures 376×264 and 184×256), as the previous builder chose — UI designer, 2026-10-08: confirmed (Read's pictures scaled to 408 px, rounded to the grid), the cells 376 tall on the corrected rows",
-  "compare cell rows": "derived, UI designer to confirm: the rows of Compare's cells follow Read's (y 48 and 248 on the page) — UI designer, 2026-10-08: corrected to y 56 and 248: the heading's 32×40 pod runs from y 8 to 48 and touched the first row; cells 184 tall (376 for one or two traits), the second row ending 8 px above the page's edge",
+  "compare grid for one or two traits": "derived, UI designer to confirm: the document gives Compare's grid for three to six traits only; one and two are Read's cells and pictures scaled to the page's 408 px (pictures 376×264 and 184×256), as the previous builder chose — UI designer, 2026-10-08: confirmed (Read's pictures scaled to 408 px, rounded to the grid), the cells 376 tall on the corrected rows — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
+  "compare cell rows": "derived, UI designer to confirm: the rows of Compare's cells follow Read's (y 48 and 248 on the page) — UI designer, 2026-10-08: corrected to y 56 and 248: the heading's 32×40 pod runs from y 8 to 48 and touched the first row; cells 184 tall (376 for one or two traits), the second row ending 8 px above the page's edge — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
   "colours": "derived, UI designer to confirm: the colour roles of the Pods regions are the builder's choice from the palette's names (the layout document names none beyond the cream focus ring, the bone stamp label with a slate edge, the frost unread page, the deep pane and the slate edge) — UI designer, 2026-10-08: confirmed but five: the ribbon (a lamp-yellow plate with rust words under the pod was a second warm, bright object beside the specimen) is the read tab's cool look, tealD with an aqua rim and creamT words; the page pane is `deep`, as the document names it (night read as dusk, not the bench's deep pane); the unread tab fill is `frostS` (rail); a sealed tab's word is `mist` (ink on the slats did not read); the difference mark is `aqua` on an `ink` keyline (diff). The frame's own roles (moss bars, the wood message plate) wait for the palette commit's migration table",
   "strings.openBay": "derived, UI designer to confirm: the empty rack's need line when the Companion is docked (open the bay at Home to bring pods in); the document gives only the undocked one — UI designer, 2026-10-08: corrected: docked with crates in the bay, \"open the bay at Home\" (strings.openBay); docked with the bay empty, \"take the Companion exploring\" (strings.explore); away, \"dock the Companion for its crates\" (strings.dockToBring, six words; the document's eight-word line was over the six-word rule)",
   "tab fills": "Signed pieces placed 1:1 at the tab's rect (x, 40): rail-tab-fill-{unread,read,sealed}-{full-152x40,compact-72x40} and rail-tab-fill-open-full-152x40. One fill per state from colours.rail (unread and read `panel`, open `hairline`, sealed `panel` with 2 px `bar` slats on a 4 px pitch, rows 4–5 to 32–33). The slants and bottom edge are 1 px `bevel`, anti-aliased. No top rim: the tab hangs from the top bar's rule. No notch, no lift.",
@@ -25,7 +25,7 @@
   "hatch confirmation": "art director and design lead, 2026-10-09: the message plate for the armed hatch says only \"✓ again\" (strings.hatchAgain); the bottom line already says \"Back to the <place>\", so strings.hatchArm is no longer shown; the plate is centred on x 512 and clear of the hatch key",
   "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture",
   "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
-  "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered",
+  "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
   "ring forms": "`ring` is the target group's focus ring form (frame.json focus.ring.forms). A place wears the circle 4 px outside its collection ring: radius 84 round (x + 96, y + 88), the ring's centre (regions.collection.ring.centre), the picture [x + 12, y + 4, 168, 168]. A kin wears the circle 4 px outside its own: radius (w >> 1) + 4 round the box's centre. The pod and the hatch wear the round ring 4 px outside their boxes; the pod's ring rides its 4 px lift and is never drawn on the dish. A tab wears the tab ring (frame.json focus.ring.tab)",
   "ordered edges at L2.0": "UI designer, 2026-10-09, on the architect's ruling of 12:25 (lvgl-switch.md §2.6.1): with L2.0's focus port, focus.overview.pod.right becomes [\"kin.first\", \"hatch\"] and focus.overview.hatch.up [\"kin.first\", \"none\"], so a pod with no kin keeps today's moves when the view resolves kin.first to null. At slot 8, when doorOpen(book) is true and the figure is a target, pod.right becomes [\"figure\", \"kin.first\", \"hatch\"]. Written here, not in focus.overview, until the port lands: today's focus.mjs and specs.test.mjs take no lists",
   "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane"
@@ -252,7 +252,7 @@
    },
    "figure": {
     "rect": [
-     432,
+     400,
      232,
      128,
      160
@@ -270,7 +270,7 @@
     "target": "until slot 8 (doorOpen(book) false) not a target: the figure and its caption are drawn, the pod's ▶ goes to kin.first, and nothing a player presses reaches the Book. From slot 8 it is a focus target once the pod is identified: ✓ Open the guide (strings.openGuide), subject strings.everySpecies, a jump to the Book's guide spread (frame.json navigation.jumps)",
     "caption": {
      "rect": [
-      432,
+      400,
       400,
       128,
       24
@@ -310,7 +310,7 @@
     "rect": [
      680,
      128,
-     328,
+     264,
      40
     ],
     "role": "caption",
@@ -338,7 +338,7 @@
      64,
      0
     ],
-    "max": 6,
+    "max": 5,
     "pod": [
      40,
      48
@@ -404,7 +404,7 @@
     "rect": [
      680,
      128,
-     328,
+     264,
      40
     ],
     "px": 20,
@@ -512,10 +512,10 @@
    },
    "page": {
     "rect": [
-     424,
-     112,
-     584,
-     440
+     360,
+     88,
+     592,
+     448
     ],
     "component": "chapterPage",
     "noDigits": true,
@@ -526,7 +526,19 @@
     "states": [
      "grid"
     ],
-    "anchor": "top",
+    "anchor": "frame",
+    "originX": {
+     "1": 576,
+     "2": 504,
+     "3": 432,
+     "4": 360
+    },
+    "originY": {
+     "1": 184,
+     "2": 88
+    },
+    "frameRule": "the largest grid over the pod's chapters: columns (1–4 → the count, 5–6 → 3, 7–8 → 4), rows (2 if any chapter holds 5 or more traits); a sealed chapter counts 1 (fix 5 P4); fixed for every chapter of the pod, so the heading and the first cell never move as the rail steps",
+    "doingPicture": "trait-{SNN}-{trait}-{w}x{h}: one plate per doing trait, no look suffix (fix 5 P7; game designer's ruling)",
     "unread": {
      "picture": null,
      "frame": false,
@@ -545,6 +557,17 @@
      "note": "the cell is clearly empty: a dotted 1 px outline round P, nothing inside, the name under it, no glyphs"
     },
     "cell": {
+     "fillWhen": "crop placed (fix 5 P2): no crop, no tone",
+     "doingLine": {
+      "at": "name line + 20",
+      "px": 16,
+      "colour": "line",
+      "lines": 2,
+      "line": 20,
+      "wrap": 140,
+      "align": "centre",
+      "when": "a read doing trait (fix 5 P7)"
+     },
      "gap": 4,
      "fill": "ground",
      "name": {
@@ -553,7 +576,7 @@
       "line": 20,
       "baseline": 16
      },
-     "lines": 0,
+     "lines": "0 for a look; the doing line for a doing (fix 5 P7)",
      "content": {
       "inside": [
        96,
@@ -622,7 +645,7 @@
       440
      ]
     },
-    "sizeRule": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): with no pane the page's size bounds the heading's rule and the grid. Columns = the count up to four, then half the count rounded up; width = 24 + columns × 128 + (columns − 1) × 16 = 8 + 144 × columns (152, 296, 440, 584); height 232 for one row (48 + 184), 440 for two (48 + 184 + 24 + 184). Left at x 424, top at y 112, so the heading and the first cell never move as the rail steps; four columns end at x 1008, the screen's right margin. A sealed chapter takes the one-trait size. Was 40 + 136 × columns, 248 or 440, on the pane",
+    "sizeRule": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): with no pane the page's size bounds the heading's rule and the grid. Columns = the count up to four, then half the count rounded up; width = 24 + columns × 128 + (columns − 1) × 16 = 8 + 144 × columns (152, 296, 440, 584); height 232 for one row (48 + 184), 440 for two (48 + 184 + 24 + 184). The origin comes from originX/originY by the pod's frame (fix 5 P4: the largest grid over its chapters), and the size by the chapter's own count, so the heading and the first cell never move as the rail steps; four columns end at x 944, inside the floor (x 64–952). A sealed chapter takes the one-trait size. Was 40 + 136 × columns, 248 or 440, on the pane",
     "align": "left",
     "sealedFind": [
      32,
@@ -631,7 +654,7 @@
      112
     ],
     "sealedFindSlot": "find-{kind}-112x112",
-    "sealedFindSlotNote": "the studio's picture of the find that opens a shut chapter, by the frame's chapter.findKind (crystal, pearl or shard); a null kind, or a picture not yet signed, leaves the flat ground cell alone",
+    "sealedFindSlotNote": "the studio's picture of the find that opens a shut chapter, by the frame's chapter.findKind (crystal, pearl or shard); a null kind, or a picture not yet signed, draws nothing, and no flat tone is drawn behind a find (fix 5 P3)",
     "sealedFindNote": "UI designer, 2026-10-09: the find centred in the one cell's rectangle (24, 48, 128, 184) of the 176×248 sealed pane, screen (456, 196); was (236, 164) on the 584 pane, which ran 28 px past the 248 pane's foot",
     "grid": {
      "1-4": {
@@ -872,11 +895,19 @@
   },
   "compareA": {
    "rect": [
-    176,
+    96,
     112,
     408,
-    440
+    416
    ],
+   "heightByCount": {
+    "1": 300,
+    "2": 300,
+    "3": 300,
+    "4": 416,
+    "5": 416,
+    "6": 416
+   },
    "component": "chapterPage",
    "noDigits": true,
    "heading": [
@@ -892,115 +923,109 @@
     "grid 2",
     "grid rows"
    ],
-   "confirmed": "UI designer, 2026-10-08: grids 1 and 2 confirmed, rows corrected to y 56 and 248",
+   "confirmed": "UI designer, 2026-10-08: grids 1 and 2 confirmed, rows corrected to y 56 and 248 — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
    "grid": {
     "1": {
      "cells": [
       [
-       16,
+       140,
        56,
-       376,
-       376
+       128,
+       228
       ]
      ],
      "picture": [
-      376,
-      264
+      128,
+      160
      ]
     },
     "2": {
      "cells": [
       [
-       16,
+       68,
        56,
-       184,
-       376
+       128,
+       228
       ],
       [
-       208,
+       212,
        56,
-       184,
-       376
+       128,
+       228
       ]
      ],
      "picture": [
-      184,
-      256
+      128,
+      160
      ]
     },
-    "3-4": {
+    "3": {
      "cells": [
       [
-       16,
+       28,
        56,
-       184,
-       184
+       104,
+       228
       ],
       [
-       208,
+       152,
        56,
-       184,
-       184
+       104,
+       228
       ],
       [
-       16,
-       248,
-       184,
-       184
-      ],
-      [
-       208,
-       248,
-       184,
-       184
+       276,
+       56,
+       104,
+       228
       ]
      ],
      "picture": [
-      184,
-      104
+      104,
+      160
      ]
     },
-    "5-6": {
+    "4-6": {
      "cells": [
       [
-       16,
+       28,
        56,
-       120,
-       184
+       104,
+       164
       ],
       [
-       144,
+       152,
        56,
-       120,
-       184
+       104,
+       164
       ],
       [
-       272,
+       276,
        56,
-       120,
-       184
+       104,
+       164
       ],
       [
-       16,
-       248,
-       120,
-       184
+       28,
+       236,
+       104,
+       164
       ],
       [
-       144,
-       248,
-       120,
-       184
+       152,
+       236,
+       104,
+       164
       ],
       [
-       272,
-       248,
-       120,
-       184
+       276,
+       236,
+       104,
+       164
       ]
      ],
      "picture": [
-      120,
+      104,
       96
      ]
     }
@@ -1057,12 +1082,54 @@
   },
   "compareB": {
    "rect": [
-    600,
+    520,
     112,
     408,
-    440
+    416
    ],
    "same": "compareA"
+  }
+ },
+ "composed": {
+  "collection": {
+   "main": "collection.ring.focused",
+   "rect": "place + [8, 0, 176, 176]"
+  },
+  "collectionEmpty": {
+   "main": "collection.places",
+   "rect": [
+    72,
+    72,
+    776,
+    416
+   ]
+  },
+  "overview": {
+   "main": "overview.pod",
+   "rect": [
+    184,
+    216,
+    144,
+    176
+   ],
+   "byClass": "medium [196, 240, 120, 152], small [204, 264, 104, 128]"
+  },
+  "chapter": {
+   "main": "chapter.page",
+   "rect": "originX/originY + sizeByCount"
+  },
+  "chapterSealed": {
+   "main": "chapter.page.sealedFind",
+   "rect": "origin + [32, 84, 112, 112]"
+  },
+  "compare": {
+   "main": "compareA+compareB",
+   "rect": [
+    96,
+    112,
+    832,
+    "heightByCount"
+   ]
   }
  },
  "classes": {
@@ -1285,11 +1352,7 @@
    "unreadDots": "bevel",
    "note": "pane and edge are Compare's pages only; the chapter page has no pane (regions.chapter.page.open). The cell's tone is `ground` (one step lighter than the old card's mean, the crops' ground keyed to it); the stand-in word and its `mist` are withdrawn"
   },
-  "stampLabel": {
-   "fill": "bone",
-   "edge": "slate",
-   "note": "interim until the art director signs the stampCase look (frame.json regions.stampSlot); a screen showing the interim bone card does not pass its gate"
-  },
+  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.75, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own; on Pods k is 0.75 and the case (back and front glass) is the signed slices"},
   "diff": {
    "note": "painted into compare-mark-differs-12x12 (aqua on a 1 px ink keyline, the master's own); the build fills nothing",
    "was": {

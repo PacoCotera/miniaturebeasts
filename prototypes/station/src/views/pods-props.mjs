@@ -5,7 +5,8 @@
 import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
-import { pageGrid } from "../../../ui/specs/derive.mjs";
+import { pageGrid, pageFrame } from "../../../ui/specs/derive.mjs";
+import { plateReq, kPct } from "../stamplook.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
@@ -45,7 +46,8 @@ export function podsBuild(m, spec) {
   } else {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
-      view.stamp = { size: sz.size, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(cur.genome)}:${[...read].sort().join(",")}:${sz.size}`, pod: cur.id, species: S.speciesOf(cur), read, size: sz.size }) };
+      const k = spec.colours.stampLabel.k;
+      view.stamp = { size: sz.size, plate: plateReq(req, k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(cur.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(k)}`, pod: cur.id, species: S.speciesOf(cur), read, size: sz.size, k }) };
       view.stampCase = { back: slot(req, "room-stamp-case-152x152", R.stampCase.rect, "the stamp case master"), front: slot(req, "room-stamp-case-152x152-front", R.stampCaseFront.rect, "the case's front glass") };
     }
     // the kin: same-species pods that can be compared, small, at most six; none for a pod not yet identified (its species is not known)
@@ -149,7 +151,8 @@ function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") 
     if (!read) { cell.frost = true; const O = region.unread?.outline; if (O && O.slice) cell.outline = slot(req, O.slice, [0, 0, ...O.size], "the unread cell's outline master"); return cell; }   // the dotted outline is the studio's nine-slice, placed over the cell's rectangle once signed
     const state = traitState(fr, t, p.genome);
     const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
-    if (state.shows) cell.crop = slot(req, `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
+    if (state.doing) cell.doing = true;   // a doing: one plate per trait, the same for every value; its value is the line under the name (fix 5 P7)
+    if (state.shows) cell.crop = slot(req, state.doing ? `trait-${sid}-${slug(t.name)}-${pw}x${ph}` : `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
     cell.lines = [state.line];
     const LM = region.lineMarks, glyph = (key) => slot(req, LM.glyphs[key].slice, [0, 0, ...LM.glyphs[key].size], "the line glyph master");   // the glyphs after the name are the studio's: slots by id (an empty slot draws nothing)
     if (LM) {
@@ -163,7 +166,8 @@ function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") 
   });
   const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone, and the studio's picture of the find by the chapter's findKind over it once signed
   const sealedPicture = sealedFind && ch.findKind && region.sealedFindSlot ? slot(req, region.sealedFindSlot.replace("{kind}", ch.findKind), [0, 0, region.sealedFind[2], region.sealedFind[3]], "the find picture master") : null;
-  return { region: key, chapter: ch.id, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region) };
+  const frame = key === "page" ? pageFrame(fr.chapters.map((c) => (c.sealed && !settings.sealedOpen ? 1 : Math.min(c.traits.length, maxTraits(region))))) : pageFrame([sealed ? 1 : traits.length]);   // the pod's largest grid (fix 5 P4); Compare's is its own count
+  return { region: key, chapter: ch.id, frame, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region) };
 }
 
 function compareView(view, m, spec, req) {
@@ -180,7 +184,7 @@ function compareView(view, m, spec, req) {
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
   view.rail = { focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: S.cap(S.spName(A)), subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
-  view.bench = [slot(req, "room-bench-stage-compare", spec.regions.bench.rect, "Compare's room master"), slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the room master without a cone"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // Compare's own bench when it is placed, else the bench without a cone: no lit, empty stage beside the pages
+  view.bench = [slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the room master without a cone"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // Compare stands on the plain case; the withdrawn compare stage is not placed (fix 5)
   view.targets = targetsOf(view, st, spec, A);   // Compare's targets are its rail's tabs
   return view;
 }

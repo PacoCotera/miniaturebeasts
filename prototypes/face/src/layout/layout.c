@@ -48,10 +48,24 @@ int layout_slant_tabs(const char *spec, const char *rail, int n, int open, int c
 
 void layout_page_size(const char *spec, const char *page, int n, int out[2]) {
   char p[400]; snprintf(p, sizeof p, "%s.sizeByCount", page); int rows = spec_len(spec, p);
-  if (rows < 0) { out[0] = ia(spec, page, "rect", 2, 0); out[1] = ia(spec, page, "rect", 3, 0); return; }
+  if (rows < 0) {   /* no table of sizes: Compare's pane is the rectangle's width and the height its count gives (heightByCount) */
+    char hp[400]; snprintf(hp, sizeof hp, "%s.heightByCount", page); int hn = spec_len(spec, hp);
+    out[0] = ia(spec, page, "rect", 2, 0); out[1] = ia(spec, page, "rect", 3, 0);
+    if (hn > 0) { int k = n < 1 ? 1 : n > hn ? hn : n; char q[440]; snprintf(q, sizeof q, "%s.%d", hp, k); out[1] = spec_int(spec, q, out[1]); }
+    return;
+  }
   int k = n < 1 ? 1 : n > rows ? rows : n; char key[420]; snprintf(key, sizeof key, "%s.%d", p, k);
   char q[460]; snprintf(q, sizeof q, "%s.0", key); out[0] = spec_int(spec, q, 0); snprintf(q, sizeof q, "%s.1", key); out[1] = spec_int(spec, q, 0);
 }
+
+/* the chapter page's origin by its frame: originX by the columns, originY by the rows (a frame beyond the table takes its nearest end) */
+static int origin_pick(const char *spec, const char *page, const char *table, int k) {
+  char t[420]; snprintf(t, sizeof t, "%s.%s", page, table); int lo = 1 << 30, hi = -1, n = spec_len(spec, t);
+  for (int i = 0; i < n; i++) { char key[24], val[16]; spec_member(spec, t, i, key, sizeof key, val, sizeof val); int v = atoi(key); if (v < lo) lo = v; if (v > hi) hi = v; }
+  if (hi < 0) return 0;
+  k = k < lo ? lo : k > hi ? hi : k; char q[440]; snprintf(q, sizeof q, "%s.%d", t, k); return spec_int(spec, q, 0);
+}
+void layout_page_origin(const char *spec, const char *page, int cols, int rows, int out[2]) { out[0] = origin_pick(spec, page, "originX", cols); out[1] = origin_pick(spec, page, "originY", rows); }
 
 int layout_page_grid(const char *spec, const char *page, int n, int cells[LAYOUT_CELLS][4], int pic[2]) { return layout_page_grid_at(spec, page, ia(spec, page, "rect", 0, 0), ia(spec, page, "rect", 1, 0), n, cells, pic); }
 int layout_page_grid_at(const char *spec, const char *page, int px, int py, int n, int cells[LAYOUT_CELLS][4], int pic[2]) {
@@ -142,6 +156,8 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
     PUSH(layout_slant_at(ip(spec, path, "slant", 0), ip(spec, path, "h", 1), a[0]));
   } else if (strcmp(rule, "pageSize") == 0 && na >= 1) {
     int s[2]; layout_page_size(spec, path, a[0], s); PUSH(s[0]); PUSH(s[1]);
+  } else if (strcmp(rule, "pageOrigin") == 0 && na >= 2) {
+    int o[2]; layout_page_origin(spec, path, a[0], a[1], o); PUSH(o[0]); PUSH(o[1]);
   } else if (strcmp(rule, "pageGrid") == 0 && na >= 1) {
     int c[LAYOUT_CELLS][4], pic[2], n = layout_page_grid(spec, path, a[0], c, pic);
     PUSH(n < 0); PUSH(n < 0 ? 0 : n); for (int i = 0; i < n; i++) for (int j = 0; j < 4; j++) PUSH(c[i][j]); PUSH(pic[0]); PUSH(pic[1]);
