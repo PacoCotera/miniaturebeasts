@@ -14371,6 +14371,55 @@
   "signed_in": null,
   "status_note": ""
  },
+ "cargo-rack-992x168": {
+  "size": [
+   992,
+   168
+  ],
+  "rect": [
+   16,
+   384,
+   992,
+   168
+  ],
+  "src": "cut by hand (cargo-rack/make-cargo-rack.py) from the signed cargo-bay-992x320 (its floor's paint and front lip) and crate-open-432x272 (its fitted foam), 0 MXN",
+  "made": "fix 5 AR4: the device's sage strip under the Cargo bay, with six fitted foam wells at (168 + 112 i, 24, 96, 128), lit lower-right lips, shaded top-left walls, dark foam floors; no labels, lamps, text or gold",
+  "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
+  "status": "unclassified",
+  "status_note": "",
+  "signed_in": null
+ },
+ "cargo-report-plate-560x288": {
+  "size": [
+   560,
+   288
+  ],
+  "rect": [
+   232,
+   64,
+   560,
+   288
+  ],
+  "src": "cut by hand (cargo-report/make-report-plate.py): the stamp case's construction (room-stamp-case-152x152, 001bcd51) at 560 wide, its sage from the signed shut door, 0 MXN",
+  "made": "fix 5 AR5 master: a dim well moulded into the sage door, an 8 px bevelled moulding lit top-left and shaded lower-right, dark rubber corners, a quiet ground #1d232b floor (bone 13.2:1, mist 4.7:1), no glass, no sheen, no text; the 20 shorter heights are derived from it",
+  "sha256": "102a4e7e982641186891b55ddce272a85b1cc1ece6e1189ac42764d085ac5e3f",
+  "status": "unclassified",
+  "status_note": "",
+  "signed_in": null
+ },
+ "icon-wait-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "typed by hand (icon-wait/make-icon-wait.py), 0 MXN",
+  "made": "fix 6 A3: the bud's wait on Create's Grow line, an hourglass in sand and bark, the caps' lit edge in clay and a paper glint on the glass's left (light top left), the sand running top to bottom; sits after the price's three material marks",
+  "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
+  "status": "unclassified",
+  "status_note": "",
+  "signed_in": null
+ },
  "crate-shadow-256x24": {
   "size": [
    256,
