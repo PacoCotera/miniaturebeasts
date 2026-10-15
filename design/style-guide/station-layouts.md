@@ -1551,7 +1551,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | Out mark | `mark-out-with-companion-64x96`: the mibi's place, kept for it, the Companion's outline standing on the ground | Out, never missing |
 | Plates | `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblems | The rail's states, as plates |
 | Modules | `panel`, `hairline` edge, `bevel` top, the word `metal`; no lamp | Home's modules, quiet |
-| Strip and tiles | Strip `ground`; tile `panel`; the shown tile `hairline`; a free bay a dashed `hairline` outline | The focus ring is the only highlight |
+| Strip and tiles | Strip `ground`; tile `panel`; the shown tile `hairline`; a free bay draws nothing | The focus ring is the only highlight |
 
 ### 5. Composition
 
@@ -2201,7 +2201,7 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 
 | Id | Size | What | Placeholder |
 | --- | --- | --- | --- |
-| `library-stage-spread-1024x522` | 1024×522 | The stage: the journal open in the device's panel, boards, pages, the sixteen empty frames with mats, caption rules, margin life, marker. No plates, no clan rules, no words | Flat: `ground`, boards `bark`, pages `paper` edged `clay`, frames edged `bark` with a `sand` mat line, rules `clay`, the bands and marker dashed `clay`, labelled |
+| `library-stage-spread-1024x522` | 1024×522 | The stage: the journal open in the device's panel, boards, pages, the sixteen empty frames with mats, caption rules, margin life, marker. No plates, no clan rules, no words | Flat: `ground`, boards `bark`, pages `paper` edged `clay`, frames edged `bark` with a `sand` mat line, rules `clay`, labelled; the bands and the marker not drawn |
 | `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The code rig's type specimen at 80×96 for all sixteen |
 | `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
 | `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `clay` L, 4 px thick, along the top and right edges |
