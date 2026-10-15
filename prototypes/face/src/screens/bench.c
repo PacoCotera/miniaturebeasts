@@ -151,12 +151,18 @@ int bench_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
   return k;
 }
 
-/* the ring on the focused target: its region's box lifted by the target's lift (the box [x, y − 2, w, h]), the ring 4 px outside it; it is drawn through the bench's holds, where it is */
+/* the ring on the focused target, round the object as drawn: its region's rect lifted by the target's lift (the plates: the union of the drawn plates, lifted); it is drawn through the bench's holds, where it is */
 static void build_ring(const char *cur) {
   if (!cur[0]) return;
-  int box[4]; brect(v_fmt("regions.%s.rect", cur), box); if (box[2] <= 0) return; box[1] -= lift_of(cur, cur);
-  char form[96]; snprintf(form, sizeof form, "focus.targets.%s.ring", cur);
-  v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, form, fcol("colours.ring"));
+  int box[4]; brect(v_fmt("regions.%s.rect", cur), box); if (box[2] <= 0) return;
+  if (strcmp(cur, "plates") == 0) {   /* the drawn plates' union: the places of the tier, each plate-sized */
+    char tp[48]; snprintf(tp, sizeof tp, "regions.plates.places.%d", v_pint("regions.plates.tier", 1)); int n = spec_len(S, tp); if (n <= 0) return;
+    int pw = bk("regions.plates.plate", 0), ph = bk("regions.plates.plate", 1), x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30);
+    for (int i = 0; i < n; i++) { int px = spec_int(S, v_fmt("%s.%d.0", tp, i), 0), py = spec_int(S, v_fmt("%s.%d.1", tp, i), 0); if (px < x0) x0 = px; if (py < y0) y0 = py; if (px + pw > x1) x1 = px + pw; if (py + ph > y1) y1 = py + ph; }
+    box[0] = x0; box[1] = y0; box[2] = x1 - x0; box[3] = y1 - y0;
+  }
+  box[1] -= lift_of(cur, cur);
+  v_region("focus", LAYER_CHROME); word_focusRing("focus", S, v_fmt("focus.targets.%s", cur), box);
 }
 
 void bench_words(void) {

@@ -429,13 +429,14 @@ static int ent_focused(const ent_t *e, const char *cur) { return strncmp(cur, "r
 
 /* ---- a moving resident drawn in its slot (§2.3 item 8, UI/UX "Asleep in place" item 8): its shadow at the ground point (never lifted), the ring when focused, the picture (hidden while it dithers), the dither node, the lamp.
    In the asleep form the ring is the feet form on the ink box [fx − 48, feet − 88, 96, 88] and the lamp sits on the ink box's top right; the lift is 0. In the walker form, focused and stopped, the picture rises 4 px. ---- */
-static const char *frame_ring(void);
+/* the cell of a moving resident whose footprint its ring takes: curl in the asleep form, else stand, "-m" when the shown cell is the mirrored one (facing against native) */
+static const char *foot_cell(const mv_t *m, int asleep) { return asleep ? "curl" : m->facing != m->native ? "stand-m" : "stand"; }
 static void mv_draw(const ent_t *e, int focused, int lift) {
   const mv_t *m = &g_m[e->mv]; const mv_stage_t *S = m->S; int asleep = mv_in_asleep_form(m);
   int up = focused && !asleep && m->clip != C_HOP && m->clip != C_WALK ? lift : 0;
   int b[4]; mv_box(m, b); b[1] -= up;
   if (has(m->shadow)) { v_name("resident.shadow"); v_sprite_window(v_fmt("g.%s.s", e->id), m->shadow, 1 + (m->sh75 ? 1 : 0) * S->sww, 0, m->x, m->feet - S->swh, S->sww, S->swh); }
-  if (focused) { int rb[4]; memcpy(rb, asleep ? e->ink : e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, sp(), "focus.targets.resident.ring", frame_ring()); }
+  if (focused) { int rb[4] = { m->x, m->feet - m->h, m->w, m->h }; v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", m->walk, foot_cell(m, asleep), rb); }   /* the footprint on the ground, not lifted */
   v_name("resident");
   if (m->dl) {
     v_sprite_hidden(v_fmt("g.%s", e->id), m->walk, b[0], b[1]);
@@ -487,9 +488,9 @@ static void glass_group(const char *cur) {
     if (it[k].kind != 1) {
       const ent_t *e = &g_e[it[k].ent];
       if (e->mv >= 0) { mv_draw(e, it[k].kind == 2, lift); continue; }
-      if (e->nap >= 0) { if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, sp(), "focus.targets.resident.ring", frame_ring()); } nap_draw(e); continue; }
+      if (e->nap >= 0) { if (it[k].kind == 2) { const nap_t *z = &g_nap[e->nap]; int rb[4] = { e->draw[0], e->draw[1], z->w, z->h }; v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", z->nap, "curl", rb); } nap_draw(e); continue; }
       int y = e->draw[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0), ly = e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0);
-      if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, sp(), "focus.targets.resident.ring", frame_ring()); }
+      if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->draw, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", e->pic, "", rb); }
       v_name(e->sleeper ? "bed" : "resident"); v_sprite(v_fmt("g.%s", e->id), e->pic, e->draw[0], y, e->draw[2], e->draw[3]);   /* a slot is a picture and its waiting lamp, the same two nodes every draw */
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, ly, e->waiting);
     } else {
@@ -558,15 +559,14 @@ static void module_objects(const char *key, int dy) {
 }
 
 /* ---- the ring on the focused target ---- */
-static const char *frame_ring(void) { static char rc[24]; spec_str("frame", "colours.ring", rc, sizeof rc); return rc; }
 static void ring(const char *cur) {
   if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;   /* the ring goes when the rest begins and stays away while it holds */
-  char rc[24]; spec_str("frame", "colours.ring", rc, sizeof rc); int box[4];
+  int box[4];
   v_region("focus", LAYER_CHROME);
-  if (strcmp(cur, "vivarium") == 0) { hrect("regions.bezel.rect", box); word_focusRing("focus", box, "home", "focus.targets.vivarium.ring", rc); return; }
+  if (strcmp(cur, "vivarium") == 0) { hrect("regions.bezel.rect", box); word_focusRing("focus", "home", "focus.targets.vivarium", box); return; }
   if (strncmp(cur, "resident.", 9) == 0) return;   /* a resident's ring is in the glass, under it */
-  if (strcmp(cur, "knob") == 0) { for (int k = 0; k < 4; k++) box[k] = hk("focus.targets.knob.box", k); box[1] -= hi("focus.targets.knob.lift", 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
-  for (int m = 0; m < 5; m++) if (strcmp(cur, MODULES[m]) == 0) { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
+  if (strcmp(cur, "knob") == 0) { for (int k = 0; k < 4; k++) box[k] = hk("regions.knob.states.focused.rect", k); word_focusRing("focus", "home", "focus.targets.knob", box); return; }   /* the knob as drawn, lifted: 32 x 6, not its 40 x 16 hit box */
+  for (int m = 0; m < 5; m++) if (strcmp(cur, MODULES[m]) == 0) { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); word_focusRing("focus", "home", v_fmt("focus.targets.%s", cur), box); return; }
 }
 
 void home_words(void) {
@@ -660,7 +660,7 @@ void vivarium_words(void) {
   glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest, and its mark while away */
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; g_tagOver = g_e[i].asleep; build_nameTag(sp(), "regions.window", g_e[i].name, g_e[i].sleeper ? g_e[i].draw : g_e[i].asleep ? g_e[i].ink : g_e[i].box, g_e[i].sleeper || g_e[i].asleep ? 0 : hi("regions.resident.lift", 4), tag); g_tagOver = 0;   /* asleep in place: over the ink, no lift (UI/UX item 4) */ }
   { int box[4]; build_bayStrip("vivarium", cur, box);
-    if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding()) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, "vivarium", "focus.targets.tile.ring", frame_ring()); } }
+    if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding()) { v_region("focus", LAYER_CHROME); word_focusRing("focus", "vivarium", "focus.targets.tile", box); } }
   g_viv = 0;
 }
 

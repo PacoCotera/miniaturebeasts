@@ -19,7 +19,7 @@
   "back": "{name} (frame.json navigation.screens.cross)",
   "room": "drops the unpaid choices; coming back starts fresh on the overview (frame.json navigation.leaving.cross)"
  },
- "focus": { "one": "the focus ring stays on the partner's head in both states; ◀ ▶ change what it holds. The open chapter is the rail's open tab, not a second ring", "ring": "focus", "width": 2, "outside": 4, "radius": 6 },
+ "focus": { "one": "the focus ring stays on the partner's head in both states; ◀ ▶ change what it holds. The open chapter is the rail's open tab, not a second ring" },
  "bottomLine": {
   "action": "✓ Cross them, then the cross's price (state.crossCost), icon before figure as on every Station screen: ⚡ 2 ❀ 4",
   "context": { "overview": "{a} × {b} · {species}", "chapter": "{chapter} · {a} × {b}" },

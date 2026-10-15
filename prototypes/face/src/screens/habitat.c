@@ -46,11 +46,6 @@ static int hop_lift(void) {
   }
   return lift;
 }
-static void build_ring_under(const char *cur) {
-  if (strcmp(cur, "resident") != 0 || spec_len("props", "overlay") >= 0) return;
-  int r[4]; hrect("regions.resident.rect", r); v_region("focus", LAYER_CHROME);
-  word_focusRing("focus", r, S, "focus.targets.resident.ring", fcol("colours.ring"));   /* the feet ring: under the creature, as on Home */
-}
 /* ---- up close with a moving set (Station M1 §2.4): the resident from the close atlas at the rect and its shadow at the feet (drawn before the feet ring, build_moving_shadow); its own 80 ms tick from the screen's first frame, at the seed's phase; awake the breath, asleep the asleep loop;
    Greet the set's hops (events.moment), a sleeper's Greet wake, hops, curl (events.moment.asleep); dithers 16 levels over 180 ms; the blink (an adult with a blink cell) every 4–9 s for 2 ticks at rest; never mirrored. ---- */
 static uint32_t g_ht0; static int g_hhave, g_hlast_tick = -1; static uint32_t g_hbreath0, g_hmoment_end; static int g_hmoment_on; static char g_hid[24];
@@ -255,7 +250,7 @@ static void cross_objects(int dy) {
     int x = r[0] + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 0) + col * pitch, y = r[1] + dy + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 1);
     snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
     snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
-    if (has(pic)) v_sprite(id, pic, x, y, w, h); else { v_layer(LAYER_ART); char ops[96]; snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, spec_int("frame", "focus.ring.width", 2), away ? colr("colours.faceRingAway") : colr("colours.faceRing")); snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); }   /* until the face is painted, the ring alone, as the top bar's */
+    if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
   }
 }
 static void wild_objects(int dy) {
@@ -290,17 +285,28 @@ int habitat_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
   return k;
 }
 
+static void build_ring_under(const char *cur) {
+  if (strcmp(cur, "resident") != 0 || spec_len("props", "overlay") >= 0) return;
+  int r[4]; hrect("regions.resident.rect", r); v_region("focus", LAYER_CHROME);
+  const mv_stage_t *S0 = close_set();   /* the footprint ring: on the ground under the creature, as on Home; a moving set's cell by name (curl asleep, stand otherwise), a still's whole picture */
+  if (S0) { char at[96]; snprintf(at, sizeof at, "%s", v_pstr("regions.resident.moving.close")); close_t f; close_now(S0, r, &f); word_focusRingFootprint("focus", S, "focus.targets.resident", at, strncmp(f.cell, "curl", 4) == 0 ? "curl" : "stand", r); }
+  else { char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr("regions.resident.picture")); word_focusRingFootprint("focus", S, "focus.targets.resident", pic, "", r); }
+}
 /* the ring on the focused target (the resident's is under the creature, drawn before it): a plate or a module lifted 2 px, a tile in its form, the name and the species word round */
 static void build_ring(const char *cur) {
   if (!cur[0] || strcmp(cur, "resident") == 0 || spec_len("props", "overlay") >= 0 || anim_holding()) return;
-  int box[4] = { 0, 0, 0, 0 }; char form[96];
+  int box[4] = { 0, 0, 0, 0 }; char target[96];
   v_region("focus", LAYER_CHROME);
-  if (strcmp(cur, "name") == 0) { memcpy(box, g_tag, sizeof box); snprintf(form, sizeof form, "focus.targets.name.ring"); }
-  else if (strcmp(cur, "species") == 0) { hrect("regions.speciesLine.rect", box); snprintf(form, sizeof form, "focus.targets.species.ring"); }
-  else if (strncmp(cur, "plate.", 6) == 0) { int n = v_plen("regions.plates.items"), i = atoi(cur + 6); if (i < 0 || i >= n) return; plate_rect(n, i, box); box[1] -= hi("focus.targets.plate.lift", 2); snprintf(form, sizeof form, "focus.targets.plate.ring"); }
+  if (strcmp(cur, "name") == 0) { memcpy(box, g_tag, sizeof box); snprintf(target, sizeof target, "focus.targets.name"); }
+  else if (strcmp(cur, "species") == 0) {   /* the line's text and guide mark as drawn: the word adds the chip's 4 px each side */
+    int r[4]; hrect("regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"); char tx[96]; snprintf(tx, sizeof tx, "%s", text); const char *mark = v_pstr("regions.card.species.mark");
+    int w = v_measure(tx, hi("regions.speciesLine.px", 16)); if (has(mark)) w += hi("regions.speciesLine.mark.gap", 4) + hk("regions.speciesLine.mark.size", 0);
+    box[0] = r[0]; box[1] = r[1] + v_fdiv(r[3] - 24, 2); box[2] = w; box[3] = 24; snprintf(target, sizeof target, "focus.targets.species");
+  }
+  else if (strncmp(cur, "plate.", 6) == 0) { int n = v_plen("regions.plates.items"), i = atoi(cur + 6); if (i < 0 || i >= n) return; plate_rect(n, i, box); box[1] -= hi("focus.targets.plate.lift", 2); snprintf(target, sizeof target, "focus.targets.plate"); }
   else if (strncmp(cur, "tile.", 5) == 0) return;   /* the strip's own ring (build_bayStrip's box) */
-  else { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); snprintf(form, sizeof form, "focus.targets.%s.ring", cur); }
-  if (box[2] > 0) word_focusRing("focus", box, S, form, fcol("colours.ring"));
+  else { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); snprintf(target, sizeof target, "focus.targets.%s", cur); }
+  if (box[2] > 0) word_focusRing("focus", S, target, box);
 }
 
 void habitat_words(void) {
@@ -314,7 +320,7 @@ void habitat_words(void) {
   build_card(); build_speciesLine(); build_story(); build_code(); build_stamp();
   build_chapterPlates(cur);
   build_modules(cur);
-  { int box[4]; build_bayStrip(S, cur, box); if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding() && spec_len("props", "overlay") < 0) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, "focus.targets.tile.ring", fcol("colours.ring")); } }
+  { int box[4]; build_bayStrip(S, cur, box); if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding() && spec_len("props", "overlay") < 0) { v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "focus.targets.tile", box); } }
   build_ring(cur);
 }
 

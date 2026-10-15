@@ -73,7 +73,7 @@
   "pose": {
    "initial": "the card chosen before in this visit, else card.0", "entry": "card.0: opening the screen always starts here, no choice made (notes.visit)", "fallback": "none",
    "graph": { "card": { "left": [{ "nearestIn": "card", "ahead": true }, "none"], "right": [{ "nearestIn": "card", "ahead": true }, "none"], "up": [{ "nearestIn": "card", "ahead": true }, "none"], "down": [{ "nearestIn": "card", "ahead": true }, "none"] } },
-   "targets": { "card": { "group": "card", "id": "card.<i>, i from 0 in the cards' order", "ring": "round", "box": "regions.cards.places, card i", "lift": 2 } }
+   "targets": { "card": { "group": "card", "id": "card.<i>, i from 0 in the cards' order", "shape": { "rect": 0 }, "box": "regions.cards.places, card i", "lift": 2 } }
   },
   "place": { "same": "as pose" },
   "confirm": {

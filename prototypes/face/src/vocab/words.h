@@ -5,8 +5,10 @@
 /* common/ */
 void word_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge);   /* a filled pane with a 1 px edge (edge NULL: none) */
 void word_hairline(const char *id, int x, int y, int len, const char *colour, int vertical);
-/* The focus ring on a target's box, composed by the face: `form` is the path of the group's `ring` in `spec` (NULL: round), `colour` a palette name. */
-void word_focusRing(const char *id, const int box[4], const char *spec, const char *form, const char *colour);
+/* The focus ring (fix 14): `target` is the path of the target's entry in `spec` (its `shape` and `ground` are read there, the bands, gap, reach and colours from frame.json focus.ring); `drawn` is the object's rect as the screen drew it this frame, lifted where it lifts; `id` is the ring's region id. */
+void word_focusRing(const char *id, const char *spec, const char *target, const int drawn[4]);
+/* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
+void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);
 /* station/ */
 void word_bench(void);   /* Pods' stage: the ground and the room master over it */
 void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */
@@ -15,10 +17,8 @@ void word_kin(const char *base);        /* the overview's kin rings and the hatc
 void word_stamp(const char *base);      /* the overview's stamp label in its case */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 void word_list(void);    /* Pods' collection: the rack's places */
-void word_focusRingShape(const char *id, const int box[4], const char *shape, const char *colour);   /* "round", "feet" or "tab" */
-void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, int cy, int outside, const char *colour);   /* radius > 0: fixed, centre (x + cx, y + cy); else from the box, rho = w/2 + outside */
-/* the ring in the form the screen spec names for the target group (targets.<name>.ring of the target whose `group` this is), colour a palette name; a group the spec does not list gets the default round ring */
-void word_focusRingFor(const char *id, const int box[4], const char *group, const char *colour);
+/* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */
+void word_focusRingFor(const char *id, const int drawn[4], const char *group);
 void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
 /* station/ (Home) */
 void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy);   /* the living window (the picture is shown from source (sx, sy): the whole shows rows 120 to 560 of Idle's painting): the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
@@ -28,6 +28,7 @@ void word_leavesArc(const char *spec, const char *region, const char *emptyPic, 
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);
+void v_faceHolder(const char *id, int x, int y, int w, int h, int away);   /* a face picture's holder ring (art layer, regions.marks.face.ringWidth), until the picture is painted: not a focus mark */
 void word_bottomLine(void);
 void word_messagePlate(void);
 #endif

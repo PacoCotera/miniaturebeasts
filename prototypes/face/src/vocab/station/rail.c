@@ -76,10 +76,9 @@ void word_rail(const char *marksSpec) {
     }
     if (v_pbool(v_fmt("regions.rail.tabs.%d.glint", i), 0) && has(star)) { v_region("rail.tab", LAYER_ART); v_sprite(v_fmt("%s.glint", tid), star, x + S + v_half(w) - gsz / 2, y + h + gbelow, gsz, gsz); }
   }
-  /* the ring crosses 4 px onto the neighbours, so it goes after every tab */
+  /* the ring crosses 5 px onto the neighbours, so it goes after every tab */
   if (focused >= 0 && focused < placed) {
-    char ring[24]; spec_str(F, "colours.ring", ring, sizeof ring);
     int box[4] = { tabs[focused].x, tabs[focused].y, tabs[focused].w, tabs[focused].h };
-    v_region("focus", LAYER_CHROME); word_focusRingFor(v_fmt("rail.%d.focus", focused), box, "rail", ring);
+    v_region("focus", LAYER_CHROME); word_focusRingFor(v_fmt("rail.%d.focus", focused), box, "rail");
   }
 }

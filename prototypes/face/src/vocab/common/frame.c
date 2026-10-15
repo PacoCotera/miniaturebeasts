@@ -32,6 +32,14 @@ void word_panel(const char *id, int x, int y, int w, int h, const char *fill, co
 }
 void word_hairline(const char *id, int x, int y, int len, const char *c, int vertical) { if (vertical) v_rect(id, x, y, 1, len, c); else v_rect(id, x, y, len, 1, c); }
 
+/* A holder for a face picture that is not there yet (the top bar's Companion face, Habitat's cross faces): the ellipse op alone, on the art layer, `regions.marks.face.ringWidth` thick, in the face-ring role
+   (docked, or away: `faceRingAway`). The top bar's roles are the frame spec's; any other holder's are its screen's own `colours.faceRing` / `colours.faceRingAway`. Not a focus mark (FR8). */
+void v_faceHolder(const char *id, int x, int y, int w, int h, int away) {
+  const char *spec = strncmp(id, "top.", 4) == 0 ? F : v_pstr("screen"); char c[24], p[48], ops[96];
+  snprintf(p, sizeof p, "colours.%s", away ? "faceRingAway" : "faceRing"); spec_str(spec, p, c, sizeof c);
+  v_layer(LAYER_ART); snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, spec_int(F, "regions.marks.face.ringWidth", 0), c);
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
+}
 void word_topBar(void) {
   char c[24], a[96], b[96], s[V_STR]; int r[4], rr[4];
   rect_of("regions.top.rect", r);
@@ -90,10 +98,7 @@ void word_topBar(void) {
   char mibi[48]; spec_str(P, "frame.top.companion.withMibi", mibi, sizeof mibi);
   if (!*mibi) fs("regions.marks.face.empty", a, sizeof a);
   else { char t[96]; fs(docked ? "regions.marks.face.docked" : "regions.marks.face.away", t, sizeof t); char *at = strstr(t, "{mibi}"); if (at) snprintf(a, sizeof a, "%.*s%s%s", (int)(at - t), t, mibi, at + 6); else snprintf(a, sizeof a, "%s", t); }
-  if (!mark("top.face", a, face)) {   /* until the face is painted, the ring alone: the ellipse op in the face-ring role */
-    v_layer(LAYER_ART); colour(docked ? "faceRing" : "faceRingAway", c); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", face[2], face[3], fi("focus.ring.width"), c);
-    snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", b); prim_node(v_id("top.face.ring"), FN_COMPOSED, face[0], face[1], face[2], face[3], 0, 0, 0);
-  }
+  if (!mark("top.face", a, face)) v_faceHolder("top.face.ring", face[0], face[1], face[2], face[3], !docked);   /* until the face is painted, the ring alone */
   /* when: the sun mark, then the turn's figure, right-aligned to 1008 */
   int W_px = fi("regions.time.px"), W_right = fi("regions.time.right"), W_gap = fi("regions.time.gap"), tr[4], mk[2]; rect_of("regions.time.rect", tr);
   mk[0] = spec_int(F, "regions.time.mark.0", 16); mk[1] = spec_int(F, "regions.time.mark.1", 16);

@@ -91,9 +91,9 @@
   },
   "primitives": "lvgl-switch.md §2.6.1 governs: `order` steps ▲ ▼ through the list as written, skipping ids that are not present, stopping at the ends; nearestIn takes the row nearest the ring",
   "targets": {
-   "plates": { "group": "plates", "ring": "round", "box": "regions.plates.rect", "lift": 2, "present": "docked only", "enabled": "a plate is gone" },
-   "switch": { "group": "module", "ring": "round", "box": "regions.switch.rect", "lift": 2, "enabled": "always" },
-   "slot": { "group": "module", "ring": "round", "box": "regions.slot.rect", "lift": 2, "enabled": "docked and tier 1 (short included)" }
+   "plates": { "group": "plates", "shape": { "rect": 0 }, "box": "the union of the drawn plates (regions.plates.places[count], 32×32)", "lift": 2, "present": "docked only", "enabled": "a plate is gone" },
+   "switch": { "group": "module", "shape": { "rect": 6 }, "box": "regions.switch.rect", "lift": 2, "enabled": "always" },
+   "slot": { "group": "module", "shape": { "rect": 6 }, "box": "regions.slot.rect", "lift": 2, "enabled": "docked and tier 1 (short included)" }
   },
   "armed": { "slot": "after the first ✓ on a ready slot", "clear": "any key but ✓ clears the arm; the arm never survives a screen change" },
   "held": "while events.mend or events.install holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends); the ring stays drawn where it is, with its lift, through the hold (unlike habitat.json); it is not redrawn",

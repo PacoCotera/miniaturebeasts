@@ -445,7 +445,7 @@
   "targets": {
    "resident": {
     "group": "resident",
-    "ring": "feet",
+    "shape": "footprint",
     "box": "regions.resident.rect",
     "ellipse": [136, 380, 320, 24],
     "lift": 4,
@@ -453,47 +453,47 @@
    },
    "name": {
     "group": "name",
-    "ring": "round",
+    "shape": { "rect": 0 },
     "box": "the tag as drawn, inside regions.nameTag.rect",
     "lift": 0,
     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
    },
-   "species": {"group": "species", "ring": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "always"},
+   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "always"},
    "plate": {
     "group": "plate",
     "id": "plate.<i>, i from 0 in ring order",
-    "ring": "round",
+    "shape": { "rect": 0 },
     "box": "regions.plates.places, plate i",
     "lift": 2,
     "enabled": "an unread chapter of a bred child that is not sealed, at home or out with the Companion (readMibi does not check the carried set)"
    },
    "door": {
     "group": "top",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "regions.door.rect",
     "lift": 2,
     "enabled": "always on a shown mibi: ✓ Take when it is not in the set as it will be (state.projectCarried) and that set holds fewer than three; ✓ Bring when it is carried (state.carriedIds) and no request for it waits; otherwise read-only, no ✓ cap: a request for it waits (state.pendingCarry) or the set is full, and the context says which (bottomLine.door)"
    },
    "portrait": {
     "group": "top",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "regions.portrait.rect",
     "lift": 2,
     "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting"
    },
    "cross": {
     "group": "low",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "regions.cross.rect",
     "lift": 2,
     "enabled": "an adult or an elder, at home or docked, with at least one partner it can pick (state.crossPartners less the partners out with the Companion while it is away; elders counted as adults)"
    },
-   "wild": {"group": "low", "ring": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty"},
+   "wild": {"group": "low", "shape": { "rect": 6 }, "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty"},
    "tile": {
     "group": "tile",
     "id": "tile.<mibi id>, housed mibis only (at home or out); free bays are not targets",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "the tile's rectangle (regions.tiles, its form)",
     "lift": 2,
     "focusShows": "focusing a tile shows its mibi in the window (events.swap); the resident target is then that mibi"

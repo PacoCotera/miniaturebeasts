@@ -39,7 +39,7 @@ export const setEnv = (env) => { ENV = env; };
 export function picture(id) {
   const a = assetOf(id, ENV); if (!a) return null;
   const e = assetEntry(id), status = e?.status === "master" ? "master" : "placeholder", p = { w: a.w, h: a.h, status, policy: policyOf(id, status), data: a.rgba() };   // the layer it shows on, from the one family table (an id outside every family throws: a new family is the art director's to place)
-  return e?.slice ? { ...p, slice: e.slice, tile: e.tile ?? 0 } : p;
+  return { ...p, ...(e?.slice ? { slice: e.slice, tile: e.tile ?? 0 } : {}), ...(e?.foot ? { foot: e.foot } : {}) };
 }
 // The ids the frame names in its own spec (the room marks, the lamps, the caps, the sun): the same on every screen.
 const walk = (o, into) => { if (typeof o === "string") { if (assetEntry(o)) into.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v, into); };

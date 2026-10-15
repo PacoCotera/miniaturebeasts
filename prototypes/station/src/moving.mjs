@@ -3,7 +3,7 @@
 // row, the mirrors made here (each row reversed, exact pixels; LVGL's software renderer cannot flip), shadow-75 derived here (alpha × 3 / 4, rounded down). A cell is its placed master (mibi-<stage>-SXX-<key>[-<step>]-WxH)
 // or, until it is placed, the stand-in of §1.5 (whole pixels, registered as a placeholder). An atlas is a master only when every one of its cells is; a set plays only when all its atlases are (the play gate), else only under
 // the developer switch "Motion sets (stand-ins)" or in the face tests. The face never makes an id: the props name the atlases.
-import { assetEntry, asset as assetOf, registerAsset, hasAsset } from "../../ui/assets.mjs";
+import { assetEntry, asset as assetOf, registerAsset, hasAsset, setFootCells } from "../../ui/assets.mjs";
 
 let MOVING = {};
 // the stand-in shadow's ink (the art director's Q6 ruling for M1a: #1e1a22 at alpha 110, a literal, no new palette name); one constant, so a ruling changes one place
@@ -27,6 +27,13 @@ export function cellsOf(species, stage, part, w, h) {
   const p = s[part], base = p.cells.map((name) => ({ name, master: id(name) }));
   return part === "walk" ? [...base, ...(p.mirror ?? []).map((name) => ({ name, master: id(name), mirror: true }))] : base;
 }
+// the cells whose footprint the face reads (fix 14, FR4): an atlas's stand and curl cells (walk, close), curl (nap), shadow (a shadow atlas), each [x, width] in the atlas (the gutter column, then the cells at 1 + i·w)
+setFootCells((id) => {
+  const a = parse(id); if (!a) return null;
+  const cs = cellsOf(a.species, a.stage, a.part, a.w, a.h), at = (name) => { const i = cs.findIndex((c) => c.name === name && !c.mirror); return i < 0 ? null : [1 + i * a.w, a.w]; }, out = {};
+  for (const name of a.part === "nap" ? ["curl"] : a.part === "shadow" ? ["shadow"] : ["stand", "curl"]) { const c = at(name); if (c) out[name] = c; }
+  return out;
+});
 const placed = (id) => { const e = assetEntry(id); return !!e && !!e.file && e.status !== "empty"; };   // a placed master (its file), not a built stand-in
 export const atlasIsMaster = (id) => { const a = parse(id); return !!a && cellsOf(a.species, a.stage, a.part, a.w, a.h).every((c) => placed(c.master)); };
 // the play gate (§1.5): every cell of every part of the set at this stage is a placed master
