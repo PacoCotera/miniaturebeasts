@@ -26,7 +26,7 @@ One navigation model for the whole Station: Home is the hub, every screen has on
 
 - **The tree.** Home is the top. Under Home: Pods (the collection), the Incubator, the Probe bench, Idle, the Library and the Vivarium. Under the collection: a pod's overview. Under the overview: its chapter page, Compare and Create. Under the Library: the Book. Under the vivarium, up close: Cross. The Incubator and the Probe bench are Home's modules (reached from Home's instrument column, ← Home) and keep the Research room's mark.
 - **Stack navigation.** A ✓ that lands in another part of the tree is a jump: Grow it (Create) and Cross them (Cross) to the Incubator, Open (the Incubator) to the vivarium, up close, Visit (the Book) to the vivarium, up close. After a jump, ← goes to the parent of the screen you are on, never back along the way you came: the Incubator after Grow reads "← Home", the vivarium, up close, after a Book's Visit reads "← Home".
-- **Home's pad.** A fixed order, not the nearest thing: ◀ ▶ cross between the vivarium's residents and the instrument column; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest. The Home key on Home puts the ring back on the room, where ✓ does what needs you.
+- **Home's pad.** A fixed order, not the nearest thing: ◀ ▶ cross between the vivarium's residents and the instrument column; ▲ ▼ walk the column, Cargo, Pods, Incubator, Probe, Library, Rest. The Home key on Home puts the ring back on the room, where ✓ does what needs you.
 - **Idle.** The first press only wakes the screen; nothing else happens.
 - **Leaving Create or Cross** by a room key drops the unpaid choices; coming back starts fresh.
 
@@ -106,9 +106,9 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 
 **Purpose.** Cargo arrives when the Companion docks into the Caddy; the Station receives it, and the player opens the bay. **Reads first:** how many crates are in the bay, then the ribbon.
 
-- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks, pods travel in a straight line into the rack's wells, the counters tick, the Probe dock shows the free mend, a ribbon names the crate ("First crate home"), the world turn jumps.
+- **Instrument.** Cargo leads: once cargo has come through, the bay door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks, pods travel in a straight line into the rack's wells, the counters tick, the Probe dock shows the free mend, a ribbon names the crate ("First crate home"), the world turn jumps.
 - **Living window.** The vivarium stays; residents turn toward the bay as crates open.
-- **Composition.** Home's layout; the Bay module lifts 2 px, the chrome lift, and nothing is scaled; the ribbon sits inside the glass's top. A report card waits on the vivarium until the next press.
+- **Composition.** Home's layout; the Cargo module lifts 2 px, the chrome lift, and nothing is scaled; the ribbon sits inside the glass's top. A report card waits on the vivarium until the next press.
 - **Lively / quiet.** Lively: the crate, the pods' travel, the residents' reaction. Quiet: the other modules.
 - **Light.** A warm beam inside the bay as the seal breaks; the vivarium unchanged.
 - **Palette.** Crates in slate and teal with orange seal tags; counters flash yellow.
@@ -226,7 +226,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 **Concept.** Reference `art/concept-station/incubator/`, IN-D-r1-a3 (growing) and IN-C1 (ready). Ready keeps the shape glowing inside the bud so the player gets to crack the incubator open. The growing bud is a cute, generic glowing bean; its colour never drifts toward the species' hue, and its shape never becomes an embryo. The stamp stands alone on the Station; the code string may also show, as a shareable "look at my mibi" string.
 
-**Instant grow.** While growing, the chrome offers `✓ Grow now` and its price, ❀ 1 for every 2 minutes left, rounded up (at most 19; the first bud 3). The first bud ever grows in five minutes, others twenty plus one per shaped trait; all timers sit under the developer-tools toggle for testing. The bud has two states, growing and ready; with no bud the Incubator opens empty, an invitation to grow one. A portrait arrives as a crate in the sample bay (Dock and arrival, [the portrait](../proposals/the-portrait.md)), and the sitting that pays for it is chosen in the vivarium, up close (the Sitting, below).
+**Instant grow.** While growing, the chrome offers `✓ Grow now` and its price, ❀ 1 for every 2 minutes left, rounded up (at most 19; the first bud 3). The first bud ever grows in five minutes, others twenty plus one per shaped trait; all timers sit under the developer-tools toggle for testing. The bud has two states, growing and ready; with no bud the Incubator opens empty, an invitation to grow one. A portrait arrives as a crate in the bay (Dock and arrival, [the portrait](../proposals/the-portrait.md)), and the sitting that pays for it is chosen in the vivarium, up close (the Sitting, below).
 
 **What a mibi wears** ([the portrait](../proposals/the-portrait.md)). Grow paints nothing, and the chamber keeps its two states. At Open the juvenile steps out in its species' juvenile picture; adults and elders wear their species' adult picture. The stylised rig pass stands in until a picture is placed. The design draws every mibi true to its expressed looks, as painted trait layers on its species' pictures, from the hatch. No lamp, status line or landing ever waits on a painting. A mibi's own painting is made only at its sitting. It arrives as the portrait crate when the sitting's wait ends, and from then the mibi is drawn in its portrait's moving set. The juvenile that steps out is the founder from Create.
 
