@@ -53,8 +53,8 @@ function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * 
 const sizeOf = (r) => r.size ?? (r.kind === "waiting" ? [24, 24] : r.kind === "star" ? [12, 12] : [16, 16]);
 const ART = /^(crate-|cargo-)/;   // a placeholder plate is art until its master
 
-async function start(b, { motion = true, t0 = 0 } = {}) {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+async function start(b, { motion = true, t0 = 0, node = false } = {}) {   // node: the test build that can name a node by its id (nodeBox)
+  const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["cargo", cargoSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) })));
@@ -116,13 +116,41 @@ test("while the crates open (events.opening holds crates × 3000 + 200): the fac
 // ---- the crates slide in on the Dock (events.crateIn) ----
 test("the crates slide in (events.crateIn): each from 64 px above over 500 ms, 250 ms apart, eased out, clipped to the bay's inside; each stands on its place when its time is up", { skip }, async () => {
   const ev = EV.crateIn.each, inside = R.bay.inside, places = R.crates.byCount[3], total = ev.ms + 2 * ev.stagger;
-  const f = await start(scene({ crates: 3 }), { t0: 1000 }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crates", ms: total, hold: 0 });
-  const crates = (ms) => { f.frame(t0 + ms); const lg = logOf(f); return lg.regions.find((r) => r.id === "crates" && r.layer !== "chrome")?.rect ?? null; };
-  assert.deepEqual(crates(0), [places[0][0], places[0][1] + EV.crateIn.each.from[1], places[0][2], places[0][3]], "at 0 the first crate is 64 px above its place (the top of the inside), the others not yet in");
-  const top = (ms) => crates(ms)?.[1]; const t = [30, 60, 120, 180, 240].map(top);
+  const f = await start(scene({ crates: 3 }), { t0: 1000, node: true }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crates", ms: total, hold: 0 });
+  const IN = inside, nb = (id) => { const b = f.nodeBox(id)?.box; return b ? [b[0] + IN[0], b[1] + IN[1], b[2], b[3]] : null; }, crate = (ms, i = 0) => { f.frame(t0 + ms); return nb(`crates.${i}`); };   // the crate's own node (the painted region log unions a crate with its shadow)
+  assert.deepEqual(crate(0), [places[0][0], places[0][1] + EV.crateIn.each.from[1], places[0][2], places[0][3]], "at 0 the first crate is 64 px above its place (the top of the inside), the others not yet in");
+  const top = (ms) => crate(ms)[1]; const t = [30, 60, 120, 180, 240].map(top);
   assert.ok(t.every((y, i) => y >= inside[1] && y <= places[0][1] && (i === 0 || y >= t[i - 1])), "it comes down and never above the bay's top: " + t); assert.ok(places[0][1] - t[4] < (places[0][1] - inside[1]) / 2, "eased out: more than half the way down at 240 ms, just under half the time");
-  assert.deepEqual(crates(ev.ms - 1)?.slice(0, 1), [places[0][0]]); assert.deepEqual(crates(ev.ms + ev.stagger * 2 + 20), [places[0][0], places[0][1], places[2][0] + places[2][2] - places[0][0], places[0][3]], "the three stand on their places when it ends");
+  assert.deepEqual(crate(ev.ms - 1)?.slice(0, 1), [places[0][0]]);
+  f.frame(t0 + ev.ms + ev.stagger * 2 + 20); const all = [0, 1, 2].map((i) => nb(`crates.${i}`)); assert.deepEqual([all[0][0], all[0][1], all[2][0] + all[2][2] - all[0][0], all[0][3]], [places[0][0], places[0][1], places[2][0] + places[2][2] - places[0][0], places[0][3]], "the three stand on their places when it ends");
   assert.equal(f.poll("done")?.kind, "arrival"); assert.deepEqual(f.errors(), []);
+});
+// ---- each crate's shadow comes in with its slide (UI/UX 2026-10-15; regions.crates.shadow.fadeIn): fixed at its place, a stepped Bayer dither-in at level 6 + floor(10 × ease_out(p) / 1000) of 16, whole at landing ----
+const easeOut = (p) => 1000 - Math.trunc(((1000 - p) * (1000 - p)) / 1000), levelAt = (e, each) => 6 + Math.floor((10 * easeOut(e >= each ? 1000 : Math.trunc((e * 1000) / each))) / 1000);
+test("each crate's shadow comes in with its slide: none before the slide starts, the fade at its place at level 6 on the first frame, the level never falls and stays under 16, the whole sprite and no fade at landing; with reduced motion every shadow is whole on the Dock frame", { skip }, async () => {
+  const ev = EV.crateIn.each, places = R.crates.byCount[3], sh = R.crates.shadow, total = ev.ms + 2 * ev.stagger, shadowId = scene({ crates: 3 }).props.regions.crates.shadow;
+  const f = await start(scene({ crates: 3 }), { t0: 1000, node: true }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crates", ms: total, hold: 0 });
+  const IN = R.bay.inside, nb = (id) => { const b = f.nodeBox(id)?.box; return b ? [b[0] + IN[0], b[1] + IN[1], b[2], b[3]] : null; }, at = (i) => [places[i][0] + sh.at[0], places[i][1] + sh.at[1], sh.size[0], sh.size[1]];
+  // the pixels of a 16 × 16 block of the window (aligned to the 4 × 4 Bayer cell) that are the shadow's: 16 × the level, while no crate covers the window
+  const lit = (i) => { const [x, y] = at(i), x0 = Math.ceil((x + 8) / 4) * 4, y0 = Math.ceil((y + 2) / 4) * 4; let n = 0; for (let yy = y0; yy < y0 + 16; yy++) for (let xx = x0; xx < x0 + 16; xx++) if (pixelIs(f, xx, yy, shadowId)) n++; return n; };
+  f.frame(t0 + 16);
+  assert.deepEqual(nb("crates.0.shadow.in"), at(0), "the fade lies at its place, fixed on the floor"); assert.equal(nb("crates.0.shadow")[2], 0, "its whole sprite is kept with no size while it comes in");
+  for (const i of [1, 2]) { assert.equal(nb(`crates.${i}.shadow.in`), null, `crate ${i} has not started: no fade`); assert.equal(nb(`crates.${i}.shadow`)[2], 0, `crate ${i} has not started: no shadow`); }
+  assert.equal(lit(0), 16 * 6, "level 6 of 16 on the first frame (37.5 %)");
+  let last = 6, seen = 0;
+  for (let ms = 32; ms < ev.ms; ms += 16) {
+    f.frame(t0 + ms); const y = nb("crates.0")[1], bottom = y + places[0][3]; if (bottom >= at(0)[1]) break;   // from here the stand-in crate covers the window
+    const L = lit(0) / 16; assert.equal(L, levelAt(ms, ev.ms), `${ms} ms: the level`); assert.ok(L >= last && L <= 15, `${ms} ms: the level never falls and stays under 16 (${L})`); last = L; seen++;
+  }
+  assert.ok(seen >= 5, `the level was read over ${seen} frames`);
+  f.frame(t0 + 300); assert.ok(nb("crates.0.shadow.in") !== null, "still coming in at 300 ms"); assert.ok(nb("crates.1.shadow.in") !== null, "crate 1 started at 250 ms, its fade is drawn");
+  f.frame(t0 + ev.ms + 16); assert.equal(nb("crates.0.shadow.in"), null, "landed: no fade node"); assert.deepEqual(nb("crates.0.shadow"), at(0), "landed: the whole sprite");
+  f.frame(t0 + total + 20); for (let i = 0; i < 3; i++) { assert.equal(nb(`crates.${i}.shadow.in`), null); assert.deepEqual(nb(`crates.${i}.shadow`), at(i)); } assert.deepEqual(f.errors(), []);
+  const still = await start(scene({ crates: 3 }), { motion: false, t0: 1000, node: true }), nbs = (id) => { const b = still.nodeBox(id)?.box; return b ? [b[0] + R.bay.inside[0], b[1] + R.bay.inside[1], b[2], b[3]] : null; }; for (let i = 0; i < 3; i++) { assert.equal(nbs(`crates.${i}.shadow.in`), null, "reduced motion: no fade"); assert.deepEqual(nbs(`crates.${i}.shadow`), at(i), `reduced motion: crate ${i}'s shadow whole on the Dock frame`); }
+});
+test("the crates' arrival (the Dock, three crates) redraws at most a quarter of the screen a refresh, at frames every 40 ms and every 16 ms through 1,100 ms; the worst value is printed", { skip }, async () => {
+  const worst = async (step) => { const f = await start(scene({ crates: 3 }), { t0: 1000 }); logOf(f); dirty(f); const t0 = f.t, M = f.M; f.send({ t: "event", kind: "arrival", target: "crates", ms: 1000, hold: 0 }); let w = 0; for (let t = step; t <= 1100; t += step) { f.frame(t0 + t); w = Math.max(w, dirty(f)); } return w; };
+  const ws = {}; for (const step of [40, 16]) { const w = ws[step] = await worst(step); console.log(`# Cargo's crateIn, frames every ${step} ms: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); } for (const step of [40, 16]) { const w = ws[step]; assert.ok(w <= 153600, `crateIn (${step} ms): dirty ${w} px (${(100 * w / 614400).toFixed(1)}%), over a quarter of the screen`); }
 });
 
 // ---- one crate opening, at the instants of its steps ----

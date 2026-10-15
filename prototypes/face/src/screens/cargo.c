@@ -71,23 +71,26 @@ static void build_bay(void) {
   v_region("bay", LAYER_ART); v_name("bay"); v_sprite("bay", v_pstr("regions.bay.open"), r[0], r[1], r[2], r[3]);
   const char *door = v_pstr("regions.bay.door"); if (*door) { v_name("bay.door"); v_sprite("bay.door", door, dr[0], dr[1], dr[2], dr[3]); }
 }
-/* The crates stand centred as a group by count (regions.crates.byCount.<n>); each has its contact shadow under it from the frame it has landed (a crate still sliding casts none). */
+/* The crates stand centred as a group by count (regions.crates.byCount.<n>); each has its contact shadow under it, fixed on the floor at its place: from the frame its slide starts it dithers in (a stepped 16-level Bayer, level 6 + floor(10 × ease_out(p) / 1000) of 16, the hatch juvenile's shadow word), whole from its landing frame; before its slide starts neither is drawn, the slot kept with no size (UI/UX, 2026-10-15; cargo.json regions.crates.shadow.fadeIn). */
 static void build_crates(void) {
   int n = v_plen("regions.crates.places"), max = ci("regions.crates.max", 3), in[4]; if (n > max) n = max; crect("regions.bay.inside", in);
   const char *shadow = v_pstr("regions.crates.shadow"); int sx = ck("regions.crates.shadow.at", 0), sy = ck("regions.crates.shadow.at", 1), sw = ck("regions.crates.shadow.size", 0), sh = ck("regions.crates.shadow.size", 1);
   anim_state_t t; int arriving = anim_get(ANIM_ARRIVAL, "crates", &t), each = ci("events.crateIn.each.ms", 500), stagger = ci("events.crateIn.each.stagger", 250), from = spec_int(C, "events.crateIn.each.from.1", -64);
-  int ys[8], shown[8], landed[8], drawn = 0;
+  int ys[8], shown[8], landed[8], fade[8], fl[8], sent = 0;
   for (int i = 0; i < n; i++) {
-    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); int y = r[1]; shown[i] = 1; landed[i] = 1;
-    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) { shown[i] = 0; landed[i] = 0; } else { int p = e >= each ? 1000 : e * 1000 / each; landed[i] = p == 1000; y = p == 1000 ? r[1] : r[1] + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; } }
-    ys[i] = y; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) drawn++;
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); int y = r[1]; shown[i] = 1; landed[i] = 1; fade[i] = 0; fl[i] = 0;
+    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) { shown[i] = 0; landed[i] = 0; } else { int p = e >= each ? 1000 : e * 1000 / each; landed[i] = p == 1000; if (p < 1000) { fade[i] = 1; fl[i] = 6 + 10 * ease_out(p) / 1000; } y = p == 1000 ? r[1] : r[1] + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; } }
+    ys[i] = y;
+    /* the nodes this place sends inside the clip, as the loop below sends them: the shadow's slot, its fade while it comes in, the crate (a node is sent only for a picture the host has) */
+    if (has(shadow)) sent += 1 + fade[i]; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) sent++;
   }
-  if (!drawn) return;
+  if (!sent) return;
   v_name("crates");
-  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, drawn, 0);   /* the bay's inside: a crate sliding in is cut at its top */
+  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, sent, 0);   /* the bay's inside: a crate sliding in is cut at its top; it holds every node sent after it (the shadows, their fades and the crates) */
   for (int i = 0; i < n; i++) {
     int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r);
-    v_name("crates"); slot(v_fmt("crates.%d.shadow", i), shadow, r[0] + sx, r[1] + sy, sw, sh, landed[i]);   /* the shadow under its crate, from the frame it has landed; kept with no size before */
+    v_name("crates"); slot(v_fmt("crates.%d.shadow", i), shadow, r[0] + sx, r[1] + sy, sw, sh, landed[i]);   /* the shadow under its crate, whole from its landing frame; kept with no size before */
+    if (fade[i]) { v_name("crates"); v_dither_window(v_fmt("crates.%d.shadow.in", i), NULL, 0, 0, shadow, 0, 0, fl[i], r[0] + sx, r[1] + sy, sw, sh); }   /* coming in with its slide, at its place; it never moves with the crate */
     slot(v_fmt("crates.%d", i), v_pstr(v_fmt("regions.crates.places.%d", i)), r[0], ys[i], r[2], r[3], shown[i]);   /* a crate not yet in keeps its node with no size */
   }
 }
