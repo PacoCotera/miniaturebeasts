@@ -47,6 +47,7 @@ This section is the Station's structure: which screens exist, their levels from 
 - **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium".
 - **The Incubator as the bridge.** Research leads in (Create, Cross, an empty Incubator's pod), and the Vivarium leads out (the hatch ends in the meet, one mibi up close). It is reached from Home's column and by those jumps, and its title keeps the Research mark.
 - **The dock's cargo moment is Cargo.** The Caddy's Dock is never a Station key. Docking brings the crates into the bay: Home's Cargo module lights amber, the notice names the crates, and ✓ on the room or the module opens Cargo. The moment itself keeps its name, the arrival: the ribbon, each crate opening and the report card play on Cargo's whole stage ([Cargo](#cargo)). The crates' pods land in the rack, so Pods' collection shows them after. Docked from the play page while the Companion or the bench has the keys, the Station lands where it can be seen: Pods, the Incubator, the Vivarium, one mibi up close with the namer shut, the Library and the Probe bench go to Home with the ring on the room; Home and Cargo play their own arrival; Create or Cross with an unpaid choice, the namer and the Sitting stay where they are, with the plate. A lift never moves the screen (`frame.json` `navigation.dock`).
+- **Shut doors.** No target in play opens a not-built screen: a door to one is shut in place, with no `✓` cap and its screen's shut line (`frame.json` `doors`). Cross is shut until the build's slot 7: "crossing is not open yet". The guide, the card's species word, is shut until slot 8: "the guide is not open yet". The portrait is shut until slot 9: "portraits are not open yet". A found frame in the Library shows the message plate "Its Book is not open yet" on `✓` until slot 8.
 
 ### The frame on every screen
 
@@ -858,7 +859,7 @@ The player sees how much came home, opens it with one press, watches each crate'
 
 ### 4. Art direction
 
-The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
+The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`bark`, `gold` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
 
 ### 5. Composition
 
@@ -880,7 +881,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
+| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
 | `crate` | 296, 120, 432, 272 | The crate closer, the whole case, centred on 512, 24 px under the ribbon and 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
 | Containers | 48×64 at (184, 320), (240, 320), (736, 320), feet on 384, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end dither; the travelling pods draw over them; no digits, never kept |
 | Its pods | 88×112, 104 apart on y 152 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
@@ -892,8 +893,8 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
 | Heading | 88, 32 tall | — | "Home from the field", 20 px medium |
-| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Developer crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "a first look around", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
-| Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
+| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "some of the land explored", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
+| Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon |
 | Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
 | The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
 
@@ -1038,7 +1039,7 @@ Every string on these screens, its zone and its longest case, measured in the re
 | Notice (16 px, 256 after the lamp) | The needs above | an Untuva pod needs more ◆ 224 (the words 204, 4, the 16 px icon); an Untuva pod waits unread 212; three crates wait in the bay 199; meet {name} 204 |
 | Way back (16 px, 68) | Home, Cargo | Cargo 46 |
 | Title (20 px medium, 200) | Home, Cargo | Cargo 58 |
-| Ribbon (20 px medium, 576 inside its pads) | First, Second, Third, Developer crate home | Developer crate home 212 |
+| Ribbon (20 px medium, 576 inside its pads) | First, Second, Third crate home | |
 | Report heading (20 px medium, 528) | Home from the field | 190 |
 | Idle line (16 px, 992) | Idle's lines | {name} is out with the Companion 362 |
 
@@ -1316,7 +1317,6 @@ The Incubator is the bridge between the research and the Vivarium: a bud grown f
 - A wooden base; an embryo inside the ready bud (never an embryo).
 - A code plate on arrival from Create: the code already printed on Create's rule.
 - A ready ring: the screen has one subject and nothing to choose, so ✓ acts on the room, and a ring round the chamber and its base would cross the leaf arcs.
-- Text lines on the empty screen ("The incubator is empty", "Shape a founder from a read pod at Research"): the plaque, the context and `✓ Choose a pod` say it.
 
 ### 3. Placement
 
@@ -1353,7 +1353,7 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 | Plaque | growing `fog`, ready `bone`, empty `fog` | Ready is the brightest word, for across a table; empty never recedes to `mist` |
 | Leaves | Full `sage` with a `sageD` vein; empty an outline in `metal`; the current leaf `sage` rows from its foot | The palette's leaf timer |
 | Stamp label, code | `bone` label with a `slate` edge; code `bone` | A readout |
-| Ribbon | Fill `tealD`, rim `aqua`, words `bone` | The one ribbon look, as on Home and Pods |
+| Ribbon | Fill `bark`, rim `gold`, words `bone` | The one ribbon look, as on Home and Pods |
 
 ### 5. Composition
 
@@ -1541,7 +1541,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | The whole's window | Idle's painting, one a light; until it lands, back `forest`, ground band `clay` with a `sand` top row, foot `soil` | The same place as Home and Idle |
 | Up close: bezel, glass | Home's bezel; the glass the near painting (`vivarium-near-{day,dusk,night}-544x408`), until it lands the same placeholder | The Vivarium close by, at the hour the whole shows |
 | Name tag | `panel`, `hairline` edge, the name `bone` | The kit's small plate |
-| Meet ribbon | `tealD`, `aqua` rim, `bone` words | The one ribbon look |
+| Meet ribbon | `bark`, `gold` rim, `bone` words | The one ribbon look |
 | Card | `panel`, `hairline` edge, `bevel` top; species line and code `bone`, the story `mist`; `mark-guide-16` | The device's readout |
 | Heart | `heart-full-24`: a small painted enamel heart, never a flat emoji heart, no face, no sparkle | A state of the mibi |
 | Notches | `notch-skill-16x24`: one filled notch cut into the card's plate, repeated one to three times | The skill as marks, never a figure |
@@ -2591,7 +2591,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 ### 4. Art direction
 
 - **Room:** the vivarium stays the warm, living thing on screen; the namer is a panel of the device's slate over its card, the report card's look.
-- **One warm signal:** the focus ring. The selection is cool (`tealD`), the caret `bone`, refusals `amber` and only for a moment.
+- **One warm signal:** the focus ring. The selection is cool (`bark`), the caret `bone`, refusals `amber` and only for a moment.
 - **Never childish:** small square keys in a calm grid, letters in Inter 16, no bounce, no colours per letter.
 - **Calm:** nothing moves but the ring and the lift of the focused key; the caret is steady.
 
@@ -2601,7 +2601,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 | --- | --- | --- |
 | Panel | `panel` fill, `hairline` edge, `bevel` top row, drop shadow `void` at (+2, +3) | The report card's look: an instrument readout standing over the scene |
 | Field | Inside `ground`, edge `hairline`; the name `bone` | A recess, as the rack's wells, so the name reads as something held |
-| Selection | `tealD` behind the name | The cool look of the ribbon: selected, not warned |
+| Selection | `bark` behind the name | The cool look of the ribbon: selected, not warned |
 | Caret | `bone`, 2×28, steady | Plain, the same colour as the name |
 | Say line | The reason `mist`; a refused press `amber` for 4 s | Mist informs without nagging; amber is the frame's "needs you" |
 | Keys | `panel` fill, `hairline` edge, `bevel` top; label `bone`; dimmed `mist` | The kit's instrument panel at its smallest |
@@ -2668,7 +2668,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 
 | State | Shows | A character key | ← | The way back slot |
 | --- | --- | --- | --- | --- |
-| Selected (as opened, or a suggestion) | The name on the `tealD` selection, no caret | Replaces the name | Clears it: the field is empty | `← Clear` |
+| Selected (as opened, or a suggestion) | The name on the `bark` selection, no caret | Replaces the name | Clears it: the field is empty | `← Clear` |
 | Typed | The caret after the last character | Appends | Deletes the last character | `← Delete` |
 | Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← {name}` (frame.json nameBack: "Back" when wider than 68 px) |
 

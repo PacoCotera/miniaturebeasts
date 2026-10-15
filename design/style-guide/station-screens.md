@@ -180,7 +180,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 **Vibe.** Research: the work tray.
 
-**Purpose.** Shape a founder and see its cost. **Reads first:** the founder.
+**Purpose.** Create a founder from this pod and see its cost. **Reads first:** the founder.
 
 - **Living window.** The founder large in a specimen chamber at the centre, at 300×310 or larger, rich treatment. Wherever a chapter is unread, that part stays misty: a cool frost over the body, never a guess.
 - **Instrument.** The same chapter rail as on Pods, same order. The opened pod at the left; the empty dome, its leaves and the stamp label at the right. A shapeable trait carries ▲▼ notches and rolls among three pictures (as the pod is, only the first copy, only the second copy); a changed one wears a "changed" tag; a doings trait wears two joined rings and "breed to change"; clashing traits are marked and Grow is withheld.
