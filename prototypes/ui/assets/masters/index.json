@@ -57,6 +57,20 @@
    "sha256": "a6e66e3621481c0c5a56a781b637d4c9bfa6ac6d07ee518abce69e726603bdc4",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "bench-plate-strip-t1-144x48": {
+   "file": "pods/bench-plate-strip-t1-144x48.png",
+   "w": 144,
+   "h": 48,
+   "sha256": "aadf24f64afae389e7eb37463bbc564a5d65d4df4ae48d98be30366abe444479",
+   "signed": "station lead's brief (fix 5 Incubator/Probe): PA1, masters-pods bea42f4d; signed by the AD in the capture"
+  },
+  "bench-plate-strip-t2-192x48": {
+   "file": "pods/bench-plate-strip-t2-192x48.png",
+   "w": 192,
+   "h": 48,
+   "sha256": "9faa9a2e68da31ca3592f2ecf583f49dd0d39ab37254cdec9a794159e78a49f5",
+   "signed": "station lead's brief (fix 5 Incubator/Probe): PA1, masters-pods bea42f4d; signed by the AD in the capture"
+  },
   "bench-plate-whole-32x32": {
    "file": "pods/bench-plate-whole-32x32.png",
    "w": 32,
@@ -3877,8 +3891,8 @@
    "file": "pods/room-bench-stage-incubator.png",
    "w": 1024,
    "h": 522,
-   "sha256": "37c92cbd023977ef3483bdc496ea8d27af1f933a116f8c09c7b3bb7593fac686",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "96c695a0f30fcbeacea19a10790a7dfd15ed32a21ff5723e831102d930ec62e1",
+   "signed": "station lead's brief (fix 5 Incubator/Probe): IA1, masters-pods bea42f4d; signed by the AD in the capture"
   },
   "room-bench-stage-overview": {
    "file": "pods/room-bench-stage-overview.png",
