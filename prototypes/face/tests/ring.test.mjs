@@ -4,13 +4,16 @@
 //   node --test prototypes/face/tests/ring.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { ringMask, tabRingMask, focusRingOps, ringRaster, footprintRing } from "../../ui/rings.mjs";
 import { footprintOf, footprintHeight } from "../../ui/specs/derive.mjs";
+import { encodePNG } from "../../ui/png.mjs";
+import { compare, newBand } from "../tools/focus-diff-mask.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { installScene } from "./node-scene.mjs";
 
@@ -96,4 +99,16 @@ const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 test("no screen or station word writes a ring, tabRing or ellipse op: the holders go through v_faceHolder and the focus ring through the focusRing word", () => {
   for (const dir of ["../src/screens", "../src/vocab/station"]) for (const f of readdirSync(path.resolve(here, dir)).filter((n) => /\.[ch]$/.test(n)))
     assert.doesNotMatch(readFileSync(path.resolve(here, dir, f), "utf8"), /\\"(ring|tabRing|ellipse)\\"/, `${dir}/${f}`);
+});
+test("the focus diff mask: a pair that differs only in the ring's band is ring-only; one pixel outside it is content changed, and exits non-zero unless a reason is listed (which does not make it ring-only)", () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "fdm-")), mk = (name, edit) => { const d = path.join(dir, name); mkdirSync(d); const px = new Uint8Array(1024 * 600 * 4).fill(40); for (let i = 3; i < px.length; i += 4) px[i] = 255; edit?.(px);
+    writeFileSync(path.join(d, "home-cargo-empty.png"), encodePNG(1024, 600, px)); writeFileSync(path.join(d, "states.json"), JSON.stringify({ "home-cargo-empty": { screen: "home", cur: "cargo", rect: [683, 41, 330, 98] } })); return d; };
+  const band = [...newBand("home", "cargo", [683, 41, 330, 98])], set = (px, k, v) => { px[4 * k] = v; px[4 * k + 1] = v; px[4 * k + 2] = v; };
+  const before = mk("b"), onRing = mk("a1", (px) => set(px, band[10], 255)), offRing = mk("a2", (px) => { set(px, band[10], 255); set(px, 300 * 1024 + 300, 255); });
+  const quiet = (f) => { const log = console.log, err = console.error; console.log = console.error = () => {}; try { return f(); } finally { console.log = log; console.error = err; } };
+  const read = (d) => JSON.parse(readFileSync(path.join(d, "verdicts.json"), "utf8"));
+  assert.equal(quiet(() => compare(before, onRing, path.join(dir, "o1"))), 0); assert.equal(read(path.join(dir, "o1"))["home-cargo-empty"].verdict, "ring-only");
+  assert.equal(quiet(() => compare(before, offRing, path.join(dir, "o2"))), 1, "an unlisted content change exits non-zero"); const v = read(path.join(dir, "o2"))["home-cargo-empty"]; assert.equal(v.verdict, "content changed"); assert.deepEqual(v.box, [300, 300, 1, 1]);
+  mkdirSync(path.join(dir, "o3")); writeFileSync(path.join(dir, "o3", "reasons.json"), JSON.stringify({ "home-cargo-empty": "a test" }));
+  assert.equal(quiet(() => compare(before, offRing, path.join(dir, "o3"))), 0, "a listed reason does not fail the run"); assert.equal(read(path.join(dir, "o3"))["home-cargo-empty"].verdict, "content changed", "and does not make it ring-only");
 });

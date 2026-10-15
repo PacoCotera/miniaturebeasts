@@ -5,7 +5,7 @@ import { moveFocus, graphProblem } from "../focus.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
-import { decodePNG } from "../png.mjs";
+import { floorThresholds, FLOOR_SCENES, zoneRange } from "../rings.mjs";
 
 
 const rd = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
@@ -799,25 +799,16 @@ test("fix 14, the shape rule: every focus target has a shape of the five kinds a
 });
 
 // the 2 px floor (§14.4): a creature ring's bands that reach 3:1 against the ground must add up to 2 px in every light. The thresholds come from the palette, never typed.
-const lum = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
-const role = (n) => lum(palette.colours.find(([k]) => k === n)[1]), keyFrom = 3 * (role("void") + 0.05) - 0.05, coreTo = (role("focus") + 0.05) / 3 - 0.05;
-// the ring zones: where a footprint ring can lie, in screen pixels (the walk's feet range ± the ring's half height, its x range ± 5), and the painting under each at the screen position the face draws it
-const SCENES = [{ name: "the Vivarium's whole", file: (l) => `idle-vivarium-${l}-1024x568`, at: [0, -80], zone: [11, 283, 1013, 479] }, { name: "Habitat up close", file: (l) => `vivarium-near-${l}-544x408`, at: [24, 56], zone: [139, 291, 453, 405] },
-  { name: "Home", file: (l) => `home-glass-${l}-640x488`, at: [24, 56], zone: [27, 287, 661, 543] }];
-const masters = rd("../assets/masters/index.json").masters, SHADOW = { rgb: "#1e1a22", alpha: 110 };
+const { keyFrom, coreTo } = floorThresholds(palette);
+const SCENES = FLOOR_SCENES, masters = rd("../assets/masters/index.json").masters;
 function floorProblems(weight) {
   const out = [];
   for (const [light, w] of Object.entries(weight)) {
     if (w !== "light") continue;
     for (const sc of SCENES) {
       const m = masters[sc.file(light)]; if (!m) { out.push(`${light}: no painting ${sc.file(light)}`); continue; }
-      const png = decodePNG(readFileSync(new URL("../assets/masters/" + m.file, import.meta.url))), sh = [1, 3, 5].map((i) => parseInt(SHADOW.rgb.slice(i, i + 2), 16)); let low = 9, at = null;
-      for (let y = sc.zone[1]; y <= sc.zone[3]; y++) for (let x = sc.zone[0]; x <= sc.zone[2]; x++) {
-        const px = x - sc.at[0], py = y - sc.at[1]; if (px < 0 || py < 0 || px >= png.width || py >= png.height) continue;
-        const i = 4 * (py * png.width + px), a = SHADOW.alpha / 255, c = [0, 1, 2].map((k) => Math.round(png.data[i + k] * (1 - a) + sh[k] * a)), L = lum("#" + c.map((v) => v.toString(16).padStart(2, "0")).join(""));
-        if (L < low) { low = L; at = [x, y]; }
-      }
-      if (low < keyFrom) out.push(`${light}: light creature weight under the 2 px floor, darkest ${low.toFixed(4)} at ${sc.name} (${at})`);
+      const { darkest, at } = zoneRange(readFileSync(new URL("../assets/masters/" + m.file, import.meta.url)), sc);
+      if (darkest < keyFrom) out.push(`${light}: light creature weight under the 2 px floor, darkest ${darkest.toFixed(4)} at ${sc.name} (${at})`);
     }
   }
   return out;

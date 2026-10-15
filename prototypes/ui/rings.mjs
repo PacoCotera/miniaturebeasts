@@ -108,3 +108,23 @@ export function ringRaster(ring) {
   }
   const px = new Uint8Array(ring.w * ring.h); for (const op of ring.ops) paint(px, ring.w, ring.h, op); return px;
 }
+
+// ---- the 2 px floor (spec §14.4): the ground under a creature's ring, per light ----
+// A creature ring's key reaches 3:1 on ground at or above luminance keyFrom = 3 (L(void) + 0.05) − 0.05, its core on ground at or below coreTo = (L(focus) + 0.05) / 3 − 0.05; the thresholds come from the palette. The ring zones are
+// where a footprint ring can lie, in screen pixels (the walk's feet range ± half the ring's tallest height, its x range ± 5), over the painting under each at the position the face draws it; the stand-in shadow ink is composited as the worst case.
+import { decodePNG } from "./png.mjs";
+export const luminance = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+export const floorThresholds = (palette) => { const L = (n) => luminance(palette.colours.find(([k]) => k === n)[1]); return { keyFrom: 3 * (L("void") + 0.05) - 0.05, coreTo: (L("focus") + 0.05) / 3 - 0.05 }; };
+export const FLOOR_SCENES = [{ name: "the Vivarium's whole", file: (l) => `idle-vivarium-${l}-1024x568`, at: [0, -80], zone: [11, 283, 1013, 479] }, { name: "Habitat up close", file: (l) => `vivarium-near-${l}-544x408`, at: [24, 56], zone: [139, 291, 453, 405] },
+  { name: "Home", file: (l) => `home-glass-${l}-640x488`, at: [24, 56], zone: [27, 287, 661, 543] }];
+export const STAND_IN_SHADOW = { rgb: "#1e1a22", alpha: 110 };
+// the darkest and brightest ground of a scene's ring zone in a light: { darkest, brightest, at }, from the painting's PNG bytes
+export function zoneRange(pngBytes, scene, shadow = STAND_IN_SHADOW) {
+  const png = decodePNG(pngBytes), sh = [1, 3, 5].map((i) => parseInt(shadow.rgb.slice(i, i + 2), 16)), a = shadow.alpha / 255; let darkest = 9, brightest = -1, at = null;
+  for (let y = scene.zone[1]; y <= scene.zone[3]; y++) for (let x = scene.zone[0]; x <= scene.zone[2]; x++) {
+    const px = x - scene.at[0], py = y - scene.at[1]; if (px < 0 || py < 0 || px >= png.width || py >= png.height) continue;
+    const i = 4 * (py * png.width + px), c = [0, 1, 2].map((k) => Math.round(png.data[i + k] * (1 - a) + sh[k] * a)), L = luminance("#" + c.map((v) => v.toString(16).padStart(2, "0")).join(""));
+    if (L < darkest) { darkest = L; at = [x, y]; } const L0 = luminance("#" + [0, 1, 2].map((k) => png.data[i + k].toString(16).padStart(2, "0")).join("")); if (L0 > brightest) brightest = L0;
+  }
+  return { darkest, brightest, at };
+}
