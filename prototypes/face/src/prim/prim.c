@@ -23,10 +23,10 @@ typedef struct {
   int kind, seen, fresh, born, layer, region, child_k, nchild;
   int x, y, w, h; uint32_t rgb; int a, b;
   lv_image_dsc_t crop;
-  uint8_t *composed; lv_image_dsc_t cdsc; uint32_t ops_hash; int ring;   /* ring: the composed ops drew a ring or tabRing (the test-mode log flags it, fix 14 rule 1) */
+  uint8_t *composed; lv_image_dsc_t cdsc; uint32_t ops_hash; int ring, dd;   /* dd: the ops drew a dash or a dot (the log flags a closed box of them, fix 14 rule 4); ring: the composed ops drew a ring or tabRing (the test-mode log flags it, fix 14 rule 1) */
 } node_t;
 static node_t g_o[MAX_OBJ];
-static int g_n, g_unknown, g_nseq, g_pass = 3;
+static int g_n, g_unknown, g_nseq, g_pass = 3, g_hide = -1;   /* g_hide: a region the test mode hides (fix 14 rule F2 draws the same state without the ring) */
 static uint32_t g_seq[MAX_OBJ];
 static lv_obj_t *g_nursery;
 static char g_text[1024];
@@ -91,12 +91,12 @@ static void put(uint8_t *px, int w, int h, int x, int y, uint32_t rgb) {
   if (x < 0 || y < 0 || x >= w || y >= h) return;
   uint8_t *q = px + (y * w + x) * 4; q[0] = (uint8_t)rgb; q[1] = (uint8_t)(rgb >> 8); q[2] = (uint8_t)(rgb >> 16); q[3] = 255;
 }
-static int g_bad, g_ringdrawn;   /* set when an op argument is not a JSON integer: prim_compose refuses the picture */
+static int g_bad, g_ringdrawn, g_dashdot;   /* set when an op argument is not a JSON integer: prim_compose refuses the picture */
 static int tokint(const char *s, const jsmntok_t *t) { int v = 0; if (t->type != JSMN_PRIMITIVE || !json_int(s + t->start, t->end - t->start, &v)) { g_bad = 1; return 0; } return v; }
 static int skip(const jsmntok_t *t, int i) { int n = t[i].size; i++; for (; n > 0; n--) i = skip(t, i); return i; }   /* the token after the one at i, with its children */
 static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len, jsmntok_t *tok, int ntok);
 int prim_compose(uint8_t *px, int w, int h, const char *ops) {
-  jsmn_parser p; g_bad = 0; g_ringdrawn = 0; jsmn_init(&p);
+  jsmn_parser p; g_bad = 0; g_ringdrawn = 0; g_dashdot = 0; jsmn_init(&p);
   size_t len = strlen(ops); int n = jsmn_parse(&p, ops, len, NULL, 0);
   if (n < 1 || n > 40000 || !json_clean(ops, (int)len)) return -1;
   jsmntok_t *tok = (jsmntok_t *)malloc(sizeof *tok * (size_t)n); if (!tok) return -1;
@@ -117,11 +117,11 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
     if ((nl == 1 && (name[0] == 'h' || name[0] == 'v')) && tok[i].size == 5) {
       if (!COL(3)) return -1; int x = A(0), y = A(1), len = A(2);
       for (int k = 0; k < len; k++) put(px, w, h, x + (name[0] == 'h' ? k : 0), y + (name[0] == 'v' ? k : 0), rgb);
-    } else if (nl == 4 && strncmp(name, "dash", 4) == 0 && tok[i].size == 8) {
+    } else if (nl == 4 && strncmp(name, "dash", 4) == 0 && tok[i].size == 8) {  g_dashdot = 1;
       if (!COL(6)) return -1; int x = A(0), y = A(1), len = A(2), on = A(4), off = A(5), vert = ops[tok[j + 3].start] == 'v';
       if (on <= 0 || off < 0) return -1;
       for (int k = 0; k < len; k++) if (k % (on + off) < on) put(px, w, h, x + (vert ? 0 : k), y + (vert ? k : 0), rgb);
-    } else if (nl == 3 && strncmp(name, "dot", 3) == 0 && tok[i].size == 4) {
+    } else if (nl == 3 && strncmp(name, "dot", 3) == 0 && tok[i].size == 4) {  g_dashdot = 1;
       if (!COL(2)) return -1; put(px, w, h, A(0), A(1), rgb);
     } else if (nl == 7 && strncmp(name, "lattice", 7) == 0 && tok[i].size == 8) {
       int x = A(0), y = A(1), lw = A(2), lh = A(3), mod = A(4), pairs = j + 5;
@@ -268,7 +268,7 @@ void prim_tag(int layer, const char *region) {
 }
 void prim_begin(void) { for (int i = 0; i < g_n; i++) g_o[i].seen = 0; g_unknown = 0; g_nseq = 0; g_clip_left = 0; g_clip_id = 0; g_nreg = 1; g_region = 0; g_layer = LAYER_CHROME; }
 static uint32_t hash_str(const char *s) { uint32_t h = 2166136261u; for (; *s; s++) { h ^= (uint8_t)*s; h *= 16777619u; } return h ? h : 1; }
-static void show(node_t *n) { lv_obj_set_hidden(n->obj, n->layer > (g_pass >= 3 ? LAYER_TYPE : g_pass - 1)); }   /* pass 1 shows chrome, 2 adds art, 3 everything */
+static void show(node_t *n) { lv_obj_set_hidden(n->obj, n->layer > (g_pass >= 3 ? LAYER_TYPE : g_pass - 1) || (g_hide >= 0 && n->region == g_hide)); }   /* pass 1 shows chrome, 2 adds art, 3 everything */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) {
   /* the clip's bookkeeping comes first: a node sent while a clip is open counts against it whether or not it is drawn, so a refused child never leaves the next root node inside the clip;
      a refused clip refuses the children it announced. A clip does not hold a clip. */
@@ -322,7 +322,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
       if (n->w != w || n->h != h || !n->composed) { free(n->composed); n->composed = (uint8_t *)calloc((size_t)w * h, 4); }
       else memset(n->composed, 0, (size_t)w * h * 4);
       if (!n->composed || prim_compose(n->composed, w, h, g_ops) < 0) { g_unknown++; if (n->composed) memset(n->composed, 0, (size_t)w * h * 4); }
-      n->ring = g_ringdrawn;
+      n->ring = g_ringdrawn; n->dd = g_dashdot;
       dsc_of(&n->cdsc, n->composed, w, h, w * 4); lv_image_set_src(o, &n->cdsc); lv_obj_invalidate(o); n->ops_hash = oh;
     }
   }
@@ -367,6 +367,11 @@ void prim_end(void) {
 }
 
 /* ---- test mode: the passes and the logs ---- */
+void prim_set_hide(const char *region) {   /* test mode: hide every node of a region (NULL or "": none), as a layer is hidden by a pass */
+  g_hide = -1; if (region && *region) for (int i = 1; i < g_nreg; i++) if (strncmp(g_reg[i], region, sizeof g_reg[0] - 1) == 0) { g_hide = i; break; }
+  for (int i = 0; i < g_n; i++) show(&g_o[i]);
+  lv_obj_invalidate(lv_screen_active());
+}
 void prim_set_pass(int pass) {
   g_pass = pass < 1 ? 1 : pass > 3 ? 3 : pass;
   for (int i = 0; i < g_n; i++) show(&g_o[i]);
@@ -382,6 +387,13 @@ static int jstr(char *buf, int cap, int *n, const char *s) {   /* a JSON string,
   }
   if (*n + 2 >= cap) return 0; buf[(*n)++] = '"'; return 1;
 }
+/* a composed node whose dash or dot ops left a closed box: each of its four bounding edges is at least half covered (fix 14 rule 4: the focus ring is the one outline) */
+static int closed_box(const node_t *nd) {
+  int w = nd->w, h = nd->h; if (w < 3 || h < 3) return 0; const uint8_t *px = nd->composed; int top = 0, bot = 0, lft = 0, rgt = 0;
+  for (int x = 0; x < w; x++) { if (px[x * 4 + 3]) top++; if (px[((h - 1) * w + x) * 4 + 3]) bot++; }
+  for (int y = 0; y < h; y++) { if (px[(y * w) * 4 + 3]) lft++; if (px[(y * w + w - 1) * 4 + 3]) rgt++; }
+  return 2 * top >= w && 2 * bot >= w && 2 * lft >= h && 2 * rgt >= h;
+}
 int prim_log_json(char *buf, int cap) {
   static const char *LAYERS[] = { "chrome", "art", "painted", "type" };
   int n = 0;
@@ -391,17 +403,17 @@ int prim_log_json(char *buf, int cap) {
   PUT("{\"regions\":[");
   int first = 1;
   for (int r = 1; r < g_nreg; r++) for (int l = 0; l < 4; l++) {   /* one entry a region and layer: the union of its nodes' rects */
-    int x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30), any = 0, ring = 0;
+    int x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30), any = 0, ring = 0, box = 0;
     for (int i = 0; i < g_n; i++) {
       node_t *nd = &g_o[i]; if (!nd->seen || nd->region != r || nd->layer != l || nd->kind == FN_CLIP) continue;
       if (nd->kind == FN_TEXT ? lv_obj_get_width(nd->obj) == 0 : (nd->w == 0 || nd->h == 0)) continue;   /* a node with no size is a slot kept for a step that has not come (§2.2): it draws nothing and is not in its region */
       int ax = nd->x, ay = nd->y; node_t *c = nd->parent ? find_node(nd->parent) : NULL; if (c) { ax += c->x; ay += c->y; }
       int ex = ax + (nd->kind == FN_TEXT ? lv_obj_get_width(nd->obj) : nd->w), ey = ay + (nd->kind == FN_TEXT ? lv_obj_get_height(nd->obj) : nd->h);
       if (c) { if (ax < c->x) ax = c->x; if (ay < c->y) ay = c->y; if (ex > c->x + c->w) ex = c->x + c->w; if (ey > c->y + c->h) ey = c->y + c->h; if (ex <= ax || ey <= ay) continue; }   /* a clip's child counts only where the clip shows it */
-      if (ax < x0) x0 = ax; if (ay < y0) y0 = ay; if (ex > x1) x1 = ex; if (ey > y1) y1 = ey; any = 1; if (nd->kind == FN_COMPOSED && nd->ring) ring = 1;
+      if (ax < x0) x0 = ax; if (ay < y0) y0 = ay; if (ex > x1) x1 = ex; if (ey > y1) y1 = ey; any = 1; if (nd->kind == FN_COMPOSED && nd->ring) ring = 1; if (nd->kind == FN_COMPOSED && nd->dd && nd->composed && closed_box(nd)) box = 1;
     }
     if (!any) continue;
-    PUT("%s{\"id\":", first ? "" : ","); STR(g_reg[r]); PUT(",\"layer\":\"%s\",\"rect\":[%d,%d,%d,%d]%s}", LAYERS[l], x0, y0, x1 - x0, y1 - y0, ring ? ",\"ring\":true" : ""); first = 0;
+    PUT("%s{\"id\":", first ? "" : ","); STR(g_reg[r]); PUT(",\"layer\":\"%s\",\"rect\":[%d,%d,%d,%d]%s%s}", LAYERS[l], x0, y0, x1 - x0, y1 - y0, (ring ? ",\"ring\":true" : ""), box ? ",\"box\":true" : ""); first = 0;
   }
   PUT("],\"type\":[");
   first = 1;

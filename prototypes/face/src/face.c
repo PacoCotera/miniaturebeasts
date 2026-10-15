@@ -151,6 +151,7 @@ int face_test_nap(int i) { return home_test_nap(i); }
 int face_test_close_cell(void) { return habitat_test_cell(); }   /* up close: the close cell shown (−1 − level while it dithers), −100 with no set */
 int face_test_close_lift(void) { return habitat_test_lift(); }
 int face_test_hatch_cell(void) { return incubator_test_cell(); }   /* the hatch: the juvenile's close cell (−50 not shown yet, −1 − level while it dithers) */   /* the residents that stepped in the last face_frame */
+void face_test_hide(const char *region) { prim_set_hide(region); lv_refr_now(g_disp); }   /* a region's nodes hidden at once (the ground frame of fix 14 rule F2) */
 void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
 int face_test_offpalette(void) {
   int bad = 0;

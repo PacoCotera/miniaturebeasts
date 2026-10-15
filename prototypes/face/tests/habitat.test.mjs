@@ -90,7 +90,7 @@ test("the departure check bites: the card moved, a plate off its pitch, a module
 });
 
 test("the namer opens and closes as cuts: the raw dirty area of the opening and of the closing is under the architect's ceilings (panel with its shadow, the ribbon and the tag, the feet ring, the bottom line); opening on a cut moment adds the resident's lifted box; the named flash frames stay under a quarter of the screen; the nodes are gone when it closes", { skip }, async () => {
-  const CEIL = 178_486 + 12_160 + 7_680 + 38_912, WITH_MOMENT = CEIL + 96_064;
+  const CEIL = 178_486 + 12_160 + 8_164 + 38_912, WITH_MOMENT = CEIL + 96_064;   // 237,722 and 333,786: the footprint ring's largest case, (304 + 10) × (16 + 10) = 8,164, where the feet ring's was 7,680 (fix 14, architect)
   const b0 = scene({ meet: true, focus: "resident" }), f = await start(b0); const objects0 = f.objects();
   const b1 = scene({ meet: true, namer: true }); frames(f); assert.equal(dirtyOf(f), 0, "the settled meet: nothing dirty");
   assert.equal(push(f, b1), 0, f.errors().join("; ")); frames(f, 1); const openRects = dirtyRects(f), open = dirtyOf(f), opened = f.objects(); assert.ok(!openRects.some(([x, y]) => x === 0 && y === 0), `the opening redraws nothing at the origin: ${JSON.stringify(openRects.filter(([x, y]) => x === 0 && y === 0))}`); assert.ok(opened > objects0 && opened <= 400, `${opened} objects open`);

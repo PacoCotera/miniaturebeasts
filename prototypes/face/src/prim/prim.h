@@ -55,6 +55,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
 /* Test mode: which layers show (1: chrome; 2: chrome and art; 3: all), and the logs the checks read. */
 void prim_set_pass(int pass);
+void prim_set_hide(const char *region);   /* the nodes of a region hidden (NULL or "": none) */
 void prim_asset_layer(int handle, int layer);
 int prim_asset_layer_of(int handle);   /* the layer the host gave a picture (art or painted; art when it gave none) */
 /* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"table":n,"pictures":n} into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table); returns its length, or -1 if it does not fit. */
