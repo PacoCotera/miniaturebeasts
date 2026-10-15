@@ -8264,13 +8264,13 @@
    16
   ],
   "rect": null,
-  "src": "typed by hand",
-  "made": "the name-line seed glyph: a misty seed (pass 60 values: bone rim lit, fog rim shaded, frostS body, a fog diagonal) with the hidden look's ghost in mist; typed pixel by pixel at this size (never scaled from the large seed); placed 1:1 after the name, top at line y + 2",
+  "src": "marks/fix11/make-line-glyphs.py, typed by rule in the pass 60 family colours",
+  "made": "fix 11 G2: the hides seed redrawn so its ink is 12 wide x 16 tall (body 12 x 14 under a 2 px fog stem): bone rim lit top left, fog rim shaded bottom right, frostS body, the hidden look's ghost in mist lower right, a fog diagonal; placed 1:1 after the name, top at line y + 2",
   "ruling": "pass 60, the art director: the ink ring round the single seed is not needed (ink on the ground is invisible at 1x); the pair keeps its ink overlap stroke. A ruling, not a drift from the signed seed.",
-  "sha256": "5d2480ccc01fab311f73a90c355cd9891f1c6a409f14b400a89533954241fae7",
-  "status": "signed",
-  "signed_in": "pass 61 verdict",
-  "status_note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+  "sha256": "13dd87f2dbc840de1ebf73990d043dc01b8a667ea4548f519cd05dba9579486e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures"
  },
  "mark-line-seed-pair-20x16": {
   "size": [
@@ -8278,13 +8278,13 @@
    16
   ],
   "rect": null,
-  "src": "typed by hand",
-  "made": "the name-line blend glyph: two seeds overlapping as one glyph (the front seed 8 px right of the back one, an ink keyline between); typed pixel by pixel; placed 1:1 after the name, top at line y + 2",
+  "src": "marks/fix11/make-line-glyphs.py, typed by rule in the pass 60 family colours",
+  "made": "fix 11 G2: the blend glyph redrawn as two 12 x 16 seeds overlapping 4 px, the front one right, an ink keyline down the back seed's edge; placed 1:1 after the name, top at line y + 2",
   "ruling": "pass 60, the art director: the ink ring round the single seed is not needed (ink on the ground is invisible at 1x); the pair keeps its ink overlap stroke. A ruling, not a drift from the signed seed.",
-  "sha256": "0bd94a522721d74f9fb156df37e731a09252e01a8225302f8220df37ed3a4203",
-  "status": "signed",
-  "signed_in": "pass 61 verdict",
-  "status_note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+  "sha256": "32ca35ff6b0229ac381ea11db3d7be06f3ce983e3ed3897d7a6bb5ff0b1e985f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures"
  },
  "mark-line-only-16x8": {
   "size": [
@@ -8297,7 +8297,7 @@
   "sha256": "0b4cccdefa46d108fd343bd8a211ccb6ac47d41d11aea769056008feb5a06f28",
   "status": "signed",
   "signed_in": "pass 60 verdict",
-  "status_note": "the stepped plinth: a 2 px fog face, a 3 px mist front, a 1 px stone foot"
+  "status_note": "the stepped plinth: a 2 px fog face, a 3 px mist front, a 1 px stone foot; superseded by mark-line-only-16x16 (fix 11 G1, 10-15): not placed"
  },
  "cell-outline-unread-24x24": {
   "size": [
@@ -15487,6 +15487,19 @@
   "sha256": "20cb709a34c7c9ea1e4abb0f4933c71306be54a86ae2d2948b50e66c45e2efaf",
   "status": "new",
   "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "signed_in": null
+ },
+ "mark-line-only-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "marks/fix11/make-line-glyphs.py, typed by rule in the pass 60 family colours",
+  "made": "fix 11 G1 (new id, replaces mark-line-only-16x8): one seed (12 x 10) standing on the signed plinth's three steps (fog top 10, mist front 14 x 2, stone foot 16); ink 16 x 14, rows 2-15; placed 1:1 after the name, top at line y + 2",
+  "sha256": "162c369faea78c4ecc5cc8c12656c2d420df31457134f3a992a2361053453953",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures",
   "signed_in": null
  }
 }
