@@ -4916,7 +4916,8 @@
   "note": "fix 6 A1 replaced it under leaf-empty-16x20"
  },
  "leaf-empty-16x20": {
-  "status": "new",
+  "status": "signed",
+  "signed_in": "art director, incubator-growing at 1x beside incubator-ready (station-fix6a b515b017)",
   "note": "fix 6 A1"
  },
  "founder-shadow-224x14": {

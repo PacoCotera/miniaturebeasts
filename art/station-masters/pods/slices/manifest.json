@@ -14769,8 +14769,9 @@
   "src": "cut by hand from leaf-full-16x20's own alpha (fix6/), 0 MXN",
   "made": "fix 6 A1: the leaf not grown yet, the full leaf's own silhouette in one flat unlit sageD #5d7a5f, no outline or vein; 1.43:1 on the Incubator wall",
   "sha256": "6f40440f3a15ba5f86419ac5d16c2bcd8930dcfe803d78a085bb8e9afe5b627c",
-  "status": "new",
-  "status_note": "new: signed in the whole incubator-growing capture beside incubator-ready"
+  "status": "signed",
+  "status_note": "signed (art director, 10-15): the wreath reads as leaves still to grow, no dots",
+  "signed_in": "art director, incubator-growing at 1x beside incubator-ready (station-fix6a b515b017)"
  },
  "founder-shadow-224x14": {
   "size": [
