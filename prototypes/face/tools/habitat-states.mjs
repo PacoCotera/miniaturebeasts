@@ -6,11 +6,12 @@
 // Each is reached by the page's own state and asserted (screen, state, ring, namer) before `visit(name, page, fail)` is called. Taken with reduced motion. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
+import { hatched } from "./incubator-states.mjs";
 
 // keys: the namer's presses after it opens ("target" on the namer screen); open: how the namer is opened ("meet" ✓ on the new mibi, "rename" ✓ on the name)
 const SCENES = {
   rest: { shown: 0, f: "resident", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
-  meet: { shown: 0, f: "resident", state: "meet", meet: true, set: (w) => { w.bays(8); w.adults(4); } },
+  meet: { shown: 2, f: "resident", state: "meet", meet: true, set: (w) => { w.bays(8); w.adults(2); w.bud(true); window.__st.openBud(); } },
   out: { shown: 0, f: "name", state: "out", set: (w) => { w.bays(8); w.adults(4); w.carry([0]); w.away(); } },
   card: { shown: 1, f: "plate.0", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[1], fr = window.__st.frameOf("S01"); m.bonded = true; m.notches = 3; m.mem = "pond"; m.from = { ...m.from, of: [window.__st.ST.mibis[0].name, window.__st.ST.mibis[2].name] }; m.read = fr.chapters.filter((c, i) => i !== 0 && !c.sealed).map((c) => c.id); } },
   plate: { shown: 0, f: "plate.1", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[0], fr = window.__st.frameOf("S01"); m.read = fr.chapters.filter((c, i) => i !== 1 && !c.sealed).map((c) => c.id); window.__st.ST.d = 9; } },
@@ -72,6 +73,11 @@ async function stillStates(visit) {
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur, namer: window.__st.props?.overlay?.id ?? null }));
       if (u.screen !== "habitat" || u.state !== sc.state) fail(`habitat-${name}: on ${u.screen}, ${u.state}`);
       if (!!sc.open !== (u.namer === "namer")) fail(`habitat-${name}: the namer is ${u.namer ?? "closed"}`);
+      if (name === "meet") {   // the meet shows the hatched mibi (the new one, index 2), and its name is the Incubator's hatch name when that ran in this process
+        const m = await page.evaluate(() => ({ shown: window.__st.props?.regions?.resident?.name, last: window.__st.ST.mibis[2]?.name, code: window.__st.ST.mibis[2]?.code }));
+        if (m.shown !== m.last || /BUD/.test(m.code)) fail(`habitat-meet: shows ${m.shown}, the new mibi is ${m.last} (code ${m.code})`);
+        if (hatched.name && m.shown !== hatched.name) fail(`habitat-meet: the meet's name ${m.shown} is not the hatch's ${hatched.name}`);
+      }
       await visit("habitat-" + name, page, fail);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
