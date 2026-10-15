@@ -433,7 +433,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-token-S03-nest", 32, 32, "stand-in"], ["c-silhouette-species", 32, 32, "stand-in"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"])]);
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"])]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
   const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
@@ -1226,7 +1226,7 @@ test("species art: the page's embedded pictures are the signed PNGs, pixel for p
   assert.ok(compared === 0 || compared === SPECIES_FILES.length, "all of the signed files or none");
 });
 
-test("species art: each state uses its own master, the cards show it at whole pixels, and what the masters lack keeps the old drawing", () => {
+test("species art: each state uses its own master, the cards show it at whole pixels, glow and nest are the idle, and the silhouette is derived", () => {
   const p = X1.page(), tok = (sp, pose, fr = 0) => p.run(`tokenOf(${sp}, '${pose}', ${fr})`), key = (sp, pose, fr) => { const t = tok(sp, pose, fr); return t && p.run(`SPECIES_ART[${sp}]`) && Array.from(t.p).join(); };
   for (const sp of [0, 1, 2]) {
     for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat"]) assert.ok(tok(sp, pose, 0) && tok(sp, pose, 1), sp + " " + pose);
@@ -1236,8 +1236,10 @@ test("species art: each state uses its own master, the cards show it at whole pi
   }
   assert.equal(key(0, "glow", 0), key(0, "idle", 0)); assert.equal(key(2, "glow", 0), key(2, "idle", 0), "a Loika and an Untuva glow as their idle, as drawn");
   assert.ok(tok(1, "curl") && tok(1, "settle") && !tok(0, "curl") && !tok(2, "settle"), "curl and settle are the Tuikis'");
-  assert.equal(tok(1, "glow"), null); assert.equal(tok(1, "nest"), null, "no master: the old drawing, listed as a stand-in");
-  assert.equal(p.run("creatureArt(1, 'nest', 0).w"), 32); assert.equal(p.run("creatureArt(1, 'nest', 0, 2).w"), 64, "the stand-in still draws at 2×");
+  assert.equal(key(1, "glow", 0), key(1, "idle", 0)); assert.equal(key(1, "nest", 0), key(1, "idle", 0), "a Tuikis' glow and nest are the signed idle, no halo");
+  assert.equal(p.run("creatureArt(1, 'nest', 0, 2).w"), 64);
+  for (const sp of [0, 1, 2]) assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'idle', 0), s = silhouette(${sp}); return a.p.every((v, i) => s.p[i] === (v >= 0 ? C.slate : -1)); })()`), true, "the silhouette is the signed idle's alpha in slate");
+  assert.ok(!/function buildCreature|haloArt/.test(PAGE), "no creature or halo drawn in code");
   for (const sp of [0, 1, 2]) {   // 1×: the token itself; 2×: each pixel twice, nothing else; the mini 12 px
     assert.equal(p.run(`creatureArt(${sp}, 'alert', 0) === tokenOf(${sp}, 'alert', 0)`), true);
     assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'flee', 0), b = creatureArt(${sp}, 'flee', 0, 2); if (b.w !== 64) return false;

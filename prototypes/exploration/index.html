@@ -659,8 +659,6 @@ const CARE_ASSETS = [
   { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
   { id: 'c-sprite-other-32', what: 'a mibi of a species the Companion has no art for: the field partner (1×), the partner card and the Lead card (2×), the active mibi stage (8×)', until: 'the species’ HiBit sprite from the art director (X6, one look)', w: 32, h: 32, status: 'placeholder' },
   { id: 'c-mini-other-12', what: 'the 12 px partner mini of such a mibi: the HUD and the field marker', until: 'the species’ HiBit mini from the art director', w: 12, h: 12, status: 'placeholder' },
-  { id: 'c-token-S03-nest', what: 'the Tuikis glowing (calm for a whole shed) and nesting (idle in a cave): the old code-drawn idle with its halo, in the field', until: 'a signed glow and nest pose, or a ruling that they use the idle', w: 32, h: 32, status: 'stand-in' },
-  { id: 'c-silhouette-species', what: 'the not-yet-identified creature on Cargo’s met row: a flat slate shape of the old code-drawn idle', until: 'a ruling on the unidentified picture', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
@@ -2523,79 +2521,16 @@ function tokenPB(rle, w) {
   return pb;
 }
 // The signed token for a species and pose (fr: the shake and eat frames), or null where the masters have no picture of it:
-// approach is the alert pose (as the old drawing was), glow is the idle pose for a Loika and an Untuva (as the old drawing was);
-// a Tuikis' glow and nest, and the pose names no master covers, stay the old code-drawn stand-in below.
+// approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null.
 function tokenOf(sp, pose, fr) {
   const t = SPECIES_ART[sp]; if (!t) return null;
-  const n = pose === 'approach' ? 'alert' : pose === 'glow' && sp !== 1 ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
+  const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
   return t[n] && n !== 'mini' ? art('tk' + sp + n, () => tokenPB(t[n], 32)) : null;
 }
 const miniArt = sp => SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : null;
 
-// ---------- The old code-drawn creatures (facing right; feet near y = 28·s): now only the stand-in for what the signed pictures do not cover (the register's c-token-S03-nest and c-silhouette-species) ----------
-function buildCreature(sp, pose, fr, s) {
-  s = s || 1; const pb = new PB(32 * s, 32 * s), k = spOf(sp).col;
-  const E = (x, y, rx, ry, c, o) => pb.ell(x * s, y * s, rx * s, ry * s, C[c], o && o.sh ? Object.assign({}, o, { sh: o.sh.map(n => C[n]) }) : o);
-  const Rr = (x, y, w, h, c) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), C[c]);
-  const Pp = (pts, c) => pb.poly(pts.map(([x, y]) => [x * s, y * s]), C[c]);
-  const sh = { sh: [k.light, k.shade] };
-  if (sp === 0) { // Loika: long ears, round body, puff tail
-    const ear = { idle: -.32, alert: -.08, approach: -.08, flee: -1.05, huddle: -1.35, shake: -.7, eat: -.4, glow: -.32 }[pose] ?? -.32;
-    const by = pose === 'huddle' ? 22 : pose === 'flee' ? 21.5 : 21, brx = pose === 'flee' ? 10 : pose === 'huddle' ? 9.6 : 9, bry = pose === 'huddle' ? 6.4 : pose === 'flee' ? 6.6 : 7.2;
-    const earAt = (bx, byy, a) => [bx + Math.sin(a) * 6.5, byy - Math.cos(a) * 6.5];
-    const [e1x, e1y] = earAt(12, by - 5, ear - .12), [e2x, e2y] = earAt(16, by - 6, ear + .1);
-    E(e1x, e1y, 2.5, 7, k.shade, { rot: ear - .12 });
-    E(e2x, e2y, 2.6, 7.2, k.body, { rot: ear + .1, sh: [k.light, k.shade] }); E(e2x, e2y + .5, 1.1, 5, 'pink', { rot: ear + .1 });
-    E(6, by + 1, 2.7, 2.7, 'bone', { sh: ['white', 'fog'] });
-    E(15, by, brx, bry, k.body, sh);
-    E(17, by + 3, 4.6, 2.8, k.light);
-    E(10, 28.2, 2.6, 1.3, k.shade); E(19, 28.2, 2.6, 1.3, k.shade);
-    const ey = pose === 'eat' ? by - 2 : by - 4;
-    Rr(19, ey, 2, 3, 'void'); Rr(19, ey, 1, 1, 'white'); Rr(21, ey + 4, 2, 1, 'pink'); Rr(24, ey + 2, 1, 1, 'pink');
-    if (pose === 'eat') Rr(23, ey + 5, 2, fr ? 1 : 2, 'plumD');
-    pb.outline();
-    if (pose === 'shake') for (const [x, y] of fr ? [[2, 14], [28, 13], [4, 25], [27, 24], [15, 6]] : [[3, 18], [29, 18], [7, 9], [24, 9], [1, 26]]) { Rr(x, y, 1, 2, 'ice'); Rr(x, y, 1, 1, 'white'); }
-  } else if (sp === 1 && (pose === 'curl' || pose === 'settle')) { // Tuikis settling: lowers, then curls into a ball, tail round the front
-    const curl = pose === 'curl';
-    if (!curl) for (let t = 0; t <= 1.001; t += .08) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 3 + t * t * 6, y = (1 - t) ** 2 * 24 + 2 * (1 - t) * t * 25 + t * t * 18; E(x, y, 1.8, 1.8, k.body); }
-    if (!curl) E(6, 16.5, 3, 3, 'gold', { sh: ['yellow', 'bark'] });
-    E(16, curl ? 23 : 24, curl ? 9.5 : 8.5, curl ? 6.5 : 4.4, k.body, sh);
-    Rr(12, curl ? 18 : 21, 2, 1, k.shade); Rr(16, curl ? 17 : 21, 2, 1, k.shade);
-    if (curl) { Pp([[19, 18], [20.5, 14], [22, 18]], k.body); E(21.5, 21, 4.5, 4, k.body, sh); Rr(22, 21, 2, 1, k.dark);
-      for (let t = 0; t <= 1.001; t += .1) E(8 + t * 14, 27.5 - Math.sin(t * Math.PI) * 1.2, 1.6, 1.6, k.shade);
-      E(23.5, 26, 2.4, 2.4, 'gold', { sh: ['yellow', 'bark'] }); }
-    else { Pp([[21, 18], [22.5, 13], [24.5, 17.5]], k.body); Pp([[25, 17.5], [27.5, 13], [28.5, 18]], k.body); E(24, 21, 5, 4.4, k.body, sh);
-      Rr(25.5, 20, 2, 1, k.dark); Rr(28, 22, 1, 1, k.dark); }
-    pb.outline();
-  } else if (sp === 1) { // Tuikis: low body, tail ending in a glowing bulb
-    const up = pose === 'alert' || pose === 'approach' ? -1 : 0, flee = pose === 'flee';
-    for (let t = 0; t <= 1.001; t += .08) { const x = (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 2 + t * t * 4, y = (1 - t) ** 2 * 22 + 2 * (1 - t) * t * 22 + t * t * 12; E(x, y, 1.8, 1.8, k.body); }
-    E(4, 10, 3.4, 3.4, 'yellow', { sh: ['cream', 'gold'] });
-    E(16, 23, flee ? 9.5 : 8.5, flee ? 4.4 : 5, k.body, sh);
-    Rr(13, 19, 2, 1, k.shade); Rr(17, 19, 2, 1, k.shade);
-    Pp([[20, 15 + up], [21.5, 9 + up], [23.5, 14 + up]], k.body); Pp([[24, 14 + up], [26.5, 8.5 + up], [27.5, 14 + up]], k.body);
-    E(23.5, 18 + up, 5.2, 4.7, k.body, sh);
-    Rr(25, 17 + up, 2, 2, k.dark); Rr(25, 17 + up, 1, 1, 'white'); Rr(28, 19 + up, 1, 1, k.dark);
-    Rr(11, 27, 2, 2, k.shade); Rr(19, 27, 2, 2, k.shade);
-    pb.outline();
-    if (pose === 'glow' || pose === 'nest') { const r0 = fr ? 4.6 : 5.6, r1 = fr ? 7 : 8;
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 14; x++) { const d = Math.hypot(x + .5 - 4, y + .5 - 10); if (d > r0 && d < r1 && (x + y) % 2 === 0 && pb.get(x * s, y * s) < 0) Rr(x, y, 1, 1, 'cream'); } }
-  } else { // Untuva: round body under a wide spotted cap
-    const big = pose === 'eat' && fr;
-    E(16, 22, 7.6, 6.8, k.body, sh);
-    E(16, 15.5, 11.5, 7, 'amber', { sh: ['cream', 'orange'], clip: (x, y) => y < 16.5 * s });
-    Rr(6, 16, 20, 1, 'rust');
-    E(10.5, 11.5, 1.7, 1.4, 'bone'); E(17, 9.5, 2.1, 1.6, 'bone'); E(22.5, 12.5, 1.5, 1.2, 'bone');
-    Rr(16, 19, 2, 2, k.dark); Rr(16, 19, 1, 1, 'white'); Rr(20, 19, 2, 2, k.dark); Rr(20, 19, 1, 1, 'white');
-    Rr(14, 23, big ? 3 : 2, big ? 2 : 1, 'pink'); if (pose === 'eat') Rr(19, 24, 2, 1, k.dark);
-    E(12, 28.2, 2.4, 1.3, k.shade); E(20, 28.2, 2.4, 1.3, k.shade);
-    pb.outline();
-  }
-  return pb;
-}
-const standInArt = (sp, pose, fr, s) => art('cr' + sp + pose + (fr ? 1 : 0) + 's' + (s || 1), () => buildCreature(sp, pose, fr, s));
-// A mibi's picture at s× (1 field, 2 cards): the signed token, else its stand-in.
-function creatureArt(sp, pose, fr, s) { const t = tokenOf(sp, pose, fr); return !t ? standInArt(sp, pose, fr, s) : (s || 1) === 1 ? t : upArt('tk' + sp + pose + (fr ? 1 : 0), t, s); }
+// A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
+function creatureArt(sp, pose, fr, s) { const t = tokenOf(sp, pose, fr) || tokenOf(sp, 'idle', 0); return (s || 1) === 1 ? t : upArt('tk' + sp + pose + (fr ? 1 : 0), t, s); }
 
 // The pawn: a small explorer in a hooded orange wetsuit, cream face opening, dark belt with a lantern at the hip.
 // Rounded torso: narrow shoulders, a waist under the chest, a round hip line; walk frames lift one leg and swing the arms.
@@ -4026,7 +3961,8 @@ function card(x, y, w, h, sel, enabled) {
   if (sel) { panel(x + 1, y + 1, w - 2, h - 2, enabled ? C.paper : C.slate, C.orange); brackets(x - 6, y - 6, w + 12, h + 12, C.amber); }
 }
 function weatherIcon(x, y, lit) { blit(ICON.cloud(lit ? 1 : 0), x - 15, y - 14); blit(ICON.bolt(lit ? 'yellow' : 'mist'), x - 2, y); }
-const silhouette = sp => art('sil' + sp, () => { const a = standInArt(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate; return pb; });
+const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate;   // the signed idle's own alpha, filled slate
+  return pb; });
 // The expedition choice: a status strip, two expedition cards with living icons, the partner as a card, and a
 // world preview (the whole-map inset with the last start flagged).
 function drawSetup(t) {
@@ -4353,7 +4289,6 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
   return pb; }); }
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
 const bigArt = (sp, pose, fr) => upArt('cr' + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr), BIG);
-const haloArt = () => art('halo', () => { const pb = new PB(300, 220); pb.ell(150, 110, 148, 108, C.cream, { chk: 1 }); return pb; });
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
 // A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
@@ -4408,7 +4343,6 @@ function drawActive(t) {
     const L = RT.look; if (!L || L.id !== m.id || RT.lookN !== RT.frameN - 1 || h) RT.look = { id: m.id, at: NOW, n: (L ? L.n : 0) + 1 };
     RT.lookN = RT.frameN;
     if (!h && !sp) { const o = lookOut(hash(S.seed, 'look', m.id, RT.look.n), NOW - RT.look.at); flip = o.flip; if (o.on) { pose = 'alert'; fr = 0; } } }
-  if (sp && m.sp === 1) blit(haloArt(), 75, 60);   // a Tuikis glows
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
