@@ -3827,7 +3827,7 @@ function drawMessage() {
 const cen = (pb, x, y) => blit(pb, x + ((32 - pb.w) >> 1), y + ((32 - pb.h) >> 1));
 const cen2 = (key, pb, x, y) => cen(upArt('sg' + key, pb, 2), x, y);
 const onGrass = (x, y, f) => { R(x, y, 32, 32, C.grass); f(); };
-// The shelter sign's picture: the art director's signed 32×32 on the core 48 (art/companion-48/signs/sign-shelter-32.png, sha256 bf8c1827f8d042aae7778c4a2212f958bb8ab8f1de8b8dcd8c6c7add710b4edf), copied one character per pixel: '.' clear, else the palette index + 48.
+// The shelter sign's picture: art/companion-48/signs/sign-shelter-32.png (32×32 on the core 48, sha256 bf8c1827f8d042aae7778c4a2212f958bb8ab8f1de8b8dcd8c6c7add710b4edf), copied one character per pixel: '.' clear, else the palette index + 48.
 // Regenerate these rows from the file if it is ever re-signed; never edit them by hand (a test compares them with the file).
 const SHELTER_ROWS = [
   'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
