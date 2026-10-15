@@ -29,11 +29,11 @@ const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e =
 // o: { minutes (into the wait), pod (a pod in the rack, no bud), open (the bud opened: the hatch), grow (a growNow snapshot), cross }
 function scene(o = {}) {
   const st = world(), id = "S01"; S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); frameOf(id).chapters.slice(0, o.read ?? 1).forEach((c) => S.read(st, p, c.id, settings));
-  let now = T0, ui = { inc: {} }, lamp = o.lamp ?? "";
+  let now = T0, ui = { inc: {} };
   if (!o.pod) { const r = S.grow(st, p, {}, settings, T0); assert.ok(r.ok); now = T0 + (o.minutes ?? 2) * 60000; }
   if (o.open) { const B = st.bud, r = S.openBud(st, {}, settings, now); assert.ok(r.ok); ui.inc.hatch = { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: B.kind, parents: null }; }
   if (o.grow) ui.inc.grow = o.grow(st, now);
-  return { ...incubatorBuild({ st, settings, now, ui, lamp }, incSpec, podsSpec), st, now };
+  return { ...incubatorBuild({ st, settings, now, ui }, incSpec, podsSpec), st, now };
 }
 const frameProps = (line = {}, top = {}) => ({ top: { screen: "incubator", title: "Incubator", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null }, ...top }, line: { back: null, need: "", ...line }, plate: { text: "", timed: false } });
 
@@ -64,7 +64,7 @@ const area = (f, o) => dirty(f, o);
 
 const colourIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
 const SC = {
-  "empty (a pod in the rack)": { pod: true }, "growing, the first half": { minutes: 2 }, "growing, the second half": { minutes: 13.2 }, "ready": { minutes: 30 }, "ready, the waiting lamp": { minutes: 30, lamp: "waiting" },
+  "empty (a pod in the rack)": { pod: true }, "growing, the first half": { minutes: 2 }, "growing, the second half": { minutes: 13.2 }, "ready": { minutes: 30 },
   "the hatch's end state": { minutes: 30, open: true },
 };
 for (const [name, o] of Object.entries(SC)) {
@@ -149,12 +149,6 @@ test("the hatch: the bud is the ready picture with its shape and its front until
   for (const ms of [1300, 1600, 2000, 2400]) { at(ms); assert.equal(top(ms), jy, `${ms} ms: standing`); }
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
-test("the hatch's waiting lamp: home-lamp-sky-12x12 at its rect while the painting is on its way, a node with no size otherwise", { skip }, async () => {
-  const on = scene({ minutes: 30, lamp: "waiting" }), off = scene({ minutes: 30 });
-  assert.equal(on.props.regions.lamp.on, true); assert.equal(off.props.regions.lamp.on, false); assert.equal(on.props.regions.lamp.picture, off.props.regions.lamp.picture);
-  const f = await start(on), lg = logOf(f); assert.deepEqual(region(lg, "lamp").rect, R.base.lamp.rect.length === 4 ? R.base.lamp.rect : null);
-  const g = await start(off); assert.equal(logOf(g).regions.some((r) => r.id === "lamp" && r.rect[2] > 0), false);
-});
 
 // ---- the keys ----
 test("keys: ✓ ← and the room keys say their intent on the room, the pad says nothing; a hold says only a room key", { skip }, async () => {
@@ -179,7 +173,7 @@ test("no refresh redraws more than a quarter of the screen across the hatch (fra
 test("growNow with reduced motion is one cut on the key's frame: the leaves, the tabs and the ready state in one refresh of at most 162,432 px", { skip }, async () => {
   const before = scene({ minutes: 13.2 }), f = await start(before, { motion: false, t0: 1000, top: { materials: { e: 9, d: 10, s: 9 } } });   // the grow spends ◆ 4 (10 → 6): the top bar changes and flashes with the line, as on the page
   const after = scene({ minutes: 13.2, grow: undefined }); const st = after.st; S.instantGrow(st, settings, after.now);
-  const b2 = incubatorBuild({ st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
+  const b2 = incubatorBuild({ st, settings, now: after.now, ui: { inc: {} } }, incSpec, podsSpec);
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line, { materials: { e: 9, d: 6, s: 9 }, flash: { d: true } }) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f), n = f.M._face_dirty_count();
   assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# the Incubator's growNow cut (motion off, ◆ 10→6 and the flash), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%) in ${n} flushes, ${f.invOverflows()} overflows`); assert.ok(a <= 162432, `dirty ${a}`);
@@ -189,7 +183,7 @@ test("growNow with motion on: the props show the bud as it was until 400, then t
   const b = scene({ minutes: 13.2 }), L = b.props.regions.leaves, f = await start(b, { t0: 1000 }), t0 = f.t;
   f.send({ t: "event", kind: "growNow", target: "room", from: L.full, to: L.total, ms: EV.growNow.ms, hold: EV.growNow.hold }); for (let t = 16; t < 400; t += 16) f.frame(t0 + t);
   const after = scene({ minutes: 13.2 }); S.instantGrow(after.st, settings, after.now);
-  const b2 = incubatorBuild({ st: after.st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
+  const b2 = incubatorBuild({ st: after.st, settings, now: after.now, ui: { inc: {} } }, incSpec, podsSpec);
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame(t0 + 400); const a = area(f);
   console.log(`# the Incubator's growNow, ready at 400 (motion on): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 153600, `dirty ${a}`); assert.deepEqual(f.errors(), []);
@@ -209,7 +203,7 @@ setMoving(MSETS);
 async function hatchMoving({ motion = true, id = "S01" } = {}) {
   const st = world(); S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); S.read(st, p, frameOf(id).chapters[0].id, settings);
   assert.ok(S.grow(st, p, {}, settings, T0).ok); const now = T0 + 30 * 60000, r = S.openBud(st, {}, settings, now); assert.ok(r.ok);
-  const b = incubatorBuild({ st, settings, now, ui: { inc: { hatch: { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null } } }, lamp: "", motionSets: true }, incSpec, podsSpec);
+  const b = incubatorBuild({ st, settings, now, ui: { inc: { hatch: { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null } } }, motionSets: true }, incSpec, podsSpec);
   assert.ok(b.props.regions.juvenile.moving, "the juvenile names its close atlas");
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["incubator", incSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0); assert.equal(sendMoving(f), 0, f.errors().join("; "));

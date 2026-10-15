@@ -25,7 +25,7 @@
     "rects": { "3 adults": [[424, 360, 144, 152], [472, 360, 144, 152], [520, 360, 144, 152]] },
     "ink": { "max": [96, 88], "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY in its box: at most [footX − 48, 424, 96, 88]. Three sit on the 192 px bed, 16 px or more inside the glass", "rects": { "3": [[448, 424, 96, 88], [496, 424, 96, 88], [544, 424, 96, 88]] } },
     "order": "the bed first, then its mark (away only), then the sleepers right to left: the first carried is drawn last, in front",
-    "mark": null, "markNote": "no mark on a sleeper: the nap pose and the context (strings.subjects.sleeper, \"…, asleep\") say it; its waiting lamp at its box's top right, as a resident's", "lift": 0,
+    "mark": null, "markNote": "no mark on a sleeper: the nap pose and the context (strings.subjects.sleeper, \"…, asleep\") say it;", "lift": 0,
     "focus": "each sleeper is a resident target (focus.targets.resident), with the feet ring and no lift"
    },
    "states": { "docked": "the nest, then one to three sleepers, the carried set (carriedIds) in carried order", "away": "the bed empty, its mark (home-bed-mark-16x24) 1:1 at markRect over it; docked and none: no mark", "none": "docked with nobody carried: the nest alone" },
@@ -63,7 +63,7 @@
    "rect": [688, 256, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
    "leaves": { "at": [200, 8, 88, 72], "rect": [888, 264, 88, 72], "component": "leaves", "form": "grid", "leaf": [8, 12], "filling": "the filling leaf, leaf `full` while full < total: the empty picture, then over it the full picture clipped from the bottom to its lowest p rows of 12, p = floor(rows × 12 / 20) (0 to 11), whole pixels; rows is stepped every 3 s by the view (incubator.json leaves.props), the face redraws the 8×12 box only when p changes", "pitch": 11, "perRow": 8, "rowPitch": 14, "rows": 5, "max": 40, "pictures": { "empty": "leaf-empty-8x12", "full": "leaf-full-8x12" }, "place": "leaf i at (888 + 11 × (i mod 8), 264 + 14 × floor(i / 8)): the last ink at x 973 and y 332", "count": "one a minute the bud will take, up to 40 (create.json regions.leaves.count)", "props": "{ total, full, rows }" },
-   "states": { "empty": "the chamber dark, no leaves, lamp off", "growing": "the bud in the chamber, its leaves filling, lamp well", "ready": "every leaf full, lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
+   "states": { "empty": "the chamber dark, no leaves, lamp off", "growing": "the bud in the chamber, its leaves filling, lamp well", "ready": "every leaf full, lamp needsYou" }
   },
   "probe": {
    "rect": [688, 360, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
@@ -80,10 +80,10 @@
  },
  "lamps": {
   "pictures": "frame.json regions.marks.lamp12, by state",
-  "rule": "one 12×12 lamp per module at (984, module.y + 12); drawn 1:1 as the picture of its state, the ids in one table, frame.json `regions.marks.lamp12` (off home-lamp-hairline-12x12, well home-lamp-sprout-12x12, waiting home-lamp-sky-12x12, needsYou home-lamp-amber-12x12), which the frame's need lamp (needsYou) and the residents' and sleepers' waiting lamp (waiting) read too; amber (needsYou) on one module at most: the module the room's ✓ acts on (strings.needs). The meet lights no module: the notice and the room's ✓ say it",
+  "rule": "one 12×12 lamp per module at (984, module.y + 12); drawn 1:1 as the picture of its state, the ids in one table, frame.json `regions.marks.lamp12` (off home-lamp-hairline-12x12, well home-lamp-sprout-12x12, waiting home-lamp-sky-12x12, needsYou home-lamp-amber-12x12), which the frame's need lamp (needsYou) reads too; amber (needsYou) on one module at most: the module the room's ✓ acts on (strings.needs). The meet lights no module: the notice and the room's ✓ say it",
   "cargo": { "off": "nothing in the bay ready to open; pods waiting for a well show the waiting mark, and the lamp stays off", "needsYou": "a crate is ready to open (walk crates while docked, a ready sitting crate) and that is the most pressing notice" },
   "pods": { "off": "the rack is empty and no pod waits for a well", "well": "pods in the rack", "needsYou": "a new pod, a glinting pod, pods waiting for a well, a pod that could grow or one waiting to be read is the most pressing notice" },
-  "incubator": { "off": "empty", "well": "a bud growing", "waiting": "the hatched mibi's painting is on its way", "needsYou": "the bud is ready" },
+  "incubator": { "off": "empty", "well": "a bud growing", "needsYou": "the bud is ready" },
   "probe": { "off": "away", "well": "docked" },
   "library": { "off": "no species found", "well": "species in the journal" }
  },

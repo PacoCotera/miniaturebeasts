@@ -28,7 +28,6 @@ function scene(o = {}) {
   const st = world(); for (let left = o.adults ?? 4, seed = 5; left > 0; left -= 6, seed += 100) S.seedAdults(st, "S01", seed, Math.min(6, left), settings);   // at most six a call
   for (const m of st.mibis) m.paint = { state: "landed" };
   if (o.young) { S.seedAdults(st, "S01", 77, o.young, settings); for (const m of st.mibis.slice(-o.young)) { m.born = st.turn; m.paint = { state: "landed" }; } }
-  for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };
   if (o.away) st.dock = { docked: false, at: T0 }; if (o.bud) st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })), mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   return idleBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day" }, frameSpec);
@@ -49,14 +48,13 @@ const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for 
 
 const SCENES = {
   "docked, two asleep, crates": { adults: 4, young: 2, carry: [0, 1], crates: 2 }, "away, one out": { adults: 4, young: 2, carry: [0], away: true }, "nobody carried, a bud": { adults: 3, bud: true }, "empty": { adults: 0 },
-  "twelve walking": { adults: 12 }, "three asleep": { adults: 5, carry: [0, 1, 2], young: 1 }, "waiting lamps": { adults: 4, waiting: 2 },
+  "twelve walking": { adults: 12 }, "three asleep": { adults: 5, carry: [0, 1, 2], young: 1 },
 };
 for (const [name, o] of Object.entries(SCENES)) test(`Idle, ${name}: draws without an error or a refusal inside the budgets, with no region leaving frame.json's rectangles and no frame`, { skip }, async () => {
   const b = scene(o), f = await start(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
   const lg = logOf(f); assert.deepEqual(departures(lg, frameSpec), []);
   const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
   assert.ok(JSON.stringify(b.props).length < 32 * 1024);
-  if (name === "waiting lamps") assert.equal(b.props.regions.residents.filter((r) => r.waiting).length, 0, "no resident shows a waiting lamp, whatever its painting's state (Grow paints nothing)");
 });
 test("the departure check bites: a resident leaving the walk ground, the strip moved, a ring and a frame word are each found", { skip }, async () => {
   const f = await start(scene({ adults: 3, crates: 1 })), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, frameSpec); };
@@ -99,7 +97,7 @@ test("the same props on the same clock give the same hash; with motion off the r
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200)); assert.equal(await run(8000, false), await run(40, false), "motion off: nothing moves");
 });
 // the bays hold twelve in all, so with three asleep on the bed at most nine walk
-const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "twelve, three waiting": { adults: 12, waiting: 3 }, "nine adults, three asleep": { adults: 12, carry: [9, 10, 11] }, "three adults and six juveniles, three asleep": { adults: 6, young: 6, carry: [3, 4, 5] }, "nine, three waiting, three asleep": { adults: 12, waiting: 3, carry: [9, 10, 11] } };
+const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "nine adults, three asleep": { adults: 12, carry: [9, 10, 11] }, "three adults and six juveniles, three asleep": { adults: 6, young: 6, carry: [3, 4, 5] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) test(`the walk on Idle, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
   const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0, lateArea = 0, ordinary = 0;
   for (let t = step + off, k = 0; t < 120000; t += step, k++) {

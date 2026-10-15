@@ -55,8 +55,6 @@ export function incubatorBuild(m, spec, pods) {
   }
   regions.base = { picture: slot(req, "base-336x96", R.base.rect, signed) };
   regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
-  const waiting = (state === "hatch" || state === "ready") && (m.lamp === "waiting" || m.lamp === "offline");   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
-  regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp };   // the lamp's node is there in every state
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon
   if (state !== "empty") {
     const known = hatch ? mb.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? mb.genome : B.genome, sz = stampSizing(fr, g);
@@ -85,7 +83,7 @@ export function incubatorBuild(m, spec, pods) {
       const noBay = S.bayFull(st, settings);
       line = { ok: Sg.open, back: Sg.back, subject: bud, need: noBay ? Sg.noBay : null }; if (noBay) line.dim = true;   // a dimmed cap when no bay is free: a guard only
     }
-  } else line = { ok: null, back: Sg.back, subject: regions.lamp.why === "offline" ? Sg.offline : regions.lamp.why === "waiting" ? Sg.painting : "", need: null };
+  } else line = { ok: null, back: Sg.back, subject: "", need: null };
   const props = { state, regions, focus: { cur: "room", targets: [] } };
   return { props, line, requests };
 }

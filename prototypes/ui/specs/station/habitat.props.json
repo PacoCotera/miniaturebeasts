@@ -189,7 +189,6 @@
       "name",
       "stage",
       "picture",
-      "waiting",
       "out"
      ],
      "additionalProperties": false,
@@ -209,9 +208,6 @@
       },
       "picture": {
        "type": "string"
-      },
-      "waiting": {
-       "type": "boolean"
       },
       "out": {
        "type": "string"

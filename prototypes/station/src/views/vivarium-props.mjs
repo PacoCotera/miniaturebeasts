@@ -44,9 +44,8 @@ export function vivariumBuild(m, spec, frame, home) {
   let line = { ok: null, subject: Sg.empty, back: Sg.back, need: null };
   if (cur !== "room") {
     const id = +cur.slice(cur.indexOf(".") + 1), mb = S.mibiById(st, id), isOut = !!mb && out(mb), sl = asleep.has(String(id));
-    const wait = !!mb && !isOut && lw.residents.concat(lw.sleepers).find((p) => p.id === String(id))?.waiting;
     const words = { a: mb ? S.aAn(stageWord(mb)).split(" ")[0] : "", stage: mb ? stageWord(mb) : "", species: mb ? S.spName(mb) : "" };
-    const subject = isOut ? Sg.out : wait ? Sg.painting : fill(sl ? Sg.sleeper : Sg.resident, words);
+    const subject = isOut ? Sg.out : fill(sl ? Sg.sleeper : Sg.resident, words);
     line = { ok: mb ? fill(Sg.look, { name: mb.name }) : null, subject, back: Sg.back, need: null };
   }
   return { props: { state, regions, focus }, line, requests };

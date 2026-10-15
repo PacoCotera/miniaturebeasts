@@ -64,7 +64,7 @@ test("the state: rest, meet (the new mibi until its first press), out (with the 
   const S0 = scenes();
   assert.equal(build(S0.rest.w, S0.rest.sv).props.state, "rest");
   { const b = build(S0.meet.w, S0.meet.sv, S0.meet.over).props; assert.equal(b.state, "meet"); assert.ok(b.regions.meetRibbon.text.startsWith("Meet ")); assert.ok(!b.focus.targets.some((t) => t.id === "name"), "the ribbon stands in the tag's place: not a target"); assert.ok(b.focus.targets.some((t) => t.id === "resident")); assert.equal(b.focus.cur, "resident"); }
-  { const b = build(S0.out.w, S0.out.sv).props, R = b.regions.resident; assert.equal(b.state, "out"); assert.equal(R.picture, ""); assert.equal(R.out, "mark-out-with-companion-64x96"); assert.equal(R.waiting, false); assert.ok(!b.focus.targets.some((t) => t.id === "resident")); assert.equal(b.focus.cur, "name", "out: the ring on the name");
+  { const b = build(S0.out.w, S0.out.sv).props, R = b.regions.resident; assert.equal(b.state, "out"); assert.equal(R.picture, ""); assert.equal(R.out, "mark-out-with-companion-64x96"); assert.equal(R.waiting, undefined); assert.ok(!b.focus.targets.some((t) => t.id === "resident")); assert.equal(b.focus.cur, "name", "out: the ring on the name");
     assert.equal(b.regions.cross.state, "out"); assert.equal(b.regions.tiles.items[0].state, "out"); assert.equal(b.regions.tiles.items[0].shown, true); }
   assert.equal(build(S0.rest.w, S0.rest.sv, { meetId: 999 }).props.state, "rest", "a meet for another mibi is not this one's");
 });
@@ -133,11 +133,10 @@ test("the strip: a tile a bay, the housed mibis in bay order then the free bays,
   assert.equal(build(S0.twelve.w, S0.twelve.sv).props.regions.tiles.items.length, 12);
 });
 
-test("the window: the near Vivarium of the light, its master named by habitat.json light.pictures; the resident's picture the mibi at the box; no waiting lamp whatever the painting's state (Grow paints nothing)", () => {
+test("the window: the near Vivarium of the light, its master named by habitat.json light.pictures; the resident's picture the mibi at the box; no lamp field (Grow paints nothing)", () => {
   const { w, sv } = scenes().rest;
   for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }); assert.equal(b.props.regions.glass.picture, `vivarium-near-${light}-544x408`); assert.ok(b.requests.some((r) => r.id === `vivarium-near-${light}-544x408` && r.kind === "slot")); }
-  const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${genomeDigest(m.genome)}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, false);
-  m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, false); assert.notEqual(x.line.subject, spec.strings.painting);
+  const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${genomeDigest(m.genome)}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, undefined, "no waiting field");
 });
 
 test("the bottom line: the resident greets (in the meet it names), the name renames, the species word opens the guide, a tile reads as its mibi; ← Vivarium", () => {

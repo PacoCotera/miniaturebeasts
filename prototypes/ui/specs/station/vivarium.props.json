@@ -8,7 +8,6 @@
     "name",
     "stage",
     "picture",
-    "waiting",
     "seed"
    ],
    "additionalProperties": false,
@@ -28,9 +27,6 @@
     },
     "picture": {
      "type": "string"
-    },
-    "waiting": {
-     "type": "boolean"
     },
     "seed": {
      "type": "integer"

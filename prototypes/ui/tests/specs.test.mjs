@@ -234,12 +234,12 @@ test("the Incubator spec file agrees with the Incubator wireframes, region by re
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
   for (const k of ["rail", "leaves", "dome", "nest", "bud", "base", "plaque", "stamp", "code"]) is(R[k].rect, k);
   for (const k of ["dome", "nest", "base", "plaque"]) is(R[k].rect, k + " (empty)", E);
-  is(R.bud.shape.rect, "the shape in the ready bud", Y); is(R.base.lamp.rect, "the waiting lamp", Y); is(R.ribbon.rect, "ribbon", H); is(R.juvenile.rect, "juvenile", H);
+  is(R.bud.shape.rect, "the shape in the ready bud", Y); is(R.ribbon.rect, "ribbon", H); is(R.juvenile.rect, "juvenile", H);
   lintRegions(inc); assert.deepEqual(inc.states, ["empty", "growing", "ready", "hatch"]); assert.deepEqual(inc.rules.needed, []); assert.ok(inc.rules.used.includes("leafArc"));
   assert.equal(R.leaves.component, "leaves"); assert.equal(R.leaves.form, "arc"); assert.deepEqual(R.leaves.layout, ["leafArc"]); assert.deepEqual(R.leaves.leaf, [16, 20]); assert.equal(R.leaves.max, 2 * R.leaves.leafArc.perArc);
   assert.deepEqual(R.rail.rect, [512 - run(6) / 2, frame.regions.rail.y, 832, frame.regions.rail.h]);
   assert.deepEqual([R.bud.rect[0] + R.bud.rect[2] / 2, R.bud.rect[1] + R.bud.rect[3] / 2], R.leaves.leafArc.centre, "the arcs centred on the bud");
-  assert.ok(inside(R.bud.shape.rect, R.bud.rect)); assert.ok(R.bud.shape.ink.every((n, i) => n <= R.bud.shape.rect[2 + i])); assert.ok(inside(R.bud.rect, R.dome.rect)); assert.ok(inside(R.nest.rect, R.dome.rect)); assert.ok(inside(R.plaque.rect, R.base.rect)); assert.ok(inside(R.base.lamp.rect, R.base.rect)); assert.ok(inside(R.base.footLight.rect, R.base.rect));
+  assert.ok(inside(R.bud.shape.rect, R.bud.rect)); assert.ok(R.bud.shape.ink.every((n, i) => n <= R.bud.shape.rect[2 + i])); assert.ok(inside(R.bud.rect, R.dome.rect)); assert.ok(inside(R.nest.rect, R.dome.rect)); assert.ok(inside(R.plaque.rect, R.base.rect)); assert.ok(inside(R.base.footLight.rect, R.base.rect));
   assert.ok(R.base.rect[1] + R.base.rect[3] <= 552, "the base inside the stage's content");
   assert.ok(R.stamp.rect[0] - (R.dome.rect[0] + R.dome.rect[2]) >= 96, "the stamp 96 px or more from the dome"); assert.deepEqual(R.stamp.rect.slice(2), [120, 120]);
   assert.equal(R.code.rect[0] + R.code.rect[2] / 2, R.stamp.rect[0] + R.stamp.rect[2] / 2); assert.ok(R.code.rect[2] >= 171, "the widest code fits");
@@ -351,7 +351,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   const NT = R.card.notches; assert.deepEqual(atRect(R.card.rect, NT.at), NT.rect); assert.ok(inside(NT.rect, R.card.rect) && gapOk(NT.rect, R.code.rect) && apart(NT.rect, R.stamp.rect), "the notches clear of the code and the stamp");
   for (const [n, xs] of Object.entries(NT.places)) { assert.equal(xs.length, +n); assert.equal(xs.at(-1)[0] + NT.notch[0], NT.right); xs.forEach(([x, y], i) => { assert.ok(inside([x, y, ...NT.notch], NT.rect)); if (i) assert.equal(x - xs[i - 1][0], NT.pitch); }); }
   assert.ok(!("0" in NT.places), "nothing at zero"); for (const [x, y] of NT.places[2]) is([x, y, ...NT.notch], "a notch"); assert.equal(R.code.rect[2], 152, "the code's box holds WWW WWW WWW (152 at 16 px)");
-  is(R.meetRibbon.rect, "meet ribbon", M); is(R.resident.lamp.rect, "waiting lamp", M);
+  is(R.meetRibbon.rect, "meet ribbon", M);
   lintRegions(hab); assert.deepEqual(hab.states, ["rest", "meet", "out"]); assert.deepEqual([hab.section, hab.level, hab.strings.title, hab.strings.back], ["vivarium", "mibi", "Vivarium", "Vivarium"]); assert.deepEqual(hab.rules.needed, []); assert.deepEqual(hab.rules.used, ["listPitch"]);
   assert.deepEqual([R.bezel.rect[0] + R.bezel.inset, R.bezel.rect[1] + R.bezel.inset, R.bezel.rect[2] - 2 * R.bezel.inset, R.bezel.rect[3] - 2 * R.bezel.inset], R.glass.rect, "the 8 px bezel");
   // the mibi: the juvenile's box from the Incubator's hatch, inside the glass, its feet on the ground band; the tag 8 px under the ring's ellipse and 8 px inside the glass
@@ -363,7 +363,6 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   assert.ok(inside(R.nameTag.rect, R.meetRibbon.rect), "the ribbon in the tag's place"); assert.deepEqual([R.nameTag.px, R.nameTag.weight, R.nameTag.h], [frame.type.title, frame.type.weight[20], 32], "the tag at 20 px medium, 32 tall");
   assert.equal(R.nameTag.max, 200 + 2 * R.nameTag.pad, "the tag holds ten of the widest letter at 20 px (200) and its pads"); assert.equal(R.nameTag.rect[2], R.nameTag.max); assert.equal(R.nameTag.rect[0] + R.nameTag.rect[2] / 2, R.resident.axis); assert.ok(R.nameTag.min % R.nameTag.round === 0 && R.nameTag.max % R.nameTag.round === 0);
   assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
-  assert.ok(inside(R.resident.lamp.rect, res) && R.resident.lamp.rect[0] + 12 === res[0] + res[2] && R.resident.lamp.rect[1] === res[1], "the lamp at the box's top right");
   const ew = res[2] + frame.focus.feet.widen; assert.equal(hab.focus.targets.resident.ring, "feet"); assert.deepEqual(hab.focus.targets.resident.ellipse, [res[0] + ((res[2] + 1) >> 1) - ((ew + 1) >> 1), R.resident.feet - 12, ew, frame.focus.feet.height], "the feet ring, as frame.json focus.ring.forms.feet places it");
   for (const spec of [hab]) for (const [k, t] of Object.entries(spec.focus.targets)) assert.ok(["round", "feet", "tab"].includes(t.ring) && !("shape" in t), k + ": a ring form of frame.json, no other key");
   // the stamp a detail: 120, far from the mibi; the card's lines and plates clear of it; modules 8 px apart, their objects 8 px under the word's baseline
@@ -440,7 +439,7 @@ test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip
   }
   assert.ok(played >= 20, "the vectors are played: " + played);
   // the words: a verb of four words or fewer, contexts of six or fewer, no digits, nothing amber
-  assert.ok(wordsIn(vv.strings.look) <= 4); for (const k of ["resident", "sleeper", "painting", "out", "empty"]) { assert.ok(wordsIn(vv.strings[k]) <= 6, k); assert.ok(!/\d/.test(vv.strings[k]), k); }
+  assert.ok(wordsIn(vv.strings.look) <= 4); for (const k of ["resident", "sleeper", "out", "empty"]) { assert.ok(wordsIn(vv.strings[k]) <= 6, k); assert.ok(!/\d/.test(vv.strings[k]), k); }
   assert.equal(vv.strings.look, rd("../specs/station/home.json").strings.actions.resident, "Home's words where Home says the same");
   assert.ok(!JSON.stringify(vv.colours).includes("amber")); assert.deepEqual(paletteBad(vv.colours), []); assert.ok(!/outing/.test(JSON.stringify(vv.strings)));
 });

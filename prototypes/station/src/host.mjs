@@ -148,9 +148,9 @@ export function createBody() {
 }
 
 // ---- Incubator ----
-// The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). No lamp: Grow paints nothing (decisions 10-11 14:17).
+// The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch).
 export function incubatorBody() {
-  return incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods);
+  return incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living() }, SPECS.incubator, SPECS.pods);
 }
 
 // ---- the props of the screen on the page ----
@@ -183,8 +183,8 @@ export function frameIds() {
   for (const id of ["energy", "data", "essence", "cross"]) if (assetEntry(`icon:${id}:16`)) ids.add(`icon:${id}:16`);
   return [...ids];
 }
-// Idle takes none of the frame's marks but the one its waiting lamps are (frame.json regions.marks.lamp12.waiting).
-export const idleMarkIds = () => [SPECS.frame.regions.marks.lamp12.waiting].filter(assetEntry);
+// Idle takes none of the frame's marks.
+export const idleMarkIds = () => [];
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----

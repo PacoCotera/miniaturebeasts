@@ -11,14 +11,6 @@ export const POLL_MS = 30000;
 export const state = { online: null, lastAt: 0, lastStatus: null, pending: new Map(), landed: new Map(), error: null };
 const wid = () => G.st.wid || "no-world";
 export const anyWaiting = () => G.st.outbox.length > 0;
-// The lamp's state for a mibi (the words are the specs': habitat.json and incubator.json strings): null (its painting landed or failed for good), "offline" (offline or painter off), "capped" (waits for tomorrow) or "waiting" (on its way).
-export function lampState(m) {
-  if (!m.paint && !G.st.outbox.some((o) => o.sha === m.sha)) return m.paint?.state === "failed" ? null : "waiting";
-  if (m.paint?.state === "landed" || m.paint?.state === "failed") return null;
-  if (state.online === false || G.settings.painter === "off") return "offline";
-  if (m.paint?.state === "capped") return "capped";
-  return "waiting";
-}
 async function api(path, init) {
   const r = await fetch(BASE + path, { cache: "no-store", ...init });
   if (r.status >= 500) { state.online = false; state.error = "the service answered " + r.status; throw new Error(state.error); }   // the proxy is up, the service is not

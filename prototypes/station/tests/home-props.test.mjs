@@ -221,7 +221,7 @@ test("a mibi with no painting changes nothing on Home: the Incubator is empty wi
   const { st, sv } = scenes().docked; assert.ok(st.mibis.every((m) => !m.paint), "no mibi has a painting");
   const r = build(st, sv).props.regions;
   assert.equal(r.incubator.state, "empty"); assert.equal(r.incubator.lamp, "off");
-  assert.ok(r.residents.every((p) => p.waiting === false) && r.bed.sleepers.every((p) => p.waiting === false), "no person has waiting: true");
+  assert.ok(r.residents.every((p) => p.waiting === undefined) && r.bed.sleepers.every((p) => p.waiting === undefined), "no person has a waiting field");
 });
 
 test("a new pod is firm until Pods has drawn it: firm, the goal is absent; seen, the goal takes the notice, the room's ✓ stays and the Pods lamp is not amber; a second unseen pod is firm again, counting one", () => {

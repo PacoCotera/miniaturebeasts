@@ -37,7 +37,7 @@ function world(species = SPECIES[0]) {
   S.seedPodFromGenome(st, podGenome(frameOf(species), 0), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p);
   return { st, p };
 }
-const build = (st, ui = { inc: {} }, now = T0, lamp = "") => incubatorBuild({ st, settings, now, ui, lamp }, spec, pods);
+const build = (st, ui = { inc: {} }, now = T0) => incubatorBuild({ st, settings, now, ui }, spec, pods);
 
 test("an empty Incubator offers Choose a pod only when the rack holds a pod and a bay is free", () => {
   const { st } = world(), e = build(st);
@@ -74,7 +74,7 @@ test("the hatch's juvenile and the meet's resident are one picture, for adultTur
     const cfg = { ...settings, adultTurns }, { st, p } = world(); const r = S.grow(st, p, {}, cfg, T0); assert.ok(r.ok);
     const now = T0 + st.bud.minutes * 60_000 + 10_000, o = S.openBud(st, {}, cfg, now); assert.ok(o.ok);
     const hatch = { mibi: o.mibi.id, species: o.mibi.species, code: o.mibi.code, read: o.mibi.read, kind: "founder", parents: null };
-    const inc = incubatorBuild({ st, settings: cfg, now, ui: { inc: { hatch } }, lamp: "" }, spec, pods), sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
+    const inc = incubatorBuild({ st, settings: cfg, now, ui: { inc: { hatch } } }, spec, pods), sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
     const hab = habitatBuild({ st, sv, settings: cfg, docked: S.docked(st), light: "day", focus: null, habId: o.mibi.id, meetId: o.mibi.id, armed: false }, habSpec, frameSpec, home);
     assert.equal(S.mibiStage(st, o.mibi, cfg), adultTurns === 2 ? "juvenile" : "adult", "the stage of the world");
     assert.equal(inc.props.regions.juvenile.picture, hab.props.regions.resident.picture, `adultTurns ${adultTurns}: one picture id`);
@@ -88,9 +88,9 @@ import { setMoving } from "../src/moving.mjs";
 test("the hatch's juvenile names its close atlas and shadow when its set may play, and fits incubator.props.json", () => {
   const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); assert.ok(S.grow(st, p, {}, settings, T0).ok);
   const r = S.openBud(st, {}, settings, T0 + 3600000); assert.ok(r.ok); const hatch = { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null };
-  const b = incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: true }, spec, pods);
+  const b = incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, motionSets: true }, spec, pods);
   assert.deepEqual(validate(b.props, schema), []); assert.deepEqual(b.props.regions.juvenile.moving, { set: "S01", close: "moving:juvenile:S01:close:304x312:species", shadow: "moving:juvenile:S01:shadow:304x24" });
-  assert.equal(incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: false }, spec, pods).props.regions.juvenile.moving, undefined, "the play gate shut: none");
+  assert.equal(incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, motionSets: false }, spec, pods).props.regions.juvenile.moving, undefined, "the play gate shut: none");
 });
 test("the ready bud's front is requested as a slot of bud-ready-front-128x160 at the bud's rect (nothing drawn until placed); the other five bud pictures stay placeholders", () => {
   const { st, p } = world(); assert.ok(S.grow(st, p, {}, settings, T0).ok);

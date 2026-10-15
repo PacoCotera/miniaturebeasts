@@ -139,14 +139,13 @@ static int build_moving_resident(const char *cur, int r[4], int lift) {
   return 1;
 }
 static void build_resident(const char *cur) {
-  int r[4], lp[4]; hrect("regions.resident.rect", r); hrect("regions.resident.lamp.rect", lp);
+  int r[4]; hrect("regions.resident.rect", r);
   if (build_moving_resident(cur, r, strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0)) {
-    int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0); const char *pic = v_pstr("regions.resident.picture");
+    const char *pic = v_pstr("regions.resident.picture");
     if (has(pic)) v_sprite_hidden("resident.out", pic, r[0], r[1]);
-    v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting);
     return;
   }
-  const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0);
+  const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0);
   char from[96] = ""; int level = 16; anim_state_t t;
   if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "resident", &t) && t.from_id[0] && t.ms > 0 && wire_has_asset(t.from_id) && has(pic)) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }   /* the swap: the old mibi cross-dithers to the new in 16 levels */
   int y = r[1] - lift - hop_lift(), dithering = from[0] != 0;
@@ -156,7 +155,6 @@ static void build_resident(const char *cur) {
   if (dithering) v_dither("resident.dither", from, pic, level, r[0], y, r[2], r[3]);
   if (has(outPic)) { int o[4]; hrect("regions.resident.out.rect", o); v_name("resident"); v_sprite("resident.out", outPic, o[0], o[1], o[2], o[3]); }
   else if (has(pic)) v_sprite_hidden("resident.out", pic, r[0], r[1]);
-  v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting && !has(outPic));   /* rides the focus lift */
 }
 
 /* ---- the name tag, or the meet ribbon in its place ---- */

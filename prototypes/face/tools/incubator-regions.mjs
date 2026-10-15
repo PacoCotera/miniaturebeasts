@@ -19,7 +19,6 @@ export function departures(log, spec, frame, state = "growing") {
   for (const r of got("bud")) must(within(r.rect, R.bud.rect), `the bud ${r.rect} leaves ${R.bud.rect}`);
   for (const r of got("base")) must(eq(r.rect, R.base.rect), `the base ${r.rect} is not ${R.base.rect}`);
   for (const r of got("plaque")) must(within(r.rect, R.plaque.rect), `the plaque ${r.rect} leaves ${R.plaque.rect}`);
-  for (const r of got("lamp")) must(eq(r.rect, R.base.lamp.rect), `the lamp ${r.rect} is not ${R.base.lamp.rect}`);
   for (const r of got("juvenile")) must(within(r.rect, [R.juvenile.rect[0], R.juvenile.rect[1] - lift, R.juvenile.rect[2], R.juvenile.rect[3] + lift + 2]),   /* + 2: the moving hatch's crouch, drawn 2 px lower */ `the juvenile ${r.rect} leaves ${R.juvenile.rect} by more than its ${lift} px step or anchor`);
   for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);

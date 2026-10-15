@@ -78,7 +78,7 @@
    "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
    "lift": 4,
    "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "lamp": "[x + w/2 + 36, feet − 88, 12, 12]", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither, lamp", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" },
-   "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
+   "props": "per resident: mibi id, stage, painting or placeholder, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
   },
   "bed": {
    "rect": [792, 416, 192, 56],
@@ -278,7 +278,7 @@
   "dock": "the Caddy's Dock, a world event: events.dock; no message plate; from the play page without the keys: lands on Home (frame.json navigation.dock)"
  },
  "bottomLine": {
-  "resident": {"action": "strings.look", "context": "strings.resident; a sleeper strings.sleeper; while the placeholder is drawn, strings.painting"},
+  "resident": {"action": "strings.look", "context": "strings.resident; a sleeper strings.sleeper"},
   "tile": {"home": "as its resident", "out": {"action": "strings.look", "context": "strings.out"}},
   "room": {"action": null, "context": "strings.empty"},
   "notice": "the frame's notice only (what needs the player anywhere); nothing on the whole sets one",
@@ -316,7 +316,6 @@
   "look": "Look at {name}",
   "resident": "{a} {stage} {species}",
   "sleeper": "{a} {stage} {species}, asleep",
-  "painting": "its painting is on its way",
   "out": "out with the Companion",
   "empty": "nobody lives here yet",
   "measured": "16 px Inter, the face's metrics (prototypes/face/tests/vectors/metrics.json), a name as ten of the widest letter (160): look 220 in the action's 356; in the context's 208: painting 176, sleeper 174 (\"an elder Untuva, asleep\"), empty 160, out 177; back 45 in its 68; title 85 at 20 px",

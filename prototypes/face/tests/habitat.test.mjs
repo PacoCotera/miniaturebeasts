@@ -28,7 +28,6 @@ const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS
 function scene(o = {}) {
   const settings = cfg(o.bays ?? 8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: !o.away, at: T0 };
   S.seedAdults(st, "S01", 5, o.adults ?? 4, settings); for (const m of st.mibis) m.paint = { state: "landed" };
-  if (o.waiting) st.mibis[0].paint = { state: "sent" };
   if (o.bonded) { st.mibis[0].bonded = true; st.mibis[0].notches = 3; }
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
   const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, armed: !!o.armed };
@@ -60,7 +59,6 @@ const SCENES = {
   "the meet: the ribbon in the tag's place": { meet: true, focus: "resident" },
   "out with the Companion: the out mark, the ring on the name": { carry: [0], away: true, focus: "name" },
   "a bonded mibi: the heart, three notches": { bonded: true, focus: "plate.0" },
-  "its painting on its way: the placeholder's lamp": { waiting: true, focus: "resident" },
   "twelve bays, compact tiles": { bays: 12, adults: 12, focus: "tile:3" },
   "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross" }, "the ring on Wild, armed": { focus: "wild", armed: true },
   "by the light of dusk": { light: "dusk", focus: "resident" },

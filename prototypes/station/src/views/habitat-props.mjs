@@ -27,14 +27,13 @@ export function habitatBuild(m, spec, frame, home) {
   const out = S.isAway(st, sv, shown), meet = !out && m.meetId != null && String(m.meetId) === String(shown.id);
   const state = out ? "out" : meet ? "meet" : "rest";
   const stage = S.mibiStage(st, shown, settings), stageWord = home.strings.stages[stage] ?? stage, species = S.spName(shown), fr = frameFor(shown), sid = String(shown.id);
-  const waiting = false;
 
   const regions = {};
   regions.stage = { room: [slot("room-vivarium-stage-habitat", R.stage.rect.slice(2), "the up-close stage master")] };
   regions.glass = { picture: slot(`${spec.light.pictures[m.light]}-${spec.light.size.join("x")}`, spec.light.size, "the near Vivarium master (the light)") };
   regions.resident = out
-    ? { id: sid, name: shown.name, stage, picture: "", waiting: false, out: slot("mark-out-with-companion-64x96", R.resident.out.rect.slice(2), "the out mark") }
-    : { id: sid, name: shown.name, stage, picture: mibiReq(req, st, shown, R.resident.rect.slice(2), settings), waiting, out: "" };
+    ? { id: sid, name: shown.name, stage, picture: "", out: slot("mark-out-with-companion-64x96", R.resident.out.rect.slice(2), "the out mark") }
+    : { id: sid, name: shown.name, stage, picture: mibiReq(req, st, shown, R.resident.rect.slice(2), settings), out: "" };
   if (!out) {   // Station M1 §2.6: its seed (the up-close tick's phase), its moving set up close (close and its shadow) and its rest by the household's stagger
     regions.resident.seed = hash(shown.id);
     const mv = movingProp(shown, stage, req, m, ["close", "closeShadow"]); if (mv) regions.resident.moving = { set: mv.set, close: mv.close, shadow: mv.closeShadow };
@@ -107,11 +106,10 @@ export function habitatBuild(m, spec, frame, home) {
   // the bottom line (habitat.json bottomLine): the action and the context of the focused target; ← Vivarium
   const a = S.aAn(stageWord).split(" ")[0], words = { a, stage: stageWord, species }, contextOf = shown.bonded ? fill(Sg.residentContextBonded, words) : fill(Sg.residentContext, words);
   const named = { name: shown.name };
-  const painting = waiting ? (m.offline ? Sg.offline : Sg.painting) : null;
   let line = { ok: null, subject: "", back: Sg.back, need: null };
   const id = cur.startsWith("tile.") ? "resident" : cur;
-  if (id === "resident") line = { ok: meet ? fill(Sg.name, named) : fill(Sg.greet, named), subject: painting ?? contextOf, back: Sg.back, need: null };
-  else if (id === "name") line = { ok: fill(Sg.rename, named), subject: out ? Sg.out : painting ?? contextOf, back: Sg.back, need: null };
+  if (id === "resident") line = { ok: meet ? fill(Sg.name, named) : fill(Sg.greet, named), subject: contextOf, back: Sg.back, need: null };
+  else if (id === "name") line = { ok: fill(Sg.rename, named), subject: out ? Sg.out : contextOf, back: Sg.back, need: null };
   else if (id === "species") line = doorOpen("book") ? { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null } : { ok: null, subject: Sg.shut.guide, back: Sg.back, need: null };
   else if (id.startsWith("plate.")) {
     const p = plates[+id.slice(6)], ch = fr.chapters[+id.slice(6)], Chapter = ch.name;

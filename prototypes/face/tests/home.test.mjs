@@ -31,7 +31,6 @@ function scene(o = {}) {
   const st = world(); S.seedAdults(st, "S01", 5, o.adults ?? 5, settings); painted(st);
   if (o.young) { S.seedAdults(st, "S01", 77, o.young, settings); for (const m of st.mibis.slice(-o.young)) { m.born = st.turn; m.paint = { state: "landed" }; } }
   for (let i = 0; i < (o.pods ?? 0); i++) { S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3 + i), settings, T0); S.skipIdentify(st, st.tray.at(-1)); }
-  for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
   if (o.away) st.dock = { docked: false, at: T0 };
   if (o.bud) st.bud = { kind: "founder", species: "S01", sp: 0, gs: 5, genome: st.mibis[0].genome, sha: "bud", code: "BUD", start: Date.now() - o.bud * 60000, minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1)), mibis: [], carried: (o.carry ?? [0, 1]).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
@@ -166,7 +165,7 @@ test("a late walk frame with the top bar live (counters and their flashes changi
   assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# Home's late frame with the top bar live: worst ${worst} px in ${areas} flushes, ${f.invOverflows()} overflows`);
 });
 // the dirty area of a refresh (the sum of the rectangles the face redraws) is at most a quarter of the screen over two minutes of walking, at 40 ms frames and at 16 ms frames
-const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [40096, 38822, 31967, 8729, 50383, 36459, 27280, 21938, 4359, 48741, 64056, 12788] } };
+const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [40096, 38822, 31967, 8729, 50383, 36459, 27280, 21938, 4359, 48741, 64056, 12788] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) {
   test(`the walk, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });

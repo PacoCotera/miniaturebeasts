@@ -77,14 +77,14 @@
   },
   "nestFront": { "rect": [408, 400, 208, 48], "component": "livingWindow", "part": "inside", "asset": "nest-front-208x48", "holds": "only the nest's front rim fibres", "over": "bud", "note": "drawn over the bud as room-cradle-front is over the pod (art director, 2026-10-09 13:47)" },
   "domeFront": { "rect": [360, 200, 304, 272], "inkTop": 2, "component": "livingWindow", "part": "frame", "slice": "dome-front-304x272", "states": { "empty": "the clean window, no highlight", "growing": "the window's edge, no highlight", "ready": "lit from inside; the window's edge unchanged, never a ring" }, "note": "the chamber's window front and its hood, drawn over the nest and the bud" },
-  "base": { "rect": [344, 456, 336, 96], "component": "livingWindow", "part": "frame", "plate": [448, 496, 128, 32], "footLight": { "rect": [352, 548, 320, 2], "when": "on in every state (art director, 2026-10-09 13:28)", "painted": "in base-336x96" }, "lamp": { "rect": [652, 506, 12, 12], "slice": "home-lamp-sky-12x12", "when": "ready and hatch, while the new mibi's painting has not landed (props.painting: waiting or offline)", "note": "the waiting lamp, cool, never a word on the stage" }, "note": "the sand housing (`enamel`), matte; not wood, not machined enamel; the chamber, in the sage housing (`metal`), stands in it, its foot at y 472; the foot light `sage`" },
+  "base": { "rect": [344, 456, 336, 96], "component": "livingWindow", "part": "frame", "plate": [448, 496, 128, 32], "footLight": { "rect": [352, 548, 320, 2], "when": "on in every state (art director, 2026-10-09 13:28)", "painted": "in base-336x96" }, "note": "the sand housing (`enamel`), matte; not wood, not machined enamel; the chamber, in the sage housing (`metal`), stands in it, its foot at y 472; the foot light `sage`" },
   "plaque": { "rect": [448, 496, 128, 32], "component": "text", "px": 16, "weight": 400, "align": "centre", "centre": 512, "lineTop": 502, "words": 1, "noDigits": true, "text": { "empty": "strings.plaque.empty", "growing": "strings.plaque.growing", "ready": "strings.plaque.ready", "hatch": "" } },
   "stamp": { "rect": [840, 296, 120, 120], "component": "stampLabel", "inStates": ["growing", "ready", "hatch"], "live": "the bud's stamp, its chapters filling as they clear", "fromDome": 176 },
   "code": { "rect": [808, 424, 184, 24], "component": "text", "inStates": ["growing", "ready", "hatch"], "px": 16, "weight": 400, "align": "centre", "centre": 900, "lineTop": 426, "text": "the bud's code (genome.codeText): three groups with spaces, \"K7Q 4MX P2D\", live text, shareable; the widest, \"WWW WWW WWW\", 152 px" },
   "ribbon": { "rect": [312, 104, 400, 40], "component": "ribbon", "inStates": ["hatch"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "look": "the one ribbon look (cargo.json regions.ribbon)", "lines": 1, "words": "strings.hatchRibbon" },
   "juvenile": { "rect": [360, 160, 304, 312], "component": "specimen", "inStates": ["hatch"], "axis": 512, "feet": 472, "asset": "the new mibi in its standard painting if it has landed, else its placeholder (the stylised rig pass); a juvenile as habitat.json regions.resident.asset (the same id, the stage in it)", "lift": 4, "handoff": "its size, 304×312, is one mibi up close's mibi (144, 80, 304, 312), where the hand-off lands it" }
  },
- "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "bud crack", "nestFront", "domeFront", "base", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
+ "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "bud crack", "nestFront", "domeFront", "base", "plaque", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
  "notes": {
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. growNow fills every leaf at once and the tabs turn read; the hatch lands on one mibi up close in the meet on the frame of ✓ Open; the wipe is a cut. The leaf fill (props) still steps a row every 3 s. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts. growNow's cut lands every leaf, the tabs and the ready state on the key's frame (up to 162,432 px, a key's frame, not an animation frame)."
  },
@@ -154,7 +154,7 @@
   "empty": { "action": "✓ Choose a pod when the rack holds a pod and a bay is free; else no ✓ cap", "context": "strings.empty", "notice": "none, but strings.noBay when no bay is free", "back": "Home" },
   "growing": { "action": "✓ Grow now, then the price, icon before figure: ❀ 1 for every 2 minutes left, rounded up (at most 19; the first bud 3) (state.instantGrowCost)", "context": "strings.bud (strings.crossBud for a cross)", "notice": "the frame's notice", "back": "Home" },
   "ready": { "action": "✓ Open, no price", "context": "strings.bud (strings.crossBud for a cross)", "notice": "no bay free (strings.noBay, the amber lamp), a guard only; else the frame's notice", "back": "Home" },
-  "hatch": { "action": "none (input held)", "context": "strings.painting while the painting is on its way, strings.offline while offline, else none", "back": "Home" }
+  "hatch": { "action": "none (input held)", "context": "none", "back": "Home" }
  },
  "colours": {
   "dome": { "back": "ground", "housing": "metal", "windowEdge": "hairline", "standby": "sand", "ready": "cream", "note": "the art director's rulings (2026-10-10 01:44): the chamber in the sage housing (metal), its window a hairline edge with no highlight; the standby pool sand, about half the ready light; ready cream, warm, never a ring" },
@@ -180,8 +180,6 @@
   "empty": "ready for a new bud",
   "noBay": "no bay free",
   "noBayPlate": "No bay free. Return a mibi to the wild first.",
-  "painting": "its painting is on its way",
-  "offline": "waiting for a signal",
   "hatchRibbon": "{Name}, a young {Species}",
   "hatchRibbonExamples": ["Fig, a young Loika"],
   "by": "copywriter, 2026-10-09 13:27"
@@ -193,7 +191,6 @@
   "carried": [
    { "id": "bud-shape-S01-112x112 to bud-shape-S16-112x112", "size": [112, 112], "region": "bud.shape", "why": "the species' silhouette, creature art; S01 and S03 are placed, the other fourteen are empty slots, nothing drawn until placed" },
    { "id": "the juvenile: the new mibi's painting, else its signed juvenile stand-in (mibi-juvenile-<species>-304x312)", "size": [304, 312], "region": "juvenile", "why": "creature art" },
-   { "id": "the waiting lamp, home-lamp-sky-12x12", "size": [12, 12], "region": "base.lamp", "why": "the kit's lamp" },
    { "id": "the stamp label, the ribbon, the rail's tab fills", "size": null, "region": "stamp, ribbon, rail", "why": "the frame's and the kit's" }
   ]
  }

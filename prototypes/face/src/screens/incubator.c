@@ -1,6 +1,6 @@
 /* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json): the words that draw each of its states (empty, growing, ready, hatch) in draw order, from the `incubator` spec and the props' regions, the frame's
    words after (screens.c). bench, rail, the leaves on their two arcs, the chamber's back, the nest, the bud (and the ready bud's shape), the nest's front, the window's front, the base (its master carries the plaque plate and the foot
-   light) with its plaque word, the base's waiting lamp, the juvenile, the stamp label, the code and the ribbon. No ring in any state: ✓ acts on the room. The ready bud's front is drawn over the shape; the cracks are drawn over the ready bud.
+   light) with its plaque word, the juvenile, the stamp label, the code and the ribbon. No ring in any state: ✓ acts on the room. The ready bud's front is drawn over the shape; the cracks are drawn over the ready bud.
    The events: `growNow` (the leaves still to fill turn whole one by one over its length, in the leaves word), `wipe` (a tab turns read, its pips filling, in the rail word) and `hatch` (a still beat: the chamber stays as it stands, its
    window open with no pane, and nothing moves; the bud keeps its ready picture and shape until the crack at 600, opens at 800 and goes at 1000, the juvenile stands at 1000 over the chamber, the ribbon shows at 1200, the juvenile steps
    out at 1400 and 1800; the hand-off at 2600 is the host's).
@@ -85,7 +85,6 @@ static void build_base(void) {
   { int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); int tw = v_measure(w, px);
     const char *st = v_pstr("state"); v_region("plaque", LAYER_TYPE);
     v_text("plaque", w, cx - v_half(tw), ci("regions.plaque.lineTop", 502) + v_fdiv(20 - v_cap(px), 2), *w ? tw : 0, px, colr(v_fmt("colours.plaque.%s", strcmp(st, "hatch") == 0 ? "ready" : st))); }
-  { const char *pic = v_pstr("regions.lamp.picture"); if (spec_len("props", "regions.lamp") >= 0) { int r[4]; crect("regions.base.lamp.rect", r); v_name("lamp"); if (v_pbool("regions.lamp.on", 0)) v_sprite("lamp", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("lamp", pic, r[0], r[1]); } }
 }
 /* ---- the hatch's first motion (Station M1 §2.5; incubator.json events.hatch.moving) for a juvenile with a moving set: the curl dithers in from clear over the held open bud (1000–1180), curl, curl·b1 (1500), curl to crouch
    (2140–2320, the crouch 2 px lower), crouch held, the stand at 2720 and its first breath, the first hop at 5120 (crouch 160, air 400 on the up-close table at 0.7×, crouch 160), stand at 5840 breathing from b0. ---- */

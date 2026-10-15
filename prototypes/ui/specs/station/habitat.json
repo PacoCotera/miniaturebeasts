@@ -23,7 +23,6 @@
   "modules": "Home's `module` build with its lamp null: one engraved word and its object. All four show on every mibi; the Portrait module is always there and opens the sitting, its own screen under one mibi up close (sitting.json). Companion (wide, the carried set) and Portrait on the first row, Cross (wide, it opens a screen) and Wild on the second; Wild, the act that lets a mibi go, sits last, at the bottom right. The bond is not a module: it is made on the Companion, and the heart on the card is its state (regions.card.heart)",
   "strip": "one tile a bay, at most twelve (one vivarium holds at most twelve mibis): the housed mibis in bay order, then the free bays. Each tile shows the mibi's thumbnail only; focusing a tile shows that mibi in the window with its name on its tag, and the action names it",
   "namer": "the namer (namer.json) is an overlay on one mibi up close, not a screen of its own, over its right column, its panel at 592, 48, 416, 424; the living window stays left of x 592 and in view, and the strip stays visible under it",
-  "painting": "a mibi whose painting has not landed shows its placeholder with the waiting lamp; the words are on the bottom line only. A painting that lands while the mibi is on screen waits for the next fresh draw (this level opened again, the strip bringing the mibi back, a wake): never a swap in view",
   "amber": "nothing on one mibi up close is amber: no module, tile, count, heart or notch is a need. The notice is the frame's (what needs the player anywhere)",
   "out": "a mibi out with the Companion is still up close: its place in the window is empty but for the out mark, its name, card, chapters and modules as at home; its chapters can be read while it is out (research is knowledge kept at the Station). Greet needs the mibi here, so it has no greet",
   "notches": "the skill notches are the mibi's skill as filled notches only, one to three, on the card; none drawn at zero; never an empty notch, never a figure; they show here and nowhere else on the Station (not in the Library or the Book)",
@@ -86,13 +85,6 @@
    "feet": 392,
    "clip": "glass",
    "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile, until its painting lands, is the art director's signed stand-in mibi-juvenile-<species>-304x312, drawn at the same 304×312 as the hatch, reading young by its proportions inside the box, never scaled down",
-   "lamp": {
-    "rect": [436, 80, 12, 12],
-    "slice": "home-lamp-sky-12x12",
-    "at": "the box's top right",
-    "when": "while the placeholder is drawn: the painting on its way, or waiting for a signal",
-    "rides": "the 4 px lift"
-   },
    "lift": 4,
    "out": {
     "rect": [264, 296, 64, 96],
@@ -315,7 +307,6 @@
   "bezel",
   "glass",
   "resident (or the out mark)",
-  "resident lamp",
   "nameTag",
   "meetRibbon",
   "card (its heart and notches)",
@@ -546,7 +537,7 @@
  "bottomLine": {
   "resident": {
    "action": "strings.greet; in the meet, strings.name",
-   "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); while the placeholder is drawn, strings.painting (strings.offline while the Caddy is unreachable)"
+   "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi)"
   },
   "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); out, strings.out"},
   "tile": "as resident, for the tile's mibi",
@@ -607,7 +598,6 @@
  "colours": {
   "bezel": {"fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline"},
   "glass": {"edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
-  "waitingLamp": {"fill": "sky", "rim": "void"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
   "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
@@ -657,7 +647,6 @@
    "chapter-plate-sealed-40x40",
    "rail-emblem-{chapter}-{read,unread,sealed}-24x24 (existing)",
    "mark-guide-16",
-   "home-lamp-sky-12x12",
    "face-{species}-24, one a species",
    "frame-companion-solid-16x24 and -outline-16x24 (existing)"
   ]
@@ -680,8 +669,6 @@
   "residentContext": "{a} {stage} {species}",
   "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
-  "painting": "its painting is on its way",
-  "offline": "waiting for a signal",
   "shut": {
    "cross": "crossing is not open yet",
    "portrait": "portraits are not open yet",

@@ -839,7 +839,7 @@ export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
   st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · " + spendText(c.e, c.d, c.s)); return { ok: true };
 }
-// Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).
+// Open: a press; the juvenile steps out fully known, into a free bay, drawn from its species' picture for its stage.
 export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!budReady(st, settings, now)) return { ok: false, msg: "The bud is still growing" };
   const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
