@@ -180,7 +180,6 @@ static void build_reportCard(void) {
       v_region("report.gathered", LAYER_TYPE); int tw = v_measure(figure, px); text_row(v_fmt("report.g.%d", m), figure, x + ic + gap, y, fig, px, tw + 1);
       x += ic + gap + tw + between;
     }
-    const char *top = v_pstr("regions.report.gathered.top"); if (*top) { v_region("report.gathered", LAYER_TYPE); text_row("report.g.top", top, x, y, lead, px, x0 + r[2] - pad - x); }
   }
   y += rowH;
   if (hasProbe) {

@@ -106,7 +106,7 @@
   },
   "keys": {
    "pad": "focus.graph",
-   "confirm": "intent target `frame.<SNN>`. A found frame: a cut to that species' Book, its face spread; until slot 8 the Book draws \"not built yet\" (frame.json notBuilt) with ← Library. A met frame: no ✓ cap (line.met.action null), and the press shows the message plate strings.met; nothing opens (game designer, 2026-10-10: a met species does not open the Book). An unmet frame: no ✓ cap, and the press shows the message plate strings.unmet; nothing opens. The old \"the plate lifts off the page and becomes the Book's mounted plate\" is withdrawn: it would enlarge an 80×96 plate to the 304×312 face (station-layouts.md, Never upscaled); the Book's own entry is slot 8's to design",
+   "confirm": "intent target `frame.<SNN>`. A found frame: until slot 8 (doorOpen(book) false) no ✓ cap (line.found.shut), and the press shows the message plate strings.bookShut, as a met frame does; from slot 8, a cut to that species' Book, its face spread. A met frame: no ✓ cap (line.met.action null), and the press shows the message plate strings.met; nothing opens (game designer, 2026-10-10: a met species does not open the Book). An unmet frame: no ✓ cap, and the press shows the message plate strings.unmet; nothing opens. The old \"the plate lifts off the page and becomes the Book's mounted plate\" is withdrawn: it would enlarge an 80×96 plate to the 304×312 face (station-layouts.md, Never upscaled); the Book's own entry is slot 8's to design",
    "back": "Home, with the ring on Home's Library module",
    "library": "the spread, the ring where it was (derived.lastOn); from the Book, the spread with the ring on that species",
    "home": "Home, the ring on the room",
@@ -114,7 +114,8 @@
   },
   "events": {},
   "line": {
-   "found": { "action": "strings.open", "subject": "strings.subjects.found", "need": "the frame's notice (home.json strings.needs)", "back": "strings.back" },
+   "found": { "action": "strings.open", "subject": "strings.subjects.found", "need": "the frame's notice (home.json strings.needs)", "back": "strings.back",
+    "shut": { "action": null, "subject": "strings.subjects.found", "when": "doorOpen(book) false (until slot 8)" } },
    "met": { "action": null, "subject": "strings.subjects.met", "need": "the frame's notice", "back": "strings.back" },
    "unmet": { "action": null, "subject": "strings.subjects.unmet", "need": "the frame's notice", "back": "strings.back" }
   },
@@ -128,6 +129,8 @@
    "met": "Its Book needs its pod identified",
    "metNote": "the message plate on ✓ on a met frame, one sentence: at most 608 px of text at 16 (the frame's plate is 640 with its 2 × 16 padding). The copywriter's signed words",
    "unmet": "Nothing is known here yet",
+   "bookShut": "Its Book is not open yet",
+   "bookShutNote": "the message plate on ✓ on a found frame until slot 8: 174 px of 608 at 16. The copywriter's signed words",
    "back": "Home"
   },
   "never": ["a digit or a count on the spread (no \"4 of 16\", no \"1 of 2\")", "a cue on an unmet frame: no silhouette, no shape, no name, no rule", "hatching for met: the pencil study says it", "a rule thicker than 1 px but the clan rule", "a plate or study enlarged: rendered at 80×96 or downsampled", "a word in the stage slice"],
@@ -158,7 +161,7 @@
    { "file": "prototypes/ui/specs/station/frame.json", "key": "navigation.screens.library", "now": {"parent": "home", "back": "Home"}, "becomes": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"}, "when": "slot 5, L: the Library spread, in the build's own change: the sandbox reads frame.json navigation (nav.mjs parentOf and backWord, host.mjs), so the spec PR leaves it as it is" },
    { "file": "prototypes/station/src/intents/library.mjs", "line": 20, "now": "✓ on a frame opens the Book when the species is known or met (st.knownIds or st.metIds), else the plate \"Nothing is known of this frame yet\"", "becomes": "✓ opens the Book only for a found species (speciesStatus found); a met frame shows the plate strings.met; an unmet frame shows the plate strings.unmet", "when": "slot 5, L: the Library spread, in the build's own change; main opens the Book for a met species today" }
   ],
- "journey": "library-spread (lvgl-switch.md §3, slot 5): Home's Library module and the Library key open the spread; the pad walks the frames by focus.vectors; a met frame has no ✓ cap and its press shows strings.met; an unmet frame has no ✓ cap and its press shows strings.unmet; ✓ on a found frame reaches the Book (\"not built yet\" until slot 8), whose ← lands on that frame; ← on the spread is Home"
+ "journey": "library-spread (lvgl-switch.md §3, slot 5): Home's Library module and the Library key open the spread; the pad walks the frames by focus.vectors; a met frame has no ✓ cap and its press shows strings.met; an unmet frame has no ✓ cap and its press shows strings.unmet; ✓ on a found frame shows strings.bookShut and stays on the spread until slot 8; from slot 8 it reaches the Book, whose ← lands on that frame; ← on the spread is Home"
  },
  "spreads": {
   "order": ["face", "guide"],

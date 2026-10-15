@@ -149,13 +149,13 @@ test("the crate: the lamp fills with the start and the rule; in the first build 
   assert.equal(T.sittingWaitMs(settings), 3 * H); assert.equal(T.sittingWaitMs({}), 3 * H, "three hours without a setting");
 });
 
-test("a painted portrait is a second wait: with the wait over and the painting not landed the lamp holds just short of full and says nothing; waiting for the cloud only when the Caddy is unreachable", () => {
+test("a painted portrait is a second wait: with the wait over and the painting not landed the lamp holds just short of full and says nothing; waiting for a signal only when the Caddy is unreachable", () => {
   const st = world(1), m = walked(st, st.mibis[0]); T.devGrantSitting(st, T0); const c = T.beginSitting(st, m, "calm", "wood", settings, T0).crate;
   const painting = { ...settings, paintPortraits: true };
   assert.equal(T.crateState(c, painting, T0 + 3 * H), "painting"); assert.equal(T.crateLamp(c, painting, T0 + 3 * H), T.LAMP_SHORT); assert.ok(T.LAMP_SHORT < 1 && T.LAMP_SHORT > 0.9);
   assert.equal(T.crateLamp(c, painting, T0 + 100 * H), T.LAMP_SHORT, "a late painting only makes the crate later"); assert.match(T.openSittingCrate(st, c.id, painting, T0 + 4 * H).msg, /still filling/);
   assert.ok(T.crateLamp(c, painting, T0 + 1 * H) < T.LAMP_SHORT, "the lamp fills as before");
-  assert.equal(T.crateState(c, { ...painting, caddyReachable: false }, T0 + 3 * H), "waiting for the cloud", "the Caddy is unreachable"); assert.equal(T.crateState(c, { ...settings, painter: "off" }, T0 + 3 * H), "waiting for the cloud", "the developer's painter is off");
+  assert.equal(T.crateState(c, { ...painting, caddyReachable: false }, T0 + 3 * H), "waiting for a signal", "the Caddy is unreachable"); assert.equal(T.crateState(c, { ...settings, painter: "off" }, T0 + 3 * H), "waiting for a signal", "the developer's painter is off");
   assert.equal(T.crateState(c, { ...settings, caddyReachable: false }, T0 + 1 * H), "filling", "it says nothing while it is still filling");
   assert.ok(T.landPortrait(st, c.id).ok); assert.ok(T.landPortrait(st, c.id).again); assert.ok(!T.landPortrait(st, "nope").ok);
   assert.equal(T.crateState(c, painting, T0 + 1 * H), "filling", "landed early, still not before its time"); assert.equal(T.crateState(c, painting, T0 + 3 * H), "ready"); assert.equal(T.crateLamp(c, painting, T0 + 3 * H), 1);
@@ -210,10 +210,10 @@ test("an act that would earn two moments at once warns first, held or not: S02's
   const lone = S.freshSt("w1", 3, T0); S.normalize(lone); lone.doorAt = T0; assert.equal(T.readWarning(lone, id, sealed.id, x, settings), "", "a lone sealed read with nothing held: one moment, no loss");
 });
 
-test("a painted portrait is never 'waiting for the cloud', and a released mibi cannot sit", () => {
+test("a painted portrait is never 'waiting for a signal', and a released mibi cannot sit", () => {
   const st = world(1), m = walked(st, st.mibis[0]); T.devGrantSitting(st, T0); const c = T.beginSitting(st, m, "calm", "wood", { ...settings, paintPortraits: true }, T0).crate;
   const offline = { ...settings, paintPortraits: true, caddyReachable: false };
-  assert.equal(T.crateState(c, offline, T0 + 3 * H), "waiting for the cloud", "not painted, Caddy unreachable");
+  assert.equal(T.crateState(c, offline, T0 + 3 * H), "waiting for a signal", "not painted, Caddy unreachable");
   T.landPortrait(st, c.id); assert.equal(T.crateState(c, offline, T0 + 3 * H), "ready", "painted: the Caddy no longer matters"); assert.equal(T.crateLamp(c, offline, T0 + 3 * H), 1);
   const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.equal(T.portraitBlock(g, r), "back in the wild"); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
 });

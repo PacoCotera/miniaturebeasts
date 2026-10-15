@@ -5,6 +5,7 @@ import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
 import { openBook } from "./library.mjs";
+import { doorOpen } from "../nav.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 // The mibi up close: the chosen one, else the first the Companion does not carry, else the first.
@@ -40,7 +41,7 @@ export function intent(h, target, verb) {
     else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said
   }
   else if (target === "name") openNamer(h, m, "rename");
-  else if (target === "species") { openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library
+  else if (target === "species") { if (!doorOpen("book")) return; openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);
@@ -51,9 +52,9 @@ export function intent(h, target, verb) {
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m);
     if (r.ok) h.save(); else if (r.why === "full") h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name }));
   }
-  else if (target === "portrait") { if (!S.isAway(h.st, h.sv, m) && h.st.sitting && !m.portrait) h.goto("sitting"); }   // the sitting: not built yet, a slot of its own
+  else if (target === "portrait") { if (doorOpen("sitting") && !S.isAway(h.st, h.sv, m) && h.st.sitting && !m.portrait) h.goto("sitting"); }   // the sitting: not built yet, a slot of its own
   else if (target === "cross") {
-    if (!S.isAdult(h.st, m, h.settings) || S.isAway(h.st, h.sv, m)) return;
+    if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings) || S.isAway(h.st, h.sv, m)) return;
     if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away)) openCross(h, m);   // only partners at home can be picked
   }
   else if (target === "wild") {

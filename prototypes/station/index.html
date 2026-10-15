@@ -107,6 +107,7 @@ body{
 /* ===== Debug strip (not part of play) ===== */
 .debug{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; font:500 13px/1.3 var(--font-ui); color:var(--muted)}
 .btn{font:500 13px/1 var(--font-ui); background:var(--chip); color:var(--ink); border:1px solid var(--line); border-bottom-width:2px; border-radius:8px; padding:8px 11px; cursor:pointer}
+#devBtn[hidden]{display:none}
 .btn:hover{border-color:var(--muted)}
 .btn-danger{color:#a6420c; border-color:#a6420c}
 #genomes{width:min(1000px,100%); font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; white-space:pre-wrap; color:var(--ink); max-height:260px; overflow:auto}
@@ -200,7 +201,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
       <button class="dock-ctl" id="dockCtl" type="button" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" width="16" height="24" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint">D</span></button>
     </div>
     <div class="debug" aria-label="Developer tools (not part of play)">
-      <button class="btn" id="devBtn" type="button" aria-pressed="false">Developer tools</button>
+      <button class="btn" id="devBtn" type="button" aria-pressed="false" hidden>Developer tools</button>
       <span class="boot" id="boot">loading…</span>
     </div>
     <section class="dev" id="dev" hidden aria-label="Developer panel">
@@ -208,12 +209,12 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
       <div id="devPanel"></div>
       <pre id="devOut" hidden></pre>
     </section>
-    <div class="stamp" id="stamp">build …</div>
+    <div class="stamp" id="stamp" hidden>build …</div>
   </div>
 
   <aside class="panel" aria-label="Playtest notes">
     <h1>Station Field Test</h1>
-    <p class="lede">The Station on its own face: a simulated 1024×600 Station screen on the real species frames. Home, Cargo, Pods, Create, the Incubator, Idle, the Vivarium (whole and up close), the Library and the Probe bench are built; Cross, a species' Book and the sitting are not built yet. It shares one save with the Companion page in this browser.</p>
+    <p class="lede">The Station on its own face: a simulated 1024×600 Station screen on the real species frames. It shares one save with the Companion page in this browser.</p>
     <div class="pair">Explore on the <a href="../exploration/">Companion page</a>, end the expedition, then dock here with the Dock control or <kbd>D</kbd>. The <a href="../play/">play page</a> shows both devices side by side.</div>
     <details id="howTo">
       <summary>How to play</summary>
@@ -234,7 +235,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
         <li><kbd>R</kbd> Research: ✓ <b>Identify</b> a pod (1 Data, always). The seal breaks, the species shows, its chapters rise as a rail and its stamp appears on the label with every chapter as hairlines.</li>
         <li>↑ to a chapter, ✓ <b>Read</b> it (1 Data a trait; half, rounded up, once that chapter was read on an earlier pod of the species; the first read ever is free). Its page shows each trait as a picture of this pod's mibi: shows X · hides Y, only X, asleep, or breed to change. The stamp's sector fills.</li>
         <li>A star on a chapter is a <b>glint</b>: this pod carries a look the species has not shown yet. ✓ on another identified pod of the same species <b>compares</b> the two, free. The hatch under the wells <b>returns</b> a pod to the wild for +1 Essence (✓ twice).</li>
-        <li>On an identified pod, ✓ <b>Shape a founder</b> opens Create: <kbd>↑</kbd><kbd>↓</kbd> roll a read trait among its three pictures, then ✓ <b>Grow it</b>, at the price the bottom line names. The bud grows in the Incubator a leaf a minute (five minutes the first time, then twenty plus one per shaped trait), or ✓ <b>Grow now</b> for a price. When it is ready, ✓ <b>Open</b>: the young mibi steps out, and you meet it up close.</li>
+        <li>On an identified pod, ✓ <b>Create from this pod</b> opens Create: <kbd>↑</kbd><kbd>↓</kbd> roll a read trait among its three pictures, then ✓ <b>Grow it</b>, at the price the bottom line names. The bud grows in the Incubator a leaf a minute (five minutes the first time, then twenty plus one per shaped trait), or ✓ <b>Grow now</b> for a price. When it is ready, ✓ <b>Open</b>: the young mibi steps out, and you meet it up close.</li>
         <li>Without a Companion world, the developer panel (<code>?dev</code>) seeds a crate: dock with the Dock control or <kbd>D</kbd>, then <b>Open the crates</b> in the panel.</li>
       </ol>
     </details>

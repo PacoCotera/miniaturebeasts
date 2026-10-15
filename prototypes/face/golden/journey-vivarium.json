@@ -223,7 +223,7 @@
     "ring": "act.done",
     "field": "|empty",
     "page": "letters",
-    "ok": "Name it ",
+    "ok": null,
     "back": "Bean"
    },
    {
@@ -277,7 +277,7 @@
     "ring": "act.done",
     "field": "|empty",
     "page": "letters",
-    "ok": "Name it ",
+    "ok": null,
     "back": "Bean"
    },
    {
@@ -382,9 +382,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": "Open the guide",
+    "ok": null,
     "price": null,
-    "subject": "every Loika",
+    "subject": "the guide is not open yet",
     "back": "Vivarium"
    },
    {
@@ -468,9 +468,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": "Open the guide",
+    "ok": null,
     "price": null,
-    "subject": "every Loika",
+    "subject": "the guide is not open yet",
     "back": "Vivarium"
    },
    {
@@ -685,9 +685,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": "Open the guide",
+    "ok": null,
     "price": null,
-    "subject": "every Loika",
+    "subject": "the guide is not open yet",
     "back": "Vivarium"
    },
    {
@@ -736,9 +736,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "cross",
-    "ok": "Cross Tuft",
+    "ok": null,
     "price": null,
-    "subject": "two Loika to pair with",
+    "subject": "crossing is not open yet",
     "back": "Vivarium"
    },
    {

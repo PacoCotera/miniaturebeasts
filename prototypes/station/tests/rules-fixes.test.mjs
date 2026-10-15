@@ -195,7 +195,7 @@ test("need(): counts spelled out, dropped above the picture, shortfalls as icon 
   const st = fresh(); st.firstMibi = false;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
   const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: "x" + i, idd: 0, read: [], g: "meadow" }));
-  for (const [n, want] of [[1, "a new pod waits"], [2, "two new pods wait"], [6, "six new pods wait"], [7, "new pods wait"]]) { st.tray = fake(n); assert.equal(S.need(st, sv, settings).text, want, "fresh " + n); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
+  for (const [n, want] of [[1, "a new pod in the rack"], [2, "two new pods in the rack"], [6, "six new pods in the rack"], [7, "new pods in the rack"]]) { st.tray = fake(n); assert.equal(S.need(st, sv, settings).text, want, "fresh " + n); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
   st.tray = []; for (const [n, want] of [[1, "a pod waits for a well"], [3, "three pods wait for a well"], [7, "pods wait for a well"]]) { st.waiting = fake(n); assert.equal(S.need(st, sv, settings).text, want, "waiting " + n); }
   st.waiting = [];
   st.docked = true; st.dock = { docked: true, at: 0 };

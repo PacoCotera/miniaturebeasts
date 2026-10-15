@@ -346,6 +346,7 @@
         "size",
         "N",
         "cell",
+        "plate",
         "asset"
        ],
        "additionalProperties": false,
@@ -358,6 +359,9 @@
         },
         "cell": {
          "type": "integer"
+        },
+        "plate": {
+         "type": "string"
         },
         "asset": {
          "type": "string"

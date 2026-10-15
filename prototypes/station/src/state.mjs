@@ -547,7 +547,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
   const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod waits" : "new pods wait"), act: "pods", label: "Look at the pods" };
+  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod in the rack" : "new pods in the rack"), act: "pods", label: "Look at the pods" };
   const glinting = st.tray.filter((p) => podGlints(st, p));
   if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
   if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };

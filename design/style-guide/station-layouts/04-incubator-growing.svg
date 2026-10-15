@@ -21,13 +21,14 @@
 <rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#bbb" stroke-width="1"/>
 <text x="690" y="60" font-size="11" fill="#8d8aa6">Stamina</text>
 <rect x="719.5" y="71.5" width="5" height="5" fill="#fff" stroke="#8d8aa6" stroke-width="1"/>
-<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
-<text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
-<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the window</text>
-<rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
-<text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
+<rect x="804.5" y="256.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="808" y="270" font-size="10" fill="#222">STAMP label 120</text>
+<text x="808" y="281" font-size="9" fill="#777">804,256 120×120</text>
+<text x="808" y="294" font-size="9" fill="#777">140 from the window</text>
+<rect x="776.5" y="381.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="776" y1="405.5" x2="952" y2="405.5" stroke="#3c4b57" stroke-width="1"/>
+<text x="864" y="397" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+<text x="864" y="416" font-size="9" fill="#777" text-anchor="middle">code 776,381 176×25</text>
 <rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
 <text x="260" y="100" font-size="9" fill="#5d7a5f">leaves 256,88 512×216</text>
 <path d="M 302 301 C 296 296, 297 286, 302 282.5 C 307 286, 308 296, 302 301 Z" transform="rotate(40 302 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
@@ -123,4 +124,13 @@
 <circle cx="951" cy="582" r="8" fill="#5d5974"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+<rect x="80.5" y="88.5" width="159" height="311" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="84" y="99" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L paint zone 80,88 160×312</text>
+<rect x="784.5" y="88.5" width="159" height="143" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="788" y="99" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R paint zone 784,88 160×144</text>
+<rect x="248.5" y="320.5" width="95" height="79" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="252" y="331" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM paint zone 248,320 96×80</text>
+<rect x="680.5" y="320.5" width="79" height="87" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="684" y="331" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM paint zone 680,320 80×88</text>
 </svg>

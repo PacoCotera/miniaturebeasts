@@ -96,3 +96,6 @@ test("fix 7: a resident master's grade is painted at either status; <master>:day
     for (const r of mibi) { const e = assetEntry(r.id); assert.ok(e, r.id); assert.ok(["art", "painted"].includes(policyOf(r.id, e.status === "master" ? "master" : "placeholder")), r.id); }
   }
 });
+test("the stamp label's dimmed plate and the stamp are painted pictures (fix 4)", () => { assert.equal(policyOf("stamp-plate-120-k20", "placeholder"), "painted"); assert.equal(policyOf("stamp-plate-120-k75", "master"), "painted"); assert.equal(policyOf("stamp:abc:1,2:92:k20", "placeholder"), "painted"); });
+
+test("a doing trait's plate (one a trait, no look suffix) is a painted picture, by the existing trait family (fix 5 P7)", () => { for (const id of ["trait-S01-drive-128x160", "trait-S01-efficiency-128x160", "trait-S03-carriage-straight-104x96"]) { assert.equal(policyOf(id, "master"), "painted", id); assert.equal(policyOf(id, "placeholder"), "painted", id); } });

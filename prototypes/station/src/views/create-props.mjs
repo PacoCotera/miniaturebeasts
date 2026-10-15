@@ -5,6 +5,7 @@
 //   m: { st, settings, ui: { create: { podId, choices, f, clash, grown } } }, spec create.json, pods pods.json
 //   ui.create.grown is what ✓ Grow it made (intents/create.mjs): { code, cost }; it holds the screen in its grow state while the pod, no longer in the rack, travels.
 import * as S from "../state.mjs";
+import { plateReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
 import { slot, railOf } from "./pods-props.mjs";
@@ -90,7 +91,8 @@ export function createBuild(m, spec, pods) {
 
   // the stamp of the read and changed chapters, and the code (printed at Grow)
   const readIds = [...new Set([...p.read, ...fr.chapters.filter((c) => c.traits.some((t) => changed.includes(t.id))).map((c) => c.id)])], sz = stampSizing(fr, genome);
-  regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(genome)}:${[...readIds].sort().join(",")}:${sz.size}`, pod: p.id, species: S.speciesOf(p), read: readIds, size: sz.size, choices: cr.choices }) };
+  const k = spec.colours.stampLabel.k;
+  regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(genome)}:${[...readIds].sort().join(",")}:${sz.size}:k${kPct(k)}`, pod: p.id, species: S.speciesOf(p), read: readIds, size: sz.size, choices: cr.choices, k }) };
   regions.code = grown ? codeText(cr.grown.code) : "";
 
   // the bottom line: ✓ Grow it and the price, what stays a surprise, the first block (the rules' order, growBlockKey) with its notice; ← the pod

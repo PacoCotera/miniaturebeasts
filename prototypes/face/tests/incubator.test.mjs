@@ -64,7 +64,7 @@ const area = (f, o) => dirty(f, o);
 
 const colourIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
 const SC = {
-  "empty (a pod in the rack)": { pod: true }, "growing, the first half": { minutes: 2 }, "growing, the second half": { minutes: 13.2 }, "ready": { minutes: 30 }, "ready, the waiting lamp": { minutes: 30, lamp: incSpec.strings.painting },
+  "empty (a pod in the rack)": { pod: true }, "growing, the first half": { minutes: 2 }, "growing, the second half": { minutes: 13.2 }, "ready": { minutes: 30 }, "ready, the waiting lamp": { minutes: 30, lamp: "waiting" },
   "the hatch's end state": { minutes: 30, open: true },
 };
 for (const [name, o] of Object.entries(SC)) {
@@ -80,7 +80,7 @@ test("the departure check bites: the nest moved, the dome resized, the stamp off
   assert.deepEqual(departures(lg, incSpec, frameSpec, "growing"), []);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nest").rect[0] = 400; })[0], /nest/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "dome").rect[2] = 300; })[0], /chamber's back/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "stamp" && r.layer === "chrome").rect[1] = 380; })[0], /stamp label/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "stamp.plate" && r.layer === "painted").rect[1] = 380; })[0], /stamp label/);
   assert.match(bad((c) => { c.regions.push({ id: "footLight", layer: "chrome", rect: [352, 548, 320, 2] }); })[0], /footLight draws nothing/);
   assert.match(bad(() => {}, "empty").join("; "), /empty Incubator draws no/);
 });
@@ -131,9 +131,9 @@ test("the hatch is a still beat: the chamber's back, the nest and the window's f
   }
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
-test("the hatch: the bud is the ready picture with its shape and its front until 600, crack-1 over the ready bud at 600, crack-2 alone over it at 800, gone at 1000; the juvenile stands from 1000 and steps out at 1400 and 1800 by the table; the ribbon shows at 1200; no leaves, no plaque word", { skip }, async () => {
+test("the hatch: the bud is the ready picture with its shape and its front until 600, crack-1 over the ready bud at 600, crack-2 alone over it at 800, gone at 1000; the juvenile stands from 1000 and steps out at 1400 and 1800 by the table; the ribbon shows at 1200; no leaves; the plaque keeps its word: ready to 999, hatched from 1000", { skip }, async () => {
   const { b, f, at } = await hatching({}, true), B = b.props.regions.bud, J = b.props.regions.juvenile.picture, [bx, by] = R.bud.rect, [jx, jy, jw] = R.juvenile.rect, BP1 = [bx + 62, by + 16], BP2 = [bx + 61, by + 16];
-  assert.equal(b.props.regions.leaves.total, 0); assert.equal(b.props.regions.plaque, "");
+  assert.equal(b.props.regions.leaves.total, 0); assert.equal(b.props.regions.plaque, "ready"); assert.equal(b.props.regions.plaqueAfter, "hatched");
   const shown = (id) => { const n = f.nodeBox(id); return !!n && n.box[2] > 0; }, nodes = () => ["early", "late", "ready", "shape", "front", "crack1", "crack2"].filter((k) => shown(`bud.${k}`)).join();
   // the cracks are overlays: crack-1's pixel (bud + (62, 16)) is crack-1's, crack-2's pixel (bud + (61, 16)) is crack-2's and crack-1 lacks it; the ready bud has no pixel free of its front, so it is told by the nodes shown
   for (const [ms, want] of [[650, B.crack1], [799, B.crack1]]) { at(ms); assert.ok(colourIs(f, ...BP1, want), `${ms} ms: the bud's ${want}`); }
@@ -141,7 +141,8 @@ test("the hatch: the bud is the ready picture with its shape and its front until
   for (const [ms, want] of [[100, "ready,shape,front"], [300, "ready,shape,front"], [599, "ready,shape,front"], [650, "ready,crack1"], [799, "ready,crack1"], [850, "ready,crack2"], [999, "ready,crack2"], [1000, ""], [1100, ""]]) { at(ms); assert.equal(nodes(), want, `${ms} ms: the nodes shown`); }
   for (const ms of [100, 300, 599]) { at(ms); assert.ok(shown("bud.front"), `${ms} ms: bud.front is shown`); assert.ok(shown("bud.ready"), `${ms} ms: bud.ready is shown under it`); }
   for (const ms of [650, 850]) { at(ms); assert.ok(shown("bud.ready"), `${ms} ms: bud.ready is shown under the crack`); assert.ok(!shown("bud.shape") && !shown("bud.front"), `${ms} ms: the shape and the front are gone (in the hatch until the crack at 600)`); }
-  for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!colourIs(f, ...BP2, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.equal(lg.type.some((t) => t.region === "plaque"), false); }
+  for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!colourIs(f, ...BP2, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.deepEqual(lg.type.filter((t) => t.region === "plaque").map((t) => t.text), ["hatched"], `${ms} ms: the plaque has cut to the hatch word`); }
+  for (const ms of [0, 300, 650, 999]) assert.deepEqual(at(ms).type.filter((t) => t.region === "plaque").map((t) => t.text), ["ready"], `${ms} ms: the plaque keeps its word`);
   at(999); assert.ok(!colourIs(f, jx + 40, jy + 40, J), "the juvenile is not there at 999");
   let lg = at(1199); assert.ok(!lg.type.some((t) => t.region === "ribbon" && t.text), "no ribbon at 1199"); lg = at(1200); assert.ok(lg.type.some((t) => t.region === "ribbon" && /young/.test(t.text)), "the ribbon's words at 1200");
   const TABLE = EV.hatch.steps[6].lift, lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], top = (ms) => { for (let y = jy - 6; y < jy + 8; y++) if (colourIs(f, jx + 40, y, J)) return y; return null; };
@@ -150,7 +151,7 @@ test("the hatch: the bud is the ready picture with its shape and its front until
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
 test("the hatch's waiting lamp: home-lamp-sky-12x12 at its rect while the painting is on its way, a node with no size otherwise", { skip }, async () => {
-  const on = scene({ minutes: 30, lamp: incSpec.strings.painting }), off = scene({ minutes: 30 });
+  const on = scene({ minutes: 30, lamp: "waiting" }), off = scene({ minutes: 30 });
   assert.equal(on.props.regions.lamp.on, true); assert.equal(off.props.regions.lamp.on, false); assert.equal(on.props.regions.lamp.picture, off.props.regions.lamp.picture);
   const f = await start(on), lg = logOf(f); assert.deepEqual(region(lg, "lamp").rect, R.base.lamp.rect.length === 4 ? R.base.lamp.rect : null);
   const g = await start(off); assert.equal(logOf(g).regions.some((r) => r.id === "lamp" && r.rect[2] > 0), false);
@@ -170,9 +171,9 @@ test("keys: ✓ ← and the room keys say their intent on the room, the pad says
 test("no refresh redraws more than a quarter of the screen across the hatch (frames every 16 ms and every 40 ms) and growNow; the hatch's first frames and growNow's key frame are printed", { skip }, async () => {
   const worst = (f, t0, until, step) => { let w = 0; for (let t = step; t < until; t += step) { f.frame(t0 + t); w = Math.max(w, area(f)); } return w; };
   { const { f, t0 } = await hatching(); const at = {}; for (let t = 16; t < 2700; t += 16) { f.frame(t0 + t); at[t] = area(f); }   // the ruling's beats: the first frame (≤ 55,808), the cracks (20,480), the juvenile standing (94,848), the ribbon at 1200 (16,000 by the ruling), the steps (96,064)
-    assert.ok(at[16] <= 55808, `t = 0: ${at[16]}`); assert.ok(at[608] <= 20480 && at[800] <= 20480, `cracks ${at[608]}, ${at[800]}`); assert.ok(at[1008] <= 94848, `1000: ${at[1008]}`); assert.ok(at[1200] <= 16000, `1200: ${at[1200]}`); console.log(`# the Incubator's hatch beats (px): t=0 ${at[16]} · 600 ${at[608]} · 800 ${at[800]} · 1000 ${at[1008]} · 1200 ${at[1200]} (the ruling: 16,000) · steps ${Math.max(...[1408, 1456, 1808, 1952].map((t) => at[t]))}`); }
-  { const { f, t0 } = await hatching(); const w = worst(f, t0, 2700, 16); assert.ok(w <= 96064, `hatch (16 ms): dirty ${w} (${(100 * w / 614400).toFixed(1)}%)`); console.log(`# the Incubator's hatch, 16 ms frames: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
-  { const { f, t0 } = await hatching(); const w = worst(f, t0, 2700, 40); assert.ok(w <= 96064, `hatch (40 ms): dirty ${w}`); console.log(`# the Incubator's hatch, 40 ms frames: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
+    assert.ok(at[16] <= 55808, `t = 0: ${at[16]}`); assert.ok(at[608] <= 20480 && at[800] <= 20480, `cracks ${at[608]}, ${at[800]}`); assert.ok(at[1008] <= 94848 + 128 * 32, `1000: ${at[1008]}`); /* the juvenile standing (94,848) plus the plaque cutting to its hatch word (fix 5 I3): at most the plaque plate's box, 128 × 32 = 4,096; measured 97,188 */ assert.ok(at[1200] <= 16000, `1200: ${at[1200]}`); console.log(`# the Incubator's hatch beats (px): t=0 ${at[16]} · 600 ${at[608]} · 800 ${at[800]} · 1000 ${at[1008]} · 1200 ${at[1200]} (the ruling: 16,000) · steps ${Math.max(...[1408, 1456, 1808, 1952].map((t) => at[t]))}`); }
+  { const { f, t0 } = await hatching(); const w = worst(f, t0, 2700, 16); assert.ok(w <= Math.max(96064, 94848 + 128 * 32), `hatch (16 ms): dirty ${w} (${(100 * w / 614400).toFixed(1)}%)`); console.log(`# the Incubator's hatch, 16 ms frames: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
+  { const { f, t0 } = await hatching(); const w = worst(f, t0, 2700, 40); assert.ok(w <= Math.max(96064, 94848 + 128 * 32), `hatch (40 ms): dirty ${w}`); console.log(`# the Incubator's hatch, 40 ms frames: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
   { const b = scene({ minutes: 13.2 }), L = b.props.regions.leaves, f = await start(b, { t0: 1000 }), t0 = f.t; f.send({ t: "event", kind: "growNow", target: "room", from: L.full, to: L.total, ms: EV.growNow.ms, hold: EV.growNow.hold });
     const w = worst(f, t0, 420, 16); assert.ok(w <= 153600, `growNow: dirty ${w}`); console.log(`# the Incubator's growNow: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
 });

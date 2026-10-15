@@ -61,7 +61,7 @@ test("found, met and unmet frames: the plate, the study, the name, the clan and 
   for (const id of ["S01", "S02", "S03", "S05"]) { const i = by[id]; assert.equal(i.status, "found", id); assert.equal(i.picture, `spread-plate-${id}-80x96`); assert.match(i.roundel, /^clan-roundel-C\d\d-12x12$/); assert.ok(i.name && !/\d/.test(i.name)); assert.ok(i.progress >= 1 && i.progress <= 4); }
   assert.deepEqual([by.S04.status, by.S04.picture, by.S04.progress, by.S04.portrayed, by.S04.complete], ["met", "spread-study-S04-80x96", null, false, false]); assert.match(by.S04.roundel, /^clan-roundel-/); assert.ok(by.S04.name);
   assert.deepEqual([by.S06.status, by.S06.name, by.S06.picture, by.S06.roundel], ["unmet", null, null, null]);
-  assert.equal(b.props.focus.cur, "frame.S03"); assert.equal(b.line.ok, SP.strings.open); assert.equal(b.line.subject, by.S03.name);
+  assert.equal(b.props.focus.cur, "frame.S03"); assert.equal(b.line.ok, null, "found: no ✓ cap until slot 8 (the Book is shut)"); assert.equal(b.line.subject, by.S03.name);
   assert.deepEqual(build(st, { page: 0, i: 3 }).line, { ok: null, subject: `${by.S04.name}, only seen`, back: "Home", need: null }, "met: no ✓ cap");
   assert.equal(build(st, { page: 0, i: 8 }).line.subject, "an empty frame");
   assert.ok(!/"(rect|x|y|w|h|colour|color)":/.test(JSON.stringify(b.props)), "names no rectangle and no colour"); assert.ok(JSON.stringify(b.props).length < 8 * 1024, "props " + JSON.stringify(b.props).length);

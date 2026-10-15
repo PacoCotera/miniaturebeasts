@@ -81,7 +81,7 @@ test("the departure check bites: the roll moved, the chamber resized, the stamp 
   assert.deepEqual(departures(lg, createSpec, frameSpec, "shape"), []);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "roll" && r.layer === "chrome").rect[0] = 200; })[0], /leaves the roll/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "chamber").rect[2] = 380; })[0], /chamber/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "stamp" && r.layer === "chrome").rect[1] = 380; })[0], /stamp label/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "stamp.plate" && r.layer === "painted").rect[1] = 380; })[0], /stamp label/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "focus").rect[1] = 300; })[0], /ring/);
   assert.match(bad(() => {}, "grow").join("; "), /pod travels in grow/);
   assert.match(bad(() => {}, "nothingRead").join("; "), /no roll and no ring/);

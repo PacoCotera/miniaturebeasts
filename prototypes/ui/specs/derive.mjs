@@ -19,9 +19,22 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
 export const slantAt = (rail, r) => Math.floor((rail.slant * (r + 0.5)) / rail.h);
 
 // The page's size by its trait count: the spec's table (page.sizeByCount, [w, h] by count 1 to 8), else the region's own rectangle.
+// Compare's pane (fix 5): the rectangle's width, and the height the open chapter's count gives (page.heightByCount).
 export function pageSize(page, n) {
-  const t = page.sizeByCount; if (!t) return page.rect.slice(2);
+  const t = page.sizeByCount, h = page.heightByCount;
+  if (!t && h) return [page.rect[2], h[String(Math.max(1, Math.min(n, Object.keys(h).length)))]];
+  if (!t) return page.rect.slice(2);
   return t[String(Math.max(1, Math.min(n, Object.keys(t).length)))].slice();
+}
+// The chapter page's frame (fix 5 P4): the largest grid over the pod's chapters, given each chapter's trait count (a sealed chapter counts 1).
+export function pageFrame(counts) {
+  const colsOf = (n) => (n <= 4 ? n : n <= 6 ? 3 : 4), ns = counts.length ? counts : [1];
+  return { cols: Math.max(1, ...ns.map(colsOf)), rows: ns.some((n) => n >= 5) ? 2 : 1 };
+}
+// The chapter page's origin by its frame (page.originX by the columns, page.originY by the rows); a frame the table does not hold takes the nearest.
+export function pageOrigin(page, cols, rows) {
+  const pick = (t, k) => { const ks = Object.keys(t).map(Number); return t[String(Math.max(Math.min(...ks), Math.min(k, Math.max(...ks))))]; };
+  return [pick(page.originX, cols), pick(page.originY, rows)];
 }
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {
@@ -73,6 +86,7 @@ export function evaluate(rule, node, args) {
     case "slantTabs": { const r = slantTabs(node, args[0], args[1], args[2] ? "centred" : "pods"); out.push(+r.overflow, r.run, typeof r.x0 === "number" ? r.x0 : 0, r.tabs.length); for (const t of r.tabs) out.push(...t.rect, +t.full); break; }
     case "slantAt": out.push(slantAt(node, args[0])); break;
     case "pageSize": out.push(...pageSize(node, args[0])); break;
+    case "pageOrigin": out.push(...pageOrigin(node, args[0], args[1])); break;
     case "pageGrid": { const g = pageGrid(node, args[0]); out.push(+g.overflow, g.cells.length); for (const c of g.cells) out.push(...c); out.push(...(g.picture ?? [0, 0])); break; }
     case "placeRect": out.push(...placeRect(node, args[0])); break;
     case "kinRect": out.push(...kinRect(node, args[0])); break;

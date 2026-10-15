@@ -11,6 +11,8 @@ import { habitatShown } from "../trickle.mjs";
 import { mibiReq, movingProp, restOf } from "./home-props.mjs";
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;   // the residents' seed (home-props.mjs)
 import { habitsOf, placesOf } from "../state.mjs";
+import { plateReq, kPct } from "../stamplook.mjs";
+import { doorOpen } from "../nav.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"];
@@ -51,7 +53,7 @@ export function habitatBuild(m, spec, frame, home) {
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
     species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "ph", id: "mark-guide-16", size: [16, 16], hollow: false, until: "the guide mark master (not signed)" }) },
     story, code: codeText(shown.code),
-    stamp: { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size }) },
+    stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, spec.colours.stampLabel.k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
   };
 
   // the plates, one a chapter in ring order: read, unread (readable at home or out) or sealed
@@ -93,11 +95,11 @@ export function habitatBuild(m, spec, frame, home) {
   const targets = [];
   if (state !== "out") targets.push({ id: "resident", group: "resident", enabled: true });
   if (state !== "meet") targets.push({ id: "name", group: "name", enabled: true });
-  targets.push({ id: "species", group: "species", enabled: true });
+  targets.push({ id: "species", group: "species", enabled: doorOpen("book") });
   plates.forEach((p, i) => targets.push({ id: "plate." + i, group: "plate", enabled: unread(p) }));
   targets.push({ id: "door", group: "top", enabled: dKind === "take" || dKind === "bring" });
-  targets.push({ id: "portrait", group: "top", enabled: !!sitting });
-  targets.push({ id: "cross", group: "low", enabled: crossState === "adult" });
+  targets.push({ id: "portrait", group: "top", enabled: !!sitting && doorOpen("sitting") });
+  targets.push({ id: "cross", group: "low", enabled: crossState === "adult" && doorOpen("cross") });
   targets.push({ id: "wild", group: "low", enabled: !wildBlock });
   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile", enabled: true });
   const has = (id) => targets.some((t) => t.id === id), cur = m.focus && has(m.focus) ? m.focus : out ? "name" : "resident";
@@ -111,7 +113,7 @@ export function habitatBuild(m, spec, frame, home) {
   const id = cur.startsWith("tile.") ? "resident" : cur;
   if (id === "resident") line = { ok: meet ? fill(Sg.name, named) : fill(Sg.greet, named), subject: painting ?? contextOf, back: Sg.back, need: null };
   else if (id === "name") line = { ok: fill(Sg.rename, named), subject: out ? Sg.out : painting ?? contextOf, back: Sg.back, need: null };
-  else if (id === "species") line = { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null };
+  else if (id === "species") line = doorOpen("book") ? { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null } : { ok: null, subject: Sg.shut.guide, back: Sg.back, need: null };
   else if (id.startsWith("plate.")) {
     const p = plates[+id.slice(6)], ch = fr.chapters[+id.slice(6)], Chapter = ch.name;
     if (p.state === "read") line = { ok: null, subject: fill(Sg.plateRead, { Chapter }), back: Sg.back, need: null };
@@ -126,10 +128,11 @@ export function habitatBuild(m, spec, frame, home) {
       : { ok: null, subject: Sg.full };
     line = { ...line, back: Sg.back, need: null };
   } else if (id === "portrait") {
-    const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : null;
+    const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
     line = why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
   } else if (id === "cross") {
-    line = crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners.replace("{n in words}", "{n}"), { n: WORDS[Math.min(pickable.length, 11)], Species: species }) }
+    line = crossState === "adult" && !doorOpen("cross") ? { ok: null, subject: Sg.shut.cross }
+      : crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners.replace("{n in words}", "{n}"), { n: WORDS[Math.min(pickable.length, 11)], Species: species }) }
       : { ok: null, subject: crossState === "out" ? Sg.crossOut : crossState === "away" ? Sg.crossAway : crossState === "alone" ? fill(Sg.noPartner, { Species: species }) : Sg.crossLater };
     line = { ...line, back: Sg.back, need: null };
   } else if (id === "wild") {

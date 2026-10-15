@@ -194,10 +194,11 @@ static void build_code(void) {
   const char *code = v_pstr("regions.card.code"); int px = hi("regions.code.px", 16), w = v_measure(code, px);
   v_region("code", LAYER_TYPE); v_text("code", code, hk("regions.code.rect", 0), hi("regions.code.lineTop", 162) + v_fdiv(20 - v_cap(px), 2), *code ? w : 0, px, colr("colours.card.code"));
 }
-/* the stamp label: a bone plate with a slate edge and the stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows) */
+/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label */
 static void build_stamp(void) {
-  int r[4]; hrect("regions.stamp.rect", r); v_region("stamp", LAYER_CHROME); word_panel("stamp", r[0], r[1], r[2], r[3], colr("colours.stampLabel.fill"), colr("colours.stampLabel.edge"));
+  int r[4]; hrect("regions.stamp.rect", r); const char *pl = v_pstr("regions.card.stamp.plate");
   const char *a = v_pstr("regions.card.stamp.asset"); int size = v_pint("regions.card.stamp.size", 0), N = v_pint("regions.card.stamp.N", 0), cell = v_pint("regions.card.stamp.cell", 0);
+  v_region("stamp", LAYER_PAINTED); if (has(pl)) { if (has(a) && size) v_sprite("stamp", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp", pl, r[0], r[1]); }
   if (!has(a) || !size) return;
   int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }

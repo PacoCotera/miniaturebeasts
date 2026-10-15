@@ -10,11 +10,11 @@
    "png": "cargo-bay-one.png"
   },
   "cargo-bay-three": {
-   "hash": "9c07ffa5",
+   "hash": "fe3349a9",
    "png": "cargo-bay-three.png"
   },
   "cargo-bay-empty": {
-   "hash": "7ae993fa",
+   "hash": "bd7f6e0c",
    "png": "cargo-bay-empty.png"
   },
   "cargo-bay-away": {
@@ -22,19 +22,19 @@
    "png": "cargo-bay-away.png"
   },
   "cargo-bay-waiting": {
-   "hash": "b0138aef",
+   "hash": "de70edd9",
    "png": "cargo-bay-waiting.png"
   },
   "cargo-report": {
-   "hash": "37c6d0ef",
+   "hash": "2ae3e431",
    "png": "cargo-report.png"
   },
   "cargo-report-small": {
-   "hash": "1d4ab862",
+   "hash": "80aec6e8",
    "png": "cargo-report-small.png"
   },
   "cargo-report-waiting": {
-   "hash": "db73da75",
+   "hash": "d8e83d9f",
    "png": "cargo-report-waiting.png"
   },
   "cargo-opening-0": {
@@ -50,23 +50,23 @@
    "png": "cargo-opening-200.png"
   },
   "cargo-opening-500": {
-   "hash": "a5d9b044",
+   "hash": "51f5fcfc",
    "png": "cargo-opening-500.png"
   },
   "cargo-opening-800": {
-   "hash": "cb638b1d",
+   "hash": "00c3be11",
    "png": "cargo-opening-800.png"
   },
   "cargo-opening-1200": {
-   "hash": "86cad44d",
+   "hash": "441a74e1",
    "png": "cargo-opening-1200.png"
   },
   "cargo-opening-1650": {
-   "hash": "f792e4e7",
+   "hash": "c26ac6ab",
    "png": "cargo-opening-1650.png"
   },
   "cargo-opening-end": {
-   "hash": "37ce4120",
+   "hash": "ea859087",
    "png": "cargo-opening-end.png"
   },
   "cargo-crates-arriving": {

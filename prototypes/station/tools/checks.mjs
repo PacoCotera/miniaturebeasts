@@ -12,7 +12,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { pageSize } from "../../ui/specs/derive.mjs";
+import { pageSize, pageOrigin } from "../../ui/specs/derive.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 import { departures } from "../../face/tools/home-regions.mjs";
 import { departures as idleDepartures } from "../../face/tools/idle-regions.mjs";
@@ -74,7 +74,7 @@ for (const s of rec.shots) {
     must(got("chrome", "glass").length + got("painted", "glass").length === 1 && got("chrome", "bezel").length === 1 && MODULES.every((m) => got("chrome", m).length === 1), "Home draws the bezel, the glass and the five modules once each");
   } else if (c.screen === "create" && c.props?.state !== "notBuilt") {   // Create: every region of the face's log against create.json (face/tools/create-regions.mjs): zero departures; the roll, the founder and the stamp label are drawn
     const d = createDepartures(lg, createSpec, frame, c.props.state); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
-    must(got("chrome", "stamp").length === 1 && got("art", "founder").length + got("painted", "founder").length >= 1 && got("chrome", "roll").length >= 1, "Create draws the roll, the founder and the stamp label");
+    must(got("painted", "stamp.plate").length === 1 && got("art", "founder").length + got("painted", "founder").length >= 1 && got("chrome", "roll").length >= 1, "Create draws the roll, the founder and the stamp label");
   } else if (c.screen === "incubator" && c.props?.state !== "notBuilt") {   // the Incubator: every region of the face's log against incubator.json (face/tools/incubator-regions.mjs): zero departures
     const d = incubatorDepartures(lg, incubatorSpec, frame, c.props.state); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "vivarium" && c.viv) {   // the Vivarium's whole: every region of the face's log against vivarium.json (face/tools/vivarium-regions.mjs): zero departures; a tile a bay
@@ -93,10 +93,10 @@ for (const s of rec.shots) {
   } else {
     one("chrome", "bench", F.stage.rect, "the stage");
     one("painted", "figure", R.overview.figure.rect); one("painted", "find", R.overview.originPicture.rect); one("painted", "hatch", R.overview.hatch.rect);
-    one("chrome", "stamp", R.overview.stamp.rect, "stamp label"); for (const r of got("chrome", "stamp")) must(r.rect[2] === 120 && r.rect[3] === 120, `stamp label ${r.rect} is 120×120`);
+    one("painted", "stamp", R.overview.stampCase.rect, "the stamp case (the label stands in it)");
     for (const r of got("painted", "stamp.image")) { const L = R.overview.stamp.rect; must(r.rect[2] === r.rect[3] && r.rect[2] <= 104 && r.rect[2] >= 34 && Math.abs(r.rect[0] + r.rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(r.rect[1] + r.rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${r.rect} is at most 104 px square and centred on its label ${L}`); }
-    one("painted", "pageA", R.compareA.rect, "compareA page"); one("painted", "pageB", R.compareB.rect, "compareB page");
-    for (const r of got("chrome", "page.rule")) { const Pg = R.chapter.page, n = c.cells ?? 0, want = [Pg.rect[0] + Pg.rule.at[0], Pg.rect[1] + Pg.rule.at[1], pageSize(Pg, n)[0] - Pg.rule.at[0], Pg.rule.h]; must(eq(r.rect, want), `the page's rule ${r.rect} is not ${want} for ${n} traits (the page is ${pageSize(Pg, n)})`); }
+    { const h = c.cmpCells == null ? null : pageSize(R.compareA, c.cmpCells)[1]; for (const [id, K] of [["pageA", R.compareA], ["pageB", R.compareB]]) one("painted", id, [K.rect[0], K.rect[1], K.rect[2], h ?? K.rect[3]], `compare${id.slice(-1)} page (the height its chapter's count gives)`); }
+    for (const r of got("chrome", "page.rule")) { const Pg = R.chapter.page, n = c.cells ?? 0, [ox, oy] = c.frame ? pageOrigin(Pg, c.frame.cols, c.frame.rows) : Pg.rect, want = [ox + Pg.rule.at[0], oy + Pg.rule.at[1], pageSize(Pg, n)[0] - Pg.rule.at[0], Pg.rule.h]; must(eq(r.rect, want), `the page's rule ${r.rect} is not ${want} for ${n} traits (the page is ${pageSize(Pg, n)})`); }
     for (const r of got("painted", "pod")) { const sizes = Object.values(pods.classes.pod); must(sizes.some(([a, b]) => a === r.rect[2] && b === r.rect[3]) || true, `pod ${r.rect}`); }
     // the rail's tab count against the frame (the face's rail is the props' tabs)
     if (c.pod && c.pod.idd && c.mode !== "collection") must(c.railTabs === c.pod.chapters, `the rail has ${c.railTabs} tabs for ${c.pod.chapters} chapters`);

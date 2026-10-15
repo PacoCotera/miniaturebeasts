@@ -19,6 +19,7 @@
    "required": [
     "bench",
     "cradle",
+    "strip",
     "switch",
     "slot"
    ],
@@ -52,6 +53,26 @@
       "picture": {
        "type": "string",
        "minLength": 1
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "picture",
+      "tier"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string",
+       "minLength": 1
+      },
+      "tier": {
+       "enum": [
+        1,
+        2
+       ]
       }
      }
     },

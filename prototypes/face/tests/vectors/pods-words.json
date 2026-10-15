@@ -447,7 +447,7 @@
      "h": 16
     }
    ],
-   "hash": "75b3f9d3"
+   "hash": "eed04a53"
   },
   {
    "state": "overview",
@@ -604,7 +604,7 @@
      "h": 16
     }
    ],
-   "hash": "f0515226"
+   "hash": "be0a8ea6"
   },
   {
    "state": "overview",
@@ -762,7 +762,7 @@
      "h": 16
     }
    ],
-   "hash": "3e6d1525"
+   "hash": "c69ad225"
   },
   {
    "state": "overview",
@@ -1043,7 +1043,7 @@
      "h": 16
     }
    ],
-   "hash": "8fdc5e24"
+   "hash": "ee3c2bec"
   },
   {
    "state": "overview",
@@ -1328,7 +1328,7 @@
      "h": 16
     }
    ],
-   "hash": "a8fe2878"
+   "hash": "1a0810d7"
   },
   {
    "state": "overview",
@@ -1630,7 +1630,7 @@
      "h": 16
     }
    ],
-   "hash": "53af3862"
+   "hash": "82dee69a"
   },
   {
    "state": "overview",
@@ -1906,7 +1906,7 @@
      "h": 16
     }
    ],
-   "hash": "d2c8e443"
+   "hash": "f75a390b"
   },
   {
    "state": "overview",
@@ -2201,7 +2201,7 @@
      "h": 16
     }
    ],
-   "hash": "ddfbaed6"
+   "hash": "af13edee"
   },
   {
    "state": "overview",
@@ -2510,7 +2510,7 @@
      "h": 16
     }
    ],
-   "hash": "3a13090d"
+   "hash": "68faea15"
   },
   {
    "state": "overview",
@@ -2807,7 +2807,7 @@
      "h": 16
     }
    ],
-   "hash": "4739259c"
+   "hash": "26ad0e94"
   },
   {
    "state": "overview",
@@ -3118,7 +3118,7 @@
      "h": 16
     }
    ],
-   "hash": "b53bd26d"
+   "hash": "340b4c85"
   },
   {
    "state": "overview",
@@ -3403,7 +3403,7 @@
      "h": 16
     }
    ],
-   "hash": "86be5ba7"
+   "hash": "56d9d44f"
   },
   {
    "state": "chapter",
@@ -3481,6 +3481,10 @@
      "page": {
       "region": "page",
       "chapter": "coat",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:coat:unread:24",
        "word": "Coat"
@@ -3646,7 +3650,7 @@
      "h": 16
     }
    ],
-   "hash": "f32326f5"
+   "hash": "ef8c84f5"
   },
   {
    "state": "chapter",
@@ -3724,6 +3728,10 @@
      "page": {
       "region": "page",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:face:read:24",
        "word": "Face"
@@ -3932,7 +3940,7 @@
      "h": 16
     }
    ],
-   "hash": "be57b448"
+   "hash": "cd57b1f8"
   },
   {
    "state": "chapter",
@@ -4019,6 +4027,10 @@
      "page": {
       "region": "page",
       "chapter": "shape",
+      "frame": {
+       "cols": 1,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:shape:read:24",
        "word": "Shape"
@@ -4207,7 +4219,7 @@
      "h": 16
     }
    ],
-   "hash": "96c7b245"
+   "hash": "8cf67905"
   },
   {
    "state": "chapter",
@@ -4303,6 +4315,10 @@
      "page": {
       "region": "page",
       "chapter": "movement",
+      "frame": {
+       "cols": 4,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:movement:read:24",
        "word": "Movement"
@@ -4548,7 +4564,7 @@
      "h": 16
     }
    ],
-   "hash": "c7e54967"
+   "hash": "2277ebaf"
   },
   {
    "state": "chapter",
@@ -4626,6 +4642,10 @@
      "page": {
       "region": "page",
       "chapter": "coat",
+      "frame": {
+       "cols": 3,
+       "rows": 2
+      },
       "heading": {
        "emblem": "emblem:coat:read:24",
        "word": "Coat"
@@ -4879,7 +4899,7 @@
      "h": 16
     }
    ],
-   "hash": "e9fa32c7"
+   "hash": "38b4b79f"
   },
   {
    "state": "chapter",
@@ -4966,6 +4986,10 @@
      "page": {
       "region": "page",
       "chapter": "face",
+      "frame": {
+       "cols": 3,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:face:unread:24",
        "word": "Face"
@@ -5146,7 +5170,7 @@
      "h": 16
     }
    ],
-   "hash": "cb07b020"
+   "hash": "d73f8578"
   },
   {
    "state": "chapter",
@@ -5224,6 +5248,10 @@
      "page": {
       "region": "page",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:face:unread:24",
        "word": "Face"
@@ -5403,7 +5431,7 @@
      "h": 16
     }
    ],
-   "hash": "a1f01f1e"
+   "hash": "a176208e"
   },
   {
    "state": "compare",
@@ -5467,6 +5495,10 @@
      "pageA": {
       "region": "compareA",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -5483,7 +5515,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
        },
        {
         "name": "Eyes",
@@ -5493,7 +5525,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-eyes-between-184x256:184x256"
+        "crop": "trait-S01-eyes-between-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5507,6 +5539,10 @@
      "pageB": {
       "region": "compareB",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -5523,7 +5559,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": false,
-        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
        },
        {
         "name": "Eyes",
@@ -5533,7 +5569,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": false,
-        "crop": "trait-S01-eyes-between-184x256:184x256"
+        "crop": "trait-S01-eyes-between-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5629,9 +5665,9 @@
      "h": 24
     },
     {
-     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
-     "w": 184,
-     "h": 256
+     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
+     "w": 128,
+     "h": 160
     },
     {
      "id": "icon:energy:16",
@@ -5649,7 +5685,7 @@
      "h": 16
     }
    ],
-   "hash": "28c2d946"
+   "hash": "49ec3352"
   },
   {
    "state": "compare",
@@ -5713,6 +5749,10 @@
      "pageA": {
       "region": "compareA",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -5729,7 +5769,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
        },
        {
         "name": "Eyes",
@@ -5739,7 +5779,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-eyes-between-184x256:184x256"
+        "crop": "trait-S01-eyes-between-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5753,6 +5793,10 @@
      "pageB": {
       "region": "compareB",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -5876,9 +5920,9 @@
      "h": 24
     },
     {
-     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
-     "w": 184,
-     "h": 256
+     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
+     "w": 128,
+     "h": 160
     },
     {
      "id": "icon:energy:16",
@@ -5896,7 +5940,7 @@
      "h": 16
     }
    ],
-   "hash": "91e895e7"
+   "hash": "8cca7c4f"
   },
   {
    "state": "compare",
@@ -5969,6 +6013,10 @@
      "pageA": {
       "region": "compareA",
       "chapter": "face",
+      "frame": {
+       "cols": 1,
+       "rows": 1
+      },
       "heading": {
        "pod": "pod:S04:i:40x48",
        "who": [
@@ -5985,7 +6033,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+        "crop": "trait-S04-eyes-small-close-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5999,6 +6047,10 @@
      "pageB": {
       "region": "compareB",
       "chapter": "face",
+      "frame": {
+       "cols": 1,
+       "rows": 1
+      },
       "heading": {
        "pod": "pod:S04:i:40x48",
        "who": [
@@ -6015,7 +6067,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": false,
-        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+        "crop": "trait-S04-eyes-small-close-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -6121,9 +6173,9 @@
      "h": 24
     },
     {
-     "id": "trait-S04-eyes-small-close-376x264:376x264",
-     "w": 376,
-     "h": 264
+     "id": "trait-S04-eyes-small-close-128x160:128x160",
+     "w": 128,
+     "h": 160
     },
     {
      "id": "icon:energy:16",
@@ -6141,7 +6193,7 @@
      "h": 16
     }
    ],
-   "hash": "b9448af4"
+   "hash": "de7d10e4"
   },
   {
    "state": "overview",
@@ -6442,7 +6494,7 @@
      "h": 16
     }
    ],
-   "hash": "b14e9c94"
+   "hash": "6d30c9e4"
   },
   {
    "state": "collection",

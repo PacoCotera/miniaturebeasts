@@ -184,7 +184,7 @@ export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, no
 // --- the crate: the lamp fills, the painting lands, the bay opens --------------------------------------------------------------
 // The timer stores the start and the rule; the lamp is a fraction (never a clock or digits). A crate is ready at the later of two: the wait over (a minimum, never shortened) and the
 // portrait landed. In the first build no portrait is painted, so the wait alone binds and the portrait lands when it ends (unless the developer's painter is off); a painting that is
-// late says nothing and the lamp holds just short of full; "waiting for the cloud" shows only when the Caddy is unreachable (or the painter is off).
+// late says nothing and the lamp holds just short of full; "waiting for a signal" shows only when the Caddy is unreachable (or the painter is off).
 const reachable = (settings) => settings.caddyReachable !== false && settings.painter !== "off";
 export const crateWaitFraction = (c, settings = DEFAULT_SETTINGS, now = Date.now()) => { const w = sittingWaitMs(settings); return w === 0 ? 1 : clamp((now - c.start) / w, 0, 1); };
 export const portraitLanded = (c, settings = DEFAULT_SETTINGS) => !!c.painted || (!settings.paintPortraits && settings.painter !== "off");
@@ -192,7 +192,7 @@ export function crateState(c, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (c.opened) return "opened";
   if (crateWaitFraction(c, settings, now) < 1) return "filling";
   if (portraitLanded(c, settings)) return "ready";   // a painted portrait is never locked behind the cloud
-  return reachable(settings) ? "painting" : "waiting for the cloud";
+  return reachable(settings) ? "painting" : "waiting for a signal";
 }
 export const crateLamp = (c, settings = DEFAULT_SETTINGS, now = Date.now()) => (crateState(c, settings, now) === "ready" ? 1 : Math.min(crateWaitFraction(c, settings, now), LAMP_SHORT));
 export function landPortrait(st, crateId) { const c = st.sittingCrates.find((x) => x.id === crateId); if (!c || c.opened) return { ok: false }; if (c.painted) return { ok: false, again: true }; c.painted = true; return { ok: true }; }
@@ -204,7 +204,7 @@ export function bayState(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) 
 }
 export function openSittingCrate(st, crateId, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const c = st.sittingCrates.find((x) => x.id === crateId); if (!c) return { ok: false, msg: "no such crate" };
-  const s = crateState(c, settings, now); if (s !== "ready") return { ok: false, msg: s === "opened" ? "already opened" : s === "filling" || s === "painting" ? "the crate is still filling" : "waiting for the cloud" };
+  const s = crateState(c, settings, now); if (s !== "ready") return { ok: false, msg: s === "opened" ? "already opened" : s === "filling" || s === "painting" ? "the crate is still filling" : "waiting for a signal" };
   c.opened = true; st.sittingCrates = st.sittingCrates.filter((x) => x !== c);
   const m = mibiById(st, c.mibiId); if (m && m.portrait) { m.portrait.state = "delivered"; m.portrait.at = now; }
   logEv(st, (m ? m.name : "A mibi") + "'s portrait has come");

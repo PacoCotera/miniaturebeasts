@@ -30,11 +30,11 @@
    "png": "home-goal-away.png"
   },
   "home-away": {
-   "hash": "d8aa0a0a",
+   "hash": "113d3ce4",
    "png": "home-away.png"
   },
   "home-waiting": {
-   "hash": "40bf55eb",
+   "hash": "077fc9e9",
    "png": "home-waiting.png"
   },
   "home-bed-none": {
@@ -42,7 +42,7 @@
    "png": "home-bed-none.png"
   },
   "home-cargo-empty": {
-   "hash": "917e8bdc",
+   "hash": "bc19e80a",
    "png": "home-cargo-empty.png"
   },
   "home-incubator-empty": {

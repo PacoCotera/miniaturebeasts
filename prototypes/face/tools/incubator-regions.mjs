@@ -21,7 +21,7 @@ export function departures(log, spec, frame, state = "growing") {
   for (const r of got("plaque")) must(within(r.rect, R.plaque.rect), `the plaque ${r.rect} leaves ${R.plaque.rect}`);
   for (const r of got("lamp")) must(eq(r.rect, R.base.lamp.rect), `the lamp ${r.rect} is not ${R.base.lamp.rect}`);
   for (const r of got("juvenile")) must(within(r.rect, [R.juvenile.rect[0], R.juvenile.rect[1] - lift, R.juvenile.rect[2], R.juvenile.rect[3] + lift + 2]),   /* + 2: the moving hatch's crouch, drawn 2 px lower */ `the juvenile ${r.rect} leaves ${R.juvenile.rect} by more than its ${lift} px step or anchor`);
-  for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
+  for (const r of got("stamp.plate", "painted")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
   for (const r of got("ribbon", "chrome")) must(eq(r.rect, R.ribbon.rect), `the ribbon ${r.rect} is not ${R.ribbon.rect}`);
@@ -30,10 +30,10 @@ export function departures(log, spec, frame, state = "growing") {
   for (const id of ["footLight", "focus"]) must(got(id).length === 0, `${id} draws nothing (incubator.json base.footLight, derived.no ring)`);
   // what each state draws
   if (state === "empty") for (const id of ["rail.tab", "leaves", "bud", "stamp", "code", "juvenile"]) must(got(id).length === 0 && !type.some((t) => t.region === id), `the empty Incubator draws no ${id}`);
-  else { must(regions.some((r) => r.id === "rail.tab"), "the rail is drawn"); must(got("stamp", "chrome").length === 1, "the stamp label is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn"); }
+  else { must(regions.some((r) => r.id === "rail.tab"), "the rail is drawn"); must(got("stamp.plate", "painted").length === 1, "the stamp label (its dimmed plate) is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn"); }
   must(state === "hatch" || got("juvenile").length === 0, "the juvenile is drawn only in the hatch");
   must(state === "hatch" || got("ribbon", "chrome").length === 0 || got("ribbon", "chrome").every((r) => r.rect[2] === 0), "the ribbon shows only in the hatch");
   must(got("dome").length > 0 && got("domeFront").length > 0, "the chamber's back and window front are drawn"); must(got("base").length > 0 && got("nest").length > 0, "the nest and the base are drawn");
-  must(type.some((t) => t.region === "plaque") === (state !== "hatch"), `the plaque's word ${state === "hatch" ? "is gone in the hatch" : "is drawn"}`);
+  must(type.some((t) => t.region === "plaque" && t.text), "the plaque always holds a word (fix 5 I3)");
   return out;
 }
