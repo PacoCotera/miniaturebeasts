@@ -1,0 +1,116 @@
+{
+ "_note": "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "incubator-states": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Grow now",
+    "price": "❀ 11",
+    "subject": "A Loika bud"
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "confirm",
+     "back"
+    ],
+    "said": [],
+    "screen": "incubator"
+   },
+   {
+    "ready": "ready",
+    "ok": "Open"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "hatch",
+    "ok": null,
+    "price": null,
+    "subject": ""
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "confirm",
+     "back"
+    ],
+    "said": [],
+    "screen": "incubator"
+   },
+   {
+    "screen": "habitat",
+    "hab": "resident",
+    "habId": 2
+   }
+  ],
+  "incubator-empty": [
+   {
+    "state": "empty",
+    "ok": "Choose a pod",
+    "subject": "ready for a new bud"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "pods",
+    "state": "collection",
+    "ok": "Open",
+    "price": null,
+    "subject": "Loika is partly read"
+   },
+   {
+    "screen": "pods",
+    "view": "collection",
+    "cur": "dev-1-39u:p0",
+    "want": "dev-1-39u:p0"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "place.0",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "ok": "Look at the pods",
+    "price": null,
+    "subject": ""
+   },
+   {
+    "back": "home"
+   }
+  ]
+ }
+}

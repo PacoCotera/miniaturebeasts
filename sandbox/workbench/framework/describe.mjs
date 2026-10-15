@@ -1,0 +1,125 @@
+// A genome in the player's own words: the looks per chapter as the frame names them ("pale
+// patches", "wide pale rings", "leaf crest") and the proportions in plain words from the rig's
+// ratios ("a short muzzle, a long tail"), never a locus id. The Grow painting service puts this
+// text in every call as its own logged field (grow/service.py); the field guide can say the same.
+import { LOCI, resolveCopies, binFor, copyValue } from "./catalogue.mjs";
+import { brief } from "./species.mjs";
+
+// The trait's look for a genome, aligned with the frame's trait looks as catalogue.looksFor orders
+// them (one label per distinct pair of the pool, or per distinct resolved value when the trait names
+// fewer looks than pairs, as a switch does).
+export function lookOf(frame, trait, genome, opts = {}) {
+  const pairSep = opts.pairSep ?? " and ";   // how a pair of colours is joined (the Pods lines use a comma)
+  const id = trait.loci[0], locus = LOCI.get(id);
+  if (!locus) return null;
+  const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id);
+  const raw = genome.loci[id];
+  if (!raw) return null;
+  const copies = raw.map((c) => binFor(locus, c)); // a blended copy (a number) is read as its bin
+  const labelOf = ([a, b]) => {
+    const v = resolveCopies(locus, [a, b]);
+    if (locus.operator === "copy-mean") return a === b ? a : `between ${a} and ${b}`;
+    if (locus.operator === "partition-map") return a === b ? a : `${a}${pairSep}${b}`;
+    if (locus.operator === "pair-map") return typeof v === "boolean" ? (v ? "on" : "off") : String(v);
+    return a === b ? a : [a, b].sort().join("/");
+  };
+  const labels = [], values = [];
+  for (let i = 0; i < pool.length; i++) for (let j = i; j < pool.length; j++) {
+    const l = labelOf([pool[i], pool[j]]); if (!labels.includes(l)) labels.push(l);
+    const v = JSON.stringify(resolveCopies(locus, [pool[i], pool[j]])); if (!values.includes(v)) values.push(v);
+  }
+  const sorted = [...copies].sort((a, b) => pool.indexOf(a) - pool.indexOf(b));
+  const label = labelOf(sorted), value = JSON.stringify(resolveCopies(locus, copies));
+  if (trait.looks?.length === labels.length && labels.includes(label)) return trait.looks[labels.indexOf(label)];
+  if (trait.looks?.length === values.length && values.includes(value)) return trait.looks[values.indexOf(value)];
+  const bins = binLooks(frame, trait); if (bins) { const l = bins.of(genome); if (l != null) return l; }   // the frame's own bins, where the pair labels would otherwise show
+  return label;
+}
+
+// A trait's looks as the frame's own bins (the player's words a read gives), for the traits whose looks are not one per pair of the pool: a blend's bins in order of value
+// ("between" is the middle bin, one look), a two-colour coat's four pure colours and "two side by side", the markings' bare, bands, spots, bands and spots.
+// Returns { looks, of(genome) } or null where the frame's looks do not follow one of these rules (the caller falls back, and the frames check names it).
+export function binLooks(frame, trait) {
+  const looks = trait.looks; if (!looks?.length) return null;
+  const id = trait.loci[0], locus = LOCI.get(id); if (!locus) return null;
+  const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id), bins = (g, lid) => (g.loci[lid] || []).map((c) => binFor(LOCI.get(lid), c));
+  if (locus.operator === "copy-mean" && looks.length === pool.length) {
+    const order = [...pool].sort((a, b) => copyValue(locus, a) - copyValue(locus, b));
+    return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; const v = resolveCopies(locus, c); let best = null, d = Infinity; for (const a of order) { const e = Math.abs(copyValue(locus, a) - v); if (e < d) { d = e; best = a; } } return looks[order.indexOf(best)]; } };
+  }
+  if (locus.operator === "partition-map" && looks.length === pool.length + 1) {
+    return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; return c[0] === c[1] ? looks[pool.indexOf(c[0])] ?? null : looks[pool.length]; } };
+  }
+  if (locus.operator === "recessive-enable" && trait.loci.length > 1 && looks.length === 4 && /layout/.test(trait.loci[1])) {
+    const lay = LOCI.get(trait.loci[1]);
+    return { looks, of: (g) => { const on = bins(g, id), l = bins(g, trait.loci[1]); if (on.length !== 2 || l.length !== 2) return null; if (!resolveCopies(locus, on)) return looks[0]; return { bands: looks[1], patches: looks[2], "bands-and-patches": looks[3] }[resolveCopies(lay, l)] ?? null; } };
+  }
+  return null;
+}
+// Every look a trait can show, as a read words it: the frame's looks where they are one per pair or per value of the pool, or the frame's bins (binLooks), else the pair labels.
+export function traitLooks(frame, trait, opts = {}) {
+  const pairSep = opts.pairSep ?? ", ", id = trait.loci[0], locus = LOCI.get(id); if (!locus) return [...(trait.looks || [])];
+  const pool = frame.pools?.[id] ?? locus.alleles.map((a) => a.id), labels = [], values = [];
+  const labelOf = ([a, b]) => { const v = resolveCopies(locus, [a, b]); if (locus.operator === "copy-mean") return a === b ? a : `between ${a} and ${b}`; if (locus.operator === "partition-map") return a === b ? a : `${a}${pairSep}${b}`; if (locus.operator === "pair-map") return typeof v === "boolean" ? (v ? "on" : "off") : String(v); return a === b ? a : [a, b].sort().join("/"); };
+  for (let i = 0; i < pool.length; i++) for (let j = i; j < pool.length; j++) { const l = labelOf([pool[i], pool[j]]); if (!labels.includes(l)) labels.push(l); const v = JSON.stringify(resolveCopies(locus, [pool[i], pool[j]])); if (!values.includes(v)) values.push(v); }
+  if (trait.looks?.length === labels.length || trait.looks?.length === values.length) return [...trait.looks];
+  const b = binLooks(frame, trait); if (b) return [...b.looks];
+  return labels;
+}
+
+// Proportions in plain words: the rig's ratio loci whose two copies agree on an end of their range.
+const PROPORTION_WORDS = {
+  "growth.core-half-length": { small: "a small body", large: "a large body" },
+  "growth.head-length-ratio": { tiny: "a tiny head", small: "a small head", large: "a big head" },
+  "growth.head-lift-ratio": { high: "the head carried high", low: "the head carried low" },
+  "growth.muzzle-projection-ratio": { short: "a short muzzle", long: "a long muzzle" },
+  "growth.beak-length-ratio": { short: "a short beak", long: "a long beak" },
+  "growth.exterior-eye-size-ratio": { small: "small eyes", large: "big eyes" },
+  "growth.auricular-length-ratio": { short: "short ears", long: "long ears", tall: "tall ears" },
+  "growth.antenna-length-ratio": { short: "short antennae", long: "long antennae" },
+  "growth.crown-height-ratio": { low: "a low crest", high: "a tall crest" },
+  "growth.feather-crest": { low: "a low feather crest", tall: "a tall feather crest" },
+  "growth.support-drop-ratio": { short: "short legs", long: "long legs" },
+  "growth.support-radius-ratio": { fine: "fine legs", slender: "slender legs", stout: "stout legs" },
+  "growth.terminal-length-ratio": { broad: "broad feet", narrow: "narrow feet" },
+  "growth.join-throat-ratio": { thin: "a thin waist", broad: "a thick waist", thick: "a thick waist" },
+  "growth.region-bend": { up: "an arched back", down: "a dipping back" },
+  "growth.axial-tail-length-ratio": { short: "a short tail", long: "a long tail" },
+  "growth.axial-tail-bend": { up: "the tail curled up", down: "the tail hanging" },
+  "growth.wing-span-ratio": { short: "short flaps", long: "wide flaps" },
+  "growth.shell-dome-ratio": { low: "a low shell", high: "a high-domed shell" },
+};
+export function proportionWords(genome) {
+  const words = [];
+  for (const [id, table] of Object.entries(PROPORTION_WORDS)) {
+    const c = genome.loci[id]; if (!c || c[0] !== c[1]) continue;
+    if (table[c[0]]) words.push(table[c[0]]);
+  }
+  const w = genome.loci["growth.core-width-ratio"], d = genome.loci["growth.core-depth-ratio"];
+  if (w && d && w[0] === w[1] && d[0] === d[1] && w[0] === d[0]) words.push(w[0] === "high" ? "a stout build" : w[0] === "low" ? "a slim build" : null);
+  return words.filter(Boolean);
+}
+
+const LOOK_CHAPTERS = ["coat", "face", "shape", "legs-tail"];
+// { chapters: [{ id, name, looks: [{ trait, name, look }] }], proportions, caption, text }
+export function describeGenome(frame, genome, scene, { typeSpecimen = false } = {}) {
+  const chapters = [];
+  for (const ch of frame.chapters ?? []) {
+    if (!LOOK_CHAPTERS.includes(ch.id)) continue;
+    const looks = ch.traits.map((t) => ({ trait: t.id, name: t.name, look: lookOf(frame, t, genome) })).filter((l) => l.look);
+    if (looks.length) chapters.push({ id: ch.id, name: ch.name, looks });
+  }
+  const proportions = proportionWords(genome);
+  const name = frame.species.name;
+  const caption = brief(scene, frame).replace(new RegExp(`^${name}: `), "");
+  // Posture, from the plan: how the body stands, with its weight on what it stands on.
+  const plan = scene.plan ?? {};
+  const posture = plan.limbSet === "legs" ? (plan.posture === "upright" ? "standing upright on its two legs, weight on its broad feet, body held level" : plan.posture === "splayed" ? "standing low on splayed legs, weight on all its feet, belly just off the ground" : "standing square on all its legs, weight settled on its feet, body resting between them")
+    : plan.limbSet === "rays" ? "standing on its rays, weight on their tips" : plan.limbSet === "feelers" ? (plan.ground === "feeler tips" ? "poised on its feeler tips" : "resting on its belly, feelers trailing") : plan.ground === "afloat" ? "floating, fins spread" : "resting on its belly";
+  let text = `A juvenile ${name}: ${caption}`;
+  if (typeSpecimen) text += ` It is the type of its kind, ${frame.taxonomy.resembles}: ${frame.signature.feature}.`;
+  for (const ch of chapters) text += ` ${ch.name}: ${ch.looks.map((l) => `${l.name.toLowerCase()} ${l.look.startsWith("between ") ? "between" : l.look}`).join("; ")}.`;
+  if (proportions.length) text += ` Proportions: ${proportions.join(", ")}.`;
+  text += ` Posture: ${posture}, still, looking at the viewer.`;
+  return { chapters, proportions, caption, posture, text };
+}

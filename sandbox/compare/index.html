@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compare: decisions</title>
+<meta name="description" content="Side-by-side proposals shown at one device pixel per image pixel, or at the Companion panel's true size.">
+<style>
+:root{--bg:#f3efe6; --ink:#2b2823; --muted:#7a7468; --panel:#fff; --line:#d9d2c3; --accent:#d9651d; --chip:#ece6d8}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#191b1a; --ink:#ebe5d8; --muted:#a9a599; --panel:#222624; --line:#383c39; --accent:#ff9150; --chip:#2b2f2c } }
+:root[data-theme="dark"]{ --bg:#191b1a; --ink:#ebe5d8; --muted:#a9a599; --panel:#222624; --line:#383c39; --accent:#ff9150; --chip:#2b2f2c }
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; max-width:1200px; margin:0 auto}
+h1{font-size:20px; margin:0 0 4px} .lede{color:var(--muted); margin:0 0 14px; font-size:14px}
+.bar{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin:0 0 16px; padding:10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:10px; font-size:14px}
+.bar label{display:inline-flex; align-items:center; gap:6px} .bar input[type=number]{width:70px; font:inherit; padding:4px 6px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink)}
+.bar .mode{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+.bar .mode button{font:inherit; border:none; background:var(--chip); color:var(--ink); padding:6px 12px; cursor:pointer} .bar .mode button[aria-pressed=true]{background:var(--accent); color:#fff}
+section{margin:0 0 28px} h2{font-size:17px; margin:0 0 6px} .note{color:var(--muted); font-size:14px; margin:0 0 10px}
+.pair{display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start}
+figure{margin:0} figcaption{font-size:13px; color:var(--muted); margin-top:6px}
+figure img{display:block; image-rendering:pixelated; image-rendering:crisp-edges; background:#0c0a12; border:1px solid var(--line)}
+.scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:6px}
+.missing{padding:14px; border:1px dashed var(--line); border-radius:8px; color:var(--muted); font-size:14px}
+footer{color:var(--muted); font-size:12px; margin-top:24px}
+</style>
+</head>
+<body>
+<h1>Decision proposals, side by side</h1>
+<p class="lede">Each image is shown at one device pixel per image pixel by default, so nothing is blurred. "True size" scales to the Companion's 2.41" panel (311 ppi) using your screen's pixel density; enter it if you know it.</p>
+
+<div class="bar" role="group" aria-label="Display scale">
+  <span class="mode"><button type="button" id="m1" aria-pressed="true">1 device px = 1 image px</button><button type="button" id="m2" aria-pressed="false">True size (311 ppi panel)</button></span>
+  <label>Your screen's ppi <input type="number" id="ppi" min="90" max="600" step="1" placeholder="auto"></label>
+  <span id="scaleNote" class="note" style="margin:0"></span>
+</div>
+
+<section id="tiles">
+  <h2>Companion tile size: 32 px or 48 px</h2>
+  <p class="note">Same place, redrawn at each tile size. 32 px gives about 14 tiles across; 48 px about 9. Judge the pawn, the tokens and the signs, not the scene.</p>
+  <div class="pair">
+    <figure><div class="scroll"><img src="img/tile-size-32.png" width="450" height="600" alt="Place at 32 px tiles"></div><figcaption>32 px tiles · about 14 across</figcaption></figure>
+    <figure><div class="scroll"><img src="img/tile-size-48.png" width="450" height="600" alt="Place at 48 px tiles"></div><figcaption>48 px tiles · about 9 across</figcaption></figure>
+  </div>
+</section>
+
+<section id="type">
+  <h2>Station type: bitmap at 3× or a smooth face</h2>
+  <p class="note">Same Station chrome, no creature, so only the type is judged. The Station panel is 1024×600; on a phone, scroll sideways inside each image.</p>
+  <div class="pair">
+    <figure><div class="scroll"><img src="img/type-station-bitmap.png" width="1024" height="600" alt="Station chrome with the bitmap face at 3x"></div><figcaption>A · Mibi 7×9 bitmap, 3× body, 4× names</figcaption></figure>
+    <figure><div class="scroll"><img src="img/type-station-smooth.png" width="1024" height="600" alt="Station chrome with a smooth face"></div><figcaption>B · smooth face at the same sizes</figcaption></figure>
+  </div>
+</section>
+
+<footer id="stamp">build …</footer>
+<script>
+(function(){
+  const imgs = Array.from(document.querySelectorAll('figure img'));
+  const m1 = document.getElementById('m1'), m2 = document.getElementById('m2'), ppiEl = document.getElementById('ppi'), note = document.getElementById('scaleNote');
+  let mode = 1;
+  function guessPpi(){ const d = window.devicePixelRatio || 1; const w = screen.width * d; // a rough guess: phones ~ 400-460 ppi, laptops ~ 110-220
+    if (w <= 1600 && d >= 2) return 440; if (d >= 2) return 220; return 110; }
+  function apply(){
+    const d = window.devicePixelRatio || 1;
+    let f = 1 / d;                               // CSS px per image px for 1:1 device pixels
+    if (mode === 2) { const ppi = +ppiEl.value || guessPpi(); f = ppi / 311; }
+    imgs.forEach(img => { const w = +img.getAttribute('width'), h = +img.getAttribute('height'); img.style.width = (w * f) + 'px'; img.style.height = (h * f) + 'px'; });
+    note.textContent = mode === 1 ? `devicePixelRatio ${d}: images at 1:1 device pixels` : `true size at ${(+ppiEl.value || guessPpi())} ppi (${(+ppiEl.value ? 'entered' : 'guessed')}); 450 px should span about 37 mm`;
+    m1.setAttribute('aria-pressed', mode === 1); m2.setAttribute('aria-pressed', mode === 2);
+  }
+  m1.onclick = () => { mode = 1; apply(); }; m2.onclick = () => { mode = 2; apply(); }; ppiEl.oninput = apply;
+  window.addEventListener('resize', apply); apply();
+  imgs.forEach(img => img.addEventListener('error', () => { const f = img.closest('figure'); f.innerHTML = '<div class="missing">Not available yet: ' + img.getAttribute('src') + '</div>'; }));
+  fetch('../../build.json', {cache:'no-store'}).then(r => r.ok ? r.json() : null).then(b => { if (b) document.getElementById('stamp').textContent = 'build ' + (b.short || '') + ' · ' + (b.built || ''); }).catch(() => {});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1062 @@
+{
+ "schemaVersion": 1,
+ "purpose": "Stage 1 cut-off trial: every paid call with its prompt, request id, usage, cost and time. Image inputs are replaced by file name and SHA-256. No key material.",
+ "calls": [
+  {
+   "id": "f98e3875-efe0-4af2-aae1-39bc1dbb3b31",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S01",
+   "individual": "S01",
+   "genomeSha256": "e1dc797cc75390649eab166f924094f0de7579ac4f9d22470cc022969890144f",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is a juvenile Loika, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "83cbc62e30bd027676033f1e24d0521613f3e175ad041c586d19de3f9cfdb564",
+     "bytes": 6148
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "282985dd8c171b14ed0568cf3011e4d6cec7d6c42a34ec8b2a32860fcef31b6f",
+     "bytes": 4566
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "36ca2dc182c3ebd1a9c872e4e6d9342271d3901869ee9b598cf28ca96b2a596b",
+     "bytes": 4737
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:02:30Z",
+   "seconds": 11.3,
+   "httpStatus": 200,
+   "responseId": "t_nGauv9GObx-8YPvPqJ6Qg",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1356,
+    "candidatesTokenCount": 1535,
+    "totalTokenCount": 2891,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 324
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S01/S01/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "d770aed2fe7dab7aba258f256a79395a2a25ec72302eb39b25f3f523f1835857"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "64d1bdd6-1bc9-44f8-9fc4-9433382cea7f",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S01",
+   "individual": "S01-5243238d",
+   "genomeSha256": "07bef58c9d38d5648b59b8d5b6738081dd4c46fd05e3a7f6853994ebfea5ec20",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. It is a juvenile Loika, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "3718fccfbe9fa5c50db94290bfec600b9f4748796628db40e4449c7870fc8e34",
+     "bytes": 5601
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "2cc4b0a4fcdf30e31464d37aa2ff9db9dce7d7432dbae81b858cfa46b7ebb29a",
+     "bytes": 4582
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "3f6c6972e5dff205233fe991f1c1ce5030a7866708f8aadee7e099a5a4a50380",
+     "bytes": 4745
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:02:55Z",
+   "seconds": 8.5,
+   "httpStatus": 200,
+   "responseId": "0PnGat78DZqPjMcP3t-G2Q4",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1354,
+    "candidatesTokenCount": 1543,
+    "totalTokenCount": 2897,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 322
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S01/S01-5243238d/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "a7374a496eaa6959ade0ea09a9b4643af85d64577242753e48bbf48471605609"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "13ba4322-a9ce-4a0d-a1c6-4c22a9e8bcaf",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S01",
+   "individual": "S01-dff664e3",
+   "genomeSha256": "954ad9bc1484af8d91a97c7da9f1fbc58ded196decc4a54753cea92f6c5ccbdf",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. It is a juvenile Loika, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "b177be7e7128d156a0d354a2f0ee77175240ac98d96a424a9a549f98214b39d3",
+     "bytes": 5572
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "22db01c5bfbbf3d50460a93959d384925c0170b91b596d1567d08224478d3907",
+     "bytes": 4569
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "043c3f5dbc3a3b44d2fe6d0344da29784de9a1d3458f9c4536e975066f44a6f6",
+     "bytes": 4736
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:03:04Z",
+   "seconds": 8.7,
+   "httpStatus": 200,
+   "responseId": "2PnGapXYJZSZ_uMP457VsAk",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1354,
+    "candidatesTokenCount": 1512,
+    "totalTokenCount": 2866,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 322
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S01/S01-dff664e3/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "1decb8d41d8aa35bbebc6d4ac1170028b191a117f8b2d6079e6b2d64930351b8"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "b98104a9-d970-4b8c-a869-0ad77a1ad69d",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S01",
+   "individual": "S01-f1e0907d",
+   "genomeSha256": "44f5ef73fa71c33bdb2d030a5de046d63f39cf5713f4290fe2987e54d65660a5",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #465459, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036, belly \u2192 #dfd2ae. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head. It is a juvenile Loika, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "a1cc684b6fa291a809f69b195dbc8ee4d387c980ca3fd78c9b7312d246e05285",
+     "bytes": 5995
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "fe539408f2d5128b4ea060b3e47773a45ac6477101909dcd66468d26779c0160",
+     "bytes": 4451
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "62e6e00a1dcb91696ef743737d50b939e2013419429faa9abb1b4b8feac2a84d",
+     "bytes": 4503
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:03:13Z",
+   "seconds": 8.7,
+   "httpStatus": 200,
+   "responseId": "4fnGarz-IYzw-8YPgfucmQw",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1349,
+    "candidatesTokenCount": 1641,
+    "totalTokenCount": 2990,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 317
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S01/S01-f1e0907d/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "5ec6badeb21e71d5de65656dcba5bf3ef6e58e27439fefd0a818336e8254f01c"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "3e7e3110-5390-41df-9c07-32c1087828f9",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S09",
+   "individual": "S09",
+   "genomeSha256": "96ee0a1f32b099d275fe910ccfa4ced9552f6001485058243e1cb8487a7923eb",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #4d7ed4, second \u2192 #fff0b8, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is a juvenile Belatz, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "0df065f324db698369b8d58c1cd128b1dad5191095710e8c2d25bbe184fec615",
+     "bytes": 5816
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "1b8f88c804174cf93bdc6dc5029470de51ac94f01aa6667809ee0e193301e3c1",
+     "bytes": 4757
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "e85d288b667b9239fc70a25147bce72637fea80375f05e5db2c07c30477eca7e",
+     "bytes": 5227
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:03:22Z",
+   "seconds": 9.1,
+   "httpStatus": 200,
+   "responseId": "6vnGauT3HeeY_uMPw-HN6AE",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1348,
+    "candidatesTokenCount": 1547,
+    "totalTokenCount": 2895,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 316
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S09/S09/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "5b4489741c30bfccaf63a424f31d7b67a455cf375afa00f4120698dcffef86cd"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "53dde190-bdeb-4da2-b81e-8747ccd6937b",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S09",
+   "individual": "S09-bb2b96cc",
+   "genomeSha256": "e6ce67f233ad191f86d477075c9feaab6d3159b0cc56657ddc8b70280ce33250",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #269fa5 and #8b7dd8, second \u2192 #fff0b8 and #d9ecf5, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is a juvenile Belatz, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "b915bfe7848c9bdb5395c96cf5c0bf9754581152540e3aefb2cb430633358e8e",
+     "bytes": 7569
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "b2a7f9efc5e64766f714549db9e71260625506f097623c954fe29cfbc6123093",
+     "bytes": 5769
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "746d7d208f8df970931536d1e76d650c41451519ff12235222bb48289e563652",
+     "bytes": 5623
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:03:31Z",
+   "seconds": 11.7,
+   "httpStatus": 200,
+   "responseId": "8_nGauajN5rx-sAP7bakmA8",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1362,
+    "candidatesTokenCount": 1655,
+    "totalTokenCount": 3017,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 330
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S09/S09-bb2b96cc/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "8fca01b0a275d28fbc52732250bb3c05ccfeec70a6722262920a9185a30237b6"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "4da22644-51ef-4582-8eb2-716d4dbc296c",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S09",
+   "individual": "S09-267acdba",
+   "genomeSha256": "563bbe734dc4824ec952d12d4295d91a29e6c99c5eaf6e976cb0a47acdc9d185",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #4d7ed4 and #269fa5, second \u2192 #fff0b8 and #d9ecf5, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is a juvenile Belatz, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "06a64a62a1d23e7a80a16fcf6f464f8faacfccac3893dc01632dfb45b10cc316",
+     "bytes": 6892
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "b59f591d3ed58b48bd30a5e3abf4fa1131acd09b5ddade822a6036deaf1955fa",
+     "bytes": 5340
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "464380d384ac759615c272bae8ad6385ab1dd04be923ac295187e41adbce5d38",
+     "bytes": 5226
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:03:43Z",
+   "seconds": 8.0,
+   "httpStatus": 200,
+   "responseId": "__nGatfVMNfBsOIPgIDAsQk",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1362,
+    "candidatesTokenCount": 1495,
+    "totalTokenCount": 2857,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 330
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S09/S09-267acdba/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "8be888d3ac151fd74260162038eb25303d36272e82f6841d139165345116642d"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "6120d00d-6faa-4133-bafb-352a857cc017",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S09",
+   "individual": "S09-e8762715",
+   "genomeSha256": "3982a7117cfa0fc3aa4f6dacfff48f8d51f5f0b6b8460adb85ef2d3fa827774e",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #4d7ed4 and #38a878, second \u2192 #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. It is a juvenile Belatz, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "94e0c32ba2ad3be2114c6f0d7502936cab3fca8c0ca2f7a009c66b0b5dcab2d5",
+     "bytes": 7133
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "dbc40ed2b76e0b11d5abc61aae6e84f5f4cfb598bbfe8bb6425e705f60f74287",
+     "bytes": 5425
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "1e8c31ccf25288df196367af943fce456a11bbdc1aa729489e85c7f5ff6f176f",
+     "bytes": 5384
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:03:51Z",
+   "seconds": 9.7,
+   "httpStatus": 200,
+   "responseId": "B_rGapGvNbvu-8YP4eCdKA",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1356,
+    "candidatesTokenCount": 1662,
+    "totalTokenCount": 3018,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 324
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S09/S09-e8762715/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "cf9418e629b6662d585710a7688618ffe4de7e0bb8d9e000c7fe15f7faf708fa"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "b4a517ee-fc69-4bda-9c1f-6806548d15d1",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S12",
+   "individual": "S12",
+   "genomeSha256": "2af58fb73ac5cbbd45f397f78257f06ee8ebb6b61d774a875fa8c73a275d6e33",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #e8b83f, second \u2192 #fff0b8, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. It is a juvenile Peplos, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "7c5c40f56d6835975e5e02e6f7cb84187ca645d659aa9a4f0893767cad284d4b",
+     "bytes": 5980
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "98cb87c3bbc22825b15795535730c21d684bcd4fd8824ab2189bade09c606f6e",
+     "bytes": 4635
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "c12c4a47fd03e98ea44efc29426e81fb74138284e6d0811800a131c7203b8bff",
+     "bytes": 5338
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:04:01Z",
+   "seconds": 11.8,
+   "httpStatus": 200,
+   "responseId": "EvrGaoCDArKa_uMPlIKM8Qk",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1345,
+    "candidatesTokenCount": 1807,
+    "totalTokenCount": 3152,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 313
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S12/S12/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "84a47e2760519bb5b7baf968483d1ced8e71ce7e6155820b4357e7f162cddd30"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "af1ed924-d025-478b-8d3a-5f92a4b15613",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S12",
+   "individual": "S12-0b5843e8",
+   "genomeSha256": "9587cfdd7ad5944492853b31a51d4ecd1ed94a65a0e19a54949c559c6fdf91e8",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #e98268 and #e8b83f, second \u2192 #dfd2ae and #ffd7c5, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. It is a juvenile Peplos, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "6e647d39d969cda6b5297f561c1f2df360d8c995de4dffbcb7e23b3398ea6a40",
+     "bytes": 6718
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "a77091249ab09a70bfb68c28e0d3fbf709cea9286319f51cbd6b8743dd6066dc",
+     "bytes": 5286
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "c12c4a47fd03e98ea44efc29426e81fb74138284e6d0811800a131c7203b8bff",
+     "bytes": 5338
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:04:13Z",
+   "seconds": 8.3,
+   "httpStatus": 200,
+   "responseId": "HfrGapyCOMDf_uMPtdXIuAw",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1359,
+    "candidatesTokenCount": 1548,
+    "totalTokenCount": 2907,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 327
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S12/S12-0b5843e8/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "586c39e58b52c65ea1a66020e90314e0ad0809191551cabf0aefc2abf559f4de"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "b0c7b2ff-f54e-4ba1-add1-85571cfac546",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S12",
+   "individual": "S12-70f7ef63",
+   "genomeSha256": "898982cf4175a0cd546bd532a65072fbf2de94622a676681431be02b484b2b9c",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #e98268 and #d95688, second \u2192 #ffd7c5, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. It is a juvenile Peplos, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "2f3daaf3a612b7ce0c62af007194b43d3523314a53b059cd8f90fb778c9bd435",
+     "bytes": 6278
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "f6732abbe926b96df8dd14ee02d47a26dc38a8f4a562644d4b56907d7773cb60",
+     "bytes": 4998
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "c12c4a47fd03e98ea44efc29426e81fb74138284e6d0811800a131c7203b8bff",
+     "bytes": 5338
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:04:22Z",
+   "seconds": 7.8,
+   "httpStatus": 200,
+   "responseId": "JvrGatLCGIao_uMPvJ7j6Ag",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1353,
+    "candidatesTokenCount": 1528,
+    "totalTokenCount": 2881,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 321
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S12/S12-70f7ef63/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "a32a592ca72ee169f3ee7b1cbc7cbb0f7f7d62104b55cf5327cd559bc7f04920"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "0e958dd7-cb1f-42d5-8f7e-b44570a9fb78",
+   "service": "gemini",
+   "model": "gemini-3.1-flash-image",
+   "purpose": "station-main",
+   "species": "S12",
+   "individual": "S12-c164a339",
+   "genomeSha256": "93cde22ff45f8b88219814597fdd6189da7276e183fbbab4d1095d917e5740e9",
+   "prompt": "Paint the creature in image 1 exactly as it is drawn: the same silhouette, pose, camera, proportions and framing, every part present and no part added. Image 1 is its form under one light from the top left. Image 2 is the colour key: each flat colour is one pigment slot of the same body, and each slot must be painted in a ramp of its own colour, never moved: body \u2192 #e8b83f, second \u2192 #fff0b8 and #dfd2ae, eyeRim \u2192 #f1eddc, pupil \u2192 #273036. Image 3 is the part map: keep every part exactly where it is. Image 4 is the finished style to match: rounded, tactile, ceramic-like volumes in crisp pixel-art clusters, three or four principal value masses, restrained highlights, the eyes as flat inks with one catch light, a friendly small face. The creature is a Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. It is a juvenile Peplos, standing still, seen from the front-right as in image 1. Paint the subject alone on a flat uniform background of exactly #f6f3ec, no scene, no ground, no shadow on the ground, no props, no text, no border. Keep the subject the same size and in the same place as in image 1. Output one square image.",
+   "images": [
+    {
+     "name": "shaded.three-quarter.large.png",
+     "sha256": "d86ea7564abf1b54f6bf84e8b28f3df6ef7dbbd587b16d9f28b555ff9f616488",
+     "bytes": 6551
+    },
+    {
+     "name": "slots.three-quarter.large.png",
+     "sha256": "930043d52c27f06eaf262829fc6ca8229a3742f3ab6b738eae6edf40b253a0de",
+     "bytes": 5073
+    },
+    {
+     "name": "index.three-quarter.large.png",
+     "sha256": "37c24a7bfd9026c61da869fde5e99f4bb68627afc934b735f7898d207c1979b3",
+     "bytes": 5395
+    },
+    {
+     "name": "style:rich-plain-300x310.png",
+     "sha256": "6b9eede77ee74338514c4139e448fce6f3b439e2e829d6d7aec590837eb2a427",
+     "bytes": 91817
+    }
+   ],
+   "generationConfig": {
+    "responseModalities": [
+     "IMAGE"
+    ],
+    "aspectRatio": "1:1",
+    "imageSize": "1K"
+   },
+   "startedAt": "2026-10-08T02:04:29Z",
+   "seconds": 7.9,
+   "httpStatus": 200,
+   "responseId": "LvrGat-nCpSZ_uMP457VsAk",
+   "modelVersion": "gemini-3.1-flash-image",
+   "usage": {
+    "promptTokenCount": 1351,
+    "candidatesTokenCount": 1589,
+    "totalTokenCount": 2940,
+    "promptTokensDetails": [
+     {
+      "modality": "TEXT",
+      "tokenCount": 319
+     },
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1032
+     }
+    ],
+    "candidatesTokensDetails": [
+     {
+      "modality": "IMAGE",
+      "tokenCount": 1120
+     }
+    ],
+    "serviceTier": "standard"
+   },
+   "output": {
+    "file": "unique/S12/S12-c164a339/station-raw.png",
+    "mimeType": "image/jpeg",
+    "size": [
+     1024,
+     1024
+    ],
+    "sha256": "d465bfeb314fcdf919861c40067896afc2be1bf910740a5f6c28fef174547bdb"
+   },
+   "status": "ok"
+  },
+  {
+   "id": "63e48224-625e-4bf9-bcf0-bc505f7f58ec",
+   "service": "retro-diffusion",
+   "model": "rd_pro__default",
+   "purpose": "token-48",
+   "species": "S01",
+   "individual": "S01-5243238d",
+   "genomeSha256": "07bef58c9d38d5648b59b8d5b6738081dd4c46fd05e3a7f6853994ebfea5ec20",
+   "prompt": "48 px pixel-art token of the creature in the reference images, same pose and silhouette, Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Flat Loika on a plain background, no text.",
+   "request": {
+    "prompt": "48 px pixel-art token of the creature in the reference images, same pose and silhouette, Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Flat Loika on a plain background, no text.",
+    "width": 48,
+    "height": 48,
+    "num_images": 1,
+    "prompt_style": "rd_pro__default",
+    "remove_bg": true,
+    "seed": 1
+   },
+   "images": [
+    {
+     "name": "companion-palette-48.png",
+     "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6"
+    },
+    {
+     "name": "unique/S01/S01-5243238d/station-300x310.png",
+     "sha256": "67eac80e70a11e1da896eacc269ac42a8ac8c589d6608f94636c1e23016e1fb4"
+    },
+    {
+     "name": "shaded.three-quarter.tile.png \u00d74",
+     "sha256": "676bd1bafa2f77be15f9d2ab82a899f0d20249ee95009fe1ad9580721e92e352"
+    }
+   ],
+   "startedAt": "2026-10-08T02:05:15Z",
+   "requestId": "d6eace79-ef41-454d-bbda-872f27565488",
+   "seconds": 1.1,
+   "taskStatus": "succeeded",
+   "status": "ok",
+   "response": "{\"status\": \"accepted\", \"task_id\": \"d6eace79-ef41-454d-bbda-872f27565488\", \"request_id\": \"d6eace79-ef41-454d-bbda-872f27565488\", \"message\": \"Inference accepted. Poll GET /v2/inferences/tasks/{task_id} for status.\"}",
+   "rdModel": "rd_pro",
+   "output": {
+    "file": "unique/S01/S01-5243238d/token-painted-48.png",
+    "size": [
+     48,
+     48
+    ],
+    "sha256": "37c76fb6fbe87505d0ed1b1153697c8a3325759684db3f9eee6d477cb8df365f"
+   }
+  },
+  {
+   "id": "085db80e-c620-4d0d-bbec-97ffdd20ce83",
+   "service": "retro-diffusion",
+   "model": "rd_pro__default",
+   "purpose": "token-48",
+   "species": "S09",
+   "individual": "S09-bb2b96cc",
+   "genomeSha256": "e6ce67f233ad191f86d477075c9feaab6d3159b0cc56657ddc8b70280ce33250",
+   "prompt": "48 px pixel-art token of the creature in the reference images, same pose and silhouette, Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Flat Belatz on a plain background, no text.",
+   "request": {
+    "prompt": "48 px pixel-art token of the creature in the reference images, same pose and silhouette, Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Flat Belatz on a plain background, no text.",
+    "width": 48,
+    "height": 48,
+    "num_images": 1,
+    "prompt_style": "rd_pro__default",
+    "remove_bg": true,
+    "seed": 1
+   },
+   "images": [
+    {
+     "name": "companion-palette-48.png",
+     "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6"
+    },
+    {
+     "name": "unique/S09/S09-bb2b96cc/station-300x310.png",
+     "sha256": "d9342a62c053531da3963ce5791fb287f911e824b97d3bd10dc6f0f57fe6d93b"
+    },
+    {
+     "name": "shaded.three-quarter.tile.png \u00d74",
+     "sha256": "588ea4cdd49ef46db1e066401ff16eeaacfa06e95f8550c2fcb1fcfa48739e25"
+    }
+   ],
+   "startedAt": "2026-10-08T02:05:15Z",
+   "requestId": "66ab027d-2e8c-4509-a4f5-9183f3b50902",
+   "seconds": 0.6,
+   "taskStatus": "succeeded",
+   "status": "ok",
+   "response": "{\"status\": \"accepted\", \"task_id\": \"66ab027d-2e8c-4509-a4f5-9183f3b50902\", \"request_id\": \"66ab027d-2e8c-4509-a4f5-9183f3b50902\", \"message\": \"Inference accepted. Poll GET /v2/inferences/tasks/{task_id} for status.\"}",
+   "rdModel": "rd_pro",
+   "output": {
+    "file": "unique/S09/S09-bb2b96cc/token-painted-48.png",
+    "size": [
+     48,
+     48
+    ],
+    "sha256": "2ab3517049e2ddddcff4907489204b21f87b642dfabc6c0c0056e0a52aa93062"
+   }
+  },
+  {
+   "id": "8fde5525-1de5-4d50-a13e-18152b166f94",
+   "service": "retro-diffusion",
+   "model": "rd_pro__default",
+   "purpose": "token-48",
+   "species": "S12",
+   "individual": "S12-0b5843e8",
+   "genomeSha256": "9587cfdd7ad5944492853b31a51d4ecd1ed94a65a0e19a54949c559c6fdf91e8",
+   "prompt": "48 px pixel-art token of the creature in the reference images, same pose and silhouette, Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Flat Peplos on a plain background, no text.",
+   "request": {
+    "prompt": "48 px pixel-art token of the creature in the reference images, same pose and silhouette, Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Flat Peplos on a plain background, no text.",
+    "width": 48,
+    "height": 48,
+    "num_images": 1,
+    "prompt_style": "rd_pro__default",
+    "remove_bg": true,
+    "seed": 1
+   },
+   "images": [
+    {
+     "name": "companion-palette-48.png",
+     "sha256": "f9fa42c290d2814b99d1c5baec08c02c7864e4dc48fc248c587b63a0890006f6"
+    },
+    {
+     "name": "unique/S12/S12-0b5843e8/station-300x310.png",
+     "sha256": "c4081da34e4ade8ed23626eab0b76239e2847943171b8bbae8c0fa83533ac150"
+    },
+    {
+     "name": "shaded.three-quarter.tile.png \u00d74",
+     "sha256": "6648eaa6b29739be32305c296557d0e866ae2f30c6819d1d0b4ac5b5a390cdee"
+    }
+   ],
+   "startedAt": "2026-10-08T02:05:16Z",
+   "requestId": "3dd5c095-95ba-4c93-b958-9e5229caaf5d",
+   "seconds": 0.7,
+   "taskStatus": "succeeded",
+   "status": "ok",
+   "response": "{\"status\": \"accepted\", \"task_id\": \"3dd5c095-95ba-4c93-b958-9e5229caaf5d\", \"request_id\": \"3dd5c095-95ba-4c93-b958-9e5229caaf5d\", \"message\": \"Inference accepted. Poll GET /v2/inferences/tasks/{task_id} for status.\"}",
+   "rdModel": "rd_pro",
+   "output": {
+    "file": "unique/S12/S12-0b5843e8/token-painted-48.png",
+    "size": [
+     48,
+     48
+    ],
+    "sha256": "b3d94756061a92334e1437e27558a182947d752e3097d73435643b7173bf8511"
+   }
+  }
+ ]
+}

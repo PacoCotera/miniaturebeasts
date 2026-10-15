@@ -1,0 +1,15 @@
+{
+  "name": "mb-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Miniature Beasts stage-0 workbench: genome framework, structural sketch and the authoring page",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "frames": "node framework/build-frames.mjs",
+    "frames:check": "node framework/build-frames.mjs --check",
+    "census": "node framework/census.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}

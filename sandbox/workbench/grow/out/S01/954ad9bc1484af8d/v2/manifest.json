@@ -1,0 +1,171 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S01",
+ "name": "Loika",
+ "level": "individual",
+ "genomeDigest": "S01-dff664e3",
+ "genomeSha256": "954ad9bc1484af8d91a97c7da9f1fbc58ded196decc4a54753cea92f6c5ccbdf",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings thin rings. Proportions: a big head, the head carried high, a short muzzle, small eyes, a tall crest, short legs, stout legs, broad feet, a stout build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:13:29Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "1636dd40-6dad-4a7f-816a-8f2ed1fcfc5c",
+     "status": "ok",
+     "seconds": 9.6,
+     "checks": {
+      "silhouetteIoU": 0.935,
+      "silhouetteIoUInPlace": 0.944,
+      "parts": {
+       "region-0": 1.0,
+       "head": 0.995,
+       "muzzle": 0.993,
+       "crown": 0.897,
+       "leg-0": 0.999,
+       "leg-1": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.999,
+        "median": "#475256",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.961,
+        "median": "#4d595a",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 1.0,
+        "median": "#4e595b",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.99,
+        "median": "#414d4d",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.993,
+        "median": "#dacba7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.972,
+        "median": "#d1c09d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 1.0,
+        "median": "#c8b491",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.99,
+      "passed": true
+     },
+     "responseId": "WgrHapTyD7zu_uMP3KjpoQE"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "44fed4e8-df64-4f84-9ff1-029a117d3e6f",
+     "status": "ok",
+     "seconds": 8.1,
+     "checks": {
+      "silhouetteIoU": 0.935,
+      "silhouetteIoUInPlace": 0.932,
+      "parts": {
+       "region-0": 1.0,
+       "head": 0.998,
+       "muzzle": 1.0,
+       "crown": 0.967,
+       "leg-0": 1.0,
+       "leg-1": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#4a5557",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.984,
+        "median": "#465053",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#d4c3a1",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 1.0,
+        "median": "#d2c09e",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.954,
+        "median": "#cbb694",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.989,
+      "passed": true
+     },
+     "responseId": "ZwrHarvGDfPRjMcP_vOKoA8"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "b0e9a45b055eadcff6c6bf7757d78cb983b74155cfdde1f699d8b7245fcc3ddd",
+  "station-portrait-300x310.png": "5c65076fc120321421271f065240e3c834246716bfef7917e7b2c8c70583d03d",
+  "station-side-600x620.png": "6925480a1a97a2c925774327e8bce6507be1233358b50996b3d0c45b5e523908",
+  "station-side-300x310.png": "15fd7d3efbe2023ac198548b8f8dbf85e77c1afc68cc8595193755dd0ae4eb00",
+  "companion-280x300.png": "3f6ad3ee507ebd488d21e23a3c1badd15bada54083c8a15d902e64cc2b57fed2",
+  "token-48.png": "1edbe42affcbcc37254b74da958d083db994de5cf885fe5c6bcb64394aebfe27"
+ },
+ "calls": 2,
+ "seconds": 17.7,
+ "finishedAt": "2026-10-08T03:13:54Z"
+}

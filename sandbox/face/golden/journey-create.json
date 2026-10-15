@@ -1,0 +1,221 @@
+{
+ "_note": "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "create-walk": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "pod",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 2,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 2,
+     "choices": [
+      "eye-rings"
+     ],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4 ◆ 1",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "pods",
+    "create": null,
+    "ok": "Open",
+    "price": null,
+    "subject": "sealed until identified"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "pod",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 1,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 2,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4",
+    "subject": "two surprises to come"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 2,
+     "choices": [
+      "eye-rings"
+     ],
+     "grown": false
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4 ◆ 1",
+    "subject": "two surprises to come"
+   }
+  ],
+  "create-grow": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 2,
+     "choices": [
+      "eye-rings"
+     ],
+     "grown": true
+    },
+    "ok": "Grow it",
+    "price": "⚡ 2 ❀ 4 ◆ 1",
+    "subject": "two surprises to come"
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "confirm",
+     "back"
+    ],
+    "said": [],
+    "screen": "create"
+   }
+  ]
+ }
+}

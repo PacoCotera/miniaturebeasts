@@ -1,0 +1,80 @@
+{
+ "S01": {
+  "species": "S01",
+  "level": "species",
+  "stationSilhouetteIoU": 0.907
+ },
+ "S01-5243238d": {
+  "species": "S01",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.925,
+  "tokenDerivedIoU": 0.882,
+  "tokenGenericIoU": 0.86
+ },
+ "S01-dff664e3": {
+  "species": "S01",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.921,
+  "tokenDerivedIoU": 0.882,
+  "tokenGenericIoU": 0.862
+ },
+ "S01-f1e0907d": {
+  "species": "S01",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.973,
+  "tokenDerivedIoU": 0.931,
+  "tokenGenericIoU": 0.741
+ },
+ "S09": {
+  "species": "S09",
+  "level": "species",
+  "stationSilhouetteIoU": 0.774
+ },
+ "S09-bb2b96cc": {
+  "species": "S09",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.883,
+  "tokenDerivedIoU": 0.811,
+  "tokenGenericIoU": 0.511
+ },
+ "S09-267acdba": {
+  "species": "S09",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.774,
+  "tokenDerivedIoU": 0.741,
+  "tokenGenericIoU": 0.6
+ },
+ "S09-e8762715": {
+  "species": "S09",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.944,
+  "tokenDerivedIoU": 0.854,
+  "tokenGenericIoU": 0.449
+ },
+ "S12": {
+  "species": "S12",
+  "level": "species",
+  "stationSilhouetteIoU": 0.759
+ },
+ "S12-0b5843e8": {
+  "species": "S12",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.941,
+  "tokenDerivedIoU": 0.895,
+  "tokenGenericIoU": 0.694
+ },
+ "S12-70f7ef63": {
+  "species": "S12",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.731,
+  "tokenDerivedIoU": 0.695,
+  "tokenGenericIoU": 0.7
+ },
+ "S12-c164a339": {
+  "species": "S12",
+  "level": "individual",
+  "stationSilhouetteIoU": 0.951,
+  "tokenDerivedIoU": 0.804,
+  "tokenGenericIoU": 0.692
+ }
+}

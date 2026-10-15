@@ -1,0 +1,310 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "7C-no-framing",
+  "name": "No framing rule",
+  "change": "Both steps, the Framing paragraph removed. Measures how much of the difference in size and placement the framing rule removes, against the rig's own framing of each species.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Both steps, the Framing paragraph removed. Measures how much of the difference in size and placement the framing rule removes, against the rig's own framing of each species.",
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S09-33855bb1",
+  "controls": "out/S09/09e30f12feee02c6"
+ },
+ "step1": {
+  "callId": "18f9a76f-a760-44b9-b101-362eeffb9c72",
+  "status": "ok",
+  "seconds": 19.3,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.5,
+   "silhouetteIoUInPlace": 0.422,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.938
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.916
+    },
+    "beak": {
+     "span": 0.662,
+     "coverage": 0.293
+    },
+    "crown": {
+     "span": 0.853,
+     "coverage": 0.801
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.783
+    },
+    "flap": {
+     "span": 0.663,
+     "coverage": 0.424
+    },
+    "tail": {
+     "span": 0.049,
+     "coverage": 0.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.379,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.292,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.357,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.385,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.357,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.389,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.521,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.814,
+     "median": "#193a89",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.614,
+     "median": "#385dad",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.989,
+     "median": "#275aaf",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.864,
+     "median": "#275aae",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.986,
+     "median": "#2659ad",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.674,
+     "median": "#d6bb95",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.019,
+     "median": "#295db1",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (25% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: tail (painted along 5% of its length)",
+    "a pigment slot is painted in another slot's colour: the second slot on the flap (painted #295db1, the colour of body)"
+   ],
+   "outside": 0.252,
+   "missing": 0.011,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.806,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "2435021c-f429-4ef0-82a5-57d1910646cf",
+  "status": "ok",
+  "seconds": 17.8,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.507,
+   "silhouetteIoUInPlace": 0.425,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.92
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.91
+    },
+    "beak": {
+     "span": 0.597,
+     "coverage": 0.258
+    },
+    "crown": {
+     "span": 0.853,
+     "coverage": 0.794
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.78
+    },
+    "flap": {
+     "span": 0.66,
+     "coverage": 0.419
+    },
+    "tail": {
+     "span": 0.02,
+     "coverage": 0.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.378,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.291,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.356,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.384,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.356,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.514,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.805,
+     "median": "#2e5390",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.567,
+     "median": "#7d90ac",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.988,
+     "median": "#3e6dba",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.85,
+     "median": "#4470b9",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.986,
+     "median": "#3866b1",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.753,
+     "median": "#d3c098",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.014,
+     "median": "#6087c0",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (23% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: beak (painted along 60% of its length), tail (painted along 2% of its length)",
+    "a pigment slot is painted in another slot's colour: the second slot on the flap (painted #6087c0, the colour of body)"
+   ],
+   "outside": 0.235,
+   "missing": 0.012,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.81,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

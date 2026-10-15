@@ -1,0 +1,205 @@
+{
+ "$comment": "The props of the namer overlay (namer.json; lvgl-switch.md §2.2): `overlay` on habitat's message while the namer is open. Props name what, never where: strings, states, labels in the grid's case (one character, or null where the page draws none), flags and the focus targets by id; the key rectangles come from namer.json. The bottom line is props.frame.line, built by the host from namer.json bottomLine.",
+ "$defs": {
+  "target": {
+   "type": "object",
+   "required": [
+    "id",
+    "enabled"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "enabled": {
+     "type": "boolean"
+    }
+   }
+  }
+ },
+ "type": "object",
+ "required": [
+  "id",
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "id": {
+   "enum": [
+    "namer"
+   ]
+  },
+  "state": {
+   "enum": [
+    "open"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "field",
+    "say",
+    "keys",
+    "shift",
+    "space",
+    "page",
+    "done",
+    "suggest"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "field": {
+     "type": "object",
+     "required": [
+      "name",
+      "state"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "name": {
+       "type": "string",
+       "maxLength": 10
+      },
+      "state": {
+       "enum": [
+        "selected",
+        "typed",
+        "empty"
+       ]
+      }
+     }
+    },
+    "say": {
+     "type": "object",
+     "required": [
+      "text",
+      "tone"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string"
+      },
+      "tone": {
+       "enum": [
+        "reason",
+        "refused"
+       ]
+      }
+     }
+    },
+    "keys": {
+     "type": "object",
+     "required": [
+      "page",
+      "caps",
+      "dim",
+      "labels"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "page": {
+       "enum": [
+        "letters",
+        "accents"
+       ]
+      },
+      "caps": {
+       "type": "boolean"
+      },
+      "dim": {
+       "type": "boolean"
+      },
+      "labels": {
+       "type": "array",
+       "minItems": 28,
+       "maxItems": 28,
+       "items": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     }
+    },
+    "shift": {
+     "type": "object",
+     "required": [
+      "on"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "on": {
+       "type": "boolean"
+      }
+     }
+    },
+    "space": {
+     "type": "object",
+     "required": [
+      "dim"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "dim": {
+       "type": "boolean"
+      }
+     }
+    },
+    "page": {
+     "type": "object",
+     "required": [
+      "label"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "label": {
+       "type": "string"
+      }
+     }
+    },
+    "done": {
+     "type": "object",
+     "required": [
+      "dim"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "dim": {
+       "type": "boolean"
+      }
+     }
+    },
+    "suggest": {
+     "type": "object",
+     "required": [],
+     "additionalProperties": false,
+     "properties": {}
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "type": "string"
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "$ref": "target"
+     }
+    }
+   }
+  }
+ }
+}

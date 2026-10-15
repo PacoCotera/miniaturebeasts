@@ -1,0 +1,293 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "7C-no-framing",
+  "name": "No framing rule",
+  "change": "Both steps, the Framing paragraph removed. Measures how much of the difference in size and placement the framing rule removes, against the rig's own framing of each species.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Both steps, the Framing paragraph removed. Measures how much of the difference in size and placement the framing rule removes, against the rig's own framing of each species.",
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S01-45ff1025",
+  "controls": "out/S01/f7a2d788e5827862"
+ },
+ "step1": {
+  "callId": "30f04b8a-857b-43c0-a552-3dd84f8d2768",
+  "status": "ok",
+  "seconds": 18.6,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.688,
+   "silhouetteIoUInPlace": 0.518,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.989
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.983
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.993
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.882
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 0.605
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.655
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.94
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.74,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.495,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.317,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.493,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.654,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.364,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.164,
+     "median": "#3e3f44",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.249,
+     "median": "#475848",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@region-0": {
+     "agreement": 0.042,
+     "median": "#3c3c43",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.818,
+     "median": "#eac7b5",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.8,
+     "median": "#d3b599",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.818,
+     "median": "#6fa158",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.667,
+     "median": "#cca78b",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.16,
+     "median": "#454145",
+     "nearest": "#465459",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #3c3c43, the colour of pupil), the belly slot on the muzzle (painted #454145, the colour of body)"
+   ],
+   "outside": 0.09,
+   "missing": 0.014,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.395,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "fdaa2cf3-19fc-4229-bcc1-eb214481b11f",
+  "status": "ok",
+  "seconds": 18.9,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.702,
+   "silhouetteIoUInPlace": 0.576,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.974
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.988
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.993
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.856
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 0.562
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.614
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.89
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.743,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.503,
+     "ok": false
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.32,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.499,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.655,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.345,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.164,
+     "median": "#3a3d41",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.289,
+     "median": "#5e6d58",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@region-0": {
+     "agreement": 0.035,
+     "median": "#242729",
+     "nearest": "#273036",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.96,
+     "median": "#d3c3a5",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.75,
+     "median": "#a7957c",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.866,
+     "median": "#71a668",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.614,
+     "median": "#aa8d72",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.137,
+     "median": "#5c5752",
+     "nearest": "#465459",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "the proportions are off: the region-0 is larger than drawn (0.74 of the body against 0.56), the head is larger than drawn (0.50 of the body against 0.35)",
+    "a pigment slot is painted in another slot's colour: the second slot on the region-0 (painted #242729, the colour of pupil), the belly slot on the muzzle (painted #5c5752, the colour of body)"
+   ],
+   "outside": 0.077,
+   "missing": 0.009,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.398,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

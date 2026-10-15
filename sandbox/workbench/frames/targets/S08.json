@@ -1,0 +1,27 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S08",
+ "name": "Rupar",
+ "resembles": "a goat or deer",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a compact body on four long slender legs, a long neck held high, a long narrow head with a muzzle, horns and ears, a short tail",
+ "shapes": [
+  {"ellipse":[50,52,23,13],"part":"body"},
+  {"capsule":[68,50,76,30,6,5],"part":"body"},
+  {"ellipse":[80,24,8,6,-20],"part":"head"},
+  {"polygon":[[85,22],[94,28],[85,30]],"part":"muzzle"},
+  {"capsule":[76,18,71,8,1.5],"part":"crest"},
+  {"capsule":[80,17,79,7,1.5],"part":"crest"},
+  {"capsule":[74,20,66,14,2],"part":"ear"},
+  {"capsule":[64,60,66,92,2.8],"part":"leg"},
+  {"capsule":[69,60,71,92,2.8],"part":"leg"},
+  {"capsule":[36,60,33,92,2.8],"part":"leg"},
+  {"capsule":[41,60,40,92,2.8],"part":"leg"},
+  {"capsule":[27,50,22,56,2],"part":"tail"}
+ ]
+}

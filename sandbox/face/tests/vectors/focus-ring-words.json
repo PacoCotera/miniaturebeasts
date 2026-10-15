@@ -1,0 +1,149 @@
+{
+ "note": "The focus ring as components/focusRing.mjs drew it (the JavaScript, through the node path, with the old mask pictures built from ui/rings.mjs) on the WebAssembly face: the form, the box, the role and the framebuffer's hash. The focusRing word must draw the same pixels.",
+ "cases": [
+  {
+   "name": "round, a wide target",
+   "form": {},
+   "box": [
+    100,
+    100,
+    200,
+    80
+   ],
+   "colour": "focus",
+   "hash": "9d296cc5"
+  },
+  {
+   "name": "round, a square target",
+   "form": {},
+   "box": [
+    300,
+    300,
+    40,
+    40
+   ],
+   "colour": "focus",
+   "hash": "d2ebbec5"
+  },
+  {
+   "name": "round, the smallest",
+   "form": {},
+   "box": [
+    500,
+    200,
+    8,
+    8
+   ],
+   "colour": "focus",
+   "hash": "5a7e52c5"
+  },
+  {
+   "name": "round, on paper",
+   "form": {},
+   "box": [
+    60,
+    400,
+    321,
+    97
+   ],
+   "colour": "rust",
+   "hash": "d13637f5"
+  },
+  {
+   "name": "feet, a creature",
+   "form": {
+    "ring": "feet"
+   },
+   "box": [
+    400,
+    300,
+    64,
+    80
+   ],
+   "colour": "focus",
+   "hash": "06cd0485"
+  },
+  {
+   "name": "feet, an odd width",
+   "form": {
+    "ring": "feet"
+   },
+   "box": [
+    403,
+    300,
+    63,
+    81
+   ],
+   "colour": "focus",
+   "hash": "f24d0e45"
+  },
+  {
+   "name": "tab, a full tab",
+   "form": {
+    "ring": "tab"
+   },
+   "box": [
+    100,
+    42,
+    136,
+    40
+   ],
+   "colour": "focus",
+   "hash": "bda0de45"
+  },
+  {
+   "name": "tab, a compact tab",
+   "form": {
+    "ring": "tab"
+   },
+   "box": [
+    300,
+    42,
+    56,
+    40
+   ],
+   "colour": "focus",
+   "hash": "e6166245"
+  },
+  {
+   "name": "circle, Pods' place",
+   "form": {
+    "ring": {
+     "circle": {
+      "radius": 84,
+      "centre": [
+       96,
+       112
+      ]
+     }
+    }
+   },
+   "box": [
+    16,
+    48,
+    320,
+    224
+   ],
+   "colour": "focus",
+   "hash": "d050ba85"
+  },
+  {
+   "name": "circle, a kin",
+   "form": {
+    "ring": {
+     "circle": {
+      "outside": 4
+     }
+    }
+   },
+   "box": [
+    600,
+    224,
+    56,
+    56
+   ],
+   "colour": "focus",
+   "hash": "b575cfc5"
+  }
+ ]
+}
