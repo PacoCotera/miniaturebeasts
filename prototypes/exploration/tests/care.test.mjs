@@ -430,7 +430,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"])]);
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-token-S03-nest", 32, 32, "stand-in"], ["c-silhouette-species", 32, 32, "stand-in"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"])]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
   const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
@@ -1155,12 +1155,12 @@ test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms,
   for (let t = 0; t < 12000; t += 40) { const sp = r.draw("active", t).find(c => c[0] === "sprite"); assert.deepEqual([sp[2], sp[3], sp[7]], ["idle", 0, false], "t " + t); }
 });
 
-test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (283 for Tuikis), for all three species; the sprite never moves", () => {
+test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (299 for Tuikis, on the signed tokens), for all three species; the sprite never moves", () => {
   for (const sp of [0, 1, 2]) {
     const p = X26.world([X26.mib(1, "Dot", sp)], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1");
     // the lowest source row holding a pixel visible on the stage's ink, for a pose and frame, at 8× from the drawn y
     const low = (pose, fr, y) => p.run(`(() => { const a = creatureArt(${sp}, ${JSON.stringify(pose)}, ${fr}); let r = -1; for (let j = 0; j < a.h; j++) for (let i = 0; i < a.w; i++) { const v = a.p[j * a.w + i]; if (v >= 0 && v !== C.ink) r = j; } return ${y} + r * 8 + 7; })()`);
-    const foot = low("idle", 0, 52); if (sp === 1) assert.equal(foot, 283, "Tuikis: the visible feet end on row 283");
+    const foot = low("idle", 0, 52); if (sp === 1) assert.equal(foot, 299, "Tuikis: the visible feet end on row 299");
     let alerts = 0;
     for (let t = 1000; t < 11000; t += 20) { const s = p.draw("active", t).find(c => c[0] === "sprite"); assert.ok(s, "drawn, t " + t);
       const [, , pose, fr, x, y] = s; if (pose === "alert") alerts++;
@@ -1169,3 +1169,4 @@ test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest 
     assert.ok(alerts > 0, "sp " + sp + ": a look-out in the 10 s run");
   }
 });
+

@@ -536,7 +536,7 @@ test("generator 2 play: stairs and aprons take no pods, creatures or slabs; plac
     const pb = p.run(`tilePB(layout(S.exp.patch.key), ${i}, 0)`); assert.ok(pb.w === 32 && pb.h === 32 && pb.p.every(v => v >= 0 && v < 48), `tile ${i}`); }
   assert.ok(kinds.has(TERR.STAIR) && kinds.has(TERR.FOOT));
   // each piece is in the register, under its TERR name, as a 32 px stand-in
-  const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32).map(a => a.id).join()");
+  const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32 && !a.id.startsWith('c-')).map(a => a.id).join()");
   assert.equal(reg, Object.keys(TERR).filter(k => k !== "NONE").join());
 });
 
