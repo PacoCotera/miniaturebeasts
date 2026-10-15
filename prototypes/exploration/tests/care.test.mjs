@@ -4,9 +4,12 @@
 // landed and is skipped until then, so the agreement tests switch on by themselves.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import vm from "node:vm";
+import { decodePNG } from "../tools/atlas-check.mjs";
+import { decodeExact } from "../src/atlas.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
@@ -1170,3 +1173,77 @@ test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest 
   }
 });
 
+// ---- Species art: the signed tokens and minis, used as they are ----
+// page species, token name, the signed file under art/companion-48/species/, and the file's sha256 (S01 = species 0, S03 = 1, S02 = 2)
+const SPECIES_FILES = [
+  // page species 0, S01
+  [0, "alert", "S01/c-token-S01-alert-32x32.png", "241fd5be2e19d6e49bd423feaa44c1cd886443a6ff4cc24d7ef5547be7340eec"],
+  [0, "eat0", "S01/c-token-S01-eat-f0-32x32.png", "286295ff49120b2af8d2942b7c3be28a2f477094d890e9514eaac707694e138d"],
+  [0, "eat1", "S01/c-token-S01-eat-f1-32x32.png", "452751a2ec8a0425027ffc0b37efe9be02ac6b3aea64c30829e23665cbbfae3a"],
+  [0, "flee", "S01/c-token-S01-flee-32x32.png", "ad1ffee6f2cf46910bbd7ea185a90a499b662823c5d5f60e4124f4c3bedf6464"],
+  [0, "huddle", "S01/c-token-S01-huddle-32x32.png", "ded03942e57a284dcd7c9b0abdfa15b5d106e00465a8c0b2db62e8a18aa20e53"],
+  [0, "idle", "S01/c-token-S01-idle-32x32.png", "b642ab6bf937de8bc23c2447303129cb31d023fc54b8d0374b8afb092e08a06a"],
+  [0, "shake0", "S01/c-token-S01-shake-f0-32x32.png", "8e106a6a919f0ea346f2c17c9e411a9e84cc542c94460b2cc30ef56ca51d0df7"],
+  [0, "shake1", "S01/c-token-S01-shake-f1-32x32.png", "99f8fb0f248bb45385b6051dc0ca38881a771862e468e477b4eed3c01fb2c126"],
+  [0, "mini", "S01/c-mini-S01-12x12.png", "0e058cc4df269a52406afaa1e9847d991677b0efb8a0c1086a0a6d7259dddb02"],
+  // page species 1, S03
+  [1, "alert", "S03/c-token-S03-alert-32x32.png", "3741961aac6cf4f0a7d8c0189ac7159ad2c5b03b8f931646e700133bb2ad5b6b"],
+  [1, "curl", "S03/c-token-S03-curl-32x32.png", "ece1d5bfecc9ebbb43e6f0fab627e18d939b6cf3c6dbc6267cd1999518bb60fc"],
+  [1, "eat0", "S03/c-token-S03-eat-f0-32x32.png", "8ef4c7d1fd3789b708a81627bb79f0ae39f4fcdee5109c7ef81541fd6ae62975"],
+  [1, "eat1", "S03/c-token-S03-eat-f1-32x32.png", "3c22445530931920478f6f5c2ea1c1edebd29788e4fb503e92533fa96b276c30"],
+  [1, "flee", "S03/c-token-S03-flee-32x32.png", "219542a1795bb069ca7633bf36534cc2700ff4c838822fafb269b4e5107376ec"],
+  [1, "huddle", "S03/c-token-S03-huddle-32x32.png", "e5239d7bff540f8052f778114d85e3831536d5af34b7a12046ec310b054ef9fa"],
+  [1, "idle", "S03/c-token-S03-idle-32x32.png", "ad6be7be6083289c3ed3b0c8499ccb7b73a3f3e4cb6dfcb7269059c14bb16775"],
+  [1, "settle", "S03/c-token-S03-settle-32x32.png", "1d92c52576b4a4926fc5c9b5d55556255fe12f0cc022258ef2e51c581e372807"],
+  [1, "shake0", "S03/c-token-S03-shake-f0-32x32.png", "29e5eba6ab18d7b669868a77ffca3bcafa48c9ddeeec9e2ef35aa8342283bf33"],
+  [1, "shake1", "S03/c-token-S03-shake-f1-32x32.png", "70eaa229ab49ab6b4aa7931695d28bde85be565974da4bb97211ed2854ac473d"],
+  [1, "mini", "S03/c-mini-S03-12x12.png", "57e75627530901af35d858d96b6df0b98a432f8bf364305fbdf43c9e1fc7db4e"],
+  // page species 2, S02
+  [2, "alert", "S02/c-token-S02-alert-32x32.png", "c60bdf85036b7636513250c49d29961c34bdd3cba0e4525b4dc88b22d32bc0c5"],
+  [2, "eat0", "S02/c-token-S02-eat-f0-32x32.png", "7afedb1bfade2ce7ba8ca97d0f35e97cb8c7506e0b34106751577175342e5c2d"],
+  [2, "eat1", "S02/c-token-S02-eat-f1-32x32.png", "f516fd1e885c0470e8114faabb7b6bcb54323bf09141e0f84ddb7ec6342a29f7"],
+  [2, "flee", "S02/c-token-S02-flee-32x32.png", "72181867c9f4e3c35fbbd4c37c068543d344aa567914e7ee1cbe25d53d65e2f5"],
+  [2, "huddle", "S02/c-token-S02-huddle-32x32.png", "f169bb2d9e90bd0f5cee5fe0f609ccb8794338353b671a23edbb2c7eae913ac6"],
+  [2, "idle", "S02/c-token-S02-idle-32x32.png", "9a633d709e1d419262fc02214bf76e180a09f253e29db28397ed6b661e7ab3d9"],
+  [2, "shake0", "S02/c-token-S02-shake-f0-32x32.png", "38d9a3e481fc55284c13351525032bbfb947fe12b605a530f0b4fd9242e35456"],
+  [2, "shake1", "S02/c-token-S02-shake-f1-32x32.png", "327f8d68a89a7d95397ab0a2be34f8bec12baa82edd1bff4d58f73a4084ae0bc"],
+  [2, "mini", "S02/c-mini-S02-12x12.png", "fda0c37ecf036a87a3d1260cbc3afe9ed4a3aa75ed30bb7f0fafc150cfecc6c2"],
+];
+test("species art: the page's embedded pictures are the signed PNGs, pixel for pixel (when the files are in the tree), 0 off-palette", () => {
+  const p = X1.page(), rgb = p.run("RGB"), art = p.run("SPECIES_ART.map(t => Object.fromEntries(Object.entries(t).map(([n, r]) => [n, tokenPB(r, n === 'mini' ? 12 : 32).p])))");
+  assert.deepEqual(plain(art.map(t => Object.keys(t).length)), [9, 11, 9], "S01 8 tokens and a mini, S03 10 and a mini, S02 8 and a mini");
+  assert.deepEqual(SPECIES_FILES.map(f => f[0] + f[1]).sort(), plain(art.flatMap((t, i) => Object.keys(t).map(n => i + n))).sort(), "every picture has its file, and every file its picture");
+  let compared = 0;
+  for (const [sp, name, file, sha] of SPECIES_FILES) {
+    const px = Array.from(art[sp][name]), w = name === "mini" ? 12 : 32;
+    assert.equal(px.length, w * w, file + " fills its square"); assert.ok(px.every(v => v >= -1 && v < 48), file + " is on the 48 colours");
+    const url = new URL("../../../art/companion-48/species/" + file, import.meta.url);
+    if (!existsSync(url)) continue;
+    const buf = readFileSync(url), img = decodePNG(buf), d = decodeExact(img.rgba, img.width ?? img.w, img.height ?? img.h, rgb);
+    assert.equal(createHash("sha256").update(buf).digest("hex"), sha, file + ": the signed file"); assert.equal(d.bad, 0, file + ": 0 off-palette");
+    assert.deepEqual(px, Array.from(d.px), file + ": the embedded rows are the signed pixels"); compared++;
+  }
+  assert.ok(compared === 0 || compared === SPECIES_FILES.length, "all of the signed files or none");
+});
+
+test("species art: each state uses its own master, the cards show it at whole pixels, and what the masters lack keeps the old drawing", () => {
+  const p = X1.page(), tok = (sp, pose, fr = 0) => p.run(`tokenOf(${sp}, '${pose}', ${fr})`), key = (sp, pose, fr) => { const t = tok(sp, pose, fr); return t && p.run(`SPECIES_ART[${sp}]`) && Array.from(t.p).join(); };
+  for (const sp of [0, 1, 2]) {
+    for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat"]) assert.ok(tok(sp, pose, 0) && tok(sp, pose, 1), sp + " " + pose);
+    for (const pose of ["shake", "eat"]) assert.notEqual(key(sp, pose, 0), key(sp, pose, 1), sp + " " + pose + ": two frames");
+    assert.equal(key(sp, "approach", 0), key(sp, "alert", 0), "approach is the alert pose, as it was drawn");
+    assert.equal(key(sp, "idle", 1), key(sp, "idle", 0), "one idle picture");
+  }
+  assert.equal(key(0, "glow", 0), key(0, "idle", 0)); assert.equal(key(2, "glow", 0), key(2, "idle", 0), "a Loika and an Untuva glow as their idle, as drawn");
+  assert.ok(tok(1, "curl") && tok(1, "settle") && !tok(0, "curl") && !tok(2, "settle"), "curl and settle are the Tuikis'");
+  assert.equal(tok(1, "glow"), null); assert.equal(tok(1, "nest"), null, "no master: the old drawing, listed as a stand-in");
+  assert.equal(p.run("creatureArt(1, 'nest', 0).w"), 32); assert.equal(p.run("creatureArt(1, 'nest', 0, 2).w"), 64, "the stand-in still draws at 2×");
+  for (const sp of [0, 1, 2]) {   // 1×: the token itself; 2×: each pixel twice, nothing else; the mini 12 px
+    assert.equal(p.run(`creatureArt(${sp}, 'alert', 0) === tokenOf(${sp}, 'alert', 0)`), true);
+    assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'flee', 0), b = creatureArt(${sp}, 'flee', 0, 2); if (b.w !== 64) return false;
+      for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (b.p[y * 64 + x] !== a.p[(y >> 1) * 32 + (x >> 1)]) return false; return true; })()`), true, sp + " at 2×");
+    assert.deepEqual(plain(p.run(`[ICON.mini(${sp}).w, ICON.mini(${sp}).h]`)), [12, 12]);
+  }
+  assert.ok(!/ell\(|poly\(/.test(source("tokenPB") + source("tokenOf")), "the token path draws no shape");
+  assert.equal(p.run("miniOf.toString().includes('c-mini-other-12') && mibiSprite.toString().includes('c-sprite-other-32')"), true, "the unknown species' labelled placeholders are intact");
+});
