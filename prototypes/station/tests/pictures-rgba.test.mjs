@@ -151,7 +151,9 @@ const LABELS = {   // screen: [golden, the label's rect, the main object's rect 
   habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],
 };
 for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the stamp label on ${screen} is dimmer than the specimen: mean and 95th percentile of linear luminance under the main object's, cell contrast at least 4.11, sRGB mean at most 111 (against the 115 cap)`, () => {
-  const img = goldenPng(file), L = lumOf(img, label), M = lumOf(img, main), inner = lumOf(img, [label[0] + 8, label[1] + 8, 104, 104]);
+  const founder = screen === "create" ? decodePNG(readFileSync(new URL("../../ui/assets/masters/pods/mibi-adult-S01-304x312.png", import.meta.url))) : null;   // AD ruling (Create founder A): the main object is the founder's own opaque pixels (alpha > 127) at (360, 240), not its 304 × 312 box
+  const lumMasked = (im, [x, y, w, h]) => { const out = []; for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { if (founder.data[(j * founder.width + i) * 4 + 3] <= 127) continue; const k = ((y + j) * im.width + (x + i)) * 4; out.push(0.2126 * lin01(im.data[k]) + 0.7152 * lin01(im.data[k + 1]) + 0.0722 * lin01(im.data[k + 2])); } return out; };
+  const img = goldenPng(file), L = lumOf(img, label), M = founder ? lumMasked(img, main) : lumOf(img, main), inner = lumOf(img, [label[0] + 8, label[1] + 8, 104, 104]);
   assert.ok(mean(L) < mean(M), `${screen}: label mean ${mean(L).toFixed(3)} is not under the main object's ${mean(M).toFixed(3)}`);
   assert.ok(pct(L, 95) < pct(M, 95), `${screen}: label p95 ${pct(L, 95).toFixed(3)} is not under the main object's ${pct(M, 95).toFixed(3)}`);
   const contrast = (pct(inner, 95) + 0.05) / (pct(inner, 5) + 0.05); assert.ok(contrast >= 4.11, `${screen}: the stamp's cells read at ${contrast.toFixed(2)}, under 4.11`);
