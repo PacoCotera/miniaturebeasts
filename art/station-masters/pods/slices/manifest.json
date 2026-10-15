@@ -5110,11 +5110,11 @@
    522
   ],
   "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage, 0 MXN",
-  "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out)",
-  "sha256": "9f85f063acce661b8f55563700e6f1dfeacad7ed60002783af8f9fe7f0dfddd0",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444: chapter and overview goldens, station/img pods-*), placed byte for byte",
-  "status_note": "new (10-15): fix 5 P-A1/P-A2 follow-up, the hose paint-out's dark residue on the right wall and bottom-right corner lifted to the wall's tone, low frequency only (stage-recut/lift-hose-ghost.py); replaces d1b7a8c7e6d4\u2026; signed in the whole Pods captures"
+  "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out); gate batch 1 (10-15): the heading band cleared (stage-recut/clear-heading-band.py): the floor in x 340-960 to slice y 116 repainted (harmonic tone from its edges, the floor's own grain), so the hose's top run, the gauge and the vent leave the two-row page's heading; the hose ends at x 330 in its own brass fitting",
+  "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "recut 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page captures (one and two rows)"
  },
  "ring-collection-idle-176x176": {
   "size": [
