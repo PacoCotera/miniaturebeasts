@@ -10850,8 +10850,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122) (fringe cleaned in pass 139: 2238 of 3472 edge pixels, two passes)",
   "sha256": "d73667a3675789df4a93a0d1c66a407435dd32c012c855db41e906d706761003",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 06:23: the Cargo retake (public station-fix5-cargo 5614a972, the 9 changed goldens), placed byte for byte",
   "status_note": "new (10-15): rebuilt from the round-2 sealed crate (crate-recut/make-crate-opening.py): the lid lifted 6 px, a shaded gap across the body proper only, the tag torn at the seam; the old composite's wing residue and jagged seam gone (QA, 10-15); replaces 5094478bd4d6\u2026 (was signed); signed in the Cargo retake"
  },
  "cargo-energy-48x64": {
@@ -14416,8 +14416,8 @@
   "src": "hand-coded (tools/cratefringe.py)",
   "made": "the crate's cast shadow, 256x24: #1e1a22, a horizontal ellipse 240 wide (the crate's base ink, x 8-248) centred at x 131 (the key light from the top left), core alpha 110 on row 12 falling to 0 at the ellipse edge as (1 - d)^1.5, the outer 4 px dithered on the 4x4 Bayer; no pads (pass 139)",
   "sha256": "9851e6aa1d00de083672a600a0d0865f09177abd278f6708ea5ca34e8b8d5e82",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 06:23: the Cargo retake (public station-fix5-cargo 5614a972, the 9 changed goldens), placed byte for byte",
   "status_note": "new (10-15): alpha x1.6, capped at 170 (crate-recut/strengthen-shadows.py): the contact shadow read too faint on the shelf (QA, 10-15); replaces 66d96f23a2ba\u2026 (was new); signed in the Cargo retake"
  },
  "crate-shadow-432x24": {
@@ -14429,8 +14429,8 @@
   "src": "hand-coded (tools/cratefringe.py)",
   "made": "the large crate's cast shadow, 432x24: #1e1a22, a horizontal ellipse 412 wide (the crate's base ink, x 7-419) centred at x 216, core alpha 110 on row 12, (1 - d)^1.5, the outer 4 px dithered on the 4x4 Bayer; no pads (pass 139)",
   "sha256": "07c836ee9f01fcb7a50d25d6a482240b30584d8c221408740cebab5c3c861aa4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 06:23: the Cargo retake (public station-fix5-cargo 5614a972, the 9 changed goldens), placed byte for byte",
   "status_note": "new (10-15): alpha x1.6, capped at 170 (crate-recut/strengthen-shadows.py): the contact shadow read too faint on the shelf (QA, 10-15); replaces cbe08ca20fcc\u2026 (was new); signed in the Cargo retake"
  },
  "cargo-store-shadow-48x14": {
