@@ -23,6 +23,7 @@ export function goalWords(goal, docked, frame) {
   if (st.key === "read" && goal.key === "guide") { const fr = frameOf(st.species), ch = fr && fr.chapters.find((c) => c.id === st.chapter); return out(fill(G.step.readPod, { chapter: ch ? ch.name : st.chapter, species: speciesWord(st.species) })); }
   if (st.key === "read") return out(fill(G.step.read, vals), G.step.readNoName);
   if (st.key === "findPod" && !vals.species) return out(G.step.goOut);
+  if (st.key === "identify" && !(st.species ?? goal.species)) return out(G.step.identifyAny);   // no species known yet: "identify a pod"
   const t = G.step[st.key]; if (typeof t !== "string") return null;
   return out(fill(t, { ...vals, species: speciesWord(st.species ?? goal.species), a: article(speciesWord(st.species ?? goal.species)) }));
 }
