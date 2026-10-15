@@ -325,10 +325,10 @@ export { upPB };
 // ---------- The founder on Create: its own colours, calm where a chapter is unread (Fix 1b part 1, unknown.mjs) ----------
 // The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
 // ghost of nothing read. A part group with no part on this body veils nothing.
-export function founderArt(frame, genome, read, w, h) {
-  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h;
+export function founderArt(frame, genome, read, w, h, painted = null) {   // painted: the species' placed adult master at this size (Create founder A, interim): the one flat picture in place of the rig render, under the same treatment
+  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h + (painted ? ":painted" : "");
   return art(key, () => {
-    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h);
+    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = painted ?? (ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h));
     if (t.mode === "clear") return base;
     const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
     return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });

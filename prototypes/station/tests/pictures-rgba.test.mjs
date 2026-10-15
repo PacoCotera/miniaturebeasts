@@ -151,7 +151,9 @@ const LABELS = {   // screen: [golden, the label's rect, the main object's rect 
   habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],
 };
 for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the stamp label on ${screen} is dimmer than the specimen: mean and 95th percentile of linear luminance under the main object's, cell contrast at least 4.11, sRGB mean at most 111 (against the 115 cap)`, () => {
-  const img = goldenPng(file), L = lumOf(img, label), M = lumOf(img, main), inner = lumOf(img, [label[0] + 8, label[1] + 8, 104, 104]);
+  const founder = screen === "create" ? decodePNG(readFileSync(new URL("../../ui/assets/masters/pods/mibi-adult-S01-304x312.png", import.meta.url))) : null;   // AD ruling (Create founder A): the main object is the founder's own opaque pixels (alpha > 127) at (360, 240), not its 304 × 312 box
+  const lumMasked = (im, [x, y, w, h]) => { const out = []; for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { if (founder.data[(j * founder.width + i) * 4 + 3] <= 127) continue; const k = ((y + j) * im.width + (x + i)) * 4; out.push(0.2126 * lin01(im.data[k]) + 0.7152 * lin01(im.data[k + 1]) + 0.0722 * lin01(im.data[k + 2])); } return out; };
+  const img = goldenPng(file), L = lumOf(img, label), M = founder ? lumMasked(img, main) : lumOf(img, main), inner = lumOf(img, [label[0] + 8, label[1] + 8, 104, 104]);
   assert.ok(mean(L) < mean(M), `${screen}: label mean ${mean(L).toFixed(3)} is not under the main object's ${mean(M).toFixed(3)}`);
   assert.ok(pct(L, 95) < pct(M, 95), `${screen}: label p95 ${pct(L, 95).toFixed(3)} is not under the main object's ${pct(M, 95).toFixed(3)}`);
   const contrast = (pct(inner, 95) + 0.05) / (pct(inner, 5) + 0.05); assert.ok(contrast >= 4.11, `${screen}: the stamp's cells read at ${contrast.toFixed(2)}, under 4.11`);
@@ -419,4 +421,14 @@ test("the Portrait test card: it derives to 40×30 with the rim, the four quadra
   assert.deepEqual([d.w, d.h], [40, 30]); assert.deepEqual(at(0, 0), [24, 24, 24]); assert.deepEqual(at(1, 1), [200, 72, 64]); assert.deepEqual(at(38, 1), [72, 168, 80]); assert.deepEqual(at(1, 28), [64, 88, 200]); assert.deepEqual(at(38, 28), [232, 200, 104]);
   const px = d.rgba(); for (let i = 0; i < px.length; i += 4) assert.ok(!(px[i] === 255 && px[i + 1] === 0 && px[i + 2] === 0), "no red from outside the crop");
   const digest = await digestOf(fx); assert.deepEqual(injectPortraitSource(digest, fx), { ok: true, digest }); const a = Buffer.from(portraitSource(digest).rgba()); assert.deepEqual(injectPortraitSource(digest, portraitFixture()), { ok: true, digest }); assert.ok(a.equals(Buffer.from(portraitSource(digest).rgba())));
+});
+
+test("Create founder A (interim): with the species' placed adult master the founder is that one flat picture, clear when everything is read, and the same calm treatment over it otherwise (ghost: alpha unchanged, no hue); never the rig", () => {
+  const w = 304, h = 312, d = new Uint8ClampedArray(w * h * 4); for (let y = 40; y < 290; y++) for (let x = 60; x < 250; x++) { const i = (y * w + x) * 4; d[i] = 40 + (x % 90); d[i + 1] = 120 + (y % 60); d[i + 2] = 60; d[i + 3] = 255; }
+  const painted = { w, h, rgba: () => d }, fr = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/species-S01.json"), "utf8")), g = typeSpecimen(fr), all = fr.chapters.map((c) => c.id);
+  const clear = founderArt(fr, g, all, w, h, painted), rig = founderArt(fr, g, all, w, h);
+  assert.deepEqual([...clear.rgba()], [...d], "clear: the painted picture as it is, to the pixel"); assert.notDeepEqual([...clear.rgba()], [...rig.rgba()], "and not the rig");
+  const ghost = founderArt(fr, g, [], w, h, painted), a = (p) => [...p.rgba()].filter((_, i) => i % 4 === 3);
+  assert.deepEqual(a(ghost), a(clear), "nothing read: the body alone is greyed, the alpha is unchanged"); assert.notDeepEqual([...ghost.rgba()], [...d]);
+  assert.equal(founderArt(fr, g, all, w, h, painted), founderArt(fr, g, all, w, h, painted), "cached per picture");
 });
