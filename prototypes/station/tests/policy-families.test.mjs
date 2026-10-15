@@ -87,3 +87,9 @@ test("a juvenile mibi takes the art director's juvenile stand-in at its size whe
   dropAsset(ADULT); dropAsset("mibi:3:adult:304x312"); dropAsset("mibi:3:elder:304x312");
   clear();
 });
+
+test("the report plate's family is exactly the 21 heights 128 to 288 by 8: 560x120 and 560x130 are in no family, 560x128 and 560x288 are painted", () => {
+  for (const h of [120, 130, 296]) assert.throws(() => policyOf(`cargo-report-plate-560x${h}`, "master"), /no layer family/, String(h));
+  for (const h of [128, 288]) assert.equal(policyOf(`cargo-report-plate-560x${h}`, "master"), "painted", String(h));
+  for (let h = 128; h <= 288; h += 8) assert.equal(policyOf(`cargo-report-plate-560x${h}`, "placeholder"), "painted", String(h));
+});
