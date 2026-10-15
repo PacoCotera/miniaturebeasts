@@ -8,16 +8,16 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 
 | Step | What the tester does | Rule |
 | --- | --- | --- |
-| **Arrival** | A crate comes from the Companion page's End expedition, or from a dev seed. Dock, then `✓ Open the bay`; the pods roll into the rack's six wells | Sample bay of three crates; cargo moves only on docking |
+| **Arrival** | A crate comes from the Companion page's End expedition, or from a dev seed. Dock, then `✓ Open the bay`; the pods roll into the rack's six wells | Cargo's bay of three crates; cargo moves only on docking |
 | **Identify** | 1 Data. The seal breaks, the glyph lights; a new species learns its frame and opens its Library page | Research loop §1 |
 | **Read** | One chapter of one pod: 1 Data a trait, half (rounded up) once that chapter was read on an earlier pod of the species, the first read ever free. Pictures: shows, hides, only, asleep, breed to change, sealed. Glint per chapter; Compare free; return a pod for +1 Essence | Research loop §4, §8 |
 | **Create** | Shape each read look among three pictures from the pod's own copies, +1 Data a change; doings breed only; a shape that won't build marks its traits and withholds Grow | Research loop §5 |
 | **Grow** | 2 Energy and 4 Essence (the first founder 2 Energy). The bud takes twenty minutes plus one per shaped trait; **the first bud ever five**; **an instant grow for a price**; a founder's unread chapters clear across the wait; a full vivarium refuses before payment | Research economy §5–6 |
-| **The painting** | At Grow the genome joins the Caddy's queue. The mibi wears the placeholder until its painting lands, at the next fresh draw; offline, a cool lamp and "waiting for the cloud" | Art pipeline §1.1 |
+| **The painting** | Grow paints nothing. Every mibi is drawn from its species' pictures for its stage and, once they are painted, from trait layers that show its expressed looks. A mibi's own painting is made only at its sitting ([the portrait](the-portrait.md)) | Art pipeline §1.1 |
 | **Vivarium** | **Six bays**, the mibis with you keeping their beds. The vivarium, up close: greet, take with you or bring home, return a mibi to the wild (+2 Essence and a field-guide note) | Research economy §6 |
 | **Cross** | Two adults of one species; refusals before cost; per trait four seeds (switches) or a range picture (blends); kinship from recorded parents, penalty B with A; 2 Energy 4 Essence; the child grows in the bud and is known only where switch parents match | The cross |
 | **Library** | The tome's spread of sixteen frames; a book per species with its face, places, frame, a tab per chapter, looks found and "more?", the stamp at 120 px, a pinned wish | Style guide, Library |
-| **Sitting (stub)** | A held sitting (the welcome one, or a field guide filled); the vivarium's offer, pose, place, confirm; a crate waits in the sample bay and opens to the mibi in its standard painting in a gilt frame. No portrait is painted | The portrait §1 |
+| **Sitting (stub)** | A held sitting (the welcome one, or a field guide filled); the vivarium's offer, pose, place, confirm; a crate waits behind Cargo's bay door and opens to the mibi in a gilt frame, drawn as everywhere else from its species' picture for its stage. No portrait is painted | The portrait §1 |
 
 **Out of the first build:** ageing past adult (elders, death; a juvenile still becomes adult after two world turns, as the Companion counts); trading, the signed postmark and the card; the family tree (the Book's panel is an empty stub; only the `parents` field is built); wonders; mutation; the bench trickle and the shelves (the dev limits stand in); a returned mibi's place shedding a pod; the find that opens a sealed chapter (a dev switch opens it); the edit item; painted looks on the Companion page (it keeps species drawings); the portrait job itself.
 
@@ -93,11 +93,11 @@ The order in which the screens move to the LVGL face, and the spec file each nee
 
 | # | Screen | Built from the decided concept | Placeholder until masters |
 | --- | --- | --- | --- |
-| 1 | **Frame and Home** | Top bar, bottom line, focus ring; vivarium in the left two thirds with six bays; four modules (sample bay, rack of six wells, incubation chamber, Probe dock); the sitting slot | The current page's drawn room and modules; residents in their placeholder or painting |
+| 1 | **Frame and Home** | Top bar, bottom line, focus ring; vivarium in the left two thirds with six bays; five modules (Cargo, Pods with its six wells, Incubator, Probe, Library); the sitting slot | The current page's drawn room and modules; residents in their species' picture for their stage, the rig stand-in where none is placed |
 | 2 | **Dock and arrival** | As built: one crate at a time, ribbon, report card, the free mend | Unchanged |
 | 3 | **Pods** | List of 160 px with progress rings (centre at Identify, an arc per chapter sized by its traits, a star for a glint, a notch for sealed, no digits); the pod under the beam; the chapter rail with as many chapters as the species has; the open page of trait pictures; the stamp on its 220 px label (PV-D-r3-a4) | The pod drawn by code from the frame's four parameters and glyph; trait pictures as placeholder close-ups of this pod's mibi; the misty seed as a frosted close-up of the hidden look |
 | 4 | **Create** | Founder 300×310 centred, misty where unread; three pictures per trait as flank close-ups; "changed" tags; "breed to change"; clashes withhold Grow; one status line for what stays a surprise; the total on the bottom line (CR-C2) | The founder in the placeholder, which is decided for Create since nothing is painted before Grow |
-| 5 | **Incubator** | Dome; a glowing bean, never an embryo; a ring of leaves, one a minute; chapter tabs clearing; the stamp and code; `✓ Grow now · price`; ready with the shape glowing inside; Open; the waiting lamp (IN-D-r1-a3, IN-C1) | Dome and bean as simple drawn shapes |
+| 5 | **Incubator** | Dome; a glowing bean, never an embryo; a ring of leaves, one a minute; chapter tabs clearing; the stamp and code; `✓ Grow now · price`; ready with the shape glowing inside; Open | Dome and bean as simple drawn shapes |
 | 6 | **the vivarium, up close** | Resident 300×310; card with name, stage, species, stamp, chapters; with-you door, heart, cross mark; the strip of six bays; return to the wild with arm-then-confirm | Resident in the placeholder until its painting lands |
 | 7 | **Cross** | Parents left and right, the child misty between; their stamps on plates with shared cells lit; per trait four seeds or a range picture; refusals with the reason and no ✓ cap | No concept yet: the guide's layout; seeds as placeholder close-ups |
 | 8 | **Library spread** | Sixteen ruled frames, all at once; found plate, met pencil study, empty unmet frame with no cue; the clan's inked rule; names on caption rules (SP-P-r4-a1) | Flat paper; found plate as the species' placeholder in a ruled frame (the accepted Pip for the Loika); the study as the index pass in grey line |
@@ -133,15 +133,15 @@ CI keeps the parse check and the page smoke, and adds two things. **Unit tests**
 | 2 | Seed one Loika pod (fixed seed); Dock; `✓ Open the bay` | One crate accepted once; the pod in a well |
 | 3 | Identify; read Coat, then Face | Free, then 2 Data; a second Loika pod's Face costs 1 |
 | 4 | Shape eye rings; `✓ Grow it` | +1 Data; a bud of twenty-one minutes; a job queued under the genome's hash; the placeholder shown |
-| 5 | Instant timers; the mock paints | The painting is not drawn until a screen change, then lands; the waiting lamp goes out |
+| 5 | Instant timers; grow and open | The mibi opens at once in its species' picture for its stage; no lamp waits for a painting |
 | 6 | `✓ Open` | The mibi in a bay, fully read; the drawn stamp decodes to the genome |
 | 7 | Seed an unrelated adult Loika; Cross | Four seeds for markings and crown, a range for eye rings, drive and efficiency; kinship 0 |
 | 8 | Cross, grow, open | The `parents` field; the child known only where switch copies matched |
 | 9 | Seed siblings; open Cross | Kinship 1/4; more seeds show the hidden look; the ranges narrow |
 | 10 | Fill the bays; Grow | Refused before payment |
 | 11 | Library, Book | The Loika's found plate; looks seen; the stamp at 120 px |
-| 12 | Seed a sitting; the ceremony; deliver now | The crate in the sample bay; it opens to the gilt frame; the slot empties |
-| 13 | Stop the service; Grow; restart it | "Waiting for the cloud", then the painting lands |
+| 12 | Seed a sitting; the ceremony; deliver now | The crate behind Cargo's bay door; it opens to the gilt frame; the slot empties |
+| 13 | Stop the service; begin a sitting; restart it | The sitting's crate shows "waiting for a signal" while the Caddy is unreachable, then fills and lands |
 | All | | No page errors; the save round-trips; the placeholder's hash matches Node's for the same genome |
 
 The journey grows with each milestone, so every push to main proves the loop that is live. On the LVGL face it also runs the checks of [lvgl-switch.md §2.8](lvgl-switch.md#28-checks-against-the-lvgl-framebuffer) and each screen milestone's gate (lvgl-switch.md §4): regions, pixels, palette, type, goldens, budgets and the import guard.
@@ -154,7 +154,7 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 | --- | --- | --- |
 | **M1 Read** | Modules and the state model; frames, resolver and stamp imported; the migration; the developer panel with seeds; Pods with Identify, reads, glints, Compare, return | A pod from a walk, or a seed, identified and read chapter by chapter at the decided prices, its stamp filling, pictures of this pod's mibi in placeholder |
 | **M2 Grow** | Create, the bud (five minutes first, then twenty plus shaping, instant grow), Open, six bays, the vivarium, up close, return a mibi | The founder loop end to end in about five minutes: shape, grow, meet; the bays fill and refuse |
-| **M3 Painting** | The Caddy service on the sandbox server: queue, mock and real painter, store, daily limit, status; hand-off at Grow, polling, landing, the offline lamp; the calibration batch | A mibi opening in its placeholder and its painting landing a few minutes later; the day's calls on the status page |
+| **M3 Painting** | The Caddy service on the sandbox server: queue, mock and real painter, store, daily limit, status, and the calibration batch. Grow hands it nothing; it serves the sitting's portrait, and the offline lamp shows on the sitting's crate. Whether a portrait is painted in play is not yet designed | A sitting's crate landing after its wait; the day's calls on the status page |
 | **M4 Cross** | The Cross screen, eligibility, forecast seeds and ranges, the `parents` field, reading a child | Two Loikas crossed and a child whose hidden looks surface; siblings crossed showing the penalty |
 | **M5 Library** | The spread, the Book, looks found and "more?", the stamp at 120 px, a pinned wish | The collection as a tome, a species page filling as pods are read |
 | **M6 Sitting and the whole journey** | Home's sitting slot, the welcome sitting, the ceremony, the crate; the CI journey complete; the README | The whole loop from a walk to a sitting's crate, every step playable |
