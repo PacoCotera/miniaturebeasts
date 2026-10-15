@@ -12,7 +12,7 @@ import { mibiReq, movingProp, restOf } from "./home-props.mjs";
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;   // the residents' seed (home-props.mjs)
 import { habitsOf, placesOf } from "../state.mjs";
 import { listForm } from "../../../ui/specs/derive.mjs";
-import { plateReq, kPct } from "../stamplook.mjs";
+import { kPct } from "../stamplook.mjs";
 import { doorOpen } from "../nav.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -57,7 +57,7 @@ export function habitatBuild(m, spec, frame, home) {
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
     species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "slot", id: "mark-guide-16:16x16", master: "mark-guide-16", size: [16, 16], until: "the guide mark master (AD G1)" }) },
     story, code: codeText(shown.code),
-    stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, spec.colours.stampLabel.k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
+    stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: slot("plate-well-120x120", [120, 120], "the label's well (Habitat GB2)"), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
   };
 
   // the plates, one a chapter in ring order: read, unread (readable at home or out) or sealed
