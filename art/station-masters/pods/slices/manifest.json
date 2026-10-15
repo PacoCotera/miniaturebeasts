@@ -3662,8 +3662,8 @@
   "src": "stamp-case/make-stamp-case.py, 0 MXN",
   "made": "fix 4 stampCase: the case moulded into the sage housing, a dim well, lit top-left rim, rubber corners (stamp-case/README.md, 001bcd51); replaces the earlier grey plate case",
   "sha256": "793516357cb1670cc85cd4bb93be6c5a6c0c3f46d92d840f687883d09ab77544",
-  "status": "new",
-  "signed_in": "art director, Pods room verdict (68130857)",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "new (10-15), replaces sha256 d66b6979e11b\u2026: the art director signs in the whole-screen Pods capture"
  },
  "ring-well-empty-80x80": {
@@ -3909,8 +3909,8 @@
   "src": "stamp-case/make-stamp-case.py, 0 MXN",
   "made": "fix 4 stampCase: the case's front glass, ground #1d232b at 48 %, no sheen (pods.json stampCaseFront)",
   "sha256": "fa704f60934f6e18cb598fb391e0370da6feb09f7d7ea2597b5e4513071e3f16",
-  "status": "new",
-  "signed_in": "art director, Pods room verdict (68130857)",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "new (10-15), replaces sha256 22758728f9d6\u2026: the art director signs in the whole-screen Pods capture"
  },
  "trait-picture-frame-144x176": {
@@ -7344,8 +7344,8 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "02a01a9b237286510ab24dee35d8f8e0fe5f3d1a164365e40babcb0e251e33f1",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -7358,8 +7358,8 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "3ca8ba4a2ffb383cdaede43281fe612f5a5cec166dfc5c3a6b8f6874bbdd092b",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -7414,8 +7414,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "2d2a51a64ca9452719346c03ef41be8d144a2d0124e3f3cfa2f7ac515ac5fded",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -7428,8 +7428,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "6f6823890fb03c8c2d7639b4c5ce44736c50479e3bb7582fdb7710bcd2f73afa",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -10798,8 +10798,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sealed Cargo crate for the bay's places, 256x176: the whole sealed crate reduced uniformly into the box with 8 px clear on every side (never enlarged) (pass 122) (fringe cleaned in pass 139: 894 of 1865 edge pixels, two passes)",
   "sha256": "fe1d90c956076ff72bdb5b9f7d4c68b4ccc521e8355890745156dc2b29a0160f",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
   "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces 071a4b591c83\u2026; signed in the whole Cargo capture"
  },
  "crate-sitting-256x176": {
@@ -10811,8 +10811,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sitting Cargo crate, 256x176: the whole sealed crate (8 px clear on every side) with the tag painted out (the handle part from its mirror image) and a small matte brass plate (gold frame, a panel inside, 48x32, lit from the top left) on the lid instead; replaces the old teal crate-sitting-80x56 look (pass 122) (fringe cleaned in pass 139: 894 of 1865 edge pixels, two passes)",
   "sha256": "c038db37c311c8919064407959383439a2c6c64086cea1da4b4adc2b77b9fd6e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
   "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces a83fbf87442b\u2026; signed in the whole Cargo capture"
  },
  "crate-open-432x272": {
@@ -10824,8 +10824,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale) (pass 122) (fringe cleaned in pass 139: 987 of 2199 edge pixels, two passes)",
   "sha256": "e2149ccb7c106fa6f0214fc4b1ae4d3c635a78738407acd32b19f0f511e9d5cc",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
   "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces f2db8bbbb51a\u2026; signed in the whole Cargo capture"
  },
  "crate-sealed-432x272": {
@@ -10837,8 +10837,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel (pass 122) (fringe cleaned in pass 139: 1895 of 3461 edge pixels, two passes)",
   "sha256": "6b0c821533733378aaa997781a78db74179dd9144c6e9c227946c55ba24fc53e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
   "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces 9ab374686299\u2026; signed in the whole Cargo capture"
  },
  "crate-opening-432x272": {
@@ -10850,8 +10850,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122) (fringe cleaned in pass 139: 2238 of 3472 edge pixels, two passes)",
   "sha256": "5094478bd4d60c8788c023417ef51baf3c7051a769c21e0ee78b958a23b31853",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
   "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces 3bfd530cd7d3\u2026; signed in the whole Cargo capture"
  },
  "cargo-energy-48x64": {
@@ -10943,8 +10943,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "138004f9b13521b9cdaff2301e8c37130f9b11aa533ed1ca9f928a67d8726ade",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 21 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -10957,8 +10957,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "45a95fa1405e5cb6ae172fc4593c93ccc6eb4ccb0d38ae9c2332e6fcbb926624",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -10971,8 +10971,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "6030c383038548bb6b90409e85f8ad5ae285557dea414c7ba529f1c8fc005409",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11040,8 +11040,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "962b4b9443832d558ea7999ab814c06048a9e6348e1a0b05c9aafe98fb075d49",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-thin-rings-104x160": {
@@ -11053,8 +11053,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "38f08c44ae9f368036685f16d73ec9fa06efd6c6f6cf22fb71436f52e9438385",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-thin-rings-104x96": {
@@ -11066,8 +11066,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "0a5a052849be4ac20a04243ca528b5bfdc8edb05b26b41b7d1257c411dfd032e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-thin-rings-104x64": {
@@ -11118,8 +11118,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "a065d9d4949ffe64efc127bf0b420ac6a1a9c74ddebf4609b76dbf826386c558",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-104x160": {
@@ -11131,8 +11131,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "bddfd98922a3bd466de1184996f3c401979275bd17381a3e6a03073d9b50a6bc",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-104x96": {
@@ -11144,8 +11144,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "b35deb3ac9ec5823cb0a316737990f2894e82eb4110aca93ddc8d0ea8da41937",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-104x64": {
@@ -11196,8 +11196,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "dacd6adfb8af320c643a76f5d21c721aa7053da22cd8ba4b4e89920694871a37",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-wide-pale-rings-104x160": {
@@ -11209,8 +11209,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "a7bc217a3b7db6a9931153e8cfce0b7378e4b8be0ce9d11132d09953620da44e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-wide-pale-rings-104x96": {
@@ -11222,8 +11222,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "e06c2896d81acd5c1a57566d0b85b4cd51425f8995293687d511e974452dffdf",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11290,8 +11290,8 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "bbee805379cf21d613fb86d3c9eb59fecf21ca37efa79acdc12d0ac7ed4c470e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11304,8 +11304,8 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "54a974d0c2b16aeeba3d8a2657457a9c084e5c6e64c152ec45cd412f4ecef32c",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 13 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11318,8 +11318,8 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "776b528932295b42c911d8714caf8d84591dc11905729cef6dc98c541fc54656",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 12 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11374,8 +11374,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "f470f0a8060ee8632df53866d620de65740c2954c104f54b43324a048ed07b6e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 127 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11388,8 +11388,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "acde09476b98a05352fb40c3cdc15f48292f373cdeef5292a5e1fe1b4cde6d87",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 95 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11402,8 +11402,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "43ab53eeea46be8ac529abeda15abc4b8a47fe4881bfdc74cda20dff74ca9ee4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 59 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11458,8 +11458,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "f244595ea2e28971116b2d50da3d1a9c617d177961bd2791ae13dfd26aff8d55",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 119 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11472,8 +11472,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "b27769c9ae01fffbfb21a3bc254821425250a6956ee1fc1b5938899f90f31f64",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 87 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11486,8 +11486,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "ad769fe98d9d682c8badba474af1632c121207517709b4479236339086c647ee",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 82 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11542,8 +11542,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "3e53ece1f3dcb98f426fc8429dfb1747ec8dbc1ff831729b1bf1f77a10a91797",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 132 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11556,8 +11556,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "bbbb75a15697d1403f7b0cdfed70d33551259d21920ef4e98695f75a1e4559cc",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 103 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11570,8 +11570,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "c77a1671ab3fcbbadfea1c2830b393acb3a8f52cb37c6503e98f9792e4c24a8f",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 78 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11626,8 +11626,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "dd2a426c07813bf18a2d7b4d4eb767855a89b93a4f257856816745587e74d017",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 139 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11640,8 +11640,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "ae80fd0ea37d899ed175ddb67be132355a9415de3c9e2bca72c00387f628921b",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 115 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11654,8 +11654,8 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "b90924cb579700d5ff44a57c5c62ab09aa0e8f35958cead39400578fcf30892b",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 76 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11710,8 +11710,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "c4130b3d5e061e64969e7b5e3c9d70e1df36f4c09375042d62289b24c56a28b4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 35 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11724,8 +11724,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "c1b793034554183e3b59253039d5469e5353825d973e39894d9c537dead4d902",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11738,8 +11738,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "9d33a275160af8c5a6938115ffd2f8373c515578c41ef55f5efeca833638b4d8",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 29 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11794,8 +11794,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "ea59ad2de5dce960af5299dc105e817fe1e9538e263074b09d149529d098c666",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 61 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11808,8 +11808,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "14aa7f27d44625d253cba1dc56ba162bbbd2fd4ddde24aee04f609fab9267c22",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 51 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11822,8 +11822,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "bdcc036e1a9e964ed7f14facdc50d921fde3e710cc7e6abc932ec28aa4217027",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 32 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11878,8 +11878,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "dc0575d6adc9bfe453da6090481e3feaa1d920dd8bd79be3858171f6b8d088c3",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 72 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11892,8 +11892,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "5fce1bc4a08c529231b7d7732aa45c1424aa95cd74157efc39d18730494ede56",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 65 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11906,8 +11906,8 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "25521db2e3c97c44584817809e02bbf814aeca82b35861a830d98ea1a3cade4a",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 34 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11962,8 +11962,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "ff3f9c020837758c8f5e8fc0d297cb24922bad301b31494beeb50ecdc7e3e855",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 27 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11976,8 +11976,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "ceae60a7978fcd5090cf3555e31ed6e2d634f162f8c698902783fec7081a5cf4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 14 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11990,8 +11990,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "e96258d803f4bbdf2df22992f886510ee4c61f7acd1f48e5f2903fa9d18fafb9",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12046,8 +12046,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "d2cecc7c8a0d6a9212880badf4d6b473c48a940b1e3f0c920d8d8906a606eec8",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12060,8 +12060,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "076d2eb1704689f0c009a3e9d49d1c304a9c77a0566a6e46bfb84f94cde0f2e5",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 15 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12074,8 +12074,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "ae8bb7cd099a9864bbcc069216105d5b04ad2148015fc99062a94b6fdfcb63cd",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 2 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12130,8 +12130,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "1885871e33cac541c6686cc5c073037f409f429e2448fc8e2bdb03c3081f8aa5",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 16 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12144,8 +12144,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "37a914752de04df018020101545ce1af4057e7b12bf78f6c420771f3cdce44b6",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12158,8 +12158,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "d0fa6463f077b84c6f0a3cd20ceffc130e00b1c41a0c0b10b76766af2b82b737",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12214,8 +12214,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "efbee845c6e205815ad6a8b4ad5e4466c995b22c78ab6038d1c180e9183e10a7",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 12 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12228,8 +12228,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "529a4f15e414e8fe4ff8429acc611bfdd730aa5e48b535918d411793f9886219",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12242,8 +12242,8 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "54aa40c58e308b61156a222c08f162acebd9cc331ed9483d4eb62f58abcaebb3",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12298,8 +12298,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "0ccb696c472f13b9bdeee73ee378e6eb70bea8488fc99870de58123d6ca5fbf1",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12312,8 +12312,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "f64bcb5e1705f9f0b2087fe1cb72fe931f5808e31ebacfcc6a5c39b6c882f5da",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12326,8 +12326,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "34c890d4c7931f2daaa7ca05d781e3f087c601f2c61d27aac92a4b92a51c174a",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12382,8 +12382,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "dca807c04c0662fc4b20ba92a82455d570d66c927d843bbdab6c47155ed16368",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12396,8 +12396,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "e90d91715f1a05febdc72b3635c43a9398994a75cf729f55246584063625b755",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12410,8 +12410,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "01191207fedbcf56daa160458e97952b8db563c6715c0d91bc2169be0313b495",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12466,8 +12466,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "6463c5553d90daa61d6f70df700a193af574628a3b40a94cde867a5fe2577014",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12480,8 +12480,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "eb8a2b8bfa68f397889087ce1a5acf0809278ca431e6550ec3fc44a960c3fd28",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12494,8 +12494,8 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "2b48f65682e375b49d5387231983247ec96c9ebcc2f231cfd368815ad35c1ab8",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 20 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12549,8 +12549,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "9e54a9a8e05a5762c88ccf4be2de16b62e25fe789361d940249901313a4248bf",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12563,8 +12563,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "68387169f39d54a3c1a6998ed630c6976f9f9ab8279e0cabfb438a5e95db0a8b",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-short-thin-104x96": {
@@ -12576,8 +12576,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "76a262936167ffa7ade8fbcfd9a032622e2e44129150542cfbc9cadc58606969",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-short-thin-104x64": {
@@ -12628,8 +12628,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "6b8e8ffba2a5e5d0e56fb59c82eba9dd26fa2f5d931370676f99f87ec65dc362",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-between-104x160": {
@@ -12641,8 +12641,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "33c67331150ef9e924781741ac6d794b29e660e4abbd510c778a899b662129de",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-between-104x96": {
@@ -12654,8 +12654,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "42a2c88d5d38653a54d1a919a1217de63cb50b1fc495a642d8a4a5cb46484d29",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-between-104x64": {
@@ -12706,8 +12706,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "c1bad8ef1d3c178588c82eb8a28a42a6c24b24f3dfbc6637edb3c6b117e491b5",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-long-thick-104x160": {
@@ -12719,8 +12719,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "28ff16cf2b7439bcaf5d0a18c5b222e4854f162b882872192f270e41a96cc807",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-long-thick-104x96": {
@@ -12732,8 +12732,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "0f9c73ac0ceef1fa23397ea00aa4d3a309a09bf0eb0b8389a4cf6623447cefd4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-tail-long-thick-104x64": {
@@ -12784,8 +12784,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "c71b9d3decb4080ba20ebe959ae98191d5eaa7510b408db48a0ad13f98a3eabb",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-hangs-104x160": {
@@ -12797,8 +12797,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "0a41f8595e67bde8357a567ed61c491463a47bfb68165a4b30f78f3fdd79ca54",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-hangs-104x96": {
@@ -12810,8 +12810,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "4e0acfd56beb5679c63b57ed5769dd769e67dcadeeb6d2e252cc81c83193cd56",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-hangs-104x64": {
@@ -12862,8 +12862,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "273b1607c4b7400afea0bb332441657ecfae2920bb55e62f6765825059b257b7",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-straight-104x160": {
@@ -12875,8 +12875,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "d159f94b3dff2a8fb1341c6d715c5b610896cdbcd2bab88772fc04b45d6a5ca0",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-straight-104x96": {
@@ -12888,8 +12888,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "975038f5af361442193ff8710597e682d6a6196be4fe6b2d1c6de96c71b64c68",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-straight-104x64": {
@@ -12941,8 +12941,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "cafabbc8b48907a5c06a95c849badb54182e64f15c0a90aa606bfaccb43a92cc",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 1 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -12955,8 +12955,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "c0e1fe2b919278d45a9f29b2f40e83065e804d2d33b8be395a4e2d21ed281fa6",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-curls-up-104x96": {
@@ -12968,8 +12968,8 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "85dcc255712b72755665f37f5299a60ea81aa06ec499ed2af11a78ab2cf8dbd4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S03-carriage-curls-up-104x64": {
@@ -13022,7 +13022,7 @@
   "sha256": "078775db23d4e03edc7669cf98ab8de9b4a1a9366a553c711a88729cb13b768d",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-round-feet-104x160": {
   "size": [
@@ -13035,7 +13035,7 @@
   "sha256": "71f39fb48bb2edda18f500f7b6c638bbc9e51a1ed8eaa2429020af84c67ee78b",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-round-feet-104x96": {
   "size": [
@@ -13048,7 +13048,7 @@
   "sha256": "80126cf32f9ff013eba07bb862345c24893df3bd9a20980e67bf1ba06ec9e8bf",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-round-feet-104x64": {
   "size": [
@@ -13100,7 +13100,7 @@
   "sha256": "515d2dc650092e22222ea4fd72c7c733215b4df41e94d11c8b9758062b5ce248",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-pads-104x160": {
   "size": [
@@ -13113,7 +13113,7 @@
   "sha256": "b7971035aedb8a896ab3b6bfd0001e1210bfee917c467b31a8656a3c70ca8533",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-pads-104x96": {
   "size": [
@@ -13126,7 +13126,7 @@
   "sha256": "be3ef9792f56c8280b356aed7dcd75ad48e7e7f1fd654d840e0a81b798c48ee6",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-pads-104x64": {
   "size": [
@@ -13178,7 +13178,7 @@
   "sha256": "cce67fac57fe49b071734705971678cd3e7c9dfb9afad99efd9532708ef74109",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-digging-wedges-104x160": {
   "size": [
@@ -13191,7 +13191,7 @@
   "sha256": "16da24b3e30b8f0b815201ae8830dc21f1afa8dbc4104ae4952decd8d1373755",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-digging-wedges-104x96": {
   "size": [
@@ -13204,7 +13204,7 @@
   "sha256": "30d1c713ecad64b6ffb2a3eddbe4e539223847309894274f30ae1f287f9c947c",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-claws-digging-wedges-104x64": {
   "size": [
@@ -13256,7 +13256,7 @@
   "sha256": "98e365e34de411d72fe3f9cbf648f4f244275178ae97dbec675868bdbd553701",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-few-fine-104x160": {
   "size": [
@@ -13269,7 +13269,7 @@
   "sha256": "d804490708314ceb6036033e158511ebfa44f9d5b46f80c3b670c48591592f99",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-few-fine-104x96": {
   "size": [
@@ -13282,7 +13282,7 @@
   "sha256": "d37b081190c5fa418276626e3d4dade84e4cd4d743ad7a0222e7e65702b8fb5f",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-few-fine-104x64": {
   "size": [
@@ -13334,7 +13334,7 @@
   "sha256": "b4a1aaf6459159f88c891ab9c85147ecf04cf4c9315e95b9bcd89cc71a041b80",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-between-104x160": {
   "size": [
@@ -13347,7 +13347,7 @@
   "sha256": "f73a6360ebaa43b87ecd39d5485dc938c4581ae490910176871be09a0ea81a66",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-between-104x96": {
   "size": [
@@ -13360,7 +13360,7 @@
   "sha256": "61fb78635421ce6219c46a1f44fd096bdab980ee65412270b5e838b608fa8ea8",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-between-104x64": {
   "size": [
@@ -13412,7 +13412,7 @@
   "sha256": "7ae760f0b07f4b3c239a456ed60e32833e2142493b7bbea158edd16a9152385d",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-many-coarse-104x160": {
   "size": [
@@ -13425,7 +13425,7 @@
   "sha256": "93e0aa6ec8c5aa48ad01f0a703e30a0991508d95bbd4b3bfa576e34725a5b817",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-many-coarse-104x96": {
   "size": [
@@ -13438,7 +13438,7 @@
   "sha256": "440defcf10d2b89f4799998bc666e43686efd2b04533a164727f03a9c5858084",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "held (2026-10-15 05:00): the art director did not sign it in the Pods captures; residue at 1x (the scales crops: blocky grey squares in the pale fur; the claws crops: a grey dotted halo round the leg's highlight); a clean recut is owed"
  },
  "trait-S03-scales-many-coarse-104x64": {
   "size": [
@@ -13489,8 +13489,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "109d98717793ec33410860ed910613b7893718f90ef813c6934de624f749799d",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 29 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13503,8 +13503,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "db46a630bd92407aaf80183438cde1a11242243a6423cdd49349c867473ac6f9",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 27 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13517,8 +13517,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "32be711eac36f81816c34cf81a1a411aef9a4bbf7409963edc93d58e3da1153c",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13573,8 +13573,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "c995ce3ea306f9fdb1e6d745081923ad7bf62920447a2f131103e5a316dee715",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13587,8 +13587,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "43f82dc59ac69aa973fe12dfe15f76605ee4e45ea4d1f866d79146e2cdbfe288",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 28 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13601,8 +13601,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "77025420c95f92657f853b2e68f4629590b5b981916955aa0967d51d1e48313a",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13657,8 +13657,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "dcc6a46ed8ab0e144688f6467fa5a459a99169d8e3e45ed8ff168fd01e2c5076",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 30 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13671,8 +13671,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "cae6ef6045841a6224a804a3c4f25863cb10b07d22d48d74e968df93db85362f",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 25 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13685,8 +13685,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "b2807da8bca73e022c0292abe8daf100b6f69871fb01d042cb892bcd2700aed3",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 23 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13741,8 +13741,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "4b152befaf6d1e2110a4800fda5014a2056431e0ad82e987070a83dc3b3ccbf4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 58 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13755,8 +13755,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "76c5b6f751771b299594bd260de388a974016a71e13c5b3e9861204ef67b4698",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 38 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -13769,8 +13769,8 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "8f579515f961f84af542abdb32eb52c6f908ea542d9548d88846166a8773f9c4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte",
   "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)",
   "defringed": "magenta key residue removed, 33 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -14720,8 +14720,9 @@
   "src": "cut by hand (halo-empty/make-halo-empty.py) from the signed halo set's mist colour, 0 MXN",
   "made": "fix 5 Pods P-A3: the empty halo before Identify, the halo's soft mist alone in one quiet upright oval (alpha at most 50, against the figures' 107-115), no silhouette",
   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
-  "status": "new",
-  "status_note": "new: the art director signs in the whole-screen Pods overview capture"
+  "status": "signed",
+  "status_note": "new: the art director signs in the whole-screen Pods overview capture",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte"
  },
  "trait-S01-drive-128x160": {
   "size": [
@@ -14732,8 +14733,9 @@
   "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-air-304x312, one scale for both plates, 0 MXN",
   "made": "fix 5 Pods P-A4: the doing-trait plate for Drive (Movement): Pip mid-hop, grounded on its own shadow at row 152, transparent around; no look suffix",
   "sha256": "c5302efbc3e91026b845aaaa9fc871e2fa1d1ae17ff11ab5f8cfdcc6c709d479",
-  "status": "new",
-  "status_note": "new: signed in the whole-screen Pods chapter capture"
+  "status": "signed",
+  "status_note": "new: signed in the whole-screen Pods chapter capture",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte"
  },
  "trait-S01-efficiency-128x160": {
   "size": [
@@ -14744,8 +14746,9 @@
   "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-curl-304x312, one scale for both plates, 0 MXN",
   "made": "fix 5 Pods P-A4: the doing-trait plate for Efficiency (Stamina): Pip curled to sleep, grounded on its own shadow at row 152, transparent around; no look suffix",
   "sha256": "ff10c5e59b5761212ec2f7135db7227939b48b97921c3b66906fe24373170cc0",
-  "status": "new",
-  "status_note": "new: signed in the whole-screen Pods chapter capture"
+  "status": "signed",
+  "status_note": "new: signed in the whole-screen Pods chapter capture",
+  "signed_in": "art director at 1x, 2026-10-15 05:00: the fix 4 + fix 5 Pods captures (public station-fix4-fix5-pods 265fa6d4, face/golden/pods and station/img), placed byte for byte"
  },
  "leaf-empty-outline-16x20": {
   "size": [
