@@ -6,6 +6,7 @@ import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";
 import { registerAsset, asset, dropAsset } from "../../ui/assets.mjs";
 import { beamArt } from "../src/art.mjs";
+import { dimRGBA, dimPicture, labelPlate, WARM } from "../src/stamplook.mjs";
 
 test("a palette buffer is RGBA: its colours from the palette, opaque, a clear cell 0,0,0,0", () => {
   const pb = new PB(3, 1); pb.set(1, 0, C.amber); const d = pb.rgba();
@@ -65,4 +66,39 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
   for (const c of cellsOf("S05", "juvenile", "nap", 96, 88)) placeMaster({ id: c.master, w: 96, h: 88, file: c.master + ".png", hash: "0".repeat(64), signed: "test", status: "master" }, coded(96, 88));
   assert.equal(atlasIsMaster(id), true, "every nap cell placed: the nap atlas is a master"); assert.equal(playable("S05", "juvenile"), false, "the set plays only when every atlas is");
   assert.throws(() => compose(id, src, [{ layer: "x" }]), /layers are composed in the bake slot/);
+});
+
+// ---- fix 4: the stamp's look (stampCase), the art director's formula (masters-pods 001bcd51 make-stamp-case.py): the label's pixels multiplied in linear light by K × WARM, a 1 px hairline edge, alpha kept ----
+test("the stamp label is the stamp's pixels × K × (1.00, 0.93, 0.80) in linear light, an edge of the hairline all round on the plate, alpha kept", () => {
+  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }, srgb = (l) => Math.max(0, Math.min(255, (l <= 0.0031308 ? l * 12.92 : 1.055 * l ** (1 / 2.4) - 0.055) * 255));
+  assert.deepEqual(WARM, [1.0, 0.93, 0.80]);
+  const src = Uint8ClampedArray.from([241, 235, 223, 255, 141, 138, 166, 255, 0, 0, 0, 0, 255, 255, 255, 128]);
+  for (const k of [0.2, 0.75]) { const d = dimRGBA(src, k); for (let i = 0; i < 4; i++) { for (let c = 0; c < 3; c++) assert.equal(d[i * 4 + c], Math.round(srgb(lin(src[i * 4 + c]) * k * WARM[c]))); assert.equal(d[i * 4 + 3], src[i * 4 + 3], "alpha is kept"); } }
+  const bone = RGB[C.bone], hair = RGB[C.hairline], p = labelPlate(120, bone, hair, 0.2), a = p.rgba(), at = (x, y) => [...a.slice((y * 120 + x) * 4, (y * 120 + x) * 4 + 4)];
+  assert.deepEqual([p.w, p.h], [120, 120]); for (const [x, y] of [[0, 0], [119, 0], [0, 119], [119, 119], [60, 0], [0, 60], [119, 60], [60, 119]]) assert.deepEqual(at(x, y), [...hair, 255], `the edge at ${x},${y}`);
+  assert.deepEqual(at(1, 1), [...dimRGBA(Uint8ClampedArray.from([...bone, 255]), 0.2)], "inside the edge: the plate dimmed"); assert.deepEqual(at(60, 60), at(1, 1));
+  assert.ok(at(60, 60)[0] < 130 && at(60, 60)[2] < 110, "a dim plate: " + at(60, 60)); assert.ok(at(60, 60)[0] > at(60, 60)[2]);
+  const pic = dimPicture({ w: 1, h: 1, rgba: () => Uint8ClampedArray.from([200, 100, 50, 255]) }, 0.75); assert.deepEqual([pic.w, pic.h, pic.rgba().length], [1, 1, 4]);
+});
+
+// ---- fix 4: the stamp label never out-shines the specimen, measured on the goldens at 1× (the art director's luminance rule, masters-pods stamp-case/make-stamp-case.py) ----
+import { decodePNG } from "../../ui/png.mjs";
+const goldenPng = (rel) => decodePNG(readFileSync(new URL("../../face/golden/" + rel, import.meta.url)));
+const lin01 = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const lumOf = (img, [x, y, w, h]) => { const out = []; for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) { const k = (j * img.width + i) * 4; out.push(0.2126 * lin01(img.data[k]) + 0.7152 * lin01(img.data[k + 1]) + 0.0722 * lin01(img.data[k + 2])); } return out; };
+const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
+const pct = (a, p) => { const s = [...a].sort((u, v) => u - v), r = (s.length - 1) * (p / 100), lo = Math.floor(r), hi = Math.ceil(r); return s[lo] + (s[hi] - s[lo]) * (r - lo); };   // linear interpolation, as numpy.percentile
+const srgbMean = (img, [x, y, w, h]) => { let t = 0; for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) { const k = (j * img.width + i) * 4; t += img.data[k] + img.data[k + 1] + img.data[k + 2]; } return t / (w * h * 3); };
+const LABELS = {   // screen: [golden, the label's rect, the main object's rect (the pod, the founder, the bud, the resident), the stamp's case on it]
+  pods: ["pods/pods-overview-identified-pod-focused.png", [804, 400, 120, 120], [184, 216, 144, 176]],
+  create: ["create/create-shape.png", [804, 400, 120, 120], [360, 240, 304, 312]],
+  incubator: ["incubator/incubator-growing.png", [804, 256, 120, 120], [448, 264, 128, 160]],
+  habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],
+};
+for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the stamp label on ${screen} is dimmer than the specimen: mean and 95th percentile of linear luminance under the main object's, cell contrast at least 4.11, sRGB mean at most 111 (against the 115 cap)`, () => {
+  const img = goldenPng(file), L = lumOf(img, label), M = lumOf(img, main), inner = lumOf(img, [label[0] + 8, label[1] + 8, 104, 104]);
+  assert.ok(mean(L) < mean(M), `${screen}: label mean ${mean(L).toFixed(3)} is not under the main object's ${mean(M).toFixed(3)}`);
+  assert.ok(pct(L, 95) < pct(M, 95), `${screen}: label p95 ${pct(L, 95).toFixed(3)} is not under the main object's ${pct(M, 95).toFixed(3)}`);
+  const contrast = (pct(inner, 95) + 0.05) / (pct(inner, 5) + 0.05); assert.ok(contrast >= 4.11, `${screen}: the stamp's cells read at ${contrast.toFixed(2)}, under 4.11`);
+  assert.ok(srgbMean(img, label) <= 111, `${screen}: the label's sRGB mean ${srgbMean(img, label).toFixed(1)} is over 111 (the cap is 115)`);
 });
