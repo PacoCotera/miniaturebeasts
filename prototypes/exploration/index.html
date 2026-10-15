@@ -270,7 +270,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, quarterFar, coverQ, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
@@ -3468,9 +3468,9 @@ function veilEdgeTile(pbKey, pb, L, mask) {
     const b = BAYER[(y & 3) * 4 + (x & 3)]; u[o] = pk(f[o] > (b + .5) / 16 ? (b < 4 ? C.night : DARK[c]) : c); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
-// At 48 px the veil and fog edges are drawn in quarters (24 px): quarterFar gives each tile's four quarters from its far bit and its 8 neighbours, and a
-// pixel takes the far side by coverQ, the 5 × 5 samples (±12 px) over the quarter and its 8 neighbours. Bit 8 of a quarter's mask is its own state, bits 0–7 its
-// neighbours (N, NE, E, SE, S, SW, W, NW).
+// At 48 px the veil and fog edges are drawn in eighths (12 px): eighthGrid opens the per-tile rule by a disc of 2 tiles (cut-only), and a pixel takes the far
+// side by coverE, the 5 × 5 samples (±6 px) over its eighth and the 8 around it. Bit 8 of an eighth's mask is its own state, bits 0–7 its neighbours (N, NE, E,
+// SE, S, SW, W, NW).
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
 // A 48 px edge canvas: each opaque pixel through near(c, x, y) or far(c, x, y), by the coverage of mask m9 (or by pick for the storm step).
 function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; let cv = EDGE_TILE.get(k); if (cv) return cv;
@@ -3522,13 +3522,19 @@ function drawPatch(t) {
   // unveiled, per tile, read once per frame (off the place counts as unveiled, so edges never fade into the border)
   const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= PW || y >= PH) return true; const k = y * PW + x; let v = uvGrid.get(k); if (v === undefined) { v = shown(x, y); uvGrid.set(k, v); } return v; };
   const lvGrid = new Map(), lvAt = (x, y) => { const k = (y + 2) * 64 + x + 2; let v = lvGrid.get(k); if (v === undefined) { v = lightAt(x, y); lvGrid.set(k, v); } return v; };
-  // quarter grids (48 px only): for a tile, the 9-bit masks of its four quarters (nw, ne, sw, se). Drawing only: built from the rule's per-tile result, never fed back.
-  const quarterGrid = farT => { const tiles = new Map(), bits = (x, y) => { const k = (y + 2) * 64 + x + 2; let q = tiles.get(k);
-      if (q === undefined) { let m8 = 0; NB9.forEach(([dx, dy], b) => { if (farT(x + dx, y + dy)) m8 |= 1 << b; }); q = quarterFar(farT(x, y) ? 1 : 0, m8); tiles.set(k, q); } return q; },
-      qf = (gx, gy) => (bits(gx >> 1, gy >> 1) >> (((gy & 1) << 1) | (gx & 1))) & 1;
-    return (tx, ty) => { const ms = []; for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) { const gx = 2 * tx + i, gy = 2 * ty + j; let m = qf(gx, gy) ? 256 : 0;
-      NB9.forEach(([dx, dy], b) => { if (qf(gx + dx, gy + dy)) m |= 1 << b; }); ms.push(m); } return ms; }; };
-  const fogQ = ts === 48 && fogged ? quarterGrid((x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y)) : null, veilQ = ts === 48 ? quarterGrid((x, y) => !uvAt(x, y)) : null;
+  // eighth grids (48 px only): the place's tile far bits opened by eighthGrid, rebuilt only when the bits change, kept on the layout. Drawing only: built from
+  // the rule's per-tile result, never fed back. For a tile, blockE gives its edge canvas key and the 16 masks of its eighths, or null when its 6 × 6 block is all near or all far.
+  const eighths = (which, farT) => { const bits = new Uint8Array(PW * PH); for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) bits[y * PW + x] = farT(x, y) ? 1 : 0;
+    const kept = lay.eg || (lay.eg = {}), e = kept[which]; if (e && e.bits.every((v, k) => v === bits[k])) return e.grid;
+    const grid = eighthGrid(bits, PW, PH); kept[which] = { bits, grid }; return grid; };
+  const blockE = (grid, tx, ty) => { const EW = 4 * PW, EH = 4 * PH, b = new Uint8Array(36); let ones = 0, own = 0, ring = 0, no = 0, nr = 0;
+    for (let j = 0; j < 6; j++) for (let i = 0; i < 6; i++) { const ex = 4 * tx - 1 + i, ey = 4 * ty - 1 + j, v = ex >= 0 && ey >= 0 && ex < EW && ey < EH ? grid[ey * EW + ex] : 0; b[j * 6 + i] = v; ones += v;
+      if (i >= 1 && i <= 4 && j >= 1 && j <= 4) own |= v << no++; else ring |= v << nr++; }
+    if (ones === 0 || ones === 36) return null;
+    const ms = []; for (let j = 1; j <= 4; j++) for (let i = 1; i <= 4; i++) { let m = b[j * 6 + i] ? 256 : 0; NB9.forEach(([dx, dy], k) => { if (b[(j + dy) * 6 + i + dx]) m |= 1 << k; }); ms.push(m); }
+    return { key: own.toString(36) + '.' + ring.toString(36), ms }; };
+  const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
+  const fogE = ts === 48 && fogged ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= PW || ty >= PH) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * PW + tx, L = lvAt(tx, ty);
@@ -3539,14 +3545,13 @@ function drawPatch(t) {
       continue; }
     const L0 = tileLight(tx, ty), i = ty * PW + tx, uv = uvAt(tx, ty);
     if (ts === 48) {   // coverage fades for the fog and the veil, the 6 px storm step beside the band
-      const pb = tileFor(i), key = keyFor(i), set = RT.remap, edgeQ = ms => !(ms.every(m => m === 0) || ms.every(m => m === 511)),
-        pickQ = ms => { const cq = ms.map(coverQ); return (x, y) => cq[(y >= 24 ? 2 : 0) + (x >= 24 ? 1 : 0)][(y % 24) * 24 + x % 24]; };
-      if (fogged) { const fm = fogQ(tx, ty);
-        if (edgeQ(fm)) { const nl = clearLight(tx, ty), f = pickQ(fm);
-          g.drawImage(edge48('F' + key + '|' + fm.join(',') + '|' + nl + (uv ? '' : 'v'), pb, f, (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
-      if (L0 !== 3) { const vm = veilQ(tx, ty);
-        if (edgeQ(vm)) { const f = pickQ(vm), lut = set[L0];
-          g.drawImage(edge48('V' + key + '|' + vm.join(',') + '|' + L0, pb, f, c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y)), W(tx * ts), H(ty * ts)); continue; } }
+      const pb = tileFor(i), key = keyFor(i), set = RT.remap;
+      if (fogged) { const fb = blockE(fogE, tx, ty);
+        if (fb) { const nl = clearLight(tx, ty), f = pickE(fb.ms);
+          g.drawImage(edge48('F' + key + '|' + fb.key + '|' + nl + (uv ? '' : 'v'), pb, f, (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
+      if (L0 !== 3) { const vb = blockE(veilE, tx, ty);
+        if (vb) { const f = pickE(vb.ms), lut = set[L0];
+          g.drawImage(edge48('V' + key + '|' + vb.key + '|' + L0, pb, f, c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y)), W(tx * ts), H(ty * ts)); continue; } }
       if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
         if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => stormStep(side === 'W' ? x : 47 - x, x, y),
           (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }

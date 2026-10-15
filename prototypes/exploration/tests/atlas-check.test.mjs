@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
 import { check, decodePNG, pageRGB, pageTables } from "../tools/atlas-check.mjs";
-import { decodeExact, paletteTable, overrideCounts, PLACE_OVERRIDES, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
 
 const CRC = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc = b => { let c = 0xffffffff; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
@@ -286,9 +286,16 @@ test("overrides: a core entry's name, hex, dark, light or dark2 differing is sti
     assert.match(t.errors.join(";"), new RegExp("entry 9: " + f), f + ": named in the refusal");
   }
 });
-test("overrides: storm defaults to dark everywhere; given, it is checked like any table and taken by placeStorm alone", () => {
+test("overrides: storm defaults to dark, and to dark2 on a mat grass entry; given, it wins, is checked like any table and taken by placeStorm alone", () => {
   const t = paletteTable(RGB, TABLES, PAL);
-  assert.deepEqual(t.placeStorm, t.dark, "no storm field: the storm's table is dark");
+  assert.deepEqual(t.placeStorm, t.dark, "no storm field and no grass: the storm's table is dark");
+  const g = paletteTable(RGB, TABLES, { biome: "meadow", entries: PAL.entries.map(e => e.i === 9 || e.i === 49 ? Object.assign({}, e, { mat: "grass" }) : e.i === 50 ? Object.assign({}, e, { mat: "grass", storm: 51 }) : e) });
+  assert.equal(g.errors, undefined, String(g.errors));
+  assert.equal(g.placeStorm[9], TABLES.dark2[9], "a grass entry of the core takes dark2"); assert.equal(g.placeStorm[49], PAL.entries[49].dark2, "a grass entry of the biome takes dark2");
+  assert.equal(g.placeStorm[50], 51, "an explicit storm wins over grass"); assert.equal(g.placeStorm[8], TABLES.dark[8], "a non-grass entry keeps dark");
+  assert.equal(g.dark[9], TABLES.dark[9], "dark itself stays"); assert.deepEqual(stormOnGrass(g, 48), { dark2: 2, core: 1, biome: 1, explicit: 1 });
+  assert.deepEqual(stormOnGrass(t, 48), { dark2: 0, core: 0, biome: 0, explicit: 0 });
+  assert.equal(overrideCounts(g, TABLES).storm, TABLES.dark2[9] !== TABLES.dark[9] ? 1 : 0, "a grass core entry counts as a storm override when its dark2 differs from its dark");
   assert.deepEqual(t.placeFog, t.fog); assert.deepEqual(t.placeFade, t.fade);
   assert.equal(t.storm, undefined, "no core-true storm table: the core's storm is its dark");
   const s = paletteTable(RGB, TABLES, edit(49, { storm: 51 })); assert.equal(s.errors, undefined, String(s.errors));
@@ -298,6 +305,9 @@ test("overrides: storm defaults to dark everywhere; given, it is checked like an
 });
 test("overrides: atlas-check prints the counts per field, and passes", () => {
   const z = runPal(); assert.match(z.out, /^place overrides of the core 48: fog 0, fade 0, storm 0$/m);
+  assert.match(z.out, /^storm on grass: dark2 on 0 entries \(core 0, biome 0\); explicit storm: 0$/m);
+  const gz = runPal({ pal: { biome: "meadow", entries: PAL.entries.map(e => e.i === 9 || e.i === 14 ? Object.assign({}, e, { mat: "grass" }) : e.i === 49 ? Object.assign({}, e, { mat: "grass" }) : e) } });
+  assert.equal(gz.refused, 0, gz.out); assert.match(gz.out, /^place overrides of the core 48: fog 0, fade 0, storm (\d)$/m); assert.match(gz.out, /^storm on grass: dark2 on 3 entries \(core 2, biome 1\); explicit storm: 0$/m);
   const pal = { biome: "meadow", entries: PAL.entries.map(e => e.i === 2 || e.i === 5 ? Object.assign({}, e, { fog: other(e.fog) }) : e.i === 7 ? Object.assign({}, e, { fade: other(e.fade), storm: other(e.dark) })
     : e.i === 8 || e.i === 11 ? Object.assign({}, e, { storm: other(e.dark) }) : e.i === 12 ? Object.assign({}, e, { storm: e.dark }) : e) };
   const r = runPal({ pal }); assert.equal(r.refused, 0, r.out);
