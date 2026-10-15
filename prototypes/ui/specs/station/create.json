@@ -149,7 +149,7 @@
   "origin": "sand",
   "dome": { "back": "ground", "housing": "metal", "windowEdge": "hairline", "note": "art reset: the Incubator's chamber, small: a window set in the sage housing (metal, as the Incubator's, art director 2026-10-10 01:44), no highlight (was base enamel, glass edge frostD, highlight frost)" },
   "bud": { "bean": "peach", "light": "cream", "edge": "rust" },
-  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
+  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.75, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
   "code": { "text": "mist", "rule": "hairline" }
 
  },
