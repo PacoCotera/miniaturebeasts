@@ -5,6 +5,18 @@
    "hash": "54f2f942",
    "png": "idle-docked.png"
   },
+  "idle-docked-dawn": {
+   "hash": "14ac45fb",
+   "png": "idle-docked-dawn.png"
+  },
+  "idle-docked-dusk": {
+   "hash": "937a6890",
+   "png": "idle-docked-dusk.png"
+  },
+  "idle-docked-night": {
+   "hash": "e994f930",
+   "png": "idle-docked-night.png"
+  },
   "idle-away": {
    "hash": "77f935ae",
    "png": "idle-away.png"

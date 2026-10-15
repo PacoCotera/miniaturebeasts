@@ -257,3 +257,15 @@ test("a picture id is keyed by the genome, not the mibi id: two worlds with the 
   assert.equal(a.mibis[0].id, b.mibis[0].id); assert.notEqual(a.mibis[0].genome && JSON.stringify(a.mibis[0].genome.loci), JSON.stringify(b.mibis[0].genome.loci));
   assert.notDeepEqual(ids(a), ids(b)); assert.deepEqual(ids(a), ids(c));
 });
+
+test("fix 7: at day the residents' and sleepers' picture ids are today's; at dawn, dusk and night every one carries its light (id ends :<light>, request carries light), the count equals day's, and the walk, nap and close atlases name the light but the shadows never; the tiles and the bed take none", () => {
+  const st = world(); dock(st); S.seedAdults(st, "S01", 5, 4, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
+  const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), mibiReqs = (light) => build(st, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = mibiReqs("day");
+  assert.ok(day.length >= 4 && day.every((r) => !("light" in r) && !/:(dawn|dusk|night)$/.test(r.id)));
+  for (const light of ["dawn", "dusk", "night"]) {
+    const got = mibiReqs(light); assert.equal(got.length, day.length); assert.ok(got.every((r) => r.light === light && r.id.endsWith(":" + light)), light);
+    assert.deepEqual(got.map((r) => r.id.replace(":" + light, "")), day.map((r) => r.id), "only the suffix differs");
+    const mv = build(st, sv, { light, motionSets: true }).requests.filter((r) => r.kind === "moving"); assert.ok(mv.length > 0);
+    for (const r of mv) assert.equal(/:shadow:/.test(r.id), !r.id.endsWith(":" + light), r.id);
+  }
+});

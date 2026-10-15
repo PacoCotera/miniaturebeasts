@@ -12,8 +12,8 @@ const COUNT = ["", "a", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
-export const mibiPictureId = (digest, stage, [w, h]) => `mibi:${digest}:${stage}:${w}x${h}`;
-export const mibiReq = (req, st, mb, size, settings) => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(genomeDigest(mb.genome), stage, size), mibi: mb.id, stage, species: S.speciesOf(mb), size }); };
+export const mibiPictureId = (digest, stage, [w, h], light = "day") => `mibi:${digest}:${stage}:${w}x${h}${light === "day" ? "" : ":" + light}`;   // fix 7: a graded resident names its light (dawn, dusk, night); at day the id is the master's own, unchanged
+export const mibiReq = (req, st, mb, size, settings, light = "day") => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(genomeDigest(mb.genome), stage, size, light), mibi: mb.id, stage, species: S.speciesOf(mb), size, ...(light === "day" ? {} : { light }) }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
@@ -58,7 +58,7 @@ export function restOf(here, time, rules) {
 }
 // A resident's moving set (Station M1 §2.2): { set, walk, shadow } when its species and stage have one and it may play (every cell a placed master, or the developer's "Motion sets (stand-ins)", or the face tests); else "" (a still, main's walk)
 export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
-  const sp = S.speciesOf(mb), I = movingIds(sp, stage, mb.look ?? "species"); if (!I || !(m.motionSets || playable(sp, stage))) return "";   // named by the mibi's look (layer-bake §7): `species` until the bake slot gives mibis a look
+  const sp = S.speciesOf(mb), I = movingIds(sp, stage, mb.look ?? "species", m.light ?? "day"); if (!I || !(m.motionSets || playable(sp, stage))) return "";   // named by the mibi's look (layer-bake §7): `species` until the bake slot gives mibis a look
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 
@@ -66,7 +66,7 @@ export function livingOf(m, R, req, ph, L) {
   const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
-  const pic = (mb, size) => mibiReq(req, st, mb, size, settings);
+  const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light);
   const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: false, ...extra }; };
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
   const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, p.stage, req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });

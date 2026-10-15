@@ -6,6 +6,7 @@
 import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset, hasAsset, isFilled } from "../../ui/assets.mjs";
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
+import { gradedOf } from "./light-grade.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { emblemArt, ICON, beamArt, mibiArt, mistyArt, ghostArt, speciesArt, speciesStudyArt, spreadStageArt, spreadGiltArt, spreadSealArt } from "./art.mjs";
@@ -46,13 +47,13 @@ export function stampPicture(frame, genome, readIds) {
 
 // A picture that is a placed master of another id at exactly this size takes that master (a mark, a place picture, the unknown pod); otherwise the stand-in builds.
 const masterAt = (masterId, w, h) => { const m = assetEntry(masterId); return m && m.status !== "empty" && m.file && m.w === w && m.h === h ? m : null; };   // a placed master of any record status (signed, new, held, placeholder), not a built stand-in
-const putOrMaster = (id, masterId, w, h, until, build, extra = {}) => { const m = masterId && masterAt(masterId, w, h); if (m) { if (!hasAsset(id)) placeMaster({ id, w, h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(masterId)); return id; } return put(id, w, h, until, build, extra); };
+const putOrMaster = (id, masterId, w, h, until, build, extra = {}, pixelsOf = masterId) => { const m = masterId && masterAt(masterId, w, h); if (m) { if (!hasAsset(id)) placeMaster({ id, w, h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(pixelsOf)); return id; } return put(id, w, h, until, build, extra); };   // pixelsOf: the picture the id shows (the master itself, or its per-light grade, fix 7)
 
 // The sources of a moving set's stand-in cells (Station M1 §1.5): the placed juvenile stand-in at the size, or for an adult Pip's placed stand (the adult plan), else the rig of the species' type specimen at that size; the 96 × 88 juvenile stand-in for the curl.
-const placedPic = (id, w, h) => { const m = masterAt(id, w, h); return m ? assetOf(id) : null; };
+const placedPic = (id, w, h, light = "day") => { const m = masterAt(id, w, h); return m ? assetOf(gradedOf(id, light)) : null; };   // a placed master takes the scene's light (fix 7); the rig is never graded
 const movingSource = (env) => ({
-  stand: (species, stage, w, h) => placedPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
-  nap: (species) => placedPic(`mibi-juvenile-${species}-96x88`, 96, 88) ?? speciesArt(env.frameOf(species), 96, 88, "three-quarter"),
+  stand: (species, stage, w, h, light) => placedPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h, light) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
+  nap: (species, light) => placedPic(`mibi-juvenile-${species}-96x88`, 96, 88, light) ?? speciesArt(env.frameOf(species), 96, 88, "three-quarter"),
 });
 // Register what a view asked for. `env`: { podById, frameOf }. Returns nothing; the ids are in the requests.
 export function registerPictures(reqs, env) {
@@ -78,7 +79,7 @@ export function registerPictures(reqs, env) {
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); return stampPicture(fr, g, r.read).build(); }); break;
       case "founder": put(r.id, r.size[0], r.size[1], "the founder's painting (the stylised rig pass)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return r.ghost ? ghostArt(fr, g, r.size[0], r.size[1]) : mistyArt(fr, g, r.misty, r.size[0], r.size[1]); }); break;   // the placeholder rig, frosted where a chapter is unread (nothing read: the whole of it, on its own outline)
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill
-      case "mibi": { const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan), else the rig; then the painted mibi", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed, else the rig
+      case "mibi": { const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan), else the rig; then the painted mibi", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed, else the rig
       case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas (Station M1 §1.2): composed from its placed masters or §1.5's stand-ins
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       case "spread": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread masters (library.json masters)", () => (r.part === "stage" ? spreadStageArt(SPECS.library) : r.part === "gilt" ? spreadGiltArt(SPECS.library) : spreadSealArt(SPECS.library))); break;   // the stage, the gilt corner, the seal: the signed master when placed, else the labelled stand-in

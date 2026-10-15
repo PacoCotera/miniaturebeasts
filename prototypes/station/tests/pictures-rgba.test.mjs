@@ -66,3 +66,50 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
   assert.equal(atlasIsMaster(id), true, "every nap cell placed: the nap atlas is a master"); assert.equal(playable("S05", "juvenile"), false, "the set plays only when every atlas is");
   assert.throws(() => compose(id, src, [{ layer: "x" }]), /layers are composed in the bake slot/);
 });
+
+// ---- global fix 7: the per-light grade of the residents (station/src/light-grade.mjs; the oracle is light-grade.py at masters-pods 917a4801) ----
+import { createHash } from "node:crypto";
+import { decodePNG } from "../../ui/png.mjs";
+import { GAIN, LUT, grade, gradedOf, dropLight } from "../src/light-grade.mjs";
+import { registerPictures } from "../src/pictures.mjs";
+import { hasAsset } from "../../ui/assets.mjs";
+import { policyOf } from "../../ui/asset-policy.mjs";
+const LG = JSON.parse(readFileSync(new URL("./fixtures/light-grade.json", import.meta.url), "utf8")), sha = (b) => createHash("sha256").update(b).digest("hex");
+const masterPng = (rel) => readFileSync(new URL("../../ui/assets/masters/" + rel, import.meta.url));
+test("fix 7: the grade's table is the oracle's (SHA-256 per light), day is the identity, no entry is brighter than its input, and the four tie entries round to even", () => {
+  for (const l of Object.keys(GAIN)) assert.equal(sha(LUT[l]), LG.lut[l], l);
+  for (let c = 0; c < 3; c++) for (let v = 0; v < 256; v++) { assert.equal(LUT.day[c * 256 + v], v); for (const l of ["dawn", "dusk", "night"]) assert.ok(LUT[l][c * 256 + v] <= v, `${l} ${"RGB"[c]}${v}`); }
+  assert.equal(LUT.dawn[256 + 5], LG.ties.dawn.G5); for (const k of ["G1", "G5", "G9"]) assert.equal(LUT.night[256 + +k.slice(1)], LG.ties.night[k], "night " + k);
+  const frame = JSON.parse(readFileSync(new URL("../../ui/specs/station/frame.json", import.meta.url), "utf8")); assert.deepEqual(frame.light.from.map((r) => r[1]).sort(), Object.keys(GAIN).sort(), "frame.json light.from names exactly the lights with a gain");
+  assert.throws(() => grade({ w: 1, h: 1, rgba: () => new Uint8ClampedArray(4) }, "dusk2"), /not a light/);
+});
+test("fix 7: the three juvenile masters graded at four lights equal the oracle's pixels (SHA-256 of the RGBA), alpha is the master's, no channel is brighter, day is the master itself", () => {
+  for (const [sp, row] of Object.entries(LG.juvenile104x112)) {
+    const buf = masterPng(row.file.replace(/^/, "")); assert.equal(sha(buf), row.source, sp + ": a recut master fails here, loudly");
+    const d = decodePNG(buf), p = { w: d.w ?? d.width, h: d.h ?? d.height, rgba: () => d.rgba ?? d.data };
+    for (const [l, want] of Object.entries(row.rgba)) {
+      const g = grade(p, l), px = g.rgba(); assert.equal(sha(Buffer.from(px.buffer, px.byteOffset, px.byteLength)), want, `${sp} ${l}`);
+      if (l === "day") assert.equal(g, p); else for (let i = 0; i < px.length; i += 4) { assert.equal(px[i + 3], p.rgba()[i + 3]); for (let c = 0; c < 3; c++) assert.ok(px[i + c] <= p.rgba()[i + c]); }
+    }
+  }
+});
+test("fix 7: a resident at night with its master placed shows the grade of the master under the suffixed id (painted, cached); with no master the rig stand-in builds ungraded as art; day and non-resident masters take no grade; dropLight removes exactly that light's entries", () => {
+  const M = "mibi-juvenile-S09-104x112", id = "mibi:fixture7:juvenile:104x112:night", px = new Uint8ClampedArray(104 * 112 * 4).map((_, i) => (i % 4 === 3 ? 200 : 100 + (i % 97)));
+  placeMaster({ id: M, w: 104, h: 112, file: "x.png", hash: "0".repeat(64), status: "master" }, { w: 104, h: 112, rgba: () => px });
+  assert.equal(gradedOf(M, "day"), M); assert.equal(gradedOf(M, "night"), M + ":night"); assert.equal(assetEntry(M + ":night").status, "derived");
+  assert.throws(() => gradedOf("mibi-halo-S01-128x160-clear", "night"), /not a resident master/); assert.throws(() => gradedOf("founder:S01:0123456789abcdef:all:112x112", "night"), /not a resident master/); assert.throws(() => gradedOf("mibi-juvenile-S01-shadow-80x16", "night"), /not a resident master/);
+  registerPictures([{ kind: "mibi", id, mibi: 1, stage: "juvenile", species: "S09", size: [104, 112], light: "night" }], { frameOf: () => null, mibiGenome: () => null });
+  const e = assetEntry(id), a = asset(id), want = grade({ w: 104, h: 112, rgba: () => px }, "night").rgba(); assert.equal(e.status, "master"); assert.equal(policyOf(id, e.status), "painted"); assert.deepEqual([...a.rgba()], [...want]); assert.equal(asset(id), a, "built once");
+  assert.ok(hasAsset(M + ":night")); dropLight("night"); assert.ok(!hasAsset(M + ":night") && !hasAsset(id) && hasAsset(M), "the night's derived pictures go, the master stays");
+  dropAsset(M);
+  const none = "mibi-juvenile-S09-96x88"; assert.equal(gradedOf(none, "night"), none, "no master placed: the master's id, and the caller falls through");
+});
+test("fix 7: a night atlas names its light on the walk, close and nap (day adds nothing), the shadows never; its placed cells are graded, a rig or ink stand-in is not", () => {
+  const N = movingIds("S05", "juvenile", "species", "night"), D = movingIds("S05", "juvenile");
+  for (const k of ["walk", "close", "nap"]) { assert.equal(N[k], D[k] + ":night"); assert.ok(N[k].length < 95); }
+  assert.deepEqual([N.shadow, N.closeShadow], [D.shadow, D.closeShadow], "the contact shadows are not graded");
+  const a = compose(N.nap, src), t = LUT.night, want = (x, y) => [t[x & 255], t[256 + (y & 255)], t[512 + 77], 255];
+  assert.deepEqual(px(a, 1 + 10, 20), want(10, 20), "a placed cell is the master's grade"); assert.deepEqual(px(compose(D.nap, src), 1 + 10, 20), [10, 20, 77, 255], "day: the master");
+  const s = compose(movingIds("S01", "juvenile", "species", "night").shadow, src); assert.deepEqual(px(s, 1 + 52, 8), [0x1e, 0x1a, 0x22, 110], "the shadow ink is never graded");
+  assert.equal(policyOf(N.nap, "master"), "painted"); assert.equal(policyOf(N.nap, "placeholder"), "art"); assert.equal(policyOf(N.shadow, "placeholder"), "art");
+});

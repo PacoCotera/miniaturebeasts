@@ -1,0 +1,51 @@
+{
+ "_note": "fix 7 (the architect's ruling 2026-10-15 04:32, appendix): the oracle is light-grade.py at masters-pods 917a4801. lut: SHA-256 of LUT[light] (768 bytes, R0..R255 G0..G255 B0..B255). juvenile104x112: the SHA-256 of the placed source PNG and the SHA-256 of the graded RGBA at each light (straight alpha, rows top-down). The adult 144x152 rows join when the adult masters are placed.",
+ "lut": {
+  "dawn": "902f8a8929846c403cb31802ebd6c92e9a16387a1522064358b84a3f6ea9affa",
+  "day": "f3a25aa93aa2fbba28d79260535bbd6a5eb0fc1c24a8b0f04e12b484c1dfe363",
+  "dusk": "bc20be6d8012f6efe22a589c09f357c3ee783dea2759a8e71587d9aec11e4c55",
+  "night": "f8316b761b66eef8729598e331f96230f1ee908549a4d375753197074a0961bb"
+ },
+ "ties": {
+  "dawn": {
+   "G5": 4
+  },
+  "night": {
+   "G1": 0,
+   "G5": 2,
+   "G9": 4
+  }
+ },
+ "juvenile104x112": {
+  "S01": {
+   "file": "pods/mibi-juvenile-S01-104x112.png",
+   "source": "a365b5f5966e2511c487139c1e48d3e2e636c3fca24e5afd1e07c8b255dbfe5f",
+   "rgba": {
+    "dawn": "235de0f01f8386f95b8543d07b35a84b9f1ce0bdc27794874ca31c57ee821ed6",
+    "day": "42e92e2927a3cac5142f7e4451e4c26cdb853889e6e492749e757134d36aba3a",
+    "dusk": "382380a6362cde6dd3857eed1ccd22de3193caad9d8c2436d42488f5556ee893",
+    "night": "4cc84381efbe2fb0a99f1a5446dd619d0d619e9e68c5c5827002e9a40c6c1e57"
+   }
+  },
+  "S02": {
+   "file": "pods/mibi-juvenile-S02-104x112.png",
+   "source": "d7cc988a83e2159cee6ee00b5868137d61de9a100de5133d2f069d2739c4b01c",
+   "rgba": {
+    "dawn": "b2ca19a2633121e821eb194fba5eb65d7386ea16fd0c9a82f5cf09b6cdb63d6f",
+    "day": "83083ebee5875a2161e577590c88ed9cfb326fd2aed052ab59f1ac069a668668",
+    "dusk": "e8145d784418b09a2066e08da787eefc9191b0e89bb4cab60266e359a8080a79",
+    "night": "d01b9a631c3a0eea165f6c5ffff8c5d4f142991a8aa3b751e08bb2ab4c2eba82"
+   }
+  },
+  "S03": {
+   "file": "pods/mibi-juvenile-S03-104x112.png",
+   "source": "4e713c24e24ce01bf92b5b7b25127c2062e847e206bfe5f64d41c6054f35ef75",
+   "rgba": {
+    "dawn": "a3b6816ef30996fc2ebdb5c43a7dfa227cf283bc5fabd911b48ad27863e8ba44",
+    "day": "bbc2a9e6d00ff94ac52826f9cc6db6dce41ea5abc9662b2fa9ee7ba9fb484838",
+    "dusk": "bb99a1392ac8a7bf78841aabfdab6e2c14896d07b619671896a52a55f989b860",
+    "night": "6dbb18e7261e467a018f8ad7b9a3142191f05cdf51fc65be778395f58959faaa"
+   }
+  }
+ }
+}

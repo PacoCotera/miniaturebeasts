@@ -8,6 +8,9 @@ import { openStation } from "./station-page.mjs";
 const SCENES = {
   fresh:      { f: "room", set: () => {} },
   docked:     { f: "room", set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
+  "docked-dawn":  { f: "room", light: "dawn",  set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },   // the same scene at three lights (fix 7: the residents take the grade)
+  "docked-dusk":  { f: "room", light: "dusk",  set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
+  "docked-night": { f: "room", light: "night", set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
   "goal-docked": { f: "room", set: (w) => { w.young(2); w.carry([0, 1]); } },
   "goal-away": { f: "room", set: (w) => { w.young(2); w.carry([0]); w.away(); } },
   away:       { f: "room", set: (w) => { w.adults(4); w.young(3); w.carry([0]); w.away(); w.pods(3); } },
@@ -84,10 +87,10 @@ async function staticStates(visit, { motion }) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate(`(${WORLD.toString()})`).catch(() => {});
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (name, sc) => page.evaluate(([setSrc, f]) => {
+  const apply = (name, sc) => page.evaluate(([setSrc, f, light]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.UI.home.f = f.startsWith("resident:") ? "resident." + S.ST.mibis[+f.slice(9)].id : f; S.UI.idle = false; S.goto("home");
-  }, [sc.set.toString(), sc.f]);
+    const S = window.__st; S.settings.light = light; S.UI.home.f = f.startsWith("resident:") ? "resident." + S.ST.mibis[+f.slice(9)].id : f; S.UI.idle = false; S.goto("home");
+  }, [sc.set.toString(), sc.f, sc.light ?? "day"]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       if (sc.motionOnly) continue;   // taken on the virtual clock below

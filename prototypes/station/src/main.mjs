@@ -40,7 +40,7 @@ async function loadFrames() {
 
 // --- the face ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
-let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null, movingHeld = new Set(), movingPrev = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -61,7 +61,8 @@ function syncProps() {
   if (key === lastProps) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
-  else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); lastLight = light;   // one light's pictures in memory, plus one frame of the next
+  else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
+  // one light's pictures in memory, plus one frame of the next
     const now = new Set(p.ids.filter((id) => id.startsWith("moving:"))); for (const id of movingHeld) if (!now.has(id) && !movingPrev.has(id)) { FACE.drop(id); movingHeld.delete(id); } for (const id of now) movingHeld.add(id); movingPrev = now; }   // a moving atlas neither these props nor the previous screen's ask for is dropped (architecture.md §3: the main.mjs gap)
   lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
 }
