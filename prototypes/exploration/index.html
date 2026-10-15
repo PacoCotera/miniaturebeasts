@@ -3698,10 +3698,11 @@ function drawSwap() {
 }
 // The place's Call hint is drawn only in the place view: every other screen's message reads as it always has (the hint is longer than the box's old text, and would cover lines under it).
 const CALL_HINT = 'Call lifts the veil: finds show';
-function shownMsg() { return S.phase !== 'patch' ? FX.msg.replace(' · ' + CALL_HINT, '').replace(CALL_HINT + ' · ', '').replace(CALL_HINT, '') : FX.msg; }
+// What the message box draws, and what spends a one-time line: the one test for "is the box drawn". The swap chooser takes the box's place in a place; other screens draw the message without the hint.
+function shownMsg() { if (S.phase === 'patch' && S.ui.swap) return ''; return S.phase !== 'patch' ? FX.msg.replace(' · ' + CALL_HINT, '').replace(CALL_HINT + ' · ', '').replace(CALL_HINT, '') : FX.msg; }
 function drawMessage() {
   const msg = shownMsg();
-  if (!msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
+  if (!msg || RT.msgInBand) return;   // the reach view shows it in its band; shownMsg() is empty while the swap chooser has the space
   const lines = wrapText(msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way

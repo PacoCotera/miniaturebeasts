@@ -836,3 +836,17 @@ test("the place's Call hint is spent only when it is drawn: skipped while anothe
   for (let i = 0; i < 30; i++) { q.key(i < 2 ? "call" : ["left", "right", "up", "down"][i % 4]); const now = q.run("FX.msg === CALL_HINT"); if (now && !was) shown++; was = was || q.run("S.found.includes('callplace')"); }
   assert.equal(shown, 1, "shown once, on a later action, and never again"); assert.equal(q.run("S.found.includes('callplace')"), true);
 });
+
+test("the place's Call hint is not spent while the swap chooser covers the message box: one test for 'the box is drawn' in shownMsg, settleOnce and drawMessage", () => {
+  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
+  p.rec("text");
+  p.run(`S.phase = 'patch'; S.ui.swap = { sel: 0 }; FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace', local: false }]; composeMsg();`);
+  assert.equal(p.run("FX.msg"), h, "the hint is composed");
+  assert.equal(p.run("shownMsg()"), "", "the chooser covers the box");
+  p.run("settleOnce()"); assert.equal(p.run("S.found.includes('callplace')"), false, "not spent while covered");
+  p.clear(); p.run("drawMessage()"); assert.ok(!p.calls("text").some(c2 => c2.a[0] === h), "and not drawn");
+  p.run(`FX.notes = [{ text: ${JSON.stringify(c)}, pri: 2 }]; composeMsg();`); assert.equal(p.run("shownMsg()"), "", "any message: the chooser has the space");
+  p.run(`S.ui.swap = null; FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace', local: false }]; composeMsg(); settleOnce();`);
+  assert.equal(p.run("S.found.includes('callplace')"), true, "spent once drawn");
+  p.clear(); p.run("drawMessage()"); assert.ok(p.calls("text").some(c2 => c2.a[0] === h), "drawn without the chooser");
+});
