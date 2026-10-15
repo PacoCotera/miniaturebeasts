@@ -7,6 +7,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { decodePNG } from "../../ui/png.mjs";
 import { podsStates } from "./pods-states.mjs";
 import { homeStates } from "./home-states.mjs";
 import { cargoStates } from "./cargo-states.mjs";
@@ -32,15 +33,21 @@ const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length 
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
 let failed = 0;
 for (const screen of run) {
-  const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {};
+  const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {}; const pngs = {};
   const { fails } = await states(async (name, page, fail) => {
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }
     got[name] = { hash: a.hash, png: prefix + slug(name) + ".png" };
+    if (name === "create-roll-100" || name === "create-shape-changed") pngs[name] = a.png;
     if (!check) { mkdirSync(dir, { recursive: true }); writeFileSync(path.join(dir, got[name].png), Buffer.from(a.png.split(",")[1], "base64")); }
     console.log(name.padEnd(34) + " " + a.hash);
   });
+  if (screen === "create" && pngs["create-roll-100"] && pngs["create-shape-changed"]) {   // on the rig every roll is a cut (fix 5 Create C8): the half-way frame is the new picture whole, so everything under the top bar equals create-shape-changed's (the two worlds' top bars may differ in a material figure)
+    const A = decodePNG(Buffer.from(pngs["create-roll-100"].split(",")[1], "base64")), B = decodePNG(Buffer.from(pngs["create-shape-changed"].split(",")[1], "base64")); let diff = 0;
+    for (let i = 40 * A.width * 4; i < A.data.length; i++) if (A.data[i] !== B.data[i]) diff++;
+    if (diff) fails.push(`create-roll-100 must equal create-shape-changed below the top bar on the rig: every roll is a cut (fix 5 Create C8); ${diff} bytes differ`);
+  }
   if (!check) { if (!fails.length) { writeFileSync(file, JSON.stringify({ _note: note + ": the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.", states: got }, null, 1) + "\n"); console.log("wrote " + Object.keys(got).length + " goldens to " + dir); } }
   else if (!existsSync(file)) fails.push("no goldens at " + file);
   else { const have = JSON.parse(readFileSync(file, "utf8")).states; for (const [n, g] of Object.entries(have)) if (!got[n]) { fails.push(n + " was not drawn"); console.error("FAIL " + n + " was not drawn"); } else if (got[n].hash !== g.hash) { fails.push(n); console.error(`FAIL ${n}: ${got[n].hash}, golden ${g.hash}`); } for (const n of Object.keys(got)) if (!have[n]) { fails.push(n); console.error("FAIL " + n + " has no golden"); } }

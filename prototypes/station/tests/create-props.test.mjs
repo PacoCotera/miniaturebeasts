@@ -60,7 +60,10 @@ test("the state: nothing read with no chapter read (no roll, the ring on the roo
   const a = make("S01", 3, 0).build(); assert.equal(a.props.state, "nothingRead"); assert.equal(a.props.regions.roll, undefined); assert.deepEqual(a.props.focus, { cur: "room", targets: [] }); assert.equal(a.props.regions.rail.open, -1);
   const b = make("S01", 3, 1).build(); assert.equal(b.props.state, "shape"); assert.deepEqual(b.props.focus, { cur: "roll", targets: [{ id: "roll", group: "roll" }] });
   const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p, minutes: r.bud.minutes }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
-  assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'"); assert.equal(g.line.price, S.priceText(r.cost.e, r.cost.d, r.cost.s, r.bud.minutes), "the price as it was paid, with the bud's own wait (grow() clears firstMibi: recomputing would read 20 for the first founder)"); assert.match(g.line.price, new RegExp(` ⧗ ${r.bud.minutes}$`));
+  assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'");
+  assert.ok(g.line.ok === null && g.line.back === null && g.line.price == null && g.line.need === "", "grow: the line is Growing, no action, price or way back, an empty right slot (fix 5 C6)"); assert.equal(g.line.subject, spec.strings.growing); assert.deepEqual([g.line.dim, g.line.blocked, g.line.short], [undefined, undefined, undefined]);
+  assert.equal(g.props.regions.roll.shown, false, "grow: the roll keeps its nodes with no size"); assert.equal(g.props.regions.roll.pictures.length, 3, "the roll pictures stay requested in grow"); assert.deepEqual(g.props.focus, { cur: "room", targets: [] }, "grow: no ring"); assert.equal(g.props.regions.rail.open, -1); assert.ok(g.props.regions.rail.tabs.every((t) => t.lift === -1), "no tab open and no pip lifted"); assert.deepEqual([g.props.regions.traitLine.text, g.props.regions.traitLine.changed], ["", false], "no trait line in grow, the tag included");
+  assert.equal(b.props.regions.roll.shown, true); assert.equal(a.props.regions.traitLine.text, "", "nothingRead: no trait line"); assert.equal(a.line.subject, "it grows as the pod is", "nothingRead: the sentence moves to the context");
   assert.equal(createPod(m.st, m.cr).id, m.p.id, "the pod is the screen's own once it has left the rack");
 });
 
@@ -86,18 +89,18 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
       else if (own.kind === "asleep") assert.equal(L.text, `${t.name}: ${own.shows}, ${own.asleep} asleep`);
       else assert.equal(L.text, `${t.name}: as the pod is`);
       assert.ok(!/\d/.test(L.text), `${id} ${t.name}: no digits in "${L.text}"`); assert.ok(words(L.text) <= spec.regions.traitLine.words, `${id} ${t.name}: "${L.text}" is ${words(L.text)} words`);
-      if (opts.length > 1) { m.cr.choices = { [t.id]: 1 }; L = m.build().props.regions.traitLine; assert.equal(L.changed, true); assert.ok(words(L.text) <= spec.regions.traitLine.words && !/\d/.test(L.text), `${id} ${t.name} changed: "${L.text}"`); assert.equal(L.text, `${t.name}: ${traitState(fr, t, S.founderGenome(m.p, m.cr.choices)).line}`); m.cr.clash = [t.id]; L = m.build().props.regions.traitLine; assert.deepEqual([L.clash, L.changed, L.text], [true, false, `✕ ${t.name}: won't grow like this`]); }
+      if (opts.length > 1) { m.cr.choices = { [t.id]: 1 }; L = m.build().props.regions.traitLine; assert.equal(L.changed, true); assert.ok(words(L.text) <= spec.regions.traitLine.words && !/\d/.test(L.text), `${id} ${t.name} changed: "${L.text}"`); const fo = traitState(fr, t, S.founderGenome(m.p, m.cr.choices)), same = own.kind === "hides" && 1 !== own.hiddenChoice && fo.kind !== "asleep"; assert.equal(L.text, fo.kind === "asleep" ? `${t.name}: ${fo.shows}, ${fo.asleep} asleep` : same ? `${t.name}: ${fo.shows}, hides nothing` : `${t.name}: ${fo.shows}`, `${id} ${t.name}`); assert.ok(!("tag" in L), "no tag in the props: the face picks the plate (C9)"); m.cr.clash = [t.id]; L = m.build().props.regions.traitLine; assert.deepEqual([L.clash, L.changed, L.text], [true, false, `✕ ${t.name}: won't grow like this`]); }
     });
   }
-  assert.equal(make("S01", 3, 0).build().props.regions.traitLine.text, T.none);
+  assert.equal(make("S01", 3, 0).build().props.regions.traitLine.text, "", "nothingRead: no size, the sentence is the context's"); assert.equal(T.none, "it grows as the pod is");
 });
 
 test("the bottom line: ✓ Grow it and the price with ◆ a change (the first founder no Essence), what stays a surprise, the first block in the rules' order with its notice; ← the pod", () => {
   const Sg = spec.strings, m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
-  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Grow it", "⚡ 2 ❀ 4 ⧗ 20", "Loika", "two surprises to come", null]);
+  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Grow it", "⚡ 2 ❀ 4 ⧗ 20", "Loika", "two chapters unread", ""]);
   const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "the wait last: 20 and one a change");
   m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
-  assert.equal(make("S01", 3, 0).build().line.subject, Sg.surprise.all); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina stays a surprise"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
+  assert.equal(make("S01", 3, 0).build().line.subject, Sg.traitLine.none); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina unread"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
   { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
   { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.bud.busy, true); }
   { const k = make("S01", 3, 2); for (let i = 0; i < 12; i++) k.st.mibis.push({ id: 100 + i, bay: i, released: false }); L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.noBay]); }
@@ -140,4 +143,31 @@ test("regions.pod.dome is the pod at the collection class, pod:<species>:i:88x11
     assert.equal(pod.sizeClass, cls); assert.equal(pod.dome, `pod:${id}:i:88x112`); assert.notEqual(pod.dome, pod.picture);
     const r = b.requests.find((x) => x.id === pod.dome); assert.ok(r && r.kind === "pod" && r.size.join("x") === "88x112" && r.species === id, "the request is the collection class's picture");
   }
+});
+
+// ---- fix 5, Create (the gate): the same look, the sealed contexts, the right slot, the case ----
+test("fix 5: the trait line names the same look only when all four hold (S01 Crown: the pod's leaf crest hides bare head, the crest chosen); a hidden look chosen, a blend and any trait the pod does not hide never take it", () => {
+  const fr = frameOf("S01"), crown = fr.chapters.flatMap((c) => c.traits).find((t) => t.name === "Crown");
+  for (const gs of [3, 4]) {   // gs 3: the hidden copy is choice 1; gs 4: choice 2
+    const m = make("S01", gs, fr.chapters.length), list = reviewTraits(m.p, fr), f = list.findIndex(({ t }) => t === crown), own = traitState(fr, crown, m.p.genome); assert.equal(own.kind, "hides"); m.cr.f = f;
+    const keep = own.hiddenChoice === 1 ? 2 : 1; m.cr.choices = { [crown.id]: keep }; let L = m.build().props.regions.traitLine; assert.equal(L.text, "Crown: leaf crest, hides nothing"); assert.equal(L.changed, true);
+    m.cr.choices = { [crown.id]: own.hiddenChoice }; L = m.build().props.regions.traitLine; assert.equal(L.text, "Crown: bare head", "the hidden look chosen: the plain form"); assert.equal(L.changed, true);
+  }
+  for (const id of SPECIES) { const fr2 = frameOf(id), m = make(id, 3, fr2.chapters.length); reviewTraits(m.p, fr2).forEach(({ t }, f) => { const own = traitState(fr2, t, m.p.genome); if (own.kind === "hides" || S.rollOptions(m.p, t.id).length <= 1 || t.nature === "doing") return; m.cr.f = f; m.cr.choices = { [t.id]: 1 }; const L = m.build().props.regions.traitLine; assert.ok(!/hides nothing/.test(L.text), `${id} ${t.name} (${own.kind}): "${L.text}"`); assert.equal(L.changed, true); }); }
+});
+test("fix 5: the context of a sealed chapter still shut: all else read names it (strings.sealedShut), unread ones show the count alone, never the shut one; fully known only with none unread or shut; sealedOpen counts it unread", () => {
+  const Sg = spec.strings, fr = frameOf("S02"), sealed = fr.chapters.find((c) => c.sealed); assert.ok(sealed, "S02 has a sealed chapter");
+  const nSealed = fr.chapters.indexOf(sealed), all = fr.chapters.length;
+  assert.equal(make("S02", 3, all).build().line.subject, `all read, ${sealed.name} sealed`, "every readable chapter read, the sealed one shut"); assert.equal(Sg.sealedShut, "all read, {Chapter} sealed");
+  const k = make("S02", 3, nSealed - 1).build().line.subject; assert.match(k, /unread$/); assert.ok(!k.includes(sealed.name), "the unread count leaves the shut chapter out"); assert.equal(k, `${fr.chapters[nSealed - 1].name} unread`, "unread and a shut one: the count alone, no combined form");
+  const m = make("S02", 3, all); const open = createBuild({ st: m.st, settings: { ...settings, sealedOpen: true }, ui: { create: m.cr } }, spec, pods).line.subject; assert.equal(open, `${sealed.name} unread`, "sealedOpen: the sealed chapter counts as unread");
+  assert.equal(make("S01", 3, frameOf("S01").chapters.length).build().line.subject, "A Loika, fully known");
+});
+test("fix 5: the right slot is Create's own and never the frame's notice (empty when nothing blocks, short or warns); busy ranks before the shortfall; the stamp's case ids are Pods'; the cradle front is Create's; no tag plate is requested", () => {
+  const m = make("S01", 3, 2), b = m.build(); assert.equal(b.line.need, "", "nothing to say: empty, never null"); const ids = b.requests.map((r) => r.id);
+  assert.deepEqual([b.props.regions.stamp.case.back, b.props.regions.stamp.case.front], ["room-stamp-case-152x152:152x152", "room-stamp-case-152x152-front:152x152"]);
+  assert.ok(ids.includes("room-stamp-case-152x152:152x152") && ids.includes("room-cradle-front-create-224x96:224x96") && !ids.some((i) => /^plate-name/.test(i)), "the case and the cradle front requested; no plate-name");
+  assert.equal(b.props.regions.cradle.front, "room-cradle-front-create-224x96:224x96");
+  const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, spec.strings.notices.busy, "busy before the shortfall");
+  const n = make("S01", 3, 0).build(); assert.equal(n.props.regions.stamp.case.back, "room-stamp-case-152x152:152x152", "the case in nothingRead too");
 });
