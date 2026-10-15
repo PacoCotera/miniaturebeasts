@@ -221,7 +221,7 @@ You can carry up to 20 of each. Essence never turns into Energy.
 
 ## 8. Ending an expedition: the sealed bay and the Station
 
-An expedition ends when you choose **End expedition** or when the Shield breaks. **End expedition works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else it is greyed in the menu and the line says how far the nearest one is ("Start · about 2 cells"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, what ending the expedition will seal, and the bay.
+An expedition ends when you choose **End expedition** or when the Shield breaks. **End expedition works only on your start cell (the flag on the map) or on a lit outpost.** Anywhere else it is greyed in the menu and the line says where the nearest one is: how far on the map ("Start · about 2 cells"), which way inside a place ("Start · north-west"); "Hold full" and "Everything in reach is explored" say "head back to the start". Cargo shows a **preview** first: how much you explored, what ending the expedition will seal, and the bay.
 
 ### Ending the expedition seals the hold
 

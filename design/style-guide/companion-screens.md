@@ -626,7 +626,6 @@ Left to the field screens' next pass; the care build does not touch these screen
 - **Probe legend.** Rows at an 18 px pitch with the text at row + 1 leave no blank row between one row's descenders and the next row's capitals (measured: rows 209–260 and 317–440 are unbroken runs of text). A 20 px pitch adds 26 rows, and under the legend the stones, their labels and the field guide leave 6 free rows (558–563), so it is a re-layout of the Probe screen, not a one-line fix.
 - **Place, the meadow pawn's tile touching the bottom line.** Not re-measured here.
 - **Menu over a place with no message.** The card (192, 40, 250, 284) can cover a pawn standing mid-screen, against "the pawn stays visible behind the card". Not re-measured here.
-- **Name tags in a place.** [Place](#place) already sets their bound (x 6–444, y 38–558) and their placement order; the build has neither. A build gap of the place screen.
 
 ---
 
