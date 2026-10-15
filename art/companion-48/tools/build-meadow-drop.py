@@ -31,7 +31,7 @@ P48 = palmod.load()
 cols = json.load(open(os.path.join(G, "mockup", "b1", "biome-meadow.json")))["colours"]
 hx = lambda h: tuple(int(h[k:k + 2], 16) for k in (1, 3, 5))
 assert len(cols) == 96 and all(cols[i]["hex"] == P48.hexes[i] for i in range(48))
-# fog (C5): four neutral greys after b1's set, the fog's targets only (no source maps to them), so meadow fog never reads lavender
+# fog: four neutral greys after b1's set, the fog's targets only (no source maps to them), so meadow fog never reads lavender
 FOG_RAMP = ["#6f7a72", "#98a39a", "#c3cbc3", "#e3e8e1"]
 cols = cols + [{"index": 96 + k, "hex": h, "set": "meadow", "material": "fog"} for k, h in enumerate(FOG_RAMP)]
 PAL = np.array([hx(c["hex"]) for c in cols]); NC = len(PAL); TR = NC          # transparent while building; written as magenta's slot (44)
@@ -92,7 +92,7 @@ assert len(set(c["hex"] for c in cols)) == NC
 with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
     fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
              "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i]),
-             "mat": str(mat[i]), **({"storm": 1} if i == 14 else {})}) for i in range(NC)) + " ] }\n")   # storm: 1 on pine (AD): the storm darkens it one step (to ink), not two (to void); mat: "grass" marks the colours the level tone moves (grass only)
+             "mat": str(mat[i]), **({"storm": 1} if i == 14 else {})}) for i in range(NC)) + " ] }\n")   # storm: 1 on pine: the storm darkens it one step (to ink), not two (to void); mat: "grass" marks the colours the level tone moves (grass only)
 OUTL = nearest((24, 52, 30)); BODY, SHAL = nearest((29, 104, 136)), nearest((34, 121, 147))
 LAWN0 = LB - 1                                                    # the middle level's tone, one step under b1's lit lawn
 def boxavg(a, k):
@@ -115,14 +115,14 @@ def tone(k): k = np.clip(np.where(k > TOPK, 2 * TOPK - k, k), 0, TOPK); return n
 BAY = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]])
 def bayer(h, w): return np.tile(BAY, (h // 4 + 1, w // 4 + 1))[:h, :w]
 def mottle(seed):
-    """three or four greens in loose, irregular patches (owner 00:05: the top is mottled, not one fill): a smoothed noise field split
+    """three or four greens in loose, irregular patches (the top is mottled, not one fill): a smoothed noise field split
     at +-1.0 sigma into a step up (every tile) or down (every second tile), faded to nothing 6 px from the tile's sides so tiles still meet on flecks alone; edges
     dithered on the 4x4 Bayer"""
     from scipy import ndimage as nd_
     rng = np.random.RandomState(seed + 77); n = nd_.gaussian_filter(rng.normal(0, 1, (48, 48)), 5); n = (n - n.mean()) / n.std()
     yy, xx = np.mgrid[0:48, 0:48]; fade = np.clip(np.minimum(np.minimum(yy, 47 - yy), np.minimum(xx, 47 - xx)) / 6.0, 0, 1)
     n = n * fade; B = bayer(48, 48) / 16.0
-    down = np.where(n < -1.0 - 0.3 * B, -1, 0) if seed % 2 == 0 else 0           # AD (round 2): split at +-1.0 sigma; step-up patches in every tile, a step-down patch in one tile in two (by the seed's parity)
+    down = np.where(n < -1.0 - 0.3 * B, -1, 0) if seed % 2 == 0 else 0           # split at +-1.0 sigma; step-up patches in every tile, a step-down patch in one tile in two (by the seed's parity)
     return np.where(n > 1.0 + 0.3 * B, 1, down)
 def lawn_tile(f, seed):
     t = tone(LAWN0 + f + mottle(seed)); rng = np.random.RandomState(seed)
@@ -154,12 +154,12 @@ def add(name, a, **f): PIECES.append((name, a, dict(status="candidate", offset=[
 FL = fleck_windows(8, 1)
 LIPF = fleck_windows(8, 2)[6:]                                    # the lawn texture for the pieces that carry their own lawn (lip, shore margin, spill, holes)
 for k in range(6): add(f"meadow/ground/lawn-{k + 1}", lawn_tile(FL[k], 300 + k), kind="ground", set="lawn", variant=str(k + 1))
-# the cast shadow (owner 00:05: "shadows help you add depth"; light from the upper left): drawn on the LOWER lawn tile beside a raised
+# the cast shadow (it adds depth; light from the upper left): drawn on the LOWER lawn tile beside a raised
 # edge, by the loader's rule (to be ruled): `e` on the tile east of a plateau or face, `s` on the tile south of a face's foot, `es` both,
 # `c` the tile whose only raised neighbour is its north-west. Lawn texture two steps under the lawn, toned by the tile's level like the
 # lawn; transparent beyond; a soft edge dithered over 4 px on the 4x4 Bayer.
 def shadow_piece(state, seed):
-    """a broad band (the owner's reference: about a quarter of the block east, the cliff's own height south, within a tile): two lawn
+    """a broad band (about a quarter of the block east, the cliff's own height south, within a tile): two lawn
     steps down in its core, one step down in its outer 6 px dithered on the 4x4 Bayer, then nothing"""
     yy, xx = np.mgrid[0:48, 0:48]; B = bayer(48, 48)
     we = 18 + np.round(1.5 * np.sin(2 * np.pi * yy / 48)); hs = 30 + np.round(2 * np.sin(2 * np.pi * xx / 48))
@@ -173,7 +173,7 @@ bank = WQ["q-nw-edgeh-f1"]; bk = bank[bank != TR]; bk = bk[np.isin(mat[bk], ["ea
 SAND = sorted(bv[np.argsort(-bc)[:2]], key=lambda i: -lum[i]) if len(bv) else [P48.index["sand"]]
 PEB, PEBL = nearest((122, 98, 72)), nearest((214, 196, 160))
 def sand_tex(seed):
-    """sand with grain (C5: the rock field read flat tan): a smoothed field in two sand tones, a fine grain of the darker, and a few
+    """sand with grain (so the rock field does not read flat tan): a smoothed field in two sand tones, a fine grain of the darker, and a few
     pebbles (a dark body, a lit top-left pixel), none within 3 px of the tile's sides so tiles meet on grain alone"""
     from scipy import ndimage as nd_
     rs = np.random.RandomState(seed); n = nd_.gaussian_filter(rs.normal(0, 1, (48, 48)), 4); n = (n - n.mean()) / n.std()
@@ -247,8 +247,8 @@ for qi, qd in enumerate(("nw", "ne", "se", "sw")):
     for st in ("fill", "edgeh", "edgev", "outer", "inner"):
         add(f"meadow/shore/sand-{qd}-{st}-f1", sand_quarter(qd, st, 60 + qi), kind="shore", set="sand", quad=qd, state=st, frame=1)
 
-# ---- drop 2 (AD brief 2026-10-12): the light patch, the deeper pond centre, the ford stones. Hand-coded here, only from the palette's
-# entries and the helpers above (tone, LIGHT, DARK, bayer, LIPF); candidate until the art director signs.
+# ---- drop 2: the light patch, the deeper pond centre, the ford stones. Hand-coded here, only from the palette's
+# entries and the helpers above (tone, LIGHT, DARK, bayer, LIPF); candidate until signed.
 import hashlib
 from scipy import ndimage as nd2
 def h2(*a): return int(hashlib.md5(repr(a).encode()).hexdigest()[:8], 16)
@@ -267,7 +267,7 @@ def land_mask(quad, state, IN, wave=None):
 def inside_d(land):
     """the distance of each non-land pixel from the land (scipy's edt of ~land); a quarter with no land is all far inside"""
     return nd2.distance_transform_edt(~land) if land.any() else np.full(land.shape, 99.0)
-# A. the light patch as a MASK (AD round 1): every quarter carries one index, lime, meaning "lit", transparent elsewhere, the same
+# A. the light patch as a MASK: every quarter carries one index, lime, meaning "lit", transparent elsewhere, the same
 # geometry and Bayer edge; the proof place (and the loader's light map) lifts the lawn under each lime pixel by LIGHT[]
 LIMEI = P48.index["lime"]; assert LIMEI == 19, LIMEI          # the loader's light map reads index 19 (meadow.json lightMask)
 for qi, qd in enumerate(("nw", "ne", "se", "sw")):
@@ -275,7 +275,7 @@ for qi, qd in enumerate(("nw", "ne", "se", "sw")):
         land = land_mask(qd, st, 10); d = inside_d(land); B = bayer(24, 24)
         lit = (d >= 6) | ((d > 0) & (d < 6) & (B < d / 6 * 16))
         add(f"meadow/light/{qd}-{st}", np.where(lit, LIMEI, TR), kind="light", quad=qd, state=st)
-# B1. the pond's centre (AD round 1): the body water-81 #0c4972 (one step under the pond's #135375, blue), water-84 #1d6888 flecks
+# B1. the pond's centre: the body water-81 #0c4972 (one step under the pond's #135375, blue), water-84 #1d6888 flecks
 # at half the pond's density (every second deep fleck dropped by hash)
 CORE_BODY = nearest((12, 73, 114)); assert PAL[CORE_BODY].tolist() == [12, 73, 114]
 for k in range(2):
@@ -285,7 +285,7 @@ for k in range(2):
         ys, xs = np.nonzero(lab == j)
         if not h2("core-fleck", k, int(ys.min()), int(xs.min())) & 1: core[lab == j] = WB
     add(f"meadow/ground/core-{k + 1}", core, kind="ground", set="core", variant=str(k + 1))
-# B2. the core's edge (AD round 1): the boundary 16 px inside the core cell's open side, a wave of +-4 px at 2 cycles per 24, a 6 px Bayer band;
+# B2. the core's edge: the boundary 16 px inside the core cell's open side, a wave of +-4 px at 2 cycles per 24, a 6 px Bayer band;
 # core inside, the water fill of the same frame outside, no foam, no outline
 COREG = [a for n, a, f in PIECES if n == "meadow/ground/core-1"][0]
 for fr in (1, 2):
@@ -377,7 +377,7 @@ for qi, q in enumerate(("nw", "ne", "se", "sw")):
         img = np.where(~m, low, -1)                                     # outside the edge: the lower lawn, opaque, so the plateau tile shows the level change
         beyond = grow(m, 12) & ~grow(m, 1) & ~m; img[beyond] = [gstep(v, -1) for v in low[beyond]]
         near2 = grow(m, 5) & ~grow(m, 1) & ~m; img[near2] = [gstep(v, -2) for v in low[near2]]
-        outl = grow(m, 1) & ~m; img[outl] = OUTL                          # a 1 px line under the turf (the owner's reference has no hard rim)
+        outl = grow(m, 1) & ~m; img[outl] = OUTL                          # a 1 px line under the turf (no hard rim)
         def nb(dy, dx): return np.roll(np.roll(m, dy, 0), dx, 1)
         rim = m & ~(nb(4, 0) & nb(0, 4) & nb(0, -4) & nb(-4, 0)); img[rim] = [gstep(v, 2) for v in up[rim]]
         e1 = m & ~(nb(1, 0) & nb(0, 1) & nb(0, -1) & nb(-1, 0)); img[e1] = [gstep(v, 1) for v in img[e1]]
@@ -415,7 +415,7 @@ def spill(a, seed):
         a[y0 + d - 1, x] = gstep(up, -2); a[y0 + d, x] = OUTL
         if rng.rand() < .35:
             for t in range(1, rng.randint(2, 7)): a[y0 + d + t, x] = gstep(up, -1) if t < 3 else OUTL
-    ROOT, ROOTL = nearest((86, 60, 40)), nearest((128, 92, 60))         # roots trailing from the turf down the stone (owner's reference)
+    ROOT, ROOTL = nearest((86, 60, 40)), nearest((128, 92, 60))         # roots trailing from the turf down the stone
     for _ in range(max(1, w // 24)):
         x = int(rng.uniform(4, w - 4)); col = np.where(a[:, x] != TR)[0]
         if not len(col): continue
@@ -477,7 +477,7 @@ def foot(a, seed):
         a[h - 14:h, k:k + ww] = np.where(s_[:, :ww] != TR, s_[:, :ww], seg)
     return a
 def side_edge(a, east, seed):
-    """the art director's recut of a side column's open edge (10-15): the candidates' edge was one regular scallop every 24 rows with a
+    """a side column's open edge, recut: the earlier edge was one regular scallop every 24 rows with a
     near-black outline, which read as a cut-out comb. Now an irregular rock edge: three waves of 1-3 cycles per 48 rows with this
     piece's own phases, faded to the shared depth at every 48 px seam so any column stacks on any other, held in runs of 3-5 rows so
     it steps like stacked stones; the rock is carried out from its own row where the edge moves out; the outline is two DARK steps under the rock it bounds, with
@@ -543,13 +543,13 @@ for p in json.load(open(os.path.join(TS, "props", "props.json")))["pieces"]:
     k_ = np.isin(a, KEY); a[k_ & edge] = P48.index["plumD"]; a[k_ & ~edge] = P48.index["soil"]
     PIECES.append((p["name"], a, dict(status="candidate", offset=[(48 - w) >> 1, 48 - h], **f)))
 
-# ---- the art director's signature: the pieces seen at 1x in a place composed by the loader's tile rules, or
+# ---- the signature: the pieces seen at 1x in a place composed by the loader's tile rules, or
 # reviewed on their sheet with a settled v1 role. Still candidate: side columns and stairs (not yet composed), material.rock (its cliff-band
 # captures), and every piece v1 does not draw (shore macros, lobes, beaches, bend, band, wall foot strips, bush, fern, bridge).
 def signed(n, f):
-    # The art director's sign, 2026-10-15 (round 2, 6c2ffc1a): every piece v1 draws, seen at 1x in the drop2 proofs (light and deep,
-    # the levels, the lawn tiling) and in the Companion's M3/M4 whole screens. Still candidate: what v1 does not draw (the shore lobes,
-    # beaches, bend and band; the wall foot strips; bush, fern, bridge) and the side columns, recut 10-15 and not yet seen in a place capture.
+    # Signed 2026-10-15: every piece v1 draws, seen at 1x in the drop2 proofs (light and deep,
+    # the levels, the lawn tiling) and in the Companion's whole screens. Still candidate: what v1 does not draw (the shore lobes,
+    # beaches, bend and band; the wall foot strips; bush, fern, bridge) and the side columns, recut and not yet seen in a place capture.
     k = f["kind"]
     if k in ("ground", "decal", "lip", "face", "cap", "stair", "landing", "apron-top", "light", "shadow", "material", "shore-macro"): return True
     if k == "shore" and f.get("set") in ("water", "water-sand", "sand", "core"): return True
