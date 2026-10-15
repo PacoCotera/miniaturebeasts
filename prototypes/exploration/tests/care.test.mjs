@@ -535,7 +535,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const said = [], noop = () => {}, id = x => x;
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
-    FX: {}, viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
+    FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
     panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
   const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
@@ -636,7 +636,7 @@ function sealed(rep, lines, bay = 1) {
     NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
     bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
-  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord"];
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord", "sealedWords"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
@@ -676,6 +676,33 @@ test("End expedition: world lines draw only while their foot stays on or above r
 test("End expedition after a break: the pods line in the copywriter's words (19:03)", () => {
   for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
     assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
+});
+test("End expedition, Sealed: the trip line is built from what was sealed (pods and supplies, or supplies only)", () => {
+  assert.ok(sealed({ sealed: { id: "c0", pods: [], d: 2 } }, []).at("Expedition 4 · supplies"), "supplies only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1], d: 2 } }, []).at("Expedition 4 · one pod and supplies"), "one pod and supplies");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "two pods and supplies");
+  assert.ok(!sealed({ sealed: { id: "c0", pods: [1], d: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
+});
+test("End expedition, the hold-empty branch (an old save): main's line, and no yield line even when one is passed", () => {
+  const d = sealed({ empty: true, yield: { data: 0, tier: 0, moments: 0 } }, []);
+  assert.ok(d.at("Nothing to seal this time."), "main's line");
+  assert.ok(!d.said.some(q => /Data ·|No crate|crate this time/.test(q.str)), "no yield line, no new string");
+  assert.equal(d.crates[0].y, 114, "the crates stay where they were");
+});
+test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
+  assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
+});
+test("Cargo's preview predicts End: the hold plus the yield still to come, always a seal when an explored walk has room", () => {
+  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, stats: { calls: 1 }, shield: 3, smax: 3, dField }, bay }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["Seals the supplies · crate 1 of 3", "The Station opens it when you dock"], "an empty hold still seals the walk's Data");
+  assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
+  assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
+  assert.equal(run({ e: 0, d: 6, s: 0, pods: [] }, [], 6, 6)[0], "Seals the supplies · crate 1 of 3", "the yield already in the hold");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])), ["Bay full · your finds stay in the hold", "dock to free it"], "bay full, hold empty: the bay-full lines");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [], 0)), [], "an old save with no yield and no hold: no line");
+  for (const o of [run({ e: 0, d: 0, s: 0, pods: [] }), run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])]) assert.ok(!o.some(l => /no crate|you still earn/.test(l)));
+  assert.doesNotMatch(source("sealPreview"), /no crate|you still earn/);
 });
 test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
   assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
