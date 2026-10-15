@@ -827,12 +827,12 @@
    "sha256": "7ee2c9c9237a32278cbd14034e3e9d7f840637e9629f832fa1788e19b2eca3a9",
    "signed": "art director (home hand masters, #112 and #116)"
   },
-  "home-sitting-24x32": {
-   "file": "pods/home-sitting-24x32.png",
-   "w": 24,
-   "h": 32,
-   "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
-   "signed": "art director (home hand masters, #112 and #116)"
+  "home-sitting-32x24": {
+   "file": "pods/home-sitting-32x24.png",
+   "w": 32,
+   "h": 24,
+   "sha256": "80ba90b17fa0df1a87d974cbbd88ca2d78b7911d48cafe88a6a915efca039298",
+   "signed": "named with --ids"
   },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",
@@ -3935,6 +3935,27 @@
    "h": 24,
    "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
    "signed": "art director, original concept marks (#117)"
+  },
+  "sitting-frame-empty-48x40": {
+   "file": "pods/sitting-frame-empty-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "ddea353f6c547e8f8662e7ed73123959286dc1302ace8e85ca59603ffe3d94fa",
+   "signed": "named with --ids"
+  },
+  "sitting-frame-held-48x40": {
+   "file": "pods/sitting-frame-held-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "e36f2be8826b38c096103ecfccd3ba61e92326bf34c1e571ae9041354b027857",
+   "signed": "named with --ids"
+  },
+  "sitting-frame-portrait-48x40": {
+   "file": "pods/sitting-frame-portrait-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
+   "signed": "named with --ids"
   },
   "spread-progress-empty-8x8": {
    "file": "pods/spread-progress-empty-8x8.png",

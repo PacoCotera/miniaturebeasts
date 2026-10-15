@@ -235,15 +235,19 @@
    "word": [16, 12],
    "lamp": null,
    "frame": {
-    "at": [52, 40],
-    "size": [32, 48],
-    "slices": {"none": "sitting-frame-empty-32x48", "held": "sitting-frame-held-32x48", "painting": "sitting-frame-held-32x48", "portrayed": "sitting-frame-portrait-32x48"}
+    "at": [44, 40],
+    "size": [48, 40],
+    "rect": [916, 312, 48, 40],
+    "slices": {"none": "sitting-frame-empty-48x40", "held": "sitting-frame-held-48x40", "painting": "sitting-frame-held-48x40", "portrayed": "sitting-frame-portrait-48x40"},
+    "window": {"at": [4, 4], "size": [40, 30], "rect": [920, 316, 40, 30], "rails": {"side": 4, "top": 4, "foot": 6}, "rule": "every frame master paints its window opaque, never hollow: the module's panel never shows through"},
+    "picture": {"at": [4, 4], "size": [40, 30], "rect": [920, 316, 40, 30], "when": "portrayed, and its portrait picture has landed", "asset": "the mibi's portrait at 40x30, placed 1:1 (props regions.portrait.picture; request portrait:<d16>:40x30, per the architect's ruling)", "over": "the frame: drawn after it, exactly its window", "until": "nothing (w 0, h 0): the portrait frame's own window shows"},
+    "lift": "rides the module's 2 px lift (focus.targets.portrait.lift): frame 916,310; window and picture 920,314"
    },
    "states": {
-    "none": "no sitting held: the frame's outline",
-    "held": "a sitting held: the gilt frame lit",
-    "painting": "its sitting begun, the crate on its way: the gilt frame",
-    "portrayed": "its portrait came: the frame filled"
+    "none": "no sitting held: the empty frame, its window debossed",
+    "held": "a sitting held: the held frame, its window dark",
+    "painting": "its sitting begun, the crate on its way: the held frame, its window dark",
+    "portrayed": "its portrait came: the portrait frame, its window a warm paper fill (never the mibi) until the picture lands, then the picture over it"
    }
   },
   "cross": {
@@ -325,7 +329,7 @@
   "stamp",
   "plates",
   "door",
-  "portrait",
+  "portrait (its frame, then its picture)",
   "cross",
   "wild",
   "strip",
@@ -617,7 +621,7 @@
   "faceRingAway": "stone"
  },
  "masters": {
-  "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`)",
+  "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`). The portrait's picture, portrait:<d16>:40x30, is derived on the Station, not a master (the architect's ruling).",
   "new": [
    {
     "id": "vivarium-near-{dawn,day,dusk,night}-544x408",
@@ -644,9 +648,9 @@
    "notch-skill-16x24 (new)",
    "mark-out-with-companion-64x96 (new)",
    "heart-full-24",
-   "sitting-frame-empty-32x48",
-   "sitting-frame-held-32x48",
-   "sitting-frame-portrait-32x48",
+   "sitting-frame-empty-48x40",
+   "sitting-frame-held-48x40",
+   "sitting-frame-portrait-48x40",
    "gate-wild-shut-48x48",
    "gate-wild-open-48x48",
    "chapter-plate-read-40x40",

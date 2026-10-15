@@ -1,7 +1,7 @@
 // One mibi up close in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `habitat-rest` (an adult at home, the ring on it), `habitat-meet` (the new mibi, the meet ribbon in
 // the tag's place), `habitat-out` (the mibi out with the Companion while it is away: the out mark, the ring on the name), `habitat-card` (a
 // bonded bred mibi: the heart, three notches, where it came from, plates read and unread), `habitat-plate` (the ring on an unread plate), `habitat-door` (the Companion's set, a request waiting), `habitat-door-away`, `habitat-cross` (partners, one out
-// while the Companion is away), `habitat-portrait` (a sitting held), `habitat-wild-armed`, `habitat-tile` (the ring on a tile), `habitat-twelve` (twelve compact tiles), `habitat-docked-dawn|day|dusk|night` (the four lights, for the art director)
+// while the Companion is away), `habitat-portrait` (a sitting held), `habitat-portrait-painting` (its sitting begun, the crate on its way), `habitat-portrait-portrayed` (its portrait came, no picture yet: the paper window), `habitat-wild-armed`, `habitat-tile` (the ring on a tile), `habitat-twelve` (twelve compact tiles), `habitat-docked-dawn|day|dusk|night` (the four lights, for the art director)
 // and the namer over it: `habitat-namer` (the meet's first ✓: Fig selected, the ring on Done), `habitat-namer-typed`, `habitat-namer-accents`, `habitat-namer-refused`, `habitat-namer-empty`, `habitat-namer-full`.
 // Each is reached by the page's own state and asserted (screen, state, ring, namer) before `visit(name, page, fail)` is called. Taken with reduced motion. Returns { fails }.
 import { openStation } from "./station-page.mjs";
@@ -19,6 +19,8 @@ const SCENES = {
   "door-away": { shown: 0, f: "door", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1, 2]); w.away(); } },
   cross: { shown: 0, f: "cross", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1]); w.away(); } },
   portrait: { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); window.__st.ST.sitting = { source: "dev", key: null, at: 0 }; } },
+  "portrait-painting": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "painting" }; } },
+  "portrait-portrayed": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "delivered" }; } },
   "wild-armed": { shown: 3, f: "wild", state: "rest", arm: true, set: (w) => { w.bays(8); w.adults(3); w.young(1); const st = window.__st.ST; st.mibis[3].born = st.turn - 4; } },
   tile: { shown: 2, f: "tile:2", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
   twelve: { shown: 5, f: "resident", state: "rest", set: (w) => { w.bays(12); w.adults(12); } },
