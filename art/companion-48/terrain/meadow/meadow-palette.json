@@ -13,7 +13,7 @@
   {"i": 11, "name": "clay", "hex": "#bf9157", "dark": 12, "light": 10, "dark2": 13, "fog": 10, "fade": 46, "mat": "core"},
   {"i": 12, "name": "bark", "hex": "#7d5435", "dark": 13, "light": 11, "dark2": 1, "fog": 10, "fade": 4, "mat": "core"},
   {"i": 13, "name": "soil", "hex": "#4b3023", "dark": 1, "light": 12, "dark2": 0, "fog": 5, "fade": 3, "mat": "core"},
-  {"i": 14, "name": "pine", "hex": "#173b2d", "dark": 1, "light": 15, "dark2": 0, "fog": 5, "fade": 3, "mat": "grass"},
+  {"i": 14, "name": "pine", "hex": "#173b2d", "dark": 1, "light": 15, "dark2": 0, "fog": 5, "fade": 3, "mat": "grass", "storm": 1},
   {"i": 15, "name": "forest", "hex": "#23623c", "dark": 14, "light": 16, "dark2": 1, "fog": 47, "fade": 4, "mat": "grass"},
   {"i": 16, "name": "leaf", "hex": "#329245", "dark": 15, "light": 17, "dark2": 14, "fog": 47, "fade": 4, "mat": "grass"},
   {"i": 17, "name": "grass", "hex": "#5cbb4c", "dark": 16, "light": 18, "dark2": 15, "fog": 6, "fade": 16, "mat": "grass"},

@@ -92,7 +92,7 @@ assert len(set(c["hex"] for c in cols)) == NC
 with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
     fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
              "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i]),
-             "mat": str(mat[i])}) for i in range(NC)) + " ] }\n")   # mat: "grass" marks the colours the level tone moves (grass only)
+             "mat": str(mat[i]), **({"storm": 1} if i == 14 else {})}) for i in range(NC)) + " ] }\n")   # storm: 1 on pine (AD): the storm darkens it one step (to ink), not two (to void); mat: "grass" marks the colours the level tone moves (grass only)
 OUTL = nearest((24, 52, 30)); BODY, SHAL = nearest((29, 104, 136)), nearest((34, 121, 147))
 LAWN0 = LB - 1                                                    # the middle level's tone, one step under b1's lit lawn
 def boxavg(a, k):
