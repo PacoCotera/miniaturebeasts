@@ -85,10 +85,10 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `6e69ff788831cdf7c0ae0a0e2bb014621919f0680c48a433822800fb983011ad`
 - `S02/c-mini-S02-juv-12x12.png` sha256 `cbdf05c2616fbfaafadac7976813a22c141aeaab933e7acf4324dce4bd5b8a36`
 
-**S03 juvenile (candidate):**
-- `S03/c-token-S03-juv-idle-32x32.png` sha256 `a3afdcda79735a54a705811d5aa9deef4980b59437eea3689543eb40fc9de449`
-- `S03/c-token-S03-juv-alert-32x32.png` sha256 `f934fe406a5ce17a2033a8ea5a920cbc4c767422e27575dea472a4a7a74a9ef3`
-- `S03/c-token-S03-juv-huddle-32x32.png` sha256 `574c159a4d6bf97b44c2dc6068cb2d5f6f74475e1e0e21014e5505f16c690045`
-- `S03/c-token-S03-juv-eat-f0-32x32.png` sha256 `35784abfa37c709a650708fb835b0dc685384ca9217c8ea5c66f54e40201586e`
-- `S03/c-token-S03-juv-eat-f1-32x32.png` sha256 `dd098daf1b4495abf68369298386e247e81148a60639e6cdc8015d410e1a83cd`
-- `S03/c-mini-S03-juv-12x12.png` sha256 `5c11ef5973b4cbcef5ceadb4649af6e8f2a170b46b3eb294def51a68ae1c8e07`
+**S03 juvenile signed** (art director, 2026-10-15 04:36), judged at 1× on the lawn beside the signed adult. The studio's set is ac79e3b8/03f19fca, with one AD fix: the head antenna was a gold stub, and is now a teal stalk (1f9d8f) with an ink cap above it, as the adult (a83542f0). That is 2 px in each of the 6 files, all on the core 48:
+- `S03/c-token-S03-juv-idle-32x32.png` sha256 `2e30a2f514968440bd0e4c673dec8fd599195a473760001a84fb49e9c27cb8b8`
+- `S03/c-token-S03-juv-alert-32x32.png` sha256 `002a4ead03ef563833f39d9d9200237ca2ab3f3391e7825225d78431f2ce337a`
+- `S03/c-token-S03-juv-huddle-32x32.png` sha256 `5f086fcbfbeb455dd983ab8f4ee380f7245e69dc3d79d27d1f0889d069e87d89`
+- `S03/c-token-S03-juv-eat-f0-32x32.png` sha256 `9d605405c97178dd616de76d336108b68fa685b4ac607455aa549470f70858bb`
+- `S03/c-token-S03-juv-eat-f1-32x32.png` sha256 `c6dc88e6ed393307ef8ea4107e4c916684fde0bec0eee4f0a7660b22a81f0975`
+- `S03/c-mini-S03-juv-12x12.png` sha256 `fa5037914614b1342a3d9c7a33fa3cd941d6ba0b9732773ba9da91344b0a7dc8`
