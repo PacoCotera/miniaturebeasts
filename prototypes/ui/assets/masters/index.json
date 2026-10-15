@@ -386,6 +386,13 @@
    "sha256": "0f003e5f0ea23d2919d7d49111ed3680c9bcacdbc928412939c8a69a62dcabb8",
    "signed": "art director, verdict (963f4eab)"
   },
+  "crate-sitting-48x40": {
+   "file": "pods/crate-sitting-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "e9af94a27c29680e4b63be600a9e923169a6706e6171ba98f78bfa23aa1c25c9",
+   "signed": "art director, hand recut (pass 137), signed at 1x 10-11 14:37"
+  },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
    "w": 16,
@@ -610,6 +617,13 @@
    "sha256": "0efb62f44b4cb30eee324d83c75908aa6f849cb0df1d42edf40ff03ba847a47c",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "founder-shadow-224x14": {
+   "file": "pods/founder-shadow-224x14.png",
+   "w": 224,
+   "h": 14,
+   "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
+   "signed": "named with --ids"
+  },
   "frame-bottom-line-1024x38": {
    "file": "pods/frame-bottom-line-1024x38.png",
    "w": 1024,
@@ -729,6 +743,20 @@
    "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-bay-open-176x72": {
+   "file": "home/home-bay-open-176x72.png",
+   "w": 176,
+   "h": 72,
+   "sha256": "261fcea830792d8c80baa534265ac4788cf03e25007456a2d09e2d101ad12a68",
+   "signed": "art director, pass 138 (db66efbf)"
+  },
+  "home-bay-shut-176x72": {
+   "file": "home/home-bay-shut-176x72.png",
+   "w": 176,
+   "h": 72,
+   "sha256": "70a31efda54232c7245704cb96bfb48b1c18dea95864d15b1ad6e4fec3c5fa56",
+   "signed": "art director, hand recut (pass 137), signed at 1x 10-11 14:37"
+  },
   "home-bed-dawn-192x56": {
    "file": "home/home-bed-dawn-192x56.png",
    "w": 192,
@@ -764,12 +792,47 @@
    "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
    "signed": "art director, verdict (d09acb12)"
   },
+  "home-chamber-empty-72x72": {
+   "file": "home/home-chamber-empty-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-chamber-growing-72x72": {
+   "file": "home/home-chamber-growing-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-chamber-ready-72x72": {
+   "file": "home/home-chamber-ready-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "e57b1c225c968a69f355fa6fa0f645b2897a0e02de712e20a3d7edaf10893a0d",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-cradle-empty-96x72": {
+   "file": "home/home-cradle-empty-96x72.png",
+   "w": 96,
+   "h": 72,
+   "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-cradle-full-96x72": {
+   "file": "home/home-cradle-full-96x72.png",
+   "w": 96,
+   "h": 72,
+   "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
   "home-crate-48x40": {
    "file": "pods/home-crate-48x40.png",
    "w": 48,
    "h": 40,
-   "sha256": "87d9a930ffd62bfcbb1a9fb522e12aefb8f29595dcd0e4d90346c867a4bb7d0d",
-   "signed": "art director (home hand masters, #112 and #116)"
+   "sha256": "a896513a48c395d956fb3f9a89a0475fdcf5649b54f911ce12ada4550ffea053",
+   "signed": "art director, hand recut from crate-sealed-256x176 (pass 138), signed at 1x 10-11 14:37"
   },
   "home-glass-dawn-640x488": {
    "file": "home/home-glass-dawn-640x488.png",
@@ -799,6 +862,13 @@
    "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
    "signed": "art director, light verdict (eb64c0d6)"
   },
+  "home-journal-104x72": {
+   "file": "home/home-journal-104x72.png",
+   "w": 104,
+   "h": 72,
+   "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
   "home-lamp-amber-12x12": {
    "file": "pods/home-lamp-amber-12x12.png",
    "w": 12,
@@ -827,6 +897,83 @@
    "sha256": "96321b87d0283a57d0543a22bd46b398b4d2acea4af77304a01cfc8251326ee7",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-rack-pod-accent-24x32": {
+   "file": "pods/home-rack-pod-accent-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "172313d6d3c600d6a4617c0d77524fcdd0eb16ca0774b3ec9a8572c58979795b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-body-24x32": {
+   "file": "pods/home-rack-pod-body-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "e78384b3cac271c61f01d00db0704ab1f017aa7bdeee2ce326fac7d267e447ce",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-light-24x32": {
+   "file": "pods/home-rack-pod-light-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "4ce2f1ce69dc60ba5dcbc41e53fb7ddb2f05a8f2b661af9b5ca8086ed9f37d1b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-outline-24x32": {
+   "file": "pods/home-rack-pod-outline-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "ab4144236c16519639a4546f8c16af2a5f466397d86cfbc91c8215c1aca91e5d",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-bands-24x32": {
+   "file": "pods/home-rack-pod-pattern-bands-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "89b5db434b657898ec82702f653867d3c9b885c6ed1edc0d3093a489e89c1d40",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-dots-24x32": {
+   "file": "pods/home-rack-pod-pattern-dots-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "0ba226431bb006e34696cd192295522f0438a0c07690e5c6f7c91cd17e86511d",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-plates-24x32": {
+   "file": "pods/home-rack-pod-pattern-plates-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "aa14653e529546fc8f0a253a60aa850459620283d3eed19b8134f71b1bfcfd14",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-ribs-24x32": {
+   "file": "pods/home-rack-pod-pattern-ribs-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "8589a8563b5ba33fcd68503ee9b70fa14c6fcb0ff3cd284d72cc0519a6c2de1f",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-segments-24x32": {
+   "file": "pods/home-rack-pod-pattern-segments-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "c77d41c42620a81f2ad95d44707c3fe756c7ed0b9c97f0851b2313030a65775b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-stripes-24x32": {
+   "file": "pods/home-rack-pod-pattern-stripes-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "1ba72652eb378b2d603842be198dd6141a1c4857d62889a2ce6a55c907684bff",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-shade-24x32": {
+   "file": "pods/home-rack-pod-shade-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "19916a8e503df7c97ee3886b4dd2e2ca2f8de896231f381b23478109d2c6ba49",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
   "home-shield-lost-12x24": {
    "file": "pods/home-shield-lost-12x24.png",
    "w": 12,
@@ -847,6 +994,13 @@
    "h": 32,
    "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
    "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-well-32x32": {
+   "file": "home/home-well-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44",
+   "signed": "art director, Home column verdict (1f7d4a83)"
   },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",
@@ -883,6 +1037,13 @@
    "sha256": "313188842cf353a44a70004b17a7357dd38e51e4776b98a19f4a06d0311f2d8e",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "icon-wait-16": {
+   "file": "pods/icon-wait-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
+   "signed": "named with --ids"
+  },
   "idle-vivarium-dawn-1024x568": {
    "file": "vivarium/idle-vivarium-dawn-1024x568.png",
    "w": 1024,
@@ -915,8 +1076,8 @@
    "file": "pods/leaf-empty-16x20.png",
    "w": 16,
    "h": 20,
-   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "6f40440f3a15ba5f86419ac5d16c2bcd8930dcfe803d78a085bb8e9afe5b627c",
+   "signed": "named with --ids"
   },
   "leaf-empty-8x12": {
    "file": "pods/leaf-empty-8x12.png",
@@ -1149,13 +1310,6 @@
    "sha256": "2fefb4b797ef82dcbe5a3c4a5b7d3e68239fa7d3aa7fde396eef55e46cf66b5c",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "mark-species-frost-24x24": {
-   "file": "pods/mark-species-frost-24x24.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
-   "signed": "art director (palette re-sign, masters-pods a60d822b)"
-  },
   "mark-species-S01-24x24": {
    "file": "pods/mark-species-S01-24x24.png",
    "w": 24,
@@ -1268,6 +1422,13 @@
    "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "mark-species-frost-24x24": {
+   "file": "pods/mark-species-frost-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
+  },
   "mark-waiting-24": {
    "file": "pods/mark-waiting-24.png",
    "w": 24,
@@ -1275,12 +1436,89 @@
    "sha256": "12920d916e647e00fc37823a11d2d7777118730628d3b107043c08740ea2534d",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "mibi-halo-empty-128x160": {
-   "file": "pods/mibi-halo-empty-128x160.png",
-   "w": 128,
-   "h": 160,
-   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  "mibi-adult-S01-144x152": {
+   "file": "pods/mibi-adult-S01-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-304x312": {
+   "file": "pods/mibi-adult-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "5c143f8fb40a350fb540e13dd759db50ea5e8e9d0eae7b0960dc096928663976",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-48x48": {
+   "file": "pods/mibi-adult-S01-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "1163284a198d623c8f0bc2f1266856a0a2b30d09dbda5a7feb735d9a3411d96a",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-96x88": {
+   "file": "pods/mibi-adult-S01-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S02-144x152": {
+   "file": "pods/mibi-adult-S02-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "1362c33472a99649a99c223d21c30d2ee57f9b66e05fa784b54b1f5f9f5044c9",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S02-304x312": {
+   "file": "pods/mibi-adult-S02-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2deffd984707a18c6c9109cb4945f95532f059394c0a18bf04f1b726c8bcbf49",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S02-48x48": {
+   "file": "pods/mibi-adult-S02-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "0e23ae35585fa728f5fb2eac65de3439d1837c44dedd1ef99acda860512a4269",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S02-96x88": {
+   "file": "pods/mibi-adult-S02-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "facedb7f27a6b41169100bb65cfb833da2cb23b78e56ebb1dcbccc8eb5b305b8",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-144x152": {
+   "file": "pods/mibi-adult-S03-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "171ebe6dc4d0fcc8edd6137b1dec038f7ace5e5f3d0c0c6f263fe34e3b2e4543",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-304x312": {
+   "file": "pods/mibi-adult-S03-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bd426004a698ee45aca2b7919910424f7a3e50de280a1b9cd5745e8229e59a8c",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-48x48": {
+   "file": "pods/mibi-adult-S03-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "ce2a291d07e4e1d3737295fc30f936fe629744689fa6f09b6705770310660b62",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-96x88": {
+   "file": "pods/mibi-adult-S03-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "85f11b8ade52bc9d15764c14f7d13b0dfbb7ece44622aea6c1eb7807fbf0ca23",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
   },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
@@ -1528,33 +1766,40 @@
    "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
+  "mibi-halo-empty-128x160": {
+   "file": "pods/mibi-halo-empty-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
   "mibi-juvenile-S01-104x112": {
    "file": "pods/mibi-juvenile-S01-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "a365b5f5966e2511c487139c1e48d3e2e636c3fca24e5afd1e07c8b255dbfe5f",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "06eaddd2d88a702b564588910783fd0214d13b9fff7d6aabba182336300a405b",
+   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
   },
   "mibi-juvenile-S01-304x312": {
    "file": "pods/mibi-juvenile-S01-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "5e4a0f8811acb6982c4d6781d74f88fd5d50af394f52631d8f19bea5307c9fb4",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "e4712cfb89e32a4452fc5dfa80f1fd8995197afd0520b7c9d06754ef25f86603",
+   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
   },
   "mibi-juvenile-S01-48x48": {
    "file": "pods/mibi-juvenile-S01-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "c15b498df7ce6eb2d57e948e9d4a9a1d42f1da73ea83db18fd05b501e44b6ed9",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "1467283119992de92cfc0d99f866835066714eaab45ffbc6e9887374ffb4df88",
+   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
   },
   "mibi-juvenile-S01-96x88": {
    "file": "pods/mibi-juvenile-S01-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "f0cfd504aca7d7659e7d4a33653f1fa8f83798c43575302644ff2327b1ef0e1a",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "0e4d6c6fc9a81a68d612bebbd62578f3b35ce036536a434d3b1cbf23fcf2c845",
+   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
   },
   "mibi-juvenile-S02-104x112": {
    "file": "pods/mibi-juvenile-S02-104x112.png",
@@ -1588,29 +1833,29 @@
    "file": "pods/mibi-juvenile-S03-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "4e713c24e24ce01bf92b5b7b25127c2062e847e206bfe5f64d41c6054f35ef75",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "c0fd88f15c7bfad7606c16669b01c1aababdad22f25289a51f43c5c4eeaf2b78",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
   },
   "mibi-juvenile-S03-304x312": {
    "file": "pods/mibi-juvenile-S03-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "53d664866437dfcb2964d2388b62c8a4bc7bc5dbe7b333e7488e63643df86d9d",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "2ff012027372a84a89921a6e8d3475ddf4cde6fe92f4c569e930970d2b7a8eb3",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
   },
   "mibi-juvenile-S03-48x48": {
    "file": "pods/mibi-juvenile-S03-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "4084c6704cec68ac9054cf2cb4a724239b28295b520571989c52559b2b95375c",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "925c3c32691181d83f1ce7c16792a1ec7c3e8230cf66a9528c3145afd5992388",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
   },
   "mibi-juvenile-S03-96x88": {
    "file": "pods/mibi-juvenile-S03-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "1c37d9ab03f2c5a79c2ad9d61c92cf9b1e5ddffc5b9eafe68bc459f25df8696b",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "fd2f97e9ef86f4b0759e76e22a41cb8212078594d255c5942134e13972880f88",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
   },
   "mibi-juvenile-S04-104x112": {
    "file": "pods/mibi-juvenile-S04-104x112.png",
@@ -4004,37 +4249,35 @@
    "w": 104,
    "h": 160,
    "sha256": "2d2a51a64ca9452719346c03ef41be8d144a2d0124e3f3cfa2f7ac515ac5fded",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-crown-leaf-crest-104x64": {
    "file": "pods/trait-S01-crown-leaf-crest-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "3a55004a949cde0626bbc53c8c2e1afb78a35dcee18270d093cd566e205ec564",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "352b1b6182e2bb350ecfd825b1014dd59a31e9c7483f6699225c3aa82fe55d6a",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-crown-leaf-crest-104x96": {
    "file": "pods/trait-S01-crown-leaf-crest-104x96.png",
    "w": 104,
    "h": 96,
    "sha256": "6f6823890fb03c8c2d7639b4c5ce44736c50479e3bb7582fdb7710bcd2f73afa",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-crown-leaf-crest-128x160": {
    "file": "pods/trait-S01-crown-leaf-crest-128x160.png",
    "w": 128,
    "h": 160,
    "sha256": "0a5f497bb7652d4c44718b372b09584fb4514f5d08c6213bbff5fb3478c87fae",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "art director, trait wave 1, 10-11"
   },
   "trait-S01-crown-leaf-crest-144x176": {
    "file": "pods/trait-S01-crown-leaf-crest-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "18a163cb2a8f7d98db14ae54112f0b371176577117fa62ecff2875b7a873cc79",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "62e475adc2173d4c608ed31d9841ec9c6a587dbac261c1f0e1a48bffa4fab519",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-drive-128x160": {
    "file": "pods/trait-S01-drive-128x160.png",
@@ -4176,37 +4419,35 @@
    "w": 104,
    "h": 160,
    "sha256": "02a01a9b237286510ab24dee35d8f8e0fe5f3d1a164365e40babcb0e251e33f1",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-markings-plain-104x64": {
    "file": "pods/trait-S01-markings-plain-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "5d2d115179cb4898e4d7b4679cfa9a0e806615bf47841268909c430e24896aae",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "91d5e74aaca4c8bcc553105d2aa9023b103fe8b2752587b3aea280359ab9efc1",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-markings-plain-104x96": {
    "file": "pods/trait-S01-markings-plain-104x96.png",
    "w": 104,
    "h": 96,
    "sha256": "3ca8ba4a2ffb383cdaede43281fe612f5a5cec166dfc5c3a6b8f6874bbdd092b",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-markings-plain-128x160": {
    "file": "pods/trait-S01-markings-plain-128x160.png",
    "w": 128,
    "h": 160,
    "sha256": "54794e1e801050d00f71d27bd7b5da5b687d4a4c7466e0f0570f5520beaf2400",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "art director, trait wave 1, 10-11"
   },
   "trait-S01-markings-plain-144x176": {
    "file": "pods/trait-S01-markings-plain-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "69d906a5e09b0c41340423798ecac272fe01539d598c6e63c6f9bc348d39b615",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "d1e2608e003341196d0bdeeaa7c3a96036373c9471269ab465da03c4de92b48d",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S02-flecks-bare-104x160": {
    "file": "pods/trait-S02-flecks-bare-104x160.png",

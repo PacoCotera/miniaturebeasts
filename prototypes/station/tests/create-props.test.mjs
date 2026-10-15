@@ -59,8 +59,8 @@ test("Create's props validate against create.props.json for every species in eve
 test("the state: nothing read with no chapter read (no roll, the ring on the room), shape with one read, grow once ✓ has paid", () => {
   const a = make("S01", 3, 0).build(); assert.equal(a.props.state, "nothingRead"); assert.equal(a.props.regions.roll, undefined); assert.deepEqual(a.props.focus, { cur: "room", targets: [] }); assert.equal(a.props.regions.rail.open, -1);
   const b = make("S01", 3, 1).build(); assert.equal(b.props.state, "shape"); assert.deepEqual(b.props.focus, { cur: "roll", targets: [{ id: "roll", group: "roll" }] });
-  const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
-  assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'"); assert.equal(g.line.price, S.priceText(r.cost.e, r.cost.d, r.cost.s), "the price as it was paid");
+  const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p, minutes: r.bud.minutes }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
+  assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'"); assert.equal(g.line.price, S.priceText(r.cost.e, r.cost.d, r.cost.s, r.bud.minutes), "the price as it was paid, with the bud's own wait (grow() clears firstMibi: recomputing would read 20 for the first founder)"); assert.match(g.line.price, new RegExp(` ⧗ ${r.bud.minutes}$`));
   assert.equal(createPod(m.st, m.cr).id, m.p.id, "the pod is the screen's own once it has left the rack");
 });
 
@@ -68,8 +68,8 @@ test("the roll: three pictures in the order as the pod is, only the first copy, 
   const m = make("S01", 3, 4), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
   list.forEach(({ t }, f) => {
     m.cr.f = f; const r = m.build().props.regions.roll, opts = S.rollOptions(m.p, t.id);
-    if (opts.length > 1) { assert.equal(r.form, "roll"); assert.equal(r.pictures.length, 3); assert.deepEqual(r.pictures, opts.map((o) => `roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${o.look.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72`)); }
-    else { assert.equal(r.form, "single"); assert.equal(r.pictures.length, 1); assert.equal(r.chosen, 0); }
+    if (opts.length > 1) { assert.equal(r.form, "roll"); assert.equal(r.pictures.length, 3); assert.deepEqual(r.pictures, opts.map((o) => `roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${o.look.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72:128x72`)); }
+    else { assert.equal(r.form, "single"); assert.equal(r.pictures.length, 1); assert.equal(r.chosen, 0); if (t.nature === "doing") assert.deepEqual(r.pictures, [`roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72:128x72`], "a doing: one plate a trait, the same for every value (Pods P7)"); }
     assert.equal(r.notches, opts.length > 1, "the notches only while the trait rolls");
   });
 });
@@ -94,9 +94,9 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
 
 test("the bottom line: ✓ Grow it and the price with ◆ a change (the first founder no Essence), what stays a surprise, the first block in the rules' order with its notice; ← the pod", () => {
   const Sg = spec.strings, m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
-  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Grow it", "⚡ 2 ❀ 4", "Loika", "two surprises to come", null]);
-  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1");
-  m.st.firstMibi = true; assert.equal(m.build().props.regions.leaves.total, 5, "the first founder: five leaves whatever is shaped"); m.st.firstMibi = false; assert.equal(m.build().props.regions.leaves.total, 21, "20 and one a change");
+  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Grow it", "⚡ 2 ❀ 4 ⧗ 20", "Loika", "two surprises to come", null]);
+  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "the wait last: 20 and one a change");
+  m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
   assert.equal(make("S01", 3, 0).build().line.subject, Sg.surprise.all); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina stays a surprise"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
   { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
   { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.bud.busy, true); }
@@ -120,7 +120,7 @@ test("the founder's picture follows the choices (the roll's dither runs from the
   const was = m.build().props.regions.founder.picture; assert.equal(was, founderPicture(m.p, {}, size).id); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 };
   const now = m.build().props.regions.founder.picture; assert.notEqual(now, was); assert.match(now, /^founder:S01:/); assert.ok(now.length < 96);
   const a = m.build().props.regions.stamp.asset; m.cr.choices = {}; assert.notEqual(m.build().props.regions.stamp.asset, a, "a changed look redraws the stamp");
-  const n = make("S01", 3, 0); assert.match(n.build().props.regions.founder.picture, /:all:/);
+  const n = make("S01", 3, 0); assert.match(n.build().props.regions.founder.picture, /^founder:S01:[^:]+:ghost:304x312$/, "nothing read: the ghost"); assert.match(m.build().props.regions.founder.picture, /^founder:S01:[^:]+:clear:304x312$/, "only the doings unread: clear");
 });
 
 // the pod's contact shadow (create.json regions.podShadow; Pods' rule): a slot of the class's shadow master at the class's width + 16, named in every state

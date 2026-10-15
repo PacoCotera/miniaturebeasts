@@ -9,22 +9,22 @@ import { plateReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
 import { slot, railOf } from "./pods-props.mjs";
+import { treatmentOf, drawnDigest, builtOf } from "../art.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const fnv = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16); };
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 
 // The traits a pod can be shaped on: the read ones, in chapter order, with their chapter (the ring order of ◀ ▶).
 export const reviewTraits = (p, frame) => frame.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => ({ c, t })));
 // The pod Create is on: held by id; while it grows, the one ✓ Grow it made (the rack no longer holds it), else the rack's.
 export const createPod = (st, cr) => cr.grown?.pod ?? st.tray.find((q) => q.id === cr.podId) ?? null;
-// The founder's picture id for the choices made (the picture the roll's dither starts from and ends on): the unread parts frosted; nothing read, every part (frost on the founder's own outline).
-const mistyOf = (fr, p) => fr.chapters.filter((c) => !p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => t.id));
+// The founder's picture id for the choices made (the picture the roll's dither starts from and ends on): founder:<species>:<drawn digest>:<clear|ghost|veil-<groups>>:<w>x<h>. The drawn digest is the genome as drawn (Glow's emission and
+// Charge's phase are not the mibi's own while unread); the treatment is art.mjs's treatmentOf on the chapters read: nothing read the ghost, an unread look a veil over its groups (body, coat, face, leg, tail), only doings unread clear.
 export function founderPicture(p, choices, size) {
-  const fr = frameOf(S.speciesOf(p)), misty = mistyOf(fr, p), none = !p.read.length;
-  return { id: `founder:${S.speciesOf(p)}:${genomeDigest(S.founderGenome(p, choices))}:${none ? "all" : fnv(misty.join(","))}:${size.join("x")}`, misty, none };
+  const fr = frameOf(S.speciesOf(p)), g = S.founderGenome(p, choices), b = builtOf(fr, g, p.read), t = treatmentOf(fr, p.read, !b.error && b.validation.status === "valid" ? b.scene : null);
+  return { id: `founder:${S.speciesOf(p)}:${drawnDigest(fr, g, p.read)}:${t.mode === "veil" ? "veil-" + t.groups.join("+") : t.mode}:${size.join("x")}`, read: [...p.read], mode: t.mode };
 }
 
 export function createBuild(m, spec, pods) {
@@ -32,7 +32,6 @@ export function createBuild(m, spec, pods) {
   const p = createPod(st, cr), fr = frameOf(S.speciesOf(p)), R = spec.regions, list = reviewTraits(p, fr), changed = S.changedTraits(cr.choices), grown = !!cr.grown;
   const state = grown ? "grow" : list.length ? "shape" : "nothingRead";
   const ph = (id, size, hollow, until) => req({ kind: "ph", id, size, hollow, until });
-  const stale = "its master (create.json placeholders)";
   const f = clamp(cr.f, 0, Math.max(0, list.length - 1)), cur = list[f] ?? null, genome = S.founderGenome(p, cr.choices);
   const regions = {};
 
@@ -52,9 +51,9 @@ export function createBuild(m, spec, pods) {
 
   // the roll: three pictures (as the pod is, only the first copy, only the second copy) or one; the chosen one ringed
   if (list.length) {
-    const opts = S.rollOptions(p, cur.t.id), rolls = opts.length > 1, pic = (look) => ph(`roll-${S.speciesOf(p)}-${slug(cur.t.name)}-${slug(look)}-128x72`, R.roll.picture.size, false, "the roll picture master (cut from the painting)");
+    const opts = S.rollOptions(p, cur.t.id), rolls = opts.length > 1, pic = (look) => slot(req, `roll-${S.speciesOf(p)}-${slug(cur.t.name)}${look == null ? "" : "-" + slug(look)}-128x72`, [0, 0, ...R.roll.picture.size], "the roll picture master (cut from the painting)");
     const chosen = rolls ? (cr.choices[cur.t.id] || 0) : 0, clash = cr.clash.includes(cur.t.id);
-    const pictures = rolls ? opts.map((o) => pic(o.look)) : [pic(traitState(fr, cur.t, genome).shows)];
+    const pictures = rolls ? opts.map((o) => pic(o.look)) : [pic(cur.t.nature === "doing" ? null : traitState(fr, cur.t, genome).shows)];
     regions.roll = { form: rolls ? "roll" : "single", chosen, clash, pictures, notches: rolls };   // the notches are the words' chrome, drawn only while the trait rolls
   }
 
@@ -76,7 +75,7 @@ export function createBuild(m, spec, pods) {
   regions.chamber = { back: ph("chamber-back-400x320", R.chamber.rect.slice(2)) };
   regions.chamberFront = { picture: ph("chamber-front-400x320", R.chamberFront.rect.slice(2)) };
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
-  regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
+  regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), read: fp.read, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }), dome: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${pods.classes.pod.collection.join("x")}`, species: S.speciesOf(p), state: "identified", size: pods.classes.pod.collection }) };   // the pod at rest in the small chamber: the collection class, only ever reduced
   regions.podShadow = { picture: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + pods.shadow.widen, pods.shadow.h], "the contact shadow") };   // as Pods' rule: named in every state, the face keeps its node
@@ -86,8 +85,8 @@ export function createBuild(m, spec, pods) {
   regions.domeFront = { picture: ph("dome-small-front-176x224", R.domeFront.rect.slice(2)) };
   regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2)), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
 
-  // the leaves the bud will take, every one empty: the minutes it will grow
-  regions.leaves = { total: S.budMinutes(st, changed.length, settings), full: 0, rows: 0, empty: ph(R.leaves.pictures.empty, R.leaves.leaf, true, stale), filled: ph(R.leaves.pictures.full, R.leaves.leaf, false, stale) };
+  // the painted contact shadow under the founder (fix 6 A2): named in every state, the face keeps its node and gives it no size until the picture is on the face
+  regions.founderShadow = { picture: slot(req, "founder-shadow-224x14", [0, 0, ...R.founderShadow.rect.slice(2)], "the contact shadow") };
 
   // the stamp of the read and changed chapters, and the code (printed at Grow)
   const readIds = [...new Set([...p.read, ...fr.chapters.filter((c) => c.traits.some((t) => changed.includes(t.id))).map((c) => c.id)])], sz = stampSizing(fr, genome);
@@ -99,7 +98,7 @@ export function createBuild(m, spec, pods) {
   const Sg = spec.strings, cost = grown ? cr.grown.cost : S.growCost(st, cr.choices, settings), key = grown ? null : S.growBlockKey(st, p, cr.choices, settings, cr.clash);
   const unread = fr.chapters.filter((c) => !p.read.includes(c.id)), name = S.spName(p);
   const subject = !unread.length ? S.cap(S.aAn(name)) + ", fully known" : unread.length === fr.chapters.length ? Sg.surprise.all : unread.length === 1 ? fill(Sg.surprise.one, { Chapter: unread[0].name }) : fill(Sg.surprise.more, { "n in words": SPELL[unread.length] ?? "many" });
-  const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s), back: S.cap(name), subject, need: null };
+  const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s, grown ? cr.grown.minutes : S.budMinutes(st, changed.length, settings)), back: S.cap(name), subject, need: null };
   if (key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(Sg.notices.shortFrom[key.from], { icons: key.short }); }   // short: the dimmed ✓, the short figures amber
   else if (key) { bottom.blocked = true; bottom.need = key.key === "busy" ? Sg.notices.busy : key.key === "noBay" ? Sg.notices.noBay : key.key === "clash" ? Sg.notices.clash : null; }   // busy, no bay, clash: no ✓ cap, the verb and the price in mist
 

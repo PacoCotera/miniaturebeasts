@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { podsProps } from "../src/views/pods-props.mjs";
+import { createBuild } from "../src/views/create-props.mjs";
 import { registerPictures, iconRequests } from "../src/pictures.mjs";
 import { SPECS } from "../src/game.mjs";
 import { assetEntry, placeMaster, dropAsset } from "../../ui/assets.mjs";
@@ -56,6 +57,15 @@ test("every picture Pods asks for, in every state of every species, is in a laye
   assert.deepEqual(unknown, []); assert.ok(seen.size > 40, "the walk found the pictures: " + seen.size);
 });
 
+test("the rack pod picture is art (composed on the palette); its layers stay art masters", () => {
+  assert.equal(policyOf("rackpod:S01"), "art"); assert.equal(policyOf("rackpod:unknown"), "art"); assert.equal(policyOf("home-rack-pod-body-24x32", "master"), "art");
+});
+
+test("the walk crate on Home is a painted picture; the other home crates are in no family until placed", () => {
+  assert.equal(policyOf("home-crate-48x40", "master"), "painted"); assert.equal(policyOf("home-crate-48x40:48x40", "master"), "painted"); assert.throws(() => policyOf("home-crate-80x56"), /no layer family/);
+  assert.equal(policyOf("crate-sitting-48x40", "master"), "painted");
+});
+
 test("the bed of a light is a painted picture; the one bed of old is in no family", () => {
   for (const l of ["dawn", "day", "dusk", "night"]) assert.equal(policyOf(`home-bed-${l}-192x56`, "master"), "painted");
   assert.throws(() => policyOf("home-bed-192x56"), /no layer family/);
@@ -65,7 +75,7 @@ test("a juvenile mibi takes the art director's juvenile stand-in at its size whe
   const MASTER = "mibi-juvenile-S01-304x312", env = { podById: () => null, frameOf, mibiGenome: () => podGenome(frameOf("S01"), 3) };
   const ask = (id, stage, [w, h] = [304, 312]) => ({ kind: "mibi", id: `mibi:${id}:${stage}:${w}x${h}`, mibi: id, stage, species: "S01", size: [w, h] });
   const ids = ["juvenile", "adult"].flatMap((st) => [1, 2].flatMap((n) => [`mibi:${n}:${st}:304x312`, `mibi:${n}:${st}:144x152`]));   // 144×152: a size with no juvenile master in the real index
-  const clear = () => { for (const id of ids) dropAsset(id); dropAsset(MASTER); };
+  const clear = () => { for (const id of ids) dropAsset(id); dropAsset(MASTER); dropAsset("mibi-adult-S01-304x312"); };   // Pip's real stand (fix 1a) out too: the first half is the hook with no adult stand placed
   clear(); registerPictures([ask(1, "juvenile", [144, 152]), ask(1, "adult", [144, 152])], env);
   assert.equal(assetEntry("mibi:1:juvenile:144x152").file, null, "no stand-in placed at this size: the juvenile builds the rig"); assert.match(assetEntry("mibi:1:juvenile:144x152").until, /juvenile stand-in/);
   placeMaster({ id: MASTER, w: 304, h: 312, file: "mibi-juvenile-S01-304x312.png", hash: "0".repeat(64), signed: "2026-10-11", status: "master" }, { w: 304, h: 312, rgba: () => new Uint8ClampedArray(304 * 312 * 4) });
@@ -99,3 +109,30 @@ test("fix 7: a resident master's grade is painted at either status; <master>:day
 test("the stamp label's dimmed plate and the stamp are painted pictures (fix 4)", () => { assert.equal(policyOf("stamp-plate-120-k20", "placeholder"), "painted"); assert.equal(policyOf("stamp-plate-120-k75", "master"), "painted"); assert.equal(policyOf("stamp:abc:1,2:92:k20", "placeholder"), "painted"); });
 
 test("a doing trait's plate (one a trait, no look suffix) is a painted picture, by the existing trait family (fix 5 P7)", () => { for (const id of ["trait-S01-drive-128x160", "trait-S01-efficiency-128x160", "trait-S03-carriage-straight-104x96"]) { assert.equal(policyOf(id, "master"), "painted", id); assert.equal(policyOf(id, "placeholder"), "painted", id); } });
+// ---- Fix 1b part 1: the founder's id carries its treatment (ui/asset-policy.mjs, unknown.mjs) ----
+test("a founder is art while it is clear (painted once a master), painted at either status when ghost or veiled; the old id shape is in no family", () => {
+  assert.equal(policyOf("founder:S01:S01-1a2b3c4d:clear:304x312"), "art"); assert.equal(policyOf("founder:S01:S01-1a2b3c4d:clear:304x312", "master"), "painted");
+  for (const id of ["founder:S03:S03-1a2b3c4d~g:ghost:304x312", "founder:S01:S01-1a2b3c4d:veil-body:304x312", "founder:S01:S01-1a2b3c4d:veil-coat:304x312", "founder:S09:S09-1a2b3c4d:veil-face+leg+tail:304x312"]) for (const st of ["placeholder", "master"]) assert.equal(policyOf(id, st), "painted", `${id} ${st}`);
+  for (const bad of ["veil-tail+face", "veil-body+coat", "veil-coat+face", "veil-+", "veil-zzz", "veil-body+face", "veil-tail+leg"]) assert.throws(() => policyOf(`founder:S01:S01-1a2b3c4d:${bad}:304x312`), /no layer family/, bad);
+  for (const ok of ["veil-face+leg+tail", "veil-face+tail", "veil-leg+tail", "veil-leg", "veil-tail", "veil-face"]) assert.equal(policyOf(`founder:S01:S01-1a2b3c4d:${ok}:304x312`), "painted", ok);
+  for (const old of ["founder:S01:S01-1a2b3c4d:all:304x312", "founder:S01:S01-1a2b3c4d:9f3c:304x312", "founder:S01:S01-1a2b3c4d:veil-Face:304x312", "founder:S01:S01-1a2b3c4d:ghost"]) assert.throws(() => policyOf(old), /no layer family/, old);
+});
+test("a Create walk on S01 and S03 (nothing read, shape, shape and a doing): every picture is in a family, and any founder with an unread look is painted", () => {
+  const specCreate = J("create.json"), pods = J("pods.json"), T0 = 1_000_000, cfg = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }; let founders = 0;
+  for (const sp of ["S01", "S03"]) for (const [name, read] of [["nothing read", 0], ["one chapter", 1], ["shape", 2], ["shape and a doing", 3], ["every chapter", frameOf(sp).chapters.length]]) {
+    const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; S.seedPodFromGenome(st, podGenome(frameOf(sp), 3), cfg, T0); const p = st.tray[0]; S.skipIdentify(st, p);
+    frameOf(sp).chapters.slice(0, read).forEach((c) => S.read(st, p, c.id, cfg));
+    const b = createBuild({ st, settings: cfg, ui: { create: { podId: p.id, choices: {}, f: 0, clash: [], grown: null } } }, specCreate, pods);
+    for (const r of b.requests) if (r.kind !== "slot" && r.kind !== "ph") for (const status of ["placeholder", "master"]) policyOf(r.id, status);   // no id throws
+    const f = b.requests.find((r) => r.kind === "founder"), unreadLook = frameOf(sp).chapters.slice(read).some((c) => ["coat", "shape", "face", "legs-tail"].includes(c.id));
+    founders++; assert.ok(f, `${sp} ${name}: the founder is asked for`);
+    for (const status of ["placeholder", "master"]) assert.equal(policyOf(f.id, status), read === 0 || unreadLook ? "painted" : status === "master" ? "painted" : "art", `${sp} ${name} ${f.id} ${status}`);
+    if (read === 0) assert.match(f.id, /:ghost:/); else if (unreadLook) assert.match(f.id, /:veil-/); else assert.match(f.id, /:clear:/);
+  }
+  assert.equal(founders, 10);
+});
+
+test("the founder's contact shadow is painted and the wait's icon is art (fix 6 A2, A3)", () => {
+  for (const st of ["placeholder", "master"]) for (const id of ["founder-shadow-224x14", "founder-shadow-224x14:224x14"]) assert.equal(policyOf(id, st), "painted", id + " " + st);
+  for (const st of ["placeholder", "master"]) assert.equal(policyOf("icon-wait-16", st), "art", st);
+});

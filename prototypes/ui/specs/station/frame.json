@@ -13,7 +13,7 @@
   "topRules": { "x": [256, 888], "y0": 8, "y1": 32 },
   "stage": { "rect": [0, 40, 1024, 522] },
   "line": { "rect": [0, 562, 1024, 38], "component": "bottomLine", "rule": "top", "slice": "frame-bottom-line-1024x38", "painted": "the bar 1:1 at the rect; the zones, the separators and the marks over it; while the bar is not on the face, the code panel (colours.chrome) and the rule (colours.rule)" },
-  "action": { "rect": [16, 570, 376, 24], "px": 16, "gap": 24, "capGap": 4, "cap": [16, 574, 16, 16], "capSize": [16, 16], "verbWords": 4, "backMoved": "regions.back" },
+  "action": { "rect": [16, 570, 376, 24], "px": 16, "gap": 24, "capGap": 4, "cap": [16, 574, 16, 16], "capSize": [16, 16], "verbWords": 4, "backMoved": "regions.back", "wait": { "token": "⧗", "icon": "icon-wait-16", "size": [16, 16], "order": "after ⚡ ❀ ◆", "colour": "price", "never": "need", "screens": ["create"], "note": "the bud's wait as a price group (fix 6 N1a; game designer, 2026-10-15)" } },
   "subject": { "rect": [408, 570, 208, 24], "centre": 512, "px": 16, "words": 6, "shrinks": true },
   "need": { "rect": [624, 570, 272, 24], "right": 896, "px": 16, "lamp": [12, 12], "lampGap": 4, "words": 6, "slideMs": 200 },
   "back": { "rect": [920, 570, 88, 24], "right": 1008, "px": 16, "cap": [16, 16], "capGap": 4, "words": 1, "gapBefore": 24, "room": 68, "roomRule": "the word's room is the slot less the cap and its gap, 88 − 16 − 4; a wider word reads \"Back\". The longest title word, \"Vivarium\" (66 px), fits" },

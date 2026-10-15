@@ -48,14 +48,15 @@ function standIn(id, size, hollow = false) { const [w, h] = size, d = new Uint8C
 const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const PINNED = pinnedPictures(podsSpec, frameSpec);
 
-async function start(b, { motion = true, t0 = 0 } = {}) {
+async function start(b, { motion = true, t0 = 0, noWait = false, skip = [] } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["create", createSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
+  if (!noWait) f.handleOf("icon-wait-16", withPolicy((i) => standIn(i, [16, 16])));   // a test-only stand-in for the signed master: the wait's picture (fix 6 A3)
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  for (const r of b.requests) if (!skip.includes(r.id)) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));   // skip: a picture the host does not have (an unplaced master)
   f.t = t0; f.motion = motion; f.build = b;
-  assert.equal(f.props({ screen: "create", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
+  const rc = f.props({ screen: "create", ...b.props, motion, frame: frameProps(b.line) }); f.initErrors = f.errors(); assert.equal(rc, 0, f.initErrors.join("; ")); frames(f); return f;   // initErrors: what the first build said (reading errors() drains it)
 }
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
@@ -103,7 +104,7 @@ test("the roll: three pictures at the spec's places, the chosen one ringed (4 px
   const one = scene({ read: 4, f: 3 }), f = await start(one), lg = logOf(f); assert.equal(one.props.regions.roll.form, "single"); assert.deepEqual(region(lg, "focus").rect, [444, 100, 136, 80]);
   assert.ok(pixelIs(f, 448 + 64, 104 + 36, one.props.regions.roll.pictures[0])); assert.equal(one.props.regions.roll.notches, false); assert.ok(f.pixel(448 + 58 + 5, 90).join() !== rgbOf("bone").join(), "no notch for a trait that does not roll");
 });
-test("a clash is a 2 px red edge inside the chosen picture, the line red with its ✕ first and no tag; the changed tag (88 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {
+test("a clash is a 2 px red edge inside the chosen picture, the line bone with its red ✕ first and no tag; the changed tag (88 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {
   const red = (f, x, y) => f.pixel(x, y).join() === rgbOf("red").join();
   const b = scene({ read: 2, f: 1, roll: 1, clash: true }), f = await start(b), c = R.roll.forms.roll.pictures[1];
   assert.ok(b.props.regions.roll.clash); assert.equal(b.props.regions.traitLine.changed, false); assert.match(b.props.regions.traitLine.text, /^✕ /); assert.equal(b.props.regions.traitLine.clash, true);
@@ -155,6 +156,20 @@ test("the founder's dither: the old picture to the new in 16 Bayer levels over 2
   }
   f.frame(t0 + 210); assert.ok(pixelIs(f, x0 + 41, y0 + 61, b) && pixelIs(f, x0 + 42, y0 + 62, b), "the new picture whole at the end"); assert.equal(f.poll("done")?.kind, "dither");
   const lg = logOf(f); assert.ok(lg.regions.every((r) => r.id !== "founder" || r.layer === "art" || r.layer === "painted"), "no opacity: pictures only"); assert.deepEqual(f.errors(), []);
+});
+test("the founder's dither is on the higher layer of its two pictures: an art picture dithering to a painted one is painted (pass 3 only), never the art layer of the new picture alone (Fix 1b part 1)", { skip }, async () => {
+  const a = scene({ read: 2, f: 1 }), b = scene({ read: 2, f: 1, roll: 1 }); for (const x of [a, b]) x.props.regions.chamberFront.picture = "";
+  const f = await start(a, { motion: true, t0: 1000 }), from = a.props.regions.founder.picture, to = b.props.regions.founder.picture; assert.notEqual(from, to);
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r), r.hollow), ...(i === to ? { policy: "painted", status: "master" } : {}) })));
+  const layer = (lg) => lg.regions.filter((r) => r.id === "founder").map((r) => r.layer), t0 = f.t;
+  f.send({ t: "event", kind: "dither", target: "founder", from, ms: EV.roll.ms, hold: EV.roll.hold }); assert.equal(f.props({ screen: "create", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; "));
+  f.frame(t0 + 100); assert.deepEqual(layer(logOf(f)), ["painted"], "mid-dither: painted (from art to painted)");
+  f.frame(t0 + 210); assert.deepEqual(layer(logOf(f)), ["painted"], "the dither's end: the new picture alone, still painted");
+  const c = scene({ read: 2, f: 1, roll: 0 }); c.props.regions.chamberFront.picture = ""; const g = await start(c, { motion: true, t0: 1000 }); g.send({ t: "event", kind: "dither", target: "founder", from: to, ms: EV.roll.ms, hold: EV.roll.hold });
+  for (const r of b.requests) g.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r), r.hollow), ...(i === to ? { policy: "painted", status: "master" } : {}) })));
+  g.handleOf(c.props.regions.founder.picture, withPolicy((i) => ({ ...standIn(i, R.founder.rect.slice(2)), policy: "art" })));   // the new picture is art, the old one painted
+  assert.equal(g.props({ screen: "create", ...c.props, motion: true, frame: frameProps(c.line) }), 0, g.errors().join("; ")); g.frame(g.t + 100); assert.deepEqual(layer(logOf(g)), ["painted"], "from a painted picture to an art one: painted too (the higher of the two)");
+  assert.deepEqual(f.errors(), []);
 });
 test("the founder's dither is a cut with reduced motion: the new picture at once, the event done on the frame", { skip }, async () => {
   const { b, f, t0 } = await rolled(false); f.frame(t0 + 16); assert.ok(pixelIs(f, R.founder.rect[0] + 41, R.founder.rect[1] + 61, b)); assert.equal(f.poll("done")?.kind, "dither"); assert.deepEqual(f.errors(), []);
@@ -238,6 +253,28 @@ test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 
   let verbShort = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(short, x, y)) verbShort++; assert.ok(verbShort > 0, "a short line has its verb at the same x (its cap picture is the frame's, not in this test)");
 });
 
+// ---- the bud's wait on the Grow line (fix 6 N1a): ⧗ n, the price's fourth group ----
+const NAMES = new Map(palette.map(([n, h]) => [n, [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))]));
+const waitSpan = (f) => { let x0 = -1; for (let x = 16; x < 400 && x0 < 0; x++) for (let y = 574; y < 592; y++) if (pixelIs(f, x, y, "icon-wait-16")) { x0 = x; break; } return x0; };   // the wait icon's first column in the action zone
+const inkOf = (f, name, x0, x1) => { let n = 0; for (let y = 574; y < 592; y++) for (let x = x0; x < x1; x++) if (f.pixel(x, y).every((v, i) => v === NAMES.get(name)[i])) n++; return n; };
+test("the Grow line's wait: every region of the action stays across its zone (x 16 to 392), the wait's icon is the last group after the ◆ figure, and no logged text carries the ⧗ token", { skip }, async () => {
+  const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f); assert.match(b.line.price, /^⚡ 2 ❀ 4 ◆ 1 ⧗ 21$/);
+  for (const r of lg.regions.filter((x) => x.id === "action")) assert.ok(r.rect[0] >= 16 && r.rect[0] + r.rect[2] <= 392 && r.rect[1] >= 566 && r.rect[1] + r.rect[3] <= 594, `action ${r.layer} ${r.rect}: across [16, 392], a text box's line 2 px above the zone`);
+  let data = -1; for (let x = 16; x < 400 && data < 0; x++) for (let y = 574; y < 592; y++) if (pixelIs(f, x, y, "icon:data:16")) { data = x; break; }
+  const wait = waitSpan(f); assert.ok(data > 0 && wait > data + 16, `the wait icon (x ${wait}) after the ◆ icon (x ${data}) and its figure`);
+  assert.ok(!lg.type.some((t) => t.text.includes("⧗")), "the token is never drawn as a glyph"); assert.deepEqual([...f.initErrors, ...f.errors()], []);
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "shape", null, true), [], "no departure from create.json");
+});
+test("the wait's colour: price (cream) at rest, dim (mist) when the action is blocked, price still when only a material is short (never need)", { skip }, async () => {
+  const price = await start(scene({ read: 2, f: 1 })), blocked = await start(scene({ read: 2, f: 1, busy: true })), short = await start(scene({ read: 2, f: 1, short: true }));
+  for (const [name, f, want, not] of [["rest", price, "focus", "mist"], ["blocked", blocked, "mist", "focus"], ["short", short, "focus", "amber"]]) {
+    const x = waitSpan(f); assert.ok(x > 0, name); assert.ok(inkOf(f, want, x + 18, x + 48) > 0, `${name}: the figure in ${want}`); assert.equal(inkOf(f, not, x + 18, x + 48), 0, `${name}: never ${not}`);
+  }
+});
+test("with no picture for the wait the face says so and draws neither the icon nor a bare figure", { skip }, async () => {
+  const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b, { noWait: true }), lg = logOf(f);
+  assert.match([...f.initErrors, ...f.errors()].join(), /icon-wait-16 is not on the face/); assert.ok(!lg.type.some((t) => t.region === "action" && t.text.trim() === "21"), "no bare figure"); assert.ok(!lg.type.some((t) => t.text.includes("⧗")), "no glyph");
+});
 // ---- the pod's contact shadow (regions.podShadow; Pods' rule): under the pod in shape and nothing read, in grow only until the travel starts, never with reduced motion ----
 const shadowOf = (lg) => lg.regions.find((r) => r.id === "podShadow" && r.layer === "painted");
 test("shape (a medium pod): the shadow is the painted node podShadow at [92, 401, 136, 14], the class's master, drawn just before the pod and clear of the departure check", { skip }, async () => {
@@ -254,4 +291,15 @@ test("grow: the shadow stands at 0 and 299 ms, is a cut to no size at 300, 600 a
   assert.deepEqual(f.errors(), []);
   const b = scene({ read: 2, f: 1, roll: 1, grown: true, motion: false }), g = await start(b, { motion: false }); g.send({ t: "event", kind: "grow", target: "pod", ms: EV.grow.ms, hold: EV.grow.hold }); frames(g, 2);
   assert.ok(!shadowOf(logOf(g)), "no shadow with reduced motion in grow");
+});
+
+test("a roll picture that is not a placed master draws nothing at its place: no ground, no ring, no clash edge, no notches; a placed doing plate is drawn at (448, 104, 128, 72) with the ring (Every state composed 2-4, Pods P2)", { skip }, async () => {
+  const b = scene(SCENES["shape, a doing"]), pic = b.props.regions.roll.pictures[0]; assert.equal(b.props.regions.roll.form, "single"); assert.match(pic, /^roll-S01-[a-z-]+-128x72:128x72$/, "a doing: one plate a trait, no look in the id");
+  const bare = logOf(await start(b, { skip: [pic] })) ?? null, f0 = await start(b, { skip: [pic] }); frames(f0); const lg0 = logOf(f0);
+  for (const [id, layer] of [["roll", "art"], ["roll", "painted"], ["focus", undefined]]) assert.equal(region(lg0, id, layer), null, `unplaced: no ${id} ${layer ?? ""}`); void bare;
+  assert.deepEqual(region(lg0, "roll", "chrome").rect, [506, 90, 12, 100], "unplaced: no ground and no edge; only the two empty notch pictures (12 × 6 boxes that draw nothing) are left in the roll region, as for a trait that does not roll")
+  const f1 = await start(b); frames(f1); const lg1 = logOf(f1); { const r1 = region(lg1, "roll", "chrome").rect; assert.ok(r1[0] <= 448 && r1[1] <= 104 && r1[0] + r1[2] >= 448 + 128 && r1[1] + r1[3] >= 104 + 72, `placed: the ground at the roll's one place (the region ${r1})`); } assert.ok(region(lg1, "focus"), "placed: the ring"); assert.deepEqual(f1.errors(), []);
+  // the clash edge and the notches follow the picture too: a clash on an unplaced picture draws no edge
+  const c = scene({ read: 2, f: 1, roll: 1, clash: true }), cp = c.props.regions.roll.pictures[1], fc = await start(c, { skip: [cp] }); frames(fc); const lgc = logOf(fc);
+  { const g = R.roll.forms.roll.pictures[1]; assert.notDeepEqual(fc.pixel(g[0] + 20, g[1] + 1), rgbOf("red"), "an unplaced chosen picture has no clash edge"); assert.ok(!region(lgc, "focus"), "an unplaced chosen picture has no ring"); void lgc; }
 });

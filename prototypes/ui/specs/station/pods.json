@@ -102,10 +102,6 @@
     },
     "noDigits": true
    },
-   "place": {
-    "at": [200, 40, 48, 48],
-    "slice": "place-{place}-48x48"
-   },
    "grow": {
     "at": [216, 104, 16, 16],
     "only": "where the ring and the seal do not say it",

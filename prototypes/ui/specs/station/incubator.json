@@ -9,7 +9,7 @@
  "derived": {
   "no ring": "UI designer, 2026-10-09: no focus ring in any state. One subject and nothing to choose, so ✓ acts on the room, as on Home's room; ready reads from the glow, the full leaves, the plaque and the ✓ cap. A ring round the dome and its base would cross the leaf arcs",
   "leaf arcs": "UI designer, 2026-10-09; the rule leafArc, the ninth layout rule (architect, 13:24): two arcs centred on the bud's centre (512, 344), inner radius 216 and outer 244, each at most 20 leaves on an 8° pitch across ±76°; the inner fills first. The outer radius 244, not 248, keeps the outer arc's top leaf 10 px under the rail with the art director's 16×20 leaf (at 248 its box would start at y 86, 6 px under it)",
-  "leaf": "art director, 2026-10-09 13:28: one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, an outline in `metal`. Was a 24×12 lying leaf",
+  "leaf": "art director, 2026-10-09 13:28: one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, the leaf's own silhouette in one flat, unlit fill, no outline and no vein (art director, fix 6 A1). Was a 24×12 lying leaf",
   "leaf fill": "UI designer, 2026-10-09: the current leaf fills from its foot in 20 whole rows, a row every 3 s, carried in props (leaves.rows), never an event, so a still frame and reduced motion show the true wait",
   "glass and base": "art director, 2026-10-09 13:28 (concept measurements), on the grid by the UI designer: the glass 304×270, a half circle of radius 152 on (512, 354), its top at y 202, in the region 360, 200, 304, 272 (its ink 2 px down); the base 336×96 at 344, 456 (the concept's about 328×96). Were 304×296 at 360, 176 and 368×80 at 328, 464. Pass R: the geometry stays; the materials follow the art reset (derived.art reset)",
   "glass lift": "UI designer, 2026-10-09; retired by the art director, 2026-10-10 10:48: nothing lifts or opens in the hatch; the chamber (dome, domeFront) stays drawn from 0 to the hand-off, its window has no pane, and the juvenile stands over it at 1000 (drawOrder). Dirty: each object invalidates only its own box; worst frame 97,188 px (15.8%) at 1000, the juvenile standing (94,848) with the plaque's cut to its hatch word; ceiling 98,944 (94,848 + the plaque plate 128 × 32 = 4,096; fix 5 I3); the steps 96,064",
@@ -57,7 +57,7 @@
   "leaves": {
    "rect": [256, 88, 512, 216], "component": "leaves", "form": "arc", "layout": ["leafArc"], "inStates": ["growing", "ready"], "leaf": [16, 20], "max": 40,
    "pictures": { "empty": "leaf-empty-16x20", "full": "leaf-full-16x20" },
-   "states": { "empty": "the outline, `metal`", "filling": "the full leaf clipped from the bottom over the outline: its lowest `rows` rows of 20", "full": "the full leaf" },
+   "states": { "empty": "the leaf's silhouette, one flat fill (leaf-empty-16x20, fix 6 A1)", "filling": "the full leaf clipped from the bottom over the outline: its lowest `rows` rows of 20", "full": "the full leaf" },
    "props": "leaves: { total, full, rows }: total the bud's minutes, full the whole minutes passed, rows 0 to 19 of the current leaf, stepped every 3 s by the view; ready: full = total",
    "leafArc": {
     "centre": [512, 344], "arcs": { "inner": 216, "outer": 244 }, "span": [-76, 76], "pitch": 8, "half": 4, "perArc": 20, "offset": [-8, -10], "fill": ["inner", "outer"],
@@ -163,7 +163,7 @@
   "bud": { "bean": "peach", "light": "cream", "edge": "rust", "late": "blush", "shape": "bark", "note": "the bud pictures' colours, never a drawn glow" },
   "base": { "fill": "enamel", "light": "sand", "shade": "bevel", "edge": "hairline", "footLight": "sage", "plate": "painted in base-336x96 (#92846d)", "plateEdge": "hairline", "note": "the sand housing, matte, lit as Home's rest knob is (was lit frost); the foot light sage, a quiet alive-and-working line, never frost, never amber (art director, 2026-10-10 01:44)" },
   "plaque": { "empty": "ink", "growing": "ink", "ready": "ink", "floor": "4.5:1 on the painted plate (16 px, weight 400); ink 4.81:1" },
-  "leaves": { "full": "sage", "vein": "sageD", "empty": "metal" },
+  "leaves": { "full": "sage", "vein": "sageD", "empty": "sageD", "note": "the empty leaf: sageD #5d7a5f, one flat unlit fill painted in leaf-empty-16x20, no outline or vein; 1.43:1 on the wall, under the full leaf's 2.70:1 (art director, fix 6 A1, masters-pods cf3b0ac6)" },
   "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
   "codeRule": "hairline",
   "code": "mist",

@@ -44,7 +44,8 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y) {
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h) {
   int fh = wire_asset_slot(fromAsset), th = wire_asset_slot(toAsset); if (fh < 0 || th < 0) return 0;
   snprintf(prim_ops(), (size_t)prim_ops_size(), "[[\"bayerPick\",%d,%d,%d,%d,%d]]", fh, th, level, x, y);
-  v_layer(prim_asset_layer_of(th)); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
+  int lf = prim_asset_layer_of(fh), lt = prim_asset_layer_of(th); v_layer(lf > lt ? lf : lt);   /* the higher layer of the two pictures (painted over art): a pick that draws pixels of the painted one is painted for the whole of the dither */
+  prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
 }
 
 /* The same pick between two windows of the picture's size (two cells of an atlas; M1 §2.1): `fromAsset` NULL or "" is clear (a dither-in from nothing). */
@@ -55,9 +56,9 @@ int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, con
   v_layer(prim_asset_layer_of(th >= 0 ? th : fh)); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
 }
 
-/* the icon a glyph stands for, and the length of its UTF-8 */
+/* the picture a glyph stands for (its id, "%d" the size), and the length of its UTF-8; the wait ⧗ (U+29D7) is a signed master, icon-wait-16 */
 static const char *icon_of(const char *p, int *len) {
-  static const struct { const char *g; const char *name; } T[] = { { "\xe2\x9a\xa1", "energy" }, { "\xe2\x97\x86", "data" }, { "\xe2\x9d\x80", "essence" }, { "\xe2\x9c\x95", "cross" } };
+  static const struct { const char *g; const char *name; } T[] = { { "\xe2\x9a\xa1", "icon:energy:%d" }, { "\xe2\x97\x86", "icon:data:%d" }, { "\xe2\x9d\x80", "icon:essence:%d" }, { "\xe2\x9c\x95", "icon:cross:%d" }, { "\xe2\xa7\x97", "icon-wait-%d" } };
   for (unsigned i = 0; i < sizeof T / sizeof T[0]; i++) { size_t l = strlen(T[i].g); if (strncmp(p, T[i].g, l) == 0) { *len = (int)l; return T[i].name; } }
   return NULL;
 }
@@ -80,7 +81,7 @@ v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *c
     if (!*p || ic) {
       if (n) { piece[n] = 0; int w = v_measure(piece, px); char nid[96]; snprintf(nid, sizeof nid, "%s.%d", id, i++); v_text(nid, piece, cx, y, w, px, colour); cx += w; n = 0; }
       if (!*p) break;
-      char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, "icon:%s:%d", ic, px);
+      char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, ic, px);
       int iy = y + v_cap(px) - px + (int)(px * 0.12 + 0.5);
       if (!v_sprite(nid, aid, cx + 2, iy, px, px)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", aid); v_error(b); }
       cx += px + 4; p += l;
@@ -88,30 +89,31 @@ v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *c
   }
   r.end = cx; return r;
 }
-/* A price ("⚡ 2 ❀ 4 ◆ 1": Energy, Essence, Data in that order, each icon and its figure): the three materials always have their two nodes (icon, figure), the ones the price does not name with no size, so a price that gains or loses a material
-   changes nodes and never adds or removes one (§2.2). A price with no material in it ("free") is one text node. The icon's and the figure's layout is v_run's. */
-static const struct { const char *glyph, *icon; } PRICE[3] = { { "\xe2\x9a\xa1", "energy" }, { "\xe2\x9d\x80", "essence" }, { "\xe2\x97\x86", "data" } };
-/* 1 when the price is exactly "icon figure" pairs in the order of PRICE ("⚡ 2 ❀ 4 ◆ 1"), the shape the views send; any other text ("+1 ❀", "free") is one ordinary run */
+/* A price ("⚡ 2 ❀ 4 ◆ 1 ⧗ 20": Energy, Essence, Data and the bud's wait in that order, each icon and its figure): the four groups always have their two nodes (icon, figure), the ones the price does not name with no size, so a price that gains or loses a group
+   changes nodes and never adds or removes one (§2.2). The wait's picture must be on the face (icon-wait-16): else v_error and its two nodes take no size, never a glyph or a bare figure. A price with no material in it ("free") is one text node. The icon's and the figure's layout is v_run's. */
+static const struct { const char *glyph, *icon; } PRICE[V_PRICE_N] = { { "\xe2\x9a\xa1", "icon:energy:%d" }, { "\xe2\x9d\x80", "icon:essence:%d" }, { "\xe2\x97\x86", "icon:data:%d" }, { "\xe2\xa7\x97", "icon-wait-%d" } };
+/* 1 when the price is exactly "icon figure" pairs in the order of PRICE ("⚡ 2 ❀ 4 ◆ 1 ⧗ 20"), the shape the views send; any other text ("+1 ❀", "free") is one ordinary run */
 static int price_pairs(const char *s) {
   int last = -1; const char *p = s; if (!*p) return 0;
   while (*p) {
-    int g = -1; for (int k = 0; k < 3; k++) if (strncmp(p, PRICE[k].glyph, strlen(PRICE[k].glyph)) == 0) g = k;
+    int g = -1; for (int k = 0; k < V_PRICE_N; k++) if (strncmp(p, PRICE[k].glyph, strlen(PRICE[k].glyph)) == 0) g = k;
     if (g <= last) return 0; last = g; p += strlen(PRICE[g].glyph); if (*p != ' ') return 0; p++;
     if (!*p || *p == ' ') return 0; while (*p && *p != ' ') p++; if (*p == ' ') p++; else if (*p) return 0;
   }
   return 1;
 }
-int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[3], const char *other) {
+int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[V_PRICE_N], const char *other) {
   if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); return v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; }
-  int cx = x, groups = 0; char fig[3][24]; int has[3];
-  for (int g = 0; g < 3; g++) {
+  int cx = x, groups = 0; char fig[V_PRICE_N][24]; int has[V_PRICE_N];
+  for (int g = 0; g < V_PRICE_N; g++) {
     const char *p = strstr(s, PRICE[g].glyph); has[g] = p != NULL; fig[g][0] = 0; if (!p) continue;
     p += strlen(PRICE[g].glyph); while (*p == ' ') p++; size_t n = 0; while (p[n] && p[n] != ' ' && n < sizeof fig[g] - 2) n++;   /* the figure: the word after the icon */
     snprintf(fig[g], sizeof fig[g], " %.*s", (int)n, p); groups++;
   }
   int iy = y + v_cap(px) - px + (int)(px * 0.12 + 0.5);
-  for (int g = 0; g < 3; g++) {
-    char ic[48], nid[96]; snprintf(ic, sizeof ic, "icon:%s:%d", PRICE[g].icon, px);
+  for (int g = 0; g < V_PRICE_N; g++) {
+    char ic[48], nid[96]; snprintf(ic, sizeof ic, PRICE[g].icon, px);
+    if (has[g] && g == V_PRICE_N - 1 && !wire_has_asset(ic)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); has[g] = 0; }   /* the wait without its picture: no glyph, no bare figure */
     if (has[g]) {
       char prefix[V_STR]; const char *at = strstr(s, PRICE[g].glyph); snprintf(prefix, sizeof prefix, "%.*s", (int)(at - s), s);   /* each icon stands where the single run would put it: after the width of the price up to it */
       cx = x + (at == s ? 0 : v_run_width(prefix, px));

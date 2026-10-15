@@ -289,7 +289,8 @@ export function shortText(st, e, d, s) {
 // The two forms of a log line or a button: what is gained and what is spent. One place, so the answer on the wording is a one-line change (forms PLACEHOLDER until the UI designer and copywriter answer).
 export const gainText = (s) => "❀ +" + s;
 export const spendText = (e, d, s) => [e ? "⚡ −" + e : "", s ? "❀ −" + s : "", d ? "◆ −" + d : ""].filter(Boolean).join(" ") || "free";
-export const priceText = (e, d, s) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : ""].filter(Boolean).join(" ") || "free";
+// `w` the bud's wait in minutes, the last group (Create's Grow line, fix 6 N1a): "free" only when all four are 0
+export const priceText = (e, d, s, w = 0) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : "", w ? "⧗ " + w : ""].filter(Boolean).join(" ") || "free";
 
 // --- dock and the bay ------------------------------------------------------------------------------
 export function probeNow(st, sv) {

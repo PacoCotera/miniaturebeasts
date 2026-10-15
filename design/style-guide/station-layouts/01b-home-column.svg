@@ -8,18 +8,18 @@
 <rect x="800.5" y="56.5" width="175" height="71" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="984.5" y="60.5" width="11" height="11" fill="#e8a33d" stroke="#444" stroke-width="1"/>
 <path d="M800 56h176v72h-176z" fill="#3a414b"/>
-<rect x="800.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
-<path d="M800 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M842 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M820 88h8v10h-8z" fill="#f0661a"/>
+<rect x="808.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+<path d="M808 72h6v6h-6z" fill="#2a2a2d"/>
+<path d="M850 72h6v6h-6z" fill="#2a2a2d"/>
+<path d="M828 88h8v10h-8z" fill="#f0661a"/>
 <rect x="864.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
 <path d="M864 72h6v6h-6z" fill="#2a2a2d"/>
 <path d="M906 72h6v6h-6z" fill="#2a2a2d"/>
 <path d="M884 88h8v10h-8z" fill="#f0661a"/>
-<rect x="928.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
-<path d="M928 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M970 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M948 88h8v10h-8z" fill="#f0661a"/>
+<rect x="920.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+<path d="M920 72h6v6h-6z" fill="#2a2a2d"/>
+<path d="M962 72h6v6h-6z" fill="#2a2a2d"/>
+<path d="M940 88h8v10h-8z" fill="#f0661a"/>
 <rect x="876.5" y="80.5" width="23" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="688.5" y="152.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="704" y="181" font-size="16" fill="#6f7a5e">Pods</text>

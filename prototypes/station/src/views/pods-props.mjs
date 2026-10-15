@@ -111,7 +111,7 @@ function specimenOf(m, spec, cur, R, req, mode) {
 // The marks that say who a pod is, the species' and its clan's, at the rectangles a region gives (Compare's headings as the overview's row).
 const whoOf = (p, fr, W, req) => [slot(req, `mark-species-${S.speciesOf(p)}-24x24`, W.marks[0], "the species' mark master"), slot(req, `mark-clan-${fr?.taxonomy?.clan ?? "-"}-24x24`, W.marks[1], "the clan's mark master")];
 
-// The collection: the rack's places in order (an empty place is the empty ring), each pod with its ring, name, find, mark and glint; the waiting mark under them.
+// The collection: the rack's places in order (an empty place is the empty ring), each pod with its ring, name, mark and glint; the waiting mark under them.
 function collectionView(view, m, spec, req) {
   const { st, settings, ui } = m, R = spec.regions.collection, L = R.places, N = R.name;
   view.mode = "collection";
@@ -129,7 +129,6 @@ function collectionView(view, m, spec, req) {
       ringLayers: [idle, ...(!n || n < RM.chapters[0] || n > RM.chapters[1] ? [] : closed ? [rs(RM.closed)] : [layer(RM.track), ...flags.flatMap((r, k) => (r ? [layer(RM.segment, k + from)] : []))])],   // the idle base, then the track and the read segments, or the closed band when every chapter is read
       pod: req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }),
       name,
-      find: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}:${R.place.at[2]}`, place: q.g, size: R.place.at[2] }) : null,
       grow: q.idd && q.read.length && !closed ? req({ kind: "grow", id: "grow:16" }) : null,
       glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : null,
     });

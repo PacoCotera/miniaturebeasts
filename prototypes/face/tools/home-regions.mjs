@@ -13,7 +13,7 @@ export function departures(log, spec, frame, cur = "room") {
   for (const r of got("glass", "chrome")) must(eq(r.rect, glass), `glass ${r.rect} is not ${glass}`);
   for (const r of got("glass", "painted")) must(eq(r.rect, glass), `the glass master ${r.rect} is not ${glass}`);
   must(got("glass", "painted").length === 0 || got("glass", "chrome").length === 0, "the glass plates show under the light's painting");   // the painting on the face: the plates are nodes with no size
-  for (const id of ["resident", "bed", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, glass), `${id} (${r.layer}) ${r.rect} leaves the glass ${glass}`);   // the residents and the bed are clipped to the glass
+  for (const id of ["resident", "bed", "bed.sleepers", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, glass), `${id} (${r.layer}) ${r.rect} leaves the glass ${glass}`);   // the residents and the bed are clipped to the glass
   for (const r of got("nameTag")) must(within(r.rect, tagBox), `the name tag (${r.layer}) ${r.rect} is not 8 px inside the glass ${glass}`);
   { const tag = got("nameTag", "chrome")[0], txt = got("nameTag", "type")[0]; if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); must(!!tag === /^resident\./.test(cur), `the name tag shows only on a resident (focus ${cur}, tag ${tag ? "drawn" : "absent"})`); }
   for (const r of got("knob")) must(within(r.rect, [R.knob.rect[0], R.knob.rect[1], R.knob.rect[2], R.knob.rect[3]]), `the knob ${r.rect} leaves ${R.knob.rect}`);

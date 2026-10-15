@@ -5,6 +5,7 @@
 import * as S from "../state.mjs";
 import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable } from "../moving.mjs";
+import { standLook } from "../stands.mjs";
 import { goalWords } from "./goal-words.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
@@ -13,7 +14,11 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + 
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
 export const mibiPictureId = (digest, stage, [w, h], light = "day") => `mibi:${digest}:${stage}:${w}x${h}${light === "day" ? "" : ":" + light}`;   // fix 7: a graded resident names its light (dawn, dusk, night); at day the id is the master's own, unchanged
-export const mibiReq = (req, st, mb, size, settings, light = "day") => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(genomeDigest(mb.genome), stage, size, light), mibi: mb.id, stage, species: S.speciesOf(mb), size, ...(light === "day" ? {} : { light }) }); };
+// An adult or elder without its signed stand takes its species' juvenile stand, 1:1 in its own size (stands.mjs, station-layouts.md Composed states, rule 5): the picture is named by the stage and size it is drawn at.
+export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.mibiStage(st, mb, settings), size);
+// the picture's id and the stage and size it is drawn at, for every caller that names a mibi's picture (the views' requests and the host's swap dither); the light is the scene's (fix 7), the grade's source the master drawn
+export const mibiPictureOf = (st, mb, size, settings, light = "day") => { const { stage, size: drawn } = lookOf(st, mb, size, settings); return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn }; };
+export const mibiReq = (req, st, mb, size, settings, light = "day") => { const p = mibiPictureOf(st, mb, size, settings, light); return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(light === "day" ? {} : { light }) }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
@@ -67,10 +72,10 @@ export function livingOf(m, R, req, ph, L) {
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light);
-  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: false, ...extra }; };
+  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; const look = lookOf(st, mb, size, settings); return { id: String(mb.id), name: mb.name, stage: look.stage, picture: pic(mb, size), waiting: false, ...extra }; };   // `stage` is the stage drawn: a juvenile stand sizes the box, the ring, the lift and the lamp as a juvenile's
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
-  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, p.stage, req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, p.stage, req, m, ["nap"]); if (mv) p.moving = mv; return p; }) : [];
+  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, stageOf(mb), req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
+  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, stageOf(mb), req, m, ["nap"]); if (mv) p.moving = mv; return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
@@ -96,7 +101,7 @@ export function homeBuild(m, spec, frame) {
   const cargoState = !docked ? "away" : crates ? "crates" : st.waiting.length ? "waiting" : "empty";
   const cargo = {
     state: cargoState, crates: Math.min(crates, R.cargo.max), lamp: lampOf("cargo") ?? "off",
-    bay: slot(cargoState === "away" ? "home-bay-shut" : "home-bay-open", R.cargo.bay.slice(2)),
+    bay: slot(`home-bay-${cargoState === "away" ? "shut" : "open"}-176x72`, R.cargo.bay.slice(2)),
     crate: ph(`home-crate-${R.cargo.crate.join("x")}`, R.cargo.crate), waiting: cargoState === "waiting" ? req({ kind: "waiting", id: "waiting:24" }) : "",
   };
   const rackSize = R.pods.wells.slots, podSize = R.pods.pod.size;
@@ -104,27 +109,25 @@ export function homeBuild(m, spec, frame) {
     const q = st.tray[i];
     if (!q) return { pod: "", glint: "" };
     const sp = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.speciesOf(q) : null;
-    return { pod: ph(`home-rack-pod-${podSize.join("x")}`, podSize), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
+    return { pod: req({ kind: "rackpod", id: `rackpod:${sp ?? "unknown"}`, species: sp, size: podSize }), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
   });
-  const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well", R.pods.wells.size), wells };
+  const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
   const bud = st.bud, ready = S.budReady(st, settings);
   const incState = !bud ? "empty" : ready ? "ready" : "growing";
-  const L = S.budLeaves(st, settings, m.now, R.incubator.leaves.max, 20), total = L.total;
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
-    chamber: slot(`home-chamber-${incState}`, R.incubator.chamber.slice(2)),
-    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: L.full, filling: L.rows, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
+    chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}-72x72`, R.incubator.chamber.slice(2)),
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;
   const probe = {
     state: docked ? "docked" : "away", lamp: lampOf("probe") ?? (docked ? "well" : "off"),
-    cradle: slot(docked ? "home-cradle-full" : "home-cradle-empty", R.probe.cradle.slice(2)),
+    cradle: slot(`home-cradle-${docked ? "full" : "empty"}-96x72`, R.probe.cradle.slice(2)),
     shields: { count: pr ? Math.min(pr.smax, R.probe.shields.count) : 0, whole: pr ? Math.min(pr.shield, pr.smax) : 0, wholePicture: ph(R.probe.shields.pictures.whole, R.probe.shields.size), gonePicture: ph(R.probe.shields.pictures.gone, R.probe.shields.size, true) },
     frame: held ? ph(R.probe.slotPicture, R.probe.slot.slice(2)) : "",
   };
   const found = st.knownIds.length;
-  const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal", R.library.journal.slice(2)) };
+  const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal-104x72", R.library.journal.slice(2)) };
 
   const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library };
 
