@@ -113,5 +113,15 @@
   "id": "room-bench-stage-probe",
   "size": "1024x522",
   "sha256": "2fbc562fdb7a95379ffb19976e5704ce5b7273ed02f2828b6e6b26ae63b6e6a6"
+ },
+ {
+  "id": "bench-plate-strip-t1-144x48",
+  "size": "144x48",
+  "sha256": "aadf24f64afae389e7eb37463bbc564a5d65d4df4ae48d98be30366abe444479"
+ },
+ {
+  "id": "bench-plate-strip-t2-192x48",
+  "size": "192x48",
+  "sha256": "9faa9a2e68da31ca3592f2ecf583f49dd0d39ab37254cdec9a794159e78a49f5"
  }
 ]
