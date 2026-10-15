@@ -116,7 +116,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 - **Chrome.** Presses during the arrival are consumed; focus stays on the room; then `✓ Look at the new pods`.
 - **Motion.** About 3 s per crate: seal 300 ms, each pod's travel 600 ms.
 
-**The portrait crate** ([the portrait](../proposals/the-portrait.md) §1). A finished portrait comes to the bay like cargo: while it is painted, a flat crate silhouette waits behind the bay door with its lamp slowly filling (no clock, no digits; "waiting for the cloud" when offline); landed, the bay lamp turns amber, `✓ Open the bay`, with "a sealed crate" in the context line. The seal breaks, the flat crate slides out, its lid lifts and the portrait stands on the stage in its gilt frame, ribbon "Fig's portrait"; then `✓ Look at Fig` opens the vivarium, up close, where Fig is drawn fresh in its painted set. The welcome sitting ("a sitting, to begin") arrives in the slot, not at the bay.
+**The portrait crate** ([the portrait](../proposals/the-portrait.md) §1). A finished portrait comes to the bay like cargo: while it is painted, a flat crate silhouette waits behind the bay door with its lamp slowly filling (no clock, no digits; "waiting for a signal" when offline); landed, the bay lamp turns amber, `✓ Open the bay`, with "a sealed crate" in the context line. The seal breaks, the flat crate slides out, its lid lifts and the portrait stands on the stage in its gilt frame, ribbon "Fig's portrait"; then `✓ Look at Fig` opens the vivarium, up close, where Fig is drawn fresh in its painted set. The welcome sitting ("a sitting, to begin") arrives in the slot, not at the bay.
 
 **Pass when**
 - [ ] Cargo arriving alone shows crates and accepts nothing.
