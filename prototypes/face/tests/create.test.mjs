@@ -262,7 +262,7 @@ test("the Grow line's wait: every region of the action stays across its zone (x 
   for (const r of lg.regions.filter((x) => x.id === "action")) assert.ok(r.rect[0] >= 16 && r.rect[0] + r.rect[2] <= 392 && r.rect[1] >= 566 && r.rect[1] + r.rect[3] <= 594, `action ${r.layer} ${r.rect}: across [16, 392], a text box's line 2 px above the zone`);
   let data = -1; for (let x = 16; x < 400 && data < 0; x++) for (let y = 574; y < 592; y++) if (pixelIs(f, x, y, "icon:data:16")) { data = x; break; }
   const wait = waitSpan(f); assert.ok(data > 0 && wait > data + 16, `the wait icon (x ${wait}) after the ◆ icon (x ${data}) and its figure`);
-  assert.ok(!lg.type.some((t) => t.text.includes("⧗")), "the token is never drawn as a glyph"); assert.deepEqual(f.errors(), []);
+  assert.ok(!lg.type.some((t) => t.text.includes("⧗")), "the token is never drawn as a glyph"); assert.deepEqual([...f.initErrors, ...f.errors()], []);
   assert.deepEqual(departures(lg, createSpec, frameSpec, "shape", null, true), [], "no departure from create.json");
 });
 test("the wait's colour: price (cream) at rest, dim (mist) when the action is blocked, price still when only a material is short (never need)", { skip }, async () => {

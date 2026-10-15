@@ -19,7 +19,7 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   for (const r of got("traitLine")) must(within(r.rect, R.traitLine.rect), `the trait line's ${r.layer} ${r.rect} leaves ${R.traitLine.rect}`);
   must(got("leaves").length === 0, "Create draws no leaves region (fix 6 N1)");
   for (const r of got("founderShadow")) must(within(r.rect, R.founderShadow.rect), `the founder's shadow ${r.rect} leaves ${R.founderShadow.rect}`);
-  for (const r of got("action")) { const z = frame.regions.action.rect; must(r.rect[0] >= z[0] && r.rect[0] + r.rect[2] <= z[0] + z[2], `the Grow line's ${r.layer} ${r.rect} leaves the action zone ${z} across (a text box's line sits 2 px above the zone, so the check is on x)`); }   // the wait is the price's last group: the whole action ends at x <= 392
+  for (const r of got("action")) { const z = frame.regions.action.rect; must(r.rect[0] >= z[0] && r.rect[0] + r.rect[2] <= z[0] + z[2] && r.rect[1] >= 566 && r.rect[1] + r.rect[3] <= 594, `the Grow line's ${r.layer} ${r.rect} leaves the action zone ${z} across x, or y 566 to 594 (a text box's line sits 2 px above the zone)`); }   // the wait is the price's last group: the whole action ends at x <= 392
   for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);

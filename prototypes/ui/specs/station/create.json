@@ -142,7 +142,7 @@
   "origin": "mist",
   "dome": { "back": "ground", "housing": "metal", "windowEdge": "hairline", "note": "art reset: the Incubator's chamber, small: a window set in the sage housing (metal, as the Incubator's, art director 2026-10-10 01:44), no highlight (was base enamel, glass edge frostD, highlight frost)" },
   "bud": { "bean": "peach", "light": "cream", "edge": "rust" },
-   "stampLabel": { "fill": "bone", "edge": "slate" },
+  "stampLabel": { "fill": "bone", "edge": "slate" },
   "code": { "text": "bone", "rule": "hairline" }
  },
  "strings": {
