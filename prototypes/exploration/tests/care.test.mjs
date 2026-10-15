@@ -1158,7 +1158,7 @@ test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms,
   for (let t = 0; t < 12000; t += 40) { const sp = r.draw("active", t).find(c => c[0] === "sprite"); assert.deepEqual([sp[2], sp[3], sp[7]], ["idle", 0, false], "t " + t); }
 });
 
-test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (299 for Tuikis, on the signed tokens), for all three species; the sprite never moves", () => {
+test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (299 on the stage for all three species, on the signed tokens), for all three species; the sprite never moves", () => {
   for (const sp of [0, 1, 2]) {
     const p = X26.world([X26.mib(1, "Dot", sp)], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1");
     // the lowest source row holding a pixel visible on the stage's ink, for a pose and frame, at 8× from the drawn y
@@ -1181,20 +1181,20 @@ const SPECIES_FILES = [
   [0, "eat0", "S01/c-token-S01-eat-f0-32x32.png", "286295ff49120b2af8d2942b7c3be28a2f477094d890e9514eaac707694e138d"],
   [0, "eat1", "S01/c-token-S01-eat-f1-32x32.png", "452751a2ec8a0425027ffc0b37efe9be02ac6b3aea64c30829e23665cbbfae3a"],
   [0, "flee", "S01/c-token-S01-flee-32x32.png", "ad1ffee6f2cf46910bbd7ea185a90a499b662823c5d5f60e4124f4c3bedf6464"],
-  [0, "huddle", "S01/c-token-S01-huddle-32x32.png", "ded03942e57a284dcd7c9b0abdfa15b5d106e00465a8c0b2db62e8a18aa20e53"],
+  [0, "huddle", "S01/c-token-S01-huddle-32x32.png", "7d9cd6bcba1f9967209d617ad66b53b612870d6e992ec1817a02d4f48ebf260f"],
   [0, "idle", "S01/c-token-S01-idle-32x32.png", "b642ab6bf937de8bc23c2447303129cb31d023fc54b8d0374b8afb092e08a06a"],
   [0, "shake0", "S01/c-token-S01-shake-f0-32x32.png", "8e106a6a919f0ea346f2c17c9e411a9e84cc542c94460b2cc30ef56ca51d0df7"],
   [0, "shake1", "S01/c-token-S01-shake-f1-32x32.png", "99f8fb0f248bb45385b6051dc0ca38881a771862e468e477b4eed3c01fb2c126"],
   [0, "mini", "S01/c-mini-S01-12x12.png", "0e058cc4df269a52406afaa1e9847d991677b0efb8a0c1086a0a6d7259dddb02"],
   // page species 1, S03
   [1, "alert", "S03/c-token-S03-alert-32x32.png", "3741961aac6cf4f0a7d8c0189ac7159ad2c5b03b8f931646e700133bb2ad5b6b"],
-  [1, "curl", "S03/c-token-S03-curl-32x32.png", "ece1d5bfecc9ebbb43e6f0fab627e18d939b6cf3c6dbc6267cd1999518bb60fc"],
+  [1, "curl", "S03/c-token-S03-curl-32x32.png", "9a10b4f20c9366d9a02cd3ecdb45cfcb9b68dfacf95c206b625dc7e6aa88321f"],
   [1, "eat0", "S03/c-token-S03-eat-f0-32x32.png", "8ef4c7d1fd3789b708a81627bb79f0ae39f4fcdee5109c7ef81541fd6ae62975"],
   [1, "eat1", "S03/c-token-S03-eat-f1-32x32.png", "3c22445530931920478f6f5c2ea1c1edebd29788e4fb503e92533fa96b276c30"],
   [1, "flee", "S03/c-token-S03-flee-32x32.png", "219542a1795bb069ca7633bf36534cc2700ff4c838822fafb269b4e5107376ec"],
-  [1, "huddle", "S03/c-token-S03-huddle-32x32.png", "e5239d7bff540f8052f778114d85e3831536d5af34b7a12046ec310b054ef9fa"],
+  [1, "huddle", "S03/c-token-S03-huddle-32x32.png", "0647fef5582491e2d585b43ce9b324f1a0add71ecc4aedc5b303db96c65d6cb5"],
   [1, "idle", "S03/c-token-S03-idle-32x32.png", "ad6be7be6083289c3ed3b0c8499ccb7b73a3f3e4cb6dfcb7269059c14bb16775"],
-  [1, "settle", "S03/c-token-S03-settle-32x32.png", "1d92c52576b4a4926fc5c9b5d55556255fe12f0cc022258ef2e51c581e372807"],
+  [1, "settle", "S03/c-token-S03-settle-32x32.png", "bad06f54b9006ef1cd4c118b022c5a996f7ec4d69f00e96e478ba10602111f7e"],
   [1, "shake0", "S03/c-token-S03-shake-f0-32x32.png", "29e5eba6ab18d7b669868a77ffca3bcafa48c9ddeeec9e2ef35aa8342283bf33"],
   [1, "shake1", "S03/c-token-S03-shake-f1-32x32.png", "70eaa229ab49ab6b4aa7931695d28bde85be565974da4bb97211ed2854ac473d"],
   [1, "mini", "S03/c-mini-S03-12x12.png", "57e75627530901af35d858d96b6df0b98a432f8bf364305fbdf43c9e1fc7db4e"],
@@ -1203,7 +1203,7 @@ const SPECIES_FILES = [
   [2, "eat0", "S02/c-token-S02-eat-f0-32x32.png", "7afedb1bfade2ce7ba8ca97d0f35e97cb8c7506e0b34106751577175342e5c2d"],
   [2, "eat1", "S02/c-token-S02-eat-f1-32x32.png", "f516fd1e885c0470e8114faabb7b6bcb54323bf09141e0f84ddb7ec6342a29f7"],
   [2, "flee", "S02/c-token-S02-flee-32x32.png", "72181867c9f4e3c35fbbd4c37c068543d344aa567914e7ee1cbe25d53d65e2f5"],
-  [2, "huddle", "S02/c-token-S02-huddle-32x32.png", "f169bb2d9e90bd0f5cee5fe0f609ccb8794338353b671a23edbb2c7eae913ac6"],
+  [2, "huddle", "S02/c-token-S02-huddle-32x32.png", "68d1eb305b9603a50fc18774d2d86b00730c4959676882e408516899c3a0c4ef"],
   [2, "idle", "S02/c-token-S02-idle-32x32.png", "9a633d709e1d419262fc02214bf76e180a09f253e29db28397ed6b661e7ab3d9"],
   [2, "shake0", "S02/c-token-S02-shake-f0-32x32.png", "38d9a3e481fc55284c13351525032bbfb947fe12b605a530f0b4fd9242e35456"],
   [2, "shake1", "S02/c-token-S02-shake-f1-32x32.png", "327f8d68a89a7d95397ab0a2be34f8bec12baa82edd1bff4d58f73a4084ae0bc"],
@@ -1240,6 +1240,11 @@ test("species art: each state uses its own master, the cards show it at whole pi
   assert.equal(p.run("creatureArt(1, 'nest', 0, 2).w"), 64);
   for (const sp of [0, 1, 2]) assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'idle', 0), s = silhouette(${sp}); return a.p.every((v, i) => s.p[i] === (v >= 0 ? C.slate : -1)); })()`), true, "the silhouette is the signed idle's alpha in slate");
   assert.ok(!/function buildCreature|haloArt/.test(PAGE), "no creature or halo drawn in code");
+  // the lowest opaque row of every signed token, as a table: every pose of every species stands on its idle's row (31)
+  const FOOT = { 0: 31, 1: 31, 2: 31 };
+  for (const sp of [0, 1, 2]) for (const name of plain(p.run(`Object.keys(SPECIES_ART[${sp}]).filter(n => n !== 'mini')`))) {
+    const row = p.run(`(() => { const a = tokenOf(${sp}, '${name.replace(/[01]$/, "")}', ${/1$/.test(name) ? 1 : 0}); let r = -1; for (let j = 0; j < 32; j++) for (let i = 0; i < 32; i++) { const v = a.p[j * 32 + i]; if (v >= 0) r = j; } return r; })()`);
+    assert.equal(row, FOOT[sp], "foot row of species " + sp + " " + name); }
   for (const sp of [0, 1, 2]) {   // 1×: the token itself; 2×: each pixel twice, nothing else; the mini 12 px
     assert.equal(p.run(`creatureArt(${sp}, 'alert', 0) === tokenOf(${sp}, 'alert', 0)`), true);
     assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'flee', 0), b = creatureArt(${sp}, 'flee', 0, 2); if (b.w !== 64) return false;
