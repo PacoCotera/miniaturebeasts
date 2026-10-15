@@ -78,17 +78,17 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S03/c-mini-S03-juv-12x12.png` sha256 `fa5037914614b1342a3d9c7a33fa3cd941d6ba0b9732773ba9da91344b0a7dc8`
 
 **S01 juvenile (candidate):**
-- `S01/c-token-S01-juv-idle-32x32.png` sha256 `2860457d26af5505126d5819a0a14deb11eec88acb6e5e25c0f032e88b879d84`
-- `S01/c-token-S01-juv-alert-32x32.png` sha256 `f15694f152ad548957da968b69420ea8cb42d8a41e714126a5e791c6d33eb705`
-- `S01/c-token-S01-juv-huddle-32x32.png` sha256 `70f5f1d3369c6c20da4851134e20040b7eb67cb0ac28f9fb53dc25ae3528f1bf`
-- `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `8f74984437137b0ca9975988d6ee14ebf03d2e69fd98b960ca713657f0b8e39c`
-- `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `cb6d6bc36d0ec7a70c0c92343dcd00a2876fd2a7100dc4ecf61880eed22341e7`
-- `S01/c-mini-S01-juv-12x12.png` sha256 `69c9ac7e21ff2d3b16fb826982af535150d53d6d1b0e91977d771997ff102fa6`
+- `S01/c-token-S01-juv-idle-32x32.png` sha256 `bbfb2085b6a79d732fd579cc1fee810c17db30003a86a385e11ec3c58f427e2d`
+- `S01/c-token-S01-juv-alert-32x32.png` sha256 `d3b41be650000e46578a6aebff085238e8a0d92fa10559c9e0308aa58069393d`
+- `S01/c-token-S01-juv-huddle-32x32.png` sha256 `bb76fe0bde424b6709c49b90a06517d4319f45b0b612f14bec8190f3de9b4950`
+- `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `cd56e3470a7780961a638e1541b44551fec97d4eae4d0a6239aca00fe5db080b`
+- `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `bb2223e140889e68c16598bcf884b779aa105aad8b92ed18c0a5513796fefc3b`
+- `S01/c-mini-S01-juv-12x12.png` sha256 `4ed25fd9cc27aec010f8f944a71cc8650b938b8d553650923e7cd336ed8b3f5c`
 
 **S02 juvenile (candidate):**
-- `S02/c-token-S02-juv-idle-32x32.png` sha256 `09493dd9b23b687127e244514a526e93b24dc11716456f52e67e76cb711bdf7c`
-- `S02/c-token-S02-juv-alert-32x32.png` sha256 `54906b4f8ebbb6e7bbfd74184a7f6f5b482bc187b9684a7620a6425629cde84d`
-- `S02/c-token-S02-juv-huddle-32x32.png` sha256 `ebb395378e1f3cdfab0bc989338d608b128a6383ba3a08f50292dba0bc2e20ab`
-- `S02/c-token-S02-juv-eat-f0-32x32.png` sha256 `82ab7688fa1d5c0050fc6e775377d2ab55f8184e44ef33efea2bba0d10b708ce`
-- `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `cc9873728c4639b97fa78bcb9f0a1e1e6480af180fbbe581d2dcc5d7a468ca25`
+- `S02/c-token-S02-juv-idle-32x32.png` sha256 `d4776650d605c46b58be94c2eed3033f71979822e59045d0993672e5072fe16d`
+- `S02/c-token-S02-juv-alert-32x32.png` sha256 `797c55cb99c442d72e403a9b7c731c8df6d31a45e539c2eba461d6d1c6078fb2`
+- `S02/c-token-S02-juv-huddle-32x32.png` sha256 `f858506536f6282e16dd0b472d9a2d29d3f7ba2125854e77d0f92c4eb0275faf`
+- `S02/c-token-S02-juv-eat-f0-32x32.png` sha256 `16917dec7d62ef50da428d8f19af2386a97543443f3c2c7b86b2c5dc8ae03f49`
+- `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `ccf48be513b8ea4a448ce64b4fad7af1fc963a028d6bc654d87d222397ec72b0`
 - `S02/c-mini-S02-juv-12x12.png` sha256 `b60ff4ec467c9287fd95b94fdaf06938f45e5f92737a7750e96c5fe88a5f7efd`

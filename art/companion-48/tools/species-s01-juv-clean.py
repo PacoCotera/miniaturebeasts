@@ -62,6 +62,10 @@ def compose(dx=0, dy=0, bdy=0, legs=True):
     for y in range(H):                                               # one ink outline round the body and head (not under the crest, where the leaves meet the crown)
         for x in range(W):
             if U[y, x] and outline_of(U)[y, x]: put(a, x, y, 'I')
+    # the AD's face fix (10-15 04:51; the cream across rows 17 to 19 read as an open duck's beak): the snout is a knob, the cheek and chin are charcoal, the bib starts at the throat; in idle
+    # coordinates, shifted by the pose's head offset
+    for x, y, c in [(24, 16, 'P'), (25, 16, 'P'), (26, 16, 'I')] + [(x, 17, 'N') for x in range(19, 23)] + [(x, 18, 'N') for x in range(19, 24)] + [(24, 18, 'D'), (25, 18, 'D'), (26, 18, 'I')] + [(17, 19, 'N'), (18, 19, 'N')]:
+        put(a, x + dx, y + dy, c)
     if legs: legs_on(a)
     return a
 def idle(): return compose()
@@ -75,7 +79,7 @@ def eat(k):
     else:
         for x, y in ((28, 21), (29, 21)): put(a, x, y, 'p')             # the bit 2 x 1, the mouth closed
     return a
-MINI = ["............", "............", "............", ".....e.e....", "....elgle...", "...ITTSSSI..", "..ITSSSOVSI.", ".ITSSSSSSPPI", ".ISSSNSSPDI.", ".ISNNNNNPPI.", ".IBNNNNBPDI.", "..IIIIIIII.."]   # a round slate head with its snout bump over a round charcoal body, the crest on top
+MINI = ["............", "............", "............", ".....e.e....", "....elgle...", "...ITTSSSI..", "..ITSSSOVSI.", ".ITSSSSSSPPI", ".ISSSNSSNDI.", ".ISNNNNNPPI.", ".IBNNNNBPDI.", "..IIIIIIII.."]   # a round slate head with its snout bump over a round charcoal body, the crest on top
 def mini():
     a = np.full((12, 12), -1)
     for y, r in enumerate(MINI):

@@ -1,7 +1,7 @@
 """The C0 S02 (Untuva) juvenile Companion tokens, round 2 (the AD's direction art/companion-48/species/S02/juv-direction/ @ 4ba9b28e): the silhouette is the AD's target mask (idle-silhouette-32x32.txt: about
 21 wide and 23 high, rows 9 to 31: a low cap dome on rows 9 to 13, the brim shadow row 14 one px wider than the body, a round ball rows 15 to 29 narrowing from row 24, a 4 x 4 bun at the back, four stubby feet).
 The mask's outline is its boundary (ink); the cap's three tones (clay, sand, paper, lit top-left), the soil shadow row under the brim (seated, no ink between cap and head), the ball's three tones (clay lit top-left,
-bark, soil shade), the bun (clay, bark), the eyes (ink 2 x 3 with a white catch-light top-left, rows 19 to 21, x 18 to 19 and 23 to 24) and the 2 px soil mouth on row 23 are painted by coordinates. The feet are two rows:
+bark, soil shade), the bun (clay, bark), the eyes (ink 2 x 3 with a white catch-light top-left, rows 19 to 21, x 18 to 19 and, after the AD's fix of 10-15 04:51, 22 to 23: clear of the outline) and the 2 px soil mouth on row 23, centred under them (x 20 to 21) are painted by coordinates. The feet are two rows:
 bark and soil on row 30 with the ink on row 31 (the lowest opaque row, as the adult). alert, huddle, eat f0 and f1 are drawn from the idle. Core 48 only, alpha 0 or 255, ink outline, never void.
 usage: python3 -I species-s02-juv-clean.py OUT_DIR"""
 import os, sys
@@ -50,11 +50,11 @@ def feet_on(a, dx=0):
         for x in range(x0, x1 + 1): put(a, x, 30, 'b' if x == x0 else 's')
         for x in range(x0 - 1, x1 + 2): put(a, x, 31, 'I')
 def face(a, dx=0, dy=0, rows=3, mouth=True):
-    for ex in (18, 23):
+    for ex in (18, 22):
         for r in range(rows):
             for c in (0, 1): put(a, ex + c + dx, 19 + r + dy, 'I')
         put(a, ex + dx, 19 + dy, 'W')
-    if mouth: put(a, 21 + dx, 23 + dy + (rows - 3), 's'); put(a, 22 + dx, 23 + dy + (rows - 3), 's')
+    if mouth: put(a, 20 + dx, 23 + dy + (rows - 3), 's'); put(a, 21 + dx, 23 + dy + (rows - 3), 's')
 def idle():
     a = paint(*parts()); face(a); feet_on(a); return a
 def moved(m, dx=0, dy=0): return np.roll(np.roll(m, dy, 0), dx, 1)
@@ -69,14 +69,14 @@ def huddle():
         if y > 29: break
     for x in range(W):
         if a[30, x] >= 0 and a[30, x] != IDX['ink'] and a[31, x] < 0: put(a, x, 31, 'I')
-    for ex in (18, 23): put(a, ex, 23, 'I'); put(a, ex + 1, 23, 'I')  # the eyes are a 1 px line under the brim
+    for ex in (18, 22): put(a, ex, 23, 'I'); put(a, ex + 1, 23, 'I')  # the eyes are a 1 px line under the brim
     return a
 def eat(k):
     cap, sh, body, bun = parts()
     a = paint(moved(cap, 1), moved(sh, 1), moved(body, 1), bun)     # the body leans 1 px forward
     face(a, dx=1, mouth=(k == 1)); feet_on(a)
     if k == 0:
-        for x in (22, 23): put(a, x, 23, 's'); put(a, x, 24, 's')      # the mouth open: two rows
+        for x in (21, 22): put(a, x, 23, 's'); put(a, x, 24, 's')      # the mouth open: two rows
         for x, y in ((27, 23), (28, 23), (27, 24), (28, 24)): put(a, x, y, 'p')   # a plumD bit 2 x 2 at the face
     else:
         for x, y in ((27, 24), (28, 24)): put(a, x, y, 'p')
