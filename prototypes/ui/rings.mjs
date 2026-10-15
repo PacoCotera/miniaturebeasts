@@ -1,3 +1,4 @@
+import { footprintHeight } from "./specs/derive.mjs";
 // The focus ring's pixels (lvgl-switch.md §2.2), the oracle of the face's `ring` op (prototypes/face/src/prim/ring.c) and the generator of tests/vectors/rings.json. Integers only: a pixel (i, j)
 // has the doubled centre X = 2i + 1, Y = 2j + 1, and every comparison is on integers (products stay far inside 2^53), so JavaScript, WebAssembly, x86-64 and aarch64 cannot round differently.
 // A rounded rectangle or an ellipse `width` thick, returned as an alpha mask (0 or 255), w*h. Pure. Refuses (throws) what the op refuses.
@@ -60,4 +61,10 @@ export function tabRingMask(w, spec) {
     if (inside(X, Y, 0, r) && !inside(X, Y, width, Math.max(0, r - width))) m[r0 * W + c] = 255;
   }
   return { mask: m, w: W, h: H };
+}
+
+// The footprint ring's box: (w + 10) x (fh + 10) at (bx + x - 5, by + feetY - (fh + 10) / 2), b the drawn (unlifted) box; a mirrored cell's x is cellW - x - w. Every coordinate is an integer.
+export function footprintRing(foot, drawn, mirrored = false, cellW = drawn[2], tokens = {}) {
+  const [fx, feetY, w] = foot, x = mirrored ? cellW - fx - w : fx, fh = footprintHeight(w, tokens);
+  return [drawn[0] + x - 5, drawn[1] + feetY - (fh + 10) / 2, w + 10, fh + 10];
 }
