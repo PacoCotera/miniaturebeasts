@@ -332,7 +332,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Dimmed ✓.** When the player cannot pay, the ✓ cap and verb show in mist, and the price names what is short. The press is refused with a message plate. Nothing is spent.
 - **Glint.** The same four-point star, 12×12, everywhere: on the collection ring's band, under the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why. Marks never sit on the picture.
-- **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
+- **No waiting lamp on a mibi:** a mibi is drawn from its species' signed stands from the hatch on, and nothing is painted for it until its portrait; no lamp and no words mark it in the living window or on the bottom line. The one wait a player sees for a painting is the portrait's crate and its fill lamp (Cargo).
 - **No words in a living window.** The vivarium, the up-close window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); the vivarium's name tag, and its meet ribbon in the tag's place ([the vivarium, up close](#the-vivarium-the-whole-and-one-mibi-up-close)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
 ### Never upscaled
@@ -1278,7 +1278,7 @@ Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x60
 
 <img src="station-layouts/05-incubator-ready.png" width="1024" alt="Incubator, ready">
 
-*05. Incubator, ready: every leaf full, every chapter known, the chamber lit, the species' shape in the bud, the plaque says ready, `✓ Open`; the waiting lamp while the painting is on its way. 1×, measured.*
+*05. Incubator, ready: every leaf full, every chapter known, the chamber lit, the species' shape in the bud, the plaque says ready, `✓ Open`. 1×, measured.*
 
 <img src="station-layouts/05b-incubator-hatch.png" width="1024" alt="Incubator, the hatch">
 
@@ -1369,7 +1369,6 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Nest | 408, 400, 208, 48 | Empty: lit and plump, its hollow visible |
 | Base | 344, 456, 336, 96 | The sand housing, not wood; the chamber stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
 | Plaque | 448, 496, 128, 32 | One word, 16 px, centred on x 512, its line box 502 to 522 |
-| Waiting lamp | 652, 506, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
 | **Stamp label** | 840, 296, 120, 120 | 176 px from the chamber window |
 | Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446; three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
@@ -1402,8 +1401,8 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 
 - **Empty** (an invitation): the standby light on the lit, plump nest, the clean window, the foot light, the plaque "empty" in `fog`; no rail, leaves, stamp or code; the context "ready for a new bud". `✓ Choose a pod` when the rack holds a pod and a bay is free: a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod. Otherwise no ✓ cap. No notice, but "no bay free" when no bay is free, the one need that stops a bud.
 - **Growing:** no ring; the leaves filling; the plaque "growing"; `✓ Grow now · ❀ 7` (❀ 1 for every 2 minutes left, rounded up: at most 19, the first bud 3), the frame's dimmed cap when short; the context "a Loika bud" (a cross: "Fig and Moss's bud", falling back to "a Loika bud" past 208 px). A founder's tabs clear across the wait, except a sealed chapter that is still shut; a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready.
-- **Ready:** every leaf full, the chamber lit, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known except a sealed chapter that is still shut; a cross bud keeps its unread chapters. No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice. While the painting is on its way, the waiting lamp on the base.
-- **Hatch** (a held state): the event below; the context "its painting is on its way" (offline "waiting for the cloud") while it has not landed. Afterwards the Incubator is empty.
+- **Ready:** every leaf full, the chamber lit, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known except a sealed chapter that is still shut; a cross bud keeps its unread chapters. No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice.
+- **Hatch** (a held state): the event below, input held; the bottom line has no action and no context. Afterwards the Incubator is empty.
 
 ### 6. Interactions
 
@@ -1576,7 +1575,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `stage` | 0, 40, 1024, 522 | frame, part stage (`room-vivarium-stage-habitat`) | | The device's housing round the window, the card and the modules |
 | `bezel` | 16, 48, 560, 424 | living window, part frame | | 8 px bezel |
 | `glass` | 24, 56, 544, 408 | living window, part inside | | The near painting; ground band 24, 304, 544, 160; no words but the tag and the meet ribbon |
-| `resident` (focal) | 144, 80, 304, 312 | specimen | rest, meet | Axis x 296, feet y 392; the juvenile's box on the Incubator. Its waiting lamp 436, 80, 12, 12 until its painting lands |
+| `resident` (focal) | 144, 80, 304, 312 | specimen | rest, meet | Axis x 296, feet y 392; the juvenile's box on the Incubator |
 | `resident.out` | 264, 296, 64, 96 | specimen (the out mark) | out | On the axis, its foot on the feet line; not a target |
 | `nameTag` | in 184, 416, 224, 32 | panel and text, build `nameTag` | rest, out | 20 px medium; the name + 24, up to 8, 80 to 224; centred on x 296 |
 | `meetRibbon` | 144, 416, 304, 40 | ribbon | meet | "Meet Moss", 20 px, centred |

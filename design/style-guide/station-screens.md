@@ -332,7 +332,7 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 **Purpose.** One mibi up close: name it, greet it, take it with you, cross, have it sit for its portrait, or return it to the wild. **Reads first:** the mibi, then its name.
 
-- **Living window.** The mibi at 304×312 in the vivarium's light, its standard painting or its placeholder with the waiting lamp, doing its species moment on Greet. Its name on a tag under its feet, 20 px.
+- **Living window.** The mibi at 304×312 in the vivarium's light, in its species' signed stand, doing its species moment on Greet. Its name on a tag under its feet, 20 px.
 - **Instrument.** A card at the right: "your Loika, adult" (the species word, with `mark-guide-16`, is the door to the guide), where it came from and what it remembers, its code, the stamp on its 120 label (the stamp is the genome code), and one plate a chapter. Under it four modules, one engraved word each: Companion, Portrait, Cross, Wild. The strip of bays along the foot, thumbnails only.
 - **Composition.** The window at the left (16 to 576), the card and modules in a 416 px column at the right, the strip 64 px along the foot.
 - **Lively / quiet.** Lively: the mibi. Quiet: card, modules, strip.
