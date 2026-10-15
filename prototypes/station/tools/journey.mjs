@@ -383,10 +383,10 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Crea
 const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
 for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
 expect((await cui()).f === eyeIndex, "◀ ▶ walk the read traits: the ring is on Eye rings");
-{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4" && p.regions.leaves.total === 20 && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4, twenty leaves: " + JSON.stringify([L, p.regions.leaves.total])); }
+{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4 ⧗ 20" && !("leaves" in p.regions) && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4 ⧗ 20, no leaf grid: " + JSON.stringify(L)); }
 await hpressC("down", 300);
 { const p = await props(), cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost));
-  expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1" && p.regions.leaves.total === 21, "▼ rolls the look: the tag, the price with ◆ 1, twenty-one leaves: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price, p.regions.leaves.total])); }
+  expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "▼ rolls the look: the tag, the price with ◆ 1 and the wait ⧗ 21: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price])); }
 { const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a room key on Create forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
   await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));

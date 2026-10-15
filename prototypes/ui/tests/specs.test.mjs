@@ -132,6 +132,7 @@ test("Compare's grid for three to six traits is the document's: two columns of 1
 test("the Station frame's language: the zones of the top bar and the bottom line, their rules and marks, in the frame wireframe", () => {
   const F = frame.regions, fsvg = readFileSync(new URL("../../../design/style-guide/station-layouts/00-frame.svg", import.meta.url), "utf8"), fb = new Set([...fsvg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)].map((m) => [Math.round(m[1] - 0.5), Math.round(m[2] - 0.5), Math.round(+m[3] + 1), Math.round(+m[4] + 1)].join(",")));
   for (const k of ["title", "materials", "companion", "time", "action", "subject", "need", "back"]) assert.ok(fb.has(F[k].rect.join(",")), `${k} ${F[k].rect} is not in the frame wireframe`);
+  assert.equal(F.action.wait.icon, "icon-wait-16", "the bud's wait is the price's fourth group, one picture id everywhere (fix 6 N1a)"); assert.deepEqual([F.action.wait.token, F.action.wait.size, F.action.wait.colour, F.action.wait.never], ["⧗", [16, 16], "price", "need"]);
   const bot = ["action", "subject", "need", "back"].map((k) => F[k].rect); assert.deepEqual(F.separators.x, [404, 620]);
   assert.ok(bot[0][0] + bot[0][2] < 404 && 404 < bot[1][0] && bot[1][0] + bot[1][2] < 620 && 620 < bot[2][0], "rules between action, context and notice");
   assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 24 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
@@ -167,8 +168,8 @@ const STEP_KEYS = ["up", "down", "left", "right"];
 test("the Create spec file agrees with the Create wireframes, region by region, and names a word for every region", () => {
   const cr = rd("../specs/station/create.json"), R = cr.regions, B = boxesOf("03-create.svg"), G = boxesOf("03c-create-grow.svg"), N = boxesOf("03e-create-nothing-read.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  for (const k of ["rail", "roll", "traitLine", "chamber", "founder", "pod", "cradle", "origin", "dome", "bud", "leaves", "stamp", "code"]) is(R[k].rect, k);
-  for (const k of ["rail", "traitLine", "chamber", "founder", "pod", "dome", "leaves", "stamp", "code"]) is(R[k].rect, k + " (nothing read)", N);
+  for (const k of ["rail", "roll", "traitLine", "chamber", "founder", "pod", "cradle", "origin", "dome", "bud", "stamp", "code"]) is(R[k].rect, k);
+  for (const k of ["rail", "traitLine", "chamber", "founder", "pod", "dome", "stamp", "code"]) is(R[k].rect, k + " (nothing read)", N);
   assert.ok(!N.has(R.roll.rect.join(",")), "no roll when nothing is read"); assert.deepEqual(R.roll.inStates, ["shape", "grow"]);
   is(R.travel.rect, "travel", G); is(R.travel.to, "travel's end", G);
   lintRegions(cr); assert.deepEqual(cr.states, ["nothingRead", "shape", "grow"]); assert.deepEqual(cr.rules.needed, []);
@@ -185,17 +186,16 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.ok(inside(R.founder.rect, R.chamber.rect)); assert.equal(R.founder.rect[0] + R.founder.rect[2] / 2, 512); assert.equal(R.chamber.rect[0] + R.chamber.rect[2] / 2, 512); assert.ok(R.founder.rect[2] >= 300 && R.founder.rect[3] >= 310, "the founder at least 300×310");
   assert.ok(R.cradle.rect[0] + R.cradle.rect[2] + 16 <= R.chamber.rect[0] && R.chamber.rect[0] + R.chamber.rect[2] + 16 <= R.dome.rect[0], "the chamber clear of the dish and the dome");
   for (const k of ["pod", "cradle", "origin"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 160, k + " on the left column's axis");
-  for (const k of ["dome", "leaves", "stamp", "code"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 864, k + " on the right column's axis");
+  for (const k of ["dome", "stamp", "code"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 864, k + " on the right column's axis");
   assert.deepEqual([R.pod.axis, R.pod.feet, R.cradle.rect[1], R.cradle.rect[1] + R.cradle.rect[3]], [160, 408, 408 - 64, 408 + 32], "the dish as on Pods' overview");
   assert.deepEqual(pods.classes.pod.large, R.pod.rect.slice(2), "the pod's region is the largest class");
   assert.equal(R.podShadow.slice, "pod-{class}-shadow"); assert.deepEqual([pods.shadow.widen, pods.shadow.h], [16, 14], "the shadow is Pods' rule: the class's width + 16, 14 tall");
   assert.deepEqual(R.travel.to, [R.travel.foot.to[0] - 44, R.travel.foot.to[1] - 112, 88, 112], "the travel ends at the collection class, bottom-centred on the foot"); assert.deepEqual(R.travel.rest.size, pods.classes.pod.collection);
   assert.ok(inside(R.travel.to, R.dome.rect), "the rest box lies inside the small chamber"); assert.ok(R.travel.to[1] > 183, "its top is under the lamp's last row (183)");
   assert.deepEqual(R.podShadow.rect, [80, 401, 160, 14]); assert.deepEqual(R.podShadow.rect, [R.pod.axis - (R.pod.rect[2] + 16) / 2, R.pod.feet - 7, R.pod.rect[2] + 16, 14], "the largest class's shadow, on the axis and 7 rows above the feet");
-  assert.deepEqual(R.dome.rect, [776, 104, 176, 224]); assert.equal(R.dome.floor, R.bud.foot[1]); assert.ok(R.dome.rect[1] + R.dome.rect[3] + 8 <= R.leaves.rect[1], "the leaves 8 px under the dome");
+  assert.deepEqual(R.dome.rect, [776, 104, 176, 224]); assert.equal(R.dome.floor, R.bud.foot[1]);
   assert.ok(R.stamp.rect[0] - (R.founder.rect[0] + R.founder.rect[2]) >= 96, "the stamp 96 px or more from the focal box"); assert.deepEqual(R.stamp.rect.slice(2), [120, 120]);
-  assert.equal(R.leaves.component, "leaves"); assert.equal(R.leaves.form, "grid"); assert.ok(!("at" in R.leaves), "Create's grid takes its region's origin");
-  assert.ok(R.leaves.perRow * R.leaves.rows >= 20 + 18 && R.leaves.max === R.leaves.perRow * R.leaves.rows, "the leaves hold the longest bud today (20 minutes + 18 shaped traits)"); assert.equal(R.leaves.perRow * R.leaves.pitch, R.leaves.rect[2]); assert.ok((R.leaves.rows - 1) * R.leaves.rowPitch + R.leaves.leaf[1] <= R.leaves.rect[3]);
+  assert.ok(!("leaves" in R), "Create draws no leaf grid (fix 6 N1): the bud's wait is the Grow line's last price group"); assert.deepEqual(R.founderShadow.rect, [400, 529, 224, 14]); assert.equal(R.founderShadow.slice, "founder-shadow-224x14"); assert.equal(R.founderShadow.rect[0] + R.founderShadow.rect[2] / 2, R.founder.axis, "the shadow centred on the founder's axis"); assert.equal(R.founderShadow.rect[1] + 7, R.founder.feet, "its centre on the feet");
   assert.deepEqual([R.code.lineTop, R.code.baseline, R.code.rule.y], [525, 541, 549]); assert.equal(R.code.rule.y - R.code.baseline, 8, "8 px from the code's baseline to its rule"); assert.ok(R.code.rect[2] >= 171, "the widest code fits"); assert.ok(R.stamp.rect[1] + R.stamp.rect[3] <= R.code.rect[1]);
   assert.equal(cr.colours.traitLine.tagWord, "bone", "changed is not a need: never amber"); assert.equal(cr.colours.rail.changed, "bone");
   assert.deepEqual(Object.keys(cr.focus.shape.graph), ["roll"]); const st = cr.focus.shape.graph.roll.stepper;

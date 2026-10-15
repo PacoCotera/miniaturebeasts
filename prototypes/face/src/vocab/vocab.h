@@ -30,12 +30,13 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y);
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* The same between two w x h windows (atlas cells, M1 §2.1): `fromAsset`'s at (fsx, fsy) and `toAsset`'s at (tsx, tsy); `fromAsset` NULL or "" is clear (a dither-in), `toAsset` NULL or "" is clear (a dither-out, keeping the pixels a dither-in at the same level leaves); never both. */
 int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, const char *toAsset, int tsx, int tsy, int level, int x, int y, int w, int h);
-/* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
+/* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ ⧗ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);
 v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *colour, int align);
-/* A price run with stable nodes: Energy, Essence and Data each have an icon and a figure node (no size when the price does not name it); `cols` is the figure's colour for each, `other` the colour of a price with no material ("free"). Returns the end x. */
-int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[3], const char *other);
+/* A price run with stable nodes: Energy, Essence, Data and the bud's wait (⧗, icon-wait-16) each have an icon and a figure node (no size when the price does not name it); `cols` is the figure's colour for each, `other` the colour of a price with no group ("free"). Returns the end x. */
+#define V_PRICE_N 4   /* the groups of a price, a closed table (vocab.c PRICE): ⚡ ❀ ◆ ⧗ */
+int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[V_PRICE_N], const char *other);
 /* Words wrapped to a width; the lines are written NUL-separated into buf and their count returned (at most max). */
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max);
 /* A string cut to a width with an ellipsis. */

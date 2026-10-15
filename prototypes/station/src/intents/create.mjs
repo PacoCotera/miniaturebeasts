@@ -23,7 +23,7 @@ export function intent(h, target, verb) {
     const r = S.grow(h.st, p, cr.choices, h.settings, h.now());
     if (!r.ok) { h.say(block && block.key === "short" ? h.specs.create.strings.notices.shortFrom[block.from].replace("{icons}", block.short) : r.msg); return r; }   // a short ✓: the plate names the notice's words (where the shortfall comes from)
     const ev = spec.events.grow, motion = h.motion ? h.motion() : true;
-    cr.grown = { code: r.bud.code, cost: r.cost, pod: p }; h.ui.pods.cur = null; h.save();
+    cr.grown = { code: r.bud.code, cost: r.cost, pod: p, minutes: r.bud.minutes };   // the bud's own minutes: grow() clears firstMibi, so recomputing them after Grow would show 20 for the first founder h.ui.pods.cur = null; h.save();
     const jump = () => { h.ui.create = null; h.goto("incubator"); };   // Grow it is a jump: the Incubator, growing; ← there reads Home
     if (motion) { h.play({ kind: "grow", target: "pod", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, jump); } else jump();   // reduced motion: the event is a cut, so the jump is on the frame of ✓
     return r;

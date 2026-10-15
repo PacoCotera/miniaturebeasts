@@ -31,7 +31,6 @@ export function createBuild(m, spec, pods) {
   const p = createPod(st, cr), fr = frameOf(S.speciesOf(p)), R = spec.regions, list = reviewTraits(p, fr), changed = S.changedTraits(cr.choices), grown = !!cr.grown;
   const state = grown ? "grow" : list.length ? "shape" : "nothingRead";
   const ph = (id, size, hollow, until) => req({ kind: "ph", id, size, hollow, until });
-  const stale = "its master (create.json placeholders)";
   const f = clamp(cr.f, 0, Math.max(0, list.length - 1)), cur = list[f] ?? null, genome = S.founderGenome(p, cr.choices);
   const regions = {};
 
@@ -85,8 +84,8 @@ export function createBuild(m, spec, pods) {
   regions.domeFront = { picture: ph("dome-small-front-176x224", R.domeFront.rect.slice(2)) };
   regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2)), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
 
-  // the leaves the bud will take, every one empty: the minutes it will grow
-  regions.leaves = { total: S.budMinutes(st, changed.length, settings), full: 0, rows: 0, empty: ph(R.leaves.pictures.empty, R.leaves.leaf, true, stale), filled: ph(R.leaves.pictures.full, R.leaves.leaf, false, stale) };
+  // the painted contact shadow under the founder (fix 6 A2): named in every state, the face keeps its node and gives it no size until the picture is on the face
+  regions.founderShadow = { picture: slot(req, "founder-shadow-224x14", [0, 0, ...R.founderShadow.rect.slice(2)], "the contact shadow") };
 
   // the stamp of the read and changed chapters, and the code (printed at Grow)
   const readIds = [...new Set([...p.read, ...fr.chapters.filter((c) => c.traits.some((t) => changed.includes(t.id))).map((c) => c.id)])], sz = stampSizing(fr, genome);
@@ -97,7 +96,7 @@ export function createBuild(m, spec, pods) {
   const Sg = spec.strings, cost = grown ? cr.grown.cost : S.growCost(st, cr.choices, settings), key = grown ? null : S.growBlockKey(st, p, cr.choices, settings, cr.clash);
   const unread = fr.chapters.filter((c) => !p.read.includes(c.id)), name = S.spName(p);
   const subject = !unread.length ? S.cap(S.aAn(name)) + ", fully known" : unread.length === fr.chapters.length ? Sg.surprise.all : unread.length === 1 ? fill(Sg.surprise.one, { Chapter: unread[0].name }) : fill(Sg.surprise.more, { "n in words": SPELL[unread.length] ?? "many" });
-  const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s), back: S.cap(name), subject, need: null };
+  const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s, grown ? cr.grown.minutes : S.budMinutes(st, changed.length, settings)), back: S.cap(name), subject, need: null };
   if (key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(Sg.notices.shortFrom[key.from], { icons: key.short }); }   // short: the dimmed ✓, the short figures amber
   else if (key) { bottom.blocked = true; bottom.need = key.key === "busy" ? Sg.notices.busy : key.key === "noBay" ? Sg.notices.noBay : key.key === "clash" ? Sg.notices.clash : null; }   // busy, no bay, clash: no ✓ cap, the verb and the price in mist
 

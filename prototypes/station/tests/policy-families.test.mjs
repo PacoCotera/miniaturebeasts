@@ -113,3 +113,8 @@ test("a Create walk on S01 and S03 (nothing read, shape, shape and a doing): eve
   }
   assert.equal(founders, 10);
 });
+
+test("the founder's contact shadow is painted and the wait's icon is art (fix 6 A2, A3)", () => {
+  for (const st of ["placeholder", "master"]) for (const id of ["founder-shadow-224x14", "founder-shadow-224x14:224x14"]) assert.equal(policyOf(id, st), "painted", id + " " + st);
+  for (const st of ["placeholder", "master"]) assert.equal(policyOf("icon-wait-16", st), "art", st);
+});

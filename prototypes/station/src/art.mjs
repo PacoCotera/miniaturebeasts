@@ -83,6 +83,18 @@ function renderPB(scene, camera, device) {
   for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0 && isShadow(img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2])) pb.p[i] = -1;
   return pb;
 }
+// Fix 6 N4: the founder carries no ink outside its body's own connected silhouette. The plain pass's cast shadow is cleared by colour tolerance, and the pixels that miss it are left as isolated dots on the shadow's ellipse; a component of fewer than
+// `min` opaque pixels (8-connected) is residue and goes. Applied to the founder's picture only (founderArt), so no other picture of the rig moves.
+export function dropSpecks(pb, min = 8) {
+  const { w, h, p } = pb, seen = new Uint8Array(w * h), stack = [];
+  for (let s0 = 0; s0 < w * h; s0++) {
+    if (seen[s0] || p[s0] < 0) continue;
+    const comp = []; seen[s0] = 1; stack.push(s0);
+    while (stack.length) { const q = stack.pop(); comp.push(q); const x = q % w, y = (q - x) / w; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const n = ny * w + nx; if (!seen[n] && p[n] >= 0) { seen[n] = 1; stack.push(n); } } }
+    if (comp.length < min) for (const q of comp) p[q] = -1;
+  }
+  return pb;
+}
 const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.4, h * 0.4, C.frostD, { sh: [C.frost, C.frostS] }); pb.outline(() => C.stone); return pb; };
 // A mibi at w×h in a view ("portrait" faces viewer-left; "three-quarter" the flank), transparent around it.
 export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
@@ -316,7 +328,7 @@ export { upPB };
 export function founderArt(frame, genome, read, w, h) {
   const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h;
   return art(key, () => {
-    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = ok ? renderPB(b.scene, camera, "station") : blobArt(w, h);
+    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h);
     if (t.mode === "clear") return base;
     const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
     return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });

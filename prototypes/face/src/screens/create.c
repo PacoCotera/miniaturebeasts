@@ -1,6 +1,6 @@
 /* Create's binding table (lvgl-switch.md §2.2, §4 R; create.json): the words that draw each of its states (nothingRead, shape, grow) in draw order, from the `create` spec and the props' regions, the frame's words after (screens.c).
    bench, rail, the small chamber and its bud, the pod, the origin, the work tray with the founder, the roll (a stepper: the ring stays on the chosen picture), the trait line, the small chamber's front, the
-   leaves it will take, the stamp label and the code, then the ring. The compositions are the spec's: `roll` and `traitLine`.
+   the stamp label and the code, then the ring. The compositions are the spec's: `roll` and `traitLine`.
    The events: `dither` on the founder (the old picture to the new in 16 Bayer levels over 200 ms; the props carry the new one), and `grow` (the stamp prints row by row for 300 ms, the code appears at 300, the pod travels from 300 to 900).
    A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. The work tray, the small chamber, the notches and the roll's pictures are labelled placeholders until their masters (create.json placeholders). */
 #include "../layout/layout.h"
@@ -168,12 +168,12 @@ void create_words(void) {
   { char u[8]; if (spec_str(C, "regions.cradleFront.until", u, sizeof u) <= 0) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front")); }   /* the dish's near lip over the pod, drawn once Create's own stage lands (the spec drops `until`) */
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
+  { int r[4]; crect("regions.founderShadow.rect", r); const char *sp = v_pstr("regions.founderShadow.picture"); v_region("founderShadow", LAYER_PAINTED); if (has(sp)) v_sprite("founderShadow", sp, r[0], r[1], r[2], r[3]); else v_sprite_hidden("founderShadow", sp, r[0], r[1]); }   /* the painted contact shadow under the founder (fix 6 A2): after the chamber, before the founder; no size until its picture is on the face */
   build_founder();
   picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamberFront.picture"));   /* the tray's rim and floor, over the founder: its ink is rows 310 to 319 only */
   build_roll();
   build_traitLine();
   picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));   /* the small chamber's front, over the bud and the travelling pod */
-  { v_name("leaves"); word_leaves(C, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), 0, v_pint("regions.leaves.full", 0), 0, ci("regions.leaves.max", 48), -1);   /* a leaf the bud will not take is a node with no size */ }
   build_stamp();
   build_code();
   build_ring();

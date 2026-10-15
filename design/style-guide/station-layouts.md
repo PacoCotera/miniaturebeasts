@@ -215,7 +215,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 | Zone | Rectangle | What it says | Sentence or mark |
 | --- | --- | --- | --- |
-| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `focus` (cream) | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
+| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `focus` (cream); on Create the price ends with the bud's wait, `⧗` and its minutes (fix 6 N1a) | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
 | **The context** | 408, 570, 208, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
 | **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
@@ -235,7 +235,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 The material icons are the kit's 16 px icons, as on the Companion.
 
-**Prices read icon before figure** on every Station screen, as the frame's counters do: `⚡ 2 ❀ 4`, `◆ 3`, `❀ +1`. Several materials read in the order ⚡ ❀ ◆, each icon with its figure, with no dot.
+**Prices read icon before figure** on every Station screen, as the frame's counters do: `⚡ 2 ❀ 4`, `◆ 3`, `❀ +1`. Several materials read in the order ⚡ ❀ ◆, each icon with its figure, with no dot. Create's Grow price ends with the bud's wait, ⧗ and its minutes (`icon-wait-16`), never short.
 
 **Slots, not words.** Every word in the frame fills a slot, written to the zone's rule above: no dot-separated fragments, a verb phrase for the action, a label for the context, a sentence for the notice, the title one word.
 
@@ -1144,14 +1144,14 @@ Create is where the player shapes a founder from an identified pod and sees what
 | **The trait line** (16 px): the trait and its chosen look; a "changed" tag, or the clash | One line naming the choice |
 | **The chapter rail** with trait pips | Where the focused trait sits; what is read, changed, clashing or still a surprise, with no digits |
 | **The pod** on its dish, with its origin | Where the founder comes from |
-| **The Incubator's chamber**, small, with the leaves the bud will take, drawn empty | Where it goes, and how long it will grow, as a picture |
+| **The Incubator's chamber**, small | Where it goes |
 | **Stamp label** (120) and a **blank code rule** | The stamp fills with the read and changed chapters; the code prints on the rule at Grow |
-| **Bottom line** | `✓ Grow it` and the total; what stays a surprise; what blocks Grow; `← Loika` |
+| **Bottom line** | `✓ Grow it`, the total and the bud's wait (`⧗ 20`); what stays a surprise; what blocks Grow; `← Loika` |
 
 **Not drawn:**
 
 - "◀ ▶ 3 of 3 read traits" or "changed: eye-rings": the pips show both.
-- "the code appears at Grow" (the blank rule shows it), "grows in 21 leaves" (the leaves show it) or "from the pod" (the pod shows it).
+- "the code appears at Grow" (the blank rule shows it), "grows in 21 minutes" (the line's `⧗ 21` shows it) or "from the pod" (the pod shows it).
 - Label plates ("founder", "chamber", "identified"), or "busy" and "empty" under the dome.
 - A stamp larger than the 120 label.
 - A clash plate on the founder ("this shape won't grow"): no words in a living window; the line, the pip and the notice say it.
@@ -1167,7 +1167,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 5. **The stamp label**, low right, with the code rule under it.
 6. **The bottom line** for the total.
 
-**At the edges:** pod (left), the small chamber, leaves and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
+**At the edges:** pod (left), the small chamber and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
 
 ### 4. Art direction
 
@@ -1190,12 +1190,11 @@ Create is where the player shapes a founder from an identified pod and sees what
 | Founder | Its own colours; unread parts `frostS` with a `frostD` texture | As Pods' unread frost |
 | Origin | `mist` | Context, quiet |
 | Small chamber (`dome`) | Back `ground`; set in the sage housing `metal`, as the Incubator's; its window's edge `hairline`, no highlight; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's chamber, small and empty |
-| Leaves | Empty, the small leaf's outline in `bevel` | The Incubator's leaf drawn at 8×12 |
 | Stamp label, code | `bone` label with a `slate` edge; the code `bone` on a `hairline` rule | The stamp label rule; a readout |
 
 ### 5. Composition
 
-The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder stands on its work tray in the lower centre. The pod stands on its dish to the left and the Incubator's small chamber to the right, its leaves and the stamp label under it.
+The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder stands on its work tray in the lower centre. The pod stands on its dish to the left and the Incubator's small chamber to the right, the stamp label under it.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
@@ -1210,7 +1209,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | Dish | 48, 344, 224, 96 | Painted in Create's own stage, `room-cradle-front` registering at (48, 344); until it lands, nothing is drawn |
 | Origin | 40, 456, 240, 40 | 16 px `mist`, at most two lines, centred on x 160 |
 | Small chamber (`dome`) | 776, 104, 176, 224 | The Incubator's chamber, small and empty; its floor at y 274. While a bud grows its glow shows here (a 64×80 bud at 832, 194) and Grow is refused |
-| Leaves to grow | 768, 336, 192, 48 | The word `leaves`, form grid: 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48), all empty: one per minute it will take, 20 plus one a change, the first founder 5 whatever is shaped |
+| Founder's shadow | 400, 529, 224, 14 | The painted contact shadow under the founder's feet (specimen, part shadow; `founder-shadow-224x14`), drawn after the chamber and before the founder; no size until its picture is on the face |
 | **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box; x 804 centres it on the column's axis, 4 px off the grid, as Home's juvenile and the medium pod are |
 | Code | 776, 525, 176, 25 | The line box 525 to 545, baseline 541, a 1 px `hairline` rule at y 549, 8 px from the baseline to the rule (off the grid for that clearance); at Grow the code prints here, centred on x 864, in three groups with spaces ("K7Q 4MX P2D"). 176 wide: the widest code, "WWW WWW WWW", is 152 px |
 | Travel (grow only) | 88, 120, 848, 288 | The pod's path from its box to the dome, feet (864, 296); from 530 ms, behind the work tray, a step to 88×112 (the collection class) at (820, 184); behind the chamber and the roll; its feet behind the small chamber's sill |
@@ -1231,32 +1230,32 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | `origin` | 40, 456, 240, 40 | text | | — |
 | `dome`, `domeFront` | 776, 104, 176, 224 | living window, parts inside and frame | | empty; busy (the bud) |
 | `bud` | 832, 194, 64, 80 | specimen | | only while another bud grows |
-| `leaves` | 768, 336, 192, 48 | leaves, form grid | | the count of minutes, every leaf empty |
+| `founderShadow` | 400, 529, 224, 14 | specimen, part shadow | | the painted contact shadow under the founder; no size until its picture is on the face |
 | `stamp` | 804, 400, 120, 120 | stamp label | | live: the read and changed chapters; grow: printing |
 | `code` | 776, 525, 176, 25 | text, with its rule | | blank; grow: the code |
 | `travel` | 88, 120, 848, 288 | specimen, part travel | grow | the pod's path |
 
-The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** bench, rail, dish, dome, its bud, pod, the dish's front, origin, chamber, founder, the chamber's front, roll, trait line, the dome's front, leaves, stamp, code, ring, frame, message plate. The travelling pod passes behind the chamber and the roll and ends inside the dome, with no change of order during the event.
+The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** bench, rail, dish, dome, its bud, pod, the dish's front, origin, chamber, the founder's shadow, founder, the chamber's front, roll, trait line, the dome's front, stamp, code, ring, frame, message plate. The travelling pod passes behind the chamber and the roll and ends inside the dome, with no change of order during the event.
 
 **Clearance** (8 px from a word's baseline to an object's first ink): the trait line's baseline at y 218, the founder's box at 240 (22 px), the work tray at 232; the tab words' baselines at about y 62, the notch at 90; the code's baseline at 541, its rule at 549. Nothing in the roll touches the ring: the notches sit 4 px outside it, the neighbours 8 px.
 
 **States and conditions** (`create.json` `states`, `bottomLine.conditions`):
 
-- **Nothing read:** the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. Every pip hollow and no tab open; no roll, no ring and no target, so the arrows do nothing; the trait line "it grows as the pod is"; the stamp with no chapter filled; 20 leaves (5 for the first bud); `✓ Grow it · ⚡ 2 ❀ 4` (`⚡ 2` alone for the first founder), no ◆; the context "all of it stays a surprise".
+- **Nothing read:** the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. Every pip hollow and no tab open; no roll, no ring and no target, so the arrows do nothing; the trait line "it grows as the pod is"; the stamp with no chapter filled; `✓ Grow it · ⚡ 2 ❀ 4 ⧗ 20` (`⚡ 2 ⧗ 5` for the first founder), no ◆; the context "all of it stays a surprise".
 - **Shape, as the pod is:** no tag, every read pip filled, the total `✓ Grow it · ⚡ 2 ❀ 4`.
-- **Changed:** the tag in the line, the pip a `bone` diamond, the founder's part and the stamp's cells redrawn, ◆ 1 and one minute a change (choosing the shown look too); the first founder's leaves stay 5.
+- **Changed:** the tag in the line, the pip a `bone` diamond, the founder's part and the stamp's cells redrawn, ◆ 1 and ⧗ +1 a change (choosing the shown look too); the first founder's wait stays ⧗ 5.
 - **Blocked:** the notice names the first block in the rules' order: busy ("a bud is already growing"), no bay ("no bay free"), clash ("these looks clash"), short. Busy, no bay and clash: no ✓ cap; the verb and the total in `mist` so the total still reads; while busy the bud glows in the dome. A clash also wears its marks: the chosen picture's red edge, the line red with the ✕, the pip a ✕.
 - **Short:** the frame's dimmed ✓; the short material's figure `amber`; the notice "needs more ‹icons›"; ✓ shows a message plate naming what is short.
 - **Grow:** the event below, then the Incubator, growing. Grow it is a jump: ← on the Incubator reads "Home", with the ring on Home's Incubator module.
 
-**Prices** read icon before figure, the frame's rule ([The frame](#the-frame)): `⚡ 2 ❀ 4 ◆ 1` here, `❀ 7` on the Incubator.
+**Prices** read icon before figure, the frame's rule ([The frame](#the-frame)): `⚡ 2 ❀ 4 ◆ 1 ⧗ 21` here (the bud's wait last), `❀ 7` on the Incubator.
 
 ### 6. Interactions
 
 | Input | What happens, and how it shows |
 | --- | --- |
 | ◀ ▶ | Shape: `step:left`, `step:right`: the previous or next read trait in ring order, skipping unread chapters; the ends stop. The ring stays on the roll; the pictures, the trait line, the open tab and the lifted pip change on the frame of the key. Nothing read: nothing |
-| ▲ ▼ | Shape: `step:up`, `step:down`: the focused trait's look among its three, wrapping; the ring and notches move to the chosen picture; the founder cross-dithers to the new picture over 200 ms (the `roll` event); the stamp's cells, the pip, the price and the leaves change at once. Nothing read: nothing |
+| ▲ ▼ | Shape: `step:up`, `step:down`: the focused trait's look among its three, wrapping; the ring and notches move to the chosen picture; the founder cross-dithers to the new picture over 200 ms (the `roll` event); the stamp's cells, the pip, the price and the wait change at once. Nothing read: nothing |
 | ▲ ▼ on a doing, or a trait the pod carries one look of | Nothing: one picture, no notches, and the line already says why ("Claws: breed to change" with the two joined rings after the name; "Crown: one look in this pod"). No message plate |
 | ✓ | `✓ Grow it · ⚡ 2 ❀ 4 ◆ 1`, checked whole and then paid: the `grow` event, then the Incubator. Blocked: no ✓ cap and nothing happens. Short: the dimmed cap and a plate |
 | ← | Back to the pod's overview with the ring on the pod, nothing spent and the choices dropped: the way back reads the pod's name, "← Loika" |
@@ -1294,7 +1293,8 @@ With `motion: false` both jump to their ends.
 | Work tray (`chamber`) | 400×320, its floor 400×16: `chamber-back-400x320`, `chamber-front-400x320` | Signed (art director, 72561d74) |
 | Small chamber (`dome`) | 176×224, `dome-small-back-176x224` and `dome-small-front-176x224`; a busy bud 64×80, `bud-small-64x80` | Signed (art director, 72561d74 for the chamber, 963f4eab for the bud) |
 | Notches | 12×6 | Carried |
-| Leaves | 8×12, `leaf-empty-8x12` and `leaf-full-8x12`: the Incubator's leaf at the small size | Re-judged with the Incubator's leaf |
+| Founder shadow | 224×14, `founder-shadow-224x14` | art director, masters-pods cf3b0ac6 (fix 6 A2) |
+| Wait icon | 16×16, `icon-wait-16` | art director, masters-pods 37753a50 (fix 6 A3) |
 | Changed pip, clash pip | 6×6, `pip-changed-6x6` (a diamond), `pip-clash-6x6` | Carried |
 | Changed tag | 88×24, `plate-name-88x24` | Signed (art director, 5238569a) |
 | Stage | 1024×522, `room-bench-stage-create` | Signed (art director, 528b73d5): the work tray's stage |

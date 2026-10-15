@@ -48,14 +48,15 @@ function standIn(id, size, hollow = false) { const [w, h] = size, d = new Uint8C
 const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const PINNED = pinnedPictures(podsSpec, frameSpec);
 
-async function start(b, { motion = true, t0 = 0 } = {}) {
+async function start(b, { motion = true, t0 = 0, noWait = false } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["create", createSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
+  if (!noWait) f.handleOf("icon-wait-16", withPolicy((i) => standIn(i, [16, 16])));   // a test-only stand-in for the signed master: the wait's picture (fix 6 A3)
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
   f.t = t0; f.motion = motion; f.build = b;
-  assert.equal(f.props({ screen: "create", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
+  const rc = f.props({ screen: "create", ...b.props, motion, frame: frameProps(b.line) }); f.initErrors = f.errors(); assert.equal(rc, 0, f.initErrors.join("; ")); frames(f); return f;   // initErrors: what the first build said (reading errors() drains it)
 }
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
@@ -252,6 +253,28 @@ test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 
   let verbShort = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(short, x, y)) verbShort++; assert.ok(verbShort > 0, "a short line has its verb at the same x (its cap picture is the frame's, not in this test)");
 });
 
+// ---- the bud's wait on the Grow line (fix 6 N1a): ⧗ n, the price's fourth group ----
+const NAMES = new Map(palette.map(([n, h]) => [n, [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))]));
+const waitSpan = (f) => { let x0 = -1; for (let x = 16; x < 400 && x0 < 0; x++) for (let y = 574; y < 592; y++) if (pixelIs(f, x, y, "icon-wait-16")) { x0 = x; break; } return x0; };   // the wait icon's first column in the action zone
+const inkOf = (f, name, x0, x1) => { let n = 0; for (let y = 574; y < 592; y++) for (let x = x0; x < x1; x++) if (f.pixel(x, y).every((v, i) => v === NAMES.get(name)[i])) n++; return n; };
+test("the Grow line's wait: every region of the action stays across its zone (x 16 to 392), the wait's icon is the last group after the ◆ figure, and no logged text carries the ⧗ token", { skip }, async () => {
+  const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f); assert.match(b.line.price, /^⚡ 2 ❀ 4 ◆ 1 ⧗ 21$/);
+  for (const r of lg.regions.filter((x) => x.id === "action")) assert.ok(r.rect[0] >= 16 && r.rect[0] + r.rect[2] <= 392 && r.rect[1] >= 566 && r.rect[1] + r.rect[3] <= 594, `action ${r.layer} ${r.rect}: across [16, 392], a text box's line 2 px above the zone`);
+  let data = -1; for (let x = 16; x < 400 && data < 0; x++) for (let y = 574; y < 592; y++) if (pixelIs(f, x, y, "icon:data:16")) { data = x; break; }
+  const wait = waitSpan(f); assert.ok(data > 0 && wait > data + 16, `the wait icon (x ${wait}) after the ◆ icon (x ${data}) and its figure`);
+  assert.ok(!lg.type.some((t) => t.text.includes("⧗")), "the token is never drawn as a glyph"); assert.deepEqual(f.errors(), []);
+  assert.deepEqual(departures(lg, createSpec, frameSpec, "shape", null, true), [], "no departure from create.json");
+});
+test("the wait's colour: price (cream) at rest, dim (mist) when the action is blocked, price still when only a material is short (never need)", { skip }, async () => {
+  const price = await start(scene({ read: 2, f: 1 })), blocked = await start(scene({ read: 2, f: 1, busy: true })), short = await start(scene({ read: 2, f: 1, short: true }));
+  for (const [name, f, want, not] of [["rest", price, "focus", "mist"], ["blocked", blocked, "mist", "focus"], ["short", short, "focus", "amber"]]) {
+    const x = waitSpan(f); assert.ok(x > 0, name); assert.ok(inkOf(f, want, x + 18, x + 48) > 0, `${name}: the figure in ${want}`); assert.equal(inkOf(f, not, x + 18, x + 48), 0, `${name}: never ${not}`);
+  }
+});
+test("with no picture for the wait the face says so and draws neither the icon nor a bare figure", { skip }, async () => {
+  const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b, { noWait: true }), lg = logOf(f);
+  assert.match([...f.initErrors, ...f.errors()].join(), /icon-wait-16 is not on the face/); assert.ok(!lg.type.some((t) => t.region === "action" && t.text.trim() === "21"), "no bare figure"); assert.ok(!lg.type.some((t) => t.text.includes("⧗")), "no glyph");
+});
 // ---- the pod's contact shadow (regions.podShadow; Pods' rule): under the pod in shape and nothing read, in grow only until the travel starts, never with reduced motion ----
 const shadowOf = (lg) => lg.regions.find((r) => r.id === "podShadow" && r.layer === "painted");
 test("shape (a medium pod): the shadow is the painted node podShadow at [92, 401, 136, 14], the class's master, drawn just before the pod and clear of the departure check", { skip }, async () => {

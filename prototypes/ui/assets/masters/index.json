@@ -603,6 +603,13 @@
    "sha256": "0efb62f44b4cb30eee324d83c75908aa6f849cb0df1d42edf40ff03ba847a47c",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "founder-shadow-224x14": {
+   "file": "pods/founder-shadow-224x14.png",
+   "w": 224,
+   "h": 14,
+   "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
+   "signed": "named with --ids"
+  },
   "frame-bottom-line-1024x38": {
    "file": "pods/frame-bottom-line-1024x38.png",
    "w": 1024,
@@ -1015,6 +1022,13 @@
    "h": 16,
    "sha256": "313188842cf353a44a70004b17a7357dd38e51e4776b98a19f4a06d0311f2d8e",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  },
+  "icon-wait-16": {
+   "file": "pods/icon-wait-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
+   "signed": "named with --ids"
   },
   "idle-vivarium-dawn-1024x568": {
    "file": "vivarium/idle-vivarium-dawn-1024x568.png",
