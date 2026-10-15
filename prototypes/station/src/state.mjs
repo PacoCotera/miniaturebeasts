@@ -818,7 +818,7 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   return { ok: true, bud: st.bud, cost };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
-const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
+export const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
 // The bud's chapters. A read chapter is known from the start. A bred bud (kind "cross") keeps every other chapter unread, always: while it grows, after Grow now and skipBud, at ready and after (what
 // the Station could be sure of is B.read, set from the parents). A founder (a missing kind counts as one) clears its unread chapters one by one across the wait: with U the unread chapters in frame order
 // (a shut sealed chapter is never among them) and n = |U|, U[k] is known when the bud is (k + 1) / (n + 1) grown.
