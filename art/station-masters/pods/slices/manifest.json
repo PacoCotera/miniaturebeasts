@@ -5112,8 +5112,8 @@
   "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage, 0 MXN",
   "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out); gate batch 1 (10-15): the heading band cleared (stage-recut/clear-heading-band.py): the floor in x 340-960 to slice y 116 repainted (harmonic tone from its edges, the floor's own grain), so the hose's top run, the gauge and the vent leave the two-row page's heading; the hose ends at x 330 in its own brass fitting",
   "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-chapter-page*, pods-sealed, pods-six-traits, pods-belatz-*, pods-eight-chapters, page-read",
   "status_note": "recut 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page captures (one and two rows)"
  },
  "ring-collection-idle-176x176": {
@@ -7285,8 +7285,8 @@
   "src": "marks/fix11/make-asleep-glyph.py, typed by rule in the name-line family's colours",
   "made": "fix 11 (10-15): the asleep mark redrawn: a full crescent moon 13 x 13 (bone rim lit top left, fog face, mist on the inner curve, frostS shaded rim), three fog sleep dots rising to its right; no ink keyline, no white, no Z's; replaces pass 38's slim crescent, which read as a pointer at 1x",
   "sha256": "9e3296786edbf527d372744555ea086317328a475c08ee100dd0128dfe701406",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
   "status_note": "redrawn 10-15 by the art director at 0 MXN (same id and size, top 2); signed in the Pods chapter-page captures"
  },
  "mark-breed-28x16": {
@@ -7386,8 +7386,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges; gate batch 1 (10-15): the straight cut edges (sides, bottom) faded into the ground, the dome and leaves kept crisp, the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "0a541c6401b84a794bb41449383e24229271f1dd6a1b2fb572c83269fe67214f",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -7456,8 +7456,8 @@
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
   "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 96x120 window, reduced and never enlarged, on the cell tone ground #162a37); 128x160 (pass 60): the ground is only what the border reaches (487 enclosed background px restored from the painting, the edge colour taken from the solid pixels beside it), a keyed fade (smoothstep, 12 px, finished inside the box) on the straight cut edges: [{'edge': 'top', 'run_px': 45}, {'edge': 'bottom', 'run_px': 96}, {'edge': 'left', 'run_px': 120}, {'edge': 'right', 'run_px': 44}]; pass 61: the same 12 px smoothstep along the hard polygon silhouette segments [[(70, 30), (93, 80)]]; pass 62: pixels (98, 96) set to the ground and (98, 97), (99, 97) to (104, 115, 115) (matte fringe); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "c1bf3e1fc6627a273bbeb46a8c56eea25c43104496b988c281bccb3e6aa92eea",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
@@ -10943,8 +10943,8 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges; gate batch 1 (10-15): the straight cut edges (sides, bottom) faded into the ground, the dome and leaves kept crisp, the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "dba54858b49d03d9edf4ac9e093876820f87a32ac1dfa68fd2da75917eae6525",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 21 px (tools/defringe-plates.py, 2026-10-12)"
  },
@@ -11040,8 +11040,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges; gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "fa0ad22b79bad63240a560e13ac60f1d8e91c63520320c9d1ef802b27897d855",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-thin-rings-104x160": {
@@ -11118,8 +11118,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges; gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "10978b1443fb69da9bffd73a378edfa483b92f19a03b85f61e143c92d6220c86",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-104x160": {
@@ -11196,8 +11196,8 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges; gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "119c92cacfc8deaee8f6632b8a635d1a66abddeac3659bbdb04032f097090a3e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-wide-pale-rings-104x160": {
@@ -13254,8 +13254,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "c3cc045351176b18081d84d885c8872d6e784ed9c05c11f85862c88ed76994e4",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-few-fine-104x160": {
@@ -13280,8 +13280,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "1aa1d4c05087ac0cd2d17354422f6f3e528b76b0e4096cd530ea458180897304",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-compare-four",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-few-fine-104x64": {
@@ -13332,8 +13332,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "0ae6bbe03ade69196823d043d5d81c0e8d02192a5d483947ce6f2011916907fb",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-between-104x160": {
@@ -13358,8 +13358,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "b5dcaab5dd835a8b58be54caacf7e4cec109045114d07daed9bd6ce0842909d1",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-compare-four",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-between-104x64": {
@@ -13410,8 +13410,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "2190d20a066b1f87b8db87aed486c063dcab07049a5671961909ce7668ca9820",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-many-coarse-104x160": {
@@ -13436,8 +13436,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade); gate batch 1 (10-15): the rectangular cut faded out across the outer 24 % of the inscribed ellipse (a close-up, not a cut-out), the ground re-keyed #162a37 -> (29, 35, 43) (trait-clean/rekey/rekey-cut-edges.py)",
   "sha256": "befda61b4547c139de65e6fb2073686d4efcf21dbf92472a89f423f7a3c75d12",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-compare-four",
   "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-many-coarse-104x64": {
