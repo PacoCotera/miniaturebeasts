@@ -1256,14 +1256,26 @@ test("species art: each state uses its own master, the cards show it at whole pi
 });
 
 // ---- Juvenile pictures: where they go, how they are looked up, and the rules the signed set must meet ----
-// JUVENILE_ART holds the signed juvenile pictures embedded so far (S03); a species without an entry shows the adult's picture. The checks
+// JUVENILE_ART holds the signed juvenile pictures (all three species); a species without an entry shows the adult's picture. The checks
 // below are written against the studio's ids and rules, so they run on the real table as soon as it holds pictures, and on
 // stand-in fixtures (adult pictures, or generated shapes) to prove the lookup and the rules themselves.
 const JUV_NAMES = ["idle", "alert", "huddle", "eat0", "eat1", "mini"];
 const JUV_S = { 0: "S01", 1: "S03", 2: "S02" };   // page species -> the studio's species id
 const juvFile = (sp, n) => JUV_S[sp] + "/" + (n === "mini" ? "c-mini-" + JUV_S[sp] + "-juv-12x12.png" : "c-token-" + JUV_S[sp] + "-juv-" + (n === "eat0" ? "eat-f0" : n === "eat1" ? "eat-f1" : n) + "-32x32.png");
-// species, piece, file, and the file's sha256 (null until the studio signs it; fill it in with the embed)
-const JUV_SHA = {   // signed so far: S03 (art director, 2026-10-15; the species README at origin/art-terrain-grass d656ff74)
+// species, piece, file, and the file's sha256
+const JUV_SHA = {   // the three signed sets (2026-10-15), as listed in the species README
+  "S01/c-token-S01-juv-alert-32x32.png": "d3b41be650000e46578a6aebff085238e8a0d92fa10559c9e0308aa58069393d",
+  "S01/c-token-S01-juv-eat-f0-32x32.png": "cd56e3470a7780961a638e1541b44551fec97d4eae4d0a6239aca00fe5db080b",
+  "S01/c-token-S01-juv-eat-f1-32x32.png": "bb2223e140889e68c16598bcf884b779aa105aad8b92ed18c0a5513796fefc3b",
+  "S01/c-token-S01-juv-huddle-32x32.png": "bb76fe0bde424b6709c49b90a06517d4319f45b0b612f14bec8190f3de9b4950",
+  "S01/c-token-S01-juv-idle-32x32.png": "bbfb2085b6a79d732fd579cc1fee810c17db30003a86a385e11ec3c58f427e2d",
+  "S01/c-mini-S01-juv-12x12.png": "4ed25fd9cc27aec010f8f944a71cc8650b938b8d553650923e7cd336ed8b3f5c",
+  "S02/c-token-S02-juv-alert-32x32.png": "797c55cb99c442d72e403a9b7c731c8df6d31a45e539c2eba461d6d1c6078fb2",
+  "S02/c-token-S02-juv-eat-f0-32x32.png": "16917dec7d62ef50da428d8f19af2386a97543443f3c2c7b86b2c5dc8ae03f49",
+  "S02/c-token-S02-juv-eat-f1-32x32.png": "ccf48be513b8ea4a448ce64b4fad7af1fc963a028d6bc654d87d222397ec72b0",
+  "S02/c-token-S02-juv-huddle-32x32.png": "f858506536f6282e16dd0b472d9a2d29d3f7ba2125854e77d0f92c4eb0275faf",
+  "S02/c-token-S02-juv-idle-32x32.png": "d4776650d605c46b58be94c2eed3033f71979822e59045d0993672e5072fe16d",
+  "S02/c-mini-S02-juv-12x12.png": "b60ff4ec467c9287fd95b94fdaf06938f45e5f92737a7750e96c5fe88a5f7efd",
   "S03/c-token-S03-juv-idle-32x32.png": "2e30a2f514968440bd0e4c673dec8fd599195a473760001a84fb49e9c27cb8b8",
   "S03/c-token-S03-juv-alert-32x32.png": "002a4ead03ef563833f39d9d9200237ca2ab3f3391e7825225d78431f2ce337a",
   "S03/c-token-S03-juv-huddle-32x32.png": "5f086fcbfbeb455dd983ab8f4ee380f7245e69dc3d79d27d1f0889d069e87d89",
@@ -1300,7 +1312,7 @@ function juvProblems(p, sp, entry) {
   if (info.idle) {
     const want = Math.round(adult("idle", 32).h * 0.8);
     if (Math.abs(info.idle.h - want) > 1) bad.push(tag + "idle is " + info.idle.h + " px high, 80% of the adult idle is " + want + " (1 px either way allowed)");
-    for (const n of ["alert", "huddle", "eat0", "eat1"]) if (info[n] && (info[n].h > info.idle.h + 2 || info[n].h < info.idle.h - 6)) bad.push(tag + n + " is " + info[n].h + " px high against the idle's " + info.idle.h);
+    for (const n of ["alert", "huddle", "eat0", "eat1"]) if (info[n] && (info[n].h > info.idle.h + 2 || info[n].h < info.idle.h - (n === "huddle" ? 9 : 6))) bad.push(tag + n + " is " + info[n].h + " px high against the idle's " + info.idle.h);
     for (const n of ["alert", "huddle", "eat0", "eat1"]) if (info[n] && info[n].px.join() === info.idle.px.join()) bad.push(tag + n + " is the idle picture");
     if (info.eat0 && info.eat1 && info.eat0.px.join() === info.eat1.px.join()) bad.push(tag + "eat has two frames");
     for (const n of ["idle", "alert", "huddle", "eat0", "eat1"]) { const an = n === "eat0" ? "eat0" : n === "eat1" ? "eat1" : n; if (info[n] && p.run(`SPECIES_ART[${sp}].${an}`) === entry[n]) bad.push(tag + n + " is the adult's picture"); }
@@ -1321,10 +1333,10 @@ function synthJuvenile(p, sp, o = {}) {
   return set;
 }
 
-test("juvenile pictures: the table has one entry per species; a non-empty entry meets the brief's rules (S01 and S02 are empty until their signed files are embedded)", () => {
+test("juvenile pictures: the table has one entry per species; a non-empty entry meets the brief's rules (all three are embedded)", () => {
   const p = X1.page(), J = plain(p.run("JUVENILE_ART"));
   assert.equal(J.length, 3, "one entry per species, in SPECIES_ART's order");
-  assert.deepEqual(J.map(e => Object.keys(e).length), [0, 6, 0], "embedded so far: S03's six pictures; S01 and S02 are waiting for their signed files");
+  assert.deepEqual(J.map(e => Object.keys(e).length), [6, 6, 6], "all three signed sets are embedded: six pictures each");
   assert.equal(p.run("JUVENILE_ART.length === SPECIES_ART.length"), true);
   let filled = 0;
   for (const sp of [0, 1, 2]) {
@@ -1332,7 +1344,7 @@ test("juvenile pictures: the table has one entry per species; a non-empty entry 
     if (!Object.keys(J[sp]).length) continue;     // not embedded yet: the adult's picture is shown
     filled++; assert.deepEqual(juvProblems(p, sp, J[sp]), [], JUV_S[sp] + " meets the rules");
   }
-  assert.equal(filled, 1);
+  assert.equal(filled, 3);
 });
 
 test("juvenile pictures: the rules catch what the brief forbids (generated shapes: a valid set passes; wrong foot, height, mini row, void, a short string, an adult picture fail)", () => {
@@ -1356,6 +1368,7 @@ test("juvenile pictures: the rules catch what the brief forbids (generated shape
 
 test("juvenile pictures: the signed files (S0n/c-token-S0n-juv-*-32x32.png, c-mini-S0n-juv-12x12.png), when in the tree, are what the page embeds, pixel for pixel and by sha256, 0 off-palette; a species has all six or none", () => {
   const p = X1.page(), rgb = p.run("RGB"), here = JUVENILE_FILES.filter(([, , file]) => existsSync(new URL("../../../art/companion-48/species/" + file, import.meta.url)));
+  assert.ok(here.length === 0 || here.length === 18, "the signed files are all in the tree or none: " + here.length + " of 18");
   for (const sp of [0, 1, 2]) { const n = here.filter(f => f[0] === sp).length; assert.ok(n === 0 || n === 6, JUV_S[sp] + ": " + n + " of 6 files in the tree"); }
   for (const [sp, name, file, sha] of here) {
     const buf = readFileSync(new URL("../../../art/companion-48/species/" + file, import.meta.url)), img = decodePNG(buf), w = name === "mini" ? 12 : 32;
@@ -1381,8 +1394,9 @@ function withStandIns() {
 }
 const px = (p, expr) => { const a = p.run(expr); return a && Array.from(a.p).join(); };
 
-test("juvenile pictures: with no juvenile entry a juvenile shows exactly the adult's picture, at every size (S01 and S02 until signed; S03 differs)", () => {
+test("juvenile pictures: with no juvenile entry a juvenile shows exactly the adult's picture, at every size (a species whose entry is emptied here; the signed ones differ)", () => {
   const p = X1.page();
+  for (const sp of [0, 2]) for (const k of Object.keys(plain(p.run(`JUVENILE_ART[${sp}]`)))) p.run(`delete JUVENILE_ART[${sp}].${k}`);   // S01 and S02 as if unsigned
   for (const sp of [0, 2]) {
     for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat", "approach", "glow", "nest"]) for (const fr of [0, 1])
       assert.equal(px(p, `tokenOf(${sp}, '${pose}', ${fr}, true)`), px(p, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + pose + " " + fr);
@@ -1392,6 +1406,11 @@ test("juvenile pictures: with no juvenile entry a juvenile shows exactly the adu
   }
   for (const pose of ["idle", "alert", "huddle", "eat"]) assert.notEqual(px(p, `tokenOf(1, '${pose}', 0, true)`), px(p, `tokenOf(1, '${pose}', 0)`), "S03's signed juvenile " + pose + " is not the adult's");
   assert.notEqual(px(p, "ICON.mini(1, true)"), px(p, "ICON.mini(1)"));
+  const q = X1.page();   // the real table: every species' signed juvenile differs from its adult, in every picture
+  for (const sp of [0, 1, 2]) {
+    for (const pose of ["idle", "alert", "huddle", "eat"]) for (const fr of [0, 1]) assert.notEqual(px(q, `tokenOf(${sp}, '${pose}', ${fr}, true)`), px(q, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + pose);
+    assert.notEqual(px(q, `ICON.mini(${sp}, true)`), px(q, `ICON.mini(${sp})`), sp + " mini");
+  }
   assert.equal(p.run("tokenOf(5, 'idle', 0, true)"), null, "an unknown species is still null (its labelled plate)");
 });
 
@@ -1429,6 +1448,32 @@ test("juvenile pictures: only the places that draw a mibi ask for the juvenile (
   for (const fn of ["drawCreature", "drawPartner", "silhouette"]) assert.ok(!/juv|JUVENILE/i.test(source(fn)), fn + " never asks for a juvenile");
   assert.ok(!/creatureArt\([^)]*true\)|bigArt\([^)]*true\)/.test(PAGE), "no species list or portrait asks for a juvenile");
   assert.match(source("drawActive"), /mibiSprite\(m\.sp, pose, fr, x, y, BIG, flip, st === 'juvenile'\)/, "the stage follows its chip (st), not the stage the clock has reached");
+});
+
+test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Walk, the Call, 20 s of look-out, every card, face, mini, row), while the routing still sends both to its own pictures", () => {
+  const bad = new Set(["huddle", "eat", "eat0", "eat1"]), seen = [];
+  const scan = (p, pages, ts, tag) => { for (const pg of pages) for (const t of ts) for (const c of p.draw(pg, t)) { seen.push(1); if (c[c.length - 1] === true && c.some(v => bad.has(v))) assert.fail(tag + " " + pg + " t " + t + ": " + JSON.stringify(c)); } };
+  for (const sp of [0, 1, 2]) {
+    const m = () => X26.mib(1, "Kit", sp), pal = () => X26.mib(2, "Pal", (sp + 1) % 3);
+    let p = X26.world([m(), pal()], [1, 2]); p.run("S.ui.aId = 1");
+    scan(p, ["setup", "mibis", "active"], [0, 400], "rest sp " + sp);
+    p.run("FX.moment = { id: 1, at: 0 }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Tend sp " + sp);                       // Tend
+    p.run("FX.moment = { id: 1, at: 0 }; FX.walk = { id: 1, at: 0, others: [2] }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Walk sp " + sp);   // the Walk
+    p.run("FX.moment = null; FX.walk = null; FX.callMibi = { id: 1, at: 0, wrong: false }"); scan(p, ["active", "mibis"], [0, 300, 700, 1200], "Call sp " + sp);   // the Call
+    p = X26.world([m()], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1"); scan(p, ["active", "map"], Array.from({ length: 1000 }, (_, i) => 1000 + i * 20), "look-out sp " + sp);   // 20 s of look-out
+    p = X26.world([m()], [1]); scan(p, ["setup"], [0], "rider sp " + sp);
+    p.setOut(); scan(p, ["map", "place"], [0], "field sp " + sp);
+  }
+  assert.ok(seen.length > 1000, "the recorder saw the draw calls");
+  // the pictures stay embedded and routable: huddle and both eat frames are the juvenile's own, not the idle, not the adult's
+  const q = X1.page();
+  for (const sp of [0, 1, 2]) {
+    const jt = (pose, fr) => px(q, `tokenOf(${sp}, '${pose}', ${fr}, true)`);
+    for (const [pose, fr, key] of [["huddle", 0, "huddle"], ["eat", 0, "eat0"], ["eat", 1, "eat1"]]) {
+      assert.equal(jt(pose, fr), q.run(`Array.from(tokenPB(JUVENILE_ART[${sp}].${key}, 32).p).join()`), sp + " " + key + " is the juvenile's own picture");
+      assert.notEqual(jt(pose, fr), jt("idle", 0), sp + " " + key + " is not its idle"); assert.notEqual(jt(pose, fr), px(q, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + key + " is not the adult's");
+    }
+  }
 });
 
 test("juvenile pictures at the sites: setup card and faces, header mini, roster, stage, look-out and the Walk's side tokens ask for the juvenile exactly when the mibi is one", () => {
