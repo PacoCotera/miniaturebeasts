@@ -1095,6 +1095,21 @@ test("48 px storm: the 6 px of the lit tile beside the band step by the Bayer ru
   for (let i = 0; i < 2304; i++) { const c = bt.p[i]; if (c < 0) continue; n++; if (px[(by + ((i / 48) | 0)) * W_ + bx + (i % 48)] === storm[c]) dk++; }
   assert.ok(dk > n * 0.97, "a band tile is fully dark: " + dk + " of " + n);
 });
+test("48 px storm on grass: a grass colour takes dark2 in the band, under the overcast and in the 6 px step; another colour keeps dark", () => {
+  const setup = "layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;";
+  const band = place48(7, 176, 14, 14, "S.exp.storm = { x: (176 % MW) - 3 - 1.25, dir: 1, w: 3, v: .25, t: 0 }; " + setup), over = place48(7, 176, 14, 14, "S.exp.storm = { x: (176 % MW) - 1, dir: 1, w: 3, v: .25, t: 0 }; " + setup);
+  const ps = band.run("PLACE_STORM"), dk = band.run("DARK"), dk2 = band.run("DARK2");
+  for (const c of [48, 49, 50, 51]) assert.equal(ps[c], dk2[c], "grass " + c + " takes dark2"); for (const c of [50, 51]) assert.notEqual(ps[c], dk[c], "and that differs from dark for " + c);
+  for (const c of [6, 8, 52, 53]) assert.equal(ps[c], dk[c], "colour " + c + " keeps dark");
+  const check = (p, tx, ty, want, what) => { const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
+    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y; let grass = 0, n = 0;
+    for (let i = 0; i < 2304; i++) { const c = pb.p[i]; if (c < 0) continue; const got = px[(sy + ((i / 48) | 0)) * W_ + sx + (i % 48)], w = want(c, i % 48, (i / 48) | 0); if (w === undefined) continue; n++; if (c >= 50 && c <= 51) grass++; assert.equal(got, w, what + " pixel " + i); }
+    assert.ok(grass > 100 && n > 1000, what + ": grass pixels " + grass + " of " + n); };
+  check(band, 12, 12, c => ps[c], "a band tile (the pawn's column minus two)");
+  check(over, 14, 12, c => ps[c], "under the overcast");
+  check(band, 13, 12, (c, x, y) => V.stormStep(x, x, y) ? ps[c] : c, "the lit tile beside the band (its 6 px step takes the storm table)");
+  assert.equal(band.run("PLACE_STORM[50] === DARK2[50] && REMAP_PLACE[1] === PLACE_STORM && REMAP[1] === DARK"), true, "the band, the step and the overcast share one table; 32 px reads the core dark");
+});
 test("48 px fog edge: in the storm's band the clear side takes the band's dark (PLACE_STORM), as 32 px does, and outside the band it is lit", () => {
   const p = place48(7, 176, 14, 14, "S.exp.fog = { x: 176 % MW + .5, y: Math.floor(176 / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 }; S.exp.storm = { x: (176 % MW) - 3 - 1.25, dir: 1, w: 3, v: .25, t: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");

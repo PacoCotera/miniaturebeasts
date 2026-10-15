@@ -88,7 +88,8 @@ export function coreMissing(cat) {
 export function coreSet(cat) { return coreMissing(cat).length === 0; }
 
 // The biome palette: one index space, 0–47 the core (unchanged) and 48 … N − 1 the biome's entries, each with the lookup tables
-// the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]) and an optional storm table (default: its dark).
+// the page draws through (dark, light, dark2, fog, fade; dark2 must be dark[dark[i]]) and an optional storm table (default: its dark2 on an
+// entry marked mat "grass", else its dark; an explicit storm field wins).
 // coreRGB and coreTables are the page's own 48 (coreTables also carries the core names: the page addresses colours by name).
 // A core entry's name, hex, dark, light and dark2 must equal the page's; its fog, fade and storm may differ: the place overrides,
 // which the place view alone draws through. Returns the core-true tables (rgb, dark, light, dark2, fog, fade, the page's own values
@@ -105,7 +106,7 @@ export function paletteTable(coreRGB, coreTables, file) {
   if (n < core) errors.push(n + ' entries: the core ' + core + ' are not all there');
   const rgb = [], seen = new Map(), out = { rgb }, raw = { storm: [] };
   for (const f of TABLE_FIELDS) { out[f] = []; raw[f] = []; }
-  out.mat = [];
+  out.mat = []; out.stormSrc = [];   // where each entry's storm came from: 'dark', 'dark2' (grass) or 'file'
   for (let k = 0; k < n; k++) {
     const e = entries[k] || {};
     if (e.i !== k) errors.push('entry ' + k + ': i is ' + JSON.stringify(e.i) + ' (a gap or out of order)');
@@ -120,7 +121,8 @@ export function paletteTable(coreRGB, coreTables, file) {
       const v = e[f]; raw[f].push(v);
       if (!Number.isInteger(v) || v < 0 || v >= n) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(v) + ' outside 0 … ' + (n - 1));
     }
-    if (e.storm === undefined) raw.storm.push(e.dark);   // the storm's table defaults to dark
+    out.stormSrc.push(e.storm !== undefined ? 'file' : e.mat === 'grass' ? 'dark2' : 'dark');
+    if (e.storm === undefined) raw.storm.push(e.mat === 'grass' ? e.dark2 : e.dark);   // the storm's table defaults to dark2 on grass, dark elsewhere
     for (const f of TABLE_FIELDS) out[f].push(k < core && PLACE_OVERRIDES.includes(f) ? coreTables[f][k] : e[f]);
     if (k < core) {
       const c = coreRGB[k], r = rgb[k];
@@ -376,6 +378,13 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     else tile.layers.push(cellLayer(pick(cat.material.rock, hash(seed, 'sr2', key, x, y)), 0, 0));
   }
   return { ok: true, tiles, sprites };
+}
+// How the storm table was derived, from a paletteTable result: the entries marked grass with no storm field (they take dark2), split into the core
+// and the biome's own, and the entries that give a storm field. `core` is the core's size.
+export function stormOnGrass(table, core) {
+  const o = { dark2: 0, core: 0, biome: 0, explicit: 0 };
+  table.stormSrc.forEach((w, k) => { if (w === 'file') o.explicit++; else if (w === 'dark2') { o.dark2++; if (k < core) o.core++; else o.biome++; } });
+  return o;
 }
 // How many core entries a palette's place tables override, per field (storm against the core's dark): what atlas-check prints.
 export function overrideCounts(table, coreTables) {
