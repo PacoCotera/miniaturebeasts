@@ -26,7 +26,7 @@ One navigation model for the whole Station: Home is the hub, every screen has on
 
 - **The tree.** Home is the top. Under Home: Pods (the collection), the Incubator, the Probe bench, Idle, the Library and the Vivarium. Under the collection: a pod's overview. Under the overview: its chapter page, Compare and Create. Under the Library: the Book. Under the vivarium, up close: Cross. The Incubator and the Probe bench are Home's modules (reached from Home's instrument column, ← Home) and keep the Research room's mark.
 - **Stack navigation.** A ✓ that lands in another part of the tree is a jump: Grow it (Create) and Cross them (Cross) to the Incubator, Open (the Incubator) to the vivarium, up close, Visit (the Book) to the vivarium, up close. After a jump, ← goes to the parent of the screen you are on, never back along the way you came: the Incubator after Grow reads "← Home", the vivarium, up close, after a Book's Visit reads "← Home".
-- **Home's pad.** A fixed order, not the nearest thing: ◀ ▶ cross between the vivarium's residents and the instrument column; ▲ ▼ walk the column, Cargo, Pods, Incubator, Probe, Library, Rest. The Home key on Home puts the ring back on the room, where ✓ does what needs you.
+- **Home's pad.** A fixed order, not the nearest thing: ◀ ▶ cross between the vivarium's residents and the instrument column; ▲ ▼ walk the column: Cargo, Pods, Incubator, Probe, Library, then the rest knob. The Home key on Home puts the ring back on the room, where ✓ does what needs you.
 - **Idle.** The first press only wakes the screen; nothing else happens.
 - **Leaving Create or Cross** by a room key drops the unpaid choices; coming back starts fresh.
 
@@ -78,7 +78,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 **Purpose.** The always-on view: the collection alive, the equipment's state. **Reads first:** the residents, then whatever needs you (the bottom line's right part).
 
 - **Living window.** The vivarium, the left two thirds (about 640×500): a lit glass habitat with plants, stones, water and a burrow. Residents in the rich treatment keep their species' routines. The with-you bed shows the one to three mibis with you, or a small Companion mark while they are away.
-- **Instrument.** The right third, a column of five modules, each with a status lamp and one engraved word (Cargo, Pods, Incubator, Probe, Library): the bay where the crates arrive, the pod rack, the Incubator with its bud and leaves, the Probe and its Shield plates, and the Library's field journal.
+- **Instrument.** The right third, a column of five modules, each with a status lamp and one engraved word (Cargo, Pods, Incubator, Probe, Library): Cargo's bay where the crates arrive, Pods with its rack of six wells, the Incubator with its bud and leaves, the Probe and its Shield plates, and the Library's field journal.
 - **Composition.** The vivarium's glass sits in a thin bezel; the modules align to one column with 16 px gaps. Nothing overlaps the vivarium.
 - **Lively / quiet.** Lively: residents, plants, water, the bud's glow. Quiet: the modules; one lamp pulses slowly when its module needs you.
 - **Light.** Inside the vivarium, the same light as Idle: the warm key light from the top left, by the time of day; even cool light on the chrome.

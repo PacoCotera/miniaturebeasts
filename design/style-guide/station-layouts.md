@@ -583,7 +583,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Compare | ▲ ▼ | Nothing: the ring stays |
 | Compare | ✓ | Nothing: Compare has no ✓ cap |
 | Compare | ← | Closes Compare: back to B, the ring on the kin that opened it. The way back reads the pod's name, "← Loika", as on C |
-| Home | ✓ on the Rack module | Opens the collection (A) with the ring on the pod that most needs the player (a new one, then a glinting one, then the first); ← from there goes Home. Home's rack keeps its one focus target: the collection is one press away, and six 40 px wells in a module would be targets too small to read as the way into a pod |
+| Home | ✓ on the Pods module | Opens the collection (A) with the ring on the pod that most needs the player (a new one, then a glinting one, then the first); ← from there goes Home. Home's rack keeps its one focus target: the collection is one press away, and six 40 px wells in a module would be targets too small to read as the way into a pod |
 | All | Can't | A dimmed ✓ with the shortfall; a message plate on press. A glint says "something new waits" in the notice, never what it is |
 
 ← always goes up one level.
@@ -1390,7 +1390,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
 | `code` | 808, 424, 184, 24 | text | growing, ready, hatch | — |
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
-| `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting, else its signed juvenile stand-in; the step lift |
+| `juvenile` | 360, 160, 304, 312 | specimen | hatch | its species' signed juvenile stand-in at this size, else the rig stand-in; the step lift |
 
 **Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top.
 
