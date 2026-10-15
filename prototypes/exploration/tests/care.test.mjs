@@ -536,7 +536,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
     FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
-    panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
+    panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
   const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
@@ -704,9 +704,6 @@ test("Cargo's preview predicts End: the hold plus the yield still to come, alway
   for (const o of [run({ e: 0, d: 0, s: 0, pods: [] }), run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])]) assert.ok(!o.some(l => /no crate|you still earn/.test(l)));
   assert.doesNotMatch(source("sealPreview"), /no crate|you still earn/);
 });
-test("Cargo, no creature met: the moments line moves under 'No creatures met yet', to (24, 208)", () => {
-  assert.match(source("drawCargo"), /ex\.met\.length \? 180 : 24, ex\.met\.length \? 196 : 208/);
-});
 test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
   assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
 });
@@ -737,7 +734,7 @@ test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to
   assert.ok(!/'[^'\n]*(take one at the Station|dock at the Station|lift at the Station|consignment)[^'\n]*'/.test(PAGE), "no retired docking words in any string");
 });
 test("the Lead card's context: docked with no one carried reads 'no one with you'", () => {
-  assert.match(source("lineFor"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
+  assert.match(source("lineBase"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
 });
 
 // ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----

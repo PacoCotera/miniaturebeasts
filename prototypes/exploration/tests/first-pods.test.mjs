@@ -231,8 +231,8 @@ test(`6. gettable in play: calm, start at glint 0, walk in, Call, dig up fa and 
 });
 
 // ---- the Untuva meal hint (copywriter's cmp.hint.untuvaMeal) ----
-const KNOWN = "A well-fed Untuva may drop a pod · put the fruit down, back off three tiles";
-const UNKNOWN = "A well-fed round creature may drop a pod · put the fruit down, back off three tiles";
+const KNOWN = "Well fed, Untuvas may drop pods";
+const UNKNOWN = "Well fed, these may drop pods";
 function withUntuva(known) {
   const p = page();
   p.run(`newWorld(3); TEST.calm = true; ${known ? "S.known.push(2);" : ""} startExpedition('weather', G.spawns[0]); enterPatch(); S.found.push('callintro', 'backplace');`);
@@ -250,11 +250,244 @@ test("the Untuva meal hint: the unknown variant names no species, the known one 
     assert.ok(put()); step();   // empty-handed: no hint
     assert.ok(!p.run("FX.msg").includes(want));
     assert.ok(put()); p.run("S.exp.carry = 'fruit'"); step();   // fruit in hand, an Untuva in sight
-    if (!p.run("FX.msg").includes(want)) step();   // a line too full for both (the fruit bubble's first help) shows it on the next action
+    if (!p.run("FX.msg").includes(want)) step();   // a sign that outranked it (the fruit bubble's) shows it on the next action
+    if (!p.run("FX.msg").includes(want)) step();
     assert.ok(p.run("FX.msg").includes(want), `shown: ${p.run("FX.msg")}`);
+    assert.ok(p.run("FX.sign && FX.sign.sign") === "untuva", "a sign: one picture and one line");
     assert.ok(!p.run("FX.msg").includes(other));
     if (!known) assert.ok(!/Untuva/.test(p.run("FX.msg")), "the unknown variant never names the species");
     assert.ok(p.S.found.includes("cmp.hint.untuvaMeal"), "spent once shown");
     for (let i = 0; i < 4; i++) { put(); p.run("S.exp.carry = 'fruit'"); step(); assert.ok(!p.run("FX.msg").includes(want), "never again"); }
   }
+});
+
+// ---- signs: one picture and one line, one at a time; the Probe lists the ones met ----
+test("a sign never joins another sign or a note; the one that loses keeps its flag and shows at its next trigger", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]);");
+  assert.equal(p.run("FX.msg"), "", "no card on the first map view: the cell line says the start");
+  assert.ok(p.S.found.includes("met:flag"), "the flag joins the Probe silently");
+  p.run("FX.notes = []; FX.sign = null; fxSign('call'); fxSign('storm', 1); fxSign('fog'); fxMsg('A plain note', 1);");
+  assert.equal(p.run("FX.sign.sign"), "storm", "priority 3 ties break to the hazards first");
+  assert.equal(p.run("FX.msg"), "More bolts, more strikes · ▶ east", "no join");
+  assert.ok(p.run("FX.held.some(n => n.text === 'A plain note')"), "a plain note waits one action");
+  p.run("settleOnce();");
+  assert.ok(p.S.found.includes("hudstorm") && !p.S.found.includes("callintro") && !p.S.found.includes("fogbank"), "only the shown sign is spent");
+  assert.ok(p.S.found.includes("met:storm"), "and it joins the Probe");
+  assert.ok(p.run("SIGN_RANK.slice(0, 5).join()") === "shield,bank,shelter,warn,storm", "hazards first");
+  assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("textW")(d.line(1), 2) <= 340), "every line fits its 340 px slot");
+});
+test("the Probe: no legend rows and no odds; the signs met are pictures in the order met, the pad moves the focus, the bottom line names it", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'probe';");
+  assert.equal(p.run("metTiles().length"), 0);
+  assert.ok(!/%(?!\s)|STRAY/.test(p.run("drawProbe.toString()")) && !/On the map/.test(p.run("drawProbe.toString()")));
+  p.run("S.found.push('met:bolt', 'met:flag', 'sign:t');");
+  assert.equal(p.run("metTiles().map(t => t.id).join()"), "bolt,flag,tracks", "in the order met");
+  assert.equal(p.run("lineCtx(lineFor()).r"), "Bolt · a charged stone");
+  p.key("right"); assert.equal(p.run("lineCtx(lineFor()).r"), "Flag · your start");
+  p.key("down"); assert.equal(p.run("S.ui.pf"), 1, "no row below: the focus stays");
+  p.key("left"); p.key("left"); assert.equal(p.run("S.ui.pf"), 0);
+  assert.ok(p.run("TILES.length") === 34 && p.run("TILES.every(t => PIC[t.pic])"));
+  for (const t of p.run("TILES")) { const n = typeof t.name === "function" ? t.name() : t.name; assert.ok(p.run("textWT")(n, 2) <= 200 && !/%|\d/.test(n.replace("tier 2", "")), n); }
+  p.key("back"); assert.equal(p.S.phase, "menu");
+});
+
+test("Cargo shows the hold as pictures: no 'empty', no cap below 16, no explored-count line", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const said = () => p.run("__t = []; drawCargo(0); __t.join('|')");
+  let t = said();
+  assert.ok(!/empty|\/20|Explored|creature moment|In the hold/.test(t), t);
+  p.run("S.exp.cargo.e = 16;"); assert.ok(said().includes("/20"), "the cap shows from 16");
+  p.run("S.exp = null; S.phase = 'cargo'; S.hold = { e: 0, d: 0, s: 0, pods: [] };"); t = said();
+  assert.ok(!/empty|\/20|In the hold/.test(t), t);
+});
+
+test("control hints lead the bottom line's middle and are spent once it shows them", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.found.push('mapintro'); FX.notes = []; FX.sign = null; FX.msg = '';");
+  p.key("left"); p.key("right");   // an action on the map
+  assert.ok(p.S.found.includes("callmap"), "spent when shown");
+  assert.ok(p.run("textWT('CALL here drops a pin', 2)") <= 190, "the signed short form fits the map's middle");
+  p.key("confirm"); if (p.S.phase === "patch") { assert.ok(p.S.found.includes("backplace")); assert.ok(!/Leave is first/.test(p.run("FX.msg")), "not in the message box"); }
+});
+
+test("the Probe's storm tile leads with the exact odds in words derived from STRAY, with no digit or percentage; hazard signs are priority 3", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'probe'; S.found.push('met:storm');");
+  assert.equal(p.run("stormOdds()"), "Open · hit one in twenty");
+  assert.ok(p.run("textWT")(p.run("stormOdds()"), 2) <= 200);
+  p.run("STRAY.strong = 1 / 10; STRAY.peak = 1 / 5;"); assert.equal(p.run("stormOdds()"), "Open · hit one in ten", "derived, not typed");
+  p.run("STRAY.strong = 1 / 20; STRAY.peak = 1 / 10; stormLevel = () => 3;"); assert.equal(p.run("stormOdds()"), "Open · hit one in ten", "the live peak level's");
+  assert.ok(!/[\d%]/.test(p.run("stormOdds()")));
+  assert.equal(p.run("lineFor().ctx[0]"), "Open · hit one in ten", "the first candidate of the storm tile");
+  assert.equal(p.run("JSON.stringify(['shield','bank','shelter','warn','storm'].map(i => SIGN[i].pri))"), "[3,3,3,3,3]");
+});
+
+test("the Call sign: after every hazard sign; only on entering a place or a Call press in one; never from a step, a take or a wait", () => {
+  assert.equal(page().run("SIGN_RANK.slice(0, 6).join()"), "shield,bank,shelter,warn,storm,call");
+  assert.ok(page().run("SIGN_RANK.indexOf('call') > SIGN_RANK.indexOf('storm')"));
+  const enter = () => { const p = page(); p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); FX.notes = []; FX.sign = null; FX.msg = ''; S.found.push('mapintro');"); return p; };
+  // entering with no hazard: the card is the Call sign and it is spent
+  let p = enter(); p.run("enterPatch(); settleOnce();");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "call"); assert.ok(p.S.found.includes("callintro"));
+  // entering while the storm fires: the storm takes the card; steps, a wait never show Call; the next Call press does
+  p = enter(); p.run("enterPatch(); fxSign('storm', 1); settleOnce();");
+  assert.equal(p.run("FX.sign.sign"), "storm"); assert.ok(!p.S.found.includes("callintro"));
+  for (const k of ["left", "right", "up", "down", "left"]) { p.key(k); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call", k); }
+  p.run("act('confirm')"); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call"); assert.ok(!p.S.found.includes("callintro"), "no retry on later actions");
+  p.run("FX.notes = []; FX.sign = null; FX.msg = ''; S.exp.storm = null;"); p.key("call");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "call", "the Call press shows it"); assert.ok(p.S.found.includes("callintro"));
+  // a hazard on the press itself keeps the card; the sign waits for the next press
+  p = enter(); p.run("enterPatch(); S.found.push('callintro'); S.found = S.found.filter(k => k !== 'callintro'); FX.notes = []; FX.sign = null; FX.msg = '';");
+  p.run("const c0 = callPlace; callPlace = function () { fxSign('warn'); return c0.apply(this, arguments); };"); p.key("call");
+  assert.equal(p.run("FX.sign.sign"), "warn"); assert.ok(!p.S.found.includes("callintro"));
+  p.run("callPlace = c0;"); p.key("call"); assert.equal(p.run("FX.sign.sign"), "call");
+  // spent: never again
+  p.key("call"); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call");
+  assert.ok(!/fxSign\('call'\)/.test(p.run("noteHud.toString()")), "noteHud no longer raises it");
+});
+
+test("the shelter sign's embedded rows are the signed picture, pixel for pixel (when the file is in the tree)", async () => {
+  const { existsSync, readFileSync } = await import("node:fs"), { decodePNG } = await import("../tools/atlas-check.mjs");
+  const file = new URL("../../../art/companion-48/signs/sign-shelter-32.png", import.meta.url);
+  if (!existsSync(file)) return;
+  const img = decodePNG(readFileSync(file)), p = page(), rows = p.run("SHELTER_ROWS.join('')"), rgb = p.run("RGB.map(c => c.join(','))");
+  assert.equal(rows.length, 1024); let diff = 0;
+  for (let i = 0; i < 1024; i++) { const a = img.rgba[i * 4 + 3], ch = rows[i]; if (a === 0 || ch === ".") { if (!(a === 0 && ch === ".")) diff++; } else if (rgb[ch.charCodeAt(0) - 48] !== [img.rgba[i * 4], img.rgba[i * 4 + 1], img.rgba[i * 4 + 2]].join(",")) diff++; }
+  assert.equal(diff, 0, "0 of 1024 pixels differ");
+});
+
+test("the storm tile's odds have a long and a short form, both from STRAY's words; the short one shows while a patch is on offer", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.found.push('met:storm'); S.phase = 'probe'; S.ui.pf = metTiles().findIndex(t => t.id === 'storm');");
+  const w = p.run("oneIn(STRAY.strong)"), wp = p.run("oneIn(STRAY.peak)");
+  assert.equal([w, wp].join(), "twenty,ten");
+  assert.equal(p.run("stormOdds()"), "Open · hit one in " + w); assert.equal(p.run("stormOddsShort()"), "Hit one in " + w);
+  assert.equal(p.run("lineCtx(lineFor()).r"), "Open · hit one in " + w, "read-only: the long form");
+  p.run("S.exp.shield = 1; S.exp.cargo.e = 5;");   // a patch on offer takes the room
+  assert.equal(p.run("canPatch()"), true); assert.equal(p.run("lineCtx(lineFor()).r"), "Hit one in " + w, "the short form fits beside ✓ Patch shield");
+  assert.ok(p.run("textWT(stormOddsShort(), 2)") <= 142 && p.run("textWT(stormOdds(), 2)") <= 200);
+  p.run("stormLevel = () => 3;"); assert.equal(p.run("stormOddsShort()"), "Hit one in " + wp);
+  assert.ok(!/[\d%]/.test(p.run("stormOdds() + stormOddsShort()")));
+});
+
+test("the Probe's Energy is the Energy held; the patch is shown with a plate gone and works only when held and not docked; it arms only while it can be spent", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'probe'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const drawn = () => p.run("__t = []; drawProbe(0); __t.join('|')"), ctx = () => p.run("lineFor()");
+  // the count is the held Energy, equal to the field HUD's counter
+  p.run("S.exp.cargo.e = 5;"); assert.ok(drawn().includes("|5|") || /\|5(\||$)/.test(drawn()), "held: 5"); assert.ok(!p.run("drawProbe.toString()").includes("energyInReach"));
+  assert.deepEqual(["Shield", "Reach", "Hold"].map(w => drawn().includes(w)), [true, true, true], "one-word captions");
+  // plates whole: no offer
+  p.run("S.exp.shield = S.exp.smax;"); assert.ok(!/mends a bar|✓ again|Confirm: patch/.test(drawn())); assert.equal(ctx().ok, ""); p.key("confirm"); assert.equal(p.run("S.ui.patchArm || 0"), 0);
+  // affordable
+  p.run("S.exp.shield = 1; S.exp.cargo.e = 3;"); assert.ok(drawn().includes("3 Energy mends a bar")); assert.equal(ctx().dim, false);
+  p.key("confirm"); assert.equal(p.run("S.ui.patchArm"), 1); assert.equal(ctx().ok, "Confirm: patch, 3 Energy"); assert.ok(!p.run("FX.msg").includes("✓ again"), "no arm message in the box");
+  p.key("confirm"); assert.equal(p.run("S.exp.cargo.e"), 0); assert.equal(p.run("S.exp.shield"), 2);
+  // unaffordable: dim, bump, nothing arms
+  p.run("S.exp.cargo.e = 2; FX.bumpAt = -1e9;"); assert.equal(ctx().dim, true); p.key("confirm"); assert.equal(p.run("S.ui.patchArm"), 0); assert.equal(p.run("S.exp.cargo.e"), 2); assert.ok(p.run("FX.bumpAt") > 0, "the refusal bump");
+  // the arm guard
+  p.run("S.ui.patchArm = 1;"); drawn(); assert.equal(p.run("S.ui.patchArm"), 0, "armed while not enabled: cleared on the next frame");
+  p.run("S.exp.cargo.e = 3; S.ui.patchArm = 1; S.exp.shield = S.exp.smax;"); drawn(); assert.equal(p.run("S.ui.patchArm"), 0);
+  // between expeditions: no offer
+  p.run("S.exp = null; S.phase = 'probe'; S.shield = 1;"); assert.ok(!/mends a bar/.test(drawn())); assert.equal(ctx().ok, "");
+});
+test("an empty pod slot is a dashed outline; the fruit is at 2x; Cargo between expeditions is pictures only", () => {
+  const p = page();
+  p.run("newWorld(3); globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  assert.ok(!/Math\.cos/.test(p.run("podSlot.toString()")) && /dashedRect/.test(p.run("podSlot.toString()")), "no hollow oval");
+  assert.ok(/cen2\('fruit'/.test(p.run("PIC.fruit.toString()")), "the 12x12 fruit is drawn 24x24");
+  p.run("S.phase = 'cargo'; S.bay = [{ id: 1, n: 1, pods: [], e: 1, d: 0, s: 0 }]; __t = []; drawCargo(0);");
+  const t = p.run("__t.join('|')"); assert.ok(!/Away|Docked|accepts|Probe tier|World turn|Nothing sealed/.test(t), t); assert.ok(t.includes("The sealed bay"));
+  assert.equal(p.run("lineFor().ctx"), "1 crate sealed · dock to transfer", "the bay line is the bottom line's, once");
+  p.run("S.bay = []"); assert.equal(p.run("lineFor().ctx"), "");
+  assert.equal(p.run("Math.max(tierOf().hold, 0)"), 2, "tier 1: two pod slots");
+  p.run("startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; __t = []; drawCargo(0);"); assert.ok(p.run("__t").includes("Reach"), "the Reach caption on Cargo");
+});
+
+test("S5: the card shows the lit tile as the view draws it (a stone only where the view draws one), never covers it, and fires only in view; the Probe tile has no stone", () => {
+  const p = page();
+  p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__s = 0; globalThis.__tp = 0; const s0 = stoneArt; stoneArt = function () { __s++; return s0.apply(this, arguments); }; const t0 = tilePB; tilePB = function () { __tp++; return t0.apply(this, arguments); };");
+  const k = p.run("(() => { const P = S.exp.patch, lay = layout(P.key); let f = lay.feats.find(q => q.kind === 'k'); if (!f) { f = { kind: 'k', id: 'zz', x: P.x + 1, y: P.y, ch: 0 }; lay.feats.push(f); } return { key: P.key, x: f.x, y: f.y }; })()");
+  assert.ok(k, "a stone in the place");
+  const draw = a => p.run(`__s = 0; __tp = 0; PIC.warn(0, 0, ${JSON.stringify(a)}); [__s, __tp].join()`);
+  p.run("unveiled = () => true; inSight = () => true;"); assert.equal(draw(k), "1,1", "a stone in view: the tile, then the stone");
+  p.run("unveiled = () => false;"); assert.equal(draw(k), "0,1", "a stone under the veil: bare ground");
+  p.run("unveiled = () => true;"); assert.equal(draw({ key: k.key, x: 0, y: 0 }), "0,1", "plain ground: the tile only");
+  assert.equal(draw(undefined).split(",")[0], "0", "the Probe's warned tile: flat grass and the outline, no stone");
+  assert.equal(draw({ c: 5 }).split(",")[0], "0", "the map's lit cell: no stone");
+  // never covered: a lit tile at view y >= 476 sends the card to the top
+  p.run("FX.notes = []; FX.msg = ''; fxSign('warn', { c: 5 }); RT.plScr = null; RT.litScr = { x: 200, y: 480, w: 32, h: 32 };");
+  assert.equal(p.run("msgGeom().y"), 40); p.run("RT.litScr = { x: 200, y: 300, w: 32, h: 32 };"); assert.equal(p.run("msgGeom().y"), 508);
+  // in view only
+  assert.equal(p.run("(() => { const P = S.exp.patch; return [tileInView(P.x, P.y, P.x + 1, P.y), tileInView(P.x, P.y, P.x + 30, P.y)].join(); })()"), "true,false");
+  assert.ok(!/Shield \d|\d of \d|Probe hit!|break it fast|Shield mended|HUD_H \+ 3, 112, 22/.test(p.run("[startExpedition, shieldHit, drawHUD, depotMend].map(String).join('')")), "the Shield digits and the badge are gone");
+});
+test("the lost plate flashes the core red for 700 ms in the HUD, and no digit badge follows a hit", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); globalThis.__pn = []; const pn = panel; panel = function (x, y, w, h) { __pn.push([x, y, w, h].join()); return pn.apply(this, arguments); };");
+  assert.equal(p.run("LOSS_FLASH"), "red"); assert.equal(p.run("PALETTE.find(c => c[0] === LOSS_FLASH)[1]"), "#c93440");
+  p.run("NOW = 1000; shieldHit(true);");
+  assert.equal(p.run("JSON.stringify(FX.plateLost)"), JSON.stringify({ i: 2, at: 1000 }), "the new plate count is the lost plate");
+  for (const a of [0, 1500, 4000]) { p.run(`NOW = 1000 + ${a}; __pn = []; S.exp.actions = S.exp.hitAt + 2; drawHUD();`); assert.ok(!p.run("__pn.includes('4,35,112,22')"), "no badge at +" + a); }
+  assert.ok(/R\(x \+ pl\.i \* 9 \+ 1, 11, 4, 10, C\[LOSS_FLASH\]\)/.test(p.run("drawHUD.toString()")) && /a < 700/.test(p.run("drawHUD.toString()")), "the fill only, for 700 ms");
+});
+
+test("the 'Swapped ·' box shows alone; a pending sign or held line comes on the next action as its own box, spent only when drawn", () => {
+  const p = page();
+  p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); S.found.push('callintro', 'backplace', 'mapintro'); S.exp.storm = { x: 0, w: 3, dir: 1, v: .25, t: 0 }; stormLevel = () => 1; FX.notes = []; FX.sign = null; FX.msg = '';");
+  p.run("fxSign('storm', 1); fxOnce('rider', 'Pip rides along until it’s grown', 2, true); fxMsg('Swapped · Unknown pod left here', 4); settleOnce();");
+  assert.equal(p.run("FX.msg"), "Swapped · Unknown pod left here", "exactly the Swapped text");
+  assert.equal(p.run("FX.sign"), null); assert.ok(!p.S.found.includes("hudstorm"), "the sign is not spent"); assert.ok(!p.run("S.exp.once && S.exp.once.rider"), "nor the held line");
+  p.key("left");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "storm", "its own box on the next action"); assert.ok(!/Swapped/.test(p.run("FX.msg")));
+  assert.ok(p.S.found.includes("hudstorm"), "spent once drawn");
+});
+
+// ---- S5: the card's tile takes the view's light (fog, the storm's dark columns) and shows what still stands on it ----
+function litPlace() {
+  const p = page();
+  p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__rm = []; globalThis.__n = { stone: 0, bush: 0, canopy: [] };"
+    + "const c0 = PB.prototype.canvas; PB.prototype.canvas = function (rm) { __rm.push(rm); return c0.apply(this, arguments); };"
+    + "const s0 = stoneArt; stoneArt = function () { __n.stone++; return s0.apply(this, arguments); }; const b0 = bushArt; bushArt = function () { __n.bush++; return b0.apply(this, arguments); };"
+    + "const k0 = canopyArt; canopyArt = function (v) { __n.canopy.push(v); return k0.apply(this, arguments); }; unveiled = () => true;");
+  return p;
+}
+const lit = (p, a) => { p.run(`__rm = []; __n.stone = 0; __n.bush = 0; __n.canopy = []; PIC.warn(0, 0, ${JSON.stringify(a)})`); return { rm: p.run("__rm[0]"), stone: p.run("__n.stone"), bush: p.run("__n.bush"), canopy: p.run("__n.canopy.join()") }; };
+test("S5 in fog: a lit tile beyond the fog's sight is the fog fill with no stone; within sight it is the view's own light and the stone", () => {
+  const p = litPlace(), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
+  p.run(`const c = layout('${P.key}').cell, q = cxy(c); S.exp.fog = { x: q.x + .5, y: q.y + .5, r: 3, dx: 0, dy: 0, at: 0 }; layout('${P.key}').feats.push({ kind: 'k', id: 'zf', x: ${P.x + 9}, y: ${P.y}, ch: 0 }, { kind: 'k', id: 'zn', x: ${P.x + 1}, y: ${P.y}, ch: 0 });`);
+  assert.equal(p.run("fogActive() && inFog(layout(S.exp.patch.key).cell)"), true);
+  const far = lit(p, { key: P.key, x: P.x + 9, y: P.y }); assert.equal(far.rm, 3, "the fog table"); assert.equal(far.stone, 0, "no stone the view hides");
+  const near = lit(p, { key: P.key, x: P.x + 1, y: P.y }); assert.equal(near.rm, 0, "within sight: the view's light"); assert.equal(near.stone, 1);
+});
+test("S5 in the storm's darkened column: the lit tile takes light 1, equal to the view's tile light", () => {
+  const p = litPlace(), P = p.run("({ key: S.exp.patch.key })");
+  p.run(`const c = layout('${P.key}').cell % MW; S.exp.fog = null; S.exp.storm = { x: c - 3 - 1, w: 3, dir: 1, v: .25, t: 0 }; stormCovers = () => false; stormRain = () => false;`);
+  const f = p.run(`placeLightFn(S.exp.patch, layout('${P.key}'))`); const dark = [], clear = [];
+  for (let x = 0; x < p.run("PW"); x++) (p.run(`placeLightFn(S.exp.patch, layout('${P.key}')).light(${x}, 5)`) === 1 ? dark : clear).push(x);
+  assert.ok(dark.length && clear.length, "both a dark column and a clear one");
+  assert.equal(lit(p, { key: P.key, x: dark[0], y: 5 }).rm, 1); assert.equal(lit(p, { key: P.key, x: clear[clear.length - 1], y: 5 }).rm, 0);
+});
+test("S5 shows what is still on the lit tile: a bush only when the view draws it, and a canopy in the variant the view draws", () => {
+  const p = litPlace(), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
+  p.run(`layout('${P.key}').feats.push({ kind: 'b', id: 'zb', x: ${P.x + 2}, y: ${P.y} });`);
+  assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 1, "seen: the bush");
+  p.run("unveiled = () => false;"); assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 0, "under the veil: no bush");
+  p.run("unveiled = () => true;");
+  // a trunk two tiles away: its canopy reaches the lit tile; the checkerboard variant when the pawn is beside the trunk
+  const tx = P.x + 5, ty = P.y;
+  p.run(`{ const lay = layout('${P.key}'), g0 = lay.tiles[${P.y} * PW + ${P.x}]; for (let k = 0; k < lay.tiles.length; k++) if (lay.tiles[k] === T.TRUNK) lay.tiles[k] = g0; lay.tiles[${ty} * PW + ${tx}] = T.TRUNK; }`);
+  assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "0", "whole leaves");
+  p.run(`S.exp.patch.x = ${tx + 1}; S.exp.patch.y = ${ty};`); assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "1", "thinned to the checkerboard beside the trunk");
+});
+test("the setup strip: the turn and tier, then the Probe's plates as the top bar draws them; no Shield digits, no sealed count, always mist", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const said = () => { p.run("__t = []; drawSetup(0);"); return p.run("__t.join('|')"); };
+  const t = said(); assert.ok(t.includes("World · turn 1 · Probe tier 1"), t); assert.ok(!/Shield \d|\d+\/\d+|sealed · |· \d+ sealed/.test(t.split("|").filter(x => /World/.test(x)).join()), "the strip has no digits for plates and no sealed tail");
+  p.run("S.shield = 1;"); said();
+  assert.equal(p.run("(() => { const s = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier, w = textW(s, 2) + 12 + 27, x0 = Math.round(225 - w / 2); return x0 > 14 && x0 + w < 436; })()"), true, "inside the screen at tier 1");
 });
