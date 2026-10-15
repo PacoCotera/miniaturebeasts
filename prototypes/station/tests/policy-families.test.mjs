@@ -66,6 +66,13 @@ test("the walk crate on Home is a painted picture; the other home crates are in 
   assert.equal(policyOf("crate-sitting-48x40", "master"), "painted");
 });
 
+test("Cargo's painted pieces (fix 5, the art director's table), the founder's shadow and the portrait's 40×30 are painted; the wait icon is art; a height off the plate's 128 to 288 is in no family", () => {
+  const painted = ["cargo-bay-992x320", "cargo-rack-992x168", "crate-shadow-256x24", "crate-shadow-432x24", "cargo-store-shadow-48x14", "founder-shadow-224x14", "portrait:S01:40x30", ...[128, 136, 200, 280, 288].map((h) => `cargo-report-plate-560x${h}`)];
+  for (const id of painted) assert.equal(policyOf(id, "master"), "painted", id), assert.equal(policyOf(id, "placeholder"), "painted", id + " as a placeholder");
+  assert.equal(policyOf("icon-wait-16"), "art"); assert.equal(policyOf("cargo-bay-shut-976x304", "placeholder"), "art", "the door moves with its master"); assert.equal(policyOf("cargo-bay-shut-976x304", "master"), "painted");
+  assert.throws(() => policyOf("cargo-report-plate-560x300"), /no layer family/); assert.throws(() => policyOf("crate-shadow-300x24"), /no layer family/);
+});
+
 test("the bed of a light is a painted picture; the one bed of old is in no family", () => {
   for (const l of ["dawn", "day", "dusk", "night"]) assert.equal(policyOf(`home-bed-${l}-192x56`, "master"), "painted");
   assert.throws(() => policyOf("home-bed-192x56"), /no layer family/);
@@ -144,4 +151,10 @@ test("fix 3c-habitat: the up-close slots' ids are in a family at either status (
   assert.equal(policyOf("mark-guide-16:16x16", "master"), "painted");
   for (const id of ["gate-wild-shut-48x48:48x48", "gate-wild-open-48x48", "gate-wild-open-48x48:48x48"]) for (const st of ["master", "placeholder"]) assert.equal(policyOf(id, st), "painted", id); for (const st of ["master", "placeholder"]) assert.equal(policyOf("sitting-frame-held-48x40:48x40", st), "art");
   for (const k of ["read", "unread", "sealed"]) { assert.equal(policyOf(`chapter-plate-${k}-40x40:40x40`, "master"), "painted"); assert.equal(policyOf(`chapter-plate-${k}-40x40:40x40`, "placeholder"), "art"); }
+});
+
+test("the report plate's family is exactly the 21 heights 128 to 288 by 8: 560x120 and 560x130 are in no family, 560x128 and 560x288 are painted", () => {
+  for (const h of [120, 130, 296]) assert.throws(() => policyOf(`cargo-report-plate-560x${h}`, "master"), /no layer family/, String(h));
+  for (const h of [128, 288]) assert.equal(policyOf(`cargo-report-plate-560x${h}`, "master"), "painted", String(h));
+  for (let h = 128; h <= 288; h += 8) assert.equal(policyOf(`cargo-report-plate-560x${h}`, "placeholder"), "painted", String(h));
 });

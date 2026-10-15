@@ -2,75 +2,71 @@
  "_note": "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the report: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "cargo-bay": {
-   "hash": "e73c46e0",
+   "hash": "1f75cb27",
    "png": "cargo-bay.png"
   },
   "cargo-bay-one": {
-   "hash": "477ab2b7",
+   "hash": "5d2d66c5",
    "png": "cargo-bay-one.png"
   },
   "cargo-bay-three": {
-   "hash": "fe3349a9",
+   "hash": "64d2460e",
    "png": "cargo-bay-three.png"
   },
   "cargo-bay-empty": {
-   "hash": "bd7f6e0c",
+   "hash": "30c5e0a4",
    "png": "cargo-bay-empty.png"
   },
   "cargo-bay-away": {
-   "hash": "ac6e7b41",
+   "hash": "56c4f749",
    "png": "cargo-bay-away.png"
   },
   "cargo-bay-waiting": {
-   "hash": "de70edd9",
+   "hash": "166976eb",
    "png": "cargo-bay-waiting.png"
   },
   "cargo-report": {
-   "hash": "2ae3e431",
+   "hash": "df2172e6",
    "png": "cargo-report.png"
   },
   "cargo-report-small": {
-   "hash": "80aec6e8",
+   "hash": "99aceb04",
    "png": "cargo-report-small.png"
   },
   "cargo-report-waiting": {
-   "hash": "d8e83d9f",
+   "hash": "a2fecb83",
    "png": "cargo-report-waiting.png"
   },
   "cargo-opening-0": {
-   "hash": "ff6493ad",
+   "hash": "c34c8ea6",
    "png": "cargo-opening-0.png"
   },
-  "cargo-opening-90": {
-   "hash": "017038fa",
-   "png": "cargo-opening-90.png"
-  },
   "cargo-opening-200": {
-   "hash": "8698ddd3",
+   "hash": "733af0cc",
    "png": "cargo-opening-200.png"
   },
   "cargo-opening-500": {
-   "hash": "51f5fcfc",
+   "hash": "e4b339bd",
    "png": "cargo-opening-500.png"
   },
   "cargo-opening-800": {
-   "hash": "00c3be11",
+   "hash": "a0975a3e",
    "png": "cargo-opening-800.png"
   },
   "cargo-opening-1200": {
-   "hash": "441a74e1",
+   "hash": "501f376c",
    "png": "cargo-opening-1200.png"
   },
   "cargo-opening-1650": {
-   "hash": "c26ac6ab",
+   "hash": "252662d9",
    "png": "cargo-opening-1650.png"
   },
   "cargo-opening-end": {
-   "hash": "ea859087",
+   "hash": "3eb9e1e0",
    "png": "cargo-opening-end.png"
   },
   "cargo-crates-arriving": {
-   "hash": "8cd22828",
+   "hash": "893e53bc",
    "png": "cargo-crates-arriving.png"
   }
  }
