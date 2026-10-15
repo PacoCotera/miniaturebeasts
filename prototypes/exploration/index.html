@@ -1399,7 +1399,7 @@ function enterPatch() {
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   meet('quarters');
-  if (!S.found.includes('callintro')) fxSign('call');
+  if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
   else if (surveyed(ex.pos)) nothingNew();
   fxHint('backplace', '← opens the menu · Leave is first', 2);
   save();
@@ -1718,6 +1718,7 @@ function callPlace() {
   ex.ptTagUntil = Math.max(ex.ptTagUntil || 0, ex.actions + 3);   // Called: the partner's name tag shows again
   advance('patch', { noise: 'act', pulse: true, reach, call: true });
   if (!lay.cave) {
+    fxSign('call');   // if the entry did not show it, this press does, beside the ring it explains (hazard signs outrank it)
     if (muffled) fxSign('muffled');
     const m = svyFull(lay.cell), left = leftPhrase(lay.cell, P, 44), lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); }   // a pod still lying here glints again, so a beat always leads somewhere
@@ -4411,7 +4412,6 @@ function mapContext() {
 // First sightings in the top bar: what the Call slot means, and the weather group's arrows.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  if (S.phase === 'patch') fxSign('call');   // in a place and not yet told (arrival, or the first press after a dock)
   if (S.phase === 'map') fxHint('callmap', 'CALL here drops a pin', 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
   if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', 'Your pin · ))) takes it away', 1);

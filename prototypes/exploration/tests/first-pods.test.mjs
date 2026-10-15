@@ -324,3 +324,27 @@ test("the Probe's storm tile leads with the exact odds in words derived from STR
   assert.equal(p.run("lineFor().ctx[0]"), "Open · hit one in ten", "the first candidate of the storm tile");
   assert.equal(p.run("JSON.stringify(['shield','bank','shelter','warn','storm'].map(i => SIGN[i].pri))"), "[3,3,3,3,3]");
 });
+
+test("the Call sign: after every hazard sign; only on entering a place or a Call press in one; never from a step, a take or a wait", () => {
+  assert.equal(page().run("SIGN_RANK.slice(0, 6).join()"), "shield,bank,shelter,warn,storm,start");
+  assert.ok(page().run("SIGN_RANK.indexOf('call') > SIGN_RANK.indexOf('storm')"));
+  const enter = () => { const p = page(); p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); FX.notes = []; FX.sign = null; FX.msg = ''; S.found.push('mapintro');"); return p; };
+  // entering with no hazard: the card is the Call sign and it is spent
+  let p = enter(); p.run("enterPatch(); settleOnce();");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "call"); assert.ok(p.S.found.includes("callintro"));
+  // entering while the storm fires: the storm takes the card; steps, a wait never show Call; the next Call press does
+  p = enter(); p.run("enterPatch(); fxSign('storm', 1); settleOnce();");
+  assert.equal(p.run("FX.sign.sign"), "storm"); assert.ok(!p.S.found.includes("callintro"));
+  for (const k of ["left", "right", "up", "down", "left"]) { p.key(k); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call", k); }
+  p.run("act('confirm')"); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call"); assert.ok(!p.S.found.includes("callintro"), "no retry on later actions");
+  p.run("FX.notes = []; FX.sign = null; FX.msg = ''; S.exp.storm = null;"); p.key("call");
+  assert.equal(p.run("FX.sign && FX.sign.sign"), "call", "the Call press shows it"); assert.ok(p.S.found.includes("callintro"));
+  // a hazard on the press itself keeps the card; the sign waits for the next press
+  p = enter(); p.run("enterPatch(); S.found.push('callintro'); S.found = S.found.filter(k => k !== 'callintro'); FX.notes = []; FX.sign = null; FX.msg = '';");
+  p.run("const c0 = callPlace; callPlace = function () { fxSign('warn'); return c0.apply(this, arguments); };"); p.key("call");
+  assert.equal(p.run("FX.sign.sign"), "warn"); assert.ok(!p.S.found.includes("callintro"));
+  p.run("callPlace = c0;"); p.key("call"); assert.equal(p.run("FX.sign.sign"), "call");
+  // spent: never again
+  p.key("call"); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call");
+  assert.ok(!/fxSign\('call'\)/.test(p.run("noteHud.toString()")), "noteHud no longer raises it");
+});

@@ -373,7 +373,7 @@ test("bayLine(): the docked variant while docked, today's line undocked", () => 
 });
 
 // ---- the game designer's ruling on hints while docked (QA D1) ----
-test("docked: no one-time hint shows or is spent; after Lift the first press shows the Call hint and spends it", () => {
+test("docked: no one-time hint shows or is spent; after Lift a step shows no Call sign, the first Call press does and spends it", () => {
   const CALL = "Call lifts the veil: finds show";
   const { p, st } = begin();
   p.key("right"); p.key("down"); p.key("right");
@@ -391,9 +391,12 @@ test("docked: no one-time hint shows or is spent; after Lift the first press sho
   p.key("back"); p.key("back"); assert.equal(p.S.phase, "patch");
   assert.equal(p.S.found.includes("callintro"), false, "not spent while docked");
   assert.notEqual(p.run("FX.msg"), CALL, "the Call hint does not show while docked");
+  p.key("call"); assert.notEqual(p.run("FX.msg"), CALL, "a Call press while docked shows no Call sign"); assert.equal(p.S.found.includes("callintro"), false, "and spends nothing");
   lift(p, st);
   p.key("left"); assert.equal(p.S.phase, "patch");
-  assert.equal(p.run("FX.msg"), CALL, "the first press after Lift shows the Call hint");
+  assert.notEqual(p.run("FX.msg"), CALL, "a step after Lift shows no Call sign"); assert.equal(p.S.found.includes("callintro"), false);
+  p.key("call");
+  assert.equal(p.run("FX.msg"), CALL, "the first Call press in a place shows it");
   assert.equal(p.S.found.includes("callintro"), true, "and spends it");
 });
 
