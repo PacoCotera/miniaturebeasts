@@ -33,13 +33,15 @@ static void marked_pip(const char *spec, const char *id, int x, int y, const cha
 void word_rail(const char *marksSpec) {
   int n = v_plen("regions.rail.tabs"); if (n <= 0) return;
   int open = v_pint("regions.rail.open", 0); layout_tab_t tabs[LAYOUT_TABS];
-  int placed = layout_slant_tabs(F, R, n, open, 0, tabs, NULL, NULL); if (placed <= 0) return;
+  int run = 0, x0 = 0, placed = layout_slant_tabs(F, R, n, open, 0, tabs, &run, &x0); if (placed <= 0) return;
   if (fi("pip.size", 6) != 6) { v_error("word: a rail pip is 6 × 6 (frame.json regions.rail.pip.size): the marks are defined at 6"); prim_refuse(); return; }
   int S = fi("slant", 16), pitch = fi("pip.pitch", 8), psz = fi("pip.size", 6), gsz = fi("glint.size", 12), gbelow = fi("glint.below", 2);
   int em0 = fi("full_layout.emblem.0", 24), em1 = fi("full_layout.emblem.1", 24), gap = fi("full_layout.gap", 8), labelY = fi("full_layout.labelY", 0), labelC = fi("full_layout.labelCentre", 0), pipsY = fi("full_layout.pipsY", 0), pipsC = fi("full_layout.pipsCentre", 0);
   int cEmY = fi("compact_layout.emblemY", 0), cEmC = fi("compact_layout.emblemCentre", 0), cPipsY = fi("compact_layout.pipsY", 0), cPipsC = fi("compact_layout.pipsCentre", 0);
   char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur()); int focused = strncmp(focus, "rail.", 5) == 0 ? atoi(focus + 5) : v_pint("regions.rail.current", -1);   /* Compare has no focus: its ring is on the chapter both pages show */
   char star[96]; snprintf(star, sizeof star, "%s", v_pstr("regions.rail.star"));
+  /* the rail sits in its well (fix 2 F11): the signed plate-rail-well-<run + 16>x48, 1:1 at (x0 - 8, 40) on the painted layer, before the tabs; a picture not on the face draws nothing (no error, no refusal, no fill: F6) */
+  v_region("rail.well", LAYER_PAINTED); { char wid[48]; snprintf(wid, sizeof wid, "plate-rail-well-%dx48", run + 16); v_sprite("rail.well", wid, x0 - 8, fi("y", 40), run + 16, 48); }
   for (int i = 0; i < placed; i++) {
     int x = tabs[i].x, y = tabs[i].y, w = tabs[i].w, h = tabs[i].h, full = tabs[i].full;
     char state[16]; snprintf(state, sizeof state, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.state", i)));
@@ -50,8 +52,7 @@ void word_rail(const char *marksSpec) {
     v_region("rail.tab", LAYER_PAINTED);   /* the tab ground is a painted master (the art director's layer table); its emblem is art */
     { char gid[96]; snprintf(gid, sizeof gid, "rail-tab-fill-%s-%s-%dx%d", key, full ? "full" : "compact", w + S, h);
       if (!v_sprite(tid, gid, x, y, w + S, h)) { char b[160]; snprintf(b, sizeof b, "word: the tab ground %.60s is not on the face", gid); v_error(b); prim_refuse(); } }
-    int pipCx, pipY, tpips = v_pint(v_fmt("regions.rail.tabs.%d.pips", i), 0), filled = v_pint(v_fmt("regions.rail.tabs.%d.filled", i), 0);
-    { anim_state_t wa; char tid2[48]; snprintf(tid2, sizeof tid2, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.id", i))); if (anim_get(ANIM_WIPE, tid2, &wa) && filled == tpips) filled = (wa.elapsed * tpips + wa.ms - 1) / wa.ms; }   /* Read: the pips fill ceil(p * n) over the event */
+    int pipCx, pipY, tpips = v_pint(v_fmt("regions.rail.tabs.%d.pips", i), 0), filled = 0;
     v_layer(LAYER_ART);
     const char *emblem = v_pstr(v_fmt("regions.rail.tabs.%d.emblem", i));
     if (full) {
@@ -64,7 +65,7 @@ void word_rail(const char *marksSpec) {
       if (has(emblem)) v_sprite(v_fmt("%s.emblem", tid), emblem, x + cEmC - em0 / 2, cEmY, em0, em1);
       pipCx = x + cPipsC; pipY = cPipsY;
     }
-    if (!sealed && tpips > 0) {
+    if (marksSpec && !sealed && tpips > 0) {   /* fix 11 (F11b): the 6 × 6 pips go on Pods, the Incubator and Compare; only Create keeps its marks (until its 12 × 12 mark lands) */
       v_region("rail.tab", LAYER_CHROME);
       int px0 = pipCx - v_half((tpips - 1) * pitch + psz);
       /* a tab with `marks` (Create): each pip a marked pip; the focused trait's pip (`lift`) stands focus.lift.chrome px higher (no ring) */

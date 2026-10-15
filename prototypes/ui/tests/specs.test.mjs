@@ -779,3 +779,9 @@ test("fix 2: every region that names a device plate names the plate's own size a
   for (const [n, k] of [["habitat", "strip"], ["habitat", "tile"], ["habitat", "door"], ["vivarium", "strip"], ["vivarium", "tile"], ["habitat", "card"]]) assert.ok(!specs[n].colours[k]?.fill && !specs[n].colours[k]?.recess && !specs[n].colours[k]?.free, `${n}.colours.${k} keeps no fill role`);
   for (const [n, s] of Object.entries(specs)) assert.ok(!s.colours.module?.fill && !s.colours.panel?.shadow && !s.colours.panel?.fill, `${n}: no module fill, panel fill or shadow`);
 });
+
+test("fix 2 F11: the rail sits in its well (frame.json regions.rail.well, painted, before the tabs, 48 tall at y 40) and the open tab's word and pip are ink on its cream plate; the 6 × 6 pips are not drawn but by Create", () => {
+  const rail = rd("../specs/station/frame.json").regions.rail;
+  assert.equal(rail.well.id, "plate-rail-well-{w}x48"); assert.equal(rail.well.y, 40); assert.equal(rail.well.h, 48); assert.equal(rail.well.layer, "painted"); assert.equal(rail.well.order, "before the tabs");
+  assert.equal(rail.states.open.word, "ink"); assert.equal(rail.states.open.pip, "ink"); assert.match(rail.pip.draw, /none on Pods, the Incubator and Compare/);
+});

@@ -8,6 +8,10 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   const must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const r of got("bench")) must(eq(r.rect, R.bench.rect), `the bench ${r.rect} is not ${R.bench.rect}`);
+  { const tabs = regions.filter((x) => x.id === "rail.tab"), wells = regions.filter((x) => x.id === "rail.well" && x.layer === "painted" && x.rect[2] > 0);   // fix 2 F11: the rail sits in its well, one painted node at y 40, 48 tall (to y 88), covering every tab; no tab, no well
+    must(wells.length <= 1, "the rail has one well");
+    for (const w of wells) { must(w.rect[1] === 40 && w.rect[3] === 48, `the rail's well ${w.rect} is not at y 40, 48 tall`); for (const t of tabs) must(t.rect[0] >= w.rect[0] && t.rect[0] + t.rect[2] <= w.rect[0] + w.rect[2] && t.rect[1] >= w.rect[1] && t.rect[1] + t.rect[3] <= w.rect[1] + w.rect[3], `the rail's ${t.layer} ${t.rect} leaves its well ${w.rect}`); }
+    must(!wells.length || tabs.length > 0, "a well with no tab: the rail with no tabs has no well (F5)"); }
   for (const r of regions.filter((x) => x.id === "rail.tab")) must(within(r.rect, [R.rail.rect[0] - 16, R.rail.rect[1], R.rail.rect[2] + 32, R.rail.rect[3] + 16]), `the rail's ${r.layer} ${r.rect} leaves the rail ${R.rail.rect}`);
   for (const id of ["chamber", "chamberFront", "dome", "domeFront", "cradle", "cradleFront", "bud"]) for (const r of got(id)) must(eq(r.rect, R[id].rect), `${id} ${r.rect} is not ${R[id].rect}`);
   for (const r of got("founder")) must(within(r.rect, R.founder.rect), `the founder ${r.rect} leaves ${R.founder.rect}`);

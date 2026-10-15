@@ -48,11 +48,19 @@ export function railGrounds(rail) {
   for (const st of ["unread", "read", "sealed"]) for (const [kind, w] of [["full", rail.full], ["compact", rail.compact]]) out.push(`rail-tab-fill-${st}-${kind}-${w + S}x${rail.h}`);
   out.push(`rail-tab-fill-open-full-${rail.full + S}x${rail.h}`); return out;
 }
+// The rail's well (fix 2 F11): plate-rail-well-<run + 16>x48 for every run the rail can take, 1 to max tabs with one open and, past fullUpTo, with none open (all compact); run = the tabs' widths + the slant.
+export function railWells(rail) {
+  const ws = new Set(); for (let n = 1; n <= rail.max; n++) for (const open of n > rail.fullUpTo ? [true, false] : [true]) {
+    const compact = n > rail.fullUpTo, total = rail.slant + (compact ? (open ? rail.full + (n - 1) * rail.compact : n * rail.compact) : n * rail.full); ws.add(total + 16);
+  }
+  return [...ws].sort((a, b) => a - b).map((w) => `plate-rail-well-${w}x48`);
+}
 // Every picture the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds, with their sizes.
 export function pinnedPictures(pods, frame) {
   const seen = new Set(), out = [];
   for (const r of Object.values(pods.regions)) if (r?.name?.plate?.series) for (const id of plateSeries(r.name)) if (!seen.has(id)) { seen.add(id); out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: r.name.plate.h }); }
   for (const id of railGrounds(frame.regions.rail)) out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: frame.regions.rail.h });
+  for (const id of railWells(frame.regions.rail)) out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: 48 });
   return out;
 }
 // The message plate: centred on x 512, at most 640 wide, 16 + 20 px a line tall, its bottom edge at y 550, or its top at y 112 when that would cover the screen's focal box.

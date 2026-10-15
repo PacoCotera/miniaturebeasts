@@ -282,7 +282,7 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
 
 The rail is the same object on all three bench screens. It hangs from the top bar at the same height on each and moves only sideways.
 
-As the plate draws it, the tabs hang from the top bar and touch along their slants.
+As the plate draws it, the tabs hang from the top bar's rule inside the rail's well, cut into the housing's top bezel (fix 2 F11; `plate-rail-well-{w}x48`, 1:1 at (x0 − 8, 40), to y 88), and touch along their slants; the open tab is a cream label plate; the 6 × 6 pips are gone but on Create (fix 11).
 
 - **Where it hangs.** Every tab's top edge is the top bar's bottom rule, y 40, and its bottom edge is y 80: tabs are 40 tall. The rail is the one region that meets the top bar; the stage's 48 px start does not apply to it. Its region is (x0, 40, 832, 40).
 - **The slant.** A tab is a parallelogram whose two sides lean the same way, 16 px over its 40 px height: the bottom edge sits 16 px right of the top edge, as on the plate. A tab of width w (the width of its top edge, and of every row of it) at x has the box (x, 40, w + 16, 40); its sides are the lines x + 16 (y − 40) / 40 and x + w + 16 (y − 40) / 40.

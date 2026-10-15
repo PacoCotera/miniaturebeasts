@@ -39,7 +39,7 @@ export function createBuild(m, spec, pods) {
   regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Create stage master")] };
 
   // the rail: one tab a chapter, a pip a trait (filled, hollow, a changed diamond or a clash cross); the open tab is the focused trait's chapter, its pip lifted
-  const open = cur ? fr.chapters.findIndex((c) => c === cur.c) : -1, rail = railOf(m, pods, p, fr.chapters, req, open, null);
+  const open = cur ? fr.chapters.findIndex((c) => c === cur.c) : -1, rail = railOf(m, pods, p, fr.chapters, req, open, null, true);
   rail.focused = null;
   rail.tabs.forEach((tab, i) => {
     const c = fr.chapters[i], read = p.read.includes(c.id), n = tab.pips;

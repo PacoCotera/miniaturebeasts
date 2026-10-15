@@ -2235,6 +2235,132 @@
    "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "plate-rail-well-168x48": {
+   "file": "pods/plate-rail-well-168x48.png",
+   "w": 168,
+   "h": 48,
+   "sha256": "a245beb4a4228aff71ec216bed384f1599c8401c64dc9643e8558d7049690c78",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-304x48": {
+   "file": "pods/plate-rail-well-304x48.png",
+   "w": 304,
+   "h": 48,
+   "sha256": "4a9fd279b8bb06e486bb5de79c9f1d45e42e41fe441eda84e17cca76c152410b",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-424x48": {
+   "file": "pods/plate-rail-well-424x48.png",
+   "w": 424,
+   "h": 48,
+   "sha256": "3a9253aeaef3dc49ba94300340c3dc094f5e990cd82ac05a5fa3621fe392d486",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-440x48": {
+   "file": "pods/plate-rail-well-440x48.png",
+   "w": 440,
+   "h": 48,
+   "sha256": "f442927872faf685e28d8825feba62c668d05aecf22fda43e11aa9edbaea58d1",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-480x48": {
+   "file": "pods/plate-rail-well-480x48.png",
+   "w": 480,
+   "h": 48,
+   "sha256": "967810b2d5806ab5ad1d80bc79eb86a6674fbf6fc3cb5d088a2d63d19b1b2223",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-504x48": {
+   "file": "pods/plate-rail-well-504x48.png",
+   "w": 504,
+   "h": 48,
+   "sha256": "6597d8d00be8347c8ffd36d90ea762f3976da7d832052bbeafe0e5b7ba99cba5",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-536x48": {
+   "file": "pods/plate-rail-well-536x48.png",
+   "w": 536,
+   "h": 48,
+   "sha256": "93a9ee7dcd603314985699e6525930f58b9b7cad8afb4cb139ed7b9dd64d2a45",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-560x48": {
+   "file": "pods/plate-rail-well-560x48.png",
+   "w": 560,
+   "h": 48,
+   "sha256": "22d9645b324a70a35ee5d67d057e3e509b731a662c465c5d3c02387215f8b0b7",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-576x48": {
+   "file": "pods/plate-rail-well-576x48.png",
+   "w": 576,
+   "h": 48,
+   "sha256": "8ef5d050ba53ceefa0ce83a6d31b844f265e1338538485cdf4426035cfe1b8d6",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-592x48": {
+   "file": "pods/plate-rail-well-592x48.png",
+   "w": 592,
+   "h": 48,
+   "sha256": "9f133748611229d30682e7dbd9e6a6e85a651e5709dd51e7d0e471c93af518ba",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-616x48": {
+   "file": "pods/plate-rail-well-616x48.png",
+   "w": 616,
+   "h": 48,
+   "sha256": "dd68b8556569d61e8ad60a12de8ba9b0a4c4abbd4b9c5af4f8e166c63ae25355",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-648x48": {
+   "file": "pods/plate-rail-well-648x48.png",
+   "w": 648,
+   "h": 48,
+   "sha256": "47d0c6cdc0d445e013572e1bc1ef98be93309eddcd58c1e2afc87a141a340f4d",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-672x48": {
+   "file": "pods/plate-rail-well-672x48.png",
+   "w": 672,
+   "h": 48,
+   "sha256": "92693c1cd6fe0533fcd6c56c5bec48fb0c46a7792fbcc79ecd9c5592f182d9f9",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-704x48": {
+   "file": "pods/plate-rail-well-704x48.png",
+   "w": 704,
+   "h": 48,
+   "sha256": "487c0847aafa2ef896808b2e745f889019a7f6554c70ea3fe44b554f811978bb",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-712x48": {
+   "file": "pods/plate-rail-well-712x48.png",
+   "w": 712,
+   "h": 48,
+   "sha256": "5cd5a80740c28dcf59aa72ad0bd8b699220833ff6fbead48e6f78758ebf93c52",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-728x48": {
+   "file": "pods/plate-rail-well-728x48.png",
+   "w": 728,
+   "h": 48,
+   "sha256": "54962fd5825626bf4d21f31cba6d9e7f6a802a0c75494a6eb20f76d251221b3e",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-784x48": {
+   "file": "pods/plate-rail-well-784x48.png",
+   "w": 784,
+   "h": 48,
+   "sha256": "1e085e5e8daba7613cff458e9726780eff115befc82fe3e339c586534ffbe129",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-848x48": {
+   "file": "pods/plate-rail-well-848x48.png",
+   "w": 848,
+   "h": 48,
+   "sha256": "225b4e587640aeb49139b10b7cff0ffeafa58bc530adc23c4b174392342067a1",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
   "plate-well-152x48": {
    "file": "pods/plate-well-152x48.png",
    "w": 152,
@@ -3072,8 +3198,8 @@
    "file": "pods/rail-tab-fill-open-full-152x40.png",
    "w": 152,
    "h": 40,
-   "sha256": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f",
-   "signed": "art director (pass 83 re-sign, 6f751b7d)"
+   "sha256": "9048cd142f666635ef1caba8d025f3308d668a0839f997b677f8a0b491c5ead6",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
   },
   "rail-tab-fill-read-compact-72x40": {
    "file": "pods/rail-tab-fill-read-compact-72x40.png",
