@@ -1222,7 +1222,6 @@ function startExpedition(type, cell) {
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier);
   meet('flag');   // the map's cell line says "End expedition here" with its flag: no card, the flag joins the Probe
   if (rd) fxOnce('rider', CARE_TEXT.riderSetOut(rd.name), 2, true);   // once per expedition; when mapintro fills the box it shows on the first move (noteHud)
-  if (S.exp.shield < S.exp.smax) fxMsg('Shield ' + S.exp.shield + '/' + S.exp.smax + ' · stray strikes break it fast · shelter in a storm', 4);
   S.phase = 'map'; transition(); save();
 }
 
@@ -1263,12 +1262,12 @@ function advance(scope, info) {
   save();
 }
 function shieldHit(stray) {
-  const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++;
+  const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // the lost plate's fill flashes in the top bar
   if (typeof stopRepeat === 'function') stopRepeat();   // a held walk stops on a hit, so the hit is seen
   lockInput(250);
   if (ex.shield <= 0) { logEv('Probe broke'); return; }
   if (!S.found.includes('shield')) fxSign('shield');   // the first bar lost: the sign stands in for the hit line (the plates' flash shows the loss)
-  else fxMsg((stray ? 'A stray strike hit the Probe' : 'Probe hit!') + ' · Shield ' + ex.shield + '/' + ex.smax, 4);
+  else fxMsg('Struck again · a plate lost', 4);   // the plates in the top bar show how many are left
   logEv('Probe hit · shield ' + ex.shield);
 }
 // A stray strike: no warning (unless a keen partner felt it), lands where you stand.
@@ -1289,7 +1288,7 @@ function mapStrikeTick() {
   if (!ex.mstrike && stormRain(p.x) && rnd(S.seed, 'ms', ex.n, ex.actions) < .3) {
     const opts = []; for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) opts.push(y * MW + x); }
     ex.mstrike = { c: opts[Math.floor(rnd(S.seed, 'mo', ex.n, ex.actions) * opts.length)], at: ex.actions + 1 };
-    fxSign('warn');
+    if (S.revealed[ex.mstrike.c] && ex.reach.includes(ex.mstrike.c)) fxSign('warn', { c: ex.mstrike.c });   // only once the lit cell is in the reach view
   }
 }
 function nextToIsland(c) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && G.island[y * MW + x]) return true; } return false; }
@@ -1534,7 +1533,7 @@ function patchAction() {
           return ex.cargo.e >= PRICE.depot ? { label: lbl, ctx, run: () => lightDepot(ft, relight) }
             : { label: lbl, ctx: (relight ? cap(DEPOT_NAME) + ' · dark · ' : '') + 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the ' + DEPOT_NAME + ' costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; }
         const litCtx = cap(DEPOT_NAME) + ' · lit ' + left + ' more turn' + (left === 1 ? '' : 's');
-        if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: litCtx + ' · Shield ' + ex.shield + '/' + ex.smax, run: () => depotMend() }
+        if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: litCtx, run: () => depotMend() }
           : { label: 'Mend a bar · 1 Energy', ctx: litCtx + ' · you have 0 Energy', dim: true, run: () => { fxMsg('Mending costs 1 Energy a bar · you have 0'); FX.bumpAt = NOW; } };
         return { label: 'End expedition here', ctx: litCtx, run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
@@ -1629,7 +1628,7 @@ function lightDepot(f, relight) {
 function depotMend() {
   const ex = S.exp; if (!S.ui.depotArm) { S.ui.depotArm = 1; fxMsg('Mend one bar · 1 Energy · ✓ again to confirm', 3); return; }
   S.ui.depotArm = 0; ex.cargo.e -= PRICE.depotMend; ex.shield = Math.min(ex.smax, ex.shield + 1); logEv('Mended at the ' + DEPOT_NAME + ' · −1 Energy');
-  fxMsg('Shield mended · ' + ex.shield + ' of ' + ex.smax, 3); advance('patch', { noise: 'act' });
+  fxMsg('Plate mended at the outpost', 3); advance('patch', { noise: 'act' });
 }
 // Shelter: within 3 tiles of a lit depot in its place, no stray strikes.
 function depotShelter() { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const f = depotOf(+P.key); return !!f && outpostLeft(P.key, f) > 0 && cheb(f, P) <= 3; }
@@ -1869,7 +1868,7 @@ function patchTick(info) {
   // Warned strikes aim at stones (the storm's offer); the risk is the stray strike, rolled in advance().
   if (raining && !live.strike && rnd(S.seed, 'sk', ex.n, ex.actions) < .5) {
     live.strike = pickStrike(X);
-    if (live.strike) { live.strike.peak = peak; fxSign('warn'); }
+    if (live.strike) { live.strike.peak = peak; if (tileInView(P.x, P.y, live.strike.x, live.strike.y)) fxSign('warn', { key: P.key, x: live.strike.x, y: live.strike.y }); }
   }
   if (!raining) live.strike = null;
 }
@@ -3594,7 +3593,7 @@ function drawPatch(t) {
   if (act.run) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
   if (live.strike) { const x = W(live.strike.x * ts), y = H(live.strike.y * ts), col = fr ? C.cream : C.yellow;
-    R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); }   // strike warned: the tile's outline only
+    R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); RT.litScr = { x, y, w: ts, h: ts }; }   // strike warned: the tile's outline only
   for (const s2 of FX.strikes) { if (s2.space !== 'patch') continue; const age = NOW - s2.at; if (age > 380) continue;
     const x = W(s2.x * ts + (ts >> 1)), y = H(s2.y * ts + (ts >> 1));
     if (age < 220 || !motion()) { let px2 = x + 10, py2 = VIEW_Y; for (let k = 0; py2 < y && k < 9; k++) { const nx = x + (k % 2 ? 9 : -9), ny = Math.min(y, py2 + 34); pline(px2, py2, nx, ny, C.cream, 3); pline(px2 + 1, py2, nx + 1, ny, C.white, 1); px2 = nx; py2 = ny; } }
@@ -3709,6 +3708,7 @@ function drawReachGrid(x0) {
 }
 // Material counters (Energy, Data, Essence): icon and number. A gain counts up one per 90 ms with a brief bright
 // flash, so a change shows even when its cause is off screen; a spend drops at once. Palette only.
+const LOSS_FLASH = 'red';   // the core red: a lost plate's fill (Lift's gain flash is cream)
 const CNT = {};
 function counterW(v) { return 14 + 3 + textW(String(v), 2) + 2; }
 function drawCounter(x, key, icon, value) {
@@ -3732,6 +3732,8 @@ function drawHUD() {
     if (a >= 0 && a < 700 && (!motion() || Math.floor(a / 120) % 2 === 0)) for (let i = sf.from; i < ex.shield; i++) R(x + i * 9 - 2, 7, 10, 18, C.cream); }
   for (let i = 0; i < ex.smax; i++) R(x + i * 9 - 1, 9, 8, 14, C.void);   // each bar with a 1 px dark outline
   shieldBars(x, 10, ex.shield, ex.smax, 6, 12);
+  { const pl = FX.plateLost, a = pl ? NOW - pl.at : 1e9;   // a plate lost: its fill flashes for 700 ms, in Lift's blinks (steady with reduced motion); the outline stays as drawn
+    if (a >= 0 && a < 700 && pl.i < ex.smax && pl.i >= ex.shield && (!motion() || Math.floor(a / 120) % 2 === 0)) R(x + pl.i * 9 + 1, 11, 4, 10, C[LOSS_FLASH]); }
   x += ex.smax * 9 + 3;
   const pf = FX.podFlash && NOW - FX.podFlash.at < 700 ? FX.podFlash : null;
   for (let i = 0; i < ex.hold; i++) { if (pf && pf.i === i && Math.floor((NOW - pf.at) / 120) % 2 === 0) R(x - 1, 5, 18, 22, C.amber); podSlot(x, 6, ex.cargo.pods[i]); x += 18; }
@@ -3748,7 +3750,6 @@ function drawHUD() {
   else if (!ex.pt && ex.rider && x + 14 < rx) {   // the rider in the partner's slot: its mini in a window (it rides in the device), no ring; its name in fog, clipped
     panel(x - 2, 8, 16, 16, C.night, C.slate); miniOf(ex.rider.sp, x, 10);
     const room = rx - 4 - (x + 17); if (room >= 30) text(clipText(ex.rider.name, room, 2), x + 17, 9, C.fog); }
-  if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }
 }
 function drawTop(title, right, cs) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
@@ -3812,7 +3813,8 @@ function msgGeom() {
   if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return null;
   const sign = FX.sign, lines = sign ? [FX.msg] : wrapText(FX.msg, 400, 2).slice(0, 3), w = sign ? 60 + textW(FX.msg, 2) : Math.max(...lines.map(l => textW(l, 2))) + 26, h = sign ? 48 : lines.length * 20 + 12;
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
-  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) ? VIEW_Y + 8 : low;
+  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, lit = RT.litScr && sign && sign.sign === 'warn' ? RT.litScr : null,   // a warning card never covers the lit tile
+    y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? VIEW_Y + 8 : low;
   return { sign, lines, w, h, x, y };
 }
 function drawMessage() {
@@ -3864,12 +3866,28 @@ const SHELTER_ROWS = [
 const SHELTER = () => art('sg-shelter', () => { const pb = new PB(32, 32); SHELTER_ROWS.forEach((r, y) => { for (let x = 0; x < 32; x++) if (r[x] !== '.') pb.set(x, y, r.charCodeAt(x) - 48); }); return pb; });
 const PAWS = () => art('sg-paws', () => { const pb = new PB(16, 15); pb.blit(ICON.paw('bone'), 0, 6); pb.blit(ICON.paw('bone'), 7, 0); return pb; });
 const sgSp = sp => Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? sp : 0;
+// Is the tile (x, y) inside the place view when the player stands on P? (the camera clamps at the place's edges)
+function tileInView(px, py, x, y) {
+  try { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, c = camAt(v, px * ts, py * ts);
+    return x * ts >= c.x && (x + 1) * ts <= c.x + SCR_W && y * ts >= c.y && (y + 1) * ts <= c.y + VIEW_H; } catch (e) { return true; }
+}
+// The lit tile as the place draws it, without what moves: the tile's own art with the view's light and veil, the stone on it only where the view draws one, then the 2 px outline.
+function warnPicPlace(x0, y0, a) {
+  const lay = layout(a.key), i = a.y * PW + a.x, cell = lay.cell % MW, over = !lay.cave && stormCovers(cell), L = over ? 1 : 0, uv = unveiled(a.key, a.x, a.y);
+  g.drawImage(tilePB(lay, i, 0).canvas(L, false, false, L !== 3 && !uv), x0, y0);
+  const f = lay.feats.find(q => q.kind === 'k' && q.x === a.x && q.y === a.y);
+  if (f && uv && inSight(a.x, a.y)) { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); blit(wm ? stoneArt(0, false, 0, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0), x0, y0); }
+  R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
+}
 const PIC = {
   start: (x, y) => cen(ICON.flag(), x, y), flag: (x, y) => cen(ICON.flag(), x, y),
   call: (x, y) => cen2('call', ICON.call('aqua'), x, y),
   shield: (x, y) => shieldBars(x + 4, y + 10, 2, 3, 6, 12),
   storm: (x, y, dir) => { blit(ICON.bolt(), x + 1, y + 8); text(dir > 0 ? '▶' : '◀', x + 15, y + 9, C.yellow); },
-  warn: (x, y) => onGrass(x, y, () => { blit(stoneArt(0, false, 0), x, y); R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }),
+  warn: (x, y, a) => { if (a && a.key) { warnPicPlace(x, y, a); return; }
+    if (a && a.c != null) { const ex = S.exp, c = a.c, X = c % MW; g.drawImage(landPatch(c, 32, !S.visited[c] ? 4 : (ex && ex.storm && stormCovers(X)) ? 1 : 0, 0), x, y); ditherFill(x, y, 32, 32, 'yellow', 6); blit(ICON.bolt(), x + 10, y + 8);   // the map's lit cell: dither and bolt, no outline
+      if (S.ui.mapFull) { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); } return; }
+    onGrass(x, y, () => { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }); },   // the Probe's tile: flat grass and the outline, no stone
   stone: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0), x, y)),
   warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0), x, y)),
@@ -4518,7 +4536,7 @@ function lineBase() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
-  RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
+  RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
@@ -4661,7 +4679,7 @@ function act(k, mode) {
       if (k === 'confirm' && !patchShown()) { }   // no offer, no press
       else if (k === 'confirm' && !patchOn()) { S.ui.patchArm = 0; FX.bumpAt = NOW; }   // shown but short of Energy: a refusal bump, nothing arms
       else if (k === 'confirm' && !S.ui.patchArm) S.ui.patchArm = 1;   // the arm shows once, on the bottom line
-      else if (k === 'confirm') { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched · ' + ex.shield + ' of ' + ex.smax); }
+      else if (k === 'confirm') { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched'); }
       else if (k === 'back') { S.ui.patchArm = 0; S.phase = 'menu'; } else { S.ui.patchArm = 0; if (isDir) probeMove(k); } break;
     case 'cargo':
       if (k === 'back') S.phase = 'menu';

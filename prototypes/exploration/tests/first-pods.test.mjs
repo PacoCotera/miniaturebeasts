@@ -406,3 +406,31 @@ test("an empty pod slot is a dashed outline; the fruit is at 2x; Cargo between e
   assert.equal(p.run("Math.max(tierOf().hold, 0)"), 2, "tier 1: two pod slots");
   p.run("startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; __t = []; drawCargo(0);"); assert.ok(p.run("__t").includes("Reach"), "the Reach caption on Cargo");
 });
+
+test("S5: the card shows the lit tile as the view draws it (a stone only where the view draws one), never covers it, and fires only in view; the Probe tile has no stone", () => {
+  const p = page();
+  p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__s = 0; globalThis.__tp = 0; const s0 = stoneArt; stoneArt = function () { __s++; return s0.apply(this, arguments); }; const t0 = tilePB; tilePB = function () { __tp++; return t0.apply(this, arguments); };");
+  const k = p.run("(() => { const P = S.exp.patch, lay = layout(P.key); let f = lay.feats.find(q => q.kind === 'k'); if (!f) { f = { kind: 'k', id: 'zz', x: P.x + 1, y: P.y, ch: 0 }; lay.feats.push(f); } return { key: P.key, x: f.x, y: f.y }; })()");
+  assert.ok(k, "a stone in the place");
+  const draw = a => p.run(`__s = 0; __tp = 0; PIC.warn(0, 0, ${JSON.stringify(a)}); [__s, __tp].join()`);
+  p.run("unveiled = () => true; inSight = () => true;"); assert.equal(draw(k), "1,1", "a stone in view: the tile, then the stone");
+  p.run("unveiled = () => false;"); assert.equal(draw(k), "0,1", "a stone under the veil: bare ground");
+  p.run("unveiled = () => true;"); assert.equal(draw({ key: k.key, x: 0, y: 0 }), "0,1", "plain ground: the tile only");
+  assert.equal(draw(undefined).split(",")[0], "0", "the Probe's warned tile: flat grass and the outline, no stone");
+  assert.equal(draw({ c: 5 }).split(",")[0], "0", "the map's lit cell: no stone");
+  // never covered: a lit tile at view y >= 476 sends the card to the top
+  p.run("FX.notes = []; FX.msg = ''; fxSign('warn', { c: 5 }); RT.plScr = null; RT.litScr = { x: 200, y: 480, w: 32, h: 32 };");
+  assert.equal(p.run("msgGeom().y"), 40); p.run("RT.litScr = { x: 200, y: 300, w: 32, h: 32 };"); assert.equal(p.run("msgGeom().y"), 508);
+  // in view only
+  assert.equal(p.run("(() => { const P = S.exp.patch; return [tileInView(P.x, P.y, P.x + 1, P.y), tileInView(P.x, P.y, P.x + 30, P.y)].join(); })()"), "true,false");
+  assert.ok(!/Shield \d|\d of \d|Probe hit!|break it fast|Shield mended|HUD_H \+ 3, 112, 22/.test(p.run("[startExpedition, shieldHit, drawHUD, depotMend].map(String).join('')")), "the Shield digits and the badge are gone");
+});
+test("the lost plate flashes the core red for 700 ms in the HUD, and no digit badge follows a hit", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); globalThis.__pn = []; const pn = panel; panel = function (x, y, w, h) { __pn.push([x, y, w, h].join()); return pn.apply(this, arguments); };");
+  assert.equal(p.run("LOSS_FLASH"), "red"); assert.equal(p.run("PALETTE.find(c => c[0] === LOSS_FLASH)[1]"), "#c93440");
+  p.run("NOW = 1000; shieldHit(true);");
+  assert.equal(p.run("JSON.stringify(FX.plateLost)"), JSON.stringify({ i: 2, at: 1000 }), "the new plate count is the lost plate");
+  for (const a of [0, 1500, 4000]) { p.run(`NOW = 1000 + ${a}; __pn = []; S.exp.actions = S.exp.hitAt + 2; drawHUD();`); assert.ok(!p.run("__pn.includes('4,35,112,22')"), "no badge at +" + a); }
+  assert.ok(/R\(x \+ pl\.i \* 9 \+ 1, 11, 4, 10, C\[LOSS_FLASH\]\)/.test(p.run("drawHUD.toString()")) && /a < 700/.test(p.run("drawHUD.toString()")), "the fill only, for 700 ms");
+});
