@@ -165,3 +165,10 @@ test("up close, the resident's seed, moving (the close atlas and its shadow) and
   for (const name of ["rest", "juvenile"]) { const { w, sv } = scenes()[name], b = build(w, sv, { time: 23 * 3600, restRules: spec.rules?.rest ?? J("vivarium.json").rules.rest, motionSets: true }), r = b.props.regions.resident;
     assert.deepEqual(validate(b.props, schema), [], name); assert.ok(Number.isInteger(r.seed)); assert.match(r.moving.close, /^moving:(juvenile|adult):S01:close:304x312:species$/); assert.match(r.moving.shadow, /:shadow:304x24$/); assert.equal(r.rest, "asleep"); }
 });
+
+test("fix 7: the close view's resident takes the scene's light; the Companion's places and the tiles (48×48) never do; the count is day's", () => {
+  const w = world(); mibis(w, 4); dock(w.st); const sv = sv0({ carried: [w.st.mibis[1].id] });
+  const reqs = (light) => build(w, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
+  assert.ok(day.every((r) => !("light" in r)));
+  for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light), big = got.filter((r) => r.size[0] > 48); assert.equal(got.length, day.length); assert.ok(big.length >= 1 && big.every((r) => r.light === light && r.id.endsWith(":" + light)), light); assert.ok(got.filter((r) => r.size[0] === 48).every((r) => !("light" in r))); }
+});

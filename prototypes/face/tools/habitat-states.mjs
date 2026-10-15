@@ -19,6 +19,7 @@ const SCENES = {
   "door-away": { shown: 0, f: "door", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1, 2]); w.away(); } },
   cross: { shown: 0, f: "cross", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1]); w.away(); } },
   portrait: { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); window.__st.ST.sitting = { source: "dev", key: null, at: 0 }; } },
+  "young-night": { shown: 1, f: "resident", state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(1); w.young(1); } },   // a juvenile up close at 304x312, the largest graded picture (fix 7)
   "wild-armed": { shown: 3, f: "wild", state: "rest", arm: true, set: (w) => { w.bays(8); w.adults(3); w.young(1); const st = window.__st.ST; st.mibis[3].born = st.turn - 4; } },
   tile: { shown: 2, f: "tile:2", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
   twelve: { shown: 5, f: "resident", state: "rest", set: (w) => { w.bays(12); w.adults(12); } },

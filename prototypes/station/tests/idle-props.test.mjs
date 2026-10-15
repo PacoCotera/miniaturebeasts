@@ -74,3 +74,9 @@ test("Idle's residents with moving sets fit idle.props.json: moving and rest; th
   const b = idleBuild({ st, sv, settings, docked: true, light: "night", time: 23 * 3600, restRules: rules, motionSets: true }, frame);
   assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving && r.rest === "asleep")); assert.ok(b.props.regions.bed.sleepers.every((s) => s.moving?.nap));
 });
+
+test("fix 7: Idle's residents take the scene's light (suffix, request light, the count as at day)", () => {
+  const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), reqs = (light) => build(st, sv, light).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
+  assert.ok(day.length >= 4 && day.every((r) => !("light" in r)));
+  for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light); assert.equal(got.length, day.length); assert.ok(got.every((r) => r.light === light && r.id.endsWith(":" + light)), light); }
+});

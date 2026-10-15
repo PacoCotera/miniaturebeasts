@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { G, UI, SPECS } from "../src/game.mjs";
-import { createHost, onFaceMessage } from "../src/host.mjs";
+import { createHost, onFaceMessage, screenProps } from "../src/host.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
 import { enterIdle, idleTick } from "../src/intents/frame.mjs";
 
@@ -132,12 +132,12 @@ test("Create's Grow on the host: the grow event holds 1080 ms and sends no hold 
 
 // ---- the meet and the namer on the host (habitat.json events.meet, namer.json): the meet persists until the first press, the first ✓ in it opens the namer with the ring on Done, the namer is the only graph while it is open,
 // Done closes it with the ring on the resident (the name after a rename) and the named flash, ← walks back through the field, and a namer message after it closed is dropped ----
-const namerRig = ({ motion = true } = {}) => {
+const namerRig = ({ motion = true, light = "day" } = {}) => {
   const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8 };
   G.st = S.freshSt("w1", 3, 1000); S.normalize(G.st); G.st.firstMibi = false; G.settings = settings; S.seedAdults(G.st, "S01", 5, 3, settings); for (const m of G.st.mibis) m.paint = { state: "landed" };
   G.sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], st: G.st };
   const m = G.st.mibis[0]; UI.screen = "habitat"; UI.idle = false; UI.resting = false; UI.hab = { id: m.id, f: "resident", wildArm: 0, namer: null, prev: null }; UI.meet = m.id;
-  const sent = []; let t = 0; const h = createHost({ send: (x) => sent.push(x), nowMs: () => t, light: () => "day", motion: () => motion }); h.save = () => {};
+  const sent = []; let t = 0; const h = createHost({ send: (x) => sent.push(x), nowMs: () => t, light: () => light, motion: () => motion }); h.save = () => {};
   return { h, sent, m, at: (ms) => { t = ms; h.frame(); } };
 };
 const on = (h, screen, target, verb) => onFaceMessage(h, { t: "intent", seq: 1, screen, target, verb });
@@ -213,4 +213,12 @@ test("a hatch with no moving set keeps 2600 / 2780 and no cut", () => {
   const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
   S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");
   UI.screen = "incubator"; UI.inc = {}; k.at(0); INTENTS.incubator.intent(k.h, "room", "confirm"); const ev = k.sent.find((m) => m.kind === "hatch"); assert.deepEqual([ev.ms, ev.hold, ev.cut], [2600, 2780, undefined]);
+});
+
+test("fix 7: the swap's from names the id of the light shown: the resident's grade at night, the master's own id at day", () => {
+  for (const [light, suffix] of [["night", ":night"], ["day", ""]]) {
+    const { h, m, at } = namerRig({ light }); at(0); UI.meet = null; screenProps(""); const tile = "tile." + G.st.mibis.find((x) => x.id !== m.id).id;
+    onFaceMessage(h, { t: "focus", screen: "habitat", target: tile });
+    assert.ok(UI.hab.prev && UI.hab.prev.endsWith(`:${SPECS.habitat.regions.resident.rect[2]}x${SPECS.habitat.regions.resident.rect[3]}${suffix}`), `${light}: ${UI.hab.prev}`);
+  }
 });
