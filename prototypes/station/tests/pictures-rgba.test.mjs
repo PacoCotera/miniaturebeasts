@@ -11,7 +11,7 @@ import { fitCamera } from "../../workbench/framework/raster.mjs";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { standLook, juvenileSize } from "../src/stands.mjs";
-import { homeBuild } from "../src/views/home-props.mjs";
+import { homeBuild, mibiPictureOf } from "../src/views/home-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 
@@ -170,12 +170,12 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
       const st = world(); S.seedAdults(st, "S04", 5, 1, settings); S.seedAdults(st, "S03", 9, 1, settings); const [s4, s3] = st.mibis;
       const b = homeBuild({ st, sv: sv0({ carried: [s4.id] }), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), R = b.props.regions;
       const res = (m) => R.residents.find((r) => r.id === String(m.id)), slp = R.bed.sleepers[0];
-      assert.equal(res(s3).stage, "adult"); assert.equal(res(s3).picture, `mibi:${s3.id}:adult:144x152`);
-      const r4 = b.requests.find((r) => r.id === `mibi:${s4.id}:juvenile:96x88`); assert.ok(r4, "the sleeper asks for the juvenile at 96×88"); assert.deepEqual([r4.size, r4.stage, r4.species], [[96, 88], "juvenile", "S04"]);
+      assert.equal(res(s3).stage, "adult"); assert.equal(res(s3).picture, `mibi:${genomeDigest(s3.genome)}:adult:144x152`);
+      const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:96x88`); assert.ok(r4, "the sleeper asks for the juvenile at 96×88"); assert.deepEqual([r4.size, r4.stage, r4.species], [[96, 88], "juvenile", "S04"]);
       assert.equal(slp.stage, "juvenile");
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0];
       const b2 = homeBuild({ st: w, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), p = b2.props.regions.residents[0];
-      assert.deepEqual([p.stage, p.picture], ["juvenile", `mibi:${m.id}:juvenile:104x112`]);
+      assert.deepEqual([p.stage, p.picture], ["juvenile", `mibi:${genomeDigest(m.genome)}:juvenile:104x112`]);
       assert.deepEqual(pics(b2).find((r) => r.id === p.picture).size, [104, 112]);
       assert.equal(S.mibiStage(w, m, settings), "adult", "the mibi itself is still an adult");
     });
@@ -191,6 +191,7 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
       const w = { st: world(), settings }; S.seedAdults(w.st, "S04", 5, 2, settings); S.seedAdults(w.st, "S01", 5, 1, settings); const [a, b0, pip] = w.st.mibis; for (const m of w.st.mibis) m.paint = { state: "landed" };
       const h = habitatBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, habId: a.id, meetId: null, armed: false }, hab, frameSpec, home);
       const near = h.requests.find((r) => r.id === h.props.regions.resident.picture); assert.deepEqual([near.stage, near.size], ["juvenile", [304, 312]]);
+      assert.equal(mibiPictureOf(w.st, a, [304, 312], settings).id, h.props.regions.resident.picture, "the host's swap dither names the same fallback picture (host.mjs habitatFocus)");
       const v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home);
       const tile = (m) => v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(m.id)).picture);
       assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 48]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 48]]);

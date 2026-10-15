@@ -16,7 +16,9 @@ const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 export const mibiPictureId = (digest, stage, [w, h]) => `mibi:${digest}:${stage}:${w}x${h}`;
 // An adult or elder without its signed stand takes its species' juvenile stand, 1:1 in its own size (stands.mjs, station-layouts.md Composed states, rule 5): the picture is named by the stage and size it is drawn at.
 export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.mibiStage(st, mb, settings), size);
-export const mibiReq = (req, st, mb, size, settings) => { const { stage, size: drawn } = lookOf(st, mb, size, settings); return req({ kind: "mibi", id: mibiPictureId(genomeDigest(mb.genome), stage, drawn), mibi: mb.id, stage, species: S.speciesOf(mb), size: drawn }); };
+// the picture's id and the stage and size it is drawn at, for every caller that names a mibi's picture (the views' requests and the host's swap dither)
+export const mibiPictureOf = (st, mb, size, settings) => { const { stage, size: drawn } = lookOf(st, mb, size, settings); return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn), stage, size: drawn }; };
+export const mibiReq = (req, st, mb, size, settings) => { const p = mibiPictureOf(st, mb, size, settings); return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
