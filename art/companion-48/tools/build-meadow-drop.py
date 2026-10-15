@@ -116,13 +116,14 @@ BAY = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]])
 def bayer(h, w): return np.tile(BAY, (h // 4 + 1, w // 4 + 1))[:h, :w]
 def mottle(seed):
     """three or four greens in loose, irregular patches (owner 00:05: the top is mottled, not one fill): a smoothed noise field split
-    at +-0.7 sigma into a step down or up, faded to nothing 6 px from the tile's sides so tiles still meet on flecks alone; edges
+    at +-1.0 sigma into a step up (every tile) or down (every second tile), faded to nothing 6 px from the tile's sides so tiles still meet on flecks alone; edges
     dithered on the 4x4 Bayer"""
     from scipy import ndimage as nd_
     rng = np.random.RandomState(seed + 77); n = nd_.gaussian_filter(rng.normal(0, 1, (48, 48)), 5); n = (n - n.mean()) / n.std()
     yy, xx = np.mgrid[0:48, 0:48]; fade = np.clip(np.minimum(np.minimum(yy, 47 - yy), np.minimum(xx, 47 - xx)) / 6.0, 0, 1)
     n = n * fade; B = bayer(48, 48) / 16.0
-    return np.where(n > 0.7 + 0.3 * B, 1, np.where(n < -0.7 - 0.3 * B, -1, 0))
+    down = np.where(n < -1.0 - 0.3 * B, -1, 0) if seed % 2 == 0 else 0           # AD (round 2): split at +-1.0 sigma; step-up patches in every tile, a step-down patch in one tile in two (by the seed's parity)
+    return np.where(n > 1.0 + 0.3 * B, 1, down)
 def lawn_tile(f, seed):
     t = tone(LAWN0 + f + mottle(seed)); rng = np.random.RandomState(seed)
     def tuft(cy, cx):
