@@ -6,35 +6,47 @@
    "png": "pods-collection.png"
   },
   "overview, unidentified": {
-   "hash": "e4589cd9",
+   "hash": "044a96de",
    "png": "pods-overview-unidentified.png"
   },
   "overview, identify warns": {
-   "hash": "790a124e",
+   "hash": "b8c9c49f",
    "png": "pods-overview-identify-warns.png"
   },
+  "chapter page, unread": {
+   "hash": "1d619ff4",
+   "png": "pods-chapter-page-unread.png"
+  },
   "overview, identified, pod focused": {
-   "hash": "b35e196b",
+   "hash": "23ac03ef",
    "png": "pods-overview-identified-pod-focused.png"
   },
   "overview, kin focused": {
-   "hash": "2f0926c2",
+   "hash": "ef4371ef",
    "png": "pods-overview-kin-focused.png"
   },
   "overview, hatch focused": {
-   "hash": "832a214c",
+   "hash": "a529d4cc",
    "png": "pods-overview-hatch-focused.png"
   },
   "overview, a rail tab focused": {
-   "hash": "9c5df9b3",
+   "hash": "83ca5898",
    "png": "pods-overview-a-rail-tab-focused.png"
   },
   "chapter page": {
-   "hash": "0ece028b",
+   "hash": "e4336fc1",
    "png": "pods-chapter-page.png"
   },
+  "chapter page, a doing": {
+   "hash": "8e172645",
+   "png": "pods-chapter-page-a-doing.png"
+  },
+  "chapter page, sealed": {
+   "hash": "30156b52",
+   "png": "pods-chapter-page-sealed.png"
+  },
   "compare": {
-   "hash": "f9413d6a",
+   "hash": "1d6dbbd0",
    "png": "pods-compare.png"
   }
  }
