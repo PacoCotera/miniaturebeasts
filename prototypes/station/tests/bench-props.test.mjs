@@ -119,3 +119,8 @@ test("while the install plays the tier-1 cradle picture is requested too (it cut
   const ids = (ui) => build(world({ tier: 2, shield: 4 }), ui).requests.map((r) => r.id);
   assert.ok(!ids({ f: null, arm: 0, install: false }).includes(spec.regions.cradle.pictures.tier1)); assert.ok(ids({ f: null, arm: 0, install: true }).includes(spec.regions.cradle.pictures.tier1));
 });
+
+test("the plate strip is named in both states, by the tier; during the install the face picks t1 before 300 (fix 5 P3)", () => {
+  for (const [o, tier] of [[{ shield: 2 }, 1], [{ tier: 2, shield: 4 }, 2], [{ docked: false }, 1], [{ docked: false, tier: 2 }, 2]]) { const b = build(world(o)); assert.deepEqual(b.props.regions.strip, { picture: spec.regions.strip.slices[tier], tier }, JSON.stringify(o)); assert.deepEqual(validate(b.props, schema), []); }
+  const b = build(world({ shield: 2 })); for (const t of [1, 2]) assert.ok(b.requests.some((r) => r.id === spec.regions.strip.slices[t] && r.size[0] === spec.regions.strip.byTier[t][2] && r.size[1] === 48), `strip t${t} is requested at its size`);
+});

@@ -42,10 +42,10 @@
   },
   "cargo": {
    "rect": [688, 48, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
-   "bay": [112, 8, 176, 72], "crate": [48, 40], "cratePicture": "home-crate-48x40", "crateAt": [0, 16], "pitch": 64, "max": 3,
-   "crateRects": [[800, 72, 48, 40], [864, 72, 48, 40], [928, 72, 48, 40]],
+   "bay": [112, 8, 176, 72], "crate": [48, 40], "cratePicture": "home-crate-48x40", "crateAt": [8, 16], "pitch": 56, "max": 3,
+   "crateRects": [[808, 72, 48, 40], [864, 72, 48, 40], [920, 72, 48, 40]],
    "waiting": { "rect": [876, 80, 24, 24], "asset": "mark-waiting-24", "when": "pods wait in the bay for a free well and no crate waits", "lamp": "off: the waiting mark is never amber; the need lights pods (strings.needs.waitingPods)" },
-   "sittingCrates": { "places": "from the right: the first at 928, a second at 864; walk crates fill from the left; at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "lamp": { "at": [18, 44], "size": [12, 12], "rows": 10, "rule": "under its crate, inside the bay: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when the crate is ready" } },
+   "sittingCrates": { "places": "from the right: the first at 920, a second at 864; walk crates fill from the left; at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "lamp": { "at": [18, 44], "size": [12, 12], "rows": 10, "rule": "under its crate, inside the bay: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when the crate is ready" } },
    "states": {
     "away": { "bay": "shut: the lid, unless a sitting crate is in the bay, which keeps it open", "crates": "sitting crates only", "lamp": "off, or needsYou for a ready sitting crate" },
     "empty": { "bay": "open", "crates": "none", "lamp": "off" },
@@ -56,21 +56,20 @@
   "pods": {
    "rect": [688, 152, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "wells": { "at": [136, 8], "size": [32, 32], "pitch": [48, 40], "cols": 3, "rows": 2, "slots": 6, "rects": [[824, 160, 32, 32], [872, 160, 32, 32], [920, 160, 32, 32], [824, 200, 32, 32], [872, 200, 32, 32], [920, 200, 32, 32]], "order": "rack order: left to right, the top row first" },
-   "pod": { "class": "rack", "size": [24, 32], "at": [4, 0], "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled" },
+   "pod": { "class": "rack", "size": [24, 32], "at": [4, 0], "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled", "picture": "rackpod:{species}", "layers": { "id": "home-rack-pod-{layer}-24x32", "order": ["body","light","shade","accent","pattern","outline"], "fill": {"body":"A","light":"lighter(A)","shade":"darker(A)","accent":"B","pattern":"B","outline":"darkest(A)"}, "pattern": "home-rack-pod-pattern-{name}-24x32, name from shellPattern through pods.json podLayers.patterns; a word with no layer draws none", "colours": "A, B: colourPair[0], [1] .pigment through cross.json colours.pigmentChips; not listed: mist; a pod of no known species: A stone, B fog, no pattern", "ramp": "light lighter[A]; shade darker[A]; outline the last colour of A's darker chain before ink or void, ink where that would be night", "rule": "each layer a 1-bit mask; its on pixels take its fill, in order, later over earlier; transparent outside body; palette-exact, 24×32, never scaled", "by": "art director 2026-10-10 09:45; architect 2026-10-10 09:43" } },
    "star": [12, 12], "starAt": [34, 10], "starNote": "a glint star in the 16 px gap right of its well, 2 px clear of either well"
   },
   "incubator": {
    "rect": [688, 256, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
-   "leaves": { "at": [200, 8, 88, 72], "rect": [888, 264, 88, 72], "component": "leaves", "form": "grid", "leaf": [8, 12], "filling": "the filling leaf, leaf `full` while full < total: the empty picture, then over it the full picture clipped from the bottom to its lowest p rows of 12, p = floor(rows × 12 / 20) (0 to 11), whole pixels; rows is stepped every 3 s by the view (incubator.json leaves.props), the face redraws the 8×12 box only when p changes", "pitch": 11, "perRow": 8, "rowPitch": 14, "rows": 5, "max": 40, "pictures": { "empty": "leaf-empty-8x12", "full": "leaf-full-8x12" }, "place": "leaf i at (888 + 11 × (i mod 8), 264 + 14 × floor(i / 8)): the last ink at x 973 and y 332", "count": "one a minute the bud will take, up to 40 (create.json regions.leaves.count)", "props": "{ total, full, rows }" },
-   "states": { "empty": "the chamber dark, no leaves, lamp off", "growing": "the bud in the chamber, its leaves filling, lamp well", "ready": "every leaf full, lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
+   "states": { "empty": "the chamber's empty picture, lamp off", "growing": "the chamber's growing picture (the bud's glow), lamp well", "ready": "the chamber's ready picture (lit full), lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
   },
   "probe": {
    "rect": [688, 360, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "cradle": [112, 8, 96, 72], "cradleRect": [800, 368, 96, 72],
    "shields": { "at": [224, 8], "size": [12, 24], "pitch": 16, "count": 4, "perTier": { "1": 3, "2": 4 }, "rects": [[912, 368, 12, 24], [928, 368, 12, 24], [944, 368, 12, 24], [960, 368, 12, 24]], "pictures": { "whole": "home-shield-whole-12x24", "gone": "home-shield-lost-12x24" } },
-   "slot": [224, 48, 24, 32], "slotRect": [912, 408, 24, 32], "slotPicture": "home-sitting-24x32",
-   "states": { "docked": "the Probe in its cradle, its plates whole or gone, the tier's count; lamp well", "away": "the cradle empty, no plates, lamp off", "sitting": "a held sitting shows as the sitting frame (home-sitting-24x32, matte) in the slot, docked or away; none held, nothing" }
+   "slot": [224, 48, 32, 24], "slotRect": [912, 408, 32, 24], "slotPicture": "home-sitting-32x24",
+   "states": { "docked": "the Probe in its cradle, its plates whole or gone, the tier's count; lamp well", "away": "the cradle empty, no plates, lamp off", "sitting": "a held sitting shows as the sitting frame (home-sitting-32x24, matte, landscape, its window dark) in the slot, docked or away; none held, nothing" }
   },
   "library": {
    "rect": [688, 464, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
@@ -230,7 +229,7 @@
    "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)" },
    "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the Incubator" },
    "meet": { "module": null, "notice": "meet {name}", "action": "Meet {name}" },
-   "newPods": { "module": "pods", "notice": "{count} new pods wait", "noticeOne": "a new pod waits", "action": "Look at the pods" },
+   "newPods": { "module": "pods", "notice": "{count} new pods in the rack", "noticeOne": "a new pod in the rack", "action": "Look at the pods" },
    "glints": { "module": "pods", "notice": "{count} pods glint", "noticeOne": "a pod glints", "action": "Look at the pods" },
    "waitingPods": { "module": "pods", "notice": "{count} pods wait for a well", "noticeOne": "a pod waits for a well", "action": "Look at the pods" },
    "couldGrow": { "module": "pods", "notice": "{a} {species} pod could grow", "short": "{a} {species} pod needs more", "action": "Look at the pods", "rule": "short of what growing it costs, it stays a need: the short notice, then each material that is short as its 16 px icon after the words, Energy ⚡ before Essence ❀ (the top bar's order), one space apart, no figure; both short shows both. If the run passes 256 px (the slot less its lamp and gap), the species goes: \"a pod needs more ⚡ ❀\"" },
@@ -244,10 +243,6 @@
    "region": "residents and sleepers",
    "show": "the register `mibi` placeholder, standing, unmirrored: a resident at its box size (144×152 or 104×112), a sleeper fitted inside 96×88, centred on footX and bottom-aligned at y 512; a juvenile is the art director's signed stand-in instead, at the same places, standing and unmirrored: mibi-juvenile-<species>-104x112 as a resident, mibi-juvenile-<species>-96x88 as a sleeper"
   },
-  "home-rack-pod-24x32": {
-   "region": "pods",
-   "show": "a PH plate at well + (4,0) for each occupied well, in rack order; nothing for an empty well; the 32×40 well pod is never scaled down"
-  },
-  "empty": "the bay (open or shut), the wells, the chamber, the cradle, the journal, the nap poses and the glass master: nothing drawn, layout unchanged; the lamp, the notice, the top bar and the context line carry that information"
+  "empty": "the nap poses: nothing drawn, layout unchanged; the lamp, the notice, the top bar and the context line carry that information"
  }
 }

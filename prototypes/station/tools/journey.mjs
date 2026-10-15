@@ -226,8 +226,8 @@ await press("confirm", 2200);
 s = await st(); const pl = s.tray.find((p) => p.id === loika.id);
 expect(pl.idd === 1 && s.d === dId0 - 1 && s.e === e0, "identified for ◆ 1, no Energy");
 await frameShot("page-identified");
-// Identify leaves the Library where it was; ✓ on an identified pod opens Create, whatever has been read: the line reads "Shape a founder", dimmed by what stops it; Create is built (nothing read: the founder frosted), and ← names the pod
-{ l = await line(); expect(l.ok === "Shape a founder", "✓ on an identified pod names Create: " + JSON.stringify(l)); await press("confirm", 400);
+// Identify leaves the Library where it was; ✓ on an identified pod opens Create, whatever has been read: the line reads "Create from this pod", dimmed by what stops it; Create is built (nothing read: the founder frosted), and ← names the pod
+{ l = await line(); expect(l.ok === "Create from this pod", "✓ on an identified pod names Create: " + JSON.stringify(l)); await press("confirm", 400);
   const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, create: window.__st.UI.create?.podId }));
   expect(at.screen === "create" && at.create === loika.id, "✓ on an identified pod opens Create on it: " + JSON.stringify(at));
   { const p = await props(); expect(p.state === "nothingRead" && p.frame.line.back === "Loika" && p.frame.line.ok === "Grow it", "Create opens on nothing read and its way back names the pod: " + JSON.stringify([p.state, p.frame.line])); }
@@ -372,7 +372,7 @@ s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id)
 // code appears, the pod travels, input held 1080 ms, then the Incubator (a jump: ← there reads Home)
 await press("research", 300);
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id); await page.waitForTimeout(400);
-l = await line(); expect(l.ok === "Shape a founder", "a read pod offers Create: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Create from this pod", "a read pod offers Create: " + JSON.stringify(l));
 const cui = () => page.evaluate(() => { const c = window.__st.UI.create; return c ? { f: c.f, choices: Object.keys(c.choices), grown: !!c.grown } : null; });
 const hpressC = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(); cur.push({ key: k, said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("create-walk");
@@ -383,10 +383,10 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Crea
 const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
 for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
 expect((await cui()).f === eyeIndex, "◀ ▶ walk the read traits: the ring is on Eye rings");
-{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4" && p.regions.leaves.total === 20 && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4, twenty leaves: " + JSON.stringify([L, p.regions.leaves.total])); }
+{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4 ⧗ 20" && !("leaves" in p.regions) && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4 ⧗ 20, no leaf grid: " + JSON.stringify(L)); }
 await hpressC("down", 300);
 { const p = await props(), cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost));
-  expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1" && p.regions.leaves.total === 21, "▼ rolls the look: the tag, the price with ◆ 1, twenty-one leaves: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price, p.regions.leaves.total])); }
+  expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "▼ rolls the look: the tag, the price with ◆ 1 and the wait ⧗ 21: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price])); }
 { const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a room key on Create forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
   await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
@@ -397,13 +397,13 @@ await hpressC("down", 300);
   await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
-await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(600);   // ✓ Grow it, then exactly 600 ms of frames: the stamp printed, the code shown at 300, the pod mid-travel
+await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Grow it, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
 { const m = await said(), u = await ui(), l = await line(); cur.push({ key: "confirm", said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
-{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code), "✓ Grow it: the screen grows and holds input, the code is the screen's: " + JSON.stringify([p.state, p.regions.code])); }
+{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code) && p.frame.line.ok == null && p.frame.line.price == null && p.frame.line.back == null && p.frame.line.subject === "it goes to the Incubator", "✓ Grow it: the screen grows and holds input, the code is the screen's, the line is Growing (no ✓, price or way back): " + JSON.stringify([p.state, p.regions.code, p.frame.line])); }
 await frameShot("page-create-grow", true);
 await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);   // the held keys, one after the other without waiting: the hold is real time (1080 ms) and the jump is at 900
 { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "create" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
-await stepClock(600); await release();   // 1200 ms in: past the hold and past the jump at 900
+await stepClock(750); await release();   // 450 + 750 = 1200 ms in: past the hold and past the jump at 900
 s = await st();
 expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
@@ -509,9 +509,12 @@ s = await st(); const adults = await adultIds(), adult2 = s.mibis.find((m) => !m
 await page.evaluate((id) => window.__st.returnMibi(id), adult2.id);   // the rule, to free a bay
 s = await st(); expect(s.mibis.find((m) => m.id === adult2.id).released, "a second adult returned to free a bay");
 const dot = s.mibis.find((m) => m.name === "Dot"), adult3 = s.mibis.find((m) => !m.released && m.id !== dot.id && adults.includes(m.id));
-await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; }, dot.id);
+await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; window.__st.goto("habitat"); }, dot.id); await page.waitForTimeout(300);
 await intent({ screen: "habitat", target: "cross", verb: "confirm" }, 300);
-expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "✓ on the cross mark opens the Cross screen (not built)");
+expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "✓ on the shut Cross module stays up close (doorOpen(cross) false until slot 7)");
+expect(((await page.evaluate(() => window.__st.props?.frame?.line)) ?? {}).ok == null, "the shut Cross module has no ✓ cap");
+await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitForTimeout(300);
+expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
 expect(fc.traits.filter((t) => t.kind === "switch").length === 2 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for markings and crown, a range for eye rings, drive and efficiency");
@@ -521,7 +524,7 @@ expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length 
   await page.evaluate((id) => { window.__st.UI.hab.id = id; }, dot.id); await press("habitat", 300);
   expect((await ui()).screen === "vivarium" && (await page.evaluate(() => window.__st.props?.focus?.cur)) === "resident." + dot.id, "the Vivarium key opens the whole with the ring on the mibi last seen up close, its resident");
   await page.evaluate(() => window.__st.goto("habitat")); await page.waitForTimeout(300);
-  await intent({ screen: "habitat", target: "cross", verb: "confirm" }, 300); await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300); }
+  await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitForTimeout(300); await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300); }
 { const e3 = (await st()).e, s3 = (await st()).s, r = await page.evaluate(([a, b]) => window.__st.doCross(a, b), [dot.id, adult3.id]);
   await page.waitForTimeout(400); s = await st();
   expect(s.bud && s.bud.kind === "cross" && s.bud.parents.length === 2 && s.bud.parents[0].id === dot.id, "the child grows in the bud with its real parents");
@@ -542,7 +545,7 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
     const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p }; };
   let r = await hp("habitat", 500); expect(r.u.screen === "vivarium" && r.p.focus.cur === "resident." + child.id, "vivarium-card: the Vivarium key opens the whole with the ring on the mibi last seen up close: " + JSON.stringify([r.u.screen, r.p.focus.cur]));
   r = await hp("confirm", 700); expect(r.u.screen === "habitat" && r.p.state === "rest" && r.p.focus.cur === "resident" && r.u.habId === child.id, "vivarium-card: ✓ on its resident looks at it up close: " + JSON.stringify([r.u.screen, r.p.state, r.p.focus.cur]));
-  r = await hp("right", 200); r = await hp("right", 200); expect(r.p.focus.cur === "species" && r.p.frame.line.ok === "Open the guide", "vivarium-card: ▶ ▶ is the species word, ✓ Open the guide: " + JSON.stringify([r.p.focus.cur, r.p.frame.line.ok]));
+  r = await hp("right", 200); r = await hp("right", 200); expect(r.p.focus.cur === "species" && r.p.frame.line.ok == null && r.p.frame.line.subject === "the guide is not open yet", "vivarium-card: ▶ ▶ is the species word, shut until slot 8: no ✓ cap, the guide is not open yet: " + JSON.stringify([r.p.focus.cur, r.p.frame.line]));
   r = await hp("down", 200); for (let i = 0; i < chIndex; i++) r = await hp("right", 200);
   { const pl = r.p.regions.plates.items; expect(r.p.focus.cur === "plate." + chIndex && pl[chIndex].state === "unread" && /^Read /.test(r.p.frame.line.ok) && (r.p.frame.line.price.startsWith("◆") || r.p.frame.line.price === ""), "vivarium-card: ▼ then ▶ walks the plates to the unread one, ✓ Read it with its price: " + JSON.stringify([r.p.focus.cur, pl.map((x) => x.state), r.p.frame.line])); }
   const d3 = (await st()).d; r = await hp("confirm", 900); s = await st();
@@ -734,8 +737,8 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   await loop("confirm", "✓ opens the bay and the report shows (the opening holds input)", () => window.__st.props?.state === "report");
   await loop("confirm", "✓ on the report lands on Pods", () => window.__st.UI.screen === "pods");
   await loop("confirm", "✓ on the new pod opens its overview", () => window.__st.props?.state === "overview");
-  await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Shape a founder");
-  await loop("confirm", "✓ Shape a founder opens Create", () => window.__st.UI.screen === "create");
+  await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Create from this pod");
+  await loop("confirm", "✓ Create from this pod opens Create", () => window.__st.UI.screen === "create");
   await loop("confirm", "✓ Grow it", () => window.__st.UI.screen === "incubator");
   await loop("confirm", "✓ Grow now (the bud is ready)", () => window.__st.props?.state === "ready");
   await loop("confirm", "✓ Open (the hatch, then the meet)", () => window.__st.UI.screen === "habitat");
@@ -764,10 +767,8 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("down", 250); expect(r.ring === "frame.S05" && r.p.regions.leftPage.items[4].status === "unmet", "library-spread: ◀ ◀ ◀ ▼ reach S05, an unmet frame: " + r.ring);
   r = await lpress("confirm", 300); { const m = await plate(); cur.push({ plate: m }); expect(r.u.screen === "library" && r.p.state === "spread" && !r.p.frame.line.ok && m === LS.unmet, "library-spread: ✓ on an unmet frame shows strings.unmet, no ✓ cap: " + JSON.stringify([r.u.screen, r.p.frame.line, m])); }
   r = await lpress("up", 250); r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S03", "library-spread: ▲ ▶ ▶ reach S03, a found frame: " + r.ring);
-  { const p = await props(); expect(p.focus.cur === "frame.S03" && p.frame.line.ok === "Open its Book", "library-spread: a found frame offers ✓ Open its Book: " + JSON.stringify(p.frame.line)); }
-  r = await lpress("confirm", 500); expect(r.u.screen === "library" && r.p.state === "notBuilt" && r.p.frame.top.title === "Library" && r.p.frame.line.back === "Library", "library-spread: ✓ on a found frame is the Book, not built yet, titled Library, ← Library: " + JSON.stringify([r.u.screen, r.p.state, r.p.frame?.top?.title, r.p.frame?.line?.back]));
-  await frameShot("page-library-book", true);
-  r = await lpress("back", 500); expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S03", "library-spread: ← from the Book is the spread with the ring on that species: " + JSON.stringify([r.u.screen, r.p.state, r.ring]));
+  { const p = await props(); expect(p.focus.cur === "frame.S03" && p.frame.line.ok == null, "library-spread: a found frame has no ✓ cap until slot 8 (the Book is shut): " + JSON.stringify(p.frame.line)); }
+  r = await lpress("confirm", 500); { const m = await plate(); cur.push({ plate: m }); expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S03" && !r.p.frame.line.ok && m === LS.bookShut, "library-spread: ✓ on a found frame shows strings.bookShut and stays on the spread (the Book is shut until slot 8): " + JSON.stringify([r.u.screen, r.p.state, r.ring, r.p.frame.line, m])); }
   await frameShot("page-library-spread", true);
   r = await lpress("back", 500); expect(r.u.screen === "home" && r.u.home === "library", "library-spread: ← on the spread is Home with the ring on the Library module: " + JSON.stringify([r.u.screen, r.u.home])); }
 { const file = path.resolve(here, "../../face/golden/journey-library.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("library-"))), json = JSON.stringify({ _note: "The Library spread, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";

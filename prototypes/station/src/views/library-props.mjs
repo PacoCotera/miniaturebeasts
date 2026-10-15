@@ -5,6 +5,7 @@
 //   m: { st, settings, ui (UI.lib: { page, i }) }
 import * as S from "../state.mjs";
 import * as Lib from "../library.mjs";
+import { doorOpen } from "../nav.mjs";
 import { frameIds, frameOf } from "../genome.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -35,7 +36,7 @@ export function libraryBuild(m, spec, frame) {
   const targets = items.map((it) => ({ id: "frame." + it.id, group: "frame", enabled: true }));   // an unmet frame is a place too: all sixteen
   const at = clamp(ui?.i ?? 0, 0, Math.max(0, items.length - 1)), cur = "frame." + items[at].id, it = items[at];
   const Sg = SP.strings;
-  const line = it.status === "found" ? { ok: Sg.open, subject: fill(Sg.subjects.found, { species: it.name }), back: Sg.back, need: null }
+  const line = it.status === "found" ? { ok: doorOpen("book") ? Sg.open : null, subject: fill(Sg.subjects.found, { species: it.name }), back: Sg.back, need: null }
     : it.status === "met" ? { ok: null, subject: fill(Sg.subjects.met, { species: it.name }), back: Sg.back, need: null }
     : { ok: null, subject: Sg.subjects.unmet, back: Sg.back, need: null };
   return { props: { state: "spread", regions, focus: { cur, targets } }, line, requests };

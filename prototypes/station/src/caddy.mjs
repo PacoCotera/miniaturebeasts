@@ -2,7 +2,7 @@
 // the service when it answers; the page polls its world's jobs every thirty seconds while any mibi waits
 // and on waking; a finished set is fetched and swapped in at the next fresh draw of that mibi (a screen
 // change or waking), never while it is on screen. Unreachable, Grow still works: the genome waits in the
-// outbox and the lamp says "waiting for the cloud".
+// outbox and the lamp says "waiting for a signal".
 import { G, UI, save, onScreenChange } from "./game.mjs";
 import * as S from "./state.mjs";
 
@@ -11,13 +11,13 @@ export const POLL_MS = 30000;
 export const state = { online: null, lastAt: 0, lastStatus: null, pending: new Map(), landed: new Map(), error: null };
 const wid = () => G.st.wid || "no-world";
 export const anyWaiting = () => G.st.outbox.length > 0;
-// The lamp's word for a mibi: null (its painting landed or failed for good), "waiting for the cloud" (offline or painter off), or "its painting is on its way".
-export function lampText(m) {
-  if (!m.paint && !G.st.outbox.some((o) => o.sha === m.sha)) return m.paint?.state === "failed" ? null : "its painting is on its way";
+// The lamp's state for a mibi (the words are the specs': habitat.json and incubator.json strings): null (its painting landed or failed for good), "offline" (offline or painter off), "capped" (waits for tomorrow) or "waiting" (on its way).
+export function lampState(m) {
+  if (!m.paint && !G.st.outbox.some((o) => o.sha === m.sha)) return m.paint?.state === "failed" ? null : "waiting";
   if (m.paint?.state === "landed" || m.paint?.state === "failed") return null;
-  if (state.online === false || G.settings.painter === "off") return "waiting for the cloud";
-  if (m.paint?.state === "capped") return "its painting waits for tomorrow";
-  return "its painting is on its way";
+  if (state.online === false || G.settings.painter === "off") return "offline";
+  if (m.paint?.state === "capped") return "capped";
+  return "waiting";
 }
 async function api(path, init) {
   const r = await fetch(BASE + path, { cache: "no-store", ...init });

@@ -59,6 +59,15 @@ static void build_cradle(void) {
   pic("cradle", "cradle.picture", p, r[0], r[1], r[2], r[3], p);
 }
 
+/* ---- the plate strip (fix 5 P3): the tier's painted foam strip under the plates in both states, at the spec's rectangle for the tier; away its slots show empty; the install cuts t1 to t2 at 300 ---- */
+static void build_strip(void) {
+  int tier = v_pint("regions.strip.tier", 1); char p[96]; ps("regions.strip.picture", p);
+  anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t);
+  if (inst >= 0 && inst < 300) { tier = 1; bs("regions.strip.slices.1", p); }   /* the tier-1 strip stays on the face until the install cuts at 300, as the cradle's picture */
+  int r[4]; brect(v_fmt("regions.strip.byTier.%d", tier), r);
+  v_region("strip", LAYER_PAINTED); pic("strip", "plates.strip", p, r[0], r[1], r[2], r[3], p);
+}
+
 /* ---- shieldPlates: one sprite a place, the places a table by the tier, read as written ---- */
 static void build_plates(int docked, const char *cur) {
   int most = longest(NULL); char sw[96], sg[96]; bs("regions.plates.slices.whole", sw); bs("regions.plates.slices.gone", sg);
@@ -163,7 +172,7 @@ void bench_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   int docked = strcmp(v_pstr("state"), "docked") == 0;
   int cap = longest(NULL); { anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) cap = spec_len(S, "regions.plates.places.1"); }   /* the meaning picture's count cuts 3 → 4 at 300 */
-  build_stage(); build_cradle(); build_plates(docked, cur); build_switch(cur, cap); build_slot(cur); build_ring(cur);
+  build_stage(); build_cradle(); build_strip(); build_plates(docked, cur); build_switch(cur, cap); build_slot(cur); build_ring(cur);
 }
 
 /* a key on the bench: ✓ ← and the room keys say an intent on the focused target; the pad moves the ring by bench.json focus.graph (the hold, in screens_key, lets only a room key through) */

@@ -3,7 +3,7 @@
 import * as S from "../state.mjs";
 import * as T from "../sitting.mjs";
 import { roomTop, ROOM_KEYS } from "../nav.mjs";
-import { closeReport } from "./cargo.mjs";
+import { closeReport, cratesIn } from "./cargo.mjs";
 
 const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
 // A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
@@ -31,10 +31,11 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
     // the crates slide into the Cargo module (home.json events.crateIn), one after another, while Home shows; docked on another screen they are in the bay when Home next shows
     const n = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.home.regions.cargo.max), each = h.specs.home.events.crateIn.each;
     if (n && h.ui.screen === "home") h.play({ kind: "arrival", target: "cargo", ms: each.ms + each.stagger * (n - 1) });
-    // docked while Cargo's bay shows: the lid opens (a cut, the props) and the crates slide in from 64 px above (cargo.json events.crateIn), hold 0
-    const bay = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.cargo.regions.crates.max), ci = h.specs.cargo.events.crateIn.each;
-    if (bay && h.ui.screen === "cargo" && h.ui.cargo.state === "bay") h.play({ kind: "arrival", target: "crates", ms: ci.ms + ci.stagger * (bay - 1), hold: 0 });
+    // docked while Cargo's bay shows: the door opens (a cut, the props) and the crates slide in (cargo.json events.crateIn): Cargo's own intent plays it and stages its line
+    const bay = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.cargo.regions.crates.max);
+    if (bay && h.ui.screen === "cargo" && h.ui.cargo.state === "bay") cratesIn(h, bay);
   }
+  else cratesIn(h, 0);   // a Lift voids a slide still staging its count: its steps write nothing after it
   if (h.ui.screen !== "home" && h.ui.screen !== "cargo") h.say(r.msg);   // on Home and Cargo the Dock key leaves no plate (home.json keys.dock, cargo.json keys.dock): the top bar, the bed, the bay and the line say it; a refusal (above) shows its plate
   if (h.ui.screen === "bench") { const b = h.ui.bench; b.arm = 0; if (!r.docked && b.f === "plates") b.f = "switch"; }   // a cut to the new state: lifted, the plates are gone from the bench and the ring moves to the switch; docked, the ring stays
   h.save(); return r;

@@ -19,8 +19,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "right",
@@ -39,8 +39,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "right",
@@ -59,8 +59,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "down",
@@ -81,8 +81,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "two chapters unread"
    },
    {
     "key": "research",
@@ -117,8 +117,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "right",
@@ -137,8 +137,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "right",
@@ -157,8 +157,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "down",
@@ -179,8 +179,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1",
-    "subject": "two surprises to come"
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "two chapters unread"
    }
   ],
   "create-grow": [
@@ -202,9 +202,9 @@
      ],
      "grown": true
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1",
-    "subject": "two surprises to come"
+    "ok": null,
+    "price": null,
+    "subject": "it goes to the Incubator"
    },
    {
     "held": [

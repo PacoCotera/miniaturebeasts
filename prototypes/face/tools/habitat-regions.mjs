@@ -38,9 +38,16 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   void np;
   // the four modules: the panel at the spec's rectangle (lifted by the lift while the ring is on it); their words and objects inside
   for (const m of ["door", "portrait", "cross", "wild"]) {
-    const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m, "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
+    const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m + ".plate", "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
     must(ps.length >= 1 && ps.every((r) => eq(r.rect, [rect[0], rect[1] - lifted, rect[2], rect[3]]) || (lifted && eq(r.rect, rect))), `the ${m} module is not at ${rect} (lifted ${lifted})`);
     for (const r of regions.filter((x) => x.id === m && x.rect[2] > 0 && x.layer !== "chrome")) must(within(r.rect, [rect[0], rect[1] - 2, rect[2], rect[3] + 2]), `the ${m} module's ${r.layer} ${r.rect} leaves it`);
+    if (m === "portrait") {   // the frame (art) at rect + frame.at and its size; the picture (painted) at rect + frame.at + frame.picture.at and its size (ruling (c)), both lifted with the ring
+      const F = R.portrait.frame, P = F.picture;
+      for (const r of regions.filter((x) => x.id === "portrait" && x.rect[2] > 0)) {
+        if (r.layer === "art") must(eq(r.rect, [rect[0] + F.at[0], rect[1] - lifted + F.at[1], F.size[0], F.size[1]]), `the portrait frame ${r.rect} is not at ${F.at} in the module, ${F.size}`);
+        if (r.layer === "painted") must(eq(r.rect, [rect[0] + F.at[0] + P.at[0], rect[1] - lifted + F.at[1] + P.at[1], P.size[0], P.size[1]]), `the portrait picture ${r.rect} is not at ${P.at} in its frame, ${P.size}`);
+      }
+    }
   }
   for (const r of got("strip", "painted")) must(r.rect[2] === 0 || eq(r.rect, R.strip.rect), `the strip's plate ${r.rect} is not ${R.strip.rect}`);
   must(!got("strip", "chrome").length, "the strip draws no fill or edge (fix 2 F1)");

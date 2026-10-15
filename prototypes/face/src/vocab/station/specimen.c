@@ -115,14 +115,18 @@ void word_kin(const char *base) {
   if (has(hatch)) { int hr[4]; srect(base, "hatch.rect", hr); v_region("hatch", LAYER_PAINTED); v_sprite("kin.hatch", hatch, hr[0], hr[1], hr[2], hr[3]); }
 }
 
-/* the stamp label in its case (station-layouts.md, "The stamp label"): the dim glass case under it, a 120 x 120 bone plate with a slate edge, the stamp centred on it, the case's front glass over it */
+/* the stamp label in its case (station-layouts.md, "The stamp label"): the case's back under it, the label's dimmed plate (120 x 120, a 1 px edge; stampCase, k × warm in linear light), the dimmed stamp centred on it, the case's front glass over it */
+/* the case's two layers (Pods' stampCase and stampCaseFront; Create's the same ids, fix 5 Create C1): the back before the label, the front after it. `spec` and `base` name the screen spec and the regions the rects are read from */
+void word_stampCase(const char *spec, const char *base, int front) {
+  int r[4]; for (int k = 0; k < 4; k++) r[k] = spec_int(spec, v_fmt("%s.%s.%d", base, front ? "stampCaseFront.rect" : "stampCase.rect", k), 0);
+  v_region("stamp", LAYER_PAINTED); layer(front ? "stamp.front" : "stamp.case", r, v_pstr(front ? "regions.stamp.case.front" : "regions.stamp.case.back"));
+}
 void word_stamp(const char *base) {
   if (spec_len("props", "regions.stamp") < 0) return;
-  int cr[4], sr[4], fr[4]; srect(base, "stampCase.rect", cr); srect(base, "stamp.rect", sr); srect(base, "stampCaseFront.rect", fr);
-  char fill[24], edge[24]; spec_str(S, "colours.stampLabel.fill", fill, sizeof fill); spec_str(S, "colours.stampLabel.edge", edge, sizeof edge);
+  int sr[4]; srect(base, "stamp.rect", sr);
   int size = v_pint("regions.stamp.size", 0); char stamp[96]; snprintf(stamp, sizeof stamp, "%s", v_pstr("regions.stamp.asset"));
-  v_region("stamp", LAYER_PAINTED); layer("stamp.case", cr, v_pstr("regions.stamp.case.back"));
-  v_region("stamp", LAYER_CHROME); word_panel("stamp", sr[0], sr[1], sr[2], sr[3], fill, edge);
+  word_stampCase(S, base, 0);
+  { const char *plate = v_pstr("regions.stamp.plate"); if (has(plate)) { v_name("stamp"); v_sprite("stamp", plate, sr[0], sr[1], sr[2], sr[3]); } }
   if (has(stamp) && size) { v_region("stamp.image", LAYER_PAINTED); v_sprite("stamp.stamp", stamp, sr[0] + v_half(sr[2] - size), sr[1] + v_half(sr[3] - size), size, size); }
-  v_region("stamp", LAYER_PAINTED); layer("stamp.front", fr, v_pstr("regions.stamp.case.front"));
+  word_stampCase(S, base, 1);
 }

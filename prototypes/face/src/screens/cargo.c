@@ -1,9 +1,9 @@
 /* Cargo's binding table (lvgl-switch.md §2.2, §4 L2.2; cargo.json): the words that draw each of its states in draw order, from the `cargo` spec and the props' regions, the frame's words after (screens.c).
-   bay    the bay (a panel, its inside; shut, the lid), its crates (sliding in on the Dock), the waiting mark, the rack.
-   opening  the rack, the ribbon, one crate closer with its pods, the pod travelling to its well. The crate and the step in it come from the arrival event's own clock (a crate every `perCrate` ms); with reduced motion the
+   bay    the painted bay and, when it holds nothing, its door; its crates (sliding in on the Dock) with their shadows, or the pods waiting for a well on the floor; the rack's painted insert.
+   opening  the bay, the rack, the ribbon, one crate closer with its shadow and its pods, the containers with their shadows, the pod travelling to its well. The crate and the step in it come from the arrival event's own clock (a crate every `perCrate` ms); with reduced motion the
             event ends at once, so the host stages them in the props (regions.opening.crate and .at) and each step is a cut.
-   report   the bay emptied, the waiting mark, the rack, and the report card over the bay.
-   The compositions are the spec's: `crates` (the bay's crates, the waiting mark, the crate closer and the pod travelling) and `reportCard`. A picture the host has not sent is a slot not yet filled: nothing is drawn.
+   report   the bay with its door shut, the rack, and the report plate set into the door.
+   The compositions are the spec's: `crates` (the bay's crates, the waiting pods, the crate closer and the pod travelling) and `reportCard`. A picture the host has not sent is a slot not yet filled: nothing is drawn.
    Cargo has no focus target: the ring is on nothing, the pad does nothing, and a key says an intent on "room". */
 #include "../layout/layout.h"
 #include "screens.h"
@@ -48,15 +48,12 @@ static void ground(void) {
 /* the rack's pod place: a well's rect + (4, 8) */
 static void well_rect(int i, int r[4]) { crect(v_fmt("regions.rack.wells.rects.%d", i), r); }
 static void pod_place(int i, int p[2]) { int r[4]; well_rect(i, r); p[0] = r[0] + ck("regions.rack.pod.at", 0); p[1] = r[1] + ck("regions.rack.pod.at", 1); }
-/* The rack: its panel, the six wells and the pods that have landed. In the opening a pod lands at its crate's step (travel ends), or with reduced motion stands in its well from the step it set out. */
+/* The rack: the painted insert (its six fitted wells are the picture's) and the pods that have landed. In the opening a pod lands at its crate's step (travel ends), or with reduced motion stands in its well from the step it set out. */
 static void build_rack(int opening, int k, int lt) {
   int r[4]; crect("regions.rack.rect", r);
-  v_region("rack", LAYER_CHROME); word_panel("rack", r[0], r[1], r[2], r[3], colr("colours.rack.fill"), colr("colours.rack.edge"));
-  v_rect("rack.top", r[0] + 1, r[1] + 1, r[2] - 2, 1, colr("colours.rack.top"));
+  v_region("rack", LAYER_ART); v_name("rack"); v_sprite("rack", v_pstr("regions.rack.insert"), r[0], r[1], r[2], r[3]);
   int n = ci("regions.rack.wells.slots", 6), pw = ck("regions.rack.pod.size", 0), ph = ck("regions.rack.pod.size", 1), motion = v_pbool("motion", 1), tms = ci("events.opening.crate.4.ms", 600);
   for (int i = 0; i < n; i++) {
-    int w[4]; well_rect(i, w);
-    v_name("rack"); v_sprite(v_fmt("rack.well.%d", i), v_pstr(v_fmt("regions.rack.wells.%d.well", i)), w[0], w[1], w[2], w[3]);
     const char *pod = v_pstr(v_fmt("regions.rack.wells.%d.pod", i)); if (!*pod) continue;
     int landed = 1, fc = v_pint(v_fmt("regions.rack.wells.%d.from.crate", i), -1);
     if (opening && fc >= 0) {
@@ -67,31 +64,44 @@ static void build_rack(int opening, int k, int lt) {
   }
 }
 
-/* ---- the bay, its crates, the waiting mark (build crates, parts crates and waiting) ---- */
+/* ---- the bay, its crates, the waiting pods (build bay, crates and waiting) ---- */
+/* The bay is the signed painting, 1:1, in every state; its door goes over it when the host names one (the bay holds nothing, or the report). */
 static void build_bay(void) {
-  int r[4], in[4]; crect("regions.bay.rect", r); crect("regions.bay.inside", in);
-  v_region("bay", LAYER_CHROME); word_panel("bay", r[0], r[1], r[2], r[3], colr("colours.bay.fill"), colr("colours.bay.edge"));
-  v_rect("bay.top", r[0] + 1, r[1] + 1, r[2] - 2, 1, colr("colours.bay.top"));
-  v_rect("bay.inside", in[0], in[1], in[2], in[3], colr("colours.bay.inside"));
-  const char *lid = v_pstr("regions.bay.lid"); if (*lid) { v_name("bay"); v_sprite("bay.lid", lid, in[0], in[1], in[2], in[3]); }
+  int r[4], dr[4]; crect("regions.bay.rect", r); crect("regions.bay.door", dr);
+  v_region("bay", LAYER_ART); v_name("bay"); v_sprite("bay", v_pstr("regions.bay.open"), r[0], r[1], r[2], r[3]);
+  const char *door = v_pstr("regions.bay.door"); if (*door) { v_name("bay.door"); v_sprite("bay.door", door, dr[0], dr[1], dr[2], dr[3]); }
 }
+/* The crates stand centred as a group by count (regions.crates.byCount.<n>); each has its contact shadow under it from the frame it has landed (a crate still sliding casts none: the shadow-while-sliding fade was tried and its dirty area went over a quarter of the screen, so the fallback holds; UI/UX ruling 2026-10-15). */
 static void build_crates(void) {
   int n = v_plen("regions.crates.places"), max = ci("regions.crates.max", 3), in[4]; if (n > max) n = max; crect("regions.bay.inside", in);
+  const char *shadow = v_pstr("regions.crates.shadow"); int sx = ck("regions.crates.shadow.at", 0), sy = ck("regions.crates.shadow.at", 1), sw = ck("regions.crates.shadow.size", 0), sh = ck("regions.crates.shadow.size", 1);
   anim_state_t t; int arriving = anim_get(ANIM_ARRIVAL, "crates", &t), each = ci("events.crateIn.each.ms", 500), stagger = ci("events.crateIn.each.stagger", 250), from = spec_int(C, "events.crateIn.each.from.1", -64);
-  int ys[8], shown[8], drawn = 0;
+  int ys[8], shown[8], landed[8], sent = 0;   /* a crate not yet in waits with no size where its slide starts (y = place + from), so showing it redraws its first box only, not its landed box too */
   for (int i = 0; i < n; i++) {
-    int r[4]; crect(v_fmt("regions.crates.places.%d", i), r); int y = r[1]; shown[i] = 1;
-    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) shown[i] = 0; else { int p = e >= each ? 1000 : e * 1000 / each; y = p == 1000 ? r[1] : r[1] + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; } }
-    ys[i] = y; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) drawn++;
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); int y = r[1]; shown[i] = 1; landed[i] = 1;
+    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) { shown[i] = 0; landed[i] = 0; y = r[1] + from; } else { int p = e >= each ? 1000 : e * 1000 / each; landed[i] = p == 1000; y = p == 1000 ? r[1] : r[1] + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; } }
+    ys[i] = y;
+    /* the nodes this place sends inside the clip, as the loop below sends them: the shadow's slot, the crate (a node is sent only for a picture the host has) */
+    if (has(shadow)) sent++; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) sent++;
   }
-  if (!drawn) return;
+  if (!sent) return;
   v_name("crates");
-  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, drawn, 0);   /* the bay's inside: a crate sliding in is cut at its top */
-  for (int i = 0; i < n; i++) { int r[4]; crect(v_fmt("regions.crates.places.%d", i), r); slot(v_fmt("crates.%d", i), v_pstr(v_fmt("regions.crates.places.%d", i)), r[0], ys[i], r[2], r[3], shown[i]); }   /* a crate not yet in keeps its node with no size */
+  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, sent, 0);   /* the bay's inside: a crate sliding in is cut at its top; it holds every node sent after it (the shadows and the crates) */
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r);
+    v_name("crates"); slot(v_fmt("crates.%d.shadow", i), shadow, r[0] + sx, r[1] + sy, sw, sh, landed[i]);   /* the shadow under its crate, from the frame it has landed; kept with no size before */
+    slot(v_fmt("crates.%d", i), v_pstr(v_fmt("regions.crates.places.%d", i)), r[0], ys[i], r[2], r[3], shown[i]);   /* a crate not yet in keeps its node with no size */
+  }
 }
-static void build_waiting(void) {
-  const char *w = v_pstr("regions.waiting"); int r[4]; crect("regions.waiting.rect", r);
-  if (*w) { v_name("waiting"); v_sprite("waiting", w, r[0], r[1], r[2], r[3]); }
+/* Pods waiting for a free well stand on the floor, oldest first, at most three, each on the signed pod shadow (feet y 280, boxes 104 apart about 512). */
+static void build_waitingPods(void) {
+  int n = v_plen("regions.waitingPods.pods"), max = ci("regions.waitingPods.max", 3); if (n > max) n = max; if (n <= 0) return;
+  const char *shadow = v_pstr("regions.waitingPods.shadow"); int pw = ck("regions.waitingPods.pod.size", 0), ph = ck("regions.waitingPods.pod.size", 1), sw = ck("regions.waitingPods.shadow.size", 0), sh = ck("regions.waitingPods.shadow.size", 1), feet = ci("regions.waitingPods.feetY", 280);
+  for (int i = 0; i < n; i++) {
+    int axis = spec_int(C, v_fmt("regions.waitingPods.axes.%d.%d", n, i), 512);
+    v_name("waiting"); v_sprite(v_fmt("waiting.%d.shadow", i), shadow, axis - sw / 2, feet - 7 + 0, sw, sh);   /* Pods' rule: feet − half the shadow's height (273 for 14) */
+    v_sprite(v_fmt("waiting.%d", i), v_pstr(v_fmt("regions.waitingPods.pods.%d", i)), axis - pw / 2, feet - ph, pw, ph);
+  }
 }
 
 /* ---- one crate opening (parts open and travel) ---- */
@@ -100,10 +110,14 @@ static void build_opening(int k, int lt) {
   char P[64]; snprintf(P, sizeof P, "regions.opening.crates.%d", k);
   int motion = v_pbool("motion", 1), lid = ci("events.opening.crate.1.at", 200), tag = lid + ci("events.opening.crate.1.ms", 300), rib = ci("events.opening.crate.2.at", 500);
   /* the ribbon shows this crate's words from its step (a cut, no fade) */
-  { int r[4]; crect("regions.ribbon.rect", r); const char *words = v_pstr(v_fmt("%s.ribbon", P)); v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, lt >= rib ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 16), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text")); }
+  { int r[4]; crect("regions.ribbon.rect", r); const char *words = v_pstr(v_fmt("%s.ribbon", P)); int rpx = ci("regions.ribbon.px", 20), rpad = ci("regions.ribbon.pad", 16);
+    int w = ((v_measure(words, rpx) + 2 * rpad) + 7) / 8 * 8; if (w < 160) w = 160; if (w > r[2]) w = r[2];   /* the ribbon fits its words (cargo.json regions.ribbon.fit): words + 2 × pad rounded up to 8, at least 160, centred on 512 */
+    r[0] = 512 - w / 2; r[2] = w;
+    v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, lt >= rib ? words : "", rpx, rpad, colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text")); }
   /* the crate closer: sealed, the tag torn and the lid lifting, open */
   int cr[4]; crect("regions.crate.rect", cr);
   const char *slice = v_pstr(v_fmt("%s.%s", P, lt < lid ? "sealed" : (motion && lt < tag) ? "opening" : "open"));   /* with reduced motion the opening slice is skipped: open at 200 */
+  { int sr[4]; crect("regions.crate.shadow.rect", sr); v_name("crate"); v_sprite("crate.shadow", v_pstr(v_fmt("%s.shadow", P)), sr[0], sr[1], sr[2], sr[3]); }   /* the contact shadow under the closer, in every step */
   v_name("crate"); v_sprite("crate", slice, cr[0], cr[1], cr[2], cr[3]);
   /* its pods: in their places while the crate holds them (a later pod rises in the middle place as the one before sets out) */
   int m = v_plen(v_fmt("%s.pods", P)), shown = m < 3 ? m : 3, tms = ci("events.opening.crate.4.ms", 600), pw = ck("regions.crate.pods.size", 0), ph = ck("regions.crate.pods.size", 1);
@@ -121,8 +135,10 @@ static void build_opening(int k, int lt) {
     for (int i = 0; i < 3; i++) {
       char want[40]; snprintf(want, sizeof want, "cargo-%s-%dx%d", mat[i], sw, sh); int brought = 0;
       for (int q = 0; q < n; q++) { const char *id = v_pstr(v_fmt("%s.stores.%d", P, q)); if (id && !strcmp(id, want)) brought = 1; }
+      int px = spec_int(C, v_fmt("regions.stores.places.%s.0", mat[i]), 0), py = spec_int(C, v_fmt("regions.stores.places.%s.1", mat[i]), 0), show = brought && lt >= at;
       v_name(v_fmt("stores.%s", mat[i]));
-      slot(v_fmt("stores.%s", mat[i]), want, spec_int(C, v_fmt("regions.stores.places.%s.0", mat[i]), 0), spec_int(C, v_fmt("regions.stores.places.%s.1", mat[i]), 0), sw, sh, brought && lt >= at);
+      slot(v_fmt("stores.%s.shadow", mat[i]), v_pstr(v_fmt("%s.storeShadow", P)), px + ck("regions.stores.shadow.at", 0), py + ck("regions.stores.shadow.at", 1), ck("regions.stores.shadow.size", 0), ck("regions.stores.shadow.size", 1), show);   /* its contact shadow, shown with it */
+      slot(v_fmt("stores.%s", mat[i]), want, px, py, sw, sh, show);
     } }
   /* a pod travelling: from its place to its well's pod place, a straight line, whole pixels, eased in and out; with reduced motion it stands in its well from its step (the rack) */
   for (int j = 0; j < m; j++) {
@@ -147,16 +163,14 @@ static void build_reportCard(void) {
   int base = ci("regions.report.rows.first", 56) + gapG + rowH + pad, worldExtra = gapW + rowH;   /* the card: its first row, the gap above Gathered, Gathered, the pad = 104; the world: its gap and its heading = 40 (cargo.json regions.report.height) */
   /* the goal rows (cargo.json regions.report.goal): the last rows of the card, 8 px below the row above, and the meanwhile row directly under; the card grows by 8 + 24 x (1 + meanwhile), never past maxHeight, and
      the world lines drop from the last until it fits (the view trims them too; the face never draws past the card) */
-  int hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.text") != 0, gapGoal = ci("regions.report.goal.gapAbove", 8), maxH = ci("regions.report.maxHeight", 320);
+  int hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.text") != 0, gapGoal = ci("regions.report.goal.gapAbove", 8), maxH = ci("regions.report.maxHeight", 288);
   int goalExtra = hasGoal ? gapGoal + rowH * (1 + (hasMw ? 1 : 0)) : 0;
   int h = base + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? worldExtra + rowH * nl : 0) + goalExtra;
   while (h > maxH && nl > 0) { nl--; h -= rowH; if (nl == 0) { h -= worldExtra; hasWorld = 0; } }
   if (h > maxH) h = maxH;
-  int x0 = r[0], y0 = r[1], cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
-  v_region("report", LAYER_CHROME);
-  v_rect("report.shadow", x0 + spec_int(C, "regions.report.shadow.0", 0), y0 + spec_int(C, "regions.report.shadow.1", 0), r[2], h, colr("colours.report.shadow"));
-  word_panel("report", x0, y0, r[2], h, colr("colours.report.fill"), colr("colours.report.edge"));
-  v_rect("report.top", x0 + 1, y0 + 1, r[2] - 2, 1, colr("colours.report.top"));
+  /* the plate: the signed picture of this exact height, set into the door, centred on the door's middle (y = 64 + 8 × floor((288 − h) / 16)); the rim and shade are painted, so the face draws no fill, edge, rule or shadow */
+  int x0 = r[0], y0 = r[1] + 8 * ((maxH - h) / 16), cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
+  v_region("report", LAYER_ART); v_name("report"); v_sprite("report.plate", v_pstr("regions.report.plate"), x0, y0, r[2], h);
   int hy = y0 + ck("regions.report.heading.at", 1), hpx = ci("regions.report.heading.px", 20), hh = ci("regions.report.heading.h", 32), leadW = ck("regions.report.rows.lead", 1);
   const char *lead = colr("colours.report.lead"), *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *heading = colr("colours.report.heading");
   v_region("report.heading", LAYER_TYPE); { const char *hd = v_pstr("regions.report.heading"); v_text("report.heading", hd, x0 + pad, hy + v_fdiv(hh - v_cap(hpx), 2), v_measure(hd, hpx), hpx, heading); }
@@ -180,7 +194,6 @@ static void build_reportCard(void) {
       v_region("report.gathered", LAYER_TYPE); int tw = v_measure(figure, px); text_row(v_fmt("report.g.%d", m), figure, x + ic + gap, y, fig, px, tw + 1);
       x += ic + gap + tw + between;
     }
-    const char *top = v_pstr("regions.report.gathered.top"); if (*top) { v_region("report.gathered", LAYER_TYPE); text_row("report.g.top", top, x, y, lead, px, x0 + r[2] - pad - x); }
   }
   y += rowH;
   if (hasProbe) {
@@ -225,12 +238,12 @@ void cargo_words(void) {
   ground();
   if (strcmp(state, "opening") == 0) {
     int k, lt; opening_clock(&k, &lt);
+    build_bay();
     build_rack(1, k, lt);
     build_opening(k, lt);
   } else {
     build_bay();
-    if (strcmp(state, "bay") == 0) build_crates();
-    build_waiting();
+    if (strcmp(state, "bay") == 0) { build_crates(); build_waitingPods(); }
     build_rack(0, 0, 0);
     if (strcmp(state, "report") == 0) build_reportCard();
   }

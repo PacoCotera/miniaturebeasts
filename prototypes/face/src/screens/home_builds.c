@@ -43,7 +43,7 @@ void build_module(const char *sp, const char *key, int dy, const char *lampState
   const char *lraw = spec_raw(sp, v_fmt("regions.%s.lamp", key), NULL); int hasLamp = lraw && lraw[0] == '[';
   if (hasLamp) { lampAt[0] = sk(sp, v_fmt("regions.%s.lamp", key), 0); lampAt[1] = sk(sp, v_fmt("regions.%s.lamp", key), 1); }
   int x = r[0], y = r[1] + dy;
-  { const char *plate = v_pstr(v_fmt("regions.%s.plate", key)); v_region(key, LAYER_PAINTED); if (*plate) v_sprite(v_fmt("%s", key), plate, x, y, r[2], r[3]); }   /* the module is its device plate (fix 2 F1), the region's first node, lifting with it; no picture, no plate: no fill falls back (F6) */
+  { const char *plate = v_pstr(v_fmt("regions.%s.plate", key)); v_region(v_fmt("%s.plate", key), LAYER_PAINTED); if (*plate) v_sprite(v_fmt("%s", key), plate, x, y, r[2], r[3]); }   /* its own region "<module>.plate", so the module's objects keep theirs */   /* the module is its device plate (fix 2 F1), the region's first node, lifting with it; no picture, no plate: no fill falls back (F6) */
   if (hasLamp) { v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState); }   /* the lamp logs as its own region, with the module's lift */
   char w[40]; spec_str(sp, v_fmt("strings.modules.%s", key), w, sizeof w);
   v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, scol(sp, "colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */

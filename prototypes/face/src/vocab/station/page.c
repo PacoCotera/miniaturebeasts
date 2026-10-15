@@ -28,7 +28,8 @@ void word_page(const char *key) {
   if (spec_len("props", P) < 0) return;
   int rx = sa(rectBase, "rect", 0, 0), ry = sa(rectBase, "rect", 1, 0), cells_n = v_plen(v_fmt("%s.cells", P));
   int n = v_pint(v_fmt("%s.count", P), cells_n), size[2];
-  if (spec_len(S, v_fmt("%s.sizeByCount", base)) >= 0) layout_page_size(S, base, n, size); else { size[0] = sa(rectBase, "rect", 2, 0); size[1] = sa(rectBase, "rect", 3, 0); }
+  if (!compare && sexists(base, "originX") && v_pint(v_fmt("%s.frame.cols", P), 0) > 0) { int o[2]; layout_page_origin(S, base, v_pint(v_fmt("%s.frame.cols", P), 1), v_pint(v_fmt("%s.frame.rows", P), 1), o); rx = o[0]; ry = o[1]; }   /* the open page: the pod's frame picks the origin, so the heading never moves as the rail steps (fix 5 P4) */
+  if (spec_len(S, v_fmt("%s.sizeByCount", base)) >= 0 || spec_len(S, v_fmt("%s.heightByCount", base)) >= 0) layout_page_size(S, base, n, size); else { size[0] = sa(rectBase, "rect", 2, 0); size[1] = sa(rectBase, "rect", 3, 0); }
   char heading[24], nameC[24], lineC[24], lineEmptyC[24], wipeC[24], cellC[24], ruleC[24];
   colour("heading", heading, sizeof heading); colour("name", nameC, sizeof nameC); colour("line", lineC, sizeof lineC); colour("lineEmpty", lineEmptyC, sizeof lineEmptyC); colour("wipe", wipeC, sizeof wipeC); colour("cell", cellC, sizeof cellC); colour("rule", ruleC, sizeof ruleC);
   char reg[24], cellReg[24]; snprintf(reg, sizeof reg, "%s", compare ? key : "page"); snprintf(cellReg, sizeof cellReg, "page.cell");
@@ -50,10 +51,9 @@ void word_page(const char *key) {
     right += pp[0]; int rule_x = rx + sa(base, "rule.at", 0, 0);
     v_region("page.rule", LAYER_CHROME); v_rect(v_fmt("%s.rule", key), rule_x, ry + sa(base, "rule.at", 1, 0), right - rule_x, si(base, "rule.h", 1), ruleC);
   }
-  if (v_pbool(v_fmt("%s.sealedFind", P), 0) && sexists(base, "sealedFind")) {   /* a shut chapter: the one picture of the find that opens it (a flat tone until it is painted) */
+  if (v_pbool(v_fmt("%s.sealedFind", P), 0) && sexists(base, "sealedFind")) {   /* a shut chapter: the one picture of the find that opens it (it carries its own ground: no flat tone behind it, and nothing at all until it is painted) */
     int fx = rx + sa(base, "sealedFind", 0, 0), fy = ry + sa(base, "sealedFind", 1, 0), fw = sa(base, "sealedFind", 2, 0), fh = sa(base, "sealedFind", 3, 0);
-    v_region("page.seal", LAYER_CHROME); v_rect(v_fmt("%s.find", key), fx, fy, fw, fh, cellC);
-    v_name("page.seal"); layer(v_fmt("%s.findpic", key), fx, fy, fw, fh, v_pstr(v_fmt("%s.sealedPicture", P)));
+    v_region("page.seal", LAYER_CHROME); layer(v_fmt("%s.findpic", key), fx, fy, fw, fh, v_pstr(v_fmt("%s.sealedPicture", P)));
     return;
   }
   int gap = sexists(base, "cell") ? si(base, "cell.gap", 0) : si(base, "nameGap", 0), line = sexists(base, "cell") ? si(base, "cell.name.line", 20) : si(base, "nameLine", 20);
@@ -65,14 +65,17 @@ void word_page(const char *key) {
     char C[64]; snprintf(C, sizeof C, "%s.cells.%d", P, i); char cid[40]; snprintf(cid, sizeof cid, "%s.c%d", key, i);
     int cx = cells[i][0], cy = cells[i][1], frost = v_pbool(v_fmt("%s.frost", C), 0), diff = v_pbool(v_fmt("%s.diff", C), 0), isNew = v_pbool(v_fmt("%s.isNew", C), 0);
     const char *crop = v_pstr(v_fmt("%s.crop", C)); char cropC[96]; snprintf(cropC, sizeof cropC, "%s", crop);
+    int placed = has(cropC) && wire_has_asset(cropC);
     if (!frost) {
       anim_state_t wa; char chap[48]; snprintf(chap, sizeof chap, "%s", v_pstr(v_fmt("%s.chapter", P)));
       if (anim_get(ANIM_WIPE, chap, &wa)) {   /* Read: the page wipes, each cell revealed from the top over the event */
         int cut = (2 * ph * wa.elapsed + wa.ms) / (2 * wa.ms);
-        v_region(cellReg, LAYER_CHROME); prim_node(v_id(v_fmt("%s.wipe", cid)), FN_CLIP, cx, cy, pw, cut, 0, has(cropC) && wire_has_asset(cropC) ? 2 : 1, 0);
-        v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC);
-        v_rect(v_fmt("%s.wipeline", cid), cx + 6, cy + cut, pw - 12, 2, wipeC);
-      } else { v_region(cellReg, LAYER_CHROME); v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); v_name(cellReg); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC); }
+        if (placed) {   /* nothing is revealed where no crop is placed (P2): no tone, no line */
+          v_region(cellReg, LAYER_CHROME); prim_node(v_id(v_fmt("%s.wipe", cid)), FN_CLIP, cx, cy, pw, cut, 0, 2, 0);
+          v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC);
+          v_rect(v_fmt("%s.wipeline", cid), cx + 6, cy + cut, pw - 12, 2, wipeC);
+        }
+      } else if (placed) { v_region(cellReg, LAYER_CHROME); v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); v_name(cellReg); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC); }   /* the tone only under a placed crop (P2) */
     } else { v_name(cellReg); layer(v_fmt("%s.outline", cid), cx, cy, pw, ph, v_pstr(v_fmt("%s.outline", C))); }
     int ny = cy + ph + gap; char nm[V_STR]; snprintf(nm, sizeof nm, "%s", v_pstr(v_fmt("%s.name", C))); int nw = v_measure(nm, 16);
     int hasNew = isNew && has(newMark) && sexists(base, "newMark");
@@ -90,6 +93,15 @@ void word_page(const char *key) {
         x += lmGap; layer(v_fmt("%s.g%d", cid, k), x, ny + gt, gw, gh, v_pstr(v_fmt("%s.glyphs.%d.asset", C, k))); x += gw;
       }
       if (hasNew) { x += lmGap; layer(v_fmt("%s.new", cid), x, ny + spec_int(S, v_fmt("%s.lineMarks.glyphs.new.top", base), 0), newSize0, newSize1, newMark); }
+      if (v_pbool(v_fmt("%s.doing", C), 0) && sexists(base, "cell.doingLine") && v_plen(v_fmt("%s.lines", C)) > 0) {   /* a read doing: its value in words under the name, centred, wrapped at the name line's reach, two lines at most (P7) */
+        const char *text = v_pstr(v_fmt("%s.lines.0", C)); int px = si(base, "cell.doingLine.px", 16), pitch = si(base, "cell.doingLine.line", 20), wrap = si(base, "cell.doingLine.wrap", 140), maxl = si(base, "cell.doingLine.lines", 2);
+        char wrapped[V_STR * 3]; int nl = has(text) ? v_wrap(text, wrap, px, wrapped, sizeof wrapped, 8) : 0; const char *l = wrapped; v_region(cellReg, LAYER_TYPE);
+        for (int j = 0; j < nl && j < maxl; j++) {
+          char t[V_STR * 3]; snprintf(t, sizeof t, "%s", l); l += strlen(l) + 1;
+          { size_t len = strlen(t); while (len && t[len - 1] == ' ') t[--len] = 0; if (len >= 2 && (uint8_t)t[len - 2] == 0xc2 && (uint8_t)t[len - 1] == 0xb7) { t[len - 2] = 0; len -= 2; while (len && t[len - 1] == ' ') t[--len] = 0; } }   /* a break drops its trailing separator */
+          int tw = v_measure(t, px); v_text(v_fmt("%s.d%d", cid, j), t, cx + v_half(pw - tw), ny + pitch + j * pitch + v_fdiv(pitch - v_cap(px), 2), tw, px, lineC);
+        }
+      }
     } else {
       int lamp = diff && has(differs) && sexists(base, "differs") ? sa(base, "differs.size", 0, 0) + si(base, "differs.gapAfterLamp", 0) : 0, dot = hasNew ? newSize0 + newGapAfter : 0;
       int nx = (hasCell ? cx + v_half(pw - nw - dot) : cx) + lamp;

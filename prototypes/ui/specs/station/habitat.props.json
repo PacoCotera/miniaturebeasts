@@ -356,6 +356,7 @@
         "size",
         "N",
         "cell",
+        "plate",
         "asset"
        ],
        "additionalProperties": false,
@@ -368,6 +369,9 @@
         },
         "cell": {
          "type": "integer"
+        },
+        "plate": {
+         "type": "string"
         },
         "asset": {
          "type": "string"
@@ -433,7 +437,8 @@
      "required": [
       "plate",
       "state",
-      "frame"
+      "frame",
+      "picture"
      ],
      "additionalProperties": false,
      "properties": {
@@ -449,6 +454,9 @@
        ]
       },
       "frame": {
+       "type": "string"
+      },
+      "picture": {
        "type": "string"
       }
      }

@@ -1,6 +1,6 @@
 /* One mibi up close, the Vivarium's closest level (habitat.json; station-layouts.md "The Vivarium: the whole and one mibi up close"): the words that draw it from the spec and the props' regions, in draw order, then the focus ring.
    The stage, the living window (the near Vivarium of the light) with the mibi large in it (or the out mark while it is out with the Companion), its name tag (or the meet ribbon), the card (the species line and its guide mark, the story,
-   the code, the heart, the skill notches, the stamp label and one plate a chapter), the four modules (the Companion's set, Portrait, Cross, Wild) and the strip of bays. A picture the host has not sent is a slot not yet filled: nothing is drawn.
+   the code, the heart, the skill notches, the stamp label and one plate a chapter), the four modules (the Companion's set, Portrait with its picture over the frame's window, Cross, Wild) and the strip of bays. A picture the host has not sent is a slot not yet filled: nothing is drawn.
    The events: `moment` (the placeholder's two hops: the creature lifts by the spec's table, the box, the tag and the ring stay), `read` (the stamp prints its cells row by row over its length), `dither` on the resident (the swap to a tile's mibi), `flash`
    on the tag (the namer saved a name). Habitat's focus is `focus.graph` of habitat.json on the boxes this file drew; while the namer (an overlay, screens/namer.c) is open habitat draws no ring and takes no key. */
 #include "screens.h"
@@ -194,10 +194,11 @@ static void build_code(void) {
   const char *code = v_pstr("regions.card.code"); int px = hi("regions.code.px", 16), w = v_measure(code, px);
   v_region("code", LAYER_TYPE); v_text("code", code, hk("regions.code.rect", 0), hi("regions.code.lineTop", 162) + v_fdiv(20 - v_cap(px), 2), *code ? w : 0, px, colr("colours.card.code"));
 }
-/* the stamp label: a bone plate with a slate edge and the stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows) */
+/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label */
 static void build_stamp(void) {
-  int r[4]; hrect("regions.stamp.rect", r); v_region("stamp", LAYER_CHROME); word_panel("stamp", r[0], r[1], r[2], r[3], colr("colours.stampLabel.fill"), colr("colours.stampLabel.edge"));
+  int r[4]; hrect("regions.stamp.rect", r); const char *pl = v_pstr("regions.card.stamp.plate");
   const char *a = v_pstr("regions.card.stamp.asset"); int size = v_pint("regions.card.stamp.size", 0), N = v_pint("regions.card.stamp.N", 0), cell = v_pint("regions.card.stamp.cell", 0);
+  v_region("stamp", LAYER_PAINTED); if (has(pl)) { if (has(a) && size) v_sprite("stamp", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp", pl, r[0], r[1]); }
   if (!has(a) || !size) return;
   int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }
@@ -242,6 +243,9 @@ static void door_objects(int dy) {
 static void portrait_objects(int dy) {
   int r[4]; hrect("regions.portrait.rect", r); const char *f = v_pstr("regions.portrait.frame"); int fx = hk("regions.portrait.frame.at", 0), fy = hk("regions.portrait.frame.at", 1), fw = hk("regions.portrait.frame.size", 0), fh = hk("regions.portrait.frame.size", 1);
   v_name("portrait"); if (has(f)) v_sprite("portrait.frame", f, r[0] + fx, r[1] + dy + fy, fw, fh); else v_sprite_hidden("portrait.frame", v_pstr("regions.glass.picture"), r[0], r[1]);
+  /* its picture, over the frame's window (frame.picture: at and size from the spec, 1:1): painted from the asset; not landed (""), a 0x0 window that draws nothing and the frame master's own window shows */
+  const char *p = v_pstr("regions.portrait.picture"); int px = hk("regions.portrait.frame.picture.at", 0), py = hk("regions.portrait.frame.picture.at", 1), pw = hk("regions.portrait.frame.picture.size", 0), ph = hk("regions.portrait.frame.picture.size", 1);
+  v_name("portrait"); if (has(p)) v_sprite("portrait.picture", p, r[0] + fx + px, r[1] + dy + fy + py, pw, ph); else v_sprite_hidden("portrait.picture", has(f) ? f : v_pstr("regions.glass.picture"), r[0], r[1]);
 }
 static void cross_objects(int dy) {
   int r[4]; hrect("regions.cross.rect", r); int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;

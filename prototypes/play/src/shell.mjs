@@ -277,7 +277,7 @@ frames.bench.addEventListener("load", () => attach("bench"));
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
-if (DEV) devOpen = true;
+if (DEV) { devOpen = true; for (const id of ["devBtn", "stamp", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden"); }   // the Developer tools button, its help row and the build stamp show with ?dev only; the Shift+T key stays
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
 function onDpr() { layout(); armDpr(); }

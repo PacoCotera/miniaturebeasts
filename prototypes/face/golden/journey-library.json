@@ -51,7 +51,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -83,7 +83,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -115,7 +115,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -147,7 +147,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -157,7 +157,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -189,7 +189,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -221,7 +221,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S09",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Belatz",
     "back": "Home"
    },
@@ -307,7 +307,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -339,7 +339,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -391,7 +391,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -423,7 +423,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -438,28 +438,14 @@
      }
     ],
     "screen": "library",
-    "state": "notBuilt",
-    "focus": "library",
-    "ok": null,
-    "subject": "",
-    "back": "Library"
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "library",
-      "target": "screen",
-      "verb": "back"
-     }
-    ],
-    "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
+   },
+   {
+    "plate": "Its Book is not open yet"
    },
    {
     "key": "back",
