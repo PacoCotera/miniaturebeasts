@@ -91,7 +91,7 @@
 <text x="24" y="148" font-size="10" fill="#2b6cb0">the arrows do nothing; ✓ Grow it.</text>
 <text x="24" y="161" font-size="10" fill="#2b6cb0">20 leaves (5 for the first bud);</text>
 <text x="24" y="174" font-size="10" fill="#2b6cb0">no ◆; the stamp no chapter.</text>
-<text x="24" y="187" font-size="10" fill="#2b6cb0">Way in: ✓ Shape a founder on any</text>
+<text x="24" y="187" font-size="10" fill="#2b6cb0">Way in: ✓ Create from this pod on any</text>
 <text x="24" y="200" font-size="10" fill="#2b6cb0">identified pod in Pods.</text>
 <line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>

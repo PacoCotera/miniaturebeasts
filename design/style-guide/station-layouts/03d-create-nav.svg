@@ -20,7 +20,7 @@
 <text x="860" y="124" font-size="9" fill="#777" text-anchor="middle">growing · ← Home</text>
 <line x1="168" y1="104" x2="270" y2="74" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
 <line x1="168" y1="112" x2="270" y2="148" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="176" y="92" font-size="9" fill="#2b6cb0">✓ Shape a founder</text>
+<text x="176" y="92" font-size="9" fill="#2b6cb0">✓ Create from this pod</text>
 <line x1="270" y1="164" x2="170" y2="130" stroke="#6b6880" stroke-width="1.5" marker-end="url(#ag)"/>
 <text x="170" y="172" font-size="9" fill="#6b6880">← Loika: ring on the pod</text>
 <line x1="424" y1="74" x2="526" y2="104" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
