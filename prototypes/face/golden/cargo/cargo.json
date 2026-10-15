@@ -2,15 +2,15 @@
  "_note": "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the report: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "cargo-bay": {
-   "hash": "12b30021",
+   "hash": "260b5fe4",
    "png": "cargo-bay.png"
   },
   "cargo-bay-one": {
-   "hash": "9d955b02",
+   "hash": "5e60dba8",
    "png": "cargo-bay-one.png"
   },
   "cargo-bay-three": {
-   "hash": "6dc58098",
+   "hash": "a2b90bcb",
    "png": "cargo-bay-three.png"
   },
   "cargo-bay-empty": {
@@ -38,27 +38,27 @@
    "png": "cargo-report-waiting.png"
   },
   "cargo-opening-0": {
-   "hash": "3769b835",
+   "hash": "f8809ff7",
    "png": "cargo-opening-0.png"
   },
   "cargo-opening-200": {
-   "hash": "3cab9133",
+   "hash": "606d37d9",
    "png": "cargo-opening-200.png"
   },
   "cargo-opening-500": {
-   "hash": "e8cfcaf0",
+   "hash": "fe1fe566",
    "png": "cargo-opening-500.png"
   },
   "cargo-opening-800": {
-   "hash": "986b2b37",
+   "hash": "8bf98775",
    "png": "cargo-opening-800.png"
   },
   "cargo-opening-1200": {
-   "hash": "e969f3b5",
+   "hash": "ef9ef21b",
    "png": "cargo-opening-1200.png"
   },
   "cargo-opening-1650": {
-   "hash": "16bde0ab",
+   "hash": "dd1a12ff",
    "png": "cargo-opening-1650.png"
   },
   "cargo-opening-end": {
@@ -66,7 +66,7 @@
    "png": "cargo-opening-end.png"
   },
   "cargo-crates-arriving": {
-   "hash": "5944446a",
+   "hash": "893e53bc",
    "png": "cargo-crates-arriving.png"
   }
  }
