@@ -3609,7 +3609,7 @@ function drawPatch(t) {
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
   if (ts === 48) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
-  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
+  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
@@ -3763,8 +3763,8 @@ function tagSpot(tg, k) {
   // what a tag may not cover: other creatures' and the pawn's clear zones, the warned cell, the message box, the edge tabs
   const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
   const block = [];
-  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(r.x), k.H(r.y), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
-  block.push(zone(k.W(RT.pl.x), k.H(RT.pl.y), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
+  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(k.PX(r)), k.H(k.PY(r)), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
+  block.push(zone(k.W(k.PX(RT.pl)), k.H(k.PY(RT.pl)), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
   if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
   const m = msgRect(); if (m) block.push(m);
   for (const t of edgeTabs()) block.push(tabRect(t));

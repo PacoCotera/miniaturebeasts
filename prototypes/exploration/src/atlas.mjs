@@ -37,7 +37,7 @@ export function catalogue(pieces, levelTone = null) {
     lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [], grass: [] }, water, waterSand, waterMacro, waterMacroSand, lip,
     face: { w3: [], w2: [], w1: [] }, cap: { w: [], e: [] }, cornerIn: { w: [], e: [] }, side: { e: sideOf(), w: sideOf() },
     stair: { S: [], N: [], E: [], W: [] }, landing: two(), foot2: two(), apronTop: two(),
-    prop: { boulder: [], reeds: [], flowers: [] }, sandShore, shadow, other: [],
+    prop: { boulder: [], reeds: [], flowers: [], ford: [] }, sandShore, shadow, other: [],
   };
   const LT = Array.isArray(levelTone) ? levelTone : [];
   const levelToneOut = [0, 1, 2].map(k => (LT[k] === 'light' || LT[k] === 'dark' ? LT[k] : 'none'));
@@ -63,7 +63,7 @@ export function catalogue(pieces, levelTone = null) {
       case 'landing': ok = part(p) >= 0 && put(cat.landing[part(p)], p); break;
       case 'foot': ok = cellsAre(p, 1, 1) && part(p) >= 0 && put(cat.foot2[part(p)], p); break;
       case 'apron-top': ok = part(p) >= 0 && put(cat.apronTop[part(p)], p); break;
-      case 'prop': ok = (p.type === 'boulder' || p.type === 'reeds' || p.type === 'flowers') && put(cat.prop[p.type], p); break;
+      case 'prop': ok = (p.type === 'boulder' || p.type === 'reeds' || p.type === 'flowers' || p.type === 'ford') && put(cat.prop[p.type], p); break;
     }
     if (!ok) cat.other.push(p);
   }
@@ -318,7 +318,8 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
       for (const q of QUADS) { const st = shoreState(wm, q);
         if (deepP && st === 'fill') L.push(quarterLayer(deepP, q, QE[q] * Q, QS[q] * Q, waterTone));
         else { const p = (sandBank ? (cat.waterSand[q][st] || [])[frame] : null) || (cat.water[q][st] || [])[frame]; if (p) L.push(quarterLayer(p, q, 0, 0, waterTone)); } }
-      if (t === T.STEP) L.push({ stand: 'step', dx: 8, dy: 16 });
+      if (t === T.STEP) { const f = pick(cat.prop.ford, hash(seed, 'pk', key, x, y)), l = f && cellLayer(f, 0, 0);   // a ford stone at its offset in the cell, over the water; none in the set: the stand-in
+        L.push(l || { stand: 'step', dx: 8, dy: 16 }); }
     }
     else if (t === T.CLIFF && !terr && rules.g1Runs) {   // generator 1's band: its runs' slices on the top and foot rows, rock between
       const r = g1.get(i);

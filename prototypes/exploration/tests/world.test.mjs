@@ -245,6 +245,19 @@ test("atlas: shore macros take their four tiles, drop the water quarters and sit
   const p = vecPlaces().find(p => A.shoreMacros((x, y) => p.lay.tiles[y * W.PW + x], W.PW, W.PH).some(m => m.radius === 60));
   if (p) assert.ok(A.placeLayers(p.lay, p.seed, r60, 0, p.level).tiles.some(t => t.layers.some(l => /-r42-f1$/.test(l.id))), "radius 42 stands in for a missing 60");
 });
+test("atlas: a stepping-stone tile takes a ford stone by hash at its offset when the set has them, and the labelled stand-in when it has none", () => {
+  const ford = n => ({ name: "meadow/prop/ford-" + n, kind: "prop", type: "ford", w: 20, h: 14, offset: [14, 34] }), pieces = [1, 2, 3].map(ford);
+  const cat = A.catalogue(VECTORS.atlas.catalogue.concat(pieces), VECTORS.atlas.levelTone), none = SYN();
+  assert.equal(cat.prop.ford.length, 3); assert.equal(none.prop.ford.length, 0); assert.equal(cat.other.length, none.other.length, "the ford pieces are not left in other");
+  let steps = 0; const used = new Set();
+  for (const p of vecPlaces()) { const a = A.placeLayers(p.lay, p.seed, cat, 0, p.level), b = A.placeLayers(p.lay, p.seed, none, 0, p.level);
+    for (let i = 0; i < W.PW * W.PH; i++) if (p.lay.tiles[i] === W.T.STEP) { steps++;
+      const f = a.tiles[i].layers.find(l => /\/ford-/.test(l.id)); assert.ok(f, p.key + " " + i + ": a ford stone");
+      assert.deepEqual([f.dx, f.dy, f.w, f.h, f.sx, f.sy], [14, 34, 20, 14, 0, 0], "at the piece's offset, whole"); used.add(f.id);
+      assert.ok(!a.tiles[i].layers.some(l => l.stand === "step"), "no stand-in beside it"); assert.ok(b.tiles[i].layers.some(l => l.stand === "step"), "the stand-in without the set");
+      assert.deepEqual(a.tiles[i].layers.filter(l => l.stand == null && !/ford-/.test(l.id)), b.tiles[i].layers.filter(l => l.stand == null), "the water quarters are the same"); } }
+  assert.ok(steps > 0, "a vector place has a stepping stone");
+});
 test("atlas: on every vector place no tile shares a lawn variant with its four neighbours; every layer lies in the tile", () => {
   for (const p of vecPlaces()) { const v = A.lawnVariants(p.lay, p.seed, 4);
     for (let i = 0; i < W.PW * W.PH; i++) { const x = i % W.PW, y = (i / W.PW) | 0;
@@ -1134,11 +1147,16 @@ test("place overrides: in a 48 px place in fog a core colour takes the file's fo
 // ---- the view's edge cues: tabs, the Call's hold on the edge, the name tag's positions, the send hint in a place ----
 // Each runs at ts 32 and at ts 48 through view.mjs (RT.ts), with motion reduced (the harness's matchMedia matches).
 // A place on seed 1's spawn cell, no storm, no fog, the pawn mid-place, nothing else in it unless the test puts it there.
+// At 48 the page draws the synthetic catalogue (each piece a solid fill, hash(name) % 40 + 4, with a 1 px ink border), so the place latches RT.ts = 48 itself.
+const CUE_SYN = syntheticPieces().map(q => ({ ...q, fill: parseInt(fnvStr(q.name), 16) % 40 + 4 }));
 function cuePlace(ts, opts = {}) {
   const p = page({}, undefined, { canvas: true, script: opts.script });
+  if (ts === 48) p.run(`atlasInstall(${JSON.stringify(CUE_SYN)}.map(q => { const px = new Int16Array(q.w * q.h).fill(q.fill);
+    for (let y = 0; y < q.h; y++) for (let x = 0; x < q.w; x++) if (!x || !y || x === q.w - 1 || y === q.h - 1) px[y * q.w + x] = C.ink; return Object.assign(q, { px }); }), null, ${JSON.stringify(SYNTH_TONE)})`);
   p.run(`newWorld(1); startExpedition('weather', G.spawns[0]); S.exp.storm = null; S.exp.fog = null; S.exp.pt = ${opts.partner ? "{ id: 1, name: 'Dot', sp: 0, elder: false }" : "null"};
-    enterPatch(); RT.ts = ${ts}; { const P = S.exp.patch; P.x = 14; P.y = 13; P.noise = 'creep'; } RT.pl = null; RT.key = null;
-    S.pods = S.pods.filter(q => q.k !== S.exp.patch.key); curLive().cr = []; curLive().fr = []; curLive().strike = null; FX.msg = ''; FX.notes = []; FX.pulse = null; FX.cue = null; FX.rings = []; NOW = 5000;`);
+    enterPatch(); { const P = S.exp.patch; P.x = 14; P.y = 13; P.noise = 'creep'; } RT.pl = null; RT.key = null;
+    S.pods = S.pods.filter(q => q.k !== S.exp.patch.key); curLive().cr = []; curLive().fr = []; curLive().strike = null; FX.msg = ''; FX.notes = []; FX.pulse = null; FX.cue = null; FX.rings = []; NOW = 5000; render(5);`);
+  assert.equal(p.run("RT.ts"), ts, `the place draws at ${ts}`);
   return p;
 }
 const crt = (id, x, y, st, more = "") => `curLive().cr.push(Object.assign({ id: ${id}, sp: 0, x: ${x}, y: ${y}, st: '${st}', hide: 0, calm: 0, face: 1 }, { ${more} }));`;
@@ -1169,7 +1187,7 @@ for (const ts of [32, 48]) {
     assert.equal(p.run("sightR(curLay())"), 4, "in a fog bank");
     assert.equal(tabsOf(p).length, 0, "beyond fog sight: none");
     p.run(`curLive().cr = []; ${crt(4, 14, 9, "alert")}`); assert.equal(tabsOf(p).length, 0, "4 tiles away in fog: in sight, but on screen");
-    p.run(`S.exp.fog = null; enterCave(); S.phase = 'patch'; RT.ts = ${ts}; curLive().cr = []; ${crt(5, 27, 1, "alert")} RT.key = null;`);
+    p.run(`S.exp.fog = null; enterCave(); S.phase = 'patch'; curLive().cr = []; ${crt(5, 27, 1, "alert")} RT.key = null;`);
     assert.equal(p.run("curLay().cave"), true); assert.equal(tabsOf(p).length, 0, "a cave: none");
   });
 
@@ -1210,6 +1228,19 @@ for (const ts of [32, 48]) {
     a.run("S.exp.actions = 2"); assert.equal(tabsOf(a).filter(mine).length, 1, "two actions on");
     a.run("S.exp.actions = 3"); assert.equal(tabsOf(a).length, 0, "three actions on: gone");
     a.run("S.exp.actions = 1; S.pods.find(q => q.id === 'tp').x = -1"); assert.equal(tabsOf(a).filter(mine).length, 0, "taken: gone");
+  });
+
+  test(`cues at ${ts}: in a fog bank a find's tab reaches out to the Call's range with no sight test, while a creature 5 tiles away gets none`, () => {
+    if (ts !== 48) return;   // 5 tiles sideways is still on screen at 32
+    const p = cuePlace(ts);
+    p.run("{ const c0 = cxy(S.exp.pos); S.exp.fog = { x: c0.x + .5, y: c0.y + .5, r: 3, dx: 0, dy: 0, at: 0 }; }");
+    assert.equal(p.run("sightR(curLay())"), 4, "in a fog bank");
+    p.run(`S.pods.push({ k: S.exp.patch.key, x: 19, y: 13, h: 1, g: 0, sp: 0, id: 'fp' }); ${crt(7, 9, 13, "approach")} callPlace();`);
+    assert.equal(p.run("FX.cue.r"), 6, "muffled: the reach is 6");
+    const tabs = tabsOf(p).filter(t => t.id === "f19,13");
+    assert.deepEqual(tabsOf(p).filter(t => t.kind !== "find"), [], "no creature tab"); assert.deepEqual(tabs.map(t => t.kind), ["find"], "the pod 5 tiles east, beyond sight 4: a find tab; the '?' creature 5 tiles west: none");
+    assert.equal(tabs[0].side, "E"); assert.equal(at(p.run("scr").px(), tabs[0].cx, tabs[0].cy - 11), p.run("C").cream, "cream border");
+    p.run("S.exp.patch.x = 15"); p.run("RT.pl = null"); assert.equal(tabsOf(p).filter(t => t.id === "f19,13").length, 0, "walking within 4 tiles: the pod's tile is on screen, no tab");
   });
 
   test(`cues at ${ts}: the Call's hold draws ice dashes on the view's edge inside the reach, each with its dark shadow on the outer side`, () => {
