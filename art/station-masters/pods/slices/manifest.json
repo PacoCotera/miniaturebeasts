@@ -15079,5 +15079,45 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "mibi-juvenile-S02-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "8ad444042b78c1f47de544494806729b408db6f5089fe3448e1de1eb1d06ccf6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): the re-exported S02 juvenile (51aa3137, juvenile/), copied into slices for fix 1a; a candidate, signed in the fix 1 retake"
+ },
+ "mibi-juvenile-S02-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "3d5ff0d119505aeb378c8f9bb591236c3d21fa05d63809a5fcaa7e1bce73e013",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): the re-exported S02 juvenile (51aa3137, juvenile/), copied into slices for fix 1a; a candidate, signed in the fix 1 retake"
+ },
+ "mibi-juvenile-S02-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "1e3f7adbf12b151d721156347aa5ead136e5d9d4b5f1a0381b725fd25e85f5fe",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): the re-exported S02 juvenile (51aa3137, juvenile/), copied into slices for fix 1a; a candidate, signed in the fix 1 retake"
+ },
+ "mibi-juvenile-S02-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "b3be64f70ef0e412d40b03447056e2c00520864664b777ac5cab39ab09ed75ac",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): the re-exported S02 juvenile (51aa3137, juvenile/), copied into slices for fix 1a; a candidate, signed in the fix 1 retake"
  }
 }
