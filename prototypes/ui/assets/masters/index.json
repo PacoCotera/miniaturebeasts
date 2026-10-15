@@ -1349,8 +1349,8 @@
    "file": "pods/mark-asleep-24x16.png",
    "w": 24,
    "h": 16,
-   "sha256": "ae714dc2e8583f348ce682f5865e4baa35cab0d27f9afa718a7fb77275e7bdff",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "9e3296786edbf527d372744555ea086317328a475c08ee100dd0128dfe701406",
+   "signed": "station lead's brief (Pods GB3): the art director's recut of mark-asleep-24x16, masters-pods 20266e67 (same id and size)"
   },
   "mark-breed-28x16": {
    "file": "pods/mark-breed-28x16.png",
