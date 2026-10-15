@@ -349,3 +349,12 @@ test("the Call sign: after every hazard sign; only on entering a place or a Call
   assert.ok(!/fxSign\('call'\)/.test(p.run("noteHud.toString()")), "noteHud no longer raises it");
 });
 
+test("the shelter sign's embedded rows are the signed picture, pixel for pixel (when the file is in the tree)", async () => {
+  const { existsSync, readFileSync } = await import("node:fs"), { decodePNG } = await import("../tools/atlas-check.mjs");
+  const file = new URL("../../../art/companion-48/signs/sign-shelter-32.png", import.meta.url);
+  if (!existsSync(file)) return;
+  const img = decodePNG(readFileSync(file)), p = page(), rows = p.run("SHELTER_ROWS.join('')"), rgb = p.run("RGB.map(c => c.join(','))");
+  assert.equal(rows.length, 1024); let diff = 0;
+  for (let i = 0; i < 1024; i++) { const a = img.rgba[i * 4 + 3], ch = rows[i]; if (a === 0 || ch === ".") { if (!(a === 0 && ch === ".")) diff++; } else if (rgb[ch.charCodeAt(0) - 48] !== [img.rgba[i * 4], img.rgba[i * 4 + 1], img.rgba[i * 4 + 2]].join(",")) diff++; }
+  assert.equal(diff, 0, "0 of 1024 pixels differ");
+});
