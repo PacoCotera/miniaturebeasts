@@ -1541,6 +1541,13 @@
    "sha256": "2fefb4b797ef82dcbe5a3c4a5b7d3e68239fa7d3aa7fde396eef55e46cf66b5c",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "mark-species-frost-24x24": {
+   "file": "pods/mark-species-frost-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
+  },
   "mark-species-S01-24x24": {
    "file": "pods/mark-species-S01-24x24.png",
    "w": 24,
@@ -1653,13 +1660,6 @@
    "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "mark-species-frost-24x24": {
-   "file": "pods/mark-species-frost-24x24.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
-   "signed": "art director (palette re-sign, masters-pods a60d822b)"
-  },
   "mark-waiting-24": {
    "file": "pods/mark-waiting-24.png",
    "w": 24,
@@ -1750,6 +1750,13 @@
    "h": 88,
    "sha256": "85f11b8ade52bc9d15764c14f7d13b0dfbb7ece44622aea6c1eb7807fbf0ca23",
    "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-halo-empty-128x160": {
+   "file": "pods/mibi-halo-empty-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
@@ -1996,13 +2003,6 @@
    "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
    "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
-  },
-  "mibi-halo-empty-128x160": {
-   "file": "pods/mibi-halo-empty-128x160.png",
-   "w": 128,
-   "h": 160,
-   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "mibi-juvenile-S01-104x112": {
    "file": "pods/mibi-juvenile-S01-104x112.png",
@@ -4327,6 +4327,55 @@
    "h": 56,
    "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
    "signed": "art director, Pods room verdict (README fa105365)"
+  },
+  "roll-S01-crown-bare-head-128x72": {
+   "file": "pods/roll-S01-crown-bare-head-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "31bb61c2b97dc7ff288d32f7666564b84dffc6e0102ca49e8c74b09de986c9cf",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-crown-leaf-crest-128x72": {
+   "file": "pods/roll-S01-crown-leaf-crest-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "fa8a9fab783bb4f9574f07c355b1c1d5b76ec5500f8ab240397a09e63534047f",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-eyes-between-128x72": {
+   "file": "pods/roll-S01-eyes-between-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "f07d59175805e756d45047706c1b080e37aa5e58245e28344ef14ac11365bf4d",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-eyes-thin-rings-128x72": {
+   "file": "pods/roll-S01-eyes-thin-rings-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "714c2ad8e456aa315f4cee67018a0a352d333b7cae0146a41e71994abc4fee16",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-eyes-wide-pale-rings-128x72": {
+   "file": "pods/roll-S01-eyes-wide-pale-rings-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "1b6220c30453e9d0fd1269ebec4bda5b8cc1ddb39a8c221c0e20c52547716483",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-markings-pale-patches-128x72": {
+   "file": "pods/roll-S01-markings-pale-patches-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "7762115cbe78ca70bb14891852289fdde913a4dc7a8eaa2709eecdbc43138987",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-markings-plain-128x72": {
+   "file": "pods/roll-S01-markings-plain-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "63c2f1e3c14a9455b9163c1226633534593f04ce8f7ce704129555fdb1ee3edd",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
   },
   "room-bench-stage": {
    "file": "pods/room-bench-stage.png",
