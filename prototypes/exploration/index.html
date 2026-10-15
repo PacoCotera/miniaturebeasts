@@ -4032,7 +4032,8 @@ const lineOf = v => typeof v === 'function' ? v() : v;
 // The Probe's storm tile also carries the exact odds, in words, derived from STRAY (never typed in): the live level's, strong when no storm is up.
 const TENS = ['', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 const oneIn = p => { const n = Math.round(1 / p); return n <= 10 ? NUM_WORD[n] : n < 100 && n % 10 === 0 ? TENS[n / 10] : String(n); };
-const stormOdds = () => 'Open · hit one in ' + oneIn(stormLevel() === 3 ? STRAY.peak : STRAY.strong);
+const stormP = () => stormLevel() === 3 ? STRAY.peak : STRAY.strong;
+const stormOdds = () => 'Open · hit one in ' + oneIn(stormP()), stormOddsShort = () => 'Hit one in ' + oneIn(stormP());   // the short form shows while ✓ Patch shield takes room
 // A tile's picture, in a 40×40 slate tile (the picture's own 32×32 slot has 4 px around it).
 function drawTile(t, x, y) {
   panel(x, y, 40, 40, C.night, C.slate);
@@ -4494,7 +4495,7 @@ function lineBase() {
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
-    case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
+    case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', fieldFrozen()) : L1('', ctx, 'close'); }   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';

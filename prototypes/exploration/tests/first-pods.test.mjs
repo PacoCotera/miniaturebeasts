@@ -358,3 +358,17 @@ test("the shelter sign's embedded rows are the signed picture, pixel for pixel (
   for (let i = 0; i < 1024; i++) { const a = img.rgba[i * 4 + 3], ch = rows[i]; if (a === 0 || ch === ".") { if (!(a === 0 && ch === ".")) diff++; } else if (rgb[ch.charCodeAt(0) - 48] !== [img.rgba[i * 4], img.rgba[i * 4 + 1], img.rgba[i * 4 + 2]].join(",")) diff++; }
   assert.equal(diff, 0, "0 of 1024 pixels differ");
 });
+
+test("the storm tile's odds have a long and a short form, both from STRAY's words; the short one shows while a patch is on offer", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.found.push('met:storm'); S.phase = 'probe'; S.ui.pf = metTiles().findIndex(t => t.id === 'storm');");
+  const w = p.run("oneIn(STRAY.strong)"), wp = p.run("oneIn(STRAY.peak)");
+  assert.equal([w, wp].join(), "twenty,ten");
+  assert.equal(p.run("stormOdds()"), "Open · hit one in " + w); assert.equal(p.run("stormOddsShort()"), "Hit one in " + w);
+  assert.equal(p.run("lineCtx(lineFor()).r"), "Open · hit one in " + w, "read-only: the long form");
+  p.run("S.exp.shield = 1; S.exp.cargo.e = 5;");   // a patch on offer takes the room
+  assert.equal(p.run("canPatch()"), true); assert.equal(p.run("lineCtx(lineFor()).r"), "Hit one in " + w, "the short form fits beside ✓ Patch shield");
+  assert.ok(p.run("textWT(stormOddsShort(), 2)") <= 142 && p.run("textWT(stormOdds(), 2)") <= 200);
+  p.run("stormLevel = () => 3;"); assert.equal(p.run("stormOddsShort()"), "Hit one in " + wp);
+  assert.ok(!/[\d%]/.test(p.run("stormOdds() + stormOddsShort()")));
+});
