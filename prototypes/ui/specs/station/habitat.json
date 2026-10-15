@@ -611,7 +611,7 @@
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
   "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
-  "stampLabel": {"fill": "bone", "edge": "slate", "note": "interim until the art director signs the stampCase look (frame.json regions.stampSlot); a screen showing the interim bone card does not pass its gate"},
+  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
   "module": {"fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal"},
   "door": {"recess": "ground"},
   "faceRing": "bevel",

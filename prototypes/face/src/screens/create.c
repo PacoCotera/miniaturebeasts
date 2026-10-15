@@ -125,10 +125,12 @@ static void build_traitLine(void) {
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, ci("regions.traitLine.lineTop", 202) + v_fdiv(20 - v_cap(px), 2), lw, px, colr(clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
   v_name("traitLine"); pic_or("traitLine.breed", bw, breed, x + lw + bg, r[1] + v_fdiv(r[3] - ck("regions.traitLine.breedMark.size", 1), 2), bw ? bw : 28, ck("regions.traitLine.breedMark.size", 1));
 }
-/* the stamp label: a bone plate with a slate edge, the stamp centred on it; in grow the stamp prints its cells row by row from the top over `steps.0.ms` (N + 2 rows of `cell` px, whole rows) */
+/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; in grow the stamp prints its cells row by row from the top over `steps.0.ms` (N + 2 rows of `cell` px, whole rows); nothing read: no label is drawn */
 static void build_stamp(void) {
-  int r[4]; crect("regions.stamp.rect", r); v_region("stamp", LAYER_CHROME); word_panel("stamp", r[0], r[1], r[2], r[3], colr("colours.stampLabel.fill"), colr("colours.stampLabel.edge"));
+  int r[4]; crect("regions.stamp.rect", r); const char *pl = v_pstr("regions.stamp.plate");
   const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0), N = v_pint("regions.stamp.N", 0), cell = v_pint("regions.stamp.cell", 0);
+  v_region("stamp.plate", LAYER_PAINTED); if (has(pl)) { if (has(a) && size) v_sprite("stamp.plate", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp.plate", pl, r[0], r[1]); }
+  v_region("stamp", LAYER_PAINTED);
   if (!has(a) || !size) return;
   int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows;
   if (strcmp(v_pstr("state"), "grow") == 0) { int t = grow_time(), ms = ci("events.grow.steps.0.ms", 300); if (has_roll() && t >= 0 && t < ms) shown = rows * t / ms; }   /* nothing read (no roll): the stamp is a cut, the whole of it from 0 */

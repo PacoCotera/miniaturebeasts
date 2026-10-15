@@ -19,7 +19,7 @@
    "base": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
    "plaque": { "type": "string" },
    "lamp": { "type": "object", "required": ["picture", "on", "why"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "on": { "type": "boolean" }, "why": { "enum": ["", "waiting", "offline"] } } },
-   "stamp": { "type": "object", "required": ["size", "N", "cell", "asset"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "asset": { "$ref": "pic" } } },
+   "stamp": { "type": "object", "required": ["size", "N", "cell", "plate", "asset"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "$ref": "pic" } } },
    "code": { "type": "string" },
    "juvenile": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "moving": { "oneOf": [{ "enum": [""] }, { "type": "object", "required": ["set", "close", "shadow"], "additionalProperties": false, "properties": { "set": { "type": "string" }, "close": { "type": "string" }, "shadow": { "type": "string" } } }], "description": "Station M1 §2.5: the hatch's first motion for a juvenile with a moving set" } } },
    "ribbon": { "type": "string" }

@@ -163,9 +163,9 @@
   "base": { "fill": "enamel", "light": "sand", "shade": "bevel", "edge": "hairline", "footLight": "sage", "plate": "painted in base-336x96 (#92846d)", "plateEdge": "hairline", "note": "the sand housing, matte, lit as Home's rest knob is (was lit frost); the foot light sage, a quiet alive-and-working line, never frost, never amber (art director, 2026-10-10 01:44)" },
   "plaque": { "empty": "ink", "growing": "ink", "ready": "ink", "floor": "4.5:1 on the painted plate (16 px, weight 400); ink 4.81:1" },
   "leaves": { "full": "sage", "vein": "sageD", "empty": "metal" },
-  "stampLabel": { "fill": "bone", "edge": "slate", "note": "interim until the art director signs the stampCase look (frame.json regions.stampSlot); a screen showing the interim bone card does not pass its gate" },
+  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
   "codeRule": "hairline",
-  "code": "bone",
+  "code": "mist",
   "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" }
  },
  "strings": {

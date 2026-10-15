@@ -18,7 +18,7 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   for (const r of got("roll")) must(within(r.rect, R.roll.rect), `the roll's ${r.layer} ${r.rect} leaves the roll ${R.roll.rect}`);
   for (const r of got("traitLine")) must(within(r.rect, R.traitLine.rect), `the trait line's ${r.layer} ${r.rect} leaves ${R.traitLine.rect}`);
   for (const r of got("leaves")) must(within(r.rect, R.leaves.rect), `the leaves ${r.rect} leave ${R.leaves.rect}`);
-  for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
+  for (const r of got("stamp.plate", "painted")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
   { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 8, R.roll.rect[1], R.roll.rect[2] + 16, R.roll.rect[3]]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
@@ -27,7 +27,7 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   must(!rolled || got("roll").length > 0, "the roll is drawn");
   must(state === "grow" ? got("pod").length === 0 && got("travel").length === 1 : got("travel").length === 0, state === "grow" ? "the pod travels in grow" : "nothing travels outside grow");
   must(state === "grow" || got("code", "type").length === 0, "the code is printed at Grow");
-  must(got("stamp", "chrome").length === 1, "the stamp label is drawn once");
+  must(got("stamp.plate", "painted").length === 1, "the stamp label (its dimmed plate) is drawn once");
   must(got("founder").length === 1, "the founder is drawn");
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   void pod; return out;

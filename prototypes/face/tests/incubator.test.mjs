@@ -80,7 +80,7 @@ test("the departure check bites: the nest moved, the dome resized, the stamp off
   assert.deepEqual(departures(lg, incSpec, frameSpec, "growing"), []);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nest").rect[0] = 400; })[0], /nest/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "dome").rect[2] = 300; })[0], /chamber's back/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "stamp" && r.layer === "chrome").rect[1] = 380; })[0], /stamp label/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "stamp.plate" && r.layer === "painted").rect[1] = 380; })[0], /stamp label/);
   assert.match(bad((c) => { c.regions.push({ id: "footLight", layer: "chrome", rect: [352, 548, 320, 2] }); })[0], /footLight draws nothing/);
   assert.match(bad(() => {}, "empty").join("; "), /empty Incubator draws no/);
 });

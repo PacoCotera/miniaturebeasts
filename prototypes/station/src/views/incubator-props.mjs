@@ -4,6 +4,7 @@
 // Runs in Node, tested there (tests/incubator-props.test.mjs); the shape is incubator.props.json.
 //   m: { st, sv, settings, now, ui: { inc: { hatch } }, spec incubator.json, pods pods.json }
 import * as S from "../state.mjs";
+import { plateReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot, maxTraits } from "./pods-props.mjs";
@@ -60,7 +61,8 @@ export function incubatorBuild(m, spec, pods) {
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon
   if (state !== "empty") {
     const known = hatch ? mb.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? mb.genome : B.genome, sz = stampSizing(fr, g);
-    regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}`, species, read: known, size: sz.size, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
+    const k = spec.colours.stampLabel.k;
+    regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}:k${kPct(k)}`, species, read: known, size: sz.size, k, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
     regions.code = codeText(hatch ? hatch.code : B.code);
   }
   if (state === "hatch") {

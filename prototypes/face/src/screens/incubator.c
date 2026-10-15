@@ -24,6 +24,7 @@
 static int ci(const char *p, int d) { return spec_int(I, p, d); }
 static void crect(const char *p, int r[4]) { if (!v_spec_rect(I, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(I, p, o, 24); return o; }
+static int ck(const char *base, int k) { return spec_int(I, v_fmt("%s.%d", base, k), 0); }
 static int has(const char *id) { return id && *id; }
 static int in_state(const char *s) { return strcmp(v_pstr("state"), s) == 0; }
 
@@ -150,16 +151,19 @@ static void build_juvenile(int t) {
   int on = has(pic) && t >= a; for (int i = 0; on && i < ns; i++) if (t >= sat[i] && t < sat[i] + sms[i]) up = step_lift(table, t - sat[i]);
   v_name("juvenile"); if (on) v_sprite("juvenile", pic, r[0], r[1] - up, r[2], r[3]); else v_sprite_hidden("juvenile", has(pic) ? pic : v_pstr("regions.bud.ready"), r[0], r[1]);
 }
-/* the stamp label: a bone plate with a slate edge, the stamp centred on it */
+/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge), the dimmed stamp centred on it; no plate with no stamp */
 static void build_stamp(void) {
   if (spec_len("props", "regions.stamp") < 0) return;
-  int r[4]; crect("regions.stamp.rect", r); v_region("stamp", LAYER_CHROME); word_panel("stamp", r[0], r[1], r[2], r[3], colr("colours.stampLabel.fill"), colr("colours.stampLabel.edge"));
-  const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0); if (!has(a) || !size) return;
+  int r[4]; crect("regions.stamp.rect", r); const char *pl = v_pstr("regions.stamp.plate"), *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0);
+  v_region("stamp.plate", LAYER_PAINTED); if (has(pl)) { if (has(a) && size) v_sprite("stamp.plate", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp.plate", pl, r[0], r[1]); }
+  v_region("stamp", LAYER_PAINTED);
+  if (!has(a) || !size) return;
   v_name("stamp"); v_sprite("stamp.stamp", a, r[0] + v_half(r[2] - size), r[1] + v_half(r[3] - size), size, size);
 }
 static void build_code(void) {
   if (spec_len("props", "regions.code") < 0 && !has(v_pstr("regions.code"))) return;
   int px = ci("regions.code.px", 16), cx = ci("regions.code.centre", 900); const char *code = v_pstr("regions.code"); int w = v_measure(code, px);
+  v_region("code", LAYER_CHROME); v_rect("code.rule", ck("regions.code.rule.x", 0), ci("regions.code.rule.y", 405), ck("regions.code.rule.x", 1) - ck("regions.code.rule.x", 0), ci("regions.code.rule.h", 1), colr("colours.codeRule"));   /* the 1 px rule under the code (the shared stamp slot) */
   v_region("code", LAYER_TYPE); v_text("code", code, cx - v_half(w), ci("regions.code.lineTop", 426) + v_fdiv(20 - v_cap(px), 2), *code ? w : 0, px, colr("colours.code"));
 }
 static void build_ribbon(int t) {

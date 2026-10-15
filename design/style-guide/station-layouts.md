@@ -273,7 +273,7 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
 
 ### The stamp label (one rule, every screen that shows it)
 
-- **The label is 120×120**, and the stamp is centred on it. Its look (the case: fill, edge, light, glass, and the code's ink and rule) is the art director's hook `stampCase` (`frame.json regions.stampSlot.look`). It is never a white card. Until that look is signed, the specs keep the bone plate with a slate edge as an interim, and no screen that shows the interim passes its gate.
+- **The label is 120×120**, and the stamp is centred on it. Its look (the case: fill, edge, light, glass, and the code's ink and rule) is the art director's hook `stampCase` (`frame.json regions.stampSlot.look`). It is never a white card. The look is signed (art director, masters-pods 001bcd51): the label's plate and the stamp are multiplied in linear light by K × (1.00, 0.93, 0.80) when the label is rasterised (a picture placed 1:1, never an overlay), K 0.20 on Create, the Incubator and the Habitat card and K 0.75 on Pods, with a 1 px `hairline` edge; on Pods the label stands in the case (`room-stamp-case-152x152` behind it, `-front`, the ground at 48 %, over it); the code is `mist` at 16 px on a 1 px `hairline` rule. The bone plate is the plate's colour before the multiply, not a look of its own.
 - **One slot** (UI/UX designer, 2026-10-12 00:02, fix 4 of the Station global fix plan). The label is at (804, 400, 120, 120) on the right column's axis 864. The code's line box is (776, 525, 176, 25), with its baseline at 541 and a 1 px rule at y 549 from x 776 to 952. The label stays in the same place from screen to screen, so it is not noticed fresh on each:
   | Screen | Label | Code | Why |
   | --- | --- | --- | --- |
@@ -1164,7 +1164,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 | Origin | `mist` | Context, quiet |
 | Small chamber (`dome`) | Back `ground`; set in the sage housing `metal`, as the Incubator's; its window's edge `hairline`, no highlight; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's chamber, small and empty |
 | Leaves | Empty, the small leaf's outline in `bevel` | The Incubator's leaf drawn at 8×12 |
-| Stamp label, code | `bone` label with a `slate` edge; the code `bone` on a `hairline` rule | The stamp label rule; a readout |
+| Stamp label, code | the `bone` plate and the stamp dimmed in linear light by K × (1.00, 0.93, 0.80), a `hairline` edge; the code `mist` on a `hairline` rule | The stamp label rule; a readout |
 
 ### 5. Composition
 
