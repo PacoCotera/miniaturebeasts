@@ -3,7 +3,7 @@
 This local proof resolves a revealed native resident projection to one of the
 two retained [Pip originals](../../design/v1-pip/manifest.json), copies its exact
 portrait bytes, and saves a description made from controlled phrases. It checks
-the [architecture recovery/offline boundary](../../specs/architecture.md#generation-backend-and-retained-results).
+the [architecture recovery/offline boundary](../../../design/architecture.md#creature-art).
 It does not produce a novel illustration, define generic traits, establish human
 fun, or deploy a backend. It uses Node's filesystem and cryptography only, with
 no dependencies, network requests or model calls.

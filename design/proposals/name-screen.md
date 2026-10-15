@@ -1,6 +1,6 @@
 # Name screen: intellectual-property check of the names in use
 
-**Proposal** (2026-10-07) for the owner. Read-only screen of every name in `design/`, `website/index.html`, `prototypes/exploration`, `prototypes/station` and `art/*/README.md` (origin/main at 2529702), plus the names proposed in `design/proposals/taxonomy.md` (not yet committed). **This is a web screen, not legal clearance.** It reads only what a web search surfaces: no trademark register was searched directly, so pending filings, unregistered use and other countries' registers are invisible to it.
+A read-only screen of every name in `design/`, `website/index.html`, `prototypes/exploration`, `prototypes/station` and `art/*/README.md` (origin/main at 2529702), plus the names proposed in `design/proposals/taxonomy.md` (not yet committed). **This is a web screen, not legal clearance.** It reads only what a web search surfaces: no trademark register was searched directly, so pending filings, unregistered use and other countries' registers are invisible to it.
 
 **Verdicts.** *Clear*: ordinary word or no notable collision. *Caution*: the same name is a known creature, character, item, product or term in a game, franchise, book, film or toy line. *Conflict*: distinctive name that identifies a well-known property. **Searches** (about 65 run, several names per query when plain): cr creature, mon monster game, pk Pokémon, vg video game character, toy, gm "<name> game", tm trademark, app, bk book, gen general or plain-word check.
 
@@ -60,7 +60,7 @@ Not screened: the 20 generated Spanish names (Saltarín, Colaluz, Gorropompón..
 | genome stamp, genome ring | tm, gm | Only an abandoned GENO-STAMP mark (2002); ring is retired | Clear (2) |
 | meadow, pond edge, rock field, wood, cave, burrow, Deep ground, Weather, Night, Waterside | gen, gm | Plain; "Deep Ground" is not a named place in a known game | Clear (10) |
 
-Not searched individually (ordinary words): postmark, glyph, tome, consignment, habitat, expedition, Head home, Send home, Wait, Identify, Create, Cross, Hatch. "vybronic" in the species notes is the owner's quotation, not a game name.
+Not searched individually (ordinary words): postmark, glyph, tome, consignment, habitat, expedition, Head home, Send home, Wait, Identify, Create, Cross, Hatch. "vybronic" in the species notes is an owner's quotation, not a game name.
 
 ## 5. Chapter names
 
