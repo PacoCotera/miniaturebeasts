@@ -21,7 +21,7 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - `S01/c-token-S01-eat-f0-32x32.png` sha256 `286295ff49120b2af8d2942b7c3be28a2f477094d890e9514eaac707694e138d`
 - `S01/c-token-S01-eat-f1-32x32.png` sha256 `452751a2ec8a0425027ffc0b37efe9be02ac6b3aea64c30829e23665cbbfae3a`
 - `S01/c-token-S01-flee-32x32.png` sha256 `ad1ffee6f2cf46910bbd7ea185a90a499b662823c5d5f60e4124f4c3bedf6464`
-- `S01/c-token-S01-huddle-32x32.png` sha256 `ded03942e57a284dcd7c9b0abdfa15b5d106e00465a8c0b2db62e8a18aa20e53`
+- `S01/c-token-S01-huddle-32x32.png` sha256 `7d9cd6bcba1f9967209d617ad66b53b612870d6e992ec1817a02d4f48ebf260f` (grounded 10-15)
 - `S01/c-token-S01-idle-32x32.png` sha256 `b642ab6bf937de8bc23c2447303129cb31d023fc54b8d0374b8afb092e08a06a`
 - `S01/c-token-S01-shake-f0-32x32.png` sha256 `8e106a6a919f0ea346f2c17c9e411a9e84cc542c94460b2cc30ef56ca51d0df7`
 - `S01/c-token-S01-shake-f1-32x32.png` sha256 `99f8fb0f248bb45385b6051dc0ca38881a771862e468e477b4eed3c01fb2c126`
@@ -38,7 +38,7 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - `S02/c-token-S02-eat-f0-32x32.png` sha256 `7afedb1bfade2ce7ba8ca97d0f35e97cb8c7506e0b34106751577175342e5c2d`
 - `S02/c-token-S02-eat-f1-32x32.png` sha256 `f516fd1e885c0470e8114faabb7b6bcb54323bf09141e0f84ddb7ec6342a29f7`
 - `S02/c-token-S02-flee-32x32.png` sha256 `72181867c9f4e3c35fbbd4c37c068543d344aa567914e7ee1cbe25d53d65e2f5`
-- `S02/c-token-S02-huddle-32x32.png` sha256 `f169bb2d9e90bd0f5cee5fe0f609ccb8794338353b671a23edbb2c7eae913ac6`
+- `S02/c-token-S02-huddle-32x32.png` sha256 `68d1eb305b9603a50fc18774d2d86b00730c4959676882e408516899c3a0c4ef` (grounded 10-15)
 - `S02/c-token-S02-idle-32x32.png` sha256 `9a633d709e1d419262fc02214bf76e180a09f253e29db28397ed6b661e7ab3d9`
 - `S02/c-token-S02-shake-f0-32x32.png` sha256 `38d9a3e481fc55284c13351525032bbfb947fe12b605a530f0b4fd9242e35456`
 - `S02/c-token-S02-shake-f1-32x32.png` sha256 `327f8d68a89a7d95397ab0a2be34f8bec12baa82edd1bff4d58f73a4084ae0bc`
@@ -46,13 +46,15 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 
 **S03 signed** (art director, 2026-10-15 00:48), judged at 1× on the lawn beside the pawn and beside S01 (`S03/sheet-S03-candidate.png`), round 2 at 566c80a6. atlas-check against core48 is ok for every file:
 - `S03/c-token-S03-alert-32x32.png` sha256 `3741961aac6cf4f0a7d8c0189ac7159ad2c5b03b8f931646e700133bb2ad5b6b`
-- `S03/c-token-S03-curl-32x32.png` sha256 `ece1d5bfecc9ebbb43e6f0fab627e18d939b6cf3c6dbc6267cd1999518bb60fc`
+- `S03/c-token-S03-curl-32x32.png` sha256 `9a10b4f20c9366d9a02cd3ecdb45cfcb9b68dfacf95c206b625dc7e6aa88321f` (grounded 10-15)
 - `S03/c-token-S03-eat-f0-32x32.png` sha256 `8ef4c7d1fd3789b708a81627bb79f0ae39f4fcdee5109c7ef81541fd6ae62975`
 - `S03/c-token-S03-eat-f1-32x32.png` sha256 `3c22445530931920478f6f5c2ea1c1edebd29788e4fb503e92533fa96b276c30`
 - `S03/c-token-S03-flee-32x32.png` sha256 `219542a1795bb069ca7633bf36534cc2700ff4c838822fafb269b4e5107376ec`
-- `S03/c-token-S03-huddle-32x32.png` sha256 `e5239d7bff540f8052f778114d85e3831536d5af34b7a12046ec310b054ef9fa`
+- `S03/c-token-S03-huddle-32x32.png` sha256 `0647fef5582491e2d585b43ce9b324f1a0add71ecc4aedc5b303db96c65d6cb5` (grounded 10-15)
 - `S03/c-token-S03-idle-32x32.png` sha256 `ad6be7be6083289c3ed3b0c8499ccb7b73a3f3e4cb6dfcb7269059c14bb16775`
-- `S03/c-token-S03-settle-32x32.png` sha256 `1d92c52576b4a4926fc5c9b5d55556255fe12f0cc022258ef2e51c581e372807`
+- `S03/c-token-S03-settle-32x32.png` sha256 `bad06f54b9006ef1cd4c118b022c5a996f7ec4d69f00e96e478ba10602111f7e` (grounded 10-15)
 - `S03/c-token-S03-shake-f0-32x32.png` sha256 `29e5eba6ab18d7b669868a77ffca3bcafa48c9ddeeec9e2ef35aa8342283bf33`
 - `S03/c-token-S03-shake-f1-32x32.png` sha256 `70eaa229ab49ab6b4aa7931695d28bde85be565974da4bb97211ed2854ac473d`
 - `S03/c-mini-S03-12x12.png` sha256 `57e75627530901af35d858d96b6df0b98a432f8bf364305fbdf43c9e1fc7db4e`
+
+**Grounding** (art director, 2026-10-15 01:44): every pose's lowest opaque row is row 31, the same as its idle, because the page draws every token at one anchor. Moved down: S01 huddle by 1, S02 huddle by 1, S03 huddle by 7, S03 curl by 1, S03 settle by 1. Their hashes are updated above.
