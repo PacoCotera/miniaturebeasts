@@ -4225,5 +4225,22 @@
    "thoughtsTokenCount": 316,
    "totalTokenCount": 2436
   }
+ },
+ {
+  "tag": "ca1-create-relight try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.1856,
+  "mxn": 3.712,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-15T12:52:55Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 880,
+   "candidatesTokenCount": 1346,
+   "thoughtsTokenCount": 186,
+   "totalTokenCount": 2412
+  }
  }
 ]

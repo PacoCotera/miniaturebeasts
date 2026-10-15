@@ -10431,10 +10431,10 @@
   ],
   "src": "slices/room-bench-stage-incubator.png (signed; its Pro painting is gemini-3-pro-image)",
   "made": "Create's own stage, drawn by hand from the signed Incubator stage in the same frame (the rim, screws and side plates are its pixels): its hoses and gauges painted out by the floor model, a plain slate floor with nothing in the keep-clear zones; the set-aside Pro painting is source/raw/create-stage.jpg (pass 120)",
-  "sha256": "209f9fda09c7f3f1a32cb47e3d1e33bf2f9ea7237dca521e0f7f16f9e8c26d2d",
-  "status": "signed",
-  "signed_in": "art director, verdict (528b73d5)",
-  "status_note": "signed (art director) at 1x: L* 35.5, key R-B 37, sat 25 against the Pods overview 36.8/35/22; the signed Incubator stage's frame with its hardware painted out, plain in every keep-clear zone"
+  "sha256": "eac3651928c02badb12b52a2b2ebcadb51fc6fdd0e96860db202f73ea8b8d3ef",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg, 3.71 MXN) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 209f9fda09c7\u2026 (was signed); signed in the Create retake"
  },
  "dome-front-304x272": {
   "size": [
@@ -10670,10 +10670,10 @@
   "rect": null,
   "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
   "made": "the work tray in the housing, drawn by hand: a panel back (the Incubator stage's warm foam), an enamel rim (the sand of base-336x96), the floor 400x16 at (0, 304) in enamel with a bevel edge; matte, no glass edge, no highlight (pass 113)",
-  "sha256": "1461315c826094795877827f277003fc8c9a1607baa10d53d3802ec641536228",
-  "status": "signed",
-  "signed_in": "art director, verdict (72561d74)",
-  "status_note": "signed (art director) at 1x: L* 38.1, key R-B 36, sat 29 against the stage 36.0/38/24; the work tray in the stage's rendering (rim lit top-left, shaded lower-right, inner shadow, four screws); the founder fills most of it"
+  "sha256": "a4c77d5a04034b55ec616f72be5b59cdcbbaea6d10b51b285085c96b8cdffce1",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg, 3.71 MXN) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 1461315c8260\u2026 (was signed); signed in the Create retake"
  },
  "chamber-front-400x320": {
   "size": [
