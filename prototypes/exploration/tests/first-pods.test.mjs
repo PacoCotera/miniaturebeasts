@@ -277,3 +277,18 @@ test("a sign never joins another sign or a note; the one that loses keeps its fl
   assert.ok(p.run("SIGN_RANK.slice(0, 5).join()") === "shield,bank,shelter,warn,storm", "hazards first");
   assert.ok(Object.values(p.run("SIGN")).every(d => d.line(1).length && p.run("textW")(d.line(1), 2) <= 340), "every line fits its 340 px slot");
 });
+test("the Probe: no legend rows and no odds; the signs met are pictures in the order met, the pad moves the focus, the bottom line names it", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'probe';");
+  assert.equal(p.run("metTiles().length"), 0);
+  assert.ok(!/%(?!\s)|STRAY/.test(p.run("drawProbe.toString()")) && !/On the map/.test(p.run("drawProbe.toString()")));
+  p.run("S.found.push('met:bolt', 'met:flag', 'sign:t');");
+  assert.equal(p.run("metTiles().map(t => t.id).join()"), "bolt,flag,tracks", "in the order met");
+  assert.equal(p.run("lineCtx(lineFor()).r"), "Bolt · a charged stone");
+  p.key("right"); assert.equal(p.run("lineCtx(lineFor()).r"), "Flag · your start");
+  p.key("down"); assert.equal(p.run("S.ui.pf"), 1, "no row below: the focus stays");
+  p.key("left"); p.key("left"); assert.equal(p.run("S.ui.pf"), 0);
+  assert.ok(p.run("TILES.length") === 34 && p.run("TILES.every(t => PIC[t.pic])"));
+  for (const t of p.run("TILES")) { const n = typeof t.name === "function" ? t.name() : t.name; assert.ok(p.run("textWT")(n, 2) <= 200 && !/%|\d/.test(n.replace("tier 2", "")), n); }
+  p.key("back"); assert.equal(p.S.phase, "menu");
+});

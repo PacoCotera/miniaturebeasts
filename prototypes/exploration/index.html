@@ -3969,47 +3969,54 @@ function drawMenu(t) {
 function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
 // as its last row), the map's signs and cells as an icon | name | meaning grid, and the field guide as tokens.
-// The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
-// as its last row), the map's signs and cells as an icon | name | meaning grid, and the field guide as tokens.
+// The reach grid at 2× (dot 6, pitch 8): filled is explored, your cell framed, a notch where a gate is. Between expeditions it is the Probe's range, all hollow.
+function reachDots(x0, y0, range) {
+  const ex = S.exp, n = range * 2 + 1, done = !!(ex && ex.saidDone), s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null;
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    let c = -1;
+    if (ex) { const X = s0.x - range + i, Y = s0.y - range + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; c = Y * MW + X; if (!reach.has(c)) continue; }
+    const px = x0 + i * 8, py = y0 + j * 8;
+    if (c === (ex && ex.pos)) R(px - 1, py - 1, 8, 8, C.amber);
+    if (c >= 0 && gatedCell(c)) { R(px, py, 6, 6, C.stone); R(px + 2, py + 2, 2, 2, C.ink); R(px + 2, py, 2, 2, C.ink); }
+    else if (c >= 0 && explored(c)) R(px, py, 6, 6, done ? C.white : C.mint);
+    else { R(px, py, 6, 6, C.stone); R(px + 2, py + 2, 2, 2, C.ink); }
+  }
+}
+const lineOf = v => typeof v === 'function' ? v() : v;
+// A tile's picture, in a 40×40 slate tile (the picture's own 32×32 slot has 4 px around it).
+function drawTile(t, x, y) {
+  panel(x, y, 40, 40, C.night, C.slate);
+  const ex = S.exp, arg = t.pic === 'storm' ? (ex && ex.storm ? ex.storm.dir : -1) : t.pic === 'untuva' ? S.known.includes(2) : t.pic === 'partner' ? (partnerMibi() || {}).sp : undefined;
+  PIC[t.pic](x + 4, y + 4, arg);
+}
+// The Probe, in groups: the Probe itself (shield plates, reach, hold, Energy, the tier 2 price), the signs you have met as pictures, and the field guide as tokens.
 function drawProbe(t) {
   // mid-expedition the Probe is as it set out (ex.range, ex.hold, ex.smax): a docked upgrade applies from the next expedition
   const ex = S.exp, tier = ex ? { range: ex.range, hold: ex.hold, shield: ex.smax } : tierOf(), tierN = ex ? +(Object.keys(TIER).find(k => TIER[k].shield === ex.smax) || S.tier) : S.tier;
   viewBg(); drawTop('Probe', 'tier ' + tierN);
-  const head = (l, y) => text(l, 24, y, C.mist), C1 = 70, C2 = 212;
-  head('Probe', 40);
-  shieldBars(24, 64, ex ? ex.shield : (S.shield != null ? Math.max(0, S.shield) : tier.shield), ex ? ex.smax : tier.shield, 12, 22);
-  text('Reaches ' + tier.range + ' cells each way · ' + tier.hold + ' pods', 120, 60, C.fog);
-  const frozen = fieldFrozen(), sh = ex ? (ex.shield >= ex.smax ? 'Shield is whole' : frozen ? DOCK_TEXT.probe : canPatch() ? (S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar') : 'Patch: 3 Energy · have ' + ex.cargo.e) : 'Station mends 1 Energy a bar';
-  text(sh, 120, 82, ex && canPatch() && !frozen ? C.amber : C.stone);   // docked: the Station mends it, in stone
-  { const er = energyInReach(); blit(ICON.energy(), 24, 109); text(ex ? 'Energy in reach: ' + er.e : 'Energy in the hold: ' + ((S.hold && S.hold.e) || 0), 44, 108, C.bone);
-    if (ex) text(er.n ? 'found, not drawn' : 'Call to find it', 426, 108, C.mist, 2, 'right'); }
+  const n = ex ? ex.shield : (S.shield != null ? Math.max(0, S.shield) : tier.shield);
+  for (let i = 0; i < tier.shield; i++) { const x = 24 + 30 * i; R(x - 1, 47, 26, 42, C.void);
+    if (i < n) { R(x, 48, 24, 40, C.bone); R(x, 86, 24, 2, C.fog); } else { R(x, 48, 24, 40, C.stone); R(x + 1, 49, 22, 38, C.ink); } }
+  reachDots(160, 48, tier.range);
+  const pods = ex ? ex.cargo.pods : ((S.hold && S.hold.pods) || []);
+  for (let i = 0; i < tier.hold; i++) podSlot(250 + 22 * i, 58, pods[i]);
+  blit(ICON.energy(), 24, 104); text(String(ex ? energyInReach().e : (S.hold && S.hold.e) || 0), 44, 103, C.bone);
+  if (ex && canPatch()) { const frozen = fieldFrozen(); text(frozen ? DOCK_TEXT.probe : S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar', 426, 103, frozen ? C.stone : C.amber, 2, 'right'); }
   if (S.tier < 2) { panel(18, 130, 414, 26, C.night); text('Tier 2 at the Station: ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 26, 135, C.amber); }
-  head('On the map', 172);
-  const rows = [
-    [(x, y) => { blit(ICON.paw('bone'), x - 8, y); blit(ICON.paw('bone'), x - 1, y - 6); }, 'Tracks', 'creatures live here'],
-    [(x, y) => blit(ICON.beat(1), x - 11, y - 8), 'Slow beat', 'often a pod'],
-    [(x, y) => blit(ICON.bolt(), x - 6, y - 8), 'Bolt', 'storm charge, +2 or +3'],
-    [(x, y) => blit(ICON.boltHollow(), x - 7, y - 8), 'Hollow bolt', 'warm stone found, +1'],
-    [(x, y) => { blit(ICON.bolt(), x - 13, y - 8); blit(ICON.bolt(), x, y - 8); }, 'Storm', 'open: ' + Math.round(STRAY.strong * 100) + '%, peak ' + Math.round(STRAY.peak * 100) + '%'],
-    [(x, y) => blit(ICON.pin(), x - 5, y - 10), 'Pin', 'your mark · 1 Energy'],
-    [(x, y) => { blit(ICON.beacon(0), x - 13, y - 8); blit(ICON.beacon(1, 0), x + 1, y - 8); }, 'Beacon', 'dark, lit: shows the land'],
-    [(x, y) => blit(ICON.flag(), x - 6, y - 10), 'Flag', 'your start: end here'],
-    [(x, y) => blit(ICON.depot(3, 0), x - 10, y - 8), cap(DEPOT_NAME), 'lit: end, mend, shelter'],
-    [(x, y) => blit(ICON.skull(), x - 7, y - 7), 'Skull', 'lost pods lie here'],
-    [(x, y) => { blit(ICON.burrow(0), x - 14, y - 7); blit(BADGE(), x + 2, y - 9); }, 'Gate', 'a partner or tier 2'],
-    [(x, y) => ditherFill(x - 16, y - 11, 32, 22, 'fog', 8), 'Fog bank', 'calm · 4 tiles of sight'],
-    [(x, y) => { R(x - 16, y - 11, 32, 22, C.grass); blit(quarterVeil(0, 0), x - 13, y - 11); blit(quarterAlmost(0, 0), x + 1, y - 11); }, 'Quarters', 'dotted till surveyed'],
-    [(x, y) => blit(podArt('bone', 1), x - 8, y - 10), 'Pod', 'seen, left behind'],
-  ];
-  rows.forEach(([ic, a, b], i) => { const y = 190 + i * 18; panel(22, y, 36, 17, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 17); g.clip(); ic(40, y + 8); g.restore(); text(a, C1, y + 1, C.bone); text(clipText(b, SCR_W - C2 - 8, 2), C2, y + 1, C.mist); });
-  // stones in a place, at 1×: plain, warm (amber ring), charged (crackle and a bolt), and a warned strike (the tile's outline)
-  { const fr = motion() ? Math.floor(NOW / 400) % 2 : 0, y = 442;
-    [['plain', () => stoneArt(0, false, 0)], ['warm', () => stoneArt(0, false, fr, 1)], ['charged', () => stoneArt(1, false, fr)], ['strike', null]].forEach(([l, a], i) => { const x = 50 + i * 104;
-      panel(x, y, 34, 34, C.sand); if (a) blit(a(), x + 1, y + 1); else { const col = fr ? C.cream : C.yellow; R(x + 1, y + 1, 32, 2, col); R(x + 1, y + 31, 32, 2, col); R(x + 1, y + 1, 2, 32, col); R(x + 31, y + 1, 2, 32, col); }
-      text(l, x + 17, y + 37, C.fog, 2, 'center'); }); }
-  head('Field guide', 500);
-  if (!S.known.length) text('No species identified yet', 24, 522, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 518, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 522); text(spOf(sp).name, x + 42, 530, C.bone); });
+  text('Signs you’ve met', 24, 172, C.mist);
+  const met = metTiles(), f = probeFocus();
+  if (!met.length) text('Signs you meet gather here', 24, 200, C.stone);
+  met.slice(0, 36).forEach((tl, i) => drawTile(tl, 21 + 46 * (i % 9), 194 + 46 * Math.floor(i / 9)));
+  if (met.length) brackets(21 + 46 * (f % 9) - 3, 194 + 46 * Math.floor(f / 9) - 3, 46, 46, C.amber);
+  text('Field guide', 24, 384, C.mist);
+  if (!S.known.length) text('No species identified yet', 24, 406, C.stone);
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 402, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 406); text(spOf(sp).name, x + 42, 414, C.bone); });
+}
+// The focused tile on the Probe (the pad moves it over the signs met, in reading order).
+function probeFocus() { const n = metTiles().length; return clamp(S.ui.pf | 0, 0, Math.max(0, n - 1)); }
+function probeMove(k) {
+  const n = metTiles().length, f = probeFocus(), to = f + ({ left: -1, right: 1, up: -9, down: 9 })[k];
+  if (to < 0 || to >= n) { FX.bumpAt = NOW; return; } S.ui.pf = to;
 }
 function drawMats(c, y, cap) {
   [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
@@ -4444,7 +4451,8 @@ function lineBase() {
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
-    case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close', fieldFrozen()) : L1('', '', 'close');   // read-only: one way out
+    case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? [lineOf(tl.name), lineOf(tl.short)] : '';   // the focused sign: name · gist, then the name alone
+      return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', fieldFrozen()) : L1('', ctx, 'close'); }   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
@@ -4609,7 +4617,7 @@ function act(k, mode) {
     case 'probe':   // patching spends Energy: two presses, the first only arms it
       if (k === 'confirm' && canPatch() && !S.ui.patchArm) { S.ui.patchArm = 1; fxMsg('Patch shield · 3 Energy · ✓ again to confirm', 3); }
       else if (k === 'confirm' && canPatch()) { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched · ' + ex.shield + ' of ' + ex.smax); }
-      else if (k === 'back') { S.ui.patchArm = 0; S.phase = 'menu'; } else S.ui.patchArm = 0; break;
+      else if (k === 'back') { S.ui.patchArm = 0; S.phase = 'menu'; } else { S.ui.patchArm = 0; if (isDir) probeMove(k); } break;
     case 'cargo':
       if (k === 'back') S.phase = 'menu';
       else if (k === 'confirm' && S.exp && canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }

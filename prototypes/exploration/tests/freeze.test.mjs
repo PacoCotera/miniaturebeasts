@@ -339,8 +339,7 @@ test("the Probe screen mid-expedition reads the Probe the expedition set out wit
   p.run("__t = []; drawProbe(0);");
   const t = p.run("__t");
   assert.ok(t.includes("tier 1"), "tier 1 in the top bar");
-  assert.ok(t.includes("Reaches 2 cells each way · 2 pods"));
-  assert.ok(t.includes("Shield is whole"), "Shield is whole at 3 of 3");
+  assert.ok(!t.some(l => /Reaches|Shield is whole|%/.test(String(l))), "no legend rows, no odds");
   p.run("S.exp.shield = 2; S.exp.cargo.e = 3; __t = []; drawProbe(0);");
   assert.ok(p.run("__t").includes(p.run("DOCK_TEXT.probe")), "docked and hurt: the Station mends it");
 });

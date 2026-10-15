@@ -30,7 +30,7 @@ Four buttons. The bottom line always reads in three parts: **✓ what Confirm do
 - The menu shows no action count. Its End expedition entry reads "Explored N of M in reach" on the bottom line.
 - The depicted shell has Call directly above the ← key (engraved ← only; Call has no engraving), both left of a larger Confirm. Call is teal with a ring texture.
 - The bottom line sets its glyphs 1 px apart (still 2× pixels) so the three parts fit 450 px.
-- A sign never joins another sign or a note: the best one shows (its priority, hazards first) and the others keep their flags for their next trigger. A one-time line or sign counts as shown only if it is on the screen when the action ends.
+- A sign never joins another sign or a note: the best one shows (its priority, hazards first) and the others keep their flags for their next trigger. A one-time line or sign counts as shown only if it is on the screen when the action ends. Every sign met joins the **Probe**, which shows them as pictures in the order met (a 9×4 grid, the pad moves a focus over it and the bottom line names the focused one); there is no legend of words.
 
 ## The loop
 
