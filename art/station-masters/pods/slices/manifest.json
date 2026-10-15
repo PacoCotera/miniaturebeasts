@@ -14793,5 +14793,31 @@
   "status": "signed",
   "status_note": "signed (art director, 10-15), fix 6 A2",
   "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)"
+ },
+ "gate-wild-shut-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "habitat-marks/make-gate-wild.py (painted in code, paintkit.py)",
+  "made": "W1, the Wild module gate shut, at (916, 416): two sage posts with sand caps on a strip of ground, a framed three-bar leaf with a sand latch; matte, top-left light, soft contact shadow baked",
+  "sha256": "23627459f292a4feb102e1f13142d1c5c134ba10ee2ae88fb27e9927abc1f1e5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "gate-wild-open-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "habitat-marks/make-gate-wild.py (painted in code, paintkit.py)",
+  "made": "W1, the Wild module gate ajar: the same posts, the leaf swung toward the viewer on its left hinge (12 px wide, free edge 2 px lower), the empty keeper on the latch post",
+  "sha256": "22aa57453638a881909bf67cb6244b1bf8336aa082e06ece5f4febab5a8c6bb6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
  }
 }
