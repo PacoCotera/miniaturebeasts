@@ -47,7 +47,7 @@ document says so in its **Not designed yet** section.
 | **sample** | Material found in the world that holds one complete, hidden genome of one species |
 | **founder** | A mibi created from a sample. It has no parents |
 | **carried / expressed** | A variant can be present in a genome without showing (carried) or showing (expressed) |
-| **bonded** | A mibi the player has chosen to raise. Only bonded mibis need care |
+| **bonded** | A mibi tended three times on the Companion; a small heart marks it. Only a bonded juvenile needs care, to grow up |
 | **chapter** | One page of a species' genome, such as Coat or Movement, read one at a time on a pod or mibi |
 | **trait** | One picture on a chapter's page, such as Markings or Eyes, standing for the loci beneath it |
 | **field guide** | The Library's record of a species: every look the player has seen for each trait, and what is still unseen |

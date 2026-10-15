@@ -247,6 +247,8 @@ Every mibi has a stamp, which can be printed and scanned
 
 - A scanned stamp shows everything its keeper has read, hidden and sleeping
   copies included. Unread and sealed chapters are never in a stamp.
+- A scanned stamp can be set beside one of the player's own mibis of its species,
+  as Compare does: the traits read on both that differ pulse.
 - A scan only shows a mibi. It never creates or moves one.
 - A scan never teaches the scanner's Station anything. It adds no look to the
   field guide, counts toward no wish, lowers no read price and makes no glint.
@@ -256,8 +258,11 @@ Every mibi has a stamp, which can be printed and scanned
 Energy runs the Station's machines, Data pays for reads and shaping, and
 Essence grows bodies. Essence never turns into Energy.
 
-- **Data** comes mostly from expeditions, from creature moments the player
-  causes ([world and exploration](world-and-exploration.md)).
+- **Data** comes mostly from expeditions. An expedition that explores brings
+  home Data by the highest tier of place it entered: 2 for a starter place, 4
+  early, 6 mid, 8 late. The creature moments the player causes bring part of it
+  in early, never more than the expedition's total
+  ([world and exploration](world-and-exploration.md)).
 - **The bench** adds a little each day. A resident watched for a full minute
   gives **1 Data**, and two residents compared give **1 Data**, up to **2 Data a
   day**. The day turns at midnight on the Station's clock.
@@ -310,7 +315,6 @@ means:
 
 - The prices and waits of the finished game. The values in this document are
   set low so the whole loop can be played through quickly.
-- How much Data an expedition yields, by kind of place.
 - How deep a family line must be to earn a sitting.
 - Editing a copy with a rare item.
 - Wonders: how the player finds the combined traits a species can show

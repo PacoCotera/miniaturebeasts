@@ -1,8 +1,10 @@
+**Superseded** by the genome stamp: see [The genome stamp](../../design/creatures-and-genomics.md#the-genome-stamp).
+
 **Retired.** The ring's circumference-bound capacity and its thin radial bars did not survive the first real phone scan; the genome code is now the [genome stamp](../genome-stamp/README.md). This prototype stays as the origin of the codec, the CRC-16, the distortion harness and the scan page.
 
 # Genome ring: print and scan test
 
-This prototype tests whether the genome ring in [research-loop.md §7](../../design/proposals/research-loop.md#7-the-genome-fingerprint-as-a-code-the-genome-ring) can be printed and scanned. It checks the payload and the reader before anyone refines the art. It is plain Node with no dependencies: an encoder (genome → SVG and PNG), a decoder (image → genome, with the check verified), a robustness test, an A4 print sheet and a phone scan page. The decoder is the same code in Node and in the browser.
+This prototype tests whether the genome ring in [research-loop.md §7](../../design/proposals/research-loop.md#7-the-genome-fingerprint-the-genome-stamp) can be printed and scanned. It checks the payload and the reader before anyone refines the art. It is plain Node with no dependencies: an encoder (genome → SVG and PNG), a decoder (image → genome, with the check verified), a robustness test, an A4 print sheet and a phone scan page. The decoder is the same code in Node and in the browser.
 
 | ![Worked hopper ring, every chapter read, 300 px](img/station-300.png) | ![Same mibi with Legs & tail and Temperament unread](img/station-300-unread.png) |
 | --- | --- |

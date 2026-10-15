@@ -214,7 +214,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 | Material | What it is | Gathered from (**Decided**) | Amounts (**Built**) |
 | --- | --- | --- | --- |
 | **Energy** | Charge; in the field, the Probe's own | Storm-struck stones; warm stones | +2 (+3 at the peak); warm +1 |
-| **Data** | Records of creatures doing things | Creature moments the player causes | +1, or +2 for a first |
+| **Data** | Records of creatures doing things | Expeditions that explored and did not break, brought in early by creature moments the player causes; the Station's bench | 2 / 4 / 6 / 8 by place; moments +1, or +2 for a first; bench 2 a day |
 | **Essence** | Living matter | Dew, pressed fruit, shed tufts | dew +1, fruit +2, tuft +1 |
 
 - **Warm stones.** At each world turn an unstruck stone can hold a warm charge of
@@ -325,7 +325,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
   short sight and nocturnal routines); the rest of the three to five V1 types and
   about ten kinds of event.
 - **Items, mods and Probe tier 3**; a clearer look for charged stones; bonded
-  care on the active mibi screen (no needs or meters until care is designed).
+  care on the active mibi screen (care has no needs or meters).
 
 ## What was rejected
 

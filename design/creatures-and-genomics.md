@@ -121,7 +121,9 @@ Every locus is one of four kinds, named by who changes it:
 3. **Inherited-only.** Only breeding changes it: a child takes its copies from
    its parents, and nothing else moves them.
 4. **Self-changing.** The mibi changes it, within its own life, in the manner
-   of epigenetics: neither the player nor a cross does.
+   of epigenetics. The change is kept beside the copies, never inherited: the
+   copies still pass in a cross, and only the change made in life is not passed
+   on.
 
 By default every look is configurable and every doing is inherited-only. A
 species may set a trait apart, with the reason kept in its frame: the Tuikis's
@@ -310,7 +312,7 @@ It is not a QR code and no ordinary scanner reads it.
 
 From the outside in:
 
-- **Perforation:** a dot on every other cell of the outer ring. These are the
+- **Perforation:** a dot on every other cell of the outer edge. These are the
   timing marks.
 - **Frame:** one solid square line, which the reader finds first.
 - **Species border:** pairs of dark and light cells drawn from the species'
@@ -348,6 +350,11 @@ decoding.
 A child's stamp repeats one of the mother's copies and one of the father's at
 every switch locus, so a family lines up on paper.
 
+The Station can check a child's stamp against its parents': at every switch
+locus it holds one of each parent's copies, and at a blended trait its two equal
+copies sit between its parents'. Certified lineage needs the cloud (see Not
+designed yet).
+
 ![A Tuikis mother, child and father](../prototypes/genome-stamp/img/family.png)
 *A Tuikis mother, child and father: at each switch locus, the child's upper cells repeat one of the mother's copies and its lower cells one of the father's.*
 
@@ -361,7 +368,7 @@ The stamp's tests, print sheet and scan page are in
 ## Codes
 
 Every mibi has a **name code**: nine characters from the genome's digest, the
-last a check character, shown in threes (for example `G7F · CD0 · 3H2`). It is
+last a check character, shown in threes with spaces (for example `G7F CD0 3H2`). It is
 a name and a lookup, not the genome.
 
 The **stamp code** is the stamp's own bytes written as text. It can be shared
@@ -384,3 +391,6 @@ never rewrites a living mibi. A child is built on its species' current frame.
 - Combined traits: traits that combine into emergent ones; for example,
   movement, energy and environment together shape a kind of locomotion, vision
   or metabolism.
+- A scanned stamp opening the mibi's public page, and certified lineage
+  through the cloud.
+- The stamp's printed size on the Caddy's paper.

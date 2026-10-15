@@ -1,19 +1,19 @@
 # Genome code: options for the fingerprint's form
 
-Options for the genome ring's form: is it future-proof as loci, layers and species grow, and does a pixelated circle limit us against a stamp, QR or randomart form? The concept stands, a scannable code of the real genome; the circle is what is in question. Nothing here is decided. Drawings and numbers come from scripts in [genome-code/](genome-code/), which run the [genome-ring prototype](../../prototypes/genome-ring/)'s codec, renderer, decoder and distortion harness unchanged on the real [species frames](species-frames.md) and on synthetic future species.
+Options for the genome ring's form: is it future-proof as loci, layers and species grow, and does a pixelated circle limit us against a stamp, QR or randomart form? The concept stands, a scannable code of the real genome; the circle is what is in question. The genome code is the stamp (option b): a scannable code of the real genome, with no QR. This page weighs the forms considered (the ring, a QR, a randomart and a grid) against the needs below. Drawings and numbers come from scripts in [genome-code/](genome-code/), which run the [genome-ring prototype](../../prototypes/genome-ring/)'s codec, renderer, decoder and distortion harness unchanged on the real [species frames](species-frames.md) and on synthetic future species.
 
 ## 1. Requirements
 
 | # | Requirement | Source |
 | --- | --- | --- |
 | R1 | Encodes the real copies, both of every shown heritable locus, not a hash or an ID | "must codify the actual genome"; Identity |
-| R2 | Visible relatedness: one species looks alike; a child visibly holds one of each parent's two copies at every locus | research-loop §5, §7; homepage genealogy tree (10-06) |
-| R3 | Partial reveal: unread chapters show as "not read yet", distinct from a value; the code fills as research does | research-loop §4, §7; "off ≠ absent ≠ zero" (working rule) |
-| R4 | Readable at Station size (300 px) and printable on the Caddy at about 20 mm (58 mm paper, 203 dpi assumed, 48 mm printable) | research-loop §7; `devices.md` (printer **Open**) |
+| R2 | Visible relatedness: one species looks alike; a child visibly holds one of each parent's two copies at every locus | research-loop §5; [the genome stamp](../creatures-and-genomics.md#the-genome-stamp); homepage genealogy tree (10-06) |
+| R3 | Partial reveal: unread chapters show as "not read yet", distinct from a value; the code fills as research does | research-loop §4; [the genome stamp](../creatures-and-genomics.md#the-genome-stamp); "off ≠ absent ≠ zero" (working rule) |
+| R4 | Readable at Station size (300 px) and printable on the Caddy at about 20 mm (58 mm paper, 203 dpi assumed, 48 mm printable) | [devices](../devices.md) for the print size (printer **Open**) |
 | R5 | Scannable by a phone camera, under real light, from a real print | "be scannable"; "scan a qr in the machine from other machines" |
 | R6 | Grows with the genome (new loci, new chapters and domains, changed layers) without breaking old prints | "genomes grow" (a direction); "rule changes never rewrite creatures"; species-frames §7 |
 | R7 | One scheme from 5 open loci (Loika) to 38 (Tuikis) to 100+ | species-frames §5; research-loop §2 |
-| R8 | Forgery shows but never grants | research-loop §7 (working rule); the spoofing worry |
+| R8 | Forgery shows but never grants | [the genome stamp](../creatures-and-genomics.md#the-genome-stamp) (working rule); the spoofing worry |
 | R9 | Fits the art: the Station's botanical-tome Library, the Caddy's paper, the website | The four vibes; the Playdate-style site |
 | R10 | Monochrome-safe: a thermal printer and an e-paper Caddy | `devices.md` |
 | R11 | Decodes offline: the kit works with no account or internet; frames ship with every reader | The project's standalone rule |

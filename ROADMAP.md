@@ -139,6 +139,7 @@ Work in this phase:
   bonded juvenile simply waits at home until it is tended. It moves to the
   devices with the rest of the loop.
 - Design how partners' abilities open the world, connecting back to phase 1.
+- Self-changing traits on the partner (Glow, Basking, Phase), as [creatures and genomics](design/creatures-and-genomics.md#self-changing-traits) describes them: the Companion records each trip's places and storms; the marks are not yet kept or shown.
 - Breeding eligibility, viability and how refusal or failure is shown.
 - Zones inside a vivarium, if they still earn their place.
 

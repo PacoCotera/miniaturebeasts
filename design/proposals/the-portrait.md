@@ -1,6 +1,6 @@
 # The portrait: a prize a mibi sits for
 
-This document turns the prize render into the thing a player meets, and sets out the words for it. It builds on the [art pipeline](art-pipeline.md) v2 (the prize render, its queue, archive and checks), the [research economy](research-economy.md), the [research loop](research-loop.md) §5–7, the [genome code](genome-code.md) (the stamp and its postmark) and the [style guide](../style-guide/README.md). The words below are the studio family (sitting, portrait); the pipeline's working word "jewel" retires with this document.
+This document turns the prize render into the thing a player meets, and sets out the words for it. It builds on the [art pipeline](art-pipeline.md) v2 (the prize render, its queue, archive and checks), the [research economy](research-economy.md), the [research loop](research-loop.md) §5–6, the [genome code](genome-code.md) (the stamp and its [postmark](../creatures-and-genomics.md#the-genome-stamp)) and the [style guide](../style-guide/README.md). The words below are the studio family (sitting, portrait); the pipeline's working word "jewel" retires with this document.
 
 **The three points of §7.** The words are **sitting**, **portrait**, **portrait card** and the `✓ Portray` cap; the earned right is "a sitting", never a token. The daily "bench sitting" becomes **the bench**; generic species pictures become **faces**. A sitting earned while one is held is not given, and the Station warns ahead; the paid monthly sitting waits on the account. A portrayed mibi may be returned to the wild and keeps its portrait in the book. The portrait arrives as a crate at the dock, and the incubator's prize state is gone. Written into the [art pipeline](art-pipeline.md), the [research economy](research-economy.md), the [research loop](research-loop.md) and the [Station](../style-guide/station-screens.md) and [Companion](../style-guide/companion-screens.md) screen guides.
 
@@ -48,7 +48,7 @@ It comes **when the first mibi comes home from its first walk**, the first momen
 
 ## 3. Trading and breeding
 
-**Only portrayed mibis travel between players.** A trade needs proof that a mibi is real and one of a kind; the signed postmark is that proof, and the portrait is when a mibi is signed and archived to the account, so its art, stamp and lineage go with it. A plain mibi's stamp shows a mibi and grants nothing (research loop §7). 
+**Only portrayed mibis travel between players.** A trade needs proof that a mibi is real and one of a kind; the signed postmark is that proof, and the portrait is when a mibi is signed and archived to the account, so its art, stamp and lineage go with it. A plain mibi's stamp shows a mibi and grants nothing ([the genome stamp](../creatures-and-genomics.md#the-genome-stamp)).  Before a trade, a scan of the offered mibi's stamp shows exactly what would come, as far as its keeper has read it.
 **Every mibi breeds.** Breeding is the core verb, and it must never wait on a prize: the vivarium is stocked by plain mibis, and the cross reads genomes, not art. A child of a portrayed mibi is born plain; the portrait is the parent's, not the line's.
 
 ## 4. Naming

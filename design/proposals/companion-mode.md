@@ -7,8 +7,7 @@ Companion mode gets a dedicated screen to interact with the active
 mibi, "think Tamagotchi", and a simpler way to choose who comes along; the Probe
 should be a way to find Energy. Four buttons: pad, Confirm, Back, Call (Call
 calls the riding mibi). Life stages: juveniles ride in the Companion but don't
-join Probe expeditions; adults help; elders have shifted strengths. Bonding is
-optional, and only bonded mibis need care. No touch. The HUD shows Energy only,
+join Probe expeditions; adults help; elders have shifted strengths. Bonding is optional. Only a bonded juvenile needs care: it grows up through Tends and Walks while it is with you, and waits at home, not growing, until then. No touch. The HUD shows Energy only,
 beside battery and connectivity.
 
 **Today** the Companions screen is a list of cards (labels overlap) with two
