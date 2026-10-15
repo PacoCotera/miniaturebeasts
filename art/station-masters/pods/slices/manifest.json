@@ -3409,8 +3409,8 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (688, 71, 912, 229)",
   "made": "the Pods room set (pass 93): the closed gasketed service hatch in the housing's sage; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "c92bc7aee08d1830309a9baf86bf3b4c44f81709e254c0c1395c50c4ab987d9b",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444: chapter and overview goldens, station/img pods-*), placed byte for byte",
   "status_note": "new (10-15): H1, the art director's recut under the same id (hatch-sprig/make-hatch-sprig.py): the wild's leaf sprig in low relief in the centred 24x24 (plate 28, 16), all else the signed plate pixel for pixel; one master for shut and armed; replaces 7484bf22296d\u2026; signed in the Pods gate captures"
  },
  "page-pane-256x440": {
@@ -5094,8 +5094,8 @@
   "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-overview and room-bench-stage, 0 MXN",
   "made": "fix 5 Pods P-A2: the overview's stage with its grey plate and the old stamp case gone; the floor runs to the right wall (fix 4 places the stamp case at 788,384)",
   "sha256": "3581670aa531fb6f525f66985e52fdf3e5ce00e11e8565873e0ffe4c3847bd55",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444: chapter and overview goldens, station/img pods-*), placed byte for byte",
   "status_note": "new (10-15): fix 5 P-A1/P-A2 follow-up, the hose paint-out's dark residue on the right wall and bottom-right corner lifted to the wall's tone, low frequency only (stage-recut/lift-hose-ghost.py); replaces df56a679983e\u2026; signed in the whole Pods captures"
  },
  "room-bench-stage-chapter": {
@@ -5112,8 +5112,8 @@
   "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage, 0 MXN",
   "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out)",
   "sha256": "9f85f063acce661b8f55563700e6f1dfeacad7ed60002783af8f9fe7f0dfddd0",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444: chapter and overview goldens, station/img pods-*), placed byte for byte",
   "status_note": "new (10-15): fix 5 P-A1/P-A2 follow-up, the hose paint-out's dark residue on the right wall and bottom-right corner lifted to the wall's tone, low frequency only (stage-recut/lift-hose-ghost.py); replaces d1b7a8c7e6d4\u2026; signed in the whole Pods captures"
  },
  "ring-collection-idle-176x176": {
@@ -13006,10 +13006,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "0ea68b23ee003a5307eb9db18695653cd109591e7fc6eec5ba95e6c664ffc7ca",
+  "sha256": "2bef63959be5ed4907e28f24d28aac1fb9ed0cd20bb02ad11242620489225d9a",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "trait-S03-claws-round-feet-128x160": {
   "size": [
@@ -13020,8 +13020,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "2a5a2e5af9201d31c2e4893b4bf1b6b7a0627360958f2ee0c9830341904fd0c0",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-round-feet-104x160": {
@@ -13033,8 +13033,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "6bc64c0ef0a011e9f8f77e813831be2065623b85980a1c48b674a6c9b5655b9c",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-round-feet-104x96": {
@@ -13046,8 +13046,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "8c4e41aa1539d46cd4bf39993016dd913e2768bfc9ea63cce5527899d477fb4a",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-round-feet-104x64": {
@@ -13058,10 +13058,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "00282f7de943e397bb59c62388673721a56b48d4ecc88645e2dd602830addd4c",
+  "sha256": "04fe0757ff1150e2fe2abef81617d63e8cd09706044df3c209b7a8221dd1b924",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "roll-S03-claws-round-feet-128x72": {
   "size": [
@@ -13084,10 +13084,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "4856c7ea58156af3e5cdabbb23b71b4f0a21a70009ec121c782b96cabe07585d",
+  "sha256": "ec0b2b917c76bd8928fb766656ed95d085c82a30b8be4aa70a4cb4595c3a6279",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "trait-S03-claws-pads-128x160": {
   "size": [
@@ -13098,8 +13098,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "4013ca229ba14ecf8196c40db400f808612f2ec0655eb452108ec5b871e244ae",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-pads-104x160": {
@@ -13111,8 +13111,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "1d346bb407d5cbb716370a51d57f5aabd6d5f0eb65134e2a35b113a5f4975c4e",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-pads-104x96": {
@@ -13124,8 +13124,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "0c87d44abbbd9f73f5e5f89c34c394be444b117dc28ecc3f916a13639b3e7cb5",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-pads-104x64": {
@@ -13136,10 +13136,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "2803567e9f22cc45328d129fd40f0f2161d7dccc24bb3daa1d4992575e4ddb91",
+  "sha256": "33431fee2cbd7ab5e8124ae194e8ae49c3058edc7d3c0184ed3f4c72e8316b34",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "roll-S03-claws-pads-128x72": {
   "size": [
@@ -13162,10 +13162,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "61a9dcfc0f847c6a4da60b39ed32184d868d93fc8c2367e2137fd33685f50ed4",
+  "sha256": "e4e77141e9ed3645c8dfd0b7404962dbb5eb23fcab5d47a5fc739b3d8c0eede5",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "trait-S03-claws-digging-wedges-128x160": {
   "size": [
@@ -13176,8 +13176,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "c2f091b580f17181f0d3f3a1f9a1da57e239899bedb8fdddcc2da9bb5ed51971",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-digging-wedges-104x160": {
@@ -13189,8 +13189,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "20e625d5b70dc964f2a50564cb5c81d6b9859530e485bff034e2aa229483d019",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-digging-wedges-104x96": {
@@ -13202,8 +13202,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "6645f47c1bac7d789bdd19bd8838bb0c56de9a03d47e3eba93dced1105b8aa43",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-claws-digging-wedges-104x64": {
@@ -13214,10 +13214,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "b8cd9ecac9007bcb4ccb2823e76c07863d4c546d8409091d732f7420cc86314d",
+  "sha256": "52709f258d2359182ac1b0ece1ef5a59646ef1ebbfea56dc5032b2546381e2cc",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "roll-S03-claws-digging-wedges-128x72": {
   "size": [
@@ -13240,10 +13240,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "c1ee43c15646cc57a652463cf1bcd8654b7c64e4ffa6992e0a6b18b7e4f2984a",
+  "sha256": "ac20c84fc48984fa120bb741150da4deb7a23fd1360ea17ced49450f8d30adb3",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "trait-S03-scales-few-fine-128x160": {
   "size": [
@@ -13254,8 +13254,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "341c1dcf6f277fe62b980c9b0d0896bf7902b5ea9fefb2046ba24c207342605c",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-few-fine-104x160": {
@@ -13267,8 +13267,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "8574f15edcc932c688ba1c13b7f5086952409123b7b0c59eacf637a4805c503d",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-few-fine-104x96": {
@@ -13280,8 +13280,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "81186022e7fbeaf83362de4712e4cf31207e059e1c641a75fc3a73ced00c2807",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-few-fine-104x64": {
@@ -13292,10 +13292,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "22e9cafebf0f93e8f2cb6ae45cafd7c2e7e22a84741a0bde56f41d937075c7e0",
+  "sha256": "c2d202a4eabc4083385083a759d2fca17623aa0b8ffd3fd2e7d983323a9ba95d",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "roll-S03-scales-few-fine-128x72": {
   "size": [
@@ -13318,10 +13318,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "3c39593a2c88a7edf96467bbcb8cb2956ff579063a4c9972fb4f69de673a527a",
+  "sha256": "83238f3363c4d32e97c420314517e5638442e824c927895b13494f0d9d6d9653",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "trait-S03-scales-between-128x160": {
   "size": [
@@ -13332,8 +13332,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "1c5b9dd06927c18339a3966f30b4ad1dc901c39a8ce918a7928acfcdc5b88027",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-between-104x160": {
@@ -13345,8 +13345,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "56ca9957ae014bb43469d5d5b568548e58c1a618461c0feadfbd98455207520f",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-between-104x96": {
@@ -13358,8 +13358,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "3edf3e13eded0e7f0a7442bdb55d244b10a83399b9586a7397d1f621f4dabca8",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-between-104x64": {
@@ -13370,10 +13370,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "018f7814983a39bb9d2c7dc7c6f9d592ab4b1a4078d8e7049a72788d7205464c",
+  "sha256": "81fa275aeab9eebe10ea842e793fd98ca23f6b40feab0762245318f0114a49eb",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "roll-S03-scales-between-128x72": {
   "size": [
@@ -13396,10 +13396,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "a96d1380d3ca7ff12cb92fedd35db1cf51dcf32bc489862aa380ebf24777e4d3",
+  "sha256": "cd76e58008721c8782b93c8cfcd3d904b2be21c4df76e1db63b5329b4bcd6f26",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "trait-S03-scales-many-coarse-128x160": {
   "size": [
@@ -13410,8 +13410,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "a50b6a247e1c6f12ec442f871cee02f4872d13ce8c976ecd85bdb5fe3312e523",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-many-coarse-104x160": {
@@ -13423,8 +13423,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "7ecb417c05a32aee10bc80f737d0f6414fc6345882deb72547a0a4c83a4bf32d",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-many-coarse-104x96": {
@@ -13436,8 +13436,8 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "8b8cdd7da5331e430cd74f43ce63df788373215f7f6696931d65d79e3c9bb0a6",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444), placed byte for byte",
   "status_note": "new (10-15): the residue cleaned, round 2, the art director's cut (trait-clean/clean-s03-residue-2.py, two passes from trait-clean/before/): the scales' dark blocks and the claws' grey ring round the highlight; signed in the Pods retake"
  },
  "trait-S03-scales-many-coarse-104x64": {
@@ -13448,10 +13448,10 @@
   "rect": null,
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
-  "sha256": "ccce10d1d348fda6e802e58b753c4d65a12378fc6db398ce2483d4ed1104aa6f",
+  "sha256": "672ae9fddfb25c4d7feed6d0f5536449d3c64b12759eb5fc4f079cc197fb3c38",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status_note": "new (10-15): the residue cleaned, round 2, at the two sizes round 1 missed (trait-clean/clean-s03-residue-2.py, two passes); signed in its next capture"
  },
  "roll-S03-scales-many-coarse-128x72": {
   "size": [
