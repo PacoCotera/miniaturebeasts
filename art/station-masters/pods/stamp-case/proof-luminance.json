@@ -1,0 +1,38 @@
+{
+ "pods": {
+  "label_mean": 0.176,
+  "label_p95": 0.223,
+  "main_mean": 0.218,
+  "main_p95": 0.676,
+  "label_srgb_mean": 111.1,
+  "cell_contrast": 4.11,
+  "pass": true
+ },
+ "create": {
+  "label_mean": 0.144,
+  "label_p95": 0.187,
+  "main_mean": 0.2,
+  "main_p95": 0.658,
+  "label_srgb_mean": 99.4,
+  "cell_contrast": 4.36,
+  "pass": true
+ },
+ "incubator": {
+  "label_mean": 0.144,
+  "label_p95": 0.187,
+  "main_mean": 0.32,
+  "main_p95": 0.398,
+  "label_srgb_mean": 99.4,
+  "cell_contrast": 4.36,
+  "pass": true
+ },
+ "habitat": {
+  "label_mean": 0.144,
+  "label_p95": 0.187,
+  "main_mean": 0.335,
+  "main_p95": 0.8,
+  "label_srgb_mean": 99.4,
+  "cell_contrast": 4.36,
+  "pass": true
+ }
+}
