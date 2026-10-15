@@ -4696,8 +4696,8 @@
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
-   "sha256": "9f85f063acce661b8f55563700e6f1dfeacad7ed60002783af8f9fe7f0dfddd0",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
@@ -4843,57 +4843,85 @@
    "file": "pods/trait-S01-crown-bare-head-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "45a95fa1405e5cb6ae172fc4593c93ccc6eb4ccb0d38ae9c2332e6fcbb926624",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "27f390347d7c111c9d6e6d1d90d42f9809cda53c353bcb4aa111ba389470d6be",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-bare-head-104x64": {
+   "file": "pods/trait-S01-crown-bare-head-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "3d8658652bac4e96da4bf74621fd0ea1a031d1ca38be678511caba3385f4204c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-bare-head-104x96": {
    "file": "pods/trait-S01-crown-bare-head-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "6030c383038548bb6b90409e85f8ad5ae285557dea414c7ba529f1c8fc005409",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "12c647de16d8eae60e8e163b95a59145ce7e5f7ac3f8e42750aa320d49331012",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-bare-head-128x160": {
    "file": "pods/trait-S01-crown-bare-head-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "138004f9b13521b9cdaff2301e8c37130f9b11aa533ed1ca9f928a67d8726ade",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "dba54858b49d03d9edf4ac9e093876820f87a32ac1dfa68fd2da75917eae6525",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-bare-head-144x176": {
+   "file": "pods/trait-S01-crown-bare-head-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "8ab79786ca51b3c81b8dd8b42b2f56d92742118163354c219127a1f19aec0b66",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-104x160": {
    "file": "pods/trait-S01-crown-leaf-crest-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "2d2a51a64ca9452719346c03ef41be8d144a2d0124e3f3cfa2f7ac515ac5fded",
-   "signed": "new (masters-pods 580a7cd7), not final"
+   "sha256": "33e3c1ae5b3a46ea6ad23aa729b57eb79265bf8eb0aa48a06b57eea24d877142",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-104x64": {
    "file": "pods/trait-S01-crown-leaf-crest-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "352b1b6182e2bb350ecfd825b1014dd59a31e9c7483f6699225c3aa82fe55d6a",
-   "signed": "new (masters-pods 580a7cd7), not final"
+   "sha256": "4c546e5d8d52d9248c4a358a1be1381bef976f50272083ec98b7d4b6e6d833e1",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-104x96": {
    "file": "pods/trait-S01-crown-leaf-crest-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "6f6823890fb03c8c2d7639b4c5ce44736c50479e3bb7582fdb7710bcd2f73afa",
-   "signed": "new (masters-pods 580a7cd7), not final"
+   "sha256": "dd80da2e685a994040b629e8627386b7f3336923b7efff08bf7bec4b9748a75e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-128x160": {
    "file": "pods/trait-S01-crown-leaf-crest-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "0a5f497bb7652d4c44718b372b09584fb4514f5d08c6213bbff5fb3478c87fae",
-   "signed": "art director, trait wave 1, 10-11"
+   "sha256": "0a541c6401b84a794bb41449383e24229271f1dd6a1b2fb572c83269fe67214f",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-144x176": {
    "file": "pods/trait-S01-crown-leaf-crest-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "62e475adc2173d4c608ed31d9841ec9c6a587dbac261c1f0e1a48bffa4fab519",
-   "signed": "new (masters-pods 580a7cd7), not final"
+   "sha256": "fbc71768bcbfee5b53209c80ffb38e475dcdb6a8e7c32c34bc545d666777b546",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-leaf-crest-40x40": {
+   "file": "pods/trait-S01-crown-leaf-crest-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "0e1d6fac57aa60034806115b0cc55c9bfd260e6ab0007f59298c333275417a84",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-leaf-crest-56x56": {
+   "file": "pods/trait-S01-crown-leaf-crest-56x56.png",
+   "w": 56,
+   "h": 56,
+   "sha256": "dece508c5757e4210fef6ebf98f83a2f8a767933cc0580e63966ad460be2122d",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-drive-128x160": {
    "file": "pods/trait-S01-drive-128x160.png",
@@ -4913,101 +4941,155 @@
    "file": "pods/trait-S01-eyes-between-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "bddfd98922a3bd466de1184996f3c401979275bd17381a3e6a03073d9b50a6bc",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "3fb864d5431105ee4397d5126d89ddce533267202dc6e757de295221ec5bc42c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-104x64": {
+   "file": "pods/trait-S01-eyes-between-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "85a925359b2c6bc438eae3ee7bec775810444e98b70e51d041ae24deeb351b58",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-104x96": {
    "file": "pods/trait-S01-eyes-between-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "b35deb3ac9ec5823cb0a316737990f2894e82eb4110aca93ddc8d0ea8da41937",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "d13e799178c9a5e496c5f5a9057df272e331415f76c8ee05ebf5cbe18ce3f397",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-128x160": {
    "file": "pods/trait-S01-eyes-between-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "a065d9d4949ffe64efc127bf0b420ac6a1a9c74ddebf4609b76dbf826386c558",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "10978b1443fb69da9bffd73a378edfa483b92f19a03b85f61e143c92d6220c86",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-144x176": {
+   "file": "pods/trait-S01-eyes-between-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "e487985ddf33387b976d0a12359dd86352682fc56dd11400bf38c07450a9d9e8",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-104x160": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "aac1a5ab70270075b5df898f1a47ba876b552cac24a9cca6eda3fe6fe7e94244",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "2b1061e8c34832451ee29f59f441bd7932014b744cccdbec07197bfe20408229",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-104x64": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "f57402d091ba61705cd3cd8f5cefc8cf150c19314e17e26a4d08b4cacb16295a",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "7e1908f0367201183f12d46fa5d7524f4aa6430aed45863da5533d0c8ebb6221",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-104x96": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "529885a951dcf212fd105b49ac81e8a7fab47db0bb3330a047b78901b5aaa925",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "2185de826b401cb756691f73ad69e5dce8cd2419e4050c0d950bee740ae0a25c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-128x160": {
    "file": "pods/trait-S01-eyes-between-small-and-large-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "41a4514d6c17b579315f23337ef552747470a3db4b1526ef3fe700faa019c15d",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "c1bf3e1fc6627a273bbeb46a8c56eea25c43104496b988c281bccb3e6aa92eea",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-144x176": {
    "file": "pods/trait-S01-eyes-between-small-and-large-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "9d0276fee7cd1eca2331612d49df2c04dd5147e55dab26003b41cc307d8e9b98",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "2b8b372f8d48a6a8896e05388112e28c78cf2df3fc051231b324933ad20fdb0d",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-small-and-large-40x40": {
+   "file": "pods/trait-S01-eyes-between-small-and-large-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "457a0f60dc5687a987bb0e94b15b7ad7f4ac3790dfccb3e24cbca7f49eabb458",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-small-and-large-56x56": {
+   "file": "pods/trait-S01-eyes-between-small-and-large-56x56.png",
+   "w": 56,
+   "h": 56,
+   "sha256": "e41ecf8acf19b65054c5e8d41e729d0bb3467a3ec513b5b1f82f5ad5187481d1",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-thin-rings-104x160": {
    "file": "pods/trait-S01-eyes-thin-rings-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "38f08c44ae9f368036685f16d73ec9fa06efd6c6f6cf22fb71436f52e9438385",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "960e488b03261c5b4a33dfd356196cde2d5f8b481960ed6bd610b20ba948775d",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-104x64": {
+   "file": "pods/trait-S01-eyes-thin-rings-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "5e58b0708cfe0d4a5d15d912c187784a9b8c7404e792b9bcdd97284e726167a4",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-thin-rings-104x96": {
    "file": "pods/trait-S01-eyes-thin-rings-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "0a5a052849be4ac20a04243ca528b5bfdc8edb05b26b41b7d1257c411dfd032e",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "2a7f001c78ed4f806c456b34c1cff40d44f260dbf90d5254444a874d6b9c8a0b",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-thin-rings-128x160": {
    "file": "pods/trait-S01-eyes-thin-rings-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "962b4b9443832d558ea7999ab814c06048a9e6348e1a0b05c9aafe98fb075d49",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "fa0ad22b79bad63240a560e13ac60f1d8e91c63520320c9d1ef802b27897d855",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-144x176": {
+   "file": "pods/trait-S01-eyes-thin-rings-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "f3520d466cc687ed5a02f1d0361f28276e55fc696666fbe945880b7e5e6072eb",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-wide-pale-rings-104x160": {
    "file": "pods/trait-S01-eyes-wide-pale-rings-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "a7bc217a3b7db6a9931153e8cfce0b7378e4b8be0ce9d11132d09953620da44e",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "10dcde27c9eb04240c3f1783a0959e85d0f3183985178fbd9e22c932702004af",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-104x64": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "82dacc9d532102b51f160ac4aeb213f6a51c9b6c8cdc18578c4f22b3c8e0013e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-wide-pale-rings-104x96": {
    "file": "pods/trait-S01-eyes-wide-pale-rings-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "e06c2896d81acd5c1a57566d0b85b4cd51425f8995293687d511e974452dffdf",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "b336d592f3e66ae5b9a001de9f0c6e645bdf00093d810597f6cba54441ec45fd",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-wide-pale-rings-128x160": {
    "file": "pods/trait-S01-eyes-wide-pale-rings-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "dacd6adfb8af320c643a76f5d21c721aa7053da22cd8ba4b4e89920694871a37",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "sha256": "119c92cacfc8deaee8f6632b8a635d1a66abddeac3659bbdb04032f097090a3e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-144x176": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "36a55a42f5b886f73c3d0fff0fae63479573305ab784b1e84fff4a4b26e5c40a",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-markings-pale-patches-104x160": {
    "file": "pods/trait-S01-markings-pale-patches-104x160.png",
@@ -5615,106 +5697,106 @@
    "file": "pods/trait-S03-scales-between-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "56ca9957ae014bb43469d5d5b568548e58c1a618461c0feadfbd98455207520f",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "4c826e9a1b9702d882ae308d5e36e24f870ab69395dd5de6100161ca5c665489",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-between-104x64": {
    "file": "pods/trait-S03-scales-between-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "81fa275aeab9eebe10ea842e793fd98ca23f6b40feab0762245318f0114a49eb",
-   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+   "sha256": "1c0c5820b7be7f891bff68cb5796b4f9957afc0d594e576a2c015c46444f5b2e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-between-104x96": {
    "file": "pods/trait-S03-scales-between-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "3edf3e13eded0e7f0a7442bdb55d244b10a83399b9586a7397d1f621f4dabca8",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "b5dcaab5dd835a8b58be54caacf7e4cec109045114d07daed9bd6ce0842909d1",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-between-128x160": {
    "file": "pods/trait-S03-scales-between-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "1c5b9dd06927c18339a3966f30b4ad1dc901c39a8ce918a7928acfcdc5b88027",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "0ae6bbe03ade69196823d043d5d81c0e8d02192a5d483947ce6f2011916907fb",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-between-144x176": {
    "file": "pods/trait-S03-scales-between-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "83238f3363c4d32e97c420314517e5638442e824c927895b13494f0d9d6d9653",
-   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+   "sha256": "3e8c4513a0e1a28234f43fee10622798c5be19f92b4e24427cc72058d21bb44b",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-few-fine-104x160": {
    "file": "pods/trait-S03-scales-few-fine-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "8574f15edcc932c688ba1c13b7f5086952409123b7b0c59eacf637a4805c503d",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "9fdd40d130ebdf36712014a81f2f110c72964e3dee5ea9abd973e408ec88c739",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-few-fine-104x64": {
    "file": "pods/trait-S03-scales-few-fine-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "c2d202a4eabc4083385083a759d2fca17623aa0b8ffd3fd2e7d983323a9ba95d",
-   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+   "sha256": "0ececc44142680a011e57f1eddc2b20e3202aec8f66679c2fe2ca9f74307515c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-few-fine-104x96": {
    "file": "pods/trait-S03-scales-few-fine-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "81186022e7fbeaf83362de4712e4cf31207e059e1c641a75fc3a73ced00c2807",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "1aa1d4c05087ac0cd2d17354422f6f3e528b76b0e4096cd530ea458180897304",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-few-fine-128x160": {
    "file": "pods/trait-S03-scales-few-fine-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "341c1dcf6f277fe62b980c9b0d0896bf7902b5ea9fefb2046ba24c207342605c",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "c3cc045351176b18081d84d885c8872d6e784ed9c05c11f85862c88ed76994e4",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-few-fine-144x176": {
    "file": "pods/trait-S03-scales-few-fine-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "ac20c84fc48984fa120bb741150da4deb7a23fd1360ea17ced49450f8d30adb3",
-   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+   "sha256": "e1b4b8ab0a3e4c620ea3a6924acf5d5ad5a4a62b6c8915a231adf959d683d415",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-many-coarse-104x160": {
    "file": "pods/trait-S03-scales-many-coarse-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "7ecb417c05a32aee10bc80f737d0f6414fc6345882deb72547a0a4c83a4bf32d",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "7364bc3f306741daa66d75ef3241673bb17c729614355acfc380f0b7b745b273",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-many-coarse-104x64": {
    "file": "pods/trait-S03-scales-many-coarse-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "672ae9fddfb25c4d7feed6d0f5536449d3c64b12759eb5fc4f079cc197fb3c38",
-   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+   "sha256": "4d5221312b61c44a8721374b408139ec8ec478263ab6bab0f8a44b872450b03b",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-many-coarse-104x96": {
    "file": "pods/trait-S03-scales-many-coarse-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "8b8cdd7da5331e430cd74f43ce63df788373215f7f6696931d65d79e3c9bb0a6",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "befda61b4547c139de65e6fb2073686d4efcf21dbf92472a89f423f7a3c75d12",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-many-coarse-128x160": {
    "file": "pods/trait-S03-scales-many-coarse-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "a50b6a247e1c6f12ec442f871cee02f4872d13ce8c976ecd85bdb5fe3312e523",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "2190d20a066b1f87b8db87aed486c063dcab07049a5671961909ce7668ca9820",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-scales-many-coarse-144x176": {
    "file": "pods/trait-S03-scales-many-coarse-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "cd76e58008721c8782b93c8cfcd3d904b2be21c4df76e1db63b5329b4bcd6f26",
-   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+   "sha256": "8ac32c8eda70bf71de991bd28a130561ddc26d4d0ec7338705dcd0b83ead5431",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S03-tail-between-104x160": {
    "file": "pods/trait-S03-tail-between-104x160.png",
