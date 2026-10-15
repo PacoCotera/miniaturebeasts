@@ -10915,9 +10915,9 @@
   "src": "slices/crate-sitting-256x176.png (signed 963f4eab), by hand",
   "made": "the sitting Cargo crate at Home's crate size (home.json cargo.sittingCrates asset, sitting.json): the signed crate-sitting-256x176 reduced uniformly (scale 0.1917, never enlarged) to 46x29, 1 px clear at each side, the feet on the box's bottom row as home-crate-48x40; nothing retouched: the 48x32 brass plate reduces to a 10x7 mark that reads at 1x; replaces crate-sitting-80x56 for Home (pass 137)",
   "sha256": "e9af94a27c29680e4b63be600a9e923169a6706e6171ba98f78bfa23aa1c25c9",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
+  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 49.7, mean R-B 14.3, 3.2 percent above L* 70; the 256 crate reduced, the plate a 10x7 brass mark; inside the crate band (L* 48.0 +-4, mean R-B 13.5 +-8)"
  },
  "home-crate-48x40": {
   "size": [
@@ -10928,9 +10928,9 @@
   "src": "slices/crate-sealed-256x176.png (signed 963f4eab), by hand",
   "made": "Home's walk crate, the bay's sealed crate (home.json cargo.cratePicture): the signed crate-sealed-256x176 reduced uniformly (scale 0.1917, never enlarged) to 46x29, 1 px clear at each side, the feet on row 39, as crate-sitting-48x40; the orange seal tag kept, nothing retouched (pass 138)",
   "sha256": "a896513a48c395d956fb3f9a89a0475fdcf5649b54f911ce12ada4550ffea053",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
+  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 50.7, mean R-B 14.8, 3.3 percent above L* 70; one object with the sitting crate and Cargo's crates, beside the open bay (pass 137)",
   "replaces": "home-crate-48x40 sha256 87d9a930ffd6 on main (art/station-masters/home-hand/slices, #116, signed): a walk crate typed by hand (source/home_marks.py), flat pixel work that read as another hand beside the painted bay and crates"
  },
  "trait-S01-crown-bare-head-144x176": {
@@ -11012,9 +11012,9 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "31bb61c2b97dc7ff288d32f7666564b84dffc6e0102ca49e8c74b09de986c9cf",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S01-crown-leaf-crest-128x72": {
@@ -11026,9 +11026,9 @@
   "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "fa8a9fab783bb4f9574f07c355b1c1d5b76ec5500f8ab240397a09e63534047f",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 24 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-eyes-thin-rings-144x176": {
@@ -11105,9 +11105,9 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "714c2ad8e456aa315f4cee67018a0a352d333b7cae0146a41e71994abc4fee16",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
  },
  "trait-S01-eyes-between-144x176": {
   "size": [
@@ -11183,9 +11183,9 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "f07d59175805e756d45047706c1b080e37aa5e58245e28344ef14ac11365bf4d",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
  },
  "trait-S01-eyes-wide-pale-rings-144x176": {
   "size": [
@@ -11262,9 +11262,9 @@
   "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "1b6220c30453e9d0fd1269ebec4bda5b8cc1ddb39a8c221c0e20c52547716483",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
  },
  "roll-S01-markings-plain-128x72": {
   "size": [
@@ -11275,9 +11275,9 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "63c2f1e3c14a9455b9163c1226633534593f04ce8f7ce704129555fdb1ee3edd",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-markings-pale-patches-144x176": {
@@ -11359,9 +11359,9 @@
   "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
   "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "7762115cbe78ca70bb14891852289fdde913a4dc7a8eaa2709eecdbc43138987",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-plain-144x176": {
@@ -11443,9 +11443,9 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "a79c8e753a64f42bd7d17ab6cc5d824b46c19e235a1f29dcf1d07963e0bad84e",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 44 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-144x176": {
@@ -11527,9 +11527,9 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "cb9e27a0235c0db1152f8755534a6a7c0cd19dd5c53b6b03ffb3a366f1426d10",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 50 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-spots-144x176": {
@@ -11611,9 +11611,9 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "5548e6b45284d61d3e9e65745c1331af598ee461ce153a8b647737c06c574671",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 55 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-markings-stripes-and-spots-144x176": {
@@ -11695,9 +11695,9 @@
   "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "944f1dec6e522878325d98fa230ee2fea12180db283baa0fd659d1cec529b3ff",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 59 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-low-crest-144x176": {
@@ -11779,9 +11779,9 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "2cef9de07bb7771203d5d726e9b4a97ec46092fcb5a5f5ca1655007a901f838c",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 30 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-between-144x176": {
@@ -11863,9 +11863,9 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "3fcb7a3a4117b955982985688695f1753ff470836105a1c00f4c0f1aed6fdc99",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 39 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-crest-tall-crest-144x176": {
@@ -11947,9 +11947,9 @@
   "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
   "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "0c050e164f1b7a0dd1d4e72514f342688a5ea292dc015fd961420978541a9c11",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 34 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bare-144x176": {
@@ -12031,9 +12031,9 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "c6f21e564d4bf2cc43616e33ea532e05c0f647bbb955348bdaad8b6049833cc8",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-144x176": {
@@ -12115,9 +12115,9 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "decf154c7acaf0006c9d4ebb55cc5d98d5b75a96f679d8144a1ed096c375c0e6",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-spots-144x176": {
@@ -12199,9 +12199,9 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "df700c44940cc7ace6919f2f55d53f137c8af285dbe327037d3886cc654c8f91",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 4 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-spots-bands-and-spots-144x176": {
@@ -12283,9 +12283,9 @@
   "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "4ec10533a6b4a6808312d9260f07461ed173d2103aa5a38aca4b1291b949f4a6",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-small-cap-144x176": {
@@ -12367,9 +12367,9 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "581af446cf0c9312f883693b21df7ed3f55d28cf622ad0cd1727b7535336f97c",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-between-144x176": {
@@ -12451,9 +12451,9 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "92ef7b52345edbb4087cc9f17db0cf5abde6ebe7ab25012573a3ce06eaf43f17",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 20 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-span-wide-cap-144x176": {
@@ -12535,9 +12535,9 @@
   "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
   "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
   "sha256": "bc10a711b01b4088cef4512fae70888e2fe4670ae0d53eb7bb3564776032efc3",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing",
   "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S03-tail-short-thin-144x176": {
@@ -12615,9 +12615,9 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "8aba6fdb5cf973eabf443011a85d026e3e950cc22a5dc1713797d38af3e430a5",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-tail-between-144x176": {
   "size": [
@@ -12693,9 +12693,9 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "b185c3de600ed524c4bd8d1dabcafc244c102d2927ec9c59c25ec2d0f75e4ebf",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-tail-long-thick-144x176": {
   "size": [
@@ -12771,9 +12771,9 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "e94d49123c408607af878eac4ccef1700c6c5db054920aeaa2b1bd18937695c8",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-carriage-hangs-144x176": {
   "size": [
@@ -12849,9 +12849,9 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "b5aa2aa24d8edb2bde41af7e7e0982b39882d182673d56ac7a30fe723d27c695",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-carriage-straight-144x176": {
   "size": [
@@ -12927,9 +12927,9 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "c7add2bf4f6d12a7b20e8173a851caf6a450e78ab8a69569acd8427fea467a44",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-carriage-curls-up-144x176": {
   "size": [
@@ -13007,9 +13007,9 @@
   "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "9b4db8bce979afc9e3e54c8ac56bd508dab3a13de6d3b8d2e90582eb2477dd9f",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-claws-round-feet-144x176": {
   "size": [
@@ -13085,9 +13085,9 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "51e7157e4b142164cdb743b173f022f0dd05fd86b511dad1c715be3e743a0493",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-claws-pads-144x176": {
   "size": [
@@ -13163,9 +13163,9 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "498a0c59fe0c3a85bda92f60eb0a9e42a03b509bf13dc6e0c73da921a5107f86",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-claws-digging-wedges-144x176": {
   "size": [
@@ -13241,9 +13241,9 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "ab2b1576f16eec7bd24c611d6851784c6aeb07dc05c45c79d3541b8f31fa3a8a",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
  },
  "trait-S03-scales-few-fine-144x176": {
   "size": [
@@ -13319,9 +13319,9 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "fba41618786ab3e95779cd64d5834d81c28abc3ce1cec8216ae14f305805d608",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-scales-between-144x176": {
   "size": [
@@ -13397,9 +13397,9 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "8a8a29f38dfea3cef0d907879b90846a574d8add6e75134efe50415e8b5332ed",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S03-scales-many-coarse-144x176": {
   "size": [
@@ -13475,9 +13475,9 @@
   "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
   "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "a1b745cdfd084eb5623dc3a7bc3f970c05472f2030bcf31ad55865c3574e2bb5",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  },
  "trait-S02-flecks-bare-144x176": {
   "size": [
@@ -13558,9 +13558,9 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "759b634bd60e7ae9562169c140d117562a62d8a394293d42682b2b043268ed60",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing",
   "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-flecks-spots-144x176": {
@@ -13642,9 +13642,9 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "64856f4f638f4ac6f0435e190f2d2b42eded34a3d3366fa17f410b4be08050e7",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing",
   "defringed": "magenta key residue removed, 3 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-short-straight-144x176": {
@@ -13726,9 +13726,9 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "763f0205ccbb6dc7add02b86f28b82eb04d571850cabdd8bc9bcfb549f80267e",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing",
   "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S02-fluff-long-swept-144x176": {
@@ -13810,9 +13810,9 @@
   "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
   "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
   "sha256": "b1a93af37f235c50e8d5983acf22dd59a6eb2c8375fc854a7c03e21109c30668",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": "",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing",
   "defringed": "magenta key residue removed, 6 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S04-stripes-between-144x176": {
@@ -13889,9 +13889,9 @@
   "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
   "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
   "sha256": "45d34ef001461552f81b6864ad848803d850b0f4e1c8c43a47c466d18169533f",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; named by the copywriter (Stripes: faint stripes, between, bold stripes; 8402eae)"
  },
  "bud-shape-S01-112x112": {
   "size": [
@@ -13902,9 +13902,9 @@
   "src": "floor/S01/keys/mibi-juvenile-S01-base-stand-304x312.png (the bare base)",
   "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
   "sha256": "f4dcc5bef3677ed501e285c15d1542d59e8735049b98d3f9870b2bdf4ffd92b3",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)",
+  "status_note": "bare head: a bare-headed founder never shows a crest"
  },
  "bud-shape-S03-112x112": {
   "size": [
@@ -13915,9 +13915,9 @@
   "src": "juvenile/mibi-juvenile-S03-304x312.png (the signed stand-in, figure alone)",
   "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
   "sha256": "8750760d90d245b729c6a15c49a946cf28c406543e0ad65b95a76cf5d338a764",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)",
+  "status_note": "the thin head stalk falls away at this size"
  },
  "trait-S04-stripes-faint-stripes-144x176": {
   "size": [
@@ -13993,9 +13993,9 @@
   "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
   "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
   "sha256": "bec781f0c15f375cad720ea21945953eee9853562b5c89077b752955cd5d5937",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; named by the copywriter (Stripes: faint stripes, between, bold stripes; 8402eae)"
  },
  "trait-S04-stripes-bold-stripes-144x176": {
   "size": [
@@ -14071,9 +14071,9 @@
   "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
   "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
   "sha256": "971a7f1abf74799291f8feb7be69572b200d62cb33f97df074cdadde2f77f908",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; named by the copywriter (Stripes: faint stripes, between, bold stripes; 8402eae)"
  },
  "mibi-adult-S01-304x312": {
   "size": [
@@ -14084,9 +14084,9 @@
   "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
   "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 304x312 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
   "sha256": "5c143f8fb40a350fb540e13dd759db50ea5e8e9d0eae7b0960dc096928663976",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  },
  "mibi-adult-S01-144x152": {
   "size": [
@@ -14097,9 +14097,9 @@
   "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
   "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 144x152 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
   "sha256": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  },
  "mibi-adult-S01-96x88": {
   "size": [
@@ -14110,9 +14110,9 @@
   "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
   "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 96x88 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
   "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  },
  "mibi-adult-S01-48x48": {
   "size": [
@@ -14123,9 +14123,9 @@
   "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
   "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 48x48 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
   "sha256": "1163284a198d623c8f0bc2f1266856a0a2b30d09dbda5a7feb735d9a3411d96a",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  },
  "mibi-juvenile-S01-304x312": {
   "size": [
@@ -14136,9 +14136,9 @@
   "src": "juvenile/mibi-juvenile-S01-304x312.png before the regrade (sha256 75f95d5ad2a7); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
   "sha256": "e4712cfb89e32a4452fc5dfa80f1fd8995197afd0520b7c9d06754ef25f86603",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
+  "status_note": "0 px magenta"
  },
  "mibi-juvenile-S01-104x112": {
   "size": [
@@ -14149,9 +14149,9 @@
   "src": "juvenile/mibi-juvenile-S01-104x112.png before the regrade (sha256 8c9904c79b3d); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
   "sha256": "06eaddd2d88a702b564588910783fd0214d13b9fff7d6aabba182336300a405b",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
+  "status_note": "0 px magenta"
  },
  "mibi-juvenile-S01-96x88": {
   "size": [
@@ -14162,9 +14162,9 @@
   "src": "juvenile/mibi-juvenile-S01-96x88.png before the regrade (sha256 8c8f33366281); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
   "sha256": "0e4d6c6fc9a81a68d612bebbd62578f3b35ce036536a434d3b1cbf23fcf2c845",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
+  "status_note": "0 px magenta"
  },
  "mibi-juvenile-S01-48x48": {
   "size": [
@@ -14175,9 +14175,9 @@
   "src": "juvenile/mibi-juvenile-S01-48x48.png before the regrade (sha256 7cc5b8ec5cc7); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
   "sha256": "1467283119992de92cfc0d99f866835066714eaab45ffbc6e9887374ffb4df88",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "new",
+  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
+  "status_note": "0 px magenta"
  },
  "mibi-adult-S03-304x312": {
   "size": [
@@ -14188,9 +14188,9 @@
   "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 304x312; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "bd426004a698ee45aca2b7919910424f7a3e50de280a1b9cd5745e8229e59a8c",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-adult-S03-144x152": {
   "size": [
@@ -14201,9 +14201,9 @@
   "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 144x152; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "171ebe6dc4d0fcc8edd6137b1dec038f7ace5e5f3d0c0c6f263fe34e3b2e4543",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-adult-S03-96x88": {
   "size": [
@@ -14214,9 +14214,9 @@
   "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 96x88; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "85f11b8ade52bc9d15764c14f7d13b0dfbb7ece44622aea6c1eb7807fbf0ca23",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-adult-S03-48x48": {
   "size": [
@@ -14227,9 +14227,9 @@
   "src": "source/raw/mibi-adult-S03-b.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S03's adult stand, the bare base (plain coat, the tail's bulb unlit), cut by adult/cut-adults.py; the teal and the bulb matched to the signed juvenile by adult/match-juvenile.py (teal,gold); 48x48; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "ce2a291d07e4e1d3737295fc30f936fe629744689fa6f09b6705770310660b62",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-adult-S02-304x312": {
   "size": [
@@ -14240,9 +14240,9 @@
   "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 304x312",
   "sha256": "2deffd984707a18c6c9109cb4945f95532f059394c0a18bf04f1b726c8bcbf49",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
  },
  "mibi-adult-S02-144x152": {
   "size": [
@@ -14253,9 +14253,9 @@
   "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 144x152",
   "sha256": "1362c33472a99649a99c223d21c30d2ee57f9b66e05fa784b54b1f5f9f5044c9",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
  },
  "mibi-adult-S02-96x88": {
   "size": [
@@ -14266,9 +14266,9 @@
   "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 96x88",
   "sha256": "facedb7f27a6b41169100bb65cfb833da2cb23b78e56ebb1dcbccc8eb5b305b8",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
  },
  "mibi-adult-S02-48x48": {
   "size": [
@@ -14279,9 +14279,9 @@
   "src": "source/raw/mibi-adult-S02-a.jpg (gemini-3-pro-image; the rig and the silhouette only)",
   "made": "S02's adult stand, the bare base (the small cap, no spots, bands or flecks, short fuzz), cut by adult/cut-adults.py; the brown and the cap matched to the signed juvenile by adult/match-juvenile.py (brown,cap); 48x48",
   "sha256": "0e23ae35585fa728f5fb2eac65de3439d1837c44dedd1ef99acda860512a4269",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta at every size"
  },
  "mibi-juvenile-S03-304x312": {
   "size": [
@@ -14292,9 +14292,9 @@
   "src": "juvenile/mibi-juvenile-S03-304x312.png before the value pass (sha256 8012316a2376); adult/value-pass.py",
   "made": "S03's juvenile stand-in; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "2ff012027372a84a89921a6e8d3475ddf4cde6fe92f4c569e930970d2b7a8eb3",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-juvenile-S03-104x112": {
   "size": [
@@ -14305,9 +14305,9 @@
   "src": "juvenile/mibi-juvenile-S03-104x112.png before the value pass (sha256 a8671bbf4139); adult/value-pass.py",
   "made": "S03's juvenile stand-in; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "c0fd88f15c7bfad7606c16669b01c1aababdad22f25289a51f43c5c4eeaf2b78",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-juvenile-S03-96x88": {
   "size": [
@@ -14318,9 +14318,9 @@
   "src": "juvenile/mibi-juvenile-S03-96x88.png before the value pass (sha256 24e82f02c907); adult/value-pass.py",
   "made": "S03's juvenile stand-in; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "fd2f97e9ef86f4b0759e76e22a41cb8212078594d255c5942134e13972880f88",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "mibi-juvenile-S03-48x48": {
   "size": [
@@ -14331,9 +14331,9 @@
   "src": "juvenile/mibi-juvenile-S03-48x48.png before the value pass (sha256 3493e619f15d); adult/value-pass.py",
   "made": "S03's juvenile stand-in; then the value pass (adult/value-pass.py): the coat's lightness lowered and its chroma lifted in OKLab, the hue kept, the underside shaded, so it has form in day light",
   "sha256": "925c3c32691181d83f1ce7c16792a1ec7c3e8230cf66a9528c3145afd5992388",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
+  "status_note": "0 px magenta"
  },
  "cargo-bay-992x320": {
   "size": [
@@ -14349,9 +14349,9 @@
   "src": "concepts/cargo-bay: source/raw/cargo-bay-open-a.jpg (gemini-3-pro-image, 1 Pro request, 4.01 MXN), cut by tools/baycut.py",
   "made": "the Cargo bay, open: sage rim, warm dark back wall, a plain sage floor shelf with a front lip (Oct 11)",
   "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (concepts/cargo-bay/README.md, e3a50bdf)",
+  "status_note": "signed (art director) at 1x; moved into slices for fix 5 AR1 (10-15), unchanged"
  },
  "cargo-bay-shut-976x304": {
   "size": [
@@ -14367,9 +14367,9 @@
   "src": "concepts/cargo-bay: source/raw/cargo-bay-shut-a.jpg (gemini-3-pro-image, 1 Pro edit, 3.66 MXN), cut by tools/baycut.py (whole door slats removed)",
   "made": "the Cargo bay's shut sage roller door, the inside rect, drawn over the open bay (Oct 11)",
   "sha256": "28c5bd98e365f724763dd2a71a23d0a83b9c1d0d78500834a9f5a3067ee32582",
-  "status": "unclassified",
-  "signed_in": null,
-  "status_note": ""
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (concepts/cargo-bay/README.md, e3a50bdf)",
+  "status_note": "signed (art director) at 1x; moved into slices for fix 5 AR1 (10-15), unchanged"
  },
  "cargo-rack-992x168": {
   "size": [
@@ -14385,8 +14385,8 @@
   "src": "cut by hand (cargo-rack/make-cargo-rack.py) from the signed cargo-bay-992x320 (its floor's paint and front lip) and crate-open-432x272 (its fitted foam), 0 MXN",
   "made": "fix 5 AR4: the device's sage strip under the Cargo bay, with six fitted foam wells at (168 + 112 i, 24, 96, 128), lit lower-right lips, shaded top-left walls, dark foam floors; no labels, lamps, text or gold",
   "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
-  "status": "unclassified",
-  "status_note": "",
+  "status": "new",
+  "status_note": "new: the art director signs in the whole Cargo capture at 1x (fix 5 spec 9)",
   "signed_in": null
  },
  "cargo-report-plate-560x288": {
@@ -14403,8 +14403,8 @@
   "src": "cut by hand (cargo-report/make-report-plate.py): the stamp case's construction (room-stamp-case-152x152, 001bcd51) at 560 wide, its sage from the signed shut door, 0 MXN",
   "made": "fix 5 AR5 master: a dim well moulded into the sage door, an 8 px bevelled moulding lit top-left and shaded lower-right, dark rubber corners, a quiet ground #1d232b floor (bone 13.2:1, mist 4.7:1), no glass, no sheen, no text; the 20 shorter heights are derived from it",
   "sha256": "102a4e7e982641186891b55ddce272a85b1cc1ece6e1189ac42764d085ac5e3f",
-  "status": "unclassified",
-  "status_note": "",
+  "status": "new",
+  "status_note": "new: the art director signs the 21-height set on a 1x sheet and at the golden heights in Cargo captures",
   "signed_in": null
  },
  "icon-wait-16": {
@@ -14416,8 +14416,8 @@
   "src": "typed by hand (icon-wait/make-icon-wait.py), 0 MXN",
   "made": "fix 6 A3: the bud's wait on Create's Grow line, an hourglass in sand and bark, the caps' lit edge in clay and a paper glint on the glass's left (light top left), the sand running top to bottom; sits after the price's three material marks",
   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
-  "status": "unclassified",
-  "status_note": "",
+  "status": "new",
+  "status_note": "new: signed in the whole create-shape capture at 1x",
   "signed_in": null
  },
  "crate-shadow-256x24": {

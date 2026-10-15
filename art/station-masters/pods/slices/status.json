@@ -4681,129 +4681,118 @@
   "note": ""
  },
  "mibi-adult-S01-304x312": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
  },
  "mibi-adult-S01-144x152": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
  },
  "mibi-adult-S01-96x88": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
  },
  "mibi-adult-S01-48x48": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
  },
  "mibi-juvenile-S01-304x312": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
  },
  "mibi-juvenile-S01-104x112": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
  },
  "mibi-juvenile-S01-96x88": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
  },
  "mibi-juvenile-S01-48x48": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
  },
  "mibi-adult-S03-304x312": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S03-144x152": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S03-96x88": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S03-48x48": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: adult re-signed; replaces the earlier S03 adult"
  },
  "mibi-adult-S02-304x312": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S02 adult stand"
  },
  "mibi-adult-S02-144x152": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S02 adult stand"
  },
  "mibi-adult-S02-96x88": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S02 adult stand"
  },
  "mibi-adult-S02-48x48": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside the juvenile at 1x (2026-10-12)",
+  "note": "fix 1b fallback: S02 adult stand"
  },
  "mibi-juvenile-S03-304x312": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
  },
  "mibi-juvenile-S03-104x112": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
  },
  "mibi-juvenile-S03-96x88": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
  },
  "mibi-juvenile-S03-48x48": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, beside S02 at 1x (2026-10-12)",
+  "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
  },
  "cargo-bay-992x320": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (e3a50bdf)",
+  "note": "fix 5 AR1: moved into slices, unchanged"
  },
  "cargo-bay-shut-976x304": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (e3a50bdf)",
+  "note": "fix 5 AR1: moved into slices, unchanged"
  },
  "cargo-rack-992x168": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 5 AR4; signed in the whole Cargo capture"
  },
  "cargo-report-plate-560x288": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 5 AR5 master"
  },
  "icon-wait-16": {
-  "status": "unclassified",
-  "signed_in": null,
-  "note": ""
+  "status": "new",
+  "note": "fix 6 A3"
  },
  "crate-shadow-256x24": {
   "status": "new",
