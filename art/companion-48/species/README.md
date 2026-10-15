@@ -92,3 +92,11 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S02/c-token-S02-juv-eat-f0-32x32.png` sha256 `16917dec7d62ef50da428d8f19af2386a97543443f3c2c7b86b2c5dc8ae03f49`
 - `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `ccf48be513b8ea4a448ce64b4fad7af1fc963a028d6bc654d87d222397ec72b0`
 - `S02/c-mini-S02-juv-12x12.png` sha256 `b60ff4ec467c9287fd95b94fdaf06938f45e5f92737a7750e96c5fe88a5f7efd`
+
+**S01 juvenile colour split (candidate; the AD's 05:25 pass, so it matches the Station juvenile; replaces the signed round 3 files, which stay in d0208a72):** charcoal on the crown only (rows 12 to 15), cheeks, chin and throat cream, a charcoal saddle 3 to 4 px deep nape to rump, everything below cream, sand toe pads on row 30; made by `tools/species-s01-juv-split.py`; review sheet `S01/sheet-S01-juv-split-candidate.png` (the juvenile idle beside the adult token and the Station juvenile reduced to the same height).
+- `S01/c-token-S01-juv-idle-32x32.png` sha256 `bbabed327ab0ad93344bfce892b0ce4fdaa7901aa809af549fe12bbefc38e8c4`
+- `S01/c-token-S01-juv-alert-32x32.png` sha256 `4b08852ce35e405b8b5141977652173b6b04059bdd0b1436a47b07c66219fc03`
+- `S01/c-token-S01-juv-huddle-32x32.png` sha256 `f8c615a3570dea41e91a40b336e48523a4850120297325491c97b7c30f705b87`
+- `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `fb66ec749ba791b8769ba1f4a09f38b66876550f58942a6eb713687e5334599b`
+- `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `2d48affd327b7eef06ff5fc3c91452b2395b18505406465cc209b86c7f0e8f98`
+- `S01/c-mini-S01-juv-12x12.png` sha256 `38ec517a367bf96448e77898ca7512c24fcc64b11fa53245317c57ad2e734a16`
