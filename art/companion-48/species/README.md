@@ -64,3 +64,15 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - S01: the toes are solid bone pads, not bone and night alternating, so at 8× they read as toes, not a row of dots.
 - No other pixel changed. The hashes above are updated.
 - X31 also: S02 flee and huddle were cut flat at the box's right edge (the front end). One body column is taken out of the middle and the front end closed with its ink outline at x 31.
+
+## Juvenile (candidate)
+
+The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenile-S0n-304x312.png`) with `tools/build-species-juv-token.py` and cleaned in place by `tools/species-s0n-juv-clean.py`; each set is the idle, alert, huddle, eat-f0, eat-f1 at 32x32 (lowest opaque row 31) and a 12x12 mini (lowest row 11). Review sheets are `S0n/sheet-S0n-juv-candidate.png`. Candidate, nothing signed.
+
+**S01 juvenile (candidate):**
+- `S01/c-token-S01-juv-idle-32x32.png` sha256 `c9607eab53a306f1fc85a29e177a8af5dcbdb81bd89915b604257fe0609dba2e`
+- `S01/c-token-S01-juv-alert-32x32.png` sha256 `1d4ffd52f4940002292454aebbcfd0961ae3c25096fb558cc0af508d30702912`
+- `S01/c-token-S01-juv-huddle-32x32.png` sha256 `acc5a65e0c3bae824bb3bf37094fe64669fb82bc8c2a53605ef3ed82f0d01fc2`
+- `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `4481ce4dfd0974c5144b58afe6ad836c6743a960ddd948ae377873c980983400`
+- `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `4a9ae65f0200d6623f10ccaf2a9df0d0159900f0dfd59952461e65b726111514`
+- `S01/c-mini-S01-juv-12x12.png` sha256 `d075f7f80b4c23435a905080f76a1e543c34d009a7df77e70862a2b4ed06c65a`
