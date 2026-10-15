@@ -636,7 +636,7 @@ test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate o
   lintRegions(cg); assert.deepEqual(cg.states, ["bay", "opening", "report"]);
   const stage = frame.regions.stage.rect; for (const r of Object.values(R)) assert.ok(inside(r.rect, stage), "inside the stage");
   is(R.bay.rect, "bay"); is(R.bay.rect, "bay", O); is(R.bay.rect, "bay", P); is(R.bay.rect, "bay", Z); is(R.rack.rect, "rack"); is(R.rack.rect, "rack", O); is(R.rack.rect, "rack", P); is(R.rack.rect, "rack", Z);
-  assert.deepEqual(R.bay.slices, { open: "cargo-bay-992x320", shut: "cargo-bay-shut-976x304" }); assert.deepEqual(R.bay.rect, [16, 48, 992, 320]); assert.deepEqual(R.bay.door, [24, 56, 976, 304]); is(R.bay.door, "the door", P); is(R.bay.door, "the door", Z); assert.ok(inside(R.bay.door, R.bay.rect));
+  assert.deepEqual(R.bay.slices, { open: "cargo-bay-992x320", shut: "cargo-bay-shut-976x304", report: "cargo-bay-shut-report-976x304" }); assert.deepEqual(R.bay.rect, [16, 48, 992, 320]); assert.deepEqual(R.bay.door, [24, 56, 976, 304]); is(R.bay.door, "the door", P); is(R.bay.door, "the door", Z); assert.ok(inside(R.bay.door, R.bay.rect));
   // the bay (R3): the crates centred as a group on 512 by count, on a 320 pitch, each place inside the bay, its feet on 282 and its contact shadow centred on them
   for (const [n, ps] of Object.entries(R.crates.byCount)) { assert.equal(ps.length, +n); ps.forEach((r, i) => { assert.deepEqual(r, [ps[0][0] + R.crates.pitch * i, R.crates.rect[1], ...R.crates.crate]); assert.ok(inside(r, R.bay.inside)); }); assert.equal((ps[0][0] + ps.at(-1)[0] + R.crates.crate[0]) / 2, 512, n + " crates centred on 512"); }
   R.crates.byCount[2].forEach((r) => { is(r, "crate place"); is([r[0] + R.crates.shadow.at[0], r[1] + R.crates.shadow.at[1], ...R.crates.shadow.size], "crate shadow"); });
@@ -838,4 +838,12 @@ test("the Probe's group stands on the floor, centred; each module is the size of
   assert.deepEqual(R.plates.rect, [232, 424, 208, 64]); assert.equal(R.plates.rect[0] + R.plates.rect[2] / 2, R.cradle.axis); assert.equal(R.plates.rect[1] + R.plates.rect[3] / 2, 456, "the plates' centre y stays 456, so ▶ finds the slot first");
   assert.ok(R.strip.byTier["1"][1] + R.strip.byTier["1"][3] <= R.cradle.rect[1] + R.cradle.rect[3] + 88, "the strips stand under the cradle"); assert.equal(R.strip.byTier["2"][1] - (R.cradle.rect[1] + R.cradle.rect[3]), 40, "the strip is 40 px under the cradle");
   assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[228, 418, 216, 72\], switch \[612, 98, 320, 136\], slot \[612, 242, 320, 256\]/)?.length, 1, "the rings from the spec");
+});
+
+test("GB-R6: the Cargo report's heading is `ink` on a cream label plate that lies at least 6 px inside the plate and ends at least 12 px above the first row, and the report door is the report slice", () => {
+  const R = rd("../specs/station/cargo.json"), rp = R.regions.report, L = rp.label;
+  assert.equal(R.colours.report.heading, "ink"); assert.equal(L.slice, "label-plate-cream-216x32"); assert.deepEqual(L.size, [216, 32]);
+  assert.ok(L.at[0] >= 6 && L.at[1] >= 6, "inside the plate by F3"); assert.ok(L.at[1] + L.size[1] + 12 <= rp.rows.first, "12 px above the first row");
+  assert.equal(rp.heading.at[0], 24); assert.ok(rp.heading.at[0] >= L.at[0] && rp.heading.at[0] + 192 <= L.at[0] + L.size[0], "the heading's 191 px lies on the label");
+  assert.equal(R.regions.bay.slices.report, "cargo-bay-shut-report-976x304");
 });

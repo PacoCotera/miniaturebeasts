@@ -14,8 +14,8 @@
    "crates": { "type": "object", "required": ["places", "shadow"], "additionalProperties": false, "properties": { "places": { "type": "array", "items": { "type": "string" } }, "shadow": { "type": "string" } } },
    "waitingPods": { "type": "object", "required": ["pods", "shadow"], "additionalProperties": false, "properties": { "pods": { "type": "array", "items": { "type": "string" } }, "shadow": { "type": "string" } } },
    "opening": { "type": "object", "required": ["crate", "at", "crates"], "additionalProperties": false, "properties": { "crate": { "type": "integer" }, "at": { "type": "integer" }, "crates": { "type": "array", "items": { "$ref": "crate" } } } },
-   "report": { "type": "object", "required": ["plate", "heading", "podIcon", "shieldIcon", "crates", "gathered", "probe", "world"], "additionalProperties": false, "properties": {
-    "plate": { "type": "string" }, "heading": { "type": "string" }, "podIcon": { "type": "string" }, "shieldIcon": { "type": "string" },
+   "report": { "type": "object", "required": ["plate", "label", "heading", "podIcon", "shieldIcon", "crates", "gathered", "probe", "world"], "additionalProperties": false, "properties": {
+    "plate": { "type": "string" }, "label": { "type": "string" }, "heading": { "type": "string" }, "podIcon": { "type": "string" }, "shieldIcon": { "type": "string" },
     "crates": { "type": "array", "items": { "$ref": "row" } },
     "gathered": { "type": "object", "required": ["lead", "e", "d", "s"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "e": { "type": "string" }, "d": { "type": "string" }, "s": { "type": "string" } } },
     "probe": { "type": ["object", "null"], "required": ["lead", "plates", "text"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "plates": { "type": "integer" }, "text": { "type": "string" } } },

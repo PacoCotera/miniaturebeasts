@@ -171,9 +171,10 @@ static void build_reportCard(void) {
   /* the plate: the signed picture of this exact height, set into the door, centred on the door's middle (y = 64 + 8 × floor((288 − h) / 16)); the rim and shade are painted, so the face draws no fill, edge, rule or shadow */
   int x0 = r[0], y0 = r[1] + 8 * ((maxH - h) / 16), cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
   v_region("report", LAYER_ART); v_name("report"); v_sprite("report.plate", v_pstr("regions.report.plate"), x0, y0, r[2], h);
+  v_sprite("report.label", v_pstr("regions.report.label"), x0 + ck("regions.report.label.at", 0), y0 + ck("regions.report.label.at", 1), ck("regions.report.label.size", 0), ck("regions.report.label.size", 1));   /* GB-R6: the heading's cream label plate, 1:1 inside the plate */
   int hy = y0 + ck("regions.report.heading.at", 1), hpx = ci("regions.report.heading.px", 20), hh = ci("regions.report.heading.h", 32), leadW = ck("regions.report.rows.lead", 1);
   const char *lead = colr("colours.report.lead"), *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *heading = colr("colours.report.heading");
-  v_region("report.heading", LAYER_TYPE); { const char *hd = v_pstr("regions.report.heading"); v_text("report.heading", hd, x0 + pad, hy + v_fdiv(hh - v_cap(hpx), 2), v_measure(hd, hpx), hpx, heading); }
+  v_region("report.heading", LAYER_TYPE); { const char *hd = v_pstr("regions.report.heading"); v_text("report.heading", hd, x0 + ck("regions.report.heading.at", 0), hy + v_fdiv(hh - v_cap(hpx), 2), v_measure(hd, hpx), hpx, heading); }
   int y, podPitch = ci("regions.report.crates.podPitch", 20), podIcon = ci("regions.report.crates.podIcon", 16), iconAt = ci("regions.report.rows.iconAt", 4);
   y = y0 + ci("regions.report.rows.first", 56);   /* the first row: 56 under the card's top (the pad, the heading's 32 and 8 more) */
   for (int i = 0; i < nc; i++, y += rowH) {
