@@ -9121,12 +9121,12 @@
    16
   ],
   "rect": null,
-  "src": "typed by hand",
-  "made": "an open book in `bone` for chrome: no feet, each page's top falling 1 px per 3 px towards a 1 px spine, the bottom edge curved to match, two text lines per page, `fog` shade on the right page, centred (rows 2 to 13) (pass 81, after the art director's verdict on pass 75)",
-  "sha256": "16e3a0de4584df69e681dec4fce65b5b98ce1c700a2b64c0e21df6e4d6b1127f",
+  "src": "habitat-marks/make-guide-mark.py (paintkit.py)",
+  "made": "G1, the field guide door mark after the species line: a closed field guide, bark cover, sand spine band, bone page block, a pressed leaf on the cover",
+  "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
  },
  "guide-seal-32": {
   "size": [
@@ -14816,6 +14816,45 @@
   "src": "habitat-marks/make-gate-wild.py (painted in code, paintkit.py)",
   "made": "W1, the Wild module gate ajar: the same posts, the leaf swung toward the viewer on its left hinge (12 px wide, free edge 2 px lower), the empty keeper on the latch post",
   "sha256": "22aa57453638a881909bf67cb6244b1bf8336aa082e06ece5f4febab5a8c6bb6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "chapter-plate-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "habitat-marks/make-chapter-plates.py (paintkit.py)",
+  "made": "P1, the plate under a read chapter emblem at (608+48i, 200): a raised sage plate, bevelled, a shallow raised face, four sand rivets; matte, top-left light",
+  "sha256": "01399fcf562404f2ba6831a7dbf97c3d7882a982128cfd31032da86c2538af8e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "chapter-plate-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "habitat-marks/make-chapter-plates.py (paintkit.py)",
+  "made": "P1, unread: the same housing as a recessed socket, its floor the dark ground, walls shaded top-left and lit bottom-right",
+  "sha256": "35633c7e700eab12071e78a743c9d04bed08ab90c0ab9434f32be558f9210b0f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "chapter-plate-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "habitat-marks/make-chapter-plates.py (paintkit.py)",
+  "made": "P1, sealed: the read plate with a bark band across its lower margin and a sand clasp, below the emblem box",
+  "sha256": "8c1b3687d57b127f71021a3e57128a324f043a9fcb6e879b53eac5874f0f63f7",
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
