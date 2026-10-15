@@ -65,9 +65,9 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - No other pixel changed. The hashes above are updated.
 - X31 also: S02 flee and huddle were cut flat at the box's right edge (the front end). One body column is taken out of the middle and the front end closed with its ink outline at x 31.
 
-## Juvenile (candidate)
+## Juvenile (signed)
 
-The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenile-S0n-304x312.png`) with `tools/build-species-juv-token.py` and cleaned in place by `tools/species-s0n-juv-clean.py`; each set is the idle, alert, huddle, eat-f0, eat-f1 at 32x32 (lowest opaque row 31) and a 12x12 mini (lowest row 11). Review sheets are `S0n/sheet-S0n-juv-candidate.png`. Candidate, nothing signed.
+The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenile-S0n-304x312.png`) with `tools/build-species-juv-token.py` and cleaned in place by `tools/species-s0n-juv-clean.py`; each set is the idle, alert, huddle, eat-f0, eat-f1 at 32x32 (lowest opaque row 31) and a 12x12 mini (lowest row 11). Review sheets are `S0n/sheet-S0n-juv-candidate.png`. All three sets are signed by the art director (below).
 
 **S03 juvenile signed** (art director, 2026-10-15 04:36), judged at 1× on the lawn beside the signed adult. The studio's set is ac79e3b8/03f19fca, with one AD fix: the head antenna was a gold stub, and is now a teal stalk (1f9d8f) with an ink cap above it, as the adult (a83542f0). That is 2 px in each of the 6 files, all on the core 48:
 - `S03/c-token-S03-juv-idle-32x32.png` sha256 `2e30a2f514968440bd0e4c673dec8fd599195a473760001a84fb49e9c27cb8b8`
@@ -77,7 +77,7 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S03/c-token-S03-juv-eat-f1-32x32.png` sha256 `c6dc88e6ed393307ef8ea4107e4c916684fde0bec0eee4f0a7660b22a81f0975`
 - `S03/c-mini-S03-juv-12x12.png` sha256 `fa5037914614b1342a3d9c7a33fa3cd941d6ba0b9732773ba9da91344b0a7dc8`
 
-**S01 juvenile (candidate):**
+**S01 juvenile signed** (art director, 2026-10-15 04:47), judged at 1× on the lawn beside the signed adult, round 3 at 6fd6e73e. The silhouette follows the AD's mask (juv-direction/) and the idle is the AD's face pass, 3b108bfe, carried to every pose and the mini:
 - `S01/c-token-S01-juv-idle-32x32.png` sha256 `bbfb2085b6a79d732fd579cc1fee810c17db30003a86a385e11ec3c58f427e2d`
 - `S01/c-token-S01-juv-alert-32x32.png` sha256 `d3b41be650000e46578a6aebff085238e8a0d92fa10559c9e0308aa58069393d`
 - `S01/c-token-S01-juv-huddle-32x32.png` sha256 `bb76fe0bde424b6709c49b90a06517d4319f45b0b612f14bec8190f3de9b4950`
@@ -85,7 +85,7 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `bb2223e140889e68c16598bcf884b779aa105aad8b92ed18c0a5513796fefc3b`
 - `S01/c-mini-S01-juv-12x12.png` sha256 `4ed25fd9cc27aec010f8f944a71cc8650b938b8d553650923e7cd336ed8b3f5c`
 
-**S02 juvenile (candidate):**
+**S02 juvenile signed** (art director, 2026-10-15 04:47), judged at 1× on the lawn beside the signed adult, round 3 at 6fd6e73e. The silhouette follows the AD's mask (juv-direction/), with the near eye at x 22–23:
 - `S02/c-token-S02-juv-idle-32x32.png` sha256 `d4776650d605c46b58be94c2eed3033f71979822e59045d0993672e5072fe16d`
 - `S02/c-token-S02-juv-alert-32x32.png` sha256 `797c55cb99c442d72e403a9b7c731c8df6d31a45e539c2eba461d6d1c6078fb2`
 - `S02/c-token-S02-juv-huddle-32x32.png` sha256 `f858506536f6282e16dd0b472d9a2d29d3f7ba2125854e77d0f92c4eb0275faf`
