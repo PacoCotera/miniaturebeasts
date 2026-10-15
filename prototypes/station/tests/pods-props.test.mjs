@@ -194,3 +194,22 @@ test("the overview's kin are at most five (fix 5): a pod of a full rack of six h
   const st = rich(["S01", "S01", "S01", "S01", "S01", "S01"]); readSome(st, 0);
   assert.equal(podsProps(model(st, { focus: "rail.0", ui: { view: "overview" } }), spec, frameSpec).props.regions.kin.length, 5);
 });
+
+// ---- fix 5 P8: Pods never takes the frame's notice; the right slot is Pods' own line or empty ----
+test("on every Pods state but Compare and the empty rack the bottom line's right slot is a string: Pods' own line or empty, never the host's notice (P8)", () => {
+  for (const [name, m] of scenes()) { if (name === "an empty rack" || /Compare/.test(name)) continue; const line = podsProps(m, spec, frameSpec).line; assert.equal(typeof line.need, "string", `${name}: need is ${JSON.stringify(line.need)}`); }
+  assert.match(spec.bottomLine.need, /never shown on Pods/);
+});
+test("P8: a read chapter of a pod with no glint has an empty right slot; an unread chapter with ◆ to spare and nothing to warn about has one too", () => {
+  const st = readSome(rich(["S01", "S01"]), 0), p = st.tray[0]; assert.ok(!S.podGlints(st, p), "no glint on this pod");
+  assert.equal(podsProps(model(st, { focus: "rail.0", ui: { view: "chapter", ci: 0 } }), spec, frameSpec).line.need, "");
+  const un = rich(["S01", "S01"]); assert.ok(!S.podGlints(un, un.tray[0]));
+  assert.equal(podsProps(model(un, { focus: "rail.1", ui: { view: "chapter", ci: 1 } }), spec, frameSpec).line.need, "", "an unread chapter, ◆ to spare, no glint, no warning");
+});
+test("P8: a sealed chapter of a pod that glints on another chapter says glintPod; without a glint it says nothing", () => {
+  const st = rich(["S02"]), fr = frameOf("S02"), sealedAt = fr.chapters.findIndex((c) => c.sealed); assert.ok(sealedAt >= 0);
+  const line = () => podsProps(model(st, { focus: `rail.${sealedAt}`, ui: { view: "chapter", ci: sealedAt } }), spec, frameSpec).line;
+  assert.ok(!S.podGlints(st, st.tray[0])); assert.equal(line().need, "", "no glint: empty");
+  st.readOnce.S02 = [fr.chapters[0].id]; st.guide.S02 = {}; assert.ok(S.podGlints(st, st.tray[0]), "the pod now glints on its first chapter");
+  assert.equal(line().need, spec.strings.glintPod, "another chapter glints: glintPod");
+});
