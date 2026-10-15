@@ -100,3 +100,11 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `e16be5c15cbd060ee708a38aa4bff3b1e72cbc5748e8d5115108794284f9f6e4`
 - `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `f11b35001f9d0f5dd20c0e4d3c828c80996d14e6aad757d2f7ed6edf34cd952b`
 - `S01/c-mini-S01-juv-12x12.png` sha256 `8f8cf745ca1525d281d708b0fa4dc3219b5691f23dc593699faf27012c710a96`
+
+**S01 juvenile X31(a), the young Loika's face (candidate; the AD's 05:47 brief: the head of split 1 and the body of split 2; the signed split 2 stays in b340b3db):** charcoal crown rows 12 to 15 with the eyes as signed, cream cheeks, chin and throat from row 16, the snout knob as signed, the cream throat running into the cream chest (no collar); the body charcoal to row 23, one slate row, cream rows 24 to 28 and legs, sand pads on row 30, ink on row 31; made by `tools/species-s01-juv-final.py`; review sheet `S01/sheet-S01-juv-x31-candidate.png` (its third tile is the Station's regraded juvenile, masters-pods 02f6f1b8, 104x112 reduced to 24 px high).
+- `S01/c-token-S01-juv-idle-32x32.png` sha256 `e5bc39970893c8aa98ce8044e8bc785d4b79aafa0b5012a124bd074f14c2806d`
+- `S01/c-token-S01-juv-alert-32x32.png` sha256 `d1b25fa4d0d729bade653c4cef854fa09559619f33c3eecd85890b9ca35bf13c`
+- `S01/c-token-S01-juv-huddle-32x32.png` sha256 `928fe6c1f93408286158eb20b2beb00d9c9411b396fa0e18f58e62a6010f804d`
+- `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `af4bb10e4bd7c204d626b4616de558fd3ca9e95c3b83fc479a432bf42c16427a`
+- `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `2816cfc2828eb2af2c98d3e11a172f5f9b24aaf79f275a0e2b3b90f68b091e38`
+- `S01/c-mini-S01-juv-12x12.png` sha256 `9652b9804c8cc5eb7970a380cc22dc5a2f50271b0da5f3b15b68d319a4c69426`
