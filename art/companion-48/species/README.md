@@ -76,3 +76,11 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `4481ce4dfd0974c5144b58afe6ad836c6743a960ddd948ae377873c980983400`
 - `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `4a9ae65f0200d6623f10ccaf2a9df0d0159900f0dfd59952461e65b726111514`
 - `S01/c-mini-S01-juv-12x12.png` sha256 `d075f7f80b4c23435a905080f76a1e543c34d009a7df77e70862a2b4ed06c65a`
+
+**S02 juvenile (candidate):**
+- `S02/c-token-S02-juv-idle-32x32.png` sha256 `03cdf61cd89f09d3c0c425ad757ef99b0b12545d710ced62dfcd08634bd6cd55`
+- `S02/c-token-S02-juv-alert-32x32.png` sha256 `7e8d9e7bab4acea6bdb96de037cd7042369d95e15d1547bccc0ff18588dad2eb`
+- `S02/c-token-S02-juv-huddle-32x32.png` sha256 `0780fe7b45697b0e5ac9ec8f35073f93d17e2ba7a13207787db11be7c893023f`
+- `S02/c-token-S02-juv-eat-f0-32x32.png` sha256 `38a75c133f021829e467eb030fad973396c09c89aa87b12ce2e3a21698a97b12`
+- `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `6e69ff788831cdf7c0ae0a0e2bb014621919f0680c48a433822800fb983011ad`
+- `S02/c-mini-S02-juv-12x12.png` sha256 `cbdf05c2616fbfaafadac7976813a22c141aeaab933e7acf4324dce4bd5b8a36`
