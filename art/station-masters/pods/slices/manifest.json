@@ -14334,5 +14334,41 @@
   "status": "signed",
   "signed_in": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures",
   "status_note": "0 px magenta"
+ },
+ "cargo-bay-992x320": {
+  "size": [
+   992,
+   320
+  ],
+  "rect": [
+   16,
+   48,
+   992,
+   320
+  ],
+  "src": "concepts/cargo-bay: source/raw/cargo-bay-open-a.jpg (gemini-3-pro-image, 1 Pro request, 4.01 MXN), cut by tools/baycut.py",
+  "made": "the Cargo bay, open: sage rim, warm dark back wall, a plain sage floor shelf with a front lip (Oct 11)",
+  "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (concepts/cargo-bay/README.md, e3a50bdf)",
+  "status_note": "signed (art director) at 1x; moved into slices for fix 5 AR1 (10-15), unchanged"
+ },
+ "cargo-bay-shut-976x304": {
+  "size": [
+   976,
+   304
+  ],
+  "rect": [
+   24,
+   56,
+   976,
+   304
+  ],
+  "src": "concepts/cargo-bay: source/raw/cargo-bay-shut-a.jpg (gemini-3-pro-image, 1 Pro edit, 3.66 MXN), cut by tools/baycut.py (whole door slats removed)",
+  "made": "the Cargo bay's shut sage roller door, the inside rect, drawn over the open bay (Oct 11)",
+  "sha256": "28c5bd98e365f724763dd2a71a23d0a83b9c1d0d78500834a9f5a3067ee32582",
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (concepts/cargo-bay/README.md, e3a50bdf)",
+  "status_note": "signed (art director) at 1x; moved into slices for fix 5 AR1 (10-15), unchanged"
  }
 }

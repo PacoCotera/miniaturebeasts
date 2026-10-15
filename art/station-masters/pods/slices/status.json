@@ -3605,5 +3605,15 @@
   "status": "signed",
   "signed_in": "art director, beside S02 at 1x (2026-10-12)",
   "note": "S03 value pass: juvenile re-signed; replaces the earlier S03 juvenile"
+ },
+ "cargo-bay-992x320": {
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (e3a50bdf)",
+  "note": "fix 5 AR1: moved into slices, unchanged"
+ },
+ "cargo-bay-shut-976x304": {
+  "status": "signed",
+  "signed_in": "art director, the Cargo bay read (e3a50bdf)",
+  "note": "fix 5 AR1: moved into slices, unchanged"
  }
 }
