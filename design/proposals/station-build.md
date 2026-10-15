@@ -81,7 +81,7 @@ A panel under the device, opened by `?dev` or a page button, never a device key.
 | Group | Controls |
 | --- | --- |
 | Timers | Bud scale (real, ×10, ×60, instant); the first-bud rule on or off; sitting wait (three hours, a minute, now); juvenile to adult (world turns, or now); the mock painter's delay |
-| Economy | Decided prices; loose (decided prices plus a top-up on each arrival, the default); free. Add materials; the instant-grow price (a placeholder until the real economy sets it) |
+| Economy | Decided prices; loose (decided prices plus a top-up on each walk crate, the default); free. Add materials; the instant-grow price (a placeholder until the real economy sets it) |
 | Limits | Bays (6, 8, 10); rack size; the world's daily grow cap, up to the server ceiling; painter real, mock or offline; sealed chapters open |
 | Seeds | A crate of pods (species, count, seed); a pod from a pasted genome; two unrelated adults; two siblings; a held sitting |
 | Skip to | Identified; read and shaped; mid-bud; ready to open; two adults ready to cross; a field guide one look from full; a sitting's crate in the bay |

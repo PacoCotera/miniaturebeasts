@@ -49,7 +49,7 @@
 <text x="368" y="193" font-size="9" fill="#777">360,160 304×312</text>
 <text x="368" y="205" font-size="9" fill="#777">feet 512,472 on the base · steps 4 px at 1400, 1800</text>
 <line x1="400" y1="472.5" x2="624" y2="472.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
-<rect x="312.5" y="104.5" width="399" height="39" fill="#0f4c50" stroke="#45d8be" stroke-width="1"/>
+<rect x="312.5" y="104.5" width="399" height="39" fill="#7d5435" stroke="#d89b14" stroke-width="1"/>
 <text x="512" y="130" font-size="16" fill="#f1ebdf" text-anchor="middle">Fig, a young Loika</text>
 <text x="716" y="116" font-size="9" fill="#777">ribbon 312,104 400×40</text>
 <text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms,</text>

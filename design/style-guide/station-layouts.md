@@ -44,7 +44,7 @@ This section is the Station's structure: which screens exist, their levels from 
 | **Library** | the spread, a species' Book (face and guide spreads) | The spread: every species at once, one frame each, found, met or empty ([Library spread](#library-spread)); the Book: one species | one level closer; Visit {name}: a jump to that mibi up close | "Home", "Library" |
 
 - **"{name}" and "{pod}"** are the mibi's and the pod's own names, as the way back already names a pod. A name wider than the way back's word room (68 px) reads "Back".
-- **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium".
+- **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium". Each is shut in place until its slot (Shut doors).
 - **The Incubator as the bridge.** Research leads in (Create, Cross, an empty Incubator's pod), and the Vivarium leads out (the hatch ends in the meet, one mibi up close). It is reached from Home's column and by those jumps, and its title keeps the Research mark.
 - **The dock's cargo moment is Cargo.** The Caddy's Dock is never a Station key. Docking brings the crates into the bay: Home's Cargo module lights amber, the notice names the crates, and ✓ on the room or the module opens Cargo. The moment itself keeps its name, the arrival: the ribbon, each crate opening and the report card play on Cargo's whole stage ([Cargo](#cargo)). The crates' pods land in the rack, so Pods' collection shows them after. Docked from the play page while the Companion or the bench has the keys, the Station lands where it can be seen: Pods, the Incubator, the Vivarium, one mibi up close with the namer shut, the Library and the Probe bench go to Home with the ring on the room; Home and Cargo play their own arrival; Create or Cross with an unpaid choice, the namer and the Sitting stay where they are, with the plate. A lift never moves the screen (`frame.json` `navigation.dock`).
 - **Shut doors.** No target in play opens a not-built screen: a door to one is shut in place, with no `✓` cap and its screen's shut line (`frame.json` `doors`). Cross is shut until the build's slot 7: "crossing is not open yet". The guide, the card's species word, is shut until slot 8: "the guide is not open yet". The portrait is shut until slot 9: "portraits are not open yet". A found frame in the Library shows the message plate "Its Book is not open yet" on `✓` until slot 8.
@@ -367,7 +367,7 @@ Two levels, told apart on every screen that shows either, so the player never lo
 
 - Never on screen: specimen, type (the type specimen is the pipeline's word), individual, critter, creature. "Specimen" stays the face's word for the spotlit thing (the `specimen` word of the vocabulary), never a label.
 - The house terms hold: Companion, partner, pod, crate, bay, Shield, beacon, outpost, mibi.
-- Each level has a door to the other. From one pod or mibi to its species: the figure on Pods' overview and the species word on the vivarium's card open the Book's guide spread (`✓ Open the guide`, a jump). From the species to one mibi: a name in the guide's "Carried by" line (`✓ Visit Fig`, a jump to the vivarium, up close). After either jump, ← goes to the parent of the screen you are on (frame.json `navigation.jumps`).
+- Each level has a door to the other. From one pod or mibi to its species: the figure on Pods' overview and the species word on the vivarium's card open the Book's guide spread (`✓ Open the guide`, a jump). From the species to one mibi: a name in the guide's "Carried by" line (`✓ Visit Fig`, a jump to the vivarium, up close). After either jump, ← goes to the parent of the screen you are on (frame.json `navigation.jumps`). Until their slots these doors are shut in place with their lines (Shut doors, above).
 
 ---
 
@@ -484,7 +484,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred |
 | Stamp case and front glass | 856, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`) |
 | **Stamp label** | 872, 400, 120, 120 | Small, at the edge; 544 px from the pod's box. Appears at Identify |
-| Ribbon ("New species") | 680, 128, 328, 40 | In the origin sentence's rectangle, 6 s, the read tab's cool look |
+| Ribbon ("New species") | 680, 128, 328, 40 | In the origin sentence's rectangle, 6 s, the one ribbon look: `bark` fill, `gold` edge, `bone` words |
 
 **C · Chapter page**
 
@@ -881,7 +881,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
+| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third or a developer crate (both developer only): "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
 | `crate` | 296, 120, 432, 272 | The crate closer, the whole case, centred on 512, 24 px under the ribbon and 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
 | Containers | 48×64 at (184, 320), (240, 320), (736, 320), feet on 384, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end dither; the travelling pods draw over them; no digits, never kept |
 | Its pods | 88×112, 104 apart on y 152 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
@@ -893,7 +893,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
 | Heading | 88, 32 tall | — | "Home from the field", 20 px medium |
-| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "some of the land explored", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
+| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Another crate" for a walk crate past the third or a developer crate (uncounted: it takes no ordinal) | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "some of the land explored", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
 | Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon |
 | Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
 | The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
@@ -1039,7 +1039,7 @@ Every string on these screens, its zone and its longest case, measured in the re
 | Notice (16 px, 256 after the lamp) | The needs above | an Untuva pod needs more ◆ 224 (the words 204, 4, the 16 px icon); an Untuva pod waits unread 212; three crates wait in the bay 199; meet {name} 204 |
 | Way back (16 px, 68) | Home, Cargo | Cargo 46 |
 | Title (20 px medium, 200) | Home, Cargo | Cargo 58 |
-| Ribbon (20 px medium, 576 inside its pads) | First, Second, Third crate home | |
+| Ribbon (20 px medium, 576 inside its pads) | First, Second, Third crate home; Another crate home; {name}'s portrait | {name}'s portrait 292 (a ten-letter name); Another crate home 191 |
 | Report heading (20 px medium, 528) | Home from the field | 190 |
 | Idle line (16 px, 992) | Idle's lines | {name} is out with the Companion 362 |
 
@@ -1634,11 +1634,11 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 | Pad | Moves the ring by the focus; on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once), in state out when that mibi is out |
 | ✓ on the mibi or its tile | `✓ Greet Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing. In the meet, `✓ Name Moss`. Out: no greet (the mibi is not here) |
 | ✓ on the name tag | `✓ Rename Burr`: the namer opens over the right column; any housed mibi, at home or out; when it closes, the ring is on the name |
-| ✓ on the species line | `✓ Open the guide`, "every Loika": a jump to the Book's guide spread |
+| ✓ on the species line | `✓ Open the guide`, "every Loika": a jump to the Book's guide spread. Until slot 8: no ✓ cap, "the guide is not open yet" |
 | ✓ on a plate | A bred child's unread chapter, at home or out: `✓ Read Coat   ◆ 1` (no price when free): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, "Coat, read", "Coat, sealed" |
 | ✓ on Companion | `✓ Take Fig with you` when Fig is not in the set as it will be and that set holds fewer than three: "goes with you now" (docked) or "goes at the next dock" (away). `✓ Bring Fig home` when Fig is carried and no request for it waits: "comes home now" or "home at the next dock". A request waiting: no ✓ cap, the context says what waits. Three in the set and Fig not one: no ✓ cap, "the Companion is full". A mibi the Companion could not take shows the plate "Fig stayed home, no room" once |
-| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the [Sitting](#sitting). Otherwise no ✓ cap and the reason: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way"; out, "sits when you dock" |
-| ✓ on Cross | An adult or an elder with a partner it can pick: `✓ Cross Burr`, "two Loika to pair with" (counting only the partners it can pick), opens Cross. Docked, a carried mibi crosses as any adult. Away, the shown mibi out with the Companion: no ✓ cap, "crosses when you dock"; at home with every partner out: no ✓ cap, "pairs when you dock". A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the [Sitting](#sitting). Otherwise no ✓ cap and the reason: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way"; out, "sits when you dock". Until slot 9, a mibi that could sit: no ✓ cap, "portraits are not open yet". |
+| ✓ on Cross | An adult or an elder with a partner it can pick: `✓ Cross Burr`, "two Loika to pair with" (counting only the partners it can pick), opens Cross. Docked, a carried mibi crosses as any adult. Away, the shown mibi out with the Companion: no ✓ cap, "crosses when you dock"; at home with every partner out: no ✓ cap, "pairs when you dock". A juvenile: "crosses once adult"; alone: "no Loika to pair with". Until slot 7, an adult that could cross: no ✓ cap, "crossing is not open yet", its partners' faces as for an adult. |
 | ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it: it dithers out to the next mibi in bay order (the whole, empty, when none is left), its tile frees, the plate "Burr goes back to the rock field". Refused with no ✓ cap and the reason: "a bonded mibi stays", "not until it is adult", "already with you", "goes at the next dock" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
 | ← | The whole, however this level was opened (a jump, Home's ✓ Look at, the hatch), the ring on this mibi's resident, or its tile while it is out. While the namer is open, ← is the namer's |
@@ -2163,7 +2163,7 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Arrive | From Home's Library module or the Library key, the ring on the frame it was last on; a fresh world, on the first frame. From the Book's ←, the ring on that species |
 | ◀ ▶ | Along a row, across the gutter to the other page's same row; the outer edges stop, never a wrap |
 | ▲ ▼ | Between the page's two rows; the edges stop |
-| ✓ on a found frame | `✓ Open its Book`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library). The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
+| ✓ on a found frame | From slot 8, `✓ Open its Book`, the context the species' name: a cut to its Book's face spread. Until slot 8 the door is shut in place: no ✓ cap, the same context, and ✓ shows the message plate "Its Book is not open yet". The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
 | ✓ on a met frame | No ✓ cap; the context "{species}, only seen"; a press shows the message plate "Its Book needs its pod identified" and nothing opens |
 | ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press shows the message plate "Nothing is known here yet" and nothing opens |
 | The notice | The frame's notice, as on every screen |
@@ -2210,7 +2210,7 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 
 - **A second spread** (more than sixteen species): the page-turn corner's region is set (968, 512, 24, 24); ▶ past the right page's last column and ◀ past the left page's first are not. `frameIds()` holds sixteen today.
 - **A name wider than 96 px** at 16: none today (Untuva, 53, is the widest).
-- **The Book's entry from a frame**: a cut until slot 8 designs it.
+- **The Book's entry from a frame**: shut until slot 8 ("Its Book is not open yet"); from slot 8 a cut, until that slot designs it.
 - **What a newly found species shows** on the spread the first time (a mark, a moment): the save holds no unopened page, as on Home's Library module.
 
 ---
@@ -2591,7 +2591,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 ### 4. Art direction
 
 - **Room:** the vivarium stays the warm, living thing on screen; the namer is a panel of the device's slate over its card, the report card's look.
-- **One warm signal:** the focus ring. The selection is cool (`bark`), the caret `bone`, refusals `amber` and only for a moment.
+- **One bright signal:** the focus ring. The selection is a quiet `bark` fill, the caret `bone`, refusals `amber` and only for a moment.
 - **Never childish:** small square keys in a calm grid, letters in Inter 16, no bounce, no colours per letter.
 - **Calm:** nothing moves but the ring and the lift of the focused key; the caret is steady.
 
@@ -2601,7 +2601,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 | --- | --- | --- |
 | Panel | `panel` fill, `hairline` edge, `bevel` top row, drop shadow `void` at (+2, +3) | The report card's look: an instrument readout standing over the scene |
 | Field | Inside `ground`, edge `hairline`; the name `bone` | A recess, as the rack's wells, so the name reads as something held |
-| Selection | `bark` behind the name | The cool look of the ribbon: selected, not warned |
+| Selection | `bark` behind the name | The ribbon's fill, quiet: selected, not warned |
 | Caret | `bone`, 2×28, steady | Plain, the same colour as the name |
 | Say line | The reason `mist`; a refused press `amber` for 4 s | Mist informs without nagging; amber is the frame's "needs you" |
 | Keys | `panel` fill, `hairline` edge, `bevel` top; label `bone`; dimmed `mist` | The kit's instrument panel at its smallest |
@@ -2748,7 +2748,7 @@ the vivarium's own spec carries these; the namer depends on them.
 
 ## Not built yet
 
-A screen the face does not draw yet shows the frame, the stage's ground and one line saying so. The numbers live in `prototypes/ui/specs/station/frame.json` `notBuilt`. Wireframes: [13-not-built.svg](station-layouts/13-not-built.svg) and [13b-not-built-idle.svg](station-layouts/13b-not-built-idle.svg), each with its 1× PNG; the magenta marks are measurements, everything else is drawn in its palette colour.
+A screen the face does not draw yet shows the frame, the stage's ground and one line saying so. The numbers live in `prototypes/ui/specs/station/frame.json` `notBuilt`. Wireframes: [13-not-built.svg](station-layouts/13-not-built.svg) and [13b-not-built-idle.svg](station-layouts/13b-not-built-idle.svg), each with its 1× PNG; the magenta marks are measurements, everything else is drawn in its palette colour. No press in play reaches it: every door to a screen not built is shut in place (Shut doors). It shows only on a developer jump or the journey's not-built steps.
 
 <table><tr>
 <td valign="top"><img src="station-layouts/13-not-built.png" width="480" alt="Home, not built yet"><br><em>13. Home, not built yet, where the sandbox opens: the frame, the flat ground and the line; the notice on a fresh world. 1×, measured.</em></td>
