@@ -3734,8 +3734,8 @@
   "src": "device-plate/rail/make-tab-open-cream.py from the signed open fill (pass 83, 75976f3c): same alpha, slant and size, colours only",
   "made": "gate batch 1 F2-A6: the open tab as the board's cream label plate: face (229, 220, 203) with a quiet fall to the lower right, the signed 1 px bevel ring as the 1 px darker edge (its AA steps kept as blends), the ring inside lit on the top row and left slant, shaded on the bottom row and right slant; matte, no gold; ink reads at 12.9:1 (its word and pips go ink, frame.json states.open)",
   "sha256": "9048cd142f666635ef1caba8d025f3308d668a0839f997b677f8a0b491c5ead6",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: create-shape*, pods-chapter-page*, pods-compare",
   "status_note": "new (10-15, gate batch 1 F2-A6): recut by the art director at 0 MXN, replacing the pass 83 slate open fill; signed in the Pods chapter-page and Create captures after fix 2's merge"
  },
  "rail-tab-fill-sealed-full-152x40": {
@@ -8282,8 +8282,8 @@
   "made": "fix 11 G2: the blend glyph redrawn as two 12 x 16 seeds overlapping 4 px, the front one right, an ink keyline down the back seed's edge; placed 1:1 after the name, top at line y + 2",
   "ruling": "pass 60, the art director: the ink ring round the single seed is not needed (ink on the ground is invisible at 1x); the pair keeps its ink overlap stroke. A ruling, not a drift from the signed seed.",
   "sha256": "32ca35ff6b0229ac381ea11db3d7be06f3ce983e3ed3897d7a6bb5ff0b1e985f",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page-a-doing",
   "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures"
  },
  "mark-line-only-16x8": {
@@ -14071,8 +14071,8 @@
   "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
   "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 304x312 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
   "sha256": "5c143f8fb40a350fb540e13dd759db50ea5e8e9d0eae7b0960dc096928663976",
-  "status": "new",
-  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: create-* (the founder, Create A)",
   "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  },
  "mibi-adult-S01-144x152": {
@@ -14084,8 +14084,8 @@
   "src": "art/miniature-lives/assets/rich-plain-300x310.png (Pip, accepted); adult/cut-pip.py",
   "made": "S01's adult stand-in, Pip (fix 1a): the body at alpha 192 and up made opaque, Pip's soft shadow as the house shadow (#1e1a22 at 110); 144x152 by the adult family's fit (304 at 1:1, the ground row on 305; 144 x0.4737, 96 x0.276, 48 refit to 44)",
   "sha256": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
-  "status": "new",
-  "signed_in": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-overview-identified-pod-focused, -kin, -hatch, -a-rail-tab-focused, img/page-identified",
   "status_note": "0 px magenta at every size; alpha 0/110/255 at 304 and 48, the family's graded shadow at 144 and 96"
  },
  "mibi-adult-S01-96x88": {
@@ -15251,9 +15251,9 @@
   "src": "device-plate/make-device-plate.py 576 48 --open-top (the fix 2 kit, cut from the signed housing)",
   "made": "fix 2 F11, the chapter rail's well for a run of 560: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "8ef5d050ba53ceefa0ce83a6d31b844f265e1338538485cdf4426035cfe1b8d6",
-  "status": "new",
+  "status": "signed",
   "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
-  "signed_in": null
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: create-*, pods-chapter-page*, pods-overview-*"
  },
  "plate-rail-well-712x48": {
   "size": [
@@ -15290,9 +15290,9 @@
   "src": "device-plate/make-device-plate.py 504 48 --open-top (the fix 2 kit, cut from the signed housing)",
   "made": "fix 2 F11, the chapter rail's well for a run of 488: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "6597d8d00be8347c8ffd36d90ea762f3976da7d832052bbeafe0e5b7ba99cba5",
-  "status": "new",
+  "status": "signed",
   "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
-  "signed_in": null
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: img/pods-compare-four, -six"
  },
  "plate-rail-well-560x48": {
   "size": [
@@ -15446,9 +15446,9 @@
   "src": "device-plate/make-device-plate.py 136 168 --well --floor 1d232b --flat (the fix 2 kit)",
   "made": "gate batch 1 C5 (D1), Pods chapter-page cells and Compare 1-2 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "700652b7023ad217be6e19c8c264148f19d200d07456066de138016f9c7e94fc",
-  "status": "new",
+  "status": "signed",
   "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
-  "signed_in": null
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page*, pods-compare, img/pods-compare-one, -two"
  },
  "plate-well-120x120": {
   "size": [
@@ -15459,9 +15459,9 @@
   "src": "device-plate/make-device-plate.py 120 120 --well --floor 1d232b --flat (the fix 2 kit)",
   "made": "gate batch 1 C5 (D1), the sealed find at (388, 252): the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "8fb2ad32e18fa70a3d0861300a3d71df0d67441ef61dd9169f8230cd990e4426",
-  "status": "new",
+  "status": "signed",
   "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
-  "signed_in": null
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page-sealed, img/pods-sealed"
  },
  "plate-well-112x168": {
   "size": [
@@ -15485,9 +15485,9 @@
   "src": "device-plate/make-device-plate.py 112 104 --well --floor 1d232b --flat (the fix 2 kit)",
   "made": "gate batch 1 C5 (D1), Compare 4-6 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "20cb709a34c7c9ea1e4abb0f4933c71306be54a86ae2d2948b50e66c45e2efaf",
-  "status": "new",
+  "status": "signed",
   "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
-  "signed_in": null
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: img/pods-compare-four, -six"
  },
  "mark-line-only-16x16": {
   "size": [
@@ -15498,8 +15498,8 @@
   "src": "marks/fix11/make-line-glyphs.py, typed by rule in the pass 60 family colours",
   "made": "fix 11 G1 (new id, replaces mark-line-only-16x8): one seed (12 x 10) standing on the signed plinth's three steps (fog top 10, mist front 14 x 2, stone foot 16); ink 16 x 14, rows 2-15; placed 1:1 after the name, top at line y + 2",
   "sha256": "162c369faea78c4ecc5cc8c12656c2d420df31457134f3a992a2361053453953",
-  "status": "new",
+  "status": "signed",
   "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures",
-  "signed_in": null
+  "signed_in": "art director at 1x, 2026-10-15 15:2x: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page"
  }
 }
