@@ -14405,7 +14405,7 @@
   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
   "status": "signed",
   "status_note": "signed (art director, 10-15), fix 6 A3",
-  "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)"
+  "signed_in": "art director at 1x, 2026-10-15 06:19: the Create captures (public station-fix6a-create a819e666, create-shape and the others), placed byte for byte"
  },
  "crate-shadow-256x24": {
   "size": [
@@ -14792,7 +14792,7 @@
   "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
   "status": "signed",
   "status_note": "signed (art director, 10-15), fix 6 A2",
-  "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)"
+  "signed_in": "art director at 1x, 2026-10-15 06:19: the Create captures (public station-fix6a-create a819e666, create-shape and the others), placed byte for byte"
  },
  "gate-wild-shut-48x48": {
   "size": [
