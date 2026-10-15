@@ -95,7 +95,9 @@ the Station the pod is identified and hatches; then the world turns once.
   No day/night cycle and no day-part light (**Decided**).
 - **End expedition** works only on the expedition's start cell (a flag on the
   map) or a lit outpost in reach. Elsewhere it is dimmed and the line names the
-  nearest place to end it, "Start · about 2 cells". Cargo previews what the
+  nearest place to end it. On the map it gives the distance, "Start · about 2
+  cells"; inside a place it gives the direction, "Start · north-west", because the
+  count only means something beside the flag (**Built**). Cargo previews what the
   Station will do first. Ending at an outpost ends the expedition exactly as at
   the start: no banking.
 - **What ends an expedition** is the player's choice, pushed by a full hold, a

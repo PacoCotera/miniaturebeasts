@@ -10,6 +10,7 @@ import { freshSt, dockKey } from "../../station/src/state.mjs";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
+import { syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
@@ -400,7 +401,7 @@ test("docked: no one-time hint shows or is spent; after Lift a step shows no Cal
   assert.equal(p.S.found.includes("callintro"), true, "and spends it");
 });
 
-// ---- C2a §8.3: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----
+// ---- C2a: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----
 // 600 frames in each scene, 16 ms apart, with no pass(): no input timer runs, so only render() and frame() could write.
 function frozenBy(p, name) {
   p.run("save()"); const snap = p.run("JSON.stringify(S)") + p.store[p.KEY]; let t = p.clock.t;
@@ -408,7 +409,7 @@ function frozenBy(p, name) {
   assert.equal(p.run("JSON.stringify(S)") + p.store[p.KEY], snap, name + ": S and the save as they were");
   assert.equal(p.run("RT.err"), 0, name + ": no render error");
 }
-test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a place, the beacon sweep and the active screen with a cut due", () => {
+test("C2a: rendering changes nothing: 600 frames in the reach view, a place, the beacon sweep and the active screen with a cut due", () => {
   { const { p } = begin(); frozenBy(p, "the reach view"); }
   { const { p } = begin(); assert.ok(intoPlaceWithCreature(p), "a creature in sight"); assert.ok(p.run("!!(curLive().pt && S.exp.pt)"), "the partner along"); frozenBy(p, "a place with a creature and the partner"); }
   { const { p } = begin();
@@ -419,6 +420,16 @@ test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a plac
       { id: 2, name: 'Pip', sp: 1, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1, 2];
       S.phase = 'active'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
     frozenBy(p, "the active screen with a cut due"); }
+});
+
+// ---- the same at 48 px: the page with a synthetic meadow set installed (each piece a solid fill), places drawn at 48 ----
+const installSynthetic = p => { p.ctx.__syn = syntheticPieces().map(q => Object.assign({}, q, { px: Array.from({ length: q.w * q.h }, () => 4 + (W.hash(q.name) % 40)) })); p.run("atlasInstall(__syn, null, " + JSON.stringify(SYNTH_TONE) + ")"); };
+test("C2a: rendering changes nothing at 48 px: 600 frames in a place with a creature and the partner, and during a Call's hold", () => {
+  { const { p } = begin(); assert.ok(intoPlaceWithCreature(p), "a creature in sight"); installSynthetic(p); assert.equal(p.run("ART48.ready"), true);
+    p.run("render(" + p.clock.t + ")"); frozenBy(p, "a 48 px place"); assert.equal(p.run("RT.ts"), 48, "drawn at 48"); }
+  { const { p } = begin(); assert.ok(intoPlaceWithCreature(p), "a creature in sight"); installSynthetic(p);
+    p.key("call");   // a Call press before the snapshot: its ring and hold are on screen across the frames
+    frozenBy(p, "a 48 px place during a Call"); assert.equal(p.run("RT.ts"), 48); }
 });
 
 // ---- a save that cannot be shown: the device's way out is two presses, and the old save is kept whole ----
