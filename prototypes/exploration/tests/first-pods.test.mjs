@@ -348,3 +348,4 @@ test("the Call sign: after every hazard sign; only on entering a place or a Call
   p.key("call"); assert.notEqual(p.run("FX.sign && FX.sign.sign"), "call");
   assert.ok(!/fxSign\('call'\)/.test(p.run("noteHud.toString()")), "noteHud no longer raises it");
 });
+

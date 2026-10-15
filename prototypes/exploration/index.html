@@ -838,12 +838,21 @@ function idsIn(o, out = new Set()) {
   else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
   return out;
 }
+// What the stored save is: nothing (a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
+// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed (the v7 save moves only into an empty slot).
 function load() {
   const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return false; }   // storage unavailable: a new world in memory
   try {
-    let raw = localStorage.getItem(SAVE_KEY), s = raw ? JSON.parse(raw) : null;
-    if (!s || s.v !== SAVE_V) { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } }
-    if (!s || s.v !== SAVE_V || typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { dropOld(); return false; }   // a Station-only save: a new world starts (and a fresh Station with it)
+    let s = null;
+    if (!raw) {   // an empty slot: a v7 save moves in
+      try { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } } catch (e) { s = null; }
+      if (!s) { dropOld(); return false; }
+    } else s = JSON.parse(raw);
+    if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
+    if (typeof s.v === 'number' && s.v > SAVE_V) return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
+    if (s.v !== SAVE_V) return 'broken';
+    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
     const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
     dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
@@ -858,7 +867,7 @@ function load() {
     if (noPods) S.pods = genLife(S.seed).pods.filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); return true;
-  } catch (e) { dropOld(); return false; }
+  } catch (e) { S = null; return 'broken'; }   // it would not load: kept as it is
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
@@ -4886,7 +4895,7 @@ copyBtn.addEventListener('click', () => {
 // A loaded save that cannot be shown is kept the same way, with its own line and the page's line beside Reset game.
 function readOnlyNewer() { RT.readOnly = true; }
 function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getElementById('resetNote').hidden = false; }
-// The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole in one slot (a newer one replaces an older one) and starts a new world.
+// The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole under its own key (one per move, never replacing an older one) and starts a new world.
 // Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
 const KEPT_KEY = 'mb-save-kept';
 function drawNewer() {
@@ -4902,12 +4911,13 @@ function actReadOnly(k) {
   if (k !== 'confirm') { RT.armNew = 0; FX.bumpAt = NOW; return; }
   if (!RT.armNew) { RT.armNew = 1; return; }
   let raw = null;
-  try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { localStorage.setItem(KEPT_KEY, raw); if (localStorage.getItem(KEPT_KEY) !== raw) throw new Error('not kept'); } }
+  try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { let at = Date.now(); while (localStorage.getItem(KEPT_KEY + '-' + at) != null) at++;   // one key per move: an older kept save is never replaced
+      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
   RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
   newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
 }
-const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
+const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
