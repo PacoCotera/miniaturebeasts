@@ -1144,6 +1144,30 @@ test("place overrides: in a 48 px place in fog a core colour takes the file's fo
   assert.equal(sample[0], true, "a core canvas and a place canvas never mix");
 });
 
+test("48 px: a ford stone takes the place's fog and the storm's dark exactly as the water under it does (no exception for a prop)", () => {
+  const FORD = [1, 2, 3].map(n => ({ name: "meadow/prop/ford-" + n, kind: "prop", type: "ford", w: 20, h: 14, offset: [14, 34], px: Int16Array.from({ length: 280 }, (_, i) => (i % 20 === 0 || i % 20 === 19 || i < 20 ? 10 : 9)) }));
+  const mk = (px, py, setup) => { const p = place48g1(1, 28, px, py); p.ctx.__syn.list.push(...FORD.map(q => ({ ...q }))); p.run("atlasInstall(__syn.list, __syn.table, __syn.levelTone)");
+    p.run(`${setup} layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;`); return p; };
+  const lay0 = place48g1(1, 28, 14, 14).run("(() => Array.from(layout(S.exp.patch.key).tiles))()"), steps = lay0.map((t, i) => t === T_.STEP ? i : -1).filter(i => i >= 0); assert.ok(steps.length, "the ford place has stepping stones");
+  const stx = 12, sty = 16; assert.ok(steps.includes(sty * 28 + stx));
+  // the pixels a stone tile shows: every opaque pixel, the stone's and the water's, through one table
+  const check = (p, px, tx, ty, table, f) => { const key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
+    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y; assert.ok(sx >= 0 && sx + 48 <= W_ && sy >= vy && sy + 48 <= vy + 532, "the stone's tile is on screen");
+    let stone = 0, water = 0, off = 0, fogged = 0;
+    for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0) continue; const isStone = x >= 14 && x < 34 && y >= 34 && y < 48 && (c === 9 || c === 10);
+      if (isStone) { stone++; if (f && f[y * 48 + x]) fogged++; assert.notEqual(table[c], c, "the stone's colour changes under this table"); } else water++;
+      if (px[(sy + y) * W_ + sx + x] !== (f && !f[y * 48 + x] ? c : table[c])) off++; }
+    assert.ok(stone > 200 && water > 1000 && (!f || fogged > 50), "pixels checked: " + [stone, water, fogged]); assert.equal(off, 0, "the stone and the water under it are drawn through the same table"); };
+  // fog: the pawn 5 tiles below the stone (the tile still whole on screen), beyond sight 4
+  { const p = mk(stx, sty + 5, "S.exp.fog = { x: 28 % MW + .5, y: Math.floor(28 / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 };"); noPuffs(p);
+    assert.equal(p.run("sightR(layout(S.exp.patch.key))"), 4); frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3);
+    const inS = (x, y) => Math.hypot(x - stx, y - (sty + 5)) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y), f = wantFar(far, stx, sty);
+    check(p, px, stx, sty, p.run("PLACE_FOG"), f); }
+  // storm: the stone's tile inside the band, dark
+  { const p = mk(Math.min(27, stx + 3), sty, "S.exp.storm = { x: (28 % MW) - 3 - 1.25, dir: 1, w: 3, v: .25, t: 0 };"); const px = frame48(p), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)");
+    assert.ok(stx * 48 + 24 - cam.x < 144, "the stone's tile is inside the band"); check(p, px, stx, sty, p.run("PLACE_STORM"), null); }
+});
+
 // ---- the view's edge cues: tabs, the Call's hold on the edge, the name tag's positions, the send hint in a place ----
 // Each runs at ts 32 and at ts 48 through view.mjs (RT.ts), with motion reduced (the harness's matchMedia matches).
 // A place on seed 1's spawn cell, no storm, no fog, the pawn mid-place, nothing else in it unless the test puts it there.
