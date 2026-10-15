@@ -14,7 +14,8 @@ export const UNKNOWN = {   // the AD's constants (71968ccc)
 const K = UNKNOWN, IN = 128;   // the output is truncated to a byte as the oracle's astype(uint8) does; a pixel is in the body at alpha 128 or more (the palette's pictures are 0 or 255)
 const clip = (v) => (v < 0 ? 0 : v > 255 ? 255 : v);
 
-// boxes: "body" (the whole body alpha: Shape, or with `luma` Coat) or [[x0, y0, x1, y1], ...] pixel boxes, first and last pixel inclusive, one ellipse each, the largest weight where they overlap.
+// boxes: "body" (the whole body alpha: Shape, or with `luma` Coat) or [[x0, y0, x1, y1], ...] pixel boxes, first and last pixel inclusive, one ellipse each, the largest weight where they overlap; a list may also hold "body"
+// (the whole body with part boxes: an ellipse never weighs more than the body, so it adds nothing).
 // luma: Coat unread: under the veil the picture is replaced by its own luma (grey, no hue); Shape unread keeps the picture's colour.
 export function treat(pic, { mode, boxes = [], luma = false }) {
   const { w, h } = pic, src = pic.rgba(), out = new Uint8ClampedArray(src);
@@ -28,8 +29,9 @@ export function treat(pic, { mode, boxes = [], luma = false }) {
     }
   } else if (mode === "veil") {
     const wt = new Float64Array(w * h);   // the veil's weight at each pixel, the largest of the veils
-    if (boxes === "body") { for (let p = 0; p < w * h; p++) wt[p] = K.VEIL_WEIGHT * (src[p * 4 + 3] / 255); }
-    else for (const [x0, y0, x1, y1] of boxes) {
+    if (boxes === "body" || (Array.isArray(boxes) && boxes.includes("body"))) { for (let p = 0; p < w * h; p++) wt[p] = K.VEIL_WEIGHT * (src[p * 4 + 3] / 255); }
+    for (const box of Array.isArray(boxes) ? boxes : []) {
+      if (box === "body") continue; const [x0, y0, x1, y1] = box;
       const cy = (y0 + y1) / 2, cx = (x0 + x1) / 2, ry = (y1 - y0) / 2 + K.GROW, rx = (x1 - x0) / 2 + K.GROW, fe = K.FEATHER / (ry > rx ? ry : rx);
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
         const ey = (y - cy) / ry, ex = (x - cx) / rx, d = Math.sqrt(ey * ey + ex * ex), f = (1 + fe - d) / fe, e = f < 0 ? 0 : f > 1 ? 1 : f, v = K.VEIL_WEIGHT * e * (src[(y * w + x) * 4 + 3] / 255), p = y * w + x;

@@ -133,21 +133,22 @@ const partsFor = (traitId) => (PART_OF.find(([re]) => re.test(traitId)) || [null
 // foot-skirt is Shape, not the leg group); null a chapter that draws nothing (the doings, and Glow and Charge, which change the emission and the phase instead). An unknown chapter id throws, as policyOf does.
 export const UNREAD_REGION = { coat: "body", shape: "body", face: [["head", "muzzle", "beak", "eye", "ear", "crown", "horn", "antenna"]], "legs-tail": [["leg", "ray"], ["tail"]], movement: null, stamina: null, character: null, glow: null, charge: null };
 const regionOf = (id) => { if (!Object.hasOwn(UNREAD_REGION, id)) throw new Error(`chapter ${id} is in no unread-region row (station/src/art.mjs UNREAD_REGION): the programme lead places a new chapter`); return UNREAD_REGION[id]; };
-// How a founder is drawn for the chapters read so far: "ghost" when nothing is read; "veil" over the union of the unread looks' groups (the whole body when Coat or Shape is unread, which wins); otherwise "clear" (only doings, Glow or Charge
-// unread). `boxes` are the groups to veil: [{ whole: true }] for the body, else [{ parts }] per group; with a scene and camera (`view`) each also carries its pixel box from partBox. It draws nothing.
-export function treatmentOf(frame, read, view = null) {
+// How a founder is drawn for the chapters read so far: "ghost" when nothing is read; "veil" over the unread looks: Coat unread the whole body in its luma (id group coat, which wins a tie with Shape), Shape unread the whole body (body); the whole body
+// absorbs the part groups, so a group is never named beside it; otherwise the part groups of the unread looks (face, leg, tail) in their declared order, not the frame's chapter order. Otherwise "clear" (only doings, Glow or Charge unread). `boxes` are what
+// to veil: [{ whole: true }] for the body, else [{ parts }] per group. With the drawn body's `scene` a group with no part on it leaves the id (S07 and S15 have no tail, S01 no tail part), and with no group left the treatment is clear. It draws nothing.
+const PART_GROUPS = [["face", UNREAD_REGION.face[0]], ["leg", UNREAD_REGION["legs-tail"][0]], ["tail", UNREAD_REGION["legs-tail"][1]]];   // the part groups' tokens and parts, in the order the id names them
+const hasPart = (scene, parts) => scene.nodes.some((n) => { const q = n.part ?? n.id; return parts.some((p) => q === p || q.startsWith(p + "-")); });
+export function treatmentOf(frame, read, scene = null) {
   const ids = frame.chapters.map((c) => c.id), readIds = [...read];
   for (const id of [...ids, ...readIds]) regionOf(id);
   if (!readIds.length) return { mode: "ghost", boxes: [], groups: [], luma: false };
   const unreadIds = ids.filter((id) => !readIds.includes(id)), unread = unreadIds.map(regionOf).filter(Boolean);
   if (!unread.length) return { mode: "clear", boxes: [], groups: [], luma: false };
-  const whole = unread.includes("body"), luma = unreadIds.includes("coat");   // Coat unread draws the body's own luma under the veil; Shape unread keeps its colour
-  const groups = whole ? null : unread.flat().filter((g, i, a) => a.findIndex((h) => h.join() === g.join()) === i);
-  const boxes = groups ? groups.map((parts) => ({ parts })) : [{ whole: true }];
-  if (view) for (const bx of boxes) Object.assign(bx, partBox(view.scene, view.camera, bx.parts ?? null));
-  return { mode: "veil", boxes, groups: whole ? [luma ? "coat" : "body"] : groups.map((g) => GROUP_TOKEN[g[0]]), luma };
+  if (unread.includes("body")) { const luma = unreadIds.includes("coat"); return { mode: "veil", boxes: [{ whole: true }], groups: [luma ? "coat" : "body"], luma }; }   // Coat wins a tie with Shape: its colour is never drawn
+  const wanted = new Set(unread.flat().map((g) => PART_GROUPS.find(([, parts]) => parts.join() === g.join())[0])), groups = PART_GROUPS.filter(([tok, parts]) => wanted.has(tok) && (!scene || hasPart(scene, parts)));
+  if (!groups.length) return { mode: "clear", boxes: [], groups: [], luma: false };
+  return { mode: "veil", boxes: groups.map(([, parts]) => ({ parts })), groups: groups.map(([tok]) => tok), luma: false };
 }
-const GROUP_TOKEN = { head: "face", leg: "leg", tail: "tail" };   // the id's names of the part groups
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 // The box (in image pixels) the named parts occupy under a camera; the whole body when none match.
 function partBox(scene, camera, parts) {
@@ -315,15 +316,11 @@ export { upPB };
 // The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
 // ghost of nothing read. A part group with no part on this body veils nothing.
 export function founderArt(frame, genome, read, w, h) {
-  const t = treatmentOf(frame, read), b = builtOf(frame, genome, read), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h;
+  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h;
   return art(key, () => {
-    const ok = !b.error && b.validation.status === "valid", base = ok ? renderPB(b.scene, fitCamera(b.scene, "portrait", [w, h], 0.06), "station") : blobArt(w, h);
+    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = ok ? renderPB(b.scene, camera, "station") : blobArt(w, h);
     if (t.mode === "clear") return base;
-    let boxes = "body";
-    if (t.groups.length && !t.luma && t.groups[0] !== "body") {
-      const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, partsOf = { face: UNREAD_REGION.face[0], leg: ["leg", "ray"], tail: ["tail"] };
-      boxes = !ok ? [] : t.groups.map((g) => partsOf[g]).filter((parts) => b.scene.nodes.some((n) => parts.some((q) => (n.part ?? n.id) === q || (n.part ?? n.id).startsWith(q + "-")))).map((parts) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
-    }
+    const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
     return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
   });
 }

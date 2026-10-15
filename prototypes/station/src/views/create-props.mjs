@@ -8,7 +8,7 @@ import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
 import { slot, railOf } from "./pods-props.mjs";
-import { treatmentOf, drawnDigest } from "../art.mjs";
+import { treatmentOf, drawnDigest, builtOf } from "../art.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
@@ -22,7 +22,7 @@ export const createPod = (st, cr) => cr.grown?.pod ?? st.tray.find((q) => q.id =
 // The founder's picture id for the choices made (the picture the roll's dither starts from and ends on): founder:<species>:<drawn digest>:<clear|ghost|veil-<groups>>:<w>x<h>. The drawn digest is the genome as drawn (Glow's emission and
 // Charge's phase are not the mibi's own while unread); the treatment is art.mjs's treatmentOf on the chapters read: nothing read the ghost, an unread look a veil over its groups (body, coat, face, leg, tail), only doings unread clear.
 export function founderPicture(p, choices, size) {
-  const fr = frameOf(S.speciesOf(p)), t = treatmentOf(fr, p.read), g = S.founderGenome(p, choices);
+  const fr = frameOf(S.speciesOf(p)), g = S.founderGenome(p, choices), b = builtOf(fr, g, p.read), t = treatmentOf(fr, p.read, !b.error && b.validation.status === "valid" ? b.scene : null);
   return { id: `founder:${S.speciesOf(p)}:${drawnDigest(fr, g, p.read)}:${t.mode === "veil" ? "veil-" + t.groups.join("+") : t.mode}:${size.join("x")}`, read: [...p.read], mode: t.mode };
 }
 

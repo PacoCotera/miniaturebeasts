@@ -86,6 +86,8 @@ test("a juvenile mibi takes the art director's juvenile stand-in at its size whe
 test("a founder is art while it is clear (painted once a master), painted at either status when ghost or veiled; the old id shape is in no family", () => {
   assert.equal(policyOf("founder:S01:S01-1a2b3c4d:clear:304x312"), "art"); assert.equal(policyOf("founder:S01:S01-1a2b3c4d:clear:304x312", "master"), "painted");
   for (const id of ["founder:S03:S03-1a2b3c4d~g:ghost:304x312", "founder:S01:S01-1a2b3c4d:veil-body:304x312", "founder:S01:S01-1a2b3c4d:veil-coat:304x312", "founder:S09:S09-1a2b3c4d:veil-face+leg+tail:304x312"]) for (const st of ["placeholder", "master"]) assert.equal(policyOf(id, st), "painted", `${id} ${st}`);
+  for (const bad of ["veil-tail+face", "veil-body+coat", "veil-coat+face", "veil-+", "veil-zzz", "veil-body+face", "veil-tail+leg"]) assert.throws(() => policyOf(`founder:S01:S01-1a2b3c4d:${bad}:304x312`), /no layer family/, bad);
+  for (const ok of ["veil-face+leg+tail", "veil-face+tail", "veil-leg+tail", "veil-leg", "veil-tail", "veil-face"]) assert.equal(policyOf(`founder:S01:S01-1a2b3c4d:${ok}:304x312`), "painted", ok);
   for (const old of ["founder:S01:S01-1a2b3c4d:all:304x312", "founder:S01:S01-1a2b3c4d:9f3c:304x312", "founder:S01:S01-1a2b3c4d:veil-Face:304x312", "founder:S01:S01-1a2b3c4d:ghost"]) assert.throws(() => policyOf(old), /no layer family/, old);
 });
 test("a Create walk on S01 and S03 (nothing read, shape, shape and a doing): every picture is in a family, and any founder with an unread look is painted", () => {

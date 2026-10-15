@@ -109,15 +109,23 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
     assert.equal(treatmentOf(fr, allBut(fr, "shape")).mode, "veil");
   });
 
-  test("S15's rays are the leg group, its tail is the tail group; S14's skirt and S15's leaves are Shape, the whole body", () => {
-    const s15 = frameOf("S15"), t = treatmentOf(s15, allBut(s15, "legs-tail"), view(s15));
-    assert.equal(t.mode, "veil"); assert.deepEqual(t.boxes.map((b) => b.parts), [["leg", "ray"], ["tail"]]);
-    const rays = t.boxes[0]; assert.equal(rays.whole, false, "the rays are not the whole body"); assert.ok(rays.x1 > rays.x0 && rays.y1 > rays.y0);
+  test("S15's rays are the leg group, its tail is the tail group; S14's skirt and S15's leaves are Shape, the whole body; a group with no part on the drawn body leaves the id", () => {
+    const s15 = frameOf("S15"), all = treatmentOf(s15, allBut(s15, "legs-tail")), drawn = treatmentOf(s15, allBut(s15, "legs-tail"), view(s15).scene);
+    assert.deepEqual(all.boxes.map((b) => b.parts), [["leg", "ray"], ["tail"]], "no body given: both groups"); assert.deepEqual(all.groups, ["leg", "tail"]);
+    assert.equal(drawn.mode, "veil"); assert.deepEqual(drawn.groups, ["leg"], "S15 has rays and no tail part: the tail group leaves the id"); assert.deepEqual(drawn.boxes.map((b) => b.parts), [["leg", "ray"]]);
     assert.deepEqual(treatmentOf(s15, allBut(s15, "shape")).boxes, [{ whole: true }], "S15 leaves");
     const s14 = frameOf("S14"); assert.ok(s14.chapters.find((c) => c.id === "shape").traits.some((x) => x.id === "skirt"));
     assert.deepEqual(treatmentOf(s14, allBut(s14, "shape")).boxes, [{ whole: true }], "S14 skirt");
     const sc = view(s14).scene, skirt = sc.nodes.find((n) => n.id === "foot-skirt");
     assert.ok(skirt && !["leg", "ray"].some((q) => (skirt.part ?? skirt.id) === q || (skirt.part ?? skirt.id).startsWith(q + "-")), "the foot-skirt is not in the leg group");
+    const s16 = frameOf("S16"); assert.deepEqual(treatmentOf(s16, allBut(s16, "face"), view(s16).scene).groups, ["face"], "S16 has a head and no leg or tail part");
+  });
+  test("the part groups are named in their declared order (face, leg, tail), not the frame's chapter order; Shape and Face give veil-body, never veil-body+face; with no group left the treatment is clear", () => {
+    const fr = frameOf("S09"), shuffled = { ...fr, chapters: [...fr.chapters].reverse() };
+    for (const f of [fr, shuffled]) assert.deepEqual(treatmentOf(f, allBut(f, "legs-tail", "face")).groups, ["face", "leg", "tail"]);
+    assert.deepEqual(treatmentOf(fr, allBut(fr, "shape", "face")).groups, ["body"]); assert.deepEqual(treatmentOf(fr, allBut(fr, "coat", "shape", "face")).groups, ["coat"], "Coat wins any tie with Shape");
+    const noParts = { scene: { nodes: [{ id: "body", part: "body" }] } }; assert.deepEqual(treatmentOf(fr, allBut(fr, "face", "legs-tail"), noParts.scene), { mode: "clear", boxes: [], groups: [], luma: false });
+    const headOnly = { scene: { nodes: [{ id: "head", part: "head" }, { id: "tail-bulb", part: "tail" }] } }; assert.deepEqual(treatmentOf(fr, allBut(fr, "face", "legs-tail"), headOnly.scene).groups, ["face", "tail"], "a group with no part drops; tail-bulb is a tail part");
   });
 
   test("Coat or Shape unread wins over the groups; Face is one group; the groups of several unread chapters are a union", () => {
@@ -229,6 +237,10 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
     assert.deepEqual(at(shape), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [149, 74, 104], [75, 101, 132], [156, 80, 111], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
     assert.deepEqual(at(coat).slice(0, 9), [[112, 117, 127], [98, 103, 113], [151, 156, 166], [117, 122, 132], [87, 92, 102], [93, 98, 108], [93, 99, 108], [94, 99, 109], [102, 108, 117]]); assert.deepEqual(px(coat, 1, 1), px(pic, 1, 1));
     const [r, g, b] = px(coat, 6, 4), off = (v, c) => v - UNKNOWN.VEIL[c] * UNKNOWN.VEIL_WEIGHT; assert.ok(Math.abs(off(r, 0) - off(g, 1)) <= 1 && Math.abs(off(g, 1) - off(b, 2)) <= 1, "no hue: the same grey under the veil in every channel");
+  });
+  test("the whole body with part boxes is the whole body: an ellipse never weighs more than the body", () => {
+    assert.deepEqual([...treat(pic, { mode: "veil", boxes: ["body", [4, 3, 7, 6], [7, 5, 10, 8]] }).rgba()], [...treat(pic, { mode: "veil", boxes: "body" }).rgba()]);
+    assert.deepEqual([...treat(pic, { mode: "veil", boxes: ["body", [4, 3, 7, 6]], luma: true }).rgba()], [...treat(pic, { mode: "veil", boxes: "body", luma: true }).rgba()]);
   });
   test("a clear treatment is the picture as it is; an unknown mode throws; the same bytes twice", () => {
     assert.deepEqual([...treat(pic, { mode: "clear" }).rgba()], [...rgba]); assert.throws(() => treat(pic, { mode: "frost" }), /frost/);
