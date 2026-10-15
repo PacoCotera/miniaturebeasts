@@ -279,3 +279,13 @@ test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when fa
     for (let i = 0; i < 3; i++) assert.ok([curl, curl + 1].includes(f.M._face_test_cell(i)), "asleep: the curl as painted");
   }
 });
+
+test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no fill or edge); with no tile housed or out it has no plate; the tiles name their wells by form, a free bay none", { skip }, async () => {
+  const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3" }), f = await start(b), lg = logOf(f);
+  assert.deepEqual(lg.regions.filter((r) => r.id === "strip" && r.layer === "painted" && r.rect[2] > 0).map((r) => r.rect), [R.strip.rect]);
+  assert.equal(lg.regions.filter((r) => r.id === "strip" && r.layer === "chrome" && r.rect[2] > 2).length, 0);
+  const T = b.props.regions.tiles.items, form = T.length > 6 ? 72 : 152;
+  T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${form}x48`)); assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
+  const e = scene({ focus: null }), g = await start(e), lg2 = logOf(g);
+  assert.equal(lg2.regions.filter((r) => r.id === "strip" && r.rect[2] > 2).length, 0, "no tile housed or out: the strip has no plate");
+});

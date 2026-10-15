@@ -91,11 +91,11 @@ void build_restKnob(int focused) {
 void build_bayStrip(const char *sp, const char *cur, int box[4]) {
   int r[4], n = v_plen("regions.tiles.items"); if (!v_spec_rect(sp, "regions.strip.rect", r)) r[0] = r[1] = r[2] = r[3] = 0; if (box) box[0] = box[1] = box[2] = box[3] = 0;
   int any = 0; for (int i = 0; i < n; i++) { const char *st = v_pstr(v_fmt("regions.tiles.items.%d.state", i)); if (strcmp(st, "housed") == 0 || strcmp(st, "out") == 0) any = 1; }
-  v_region("strip", LAYER_PAINTED); { const char *pl = v_pstr("regions.strip.plate"); if (any && *pl) v_sprite("strip", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("strip", *pl ? pl : "plate-device-992x64", r[0], r[1]); }   /* fix 2 F1/F5: the strip's plate, 1:1; no housed or out tile: no plate (Every state composed, rule 2: no bare panel) */
+  v_region("strip", LAYER_PAINTED); { const char *pl = v_pstr("regions.strip.plate"); if (any && *pl) v_sprite("strip", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("strip", v_pstr("regions.tiles.glyph"), r[0], r[1]); }   /* fix 2 F1/F5: the strip's plate, 1:1; no housed or out tile: no plate (Every state composed, rule 2: no bare panel) */
   char fk[48]; if (n > 12 || layout_list_form(sp, "regions.tiles", n, fk, sizeof fk) < 0) { v_error("word: the bay strip holds twelve bays at most, and its forms must hold this many"); return; }
   int tx = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
   int gw = sk(sp, "regions.tiles.tile.outGlyph", 0), gh = sk(sp, "regions.tiles.tile.outGlyph", 1), lift = si(sp, "focus.targets.tile.lift", 2);
-  const char *glyph = v_pstr("regions.tiles.glyph");
+  char glyph[96]; snprintf(glyph, sizeof glyph, "%s", v_pstr("regions.tiles.glyph"));   /* a copy: v_pstr's ring of 32 is spent by eight tiles */
   for (int i = 0; i < n; i++) {
     char P[64]; snprintf(P, sizeof P, "regions.tiles.items.%d", i);
     const char *id = v_pstr(v_fmt("%s.id", P)), *state = v_pstr(v_fmt("%s.state", P)), *pic = v_pstr(v_fmt("%s.picture", P));
@@ -104,7 +104,7 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     int focused = strncmp(cur, "tile.", 5) == 0 && *id && strcmp(cur + 5, id) == 0, x = b[0], y = b[1] - (focused ? lift : 0), w = b[2], h = b[3];
     if (focused && box) { box[0] = x; box[1] = y; box[2] = w; box[3] = h; }
     char nm[40], reg[24]; snprintf(reg, sizeof reg, "tile.%d", i); v_region(reg, LAYER_PAINTED);   /* a region a tile: the log holds each tile's box; the well is painted (fix 2) */
-    snprintf(nm, sizeof nm, "tile.%d", i); { const char *wl = v_pstr(v_fmt("%s.well", P)); if (!free_ && *wl) v_sprite(nm, wl, x, y, w, h); else v_sprite_hidden(nm, *wl ? wl : "plate-well-72x48", x, y); }
+    snprintf(nm, sizeof nm, "tile.%d", i); { const char *wl = v_pstr(v_fmt("%s.well", P)); if (!free_ && *wl) v_sprite(nm, wl, x, y, w, h); else v_sprite_hidden(nm, glyph, x, y); }
     v_region(reg, LAYER_CHROME);   /* fix 2 F4: the tile is its well, by form (the mibi up close: the -shown well); a free bay draws nothing */
     v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
     if (housed && *pic) v_sprite(nm, pic, x + tx, y + ty, tw, th); else v_sprite_hidden(nm, glyph, x + tx, y + ty);

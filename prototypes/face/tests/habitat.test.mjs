@@ -211,3 +211,49 @@ test("S05 up close (the animator's ruling): no hop: an eager step twice on the h
   const steps = tr.filter((x) => x[1] === "stepa"); assert.equal(steps.length, 2, JSON.stringify(tr)); assert.ok(tr.every((x) => x[2] === 0), "lift 0"); assert.ok(Math.abs(steps[1][0] - steps[0][0] - 900) <= 20, "the steps 900 ms apart");
   const cr = tr.find((x) => x[1] === "crouch"); assert.ok(steps[0][0] - cr[0] >= 140 && steps[0][0] - cr[0] <= 180, "crouch 160 first");
 });
+
+// ---- fix 2: the device plates (F1 to F6, F8) ----
+const painted = (lg, id) => lg.regions.filter((r) => r.id === id && r.layer === "painted" && r.rect[2] > 0).map((r) => r.rect), chromeOf = (lg, id) => lg.regions.filter((r) => r.id === id && r.layer === "chrome" && r.rect[2] > 2);
+test("fix 2 F1, F2: the card and the four modules are their plates, 1:1 at the spec's rectangles and painted, with no fill, edge or bevel row; the focused module's plate lifts with it", { skip }, async () => {
+  for (const focus of ["resident", "door", "wild"]) {
+    const b = scene({ focus }), f = await start(b), lg = logOf(f);
+    assert.deepEqual(painted(lg, "card").filter((r) => r[2] === 416), [R.card.rect], "the card's plate");
+    assert.equal(chromeOf(lg, "card").length, 0, "no card fill, edge or top row");
+    for (const m of ["door", "portrait", "cross", "wild"]) {
+      const want = [R[m].rect[0], R[m].rect[1] - (focus === m ? (R[m].lift ?? 2) : 0), R[m].rect[2], R[m].rect[3]];
+      assert.deepEqual(painted(lg, m).filter((r) => r[2] === want[2] && r[3] === want[3]), [want], `${m}'s plate (focus ${focus})`);
+      assert.equal(chromeOf(lg, m).filter((r) => r[2] === want[2]).length, 0, `${m} draws no panel`);
+    }
+  }
+});
+test("fix 2 F4: the Companion's three places are the 48 well in every state, a free place the well alone (no dash)", { skip }, async () => {
+  for (const o of [{ carry: [] }, { carry: [1, 2, 3] }, { carry: [1], away: true }]) {
+    const b = scene({ ...o, focus: "resident" }), f = await start(b), lg = logOf(f);
+    const door = painted(lg, "door"); assert.ok(door.length >= 1 && door.every((r) => r[0] >= R.door.rect[0] - 2 && r[0] + r[2] <= R.door.rect[0] + R.door.rect[2]), "the door region draws its plate and wells: " + JSON.stringify(o));
+    assert.equal(b.props.regions.door.places.length, 3); assert.ok(b.props.regions.door.places.every((p) => p.well === "plate-well-48x48"), "every place, filled or free, names its well");
+    assert.equal(lg.regions.filter((r) => /dash/.test(r.id)).length, 0);
+  }
+});
+test("fix 2 F5, F8: the namer's plate and its name well draw only while the namer is open, with no drop shadow", { skip }, async () => {
+  const shut = await start(scene({ focus: "resident" })), lgShut = logOf(shut);
+  assert.equal(painted(lgShut, "panel").length + painted(lgShut, "field").length, 0, "no namer plate while it is shut");
+  const b = scene({ focus: "resident", namer: true }), f = await start(b), lg = logOf(f), P = namerSpec.regions.panel.rect;
+  assert.deepEqual(painted(lg, "panel"), [P], "the namer's plate, 1:1");
+  assert.deepEqual(painted(lg, "field").filter((r) => r[2] === 328), [namerSpec.regions.field.rect], "the name well, 1:1");
+  assert.equal(chromeOf(lg, "panel").length, 0, "no panel fill, edge, bevel row or shadow");
+  assert.ok(!lg.regions.some((r) => r.id === "panel.shadow"));
+});
+test("fix 2 F4: the strip's tiles name their well by form and state (full or compact; the shown tile its -shown well), a free bay none; the strip names its plate", { skip }, () => {
+  for (const [bays, form] of [[8, "compact"], [4, "full"]]) {
+    const b = scene({ bays, adults: 3, focus: "resident" }), w = form === "full" ? 152 : 72, T = b.props.regions.tiles.items;
+    assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
+    T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${w}x48${t.shown ? "-shown" : ""}`));
+    assert.equal(T.filter((t) => t.shown).length, 1); assert.ok(T.some((t) => t.state === "free"), "a free bay");
+  }
+});
+test("fix 2 F6: no plate picture, no plate: a module whose plate master is not there draws no fill and keeps no plate", { skip }, async () => {
+  const b = scene({ focus: "resident" }); b.requests = b.requests.filter((r) => !/^plate-/.test(r.id));
+  const f = await start(b), lg = logOf(f);
+  assert.equal(painted(lg, "card").length, 0); assert.equal(chromeOf(lg, "card").length, 0, "nothing falls back to a fill");
+  for (const m of ["door", "portrait", "cross", "wild"]) assert.equal(chromeOf(lg, m).filter((r) => r[2] === R[m].rect[2]).length, 0);
+});
