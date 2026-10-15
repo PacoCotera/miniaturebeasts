@@ -747,7 +747,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
 | Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside) | The bridge from research to the Vivarium |
-| Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting the matte sitting frame, `home-sitting-24x32` | The Probe as the project's Probe art draws it, never a needle |
+| Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting the matte sitting frame, `home-sitting-32x24` | The Probe as the project's Probe art draws it, never a needle |
 | Library | The field journal: cover `bark`, page edge `sand`; the glint `yellow` | The worn expedition volume |
 | Bed | A low nest: rim `bark`, hollow `soil`, lit rim `sand` | Inside the warm field |
 | Rest knob | `enamel`, lit `sand`, shade `bevel` | One step lighter than the bezel it sits on |
@@ -777,7 +777,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (808 + 56i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 920, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
 | `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
 | `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72 | Empty: the chamber's empty picture, lamp off. Growing: the chamber's growing picture (the bud's glow), lamp well. Ready: the chamber's ready picture (lit full), amber. The hatched mibi's painting on its way: lamp waiting |
-| `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
+| `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 32×24 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
 | `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72 | No species found: the journal shut, lamp off. Otherwise the journal, lamp well |
 
 **The lamps.** Amber marks the module the room's ✓ acts on, and only it. The notice and the room's ✓ take the first of these that holds:
@@ -1103,7 +1103,7 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 | Incubator module: the chamber | 72×72 | Empty, growing and ready; signed, placed |
 | Probe module: the cradle | 96×72 | Full and empty; signed, placed |
 | Probe module: a Shield plate | 12×24 | One |
-| Probe module: the sitting frame | 24×32 | One |
+| Probe module: the sitting frame | 32×24 | One |
 | Library module: the journal | 104×72 | One; signed, placed |
 | Module lamps | 12×12 | `sprout`, `sky` and `hairline` |
 | Cargo: the bay | 992×320 | Open and shut |
@@ -1634,7 +1634,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `stamp` | 872, 64, 120, 120 | stamp label | | 424 px from the mibi's box |
 | `plates` | 608, 200, 376, 40 | list, build `chapterPlates` (rule `listPitch`) | | 40×40 on a 48 pitch from 608, up to eight, in ring order; the emblem 24×24 at (8, 8); no word, no pips |
 | `door` (Companion) | 592, 272, 272, 96 | panel, build `module`, no lamp | | Word at (16, 12); the glyph 16×24 at (24, 52), solid docked, outline away; three places 48×48 at (56, 40), (120, 40), (184, 40): the set as it will be, docked or away; an add waiting with `frame-lamp-8-stone` at the place's (40, 0); a free place a dashed `hairline` outline 1 px inside it |
-| `portrait` | 872, 272, 136, 96 | panel, build `module` | | The sitting frame 32×48 at (52, 40): none, held, painting, portrayed |
+| `portrait` | 872, 272, 136, 96 | panel, build `module` | | The sitting frame 48×40 at (44, 40), its window 40×30 at (4, 4): none, held, painting, portrayed; portrayed, the portrait 40×30 over the window |
 | `cross` | 592, 376, 272, 96 | panel, build `module` | | A face a partner, 24 on a 32 pitch: up to seven at (16, 56); eight to eleven in two rows at y 38 and 64. A partner out with the Companion while it is away is drawn dimmed, on a `stone` ring, and cannot be picked |
 | `wild` | 872, 376, 136, 96 | panel, build `module` | | The gate 48×48 at (44, 40), shut or ajar (armed) |
 | `strip` | 16, 488, 992, 64 | panel | | |
@@ -1778,7 +1778,7 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 | The mibi | 304×312 | `resident` | Its standard painting, else its placeholder; a juvenile's, its signed stand-in mibi-juvenile-<species>-304x312. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) | — |
 | Residents, sleepers, the bed | 144×152, 104×112, 192×56 | the whole | As on Home and Idle | — |
 | Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48; a juvenile, its signed stand-in mibi-juvenile-<species>-48x48, 1:1. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) | — |
-| `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
+| `sitting-frame-{empty,held,portrait}-48x40` | 48×40 | Portrait | The frame; its window 40×30 at (4, 4), opaque: debossed (none), dark (held, painting), a warm paper fill (portrayed) | — |
 | `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
 | `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
 | `mark-guide-16`, `home-lamp-sky-12x12`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
@@ -2098,7 +2098,7 @@ With `motion: false` every event jumps to its end.
 ### After begin: the vivarium, up close, and Home
 
 - **The message plate on the vivarium, up close:** "Fig's portrait is on its way", one line, 16 + 20 = 36 tall, its bottom at y 550. When a welcome sitting was waiting for the slot, begin gives it at once (`beginSitting`), and the same plate takes a second line, "Another sitting is yours": 16 + 40 = 56 tall, (399, 494, 226, 56) for Fig: the longer line, 193 px, plus 16 each side, rounded up to an even width so it centres on x 512. It covers the strip, not the mibi's box or the Portrait module, so it keeps its bottom edge at y 550.
-- **Home's sitting frame** (the Probe module, 912, 408, 24, 32) shows nothing after begin, or the gilt frame when the welcome sitting was given.
+- **Home's sitting frame** (the Probe module, 912, 408, 32, 24) shows nothing after begin, or the gilt frame when the welcome sitting was given.
 - **The sitting's crate** waits in Cargo from begin until it is opened: on Home's Cargo module and in Cargo's bay, from the right, with its fill lamp ([Home](#home-the-panel-and-the-column), [Cargo](#cargo)).
 
 ### Placeholders on the sitting

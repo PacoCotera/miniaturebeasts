@@ -51,7 +51,7 @@ export function habitatBuild(m, spec, frame, home) {
   regions.card = {
     heart: shown.bonded ? slot("heart-full-24", R.card.heart.size, "the heart master") : "",
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
-    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "ph", id: "mark-guide-16", size: [16, 16], hollow: false, until: "the guide mark master (not signed)" }) },
+    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "slot", id: "mark-guide-16:16x16", master: "mark-guide-16", size: [16, 16], until: "the guide mark master (AD G1)" }) },
     story, code: codeText(shown.code),
     stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, spec.colours.stampLabel.k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
   };
@@ -60,7 +60,7 @@ export function habitatBuild(m, spec, frame, home) {
   const sealedShut = (c) => !!c.sealed && !settings.sealedOpen && !(shown.read || []).includes(c.id);
   const plates = (fr?.chapters ?? []).slice(0, R.plates.places.max).map((c) => {
     const st2 = (shown.read || []).includes(c.id) ? "read" : sealedShut(c) ? "sealed" : "unread";
-    return { id: c.id, state: st2, ground: req({ kind: "ph", id: `chapter-plate-${st2}-40x40`, size: [40, 40], hollow: false, until: "the chapter plate master (not signed)" }), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
+    return { id: c.id, state: st2, ground: req({ kind: "slot", id: `chapter-plate-${st2}-40x40:40x40`, master: `chapter-plate-${st2}-40x40`, size: [40, 40], until: "the chapter plate master (AD P1)" }), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
   });
   regions.plates = { items: plates };
 
@@ -71,7 +71,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Portrait module
   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
-  regions.portrait = { state: pst, frame: req({ kind: "ph", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-32x48`, size: [32, 48], hollow: false, until: "the sitting frame master (not signed)" }) };
+  regions.portrait = { state: pst, frame: req({ kind: "slot", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40:48x40`, master: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, size: [48, 40], until: "the sitting frame master (AD, candidates)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
 
   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);
@@ -80,7 +80,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Wild module: shut at rest, ajar once armed
   const wildBlock = S.returnMibiBlock(st, sv, shown), armed = !!m.armed && !wildBlock;
-  regions.wild = { state: armed ? "armed" : "shut", gate: req({ kind: "ph", id: `gate-wild-${armed ? "open" : "shut"}-48x48`, size: [48, 48], hollow: false, until: "the gate master (not signed)" }) };
+  regions.wild = { state: armed ? "armed" : "shut", gate: req({ kind: "slot", id: `gate-wild-${armed ? "open" : "shut"}-48x48:48x48`, master: `gate-wild-${armed ? "open" : "shut"}-48x48`, size: [48, 48], until: "the gate master (AD W1)" }) };
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);

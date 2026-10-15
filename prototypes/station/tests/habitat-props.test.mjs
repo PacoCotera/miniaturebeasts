@@ -111,7 +111,7 @@ test("Cross: a face a partner (an adult or an elder of the species), a partner o
 test("Wild: shut, ajar once armed, its context from the rules (a young, a bonded, a carried mibi stays) and the price ❀ +2 on the line", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
   let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, "❀ +2"); assert.equal(b.line.subject, "goes back to the wild");
-  b = build(w, sv, { focus: "wild", armed: true }); assert.equal(b.props.regions.wild.state, "armed"); assert.equal(b.props.regions.wild.gate, "gate-wild-open-48x48"); assert.equal(b.line.ok, `Again: return ${m[0].name}`); assert.equal(b.props.focus.armed, "wild");
+  b = build(w, sv, { focus: "wild", armed: true }); assert.equal(b.props.regions.wild.state, "armed"); assert.equal(b.props.regions.wild.gate, "gate-wild-open-48x48:48x48"); assert.equal(b.line.ok, `Again: return ${m[0].name}`); assert.equal(b.props.focus.armed, "wild");
   m[0].bonded = true; b = build(w, sv, { focus: "wild", armed: true }); assert.equal(b.props.regions.wild.state, "shut", "a block disarms"); assert.equal(b.line.subject, "a bonded mibi stays"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
 });
 
@@ -122,6 +122,20 @@ test("Portrait: none, held, its portrait on the way, portrayed; the context name
   w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(st(), "held"); assert.equal(line().subject, "no pose seen yet"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, false);
   m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, null); assert.equal(l.subject, "portraits are not open yet", "a mibi that has seen a pose and been to a place may sit, but the door is shut until slot 9");
   m[0].portrait = { state: "painting" }; assert.equal(st(), "painting"); assert.equal(line().subject, "its portrait is on its way"); m[0].portrait = { state: "delivered" }; assert.equal(st(), "portrayed"); assert.equal(line().subject, "already portrayed");
+});
+
+test("Portrait picture: \"\" for none, held, painting and portrayed with no digest; portrait:<d16>:40x30 once a digest is kept (not the mibi's id, not the genome's); an old save normalizes unchanged and gives \"\"", () => {
+  const w = world(); dock(w.st); const m = mibis(w, 2), sv = sv0(), pic = () => build(w, sv, { focus: "portrait" }).props.regions.portrait.picture, reqs = () => build(w, sv, { focus: "portrait" }).requests.filter((r) => r.kind === "portrait");
+  assert.equal(pic(), "", "none"); w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(pic(), "", "held");
+  m[0].portrait = { state: "painting" }; assert.equal(pic(), "", "painting"); m[0].portrait = { state: "delivered" }; assert.equal(pic(), "", "portrayed, no digest (a save from before)"); assert.deepEqual(reqs(), []);
+  m[0].portrait = { state: "delivered", digest: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef" }; assert.equal(pic(), "portrait:0123456789abcdef:40x30"); assert.match(pic(), /^portrait:[0-9a-f]{16}:40x30$/);
+  assert.deepEqual(reqs().map((r) => [r.id, r.digest.slice(0, 16), r.size]), [["portrait:0123456789abcdef:40x30", "0123456789abcdef", [40, 30]]]);
+  const v = validate(build(w, sv, { focus: "portrait" }).props, schema); assert.deepEqual(v, [], "the props schema takes the picture");
+  const w2 = world(); dock(w2.st); const n = mibis(w2, 2); assert.equal(n[0].id, m[0].id, "the same mibi id in another world"); n[0].portrait = { state: "delivered", digest: "fedcba9876543210" + "0".repeat(48) };
+  const pic2 = build(w2, sv0(), { focus: "portrait" }).props.regions.portrait.picture; assert.equal(pic2, "portrait:fedcba9876543210:40x30"); assert.notEqual(pic2, pic(), "two worlds, one mibi id, two digests: two ids");
+  assert.equal(n[0].genome && m[0].genome && JSON.stringify(n[0].genome) === JSON.stringify(m[0].genome), true, "the same genome in both: the id is not the genome's");
+  const old = world(); dock(old.st); const o = mibis(old, 1); o[0].portrait = { state: "delivered", at: 5 }; const before = JSON.stringify(o[0].portrait); S.normalize(old.st); assert.equal(JSON.stringify(old.st.mibis[0].portrait), before, "normalize leaves a portrait without a digest as it was");
+  assert.equal(build(old, sv0(), { focus: "portrait" }).props.regions.portrait.picture, "");
 });
 
 test("the strip: a tile a bay, the housed mibis in bay order then the free bays, the shown mibi's tile marked, an out mibi's tile the glyph; the targets in the graph's groups; a tile shows its mibi (focus.resolve tile.shown)", () => {

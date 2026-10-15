@@ -144,7 +144,7 @@
  },
  "home": {
   "plate": { "on": "Habitat, after events.begin", "lines": ["strings.beganPlate", "strings.welcomePlate, only when begin gave a waiting welcome sitting (sitting.mjs beginSitting, checkWelcome)"], "px": 16, "pad": 16, "line": 20, "height": "16 + 20 × lines: 36, or 56 with the welcome", "bottom": 550, "example": { "lines": 2, "widths": [193, 174], "rect": [399, 494, 226, 56], "note": "Fig: the longer line plus 16 each side, rounded up to an even width to centre on x 512; it covers the strip, not the mibi's box or the Portrait module" } },
-  "slot": { "rect": [912, 408, 24, 32], "after": "nothing; the gilt frame when begin gave a waiting welcome sitting (home.json regions.probe.slotRect)" },
+  "slot": { "rect": [912, 408, 32, 24], "after": "nothing; the gilt frame when begin gave a waiting welcome sitting (home.json regions.probe.slotRect)" },
   "bay": {
    "rule": "from begin until it is opened, the sitting's crate stands in Cargo: on Home's Cargo module (home.json regions.cargo.sittingCrates) and in Cargo's bay (cargo.json regions.crates.sitting)",
    "crate": { "size": [48, 40], "slots": "from the right: the first at [928, 72], a second at [864, 72]; walk crates fill from the left (800 + 64i); at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "until": "the walk crate's roles, no seal tag" },

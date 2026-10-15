@@ -68,8 +68,8 @@
    "rect": [688, 360, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "cradle": [112, 8, 96, 72], "cradleRect": [800, 368, 96, 72],
    "shields": { "at": [224, 8], "size": [12, 24], "pitch": 16, "count": 4, "perTier": { "1": 3, "2": 4 }, "rects": [[912, 368, 12, 24], [928, 368, 12, 24], [944, 368, 12, 24], [960, 368, 12, 24]], "pictures": { "whole": "home-shield-whole-12x24", "gone": "home-shield-lost-12x24" } },
-   "slot": [224, 48, 24, 32], "slotRect": [912, 408, 24, 32], "slotPicture": "home-sitting-24x32",
-   "states": { "docked": "the Probe in its cradle, its plates whole or gone, the tier's count; lamp well", "away": "the cradle empty, no plates, lamp off", "sitting": "a held sitting shows as the sitting frame (home-sitting-24x32, matte) in the slot, docked or away; none held, nothing" }
+   "slot": [224, 48, 32, 24], "slotRect": [912, 408, 32, 24], "slotPicture": "home-sitting-32x24",
+   "states": { "docked": "the Probe in its cradle, its plates whole or gone, the tier's count; lamp well", "away": "the cradle empty, no plates, lamp off", "sitting": "a held sitting shows as the sitting frame (home-sitting-32x24, matte, landscape, its window dark) in the slot, docked or away; none held, nothing" }
   },
   "library": {
    "rect": [688, 464, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],

@@ -88,7 +88,7 @@
 <rect x="928.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
 <rect x="944.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
 <rect x="960.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="912.5" y="408.5" width="23" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="912.5" y="408.5" width="31" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="688.5" y="464.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="704" y="493" font-size="16" fill="#6f7a5e">Library</text>
 <rect x="800.5" y="472.5" width="175" height="71" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>

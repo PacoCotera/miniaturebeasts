@@ -9,7 +9,7 @@
 //   st.doorAt         null until the sitting's door first opens on this save; until then no moment is paid and none is lost (the-portrait.md §8, X21)
 //   st.owed           the moments earned before the door opened, paid into the ledger and waiting in earned order: [{ key, at }]; one comes into the slot whenever it is empty
 //   st.sittingCrates  the crates of sittings begun: { id, mibiId, pose, place, start, source, painted, opened }
-//   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
+//   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at, digest }; digest: the first 16 hex of the SHA-256 of the 528×392 RGBA of the portrait's opening, written only by a rule when the source lands (not yet written in play)
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf, chapterLooks } from "./genome.mjs";
 import { mibiById, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";

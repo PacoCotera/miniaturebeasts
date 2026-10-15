@@ -1,6 +1,6 @@
 /* One mibi up close, the Vivarium's closest level (habitat.json; station-layouts.md "The Vivarium: the whole and one mibi up close"): the words that draw it from the spec and the props' regions, in draw order, then the focus ring.
    The stage, the living window (the near Vivarium of the light) with the mibi large in it (or the out mark while it is out with the Companion), its name tag (or the meet ribbon), the card (the species line and its guide mark, the story,
-   the code, the heart, the skill notches, the stamp label and one plate a chapter), the four modules (the Companion's set, Portrait, Cross, Wild) and the strip of bays. A picture the host has not sent is a slot not yet filled: nothing is drawn.
+   the code, the heart, the skill notches, the stamp label and one plate a chapter), the four modules (the Companion's set, Portrait with its picture over the frame's window, Cross, Wild) and the strip of bays. A picture the host has not sent is a slot not yet filled: nothing is drawn.
    The events: `moment` (the placeholder's two hops: the creature lifts by the spec's table, the box, the tag and the ring stay), `read` (the stamp prints its cells row by row over its length), `dither` on the resident (the swap to a tile's mibi), `flash`
    on the tag (the namer saved a name). Habitat's focus is `focus.graph` of habitat.json on the boxes this file drew; while the namer (an overlay, screens/namer.c) is open habitat draws no ring and takes no key. */
 #include "screens.h"
@@ -246,6 +246,9 @@ static void door_objects(int dy) {
 static void portrait_objects(int dy) {
   int r[4]; hrect("regions.portrait.rect", r); const char *f = v_pstr("regions.portrait.frame"); int fx = hk("regions.portrait.frame.at", 0), fy = hk("regions.portrait.frame.at", 1), fw = hk("regions.portrait.frame.size", 0), fh = hk("regions.portrait.frame.size", 1);
   v_name("portrait"); if (has(f)) v_sprite("portrait.frame", f, r[0] + fx, r[1] + dy + fy, fw, fh); else v_sprite_hidden("portrait.frame", v_pstr("regions.glass.picture"), r[0], r[1]);
+  /* its picture, over the frame's window (frame.picture: at and size from the spec, 1:1): painted from the asset; not landed (""), a 0x0 window that draws nothing and the frame master's own window shows */
+  const char *p = v_pstr("regions.portrait.picture"); int px = hk("regions.portrait.frame.picture.at", 0), py = hk("regions.portrait.frame.picture.at", 1), pw = hk("regions.portrait.frame.picture.size", 0), ph = hk("regions.portrait.frame.picture.size", 1);
+  v_name("portrait"); if (has(p)) v_sprite("portrait.picture", p, r[0] + fx + px, r[1] + dy + fy + py, pw, ph); else v_sprite_hidden("portrait.picture", has(f) ? f : v_pstr("regions.glass.picture"), r[0], r[1]);
 }
 static void cross_objects(int dy) {
   int r[4]; hrect("regions.cross.rect", r); int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
