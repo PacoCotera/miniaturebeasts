@@ -214,33 +214,53 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; for (let c = 0; c < 3; c++) rgba[i + c] = (x * 37 + y * 91 + c * 53 + x * y * 7) % 256; rgba[i + 3] = inBody(x, y) ? 255 : 0; }
   const pic = { w: W, h: H, rgba: () => rgba }, PTS = [[7, 6], [6, 4], [3, 3], [2, 5], [12, 6], [7, 2], [8, 10], [9, 8], [5, 3], [1, 1]];
   const px = (p, x, y) => [...p.rgba().slice((y * W + x) * 4, (y * W + x) * 4 + 3)], at = (p) => PTS.map(([x, y]) => px(p, x, y));
-  test("ghost (nothing read): GHOST plus 0.22 of the luma contrast about the body's mean, no hue, alpha unchanged, a 2 px top-left rim at 50 %; the oracle's numbers", () => {
+  test("ghost (nothing read): GHOST plus 0.12 of the luma contrast about the body's mean, no hue, alpha unchanged, a 2 px top-left rim at 50 %; the oracle's numbers", () => {
     const g = treat(pic, { mode: "ghost" });
-    assert.deepEqual(at(g), [[93, 102, 118], [114, 123, 139], [128, 138, 153], [119, 128, 144], [79, 88, 104], [112, 122, 137], [83, 92, 108], [83, 92, 108], [115, 124, 140], [135, 188, 241]]);
+    assert.deepEqual(at(g), [[94, 103, 119], [116, 125, 141], [124, 133, 149], [119, 128, 144], [86, 95, 111], [115, 125, 140], [88, 97, 113], [88, 97, 113], [117, 126, 142], [135, 188, 241]]);
     assert.deepEqual([...g.rgba()].filter((_, i) => i % 4 === 3), [...rgba].filter((_, i) => i % 4 === 3), "alpha unchanged"); assert.deepEqual([g.w, g.h], [W, H]);
     const [a, b, c] = px(g, 6, 4); assert.deepEqual([b - a, c - b], [UNKNOWN.GHOST[1] - UNKNOWN.GHOST[0], UNKNOWN.GHOST[2] - UNKNOWN.GHOST[1]], "one grey-blue tone: the same offset in every channel, no hue kept");
     let rim = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (inBody(x, y) && !(x >= 2 && y >= 2 && inBody(x - 2, y - 2))) rim++; assert.equal(rim, 28, "the rim pixels: those whose (x-2, y-2) neighbour is outside the body");
-    assert.deepEqual(px(g, 7, 2), [112, 122, 137], "a rim pixel is half RIM");
+    assert.deepEqual(px(g, 7, 2), [115, 125, 140], "a rim pixel is half RIM");
   });
   test("a veil on one part: an ellipse on the box grown 4 px, 6 px feather, clipped to the body, VEIL at 60 % into the picture's own colour; outside the body untouched", () => {
     const v = treat(pic, { mode: "veil", boxes: [[4, 3, 7, 6]] });
-    assert.deepEqual(at(v), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [162, 61, 96], [75, 101, 132], [162, 75, 108], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
+    assert.deepEqual(at(v), [[94, 120, 151], [133, 70, 96], [140, 167, 95], [99, 125, 156], [109, 41, 65], [55, 75, 97], [124, 57, 83], [57, 77, 100], [75, 99, 127], [135, 188, 241]]);
     assert.deepEqual(px(v, 7, 6), [94, 120, 151], "the centre: 0.4 × the picture + 0.6 × VEIL"); assert.deepEqual(px(v, 1, 1), px(pic, 1, 1), "outside the body: as it is");
   });
   test("where two part veils overlap the weight is the largest, never the sum", () => {
     const one = treat(pic, { mode: "veil", boxes: [[4, 3, 7, 6]] }), both = treat(pic, { mode: "veil", boxes: [[4, 3, 7, 6], [7, 5, 10, 8]] });
-    assert.deepEqual(at(both), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [149, 74, 104], [75, 101, 132], [156, 80, 111], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
+    assert.deepEqual(at(both), [[94, 120, 151], [133, 70, 96], [140, 167, 95], [99, 125, 156], [94, 46, 65], [55, 75, 97], [117, 60, 83], [57, 77, 100], [75, 99, 127], [135, 188, 241]]);
     assert.deepEqual(px(both, 7, 6), px(one, 7, 6), "inside both: the same as inside one, not a double veil"); assert.notDeepEqual(px(both, 12, 6), px(one, 12, 6), "the second ellipse adds its own place");
   });
   test("the whole body (Shape unread): the full alpha at weight 0.6 × alpha, the picture's colour kept; Coat unread: its own luma (grey) under the veil", () => {
     const shape = treat(pic, { mode: "veil", boxes: "body" }), coat = treat(pic, { mode: "veil", boxes: "body", luma: true });
-    assert.deepEqual(at(shape), [[94, 120, 151], [161, 85, 116], [140, 167, 95], [99, 125, 156], [149, 74, 104], [75, 101, 132], [156, 80, 111], [75, 102, 133], [84, 111, 142], [135, 188, 241]]);
-    assert.deepEqual(at(coat).slice(0, 9), [[112, 117, 127], [98, 103, 113], [151, 156, 166], [117, 122, 132], [87, 92, 102], [93, 98, 108], [93, 99, 108], [94, 99, 109], [102, 108, 117]]); assert.deepEqual(px(coat, 1, 1), px(pic, 1, 1));
-    const [r, g, b] = px(coat, 6, 4), off = (v, c) => v - UNKNOWN.VEIL[c] * UNKNOWN.VEIL_WEIGHT; assert.ok(Math.abs(off(r, 0) - off(g, 1)) <= 1 && Math.abs(off(g, 1) - off(b, 2)) <= 1, "no hue: the same grey under the veil in every channel");
+    assert.deepEqual(at(shape), [[94, 120, 151], [133, 70, 96], [140, 167, 95], [99, 125, 156], [94, 46, 65], [55, 75, 97], [117, 60, 83], [57, 77, 100], [75, 99, 127], [135, 188, 241]]);
+    assert.deepEqual(at(coat).slice(0, 9), [[112, 117, 127], [81, 86, 94], [151, 156, 166], [117, 122, 132], [54, 58, 64], [68, 72, 79], [70, 74, 81], [70, 74, 82], [92, 96, 105]]); assert.deepEqual(px(coat, 1, 1), px(pic, 1, 1));
+    const [r, g, b] = px(coat, 7, 6), off = (v, c) => v - UNKNOWN.VEIL[c] * UNKNOWN.VEIL_WEIGHT; assert.ok(Math.abs(off(r, 0) - off(g, 1)) <= 1 && Math.abs(off(g, 1) - off(b, 2)) <= 1, "no hue: the same grey under the veil in every channel");
   });
   test("the whole body with part boxes is the whole body: an ellipse never weighs more than the body", () => {
     assert.deepEqual([...treat(pic, { mode: "veil", boxes: ["body", [4, 3, 7, 6], [7, 5, 10, 8]] }).rgba()], [...treat(pic, { mode: "veil", boxes: "body" }).rgba()]);
     assert.deepEqual([...treat(pic, { mode: "veil", boxes: ["body", [4, 3, 7, 6]], luma: true }).rgba()], [...treat(pic, { mode: "veil", boxes: "body", luma: true }).rgba()]);
+  });
+  const LUMA = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b, mk = (f) => { const a = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; for (let c = 0; c < 3; c++) a[i + c] = f(x, y, c); a[i + 3] = inBody(x, y) ? 255 : 0; } return { w: W, h: H, rgba: () => a }; };
+  const charcoal = mk((x, y, c) => 12 + ((x * 5 + y * 3 + c * 2) % 30)), pale = mk((x, y, c) => 200 + ((x * 3 + y * 5 + c) % 40)), meanL = (p) => { let s = 0, n = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (inBody(x, y)) { s += LUMA(px(p, x, y)); n++; } return s / n; };
+  test("never brighter, per pixel, for the veils: no veiled pixel's luma is above its picture's (a dark coat is not lifted toward the veil's grey); a pixel the veil would lighten is scaled down to the picture's luma, hue kept; black stays black", () => {
+    for (const [name, p] of [["synthetic", pic], ["charcoal", charcoal], ["pale", pale]]) for (const opt of [{ boxes: [[4, 3, 7, 6]] }, { boxes: [[4, 3, 7, 6], [7, 5, 10, 8]] }, { boxes: "body" }, { boxes: "body", luma: true }]) {
+      const v = treat(p, { mode: "veil", ...opt }); let brighter = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (LUMA(px(v, x, y)) > LUMA(px(p, x, y)) + 1e-9) brighter++;
+      assert.equal(brighter, 0, `${name} ${JSON.stringify(opt.boxes).slice(0, 20)} ${opt.luma ? "coat" : ""}: ${brighter} brighter pixels`);
+    }
+    assert.deepEqual([px(treat(charcoal, { mode: "veil", boxes: "body", luma: true }), 7, 6), px(treat(charcoal, { mode: "veil", boxes: "body" }), 7, 6)], [[34, 36, 41], [34, 36, 41]], "the charcoal back keeps its dark: scaled to the picture's luma");
+    assert.ok(LUMA(px(charcoal, 7, 6)) - LUMA([34, 36, 41]) < 1.5, "to the picture's own luma, give or take the byte");
+    const black = mk(() => 0), v = treat(black, { mode: "veil", boxes: "body" }); assert.deepEqual(px(v, 7, 6), [0, 0, 0], "L_out above a picture of black is scaled to it: black stays black");
+    const lighten = mk((x, y, c) => [20, 30, 40][c]), lv = treat(lighten, { mode: "veil", boxes: "body" }); assert.deepEqual(px(lv, 7, 6), [20, 30, 40].map((c, i) => px(lv, 7, 6)[i]));
+    assert.ok(Math.abs(LUMA(px(lv, 7, 6)) - LUMA([20, 30, 40])) < 1.5); assert.ok(px(lv, 7, 6)[2] > px(lv, 7, 6)[0], "the hue is kept: still the cooler tint of the veil");
+  });
+  test("the ghost, once per silhouette: a charcoal creature darkens uniformly (rim included) to the picture's mean luma; a pale one is unchanged; never brighter on the mean", () => {
+    for (const [name, p] of [["synthetic", pic], ["charcoal", charcoal], ["pale", pale]]) assert.ok(meanL(treat(p, { mode: "ghost" })) <= meanL(p) + 1e-9, `${name}: the ghost's mean luma is not above the picture's`);
+    const c = treat(charcoal, { mode: "ghost" }); assert.deepEqual(at(c), [[22, 24, 28], [27, 29, 33], [27, 30, 33], [27, 30, 33], [22, 24, 28], [27, 29, 33], [22, 24, 27], [21, 24, 27], [27, 29, 33], [20, 22, 24]]);
+    assert.ok(Math.abs(meanL(c) - meanL(charcoal)) < 1.5, "the whole silhouette is at the picture's mean"); assert.deepEqual(px(c, 7, 2), [27, 29, 33], "the rim is scaled with the rest");
+    assert.deepEqual(at(treat(pale, { mode: "ghost" })), [[93, 102, 118], [119, 129, 144], [119, 128, 144], [119, 129, 144], [95, 104, 120], [119, 129, 144], [96, 105, 121], [95, 104, 120], [119, 129, 144], [208, 209, 210]], "a pale species: GHOST and its 12 % only");
+    assert.ok(meanL(pic) > meanL(treat(pic, { mode: "ghost" })), "the synthetic picture: already above the ghost, no scale");
   });
   test("a clear treatment is the picture as it is; an unknown mode throws; the same bytes twice", () => {
     assert.deepEqual([...treat(pic, { mode: "clear" }).rgba()], [...rgba]); assert.throws(() => treat(pic, { mode: "frost" }), /frost/);
