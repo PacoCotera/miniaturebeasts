@@ -19,3 +19,6 @@ What fails, measured on the composed screen (`proof/hand-attempt-1x.png`):
   - the tray's pool is the brightest 224×52 bench window at 0.379, against 0.293 for the best elsewhere;
   - the founder's p95 is 0.680, the highest of any stage object.
 - **Proof:** `proof/relit-1x.png`.
+
+## CA3: the dish, by hand (10-15)
+`paint-dish.py` presses a shallow worn dish into the relit bench at the pod's place (axis 160, feet 408), at 0 MXN. It is a height field shaded by the same top-left key. `room-cradle-front-create-224x96` is its near lip, as its own layer at (48, 344) over the pod's feet. Create gets its own id because `room-cradle-front` is Pods' signed piece. Proof: `proof/dish-pod-and-empty-2x.png`, with the pod and empty.

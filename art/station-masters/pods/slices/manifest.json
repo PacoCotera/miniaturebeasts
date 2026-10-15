@@ -10431,10 +10431,10 @@
   ],
   "src": "slices/room-bench-stage-incubator.png (signed; its Pro painting is gemini-3-pro-image)",
   "made": "Create's own stage, drawn by hand from the signed Incubator stage in the same frame (the rim, screws and side plates are its pixels): its hoses and gauges painted out by the floor model, a plain slate floor with nothing in the keep-clear zones; the set-aside Pro painting is source/raw/create-stage.jpg (pass 120)",
-  "sha256": "eac3651928c02badb12b52a2b2ebcadb51fc6fdd0e96860db202f73ea8b8d3ef",
+  "sha256": "d48e37b576f13f4f3bcedc347b2cdb7d35b39d33953d85ec7dd8ed6ed26a5a29",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg, 3.71 MXN) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 209f9fda09c7\u2026 (was signed); signed in the Create retake"
+  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg, 3.71 MXN) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 209f9fda09c7\u2026 (was signed); plus CA3, the dish pressed in by hand at the pod's place (create-relight/paint-dish.py, 0 MXN); signed in the Create retake"
  },
  "dome-front-304x272": {
   "size": [
@@ -15158,5 +15158,18 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "room-cradle-front-create-224x96": {
+  "size": [
+   224,
+   96
+  ],
+  "rect": null,
+  "src": "create-relight/paint-dish.py (cut from the relit room-bench-stage-create)",
+  "made": "fix 5 Create CA3: the dish's near lip and near inner wall as its own layer, 224x96 at (48, 344), drawn over the pod's feet; Create's own (Pods' room-cradle-front stays Pods')",
+  "sha256": "7c933d3da94332df0d0ace023bbf4064ad2e55fbcb186cb37560cfb00764cc80",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the Create retake"
  }
 }
