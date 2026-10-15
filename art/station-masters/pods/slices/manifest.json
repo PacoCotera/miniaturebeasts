@@ -10658,8 +10658,8 @@
   "src": "source/raw/incubator-stage.jpg (gemini-3-pro-image)",
   "made": "the Incubator's stage: the Pods room's sage and sand frame and dark foam floor, a hose in from each side low on the floor, three small gauges low and to the sides, the hoses clear of every gauge, the left third and the whole middle plain, no chamber painted; a Pro painting, centre-cut to 1024x522, its three faint vertical brightness slabs removed by hand (pass 111)",
   "sha256": "96c695a0f30fcbeacea19a10790a7dfd15ed32a21ff5723e831102d930ec62e1",
-  "status": "new",
-  "signed_in": null,
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 05:32: the Incubator captures (public station-fix5-incubator-probe 580a1607: page-incubator-empty, page-incubator, page-hatch, face/golden/incubator), placed byte for byte",
   "status_note": "new (10-15): fix 5 IA1, the art director's recut under the same id (stage-incubator/paint-machinery.py): the chamber's machinery in the four paint zones only, all else the signed stage pixel for pixel; replaces 37c92cbd0239\u2026; signed in the whole Incubator captures"
  },
  "chamber-back-400x320": {

@@ -190,8 +190,9 @@
   ],
   "src": "typed by hand (bench/make-plate-strips.py) from bench-cradle-empty-480x288 (foam) and bench-plate-gone-32x32 (recess shape)",
   "sha256": "aadf24f64afae389e7eb37463bbc564a5d65d4df4ae48d98be30366abe444479",
-  "status": "new",
-  "note": "the Probe's plate strip, 3 recesses, placed 1:1 at (264, 432); the foam from the cradle's flat inside, matte, light from the top left, a baked contact shadow in rows 45-47; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "note": "the Probe's plate strip, 3 recesses, placed 1:1 at (264, 432); the foam from the cradle's flat inside, matte, light from the top left, a baked contact shadow in rows 45-47; awaiting the art director's judgement (not signed)",
+  "signed_in": "art director at 1x, 2026-10-15 05:32: the Probe captures (public station-fix5-incubator-probe 580a1607: page-bench, -away, -armed, -tier2, face/golden/bench), placed byte for byte"
  },
  "bench-plate-strip-t2-192x48": {
   "size": [
@@ -200,7 +201,8 @@
   ],
   "src": "typed by hand (bench/make-plate-strips.py) from bench-cradle-empty-480x288 (foam) and bench-plate-gone-32x32 (recess shape)",
   "sha256": "9faa9a2e68da31ca3592f2ecf583f49dd0d39ab37254cdec9a794159e78a49f5",
-  "status": "new",
-  "note": "the Probe's plate strip, 4 recesses, placed 1:1 at (240, 432); the foam from the cradle's flat inside, matte, light from the top left, a baked contact shadow in rows 45-47; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "note": "the Probe's plate strip, 4 recesses, placed 1:1 at (240, 432); the foam from the cradle's flat inside, matte, light from the top left, a baked contact shadow in rows 45-47; awaiting the art director's judgement (not signed)",
+  "signed_in": "art director at 1x, 2026-10-15 05:32: the Probe captures (public station-fix5-incubator-probe 580a1607: page-bench, -away, -armed, -tier2, face/golden/bench), placed byte for byte"
  }
 }
