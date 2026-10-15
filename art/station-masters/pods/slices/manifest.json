@@ -14404,5 +14404,17 @@
   "sha256": "102a4e7e982641186891b55ddce272a85b1cc1ece6e1189ac42764d085ac5e3f",
   "status": "new",
   "status_note": "new: the art director signs the 21-height set on a 1x sheet and at the golden heights in Cargo captures"
+ },
+ "icon-wait-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "typed by hand (icon-wait/make-icon-wait.py), 0 MXN",
+  "made": "fix 6 A3: the bud's wait on Create's Grow line, an hourglass in sand and bark, the caps' lit edge in clay and a paper glint on the glass's left (light top left), the sand running top to bottom; sits after the price's three material marks",
+  "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
+  "status": "new",
+  "status_note": "new: signed in the whole create-shape capture at 1x"
  }
 }

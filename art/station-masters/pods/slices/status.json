@@ -3623,5 +3623,9 @@
  "cargo-report-plate-560x288": {
   "status": "new",
   "note": "fix 5 AR5 master"
+ },
+ "icon-wait-16": {
+  "status": "new",
+  "note": "fix 6 A3"
  }
 }
