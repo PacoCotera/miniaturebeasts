@@ -54,7 +54,7 @@
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
-   "hash": "2e52e603",
+   "hash": "83cbc7d9",
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
@@ -98,7 +98,7 @@
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "47c8efe0",
+   "hash": "e033074a",
    "png": "home-crates-arriving.png"
   }
  }
