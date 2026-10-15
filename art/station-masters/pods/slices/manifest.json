@@ -14122,10 +14122,10 @@
   "rect": null,
   "src": "juvenile/mibi-juvenile-S01-304x312.png before the regrade (sha256 75f95d5ad2a7); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
-  "sha256": "e4712cfb89e32a4452fc5dfa80f1fd8995197afd0520b7c9d06754ef25f86603",
+  "sha256": "13d8fb322b0ddfb614eb031fc5a6a171b8337e2529c6678f8338fb64b0856a13",
   "status": "new",
-  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
-  "status_note": "0 px magenta"
+  "signed_in": null,
+  "status_note": "new (10-15): the iris finished onto Pip's amber (juvenile/regrade-S01-iris.py; fix 1a had left the outer iris's mint sheen and olive flecks cool, so the young Loika read pale-eyed against Pip); replaces e4712cfb89e3\u2026 (was new); signed in its next whole-screen capture"
  },
  "mibi-juvenile-S01-104x112": {
   "size": [
@@ -14135,10 +14135,10 @@
   "rect": null,
   "src": "juvenile/mibi-juvenile-S01-104x112.png before the regrade (sha256 8c9904c79b3d); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
-  "sha256": "06eaddd2d88a702b564588910783fd0214d13b9fff7d6aabba182336300a405b",
+  "sha256": "3a0bf9b7ce973d6fb06852d946c227fd9094117cd8a020655578562e3bcab049",
   "status": "new",
-  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
-  "status_note": "0 px magenta"
+  "signed_in": null,
+  "status_note": "new (10-15): the iris finished onto Pip's amber (juvenile/regrade-S01-iris.py; fix 1a had left the outer iris's mint sheen and olive flecks cool, so the young Loika read pale-eyed against Pip); replaces 06eaddd2d88a\u2026 (was new); signed in its next whole-screen capture"
  },
  "mibi-juvenile-S01-96x88": {
   "size": [
@@ -14148,10 +14148,10 @@
   "rect": null,
   "src": "juvenile/mibi-juvenile-S01-96x88.png before the regrade (sha256 8c8f33366281); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
-  "sha256": "0e4d6c6fc9a81a68d612bebbd62578f3b35ce036536a434d3b1cbf23fcf2c845",
+  "sha256": "ba772eafc1577bf48ba427744e2e63221baa90c6de1e35f9f5a8b57b7f3667c9",
   "status": "new",
-  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
-  "status_note": "0 px magenta"
+  "signed_in": null,
+  "status_note": "new (10-15): the iris finished onto Pip's amber (juvenile/regrade-S01-iris.py; fix 1a had left the outer iris's mint sheen and olive flecks cool, so the young Loika read pale-eyed against Pip); replaces 0e4d6c6fc9a8\u2026 (was new); signed in its next whole-screen capture"
  },
  "mibi-juvenile-S01-48x48": {
   "size": [
@@ -14161,10 +14161,10 @@
   "rect": null,
   "src": "juvenile/mibi-juvenile-S01-48x48.png before the regrade (sha256 7cc5b8ec5cc7); juvenile/regrade-S01.py",
   "made": "S01's juvenile stand-in regraded toward Pip by hand rule: the teal body onto Pip's charcoal, the iris onto Pip's amber, the beak and feet onto Pip's cream-tan, the leaves onto Pip's olive (kept a step brighter), each keeping the juvenile's shading",
-  "sha256": "1467283119992de92cfc0d99f866835066714eaab45ffbc6e9887374ffb4df88",
+  "sha256": "d1a7b2427d29cf0848984969d2bc40e869b7baf37f4503ee17084dafe79d3250",
   "status": "new",
-  "signed_in": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)",
-  "status_note": "0 px magenta"
+  "signed_in": null,
+  "status_note": "new (10-15): the iris finished onto Pip's amber (juvenile/regrade-S01-iris.py; fix 1a had left the outer iris's mint sheen and olive flecks cool, so the young Loika read pale-eyed against Pip); replaces 146728311999\u2026 (was new); signed in its next whole-screen capture"
  },
  "mibi-adult-S03-304x312": {
   "size": [
