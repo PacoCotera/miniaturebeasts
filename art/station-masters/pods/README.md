@@ -1085,6 +1085,31 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 141 - the S03 trait plates' residue cleaned (by hand, no paid call)
+
+The art director's brief (relayed 10-15 05:02): 18 plates, each cleaned at its own size by `trait-clean/clean-s03-residue.py` (rules in its docstring); the originals are kept in `trait-clean/before/`; sheets `trait-clean/before-after-4x.png` (the defect areas of the six 128x160 plates) and `trait-clean/before-after-1x.png` (all 18). Manifest and status rows written directly (status new, note "the residue cleaned (10-15)"); `tools/status.py` not run. Changed pixels per file:
+  - `trait-S03-scales-between-128x160`: 28 px
+  - `trait-S03-scales-between-104x160`: 19 px
+  - `trait-S03-scales-between-104x96`: 16 px
+  - `trait-S03-scales-few-fine-128x160`: 12 px
+  - `trait-S03-scales-few-fine-104x160`: 12 px
+  - `trait-S03-scales-few-fine-104x96`: 4 px
+  - `trait-S03-scales-many-coarse-128x160`: 36 px
+  - `trait-S03-scales-many-coarse-104x160`: 19 px
+  - `trait-S03-scales-many-coarse-104x96`: 8 px
+  - `trait-S03-claws-digging-wedges-128x160`: 179 px
+  - `trait-S03-claws-digging-wedges-104x160`: 69 px
+  - `trait-S03-claws-digging-wedges-104x96`: 104 px
+  - `trait-S03-claws-pads-128x160`: 178 px
+  - `trait-S03-claws-pads-104x160`: 63 px
+  - `trait-S03-claws-pads-104x96`: 85 px
+  - `trait-S03-claws-round-feet-128x160`: 149 px
+  - `trait-S03-claws-round-feet-104x160`: 63 px
+  - `trait-S03-claws-round-feet-104x96`: 98 px
+
+- **Scales** follow the brief's rule exactly (saturation under 0.12, luma 25 below the 5x5 median, the 7x7 median of the unflagged pixels): 4 to 36 px per file. Some darker pixels in the same upper-left cluster have saturation 0.12 to 0.23 (the teal-grey of the scale outlines), so the rule keeps them; a few dark squares remain at 4x. A looser saturation limit would take them too, and the outlines with them: the art director's call.
+- **Claws** replace each pale grey ring pixel (saturation under 0.15, luma 140 to 205) that has the fur on one side and the warm highlight on the other within 2 px with the mean of the two sides' mean colours: 63 to 179 px per file, more than the "tens" expected, because the ring on these plates is 3 px wide, not 1 (x 88 to 90 on the 128x160). The darker outline on the highlight's right and lower edge is left (a toe line or outline by the brief's rule).
+
 ## Pass 140 - the Cargo report plate heights (by hand, no paid call)
 
 The art director's AR5 heights note. `cargo-report-plate-560x{h}` for h = 128 to 280 by 8 (20 files) from `slices/cargo-report-plate-560x288.png` (the master, masters-pods 0342d6d4), by `tools/reportplatecut.py`: a band of 288 - h rows centred on row 168 is removed from the well floor, the band's first 8 rows fading linearly into the 8 rows below it (as `tools/baycut.py` does for the bay); rows 0-24 and the last 24 rows are never cut; alpha kept (blended premultiplied). Each has a manifest row (status new, sha256, src "derived from cargo-report-plate-560x288 by a middle band cut"). The sheet of all 21 at 1x on the shut door: `marks/cargo-report-heights-1x.png` (the plate at the door's centre, 8 px from its top). One reading to confirm: "feathered over 8 rows, blend the 8 rows above and below the cut" is taken as baycut.py does it (the feather lies inside the removed band's first rows and the rows after it), so the output is exactly h rows.
