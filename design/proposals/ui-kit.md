@@ -194,7 +194,7 @@ licence, and Silkscreen (OFL) has no true lowercase, so neither is proposed.
 - *Menu:* paper card, 16 px icon per entry, focus as a lifted `W4` row inside orange brackets.
 - *Cards:* paper with a round vignette and a 3× title.
 - *Counters:* +1 per 90 ms with a 260 ms `Y2` flash; a spend drops at once.
-- *Bubbles:* `?` blue, `!` red, white rounded bubble with a tail.
+- *Bubbles:* `?` green, `!` yellow, white rounded bubble with a tail.
 - *Name tag:* ink tag with a pointer.
 - *Focus:* corner brackets, orange on the Companion; on the Station a cream ring (`focus`).
 - *Flags, pins and signs:* the start flag, the teal pin, pod, bolt and hollow bolt on the map.

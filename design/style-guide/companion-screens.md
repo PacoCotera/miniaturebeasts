@@ -213,7 +213,7 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 **Purpose.** Act in a place: walk, gather, meet creatures. **Reads first:** the pawn and what it faces.
 
-- **Composition.** 48 px tiles, about 9 across and 11 down. The camera keeps the pawn in the middle third. The partner on its teal ring with a name tag; creatures with their bubbles (`?` blue, `!` red, fruit, `…`). The message box at the foot of the view, or at the top when the pawn is in the lower third.
+- **Composition.** 48 px tiles, about 9 across and 11 down. The camera keeps the pawn in the middle third. The partner on its teal ring with a name tag; creatures with their bubbles (`?` green, `!` yellow, fruit, `…`). The message box at the foot of the view, or at the top when the pawn is in the lower third.
 - **Lively / quiet.** Lively: creatures and their routines, water, flames, a charged stone's crackle, rain. Quiet: the ground and the veil.
 - **Light and weather.** Daylight from the top left; trees cast shade down-right. **Storm:** every colour through the dark table toward blue, slanted rain with the storm's heading, a charged stone in blue-white crackle, a warned strike as a yellow tile outline only. **Fog bank:** colours washed toward pale bone, white puffs only over the fogged part, a soft round edge of sight. **Veil:** ground one step darker with night dots, a 16 px dithered edge. Cave: dark with a lantern circle. The pawn and mibis are never darkened.
 - **Palette.** Grass, warm earth and cool stone ramps; storms go blue, never brown-grey; red only for danger and fruit.
