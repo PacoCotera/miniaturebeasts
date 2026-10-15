@@ -48,7 +48,7 @@ async function start(b, { motion = true, frame = {}, t0 = 0 } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-crate-/.test(i) ? { policy: "art" } : {}) })));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r))));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "home", ...b.props, motion, frame: frameProps({ ...b.line, ...frame }) }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -112,16 +112,22 @@ test("while the rest holds, the face moves no focus and sends no intent but room
 const crateRects = (f) => { const lg = logOf(f); return lg.regions.filter((r) => r.id === "cargo" && r.layer === "painted").map((r) => r.rect); };
 test("the crates slide in (events.crateIn): each from 40 px above over 500 ms, 250 ms apart, eased out, clipped to the bay; each stands on the spec's rectangle when its time is up", { skip }, async () => {
   const ev = homeSpec.events.crateIn.each, rest = homeSpec.regions.cargo.crateRects, bay = homeSpec.regions.cargo.rect, clip = [bay[0] + 112, bay[1] + 8, 176, 72];
-  const play = async (n, total) => { const f = await start(scene({ adults: 1, crates: n, carry: [] }), { t0: 1000 }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "cargo", ms: total });
-    return { f, at: (ms) => { f.frame(t0 + ms); return logOf(f).regions.find((r) => r.id === "cargo" && r.layer === "art")?.rect ?? null; } }; };   // the crates' union (the stand-ins are art)
+  const play = async (n, total) => {
+    const f = await start(scene({ adults: 1, crates: n, carry: [] }), { t0: 1000 }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "cargo", ms: total });
+    const id = f.build.requests.find((r) => /^home-crate-/.test(r.id)).id, s = standIn(id, sizeOf({ size: homeSpec.regions.cargo.crate })), ink = [s.data[0], s.data[1], s.data[2]];
+    // a crate's visible span in its column (the crate rect's centre x): [top, height] of the stand-in's colour inside the bay's clip, or null when it has not slid in; read under the production policy (the crate is a painted master)
+    const span = (i) => { const x = rest[i][0] + rest[i][2] / 2; let top = -1, bot = -1; for (let y = clip[1]; y < clip[1] + clip[3]; y++) { const p = f.pixel(x, y); if (p[0] === ink[0] && p[1] === ink[1] && p[2] === ink[2]) { if (top < 0) top = y; bot = y; } } return top < 0 ? null : [top, bot - top + 1]; };
+    return { f, at: (ms, i = 0) => { f.frame(t0 + ms); logOf(f); return span(i); } };
+  };
   { const { f, at } = await play(1, ev.ms);
-    assert.deepEqual(at(0), [rest[0][0], clip[1], rest[0][2], 16], "at 0 the crate is 40 px above its place: its lower 16 px show in the bay"); assert.deepEqual(f.errors(), []);
-    const tops = [100, 200, 300, 400, 499].map((ms) => at(ms)[1]); assert.ok(tops.every((y, i) => y >= clip[1] && y <= rest[0][1] && (i === 0 || y >= tops[i - 1])), "it comes down and stops, never above the bay's top: " + tops);
-    assert.ok(tops[0] - clip[1] > 0 || at(100)[3] > 16, "eased out: most of the way in the first half");
-    assert.deepEqual(at(ev.ms + 20), rest[0], "on its rectangle when its time is up"); assert.equal(f.poll("done")?.kind, "arrival"); }
-  { const total = ev.ms + 2 * ev.stagger, { f, at } = await play(3, total), w = (ms) => at(ms)[2];
-    assert.equal(w(249), rest[0][2], "one crate before the second begins at 250"); assert.ok(w(260) > rest[0][2], "the second"); assert.equal(w(499), rest[1][0] + rest[1][2] - rest[0][0]); assert.ok(w(510) > rest[1][0] + rest[1][2] - rest[0][0], "the third at 500");
-    assert.deepEqual(at(total + 20), [rest[0][0], rest[0][1], rest[2][0] + rest[2][2] - rest[0][0], rest[0][3]], "the three on their rectangles when it ends"); assert.equal(f.poll("done")?.kind, "arrival"); }
+    assert.deepEqual(at(0), [clip[1], 16], "at 0 the crate is 40 px above its place: its lower 16 px show in the bay"); assert.deepEqual(f.errors(), []);
+    const tops = [100, 200, 300, 400, 499].map((ms) => { const [t, h] = at(ms); return t + h - rest[0][3]; });
+    assert.ok(tops.every((y, i) => y >= clip[1] - 40 && y <= rest[0][1] && (i === 0 || y >= tops[i - 1])), "it comes down and stops, never above the bay's top: " + tops);
+    assert.ok(tops[0] - (clip[1] - 40) > 20, "eased out: more than half way down in the first fifth");
+    assert.deepEqual(at(ev.ms + 20), [rest[0][1], rest[0][3]], "on its rectangle when its time is up"); assert.equal(f.poll("done")?.kind, "arrival"); }
+  { const total = ev.ms + 2 * ev.stagger, { f, at } = await play(3, total);
+    assert.equal(at(249, 1), null, "one crate before the second begins at 250"); assert.notEqual(at(260, 1), null, "the second"); assert.equal(at(499, 2), null); assert.notEqual(at(510, 2), null, "the third at 500");
+    const end = [0, 1, 2].map((i) => at(total + 20, i)); assert.deepEqual(end, rest.slice(0, 3).map((r) => [r[1], r[3]]), "the three on their rectangles when it ends"); assert.equal(f.poll("done")?.kind, "arrival"); }
 });
 test("the rest (events.rest): the knob settles in the first 200 ms and the ring goes; the face says done at 200; the host's dither closes over the stage for 180 ms; input is held until 380 and the ring and the lift stay away", { skip }, async () => {
   const f = await start(scene({ adults: 2, focus: "knob" }), { t0: 1000 }), R = homeSpec.regions.knob.states, knob = (lg) => lg.regions.find((r) => r.id === "knob"), ring = (lg) => lg.regions.some((r) => r.id === "focus"), dither = (lg) => lg.regions.some((r) => r.id === "stage" && r.layer === "art");
@@ -215,7 +221,7 @@ test("a light change is a cut: Home redraws the whole of its glass at most (312,
   const LIGHTS = ["dawn", "day", "dusk", "night"];
   for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {
     const f = await start(scene({ adults: 4, young: 2, carry: [0, 1], light: from }), { motion: false, t0: 1000 }), b = scene({ adults: 4, young: 2, carry: [0, 1], light: to });
-    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-crate-/.test(i) ? { policy: "art" } : {}) })));
+    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r))));
     assert.equal(f.props({ screen: "home", ...b.props, motion: false, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16));
     const a = dirty(f); assert.ok(a <= 312320, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
   }

@@ -565,8 +565,10 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
   mods.forEach((k, i) => { const m = R[k]; is(m.rect, k); is(m.rect, k, C); assert.deepEqual(m.rect, [688, 48 + 104 * i, 320, 88]); assert.deepEqual(at(m, m.lamp), [984, m.rect[1] + 12, 12, 12]); assert.deepEqual(m.objects, [112, 8, 176, 72]); is(at(m, m.objects), k + " objects", C); assert.equal(m.build, "module"); assert.ok(m.objects[0] - m.word[0] >= 96, "80 px for the word, then 16"); assert.ok(at(m, m.objects)[0] + 176 + 8 <= at(m, m.lamp)[0], "the objects 8 px clear of the lamp"); });
   assert.deepEqual(home.focus.graph.column.order.slice(0, 5), mods, "▲ ▼ walk the column top to bottom");
   const O = (k) => at(R[k], R[k].objects), within = (r, k) => assert.ok(inside(r, O(k)), `${r} inside ${k}'s objects`);
-  // Cargo: three crates 48×40 on a 64 pitch filling the bay; the waiting mark centred
-  R.cargo.crateRects.forEach((r, i) => { assert.deepEqual(r, [800 + R.cargo.pitch * i, R.cargo.rect[1] + R.cargo.bay[1] + R.cargo.crateAt[1], ...R.cargo.crate]); within(r, "cargo"); is(r, "crate", C); });
+  // Cargo: three crates 48×40 on a 56 pitch, symmetric in the bay; the waiting mark centred
+  R.cargo.crateRects.forEach((r, i) => { assert.deepEqual(r, [R.cargo.rect[0] + R.cargo.bay[0] + R.cargo.crateAt[0] + R.cargo.pitch * i, R.cargo.rect[1] + R.cargo.bay[1] + R.cargo.crateAt[1], ...R.cargo.crate]); within(r, "cargo"); is(r, "crate", C); });
+  assert.equal(R.cargo.crateRects[1][0] + 24, 800 + 88, "the middle crate on the bay's centre");
+  assert.equal(R.cargo.crateRects[0][0] - 800, 800 + 176 - (R.cargo.crateRects[2][0] + 48), "the three symmetric in the bay");
   assert.deepEqual(at(R.cargo, R.cargo.bay), O("cargo")); within(R.cargo.waiting.rect, "cargo"); assert.equal(R.cargo.waiting.rect[0] + 12, 800 + 88); is(R.cargo.waiting.rect, "waiting mark", C);
   // Pods: six wells, two rows of three, the pod 24×32 in each, a glint in the gap beside each well
   const W = R.pods.wells, wells = Array.from({ length: W.slots }, (_, i) => [R.pods.rect[0] + W.at[0] + W.pitch[0] * (i % W.cols), R.pods.rect[1] + W.at[1] + W.pitch[1] * Math.floor(i / W.cols), ...W.size]);

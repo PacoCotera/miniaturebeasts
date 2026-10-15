@@ -17,6 +17,17 @@ export function composePod(layers, A, B, w, h, { sealed = false } = {}) {
   }
   return out;
 }
+// The rack pod from its 1-bit layer masks (24×32, a layer's `on` pixels are the ones with alpha): each layer's on pixels take its fill ([r, g, b]) in `order`, later over earlier; alpha 255 where `body`
+// is on, 0 elsewhere. Pure on RGBA arrays of one size; a layer with no mask draws nothing.
+export function composeRackPod(masks, order, fills, w, h) {
+  const out = new Uint8ClampedArray(w * h * 4), body = masks.body;
+  for (let i = 0; i < w * h; i++) {
+    const o = i * 4; if (!body || !body[o + 3]) continue;
+    for (const l of order) { const m = masks[l], f = fills[l]; if (m && f && m[o + 3]) { out[o] = f[0]; out[o + 1] = f[1]; out[o + 2] = f[2]; } }
+    out[o + 3] = 255;
+  }
+  return out;
+}
 // The layer a species' shell pattern words name, by the spec's map; a word with no layer draws none (never forced onto the nearest).
 export const patternLayer = (words, map) => { for (const [k, v] of Object.entries(map)) if (words.includes(k)) return v; return null; };
 
