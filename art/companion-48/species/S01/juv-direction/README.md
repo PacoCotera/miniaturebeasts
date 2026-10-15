@@ -1,4 +1,4 @@
-# S01 juvenile token: AD direction for round 2 (10-15 04:31)
+# S01 juvenile token: AD direction for round 2 (10-15 04:29)
 
 Round 1 (727514a4) is not signed. It reads as a long, low weasel: a 45° staircase back, a narrow wedge muzzle on a straight neck, and a flat rectangular cream belly. The Station stand's identity is a baby: a big round head, about 45% of the height and as wide as the body is deep, sitting forward over a round body, with a snout bump and short legs.
 
