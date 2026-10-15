@@ -471,8 +471,38 @@ def foot(a, seed):
         s_ = FEET[(seed + k // 48) % len(FEET)][:14]; ww = min(48, w - k); seg = a[h - 14:h, k:k + ww]
         a[h - 14:h, k:k + ww] = np.where(s_[:, :ww] != TR, s_[:, :ww], seg)
     return a
+def side_edge(a, east, seed):
+    """the art director's recut of a side column's open edge (10-15): the candidates' edge was one regular scallop every 24 rows with a
+    near-black outline, which read as a cut-out comb. Now an irregular rock edge: three waves of 1-3 cycles per 48 rows with this
+    piece's own phases, faded to the shared depth at every 48 px seam so any column stacks on any other, held in runs of 3-5 rows so
+    it steps like stacked stones; the rock is carried out from its own row where the edge moves out; the outline is two DARK steps under the rock it bounds, with
+    a LIGHT pixel inside it where a west-facing edge steps out (the light is upper left)."""
+    h, w = a.shape; rng = np.random.RandomState(seed); y = np.arange(h)
+    env = np.sqrt(np.abs(np.sin(np.pi * (y % 48) / 48)))
+    wave = sum(rng.uniform(.8, 1.6) * np.sin(2 * np.pi * k * y / 48 + rng.uniform(0, 2 * np.pi)) for k in (1, 2, 3))
+    raw = np.clip(np.round(3 + env * wave * 1.1), 0, 7).astype(int); depth = raw.copy(); r0 = 0
+    while r0 < h:                                                                        # stones: the edge holds for 3-5 rows, then steps
+        run = rng.randint(3, 6); depth[r0:r0 + run] = int(np.round(raw[r0:r0 + run].mean())); r0 += run
+    depth[(y % 48) == 0] = depth[(y % 48) == 47] = 3                                     # the shared depth at every seam
+    opaque = a != TR; src = a.copy()
+    for r in range(h):
+        row = src[r]; cols = np.where(row != TR)[0]
+        if not len(cols): continue
+        if east:                                                                         # the open side is the right edge
+            inner = row[:max(1, cols.max() - 3)]; lim = w - 1 - depth[r]
+            new = np.full(w, TR); new[:lim + 1] = np.concatenate([inner, np.resize(inner[-6:][::-1], max(0, lim + 1 - len(inner)))])[:lim + 1]
+            new[lim] = DARK[DARK[new[lim - 1]]]
+        else:
+            inner = row[min(w - 1, cols.min() + 3):]; lim = depth[r]
+            body = np.concatenate([np.resize(inner[:6][::-1], max(0, w - lim - len(inner))), inner])[-(w - lim):]
+            new = np.full(w, TR); new[lim:] = body; new[lim] = DARK[DARK[new[lim + 1]]]
+            if r and depth[r] < depth[r - 1]: new[lim + 1] = LIGHT[new[lim + 1]]
+        a[r] = new
+    return a
 for p in WJ:
     a = to_idx(os.path.join(TS, "walls", p["file"])); h, w = a.shape
+    if p["kind"] in ("side", "side-end") and p.get("end") not in ("top", "foot"):
+        a = side_edge(a, p["side"] == "e", sum(map(ord, p["name"])))
     if p["kind"] in ("face", "cap"):
         a = soften(flatten(a))
         a = spill(a, sum(map(ord, p["name"])))
