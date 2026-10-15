@@ -126,30 +126,28 @@ def outline(a, M):
             if not M[y, x] and any(0 <= y + dy < H and 0 <= x + dx < W and M[y + dy, x + dx] for dy in (-1, 0, 1) for dx in (-1, 0, 1)): a[y, x] = IDX['ink']
 def curl(I):
     a = np.full((H, W), -1)
-    ball = spans_mask({15: (9, 15), 16: (7, 17), 17: (6, 18), 18: (5, 19), 19: (4, 20), 20: (4, 20), 21: (4, 20), 22: (4, 20), 23: (4, 20), 24: (4, 20), 25: (4, 20), 26: (5, 19), 27: (6, 18), 28: (7, 17), 29: (9, 15)})
-    head = spans_mask({19: (19, 22), 20: (18, 23), 21: (17, 24), 22: (17, 24), 23: (17, 24), 24: (17, 24), 25: (17, 24), 26: (18, 23), 27: (19, 22)})
-    ear = spans_mask({16: (21, 23), 17: (20, 24), 18: (20, 24)})
-    tail = spans_mask({28: (7, 17), 27: (15, 18), 26: (17, 19), 25: (18, 20), 24: (19, 20), 23: (19, 20), 22: (19, 20), 21: (19, 20), 20: (18, 19), 19: (17, 18), 18: (15, 17), 17: (13, 15), 16: (12, 14)})   # the tail wrapped round the front, from the rump over the bottom and up the chest to the top
-    allm = ball | head | ear | tail
-    coat(a, ball, rim_rows=19)
+    ball = spans_mask({14: (9, 15), 15: (7, 17), 16: (6, 18), 17: (5, 19), 18: (4, 20), 19: (4, 20), 20: (4, 20), 21: (4, 20), 22: (4, 20), 23: (4, 20), 24: (4, 20), 25: (5, 19), 26: (6, 18), 27: (7, 17), 28: (9, 15)})
+    ear = spans_mask({12: (18, 19), 13: (18, 19)})                           # the near ear, 2 px wide, on the ball's front-top
+    tail = spans_mask({27: (17, 23), 28: (6, 22), 29: (8, 21)})              # the tail wrapped round the front along the bottom: 2 px of teal from the rump to the front-bottom
+    bulb = spans_mask({27: (22, 24), 28: (22, 24), 29: (22, 24)})            # ending in the 3 x 3 bulb
+    allm = ball | ear | tail | bulb
+    coat(a, ball | ear, rim_rows=17)
     for y in range(H):
         for x in range(W):
-            if tail[y, x] and not (head[y, x]): put(a, x, y, 'm' if (x + y) % 4 == 0 else 'd')       # the tail: a band of tealD with a lit mint pixel along it
-    coat(a, head | ear, rim_rows=0)
+            if tail[y, x] and not bulb[y, x]: put(a, x, y, 'd' if y == 29 else 't')    # the tail: teal over tealD, outlined in ink with the ball
     outline(a, allm)
-    for x, y in ((21, 17), (22, 17), (21, 18), (22, 18)): put(a, x, y, 'm')                          # the inner ear
-    for x in (19, 20, 21): put(a, x, 23, 'I')                                                       # the closed eye: a 1 px line
-    for x, y in ((23, 25), (24, 25), (23, 26)): put(a, x, y, 'm')                                   # the muzzle
-    for dy, r in enumerate(["cYY", "YYG", "YGG"]):                                                  # the bulb resting on top of the ball: yellow, no glow
-        for dx, c in enumerate(r): put(a, 11 + dx, 12 + dy, {'c': 'cream', 'Y': 'yellow', 'G': 'gold'}[c])
-    for x in range(10, 15): put(a, x, 11, 'I')
-    for y in (12, 13, 14): put(a, 10, y, 'I'); put(a, 14, y, 'I')
+    for x, y in ((18, 12), (19, 12), (18, 13), (19, 13)): put(a, x, y, 'm') if a[y, x] >= 0 else None            # the inner ear, mint
+    put(a, 17, 17, 'W'); put(a, 18, 17, 'I'); put(a, 17, 18, 'I'); put(a, 18, 18, 'I')                          # the eye: ink 2 x 2 with a white catch-light top-left
+    for x in range(5, 22): put(a, x, 30, 'I') if a[30, x] < 0 and a[29, x] >= 0 else None
+    for dy, r in enumerate(["cYY", "YYG", "YGG"]):                                                              # the bulb: cream, yellow, gold, no glow
+        for dx, c in enumerate(r): put(a, 22 + dx, 27 + dy, {'c': 'cream', 'Y': 'yellow', 'G': 'gold'}[c])
+    for x in range(21, 26): put(a, x, 26, 'I'); put(a, x, 30, 'I')
+    for y in (27, 28, 29): put(a, 25, y, 'I')
     return a
 def mini_from(base):
     a = np.full((12, 12), -1)
-    head = {5: (4, 8), 6: (3, 9), 7: (3, 9), 8: (3, 9), 9: (4, 8), 10: (5, 7)}
-    ears = {2: (2, 4), 3: (1, 5), 4: (1, 5), 5: (2, 3)}
-    ears2 = {2: (8, 10), 3: (7, 11), 4: (7, 11), 5: (9, 10)}
+    head = {5: (3, 8), 6: (3, 8), 7: (3, 8), 8: (3, 8), 9: (3, 8), 10: (4, 7)}            # a round head with a flat-ish chin (not a point)
+    ears = {3: (1, 2), 4: (1, 2)}; ears2 = {3: (9, 10), 4: (9, 10)}                       # two small ears, 2 x 2 each, set apart
     M = np.zeros((12, 12), bool)
     for sp in (head, ears, ears2):
         for y, (x0, x1) in sp.items(): M[y, x0:x1 + 1] = True
@@ -160,12 +158,12 @@ def mini_from(base):
                 put(a, x, y, 'm' if (t == 1 and y <= 6) else ('d' if b <= 1 else ('t' if b <= 2 else 'q')))
     for y in range(12):
         for x in range(12):
-            if not M[y, x] and any(0 <= y + dy < 12 and 0 <= x + dx < 12 and M[y + dy, x + dx] for dy in (-1, 0, 1) for dx in (-1, 0, 1)) and a[y, x] < 0: a[y, x] = IDX['ink']
-    for x, y in ((2, 3), (3, 3), (2, 4), (3, 4), (8, 3), (9, 3), (8, 4), (9, 4)): put(a, x, y, 'm')   # the inner ears, mint
-    put(a, 5, 7, 'I'); put(a, 8, 7, 'I')                           # the eyes, 1 px ink
-    put(a, 7, 9, 'm'); put(a, 8, 9, 'm')                           # the muzzle, mint
-    for x, y in ((6, 2), (6, 3), (6, 4)): put(a, x, y, 'G')         # the stalk, 1 px gold
-    for x, y, c in ((5, 0, 'cream'), (6, 0, 'yellow'), (5, 1, 'yellow'), (6, 1, 'gold')): put(a, x, y, c)   # the bulb, 2 x 2
+            if not M[y, x] and any(0 <= y + dy < 12 and 0 <= x + dx < 12 and M[y + dy, x + dx] for dy in (-1, 0, 1) for dx in (-1, 0, 1)): a[y, x] = IDX['ink']
+    for x, y in ((1, 3), (2, 3), (9, 3), (10, 3)): put(a, x, y, 'm')                       # the ears' inner tops, mint
+    put(a, 5, 7, 'W'); put(a, 5, 8, 'I')                                                    # one eye: 1 px ink with a white pixel above it
+    put(a, 7, 9, 'm'); put(a, 8, 9, 'm') if M[9, 8] else None; put(a, 7, 8, 'm')            # the muzzle, mint, 2 px
+    put(a, 6, 4, 'G'); put(a, 6, 3, 'G'); put(a, 6, 2, 'G')                                 # the antenna: 1 px gold, between the ears
+    for x, y, c in ((5, 0, 'cream'), (6, 0, 'yellow'), (5, 1, 'yellow'), (6, 1, 'gold')): put(a, x, y, c)
     return a
 if __name__ == "__main__":
     base_dir, out = sys.argv[1:3]; os.makedirs(out, exist_ok=True)

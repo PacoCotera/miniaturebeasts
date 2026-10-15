@@ -19,8 +19,15 @@ def idle_from(base):
             elif body[y, x]:
                 t, b = tl(body, y, x), br(body, y, x)
                 put(a, x, y, 'C' if t <= 3 else ('s' if b <= 3 else 'b'))                    # the bun: clay lit top-left, soil shade bottom-right, bark between
-    for x in range(15, 28):
-        if a[10, x] >= 0 and a[10, x] != IDX["ink"]: put(a, x, 10, "s")                            # the 1 px shadow row under the cap's brim
+    # the cap SEATED (round 2): its brim overlaps the head by 1 px, there is no ink line between cap and head where they touch (the outer outline runs round the whole silhouette), and the 1 px
+    # soil shadow row lies on the head's pixels under the brim
+    capL = a.copy(); capL[10:] = -1; bodyL = a.copy(); bodyL[:10] = -1
+    a = bodyL.copy()
+    for y in range(H - 1):
+        for x in range(W):
+            if capL[y, x] >= 0: a[y + 1, x] = capL[y, x]
+    for x in range(W):
+        if capL[9, x] >= 0 and capL[9, x] != IDX['ink'] and a[11, x] >= 0 and a[11, x] != IDX['ink']: put(a, x, 11, 's')
     # the legs: rows 28 to 31 rebuilt as four stubby legs (soil, a bark lit edge) with the outline between them
     a[28:32, :] = -1
     for x in range(2, 28):
@@ -39,9 +46,12 @@ def idle_from(base):
     return a
 # ------------------------------------------------------------------ the poses, from the cleaned idle: the cap is its own layer (rows 0 to 9) so it can move on the body; its brim's shadow row is drawn under it each time
 def layers(I):
-    cap = np.full_like(I, -1); cap[:10] = I[:10]
-    body = I.copy(); body[:10] = -1; body[10] = np.where(I[10] == IDX['soil'], -2, I[10])   # row 10 is the brim's shadow: redrawn, so marked -2 and filled with bark below
-    body[10][body[10] == -2] = IDX['bark']
+    cap = np.full_like(I, -1); cap[:11] = I[:11]
+    body = I.copy(); body[:10] = -1
+    for x in range(W):
+        if body[11, x] == IDX['soil']: body[11, x] = IDX['bark']        # the shadow row is redrawn under the cap each time
+        if cap[10, x] >= 0 and cap[10, x] != IDX['ink'] and body[11, x] >= 0: body[10, x] = body[11, x]
+        else: body[10, x] = I[10, x] if (I[10, x] >= 0 and I[10, x] == IDX['ink']) else -1
     return cap, body
 def compose(body, cap, cdx=0, cdy=0, shadow=True):
     a = body.copy(); cm = np.full_like(a, -1)
@@ -116,13 +126,19 @@ def eat(I, k):
     return a
 def mini_from(base):
     a = base.copy(); inner = (a >= 0) & (a != IDX['ink'])
-    cap = inner.copy(); cap[5:] = False; body = inner.copy(); body[:6] = False      # the cap rows 2 to 4, the head's first row (5) is the brim's soil shadow, the head rows 6 to 11
+    cap = inner.copy(); cap[5:] = False; body = inner.copy(); body[:5] = False
     for y in range(12):
         for x in range(12):
             if cap[y, x]: put(a, x, y, 'P' if (tl(cap, y, x) <= 1 and y <= 3) else ('C' if (y == 4 or br(cap, y, x) <= 1) else 'D'))
-            elif inner[y, x] and y == 5: put(a, x, y, 's')
             elif body[y, x]: put(a, x, y, 'C' if tl(body, y, x) <= 2 else ('s' if br(body, y, x) <= 2 else 'b'))
-    put(a, 6, 7, 'I'); put(a, 9, 7, 'I')                           # the two eyes, 1 px ink
+    # the cap seated: moved down 1 px over the head, no ink between them, the soil shadow row on the head pixels under the brim
+    capL = a.copy(); capL[5:] = -1; bodyL = a.copy(); bodyL[:5] = -1; a = bodyL.copy()
+    for y in range(11):
+        for x in range(12):
+            if capL[y, x] >= 0: a[y + 1, x] = capL[y, x]
+    for x in range(12):
+        if capL[4, x] >= 0 and capL[4, x] != IDX['ink'] and a[6, x] >= 0 and a[6, x] != IDX['ink']: put(a, x, 6, 's')
+    put(a, 6, 7, 'W'); put(a, 6, 8, 'I'); put(a, 9, 7, 'I'); put(a, 9, 8, 'I')      # two 1 x 2 eyes, the near one with a 1 px white catch-light
     return a
 if __name__ == "__main__":
     base_dir, out = sys.argv[1:3]; os.makedirs(out, exist_ok=True)
