@@ -3817,7 +3817,42 @@ function drawMessage() {
 const cen = (pb, x, y) => blit(pb, x + ((32 - pb.w) >> 1), y + ((32 - pb.h) >> 1));
 const cen2 = (key, pb, x, y) => cen(upArt('sg' + key, pb, 2), x, y);
 const onGrass = (x, y, f) => { R(x, y, 32, 32, C.grass); f(); };
-const ROOF_CROP = () => art('sg-roof', () => { const r = roofArt(0), pb = new PB(32, 22); for (let j = 0; j < 22; j++) for (let i = 0; i < 32; i++) pb.p[j * 32 + i] = r.p[j * r.w + i]; return pb; });   // placeholder: the left end of the built overhang, until the meadow atlas picture is in the page
+// The shelter sign's picture: the art director's signed 32×32 on the core 48 (art/companion-48/signs/sign-shelter-32.png), one character per pixel: '.' clear, else the palette index + 48.
+const SHELTER_ROWS = [
+  'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+  'BBBBBBBBBBBBBBAAAAAAAAAAAAAAAAAA',
+  'AA@@@@@@@AAABAAAAAAAAAAAAAAAAAAA',
+  'AAAABAAAAAAAABBBAAABBABBB@BB@@B@',
+  '@@ABAAABA@ABBBBAAABBB@@@B>@@>>@>',
+  '@@ABBABB@@@BBBAAAAB@B>>>B>>>=@>=',
+  '@@ABBBBBB@@@@AAAAAB>@=>>@>4@=@@=',
+  '@@B@BBB@BA@@>AAAAA@^>>>>>==@4444',
+  'B@@>@A@>BB@>=AAAAA>^@44>>==>=444',
+  '@>>=>@>@@A@4^AABBA@>4>44444>=444',
+  '>====>>@>BA44ABBBB@=>444444==4=>',
+  '@=3===4>@@A44BBBBB>>>444444=444=',
+  '==3===>>4>A44BB@@B>4=>44444=4444',
+  '========44B44B@>>@44==4444434444',
+  '=====44444B4^@><=>^44===44==4444',
+  '====44444^B44><=44444^======4444',
+  '===4444444@4<=4<=4444^=====24444',
+  '===4444444>4<=44<=4^44=====34444',
+  '===44444444<=4444<==44=====44444',
+  '===44444444<=4==<==444=====44444',
+  '===33333333<=3==<===33=33==33334',
+  '================================',
+  '.==============================.',
+  '...==========================...',
+  '.......=.......==.......=.......',
+  '.......<.......<<.......<.......',
+  '.......<.......<........<.......',
+  '...............<................',
+  '................................',
+  '................................',
+  '................................',
+  '................................'
+];
+const SHELTER = () => art('sg-shelter', () => { const pb = new PB(32, 32); SHELTER_ROWS.forEach((r, y) => { for (let x = 0; x < 32; x++) if (r[x] !== '.') pb.set(x, y, r.charCodeAt(x) - 48); }); return pb; });
 const PAWS = () => art('sg-paws', () => { const pb = new PB(16, 15); pb.blit(ICON.paw('bone'), 0, 6); pb.blit(ICON.paw('bone'), 7, 0); return pb; });
 const sgSp = sp => Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? sp : 0;
 const PIC = {
@@ -3829,7 +3864,7 @@ const PIC = {
   stone: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0), x, y)),
   warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0), x, y)),
-  shelter: (x, y) => cen(ROOF_CROP(), x, y),
+  shelter: (x, y) => cen(SHELTER(), x, y),
   pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1, p && p.sp), x, y),
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
