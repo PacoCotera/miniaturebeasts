@@ -2,7 +2,7 @@
 // asset ids, strings, flags and which crate and pod goes to which well; no rectangle, no measure, no layout rule, no colour (the words place everything from cargo.json). The output is plain JSON:
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), need }.
 // Runs in Node, tested there (tests/cargo-props.test.mjs); the shape is cargo.props.json.
-//   m: { st, sv, settings, docked, ui: { cargo: { state, crate, at, run }, meet }, spec cargo.json, home home.json, frame frame.json }
+//   m: { st, sv, settings, docked, ui: { cargo: { state, crate, at, run, drawn }, meet }, spec cargo.json, home home.json, frame frame.json }
 //   ui.cargo.run is what ✓ Open the bay made when it opened the crates (intents/cargo.mjs `openRun`): the crates in the order they opened, each with its ribbon key, its pods and the well each went to, and the report.
 import * as S from "../state.mjs";
 import { wordsOf } from "./home-props.mjs";

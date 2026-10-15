@@ -91,7 +91,7 @@
  },
  "handoff": {
   "to": "pods",
-  "rule": "a crate's pods land in the rack, the Station's six wells: Pods' collection shows them in the same wells, new until identified. ✓ See the new pods on the report jumps to Pods' collection with the ring on the pod that most needs the player; ← there reads Home. A pod with no free well waits in the bay (regions.waiting) and lands, oldest first, as a well frees"
+  "rule": "a crate's pods land in the rack, the Station's six wells: Pods' collection shows them in the same wells, new until identified. ✓ See the new pods on the report jumps to Pods' collection with the ring on the pod that most needs the player; ← there reads Home. A pod with no free well waits in the bay (regions.waitingPods) and lands, oldest first, as a well frees"
  },
  "colours": {
   "crate": { "body": "metal", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },

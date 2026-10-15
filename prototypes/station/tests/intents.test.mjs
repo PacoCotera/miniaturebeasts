@@ -82,6 +82,10 @@ test("the Dock while Cargo's bay shows stages the crates drawn (cargo.json line.
   { const h = mk(); h.motion = () => true; INTENTS.frame.dock(h, false, true); const c = h.ui.cargo, ci = h.specs.cargo.events.crateIn.each, at = (ms) => h.timers.filter((t) => t.ms <= ms).sort((a, b) => a.ms - b.ms).forEach((t) => t.fn());
     assert.equal(c.drawn, 1, "the first crate counts from the Dock frame"); at(250); assert.equal(c.drawn, 2); at(500); assert.equal(c.drawn, 3); at(ci.ms + ci.stagger * 2); assert.equal(c.drawn, null, "the slide is over: every crate counts"); }
   { const h = mk(); h.motion = () => false; INTENTS.frame.dock(h, false, true); assert.ok(h.ui.cargo.drawn == null, "reduced motion: nothing staged"); }
+  { const h = mk(); h.motion = () => true; const c = h.ui.cargo, run = (from, to) => h.timers.filter((t) => t.ms > from && t.ms <= to).sort((a, b) => a.ms - b.ms).forEach((t) => t.fn());   // a Lift and a Dock inside one slide: the first slide's steps write nothing after it
+    INTENTS.frame.dock(h, false, true); run(0, 250); assert.equal(c.drawn, 2); const t0 = h.timers.length;
+    INTENTS.frame.dock(h, false, true); assert.equal(c.drawn, null, "lifted: the slide is void"); INTENTS.frame.dock(h, false, true); assert.equal(c.drawn, 1, "docked again: one crate counts from the Dock frame");
+    h.timers.slice(0, t0).filter((t) => t.ms > 250).forEach((t) => t.fn()); assert.equal(c.drawn, 1, "the first slide's later steps write nothing"); }
 });
 test("the Dock with the keys (keysElsewhere false) from Pods does not navigate and says the plate; a Lift never navigates, whatever keysElsewhere is", () => {
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, false); assert.equal(h.went.length, 0, "no goto"); assert.equal(h.ui.screen, "pods"); assert.equal(h.said.at(-1), r.msg); }

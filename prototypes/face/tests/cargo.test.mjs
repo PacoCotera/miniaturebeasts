@@ -228,7 +228,7 @@ test("the report plate's rows sit on the spec's y from its top: the crates' pod 
 });
 
 // ---- the dirty area ----
-for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates open (9180 ms, frames every ${step} ms): no refresh redraws more than a quarter of the screen, outside the dither the host plays at each crate's start and at the end`, { skip }, async () => {
+for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates open (9180 ms, frames every ${step} ms): no refresh redraws more than a quarter of the screen (Cargo's own steps are cuts: no dither at a crate's start or at the end)`, { skip }, async () => {
   const b = scene({ crates: 3, open: true, podsEach: 3 }), f = await start(b, { t0: 1000 }), M = f.M; logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crate", ms: 9180, hold: 9200 }); let area = 0, moved = 0;
   for (let t = step + off; t < 9180; t += step) {
     f.frame(t0 + t); const n = M._face_dirty_count(), s = dirty(f); area = Math.max(area, s); if (n) moved++;

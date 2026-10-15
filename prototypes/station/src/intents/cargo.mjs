@@ -1,7 +1,7 @@
 // Cargo's intents (cargo.json: the keys, the line, events.opening, handoff): the rule call behind ✓ and ← in the bay and the report, the opening's timeline, and the report that follows it. Cargo has no targets: the ring is on nothing,
 // the pad does nothing in the bay, and every key but ✓ and ← only closes the report. The pad's moves are the face's (there are none).
-//   h.ui.cargo: { state: "bay" | "opening" | "report", crate, at, mend, run, shown }
-//   run: what ✓ Open the bay made, in the order the crates opened: { crates: [ { ribbon, pods: [ { id, well } ], dev, gained: { e, d, s } } ], report }; shown: the counters and the turn as the top bar shows them while the crates open
+//   h.ui.cargo: { state: "bay" | "opening" | "report", crate, at, mend, run, shown, drawn, slide }
+//   run: what ✓ Open the bay made, in the order the crates opened: { crates: [ { ribbon, pods: [ { id, well } ], dev, gained: { e, d, s } } ], report }; shown: the counters and the turn as the top bar shows them while the crates open; drawn: the crates drawn while they slide in (null: all), slide: the slide that may stage it (cratesIn)
 import * as S from "../state.mjs";
 import { ribbonOf, leadOf, reachWord } from "../views/cargo-props.mjs";
 import { toPods } from "./home.mjs";
@@ -70,6 +70,18 @@ export function openBay(h) {
   });
   h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; });   // a cut to the report: the door shut, the plate on it (R8)
   h.save(); return r;
+}
+
+// The crates sliding into the bay on the Dock (cargo.json events.crateIn, line.bay): the event, and the count of crates drawn, staged as Cargo's UI state at each slide's start
+// (a crate counts from the frame its slide starts; with reduced motion every crate is in on the Dock frame, nothing staged). Each call starts a new slide; a step of an older slide writes
+// nothing, so a Lift and a Dock inside one slide never leave the line counting the old one. n = 0 (a Lift) only voids the slide in flight.
+export function cratesIn(h, n) {
+  const c = h.ui.cargo, ci = h.specs.cargo.events.crateIn.each, slide = (c.slide = (c.slide ?? 0) + 1);
+  c.drawn = null; if (!n) return;
+  h.play({ kind: "arrival", target: "crates", ms: ci.ms + ci.stagger * (n - 1), hold: 0 });
+  if (!h.motion()) return;
+  const step = (v) => () => { if (c.slide === slide) c.drawn = v; };
+  c.drawn = 1; for (let i = 1; i < n; i++) h.at(i * ci.stagger, step(i + 1)); h.at(ci.ms + ci.stagger * (n - 1), step(null));
 }
 
 // the report closes: the bay shows (the crates are accepted): the shut door when it holds nothing, the waiting pods on the open bay when pods wait; the plate's rows go with it
