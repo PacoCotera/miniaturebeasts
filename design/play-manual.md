@@ -129,7 +129,9 @@ Wait lets one action pass. You find it on ✓ when you face nothing in a place, 
 | Between expeditions | Next expedition · Probe · Cargo · Mibis · New world |
 | On the expedition choice | Mibis · Full map · New world |
 
-Probe shows your Shield, patching and the map legend; Cargo shows what you carry, how much is explored and the sealed bay. End expedition is greyed away from the flag and lit outposts.
+Probe shows your Shield as three plates (whole or gone) and patching, your reach as a row of dots (hollow at home), the Energy you can reach and the price of the next tier; below them is a grid of picture tiles, one for every kind of sign you have met, in the order met. The pad moves a focus over the tiles and the bottom line names the focused one. Cargo shows the hold as pictures: the counters for what you carry, your pods with dashed outlines for empty slots, the crate places in the bay with dashed outlines for empty ones, and a one-line preview of what End expedition would seal. End expedition is greyed away from the flag and lit outposts.
+
+**A save that can't be shown.** When the saved game is damaged or not in a form this page understands, the screen says "This save can't be shown" and the page never touches it. Press ✓ once ("Start a new world"); the screen asks you to confirm ("The mibis stay with the old save", "Confirm: new world"). Press ✓ again and the old save is set aside, untouched, under a key of its own (a new key each time, so an earlier set-aside save is never overwritten), and a new world starts with a fresh Station. Any other key cancels the confirmation. If the old save cannot be set aside, nothing changes. A save from a newer version of the game shows "This page is out of date · reload to play" and is left alone.
 
 ### Pods and the hold
 
@@ -181,7 +183,7 @@ A storm is a band that moves across the map. The bolts in the bottom line show h
 | 2 | Strong rain | "Strong storm · stray strikes can hit you in the open · shelter under an overhang or in a cave" |
 | 3 | The peak | "Storm peak · strikes more likely · get under an overhang, into a cave or leave" |
 
-The exact odds are in the quick reference and on the Probe screen's legend.
+The exact odds are in the quick reference and on the Probe, where focusing the storm tile reads them in words ("one in twenty" in strong rain, "one in ten" at the peak).
 
 - **Warned strikes** aim at stones (or open ground near you, never your own tile). The tile lights up one action before. A struck stone holds a charge: +2 Energy, or +3 at the storm's peak.
 - **Stray strikes** can hit the Probe on any action you spend in the open under rain. Each hit takes one Shield bar.
