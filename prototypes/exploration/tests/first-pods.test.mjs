@@ -312,3 +312,15 @@ test("control hints lead the bottom line's middle and are spent once it shows th
   assert.ok(p.run("textWT('CALL here drops a pin', 2)") <= 190, "the signed short form fits the map's middle");
   p.key("confirm"); if (p.S.phase === "patch") { assert.ok(p.S.found.includes("backplace")); assert.ok(!/Leave is first/.test(p.run("FX.msg")), "not in the message box"); }
 });
+
+test("the Probe's storm tile leads with the exact odds in words derived from STRAY, with no digit or percentage; hazard signs are priority 3", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'probe'; S.found.push('met:storm');");
+  assert.equal(p.run("stormOdds()"), "Open · hit one in twenty");
+  assert.ok(p.run("textWT")(p.run("stormOdds()"), 2) <= 200);
+  p.run("STRAY.strong = 1 / 10; STRAY.peak = 1 / 5;"); assert.equal(p.run("stormOdds()"), "Open · hit one in ten", "derived, not typed");
+  p.run("STRAY.strong = 1 / 20; STRAY.peak = 1 / 10; stormLevel = () => 3;"); assert.equal(p.run("stormOdds()"), "Open · hit one in ten", "the live peak level's");
+  assert.ok(!/[\d%]/.test(p.run("stormOdds()")));
+  assert.equal(p.run("lineFor().ctx[0]"), "Open · hit one in ten", "the first candidate of the storm tile");
+  assert.equal(p.run("JSON.stringify(['shield','bank','shelter','warn','storm'].map(i => SIGN[i].pri))"), "[3,3,3,3,3]");
+});

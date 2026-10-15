@@ -508,7 +508,7 @@ function settleOnce() {
 }
 // ===================== Signs: one picture and one line, found again on the Probe =====================
 // key: the once-flag (an old save keeps its flags); also: other flags that count as seen; tile: its place on the Probe (met-order grid).
-// Priority is the old once-line's (a merged sign takes the highest of its lines). Hazards break ties, then the order below.
+// Priority is the old once-line's (a merged sign takes the highest of its lines; every hazard sign is 3, so the hazard order decides). Then the order below.
 const SIGN_LINE = {
   start: 'Your start · end the expedition here', call: 'Call lifts the veil: finds show', shield: 'Shield hit · none left, it breaks',
   storm: dir => 'More bolts, more strikes · ' + (dir > 0 ? '▶ east' : '◀ west'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
@@ -526,7 +526,7 @@ const SIGN = {};
   add('shield', 'shield', 3, 'shield', 'shield', SIGN_LINE.shield);
   add('bank', 'bank', 3, 'bank', 'bank', SIGN_LINE.bank);
   add('shelter', 'strayexp', 3, 'shelter', 'shelter', SIGN_LINE.shelter, { also: ['odds'] });
-  add('warn', 'warn', 2, 'warned', 'warn', SIGN_LINE.warn, { also: ['warnMap'] });
+  add('warn', 'warn', 3, 'warned', 'warn', SIGN_LINE.warn, { also: ['warnMap'] });
   add('storm', 'hudstorm', 3, 'storm', 'storm', SIGN_LINE.storm, { also: ['stormdir', 'oddsPeak'] });
   add('start', 'mapintro', 3, 'flag', 'flag', SIGN_LINE.start);
   add('call', 'callintro', 3, 'call', 'call', SIGN_LINE.call, { also: ['callplace'] });
@@ -3983,6 +3983,10 @@ function reachDots(x0, y0, range) {
   }
 }
 const lineOf = v => typeof v === 'function' ? v() : v;
+// The Probe's storm tile also carries the exact odds, in words, derived from STRAY (never typed in): the live level's, strong when no storm is up.
+const TENS = ['', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+const oneIn = p => { const n = Math.round(1 / p); return n <= 10 ? NUM_WORD[n] : n < 100 && n % 10 === 0 ? TENS[n / 10] : String(n); };
+const stormOdds = () => 'Open · hit one in ' + oneIn(stormLevel() === 3 ? STRAY.peak : STRAY.strong);
 // A tile's picture, in a 40×40 slate tile (the picture's own 32×32 slot has 4 px around it).
 function drawTile(t, x, y) {
   panel(x, y, 40, 40, C.night, C.slate);
@@ -4445,7 +4449,7 @@ function lineBase() {
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
-    case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? [lineOf(tl.name), lineOf(tl.short)] : '';   // the focused sign: name · gist, then the name alone
+    case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', fieldFrozen()) : L1('', ctx, 'close'); }   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
