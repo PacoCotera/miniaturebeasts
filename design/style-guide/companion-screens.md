@@ -225,6 +225,8 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
   3. **Left:** the mirror of right, pointer right.
   4. **Above:** centred on the cell, its pointer's tip 4 px over the highest drawn pixel (the sprout tip, not the cell's top, over the idle frames and the bob), pointer down.
   5. **Below, slid sideways** in 4 px steps (+4, −4, +8, −8 …) until clear, the pointer kept on the cell's centre and at least 4 px inside the panel's ends. If nothing is clear, the tag is not drawn until a position clears.
+- **Edge tabs.** What is off screen is pointed to from the view's edge. A tab is a 22×22 ink (#1a1725) panel with cut corners, a 1 px border and a 3-row pointer outside it on the side it faces, centred where the line from the pawn to the target meets the view's edge (x 17–433, y 49–547). The border and icon say what it is: a creature showing `!` in yellow #ffd441, one showing `?` in sprout #98d85c (each with its bubble), and a find the Call lit in cream #fff4a6 (with the spark). At most 4 tabs show, and two within 24 px along an edge merge into one (`!` first, then `?`, then a find; the nearer wins a tie). A tab slides along the edge to stay clear of the message box. No digits or counts. A tab flashes cream for 160 ms when it appears (not with reduced motion) and is still after that. A creature's tab lasts as long as its bubble and never shows for a hidden creature, one beyond fog sight, or in a cave; a find's tab shows for the 3 actions after the Call until the find is taken, out to the Call's own reach (in a fog bank too).
+- **Call's hold dashes.** While the Call ring's last contour is held (400 ms after its 300 ms sweep), ice #a9e6ff dashes run along the view's edge wherever the Call reached past it: 4×2 on the top and bottom, 2×4 on the sides, every 8 px, each with a 1 px void #0c0a12 shadow on its outer side so it reads on sand, pale lawn and the message box. In a fog bank the corners drop out and the dashes show the round reach. They are gone when the hold ends.
 - **Motion.** Idle 2 frames at 2 Hz; walk 3 frames, 150 ms a step; the Call ring 3 frames over 300 ms, its last contour held a moment; a hit is a 260 ms 3 px shake.
 
 **Pass when**
@@ -244,7 +246,7 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 **Purpose.** The field menu behind the ← key. **Reads first:** the focused entry.
 
-- **Composition.** A paper card at the lower right, above the bottom line, about 260 px wide. Rows 40 px: a 16 px icon and a 2× label. A dimmed entry gives its reason in the bottom line ("Start · about 2 cells"). A rule before New world. The view stays visible behind, darkened through the dark table.
+- **Composition.** A paper card at the lower right, above the bottom line, about 260 px wide. Rows 40 px: a 16 px icon and a 2× label. A dimmed entry gives its reason in the bottom line: over the map the distance ("Start · about 2 cells"), over a place the direction ("Start · south"). A rule before New world. The view stays visible behind, darkened through the dark table.
 - **Lively / quiet.** Lively: the focused row only. Quiet: everything else; the world behind holds still.
 - **Light and weather.** The view behind keeps its weather, one step darker. The card is lit from the top left like any object.
 - **Palette.** Paper on a darkened view; orange for focus; dimmed rows through the fade table.
