@@ -516,29 +516,29 @@
    "file": "pods/crate-open-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "058df985e86981ae28ac33c928f7153871988d042fc99db02cd1a1bb5b39ae61",
-   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "f2db8bbbb51a457b6074d079eed891387f1aee1d97ebcdc07d8a5d8586dd5c7c",
+   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-opening-432x272": {
    "file": "pods/crate-opening-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "a2ae9a22e0db5de7b93ff618bd62bf446f87fac582b7449ab5398b8f9b305b60",
-   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "3bfd530cd7d337dea716f80c141921ff5dd4b07c329cd6bf5a63fcd6da7a93ee",
+   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "27b530f2ce0b38639aa59956654f128a5f778838ad74aca941e46754144a15e1",
-   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "071a4b591c838a76a5d8521f7b84ae7c0b6a581459506aea29b1001d220f7765",
+   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "f51b92292612775674ea58325397feea04a4b206da7e1a723589c96aaad8ca74",
-   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "9ab374686299190efc45442ed7f10d1adc4be00c4d0a258cad726afa938b1815",
+   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "crate-shadow-256x24": {
    "file": "pods/crate-shadow-256x24.png",
@@ -558,8 +558,8 @@
    "file": "pods/crate-sitting-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "078442f4b5106d07350d888ca6d6c93f6672bb7d36f4814cf65f09a50893d841",
-   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "a83fbf87442b52446607f7b39fc5383b7ce76e12e5dd16925c9ed86cd0f12b3a",
+   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
   },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
