@@ -10,9 +10,3 @@ export function injectPortraitSource(digest, rgba, w = 528, h = 392) {
 }
 export const dropPortraitSources = () => SOURCES.clear();
 export async function digestOf(rgba) { const h = new Uint8Array(await crypto.subtle.digest("SHA-256", rgba)); return [...h.slice(0, 8)].map((b) => b.toString(16).padStart(2, "0")).join(""); }
-// The source has landed for a mibi's delivered portrait: its digest names it, it is derived, and the digest is kept on the mibi (additive in the save, no schema bump). Returns { ok, digest } or { error }.
-export async function landPortrait(m, rgba, w = 528, h = 392) {
-  if (!m || !m.portrait) return { error: "the mibi has no portrait to land" };
-  const digest = await digestOf(rgba), r = injectPortraitSource(digest, rgba, w, h); if (r.error) return r;
-  m.portrait.digest = digest; return r;
-}

@@ -80,7 +80,7 @@ export function registerPictures(reqs, env) {
       case "founder": put(r.id, r.size[0], r.size[1], "the founder's painting (the stylised rig pass)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return r.ghost ? ghostArt(fr, g, r.size[0], r.size[1]) : mistyArt(fr, g, r.misty, r.size[0], r.size[1]); }); break;   // the placeholder rig, frosted where a chapter is unread (nothing read: the whole of it, on its own outline)
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill
       case "portrait": {   // the sitting's portrait at 40×30, derived on the Station (derive.mjs): an empty slot until its source arrives, then filled (assets.mjs: a stand-in fills an empty slot); the status is "derived", never in the placeholder register
-        const src = env.portraitSource ? env.portraitSource(r.digest) : portraitSource(r.digest);
+        const src = portraitSource(r.digest);
         if (!src) registerSlot({ id: r.id, w: 40, h: 30, until: "the sitting's portrait (derived on the Station from its opening)" }); else registerAsset({ id: r.id, w: 40, h: 30, status: "derived", build: () => src });
         break;
       }

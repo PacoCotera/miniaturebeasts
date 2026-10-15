@@ -69,7 +69,7 @@ test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in,
 
 // ---- the portrait's picture (derive.mjs, portrait-source.mjs, the "portrait" kind). PROVISIONAL: the art director signs the reducer's rule once, on real portraits ----
 import { derivePortrait } from "../src/derive.mjs";
-import { portraitSource, injectPortraitSource, dropPortraitSources, landPortrait, digestOf } from "../src/portrait-source.mjs";
+import { portraitSource, injectPortraitSource, dropPortraitSources, digestOf } from "../src/portrait-source.mjs";
 import { registerPictures } from "../src/pictures.mjs";
 import { policyOf as policyOfPortrait } from "../../ui/asset-policy.mjs";
 {
@@ -98,7 +98,7 @@ import { policyOf as policyOfPortrait } from "../../ui/asset-policy.mjs";
     const e = assetEntry(id); assert.deepEqual([e.status, e.w, e.h, e.until], ["derived", 40, 30, null]); const p = asset(id); assert.deepEqual([...p.rgba().slice(0, 4)], [90, 80, 70, 255]); assert.equal(policyOfPortrait(id, e.status), "painted");
     assert.equal(portraitSource(digest).rgba().length, 4800, "only the 4.8 KB result is kept");
     const bad = "ffffffffffffffff0000000000000000"; assert.equal(injectPortraitSource(bad, new Uint8ClampedArray(OW * OH * 4)).error.includes("opaque"), true); assert.equal(portraitSource(bad), null, "a refused source keeps nothing");
-    const m = { portrait: { state: "delivered" } }, src = opening((x, y) => [x & 255, y & 255, 9]), r = await landPortrait(m, src); assert.equal(m.portrait.digest, r.digest); assert.equal(r.digest, await digestOf(src)); assert.match(r.digest, /^[0-9a-f]{16}$/); assert.ok(portraitSource(r.digest));
+    const src = opening((x, y) => [x & 255, y & 255, 9]), d16 = await digestOf(src); assert.match(d16, /^[0-9a-f]{16}$/, "the digest: the first 16 hex of the SHA-256 of the source"); assert.equal(d16, await digestOf(new Uint8ClampedArray(src)), "what changes the pixels names it"); assert.equal(injectPortraitSource(d16, src).ok, true); assert.ok(portraitSource(d16));
     dropPortraitSources(); dropAsset(id);
   });
 }
