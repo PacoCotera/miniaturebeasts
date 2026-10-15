@@ -69,14 +69,6 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 
 The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenile-S0n-304x312.png`) with `tools/build-species-juv-token.py` and cleaned in place by `tools/species-s0n-juv-clean.py`; each set is the idle, alert, huddle, eat-f0, eat-f1 at 32x32 (lowest opaque row 31) and a 12x12 mini (lowest row 11). Review sheets are `S0n/sheet-S0n-juv-candidate.png`. Candidate, nothing signed.
 
-**S02 juvenile (candidate):**
-- `S02/c-token-S02-juv-idle-32x32.png` sha256 `03cdf61cd89f09d3c0c425ad757ef99b0b12545d710ced62dfcd08634bd6cd55`
-- `S02/c-token-S02-juv-alert-32x32.png` sha256 `7e8d9e7bab4acea6bdb96de037cd7042369d95e15d1547bccc0ff18588dad2eb`
-- `S02/c-token-S02-juv-huddle-32x32.png` sha256 `0780fe7b45697b0e5ac9ec8f35073f93d17e2ba7a13207787db11be7c893023f`
-- `S02/c-token-S02-juv-eat-f0-32x32.png` sha256 `38a75c133f021829e467eb030fad973396c09c89aa87b12ce2e3a21698a97b12`
-- `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `6e69ff788831cdf7c0ae0a0e2bb014621919f0680c48a433822800fb983011ad`
-- `S02/c-mini-S02-juv-12x12.png` sha256 `cbdf05c2616fbfaafadac7976813a22c141aeaab933e7acf4324dce4bd5b8a36`
-
 **S03 juvenile signed** (art director, 2026-10-15 04:36), judged at 1× on the lawn beside the signed adult. The studio's set is ac79e3b8/03f19fca, with one AD fix: the head antenna was a gold stub, and is now a teal stalk (1f9d8f) with an ink cap above it, as the adult (a83542f0). That is 2 px in each of the 6 files, all on the core 48:
 - `S03/c-token-S03-juv-idle-32x32.png` sha256 `2e30a2f514968440bd0e4c673dec8fd599195a473760001a84fb49e9c27cb8b8`
 - `S03/c-token-S03-juv-alert-32x32.png` sha256 `002a4ead03ef563833f39d9d9200237ca2ab3f3391e7825225d78431f2ce337a`
@@ -92,3 +84,11 @@ The juveniles are drawn from the Station's signed juvenile stands (`mibi-juvenil
 - `S01/c-token-S01-juv-eat-f0-32x32.png` sha256 `8f74984437137b0ca9975988d6ee14ebf03d2e69fd98b960ca713657f0b8e39c`
 - `S01/c-token-S01-juv-eat-f1-32x32.png` sha256 `cb6d6bc36d0ec7a70c0c92343dcd00a2876fd2a7100dc4ecf61880eed22341e7`
 - `S01/c-mini-S01-juv-12x12.png` sha256 `69c9ac7e21ff2d3b16fb826982af535150d53d6d1b0e91977d771997ff102fa6`
+
+**S02 juvenile (candidate):**
+- `S02/c-token-S02-juv-idle-32x32.png` sha256 `09493dd9b23b687127e244514a526e93b24dc11716456f52e67e76cb711bdf7c`
+- `S02/c-token-S02-juv-alert-32x32.png` sha256 `54906b4f8ebbb6e7bbfd74184a7f6f5b482bc187b9684a7620a6425629cde84d`
+- `S02/c-token-S02-juv-huddle-32x32.png` sha256 `ebb395378e1f3cdfab0bc989338d608b128a6383ba3a08f50292dba0bc2e20ab`
+- `S02/c-token-S02-juv-eat-f0-32x32.png` sha256 `82ab7688fa1d5c0050fc6e775377d2ab55f8184e44ef33efea2bba0d10b708ce`
+- `S02/c-token-S02-juv-eat-f1-32x32.png` sha256 `cc9873728c4639b97fa78bcb9f0a1e1e6480af180fbbe581d2dcc5d7a468ca25`
+- `S02/c-mini-S02-juv-12x12.png` sha256 `b60ff4ec467c9287fd95b94fdaf06938f45e5f92737a7750e96c5fe88a5f7efd`

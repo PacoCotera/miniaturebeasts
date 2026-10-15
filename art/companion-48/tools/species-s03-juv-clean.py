@@ -2,7 +2,9 @@
 stand (304 x 312, --flip --ramps S03; the stand's grey ground shadow removed first) and are cleaned IN PLACE from the base's pixels: the silhouette and the outline are the base's (the big round head with its
 round ears, the body, the tail rising to its bulb); what is edited, by coordinates: the coat in tealD, teal and aqua (lit top-left, mint a 1 px rim only), the two big ink eyes (2 x 3, a white catch-light top-left),
 the inner ears and the muzzle in mint, a 1 px antenna on the head, four short slender legs on rows 26 to 30, and the tail's bulb (gold) on its teal stalk. alert, huddle, eat f0 and f1 are drawn from the idle.
-The lowest opaque row is 31 in every token (11 in the mini). Core 48 only, alpha 0 or 255, ink outline, never void. usage: python3 -I species-s03-juv-clean.py BASE_DIR OUT_DIR"""
+The lowest opaque row is 31 in every token (11 in the mini). Core 48 only, alpha 0 or 255, ink outline, never void. usage: python3 -I species-s03-juv-clean.py BASE_DIR OUT_DIR
+Note (10-15 04:40): the signed S03 juvenile files carry the AD's hand fix (the antenna a teal stalk with an ink cap above) and hand edits in alert, huddle and the mini; this script reproduces the idle and
+the eat frames byte for byte, not those three. Do NOT re-run it over the signed files."""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from species_common import *
@@ -45,7 +47,7 @@ def idle_from(base):
     put(a, 26, 17, 'm'); put(a, 27, 17, 'm')
     for x, y in ((16, 8), (17, 8), (15, 9), (18, 9)): put(a, x, y, 'I')   # the near ear: a 2 px nub with its ink, joined to the crown (the head's outline opens under it)
     for x in (16, 17): put(a, x, 9, 't')
-    put(a, 21, 8, 'G'); put(a, 21, 9, 't')                              # the antenna: a 1 px stalk through the crown's outline, its gold tip above
+    put(a, 21, 7, 'I'); put(a, 21, 8, 't'); put(a, 21, 9, 't')           # the antenna (the AD's fix): a teal stalk through the crown's outline with an ink cap above it
     return a
 # ------------------------------------------------------------------ the poses, drawn from the cleaned idle
 def torso(I): t = I.copy(); t[26:] = -1; return t
