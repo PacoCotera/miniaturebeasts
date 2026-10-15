@@ -148,7 +148,7 @@ test("a portrait the Station derives is a painted picture at either status (its 
 });
 
 test("fix 3c-habitat: the up-close slots' ids are in a family at either status (the guide mark and the gate painted, the sitting frames art, the chapter plates by status)", () => {
-  assert.equal(policyOf("mark-guide-16:16x16", "master"), "painted");
+  assert.equal(policyOf("mark-guide-16:16x16", "master"), "painted"); for (const st of ["placeholder", "master"]) assert.equal(policyOf("icon-cross-16", st), "painted", "the clash line's ✕ master");
   for (const id of ["gate-wild-shut-48x48:48x48", "gate-wild-open-48x48", "gate-wild-open-48x48:48x48"]) for (const st of ["master", "placeholder"]) assert.equal(policyOf(id, st), "painted", id); for (const st of ["master", "placeholder"]) assert.equal(policyOf("sitting-frame-held-48x40:48x40", st), "art");
   for (const k of ["read", "unread", "sealed"]) { assert.equal(policyOf(`chapter-plate-${k}-40x40:40x40`, "master"), "painted"); assert.equal(policyOf(`chapter-plate-${k}-40x40:40x40`, "placeholder"), "art"); }
 });

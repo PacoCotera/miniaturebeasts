@@ -99,4 +99,4 @@ export function registerPictures(reqs, env) {
   }
 }
 // The material icons the text runs draw (16 px).
-export const iconRequests = () => ["energy", "data", "essence", "cross"].map((name) => ({ kind: "icon", id: `icon:${name}:16`, name, px: 16 }));
+export const iconRequests = () => [...["energy", "data", "essence", "cross"].map((name) => ({ kind: "icon", id: `icon:${name}:16`, name, px: 16 })), { kind: "slot", id: "icon-cross-16", master: "icon-cross-16", size: [16, 16], until: "the cross icon master (the clash line's ✕)" }];   // the clash line's ✕ is the master icon-cross-16 (painted), not the stand-in sprite

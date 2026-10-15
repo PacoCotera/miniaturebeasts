@@ -52,6 +52,7 @@ async function start(b, { motion = true, t0 = 0, noWait = false, skip = [] } = {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["create", createSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
+  f.handleOf("icon-cross-16", withPolicy((i) => standIn(i, [16, 16])));   // the clash line's ✕: the cross icon master (a test-only stand-in)
   if (!noWait) f.handleOf("icon-wait-16", withPolicy((i) => standIn(i, [16, 16])));   // a test-only stand-in for the signed master: the wait's picture (fix 6 A3)
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
   for (const r of b.requests) if (!skip.includes(r.id)) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));   // skip: a picture the host does not have (an unplaced master)

@@ -1226,6 +1226,13 @@
    "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44",
    "signed": "art director, Home column verdict (1f7d4a83)"
   },
+  "icon-cross-16": {
+   "file": "pods/icon-cross-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "a191383a949e74a57e4da08dbfff8e2dc87bec25a244d8f7834fe7d5a5f25d6f",
+   "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
+  },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",
    "w": 16,
@@ -4341,6 +4348,20 @@
    "h": 72,
    "sha256": "fa8a9fab783bb4f9574f07c355b1c1d5b76ec5500f8ab240397a09e63534047f",
    "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-drive-128x72": {
+   "file": "pods/roll-S01-drive-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "6a4cd91c5a0d35ab9efcfaca8d649bbe422bba3dbb5fc895d8e9ad574eb41258",
+   "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
+  },
+  "roll-S01-efficiency-128x72": {
+   "file": "pods/roll-S01-efficiency-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "1fe82de79e06eae2e6db7caeff1da6c24355ffafd8a39e1cf60996a5d6433fc5",
+   "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
   },
   "roll-S01-eyes-between-128x72": {
    "file": "pods/roll-S01-eyes-between-128x72.png",

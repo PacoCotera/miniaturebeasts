@@ -123,7 +123,7 @@ static void build_traitLine(void) {
   int total = (tw ? tw + gap : 0) + (cross ? ic : 0) + lw + (bw ? bg + bw : 0), x = cx - v_half(total), tx = r[1] + v_fdiv(r[3] - th, 2);
   v_region("traitLine", LAYER_PAINTED); pic_or("traitLine.tag", tw > 0, v_pstr("regions.traitLine.tag"), x, tx, tw, th);   /* the tag is the signed plate-name-88x24 on the painted layer, drawn at its width (the word's + 16 on the 8 px grid, 88 for "changed"), never stretched */
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + v_half(tw - v_measure(word, px)), cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, colr("colours.traitLine.tagWord")); if (tw) x += tw + gap;
-  v_name("traitLine"); pic_or("traitLine.cross", cross, "icon:cross:16", x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px); if (cross) x += ic;
+  v_name("traitLine"); pic_or("traitLine.cross", cross, "icon-cross-16", x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px); if (cross) x += ic;
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, ci("regions.traitLine.lineTop", 202) + v_fdiv(20 - v_cap(px), 2), lw, px, colr(clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
   v_name("traitLine"); pic_or("traitLine.breed", bw, breed, x + lw + bg, r[1] + v_fdiv(r[3] - ck("regions.traitLine.breedMark.size", 1), 2), bw ? bw : 28, ck("regions.traitLine.breedMark.size", 1));
 }
