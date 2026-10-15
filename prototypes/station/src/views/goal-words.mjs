@@ -30,6 +30,7 @@ export function goalWords(goal, docked, frame) {
 // The pre-spend warning's words (frame.json strings.goalWarn): goalSpendWarn's { step, species | name, icons } for the notice zone; null when the spend warns of nothing.
 export function warnWords(st, sv, settings, frame, price, act) {
   const w = S.goalSpendWarn(st, sv, settings, price, act); if (!w) return null;
+  if ((w.step === "identify" || w.step === "grow") && !w.species) return null;   // GB1 C3: the species warnings name a known species only; with none, no warning and the right slot stays empty
   return fill(frame.strings.goalWarn[w.step], { species: speciesWord(w.species), name: w.name, icons: w.icons });
 }
 // The read the report suggests while the step is a wait: { text, price }, from goalKey's meanwhile ({ pod, chapter, glint, cost }) and cargo.json strings.report.goal.
