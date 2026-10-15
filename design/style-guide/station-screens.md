@@ -84,7 +84,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 - **Light.** Inside the vivarium, the same light as Idle: the warm key light from the top left, by the time of day; even cool light on the chrome.
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
 - **Type.** Inter: the title 20 px medium; the module words and the name tag 16 px.
-- **Chrome.** `✓ Look at Bean` | "an adult Untuva" (the name is on the tag under the resident) | "a new pod waits"; no ← on Home.
+- **Chrome.** `✓ Look at Bean` | "an adult Untuva" (the name is on the tag under the resident) | "a new pod in the rack"; no ← on Home.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -149,8 +149,8 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 - **Light.** The warm daylight from above onto the pod's dish; a read page lit warm from inside; the rail and the rings in the device's panels.
 - **Palette.** Pods from one renderer: the species' colour pair and shell pattern, the place's dust or moss; frost, the veil over what is unread; seeds pearl with a ghost inside; the collection ring read `bone`, unread `bevel`.
 - **Type.** Inter: the pod's name 20 px medium on its plate; the origin 16 px ("Found on the rock field, as a Tuikis felt safe."; the pattern is in [Station layouts](station-layouts.md), Words on Pods); the page heading 20 px medium; one word per chapter and one word per trait, 16 px.
-- **Chrome.** `✓ Identify   ◆ 1`, `✓ Read Coat   ◆ 3`, `✓ Shape a founder`, `✓ Compare`, `✓ Return to the wild   ❀ +1`, `✓ Open the guide` on the figure; the way back `← Home`, `← Pods` or the pod's name.
-- **This pod, the species.** On the overview, "this pod" under the pod's marks and "the species" under the figure, once identified. The ring starts on the pod with `✓ Shape a founder`; the figure is a side trip one ▶ away, and ✓ on it opens the species' guide: a jump to the Book's guide spread, where ← reads Library.
+- **Chrome.** `✓ Identify   ◆ 1`, `✓ Read Coat   ◆ 3`, `✓ Create from this pod`, `✓ Compare`, `✓ Return to the wild   ❀ +1`, `✓ Open the guide` on the figure; the way back `← Home`, `← Pods` or the pod's name.
+- **This pod, the species.** On the overview, "this pod" under the pod's marks and "the species" under the figure, once identified. The ring starts on the pod with `✓ Create from this pod`; the figure is a side trip one ▶ away, and ✓ on it opens the species' guide: a jump to the Book's guide spread, where ← reads Library.
 - **Motion.** The seal breaks and the glyph lights in about 2 s; a read wipes the page's frost in 2 s and the tab's pips fill; the page turns in 200 ms; glints 2 Hz.
 
 **Concept.** The genome stamp sits on its 120 px label, a small label and never the spotlight. The progress ring sits around the pod and carries chapters only; "identified" shows on the pod's seal. The device's matte slate panels are the bench, and Create and Incubator follow it. Reference: `art/concept-station/pods-v2/`, candidate PV-D-r3-a4.
