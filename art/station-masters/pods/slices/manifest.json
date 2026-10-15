@@ -15119,5 +15119,44 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-15): the re-exported S02 juvenile (51aa3137, juvenile/), copied into slices for fix 1a; a candidate, signed in the fix 1 retake"
+ },
+ "roll-S01-drive-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "trait-plates/make-doing-rolls.py from trait-S01-drive-128x160 (signed)",
+  "made": "Create doing roll for Drive, no look suffix: the signed plate figure reduced (x0.495) into the centred 96x54 on #162a37",
+  "sha256": "6a4cd91c5a0d35ab9efcfaca8d649bbe422bba3dbb5fc895d8e9ad574eb41258",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "roll-S01-efficiency-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "trait-plates/make-doing-rolls.py from trait-S01-efficiency-128x160 (signed)",
+  "made": "Create doing roll for Efficiency, no look suffix: the signed plate figure reduced (x0.667) into the centred 96x54 on #162a37",
+  "sha256": "1fe82de79e06eae2e6db7caeff1da6c24355ffafd8a39e1cf60996a5d6433fc5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+ },
+ "icon-cross-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "habitat-marks/make-icon-cross.py (paintkit.py)",
+  "made": "the clash line cross: two bevelled bars at 45 deg, warm brick red (236,132,104) at 3.15:1 on the bench over a 1 px dark rim, matte, top-left light",
+  "sha256": "a191383a949e74a57e4da08dbfff8e2dc87bec25a244d8f7834fe7d5a5f25d6f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
  }
 }
