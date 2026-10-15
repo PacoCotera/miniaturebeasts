@@ -90,7 +90,7 @@ test("the departure check bites: the strip moved, a tile off its pitch, the name
   const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3" }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
   const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, b.props.state, b.props.focus.cur, n); };
   assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, n), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "strip" && r.layer === "chrome").rect[0] += 8; })[0], /strip/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "strip" && r.layer === "painted").rect[0] += 8; })[0], /strip/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "tile.2" && r.layer === "chrome").rect[0] += 4; })[0], /tile 2/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect[0] = 2; })[0], /name tag/);
   assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); r.rect[0] = 0; })[0], /walk ground/);

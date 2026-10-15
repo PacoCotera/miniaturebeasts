@@ -91,7 +91,7 @@ test("the plates: one a chapter in ring order, read / unread / sealed; only an u
 
 test("the Companion module: the set as it will be in its order (an add request waiting shows its lamp), the glyph docked or away; ✓ Take / Bring / Full by the set; the request waiting is read-only", () => {
   const w = world(); dock(w.st); const m = mibis(w, 5), sv = sv0({ carried: [m[1].id] });
-  let b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.state, "docked"); assert.equal(b.props.regions.door.glyph, "frame-companion-solid-16x24"); assert.equal(b.props.regions.door.places[0].picture, `mibi:${genomeDigest(m[1].genome)}:adult:48x48`); assert.equal(b.props.regions.door.places[1], null);
+  let b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.state, "docked"); assert.equal(b.props.regions.door.glyph, "frame-companion-solid-16x24"); assert.equal(b.props.regions.door.places[0].picture, `mibi:${genomeDigest(m[1].genome)}:adult:48x48`); assert.deepEqual(b.props.regions.door.places[1], { picture: "", waiting: false, well: "plate-well-48x48" }, "a free place is the well alone (fix 2 F4)");
   assert.equal(b.line.ok, `Take ${m[0].name} with you`); assert.equal(b.line.subject, "goes with you now"); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, true);
   b = build(w, sv, { focus: "door", habId: m[1].id }); assert.equal(b.line.ok, `Bring ${m[1].name} home`); assert.equal(b.line.subject, "comes home now");
   const full = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, full, { focus: "door" }); assert.equal(b.line.ok, null); assert.equal(b.line.subject, "the Companion is full"); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, false);

@@ -3,7 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#home-the-panel-and-the-column",
  "frame": "frame.json",
- "status": "Home's detail spec, from the structure in station-layouts.md (Home, the sections and the Vivarium): the vivarium panel, its residents and the with-you bed for up to three carried mibis, the rest knob, the column of five section modules with their objects, lamps and states, the focus graph as `order` and `nearestIn` data with its vectors, and the bottom line for every focus. The crates open in Cargo (cargo.json); Idle is a state of the frame (frame.json `idle`)",
+ "status": "Home's detail spec, from the structure in station-layouts.md (Home, the sections and the Vivarium): the vivarium panel, its residents and the with-you bed for up to three carried mibis, the rest knob, the column of five section modules with their objects, lamps and states, the focus graph as `order` and `nearestIn` data with its vectors, and the bottom line for every focus. The crates open in Cargo (cargo.json); Idle is a state of the frame (frame.json `idle`) Fix 2 (boards/station-fix2-spec.md): the five modules are the device plate plate-device-320x88, placed 1:1; no fill, edge or bevel row drawn.",
  "note": "The one home of the Home numbers, written from station-layouts.md (Home) and its wireframes 01-home.svg to 01f-home-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin.",
  "states": ["home"],
  "initial": "home",
@@ -41,7 +41,7 @@
    }
   },
   "cargo": {
-   "rect": [688, 48, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 48, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "bay": [112, 8, 176, 72], "crate": [48, 40], "cratePicture": "home-crate-48x40", "crateAt": [0, 16], "pitch": 64, "max": 3,
    "crateRects": [[800, 72, 48, 40], [864, 72, 48, 40], [928, 72, 48, 40]],
    "waiting": { "rect": [876, 80, 24, 24], "asset": "mark-waiting-24", "when": "pods wait in the bay for a free well and no crate waits", "lamp": "off: the waiting mark is never amber; the need lights pods (strings.needs.waitingPods)" },
@@ -54,26 +54,26 @@
    }
   },
   "pods": {
-   "rect": [688, 152, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 152, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "wells": { "at": [136, 8], "size": [32, 32], "pitch": [48, 40], "cols": 3, "rows": 2, "slots": 6, "rects": [[824, 160, 32, 32], [872, 160, 32, 32], [920, 160, 32, 32], [824, 200, 32, 32], [872, 200, 32, 32], [920, 200, 32, 32]], "order": "rack order: left to right, the top row first" },
    "pod": { "class": "rack", "size": [24, 32], "at": [4, 0], "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled" },
    "star": [12, 12], "starAt": [34, 10], "starNote": "a glint star in the 16 px gap right of its well, 2 px clear of either well"
   },
   "incubator": {
-   "rect": [688, 256, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 256, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
    "leaves": { "at": [200, 8, 88, 72], "rect": [888, 264, 88, 72], "component": "leaves", "form": "grid", "leaf": [8, 12], "filling": "the filling leaf, leaf `full` while full < total: the empty picture, then over it the full picture clipped from the bottom to its lowest p rows of 12, p = floor(rows × 12 / 20) (0 to 11), whole pixels; rows is stepped every 3 s by the view (incubator.json leaves.props), the face redraws the 8×12 box only when p changes", "pitch": 11, "perRow": 8, "rowPitch": 14, "rows": 5, "max": 40, "pictures": { "empty": "leaf-empty-8x12", "full": "leaf-full-8x12" }, "place": "leaf i at (888 + 11 × (i mod 8), 264 + 14 × floor(i / 8)): the last ink at x 973 and y 332", "count": "one a minute the bud will take, up to 40 (create.json regions.leaves.count)", "props": "{ total, full, rows }" },
    "states": { "empty": "the chamber dark, no leaves, lamp off", "growing": "the bud in the chamber, its leaves filling, lamp well", "ready": "every leaf full, lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
   },
   "probe": {
-   "rect": [688, 360, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 360, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "cradle": [112, 8, 96, 72], "cradleRect": [800, 368, 96, 72],
    "shields": { "at": [224, 8], "size": [12, 24], "pitch": 16, "count": 4, "perTier": { "1": 3, "2": 4 }, "rects": [[912, 368, 12, 24], [928, 368, 12, 24], [944, 368, 12, 24], [960, 368, 12, 24]], "pictures": { "whole": "home-shield-whole-12x24", "gone": "home-shield-lost-12x24" } },
    "slot": [224, 48, 24, 32], "slotRect": [912, 408, 24, 32], "slotPicture": "home-sitting-24x32",
    "states": { "docked": "the Probe in its cradle, its plates whole or gone, the tier's count; lamp well", "away": "the cradle empty, no plates, lamp off", "sitting": "a held sitting shows as the sitting frame (home-sitting-24x32, matte) in the slot, docked or away; none held, nothing" }
   },
   "library": {
-   "rect": [688, 464, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 464, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "journal": [112, 8, 104, 72], "journalRect": [800, 472, 104, 72],
    "states": { "empty": "no species found yet: the journal shut, lamp off", "pages": "the journal, lamp well" }
   }
@@ -189,7 +189,7 @@
  "colours": {
   "bezel": { "fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline" },
   "glass": { "edge": "hairline", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil" },
-  "module": { "fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal" },
+  "module": { "word": "metal" },
   "cargo": { "inside": "ground", "lid": "enamel", "seal": "deepTeal", "crate": "metal", "crateCorner": "deepTeal", "crateEdge": "hairline", "tag": "orange" },
   "pods": { "well": "ground", "wellShade": "void", "wellLip": "bevel", "glint": "yellow" },
   "incubator": { "housing": "metal", "base": "enamel", "footLight": "sage", "readyLight": "cream", "window": "hairline", "inside": "ground", "leaf": "sage", "leafVein": "sageD", "leafEmpty": "bevel" },

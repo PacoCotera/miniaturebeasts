@@ -41,7 +41,7 @@ export function podsBuild(m, spec) {
   view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
   if (view.mode === "chapter") {
     const ch = chapters[ci];
-    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, null), pane: null };
+    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, null), plate: "" };
   } else {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
@@ -172,7 +172,8 @@ function compareView(view, m, spec, req) {
   const chs = fr.chapters, ci = clamp(c.ci, 0, chs.length - 1), ch = chs[ci], diff = S.compareDiff(st, A, B) || [];
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
-    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, ids, key), pane: region.pane };
+    const page = pageView(m, spec, p, fr, ch, null, region, req, ids, key), h = region.heightByCount ? region.heightByCount[Math.min(Math.max(page.count, 1), 6)] ?? region.rect[3] : region.rect[3];
+    page.plate = req({ kind: "slot", id: region.plate.replace("{h}", h), master: region.plate.replace("{h}", h), size: [region.rect[2], h], until: "the device plate (fix 2: placed 1:1)" });
     page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), who: whoOf(p, fr, R.compareA.who, req) };
     return page;
   };

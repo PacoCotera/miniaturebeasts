@@ -39,9 +39,9 @@
  },
  "column": { "x": 636, "w": 328, "pad": 44, "offGrid": "the inner column is centred in the panel, 44 px a side, so every inner region's x sits 4 px off the 8 px grid; y, w and h stay on it" },
  "regions": {
-  "panel": { "rect": [592, 48, 416, 424], "component": "panel", "build": "namer", "shadow": [2, 3], "note": "the report card's look: panel fill, hairline edge, bevel top row, a void drop shadow; it covers Habitat's right column (the card and the modules, x 592 to 1008, y 48 to 472), 16 px from the window's bezel (x 576)" },
+  "panel": { "rect": [592, 48, 416, 424], "plate": "plate-device-416x424", "component": "panel", "build": "namer", "note": "fix 2: the device plate 1:1, no fill, edge, bevel row or drop shadow (F8); it covers Habitat's right column (the card and the modules, x 592 to 1008, y 48 to 472), 16 px from the window's bezel (x 576)" },
   "field": {
-   "rect": [636, 64, 328, 48], "offGrid": true, "component": "panel", "build": "nameField", "text": "text",
+   "rect": [636, 64, 328, 48], "plate": "plate-well-328x48", "offGrid": true, "component": "panel", "build": "nameField", "text": "text",
    "nameAt": [652, 70], "lineTop": 70, "line": 36, "px": 28, "weight": 600, "align": "left",
    "holds": 296, "widest": "ten of the widest allowed letter (W at 28 semibold, 29 px with LVGL's rounding) measure 290 px: x 652 to 942; the caret ends at 946, 18 px inside the field's edge",
    "selection": { "rect": "x 648, y 70, the name's width + 8, 36 tall", "fill": "tealD" },
@@ -167,8 +167,7 @@
   "widths": "measured at Inter 16 with the widest ten-letter name: ✓ Name it W×10 221 px, ✓ Keep W×10 203 px, inside the action zone's 356; the context strings.context 175 px with the longest species name, inside 208"
  },
  "colours": {
-  "panel": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void" },
-  "field": { "fill": "ground", "edge": "hairline", "name": "bone", "selection": "tealD", "caret": "bone" },
+  "field": { "name": "bone", "selection": "tealD", "caret": "bone" },
   "say": { "reason": "mist", "refused": "amber" },
   "key": { "fill": "panel", "edge": "hairline", "top": "bevel", "label": "bone", "labelDim": "mist", "on": "hairline" },
   "space": { "label": "fog", "labelDim": "mist" },

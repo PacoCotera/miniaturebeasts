@@ -138,6 +138,7 @@
   },
   "card": {
    "rect": [592, 48, 416, 208],
+   "plate": "plate-device-416x208",
    "component": "panel",
    "inStates": ["rest", "meet", "out"],
    "heart": {
@@ -208,6 +209,7 @@
   },
   "door": {
    "rect": [592, 272, 272, 96],
+   "plate": "plate-device-272x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
@@ -222,13 +224,14 @@
     "away": "the same: the carried mibis drawn at 48, so the set reads while they are out; the outline glyph says they are out",
     "waiting": "an add request waiting: its picture at 48 with frame-lamp-8-stone at the place's (40, 0)",
     "lampAt": [40, 0],
-    "recess": "each place's box, [648|712|776, 312, 48, 48], filled colours.door.recess (ground), no edge; the picture over it at 48; a free place adds the dash outline 1 px inside; no recess round the row; chrome, no master",
-    "free": "a place the set does not fill: a composed `dash` outline 1 px inside the place's box, 1 px `hairline`, dash [2, 2], as the strip's free bay, so the three places read with no figure"
+    "recess": "fix 2 F4: each place's box, [648|712|776, 312, 48, 48], is `plate-well-48x48` 1:1 in every state (props places[i].well), painted, no fill; the mibi's picture over it at 48",
+    "free": "fix 2 F4: a place the set does not fill is the well alone, no dash, no fill; the door.free node keeps its box with no ops"
    },
    "states": {"docked": "the solid glyph and the three places", "away": "the outline glyph and the three places", "none": "nobody carried: the glyph and three free places"}
   },
   "portrait": {
    "rect": [872, 272, 136, 96],
+   "plate": "plate-device-136x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
@@ -248,6 +251,7 @@
   },
   "cross": {
    "rect": [592, 376, 272, 96],
+   "plate": "plate-device-272x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
@@ -275,6 +279,7 @@
   },
   "wild": {
    "rect": [872, 376, 136, 96],
+   "plate": "plate-device-136x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
@@ -283,7 +288,7 @@
    "gate": {"at": [44, 40], "size": [48, 48], "slices": {"shut": "gate-wild-shut-48x48", "armed": "gate-wild-open-48x48"}},
    "states": {"shut": "at rest", "armed": "after the first ✓: the gate ajar"}
   },
-  "strip": {"rect": [16, 488, 992, 64], "component": "panel"},
+  "strip": {"rect": [16, 488, 992, 64], "plate": "plate-device-992x64", "component": "panel"},
   "tiles": {
    "rect": [32, 496, 952, 48],
    "component": "list",
@@ -607,13 +612,10 @@
   "waitingLamp": {"fill": "sky", "rim": "void"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "tealD", "edge": "aqua", "text": "bone"},
-  "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
+  "card": {"species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
   "stampLabel": {"fill": "bone", "edge": "slate"},
-  "module": {"fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal"},
-  "door": {"recess": "ground"},
+  "module": {"word": "metal"},
   "faceRing": "bevel",
-  "strip": {"fill": "ground", "edge": "hairline"},
-  "tile": {"fill": "panel", "shown": "hairline", "free": "hairline"},
   "faceRingAway": "stone"
  },
  "masters": {
@@ -729,7 +731,7 @@
   "the state empty goes: with no housed mibi the whole shows its empty state, and the last release here lands there",
   "a new state out: the shown mibi out with the Companion keeps its page; the out mark in its place, no greet, its chapters readable",
   "the card gains the skill notches (regions.card.notches) and the code's box narrows to 152",
-  "the Companion module draws the carried set while the Companion is away too, and its free places as dashed outlines",
+  "the Companion module draws the carried set while the Companion is away too, and its free places as the well alone (fix 2 F4)",
   "the title reads Vivarium and the way back Vivarium",
   "Cross: a mibi out with the Companion, away, may not cross, as the shown mibi or as a partner (state.crossBlock and crossPartners gain the check); docked it crosses as any adult. Away partners' faces are drawn dimmed on a `stone` ring and are not picked on Cross",
   "the watch runs only on one mibi up close, never on a carried mibi (state.benchWatch is called from this level alone)",

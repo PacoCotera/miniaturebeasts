@@ -23,8 +23,10 @@ export function namerBuild(m, spec) {
   const problem = S.nameProblem(st, mibi, ui.text, true), species = S.spName(mibi);
   const reason = ui.say ? ui.say.text : reasonOf(spec, st, mibi, ui.text);
   const names = S.peekNames(st, mibi, 12), startOfName = ui.fs !== "typed";
+  const requests = [], slot = (id, size) => { requests.push({ kind: "slot", id, master: id, size, until: "the device plate (fix 2: placed 1:1)" }); return id; };
   const regions = {
-    field: { name: ui.text, state: ui.fs },
+    panel: { plate: slot("plate-device-416x424", [416, 424]) },
+    field: { plate: slot("plate-well-328x48", [328, 48]), name: ui.text, state: ui.fs },
     say: { text: reason ?? "", tone: ui.say?.tone === "refused" ? "refused" : "reason" },
     keys: { page: ui.page, caps, dim: isFull, labels },
     shift: { on: ui.fs === "typed" && !!ui.shift },
@@ -47,5 +49,5 @@ export function namerBuild(m, spec) {
   else if (cur === "mod.page") line = { ok: ui.page === "letters" ? Sg.accents : Sg.letters, subject: ctx, back, need: null };
   else if (cur === "act.suggest") line = names.length ? { ok: ui.sugg >= 0 ? Sg.suggestAgain : Sg.suggest, subject: ctx, back, need: null } : { ok: null, subject: Sg.noSuggest, back, need: null };
   else if (cur === "act.done") line = { ok: ui.text === mibi.name ? fill(Sg.keep, { name: ui.text }) : fill(Sg.name, { name: ui.text }), ...(problem ? { dim: true } : {}), subject: ctx, back, need: null };
-  return { overlay: { id: "namer", state: "open", regions, focus: { cur, targets } }, line };
+  return { overlay: { id: "namer", state: "open", regions, focus: { cur, targets } }, line, requests };
 }

@@ -95,7 +95,8 @@
    "required": [
     "id",
     "state",
-    "picture"
+    "picture",
+    "well"
    ],
    "additionalProperties": false,
    "properties": {
@@ -110,6 +111,9 @@
      ]
     },
     "picture": {
+     "type": "string"
+    },
+    "well": {
      "type": "string"
     }
    }
@@ -157,6 +161,7 @@
     "window",
     "residents",
     "bed",
+    "strip",
     "tiles"
    ],
    "additionalProperties": false,
@@ -229,6 +234,18 @@
        "items": {
         "$ref": "tile"
        }
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
       }
      }
     }

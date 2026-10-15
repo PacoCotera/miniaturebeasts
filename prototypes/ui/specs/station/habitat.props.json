@@ -35,7 +35,8 @@
     "id",
     "state",
     "shown",
-    "picture"
+    "picture",
+    "well"
    ],
    "additionalProperties": false,
    "properties": {
@@ -53,6 +54,9 @@
      "type": "boolean"
     },
     "picture": {
+     "type": "string"
+    },
+    "well": {
      "type": "string"
     }
    }
@@ -86,13 +90,11 @@
    }
   },
   "place": {
-   "type": [
-    "object",
-    "null"
-   ],
+   "type": "object",
    "required": [
     "picture",
-    "waiting"
+    "waiting",
+    "well"
    ],
    "additionalProperties": false,
    "properties": {
@@ -101,6 +103,9 @@
     },
     "waiting": {
      "type": "boolean"
+    },
+    "well": {
+     "type": "string"
     }
    }
   },
@@ -150,6 +155,7 @@
     "portrait",
     "cross",
     "wild",
+    "strip",
     "tiles"
    ],
    "additionalProperties": false,
@@ -286,6 +292,7 @@
     "card": {
      "type": "object",
      "required": [
+      "plate",
       "heart",
       "notches",
       "species",
@@ -295,6 +302,9 @@
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "heart": {
        "type": "string"
       },
@@ -385,6 +395,7 @@
     "door": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "glyph",
       "places",
@@ -392,6 +403,9 @@
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "docked",
@@ -417,11 +431,15 @@
     "portrait": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "frame"
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "none",
@@ -438,11 +456,15 @@
     "cross": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "faces"
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "adult",
@@ -464,11 +486,15 @@
     "wild": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "gate"
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "shut",
@@ -497,6 +523,18 @@
         "$ref": "tile"
        },
        "maxItems": 12
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
       }
      }
     }

@@ -19,8 +19,8 @@ export function departures(log, spec, frame, cur = "room") {
   for (const r of got("knob")) must(within(r.rect, [R.knob.rect[0], R.knob.rect[1], R.knob.rect[2], R.knob.rect[3]]), `the knob ${r.rect} leaves ${R.knob.rect}`);
   for (const m of MODULES) {
     const M = R[m].rect, up = cur === m ? lift : 0, box = [M[0], M[1] - up, M[2], M[3] + up];
-    const panel = got(m, "chrome"); must(panel.length === 1 && eq(panel[0].rect, [M[0], M[1] - up, M[2], M[3]]), `${m}'s panel ${panel[0]?.rect} is not ${[M[0], M[1] - up, M[2], M[3]]}`);
-    for (const layer of ["art", "painted"]) for (const r of got(m, layer)) { const obj = [M[0] + R[m].objects[0], M[1] - up + R[m].objects[1], R[m].objects[2], R[m].objects[3]]; const lamp = [M[0] + R[m].lamp[0], M[1] - up + R[m].lamp[1], 12, 12]; must(within(r.rect, obj) || within(r.rect, [obj[0], obj[1] - up, obj[2], obj[3]]), `${m}'s objects (${layer}) ${r.rect} leave their zone ${obj}`); }
+    const panel = got(m, "painted").filter((r) => r.rect[2] === M[2] && r.rect[3] === M[3]); must(panel.length === 1 && eq(panel[0].rect, [M[0], M[1] - up, M[2], M[3]]), `${m}'s plate ${panel[0]?.rect} is not ${[M[0], M[1] - up, M[2], M[3]]}`);
+    for (const layer of ["art", "painted"]) for (const r of got(m, layer).filter((x) => !eq(x.rect, [M[0], M[1] - up, M[2], M[3]]))) { const obj = [M[0] + R[m].objects[0], M[1] - up + R[m].objects[1], R[m].objects[2], R[m].objects[3]]; const lamp = [M[0] + R[m].lamp[0], M[1] - up + R[m].lamp[1], 12, 12]; must(within(r.rect, obj) || within(r.rect, [obj[0], obj[1] - up, obj[2], obj[3]]), `${m}'s objects (${layer}) ${r.rect} leave their zone ${obj}`); }
     for (const r of got(m + ".lamp")) { const lamp = [M[0] + R[m].lamp[0], M[1] - up + R[m].lamp[1], 12, 12]; must(eq(r.rect, lamp), `${m}'s lamp ${r.rect} is not ${lamp}`); }
     const w = got(m, "type")[0], zone = [M[0] + R[m].word[0], M[1] - up + R[m].word[1], R[m].objects[0] - R[m].word[0], 24]; must(!!w && within(w.rect, zone), `${m}'s word ${w?.rect} leaves its zone ${zone}`);
     must(within(panel[0]?.rect ?? [0, 0, 0, 0], box), `${m}'s panel leaves its box`);

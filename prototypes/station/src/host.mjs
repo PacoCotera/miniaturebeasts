@@ -122,7 +122,7 @@ export function habitatBody(light = lightNow()) {
   if (!body) return null;
   UI.hab.f = body.props.focus.cur; UI.hab.id = body.shown.id; const rs = body.props.regions.resident; UI.hab.asleep = !!(rs && rs.moving && rs.rest === "asleep");   // a sleeper with a moving set: its Greet is the asleep moment (habitat.json events.moment.asleep)
   const n = UI.hab.namer, who = n && mibiById(n.id);
-  if (n && who) { const nb = namerBuild({ st: G.st, mibi: who, ui: n }, SPECS.namer); body.props.overlay = nb.overlay; body.line = nb.line; } else if (n) UI.hab.namer = null;
+  if (n && who) { const nb = namerBuild({ st: G.st, mibi: who, ui: n }, SPECS.namer); body.props.overlay = nb.overlay; body.line = nb.line; body.requests = [...body.requests, ...nb.requests]; } else if (n) UI.hab.namer = null;
   return body;
 }
 

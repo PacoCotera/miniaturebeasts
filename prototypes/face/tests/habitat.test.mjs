@@ -33,7 +33,7 @@ function scene(o = {}) {
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
   const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, armed: !!o.armed };
   const b = habitatBuild(m, spec, frameSpec, homeSpec);
-  if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
+  if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; b.requests = [...b.requests, ...nb.requests]; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
   return { ...b, st, m };
 }
 const frameProps = (line = {}) => ({ top: { screen: "habitat", title: "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Vivarium", need: "", ...line }, plate: { text: "" } });
@@ -82,11 +82,11 @@ test("the departure check bites: the card moved, a plate off its pitch, a module
   const b = scene({ focus: "resident", namer: true }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
   const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, n, true); };
   assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, n, true), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "card" && r.layer === "chrome").rect[0] += 8; })[0], /card/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "door" && r.layer === "chrome" && r.rect[2] === 272).rect[1] += 8; })[0], /door module/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "card" && r.layer === "painted").rect[0] += 8; })[0], /card/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "door" && r.layer === "painted" && r.rect[2] === 272).rect[1] += 8; })[0], /door module/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome" && r.rect[2] > 2).rect[0] = 2; })[0], /tag/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "field" && r.layer === "type").rect[0] = 940; })[0], /field/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "panel" && r.layer === "chrome").rect[2] += 40; })[0], /panel/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "panel" && r.layer === "painted").rect[2] += 40; })[0], /panel/);
 });
 
 test("the namer opens and closes as cuts: the raw dirty area of the opening and of the closing is under the architect's ceilings (panel with its shadow, the ribbon and the tag, the feet ring, the bottom line); opening on a cut moment adds the resident's lifted box; the named flash frames stay under a quarter of the screen; the nodes are gone when it closes", { skip }, async () => {
