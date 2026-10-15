@@ -98,16 +98,20 @@ for r in range(R):
                 if at(r, c + (1 if q in ("ne", "se") else -1)) == "F" and s in ("outer", "edgev"): s += "0"
                 put(toned(PC[f"meadow/lip/lip-{q}-{s}"][1], 0), r * 48 + y, c * 48 + x)
 # drop 2: the light patch on the plateau, the deeper centre of the pond with its edge, the ford stones (only when the drop carries them)
-LIGHTT = np.array([c["light"] for c in pal])
+LIGHTT = np.array([c["light"] for c in pal]); LUM = PAL @ np.array([.2126, .7152, .0722]); LIMEI = man.get("lightMask", 19)
+def apply_light(buf, lit):
+    """the light pieces are masks (lime = lit): under each lime pixel a lawn pixel p becomes LIGHT[p], only where LIGHT[p] is lighter than p
+    (relative luminance): the patch never darkens, and the ramp's top does not wrap"""
+    for (r, c) in sorted(lit):
+        m = sum(1 << i for i, (dy, dx) in OFF.items() if (r + dy, c + dx) not in lit)
+        for q, (y, x) in QXY.items():
+            a_ = PC[f"meadow/light/{q}-{state(m, q)}"][1]; y0, x0 = r * 48 + y, c * 48 + x; sub = buf[y0:y0 + 24, x0:x0 + 24]
+            ok = (a_ == LIMEI) & (sub >= 0); ok[ok] = GR[sub[ok]] & (LUM[LIGHTT[sub[ok]]] > LUM[sub[ok]]); sub[ok] = LIGHTT[sub[ok]]
 if "meadow/light/nw-fill" in PC:
     inner = {(r, c) for r in range(R) for c in range(Cn) if L[r][c] == "1" and all(at(r + dy, c + dx) == "1" for dy, dx in OFF.values())}
     blk = next((r, c) for r in range(R) for c in range(Cn) if all((r + i, c + j) in inner for i in range(2) for j in range(4)))   # a 4x2 block, the top-left-most, one cell in from every rim
     lit = {(blk[0] + i, blk[1] + j) for i in range(2) for j in range(4)}
-    for (r, c) in sorted(lit):
-        m = sum(1 << i for i, (dy, dx) in OFF.items() if (r + dy, c + dx) not in lit)
-        for q, (y, x) in QXY.items():       # the pieces are masks: LIGHT[] on the lawn under each lime pixel, no colour of their own
-            a_ = PC[f"meadow/light/{q}-{state(m, q)}"][1]; y0, x0 = r * 48 + y, c * 48 + x; sub = img[y0:y0 + 24, x0:x0 + 24]
-            on = (a_ >= 0) & (sub >= 0) & GR[np.clip(sub, 0, None)]; sub[on] = LIGHTT[sub[on]]
+    apply_light(img, lit)
     GRID["light"] = sorted(f"{r},{c}" for r, c in lit)
 if "meadow/ground/core-1" in PC:
     core = {(r, c) for r in range(R) for c in range(Cn) if L[r][c] == "w" and all(W_(r + dy, c + dx) for dy, dx in OFF.values())}
@@ -146,5 +150,15 @@ for nm, (r, c) in (("meadow/prop/boulder-2", (8, 2)), ("meadow/prop/boulder-1", 
     p, a_ = PC[nm]; put(a_, r * 48 + p["offset"][1], c * 48 + p["offset"][0])
 rgb = PAL[np.clip(img, 0, None)].astype(np.uint8); rgb[img < 0] = (0, 0, 0)
 im = Image.fromarray(rgb, "RGB"); im.save(outp + "-1x.png"); im.resize((im.width * 3, im.height * 3), Image.NEAREST).save(outp + "-3x.png")
+if "meadow/light/nw-fill" in PC:                                          # the patch on a level-1 and a level-2 lawn (the place has no level-2 plateau): two 6x4-cell swatches
+    sw = []
+    for lv in (1, 2):
+        buf = np.full((4 * 48, 6 * 48), -1)
+        for r in range(4):
+            for c in range(6):
+                k = hsh("sw", lv, r, c) % len(lawn); buf[r * 48:r * 48 + 48, c * 48:c * 48 + 48] = toned(PC[lawn[k]][1], lv)
+        apply_light(buf, {(r, c) for r in (1, 2) for c in (1, 2, 3, 4)}); sw.append(PAL[buf].astype(np.uint8))
+    sheet2 = np.concatenate([sw[0], np.full((sw[0].shape[0], 16, 3), (0x2b, 0x30, 0x38), np.uint8), sw[1]], 1)
+    im2 = Image.fromarray(sheet2, "RGB"); im2.save(outp + "-levels-1x.png"); im2.resize((im2.width * 3, im2.height * 3), Image.NEAREST).save(outp + "-levels-3x.png")
 json.dump({"layout": L, "levelTone": LEVEL_TONE, "cells": GRID, "macros": sorted(f"{r},{c}" for r, c in macro_cells)}, open(outp + "-grid.json", "w"), indent=1)
 print("macros", len(macro_cells) // 4)

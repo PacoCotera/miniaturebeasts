@@ -268,7 +268,7 @@ def inside_d(land):
     return nd2.distance_transform_edt(~land) if land.any() else np.full(land.shape, 99.0)
 # A. the light patch as a MASK (AD round 1): every quarter carries one index, lime, meaning "lit", transparent elsewhere, the same
 # geometry and Bayer edge; the proof place (and the loader's light map) lifts the lawn under each lime pixel by LIGHT[]
-LIMEI = P48.index["lime"]
+LIMEI = P48.index["lime"]; assert LIMEI == 19, LIMEI          # the loader's light map reads index 19 (meadow.json lightMask)
 for qi, qd in enumerate(("nw", "ne", "se", "sw")):
     for st in ("fill", "edgeh", "edgev", "outer", "inner"):
         land = land_mask(qd, st, 10); d = inside_d(land); B = bayer(24, 24)
@@ -559,6 +559,7 @@ GROUPS = [("ground", lambda n: "/ground/" in n or "/material/" in n or "/decal/"
           ("shore", lambda n: "/shore" in n or "/band/" in n), ("walls", lambda n: any(k in n for k in ("/face/", "/cap/", "/side/", "/foot/"))),
           ("stairs", lambda n: "/stair/" in n), ("props", lambda n: "/prop/" in n)]
 man = {"biome": "meadow", "tile": 48, "quarter": 24, "palette": "meadow", "paletteFile": "meadow-palette.json", "levelTone": ["dark", "none", "light"],
+       "lightMask": LIMEI,
        "note": "The meadow drop: signed where the art director has signed, else candidate. Sheets are 8-bit indexed on meadow-palette.json; index 44 (magenta, used by no piece) is transparent. "
                "Built by art/companion-48/tools/build-meadow-drop.py from its inputs in art/companion-48/terrain/grass/.", "sheets": {}, "pieces": []}
 done = set()
