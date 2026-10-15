@@ -94,7 +94,7 @@ test("fix 7: the grade's table is the oracle's (SHA-256 per light), day is the i
   assert.throws(() => grade({ w: 1, h: 1, rgba: () => new Uint8ClampedArray(4) }, "dusk2"), /not a light/);
 });
 test("fix 7: the three juvenile masters graded at four lights equal the oracle's pixels (SHA-256 of the RGBA), alpha is the master's, no channel is brighter, day is the master itself", () => {
-  for (const [sp, row] of Object.entries(LG.juvenile104x112)) {
+  for (const [sp, row] of [...Object.entries(LG.juvenile104x112), ...Object.entries(LG.adult144x152 ?? {})]) {
     const buf = masterPng(row.file.replace(/^/, "")); assert.equal(sha(buf), row.source, sp + ": a recut master fails here, loudly");
     const d = decodePNG(buf), p = { w: d.w ?? d.width, h: d.h ?? d.height, rgba: () => d.rgba ?? d.data };
     for (const [l, want] of Object.entries(row.rgba)) {
