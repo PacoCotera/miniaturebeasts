@@ -2008,85 +2008,85 @@
    "file": "pods/mibi-juvenile-S01-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "06eaddd2d88a702b564588910783fd0214d13b9fff7d6aabba182336300a405b",
-   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
+   "sha256": "3a0bf9b7ce973d6fb06852d946c227fd9094117cd8a020655578562e3bcab049",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S01-304x312": {
    "file": "pods/mibi-juvenile-S01-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "e4712cfb89e32a4452fc5dfa80f1fd8995197afd0520b7c9d06754ef25f86603",
-   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
+   "sha256": "13d8fb322b0ddfb614eb031fc5a6a171b8337e2529c6678f8338fb64b0856a13",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S01-48x48": {
    "file": "pods/mibi-juvenile-S01-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "1467283119992de92cfc0d99f866835066714eaab45ffbc6e9887374ffb4df88",
-   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
+   "sha256": "d1a7b2427d29cf0848984969d2bc40e869b7baf37f4503ee17084dafe79d3250",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S01-96x88": {
    "file": "pods/mibi-juvenile-S01-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "0e4d6c6fc9a81a68d612bebbd62578f3b35ce036536a434d3b1cbf23fcf2c845",
-   "signed": "candidate: the art director signs it beside Pip in builder 2's whole-screen captures (fix 1a)"
+   "sha256": "ba772eafc1577bf48ba427744e2e63221baa90c6de1e35f9f5a8b57b7f3667c9",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-104x112": {
    "file": "pods/mibi-juvenile-S02-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "d7cc988a83e2159cee6ee00b5868137d61de9a100de5133d2f069d2739c4b01c",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "3d5ff0d119505aeb378c8f9bb591236c3d21fa05d63809a5fcaa7e1bce73e013",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-304x312": {
    "file": "pods/mibi-juvenile-S02-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "dce28955f0a22e60518ed8738e9e91a33e45c0f8d8f90f783b2f005b73eb2f95",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "8ad444042b78c1f47de544494806729b408db6f5089fe3448e1de1eb1d06ccf6",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-48x48": {
    "file": "pods/mibi-juvenile-S02-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "cc67e4b684faccb3705ba39e43386dadd0985befeebc255b6391d2c44e2ff758",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "b3be64f70ef0e412d40b03447056e2c00520864664b777ac5cab39ab09ed75ac",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-96x88": {
    "file": "pods/mibi-juvenile-S02-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "b15d27a4e620e534a27fb953916cb38f2c69c6aec5815ca9473d811d642e83ed",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "1e3f7adbf12b151d721156347aa5ead136e5d9d4b5f1a0381b725fd25e85f5fe",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-104x112": {
    "file": "pods/mibi-juvenile-S03-104x112.png",
    "w": 104,
    "h": 112,
    "sha256": "c0fd88f15c7bfad7606c16669b01c1aababdad22f25289a51f43c5c4eeaf2b78",
-   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-304x312": {
    "file": "pods/mibi-juvenile-S03-304x312.png",
    "w": 304,
    "h": 312,
    "sha256": "2ff012027372a84a89921a6e8d3475ddf4cde6fe92f4c569e930970d2b7a8eb3",
-   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-48x48": {
    "file": "pods/mibi-juvenile-S03-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "925c3c32691181d83f1ce7c16792a1ec7c3e8230cf66a9528c3145afd5992388",
-   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-96x88": {
    "file": "pods/mibi-juvenile-S03-96x88.png",
    "w": 96,
    "h": 88,
    "sha256": "fd2f97e9ef86f4b0759e76e22a41cb8212078594d255c5942134e13972880f88",
-   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S04-104x112": {
    "file": "pods/mibi-juvenile-S04-104x112.png",
