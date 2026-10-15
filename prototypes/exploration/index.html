@@ -269,7 +269,8 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { viewOf, camAt, visTiles, sprOff } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -462,8 +463,17 @@ function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q =
   let best = { c: ex.start, n: d(ex.start), name: 'Start' };
   for (const c of ex.reach) if (depotLit(c) && d(c) < best.n) best = { c, n: d(c), name: cap(DEPOT_NAME) };
   return best; }
-function sendHint() { const b = nearestSend(); return b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'); }
-function headBack() { if (canSend()) return '← End expedition'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
+// In a place (S.exp.patch set, a cave included, whatever screen is open over it) a send-point string names the way, never a count:
+// no flag is drawn there. Over the reach view it keeps the count beside the flag. One helper, so the two forms cannot drift apart.
+const SEND_TXT = {
+  hint: (b, dir) => dir ? b.name + ' · ' + dir : b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'),
+  back: (b, dir) => dir ? 'head back ' + dir + ' to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME)
+    : 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')',
+};
+function sendWay() { const ex = S.exp, b = nearestSend(); if (!ex.patch) return { b, dir: null };
+  const p = cxy(ex.pos), q = cxy(b.c), dx = q.x - p.x, dy = q.y - p.y; return { b, dir: dx || dy ? dirWord(dx, dy, Math.hypot(dx, dy)) : null }; }
+function sendHint() { const w = sendWay(); return SEND_TXT.hint(w.b, w.dir); }
+function headBack() { if (canSend()) return '← End expedition'; const w = sendWay(); return SEND_TXT.back(w.b, w.dir); }
 
 
 // ===================== 5. State, persistence, effects hooks =====================
@@ -673,6 +683,12 @@ const CARE_ASSETS = [
   { id: 'LANDING', what: 'the landing above a stair, on the higher ground (stair/landing)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'FOOT', what: 'the foot below a stair, on the lower ground (stair/foot)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'APRON_TOP', what: 'the tile inside a north-facing stair top (stair/apron-top)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'c-creature-32', what: 'a creature in a 48 px place: today’s code-drawn 32 px sprite, 1:1, bottom-aligned and centred in its cell (feet on rows 44–45)', until: 'each species’ 48 × 48 frames', w: 32, h: 32, status: 'stand-in' },
+  { id: 'c-pawn-32', what: 'the pawn in a 48 px place: today’s code-drawn 32 px sprite, 1:1, bottom-aligned and centred in its cell', until: 'the 48 px pawn', w: 32, h: 32, status: 'stand-in' },
+  { id: 'c-trunk-32', what: 'a tree trunk in a 48 px place: the built code-drawn 32 px trunk, with its canopy over it', until: 'the meadow tree prop', w: 32, h: 32, status: 'stand-in' },
+  { id: 'c-step-32', what: 'a stepping stone in a 48 px place: the built code-drawn 32 px stone on the water’s quarters', until: 'the ford pieces', w: 32, h: 32, status: 'stand-in' },
+  { id: 'c-canopy-88x76', what: 'a tree canopy over its trunk, in a place at 32 or 48 px', until: 'the meadow tree prop', w: 88, h: 76, status: 'stand-in' },
+  { id: 'c-roof-104x22', what: 'the roof on an outcrop, 104 px wide on the 144 px outcrop of a 48 px place', until: 'the meadow outcrop piece', w: 104, h: 22, status: 'stand-in' },
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
   'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
@@ -1120,7 +1136,7 @@ function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
   ex.saidDone = ex.actions || 1; logEv('Everything in reach explored (' + rc.total + ' cells)');
-  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + rc.gated + ' cave needs a digger' : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
+  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'a cave needs a digger' : 'caves need a digger') : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
@@ -1707,18 +1723,19 @@ function offer(c) {
 function callPlace() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
   const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = muffled ? CALL_R_FOG : CALL_R;
-  let found = 0;
-  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); found++; }
+  let found = 0; const cue = [];   // the finds this Call lights, for their edge tabs
+  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); cue.push({ x: p.x, y: p.y }); found++; }
   for (const f of lay.feats) {
     const fp = featPos(key, f); if (!inCall(P, fp.x, fp.y, reach)) continue;
-    if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); found++; }
-    if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); found++; }
+    if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
+    if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
   let lifted = null;
   if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1; }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
+  FX.cue = { key, at: NOW, until: ex.actions + 3, r: reach, finds: cue };   // the finds' edge tabs, for the 3 actions after the Call
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
   // the partner answers: a digger near the burrow digs it
@@ -1729,7 +1746,7 @@ function callPlace() {
     fxSign('call');   // if the entry did not show it, this press does, beside the ring it explains (hazard signs outrank it)
     if (muffled) fxSign('muffled');
     const m = svyFull(lay.cell), left = leftPhrase(lay.cell, P, 44), lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
-    if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); }   // a pod still lying here glints again, so a beat always leads somewhere
+    if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
     // never ahead of the picture: "3/4 surveyed · a corner north-east still veiled"
     const vw = m === 15 ? null : veiledWhere(lay.cell), almost = vw && qCount(S.svy[lay.cell] || 0) > qCount(m);
     const head = m === 15 ? 'Surveyed' : (m ? qCount(m) + '/4 surveyed' : 'Survey begun') + (almost ? ' · a corner ' + vw.dir + ' still veiled' : m === before ? ' · walk or Call further on' : '');
@@ -2342,6 +2359,7 @@ const DARK = PALETTE.map(([n]) => C[DARK_OF[n]]);
 const LIGHT = PALETTE.map(([n]) => C[LIGHT_OF[n]]);
 const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l) ? c : l);   // one step lighter, never into the reserved orange, amber or white
 const DARK2 = DARK.map(i => DARK[i]);
+const LIGHT_GRASS = PALETTE.map((_, i) => i), DARK_GRASS = PALETTE.map((_, i) => i);   // the level tone's grass-only steps: identity until a biome palette marks its grass
 const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
 function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
 function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
@@ -2350,6 +2368,10 @@ const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low c
      FADE = mixLUT('stone', .5);
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
+// The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
+const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
+const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE];
+REMAP.id = 0; REMAP_PLACE.id = 1;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
 
@@ -2406,10 +2428,10 @@ class PB {
   // A canvas of this buffer through a lookup table, optionally mirrored or thinned to a checkerboard.
   // veil: the survey veil, baked once per tile and light level: one step darker (DARK) plus a 4×4 Bayer dot of night.
   canvas(rm, flip, chk, veil) {
-    const key = (rm || 0) * 4 + (flip ? 2 : 0) + (chk ? 1 : 0) + (veil ? 100 : 0); let cv = this.cache.get(key);
+    const set = RT.remap, key = (rm || 0) * 4 + (flip ? 2 : 0) + (chk ? 1 : 0) + (veil ? 100 : 0) + set.id * 1000; let cv = this.cache.get(key);
     if (cv) return cv;
     cv = document.createElement('canvas'); cv.width = this.w; cv.height = this.h;
-    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h), lut = REMAP[rm || 0];
+    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h), lut = set[rm || 0];
     for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) {
       let c = this.p[y * this.w + (flip ? this.w - 1 - x : x)]; if (c < 0 || (chk && (x + y) % 2)) continue;
       if (lut) c = lut[c];
@@ -2934,6 +2956,90 @@ function tilePB(lay, i, fr) {
 }
 function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light); }
 
+// ---------- The 48 px places: the art director's meadow set, loaded from art/ by exact colour ----------
+// The manifests, their sheets and the biome palette beside each manifest. Any failure leaves places at 32 px, exactly as before.
+const ATLAS_URLS = ['../../art/companion-48/terrain/meadow/meadow.json'];
+const ART48 = { ready: false, pieces: new Map(), cat: null, refused: [], ver: 0, g48: 0 };
+const CORE_N = 48;
+// The page's core 48 with their names and tables, as the palette file must repeat them.
+const coreTables = () => ({ names: PALETTE.slice(0, CORE_N).map(p => p[0]), dark: DARK.slice(0, CORE_N), light: LIGHT.slice(0, CORE_N), dark2: DARK2.slice(0, CORE_N), fog: FOGLUT.slice(0, CORE_N), fade: FADE.slice(0, CORE_N) });
+async function loadAtlas() {
+  try {
+    const mans = [];
+    for (const url of ATLAS_URLS) { const man = await (await fetch(url)).json(), dir = url.slice(0, url.lastIndexOf('/') + 1);
+      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(dir + name + '-palette.json')).json();
+      mans.push({ man, dir, sig: name + '|' + JSON.stringify(pal && pal.entries), pal }); }
+    if (new Set(mans.map(m => m.sig)).size !== 1) throw new Error('the manifests name different palettes');
+    const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
+    if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
+    const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = [];
+    const image = async file => { if (!images.has(file)) images.set(file, (async () => {
+      const bm = await createImageBitmap(await (await fetch(file)).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+      const cv = document.createElement('canvas'); cv.width = bm.width; cv.height = bm.height; const cg = cv.getContext('2d'); cg.drawImage(bm, 0, 0);
+      return { w: bm.width, h: bm.height, data: cg.getImageData(0, 0, bm.width, bm.height).data }; })()); return images.get(file); };
+    const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
+    for (const [name, { p, dir, sheets }] of byName) {
+      const img = await image(dir + (p.file != null ? p.file : sheets[p.sheet])), x0 = p.file != null ? 0 : p.x, y0 = p.file != null ? 0 : p.y, w = p.file != null ? img.w : p.w, h = p.file != null ? img.h : p.h;
+      if (x0 + w > img.w || y0 + h > img.h) { refused.push(name); continue; }
+      const rgba = new Uint8Array(w * h * 4); for (let y = 0; y < h; y++) rgba.set(img.data.subarray(((y0 + y) * img.w + x0) * 4, ((y0 + y) * img.w + x0 + w) * 4), y * w * 4);
+      const d = decodeExact(rgba, w, h, rgbTable);
+      if (d.bad) { refused.push(name); console.warn('48 px piece refused (' + d.bad + ' pixels off the palette): ' + name); continue; }
+      list.push(Object.assign({}, p, { w, h, px: d.px }));
+    }
+    atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
+  } catch (e) { console.warn('the 48 px place art did not load; places draw at 32 px', e); }
+}
+// The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 48) and
+// the manifest's levelTone. The page's colour and lookup arrays grow from index 48 by the table; 0–47 never change.
+function atlasInstall(list, table, levelTone) {
+  for (const a of [RGB, HEX, DARK, LIGHT, DARK2, FOGLUT, FADE, TINT, LEVEL_LIGHT]) a.length = CORE_N;
+  for (let i = 0; i < CORE_N; i++) { LIGHT_GRASS[i] = table ? table.lightGrass[i] : i; DARK_GRASS[i] = table ? table.darkGrass[i] : i; } LIGHT_GRASS.length = DARK_GRASS.length = CORE_N;
+  if (table) for (let i = CORE_N; i < table.rgb.length; i++) {
+    RGB[i] = table.rgb[i].slice(); HEX[i] = '#' + table.rgb[i].map(v => v.toString(16).padStart(2, '0')).join('');
+    DARK[i] = table.dark[i]; LIGHT[i] = table.light[i]; DARK2[i] = table.dark2[i]; FOGLUT[i] = table.fog[i]; FADE[i] = table.fade[i]; TINT[i] = i; LEVEL_LIGHT[i] = i;
+    LIGHT_GRASS[i] = table.lightGrass[i]; DARK_GRASS[i] = table.darkGrass[i]; }
+  for (let i = 0; i < RGB.length; i++) { PLACE_STORM[i] = table && table.placeStorm ? table.placeStorm[i] : DARK[i]; PLACE_FOG[i] = table && table.placeFog ? table.placeFog[i] : FOGLUT[i]; PLACE_FADE[i] = table && table.placeFade ? table.placeFade[i] : FADE[i]; }
+  PLACE_STORM.length = PLACE_FOG.length = PLACE_FADE.length = RGB.length;
+  ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
+  for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
+  EDGE_TILE.clear();   // the edge canvases repeat their keys when a layer signature repeats; the place set (set.id 1) is fixed for the page's life, so a reinstall starts clean
+}
+// A place's layers at 48, per water frame, cached on the layout for the catalogue in effect.
+function layers48(lay, fr) {
+  if (!lay.l48 || lay.l48.ver !== ART48.ver) lay.l48 = { ver: ART48.ver };
+  return lay.l48[fr] || (lay.l48[fr] = placeLayers(lay, S.seed, ART48.cat, fr, G.level ? G.level[lay.cell] : null));
+}
+// The tile size a place draws at: 48 when the meadow set is in and the place can be built from it; caves stay at 32.
+function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
+const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
+const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
+function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : ''); }
+// A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone (grass colours only), the 32 px stand-ins, then the dark of
+// a wood place. Identical tiles share one buffer (and one canvas per light level).
+function tile48(lay, i, fr) {
+  const key = tile48Key(lay, i, fr); let pb = ART.get(key); if (pb) return pb;
+  if (ART48.g48 > 4000) { for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); ART48.g48 = 0; }
+  const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
+  for (const l of t.layers) {
+    if (l.stand) { const s32 = stand32(l.stand, lay.base); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
+    const pc = ART48.pieces.get(l.id), lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null; if (!pc) continue;   // the level tone moves grass only
+    for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) { let c = pc.px[(l.sy + y) * pc.w + l.sx + x]; if (c < 0) continue; if (lut) c = lut[c]; pb.p[(l.dy + y) * 48 + l.dx + x] = c; }
+  }
+  if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
+  ART.set(key, pb); ART48.g48++; return pb;
+}
+// The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground.
+function stand32(kind, base) {
+  return art('st32|' + kind + '|' + base, () => { const pb = new PB(32, 32);
+    if (kind === 'trunk') { pb.ell(16, 26, 10, 4, base === T.SAND ? C.clay : C.forest);
+      pb.rect(11, 6, 10, 21, C.bark); pb.rect(11, 6, 3, 21, C.clay); pb.rect(18, 6, 3, 21, C.soil); pb.rect(8, 25, 4, 2, C.bark); pb.rect(20, 25, 4, 2, C.soil); pb.rect(14, 12, 1, 4, C.soil); }
+    else if (kind === 'step') { pb.ell(16, 17, 11, 7.5, C.rock); pb.ell(15.5, 15.5, 10, 6, C.rockL, { sh: [C.white, C.rockL] }); pb.set(20, 13, C.fog); }
+    return pb; });
+}
+// A whole meadow piece as a sprite (the reeds, taller than a cell).
+function blit48(id, x, y, rm) { const pc = ART48.pieces.get(id); if (!pc) return;
+  blit(art('p48|' + id, () => { const pb = new PB(pc.w, pc.h); pb.p.set(pc.px); return pb; }), x, y, rm); }
+
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
 function buildMapPB() {
   const pb = new PB(MW * CELL, MH * CELL);
@@ -3000,7 +3106,7 @@ function fogEdgeArt(m) { return art('fe' + m, () => { const pb = new PB(CELL, CE
     if (d === 0 || (d === 1 && (x + y) % 2 === 0) || (d === 2 && (x % 2 === 0 && y % 2 === 0))) pb.set(x, y, C.night); }
   return pb; }); }
 // Ordered-dither overlays (Bayer 4×4): the only way this screen shows "partly see-through".
-const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+const BAYER = BAYER4;
 function ditherArt(w, h, col, level) { return art('dz' + w + 'x' + h + col + level, () => { const pb = new PB(w, h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < level) pb.set(x, y, C[col]); return pb; }); }
 // The veil over an unsurveyed quarter of a visited map cell: 13×13 of Bayer dots in night, phased to the screen grid.
@@ -3074,7 +3180,7 @@ function tween(o, tx, ty, dur) {
   o.x = o.fx + (o.tx - o.fx) * k; o.y = o.fy + (o.ty - o.fy) * k;
   o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position the camera and the map pawn read; x, y stay exact (a retarget starts from them, and the floored overlays take them)
 }
-const RT = { key: null, ts: 32, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
+const RT = { key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
 function viewBg(col) {
   if (col != null) { R(0, VIEW_Y, SCR_W, VIEW_H, col); return; }
@@ -3455,7 +3561,7 @@ function caveLight(lay, live, P) {
 // The 4x4 Bayer pattern is baked into the variant through the same LUTs; variants are built on first use and cached.
 // Every builder works on the tile's own size, n = pb.w (32 today), and caches by (mask, n); the fade stays 16 px wide.
 const FADE_W = 16, EDGE_FADE = new Map(), EDGE_TILE = new Map();
-const STORM_K = { 32: 2.4, 48: 1.5 };   // the approaching storm's dark columns per column of gap still to close, per tile size (the gap is fractional)
+const STORM_K = { 32: 2.4, 48: 1.4 };   // 48 is the ratio 7/5, taken as stormCols48 in integers;   // the approaching storm's dark columns per column of gap still to close, per tile size (the gap is fractional)
 function edgeFade(mask, n) { // per pixel: how far (0..1) toward the darker level, strongest at the borders
   const fk = mask + '|' + n; let f = EDGE_FADE.get(fk); if (f) return f; f = new Float32Array(n * n);
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { let t = 0;
@@ -3467,10 +3573,10 @@ function edgeFade(mask, n) { // per pixel: how far (0..1) toward the darker leve
   EDGE_FADE.set(fk, f); return f;
 }
 function edgeTile(pbKey, pb, L, mask) {
-  const n = pb.w, key = pbKey + '|' + L + '|' + mask + '|' + n; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  const n = pb.w, key = pbKey + '|' + L + '|' + mask + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
   const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = edgeFade(mask, n);
-  const pk = lv => RGB.map((_, c) => { const q = RGB[REMAP[lv] ? REMAP[lv][c] : c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }), a = pk(L), b = pk(L + 1);
+  const pk = lv => RGB.map((_, c) => { const q = RGB[RT.remap[lv] ? RT.remap[lv][c] : c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }), a = pk(L), b = pk(L + 1);
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const o = y * n + x, c = pb.p[o]; if (c < 0) continue;
     u[o] = (f[o] > (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16 ? b : a)[c]; }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
@@ -3485,49 +3591,67 @@ function fogFade(mask, n) { const fk = mask + '|' + n; let f = FOG_FADE.get(fk);
     f[y * n + x] = t * .9; }
   FOG_FADE.set(fk, f); return f; }
 function fogEdgeTile(pbKey, pb, L, mask, veil) {
-  const n = pb.w, key = 'f' + pbKey + '|' + L + '|' + mask + (veil ? 'v' : '') + '|' + n; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  const n = pb.w, key = 'f' + pbKey + '|' + L + '|' + mask + (veil ? 'v' : '') + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
-  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = fogFade(mask, n), lut = REMAP[L];
+  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = fogFade(mask, n), lut = RT.remap[L], fogT = RT.remap[3];
   const pk = c => { const q = RGB[c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; };
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const o = y * n + x, c = pb.p[o]; if (c < 0) continue;
     const b = BAYER[(y & 3) * 4 + (x & 3)], lc = lut ? lut[c] : c;
-    u[o] = pk(f[o] > (b + .5) / 16 ? FOGLUT[c] : veil ? (b < 4 ? C.night : DARK[lc]) : lc); }
+    u[o] = pk(f[o] > (b + .5) / 16 ? fogT[c] : veil ? (b < 4 ? C.night : DARK[lc]) : lc); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
 // The same for the survey veil: an unveiled tile beside veiled ones fades into the veil's dots at the shared sides.
 function veilEdgeTile(pbKey, pb, L, mask) {
-  const n = pb.w, key = 'v' + pbKey + '|' + L + '|' + mask + '|' + n; let cv = EDGE_TILE.get(key); if (cv) return cv;
+  const n = pb.w, key = 'v' + pbKey + '|' + L + '|' + mask + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
-  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = edgeFade(mask, n), lut = REMAP[L];
+  const cg = cv.getContext('2d'), id = cg.createImageData(n, n), u = new Uint32Array(id.data.buffer), f = edgeFade(mask, n), lut = RT.remap[L];
   const pk = c => { const q = RGB[c]; return ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; };
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const o = y * n + x; let c = pb.p[o]; if (c < 0) continue; if (lut) c = lut[c];
     const b = BAYER[(y & 3) * 4 + (x & 3)]; u[o] = pk(f[o] > (b + .5) / 16 ? (b < 4 ? C.night : DARK[c]) : c); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
+// At 48 px the veil and fog edges are drawn in eighths (12 px): eighthGrid opens the per-tile rule by a disc of 2 tiles (cut-only), and a pixel takes the far
+// side by coverE, the 5 × 5 samples (±6 px) over its eighth and the 8 around it. Bit 8 of an eighth's mask is its own state, bits 0–7 its neighbours (N, NE, E,
+// SE, S, SW, W, NW).
+const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+// A 48 px edge canvas: each opaque pixel through near(c, x, y) or far(c, x, y), by the coverage of mask m9 (or by pick for the storm step).
+function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; let cv = EDGE_TILE.get(k); if (cv) return cv;
+  cv = document.createElement('canvas'); cv.width = cv.height = 48;
+  const cg = cv.getContext('2d'), id = cg.createImageData(48, 48), u = new Uint32Array(id.data.buffer);
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const o = y * 48 + x, c = pb.p[o]; if (c < 0) continue;
+    const q = RGB[pick(x, y) ? far(c, x, y) : near(c, x, y)]; u[o] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
+  cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
+const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
 function drawPatch(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
-  if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; }
+  if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
+  else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, o = sprOff(ts);
+  if (ts === 48) RT.remap = REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
   const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
-  RT.plScr = { x: W(RT.pl.x) + (ts >> 1), y: H(RT.pl.y) + (ts >> 1) };
+  const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
+  const tileFor = (i) => ts === 48 ? tile48(lay, i, fr) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
+  RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
-    if (gap >= 0 && gap < 3) { darkW = Math.ceil((3 - gap) * STORM_K[ts]) * ts; darkLeft = st.dir > 0; } }
+    if (gap >= 0 && gap < 3) { darkW = (ts === 48 ? stormCols48(Math.round((3 - gap) * 20)) : Math.ceil((3 - gap) * STORM_K[ts])) * ts; darkLeft = st.dir > 0; } }
   const lightAt = lay.cave ? caveLight(lay, live, P) : null;
   // fog bank: sight is 4 tiles (6 with a glowing partner); beyond it the land takes the fog table and nothing else shows
   const sight = sightR(lay), inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
   const pu = FX.pulse && FX.pulse.key === P.key && FX.pulse.lifted && motion() && NOW - FX.pulse.at < CALL_MS ? FX.pulse : null, puR = pu ? pu.r * (NOW - pu.at) / CALL_MS : 0;
   const shown = (x, y) => unveiled(P.key, x, y) && !(pu && pu.lifted.has(y * PW + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
   const see = (x, y) => inS(x, y) && shown(x, y);   // the survey veil hides what stands on a tile until a Call
-  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; if (overcast) return 1;
+  // a tile's light without the fog: 1 under the storm or inside the approaching band's columns, else 0 (the fog edge's clear side takes this)
+  const clearLight = (tx, ty) => { if (overcast) return 1;
     if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
+  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : 0;
   // overlays (canopies, roofs) take the veil like the tiles under them; beyond fog sight the fog table
@@ -3540,6 +3664,19 @@ function drawPatch(t) {
   // unveiled, per tile, read once per frame (off the place counts as unveiled, so edges never fade into the border)
   const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= PW || y >= PH) return true; const k = y * PW + x; let v = uvGrid.get(k); if (v === undefined) { v = shown(x, y); uvGrid.set(k, v); } return v; };
   const lvGrid = new Map(), lvAt = (x, y) => { const k = (y + 2) * 64 + x + 2; let v = lvGrid.get(k); if (v === undefined) { v = lightAt(x, y); lvGrid.set(k, v); } return v; };
+  // eighth grids (48 px only): the place's tile far bits opened by eighthGrid, rebuilt only when the bits change, kept on the layout. Drawing only: built from
+  // the rule's per-tile result, never fed back. For a tile, blockE gives its edge canvas key and the 16 masks of its eighths, or null when its 6 × 6 block is all near or all far.
+  const eighths = (which, farT) => { const bits = new Uint8Array(PW * PH); for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) bits[y * PW + x] = farT(x, y) ? 1 : 0;
+    const kept = lay.eg || (lay.eg = {}), e = kept[which]; if (e && e.bits.every((v, k) => v === bits[k])) return e.grid;
+    const grid = eighthGrid(bits, PW, PH); kept[which] = { bits, grid }; return grid; };
+  const blockE = (grid, tx, ty) => { const EW = 4 * PW, EH = 4 * PH, b = new Uint8Array(36); let ones = 0, own = 0, ring = 0, no = 0, nr = 0;
+    for (let j = 0; j < 6; j++) for (let i = 0; i < 6; i++) { const ex = 4 * tx - 1 + i, ey = 4 * ty - 1 + j, v = ex >= 0 && ey >= 0 && ex < EW && ey < EH ? grid[ey * EW + ex] : 0; b[j * 6 + i] = v; ones += v;
+      if (i >= 1 && i <= 4 && j >= 1 && j <= 4) own |= v << no++; else ring |= v << nr++; }
+    if (ones === 0 || ones === 36) return null;
+    const ms = []; for (let j = 1; j <= 4; j++) for (let i = 1; i <= 4; i++) { let m = b[j * 6 + i] ? 256 : 0; NB9.forEach(([dx, dy], k) => { if (b[(j + dy) * 6 + i + dx]) m |= 1 << k; }); ms.push(m); }
+    return { key: own.toString(36) + '.' + ring.toString(36), ms }; };
+  const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
+  const fogE = ts === 48 && fogged ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= PW || ty >= PH) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * PW + tx, L = lvAt(tx, ty);
@@ -3549,15 +3686,28 @@ function drawPatch(t) {
       g.drawImage(m ? edgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L, m) : tileCanvas(lay, i, L, fr), W(tx * ts), H(ty * ts));
       continue; }
     const L0 = tileLight(tx, ty), i = ty * PW + tx, uv = uvAt(tx, ty);
+    if (ts === 48) {   // coverage fades for the fog and the veil, the 6 px storm step beside the band
+      const pb = tileFor(i), key = keyFor(i), set = RT.remap;
+      if (fogged) { const fb = blockE(fogE, tx, ty);
+        if (fb) { const nl = clearLight(tx, ty), f = pickE(fb.ms);
+          g.drawImage(edge48('F' + key + '|' + fb.key + '|' + nl + (uv ? '' : 'v'), pb, f, (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
+      if (L0 !== 3) { const vb = blockE(veilE, tx, ty);
+        if (vb) { const f = pickE(vb.ms), lut = set[L0];
+          g.drawImage(edge48('V' + key + '|' + vb.key + '|' + L0, pb, f, c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y)), W(tx * ts), H(ty * ts)); continue; } }
+      if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
+        if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => stormStep(side === 'W' ? x : 47 - x, x, y),
+          (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }
+      g.drawImage(pb.canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts)); continue;
+    }
     if (fogged && L0 !== 3) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && fk(tx - 1, ty - 1)) m |= 16; if (!u && !r && fk(tx + 1, ty - 1)) m |= 32; if (!d && !r && fk(tx + 1, ty + 1)) m |= 64; if (!d && !l && fk(tx - 1, ty + 1)) m |= 128;
-      if (m) { g.drawImage(fogEdgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L0, m, !uv), W(tx * ts), H(ty * ts)); continue; } }
+      if (m) { g.drawImage(fogEdgeTile(keyFor(i), tileFor(i), L0, m, !uv), W(tx * ts), H(ty * ts)); continue; } }
     if (L0 !== 3 && uv) { const vk = (x, y) => !uvAt(x, y), u = vk(tx, ty - 1), r = vk(tx + 1, ty), d = vk(tx, ty + 1), l = vk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && vk(tx - 1, ty - 1)) m |= 16; if (!u && !r && vk(tx + 1, ty - 1)) m |= 32; if (!d && !r && vk(tx + 1, ty + 1)) m |= 64; if (!d && !l && vk(tx - 1, ty + 1)) m |= 128;
-      if (m) { g.drawImage(veilEdgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L0, m), W(tx * ts), H(ty * ts)); continue; } }
-    g.drawImage(tilePB(lay, i, fr).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
+      if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
+    g.drawImage(tileFor(i).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
@@ -3593,22 +3743,20 @@ function drawPatch(t) {
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(nr.x), SY(nr.y), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * ts, live.pt.y * ts, ex.pt.elder ? 220 : 150); const rp = RT.pt;
-    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(rp.x), SY(rp.y), t);
-      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(rp.x) + 16, y: SY(rp.y), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(rp.x) + 11, SY(rp.y) - 9); } }); }
+    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(PX(rp)), SY(PY(rp)), t);
+      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(PX(rp)) + 16, y: SY(PY(rp)), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(PX(rp)) + 11, SY(PY(rp)) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   items.push({ y: RT.pl.y + 5, d: () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    blit(playerArt(P.dir, pose, f2), SX(RT.pl.x) + bx, SY(RT.pl.y));
-    if (ex.carry) blit(FRUIT(), SX(RT.pl.x + 10) + bx, SY(RT.pl.y - 6)); } });
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)));
+    if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
+  if (ts === 48) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
-  // the partner's name tag: above it, with a pointer down to it, shifted sideways so it never covers the player
-  if (RT.tag) { const tg = RT.tag, w = textW(tg.name, 2) + 10, pl = RT.plScr; let nx = tg.x - Math.round(w / 2), ny = tg.y - 26;
-    if (pl && nx < pl.x + 18 && nx + w > pl.x - 18 && ny < pl.y + 18 && ny + 20 > pl.y - 20) nx = pl.x > tg.x ? pl.x - 20 - w : pl.x + 20;
-    R(tg.x - 1, ny + 20, 2, 5, C.aqua); panel(nx, ny, w, 20, C.ink, C.aqua); text(tg.name, nx + 5, ny + 3, C.mint); }
+  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
@@ -3638,7 +3786,7 @@ function drawPatch(t) {
     const a = sparkArt(!motion() || Math.floor(age / 120) % 2 === 0); blit(a, W(r.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(r.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); }
   if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * ts + (ts >> 1)), cy = H(FX.pulse.y * ts + (ts >> 1)), maxR = (2 * FX.pulse.r + 1) * ts >> 1;   // the range's edge
     if (motion() && age < CALL_MS) circ(cx, cy, 8 + (maxR - 8) * age / CALL_MS, C.ice);            // the leading edge: the veil lifts behind it
-    else if (age < CALL_MS + 400) circ(cx, cy, maxR, C.ice, true); }                                // then the final contour: exactly the Call's range
+    else if (age < CALL_MS + 400) { circ(cx, cy, maxR, C.ice, true); holdDashes(cx, cy, maxR); } }  // then the final contour: exactly the Call's range, and the view's edge inside it
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * ts + (ts >> 1)), y = H(FX.dig.y * ts + ts - 6);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
@@ -3653,7 +3801,7 @@ function drawPatch(t) {
   if (fogged) { const d = motion() ? Math.floor(t * 9) : 0, pl = RT.plScr, keep = (sightR(lay) + 1.5) * ts;   // drifting texture on the fogged area only, never over what you see
     for (let i = 0; i < 6; i++) { const h = hash(9, i), px = ((h % 600) + d * (1 + i % 2)) % 600 - 96, py = VIEW_Y + 20 + (h >>> 12) % 460;
       if (pl && Math.max(Math.abs(px + 48 - pl.x) - 48, 0) ** 2 + Math.max(Math.abs(py + 24 - pl.y) - 24, 0) ** 2 < keep * keep) continue; blit(puffArt(i % 2 ? 3 : 2), px, py); } }
-  g.restore();
+  g.restore(); RT.remap = REMAP;
 }
 function drawCreature(c, x, y, pose, t, rm, cue) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
@@ -3680,6 +3828,105 @@ function drawPartner(sp, pt, x, y, t) {
   if (pt.st === 'sniff') for (let i = 0; i < 3; i++) R(f > 0 ? x + 30 + i * 3 : x - 2 - i * 3, y + 14 - i * 2 - ((fr + i) % 2), 2, 2, C.bone);
   if (pt.st === 'dig') for (let i = 0; i < 5; i++) { const a = ((t * 6) + i / 5) % 1; R(f > 0 ? x + 4 - a * 12 : x + 26 + a * 12, y + 20 - Math.round(Math.sin(a * Math.PI) * 10), 2, 2, C.clay); }
 }
+
+// ---------- The view's edge cues: tabs for what is off screen, the Call's hold on the edge, the name tag's place ----------
+// Read only: S, FX and RT in, pixels out. The one render state is RT.tabSeen (when each tab first showed, for its flash).
+const TAB = { order: ['!', '?', 'find'], border: { '!': 'yellow', '?': 'sprout', find: 'cream' }, max: 4, merge: 24, clear: 4, flashMs: 160 };
+const rectsMeet = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+// the place view and its drawn camera, as drawPatch has them this frame (the shake after the clamp)
+function cueView() { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), [sx, sy] = shakeOff(), c0 = camAt(v, RT.pl.rx, RT.pl.ry); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
+// a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
+function findThere(key, lay, q) {
+  return S.pods.some(p => p.k === key && !p.h && p.x === q.x && p.y === q.y)
+    || lay.feats.some(f => f.x === q.x && f.y === q.y && (f.kind === 'd' || (f.kind === 'k' && stoneCharge(key, f) > 0)));
+}
+// At most 4 tabs { kind, cx, cy, side, tx, ty, d, id } for `!` and `?` creatures and this Call's finds whose tile is off screen.
+function edgeTabs() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || !RT.pl || !RT.plScr || RT.key !== P.key) return [];
+  const lay = layout(P.key), live = ex.live[P.key]; if (lay.cave || !live) return [];
+  const { v, cam } = cueView(), ts = v.ts, sight = sightR(lay), ax = Math.round(RT.plScr.x), ay = Math.round(RT.plScr.y), all = [], ids = new Set();
+  const add = (kind, tx, ty, id) => { if (ids.has(id) || tileOnScreen(v, cam, tx, ty, ON_SCREEN)) return; ids.add(id);
+    const bx = v.x + tx * ts - cam.x + (ts >> 1), by = v.y + ty * ts - cam.y + (ts >> 1), e = edgePoint(ON_SCREEN, ax, ay, bx, by); if (!e) return;
+    const B = ON_SCREEN, dx = bx - ax, dy = by - ay, corner = (e.x === B.x0 || e.x === B.x1) && (e.y === B.y0 || e.y === B.y1);
+    const side = corner ? (Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N')) : e.side;   // at a corner, the larger axis
+    all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
+  for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
+    const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?') add(b, c.x, c.y, 'c' + c.id); }
+  const q = FX.cue;
+  if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
+    if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
+    add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }
+  all.sort((a, b) => TAB.order.indexOf(a.kind) - TAB.order.indexOf(b.kind) || a.d - b.d);
+  const kept = [];
+  for (const t of all) { if (kept.length >= TAB.max) break;
+    if (kept.some(k => k.side === t.side && Math.abs(t.side === 'N' || t.side === 'S' ? k.cx - t.cx : k.cy - t.cy) <= TAB.merge)) continue; kept.push(t); }
+  const m = msgGeom();   // never over the message box: slide along the edge until the tab, grown by 4, clears it
+  if (m) for (const t of kept) { const g4 = 11 + TAB.clear; if (!rectsMeet({ x: t.cx - g4, y: t.cy - g4, w: 2 * g4, h: 2 * g4 }, m)) continue;
+    t.cy = m.y > VIEW_Y + (VIEW_H >> 1) ? m.y - g4 : m.y + m.h + g4; }
+  return kept;
+}
+// a tab's pointer: three rows in its border colour, outside the tab on the side the ray leaves by
+function tabPointer(t) { const { cx, cy } = t;
+  if (t.side === 'E') return [[cx + 11, cy - 2, 1, 5], [cx + 12, cy - 1, 1, 3], [cx + 13, cy, 1, 1]];
+  if (t.side === 'W') return [[cx - 12, cy - 2, 1, 5], [cx - 13, cy - 1, 1, 3], [cx - 14, cy, 1, 1]];
+  if (t.side === 'N') return [[cx - 2, cy - 12, 5, 1], [cx - 1, cy - 13, 3, 1], [cx, cy - 14, 1, 1]];
+  return [[cx - 2, cy + 11, 5, 1], [cx - 1, cy + 12, 3, 1], [cx, cy + 13, 1, 1]]; }
+// the tab and its pointer as one rect (what the name tag refuses)
+function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
+  if (t.side === 'E') r.w += 3; else if (t.side === 'W') { r.x -= 3; r.w += 3; } else if (t.side === 'N') { r.y -= 3; r.h += 3; } else r.h += 3; return r; }
+// After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
+function drawEdgeCues(t) {
+  const tabs = edgeTabs(), seen = RT.tabSeen || (RT.tabSeen = new Map()), keep = new Set();
+  clipView();
+  for (const tb of tabs) { const k = tb.kind + tb.id, col = C[TAB.border[tb.kind]]; keep.add(k); if (!seen.has(k)) seen.set(k, NOW);
+    panel(tb.cx - 11, tb.cy - 11, 22, 22, motion() && NOW - seen.get(k) < TAB.flashMs ? C.cream : C.ink, col);
+    if (tb.kind === 'find') blit(sparkArt(true), tb.cx - 6, tb.cy - 6); else blit(bubbleArt(tb.kind), tb.cx - 5, tb.cy - 7);
+    for (const [x, y, w, h] of tabPointer(tb)) R(x, y, w, h, col); }
+  for (const k of [...seen.keys()]) if (!keep.has(k)) seen.delete(k);   // a tab that goes and comes back flashes again
+  g.restore();
+}
+// The Call's hold, on the view's edge wherever the edge lies inside its reach: ice dashes every 8 px, each with a 1 px dark shadow on its outer side.
+const DASH = { col: 'ice', shadow: 'void' };
+function holdDashes(cx, cy, maxR) {
+  const r2 = 4 * maxR * maxR, near = (x, y, w, h) => (2 * x + w - 2 * cx) ** 2 + (2 * y + h - 2 * cy) ** 2 <= r2, c = C[DASH.col], sh = C[DASH.shadow];   // the dash's centre, doubled
+  for (let x = 4; x <= 444; x += 8) { if (near(x, 34, 4, 2)) { R(x, 33, 4, 1, sh); R(x, 34, 4, 2, c); } if (near(x, 560, 4, 2)) { R(x, 562, 4, 1, sh); R(x, 560, 4, 2, c); } }
+  for (let y = 36; y <= 556; y += 8) { if (near(2, y, 2, 4)) { R(1, y, 1, 4, sh); R(2, y, 2, 4, c); } if (near(446, y, 2, 4)) { R(448, y, 1, 4, sh); R(446, y, 2, 4, c); } }
+}
+// The partner's name tag: a 20 px ink panel with an aqua border and a 2×5 (5×2 sideways) aqua pointer on the side facing the partner.
+// Its clear zone is the cell, the ring's foot rows below it, and a 4 px margin that stays empty; the pointer sits just outside the margin.
+// Positions in order: below, right, left, above (from the species' highest row), below slid by ±4, ±8 …; none clear, no tag.
+const TAG = { h: 20, ptr: 5, margin: 4, view: { x0: 6, y0: 38, x1: 444, y1: 558 }, slide: 4, slideIn: 6 };
+const tagTop = sp => { const top = pb => { for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if (pb.p[y * pb.w + x] >= 0) return y; return pb.h; };
+  return spOf(sp).other ? 0 : Math.min(top(creatureArt(sp, 'idle', 0)), top(creatureArt(sp, 'idle', 1))); };   // the bob only moves it down
+function tagSpot(tg, k) {
+  const ex = S.exp, P = ex.patch, live = ex.live[P.key], lay = layout(P.key), ts = k.ts, o = k.o, h2 = ts >> 1, M = TAG.margin, n = TAG.ptr, w = textW(tg.name, 2) + 10;
+  const X = tg.x - 16 - o.x, Y = tg.y - o.y;   // the partner's cell on screen
+  const zx1 = Math.max(ts - 1, o.x + 29) + M, zy1 = Math.max(ts - 1, o.y + 33) + M;   // the zone's far column and row (the ring is 28×11 at sprite + (2, 23))
+  const at = (px, py, pw, ph, nx, ny) => ({ ptr: { x: X + px, y: Y + py, w: pw, h: ph }, panel: { x: X + nx, y: Y + ny, w, h: TAG.h } });
+  const below = d => at(h2 - 1, zy1 + 1, 2, n, h2 - (w >> 1) + d, zy1 + 1 + n), H0 = o.y + tagTop(ex.pt.sp);
+  const spots = [below(0), at(zx1 + 1, h2 - 1, n, 2, zx1 + 1 + n, h2 - (TAG.h >> 1)), at(-M - n, h2 - 1, n, 2, -M - n - w, h2 - (TAG.h >> 1)),
+    at(h2 - 1, H0 - M - n, 2, n, h2 - (w >> 1), H0 - M - n - TAG.h)];
+  for (let d = TAG.slide; d <= (w >> 1) - TAG.slideIn; d += TAG.slide) spots.push(below(d), below(-d));
+  // what a tag may not cover: other creatures' and the pawn's clear zones, the finds' zones, the warned cell, the message box, the edge tabs
+  const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
+  const block = [];
+  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(k.PX(r)), k.H(k.PY(r)), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
+  block.push(zone(k.W(k.PX(RT.pl)), k.H(k.PY(RT.pl)), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
+  // a find the view draws (a pod, a stone, the crack, a lime pod, fruit on the ground): its cell, its pixels outside the cell, and the margin; the seen crack's ring reaches past the cell
+  const fz = (x, y, seenCrack) => block.push(seenCrack ? (ts === 48 ? zone(k.W(x * ts), k.H(y * ts), 0, 0, ts, 55) : zone(k.W(x * ts), k.H(y * ts), -6, -6, 39, 39)) : zone(k.W(x * ts), k.H(y * ts), 0, 0, ts, ts));
+  for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0 && k.see(p.x, p.y)) fz(p.x, p.y);
+  for (const f of lay.feats) { const q = featPos(P.key, f);
+    if (f.kind === 'k' && k.see(q.x, q.y)) fz(q.x, q.y); else if (f.kind === 'd' && k.see(f.x, f.y)) fz(f.x, f.y, live.seen.d); else if (f.kind === 'i' && k.inS(f.x, f.y)) fz(f.x, f.y); }
+  for (const f of live.fr) if (k.see(f.x, f.y) || (f.put && k.inS(f.x, f.y))) fz(f.x, f.y);
+  if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
+  const m = msgGeom(); if (m) block.push(m);
+  for (const t of edgeTabs()) block.push(tabRect(t));
+  const V = TAG.view, inView = r => r.x >= V.x0 && r.y >= V.y0 && r.x + r.w - 1 <= V.x1 && r.y + r.h - 1 <= V.y1;
+  const s = spots.find(s => inView(s.ptr) && inView(s.panel) && !block.some(b => rectsMeet(b, s.ptr) || rectsMeet(b, s.panel)));
+  return s ? Object.assign({ name: tg.name }, s) : null;
+}
+function drawTag(s) { if (!s) return; const p = s.ptr, q = s.panel;
+  R(p.x, p.y, p.w, p.h, C.aqua); panel(q.x, q.y, q.w, q.h, C.ink, C.aqua); text(s.name, q.x + 5, q.y + 3, C.mint); }
 
 // ===================== 14. HUD, bottom line, mode screens =====================
 // Call's meaning right now, for the top-right slot. Empty where Call does nothing.
@@ -3849,9 +4096,10 @@ function drawSwap() {
 function msgGeom() {
   if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return null;
   const sign = FX.sign, lines = sign ? [FX.msg] : wrapText(FX.msg, 400, 2).slice(0, 3), w = sign ? 60 + textW(FX.msg, 2) : Math.max(...lines.map(l => textW(l, 2))) + 26, h = sign ? 48 : lines.length * 20 + 12;
+  // the cell's foot is the player's centre + 20 at 32 px, + 24 at 48
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, lit = RT.litScr && sign && sign.sign === 'warn' ? RT.litScr : null,   // a warning card never covers the lit tile
-    y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? VIEW_Y + 8 : low;
+    y = (pl ? pl.y + (RT.ts === 48 ? 24 : 20) > low : RT.focusFoot != null && RT.focusFoot >= low) || (lit && lit.y + lit.h >= low && lit.x < x + w && lit.x + lit.w > x) ? VIEW_Y + 8 : low;
   return { sign, lines, w, h, x, y };
 }
 function drawMessage() {
@@ -3916,32 +4164,32 @@ function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyon
   const inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
-    if (gap >= 0 && gap < 3) { darkW = Math.ceil((3 - gap) * STORM_K[ts]) * ts; darkLeft = st.dir > 0; } }
+    if (gap >= 0 && gap < 3) { darkW = (ts === 48 ? stormCols48(Math.round((3 - gap) * 20)) : Math.ceil((3 - gap) * STORM_K[ts])) * ts; darkLeft = st.dir > 0; } }   // as drawPatch counts the columns
   const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return 1;
     if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
   return { ts, light, inS, see: (x, y) => inS(x, y) && unveiled(P.key, x, y) };
 }
 function warnPicPlace(x0, y0, a) {
-  const ex = S.exp, P = ex.patch, lay = layout(a.key), live = ex.live[a.key] || { fr: [], tf: [], cr: [] }, { ts, light, inS, see } = placeLightFn(P, lay), o = sprOff(ts);
-  const i = a.y * PW + a.x, L = light(a.x, a.y), uv = unveiled(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox, Y = sy => y0 + sy - oy;
-  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip();
-  g.drawImage(tilePB(lay, i, 0).canvas(L, false, false, L !== 3 && !uv), x0, y0);
+  const ex = S.exp, P = ex.patch, lay = layout(a.key), live = ex.live[a.key] || { fr: [], tf: [], cr: [] }, { ts, light, inS, see } = placeLightFn(P, lay), o = sprOff(ts), keepRm = RT.remap;   // at 48 the card shows the cell's sprite box (columns 8–39, rows 16–47 of the cell: everything shifted up and left by sprOff, (8, 16)) in the place's own tables
+  const i = a.y * PW + a.x, L = light(a.x, a.y), uv = unveiled(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox - o.x, Y = sy => y0 + sy - oy - o.y;
+  g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip(); if (ts === 48) RT.remap = REMAP_PLACE;
+  g.drawImage((ts === 48 ? tile48(lay, i, 0) : tilePB(lay, i, 0)).canvas(L, false, false, L !== 3 && !uv), x0 - o.x, y0 - o.y);
   const here = (x, y) => x === a.x && y === a.y;
   for (const f of lay.feats) { if (!here(f.x, f.y) || (!'gxim'.includes(f.kind) && !see(f.x, f.y))) continue;   // ground marks
-    if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0 + o.x, y0 + o.y);
-    else if (f.kind === 'e') blit(NEST(), x0 + o.x, y0 + o.y); else if (f.kind === 'm') blit(mushArt(0), x0 + o.x, y0 + o.y);
-    else if (f.kind === 'd') blit(CRACK(), x0 + o.x, y0 + o.y); else if (f.kind === 'x') blit(exitArt(0), x0 + o.x, y0 + o.y);
-    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0 + o.x, y0 + o.y);
-    else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + o.x + 9, y0 + o.y + 8, L); }
-    else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + o.x + 8 + (k % 4) * 5, y0 + o.y + 18 + (k >> 2) * 4, 3, 1); } }
+    if (f.kind === 'n') blit(holeArt(live.cr.some(c => c.hide && c.x === f.x && c.y === f.y && c.sp === 1) ? 1 : 0), x0, y0);
+    else if (f.kind === 'e') blit(NEST(), x0, y0); else if (f.kind === 'm') blit(mushArt(0), x0, y0);
+    else if (f.kind === 'd') blit(CRACK(), x0, y0); else if (f.kind === 'x') blit(exitArt(0), x0, y0);
+    else if (f.kind === 'g') blit(burrowArt(!!S.opened[G.gate]), x0, y0);
+    else if (f.kind === 'i') { if (inS(f.x, f.y)) blit(podArt('lime'), x0 + 9, y0 + 8, L); }
+    else if (f.kind === 's' && fs(a.key, f.id).moved) { g.fillStyle = HEX[C.bark]; for (let k = 0; k < 8; k++) g.fillRect(x0 + 8 + (k % 4) * 5, y0 + 18 + (k >> 2) * 4, 3, 1); } }
   for (const f of lay.feats) { if (!'bsukjh'.includes(f.kind)) continue; const p = featPos(a.key, f); if (!here(p.x, p.y) || !see(p.x, p.y)) continue;   // props and still finds
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), 0); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, 0, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0); }
-    blit(art, x0 + o.x, y0 + o.y); }
-  for (const f of live.tf) if (here(f.x, f.y) && see(f.x, f.y)) blit(ICON.tuft(), x0 + o.x + 9, y0 + o.y + 16);
-  for (const f of live.fr) if (here(f.x, f.y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) blit(FRUIT(), x0 + o.x + 10, y0 + o.y + 14);
+    blit(art, x0, y0); }
+  for (const f of live.tf) if (here(f.x, f.y) && see(f.x, f.y)) blit(ICON.tuft(), x0 + 9, y0 + 16);
+  for (const f of live.fr) if (here(f.x, f.y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) blit(FRUIT(), x0 + 10, y0 + 14);
   // canopies and roofs over the tile, in the variant the view draws (thinned to a checkerboard when something is beneath)
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
@@ -3950,7 +4198,8 @@ function warnPicPlace(x0, y0, a) {
     over(canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
     over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
-  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1, q.sp), x0 + o.x + 8, y0 + o.y + 8);
+  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1, q.sp), x0 + 8, y0 + 8);
+  RT.remap = keepRm;
   g.restore();
   R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
 }
@@ -4617,13 +4866,13 @@ function lineBase() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
-  RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
+  RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
-    case 'patch': drawPatch(t); drawHUD(); drawSwap(); break;
+    case 'patch': drawPatch(t); drawEdgeCues(t); drawHUD(); drawSwap(); break;
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
@@ -5022,6 +5271,7 @@ function actReadOnly(k) {
   newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition();
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(urlSeed());
+loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
@@ -5054,12 +5304,12 @@ try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(t
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { get S() { return S; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
-  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
+  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
     return { colours: new Set(Array.from({ length: d.length / 4 }, (_, i) => (d[i * 4] << 16) | (d[i * 4 + 1] << 8) | d[i * 4 + 2])).size, bad: [...bad.entries()].slice(0, 8) }; } };
 </script>
