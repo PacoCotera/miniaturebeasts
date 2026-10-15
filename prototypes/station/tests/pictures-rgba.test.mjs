@@ -146,7 +146,7 @@ const pct = (a, p) => { const s = [...a].sort((u, v) => u - v), r = (s.length - 
 const srgbMean = (img, [x, y, w, h]) => { let t = 0; for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) { const k = (j * img.width + i) * 4; t += img.data[k] + img.data[k + 1] + img.data[k + 2]; } return t / (w * h * 3); };
 const LABELS = {   // screen: [golden, the label's rect, the main object's rect (the pod, the founder, the bud, the resident), the stamp's case on it]
   pods: ["pods/pods-overview-identified-pod-focused.png", [804, 400, 120, 120], [184, 216, 144, 176]],
-  create: ["create/create-shape.png", [804, 400, 120, 120], [360, 240, 304, 312]],
+  create: ["create/create-shape.png", [804, 336, 120, 120], [360, 240, 304, 312]],   // the slot moved up 64 with the case (fix 5 Create)
   incubator: ["incubator/incubator-growing.png", [804, 256, 120, 120], [448, 264, 128, 160]],
   habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],
 };
