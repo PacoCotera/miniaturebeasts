@@ -124,4 +124,13 @@
 <circle cx="951" cy="582" r="8" fill="#5d5974"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+<rect x="80.5" y="88.5" width="159" height="311" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="84" y="99" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L paint zone 80,88 160×312</text>
+<rect x="784.5" y="88.5" width="159" height="143" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="788" y="99" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R paint zone 784,88 160×144</text>
+<rect x="248.5" y="320.5" width="95" height="79" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="252" y="331" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM paint zone 248,320 96×80</text>
+<rect x="680.5" y="320.5" width="79" height="87" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="684" y="331" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM paint zone 680,320 80×88</text>
 </svg>

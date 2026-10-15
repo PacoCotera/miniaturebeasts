@@ -83,8 +83,9 @@ static void build_bud(int t) {
 }
 static void build_base(void) {
   picture("base", "base", "regions.base.rect", v_pstr("regions.base.picture"));
-  { int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); int tw = v_measure(w, px);
-    const char *st = v_pstr("state"); v_region("plaque", LAYER_TYPE);
+  { int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); const char *st = v_pstr("state");
+    { const char *after = v_pstr("regions.plaqueAfter"); int t = hatch_time(); if (has(after) && t >= ci("events.hatch.steps.4.at", 1000)) w = after; }   /* the hatch: the word cuts at the step that sets the juvenile on the base (fix 5 I3), one text node whose text changes */
+    int tw = v_measure(w, px); v_region("plaque", LAYER_TYPE);
     v_text("plaque", w, cx - v_half(tw), ci("regions.plaque.lineTop", 502) + v_fdiv(20 - v_cap(px), 2), *w ? tw : 0, px, colr(v_fmt("colours.plaque.%s", strcmp(st, "hatch") == 0 ? "ready" : st))); }
   { const char *pic = v_pstr("regions.lamp.picture"); if (spec_len("props", "regions.lamp") >= 0) { int r[4]; crect("regions.base.lamp.rect", r); v_name("lamp"); if (v_pbool("regions.lamp.on", 0)) v_sprite("lamp", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("lamp", pic, r[0], r[1]); } }
 }

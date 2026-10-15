@@ -55,7 +55,8 @@ export function incubatorBuild(m, spec, pods) {
       crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master"), front: slot(req, "bud-ready-front-128x160", R.bud.rect, signed) };
   }
   regions.base = { picture: slot(req, "base-336x96", R.base.rect, signed) };
-  regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
+  regions.plaque = spec.strings.plaque[state === "hatch" ? "ready" : state];   // the plaque never goes blank (fix 5 I3): "ready" through the hatch, then the hatch word, which the face picks at the step that sets the juvenile down
+  regions.plaqueAfter = state === "hatch" ? spec.strings.plaque.hatch : "";
   const waiting = (state === "hatch" || state === "ready") && (m.lamp === "waiting" || m.lamp === "offline");   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
   regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp };   // the lamp's node is there in every state
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon

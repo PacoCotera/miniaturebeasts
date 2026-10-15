@@ -34,6 +34,6 @@ export function departures(log, spec, frame, state = "growing") {
   must(state === "hatch" || got("juvenile").length === 0, "the juvenile is drawn only in the hatch");
   must(state === "hatch" || got("ribbon", "chrome").length === 0 || got("ribbon", "chrome").every((r) => r.rect[2] === 0), "the ribbon shows only in the hatch");
   must(got("dome").length > 0 && got("domeFront").length > 0, "the chamber's back and window front are drawn"); must(got("base").length > 0 && got("nest").length > 0, "the nest and the base are drawn");
-  must(type.some((t) => t.region === "plaque") === (state !== "hatch"), `the plaque's word ${state === "hatch" ? "is gone in the hatch" : "is drawn"}`);
+  must(type.some((t) => t.region === "plaque" && t.text), "the plaque always holds a word (fix 5 I3)");
   return out;
 }

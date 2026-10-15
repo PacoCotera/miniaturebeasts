@@ -1337,11 +1337,11 @@ The Incubator is the bridge between the research and the Vivarium: a bud grown f
 4. **The rail**: which surprises remain.
 5. **The stamp label** at the right, then the code under it.
 
-Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The left of the stage stays empty and dark, so the chamber reads alone.
+Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The chamber stands centred among the machinery that serves it, painted on the wall at both sides; the wall over the chamber stays clear for the leaves, and the label's place stays clear at the right (fix 5).
 
 ### 4. Art direction
 
-- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing.
+- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing. **Fix 5 (IA1):** the stage's wall carries the chamber's service machinery (lines, a vent, small units in the sage `metal`, the sand `enamel` and the hose rubber, joined to the hoses at the foot) painted in four paint zones only: L (80, 88, 160, 312), R (784, 88, 160, 144), LM (248, 320, 96, 80), RM (680, 320, 80, 88). It never paints in the keep-clear zones: the leaf band (248, 80, 528, 240), the chamber and its base (344, 200, 336, 352), the label's place (768, 240, 184, 176); everything the stage paints below y 405 stays pixel for pixel. Nothing in it is lit and it has no text: inside each zone the 95th-percentile relative luminance is at or below that of the stage's gauge housings and the mean at or below the empty chamber's back. No bare rectangle of wall of 160×160 or more remains outside the leaf band and the label's place; in the empty state those two stay bare wall, the only bare fields accepted.
 - **The sage housing for the chamber, the sand housing for the base and the outer frame, matte;** the window set in the chamber with a `hairline` edge and no highlight; the hood a shallow lip, not a canopy; leaf greens for the timer.
 - **The chamber's ink** (window and hood) stays inside the arch outline (the chamber window row below), so the leaf arcs keep their clearance.
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
@@ -1447,7 +1447,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | 0 | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | 400 ms | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its signed juvenile stand-in. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
+| `hatch` (2600 ms) | 2780 ms | 0: the leaves go (a cut); the plaque keeps its word, "ready". 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its signed juvenile stand-in; the plaque cuts to "hatched" (`strings.plaque.hatch`, 60 px at Inter 16). 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
 **The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the Vivarium: states and events](#the-vivarium-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). `frame.json` carries it: the whole `vivarium` under Home, `habitat` under it (← "Vivarium"), Cross and the Sitting under `habitat` (← the mibi's name). With `motion: false` the hatch jumps to its end, the meet.
 
@@ -1462,7 +1462,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |
-| Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
+| Stage | 1024×522, `room-bench-stage-incubator`, signed (d09acb12); recut, fix 5 IA1 | The wall carries the chamber's machinery in the four paint zones |
 | Juvenile | 304×312: the new mibi's painting, or its signed juvenile stand-in (mibi-juvenile-<species>-304x312) | Carried |
 
 ---
@@ -1802,7 +1802,7 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 | Element | Why it is here |
 | --- | --- |
 | **The Probe on its work tray**, in its cradle, large | The subject: the device the Companion carries out, being mended |
-| **The Shield plates**, standing under it | The Shield's state with no words: whole or gone, the tier's count |
+| **The Shield plates**, standing under it in their strip | The Shield's state with no words: whole or gone, the tier's count; the tier's painted foam strip holds them in both states, and away it shows its empty slots (fix 5 P3) |
 | **The Mend module**: the switch, a picture of what it means (the dock, then the plates it leaves whole), a lamp | The standing choice: the dock mends every plate at its price, or two free |
 | **The Upgrade module**: the socket, the part, what it adds as pictures, a lamp | The upgrade: whether it can be fitted, and what it brings |
 | **Bottom line** | Mend a plate, switch, fit, each with its price; the context in words |
@@ -1813,12 +1813,12 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 
 **Reading order:**
 
-1. **The Probe in its cradle**, left of centre, on the axis x 296.
+1. **The Probe in its cradle**, left of centre, on the axis x 336.
 2. **The plates** under it.
 3. **The Mend module**, top right.
 4. **The Upgrade module** under it.
 
-The cradle and the column form one group centred on x 512, from 56 to 968.
+The cradle (480), a 40 gap and the column (312) form one group centred on x 512, from 96 to 928, inside the floor (x 66 to 955) (fix 5 P1).
 
 ### 4. Art direction
 
@@ -1838,10 +1838,11 @@ The cradle and the column form one group centred on x 512, from 56 to 968.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| **Cradle (focal)** | 56, 104, 480, 288 | The Probe standing in its cradle, one painted picture a tier; away, the empty cradle. Axis x 296; first ink at y 108 |
-| Plates | 192, 416, 208, 80 | Plates 32×32 at y 440, centred in the region, on a 48 pitch: tier 1 at x 232, 280, 328; tier 2 at 208, 256, 304, 352; centred on x 296; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
-| Mend module | 584, 104, 384, 128 | Word at (16, 12), lamp at (356, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
-| Upgrade module | 584, 248, 384, 248 | Word at (16, 12), lamp at (356, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
+| **Cradle (focal)** | 96, 104, 480, 288 | The Probe standing in its cradle, one painted picture a tier; away, the empty cradle. Axis x 336; first ink at y 108 |
+| Plate strip | tier 1: 264, 432, 144, 48; tier 2: 240, 432, 192, 48 | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
+| Plates | 232, 424, 208, 64 | Plates 32×32 at y 440, centred in the region, on a 48 pitch: tier 1 at x 272, 320, 368; tier 2 at 248, 296, 344, 392; centred on x 336; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Mend module | 616, 104, 312, 128 | Word at (16, 12), lamp at (284, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
+| Upgrade module | 616, 248, 312, 248 | Word at (16, 12), lamp at (284, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
 
 Each module's objects start 8 px or more under its word's baseline (y + 28).
 
@@ -1850,12 +1851,15 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Region (`bench.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
 | `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`, signed) | | — |
-| `cradle` | 56, 104, 480, 288 | specimen (focal) | | tier 1, tier 2, empty |
-| `plates` | 192, 416, 208, 80 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
-| `switch` | 584, 104, 384, 128 | panel, build `module` | | off, on |
-| `slot` | 584, 248, 384, 248 | panel, build `module` | | dim, ready, armed, fitted |
+| `cradle` | 96, 104, 480, 288 | specimen (focal) | | tier 1, tier 2, empty |
+| `strip` | 240, 432, 192, 48 (bound; by tier) | picture, painted | | tier 1, tier 2 (both states) |
+| `plates` | 232, 424, 208, 64 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
+| `switch` | 616, 104, 312, 128 | panel, build `module` | | off, on |
+| `slot` | 616, 248, 312, 248 | panel, build `module` | | dim, ready, armed, fitted |
 
-**Draw order:** bench, cradle, plates, switch, slot, ring, frame, message plate.
+**Draw order:** bench, cradle, strip, plates, switch, slot, ring, frame, message plate.
+
+Rings (4 px out, 2 px lift): plates 228, 418, 216, 72; switch 612, 98, 320, 136; slot 612, 242, 320, 256.
 
 ### 6. Interactions
 
@@ -1899,6 +1903,7 @@ With `motion: false` every event jumps to its end.
 | `room-bench-stage-probe` | 1024×522 |
 | `bench-probe-t1-480x288`, `bench-probe-t2-480x288`, `bench-cradle-empty-480x288` | 480×288, rows 0 to 3 kept empty |
 | `bench-plate-whole-32x32`, `bench-plate-gone-32x32` | 32×32 |
+| `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48` | 144×48; 192×48 (fix 5 PA1, masters-pods bea42f4d) |
 | `bench-switch-track-off-80x40`, `bench-switch-track-on-80x40`; `bench-switch-knob-40x40` | 80×40; 40×40 |
 | `mark-dock-24x24` | 24×24 |
 | `icon-shield-16`, `icon-shield-16-new`, `icon-shield-gone-16` | 16×16 |

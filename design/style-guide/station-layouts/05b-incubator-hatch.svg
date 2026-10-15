@@ -56,10 +56,10 @@
 <rect x="652.5" y="506.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
 <text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms,</text>
 <text x="24" y="109" font-size="10" fill="#2b6cb0">a held state):</text>
-<text x="24" y="122" font-size="10" fill="#2b6cb0">0 leaves and plaque word go;</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">0 the leaves go (plaque keeps "ready");</text>
 <text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the window opens;</text>
 <text x="24" y="148" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
-<text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands</text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands; plaque "hatched"</text>
 <text x="24" y="174" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>
 <text x="24" y="187" font-size="10" fill="#2b6cb0">1200 the ribbon;</text>
 <text x="24" y="200" font-size="10" fill="#2b6cb0">1400, 1800 it steps 4 px;</text>
@@ -97,4 +97,14 @@
 <circle cx="951" cy="582" r="8" fill="#5d5974"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+<rect x="80.5" y="88.5" width="159" height="311" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="84" y="99" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L paint zone 80,88 160×312</text>
+<rect x="784.5" y="88.5" width="159" height="143" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="788" y="99" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R paint zone 784,88 160×144</text>
+<rect x="248.5" y="320.5" width="95" height="79" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="252" y="331" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM paint zone 248,320 96×80</text>
+<rect x="680.5" y="320.5" width="79" height="87" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="684" y="331" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM paint zone 680,320 80×88</text>
+<text x="512" y="517" font-size="13" fill="#c6c4d8" text-anchor="middle">ready</text><text x="512" y="545" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plaque: "ready" to 1000, then "hatched"</text>
 </svg>

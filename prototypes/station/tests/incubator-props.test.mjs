@@ -64,7 +64,8 @@ test("every state is plain JSON, names no rectangle, and fits the 32 KiB budget"
   const now = T0 + st.bud.minutes * 60_000 + 10_000, o = S.openBud(st, {}, settings, now); assert.ok(o.ok);
   const hatch = { mibi: o.mibi.id, species: o.mibi.species, code: o.mibi.code, read: o.mibi.read, kind: "founder", parents: null };
   const h = build(st, { inc: { hatch } }, now, "painting");
-  assert.deepEqual(validate(h.props, schema), [], "hatch validates"); assert.equal(h.props.state, "hatch"); assert.equal(h.line.ok, null); assert.ok(h.props.regions.juvenile.picture); assert.ok(JSON.stringify(h.props).length < 24_000);
+  assert.deepEqual(validate(h.props, schema), [], "hatch validates"); assert.equal(h.props.state, "hatch"); assert.equal(h.line.ok, null); assert.ok(h.props.regions.juvenile.picture); assert.ok(JSON.stringify(h.props).length < 24_000); assert.deepEqual([h.props.regions.plaque, h.props.regions.plaqueAfter], ["ready", "hatched"], "the plaque keeps its word through the hatch, then the hatch word (fix 5 I3)");
+  assert.equal(build(st, { inc: {} }, now, "painting").props.regions.plaqueAfter, "", "no second word outside the hatch");
 });
 
 // L3: the hatch draws the mibi at the stage it has now, and the meet after it draws the same picture (one id, one request), whatever the world's adult turns
