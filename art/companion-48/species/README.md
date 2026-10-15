@@ -17,14 +17,14 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - Checks: `atlas-check.mjs` on a one-piece manifest per file, each piece ok against the core 48 (its 22 missing core keys are the one-piece manifest's); alpha only 0 and 255; the only void is the pupils.
 
 **S01 signed** (art director, 2026-10-15 00:37), judged at 1× on the lawn beside the pawn (`S01/sheet-S01-candidate.png`). The idle is the art director's hand pass c05cb474, with the studio's outline pixel at (27,18). The poses and the mini are round 3, 9d36bbd6:
-- `S01/c-token-S01-alert-32x32.png` sha256 `241fd5be2e19d6e49bd423feaa44c1cd886443a6ff4cc24d7ef5547be7340eec`
-- `S01/c-token-S01-eat-f0-32x32.png` sha256 `286295ff49120b2af8d2942b7c3be28a2f477094d890e9514eaac707694e138d`
-- `S01/c-token-S01-eat-f1-32x32.png` sha256 `452751a2ec8a0425027ffc0b37efe9be02ac6b3aea64c30829e23665cbbfae3a`
-- `S01/c-token-S01-flee-32x32.png` sha256 `ad1ffee6f2cf46910bbd7ea185a90a499b662823c5d5f60e4124f4c3bedf6464`
+- `S01/c-token-S01-alert-32x32.png` sha256 `f45a9f86dd0ad14bb8c131cf67a3a687903b6f7ba14db3c06fd5742358ed5ab6`
+- `S01/c-token-S01-eat-f0-32x32.png` sha256 `cb8960484fc767bbc98de2b8b4a7cc5bad629f1c746877c01e7c4c09390afccd`
+- `S01/c-token-S01-eat-f1-32x32.png` sha256 `5856782f5dcebf2d953ec74c113c77037fd406c5b47be04a6a5e2f158eb00b82`
+- `S01/c-token-S01-flee-32x32.png` sha256 `4b16555b9e0ec4ff55bd58e750fd23ba3031af761765c123633b3a1e616e7128`
 - `S01/c-token-S01-huddle-32x32.png` sha256 `7d9cd6bcba1f9967209d617ad66b53b612870d6e992ec1817a02d4f48ebf260f` (grounded 10-15)
-- `S01/c-token-S01-idle-32x32.png` sha256 `b642ab6bf937de8bc23c2447303129cb31d023fc54b8d0374b8afb092e08a06a`
-- `S01/c-token-S01-shake-f0-32x32.png` sha256 `8e106a6a919f0ea346f2c17c9e411a9e84cc542c94460b2cc30ef56ca51d0df7`
-- `S01/c-token-S01-shake-f1-32x32.png` sha256 `99f8fb0f248bb45385b6051dc0ca38881a771862e468e477b4eed3c01fb2c126`
+- `S01/c-token-S01-idle-32x32.png` sha256 `9f869e8bac7bea8d13f0653af617244d47a1d9f14ed2df3c7bda7c440dccdba4`
+- `S01/c-token-S01-shake-f0-32x32.png` sha256 `3e6f156c4ea1e5bc7f2c1d9a35c0d04aeda06ec754ac7842eda676169d16ba41`
+- `S01/c-token-S01-shake-f1-32x32.png` sha256 `385ed5dea381b4fa8e0f83b3b2767725ec9b2a5e43c60e9768678a168b9f0c76`
 - `S01/c-mini-S01-12x12.png` sha256 `0e058cc4df269a52406afaa1e9847d991677b0efb8a0c1086a0a6d7259dddb02`
 
 **S02 Untuva and S03 Tuikis status (candidate, for the art director's read; nothing signed):**
@@ -45,16 +45,21 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - `S02/c-mini-S02-12x12.png` sha256 `fda0c37ecf036a87a3d1260cbc3afe9ed4a3aa75ed30bb7f0fafc150cfecc6c2`
 
 **S03 signed** (art director, 2026-10-15 00:48), judged at 1× on the lawn beside the pawn and beside S01 (`S03/sheet-S03-candidate.png`), round 2 at 566c80a6. atlas-check against core48 is ok for every file:
-- `S03/c-token-S03-alert-32x32.png` sha256 `3741961aac6cf4f0a7d8c0189ac7159ad2c5b03b8f931646e700133bb2ad5b6b`
+- `S03/c-token-S03-alert-32x32.png` sha256 `f6097462b67c6720628784d3f1572900d0bdb11c9af9b61e16b27f8051d545e0`
 - `S03/c-token-S03-curl-32x32.png` sha256 `9a10b4f20c9366d9a02cd3ecdb45cfcb9b68dfacf95c206b625dc7e6aa88321f` (grounded 10-15)
-- `S03/c-token-S03-eat-f0-32x32.png` sha256 `8ef4c7d1fd3789b708a81627bb79f0ae39f4fcdee5109c7ef81541fd6ae62975`
-- `S03/c-token-S03-eat-f1-32x32.png` sha256 `3c22445530931920478f6f5c2ea1c1edebd29788e4fb503e92533fa96b276c30`
-- `S03/c-token-S03-flee-32x32.png` sha256 `219542a1795bb069ca7633bf36534cc2700ff4c838822fafb269b4e5107376ec`
+- `S03/c-token-S03-eat-f0-32x32.png` sha256 `9606ad293d7b108da8e0a3581da00148332716022d13940b5c91d79a3e703fe5`
+- `S03/c-token-S03-eat-f1-32x32.png` sha256 `b02295fd894fefb6fddf5ceb9dad6879a57da53330953d5618b64306d31fd5dc`
+- `S03/c-token-S03-flee-32x32.png` sha256 `cac0850f30359e5d1c0be4b39e46d7fb58d10a7ec02161ac1ca0839ce8592f5e`
 - `S03/c-token-S03-huddle-32x32.png` sha256 `0647fef5582491e2d585b43ce9b324f1a0add71ecc4aedc5b303db96c65d6cb5` (grounded 10-15)
-- `S03/c-token-S03-idle-32x32.png` sha256 `ad6be7be6083289c3ed3b0c8499ccb7b73a3f3e4cb6dfcb7269059c14bb16775`
-- `S03/c-token-S03-settle-32x32.png` sha256 `bad06f54b9006ef1cd4c118b022c5a996f7ec4d69f00e96e478ba10602111f7e` (grounded 10-15)
-- `S03/c-token-S03-shake-f0-32x32.png` sha256 `29e5eba6ab18d7b669868a77ffca3bcafa48c9ddeeec9e2ef35aa8342283bf33`
-- `S03/c-token-S03-shake-f1-32x32.png` sha256 `70eaa229ab49ab6b4aa7931695d28bde85be565974da4bb97211ed2854ac473d`
+- `S03/c-token-S03-idle-32x32.png` sha256 `474f9be9f02db55b125495fda3afbd0b995dc23b2486faf5a9f37662a18fcf9e`
+- `S03/c-token-S03-settle-32x32.png` sha256 `a6d789a5f7d2a9903c393b3504ad70fba2148e5f4ee27fe5b52f8a6d3441515d` (grounded 10-15)
+- `S03/c-token-S03-shake-f0-32x32.png` sha256 `946fe35215d1c408ff7e48371041955f7ac8c17bd2bf674419c3db28b6c8ba2d`
+- `S03/c-token-S03-shake-f1-32x32.png` sha256 `e5111454999459eaeb01cfd7aacab3c466ee93b2acfde9c0b8ae4cfd061b84b3`
 - `S03/c-mini-S03-12x12.png` sha256 `57e75627530901af35d858d96b6df0b98a432f8bf364305fbdf43c9e1fc7db4e`
 
 **Grounding** (art director, 2026-10-15 01:44): every pose's lowest opaque row is row 31, the same as its idle, because the page draws every token at one anchor. Moved down: S01 huddle by 1, S02 huddle by 1, S03 huddle by 7, S03 curl by 1, S03 settle by 1. Their hashes are updated above.
+
+**X31 touch-up** (art director, 2026-10-15 03:21), from the creative director's note on C0:
+- S03: the antenna stalk is drawn in teal, not ink, so on the dark stage the bulb stays joined to the head.
+- S01: the toes are solid bone pads, not bone and night alternating, so at 8× they read as toes, not a row of dots.
+- No other pixel changed. The hashes above are updated.
