@@ -516,29 +516,29 @@
    "file": "pods/crate-open-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "f2db8bbbb51a457b6074d079eed891387f1aee1d97ebcdc07d8a5d8586dd5c7c",
-   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "e2149ccb7c106fa6f0214fc4b1ae4d3c635a78738407acd32b19f0f511e9d5cc",
+   "signed": "art director, crate recut round 2 (masters-pods d56f26ee, e5c2f11a)"
   },
   "crate-opening-432x272": {
    "file": "pods/crate-opening-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "3bfd530cd7d337dea716f80c141921ff5dd4b07c329cd6bf5a63fcd6da7a93ee",
-   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "5094478bd4d60c8788c023417ef51baf3c7051a769c21e0ee78b958a23b31853",
+   "signed": "art director, crate recut round 2 (masters-pods d56f26ee, e5c2f11a)"
   },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "071a4b591c838a76a5d8521f7b84ae7c0b6a581459506aea29b1001d220f7765",
-   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "fe1d90c956076ff72bdb5b9f7d4c68b4ccc521e8355890745156dc2b29a0160f",
+   "signed": "art director, crate recut round 2 (masters-pods d56f26ee, e5c2f11a)"
   },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "9ab374686299190efc45442ed7f10d1adc4be00c4d0a258cad726afa938b1815",
-   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "6b0c821533733378aaa997781a78db74179dd9144c6e9c227946c55ba24fc53e",
+   "signed": "art director, crate recut round 2 (masters-pods d56f26ee, e5c2f11a)"
   },
   "crate-shadow-256x24": {
    "file": "pods/crate-shadow-256x24.png",
@@ -558,8 +558,8 @@
    "file": "pods/crate-sitting-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "a83fbf87442b52446607f7b39fc5383b7ce76e12e5dd16925c9ed86cd0f12b3a",
-   "signed": "masters-pods 84b7f5e4 (status new; the art director signs at 1x in the Cargo captures)"
+   "sha256": "c038db37c311c8919064407959383439a2c6c64086cea1da4b4adc2b77b9fd6e",
+   "signed": "art director, crate recut round 2 (masters-pods d56f26ee, e5c2f11a)"
   },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
