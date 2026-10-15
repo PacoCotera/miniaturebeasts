@@ -5,7 +5,8 @@
 import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
-import { pageGrid, pageFrame } from "../../../ui/specs/derive.mjs";
+import { pageGrid } from "../../../ui/specs/derive.mjs";
+import { founderPicture } from "./create-props.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
@@ -76,7 +77,7 @@ export function railOf(m, spec, cur, chapters, req, open, focused, withPips = fa
 function specimenOf(m, spec, cur, R, req, mode) {
   const { st, settings } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
   const sizeClass = shellFrame(st, cur)?.pod?.sizeClass ?? "medium", box = spec.classes.pod[sizeClass], N = R.name;
-  const nameText = cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod;
+  const nameText = cur.idd || st.knownIds.includes(S.speciesOf(cur)) ? S.cap(S.spName(cur)) : spec.strings.unknownPod;   // GB1 C4: a pod whose species is known is named by it, identified or not
   const sp = shellFrame(st, cur) ? S.speciesOf(cur) : null;
   const out = {
     beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
@@ -95,21 +96,16 @@ function specimenOf(m, spec, cur, R, req, mode) {
   if (mode === "overview") {
     out.origin = S.podOriginLines(cur);   // the whole lines: the face wraps them to the origin region and keeps the first R.origin.lines
     out.ribbon = spec.strings.newSpecies;   // what the ribbon says; the face shows it while a `ribbon` event for this pod plays
-    out.captions = { pod: spec.strings.thisPod, figure: cur.idd ? spec.strings.theSpecies : null };   // the two labels the overview adds (no JavaScript twin): the pod's under the marks, the species' under the figure once identified
+    out.captions = { pod: spec.strings.thisPod, figure: cur.idd ? spec.strings.theSpecies.replace("{species}", S.cap(S.spName(cur))) : null };   // the two labels the overview adds (no JavaScript twin): the pod's under the marks, the species' under the figure once identified
     out.originPicture = PLACE_KEYS.includes(cur.g) ? req({ kind: "place", id: `place:${cur.g}:${R.originPicture.rect[2]}`, place: cur.g, size: R.originPicture.rect[2] }) : null;
-    const [fw, fh] = R.figure.rect.slice(2), total = fr ? fr.chapters.length : 0, read = fr ? fr.chapters.filter((c) => cur.read.includes(c.id)).length : 0;
-    if (cur.idd && sp) {
-      const mist = slot(req, `mibi-halo-${sp}-${fw}x${fh}-mist`, R.figure.rect, "the species' figure master (mist)"), clear = slot(req, `mibi-halo-${sp}-${fw}x${fh}-clear`, R.figure.rect, "the species' figure master (clear)");
-      out.figure = req({ kind: "figure", id: `figure:${sp}:${read}/${total}`, size: [fw, fh], mist, clear, alpha: total ? read / total : 0 });
-    } else out.figure = slot(req, `mibi-halo-empty-${fw}x${fh}`, R.figure.rect, "the empty halo master");
-    out.who = cur.idd && sp ? [slot(req, `mark-species-${sp}-24x24`, R.who.marks[0], "the species' mark master"), slot(req, `mark-clan-${fr?.taxonomy?.clan ?? "-"}-24x24`, R.who.marks[1], "the clan's mark master"), cur.newSp ? slot(req, "mark-first-16x16", R.who.marks[2], "the first-of-its-kind mark master") : null]
-      : [slot(req, "mark-species-frost-24x24", R.who.marks[0], "the frosted mark master"), slot(req, "mark-species-frost-24x24", R.who.marks[1], "the frosted mark master")];   // before Identify the marks are frosted
+    const [fw, fh] = R.figure.rect.slice(2);
+    if (cur.idd && sp) {   // GB1 C1: the species' painted adult through the adult hook, one picture; the pod's unread look chapters are veiled by the calm unknown (the founder's painted family, as Create's), nothing read C, doings A
+      const fp = founderPicture(cur, {}, [fw, fh]);
+      out.figure = req({ kind: "founder", id: fp.id, pod: cur.id, choices: {}, species: sp, read: fp.read, size: [fw, fh] });
+    } else out.figure = slot(req, R.figure.beforeIdentify.slice, R.figure.beforeIdentify.rect, "the empty halo master");
   }
   return out;
 }
-
-// The marks that say who a pod is, the species' and its clan's, at the rectangles a region gives (Compare's headings as the overview's row).
-const whoOf = (p, fr, W, req) => [slot(req, `mark-species-${S.speciesOf(p)}-24x24`, W.marks[0], "the species' mark master"), slot(req, `mark-clan-${fr?.taxonomy?.clan ?? "-"}-24x24`, W.marks[1], "the clan's mark master")];
 
 // The collection: the rack's places in order (an empty place is the empty ring), each pod with its ring, name, mark and glint; the waiting mark under them.
 function collectionView(view, m, spec, req) {
@@ -122,7 +118,7 @@ function collectionView(view, m, spec, req) {
     const q = st.tray[i], idle = rs(RM.idle);
     if (!q) { places.push({ empty: true, ringLayers: [idle] }); continue; }
     const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, n = flags ? flags.length : 0, closed = n > 0 && flags.every(Boolean);
-    const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod;
+    const name = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.cap(S.spName(q)) : spec.strings.unknownPod;
     const sp = shellFrame(st, q) ? S.speciesOf(q) : null, size = R.pod.size;
     const layer = (tpl, k) => rs(tpl.replace("{N}", n).replace("{i}", k));
     places.push({
@@ -146,7 +142,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") 
   const { st, settings } = m, C = spec.colours, read = p.read.includes(ch.id), sealed = !!ch.sealed && !settings.sealedOpen, traits = ch.traits.slice(0, maxTraits(region)), grid = pageGrid(region, traits.length);
   const [pw, ph] = grid.picture ?? [0, 0];
   const cells = traits.map((t) => {
-    const cell = { name: t.name, lines: [], glyphs: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
+    const cell = { well: slot(req, `plate-well-${pw + 8}x${ph + 8}`, [0, 0, pw + 8, ph + 8], "the cell's well (GB1 D1)"), name: t.name, lines: [], glyphs: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
     if (!read) { cell.frost = true; const O = region.unread?.outline; if (O && O.slice) cell.outline = slot(req, O.slice, [0, 0, ...O.size], "the unread cell's outline master"); return cell; }   // the dotted outline is the studio's nine-slice, placed over the cell's rectangle once signed
     const state = traitState(fr, t, p.genome);
     const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
@@ -165,8 +161,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") 
   });
   const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone, and the studio's picture of the find by the chapter's findKind over it once signed
   const sealedPicture = sealedFind && ch.findKind && region.sealedFindSlot ? slot(req, region.sealedFindSlot.replace("{kind}", ch.findKind), [0, 0, region.sealedFind[2], region.sealedFind[3]], "the find picture master") : null;
-  const frame = key === "page" ? pageFrame(fr.chapters.map((c) => (c.sealed && !settings.sealedOpen ? 1 : Math.min(c.traits.length, maxTraits(region))))) : pageFrame([sealed ? 1 : traits.length]);   // the pod's largest grid (fix 5 P4); Compare's is its own count
-  return { region: key, chapter: ch.id, frame, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region) };
+  return { region: key, chapter: ch.id, sealedWell: sealed && region.sealedFindWell ? slot(req, region.sealedFindWell.id, [0, 0, 120, 120], "the find's well (GB1 D1)") : "", heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region) };
 }
 
 function compareView(view, m, spec, req) {
@@ -177,7 +172,7 @@ function compareView(view, m, spec, req) {
   const side = (p, region, key) => {
     const page = pageView(m, spec, p, fr, ch, null, region, req, ids, key), h = region.heightByCount ? region.heightByCount[Math.min(Math.max(page.count, 1), 6)] ?? region.rect[3] : region.rect[3];
     page.plate = req({ kind: "slot", id: region.plate.replace("{h}", h), master: region.plate.replace("{h}", h), size: [region.rect[2], h], until: "the device plate (fix 2: placed 1:1)" });
-    page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), who: whoOf(p, fr, R.compareA.who, req) };
+    page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }) };
     return page;
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
