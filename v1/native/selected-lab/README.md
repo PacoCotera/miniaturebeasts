@@ -4,7 +4,7 @@
 → resident journey. It owns accepted game state, interaction, saves and native
 frames. The browser presenter transports depicted physical controls and BMP
 output. [V1](V1.md) explains how to play and its provisional Pip content;
-[architecture](../../specs/architecture.md) explains the intended ecosystem. Visible product, Station and mibi labels follow [branding](../../BRANDING.md); existing protocol names and saved identities retain their technical spelling.
+[architecture](../../../design/architecture.md) explains the intended ecosystem. Visible product, Station and mibi labels follow [branding](../../BRANDING.md); existing protocol names and saved identities retain their technical spelling.
 
 ## Module responsibilities
 

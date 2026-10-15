@@ -51,5 +51,5 @@ buffer release checks pass, including a valid narrow/tall partial region.
 [Same-source headless ESP-IDF compilation](ESP32.md) passes atc3c8a6d.
 
 remaining Companion routes are still manual and remain required migrations.
-See [architecture](../../../specs/architecture.md#native-ui-foundation) and
+See [architecture](../../../../design/architecture.md#software) and
 [portable UI boundary](../../../native/ui/README.md).

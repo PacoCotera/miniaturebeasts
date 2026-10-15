@@ -19,7 +19,7 @@ export const PLACEHOLDERS = [
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "home-glass-by-light", what: "Home's glass (640×488, home-glass-<light>) and Idle's Vivarium (1024×568, idle-vivarium-<light>) and the with-you bed (192×56, home-bed-<light>): one slot a light (dawn, day, dusk, night) from frame.json light and the picture maps; the flat plates of the colours show only while a light's slot is empty (all four lights have their masters today)", until: "the masters of a light, if one is not placed" },
   { id: "home-rack-pod-24x32", what: "a pod in the Pods module's rack: a PH plate at well + (4,0); the 32×32 wells are left empty", until: "the rack pod and the well master" },
-  { id: "library-stage-spread-1024x522", what: "the Library spread's stage, 1024×522 at (0, 40): flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat, the caption rules in clay, the marker and the margin bands as dashed clay outlines", until: "the spread stage master" },
+  { id: "library-stage-spread-1024x522", what: "the Library spread's stage, 1024×522 at (0, 40): flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat, the caption rules in clay; the marker and the margin bands are not drawn (fix 6)", until: "the spread stage master" },
   { id: "spread-plate-S01..S16-80x96", what: "a found species' plate, 80×96: the code rig's type specimen (speciesArt), for all sixteen", until: "the sixteen spread plate masters" },
   { id: "spread-study-S01..S16-80x96", what: "a met species' study, 80×96: the same specimen reduced to its 1 px outline in stone, transparent inside", until: "the sixteen spread study masters" },
   { id: "spread-gilt-corner-16x16", what: "the gilt corner of a portrayed species: a 16×16 clay L, 4 px thick, along the top and right edges", until: "the gilt corner master" },
@@ -74,8 +74,7 @@ export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
 export function speciesArt(frame, w, h, view = "portrait") { return frame.typeSpecimen?.genome ? mibiArt(frame, frame.typeSpecimen.genome, w, h, view) : blobArt(w, h); }
 
 // ---------- The Library spread's placeholders (library.json spread.placeholders): the stage, the gilt corner, the seal and a species' study ----------
-const dashRect = (pb, x, y, w, h, c) => { for (let i = 0; i < w; i += 4) { pb.rect(x + i, y, Math.min(2, w - i), 1, c); pb.rect(x + i, y + h - 1, Math.min(2, w - i), 1, c); } for (let j = 0; j < h; j += 4) { pb.rect(x, y + j, 1, Math.min(2, h - j), c); pb.rect(x + w - 1, y + j, 1, Math.min(2, h - j), c); } };
-// The stage, flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat and a paper inside, the caption rules in clay, the cloth marker and the margin bands as dashed clay outlines.
+// The stage, flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat and a paper inside, the caption rules in clay; the cloth marker and the margin bands are not drawn: the painted stage carries them (fix 6).
 // Coordinates are the spec's (library.json spread.regions.stage.parts, leftPage and rightPage places), taken off the stage's origin (0, 40).
 export function spreadStageArt(spec) {
   const R = spec.spread.regions, oy = R.stage.rect[1], cl = spec.spread.colours, pb = new PB(R.stage.rect[2], R.stage.rect[3]), at = (r) => [r[0], r[1] - oy, r[2], r[3]], col = (n) => C[n];
@@ -87,7 +86,6 @@ export function spreadStageArt(spec) {
     pb.rect(x, y, w, h, col(cl.placeholderMat)); pb.rect(x + 8, y + 8, 80, 96, col(cl.placeholderPaper)); box(x, y, w, h, col(cl.placeholderFrame));
     pb.rect(x, y + 144, 96, 1, col(cl.placeholderEdge));   // the caption rule, 144 px under the frame's top (y 256 and 440 on the screen)
   }
-  dashRect(pb, ...at(R.stage.parts.marker), col(cl.placeholderEdge)); for (const m of R.stage.parts.marginLife) dashRect(pb, ...at(m), col(cl.placeholderEdge));
   return pb;
 }
 // The gilt corner: a 16 × 16 clay L, 4 px thick, along the top and right edges. The seal: a 16 × 16 sand disc with a 1 px bark edge.

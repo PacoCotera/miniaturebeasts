@@ -135,7 +135,7 @@
    "lift": 0,
    "note": "Home's tag (home.json regions.nameTag), the same size: the residents are Home's size"
   },
-  "strip": {"rect": [16, 488, 992, 64], "component": "panel", "note": "habitat.json regions.strip"},
+  "strip": {"rect": [16, 488, 992, 64], "component": "panel", "note": "habitat.json regions.strip", "empty": "no housed or out tile: the panel has no size (Every state composed, 2)"},
   "tiles": {
    "rect": [32, 496, 952, 48],
    "component": "list",
@@ -149,12 +149,12 @@
     "thumb": {"full": [52, 0, 48, 48], "compact": [12, 0, 48, 48]},
     "outGlyph": [16, 24],
     "fill": "a panel rect in the tile's box",
-    "free": "a composed `dash` outline round the tile's box, 1 px `hairline`, dash [2, 2]; not a target",
+    "free": "nothing drawn: the node keeps its box with no ops (Every state composed, 2); not a target",
     "out": "the outline Companion glyph (outGlyph) centred where the thumbnail stands",
     "note": "the same forms and tile as habitat.json regions.tiles"
    },
    "count": "one tile a bay (state.bayCount, 1 to 12): the housed mibis in bay order, then the free bays",
-   "states": {"housed": "fill `panel`, the thumbnail", "out": "fill `panel`, the outline glyph", "free": "the dashed outline"},
+   "states": {"housed": "fill `panel`, the thumbnail", "out": "fill `panel`, the outline glyph", "free": "nothing drawn"},
    "noShown": "the whole shows no mibi up close, so no tile is `shown`: the ring is the only highlight"
   }
  },
@@ -295,7 +295,7 @@
   "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "strip": {"fill": "ground", "edge": "hairline"},
-  "tile": {"fill": "panel", "free": "hairline"},
+  "tile": {"fill": "panel"},
   "stageGround": "ground"
  },
  "masters": {

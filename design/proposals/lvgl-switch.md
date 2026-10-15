@@ -230,7 +230,7 @@ The rule: **the timeline in JavaScript decides that something plays and whether 
 | `plate` (4000 ms, no hold; one mibi up close's `refused` among its users) | `game.mjs` `msg` | The message plate word |
 | Counters' tick (70 ms a unit, 240 ms flash) and the turn's flash (1 s, 160 ms blink) | `present.mjs` `createFramePresenter` | The top bar word, from old and new values |
 | Screen change (180 ms, 16-level Bayer) | `main.mjs`, the host | A `dither` transition: 16 lattice pictures over the stage. No opacity |
-| A region's picture changing (Create's founder: 200 ms, 16 levels) | — | A `dither` event between the two pictures, composed by `bayerPick` (below) |
+| A region's picture changing (Create's founder, the vivarium's swap, the Sitting: 16 levels; Create's founder 200 ms) | — | A `dither` event between the two pictures, composed by `bayerPick` (below) |
 | `grow` (Create, 900 ms, hold 1080 ms) | — | The stamp label prints row by row, the code is cut in, the pod travels |
 | `moment` (one mibi up close, 1800 ms, hold 300 ms, cut) | — | The living window word plays the mibi's species moment from its moving set; until it has one, the placeholder hops twice, the creature lift 4 px up and back in whole pixels, at 0 and 900 ms. A key after the hold cuts it to its end |
 | `meet` (one mibi up close, 0 ms, hold 0; when the hatch's 180 ms dither ends on the new mibi) | `UI.meet` and `FX.meetId` (`game.mjs`), set by the hatch's hand-off (`host.mjs`) | The state `meet`: the ribbon word in the name tag's place, and the mibi's `moment` played once with no hold. The first key takes the ribbon away (a cut) |

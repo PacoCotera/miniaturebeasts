@@ -19,7 +19,7 @@ Your **mibis** are the creatures you raise at the Station. Up to three of them c
 | **Pad** | Moves. On the map, one tap is one step; hold to keep walking. In a place, a tap is a careful step (creeping); holding walks. In menus, it moves the choice. |
 | **✓ Confirm** (the big one) | Does the thing in front of you: go down into a place, take a pod, shake a bush. Facing nothing in a place, it waits. |
 | **← key** | Opens the menu, or closes the screen you are on. The bottom line names what it opens by the menu's top entry: "← Leave" in a place, "← End expedition" on the start cell or a lit outpost. |
-| **))) Call** (the teal button above ←, no word on it) | Sends a signal and things answer. In a place it pulses: it lifts the veil and finds things; on the map it drops a pin for 1 Energy; at home your mibi answers. |
+| **))) Call** (the teal button above ←, no word on it) | Sends a signal and things answer. In a place it pulses (Call lifts the veil: finds show); on the map it drops a pin for 1 Energy; at home your mibi answers. |
 
 ### The bottom line
 
@@ -257,7 +257,7 @@ The lamp on Home's bench rests the screen (the vivarium plays alone); any press 
 4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; windows studied on both that differ pulse.
 5. **Shape a founder** (Create). The new mibi shows large; frosted windows stay a surprise. On a studied window, ↑ ↓ choose among what **this pod** carries: as it is, the hidden look through and through, or the shown look through and through. A pod that shows a look through and through can't give another. Each change costs 2 Data.
 6. **Grow it** (2 Energy + 4 Essence, plus 2 Data per change; your very first founder costs 2 Energy only). The fingerprint stamps the pod, its **code** appears (like `G7F · CD0 · 3H2`), and the pod goes into the incubator.
-7. **The incubator** grows it in **real minutes**, one leaf per minute: 20, plus 1 for each change. Your first mibi ever takes 5 minutes. The frosted windows clear one by one while it grows. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in the vivarium, up close, where ✓ takes it with you.
+7. **The incubator** grows it in **real minutes**, one leaf per minute: 20, plus 1 for each change. Your first mibi ever takes 5 minutes. A founder's frosted windows clear one by one while it grows. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in the vivarium, up close, where ✓ takes it with you.
 8. **Return to the wild** (the garden gate beside the tray): ✓, then ✓ again, frees the cup and gives +1 Essence. The pod goes back to where it came from the next time you dock.
 
 **The fingerprint** is a round whorl with one petal per window. Its ridges come from the mibi's genome, so no two look alike; a petal lights in its colours when you study that window. It shows on the pod, at Create, on the incubator, in the Library and in the vivarium, up close.

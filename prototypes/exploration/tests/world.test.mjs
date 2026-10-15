@@ -5,6 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
@@ -135,7 +136,8 @@ test("a save from a newer generator (gen 3) is read-only: load() says 'newer', b
   assert.equal(p.run("S"), null, "nothing was read into the page");
   assert.equal(p.run("load()"), "newer");
   p.run("var saves = 0; const save0 = save; save = function () { saves++; return save0.apply(this, arguments); };");
-  for (const k of ["up", "down", "left", "right", "confirm", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  for (const k of ["up", "down", "left", "right", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  // Confirm is the device's way out (two presses start a new world and keep this save): freeze.test.mjs
   p.run("render(1); frame(1000)");
   assert.equal(p.run("saves"), 0, "nothing called save()");
   assert.equal(p.run("S"), null, "input started no world");
@@ -985,15 +987,17 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
   const W_ = p.run("SCR_W"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), ox = tx * 48 - cam.x, oy = 32 + ty * 48 - cam.y;
   let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) { const x = i % W_, y = (i / W_) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
   assert.ok(x1 >= 0, "the creature draws");
-  // species 0 idle: the opaque box inside the 32 px sprite is columns 2…25 and rows 1…29, so (8, 16) on from the cell's corner
-  assert.deepEqual([x0 - ox, x1 - ox, y0 - oy, y1 - oy], [10, 33, 17, 45], "the changed pixels' box in cell coordinates");
+  // species 0 idle: the opaque box inside its 32 px sprite (the signed token's own), so (8, 16) on from the cell's corner
+  const art = p.run("creatureArt(0, 'idle', 0)"); assert.deepEqual([art.w, art.h], [32, 32]);
+  let c0 = 99, c1 = -1, r0 = 99, r1 = -1; for (let i = 0; i < art.p.length; i++) if (art.p[i] >= 0) { const x = i % art.w, y = (i / art.w) | 0; c0 = Math.min(c0, x); c1 = Math.max(c1, x); r0 = Math.min(r0, y); r1 = Math.max(r1, y); }
+  assert.deepEqual([x0 - ox, x1 - ox, y0 - oy, y1 - oy], [8 + c0, 8 + c1, 16 + r0, 16 + r1], "the changed pixels' box in cell coordinates");
 });
 
 // ---- golden frames: FNV of the 450×600 screen ----
 // The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
-const MAIN_FRAMES = { cave: 1237067964, place32: 3198906207, map: 3385181673 };   // main 5e287081 + the overrides PR
-const GOLDEN48 = { faceStair: 3280510987, gen1: 4281269472, corner: 576912844 };
+const MAIN_FRAMES = { cave: 1205165258, place32: 1284530620, map: 3135324483 };   // main 92b58bf8 (unchanged by the later main commits), captured from its own page with this harness
+const GOLDEN48 = { faceStair: 2997770219, gen1: 414766699, corner: 1650250194 };   // re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y) {
   const p = page48(seed);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
@@ -1015,6 +1019,21 @@ test("golden frames at 48: a place with a south face and a stair, a generator 1 
     corner: fnv(frame48(place48(7, 176, 1, 1))),
   };
   for (const [k, v] of Object.entries(got)) assert.equal(v, GOLDEN48[k], k + " " + v);
+});
+
+test("the warned-tile card in a 48 px place shows the cell's sprite box (columns 8–39, rows 16–47): the 48 px tile, the stone at the card's origin, the place's tables left as found", () => {
+  const p = place48(7, 176, 14, 14); frame48(p); assert.equal(p.run("RT.ts"), 48);
+  const key = p.run("S.exp.patch.key");
+  const st = p.run(`(() => { const lay = layout(${JSON.stringify(key)}), P = S.exp.patch; let f = lay.feats.find(q => q.kind === 'k'); if (!f) { f = { kind: 'k', id: 'zz', x: P.x + 1, y: P.y, ch: 0 }; lay.feats.push(f); } return { x: f.x, y: f.y }; })()`);
+  p.run("unveiled = () => true; globalThis.__t48 = 0; globalThis.__tp = 0; globalThis.__b = []; { const t0 = tile48; tile48 = function () { __t48++; return t0.apply(this, arguments); }; const t1 = tilePB; tilePB = function () { __tp++; return t1.apply(this, arguments); };"
+    + " const s0 = stoneArt; stoneArt = function () { globalThis.__stone = s0.apply(this, arguments); return __stone; }; const d0 = g.drawImage; g.drawImage = function (c, x, y) { __b.push([x, y]); return d0.apply(this, arguments); }; } RT.remap = REMAP;");
+  p.run(`PIC.warn(100, 200, { key: ${JSON.stringify(key)}, x: ${st.x}, y: ${st.y} })`);
+  assert.equal(p.run("__t48 + ',' + __tp"), "1,0", "the 48 px tile, not the 32 px one");
+  assert.equal(p.run("JSON.stringify(__b.slice(0, 2))"), "[[92,184],[100,200]]", "the tile is drawn 8 left and 16 up of the slot, the stone at the slot's origin: the sprite box is the slot");
+  const art = p.run("__stone"); let low = -1; for (let i = 0; i < art.p.length; i++) if (art.p[i] >= 0) low = Math.max(low, (i / art.w) | 0);
+  assert.ok(low >= 0 && low + 16 <= 47, "the stone's lowest row (sprite row " + low + ", cell row " + (low + 16) + ", card y + " + (8 + low) + ") is inside the sprite box, not cut off");
+  assert.equal(p.run("RT.remap === REMAP"), true, "the tables are left as they were");
+  assert.equal(p.run("placeLightFn(S.exp.patch, layout(S.exp.patch.key)).ts"), 48);
 });
 
 // ---- the edges at 48: coverage fades, the storm step, the place's own tables ----
@@ -1270,7 +1289,7 @@ for (const ts of [32, 48]) {
     for (const t of tabs) for (const u of tabs) if (t !== u && t.side === u.side) assert.ok(Math.abs(t.side === "N" || t.side === "S" ? t.cx - u.cx : t.cy - u.cy) > 24);
     // the message box at the foot: a tab straight south moves up clear of it
     p.run(`curLive().cr = []; ${crt(9, 14, 31, "alert")} FX.msg = 'A long message that wraps onto a second line in the box at the foot of the view, so it is tall';`);
-    const [t] = tabsOf(p), m = js(p, "msgRect()");
+    const [t] = tabsOf(p), m = js(p, "msgGeom()");
     assert.ok(m && m.y > 300, "the box at the foot");
     const g = { x: t.cx - 15, y: t.cy - 15, w: 30, h: 30 };
     assert.ok(!(g.x < m.x + m.w && m.x < g.x + g.w && g.y < m.y + m.h && m.y < g.y + g.h), "clear of the box, grown by 4");
@@ -1471,4 +1490,158 @@ test("the send hint in a place names the way, never a count, at all seven sites;
   assert.equal(onMap.headBack, `head back to the ${name === "Start" ? "start" : "outpost"} (about ${n} cell${n === 1 ? "" : "s"})`);
   // and the reach band keeps the count
   p.run("S.phase = 'map'; TXT = []; render(5)"); assert.ok(p.run("TXT").some(t => t === cnt || t.startsWith(name + " · about")), "the reach band");
+});
+
+// ---- the Companion's screens that agree, and the shell's keys ----
+// How a sprite sits on the drawn frame at (x, y): its opaque pixels counted (n) and those the frame differs on (off); `inside` limits the sprite's area.
+function sprite(p, expr, x0, y0, inside = () => true) {
+  const pb = p.run(expr), cv = pb.canvas(), sp = cv.px(), f = p.run("scr").px(), SW = p.run("SCR_W"); let n = 0, off = 0;
+  for (let y = 0; y < cv.height; y++) for (let x = 0; x < cv.width; x++) { const v = sp[y * cv.width + x]; if (v < 0 || !inside(x, y)) continue; n++; if (f[(y0 + y) * SW + x0 + x] !== v) off++; }
+  return { n, off };
+}
+// A new world with one grown mibi with you; `rec` wraps the named page functions so their calls are recorded.
+function world(seed = 1) {
+  const p = page({}, undefined, { canvas: true });
+  p.run(`newWorld(${seed}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1]; save();`);
+  p.run("var __rec = []; function __wrap(n) { const f = globalThis[n]; globalThis[n] = function (...a) { const r = f.apply(this, a); __rec.push({ n, a, r }); return r; }; }");
+  p.rec = (...names) => { for (const n of names) p.run(`__wrap(${JSON.stringify(n)})`); };
+  p.calls = n => p.run(`__rec.filter(c => c.n === ${JSON.stringify(n)})`);
+  p.clear = () => p.run("__rec.length = 0");
+  p.key = k => p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)})`);
+  return p;
+}
+// Into the first place of a Weather expedition at the first glint, the pawn facing nothing (✓ is Wait).
+function inPlace() {
+  const p = world();
+  p.key("confirm"); p.key("confirm"); assert.ok(p.run("S.exp"), "the expedition started");
+  p.key("confirm"); assert.equal(p.run("S.phase"), "patch", "in a place");
+  for (const d of ["down", "up", "left", "right"]) { if (p.run("patchAction() === NOTHING")) break; p.run(`S.exp.patch.face = ${JSON.stringify(d)}; S.exp.face = ${JSON.stringify(d)}`); }
+  assert.equal(p.run("patchAction() === NOTHING"), true, "facing nothing: ✓ is Wait");
+  return p;
+}
+
+test("the Call sign's line reads 'Call lifts the veil: finds show' and is 260 px at 2×", () => {
+  const p = world(), l = "Call lifts the veil: finds show";
+  assert.equal(p.run("SIGN_LINE.call"), l); assert.equal(p.run(`textW(${JSON.stringify(l)}, 2)`), 260);
+  assert.doesNotMatch(PAGE, /The teal CALL button|CALL_HINT|shownMsg/);
+});
+
+test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Expedition 999; Weather's bolt 4 px before the note", () => {
+  const p = world();
+  p.rec("text", "drawTop");
+  for (const [type, revealed, note] of [["weather", false, "storm start"], ["deep", false, "pick a start"], ["deep", true, "any seen cell"]]) {
+    for (const n of [1, 12, 999]) {
+      p.run(`S.turn = 9; S.expN = ${n}; S.ui.type = '${type}'; S.ui.cur = G.spawns[0]; S.revealed.fill(0); ${revealed ? "S.revealed[G.spawns[0]] = 1;" : ""} S.phase = 'place'; FX.msg = '';`);
+      p.clear(); p.run("render(0)");
+      assert.equal(p.run("'T' + wTurn()"), "T10");
+      const top = p.calls("drawTop")[0], rx = top.r, title = "Expedition " + n;
+      assert.deepEqual([top.a[0], top.a[1]], [title, note], `${type} ${n}: the title drops its type word`);
+      const drawn = p.calls("text").find(c => c.a[1] === rx && c.a[2] === 9);
+      assert.equal(drawn && drawn.a[0], note, `${type} ${n}: the note unclipped`);
+      const noteW = p.run(`textW(${JSON.stringify(note)}, 2)`), titleEnd = 10 + p.run(`textW(${JSON.stringify(title)}, 2)`);
+      const bx = rx - noteW - 16, bolt = sprite(p, "ICON.bolt('mist')", bx, 8);
+      if (type === "weather") { assert.ok(bolt.n > 40 && bolt.off === 0, `${n}: the mist bolt at (rx − noteW − 16, 8)`); assert.ok(bx > titleEnd + 4, `${n}: the bolt clears the title`); }
+      else { assert.ok(bolt.off > 0, "Deep ground has no icon"); assert.ok(rx - noteW > titleEnd + 4, `${n}: the note clears the title`); }
+    }
+  }
+  assert.doesNotMatch(PAGE, /dotted: storm start/);
+});
+
+test("bottom line in a place: the candidates keep the place name before the take kinds go; after a Call the name stays with Wait · Leave", () => {
+  const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
+  p.run("leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone']; S.exp.patch && (curLay().land = curLay().land);");
+  const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
+  assert.equal(L.ok, "Wait"); assert.equal(L.back, "Leave");
+  const sv = p.run("placeState(curLay().cell)"), svN = p.run("placeState(curLay().cell, false, true)"), short = p.run("placeState(curLay().cell, true)");
+  assert.match(sv, /2 to take: charge · warm stone$/); assert.match(svN, /2 to take$/);
+  assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)).map(c => c.replace("\x01", "")).map(c => c.replace(/ · (lull|overcast)$/, "")), [land + " · " + sv, land + " · " + svN, svN, short]);
+  // after a Call, drawn: the name and the count stay (the kinds drop first)
+  p.key("call"); p.run("S.phase = 'patch'; FX.msg = ''; leftTotal = () => 2; takeKinds = () => ['charge', 'warm stone'];");
+  const L2 = p.run("lineFor()"); assert.equal(L2.ok, "Wait");
+  // drawn, in a meadow ("meadow · not surveyed · 2 to take" is 276 px in the line's tight spacing, textWT, against 291 available): the name and the count stay, the kinds drop
+  p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
+  const said = p.calls("text").map(c => c.a[0]).join("|");
+  assert.match(said, /\|meadow · \|not surveyed · 2 to take$/, "the place name stays: " + said);
+  // and whatever the land, a candidate with the name is drawn whenever it fits
+  for (let k = 0; k < 4; k++) { p.run(`curLay().land = ${k}`); const c = p.run("lineFor().ctx[1]").replace("\x01", ""), fits = p.run(`textWT(${JSON.stringify(c)}, 2)`) <= 291;
+    p.clear(); p.run("drawLine(lineFor())"); const d = p.calls("text").map(c => c.a[0]).join("");
+    assert.equal(d.includes(p.run(`LAND_NAME[${k}]`)), fits, `${p.run(`LAND_NAME[${k}]`)}: the name drawn iff "${c}" fits`); }
+});
+
+test("focus brackets: none on the empty tile when ✓ is Wait; shown on a thing Confirm acts on", () => {
+  const p = inPlace();
+  p.rec("brackets"); p.clear(); p.run("FX.msg = ''; render(0)");
+  const amber = p.run("C.amber"), f = p.run("frontOf(S.exp.patch)");
+  const onFront = () => p.calls("brackets").filter(c => c.a[4] === amber && c.a[2] === c.a[3]);
+  assert.equal(onFront().length, 0, "no brackets when ✓ is Wait");
+  p.run("const __pa = patchAction; patchAction = () => ({ label: 'Take the pod', run: () => {} });"); p.clear(); p.run("render(0)");
+  assert.equal(onFront().length, 1, "brackets on a thing Confirm acts on");
+  assert.ok(f);
+});
+
+test("the fresh 'Your world' box draws its unseen cells from the map's fog layer, not flat night", () => {
+  const p = world();
+  p.run("S.revealed.fill(0); S.visited.fill(0); ensureMap(); scr.px().fill(-1); drawWorldInset(100, 100, 0, 6);");
+  const f = p.run("scr").px(), fog = p.run("fogCv"), fp = fog.px(), SW = p.run("SCR_W"), MW_ = p.run("MW"), MH_ = p.run("MH"), CELL_ = p.run("CELL"), u = 6;
+  let diff = 0, night = 0; const nightI = p.run("HEX.indexOf(C.night)"), N = MW_ * MH_ * u * u;
+  for (let c = 0; c < MW_ * MH_; c++) for (let j = 0; j < u; j++) for (let i = 0; i < u; i++) {
+    const x = 100 + (c % MW_) * u + i, y = 100 + Math.floor(c / MW_) * u + j, want = fp[(Math.floor(c / MW_) * CELL_ + Math.floor(j * CELL_ / u)) * fog.width + (c % MW_) * CELL_ + Math.floor(i * CELL_ / u)];
+    const got = f[y * SW + x]; if (got !== want) diff++; if (got === nightI) night++; }
+  assert.ok(diff <= N * 0.02, `the fog layer, cell for cell (${diff} of ${N} pixels differ: the pins, outposts and the last start draw over it)`);
+  assert.ok(night < N * 0.5, "not a flat night square");
+});
+
+// ---- the shell ----
+test("shell: no engravings, the brand line kept, the key icons in their inks, Call as built", () => {
+  assert.doesNotMatch(PAGE, /class="engrave"|\.engrave\b/, "no engraving element or rule");
+  assert.doesNotMatch(PAGE, />CONFIRM</);
+  assert.match(PAGE, /<div class="brand">MINIATURE BEASTS<span>COMPANION<\/span><\/div>/, "the brand line on top stays");
+  for (const k of ["Up", "Left", "Right", "Down", "Call", "Back", "Confirm"]) assert.match(PAGE, new RegExp(`aria-label="${k}"`), k + ": aria-label kept");
+  assert.match(PAGE, /\.dpad \.key svg\{width:16px; height:16px; fill:#f4f1ec\}/, "pad ink");
+  assert.match(PAGE, /\.dpad \.key\{[^}]*#3a3d42,#2e3136\)/, "pad cap base");
+  assert.match(PAGE, /<div class="stamp" id="stamp" hidden>/); assert.match(PAGE, /obsEl\.hidden = !on; stampEl\.hidden = !on;/, "the build stamp shows only with the Observer");
+  assert.match(PAGE, /\.back\{[^}]*background:#33363b;/, "Back's cap");
+  assert.match(PAGE, /\.back \.cap-ico\{background:#f4f1ec; mask: url\(shell\/cap-back-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Back's icon and ink");
+  assert.match(PAGE, /\.confirm \.cap-ico\{background:#ffffff; mask: url\(shell\/cap-confirm-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Confirm's icon and ink");
+  assert.match(PAGE, /\.confirm\{[^}]*var\(--orange\)/, "Confirm's cap as built");
+  assert.match(PAGE, /\.call\{[^}]*#26b5a4[^}]*\}/, "Call's teal cap as built");
+  assert.match(PAGE, /\.call svg\{width:26px; height:26px; stroke:#eafff9;/, "Call's icon as built");
+  assert.match(PAGE, /aria-label="Call"><svg viewBox="0 0 26 26">/, "Call keeps its SVG");
+});
+test("shell: the Back and Confirm icons are the signed masters, byte for byte", () => {
+  const man = JSON.parse(readFileSync(new URL("../../../art/device-buttons/caps/manifest.json", import.meta.url), "utf8"));
+  for (const id of ["cap-back-10mm", "cap-confirm-10mm"]) {
+    const e = man.find(m => m.id === id); assert.equal(e.status, "signed");
+    const placed = readFileSync(new URL(`../shell/${id}.png`, import.meta.url)), master = readFileSync(new URL(`../../../art/device-buttons/caps/${id}.png`, import.meta.url));
+    assert.equal(createHash("sha256").update(placed).digest("hex"), e.sha256, id + ": the manifest's hash");
+    assert.ok(placed.equals(master), id + ": byte-identical to the master");
+  }
+});
+
+test("Cargo's bottom line: a crate with room, the finds in the hold with the bay full; the menu's End row says what it does", () => {
+  const p = world(); p.key("confirm"); p.key("confirm"); assert.ok(p.run("S.exp"), "an expedition");
+  p.run("S.exp.pos = S.exp.start; S.phase = 'cargo';");
+  assert.equal(p.run("canSend()"), true);
+  const L = p.run("lineFor()"); assert.equal(L.ok, "End expedition");
+  assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)), ["seals a crate · the world turns", "seals a crate"]);
+  assert.ok(p.run("textWT('seals a crate', 2)") <= 223, "the short form fits the slot");
+  p.run("S.bay = [{}, {}, {}]"); assert.equal(p.run("lineFor().ctx"), "finds stay in the hold");
+  assert.ok(p.run("textWT('finds stay in the hold', 2)") <= 223, "fits whole");
+  assert.doesNotMatch(PAGE, /seals the hold · the world turns|shows what it seals/);
+  assert.match(PAGE, /'shows what it does'/);
+});
+
+test("the Call sign never joins another message; it is spent only when it is drawn (not while the swap chooser covers the box), shown once, and never again", () => {
+  const p = world(), l = "Call lifts the veil: finds show", c = "? · curious · it will come closer", spent = () => p.run("S.found.includes('callintro')");
+  p.run(`S.phase = 'patch'; FX.notes = []; fxSign('call'); fxMsg(${JSON.stringify(c)}, 2); settleOnce();`);
+  assert.equal(p.run("FX.msg"), l, "the sign alone; the other message waits"); assert.equal(p.run("FX.sign.sign"), "call"); assert.equal(spent(), true, "drawn in the place: spent");
+  p.run("S.found = S.found.filter(k => k !== 'callintro' && k !== 'met:call'); FX.notes = []; S.ui.swap = { sel: 0 }; fxSign('call'); settleOnce();");
+  assert.equal(spent(), false, "the chooser covers the box: not spent");
+  p.run("S.ui.swap = null; settleOnce();"); assert.equal(spent(), true, "spent once drawn");
+  p.run("FX.notes = []; fxSign('call');"); assert.equal(p.run("FX.notes.length"), 0, "never queued again");
+  // in play: the first place shows it once
+  const q = world(); q.key("confirm"); q.key("confirm"); q.key("confirm"); assert.equal(q.run("S.phase"), "patch");
+  let shown = 0, was = false;
+  for (let i = 0; i < 30; i++) { q.key(["left", "right", "up", "down"][i % 4]); const now = q.run("FX.msg === SIGN_LINE.call"); if (now && !was) shown++; was = was || now; }
+  assert.ok(shown <= 1 && q.run("S.found.includes('callintro')") === true, "shown at most once more, and spent");
 });

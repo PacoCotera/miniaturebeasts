@@ -4,9 +4,12 @@
 // landed and is skipped until then, so the agreement tests switch on by themselves.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import vm from "node:vm";
+import { decodePNG } from "../tools/atlas-check.mjs";
+import { decodeExact } from "../src/atlas.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
@@ -536,8 +539,8 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const said = [], noop = () => {}, id = x => x;
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
-    FX: {}, viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
-    panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
+    FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
+    panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
     CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
   const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
@@ -637,7 +640,7 @@ function sealed(rep, lines, bay = 1) {
     NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
     bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
-  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord"];
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord", "sealedWords"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
@@ -678,8 +681,32 @@ test("End expedition after a break: the pods line in the copywriter's words (19:
   for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
     assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
 });
-test("Cargo, no creature met: the moments line moves under 'No creatures met yet', to (24, 208)", () => {
-  assert.match(source("drawCargo"), /ex\.met\.length \? 180 : 24, ex\.met\.length \? 196 : 208/);
+test("End expedition, Sealed: the trip line is built from what was sealed (pods and supplies, or supplies only)", () => {
+  assert.ok(sealed({ sealed: { id: "c0", pods: [], d: 2 } }, []).at("Expedition 4 · supplies"), "supplies only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1], d: 2 } }, []).at("Expedition 4 · one pod and supplies"), "one pod and supplies");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "two pods and supplies");
+  assert.ok(!sealed({ sealed: { id: "c0", pods: [1], d: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
+});
+test("End expedition, the hold-empty branch (an old save): main's line, and no yield line even when one is passed", () => {
+  const d = sealed({ empty: true, yield: { data: 0, tier: 0, moments: 0 } }, []);
+  assert.ok(d.at("Nothing to seal this time."), "main's line");
+  assert.ok(!d.said.some(q => /Data ·|No crate|crate this time/.test(q.str)), "no yield line, no new string");
+  assert.equal(d.crates[0].y, 114, "the crates stay where they were");
+});
+test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
+  assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
+});
+test("Cargo's preview predicts End: the hold plus the yield still to come, always a seal when an explored walk has room", () => {
+  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, stats: { calls: 1 }, shield: 3, smax: 3, dField }, bay }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["Seals the supplies · crate 1 of 3", "The Station opens it when you dock"], "an empty hold still seals the walk's Data");
+  assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
+  assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
+  assert.equal(run({ e: 0, d: 6, s: 0, pods: [] }, [], 6, 6)[0], "Seals the supplies · crate 1 of 3", "the yield already in the hold");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])), ["Bay full · your finds stay in the hold", "dock to free it"], "bay full, hold empty: the bay-full lines");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [], 0)), [], "an old save with no yield and no hold: no line");
+  for (const o of [run({ e: 0, d: 0, s: 0, pods: [] }), run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])]) assert.ok(!o.some(l => /no crate|you still earn/.test(l)));
+  assert.doesNotMatch(source("sealPreview"), /no crate|you still earn/);
 });
 test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
   assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
@@ -711,7 +738,7 @@ test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to
   assert.ok(!/'[^'\n]*(take one at the Station|dock at the Station|lift at the Station|consignment)[^'\n]*'/.test(PAGE), "no retired docking words in any string");
 });
 test("the Lead card's context: docked with no one carried reads 'no one with you'", () => {
-  assert.match(source("lineFor"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
+  assert.match(source("lineBase"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
 });
 
 // ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----
@@ -906,9 +933,9 @@ const X26 = (() => {
       const w = (name, f) => { const real = globalThis[name]; globalThis[name] = (...a) => { __d.push(f(...a)); return real(...a); }; };
       w('text', (s, x, y, col, k) => ['text', String(s), x, y, col, k || 2]);
       w('panel', (x, y, ww, h, fill, border) => ['panel', x, y, ww, h, fill, border]);
-      w('miniOf', (sp, x, y) => ['mini', sp, x, y]);
-      w('mibiSprite', (sp, pose, fr, x, y, k, flip) => ['sprite', sp, pose, fr, x, y, k || 1, !!flip]);
-      w('placeholderPlate', (id, x, y, k, sp) => ['plate', id, x, y, k || 1, sp]);
+      w('miniOf', (sp, x, y, juv) => ['mini', sp, x, y, !!juv]);
+      w('mibiSprite', (sp, pose, fr, x, y, k, flip, juv) => ['sprite', sp, pose, fr, x, y, k || 1, !!flip, !!juv]);
+      w('placeholderPlate', (id, x, y, k, sp, fr, juv) => ['plate', id, x, y, k || 1, sp, fr || 0, !!juv]);
       w('art', key => ['art', key]);
     })();`);
     return Object.assign(p, {
@@ -1132,12 +1159,12 @@ test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms,
   for (let t = 0; t < 12000; t += 40) { const sp = r.draw("active", t).find(c => c[0] === "sprite"); assert.deepEqual([sp[2], sp[3], sp[7]], ["idle", 0, false], "t " + t); }
 });
 
-test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (283 for Tuikis), for all three species; the sprite never moves", () => {
+test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (299 on the stage for all three species, on the signed tokens), for all three species; the sprite never moves", () => {
   for (const sp of [0, 1, 2]) {
     const p = X26.world([X26.mib(1, "Dot", sp)], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1");
     // the lowest source row holding a pixel visible on the stage's ink, for a pose and frame, at 8× from the drawn y
     const low = (pose, fr, y) => p.run(`(() => { const a = creatureArt(${sp}, ${JSON.stringify(pose)}, ${fr}); let r = -1; for (let j = 0; j < a.h; j++) for (let i = 0; i < a.w; i++) { const v = a.p[j * a.w + i]; if (v >= 0 && v !== C.ink) r = j; } return ${y} + r * 8 + 7; })()`);
-    const foot = low("idle", 0, 52); if (sp === 1) assert.equal(foot, 283, "Tuikis: the visible feet end on row 283");
+    const foot = low("idle", 0, 52); if (sp === 1) assert.equal(foot, 299, "Tuikis: the visible feet end on row 299");
     let alerts = 0;
     for (let t = 1000; t < 11000; t += 20) { const s = p.draw("active", t).find(c => c[0] === "sprite"); assert.ok(s, "drawn, t " + t);
       const [, , pose, fr, x, y] = s; if (pose === "alert") alerts++;
@@ -1145,4 +1172,355 @@ test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest 
       assert.equal(low(pose, fr, y), foot, "sp " + sp + " t " + t + " " + pose + ": the idle foot row"); }
     assert.ok(alerts > 0, "sp " + sp + ": a look-out in the 10 s run");
   }
+});
+
+// ---- Species art: the signed tokens and minis, used as they are ----
+// page species, token name, the signed file under art/companion-48/species/, and the file's sha256 (S01 = species 0, S03 = 1, S02 = 2)
+const SPECIES_FILES = [
+  // page species 0, S01
+  [0, "alert", "S01/c-token-S01-alert-32x32.png", "f45a9f86dd0ad14bb8c131cf67a3a687903b6f7ba14db3c06fd5742358ed5ab6"],
+  [0, "eat0", "S01/c-token-S01-eat-f0-32x32.png", "cb8960484fc767bbc98de2b8b4a7cc5bad629f1c746877c01e7c4c09390afccd"],
+  [0, "eat1", "S01/c-token-S01-eat-f1-32x32.png", "5856782f5dcebf2d953ec74c113c77037fd406c5b47be04a6a5e2f158eb00b82"],
+  [0, "flee", "S01/c-token-S01-flee-32x32.png", "4b16555b9e0ec4ff55bd58e750fd23ba3031af761765c123633b3a1e616e7128"],
+  [0, "huddle", "S01/c-token-S01-huddle-32x32.png", "7d9cd6bcba1f9967209d617ad66b53b612870d6e992ec1817a02d4f48ebf260f"],
+  [0, "idle", "S01/c-token-S01-idle-32x32.png", "9f869e8bac7bea8d13f0653af617244d47a1d9f14ed2df3c7bda7c440dccdba4"],
+  [0, "shake0", "S01/c-token-S01-shake-f0-32x32.png", "3e6f156c4ea1e5bc7f2c1d9a35c0d04aeda06ec754ac7842eda676169d16ba41"],
+  [0, "shake1", "S01/c-token-S01-shake-f1-32x32.png", "385ed5dea381b4fa8e0f83b3b2767725ec9b2a5e43c60e9768678a168b9f0c76"],
+  [0, "mini", "S01/c-mini-S01-12x12.png", "0e058cc4df269a52406afaa1e9847d991677b0efb8a0c1086a0a6d7259dddb02"],
+  // page species 1, S03
+  [1, "alert", "S03/c-token-S03-alert-32x32.png", "f6097462b67c6720628784d3f1572900d0bdb11c9af9b61e16b27f8051d545e0"],
+  [1, "curl", "S03/c-token-S03-curl-32x32.png", "9a10b4f20c9366d9a02cd3ecdb45cfcb9b68dfacf95c206b625dc7e6aa88321f"],
+  [1, "eat0", "S03/c-token-S03-eat-f0-32x32.png", "9606ad293d7b108da8e0a3581da00148332716022d13940b5c91d79a3e703fe5"],
+  [1, "eat1", "S03/c-token-S03-eat-f1-32x32.png", "b02295fd894fefb6fddf5ceb9dad6879a57da53330953d5618b64306d31fd5dc"],
+  [1, "flee", "S03/c-token-S03-flee-32x32.png", "cac0850f30359e5d1c0be4b39e46d7fb58d10a7ec02161ac1ca0839ce8592f5e"],
+  [1, "huddle", "S03/c-token-S03-huddle-32x32.png", "0647fef5582491e2d585b43ce9b324f1a0add71ecc4aedc5b303db96c65d6cb5"],
+  [1, "idle", "S03/c-token-S03-idle-32x32.png", "474f9be9f02db55b125495fda3afbd0b995dc23b2486faf5a9f37662a18fcf9e"],
+  [1, "settle", "S03/c-token-S03-settle-32x32.png", "a6d789a5f7d2a9903c393b3504ad70fba2148e5f4ee27fe5b52f8a6d3441515d"],
+  [1, "shake0", "S03/c-token-S03-shake-f0-32x32.png", "946fe35215d1c408ff7e48371041955f7ac8c17bd2bf674419c3db28b6c8ba2d"],
+  [1, "shake1", "S03/c-token-S03-shake-f1-32x32.png", "e5111454999459eaeb01cfd7aacab3c466ee93b2acfde9c0b8ae4cfd061b84b3"],
+  [1, "mini", "S03/c-mini-S03-12x12.png", "57e75627530901af35d858d96b6df0b98a432f8bf364305fbdf43c9e1fc7db4e"],
+  // page species 2, S02
+  [2, "alert", "S02/c-token-S02-alert-32x32.png", "c60bdf85036b7636513250c49d29961c34bdd3cba0e4525b4dc88b22d32bc0c5"],
+  [2, "eat0", "S02/c-token-S02-eat-f0-32x32.png", "7afedb1bfade2ce7ba8ca97d0f35e97cb8c7506e0b34106751577175342e5c2d"],
+  [2, "eat1", "S02/c-token-S02-eat-f1-32x32.png", "f516fd1e885c0470e8114faabb7b6bcb54323bf09141e0f84ddb7ec6342a29f7"],
+  [2, "flee", "S02/c-token-S02-flee-32x32.png", "e633b40e257fdf62830c1b1e310b86d2d5c5992b898248a502a9af4e47b7f961"],
+  [2, "huddle", "S02/c-token-S02-huddle-32x32.png", "af14fec42ec265a6cfa9865b974c6e7e05a7d55ce2ef986424334286a41eea7b"],
+  [2, "idle", "S02/c-token-S02-idle-32x32.png", "9a633d709e1d419262fc02214bf76e180a09f253e29db28397ed6b661e7ab3d9"],
+  [2, "shake0", "S02/c-token-S02-shake-f0-32x32.png", "38d9a3e481fc55284c13351525032bbfb947fe12b605a530f0b4fd9242e35456"],
+  [2, "shake1", "S02/c-token-S02-shake-f1-32x32.png", "327f8d68a89a7d95397ab0a2be34f8bec12baa82edd1bff4d58f73a4084ae0bc"],
+  [2, "mini", "S02/c-mini-S02-12x12.png", "fda0c37ecf036a87a3d1260cbc3afe9ed4a3aa75ed30bb7f0fafc150cfecc6c2"],
+];
+test("species art: the page's embedded pictures are the signed PNGs, pixel for pixel (when the files are in the tree), 0 off-palette", () => {
+  const p = X1.page(), rgb = p.run("RGB"), art = p.run("SPECIES_ART.map(t => Object.fromEntries(Object.entries(t).map(([n, r]) => [n, tokenPB(r, n === 'mini' ? 12 : 32).p])))");
+  assert.deepEqual(plain(art.map(t => Object.keys(t).length)), [9, 11, 9], "S01 8 tokens and a mini, S03 10 and a mini, S02 8 and a mini");
+  assert.deepEqual(SPECIES_FILES.map(f => f[0] + f[1]).sort(), plain(art.flatMap((t, i) => Object.keys(t).map(n => i + n))).sort(), "every picture has its file, and every file its picture");
+  let compared = 0;
+  for (const [sp, name, file, sha] of SPECIES_FILES) {
+    const px = Array.from(art[sp][name]), w = name === "mini" ? 12 : 32;
+    assert.equal(px.length, w * w, file + " fills its square"); assert.ok(px.every(v => v >= -1 && v < 48), file + " is on the 48 colours");
+    const url = new URL("../../../art/companion-48/species/" + file, import.meta.url);
+    if (!existsSync(url)) continue;
+    const buf = readFileSync(url), img = decodePNG(buf), d = decodeExact(img.rgba, img.width ?? img.w, img.height ?? img.h, rgb);
+    assert.equal(createHash("sha256").update(buf).digest("hex"), sha, file + ": the signed file"); assert.equal(d.bad, 0, file + ": 0 off-palette");
+    assert.deepEqual(px, Array.from(d.px), file + ": the embedded rows are the signed pixels"); compared++;
+  }
+  assert.ok(compared === 0 || compared === SPECIES_FILES.length, "all of the signed files or none");
+});
+
+test("species art: each state uses its own master, the cards show it at whole pixels, glow and nest are the idle, and the silhouette is derived", () => {
+  const p = X1.page(), tok = (sp, pose, fr = 0) => p.run(`tokenOf(${sp}, '${pose}', ${fr})`), key = (sp, pose, fr) => { const t = tok(sp, pose, fr); return t && p.run(`SPECIES_ART[${sp}]`) && Array.from(t.p).join(); };
+  for (const sp of [0, 1, 2]) {
+    for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat"]) assert.ok(tok(sp, pose, 0) && tok(sp, pose, 1), sp + " " + pose);
+    for (const pose of ["shake", "eat"]) assert.notEqual(key(sp, pose, 0), key(sp, pose, 1), sp + " " + pose + ": two frames");
+    assert.equal(key(sp, "approach", 0), key(sp, "alert", 0), "approach is the alert pose, as it was drawn");
+    assert.equal(key(sp, "idle", 1), key(sp, "idle", 0), "one idle picture");
+  }
+  assert.equal(key(0, "glow", 0), key(0, "idle", 0)); assert.equal(key(2, "glow", 0), key(2, "idle", 0), "a Loika and an Untuva glow as their idle, as drawn");
+  assert.ok(tok(1, "curl") && tok(1, "settle") && !tok(0, "curl") && !tok(2, "settle"), "curl and settle are the Tuikis'");
+  assert.equal(key(1, "glow", 0), key(1, "idle", 0)); assert.equal(key(1, "nest", 0), key(1, "idle", 0), "a Tuikis' glow and nest are the signed idle, no halo");
+  assert.equal(p.run("creatureArt(1, 'nest', 0, 2).w"), 64);
+  for (const sp of [0, 1, 2]) assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'idle', 0), s = silhouette(${sp}); return a.p.every((v, i) => s.p[i] === (v >= 0 ? C.slate : -1)); })()`), true, "the silhouette is the signed idle's alpha in slate");
+  assert.ok(!/function buildCreature|haloArt/.test(PAGE), "no creature or halo drawn in code");
+  // the lowest opaque row of every signed token, as a table: every pose of every species stands on its idle's row (31)
+  const FOOT = { 0: 31, 1: 31, 2: 31 };
+  for (const sp of [0, 1, 2]) for (const name of plain(p.run(`Object.keys(SPECIES_ART[${sp}]).filter(n => n !== 'mini')`))) {
+    const row = p.run(`(() => { const a = tokenOf(${sp}, '${name.replace(/[01]$/, "")}', ${/1$/.test(name) ? 1 : 0}); let r = -1; for (let j = 0; j < 32; j++) for (let i = 0; i < 32; i++) { const v = a.p[j * 32 + i]; if (v >= 0) r = j; } return r; })()`);
+    assert.equal(row, FOOT[sp], "foot row of species " + sp + " " + name); }
+  for (const sp of [0, 1, 2]) {   // 1×: the token itself; 2×: each pixel twice, nothing else; the mini 12 px
+    assert.equal(p.run(`creatureArt(${sp}, 'alert', 0) === tokenOf(${sp}, 'alert', 0)`), true);
+    assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'flee', 0), b = creatureArt(${sp}, 'flee', 0, 2); if (b.w !== 64) return false;
+      for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (b.p[y * 64 + x] !== a.p[(y >> 1) * 32 + (x >> 1)]) return false; return true; })()`), true, sp + " at 2×");
+    assert.deepEqual(plain(p.run(`[ICON.mini(${sp}).w, ICON.mini(${sp}).h]`)), [12, 12]);
+  }
+  assert.ok(!/ell\(|poly\(/.test(source("tokenPB") + source("tokenOf")), "the token path draws no shape");
+  assert.equal(p.run("miniOf.toString().includes('c-mini-other-12') && mibiSprite.toString().includes('c-sprite-other-32')"), true, "the unknown species' labelled placeholders are intact");
+});
+
+// ---- Juvenile pictures: where they go, how they are looked up, and the rules the signed set must meet ----
+// JUVENILE_ART holds the signed juvenile pictures (all three species); a species without an entry shows the adult's picture. The checks
+// below are written against the studio's ids and rules, so they run on the real table as soon as it holds pictures, and on
+// stand-in fixtures (adult pictures, or generated shapes) to prove the lookup and the rules themselves.
+const JUV_NAMES = ["idle", "alert", "huddle", "eat0", "eat1", "mini"];
+const JUV_S = { 0: "S01", 1: "S03", 2: "S02" };   // page species -> the studio's species id
+const juvFile = (sp, n) => JUV_S[sp] + "/" + (n === "mini" ? "c-mini-" + JUV_S[sp] + "-juv-12x12.png" : "c-token-" + JUV_S[sp] + "-juv-" + (n === "eat0" ? "eat-f0" : n === "eat1" ? "eat-f1" : n) + "-32x32.png");
+// species, piece, file, and the file's sha256
+const JUV_SHA = {   // the three signed sets (2026-10-15), as listed in the species README
+  "S01/c-token-S01-juv-alert-32x32.png": "d1b25fa4d0d729bade653c4cef854fa09559619f33c3eecd85890b9ca35bf13c",
+  "S01/c-token-S01-juv-eat-f0-32x32.png": "af4bb10e4bd7c204d626b4616de558fd3ca9e95c3b83fc479a432bf42c16427a",
+  "S01/c-token-S01-juv-eat-f1-32x32.png": "2816cfc2828eb2af2c98d3e11a172f5f9b24aaf79f275a0e2b3b90f68b091e38",
+  "S01/c-token-S01-juv-huddle-32x32.png": "928fe6c1f93408286158eb20b2beb00d9c9411b396fa0e18f58e62a6010f804d",
+  "S01/c-token-S01-juv-idle-32x32.png": "e5bc39970893c8aa98ce8044e8bc785d4b79aafa0b5012a124bd074f14c2806d",
+  "S01/c-mini-S01-juv-12x12.png": "9652b9804c8cc5eb7970a380cc22dc5a2f50271b0da5f3b15b68d319a4c69426",
+  "S02/c-token-S02-juv-alert-32x32.png": "797c55cb99c442d72e403a9b7c731c8df6d31a45e539c2eba461d6d1c6078fb2",
+  "S02/c-token-S02-juv-eat-f0-32x32.png": "16917dec7d62ef50da428d8f19af2386a97543443f3c2c7b86b2c5dc8ae03f49",
+  "S02/c-token-S02-juv-eat-f1-32x32.png": "ccf48be513b8ea4a448ce64b4fad7af1fc963a028d6bc654d87d222397ec72b0",
+  "S02/c-token-S02-juv-huddle-32x32.png": "f858506536f6282e16dd0b472d9a2d29d3f7ba2125854e77d0f92c4eb0275faf",
+  "S02/c-token-S02-juv-idle-32x32.png": "d4776650d605c46b58be94c2eed3033f71979822e59045d0993672e5072fe16d",
+  "S02/c-mini-S02-juv-12x12.png": "b60ff4ec467c9287fd95b94fdaf06938f45e5f92737a7750e96c5fe88a5f7efd",
+  "S03/c-token-S03-juv-idle-32x32.png": "2e30a2f514968440bd0e4c673dec8fd599195a473760001a84fb49e9c27cb8b8",
+  "S03/c-token-S03-juv-alert-32x32.png": "002a4ead03ef563833f39d9d9200237ca2ab3f3391e7825225d78431f2ce337a",
+  "S03/c-token-S03-juv-huddle-32x32.png": "5f086fcbfbeb455dd983ab8f4ee380f7245e69dc3d79d27d1f0889d069e87d89",
+  "S03/c-token-S03-juv-eat-f0-32x32.png": "9d605405c97178dd616de76d336108b68fa685b4ac607455aa549470f70858bb",
+  "S03/c-token-S03-juv-eat-f1-32x32.png": "c6dc88e6ed393307ef8ea4107e4c916684fde0bec0eee4f0a7660b22a81f0975",
+  "S03/c-mini-S03-juv-12x12.png": "fa5037914614b1342a3d9c7a33fa3cd941d6ba0b9732773ba9da91344b0a7dc8" };
+const JUVENILE_FILES = [0, 1, 2].flatMap(sp => JUV_NAMES.map(n => [sp, n, juvFile(sp, n), JUV_SHA[juvFile(sp, n)] ?? null]));
+const RUN48 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv";
+const inkOf = p => p.run("C.ink"), voidOf = p => p.run("C.void");
+
+// The rules for one species' juvenile set (an object of six picture strings), read against the adult pictures in the page.
+// Returns the list of problems (empty: the set meets the brief).
+function juvProblems(p, sp, entry) {
+  const bad = [], tag = JUV_S[sp] + " ";
+  if (Object.keys(entry).sort().join() !== [...JUV_NAMES].sort().join()) return [tag + "needs exactly " + JUV_NAMES.join(", ")];
+  const heightOf = px => { let top = -1, low = -1; const w = Math.sqrt(px.length); px.forEach((v, i) => { if (v >= 0) { if (top < 0) top = i / w | 0; low = i / w | 0; } }); return { top, low, h: low - top + 1 }; };
+  const adult = (n, w) => heightOf(p.run(`Array.from(tokenPB(SPECIES_ART[${sp}].${n}, ${w}).p)`));
+  const info = {};
+  for (const n of JUV_NAMES) {
+    const s = entry[n], w = n === "mini" ? 12 : 32;
+    if (typeof s !== "string" || !/^(?:[.A-Za-z]\d*)+$/.test(s)) { bad.push(tag + n + ": not a picture string"); continue; }
+    let total = 0, offPalette = false;
+    for (const [, ch, r] of s.matchAll(/([.A-Za-z])(\d*)/g)) { total += r ? +r : 1; if (ch !== "." && !RUN48.includes(ch)) offPalette = true; }
+    if (offPalette) bad.push(tag + n + ": a colour outside the 48");
+    if (total !== w * w) { bad.push(tag + n + ": " + total + " pixels, not " + w * w); continue; }
+    const px = p.run(`Array.from(tokenPB(${JSON.stringify(s)}, ${w}).p)`), g = heightOf(px);
+    info[n] = { px, ...g };
+    if (g.top < 0) { bad.push(tag + n + ": empty"); continue; }
+    if (g.low !== w - 1) bad.push(tag + n + ": lowest opaque row " + g.low + ", not " + (w - 1));
+    if (px.some(v => v < -1 || v > 47)) bad.push(tag + n + ": off the 48");
+    if (sp !== 0 && px.includes(voidOf(p))) bad.push(tag + n + ": void is only in S01's pupils");
+    if (!px.includes(inkOf(p))) bad.push(tag + n + ": no ink outline");
+  }
+  if (info.idle) {
+    const want = Math.round(adult("idle", 32).h * 0.8);
+    if (Math.abs(info.idle.h - want) > 1) bad.push(tag + "idle is " + info.idle.h + " px high, 80% of the adult idle is " + want + " (1 px either way allowed)");
+    for (const n of ["alert", "huddle", "eat0", "eat1"]) if (info[n] && (info[n].h > info.idle.h + 2 || info[n].h < info.idle.h - (n === "huddle" ? 9 : 6))) bad.push(tag + n + " is " + info[n].h + " px high against the idle's " + info.idle.h);
+    for (const n of ["alert", "huddle", "eat0", "eat1"]) if (info[n] && info[n].px.join() === info.idle.px.join()) bad.push(tag + n + " is the idle picture");
+    if (info.eat0 && info.eat1 && info.eat0.px.join() === info.eat1.px.join()) bad.push(tag + "eat has two frames");
+    for (const n of ["idle", "alert", "huddle", "eat0", "eat1"]) { const an = n === "eat0" ? "eat0" : n === "eat1" ? "eat1" : n; if (info[n] && p.run(`SPECIES_ART[${sp}].${an}`) === entry[n]) bad.push(tag + n + " is the adult's picture"); }
+  }
+  if (info.mini) { const want = Math.round(adult("mini", 12).h * 0.8); if (Math.abs(info.mini.h - want) > 1) bad.push(tag + "mini is " + info.mini.h + " px high, about " + want + " expected"); }
+  return bad;
+}
+// Generated shapes (not art): an ink box with a lighter body, for the rules' own tests. The tokens stand on the foot row.
+function synthJuvenile(p, sp, o = {}) {
+  const ink = inkOf(p), body = 2, eye = 8, enc = px => { let out = "", i = 0; while (i < px.length) { let j = i; while (j < px.length && px[j] === px[i]) j++; out += (px[i] < 0 ? "." : RUN48[px[i]]) + (j - i > 1 ? j - i : ""); i = j; } return out; };
+  const draw = (w, h, width, foot, k) => { const px = new Array(w * w).fill(-1), x0 = (w - width) >> 1;
+    for (let y = foot - h + 1; y <= foot; y++) for (let x = x0; x < x0 + width; x++) px[y * w + x] = y === foot - h + 1 || y === foot || x === x0 || x === x0 + width - 1 ? ink : body;
+    px[(foot - h + 3) * w + x0 + 2 + (k || 0)] = eye; return px; };
+  const adultH = n => p.run(`(() => { const a = tokenPB(SPECIES_ART[${sp}].${n}, ${n === "mini" ? 12 : 32}), w = ${n === "mini" ? 12 : 32}; let t = -1; a.p.forEach((v, i) => { if (v >= 0 && t < 0) t = i / w | 0; }); return w - t; })()`);
+  const ih = o.idleH ?? Math.round(adultH("idle") * 0.8), mh = o.miniH ?? Math.round(adultH("mini") * 0.8), foot = o.foot ?? 31;
+  const set = { idle: enc(draw(32, ih, 14, foot)), alert: enc(draw(32, ih + 1, 14, foot, 1)), huddle: enc(draw(32, ih - 2, 16, foot)), eat0: enc(draw(32, ih - 1, 15, foot)), eat1: enc(draw(32, ih - 2, 15, foot, 1)), mini: enc(draw(12, mh, 8, o.miniFoot ?? 11)) };
+  if (o.voidPixel) { const px = draw(32, ih, 14, foot); px[(foot - 2) * 32 + 16] = voidOf(p); set.idle = enc(px); }
+  return set;
+}
+
+test("juvenile pictures: the table has one entry per species; a non-empty entry meets the brief's rules (all three are embedded)", () => {
+  const p = X1.page(), J = plain(p.run("JUVENILE_ART"));
+  assert.equal(J.length, 3, "one entry per species, in SPECIES_ART's order");
+  assert.deepEqual(J.map(e => Object.keys(e).length), [6, 6, 6], "all three signed sets are embedded: six pictures each");
+  assert.equal(p.run("JUVENILE_ART.length === SPECIES_ART.length"), true);
+  let filled = 0;
+  for (const sp of [0, 1, 2]) {
+    assert.equal(typeof J[sp], "object");
+    if (!Object.keys(J[sp]).length) continue;     // not embedded yet: the adult's picture is shown
+    filled++; assert.deepEqual(juvProblems(p, sp, J[sp]), [], JUV_S[sp] + " meets the rules");
+  }
+  assert.equal(filled, 3);
+});
+
+test("juvenile pictures: the rules catch what the brief forbids (generated shapes: a valid set passes; wrong foot, height, mini row, void, a short string, an adult picture fail)", () => {
+  const p = X1.page();
+  for (const sp of [0, 1, 2]) {
+    assert.deepEqual(juvProblems(p, sp, synthJuvenile(p, sp)), [], JUV_S[sp] + ": a set of the right size on the right rows passes");
+    assert.ok(juvProblems(p, sp, synthJuvenile(p, sp, { foot: 30 })).some(m => /lowest opaque row 30, not 31/.test(m)), "foot row 30 fails");
+    assert.ok(juvProblems(p, sp, synthJuvenile(p, sp, { miniFoot: 10 })).some(m => /mini: lowest opaque row 10, not 11/.test(m)), "mini row 10 fails");
+    const adultIdle = p.run(`(() => { const a = tokenPB(SPECIES_ART[${sp}].idle, 32); let t = -1; a.p.forEach((v, i) => { if (v >= 0 && t < 0) t = i >> 5; }); return 32 - t; })()`);
+    assert.ok(juvProblems(p, sp, synthJuvenile(p, sp, { idleH: adultIdle })).some(m => /80% of the adult idle/.test(m)), "an adult-height idle fails");
+    assert.ok(juvProblems(p, sp, synthJuvenile(p, sp, { idleH: Math.round(adultIdle * 0.8) + 2 })).some(m => /80% of the adult idle/.test(m)), "two pixels too tall fails");
+    assert.ok(juvProblems(p, sp, synthJuvenile(p, sp, { miniH: 4 })).some(m => /mini is 4 px high/.test(m)), "a mini far off 80% fails");
+    assert.ok(juvProblems(p, sp, { ...synthJuvenile(p, sp), idle: "A5" }).some(m => /5 pixels, not 1024/.test(m)), "a short string fails");
+    assert.ok(juvProblems(p, sp, { ...synthJuvenile(p, sp), mini: "w144" }).some(m => /outside the 48/.test(m)), "a letter outside the 48 fails");
+    assert.ok(juvProblems(p, sp, { ...synthJuvenile(p, sp), eat1: p.run(`SPECIES_ART[${sp}].eat1`) }).some(m => /eat1 is the adult's picture/.test(m)), "an adult picture fails");
+    assert.ok(juvProblems(p, sp, (({ mini, ...r }) => r)(synthJuvenile(p, sp))).some(m => /needs exactly/.test(m)), "a missing piece fails");
+    assert.equal(juvProblems(p, sp, synthJuvenile(p, sp, { voidPixel: true })).some(m => /void is only in S01/.test(m)), sp !== 0, "void only for S01 (the pupils)");
+  }
+  assert.deepEqual([0, 1, 2].map(sp => p.run(`(() => { const a = tokenPB(SPECIES_ART[${sp}].idle, 32); let t = -1; a.p.forEach((v, i) => { if (v >= 0 && t < 0) t = i >> 5; }); return Math.round((32 - t) * 0.8); })()`)), [24, 24, 22], "the brief's heights: S01 24, S03 24, S02 22");
+});
+
+test("juvenile pictures: the signed files (S0n/c-token-S0n-juv-*-32x32.png, c-mini-S0n-juv-12x12.png), when in the tree, are what the page embeds, pixel for pixel and by sha256, 0 off-palette; a species has all six or none", () => {
+  const p = X1.page(), rgb = p.run("RGB"), here = JUVENILE_FILES.filter(([, , file]) => existsSync(new URL("../../../art/companion-48/species/" + file, import.meta.url)));
+  assert.ok(here.length === 0 || here.length === 18, "the signed files are all in the tree or none: " + here.length + " of 18");
+  for (const sp of [0, 1, 2]) { const n = here.filter(f => f[0] === sp).length; assert.ok(n === 0 || n === 6, JUV_S[sp] + ": " + n + " of 6 files in the tree"); }
+  for (const [sp, name, file, sha] of here) {
+    const buf = readFileSync(new URL("../../../art/companion-48/species/" + file, import.meta.url)), img = decodePNG(buf), w = name === "mini" ? 12 : 32;
+    const d = decodeExact(img.rgba, img.width ?? img.w, img.height ?? img.h, rgb);
+    assert.equal(d.bad, 0, file + ": 0 off-palette, alpha 0 and 255 only");
+    assert.deepEqual([img.width ?? img.w, img.height ?? img.h], [w, w], file + ": its size");
+    assert.ok(sha, file + " is in the tree: record its sha256 in JUVENILE_FILES and embed it in JUVENILE_ART");
+    assert.equal(createHash("sha256").update(buf).digest("hex"), sha, file + ": the signed file");
+    const str = p.run(`JUVENILE_ART[${sp}].${name}`); assert.ok(str, file + " is in the tree: embed it in JUVENILE_ART");
+    assert.deepEqual(Array.from(p.run(`Array.from(tokenPB(${JSON.stringify(str)}, ${w}).p)`)), Array.from(d.px), file + ": the embedded string is the signed pixels");
+  }
+  for (const sp of [0, 1, 2]) if (here.some(f => f[0] === sp)) assert.deepEqual(juvProblems(p, sp, plain(p.run(`JUVENILE_ART[${sp}]`))), [], JUV_S[sp] + ": the rules");
+});
+
+// Stand-in pictures to prove the routing: each juvenile slot of Loika (page species 0) holds a different adult picture, so a juvenile asking
+// for a pose can be told from the adult's own. Tuikis (1) keeps an empty entry; Untuva (2) holds only a mini.
+function withStandIns() {
+  const p = X1.page();
+  p.run(`for (const e of JUVENILE_ART) for (const k of Object.keys(e)) delete e[k];   // whatever is embedded, the fixture starts empty
+    Object.assign(JUVENILE_ART[0], { idle: SPECIES_ART[0].alert, alert: SPECIES_ART[0].huddle, huddle: SPECIES_ART[0].eat0, eat0: SPECIES_ART[0].shake0, eat1: SPECIES_ART[0].shake1, mini: SPECIES_ART[1].mini });
+    JUVENILE_ART[2].mini = SPECIES_ART[0].mini;`);
+  return p;
+}
+const px = (p, expr) => { const a = p.run(expr); return a && Array.from(a.p).join(); };
+
+test("juvenile pictures: with no juvenile entry a juvenile shows exactly the adult's picture, at every size (a species whose entry is emptied here; the signed ones differ)", () => {
+  const p = X1.page();
+  for (const sp of [0, 2]) for (const k of Object.keys(plain(p.run(`JUVENILE_ART[${sp}]`)))) p.run(`delete JUVENILE_ART[${sp}].${k}`);   // S01 and S02 as if unsigned
+  for (const sp of [0, 2]) {
+    for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat", "approach", "glow", "nest"]) for (const fr of [0, 1])
+      assert.equal(px(p, `tokenOf(${sp}, '${pose}', ${fr}, true)`), px(p, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + pose + " " + fr);
+    assert.equal(px(p, `ICON.mini(${sp}, true)`), px(p, `ICON.mini(${sp})`));
+    assert.equal(px(p, `creatureArt(${sp}, 'idle', 0, 2, true)`), px(p, `creatureArt(${sp}, 'idle', 0, 2)`), "2×");
+    assert.equal(px(p, `bigArt(${sp}, 'alert', 0, true)`), px(p, `bigArt(${sp}, 'alert', 0)`), "8×");
+  }
+  for (const pose of ["idle", "alert", "huddle", "eat"]) assert.notEqual(px(p, `tokenOf(1, '${pose}', 0, true)`), px(p, `tokenOf(1, '${pose}', 0)`), "S03's signed juvenile " + pose + " is not the adult's");
+  assert.notEqual(px(p, "ICON.mini(1, true)"), px(p, "ICON.mini(1)"));
+  const q = X1.page();   // the real table: every species' signed juvenile differs from its adult, in every picture
+  for (const sp of [0, 1, 2]) {
+    for (const pose of ["idle", "alert", "huddle", "eat"]) for (const fr of [0, 1]) assert.notEqual(px(q, `tokenOf(${sp}, '${pose}', ${fr}, true)`), px(q, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + pose);
+    assert.notEqual(px(q, `ICON.mini(${sp}, true)`), px(q, `ICON.mini(${sp})`), sp + " mini");
+  }
+  assert.equal(p.run("tokenOf(5, 'idle', 0, true)"), null, "an unknown species is still null (its labelled plate)");
+});
+
+test("juvenile pictures: a juvenile asks for its own entry (stand-ins), the adult's pictures do not move, a species without an entry falls back to the adult's", () => {
+  const p = withStandIns(), A = n => `SPECIES_ART[0].${n}`;
+  const same = (expr, str, w = 32) => assert.equal(px(p, expr), p.run(`Array.from(tokenPB(${str}, ${w}).p).join()`), expr);
+  same("tokenOf(0, 'idle', 0, true)", A("alert")); same("tokenOf(0, 'alert', 0, true)", A("huddle")); same("tokenOf(0, 'huddle', 0, true)", A("eat0"));
+  same("tokenOf(0, 'eat', 0, true)", A("shake0")); same("tokenOf(0, 'eat', 1, true)", A("shake1")); same("ICON.mini(0, true)", "SPECIES_ART[1].mini", 12);
+  same("tokenOf(0, 'approach', 0, true)", A("huddle")); same("tokenOf(0, 'glow', 0, true)", A("alert")); same("tokenOf(0, 'nest', 1, true)", A("alert"));
+  // the poses a juvenile has no picture for show its own idle, never the adult's
+  for (const pose of ["flee", "shake", "curl", "settle", "dive", "nothing"]) for (const fr of [0, 1]) same(`tokenOf(0, '${pose}', ${fr}, true)`, A("alert"));
+  // the adult: untouched, in either order of asking
+  for (const pose of ["idle", "alert", "flee", "huddle"]) assert.equal(px(p, `tokenOf(0, '${pose}', 0)`), px(p, `tokenOf(0, '${pose}', 0, false)`));
+  same("tokenOf(0, 'idle', 0)", A("idle")); same("tokenOf(0, 'eat', 1)", A("eat1")); same("ICON.mini(0)", A("mini"), 12);
+  assert.notEqual(px(p, "tokenOf(0, 'idle', 0, true)"), px(p, "tokenOf(0, 'idle', 0)"), "a juvenile is not the adult picture");
+  // 2× and 8×: whole blocks of the juvenile's picture, cached apart from the adult's
+  assert.equal(p.run("(() => { const a = creatureArt(0, 'idle', 0, 2, true), t = tokenOf(0, 'idle', 0, true); if (a.w !== 64) return false; for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (a.p[y * 64 + x] !== t.p[(y >> 1) * 32 + (x >> 1)]) return false; return true; })()"), true);
+  assert.equal(p.run("(() => { const a = bigArt(0, 'idle', 0, true), t = tokenOf(0, 'idle', 0, true); if (a.w !== 256) return false; for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) if (a.p[y * 256 + x] !== t.p[(y >> 3) * 32 + (x >> 3)]) return false; return true; })()"), true);
+  assert.equal(px(p, "creatureArt(0, 'idle', 0, 2)"), p.run("Array.from(creatureArt(0, 'idle', 0, 2).p).join()"));
+  assert.notEqual(px(p, "creatureArt(0, 'idle', 0, 2)"), px(p, "creatureArt(0, 'idle', 0, 2, true)"));
+  assert.notEqual(px(p, "bigArt(0, 'idle', 0)"), px(p, "bigArt(0, 'idle', 0, true)"));
+  // Tuikis: no entry, the adult's picture for every pose; Untuva: a mini only, so the mini is its own and the tokens are the adult's
+  for (const pose of ["idle", "alert", "huddle", "eat", "curl", "settle", "flee"]) assert.equal(px(p, `tokenOf(1, '${pose}', 1, true)`), px(p, `tokenOf(1, '${pose}', 1)`), "Tuikis " + pose);
+  assert.equal(px(p, "ICON.mini(1, true)"), px(p, "ICON.mini(1)"));
+  for (const pose of ["idle", "alert", "huddle", "eat"]) assert.equal(px(p, `tokenOf(2, '${pose}', 0, true)`), px(p, `tokenOf(2, '${pose}', 0)`), "Untuva tokens " + pose);
+  same("ICON.mini(2, true)", "SPECIES_ART[0].mini", 12); assert.notEqual(px(p, "ICON.mini(2, true)"), px(p, "ICON.mini(2)"));
+  // the species-level pictures (Cargo, the Probe's field guide, the silhouette) stay the adult's
+  assert.equal(px(p, "silhouette(0)"), px(p, "(() => { const a = tokenOf(0, 'idle', 0), s = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) s.p[i] = C.slate; return s; })()"));
+  assert.equal(px(p, "creatureArt(0, 'idle', 0)"), p.run("Array.from(tokenPB(SPECIES_ART[0].idle, 32).p).join()"));
+});
+
+test("juvenile pictures: only the places that draw a mibi ask for the juvenile (no wild creature, no partner in the field, no species list)", () => {
+  const lines = PAGE.split("\n").filter(l => /JUVENILE_ART/.test(l) && !/^\s*\/\//.test(l));
+  assert.equal(lines.length, 3, "the table, tokenOf and miniArt read it: " + lines.map(l => l.trim().slice(0, 40)).join(" | "));
+  for (const fn of ["drawCreature", "drawPartner", "silhouette"]) assert.ok(!/juv|JUVENILE/i.test(source(fn)), fn + " never asks for a juvenile");
+  assert.ok(!/creatureArt\([^)]*true\)|bigArt\([^)]*true\)/.test(PAGE), "no species list or portrait asks for a juvenile");
+  assert.match(source("drawActive"), /mibiSprite\(m\.sp, pose, fr, x, y, BIG, flip, st === 'juvenile'\)/, "the stage follows its chip (st), not the stage the clock has reached");
+});
+
+test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Walk, the Call, 20 s of look-out, every card, face, mini, row), while the routing still sends both to its own pictures", () => {
+  const bad = new Set(["huddle", "eat", "eat0", "eat1"]), seen = [];
+  const scan = (p, pages, ts, tag) => { for (const pg of pages) for (const t of ts) for (const c of p.draw(pg, t)) { seen.push(1); if (c[c.length - 1] === true && c.some(v => bad.has(v))) assert.fail(tag + " " + pg + " t " + t + ": " + JSON.stringify(c)); } };
+  for (const sp of [0, 1, 2]) {
+    const m = () => X26.mib(1, "Kit", sp), pal = () => X26.mib(2, "Pal", (sp + 1) % 3);
+    let p = X26.world([m(), pal()], [1, 2]); p.run("S.ui.aId = 1");
+    scan(p, ["setup", "mibis", "active"], [0, 400], "rest sp " + sp);
+    p.run("FX.moment = { id: 1, at: 0 }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Tend sp " + sp);                       // Tend
+    p.run("FX.moment = { id: 1, at: 0 }; FX.walk = { id: 1, at: 0, others: [2] }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Walk sp " + sp);   // the Walk
+    p.run("FX.moment = null; FX.walk = null; FX.callMibi = { id: 1, at: 0, wrong: false }"); scan(p, ["active", "mibis"], [0, 300, 700, 1200], "Call sp " + sp);   // the Call
+    p = X26.world([m()], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1"); scan(p, ["active", "map"], Array.from({ length: 1000 }, (_, i) => 1000 + i * 20), "look-out sp " + sp);   // 20 s of look-out
+    p = X26.world([m()], [1]); scan(p, ["setup"], [0], "rider sp " + sp);
+    p.setOut(); scan(p, ["map", "place"], [0], "field sp " + sp);
+  }
+  assert.ok(seen.length > 1000, "the recorder saw the draw calls");
+  // the pictures stay embedded and routable: huddle and both eat frames are the juvenile's own, not the idle, not the adult's
+  const q = X1.page();
+  for (const sp of [0, 1, 2]) {
+    const jt = (pose, fr) => px(q, `tokenOf(${sp}, '${pose}', ${fr}, true)`);
+    for (const [pose, fr, key] of [["huddle", 0, "huddle"], ["eat", 0, "eat0"], ["eat", 1, "eat1"]]) {
+      assert.equal(jt(pose, fr), q.run(`Array.from(tokenPB(JUVENILE_ART[${sp}].${key}, 32).p).join()`), sp + " " + key + " is the juvenile's own picture");
+      assert.notEqual(jt(pose, fr), jt("idle", 0), sp + " " + key + " is not its idle"); assert.notEqual(jt(pose, fr), px(q, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + key + " is not the adult's");
+    }
+  }
+});
+
+test("juvenile Loika's Tend paws are drawn 6 source rows (48 px) lower than the adult's, in y only; the adult's, the Tuikis' sparks and the Untuva's ring are unchanged", () => {
+  const pawY = (sp, adult, st) => { const p = X26.world([X26.mib(1, "Kit", sp, adult ? { grownTurn: 0 } : {})], [1]); p.run("S.ui.aId = 1");
+    p.run(`var __p = []; (() => { const real = stagePawY; stagePawY = j => { const y = real(j); __p.push([j, y]); return y; }; })();`);
+    p.run("FX.moment = { id: 1, at: 0 }"); p.draw("active", 700); return plain(p.run("__p")); };
+  assert.deepEqual(pawY(0, true), [[false, 78], [false, 78]], "the adult Loika's two paws: y 78, as before");
+  assert.deepEqual(pawY(0, false), [[true, 126], [true, 126]], "the juvenile Loika's paws: y 78 + 48");
+  assert.equal(p0().run("LOIKA_JUV_PAW_DROP"), 6 * 8, "6 source rows at 8x");
+  for (const sp of [1, 2]) for (const adult of [true, false]) assert.deepEqual(pawY(sp, adult), [], "no paws for species " + sp);
+  assert.match(source("drawActive"), /for \(const px of \[250, 300\]\) blit\(upArt\('paw', ICON\.paw\('blush'\), 3\), px, stagePawY\(st === 'juvenile'\)\)/, "x stays 250 and 300; y by the chip");
+  assert.match(source("drawActive"), /R\(225 \+ Math\.round\(Math\.cos\(a\) \* r \* 1\.2\) - 4, 178 \+ Math\.round\(Math\.sin\(a\) \* r \* \.8\) - 4, 8, 8, C\.fog\)/, "the Untuva ring is as it was");
+  assert.match(source("drawActive"), /\[\[90, 88\], \[340, 118\], \[120, 248\], \[320, 238\]\]/, "the Tuikis' sparks are as they were");
+});
+function p0() { return X1.page(); }
+
+test("juvenile pictures at the sites: setup card and faces, header mini, roster, stage, look-out and the Walk's side tokens ask for the juvenile exactly when the mibi is one", () => {
+  // setup: Dot (Tuikis, juvenile) alone rides: its card at 2×, no ring; its face plate; with Pip (Loika, grown) the partner card is Pip's, an adult picture
+  let p = X26.world([dot()], [1]); let d = p.draw("setup");
+  assert.deepEqual(d.find(c => c[0] === "sprite" && c[6] === 2).slice(1, 9), [1, "idle", 0, 28, 264, 2, false, true].slice(0, 8), "the rider card: Dot's idle at 2×");
+  assert.equal(d.find(c => c[0] === "sprite" && c[6] === 2)[8], true, "juvenile");
+  assert.equal(d.find(c => c[0] === "plate" && c[1] === "c-face-24")[7], true, "Dot's ring face plate asks for the juvenile");
+  assert.equal(d.find(c => c[0] === "mini")[4], true, "and so does the mini inside it");
+  p = X26.world([pip(), dot()], [1, 2]); d = p.draw("setup");
+  assert.equal(d.find(c => c[0] === "sprite" && c[6] === 2)[8], false, "the partner card shows Pip, an adult");
+  assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-face-24").map(c => [c[5], c[7]]), [[1, true], [0, false]], "faces in carried order: Dot (id 1) juvenile, Pip (id 2) adult");
+  // header: the rider's mini asks for the juvenile; a partner's does not
+  p = X26.world([dot()], [1]); p.setOut(); d = p.draw("map"); assert.deepEqual(d.filter(c => c[0] === "mini").map(c => [c[1], c[4]]), [[1, true]], "the rider's mini");
+  p = X26.world([pip(), dot()], [1, 2]); p.setOut(); d = p.draw("map"); assert.deepEqual(d.filter(c => c[0] === "mini").map(c => [c[1], c[4]]), [[0, false]], "the partner's mini");
+  d = p.draw("place"); assert.ok(d.filter(c => c[0] === "mini").every(c => c[4] === false), "in a place too");
+  // roster rows (one token plate each) and the Lead card
+  p = X26.world([pip(), dot(), X26.mib(3, "Moss", 2)], [1, 2, 3]); d = p.draw("mibis");
+  assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-token-48").map(c => [c[5], c[7]]), [[1, true], [0, false], [2, true]], "rows in carried order: Dot juvenile, Pip adult, Moss juvenile");
+  assert.equal(d.find(c => c[0] === "sprite" && c[6] === 2)[8], false, "the Lead card shows the partner, an adult");
+  assert.deepEqual(d.filter(c => c[0] === "sprite" && c[6] === 1).map(c => [c[1], c[8]]), [[1, true], [0, false], [2, true]], "the sprites in the plates");
+  // stage: the shown mibi; a grown mibi keeps the juvenile picture until its cut
+  p = X26.world([pip(), dot()], [1, 2]); p.run("S.ui.aId = 1"); assert.equal(p.draw("active").find(c => c[0] === "sprite")[8], true, "Dot on the stage");
+  p.run("S.ui.aId = 2"); assert.equal(p.draw("active").find(c => c[0] === "sprite")[8], false, "Pip on the stage");
+  p.run("FX.cuts = [{ kind: 'grow', id: 2, at: 5000 }]"); assert.equal(p.draw("active", 1000).find(c => c[0] === "sprite")[8], true, "Pip before its grow cut: the chip and the picture are the juvenile's");
+  assert.equal(p.draw("active", 5200).find(c => c[0] === "sprite")[8], false, "after the cut: the adult's");
+  // look-out and the Call's alert: still the juvenile's
+  p = X26.world([dot()], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1"); let alerts = 0;
+  for (let t = 1000; t < 21000; t += 20) { const s = p.draw("active", t).find(c => c[0] === "sprite"); assert.equal(s[8], true, "t " + t + " " + s[2]); if (s[2] === "alert") alerts++; }
+  assert.ok(alerts > 0, "a look-out happened");
+  p = X26.world([dot()], [1]); p.run("S.ui.aId = 1"); p.run("FX.callMibi = { id: 1, at: 0, wrong: false }"); assert.deepEqual(p.draw("active", 700).find(c => c[0] === "sprite").slice(2, 3).concat(p.draw("active", 700).find(c => c[0] === "sprite")[8]), ["alert", true], "Call: the juvenile's alert");
+  // the Walk's side tokens: the other mibis with you at the foot of the stage
+  p = X26.world([pip(), dot(), X26.mib(3, "Moss", 2)], [1, 2, 3]); p.run("S.ui.aId = 1; FX.walk = { id: 1, at: 0, others: [2, 3] }");
+  d = p.draw("active", 100); assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-token-48").map(c => [c[2], c[5], c[7]]), [[36, 0, false], [366, 2, true]], "left Pip (adult), right Moss (juvenile)");
 });
