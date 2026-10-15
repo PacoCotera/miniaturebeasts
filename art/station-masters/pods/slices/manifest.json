@@ -10605,19 +10605,6 @@
   "signed_in": "art director, verdict (963f4eab)",
   "status_note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
- "leaf-empty-16x20": {
-  "size": [
-   16,
-   20
-  ],
-  "rect": null,
-  "src": "hand-pixelled in tools/incubatorbud.py",
-  "made": "the leaf, empty, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12) (pass 111)",
-  "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
-  "status_note": "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"
- },
  "leaf-full-16x20": {
   "size": [
    16,
@@ -14759,5 +14746,47 @@
   "sha256": "ff10c5e59b5761212ec2f7135db7227939b48b97921c3b66906fe24373170cc0",
   "status": "new",
   "status_note": "new: signed in the whole-screen Pods chapter capture"
+ },
+ "leaf-empty-outline-16x20": {
+  "size": [
+   16,
+   20
+  ],
+  "rect": null,
+  "src": "hand-pixelled in tools/incubatorbud.py",
+  "made": "the leaf, empty, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12) (pass 111)",
+  "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
+  "status": "withdrawn",
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "status_note": "withdrawn (art director, 10-15): the 1 px outline leaf read as a dotted arc (fix 6 N3); replaced under leaf-empty-16x20 by the flat silhouette; kept for the record"
+ },
+ "leaf-empty-16x20": {
+  "size": [
+   16,
+   20
+  ],
+  "rect": null,
+  "src": "cut by hand from leaf-full-16x20's own alpha (fix6/), 0 MXN",
+  "made": "fix 6 A1: the leaf not grown yet, the full leaf's own silhouette in one flat unlit sageD #5d7a5f, no outline or vein; 1.43:1 on the Incubator wall",
+  "sha256": "6f40440f3a15ba5f86419ac5d16c2bcd8930dcfe803d78a085bb8e9afe5b627c",
+  "status": "new",
+  "status_note": "new: signed in the whole incubator-growing capture beside incubator-ready"
+ },
+ "founder-shadow-224x14": {
+  "size": [
+   224,
+   14
+  ],
+  "rect": [
+   400,
+   529,
+   224,
+   14
+  ],
+  "src": "cut by hand (fix6/), 0 MXN",
+  "made": "fix 6 A2: the founder's contact shadow on Create's tray, the bench's shadow ink #060c12, a soft ellipse (alpha 153, core 3 px right) with two pads under the feet (170), clear at the ends",
+  "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
+  "status": "new",
+  "status_note": "new: signed in the whole create-shape capture"
  }
 }

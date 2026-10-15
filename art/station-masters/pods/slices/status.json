@@ -3400,11 +3400,6 @@
   "signed_in": "art director, verdict (963f4eab)",
   "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
- "leaf-empty-16x20": {
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
-  "note": "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"
- },
  "leaf-full-16x20": {
   "status": "signed",
   "signed_in": "art director, verdict (d09acb12)",
@@ -4920,5 +4915,17 @@
  "trait-S01-efficiency-128x160": {
   "status": "new",
   "note": "fix 5 Pods P-A4"
+ },
+ "leaf-empty-outline-16x20": {
+  "status": "withdrawn",
+  "note": "fix 6 A1 replaced it under leaf-empty-16x20"
+ },
+ "leaf-empty-16x20": {
+  "status": "new",
+  "note": "fix 6 A1"
+ },
+ "founder-shadow-224x14": {
+  "status": "new",
+  "note": "fix 6 A2"
  }
 }
