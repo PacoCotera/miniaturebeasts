@@ -32,3 +32,27 @@ These replace the page's code-drawn creatures: `buildCreature` gives the 32 px t
 - S02 (8 + mini): idle, alert, flee (body 2 px longer, stubby legs splayed 3 px), huddle (the cap pulled down over the eyes, which become a 1 px line), shake-f0/f1 (the cap swings opposite), eat-f0/f1.
 - S03 (10 + mini): the same eight (slender legs 2 px wide; flee with the legs stretched, not splayed) plus settle (lowered, legs folded) and curl (a ball, the tail wrapped round the front, the bulb resting on top, yellow only).
 - Sheets: `S02/sheet-S02-candidate.png` and `S03/sheet-S03-candidate.png`: every piece at 8x on ink, at 1x on a 48 px lawn tile beside the pawn (the 48 px frame stands in for c-pawn-32), and S01's, S02's and S03's idles side by side at 1x. Checks: atlas-check ok on a one-piece manifest per file; alpha only 0 and 255; no void anywhere.
+
+**S02 signed** (art director, 2026-10-15 00:48), judged at 1× on the lawn beside the pawn and beside S01 (`S02/sheet-S02-candidate.png`), round 2 at 566c80a6. atlas-check against core48 is ok for every file:
+- `S02/c-token-S02-alert-32x32.png` sha256 `c60bdf85036b7636513250c49d29961c34bdd3cba0e4525b4dc88b22d32bc0c5`
+- `S02/c-token-S02-eat-f0-32x32.png` sha256 `7afedb1bfade2ce7ba8ca97d0f35e97cb8c7506e0b34106751577175342e5c2d`
+- `S02/c-token-S02-eat-f1-32x32.png` sha256 `f516fd1e885c0470e8114faabb7b6bcb54323bf09141e0f84ddb7ec6342a29f7`
+- `S02/c-token-S02-flee-32x32.png` sha256 `72181867c9f4e3c35fbbd4c37c068543d344aa567914e7ee1cbe25d53d65e2f5`
+- `S02/c-token-S02-huddle-32x32.png` sha256 `f169bb2d9e90bd0f5cee5fe0f609ccb8794338353b671a23edbb2c7eae913ac6`
+- `S02/c-token-S02-idle-32x32.png` sha256 `9a633d709e1d419262fc02214bf76e180a09f253e29db28397ed6b661e7ab3d9`
+- `S02/c-token-S02-shake-f0-32x32.png` sha256 `38d9a3e481fc55284c13351525032bbfb947fe12b605a530f0b4fd9242e35456`
+- `S02/c-token-S02-shake-f1-32x32.png` sha256 `327f8d68a89a7d95397ab0a2be34f8bec12baa82edd1bff4d58f73a4084ae0bc`
+- `S02/c-mini-S02-12x12.png` sha256 `fda0c37ecf036a87a3d1260cbc3afe9ed4a3aa75ed30bb7f0fafc150cfecc6c2`
+
+**S03 signed** (art director, 2026-10-15 00:48), judged at 1× on the lawn beside the pawn and beside S01 (`S03/sheet-S03-candidate.png`), round 2 at 566c80a6. atlas-check against core48 is ok for every file:
+- `S03/c-token-S03-alert-32x32.png` sha256 `3741961aac6cf4f0a7d8c0189ac7159ad2c5b03b8f931646e700133bb2ad5b6b`
+- `S03/c-token-S03-curl-32x32.png` sha256 `ece1d5bfecc9ebbb43e6f0fab627e18d939b6cf3c6dbc6267cd1999518bb60fc`
+- `S03/c-token-S03-eat-f0-32x32.png` sha256 `8ef4c7d1fd3789b708a81627bb79f0ae39f4fcdee5109c7ef81541fd6ae62975`
+- `S03/c-token-S03-eat-f1-32x32.png` sha256 `3c22445530931920478f6f5c2ea1c1edebd29788e4fb503e92533fa96b276c30`
+- `S03/c-token-S03-flee-32x32.png` sha256 `219542a1795bb069ca7633bf36534cc2700ff4c838822fafb269b4e5107376ec`
+- `S03/c-token-S03-huddle-32x32.png` sha256 `e5239d7bff540f8052f778114d85e3831536d5af34b7a12046ec310b054ef9fa`
+- `S03/c-token-S03-idle-32x32.png` sha256 `ad6be7be6083289c3ed3b0c8499ccb7b73a3f3e4cb6dfcb7269059c14bb16775`
+- `S03/c-token-S03-settle-32x32.png` sha256 `1d92c52576b4a4926fc5c9b5d55556255fe12f0cc022258ef2e51c581e372807`
+- `S03/c-token-S03-shake-f0-32x32.png` sha256 `29e5eba6ab18d7b669868a77ffca3bcafa48c9ddeeec9e2ef35aa8342283bf33`
+- `S03/c-token-S03-shake-f1-32x32.png` sha256 `70eaa229ab49ab6b4aa7931695d28bde85be565974da4bb97211ed2854ac473d`
+- `S03/c-mini-S03-12x12.png` sha256 `57e75627530901af35d858d96b6df0b98a432f8bf364305fbdf43c9e1fc7db4e`
