@@ -10,7 +10,9 @@ The shown well (--well --shown, id plate-well-<w>x<h>-shown) is the well one ste
 today's hairline tile gives over the panel ((61,67,75) over (43,48,56)); never lit, gold or teal.
 --floor RRGGBB sets the floor's tone outright (the wall's grain kept) for a plate whose text was cleared on another floor;
 --sage R,G,B sets the bezel's mid sage (the shade keeps the housing ramp's ratio) for a plate set into another sage surface.
-usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]] [--floor RRGGBB] [--sage R,G,B]"""
+--open-top cuts the plate into the housing's top bezel, open to the top bar: no top wall, no top hairline, square top corners, no
+inner shade from the top (the rail's well, fix 2 F11: plate-rail-well-<w>x48).
+usage: make-device-plate.py W H OUT.png [--bezel N] [--radius R] [--well [--shown]] [--floor RRGGBB] [--sage R,G,B] [--open-top]"""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -30,7 +32,7 @@ def rrect_sd(W, H, x0, y0, x1, y1, r):
     d_corner = r - np.hypot(xx - cx, yy - cy)
     return np.where(inside_core, d_edge, d_corner)
 
-def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage=None):
+def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage=None, open_top=False):
     st = np.asarray(Image.open(STAGE).convert('RGB')).astype(float)
     wall = st[120:184, 650:778]                                     # the flattest bare stretch of the signed wall (low-frequency sd 0.9)
     grain = np.clip(wall - nd.gaussian_filter(wall, (5, 5, 0)), -6, 6)
@@ -41,8 +43,9 @@ def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage
     if well: bezel = 1
     sage_mid, sage_shade = lin((136, 142, 112)), lin((98, 102, 79))   # the housing's sage ramp, measured on the signed stage
     if sage: sage_shade = lin(np.array(sage, float) * np.array((98, 102, 79)) / (136, 142, 112)); sage_mid = lin(sage)
-    outer = rrect_sd(W, H, 0, 0, W, H, radius)
-    inner = rrect_sd(W, H, bezel, bezel, W - bezel, H - bezel, max(radius - bezel // 2, 2))
+    top = -4 * radius - bezel - 2 if open_top else 0                 # open to the top bar: the rects run on above the canvas
+    outer = rrect_sd(W, H, 0, top, W, H, radius)
+    inner = rrect_sd(W, H, bezel, top + bezel if open_top else bezel, W - bezel, H - bezel, max(radius - bezel // 2, 2))
     yy, xx = np.mgrid[0:H, 0:W] + .5
     # the bezel: a rounded rail (height sin(pi t) across its width), lambert from the top left, in the housing's sage shade range
     t = np.clip(outer / max(bezel, 1), 0, 1)
@@ -54,7 +57,7 @@ def plate(W, H, bezel=5, radius=6, well=False, shown=False, floor_hex=None, sage
     bez = sage_shade * (0.42 + 0.78 * k)[..., None] * 1.12
     bez = bez * (1.04 - 0.08 * (xx / W * .5 + yy / H * .5))[..., None]
     # the well: the floor, an inner shade on the top and left walls, a 1 px lit lip bottom and right
-    dist_top = yy - bezel; dist_left = xx - bezel
+    dist_top = (yy - bezel) if not open_top else np.full_like(yy, 99.0); dist_left = xx - bezel
     shade = 1 - 0.55 * np.exp(-np.clip(np.minimum(dist_top, dist_left), 0, None) / 2.2)
     wellc = floor * shade[..., None] * (1.07 - 0.14 * (xx / W * .5 + yy / H * .5))[..., None]
     lip = (inner > 0) & (inner <= 1.0) & ((xx > W - bezel - 2) | (yy > H - bezel - 2))
@@ -73,4 +76,4 @@ if __name__ == "__main__":
     rd = int(sys.argv[sys.argv.index('--radius') + 1]) if '--radius' in sys.argv else 6
     fl = sys.argv[sys.argv.index('--floor') + 1] if '--floor' in sys.argv else None
     sg = [float(v) for v in sys.argv[sys.argv.index('--sage') + 1].split(',')] if '--sage' in sys.argv else None
-    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv, fl, sg).save(out)
+    plate(W, H, bz, rd, '--well' in sys.argv, '--shown' in sys.argv, fl, sg, '--open-top' in sys.argv).save(out)

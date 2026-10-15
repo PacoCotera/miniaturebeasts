@@ -3731,12 +3731,12 @@
    152,
    40
   ],
-  "src": "chrome geometry, supersampled 4x",
-  "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked (pass 83: the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque; the left ends unchanged)",
-  "sha256": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f",
-  "status": "signed",
-  "signed_in": "art director, pass 83 re-sign",
-  "status_note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+  "src": "device-plate/rail/make-tab-open-cream.py from the signed open fill (pass 83, 75976f3c): same alpha, slant and size, colours only",
+  "made": "gate batch 1 F2-A6: the open tab as the board's cream label plate: face (229, 220, 203) with a quiet fall to the lower right, the signed 1 px bevel ring as the 1 px darker edge (its AA steps kept as blends), the ring inside lit on the top row and left slant, shaded on the bottom row and right slant; matte, no gold; ink reads at 12.9:1 (its word and pips go ink, frame.json states.open)",
+  "sha256": "9048cd142f666635ef1caba8d025f3308d668a0839f997b677f8a0b491c5ead6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-15, gate batch 1 F2-A6): recut by the art director at 0 MXN, replacing the pass 83 slate open fill; signed in the Pods chapter-page and Create captures after fix 2's merge"
  },
  "rail-tab-fill-sealed-full-152x40": {
   "size": [
@@ -15201,6 +15201,240 @@
   "sha256": "48757b73c248bd31ed7385788d53c948097a408d951cbe1971dbdcc0a694deda",
   "status": "new",
   "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
+  "signed_in": null
+ },
+ "plate-rail-well-168x48": {
+  "size": [
+   168,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 168 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 152: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "a245beb4a4228aff71ec216bed384f1599c8401c64dc9643e8558d7049690c78",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-304x48": {
+  "size": [
+   304,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 304 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 288: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "4a9fd279b8bb06e486bb5de79c9f1d45e42e41fe441eda84e17cca76c152410b",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-440x48": {
+  "size": [
+   440,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 440 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 424: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "f442927872faf685e28d8825feba62c668d05aecf22fda43e11aa9edbaea58d1",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-576x48": {
+  "size": [
+   576,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 576 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 560: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "8ef5d050ba53ceefa0ce83a6d31b844f265e1338538485cdf4426035cfe1b8d6",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-712x48": {
+  "size": [
+   712,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 712 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 696: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "5cd5a80740c28dcf59aa72ad0bd8b699220833ff6fbead48e6f78758ebf93c52",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-848x48": {
+  "size": [
+   848,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 848 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 832: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "225b4e587640aeb49139b10b7cff0ffeafa58bc530adc23c4b174392342067a1",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-504x48": {
+  "size": [
+   504,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 504 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 488: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "6597d8d00be8347c8ffd36d90ea762f3976da7d832052bbeafe0e5b7ba99cba5",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-560x48": {
+  "size": [
+   560,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 560 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 544: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "22d9645b324a70a35ee5d67d057e3e509b731a662c465c5d3c02387215f8b0b7",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-616x48": {
+  "size": [
+   616,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 616 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 600: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "dd68b8556569d61e8ad60a12de8ba9b0a4c4abbd4b9c5af4f8e166c63ae25355",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-672x48": {
+  "size": [
+   672,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 672 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 656: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "92693c1cd6fe0533fcd6c56c5bec48fb0c46a7792fbcc79ecd9c5592f182d9f9",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-728x48": {
+  "size": [
+   728,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 728 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 712: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "54962fd5825626bf4d21f31cba6d9e7f6a802a0c75494a6eb20f76d251221b3e",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-784x48": {
+  "size": [
+   784,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 784 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 768: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "1e085e5e8daba7613cff458e9726780eff115befc82fe3e339c586534ffbe129",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-424x48": {
+  "size": [
+   424,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 424 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 408: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "3a9253aeaef3dc49ba94300340c3dc094f5e990cd82ac05a5fa3621fe392d486",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-480x48": {
+  "size": [
+   480,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 480 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 464: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "967810b2d5806ab5ad1d80bc79eb86a6674fbf6fc3cb5d088a2d63d19b1b2223",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-536x48": {
+  "size": [
+   536,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 536 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 520: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "93a9ee7dcd603314985699e6525930f58b9b7cad8afb4cb139ed7b9dd64d2a45",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-592x48": {
+  "size": [
+   592,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 592 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 576: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "9f133748611229d30682e7dbd9e6a6e85a651e5709dd51e7d0e471c93af518ba",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-648x48": {
+  "size": [
+   648,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 648 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 632: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "47d0c6cdc0d445e013572e1bc1ef98be93309eddcd58c1e2afc87a141a340f4d",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "signed_in": null
+ },
+ "plate-rail-well-704x48": {
+  "size": [
+   704,
+   48
+  ],
+  "rect": null,
+  "src": "device-plate/make-device-plate.py 704 48 --open-top (the fix 2 kit, cut from the signed housing)",
+  "made": "fix 2 F11, the chapter rail's well for a run of 688: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
+  "sha256": "487c0847aafa2ef896808b2e745f889019a7f6554c70ea3fe44b554f811978bb",
+  "status": "new",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  }
 }
