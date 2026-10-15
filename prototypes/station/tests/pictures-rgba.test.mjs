@@ -97,7 +97,7 @@ test("fix 7: a resident at night with its master placed shows the grade of the m
   const M = "mibi-juvenile-S09-104x112", id = "mibi:fixture7:juvenile:104x112:night", px = new Uint8ClampedArray(104 * 112 * 4).map((_, i) => (i % 4 === 3 ? 200 : 100 + (i % 97)));
   placeMaster({ id: M, w: 104, h: 112, file: "x.png", hash: "0".repeat(64), status: "master" }, { w: 104, h: 112, rgba: () => px });
   assert.equal(gradedOf(M, "day"), M); assert.equal(gradedOf(M, "night"), M + ":night"); assert.equal(assetEntry(M + ":night").status, "derived");
-  assert.throws(() => gradedOf("mibi-halo-S01-128x160-clear", "night"), /not a resident master/); assert.throws(() => gradedOf("mibi-juvenile-S01-shadow-80x16", "night"), /not a resident master/);
+  assert.throws(() => gradedOf("mibi-halo-S01-128x160-clear", "night"), /not a resident master/); assert.throws(() => gradedOf("founder:S01:0123456789abcdef:all:112x112", "night"), /not a resident master/); assert.throws(() => gradedOf("mibi-juvenile-S01-shadow-80x16", "night"), /not a resident master/);
   registerPictures([{ kind: "mibi", id, mibi: 1, stage: "juvenile", species: "S09", size: [104, 112], light: "night" }], { frameOf: () => null, mibiGenome: () => null });
   const e = assetEntry(id), a = asset(id), want = grade({ w: 104, h: 112, rgba: () => px }, "night").rgba(); assert.equal(e.status, "master"); assert.equal(policyOf(id, e.status), "painted"); assert.deepEqual([...a.rgba()], [...want]); assert.equal(asset(id), a, "built once");
   assert.ok(hasAsset(M + ":night")); dropLight("night"); assert.ok(!hasAsset(M + ":night") && !hasAsset(id) && hasAsset(M), "the night's derived pictures go, the master stays");
