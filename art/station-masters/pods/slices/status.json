@@ -4781,7 +4781,8 @@
   "note": "fix 5 AR5 master"
  },
  "icon-wait-16": {
-  "status": "new",
+  "status": "signed",
+  "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)",
   "note": "fix 6 A3"
  },
  "crate-shadow-256x24": {
@@ -4921,7 +4922,8 @@
   "note": "fix 6 A1"
  },
  "founder-shadow-224x14": {
-  "status": "new",
+  "status": "signed",
+  "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)",
   "note": "fix 6 A2"
  }
 }

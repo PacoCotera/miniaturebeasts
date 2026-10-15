@@ -14403,9 +14403,9 @@
   "src": "typed by hand (icon-wait/make-icon-wait.py), 0 MXN",
   "made": "fix 6 A3: the bud's wait on Create's Grow line, an hourglass in sand and bark, the caps' lit edge in clay and a paper glint on the glass's left (light top left), the sand running top to bottom; sits after the price's three material marks",
   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
-  "status": "new",
-  "status_note": "new: signed in the whole create-shape capture at 1x",
-  "signed_in": null
+  "status": "signed",
+  "status_note": "signed (art director, 10-15), fix 6 A3",
+  "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)"
  },
  "crate-shadow-256x24": {
   "size": [
@@ -14787,7 +14787,8 @@
   "src": "cut by hand (fix6/), 0 MXN",
   "made": "fix 6 A2: the founder's contact shadow on Create's tray, the bench's shadow ink #060c12, a soft ellipse (alpha 153, core 3 px right) with two pads under the feet (170), clear at the ends",
   "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
-  "status": "new",
-  "status_note": "new: signed in the whole create-shape capture"
+  "status": "signed",
+  "status_note": "signed (art director, 10-15), fix 6 A2",
+  "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)"
  }
 }
