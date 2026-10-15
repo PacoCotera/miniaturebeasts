@@ -2515,22 +2515,41 @@ const SPECIES_ART = [
     mini: '.30B4.7BJ4B.5BJ2K2LJB.B4L5B3L4N5LB2L3M2IMNBNB2L2M3BMNBNBL3M4N3B.B2L2N6B.2BL2N5B.2',
   },
 ];
+// The juvenile pictures (signed S03 so far), same species order and same format as above: per species idle, alert, huddle, eat0, eat1 (32 px) and mini
+// (12 px). A species whose entry is empty has no signed juvenile yet and shows the adult picture (tokenOf, miniArt); when the
+// entry holds a picture, a juvenile never shows the adult's. Poses a juvenile has no picture for (flee, shake, curl, settle)
+// show its own idle; none of them is reachable for a juvenile today.
+const JUVENILE_ART = [
+  {},   // S01 Loika
+  { // S03 Tuikis
+    idle: '.245B.12B2.12B2.3a.3B3.5BrqB.10Ba2B3aB3c3B.4BqpB.10Bc2b8c2ZB.4BaB.9Bcab8a2ZB.6B2.9BZab2IBb3IBaZB.6BaB.9BZb2B2b3B2a2ZB.6BaB.9Bb2B2b3B2a2ZB.6BaB2.8Bb9a2ZB.7Ba2B.3B.3Bb8a3ZB.8Bc2B3cB3cb7a2c2ZB.9B2c2b10a6Z2B.10Bb12a5Z2B.11Bb12a2Z4B.11Bcb11a3ZB3.12Baba2b8a3ZB.14Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
+    alert: '.213B.12B2.12B2.3a.3B3.5BrqB.10Ba2B3aB3c3B.4BqpB.10Bc2b8c2ZB.4BaB.9Bcab8a2ZB.6B2.9BZab2IBb3IBaZB.6BaB.9BZb2B2b3B2a2ZB.6BaB.9Bb2B2b3B2a2ZB.6BaB2.8Bb9a2ZB.7Ba2B.3B.3Bb8a3ZB.8Bc2B3cB3cb7a2c2ZB.9B2c2b10a6Z2B.10Bb12a5Z2B.11Bb12a2Z4B.11Bcb11a3ZB3.12Baba2b8a3ZB.14Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
+    huddle: '.407B.10B2.14B2.3a.3B3.3BrqB.12Ba2B3aB3c3B.2BqpB.12Bc2b8c2ZB.2BaB.11Bcab8a2ZB.4B2.11BZab2C2b3C2aZB.4BaB.11BZb2B2b3B2a2ZB.4BaB.11Bb2B2b3B2a2ZB.4BaB2.10Bb9a2ZB.5Ba2B.3B.5Bb8a3ZB.6Bc2B3cB5cb7a2c2ZB.7B2c2b12a6Z2B.8Bb14a5Z2B.9Bb14a2Z4B.9Bcb13a3ZB3.10Baba2b10a3ZB.12Ba16Z2B.11BcaZ3a12ZB.12BZ3B2Z13B.12B20.6',
+    eat0: '.258B2.29BrqB.16B.11BqpB.11B2.3a.3B3.6BaB.10Ba2B3aB3c3B.6B2.10Bc2b8c2ZB.5BaB.8Bcab8a2ZB.7BaB.7BZab2IBb3IBaZB.7BaB2.7BZb2B2b3B2a2ZB.7Ba2B.7Bb2B2b3B2a2ZB.8Bc2B4.3Bb9a2ZB.9B2c2bcB.2Bb8a3ZB.10Bb5B2cb7a2c2ZB.10Bb12a6Z2Bd2.7Bcb12a5Z2B.d2.7Baba2b9a2Z4B.11Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
+    eat1: '.258B2.29BrqB.16B.11BqpB.11B2.3a.3B3.6BaB.10Ba2B3aB3c3B.6B2.10Bc2b8c2ZB.5BaB.8Bcab8a2ZB.7BaB.7BZab2IBb3IBaZB.7BaB2.7BZb2B2b3B2a2ZB.7Ba2B.7Bb2B2b3B2a2ZB.8Bc2B4.3Bb9a2ZB.9B2c2bcB.2Bb8a3ZB.10Bb5B2cb7a2c2ZB.10Bb12a6Z2B.9Bcb12a5Z2B.d2.7Baba2b9a2Z4B.11Ba14Z2B.13BcaZ3a10ZB.14BZ3B2Z11B.15BbaBaZB3aZB3baB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15BbaBaZB.BaZB.BbaB.15B7.B4.B4.8',
+    mini: '.19B.8B2.aB2.5Ba2B2a2B.4Bb5aB.4BbIb2BbaB.2Bb2Bb2BbcBp.Bb6c2BaBb6Z2B.2Bb5Z2B.3BbBbBb2ZB.4B8.2',
+  },
+  {},   // S02 Untuva
+];
 function tokenPB(rle, w) {
   const pb = new PB(w, w); let i = 0;
   for (const [, ch, n] of rle.matchAll(/([.A-Za-z])(\d*)/g)) { const k = n ? +n : 1; if (ch !== '.') pb.p.fill(RUN_LETTERS.indexOf(ch), i, i + k); i += k; }
   return pb;
 }
 // The signed token for a species and pose (fr: the shake and eat frames), or null where the masters have no picture of it:
-// approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null.
-function tokenOf(sp, pose, fr) {
+// approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
+// juvenile: its own picture where the species has one, else the adult's.
+function tokenOf(sp, pose, fr, juv) {
   const t = SPECIES_ART[sp]; if (!t) return null;
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
+  const j = juv && JUVENILE_ART[sp];
+  if (j && j.idle) { const k = n !== 'mini' && j[n] ? n : 'idle'; return art('tj' + sp + k, () => tokenPB(j[k], 32)); }
   return t[n] && n !== 'mini' ? art('tk' + sp + n, () => tokenPB(t[n], 32)) : null;
 }
-const miniArt = sp => SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : null;
+const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.mini ? art('tjm' + sp, () => tokenPB(j.mini, 12)) : SPECIES_ART[sp] ? art('tkm' + sp, () => tokenPB(SPECIES_ART[sp].mini, 12)) : null; };
 
 // A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
-function creatureArt(sp, pose, fr, s) { const t = tokenOf(sp, pose, fr) || tokenOf(sp, 'idle', 0); return (s || 1) === 1 ? t : upArt('tk' + sp + pose + (fr ? 1 : 0), t, s); }
+function creatureArt(sp, pose, fr, s, juv) { const t = tokenOf(sp, pose, fr, juv) || tokenOf(sp, 'idle', 0, juv); return (s || 1) === 1 ? t : upArt('tk' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
 
 // The pawn: a small explorer in a hooded orange wetsuit, cream face opening, dark belt with a lantern at the hip.
 // Rounded torso: narrow shoulders, a waist under the chest, a round hip line; walk frames lift one leg and swing the arms.
@@ -2746,7 +2765,7 @@ const ICON = {
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
   wave: () => art('i-wave', () => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
   burrow: (lit) => art('i-burrow' + lit, () => { const pb = new PB(16, 14); pb.ell(8, 12, 7.5, 9, lit ? C.clay : C.stone, { clip: (x, y) => y < 13 }); pb.ell(8, 13, 4, 7, lit ? C.void : C.night, { clip: (x, y) => y < 13 }); pb.rect(0, 13, 16, 1, lit ? C.bark : C.slate); if (lit) pb.rect(7, 10, 2, 2, C.yellow); return pb; }),
-  mini: (sp) => miniArt(sp),
+  mini: (sp, juv) => miniArt(sp, juv),
   tick: (col) => art('i-tick' + col, () => { const pb = new PB(11, 9); for (const [x, y] of [[0, 4], [1, 5], [2, 6], [3, 7], [4, 6], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1], [10, 0]]) pb.rect(x, y, 1, 2, C[col]); pb.outline(() => C.ink); return pb; }),
   pip: () => art('i-pip', () => { const pb = new PB(5, 5); pb.rect(1, 1, 3, 3, C.white); pb.outline(() => C.ink); return pb; }),
   call: (col) => art('i-call' + col, () => { const pb = new PB(14, 14), c = C[col]; pb.rect(0, 6, 2, 2, c);
@@ -3751,7 +3770,7 @@ function drawHUD() {
   if (chipW) { panel(x, 6, chipW, 22, C.ink, C.mint); text(DOCK_TEXT.chip, x + 8, 9, C.mint); x += chipW + 4; }
   if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 21); miniOf(ex.pt.sp, x, 10); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 9, C.amber); }
   else if (!ex.pt && ex.rider && x + 14 < rx) {   // the rider in the partner's slot: its mini in a window (it rides in the device), no ring; its name in fog, clipped
-    panel(x - 2, 8, 16, 16, C.night, C.slate); miniOf(ex.rider.sp, x, 10);
+    panel(x - 2, 8, 16, 16, C.night, C.slate); miniOf(ex.rider.sp, x, 10, true);
     const room = rx - 4 - (x + 17); if (room >= 30) text(clipText(ex.rider.name, room, 2), x + 17, 9, C.fog); }
 }
 function drawTop(title, right, cs) {
@@ -3998,13 +4017,13 @@ function drawSetup(t) {
     chip(112, 292, st, stageFill(st), 'bone');
     text(clipText(abTextOf(pm.sp), 220, 2), 112, 320, C.stone); }
   else if (cm.length) { const rd = cm[0], st = mibiStage(rd), nm = clipText(rd.name, 220, 3);   // the rider, first in carried order: its picture with no ring, and how it grows
-    mibiSprite(rd.sp, 'idle', fr, 28, 264, 2);
+    mibiSprite(rd.sp, 'idle', fr, 28, 264, 2, false, st === 'juvenile');
     text(nm, 112, 260, C.ink, 3); if (rd.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, st, stageFill(st), 'bone');
     text(clipText(rd.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime, 306, 2), 112, 320, C.stone); }
   else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
-  if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm); else blit(dashedCircleArt(24), fx, 262); }
+  if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm, !isAdult(q)); else blit(dashedCircleArt(24), fx, 262); }
   // the world preview: the whole map small, the last start flagged, and the count
   const iy = 360, u = 6; drawWorldInset(24, iy, t, u);
   const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
@@ -4211,9 +4230,9 @@ const dashedCircleArt = d => art('dcirc' + d, () => { const pb = new PB(d, d), c
   pts.sort((a, b) => a[2] - b[2]); pts.forEach(([x, y], i) => { if ((i >> 1) % 2 === 0) pb.set(x, y, C.stone); }); return pb; });
 // The 24 px HUD ring face: the face is the missing asset c-face-24, drawn as its labelled placeholder; the ring at its foot is
 // the partner's marker (`teal` for the partner, `stone` for the others), a plain outline.
-function ringFace(x, y, sp, partner) {
+function ringFace(x, y, sp, partner, juv) {
   const ring = partner ? ringArt('rf24t', 24, 8) : ringArt('rf24s', 24, 8, C.stone, C.slate);
-  blit(ring, x, y + 16); placeholderPlate('c-face-24', x, y, 1, sp);
+  blit(ring, x, y + 16); placeholderPlate('c-face-24', x, y, 1, sp, 0, juv);
   g.save(); g.beginPath(); g.rect(x, y + 20, 24, 4); g.clip(); blit(ring, x, y + 16); g.restore();   // the ring's front arc in front of the face: it stands on it
 }
 // A missing asset of the register (CARE_ASSETS), drawn as its labelled placeholder at its exact size (k: pixel for pixel at k×):
@@ -4221,19 +4240,19 @@ function ringFace(x, y, sp, partner) {
 // 32 px sprite at 1× (breath frame fr) on the token. The label, where it fits, is drawn only while the observer panel is open,
 // so a reviewer can name every placeholder and a player sees no build words. Never drawn art; the master replaces it by id.
 const obsOpen = () => { const o = document.getElementById('obs'); return !!o && o.hidden === false; };
-function placeholderPlate(id, x, y, k, sp, fr) {
+function placeholderPlate(id, x, y, k, sp, fr, juv) {
   const a = CARE_ASSETS.find(e => e.id === id), [fill, labels, carries] = PLATE[id]; k = k || 1; const w = a.w * k, h = a.h * k;
   R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C[fill]);
-  if (sp != null && carries === 'mini') miniOf(sp, x + (w - 12) / 2, y + (h - 12) / 2);
-  else if (sp != null && carries === 'sprite') mibiSprite(sp, 'idle', fr || 0, x + (w - 32) / 2, y + (h - 32) / 2, 1);
+  if (sp != null && carries === 'mini') miniOf(sp, x + (w - 12) / 2, y + (h - 12) / 2, juv);
+  else if (sp != null && carries === 'sprite') mibiSprite(sp, 'idle', fr || 0, x + (w - 32) / 2, y + (h - 32) / 2, 1, false, juv);
   const lbl = obsOpen() && labels.find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
 }
 // A mibi's sprite at k× (1 field, 2 cards, BIG the stage); a species the Companion has no art for is its labelled plate in the same rect.
-function mibiSprite(sp, pose, fr, x, y, k, flip) {
-  if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(k > 2 ? bigArt(sp, pose, fr) : creatureArt(sp, pose, fr, k), x, y, 0, flip);
+function mibiSprite(sp, pose, fr, x, y, k, flip, juv) {
+  if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(k > 2 ? bigArt(sp, pose, fr, juv) : creatureArt(sp, pose, fr, k, juv), x, y, 0, flip);
 }
 // The 12 px partner mini (the HUD, the field marker); a species with no art is its labelled plate.
-function miniOf(sp, x, y) { if (spOf(sp).other) placeholderPlate('c-mini-other-12', x, y); else blit(ICON.mini(sp), x, y); }
+function miniOf(sp, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-mini-other-12', x, y); else blit(ICON.mini(sp, juv), x, y); }
 // Why there is no partner, on the Lead card and the partner card.
 function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; const j = cm.find(m => !isAdult(m)); return j && j.bonded ? CARE_TEXT.youngCare : CARE_TEXT.youngTime; }
 // Mibis: the roster. The Lead card; "With you" and three places (a free place dashed, never focused); docked, "At home".
@@ -4257,7 +4276,7 @@ function rosterRow(m, y0, sel, isP, fr) {
   rosterCard(16, y0, 418, 64, sel); const y = sel ? y0 - 2 : y0, st = mibiStage(m);
   const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
   if (isP) blit(RING(), 38, y + 48);
-  placeholderPlate('c-token-48', 28, y + 8 - hy, 1, m.sp, fr);   // the 48 px field token is a missing asset: its plate carries the mibi's sprite
+  placeholderPlate('c-token-48', 28, y + 8 - hy, 1, m.sp, fr, st === 'juvenile');   // the 48 px field token is a missing asset: its plate carries the mibi's sprite
   const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) placeholderPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
   let cx = 88; cx += chip(cx, y + 38, st, stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
   if (sel) text('▶', 422, y + 22, C.mist, 2, 'right');   // the open mark: ▶ opens this mibi's page
@@ -4288,7 +4307,7 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
   for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) { const c = src.p[y * src.w + x]; if (c < 0) continue; for (let j = 0; j < k; j++) for (let i = 0; i < k; i++) pb.p[(y * k + j) * pb.w + x * k + i] = c; }
   return pb; }); }
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
-const bigArt = (sp, pose, fr) => upArt('cr' + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr), BIG);
+const bigArt = (sp, pose, fr, juv) => upArt('cr' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr, 1, juv), BIG);
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
 // A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
@@ -4346,14 +4365,14 @@ function drawActive(t) {
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
-  mibiSprite(m.sp, pose, fr, x, y, BIG, flip);
+  mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
   if (h && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 78);
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
   // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
   const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
-  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260, 1, q.sp, mo ? Math.floor(t * 1.25) % 2 : 0); });   // the 48 px field token is a missing asset
+  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260, 1, q.sp, mo ? Math.floor(t * 1.25) % 2 : 0, !isAdult(q)); });   // the 48 px field token is a missing asset
   // the bond's heart: c-heart-24 at 2×, rising beside the head from y 140 to 60 in four 20 px steps of 150 ms, held 900 ms;
   // under reduced motion it stands at y 60 for 1.5 s
   if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; placeholderPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
