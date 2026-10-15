@@ -547,10 +547,13 @@ for p in json.load(open(os.path.join(TS, "props", "props.json")))["pieces"]:
 # reviewed on their sheet with a settled v1 role. Still candidate: side columns and stairs (not yet composed), material.rock (its cliff-band
 # captures), and every piece v1 does not draw (shore macros, lobes, beaches, bend, band, wall foot strips, bush, fern, bridge).
 def signed(n, f):
+    # The art director's sign, 2026-10-15 (round 2, 6c2ffc1a): every piece v1 draws, seen at 1x in the drop2 proofs (light and deep,
+    # the levels, the lawn tiling) and in the Companion's M3/M4 whole screens. Still candidate: what v1 does not draw (the shore lobes,
+    # beaches, bend and band; the wall foot strips; bush, fern, bridge) and the side columns, recut 10-15 and not yet seen in a place capture.
     k = f["kind"]
-    if k in ("ground",) or (k == "decal"): return True                # the lip, faces, caps and water quarters were redrawn (level tone, the
-    # foot, the rock's contrast, round shores): candidate until they are signed in the new proof
-    if k == "prop" and f.get("type") in ("boulder", "reeds", "flowers"): return True
+    if k in ("ground", "decal", "lip", "face", "cap", "stair", "landing", "apron-top", "light", "shadow", "material", "shore-macro"): return True
+    if k == "shore" and f.get("set") in ("water", "water-sand", "sand", "core"): return True
+    if k == "prop" and f.get("type") in ("boulder", "reeds", "flowers", "ford"): return True
     return False
 PIECES = [(n, a, dict(f, status="signed") if signed(n, f) else f) for n, a, f in PIECES]
 
