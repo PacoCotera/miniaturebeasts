@@ -715,7 +715,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | --- | --- | --- |
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag |
 | `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`), 1:1. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (536, 488, 16, 24) over it; docked, no mark. Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
 | `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
@@ -730,7 +730,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | --- | --- | --- | --- |
 | `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (800 + 64i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 928, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
 | `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
-| `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber. The hatched mibi's painting on its way: lamp waiting |
+| `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber |
 | `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
 | `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72 | No species found: the journal shut, lamp off. Otherwise the journal, lamp well |
 
@@ -990,7 +990,7 @@ The Vivarium only, one painting a light (dawn, day, dusk, night), the warm key l
 | Region (`frame.json` `idle`) | Rectangle | Notes |
 | --- | --- | --- |
 | `vivarium` | 0, 0, 1024, 568 | One painting, the master of the light (`idle-vivarium-dawn|day|dusk|night-1024x568`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20; frame.json `light`). Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag; the waiting lamp steady at its box's top right. Drawn by the feet's y |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag. Drawn by the feet's y |
 | `bed` | 792, 496, 192, 56 | The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`; the same picture as Home's), 1:1. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (880, 512, 16, 24) over it; docked, no mark |
 | `strip` | 0, 568, 1024, 32 | Build `idleLine`; a 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | 16 px `mist`, centred on x 512 and y 584; one sentence, six words or fewer, no digits |
@@ -1352,7 +1352,6 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 | Base | `enamel`, matte, lit `sand`, shade `bevel`, edge `hairline`; the foot light `sage`, a quiet line that says it is alive and working; the plaque's plate `panel` with a `hairline` edge | The sand housing |
 | Plaque | growing `fog`, ready `bone`, empty `fog` | Ready is the brightest word, for across a table; empty never recedes to `mist` |
 | Leaves | Full `sage` with a `sageD` vein; empty an outline in `metal`; the current leaf `sage` rows from its foot | The palette's leaf timer |
-| Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role |
 | Stamp label, code | `bone` label with a `slate` edge; code `bone` | A readout |
 | Ribbon | Fill `tealD`, rim `aqua`, words `bone` | The one ribbon look, as on Home and Pods |
 
@@ -1386,7 +1385,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
 | `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking: crack-1 then crack-2 over the ready bud |
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
-| `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
+| `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on |
 | `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
 | `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
 | `code` | 808, 424, 184, 24 | text | growing, ready, hatch | — |
@@ -1451,7 +1450,6 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 (measured at alpha ≥ 128) | S01 and S03 are placed (signed, art director at 1x, masters-pods 8c3b6a7b); S02 and S04–S16 are empty slots, nothing drawn until placed |
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
-| Waiting lamp | 12×12 | Carried |
 | Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
 | Juvenile | 304×312: the new mibi's painting, or its signed juvenile stand-in (mibi-juvenile-<species>-304x312) | Carried |
 
@@ -1560,7 +1558,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | --- | --- | --- | --- |
 | `stage` | 0, 40, 1024, 522 | frame, part stage | Flat `ground` round the strip |
 | `window` | 0, 40, 1024, 440 | living window, part inside, no frame | Idle's painting rows 120 to 560 at 1:1; ground band 0, 296, 1024, 176; foot 0, 472, 1024, 8 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag |
 | `bed` | 792, 416, 192, 56 | living window, build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
 | `nameTag` | 24 tall; the name + 16, up to 8, 48 to 176 | panel and text, build `nameTag` | Home's tag (16 px). Top at feet + 24; if its bottom would pass y 472 it sits over the resident (top = box.y − 4 − 32); a sleeper's over it. Slid to stay 8 px inside the window |
 | `strip` | 16, 488, 992, 64 | panel | The rectangle of one mibi up close |
@@ -1600,7 +1598,7 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 <td valign="top"><img src="station-layouts/18a-vivarium-whole-away.png" width="480" alt="The whole, the Companion away"><br><em>18a. The whole, away: Pip and Sorrel out, the bed's Companion mark, their tiles' outline glyph, the ring on Pip's tile, <code>✓ Look at Pip</code>. 1×, measured.</em></td>
 <td valign="top"><img src="station-layouts/18b-vivarium-whole-empty.png" width="480" alt="The whole, empty"><br><em>18b. The whole, empty: six free bays, no ring and no ✓ cap, "nobody lives here yet". 1×, measured.</em></td>
 </tr><tr>
-<td valign="top"><img src="station-layouts/19a-vivarium-mibi-meet.png" width="480" alt="One mibi up close, the meet"><br><em>19a. The meet: Moss from the hatch, its signed stand-in and waiting lamp, the ribbon in the tag's place, <code>✓ Name Moss</code>. Unbonded and young: no heart, no notches, no partners. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/19a-vivarium-mibi-meet.png" width="480" alt="One mibi up close, the meet"><br><em>19a. The meet: Moss from the hatch, its signed juvenile stand, the ribbon in the tag's place, <code>✓ Name Moss</code>. Unbonded and young: no heart, no notches, no partners. 1×, measured.</em></td>
 <td valign="top"><img src="station-layouts/19b-vivarium-mibi-child.png" width="480" alt="One mibi up close, a bred child"><br><em>19b. A bred child: two chapters still a surprise and one sealed; the ring on an unread plate, <code>✓ Read Coat   ◆ 1</code>. 1×, measured.</em></td>
 </tr><tr>
 <td valign="top"><img src="station-layouts/19c-vivarium-mibi-out.png" width="480" alt="One mibi up close, out with the Companion"><br><em>19c. Out: Pip is with the Companion; the out mark keeps its place, the ring on its name, <code>✓ Rename Pip</code>; the Companion module shows the set while away. 1×, measured.</em></td>
@@ -1624,7 +1622,7 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 
 | Focus | ✓ and its verb | Context |
 | --- | --- | --- |
-| A resident | `✓ Look at Bean` | "an adult Untuva"; a sleeper "an elder Untuva, asleep"; one waiting for its painting "its painting is on its way" |
+| A resident | `✓ Look at Bean` | "an adult Untuva"; a sleeper "an elder Untuva, asleep" |
 | A tile, the mibi at home | As its resident | As its resident |
 | A tile, the mibi out | `✓ Look at Pip` | "out with the Companion" |
 | Nothing (empty) | no ✓ cap | "nobody lives here yet" |
