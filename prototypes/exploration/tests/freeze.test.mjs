@@ -422,7 +422,8 @@ test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a plac
 });
 
 // ---- a save that cannot be shown: the device's way out is two presses, and the old save is kept whole ----
-for (const kind of ["broken", "newer"]) test(`a ${kind} save: ✓ arms, ✓ again keeps the old bytes in one slot and starts a new world; any other key does nothing`, () => {
+test("a broken save: ✓ arms, ✓ again keeps the old bytes under its own key and starts a new world; any other key does nothing", () => {
+  const kind = "broken";
   const old = JSON.stringify({ v: 8, seed: 5, note: "old bytes " + kind });
   const p = page({}); p.store[p.KEY] = old;
   p.run(kind === "broken" ? "readOnlyBroken()" : "readOnlyNewer()");
@@ -473,4 +474,17 @@ test("a v8 save that throws while it loads leaves every stored key untouched", (
   const w2 = [], s2 = new Proxy({ ...init }, { set: (o, k, v) => { w2.push("set:" + k); o[k] = v; return true; }, deleteProperty: (o, k) => { w2.push("rm:" + k); delete o[k]; return true; } });
   const q = page(s2); w2.length = 0; for (const k of Object.keys(init)) q.store[k] = init[k]; w2.length = 0; q.run("S = null; RT.readOnly = false; RT.broken = false; migrateCarried = () => { throw new Error('no'); }; globalThis.__r = load();");
   assert.equal(q.run("__r"), "broken"); assert.deepEqual(w2, [], "nothing written or removed on the way to the broken screen");
+});
+
+test("a newer save: ✓ reloads in one press, no arm, no new world; the save is never written or moved", () => {
+  const old = JSON.stringify({ v: 9, seed: 5, cr: [], mibis: [] });
+  const p = page({ "mb-save-v8": old });
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("!!RT.broken"), false);
+  p.run("globalThis.__rl = 0; location = { reload: () => { __rl++; } };");
+  for (const k of ["up", "down", "left", "right", "back", "call"]) { p.key(k); assert.equal(p.run("__rl"), 0, k); assert.equal(p.run("RT.armNew || 0"), 0); }
+  assert.equal(p.run("FX.bumpAt"), p.clock.t, "refused with the bump");
+  p.key("confirm"); assert.equal(p.run("__rl"), 1, "one press reloads"); p.key("confirm"); assert.equal(p.run("__rl"), 2);
+  assert.equal(p.store["mb-save-v8"], old, "never written"); assert.ok(!Object.keys(p.store).some(k => k.startsWith("mb-save-kept")), "never moved"); assert.equal(p.run("RT.readOnly"), true);
+  p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }");
+  const t = p.run("__said.join('|')"); assert.ok(t.includes("Newer save · untouched · reload plays it") && !/new world|out of date/i.test(t), t);
 });

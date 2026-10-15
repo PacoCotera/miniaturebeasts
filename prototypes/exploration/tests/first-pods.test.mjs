@@ -265,8 +265,8 @@ test("the Untuva meal hint: the unknown variant names no species, the known one 
 test("a sign never joins another sign or a note; the one that loses keeps its flag and shows at its next trigger", () => {
   const p = page();
   p.run("newWorld(3); startExpedition('weather', G.spawns[0]);");
-  assert.equal(p.run("FX.msg"), "Your start · end the expedition here");
-  assert.equal(p.run("FX.sign.sign"), "start");
+  assert.equal(p.run("FX.msg"), "", "no card on the first map view: the cell line says the start");
+  assert.ok(p.S.found.includes("met:flag"), "the flag joins the Probe silently");
   p.run("FX.notes = []; FX.sign = null; fxSign('call'); fxSign('storm', 1); fxSign('fog'); fxMsg('A plain note', 1);");
   assert.equal(p.run("FX.sign.sign"), "storm", "priority 3 ties break to the hazards first");
   assert.equal(p.run("FX.msg"), "More bolts, more strikes · ▶ east", "no join");
@@ -326,7 +326,7 @@ test("the Probe's storm tile leads with the exact odds in words derived from STR
 });
 
 test("the Call sign: after every hazard sign; only on entering a place or a Call press in one; never from a step, a take or a wait", () => {
-  assert.equal(page().run("SIGN_RANK.slice(0, 6).join()"), "shield,bank,shelter,warn,storm,start");
+  assert.equal(page().run("SIGN_RANK.slice(0, 6).join()"), "shield,bank,shelter,warn,storm,call");
   assert.ok(page().run("SIGN_RANK.indexOf('call') > SIGN_RANK.indexOf('storm')"));
   const enter = () => { const p = page(); p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); FX.notes = []; FX.sign = null; FX.msg = ''; S.found.push('mapintro');"); return p; };
   // entering with no hazard: the card is the Call sign and it is spent
@@ -371,4 +371,38 @@ test("the storm tile's odds have a long and a short form, both from STRAY's word
   assert.ok(p.run("textWT(stormOddsShort(), 2)") <= 142 && p.run("textWT(stormOdds(), 2)") <= 200);
   p.run("stormLevel = () => 3;"); assert.equal(p.run("stormOddsShort()"), "Hit one in " + wp);
   assert.ok(!/[\d%]/.test(p.run("stormOdds() + stormOddsShort()")));
+});
+
+test("the Probe's Energy is the Energy held; the patch is shown with a plate gone and works only when held and not docked; it arms only while it can be spent", () => {
+  const p = page();
+  p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'probe'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  const drawn = () => p.run("__t = []; drawProbe(0); __t.join('|')"), ctx = () => p.run("lineFor()");
+  // the count is the held Energy, equal to the field HUD's counter
+  p.run("S.exp.cargo.e = 5;"); assert.ok(drawn().includes("|5|") || /\|5(\||$)/.test(drawn()), "held: 5"); assert.ok(!p.run("drawProbe.toString()").includes("energyInReach"));
+  assert.deepEqual(["Shield", "Reach", "Hold"].map(w => drawn().includes(w)), [true, true, true], "one-word captions");
+  // plates whole: no offer
+  p.run("S.exp.shield = S.exp.smax;"); assert.ok(!/mends a bar|✓ again|Confirm: patch/.test(drawn())); assert.equal(ctx().ok, ""); p.key("confirm"); assert.equal(p.run("S.ui.patchArm || 0"), 0);
+  // affordable
+  p.run("S.exp.shield = 1; S.exp.cargo.e = 3;"); assert.ok(drawn().includes("3 Energy mends a bar")); assert.equal(ctx().dim, false);
+  p.key("confirm"); assert.equal(p.run("S.ui.patchArm"), 1); assert.equal(ctx().ok, "Confirm: patch, 3 Energy"); assert.ok(!p.run("FX.msg").includes("✓ again"), "no arm message in the box");
+  p.key("confirm"); assert.equal(p.run("S.exp.cargo.e"), 0); assert.equal(p.run("S.exp.shield"), 2);
+  // unaffordable: dim, bump, nothing arms
+  p.run("S.exp.cargo.e = 2; FX.bumpAt = -1e9;"); assert.equal(ctx().dim, true); p.key("confirm"); assert.equal(p.run("S.ui.patchArm"), 0); assert.equal(p.run("S.exp.cargo.e"), 2); assert.ok(p.run("FX.bumpAt") > 0, "the refusal bump");
+  // the arm guard
+  p.run("S.ui.patchArm = 1;"); drawn(); assert.equal(p.run("S.ui.patchArm"), 0, "armed while not enabled: cleared on the next frame");
+  p.run("S.exp.cargo.e = 3; S.ui.patchArm = 1; S.exp.shield = S.exp.smax;"); drawn(); assert.equal(p.run("S.ui.patchArm"), 0);
+  // between expeditions: no offer
+  p.run("S.exp = null; S.phase = 'probe'; S.shield = 1;"); assert.ok(!/mends a bar/.test(drawn())); assert.equal(ctx().ok, "");
+});
+test("an empty pod slot is a dashed outline; the fruit is at 2x; Cargo between expeditions is pictures only", () => {
+  const p = page();
+  p.run("newWorld(3); globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
+  assert.ok(!/Math\.cos/.test(p.run("podSlot.toString()")) && /dashedRect/.test(p.run("podSlot.toString()")), "no hollow oval");
+  assert.ok(/cen2\('fruit'/.test(p.run("PIC.fruit.toString()")), "the 12x12 fruit is drawn 24x24");
+  p.run("S.phase = 'cargo'; S.bay = [{ id: 1, n: 1, pods: [], e: 1, d: 0, s: 0 }]; __t = []; drawCargo(0);");
+  const t = p.run("__t.join('|')"); assert.ok(!/Away|Docked|accepts|Probe tier|World turn|Nothing sealed/.test(t), t); assert.ok(t.includes("The sealed bay"));
+  assert.equal(p.run("lineFor().ctx"), "1 crate sealed · dock to transfer", "the bay line is the bottom line's, once");
+  p.run("S.bay = []"); assert.equal(p.run("lineFor().ctx"), "");
+  assert.equal(p.run("Math.max(tierOf().hold, 0)"), 2, "tier 1: two pod slots");
+  p.run("startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; __t = []; drawCargo(0);"); assert.ok(p.run("__t").includes("Reach"), "the Reach caption on Cargo");
 });

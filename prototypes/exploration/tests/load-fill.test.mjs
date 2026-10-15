@@ -94,7 +94,7 @@ test("a save forced to throw (ui present but null, kept as it is) opens read-onl
 
 // The line drawn on the read-only screen: every text() call of one render.
 function drawnText(p) { p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }"); return plain(p.run("__said")); }
-const BROKEN_LINE = "This save can’t be shown · kept untouched", NEWER_LINE = "This page is out of date · reload to play", PAGE_LINE = "Reset game erases this save and starts fresh";
+const BROKEN_LINE = "This save can’t be shown · kept untouched", NEWER_LINE = "Newer save · untouched · reload plays it", PAGE_LINE = "Reset game erases this save and starts fresh";
 
 test("nextId: missing, it is 1 + the highest r/p/b/n pod id held anywhere in the save; a valid one is kept, an invalid one is counted", () => {
   const p = page(), o = JSON.parse(SCHEMA);
