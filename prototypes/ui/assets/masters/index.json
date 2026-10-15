@@ -1499,6 +1499,13 @@
    "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
    "signed": "named with --ids"
   },
+  "mark-line-only-16x16": {
+   "file": "pods/mark-line-only-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "162c369faea78c4ecc5cc8c12656c2d420df31457134f3a992a2361053453953",
+   "signed": "station lead's brief (Pods GB1 C6, fix 11), masters-pods 8a8985b6: the name-line seeds redrawn at 12 px, the only glyph (status new; the AD signs in the captures)"
+  },
   "mark-line-only-16x8": {
    "file": "pods/mark-line-only-16x8.png",
    "w": 16,
@@ -1510,15 +1517,15 @@
    "file": "pods/mark-line-seed-12x16.png",
    "w": 12,
    "h": 16,
-   "sha256": "5d2480ccc01fab311f73a90c355cd9891f1c6a409f14b400a89533954241fae7",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "13dd87f2dbc840de1ebf73990d043dc01b8a667ea4548f519cd05dba9579486e",
+   "signed": "station lead's brief (Pods GB1 C6, fix 11), masters-pods 8a8985b6: the name-line seeds redrawn at 12 px, the only glyph (status new; the AD signs in the captures)"
   },
   "mark-line-seed-pair-20x16": {
    "file": "pods/mark-line-seed-pair-20x16.png",
    "w": 20,
    "h": 16,
-   "sha256": "0bd94a522721d74f9fb156df37e731a09252e01a8225302f8220df37ed3a4203",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "32ca35ff6b0229ac381ea11db3d7be06f3ce983e3ed3897d7a6bb5ff0b1e985f",
+   "signed": "station lead's brief (Pods GB1 C6, fix 11), masters-pods 8a8985b6: the name-line seeds redrawn at 12 px, the only glyph (status new; the AD signs in the captures)"
   },
   "mark-only-72x8": {
    "file": "pods/mark-only-72x8.png",
@@ -2682,6 +2689,34 @@
    "h": 24,
    "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "plate-well-112x104": {
+   "file": "pods/plate-well-112x104.png",
+   "w": 112,
+   "h": 104,
+   "sha256": "20cb709a34c7c9ea1e4abb0f4933c71306be54a86ae2d2948b50e66c45e2efaf",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-112x168": {
+   "file": "pods/plate-well-112x168.png",
+   "w": 112,
+   "h": 168,
+   "sha256": "7bec12230770ecf27785451eb37718c676d29f9abc6ecc67bc4b9b306fe9ab9f",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-120x120": {
+   "file": "pods/plate-well-120x120.png",
+   "w": 120,
+   "h": 120,
+   "sha256": "8fb2ad32e18fa70a3d0861300a3d71df0d67441ef61dd9169f8230cd990e4426",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-136x168": {
+   "file": "pods/plate-well-136x168.png",
+   "w": 136,
+   "h": 168,
+   "sha256": "700652b7023ad217be6e19c8c264148f19d200d07456066de138016f9c7e94fc",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
   },
   "pod-collection-band": {
    "file": "pods/pod-collection-band.png",

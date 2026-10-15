@@ -31,7 +31,7 @@ test("the slanted rail: full tabs to six, compact with the open one full to twel
 test("the page: its size and grid by trait count; a count the table lacks is the UI designer's", () => {
   const P = pods.regions.chapter.page;
   assert.deepEqual(pageSize(P, 1), [152, 232]); assert.deepEqual(pageSize(P, 8), [584, 440]); assert.deepEqual(pageSize(P, 99), [584, 440]); assert.deepEqual(pageSize(P, 0), [152, 232]);
-  assert.equal(pageGrid(P, 4).cells.length, 4); assert.deepEqual(pageGrid(P, 6).cells[3], [P.rect[0] + 24, P.rect[1] + 256, 128, 184]); assert.equal(pageGrid(P, 9).overflow, true); assert.equal(pageGrid(P, 0).overflow, false);
+  assert.equal(pageGrid(P, 4).cells.length, 4); assert.deepEqual(pageGrid(P, 6).cells[3], [P.rect[0] + 24, P.rect[1] + 248, 128, 184]); assert.equal(pageGrid(P, 9).overflow, true); assert.equal(pageGrid(P, 0).overflow, false);
 });
 test("the rack, the kin, the name plate, the message plate and the stamp", () => {
   assert.deepEqual(placeRect(pods.regions.collection, 4), [364, 312, 288, 224]); assert.deepEqual(kinRect(pods.regions.overview.kin, 2), [728, 224, 56, 56]);

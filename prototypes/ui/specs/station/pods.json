@@ -23,7 +23,7 @@
   "kin ring band": "derived, UI designer to confirm: the kin ring's stand-in is a 2 px `hairline` band (kin.band) until ring-kin-56x56 is the studio's",
   "stand-in word": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): no stand-in card and no word; a stand-in is the cell's flat `ground` tone. Was: design lead, 2026-10-09, the build set \"stand-in\" in 16 px `mist` on the card",
   "hatch confirmation": "art director and design lead, 2026-10-09: the message plate for the armed hatch says only \"✓ again\" (strings.hatchAgain); the bottom line already says \"Back to the <place>\", so strings.hatchArm is no longer shown; the plate is centred on x 512 and clear of the hatch key",
-  "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture",
+  "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture Superseded by GB1: no marks.",
   "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
   "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
   "ring forms": "`ring` is the target group's focus ring form (frame.json focus.ring.forms). A place wears the circle 4 px outside its collection ring: radius 84 round (x + 96, y + 88), the ring's centre (regions.collection.ring.centre), the picture [x + 12, y + 4, 168, 168]. A kin wears the circle 4 px outside its own: radius (w >> 1) + 4 round the box's centre. The pod and the hatch wear the round ring 4 px outside their boxes; the pod's ring rides its 4 px lift and is never drawn on the dish. A tab wears the tab ring (frame.json focus.ring.tab)",
@@ -46,17 +46,33 @@
      3,
      2
     ],
-    "first": [64, 72, 288, 224],
-    "pitch": [300, 240],
+    "first": [
+     64,
+     72,
+     288,
+     224
+    ],
+    "pitch": [
+     300,
+     240
+    ],
     "radius": 6,
     "on": "room-bench-stage-collection"
    },
    "ring": {
-    "centre": [96, 88],
+    "centre": [
+     96,
+     88
+    ],
     "outer": 80,
     "band": 8,
     "arcs": "one per chapter, filled when read, closed when all read",
-    "slice": [8, 0, 176, 176],
+    "slice": [
+     8,
+     0,
+     176,
+     176
+    ],
     "masters": {
      "idle": "ring-collection-idle-176x176",
      "closed": "ring-collection-closed-176x176",
@@ -83,10 +99,16 @@
      88,
      112
     ],
-    "centre": [96, 88]
+    "centre": [
+     96,
+     88
+    ]
    },
    "name": {
-    "at": [96, 184],
+    "at": [
+     96,
+     184
+    ],
     "align": "centre",
     "clamp": "place",
     "h": 24,
@@ -103,12 +125,22 @@
     "noDigits": true
    },
    "grow": {
-    "at": [216, 104, 16, 16],
+    "at": [
+     216,
+     104,
+     16,
+     16
+    ],
     "only": "where the ring and the seal do not say it",
     "slice": "mark-can-grow-16"
    },
    "glint": {
-    "at": [148, 16, 12, 12],
+    "at": [
+     148,
+     16,
+     12,
+     12
+    ],
     "slice": "glint-star-12x12"
    },
    "waiting": {
@@ -219,50 +251,27 @@
     "rule": "frame.rail",
     "open": null
    },
-   "who": {
-    "marks": [
-     [
-      200,
-      488,
-      24,
-      24
-     ],
-     [
-      232,
-      488,
-      24,
-      24
-     ],
-     [
-      268,
-      492,
-      16,
-      16
-     ]
-    ],
-    "kinds": [
-     "glyph",
-     "clan",
-     "first"
-    ]
-   },
    "figure": {
     "rect": [
-     400,
-     232,
-     128,
-     160
+     392,
+     240,
+     144,
+     152
     ],
     "feet": 392,
-    "kind": "species silhouette in a soft halo",
-    "fromPainting": "the standard painting's silhouette",
+    "kind": "the species' painted adult, as on Home (fix 1)",
+    "fromPainting": "the adult hook (fix 1b part 3): mibi-adult-{SNN}-144x152, else the signed juvenile 104×112 bottom-centred on (464, 392); never scaled",
     "individual": false,
-    "beforeIdentify": "an empty halo",
-    "slices": {
-     "mist": "mibi-halo-{SNN}-128x160-mist",
-     "clear": "mibi-halo-{SNN}-128x160-clear"
+    "beforeIdentify": {
+     "slice": "mibi-halo-empty-128x160",
+     "rect": [
+      400,
+      232,
+      128,
+      160
+     ]
     },
-    "crossFade": "clear alpha = chapters read / chapters, over the mist; the build blurs nothing",
+    "crossFade": "unknown: this pod's unread look chapters under the calm unknown (fix 1b part 1 B, by part 2's chapter groups); nothing read: C; doings: A; no dither, no blur",
     "target": "until slot 8 (doorOpen(book) false) not a target: the figure and its caption are drawn, the pod's ▶ goes to kin.first, and nothing a player presses reaches the Book. From slot 8 it is a focus target once the pod is identified: ✓ Open the guide (strings.openGuide), subject strings.everySpecies, a jump to the Book's guide spread (frame.json navigation.jumps)",
     "caption": {
      "rect": [
@@ -281,7 +290,7 @@
    "thisPod": {
     "rect": [
      144,
-     520,
+     488,
      224,
      24
     ],
@@ -290,7 +299,7 @@
     "colour": "mist",
     "align": "centre",
     "centre": 256,
-    "note": "the individual's caption under the who-it-is marks (owner, 2026-10-09: \"this pod\" and \"the species\" are allowed as two-word labels)"
+    "note": "the individual's caption under the pod's name (GB1)"
    },
    "originPicture": {
     "rect": [
@@ -523,18 +532,18 @@
     "states": [
      "grid"
     ],
-    "anchor": "frame",
+    "anchor": "count",
     "originX": {
-     "1": 576,
-     "2": 504,
-     "3": 432,
+     "1": 360,
+     "2": 360,
+     "3": 360,
      "4": 360
     },
     "originY": {
      "1": 184,
-     "2": 88
+     "2": 96
     },
-    "frameRule": "the largest grid over the pod's chapters: columns (1–4 → the count, 5–6 → 3, 7–8 → 4), rows (2 if any chapter holds 5 or more traits); a sealed chapter counts 1 (fix 5 P4); fixed for every chapter of the pod, so the heading and the first cell never move as the rail steps",
+    "frameRule": "retired (GB1 D1): the page's origin follows this chapter's own count, not the pod's largest grid: columns 1–4 the count, 5–6 → 3, 7–8 → 4, rows 1 up to 4 traits, else 2; a sealed chapter counts 1. Cells start at x 384 for every count (the origin x 360 + the cell's 24); P.y 232 (one row) or 144 and 344 (two)",
     "doingPicture": "trait-{SNN}-{trait}-{w}x{h}: one plate per doing trait, no look suffix (fix 5 P7; game designer's ruling)",
     "unread": {
      "picture": null,
@@ -542,7 +551,10 @@
      "fill": null,
      "outline": {
       "slice": "cell-outline-unread-128x160",
-      "size": [128, 160],
+      "size": [
+       128,
+       160
+      ],
       "style": "dotted",
       "px": 1,
       "on": 1,
@@ -554,7 +566,7 @@
      "note": "the cell is clearly empty: a dotted 1 px outline round P, nothing inside, the name under it, no glyphs"
     },
     "cell": {
-     "fillWhen": "crop placed (fix 5 P2): no crop, no tone",
+     "fillWhen": "never: the well's floor is the tone (GB1 D1)",
      "doingLine": {
       "at": "name line + 20",
       "px": 16,
@@ -565,7 +577,7 @@
       "align": "centre",
       "when": "a read doing trait (fix 5 P7)"
      },
-     "gap": 4,
+     "gap": 8,
      "fill": "ground",
      "name": {
       "px": 16,
@@ -586,7 +598,17 @@
       "share": 0.75,
       "rule": "a picture's content (the creature, its part) sits inside the centred 75% of the 128×160 picture, 96×120 at (16, 20); the cell's flat tone is the margin. Crops are cut to that, reduced from the painting, never enlarged"
      },
-     "note": "the cell is one flat rectangle of `ground` (128×160, the picture's rectangle P); a painted crop is placed 1:1 on it with its ground keyed to the same tone, so a stand-in is the flat tone alone. Was `cardFill` on the stand-in card"
+     "note": "the cell is one flat rectangle of `ground` (128×160, the picture's rectangle P); a painted crop is placed 1:1 on it with its ground keyed to the same tone, so a stand-in is the flat tone alone. Was `cardFill` on the stand-in card",
+     "nameBelow": "8 under P (GB1 D1; was 4)",
+     "well": {
+      "id": "plate-well-{w}x{h}",
+      "at": "P − (4, 4)",
+      "size": "P + (8, 8)",
+      "layer": "painted",
+      "when": "every cell, every state",
+      "floor": "ground",
+      "order": "first: the read crop (1:1 at P), the unread outline (cell-outline-unread-128x160) or the doing plate sit on it; with no crop the well alone"
+     }
     },
     "newMark": {
      "slice": "page-mark-new-10",
@@ -645,8 +667,8 @@
     "sizeRule": "UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\"): with no pane the page's size bounds the heading's rule and the grid. Columns = the count up to four, then half the count rounded up; width = 24 + columns × 128 + (columns − 1) × 16 = 8 + 144 × columns (152, 296, 440, 584); height 232 for one row (48 + 184), 440 for two (48 + 184 + 24 + 184). The origin comes from originX/originY by the pod's frame (fix 5 P4: the largest grid over its chapters), and the size by the chapter's own count, so the heading and the first cell never move as the rail steps; four columns end at x 944, inside the floor (x 64–952). A sealed chapter takes the one-trait size. Was 40 + 136 × columns, 248 or 440, on the pane",
     "align": "left",
     "sealedFind": [
-     32,
-     84,
+     392,
+     256,
      112,
      112
     ],
@@ -709,19 +731,19 @@
        ],
        [
         24,
-        256,
+        248,
         128,
         184
        ],
        [
         168,
-        256,
+        248,
         128,
         184
        ],
        [
         312,
-        256,
+        248,
         128,
         184
        ]
@@ -760,25 +782,25 @@
        ],
        [
         24,
-        256,
+        248,
         128,
         184
        ],
        [
         168,
-        256,
+        248,
         128,
         184
        ],
        [
         312,
-        256,
+        248,
         128,
         184
        ],
        [
         456,
-        256,
+        248,
         128,
         184
        ]
@@ -829,13 +851,13 @@
        "status": "to paint (studio): one painted glyph, two seeds overlapping, never two seeds placed by the build"
       },
       "only": {
-       "slice": "mark-line-only-16x8",
+       "slice": "mark-line-only-16x16",
        "size": [
         16,
-        8
+        16
        ],
-       "top": 8,
-       "status": "to paint (studio): the base as a small glyph, its foot on the baseline"
+       "top": 2,
+       "status": "signed (fix 11, AD 8a8985b6): one seed on the plinth's three steps; mark-line-only-16x8 is superseded"
       },
       "asleep": {
        "slice": "mark-asleep-24x16",
@@ -873,6 +895,31 @@
      "was": [
       8,
       16
+     ]
+    },
+    "x": 384,
+    "rowsY": {
+     "1": [
+      232
+     ],
+     "2": [
+      144,
+      344
+     ]
+    },
+    "headingTwo": [
+     24,
+     -2
+    ],
+    "ruleTwo": [
+     24,
+     28
+    ],
+    "sealedFindWell": {
+     "id": "plate-well-120x120",
+     "at": [
+      388,
+      252
      ]
     }
    },
@@ -1028,33 +1075,13 @@
     }
    },
    "pane": "page-pane-256x440",
-   "nameGap": 8,
+   "nameGap": 12,
    "nameLine": 20,
    "podAt": [
     12,
     4
    ],
    "podNote": "the 40×48 list class, centred where the 32×40 pod was (its centre at (32, 28) on the page)",
-   "who": {
-    "marks": [
-     [
-      56,
-      8,
-      24,
-      24
-     ],
-     [
-      84,
-      8,
-      24,
-      24
-     ]
-    ],
-    "kinds": [
-     "glyph",
-     "clan"
-    ]
-   },
    "differs": {
     "slice": "frame-lamp-12-amber",
     "size": [
@@ -1282,7 +1309,15 @@
  "targets": {
   "place": {
    "group": "place",
-   "ring": { "circle": { "radius": 84, "centre": [96, 88] } },
+   "ring": {
+    "circle": {
+     "radius": 84,
+     "centre": [
+      96,
+      88
+     ]
+    }
+   },
    "state": "collection"
   },
   "pod": {
@@ -1301,7 +1336,11 @@
   },
   "kin": {
    "group": "kin",
-   "ring": { "circle": { "outside": 4 } },
+   "ring": {
+    "circle": {
+     "outside": 4
+    }
+   },
    "state": "overview"
   },
   "hatch": {
@@ -1349,7 +1388,17 @@
    "unreadDots": "bevel",
    "note": "pane and edge are Compare's pages only; the chapter page has no pane (regions.chapter.page.open). The cell's tone is `ground` (one step lighter than the old card's mean, the crops' ground keyed to it); the stand-in word and its `mist` are withdrawn"
   },
-  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.75, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own; on Pods k is 0.75 and the case (back and front glass) is the signed slices"},
+  "stampLabel": {
+   "fill": "bone",
+   "edge": "hairline",
+   "k": 0.75,
+   "warm": [
+    1.0,
+    0.93,
+    0.8
+   ],
+   "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own; on Pods k is 0.75 and the case (back and front glass) is the signed slices"
+  },
   "diff": {
    "note": "painted into compare-mark-differs-12x12 (aqua on a 1 px ink keyline, the master's own); the build fills nothing",
    "was": {
@@ -1396,7 +1445,7 @@
   "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name",
   "subjectIs": "{name} is {state}",
   "thisPod": "this pod",
-  "theSpecies": "the species",
+  "theSpecies": "every {species}",
   "openGuide": "Open the guide",
   "everySpecies": "every {species}",
   "states": {
@@ -1409,7 +1458,12 @@
   "unknownSubject": "sealed until identified",
   "backTo": "Back to the {place}",
   "needMore": "needs more {icons}",
-  "needMoreFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" },
+  "needMoreFrom": {
+   "field": "needs more {icons}: go out",
+   "bench": "needs more {icons}: watch your mibis",
+   "fieldOrPod": "needs {icons}: go out or return pods",
+   "fieldAndBench": "needs {icons}: go out and watch"
+  },
   "glintHere": "something new here",
   "glintPod": "something new waits",
   "openChapter": "Open {chapter}",
@@ -1421,9 +1475,12 @@
    "compare": "{name}"
   },
   "hatchAgain": "✓ again",
-  "price": "icon before figure, as on every Station screen (station-layouts.md, The frame): Identify ◆ 1, Read ◆ 3, Return to the wild ❀ +1; nothing for free, and a half price is the lower number"
+  "price": "icon before figure, as on every Station screen (station-layouts.md, The frame): Identify ◆ 1, Read ◆ 3, Return to the wild ❀ +1; nothing for free, and a half price is the lower number",
+  "unknownPodNote": "only for a pod whose species is not in knownIds (GB1; decisions 2026-10-05)"
  },
- "bottomLine": { "need": "Pods' own line, the first that holds: the shortfall (needMoreFrom/needMore), a blocked reason, the pre-spend warning (frame.json goalWarn), glintHere, glintPod, Compare's three, the empty rack's three. None: empty (\"\"), no text and no lamp. The frame's station-wide notice (state.mjs need()) is never shown on Pods (fix 5 P8; station-layouts.md Words on Pods)" },
+ "bottomLine": {
+  "need": "Pods' own line, the first that holds: the shortfall (needMoreFrom/needMore), a blocked reason, the pre-spend warning (frame.json goalWarn), glintHere, glintPod, Compare's three, the empty rack's three. None: empty (\"\"), no text and no lamp. The frame's station-wide notice (state.mjs need()) is never shown on Pods (fix 5 P8; station-layouts.md Words on Pods)"
+ },
  "states": [
   "collection",
   "overview",

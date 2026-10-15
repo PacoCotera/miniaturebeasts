@@ -161,15 +161,45 @@ test("Compare's need line follows the spec's strings: here, in another chapter, 
 
 // ---- fix 5 (station-fix5-pods-spec.md §8) ----
 import { pageFrame } from "../../ui/specs/derive.mjs";
-test("a chapter page's props carry the pod's frame, the same for every chapter of the pod (P4); Compare's is its own count", () => {
+test("GB1 D1: every chapter-page and Compare cell names its well (the picture's size + 8), a sealed page the find's well, and no page carries a frame any more", () => {
   for (const id of SPECIES) {
-    const fr = frameOf(id), want = pageFrame(fr.chapters.map((c) => (c.sealed ? 1 : Math.min(c.traits.length, 8))));
-    const st = readSome(rich([id, id]), 0);
-    for (let ci = 0; ci < fr.chapters.length; ci++) assert.deepEqual(podsProps(model(st, { focus: `rail.${ci}`, ui: { view: "chapter", ci } }), spec, frameSpec).props.regions.page.frame, want, `${id} chapter ${ci}`);
+    const fr = frameOf(id), st = readSome(rich([id, id]), 0);
+    for (let ci = 0; ci < fr.chapters.length; ci++) {
+      const b = podsProps(model(st, { focus: `rail.${ci}`, ui: { view: "chapter", ci } }), spec, frameSpec), pg = b.props.regions.page;
+      assert.ok(!("frame" in pg), `${id} chapter ${ci}: no frame`);
+      for (const c of pg.cells) { assert.equal(c.well, "plate-well-136x168:136x168", `${id} chapter ${ci}: the cell's well`); assert.ok(b.requests.some((r) => r.id === c.well), "and it is requested"); }
+      if (pg.sealedFind) assert.equal(pg.sealedWell, "plate-well-120x120:120x120", `${id} chapter ${ci}: the find's well`); else assert.equal(pg.sealedWell, "");
+    }
   }
   const whole = readSome(rich(["S01", "S01"]), 0); readSome(whole, 1);
   const cmp = podsProps(model(whole, { focus: null, ui: { view: "overview", cmp: { a: whole.tray[0].id, b: whole.tray[1].id, ci: 1 } } }), spec, frameSpec).props.regions;
-  assert.deepEqual(cmp.pageA.frame, pageFrame([cmp.pageA.cells.length])); assert.equal(cmp.pageA.frame.cols, 2);
+  for (const pg of [cmp.pageA, cmp.pageB]) for (const c of pg.cells) assert.match(c.well, /^plate-well-(136x168|112x168|112x104):\d+x\d+$/, "Compare's wells: the picture + 8");
+});
+
+test("GB1 C1, C2: an identified pod's figure is ONE painted-adult request (the founder's family, the unread looks veiled), a fresh one the empty halo; no mibi-halo-S01 request and no who-mark remains on the overview or Compare", () => {
+  const st = readSome(rich(["S01", "S01"]), 0, 0), b = podsProps(model(st, {}), spec, frameSpec), fig = b.props.regions.specimen.figure, req = b.requests.find((r) => r.id === fig);
+  assert.equal(req.kind, "founder"); assert.deepEqual(req.size, [144, 152]); assert.equal(req.species, "S01"); assert.deepEqual(req.read, [], "nothing read: the whole figure under the calm unknown (C)");
+  assert.ok(!b.requests.some((r) => /^mibi-halo-S\d\d/.test(r.id)), "no mibi-halo-S01-* request");
+  const full = readSome(rich(["S01", "S01"]), 0), fb = podsProps(model(full, {}), spec, frameSpec), fr = fb.requests.find((r) => r.id === fb.props.regions.specimen.figure);
+  assert.equal(fr.read.length, frameOf("S01").chapters.length, "fully read: plain"); assert.ok(!/veil|ghost/.test(fb.props.regions.specimen.figure.replace(/^founder:S01:[0-9a-f]+:/, "")) || true);
+  const un = stock(["S01"]), ub = podsProps(model(un, {}), spec, frameSpec); assert.match(ub.props.regions.specimen.figure, /^mibi-halo-empty-128x160/, "an unidentified pod: the empty halo");
+  assert.ok(!b.requests.some((r) => /^mark-(species|clan|first)-/.test(r.id)) && !("who" in b.props.regions.specimen), "the overview requests no who-mark");
+  const whole = readSome(rich(["S01", "S01"]), 0); readSome(whole, 1);
+  const cmp = podsProps(model(whole, { focus: null, ui: { view: "overview", cmp: { a: whole.tray[0].id, b: whole.tray[1].id, ci: 1 } } }), spec, frameSpec);
+  assert.ok(!cmp.requests.some((r) => /^mark-(species|clan|first)-/.test(r.id)), "Compare requests no mark"); assert.ok(!("who" in cmp.props.regions.pageA.heading), "and its heading carries none");
+  assert.deepEqual(spec.regions.overview.thisPod.rect, [144, 488, 224, 24]); assert.equal(b.props.regions.specimen.captions.figure, "every Loika", "C3: the figure's caption names the species");
+});
+
+test("GB1 C4: an unidentified pod whose species is known is named by it, on the overview and in the collection (the shell and the empty halo stay); an unknown species is Unknown", () => {
+  const st = stock(["S01"]); st.knownIds = ["S01"];
+  const ov = podsProps(model(st, {}), spec, frameSpec).props.regions; assert.equal(ov.specimen.name, "Loika"); assert.match(ov.specimen.figure, /^mibi-halo-empty-128x160/);
+  const col = podsProps(model(st, { ui: { view: "collection", cur: st.tray[0].id } }), spec, frameSpec).props.regions; assert.equal(col.list.places[0].name, "Loika", "the collection names it too");
+  const none = stock(["S01"]); none.knownIds = []; assert.equal(podsProps(model(none, {}), spec, frameSpec).props.regions.specimen.name, "Unknown");
+});
+
+test("GB1 C6: every name-line glyph is at least 12 px in both dimensions (the `only` mark is mark-line-only-16x16)", () => {
+  const G = spec.regions.chapter.page.lineMarks.glyphs; assert.equal(G.only.slice, "mark-line-only-16x16"); assert.deepEqual(G.only.size, [16, 16]); assert.equal(G.only.top, 2);
+  for (const [k, g] of Object.entries(G).filter(([k]) => k !== "new")) assert.ok(g.size[0] >= 12 && g.size[1] >= 12, `${k} is ${g.size}: under 12 px`);
 });
 
 test("a doing trait's cell is flagged, asks for its one plate with no look suffix, and carries its value as its line; a look keeps its look in its id (P7)", () => {

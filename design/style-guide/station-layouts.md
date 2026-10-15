@@ -541,7 +541,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Page heading | 448, 118, w − 24, 24; the rule 448, 148, the grid's width, 1 | Emblem 24×24, then the chapter's word in 20 px `bone`, 8 px after it. Under it one 1 px `hairline` rule from the first column's left edge to the last column's right edge (12 px under the heading, 12 px over the cells). "Legs & Tail", the longest word, makes the heading 24 + 8 + 103 = 135 px; on a one-trait page that runs 7 px past the 128 px rule, which is fine with no pane to hold it |
 | Trait cells | the grid below | In the chapter's order, row by row: the picture P (128×160, one flat rectangle of `ground`, no frame, no card, no word), 4 px, the name line (20 px): the one-word name in 16 px `bone`, then its glyphs (Marks after the name), the name and the glyphs centred together on the cell. A picture's content sits inside P's centred 75%, 96×120 at (16, 20), the tone as its margin |
 
-**Page grid,** by the open chapter's trait count. Columns of 128 with **16 px gaps**, rows 208 apart (**24 px** between a name line and the next picture), the first column at x 448. Every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred in the one-trait cell's rectangle, (456, 196, 112, 112).
+**Page grid,** by the open chapter's trait count. Pictures in wells pressed into the case floor, the well's floor the flat tone (GB1 D1: `plate-well-136x168` at P − (4, 4), cells from x 384, P.y 232 for one row and 144 and 344 for two). Columns of 128 with **16 px gaps**, rows 200 apart (**24 px** between a name line and the next picture), the first column at x 448. Every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred in the one-trait cell's rectangle, (456, 196, 112, 112).
 
 **The page's size, one rule.** With no pane, the size bounds the rule and the grid, nothing is drawn at it. Columns are the count up to four, then half the count rounded up; the width is 24 + columns × 128 + (columns − 1) × 16, that is 8 + 144 × columns; the height is 232 for one row (48 + 184) and 440 for two (48 + 184 + 24 + 184). Left-aligned at x 424, so the heading and the first cell stay put as the rail steps; four columns end at x 1008, the screen's right margin, and two rows at y 552, 10 px over the bottom bar. A sealed chapter takes the one-trait size, whatever its count. `pods.json` `regions.chapter.page.sizeByCount`.
 
@@ -559,8 +559,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Traits | Cells (x, y, w, h) | Picture |
 | --- | --- | --- |
 | 1–4 | 448, 592, 736 or 880, at y 160; each 128×184 | 128×160 |
-| 5–6 | 448, 592 or 736, at y 160 and 368; each 128×184 | 128×160 |
-| 7–8 | 448, 592, 736 or 880, at y 160 and 368; each 128×184 | 128×160 |
+| 5–6 | 448, 592 or 736, at y 160 and 360; each 128×184 | 128×160 |
+| 7–8 | 448, 592, 736 or 880, at y 160 and 360; each 128×184 | 128×160 |
 | 9 or more | none today; not designed yet | |
 
 **The page, one state.**

@@ -48,22 +48,24 @@ const pageRegions = (lg) => lg.regions.filter((r) => /^page/.test(r.id)), at = (
 const frameOfPod = (fr) => pageFrame(fr.chapters.map((c) => (c.sealed ? 1 : Math.min(c.traits.length, 8))));
 const chapterIndex = (fr, id) => fr.chapters.findIndex((c) => c.id === id);
 
-test("a read cell with no placed crop draws no node at its picture rectangle (P2); with the crop placed it draws its tone and the picture", { skip }, async () => {
-  const sc = scene("S01", { ci: 1 }), cell = podsProps(sc.m, podsSpec, frameSpec).props.regions.page.cells[0];
-  assert.match(cell.crop, /^trait-S01-/, "the cell asks for its crop");
-  const crops = podsProps(sc.m, podsSpec, frameSpec).props.regions.page.cells.map((c) => c.crop), bare = await draw(sc, { without: crops }), full = await draw(sc);
-  assert.deepEqual(at(bare.lg, "page.cell", "chrome"), [], "no flat tone where the crop is not placed"); assert.ok(bare.lg.type.some((t) => t.region === "page.cell" && t.text === cell.name), "the name line still shows"); assert.deepEqual(at(bare.lg, "page.cell", "painted"), [], "no picture either");
-  const tone = at(full.lg, "page.cell", "chrome"); assert.equal(tone.length, 1, "the tone under the placed crops (the region's union)"); assert.deepEqual(tone[0].rect.slice(2), [128 + 144, 160], "both cells' tones: 128×160 each, 16 apart");
-  const one = await draw(sc, { without: [crops[1]] }); assert.deepEqual(at(one.lg, "page.cell", "chrome")[0].rect.slice(2), [128, 160], "only the placed crop has its tone");
+test("a read cell is a well (GB1 D1): the well first at P − (4, 4), no flat ground rect at P in any state; the crop 1:1 at P inside it, or the well alone", { skip }, async () => {
+  const sc = scene("S01", { ci: 1 }), cells = podsProps(sc.m, podsSpec, frameSpec).props.regions.page.cells, cell = cells[0];
+  assert.match(cell.crop, /^trait-S01-/, "the cell asks for its crop"); assert.equal(cell.well, "plate-well-136x168", "and for its well");
+  const crops = cells.map((c) => c.crop), bare = await draw(sc, { without: crops }), full = await draw(sc);
+  assert.deepEqual(at(bare.lg, "page.cell", "chrome"), [], "no flat tone where the crop is not placed"); assert.ok(bare.lg.type.some((t) => t.region === "page.cell" && t.text === cell.name), "the name line still shows");
+  assert.deepEqual(at(full.lg, "page.cell", "chrome"), [], "no flat ground rect under a placed crop either: the well's floor is the tone");
+  const wells = at(bare.lg, "page.cell", "painted"); assert.equal(wells.length, 1, "the wells' union"); assert.deepEqual(wells[0].rect.slice(0, 2), [384 - 4, 232 - 4], "the first well at P − (4, 4)");
+  assert.deepEqual(wells[0].rect.slice(2), [136 + 8 + 144 * (cells.length - 1) - 8, 168], "136×168 wells on a 144 pitch");
+  assert.deepEqual(at(full.lg, "page.cell", "painted")[0].rect, wells[0].rect, "the crops lie inside their wells");
 });
 
 test("the sealed find draws no flat tone behind it; with no find picture the heading shows and nothing is drawn at the find (P3)", { skip }, async () => {
   const sc = scene("S02", { ci: 3 }), fr = sc.fr, ch = fr.chapters[3]; assert.ok(ch.sealed, "S02's fourth chapter is the shut one (Character)");
-  const props = podsProps(sc.m, podsSpec, frameSpec).props.regions.page; assert.equal(props.sealedFind, true); assert.deepEqual(props.frame, { cols: 3, rows: 2 });
+  const props = podsProps(sc.m, podsSpec, frameSpec).props.regions.page; assert.equal(props.sealedFind, true); assert.equal(props.sealedWell, "plate-well-120x120"); assert.ok(!("frame" in props), "GB1: no frame in the props");
   const find = (await draw(sc, { extra: [] })).body.requests.find((r) => /^find-/.test(r.id) || /^find-/.test(r.master ?? "")); assert.ok(find, "the chapter asks for its find picture by its kind");
   const shown = await draw(sc, { extra: [find.id] }), none = await draw(sc, { without: [find.id] });
   assert.deepEqual(at(shown.lg, "page.seal").map((r) => r.layer === "chrome" ? r.rect : null).filter(Boolean).length <= 1, true);
-  assert.deepEqual(at(shown.lg, "page.seal")[0].rect, [432 + 32, 88 + 84, 112, 112], "the find at the origin + (32, 84): (464, 172) on S02's frame of 3 columns × 2 rows");
+  assert.deepEqual(at(shown.lg, "page.seal")[0].rect, [388, 252, 120, 120], "the find at (392, 256, 112, 112) in its well at (388, 252): the painted union");
   assert.deepEqual(at(shown.lg, "page.seal").length, 1, "the picture alone: no tone rectangle beside it"); assert.deepEqual(at(none.lg, "page.seal"), [], "an unsigned find draws nothing");
   assert.ok(none.lg.type.some((t) => t.region === "page" && t.text === ch.name), "the heading still shows");
 });
@@ -82,15 +84,12 @@ test("a read doing cell asks for its one plate with no look suffix and draws its
   assert.deepEqual(quiet.lg.type.filter((t) => t.region === "page.cell").map((t) => t.text), ["Drive"], "an unread doing draws its name and nothing else");
 });
 
-test("the heading and the first cell never move as the rail steps through a pod's chapters; the origin is the frame's (P4)", { skip }, async () => {
-  for (const id of ["S01", "S02", "S03"]) {
-    const fr = frameOf(id), frame = frameOfPod(fr), [ox, oy] = pageOrigin(PG, frame.cols, frame.rows), heads = [], firsts = [];
-    for (let ci = 0; ci < fr.chapters.length; ci++) {
-      const { lg } = await draw(scene(id, { ci })), emblem = at(lg, "page", "art")[0];
-      if (fr.chapters[ci].sealed) continue; heads.push(emblem.rect.slice(0, 2)); firsts.push(at(lg, "page.rule", "chrome")[0].rect.slice(0, 2));
-    }
-    assert.ok(heads.every((h) => h.join() === heads[0].join()), `${id}: the heading stays put (${heads.join(" | ")})`); assert.ok(firsts.every((h) => h.join() === firsts[0].join()), `${id}: the rule and the first column stay put`);
-    assert.deepEqual(firsts[0], [ox + 24, oy + 36], `${id}: the rule from the first column, at the frame's origin + (24, 36)`); assert.deepEqual(heads[0], [ox + 24, oy + 6], `${id}: the heading's emblem at the frame's origin + (24, 6)`);
+test("GB1 D1: for counts 1 to 8 the cells' P rects are the table (x 384 + 144 a column; y 232, or 144 and 344), no well ends past x 952 or y 535, and no well of a two-row page starts above 140", { skip }, () => {
+  const ROWS = { 1: [232], 2: [144, 344] };
+  for (let n = 1; n <= 8; n++) {
+    const cols = n <= 4 ? n : n <= 6 ? 3 : 4, rows = n > 4 ? 2 : 1, [ox, oy] = pageOrigin(PG, cols, rows), cells = pageGrid({ ...PG, rect: [ox, oy, PG.rect[2], PG.rect[3]] }, n).cells;
+    assert.equal(cells.length, n);
+    cells.forEach(([x, y, w, h], i) => { const want = [384 + 144 * (i % cols), ROWS[rows][Math.floor(i / cols)]]; assert.deepEqual([x, y], want, `${n} traits, cell ${i}`); assert.ok(x - 4 >= 0 && x + 128 + 4 <= 952 && y + 160 + 4 <= 535 && (rows === 1 || y - 4 >= 140), `${n} traits, cell ${i}: its well lies on the floor`); });
   }
 });
 
