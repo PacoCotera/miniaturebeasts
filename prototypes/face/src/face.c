@@ -12,6 +12,8 @@
 #include "platform/platform.h"
 #include "lvgl.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static uint8_t g_fb[FACE_W * FACE_H * 4];
 static lv_display_t *g_disp;
@@ -149,16 +151,21 @@ int face_test_nap(int i) { return home_test_nap(i); }
 int face_test_close_cell(void) { return habitat_test_cell(); }   /* up close: the close cell shown (−1 − level while it dithers), −100 with no set */
 int face_test_close_lift(void) { return habitat_test_lift(); }
 int face_test_hatch_cell(void) { return incubator_test_cell(); }   /* the hatch: the juvenile's close cell (−50 not shown yet, −1 − level while it dithers) */   /* the residents that stepped in the last face_frame */
+void face_test_hide(const char *region) { prim_set_hide(region); lv_refr_now(g_disp); }   /* a region's nodes hidden at once (the ground frame of fix 14 rule F2) */
 void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
 int face_test_offpalette(void) {
   int bad = 0;
   for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0]) && !prim_painted_at(i % FACE_W, i / FACE_W)) bad++; }   /* (a painted picture covers its own pixels: on the chrome and art passes they are not findings) */
   return bad;
 }
-/* test mode: one focus ring word on a box, from a form given as JSON ({"ring": "round" | "feet" | "tab" | {"circle": {...}}}, or {} for the default), replacing the scene (the checks of the word alone) */
-int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *colour) {
-  if (spec_load("ringform", form_json, strlen(form_json)) < 0) return -1;
+/* test mode: one focus ring word on a rect, from a target given as JSON ({"shape": "oval" | "footprint" | "tab" | {"rect": r} | {"circle": ...}, "ground": "paper"}), replacing the scene (the checks of the word alone).
+   `picture` and `cell` name the creature picture a footprint shape reads its `foot` from (the asset message gave it); "" for the other shapes. */
+int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *picture, const char *cell) {
+  size_t n = strlen(form_json) + 16; char *wrap = (char *)malloc(n); if (!wrap) return -1; snprintf(wrap, n, "{\"t\":%s}", form_json);
+  int rc = spec_load("ringform", wrap, strlen(wrap)); free(wrap); if (rc < 0) return -1;
   int box[4] = { x, y, w, h };
-  prim_begin(); v_region("focus", LAYER_CHROME); word_focusRing("focus.ring", box, "ringform", spec_raw("ringform", "ring", NULL) ? "ring" : NULL, colour); prim_end(); wire_changed();
+  prim_begin(); v_region("focus", LAYER_CHROME);
+  if (picture && *picture) word_focusRingFootprint("focus.ring", "ringform", "t", picture, cell ? cell : "", box); else word_focusRing("focus.ring", "ringform", "t", box);
+  prim_end(); wire_changed();
   return prim_unknown();
 }

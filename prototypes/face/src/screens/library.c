@@ -99,7 +99,7 @@ static void build_ring(void) {
   focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk), box[4] = { 0, 0, 0, 0 };
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0) { box[0] = t[i].x; box[1] = t[i].y; box[2] = t[i].w; box[3] = t[i].h; }
   if (box[2] <= 0) return;
-  v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, "spread.focus.targets.frame.ring", fcol("focus.ring.onPaper"));
+  v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "spread.focus.targets.frame", box);
 }
 void library_words(void) { build_stage(); build_pages(); build_ring(); }
 

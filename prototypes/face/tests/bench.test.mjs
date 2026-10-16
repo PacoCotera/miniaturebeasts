@@ -157,3 +157,16 @@ test("the cuts: the install step at t = 300 jumped from 0 ≤ 173,056 px; the in
 test("the short case: the dimmed cap on the plates draws without an error and the ring is where it was", { skip }, async () => {
   const b = scene({ e: 0, d: 0, f: "plates" }); assert.equal(b.line.dim, true); const f = await start(b); assert.deepEqual(f.errors(), []); assert.deepEqual(departures(logOf(f), spec, b.props, "plates"), []);
 });
+
+// fix 14, rule 6: the ring says where you are, not what you can do: unchanged between focused and armed on the same target (its rect and the pixels of its four bands), and the Probe's ring stays through its holds (as on main: the architect's ceilings test above holds it where it is)
+test("the ring is unchanged between focused and armed on the slot (fix 14, rule 6)", { skip }, async () => {
+  const band = async (o) => { const f = await start(scene(o)), r = logOf(f).regions.find((q) => q.id === "focus" && q.layer === "chrome")?.rect; assert.ok(r, "a ring"); const px = [];
+    for (let y = 0; y < r[3]; y++) for (let x = 0; x < r[2]; x++) if (x < 4 || y < 4 || x >= r[2] - 4 || y >= r[3] - 4) px.push(f.pixel(r[0] + x, r[1] + y)); return { r, px }; };
+  const a = await band({ f: "slot", arm: 0 }), b = await band({ f: "slot", arm: 1 });
+  assert.deepEqual(a.r, b.r, "the same rect"); assert.deepEqual(a.px, b.px, "the same pixels in its four bands");
+});
+
+test("the plates' ring is the drawn plates' union grown by 5, lifted: (267, 433, 138, 42) at three plates and (243, 433, 186, 42) at four (spec §5, fix 5's places)", { skip }, async () => {
+  const ring = async (o) => logOf(await start(scene(o))).regions.find((q) => q.id === "focus" && q.layer === "chrome").rect;
+  assert.deepEqual(await ring({ f: "plates" }), [267, 433, 138, 42]); assert.deepEqual(await ring({ tier: 2, shield: 4, f: "plates" }), [243, 433, 186, 42]);
+});

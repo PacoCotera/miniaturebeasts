@@ -30,7 +30,7 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   must(got("stamp", "painted").some((r) => eq(r.rect, R.stampCase.rect)), `the stamp case is not drawn at ${R.stampCase.rect}`);
   must(R.stamp.rect[0] >= R.stampCase.rect[0] && R.stamp.rect[1] >= R.stampCase.rect[1] && R.stamp.rect[0] + R.stamp.rect[2] <= R.stampCase.rect[0] + R.stampCase.rect[2] && R.stamp.rect[1] + R.stamp.rect[3] <= R.stampCase.rect[1] + R.stampCase.rect[3], "the label lies inside its case");
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
-  { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 8, R.roll.rect[1], R.roll.rect[2] + 16, R.roll.rect[3]]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
+  { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 5, R.roll.rect[1] - 5, R.roll.rect[2] + 10, R.roll.rect[3] + 10]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
   // what each state draws, and what it does not
   must(rolled || (got("roll").length === 0 && got("focus").length === 0), "nothing read: no roll and no ring");
   must(!rolled || got("roll").length > 0, "the roll is drawn");

@@ -178,7 +178,9 @@ test("a walking resident keeps its box in 16..1008 and its feet in the band 296.
 });
 
 // ---- Station M1 §3: residents with moving sets (stand-in atlases synthesized at the slot sizes; moving-scene.mjs) ----
-import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds, rule2Run } from "./moving-scene.mjs";
+import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds, rule2Run, atlasPicture } from "./moving-scene.mjs";
+import { footOf } from "../../station/src/moving.mjs";
+import { footprintRing } from "../../ui/rings.mjs";
 const HOUSE = { adults: 6, juveniles: 5, s05: 1, sleepers: 3 };   // S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1, three bed sleepers breathing
 for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
   test(`MOVING (M1 §3): twelve residents with moving sets and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}, the top bar live: no frame over 153,600 px, no overflow, at most six residents changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
@@ -239,11 +241,12 @@ test("rest change (M1 §3, game designer R1; UI/UX asleep in place): awake → a
   const w = trace(f, 0, 2500), wd = w.filter((x) => x.clip === CLIP.wake && x.phase === 0), cr = w.find((x) => x.clip === CLIP.wake && x.phase === 1), st = w.find((x) => x.clip === CLIP.rest);
   assert.deepEqual(wd.map((x) => x.level), [4, 8, 12, 16], "the wake's dither, curl to crouch"); assert.equal(cr.cell.replace("*", ""), "crouch"); assert.equal(cr.dy, 2); assert.equal(st.t - cr.t, 400, "the crouch held 400 ms"); assert.equal(st.cell.replace("*", ""), "stand", "then stand, breathing from b0"); assert.equal(st.dy, 0, "risen to its line");
 });
-test("asleep in place (UI/UX, M1): a focused sleeper's ring is the feet form on its ink box [x + w/2 − 56, feet − 12, 112, 24], its tag's top feet − 120, and neither moves nor changes over 45 s while stirs fall due (they go to the other sleeper)", { skip }, async () => {
+test("asleep in place (UI/UX, M1): a focused sleeper's ring is the footprint of its curl cell on the ground (fix 14), its tag's top feet − 120, and neither moves nor changes over 45 s while stirs fall due (they go to the other sleeper)", { skip }, async () => {
   const sc = movingScene("vivarium", { adults: 2, time: 23 * 3600, focus: "resident:0" }), f = await bootScene(sc);
   const x = f.M._face_test_mv(0, 0), feet = f.M._face_test_mv(0, 1), w = 144;
   f.frame((f.t += 40)); let lg = null; for (let m; (m = f.poll("log"));) lg = m; const ring = lg.regions.find((r) => r.id === "focus" && r.layer === "chrome").rect, tag = lg.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect;
-  assert.deepEqual(ring, [x + w / 2 - 56, feet - 12, 112, 24], "the ring on the ink box"); assert.equal(tag[1], feet - 120, "the tag over the ink, no lift");
+  const walk = movingIds("S01", "adult").walk, foot = footOf(walk, atlasPicture(walk), atlasPicture).curl; assert.ok(foot, "the curl cell has a footprint");
+  assert.deepEqual(ring, footprintRing(foot, [x, feet - 152, w, 152]), "the ring on the curl cell's footprint, on the ground"); assert.equal(tag[1], feet - 120, "the tag over the ink, no lift");
   let stirs1 = 0, prev1 = 0;
   for (let t = 0; t < 45000; t += 40) { f.frame((f.t += 40)); const s0 = STATE(f.M._face_test_state(0)), s1 = STATE(f.M._face_test_state(1)); assert.notEqual(s0.clip, CLIP.stir, "no stir begins on the focused sleeper"); assert.equal(s0.clip, CLIP.asleep); if (s1.clip === CLIP.stir && prev1 !== CLIP.stir) stirs1++; prev1 = s1.clip; }
   assert.ok(stirs1 >= 1, "the due stirs went to the other sleeper: " + stirs1);

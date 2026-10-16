@@ -1,139 +1,123 @@
 {
- "note": "The focus ring as components/focusRing.mjs drew it (the JavaScript, through the node path, with the old mask pictures built from ui/rings.mjs) on the WebAssembly face: the form, the box, the role and the framebuffer's hash. The focusRing word must draw the same pixels.",
+ "note": "The focusRing word as fix 14 draws it: a target (its shape and ground), the rect the screen drew and, for a footprint, the picture and cell it reads. words.test.mjs draws each on the face and compares every pixel of the ring's box with the roles ui/rings.mjs gives.",
  "cases": [
   {
-   "name": "round, a wide target",
-   "form": {},
+   "name": "rect 0, a wide target",
+   "target": {
+    "shape": {
+     "rect": 0
+    }
+   },
    "box": [
     100,
     100,
     200,
     80
-   ],
-   "colour": "focus",
-   "hash": "9d296cc5"
+   ]
   },
   {
-   "name": "round, a square target",
-   "form": {},
+   "name": "rect 0, a square target",
+   "target": {
+    "shape": {
+     "rect": 0
+    }
+   },
    "box": [
     300,
     300,
     40,
     40
-   ],
-   "colour": "focus",
-   "hash": "d2ebbec5"
+   ]
   },
   {
-   "name": "round, the smallest",
-   "form": {},
-   "box": [
-    500,
-    200,
-    8,
-    8
-   ],
-   "colour": "focus",
-   "hash": "5a7e52c5"
-  },
-  {
-   "name": "round, on paper",
-   "form": {},
-   "box": [
-    60,
-    400,
-    321,
-    97
-   ],
-   "colour": "rust",
-   "hash": "d13637f5"
-  },
-  {
-   "name": "feet, a creature",
-   "form": {
-    "ring": "feet"
-   },
-   "box": [
-    400,
-    300,
-    64,
-    80
-   ],
-   "colour": "focus",
-   "hash": "06cd0485"
-  },
-  {
-   "name": "feet, an odd width",
-   "form": {
-    "ring": "feet"
-   },
-   "box": [
-    403,
-    300,
-    63,
-    81
-   ],
-   "colour": "focus",
-   "hash": "f24d0e45"
-  },
-  {
-   "name": "tab, a full tab",
-   "form": {
-    "ring": "tab"
-   },
-   "box": [
-    100,
-    42,
-    136,
-    40
-   ],
-   "colour": "focus",
-   "hash": "bda0de45"
-  },
-  {
-   "name": "tab, a compact tab",
-   "form": {
-    "ring": "tab"
-   },
-   "box": [
-    300,
-    42,
-    56,
-    40
-   ],
-   "colour": "focus",
-   "hash": "e6166245"
-  },
-  {
-   "name": "circle, Pods' place",
-   "form": {
-    "ring": {
-     "circle": {
-      "radius": 84,
-      "centre": [
-       96,
-       112
-      ]
-     }
+   "name": "rect 0, the smallest",
+   "target": {
+    "shape": {
+     "rect": 0
     }
    },
    "box": [
-    16,
-    48,
+    500,
+    200,
+    10,
+    10
+   ]
+  },
+  {
+   "name": "rect 6, a plate (lifted)",
+   "target": {
+    "shape": {
+     "rect": 6
+    }
+   },
+   "box": [
+    688,
+    38,
     320,
-    224
-   ],
-   "colour": "focus",
-   "hash": "d050ba85"
+    88
+   ]
+  },
+  {
+   "name": "rect 6, a well",
+   "target": {
+    "shape": {
+     "rect": 6
+    }
+   },
+   "box": [
+    32,
+    492,
+    152,
+    48
+   ]
+  },
+  {
+   "name": "rect 0 with a chip, a text",
+   "target": {
+    "shape": {
+     "rect": 0,
+     "chip": 4
+    }
+   },
+   "box": [
+    604,
+    64,
+    120,
+    24
+   ]
+  },
+  {
+   "name": "rect 0, on paper",
+   "target": {
+    "shape": {
+     "rect": 0
+    },
+    "ground": "paper"
+   },
+   "box": [
+    60,
+    400,
+    96,
+    112
+   ]
+  },
+  {
+   "name": "oval, a pod",
+   "target": {
+    "shape": "oval"
+   },
+   "box": [
+    196,
+    240,
+    120,
+    152
+   ]
   },
   {
    "name": "circle, a kin",
-   "form": {
-    "ring": {
-     "circle": {
-      "outside": 4
-     }
+   "target": {
+    "shape": {
+     "circle": "box"
     }
    },
    "box": [
@@ -141,9 +125,189 @@
     224,
     56,
     56
+   ]
+  },
+  {
+   "name": "circle, Pods' place",
+   "target": {
+    "shape": {
+     "circle": {
+      "centre": [
+       96,
+       88
+      ],
+      "r": 88
+     }
+    }
+   },
+   "box": [
+    64,
+    64,
+    176,
+    176
+   ]
+  },
+  {
+   "name": "tab, a full tab",
+   "target": {
+    "shape": "tab"
+   },
+   "box": [
+    100,
+    40,
+    136,
+    40
+   ]
+  },
+  {
+   "name": "tab, a compact tab",
+   "target": {
+    "shape": "tab"
+   },
+   "box": [
+    300,
+    40,
+    56,
+    40
+   ]
+  },
+  {
+   "name": "footprint, a juvenile walker",
+   "target": {
+    "shape": "footprint"
+   },
+   "box": [
+    200,
+    300,
+    104,
+    112
    ],
-   "colour": "focus",
-   "hash": "b575cfc5"
+   "pic": {
+    "w": 104,
+    "h": 112,
+    "foot": {
+     "stand": [
+      10,
+      100,
+      56
+     ],
+     "curl": [
+      14,
+      108,
+      70
+     ]
+    }
+   },
+   "cell": "stand"
+  },
+  {
+   "name": "footprint, an odd width",
+   "target": {
+    "shape": "footprint"
+   },
+   "box": [
+    400,
+    300,
+    104,
+    112
+   ],
+   "pic": {
+    "w": 104,
+    "h": 112,
+    "foot": {
+     "stand": [
+      3,
+      110,
+      57
+     ],
+     "curl": [
+      14,
+      108,
+      70
+     ]
+    }
+   },
+   "cell": "stand"
+  },
+  {
+   "name": "footprint, the mirrored cell",
+   "target": {
+    "shape": "footprint"
+   },
+   "box": [
+    600,
+    300,
+    104,
+    112
+   ],
+   "pic": {
+    "w": 104,
+    "h": 112,
+    "foot": {
+     "stand": [
+      10,
+      100,
+      56
+     ],
+     "curl": [
+      14,
+      108,
+      70
+     ]
+    }
+   },
+   "cell": "stand-m"
+  },
+  {
+   "name": "footprint, a sleeper's curl",
+   "target": {
+    "shape": "footprint"
+   },
+   "box": [
+    800,
+    300,
+    104,
+    112
+   ],
+   "pic": {
+    "w": 104,
+    "h": 112,
+    "foot": {
+     "stand": [
+      10,
+      100,
+      56
+     ],
+     "curl": [
+      14,
+      108,
+      70
+     ]
+    }
+   },
+   "cell": "curl"
+  },
+  {
+   "name": "footprint, a still picture",
+   "target": {
+    "shape": "footprint"
+   },
+   "box": [
+    100,
+    450,
+    120,
+    100
+   ],
+   "pic": {
+    "w": 120,
+    "h": 100,
+    "foot": [
+     8,
+     96,
+     100
+    ]
+   },
+   "cell": ""
   }
  ]
 }

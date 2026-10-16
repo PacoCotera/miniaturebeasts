@@ -1,6 +1,7 @@
 // Check 1 for one mibi up close (lvgl-switch.md §4): every region the face's log says it drew, against the rectangles habitat.json gives it (and namer.json's while the namer is open). `departures` returns the list of departures, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: habitat.json; namer: namer.json; state: "rest" | "meet" | "out"; cur: the ring; n: the bays (the tiles drawn); open: the namer is open.
 import { listPitch } from "../../ui/specs/derive.mjs";
+import { footprintRing } from "../../ui/rings.mjs";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 // the moving sets' highest up-close hop (Station M1 §2.4, the animator's closeHop): a resident with a set lifts by it, and its crouch drops 2 px
@@ -9,7 +10,7 @@ const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const grow = (r, k) => [r[0] - k, r[1] - k, r[2] + 2 * k, r[3] + 2 * k];
 
-export function departures(log, spec, namer, state = "rest", cur = "resident", n = 0, open = false) {
+export function departures(log, spec, namer, state = "rest", cur = "resident", n = 0, open = false, foot = null) {
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), glass = R.glass.rect, must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const id of ["notBuilt.stage", "notBuilt.line"]) must(got(id).length === 0, `one mibi up close draws no ${id}`);
@@ -40,6 +41,7 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   for (const m of ["door", "portrait", "cross", "wild"]) {
     const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m + ".plate", "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
     must(ps.length >= 1 && ps.every((r) => eq(r.rect, [rect[0], rect[1] - lifted, rect[2], rect[3]]) || (lifted && eq(r.rect, rect))), `the ${m} module is not at ${rect} (lifted ${lifted})`);
+    if (cur === m && !open) { const rings = got("focus"), want = [rect[0] - 5, rect[1] - lifted - 5, rect[2] + 10, rect[3] + 10]; must(rings.length === 0 || (rings.length === 1 && eq(rings[0].rect, want)), `the ${m} ring ${rings[0]?.rect} is not ${want} (fix 14: the module as drawn grown by 5)`); }
     for (const r of regions.filter((x) => x.id === m && x.rect[2] > 0 && x.layer !== "chrome")) must(within(r.rect, [rect[0], rect[1] - 2, rect[2], rect[3] + 2]), `the ${m} module's ${r.layer} ${r.rect} leaves it`);
     if (m === "portrait") {   // the frame (art) at rect + frame.at and its size; the picture (painted) at rect + frame.at + frame.picture.at and its size (ruling (c)), both lifted with the ring
       const F = R.portrait.frame, P = F.picture;
@@ -61,6 +63,17 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
       }
     }
     must(lifted <= 1, "more than one tile is lifted"); must(!regions.some((r) => r.id.startsWith("tile.") && Number(r.id.slice(5)) >= n), "a tile past the bays is drawn");
+  }
+  // fix 14, rule 5: the ring of a chrome target is the object as drawn grown by 5: a plate (lifted), the name tag, the species line's text and mark plus the chip, a tile; a still resident's is its footprint on the ground (`foot`: the picture's, from the manifest)
+  if (!open && got("focus").length) {
+    const ring = got("focus")[0].rect; let want = null, anyOf = null; const P = R.plates.places, G = (b) => grow(b, 5);
+    if (/^plate\./.test(cur)) want = G([P.first[0] + P.pitch[0] * Number(cur.slice(6)), P.first[1] - 2, 40, 40]);
+    else if (cur === "name") { const tag = got("nameTag", "chrome")[0]; want = tag ? G(tag.rect) : null; }
+    else if (cur === "species") { const parts = regions.filter((x) => x.id === "speciesLine" && x.rect[2] > 0), x0 = Math.min(...parts.map((x) => x.rect[0])), x1 = Math.max(...parts.map((x) => x.rect[0] + x.rect[2])), r = R.speciesLine.rect; want = [x0 - 4 - 5, r[1] + (r[3] - 24) / 2 - 5, x1 - x0 + 8 + 10, 24 + 10]; }
+    else if (/^tile\./.test(cur)) anyOf = regions.filter((x) => /^tile\./.test(x.id) && x.layer === "chrome").map((x) => G(x.rect));
+    else if (cur === "resident" && foot && Array.isArray(foot)) want = footprintRing(foot, R.resident.rect);
+    if (want) must(eq(ring, want), `the ${cur} ring ${ring} is not ${want} (fix 14: the object as drawn grown by 5, or the footprint on the ground)`);
+    if (anyOf) must(anyOf.some((b) => eq(ring, b)), `the ${cur} ring ${ring} is not a tile as drawn grown by 5`);
   }
   // the namer: its panel and shadow at the spec's rectangle (the shadow a 2 × 3 offset), the field, the say line, the keys on their rectangles, no habitat ring while it is open
   if (open) {

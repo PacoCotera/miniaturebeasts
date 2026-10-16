@@ -81,7 +81,7 @@
   },
   "focus": {
    "initial": "derived.lastOn; with nothing kept (a fresh world), frame.S01, the first frame",
-   "targets": { "frame": { "group": "frame", "id": "frame.<SNN>", "ring": "round", "box": "the frame's place (leftPage or rightPage rects)", "ringBox": "[x − 4, y − 4, 104, 120]", "colour": "frame.json focus.ring.onPaper (rust)", "every": "all sixteen frames, found, met or unmet: an empty frame is a place too, and the ring walks the grid without holes", "lift": 0, "ringOrder": "the ring draws last, over the gilt corner and the seal; their offsets stand", "enabled": "all sixteen; ✓ on an unmet frame reaches the intent table, which shows strings.unmet; the cap is dropped by line.unmet.action null" } },
+   "targets": { "frame": { "group": "frame", "id": "frame.<SNN>", "shape": { "rect": 0 }, "ground": "paper", "box": "the frame's place (leftPage or rightPage rects)", "ringBox": "[x − 5, y − 5, 106, 122]", "colour": "frame.json focus.ring.colours.paper (rust, no keys)", "every": "all sixteen frames, found, met or unmet: an empty frame is a place too, and the ring walks the grid without holes", "lift": 0, "ringOrder": "the ring draws last, over the gilt corner and the seal; their offsets stand", "enabled": "all sixteen; ✓ on an unmet frame reaches the intent table, which shows strings.unmet; the cap is dropped by line.unmet.action null" } },
    "graph": {
     "fallback": "none",
     "frame": { "left": { "nearestIn": "frame", "ahead": true }, "right": { "nearestIn": "frame", "ahead": true }, "up": { "nearestIn": "frame", "ahead": true }, "down": { "nearestIn": "frame", "ahead": true } }
@@ -251,7 +251,7 @@
   "initial": "the first trait cell of the first chapter that is not sealed; the same after a jump into the guide",
   "grid": { "up": "the cell above; from the first row, the detail's first plate", "down": "the cell below, stopping at the column's last", "left": "the same row in the previous column that is not sealed, clamped to its last row; from the first column, the page turns back to the face spread", "right": "the same row in the next column that is not sealed, clamped; from the last column, nothing" },
   "detail": { "left": "the previous plate, then the carrier names from the last", "right": "the next plate; from the last, nothing", "down": "the open trait's cell", "up": "nothing" },
-  "ring": "frame.focus.ring in its onPaper colour (rust), the same geometry"
+  "ring": "frame.json focus.ring, ground paper: a rust core, no keys"
  },
  "bottomLine": {
   "cell": { "action": null, "context": "strings.cellMore or strings.cellComplete" },

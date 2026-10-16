@@ -34,7 +34,8 @@ const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLower
 let failed = 0;
 for (const screen of run) {
   const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {}; const pngs = {};
-  const { fails } = await states(async (name, page, fail) => {
+  const { fails } = await states(async (name, page, fail, opts) => {
+    if (opts?.captureOnly) return;   // a capture state (fix 14), not a golden
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }

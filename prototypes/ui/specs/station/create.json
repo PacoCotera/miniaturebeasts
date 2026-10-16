@@ -52,7 +52,7 @@
    "picture": { "size": [128, 72], "gap": 16, "ground": "colours.roll.ground", "asset": "roll-{species}-{trait}-{look}-128x72; a doing: roll-{species}-{trait}-128x72, one per trait, the same for every value (Pods P7)", "placed": "a place whose picture is not a placed master draws nothing: no ground, no ring, no clash edge, no notches (Every state composed 2–4; Pods P2)", "recut": "derived.roll pictures (art director, 2026-10-09 13:28)", "partInside": [16, 9, 96, 54] },
    "chosen": "the picture of the trait's choice (0, 1 or 2); single: the one picture",
    "notch": { "size": [12, 6], "x": "the chosen picture's x + 58", "up": 90, "down": 184, "gap": "4 px outside the ring" },
-   "ring": { "shape": "round", "box": "4 px outside the chosen picture: (x − 4, 100, 136, 80)" },
+   "ring": { "shape": { "rect": 0 }, "box": "5 px outside the chosen picture: (x − 5, 99, 138, 82)" },
    "target": { "id": "roll", "rect": "the chosen picture's rectangle: the roll composition registers target `roll` there (architect, 2026-10-09 13:24)" },
    "clashEdge": { "width": 2, "inside": true, "on": "the chosen picture of a clashing trait" }
   },
@@ -105,7 +105,7 @@
   "shape": {
    "initial": "roll", "fallback": "none",
    "graph": { "roll": { "stepper": ["left", "right", "up", "down"] } },
-   "targets": { "roll": { "group": "roll", "shape": "round", "box": "the chosen picture's rectangle (regions.roll.target)", "lift": 0, "note": "the ring never leaves the roll, so it does not lift; no ring while the chosen picture is not placed (rule 2)" } },
+   "targets": { "roll": { "group": "roll", "shape": { "rect": 0 }, "box": "the chosen picture's rectangle (regions.roll.target)", "lift": 0, "note": "the ring never leaves the roll, so it does not lift; no ring while the chosen picture is not placed (rule 2)" } },
    "stepper": "architect, 2026-10-09 13:24: a stepper key sends intent `step:<key>`, the ring stays and no focus message goes; refused at load: an empty list, a duplicate or unknown key, a stepper key with an edge in the group, axis horizontal with left or right, axis vertical with up or down, order with up or down"
   },
   "keys": {

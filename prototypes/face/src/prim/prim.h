@@ -55,6 +55,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
 /* Test mode: which layers show (1: chrome; 2: chrome and art; 3: all), and the logs the checks read. */
 void prim_set_pass(int pass);
+void prim_set_hide(const char *region);   /* the nodes of a region hidden (NULL or "": none) */
 void prim_asset_layer(int handle, int layer);
 int prim_asset_alpha_box(int fh, int th, int out[4]);   /* the silhouette box of two held pictures: pixels clear in one and not the other (0, or -1 when refused) */
 int prim_asset_diff_box(int fh, int th, int out[4]);    /* the change box: pixels whose alpha differs or, neither clear, whose colour differs */

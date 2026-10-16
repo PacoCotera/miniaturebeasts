@@ -1,6 +1,6 @@
 // Check 1 for the Probe bench (lvgl-switch.md §4): every part the face's log says it drew, against the rectangles bench.json gives it, and every node's box as the face holds it. The log holds one union rectangle a region and layer, so each
 // region's union is held to the union of the parts the state gives, exactly: the stage over the whole stage; the cradle's picture at the cradle's rectangle; the plates (docked only) at the tier's places, lifted while the ring is on them; each
-// module's panel (lifted 2 px while the ring is on it), its lamp, and its pictures at their offsets from the module; the ring 4 px outside the focused region lifted by its lift. `departures` returns the list, empty when none.
+// module's panel (lifted 2 px while the ring is on it), its lamp, and its pictures at their offsets from the module; the ring 5 px outside the focused object as drawn (the plates: the union of the drawn plates). `departures` returns the list, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [...] }; spec: bench.json; props: the bench's props (state, regions, focus); cur: the ring.
 // `partDepartures(boxOf, spec, props, cur)`: the per-node check (boxOf(id) is the node's [x, y, w, h] by its id string, or null): the plates' four nodes and every picture of both modules, each exactly at its place; a place the tier lacks a node of no size.
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
@@ -32,8 +32,8 @@ export function expected(spec, props, cur) {
   for (let i = 0; i < AD.pods.count; i++) out.parts[`slot.pod.${i}`] = [n[0] + AD.pods.at[0] + AD.pods.pitch * i, n[1] + AD.pods.at[1], AD.pods.icon[0], AD.pods.icon[1]];
   for (let i = 0; i < AD.plates.count; i++) out.parts[`slot.plate.${i}`] = [n[0] + AD.plates.at[0] + AD.plates.pitch * i, n[1] + AD.plates.at[1], AD.plates.icon[0], AD.plates.icon[1]];
   for (const k of ["reach", "deep"]) out.parts[`slot.${k}`] = [n[0] + AD[k].at[0], n[1] + AD[k].at[1], AD[k].size[0], AD[k].size[1]];
-  // the ring: the focused region's rectangle lifted by its lift, 4 px outside
-  if (cur) { const r = R[cur].rect, y = r[1] - lift(cur); out.ring = [r[0] - 4, y - 4, r[2] + 8, r[3] + 8]; }
+  // the ring (fix 14): the object as drawn, its rectangle lifted by its lift (the plates: the union of the drawn plates, lifted), grown by 5
+  if (cur) { const o = cur === "plates" ? union(Object.entries(out.parts).filter(([k, v]) => /^plates\.\d+$/.test(k) && v[2]).map(([, v]) => v)) : [R[cur].rect[0], R[cur].rect[1] - lift(cur), R[cur].rect[2], R[cur].rect[3]]; out.ring = o && [o[0] - 5, o[1] - 5, o[2] + 10, o[3] + 10]; }   // the plates, not the strip they stand on (a container: the ring may lie on it)
   return out;
 }
 

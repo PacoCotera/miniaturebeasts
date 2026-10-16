@@ -92,8 +92,8 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 
 | Region | Rectangle | For | Focus target |
 | --- | --- | --- | --- |
-| Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a round ring 4 px outside the bezel (12, 44, 664, 512); ▲ from the topmost resident; `✓ Open the vivarium` |
-| Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`, to that mibi up close |
+| Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a ring 5 px outside the bezel (11, 43, 666, 514); ▲ from the topmost resident; `✓ Open the vivarium` |
+| Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the footprint ring (fix 14); `✓ Look at Bean`, to that mibi up close |
 | With-you bed | 448, 472, 192, 56 | The carried set: one to three asleep when docked; away, the bed empty | each sleeper is a `resident` target, without the lift |
 | Name tag | under the focused resident | Which mibi this is | — |
 | Rest knob | 624, 544, 32, 8 | Put the Station on Idle | `knob`; `✓ Rest` |
@@ -114,7 +114,7 @@ Each module is one engraved word at (16, 12), its 12×12 lamp at (296, 12) and i
 | Region | Rectangle | For | Focus target |
 | --- | --- | --- | --- |
 | Living window | 0, 40, 1024, 440, edge to edge, no bezel; ground band 0, 296, 1024, 176 | The whole Vivarium, the same painting Idle shows | — |
-| Residents | at their size, walking inside 16, 296, 992, 176 | Every mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`; ▼ to its bay tile |
+| Residents | at their size, walking inside 16, 296, 992, 176 | Every mibi at home | `resident.<id>`: the footprint ring (fix 14); `✓ Look at Bean`; ▼ to its bay tile |
 | With-you bed | 792, 416, 192, 56 | The carried set asleep, or the Companion mark | sleepers are `resident` targets |
 | Name tag | under the focused resident | Which mibi this is | — |
 | Strip of bays | 16, 488, 992, 64; tiles from 32, 496 | Every bay, at most twelve: each mibi, the free bays, the mibis out with the Companion (the outline glyph) | `tile.<id>`: ◀ ▶ along, ▲ to its resident; ✓ to that mibi up close |
@@ -130,7 +130,7 @@ Nothing else is on the stage: no card, no modules, no words in the window but th
 | Region | Rectangle | For | Focus target |
 | --- | --- | --- | --- |
 | Bezel, glass | 16, 48, 560, 424; 24, 56, 544, 408 | The mibi at home, in the Vivarium's light | — |
-| The mibi | 144, 80, 304, 312 | The one this level is about | `resident`: the feet ring; `✓ Greet Burr` (its species moment) |
+| The mibi | 144, 80, 304, 312 | The one this level is about | `resident`: the footprint ring (fix 14); `✓ Greet Burr` (its species moment) |
 | Name tag | in 184, 416, 224, 32 | Its name | `name`: `✓ Rename Burr`, the namer over the right column (592, 48, 416, 424) |
 | Card | 592, 48, 416, 208 | Who it is: species line, heart, story, code, skill notches, stamp, chapter plates | `species` (`✓ Open the guide`), `plate.<i>` |
 | Heart | 832, 64, 24, 24 | Bonded: drawn; unbonded: nothing | — |
@@ -322,7 +322,7 @@ As the plate draws it, the tabs hang from the top bar's rule inside the rail's w
 | Sealed | `panel` with horizontal slats in `bar` | `mist` | none |
 | Focused | its state's fill, word and pips, unchanged | | |
 
-The focused tab adds the focus ring in the `focus` role, in its tab shape (States shared by every screen, Focus ring), and nothing else: no lift, no lit edge, no change of fill. Read and unread share a fill and differ by word and pips; the open tab alone is one step lighter.
+The focused tab adds the focus ring in the `focus` role between its `void` keys, in its tab shape (States shared by every screen, Focus ring: the tab's outline grown, bottom corners 7 / 6 / 4), and nothing else: no lift, no lit edge, no change of fill. Read and unread share a fill and differ by word and pips; the open tab alone is one step lighter.
 
 | Other mark | How it is drawn |
 | --- | --- |
@@ -332,10 +332,13 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 
 ### States shared by every screen
 
-- **Focus ring.**
-  - One warm ring per screen, in the palette's `focus` role (warm cream, #ffe6ad; ui-kit §2), 2 px wide, 4 px outside its target, with a 6 px corner radius.
-  - On a creature it is an ellipse on the ground under its feet instead: the box width plus 16, by 24 px tall.
-  - **On a rail tab it follows the tab:** the tab's two slant lines moved 4 px outward, x − 4 + 16 (y − 40) / 40 and x + w + 4 + 16 (y − 40) / 40, running from y 42 to y 80 (the tab's bottom edge), then dropping straight down to a bottom run at y 84 (at x + 12 and x + w + 20), closed by a top run at y 42 (just under the top bar's rule). One rule: the slants stop at y 80, so the ring's box is exactly (x − 4, 42, w + 24, 42). The ring is 2 px and cream, its bottom corners rounded 6 and its top corners square against the top bar. It crosses 4 px onto each neighbouring tab. Its box is (x − 4, 42, w + 24, 42).
+- **Focus ring (fix 14).**
+  - One solid cased line per screen, outside its object and parallel to the object's outline: a 2 px core in the palette's `focus` role (warm cream, #ffe6ad; ui-kit §2) between two 1 px keys in `void`, one pixel of ground between the object and the line, 5 px out in all (`frame.json` `focus.ring`: `gap` 1, `bands` key 1 / core 2 / key 1, `reach` 5). 2 px of contrast in every light, on any ground.
+  - The object's shape picks the ring's shape, and its corners are concentric with the object's (radius + 5 / 4 / 2 for the keys and core): a plate or a well (radius 6) is ringed as a rounded rectangle (outer radius 11); a key, a frame, a tag, a bezel, the roll picture as a square (outer radius 5); a pod as an oval; a collection place or a kin ring as a circle; a creature by its footprint on the ground (below).
+  - On a creature it is an ellipse on the ground under its feet, the footprint of its picture as drawn: the lowest 6 rows of ink, (w + 10) × (fh + 10) with fh = 2 × round(w / 12) held between 6 and 16. The ring is drawn under the creature, so the body hides its back arc. Night keeps the same weight: the 2 px floor holds in every light.
+  - On the tome's paper (the Library) the ring is `rust`, the core alone, no keys, the same geometry.
+  - **On a rail tab it follows the tab:** the tab's outline grown by the bands, outer key 5 px out (top 41, bottom 85), core 4 (42, 84), inner key 2 (44, 82); bottom corners rounded 7 / 6 / 4 and the top square against the top bar's rule. It crosses 5 px onto each neighbouring tab.
+  - A cut: the whole ring on the first frame focus lands, gone on the frame it leaves; no grow, fade, travel or blink, with reduced motion too.
   - The focused thing lifts: chrome 2 px, a creature 4 px, over 200 ms. A hanging rail tab does not lift.
   - Never a list cursor, a side bar or a second ring.
   - A focus with nothing to confirm still draws the ring. The bottom line then has no ✓ cap.
@@ -502,7 +505,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Place c, r (c 0–2, r 0–1) | 64 + 300c, 72 + 240r, 288, 224 | A place on the plain bench `room-bench-stage-collection` (the signed plain recut): no panel, nothing drawn behind the ring; an empty place is the idle ring alone; the focus target. Its focus ring is a circle 4 px outside the ring: 2 px in the `focus` role, radius 84 round the ring's centre. Every place drawn; an empty place is the empty ring |
+| Place c, r (c 0–2, r 0–1) | 64 + 300c, 72 + 240r, 288, 224 | A place on the plain bench `room-bench-stage-collection` (the signed plain recut): no panel, nothing drawn behind the ring; an empty place is the idle ring alone; the focus target. Its focus ring is a circle round the gauge (fix 14): radius 93 round the ring's centre (the gauge's 88 + 5), cased, `focus` between `void` keys. Every place drawn; an empty place is the empty ring |
 | Ring | slice place + (8, 0, 176, 176), centred on place + (96, 88); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: `ring-collection-idle-176x176`, an empty place's ring and the base under the arcs; for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin; and when every chapter is read, the continuous band `ring-collection-closed-176x176` in place of the track and segments. There is no selected ring: the focus ring marks the focused place. The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline`; the build draws no arc |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph |
 | Name label | centred on place + (96, 184), hugging, kept inside the place, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
@@ -761,10 +764,10 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | --- | --- | --- |
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the footprint ring (fix 14), a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
 | `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`), 1:1. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (536, 488, 16, 24) over it; docked, no mark. Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
-| `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
+| `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (619, 539, 42, 16) |
 
 **The column.** Five modules of 320×88 at x 688 on a 104 px pitch. Each module's word is at (16, 12), 16 px; its 12×12 lamp at (296, 12), screen x 984; its objects in (112, 8, 176, 72), screen x 800 to 976. The longest word, "Incubator", is 72 px (704 to 776), 24 px clear of the objects.
 
@@ -844,9 +847,9 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | From | ▲ | ▼ | ◀ | ▶ |
 | --- | --- | --- | --- | --- |
 | The room | `vivarium` | none | the nearest resident by row, else `vivarium` | `cargo` |
-| `vivarium` (the panel: a round ring 4 px outside the bezel, 12, 44, 664, 512; no lift) | none | the resident nearest its middle by column, else none | none | `cargo` |
+| `vivarium` (the panel: a ring 5 px outside the bezel, 11, 43, 666, 514; no lift) | none | the resident nearest its middle by column, else none | none | `cargo` |
 | `column` (`order`: cargo, pods, incubator, probe, library, knob; round rings, 2 px lift) | the one before; the end stops | the one after; the end stops | the nearest resident by row, else `vivarium` | none |
-| `resident` (the feet ring; sleepers too, without the lift) | the nearest resident ahead, else `vivarium` | the nearest resident ahead | the nearest resident ahead | the module nearest by row (the knob is one) |
+| `resident` (the footprint ring (fix 14); sleepers too, without the lift) | the nearest resident ahead, else `vivarium` | the nearest resident ahead | the nearest resident ahead | the module nearest by row (the knob is one) |
 
 **Vectors** (`home.json` `focus.vectors`, 31, played on 15a's residents: Bean 40, 264; Dot 200, 320; Fig 296, 336; Moss and Pip asleep at 448 and 496, 360; the same 31 are the Home cases of `prototypes/face/tests/vectors/focus.json`, which `ui/focus.mjs` and the face's C port both play). Among them: room ▶ cargo; room ▲ vivarium; room ◀ Bean; with no residents, room ◀ vivarium; vivarium ▼ Fig; vivarium ▶ cargo; cargo ▲ cargo; library ▼ knob; knob ▼ knob; knob ▲ library; cargo ◀ Bean; library ◀ Pip; Bean ▲ vivarium; Bean ◀ Bean; Fig ◀ Dot; Pip ◀ Moss; Moss ▶ probe; Bean ▶ incubator.
 
@@ -1214,7 +1217,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | Rail | 96, 40, 832, 40 | Hanging from the top bar, its run centred on x 512 (232 for Loika's four chapters); not a focus target; no glint |
 | Roll | 296, 88, 432, 104 | Three pictures of 128×72 at (304, 104), (448, 104), (592, 104), 16 px apart, in the order as the pod is, only the first copy, only the second copy (the trait state's hidden choice says which copy is the hidden look); one picture at (448, 104) when the trait does not roll (Tuikis Claws: "breed to change"). Not drawn when nothing is read |
 | ▲ and ▼ notches | 12×6 at (chosen.x + 58, 90) and (chosen.x + 58, 184) | 4 px outside the ring, only when the trait rolls |
-| Ring | 4 px outside the chosen picture: (x − 4, 100, 136, 80) | The screen's one focus ring; none when nothing is read |
+| Ring | 5 px outside the chosen picture: (x − 5, 99, 138, 82) | The screen's one focus ring; none when nothing is read |
 | Trait line | 296, 200, 432, 24 | 16 px, its line box 202 to 222, centred on x 512; with the changed tag (24 tall, 88 wide), 8 px before the words, the group centred |
 | Work tray (`chamber`) | 312, 232, 400, 320 | The tray in the housing; floor 312, 536, 400, 16 (the concept's 316, 232, 392, 320 on the grid) |
 | **Founder (focal)** | 360, 240, 304, 312 | At least 300×310, feet at y 536 |
@@ -1610,7 +1613,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | --- | --- | --- | --- |
 | `stage` | 0, 40, 1024, 522 | frame, part stage | Flat `ground` round the strip |
 | `window` | 0, 40, 1024, 440 | living window, part inside, no frame | Idle's painting rows 120 to 560 at 1:1; ground band 0, 296, 1024, 176; foot 0, 472, 1024, 8 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the footprint ring (fix 14), a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
 | `bed` | 792, 416, 192, 56 | living window, build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
 | `nameTag` | 24 tall; the name + 16, up to 8, 48 to 176 | panel and text, build `nameTag` | Home's tag (16 px). Top at feet + 24; if its bottom would pass y 472 it sits over the resident (top = box.y − 4 − 32); a sleeper's over it. Slid to stay 8 px inside the window |
 | `strip` | 16, 488, 992, 64 | panel | The rectangle of one mibi up close |
@@ -1702,7 +1705,7 @@ The way back reads "Vivarium", its ← cap at x 922. **The watch** (`state.bench
 
 Both graphs use the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): edges by name, selector, `nearestIn` with `ahead`, ordered lists and `axis`.
 
-**The whole** (`vivarium.json` `focus`). Targets: `resident.<id>` (the feet ring; sleepers too, without the lift) and `tile.<id>` (round, every housed mibi, at home or out). The selectors are the view's: `tile.of`, the focused resident's own tile; `resident.of`, the focused tile's resident, null for a mibi that is out, when the selector rule takes the first resident in the list.
+**The whole** (`vivarium.json` `focus`). Targets: `resident.<id>` (the footprint ring (fix 14); sleepers too, without the lift) and `tile.<id>` (round, every housed mibi, at home or out). The selectors are the view's: `tile.of`, the focused resident's own tile; `resident.of`, the focused tile's resident, null for a mibi that is out, when the selector rule takes the first resident in the list.
 
 | From | ◀ | ▶ | ▲ | ▼ |
 | --- | --- | --- | --- | --- |
@@ -1921,7 +1924,7 @@ Rings (4 px out, 2 px lift): plates 228, 418, 216, 72; switch 612, 98, 320, 136;
 | `plates` | none | `nearestIn: module` (the slot, the row nearest) | none | none |
 | `module` (`order: [switch, slot]`) | `plates`, else none | none | the previous in the order | the next in the order |
 
-**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift (the rings: plates 188, 410, 216×88; switch 580, 98, 392×136; slot 580, 242, 392×256). **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends); the ring stays drawn where it is, with its lift, through the hold; it is not redrawn.
+**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** 5 px outside each object as drawn (the plates' ring round the drawn plates), with the 2 px chrome lift (the rings: plates 188, 410, 216×88; switch 580, 98, 392×136; slot 580, 242, 392×256). **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends); the ring stays drawn where it is, with its lift, through the hold; it is not redrawn.
 
 ### The bench's states and events
 
@@ -2065,7 +2068,7 @@ The left half is the vivarium's: the window, the mibi and its tag at the same pl
 | `strip` | 16, 488, 992, 64 | panel | | — |
 | `steps` | 32, 496, 952, 48 | list, build `stepTiles` (rule `listPitch`) | | current, done (with its picture), ahead |
 
-The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 2 px chrome lift: on card 1, (740, 106, 120, 120). **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, deck, heading, cards or chosen, strip, steps, ring, frame, message plate.
+The ring is the frame's `focusRing` word, 5 px outside a card with the 2 px chrome lift: on card 1, (739, 105, 122, 122), radius 5. **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, deck, heading, cards or chosen, strip, steps, ring, frame, message plate.
 
 ### 6. Interactions
 
@@ -2207,7 +2210,7 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Gilt corner | frame + (88, −8), 16×16 | sprite `spread-gilt-corner-16x16` | Centred on the frame's top right corner; found and portrayed |
 | Progress | frame + (26, 152), 44×8 | four sprites, `spread-progress-full-8x8` or `spread-progress-empty-8x8`, 8×8 on a 12 pitch | y 264 and 448, centred on the frame, 8 px under the caption rule, 8 px over the next row's roundel and the margin life; found only |
 | Seal | frame + (88, 104), 16×16 | sprite `spread-seal-16x16` | Centred on the frame's bottom right corner; found and complete |
-| Focus | frame outset 4, radius 6: 104×120 | the ring | `rust` on paper; nothing lifts; drawn last, over the gilt corner and the seal (their offsets stand) |
+| Focus | frame outset 5, radius 5: 106×122 | the ring | `rust` on paper, no keys; nothing lifts; drawn last, over the gilt corner and the seal (their offsets stand) |
 | Page-turn corner | 968, 512, 24, 24 | sprite `book-corner-turn-24x24`, part of `spreadPage` | Its own region, never in the stage slice; only with a second spread |
 | Message plate | centred on x 512, bottom at y 550 | the frame's | 225×36 for "Nothing is known here yet" (193 px of text and 2 × 16 padding); 271×36 for "Its Book needs its pod identified" (239 px) |
 
@@ -2685,7 +2688,7 @@ The panel stands over the vivarium's right column, 16 px right of the window's b
 | Suggest | 636, 408, 160, 40 | |
 | **Done** | 804, 408, 160, 40 | Where the ring opens |
 
-The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside the lifted box: 48×48 on a 48 px pitch, so rings never touch a neighbouring key, and the ring over a key clears the row above by 2 px.
+The focused key lifts 2 px, the chrome lift, and its ring stands 5 px outside the lifted box: 50×50 on a 48 px pitch over 40 px keys, 3 px clear of the next key, and the ring over a key clears the row above by 2 px.
 
 **Regions and their words.** One state, **open**; the field's own states are selected, typed and empty (Interactions, below).
 

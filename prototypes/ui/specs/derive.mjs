@@ -165,3 +165,19 @@ export function chapterPlan(traits, spec) {
   const rows = traits.map((t) => { const h = T.h + T.perLocus * Math.max(0, t.loci - 1), r = { id: t.id, y, h, loci: t.loci }; y += h; return r; });
   return { rows, height: y - top, fits: y - top <= spec.regions.chapter.rows[3] };
 }
+
+// A creature's footprint (fix 14, FR4): measured on the alpha of the picture as drawn, in integers. The feet band is the lowest `band` rows (default 6) holding a pixel of alpha >= `alpha` (default 128)
+// in the cell [cellX, cellX + cellW) of `pic` (anything with w, h and rgba() or data: RGBA bytes, straight alpha); `feetY` is the row under the lowest of them; `x` is the band's leftmost ink column and `w`
+// its ink width (leftmost to rightmost ink column). Returns [x, feetY, w] relative to the cell, or null when the cell has no ink. frame.json focus.ring.shapes.footprint carries band and alpha.
+export function footprintOf(pic, cellX = 0, cellW = pic.w, { band = 6, alpha = 128 } = {}) {
+  if (![pic.w, pic.h, cellX, cellW, band, alpha].every(Number.isInteger) || cellX < 0 || cellW < 1 || cellX + cellW > pic.w || band < 1) throw new Error(`footprintOf refused: ${pic.w}x${pic.h} cell ${cellX}+${cellW}`);
+  const px = typeof pic.rgba === "function" ? pic.rgba() : pic.data, ink = (x, y) => px[4 * (y * pic.w + cellX + x) + 3] >= alpha;
+  let low = -1;
+  for (let y = pic.h - 1; y >= 0 && low < 0; y--) for (let x = 0; x < cellW; x++) if (ink(x, y)) { low = y; break; }
+  if (low < 0) return null;
+  let lo = cellW, hi = -1;
+  for (let y = Math.max(0, low - band + 1); y <= low; y++) for (let x = 0; x < cellW; x++) if (ink(x, y)) { if (x < lo) lo = x; if (x > hi) hi = x; }
+  return [lo, low + 1, hi - lo + 1];
+}
+// The footprint ring's height (Q3): 2 * round(w / 12), held between `hMin` and `hMax`; in integers 2 * floor((w + 6) / 12). So fh + 10 is even.
+export const footprintHeight = (w, { hMin = 6, hMax = 16 } = {}) => Math.min(hMax, Math.max(hMin, 2 * Math.floor((w + 6) / 12)));

@@ -72,10 +72,10 @@ static void build_mods(void) {
   nrect("regions.suggest.rect", r); spec_str(N, "strings.keys.suggest", s, sizeof s); key_face("suggest", "suggest", r, strcmp(c, "act.suggest") == 0, ncol("colours.key.fill"), s, ncol("colours.key.label"));
   nrect("regions.done.rect", r); spec_str(N, "strings.keys.done", s, sizeof s); key_face("done", "done", r, strcmp(c, "act.done") == 0, ncol("colours.key.fill"), s, ncol(doneDim ? "colours.done.labelDim" : "colours.done.label"));
 }
-/* the ring over the focused target, lifted 2 px: 4 px outside its key (48 x 48 on a 48 pitch) */
+/* the ring over the focused target, lifted 2 px: 5 px outside its key as drawn (50 x 50 on a 48 pitch over 40 px keys) */
 static void build_ring(void) {
   const char *c = cur(); int box[4]; if (!*c || anim_holding()) return; target_rect(c, box); if (box[2] <= 0) return; box[1] -= ni("focus.targets.key.lift", 2);
-  v_region("focus", LAYER_CHROME); word_focusRing("focus", box, N, "focus.targets.key.ring", ncol("colours.ring"));
+  v_region("focus", LAYER_CHROME); word_focusRing("focus", N, "focus.targets.key", box);   /* every namer target wears the key's shape (the other targets' names hold a dot and no path reaches them) */
 }
 void namer_words(void) { build_panel(); build_field(); build_say(); build_keys(); build_mods(); build_ring(); }
 

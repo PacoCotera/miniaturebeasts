@@ -18,6 +18,8 @@ const SCENES = {
   "docked-day":   { f: null, state: "rest", light: "day",   set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-dusk":  { f: null, state: "rest", light: "dusk",  set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
+  // fix 14 (§14.4): capture states, not goldens: the vivarium-docked seed with a juvenile resident focused, one a light; its ring crosses the dark grain and the lit moss (the 2 px floor, layer-check rule F2; the CD's frames)
+  ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { f: "resident:4", state: "rest", light: l, captureOnly: true, set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } }])),
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, f, light]) => {
@@ -37,7 +39,7 @@ async function still(visit) {
       await enter(page, sc); await page.waitForTimeout(900);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur, n: window.__st.props?.regions?.tiles?.items?.length }));
       if (u.screen !== "vivarium" || u.state !== sc.state) fail(`vivarium-${name}: on ${u.screen}, ${u.state}`);
-      await visit("vivarium-" + name, page, fail);
+      await visit("vivarium-" + name, page, fail, sc.captureOnly ? { captureOnly: true } : undefined);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }

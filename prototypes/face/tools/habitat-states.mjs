@@ -33,6 +33,8 @@ const SCENES = {
   "docked-day": { shown: 0, f: "resident", state: "rest", light: "day", set: (w) => { w.bays(8); w.adults(4); } },
   "docked-dusk": { shown: 0, f: "resident", state: "rest", light: "dusk", set: (w) => { w.bays(8); w.adults(4); } },
   "docked-night": { shown: 0, f: "resident", state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); } },
+  // fix 14 (§14.4): capture states, not goldens: a juvenile up close with the ring on its footprint, one a light (the 2 px floor, layer-check rule F2; the CD's frames)
+  ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { shown: 4, f: "resident", state: "rest", light: l, captureOnly: true, set: (w) => { w.bays(8); w.adults(4); w.young(3); } }])),
   namer: { shown: 0, f: "resident", state: "rest", meet: true, open: true, set: (w) => { w.bays(8); w.adults(4); } },
   "namer-typed": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["act.suggest", "x:back", "key.12", "key.14", "key.13", "key.4"], set: (w) => { w.bays(8); w.adults(4); } },
   "namer-accents": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.3", "mod.page"], set: (w) => { w.bays(8); w.adults(4); } },
@@ -87,7 +89,7 @@ async function stillStates(visit) {
         if (m.shown !== m.last || /BUD/.test(m.code)) fail(`habitat-meet: shows ${m.shown}, the new mibi is ${m.last} (code ${m.code})`);
         if (hatched.name && m.shown !== hatched.name) fail(`habitat-meet: the meet's name ${m.shown} is not the hatch's ${hatched.name}`);
       }
-      await visit("habitat-" + name, page, fail);
+      await visit("habitat-" + name, page, fail, sc.captureOnly ? { captureOnly: true } : undefined);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }

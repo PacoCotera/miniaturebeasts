@@ -205,7 +205,7 @@
    "resident": {
     "group": "resident",
     "id": "resident.<mibi id>",
-    "ring": "feet",
+    "shape": "footprint",
     "box": "the resident's box where the face has stepped it; each sleeper is one, with no lift",
     "lift": 4,
     "present": "rest, every mibi at home"
@@ -213,7 +213,7 @@
    "tile": {
     "group": "tile",
     "id": "tile.<mibi id>",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "the tile's rectangle (regions.tiles, its form)",
     "lift": 2,
     "present": "rest, every housed mibi, at home or out; free bays are not targets"

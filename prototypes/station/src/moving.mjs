@@ -4,6 +4,7 @@
 // or, until it is placed, the stand-in of §1.5 (whole pixels, registered as a placeholder). An atlas is a master only when every one of its cells is; a set plays only when all its atlases are (the play gate), else only under
 // the developer switch "Motion sets (stand-ins)" or in the face tests. The face never makes an id: the props name the atlases.
 import { assetEntry, asset as assetOf, registerAsset, hasAsset } from "../../ui/assets.mjs";
+import { footprintOf } from "../../ui/specs/derive.mjs";
 import { gradedOf } from "./light-grade.mjs";
 
 let MOVING = {};
@@ -28,6 +29,21 @@ export function cellsOf(species, stage, part, w, h) {
   if (part === "shadow") return [{ name: "shadow", master: id("shadow") }, { name: "shadow-75", master: id("shadow"), derived75: true }];
   const p = s[part], base = p.cells.map((name) => ({ name, master: id(name) }));
   return part === "walk" ? [...base, ...(p.mirror ?? []).map((name) => ({ name, master: id(name), mirror: true }))] : base;
+}
+// A creature picture's footprint, the `foot` the host sends on its `asset` message (fix 14, FR4; the architect's ruling of 08:12): a `mibi:` still, master copy or rig render (graded copies alike): [x, feetY, w] at alpha T.alpha; a walk or close
+// atlas: { stand, curl, shadow }, its cells found by name (the first painted, non-mirror cell of that name: no index is written anywhere) and `shadow` from cell 0 of the same-size shadow atlas at T.shadowAlpha, moved into the creature cell's
+// coordinates (feetY + h - the shadow's h); a nap atlas: { curl }; a shadow atlas and the mibi-* master ids: none. `picOf(id)` gives the shadow atlas. Alpha only, so a graded copy measures as its master. Null when nothing has ink.
+export function footOf(id, pic, picOf, T = { band: 6, alpha: 128, shadowAlpha: 1 }) {
+  const rgba = typeof pic.rgba === "function" ? pic : { w: pic.w, h: pic.h, rgba: () => pic.data };
+  if (/^mibi:/.test(id)) return footprintOf(rgba, 0, pic.w, T);
+  const a = parse(id); if (!a || a.part === "shadow") return null;
+  const cs = cellsOf(a.species, a.stage, a.part, a.w, a.h), at = (name) => { const i = cs.findIndex((c) => c.name === name && !c.mirror); return i < 0 ? null : 1 + i * a.w; }, out = {};
+  for (const name of a.part === "nap" ? ["curl"] : ["stand", "curl"]) { const x = at(name); if (x == null) continue; const f = footprintOf(rgba, x, a.w, T); if (f) out[name] = f; }
+  if (a.part !== "nap") {
+    const s = movingOf(a.species, a.stage), [sw, sh] = s?.shadow?.[a.part] ?? [0, 0], sp = sw ? picOf?.(`moving:${a.stage}:${a.species}:shadow:${sw}x${sh}`) : null;
+    if (sp) { const f = footprintOf(typeof sp.rgba === "function" ? sp : { w: sp.w, h: sp.h, rgba: () => sp.data }, 1, sw, { ...T, alpha: T.shadowAlpha }); if (f) out.shadow = [f[0], f[1] + a.h - sh, f[2]]; }
+  }
+  return Object.keys(out).length ? out : null;
 }
 const placed = (id) => { const e = assetEntry(id); return !!e && !!e.file && e.status !== "empty"; };   // a placed master (its file), not a built stand-in
 export const atlasIsMaster = (id) => { const a = parse(id); return !!a && cellsOf(a.species, a.stage, a.part, a.w, a.h).every((c) => placed(c.master)); };

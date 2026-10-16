@@ -49,23 +49,30 @@ static void stage_dither(void) {
   snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
   v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
-/* a target's ring form (lvgl-switch.md §2.6): "round", "feet", "tab", { "circle": { "radius": r > 0, "centre": [x, y] } } or { "circle": { "outside": n >= 0 } }, and nothing else */
+/* a target's ring shape (lvgl-switch.md §2.6; fix 14): "oval", "footprint", "tab", { "rect": r >= 0 [, "chip": n >= 0] }, { "circle": "box" } or { "circle": { "centre": [x, y], "r": r > 0 } }, and nothing else;
+   its `ground` is "default" or "paper"; the old `ring` key is refused */
 static int vet_ring(const char *screen, const char *name, char *err, int cap) {
   char R[96], C[112], Q[128], why[80] = "";
-  snprintf(R, sizeof R, "targets.%s.ring", name); int rl; const char *raw = spec_raw(screen, R, &rl); if (!raw) return 0;
-  if (raw[0] == '"') { char f[16]; spec_str(screen, R, f, sizeof f); if (strcmp(f, "round") && strcmp(f, "feet") && strcmp(f, "tab")) snprintf(why, sizeof why, "%.30s is not a ring form", f); }
+  snprintf(Q, sizeof Q, "targets.%s.ring", name); if (spec_raw(screen, Q, NULL)) { snprintf(err, (size_t)cap, "spec %s: targets.%s: `ring` is replaced by `shape`", screen, name); return -1; }
+  snprintf(Q, sizeof Q, "targets.%s.ground", name); if (spec_raw(screen, Q, NULL)) { char g[12]; spec_str(screen, Q, g, sizeof g); if (strcmp(g, "default") && strcmp(g, "paper")) { snprintf(err, (size_t)cap, "spec %s: %s is \"default\" or \"paper\"", screen, Q); return -1; } }
+  snprintf(R, sizeof R, "targets.%s.shape", name); int rl; const char *raw = spec_raw(screen, R, &rl); if (!raw) return 0;
+  if (raw[0] == '"') { char f[16]; spec_str(screen, R, f, sizeof f); if (strcmp(f, "oval") && strcmp(f, "footprint") && strcmp(f, "tab")) snprintf(why, sizeof why, "%.30s is not a ring shape", f); }
   else if (raw[0] == '{') {
-    snprintf(C, sizeof C, "%s.circle", R); char k[16], d[2];
-    if (spec_len(screen, R) != 1 || !spec_member(screen, R, 0, k, sizeof k, d, sizeof d) || strcmp(k, "circle")) snprintf(why, sizeof why, "an object ring has the one key circle");
-    else if (spec_raw(screen, C, NULL) && spec_raw(screen, C, NULL)[0] == '{') {
-      int n = spec_len(screen, C); char k0[16], k1[16];
-      if (n == 1 && spec_member(screen, C, 0, k0, sizeof k0, d, sizeof d) && !strcmp(k0, "outside")) { snprintf(Q, sizeof Q, "%s.outside", C); if (!spec_raw(screen, Q, NULL) || spec_int(screen, Q, -1) < 0) snprintf(why, sizeof why, "circle.outside must be 0 or more"); }
-      else if (n == 2 && spec_member(screen, C, 0, k0, sizeof k0, d, sizeof d) && spec_member(screen, C, 1, k1, sizeof k1, d, sizeof d) && ((!strcmp(k0, "radius") && !strcmp(k1, "centre")) || (!strcmp(k0, "centre") && !strcmp(k1, "radius")))) {
-        snprintf(Q, sizeof Q, "%s.radius", C); char c[120]; snprintf(c, sizeof c, "%s.centre", C);
-        if (spec_int(screen, Q, 0) <= 0) snprintf(why, sizeof why, "circle.radius must be above 0"); else if (spec_len(screen, c) != 2) snprintf(why, sizeof why, "circle.centre is [x, y]");
-      } else snprintf(why, sizeof why, "a circle is radius with centre, or outside");
-    } else snprintf(why, sizeof why, "circle must be an object");
-  } else snprintf(why, sizeof why, "a ring is a form name or a circle");
+    char k[16], d[2]; int n = spec_len(screen, R);
+    if (n >= 1 && spec_member(screen, R, 0, k, sizeof k, d, sizeof d) && !strcmp(k, "rect")) {
+      snprintf(Q, sizeof Q, "%s.rect", R); char k1[16];
+      if (spec_int(screen, Q, -1) < 0) snprintf(why, sizeof why, "rect is a radius of 0 or more");
+      else if (n == 2) { if (!spec_member(screen, R, 1, k1, sizeof k1, d, sizeof d) || strcmp(k1, "chip")) snprintf(why, sizeof why, "a rect shape has rect and chip"); else { snprintf(Q, sizeof Q, "%s.chip", R); if (spec_int(screen, Q, -1) < 0) snprintf(why, sizeof why, "chip is 0 or more"); } }
+      else if (n != 1) snprintf(why, sizeof why, "a rect shape has rect and chip");
+    } else if (n == 1 && spec_member(screen, R, 0, k, sizeof k, d, sizeof d) && !strcmp(k, "circle")) {
+      snprintf(C, sizeof C, "%s.circle", R); const char *cr = spec_raw(screen, C, NULL);
+      if (cr && cr[0] == '"') { char b[8]; spec_str(screen, C, b, sizeof b); if (strcmp(b, "box")) snprintf(why, sizeof why, "circle is \"box\" or an object"); }
+      else if (cr && cr[0] == '{') {
+        char c[120]; snprintf(Q, sizeof Q, "%s.r", C); snprintf(c, sizeof c, "%s.centre", C);
+        if (spec_len(screen, C) != 2 || spec_int(screen, Q, 0) <= 0) snprintf(why, sizeof why, "a circle is { centre, r } with r above 0"); else if (spec_len(screen, c) != 2) snprintf(why, sizeof why, "circle.centre is [x, y]");
+      } else snprintf(why, sizeof why, "circle is \"box\" or an object");
+    } else snprintf(why, sizeof why, "an object shape is rect or circle");
+  } else snprintf(why, sizeof why, "a shape is a name, rect or circle");
   if (*why) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, R, why); return -1; }
   return 0;
 }

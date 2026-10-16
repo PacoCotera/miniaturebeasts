@@ -26,7 +26,7 @@
   "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture Superseded by GB1: no marks.",
   "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
   "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
-  "ring forms": "`ring` is the target group's focus ring form (frame.json focus.ring.forms). A place wears the circle 4 px outside its collection ring: radius 84 round (x + 96, y + 88), the ring's centre (regions.collection.ring.centre), the picture [x + 12, y + 4, 168, 168]. A kin wears the circle 4 px outside its own: radius (w >> 1) + 4 round the box's centre. The pod and the hatch wear the round ring 4 px outside their boxes; the pod's ring rides its 4 px lift and is never drawn on the dish. A tab wears the tab ring (frame.json focus.ring.tab)",
+  "ring forms": "`shape` is the target group's focus ring form (frame.json focus.ring.shapes). A place wears the circle round its collection gauge: radius 88 + 5 = 93 round (x + 96, y + 88), the gauge slice's centre (regions.collection.ring.centre). A kin wears the circle round its own: radius (w >> 1) + 5 round the box's centre. The pod wears the oval through its ink box grown by 5; the hatch the rounded rectangle (r 6) grown by 5; the pod's ring rides its 4 px lift and is never drawn on the dish. A tab wears the tab ring (frame.json focus.ring.shapes.tab)",
   "ordered edges at L2.0": "UI designer, 2026-10-09, on the architect's ruling of 12:25 (lvgl-switch.md §2.6.1): with L2.0's focus port, focus.overview.pod.right becomes [\"kin.first\", \"hatch\"] and focus.overview.hatch.up [\"kin.first\", \"none\"], so a pod with no kin keeps today's moves when the view resolves kin.first to null. At slot 8, when doorOpen(book) is true and the figure is a target, pod.right becomes [\"figure\", \"kin.first\", \"hatch\"]. Written here, not in focus.overview, until the port lands: today's focus.mjs and specs.test.mjs take no lists",
   "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane"
  },
@@ -88,10 +88,7 @@
     },
     "paint": "colours.collectionRingPaint: the paint reference for the masters; the build draws no arcs",
     "focus": {
-     "form": "targets.place.ring",
-     "radius": 84,
-     "width": 2,
-     "colour": "focus"
+     "form": "targets.place.shape"
     }
    },
    "pod": {
@@ -1310,25 +1307,17 @@
  "targets": {
   "place": {
    "group": "place",
-   "ring": {
-    "circle": {
-     "radius": 84,
-     "centre": [
-      96,
-      88
-     ]
-    }
-   },
+   "shape": { "circle": { "centre": [96, 88], "r": 88 } },
    "state": "collection"
   },
   "pod": {
    "group": "pod",
-   "ring": "round",
+   "shape": "oval",
    "state": "overview"
   },
   "tab": {
    "group": "rail",
-   "ring": "tab",
+   "shape": "tab",
    "states": [
     "overview",
     "chapter",
@@ -1337,16 +1326,12 @@
   },
   "kin": {
    "group": "kin",
-   "ring": {
-    "circle": {
-     "outside": 4
-    }
-   },
+   "shape": { "circle": "box" },
    "state": "overview"
   },
   "hatch": {
    "group": "hatch",
-   "ring": "round",
+   "shape": { "rect": 6 },
    "state": "overview"
   }
  },
@@ -1373,7 +1358,6 @@
    "sealedWord": "mist",
    "pip": "bone",
    "pipHollow": "mist",
-   "ring": "focus",
    "changed": "amber"
   },
   "page": {
