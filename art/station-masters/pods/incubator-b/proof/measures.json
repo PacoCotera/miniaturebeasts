@@ -1,0 +1,74 @@
+{
+ "S01 empty": {
+  "cradle": 0.306
+ },
+ "S01 growing-cool": {
+  "ring": 0.259,
+  "cradle": 0.27,
+  "pod": 0.706,
+  "slip": 0.339,
+  "card": 0.138,
+  "stamp": 0.233,
+  "pod - highest other": 0.367
+ },
+ "S01 growing": {
+  "ring": 0.281,
+  "cradle": 0.271,
+  "pod": 0.698,
+  "slip": 0.339,
+  "card": 0.138,
+  "stamp": 0.233,
+  "pod - highest other": 0.359
+ },
+ "S01 ready": {
+  "ring": 0.338,
+  "cradle": 0.278,
+  "pod": 0.698,
+  "slip": 0.339,
+  "card": 0.138,
+  "stamp": 0.233,
+  "pod - highest other": 0.359
+ },
+ "S01 hatch-1100": {
+  "cradle": 0.684,
+  "juvenile": 0.788,
+  "slip": 0.339,
+  "stamp": 0.233
+ },
+ "S03 empty": {
+  "cradle": 0.306
+ },
+ "S03 growing-cool": {
+  "ring": 0.259,
+  "cradle": 0.286,
+  "pod": 0.644,
+  "slip": 0.339,
+  "card": 0.138,
+  "stamp": 0.233,
+  "pod - highest other": 0.305
+ },
+ "S03 growing": {
+  "ring": 0.281,
+  "cradle": 0.287,
+  "pod": 0.626,
+  "slip": 0.339,
+  "card": 0.138,
+  "stamp": 0.233,
+  "pod - highest other": 0.287
+ },
+ "S03 ready": {
+  "ring": 0.338,
+  "cradle": 0.296,
+  "pod": 0.652,
+  "slip": 0.339,
+  "card": 0.138,
+  "stamp": 0.233,
+  "pod - highest other": 0.313
+ },
+ "S03 hatch-1100": {
+  "cradle": 0.42,
+  "juvenile": 0.799,
+  "slip": 0.339,
+  "stamp": 0.233
+ }
+}

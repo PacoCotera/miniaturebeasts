@@ -4952,5 +4952,80 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
   "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
+ },
+ "incubator-stage": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-cradle": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-cradle-empty": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-cradle-front": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-ring-fill": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-ring-closed": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-card-ground": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "slip-208x408": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "slip-208x296": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-shell-cool": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-shell-warm": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-shell-glowing": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-shell-seams": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-shell-crack-1": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
+ },
+ "incubator-shell-crack-2": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "note": "T-20261016-27, Incubator option B"
  }
 }

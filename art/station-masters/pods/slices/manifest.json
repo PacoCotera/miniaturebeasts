@@ -15961,5 +15961,275 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
   "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well"
+ },
+ "incubator-stage": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "incubator-b/make-stage.py",
+  "made": "the Incubator's ground: Pods' clean stage (the sage bezel pixel for pixel), the floor repainted calm in its own tone and grain, and the ring's track moulded into it (open arc, centre (512, 248) in the slice, radii 176-200, 96 degrees open at the bottom). Job: the device's own ground; the track shows how far the wait has come",
+  "sha256": "a8757c31161bb9f02b54d4160aca96b7fa5752ad7187298b81ebcf397b5dc854",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-cradle": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the cradle with the pod's contact shadow: moulded sage polymer pedestal, the vivarium's own moss as a nest, the candling lens under it. Job: holds the pod and lights its shell from below",
+  "sha256": "eac0ce1840170cf3c6fe3f79a1004dba9788db43ab340d00db658253560abced",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-cradle-empty": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the cradle with no pod (empty, and under the juvenile at the hatch). Job: the nest waiting for a pod",
+  "sha256": "0bb5621e8c9a88ad6215819ffafde1bf9c8beff9c7a04b1cf76fb6615192fd9b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-cradle-front": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the nest's near lip, drawn over the pod's foot. Job: the pod sits in the moss, not on it",
+  "sha256": "1ee904b6477414b9be19d6f4b3dde9eee66e17af4f7824c45d4905c528bdb5c7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-ring-fill": {
+  "size": [
+   400,
+   400
+  ],
+  "rect": [
+   312,
+   88,
+   400,
+   400
+  ],
+  "src": "incubator-b/make-ring.py",
+  "made": "the ring's fill: a matte sand inlay in the track; the build clips it to the wedge from 228 degrees clockwise to 228 + 264 f, whole degrees. Job: how close the meeting is",
+  "sha256": "344c10ec3a1a9c6da5ef895392b879947c6986673cd099cbbd0cada3b3f7c583",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-ring-closed": {
+  "size": [
+   400,
+   400
+  ],
+  "rect": [
+   312,
+   88,
+   400,
+   400
+  ],
+  "src": "incubator-b/make-ring.py",
+  "made": "the ring full, its ends warmed where they meet the candling light. Job: ready",
+  "sha256": "96798224f9383342f4c4009c7c5195c142f4971ab926145f659ee7e52f40e5a7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-card-ground": {
+  "size": [
+   208,
+   240
+  ],
+  "rect": [
+   728,
+   96,
+   208,
+   240
+  ],
+  "src": "device-plate/make-device-plate.py 208 240 (the fix 2 kit)",
+  "made": "the just-cleared card's panel: the house device plate (sage bezel, dark matte well). Job: holds the newest reveal (the build's picture and words)",
+  "sha256": "379f8fea7fc8961bff29c54acf44e3edd77572215f893ff3547d1ac061e46282",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "slip-208x408": {
+  "size": [
+   208,
+   408
+  ],
+  "rect": [
+   88,
+   96,
+   208,
+   408
+  ],
+  "src": "incubator-b/make-slip.py",
+  "made": "the slip's paper: Pods' paper tag shaded to toned paper, a matte steel clip. Job: what this pod is and what they made (the build's live text)",
+  "sha256": "609a11185490a80ad5112aaadb60580402cb7859030637308c13d35d390f2a64",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "slip-208x296": {
+  "size": [
+   208,
+   296
+  ],
+  "rect": [
+   728,
+   96,
+   208,
+   296
+  ],
+  "src": "incubator-b/make-slip.py",
+  "made": "Create's slip (T-20261016-41): the same paper and clip at Create's height",
+  "sha256": "65a4b18268e38cc0e7a376ac9b4d657a4ef58f5261b3b755bdc901090c3b150a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-shell-cool": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-shell-light.py",
+  "made": "the shell light overlay, cool: placed over the pod's shell 1:1, never tinted (the light just on (f < 1/3)). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
+  "sha256": "f715202f8b7c2c366d3ce22e723d8d0c557abfc5712100cfa3bb90079d904e50",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-shell-warm": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-shell-light.py",
+  "made": "the shell light overlay, warm: placed over the pod's shell 1:1, never tinted (f < 2/3). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
+  "sha256": "03bf6ae48a10715c895e32d0637535233907b08f932b4abab05035d60ed8495e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-shell-glowing": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-shell-light.py",
+  "made": "the shell light overlay, glowing: placed over the pod's shell 1:1, never tinted (f >= 2/3 and ready). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
+  "sha256": "3f172ed0d105926e7c56eb086e7a2e75b7bb85178e5e580cefde63d72b269aff",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-shell-seams": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-shell-light.py",
+  "made": "the shell light overlay, seams: placed over the pod's shell 1:1, never tinted (ready: the light through the seams). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
+  "sha256": "4446cc15e20f9a8b4a639a005834669afafae1057d3519a0e73cb794163d05ac",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-shell-crack-1": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-shell-light.py",
+  "made": "the shell light overlay, crack-1: placed over the pod's shell 1:1, never tinted (hatch 600). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
+  "sha256": "2c61ced7823a817c7d411656907934781ba7be9dae4a1ac9d8208fcb72a17a64",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
+ },
+ "incubator-shell-crack-2": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-shell-light.py",
+  "made": "the shell light overlay, crack-2: placed over the pod's shell 1:1, never tinted (hatch 800). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
+  "sha256": "82d593205c0f1fbc1c65a8380bfeea62ea2fa44ae210ca97c3c984f13f71f209",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
+  "status_note": "new (10-16, T-20261016-27)"
  }
 }
