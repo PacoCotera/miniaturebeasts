@@ -1,4 +1,4 @@
-"""Fix 5 Create CA3, by hand, 0 MXN: a shallow worn dish pressed into the relit bench at the pod's place (axis x 160, feet y 408 on
+"""Fix 5 Create CA3, by hand: a shallow worn dish pressed into the relit bench at the pod's place (axis x 160, feet y 408 on
 screen; stage y = screen - 40). The dish is an elliptical depression in the bench's own paint (rx 92, ry 26 at the rim, centred
 3 px above the feet): a height field (a smooth bowl, 3 px deep, with a 2 px raised worn lip), shaded by the key light from the top
 left as a multiplier on the bench paint, so the far inner wall catches light and the near inner wall falls in shade; a faint wear

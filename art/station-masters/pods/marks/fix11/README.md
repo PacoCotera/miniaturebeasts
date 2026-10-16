@@ -1,4 +1,4 @@
-# Fix 11, gate batch 1 (AD, 10-15, 0 MXN)
+# Fix 11, gate batch 1 (AD, 10-15)
 
 - `make-line-glyphs.py` writes the name-line glyphs. Each one's meaning now sits in a form at least 12 px across, in the pass 60 family's colours.
   - `mark-line-seed-12x16` (hides): ink 12 × 16. The id is unchanged.

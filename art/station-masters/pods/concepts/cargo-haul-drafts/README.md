@@ -1,11 +1,11 @@
 # Cargo haul container drafts (Oct 10)
 
-The Station art director's CARGO HAUL CONTAINERS brief (the owner: the ten references are "the containers, the cargo haul that you unload"). Four 48x64 containers stand in the open crate on its foot line at y 384: Energy (a dark tube with a dim warm amber core, #ffa83f), Data (a matte banded canister with a sky window, #5bb9f3, and a short bar glyph), Essence (a matte jar with a dark screw cap and a cord loop and a green window, #5cbb4c), Find (one clear-windowed tube with a cap and a dark foot, painted EMPTY; the finds are composited in by hand later from the signed `find-*-112x112`). Two Pro requests (gemini-3-pro-image), one per family, no retry, cap 9 MXN, under the owner's standing approval in the art director's order. Concept drafts only: nothing cut until the art director picks. The owner's pictures were described in words only; image references were project-owned only (the signed `crate-open-432x272` and the three material icons `art/companion-48/review-place/work/ui/icon-{energy,data,essence}.png`).
+The Station art director's CARGO HAUL CONTAINERS brief (the owner: the ten references are "the containers, the cargo haul that you unload"). Four 48x64 containers stand in the open crate on its foot line at y 384: Energy (a dark tube with a dim warm amber core, #ffa83f), Data (a matte banded canister with a sky window, #5bb9f3, and a short bar glyph), Essence (a matte jar with a dark screw cap and a cord loop and a green window, #5cbb4c), Find (one clear-windowed tube with a cap and a dark foot, painted EMPTY; the finds are composited in by hand later from the signed `find-*-112x112`). Two Pro requests (gemini-3-pro-image), one per family, no retry, under the owner's standing approval in the art director's order. Concept drafts only: nothing cut until the art director picks. The owner's pictures were described in words only; image references were project-owned only (the signed `crate-open-432x272` and the three material icons `art/companion-48/review-place/work/ui/icon-{energy,data,essence}.png`).
 
-| File | Family | Cost |
-| --- | --- | --- |
-| `cargo-haul-sheet-1-rugged-1376x768.jpg` | Sheet 1, rugged: banded canisters, rubber end caps and corner guards, sand and charcoal bodies | 4.59 MXN |
-| `cargo-haul-sheet-2-soft-1376x768.jpg` | Sheet 2, soft: rounded capsules and a jar, screw caps and rope loops, sand and off-white bodies | 4.18 MXN |
+| File | Family |
+| --- | --- |
+| `cargo-haul-sheet-1-rugged-1376x768.jpg` | Sheet 1, rugged: banded canisters, rubber end caps and corner guards, sand and charcoal bodies |
+| `cargo-haul-sheet-2-soft-1376x768.jpg` | Sheet 2, soft: rounded capsules and a jar, screw caps and rope loops, sand and off-white bodies |
 
 Jobs `source/work/cargo-haul-sheet-{1-rugged,2-soft}.json`; calls `log/calls.jsonl`.
 

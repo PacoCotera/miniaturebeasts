@@ -1,4 +1,4 @@
-# Idle full-screen band (QA 2f1da9f; programme lead's go 18:28, 0 MXN): the side fixtures (wall panels, feed line, mister
+# Idle full-screen band (QA 2f1da9f; programme lead's go 18:28): the side fixtures (wall panels, feed line, mister
 # pipe) started on a cut line at rows 114-118 under the canopy band. They now run up to the top edge, carried from their own
 # row 120 (continuous with the protected rows) and softened as they rise into the band, the way the band itself is out of focus: the blur grows
 # from 0 at row 119 to sigma 5 px at row 60 and above. Side bands x < 104 and x >= 856, feathered into the canopy over

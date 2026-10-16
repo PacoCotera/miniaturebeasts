@@ -1,4 +1,4 @@
-# Fix 2 F11: the chapter rail's well and the cream open tab (gate batch 1, F2-A5 and F2-A6; AD, 10-15, 0 MXN)
+# Fix 2 F11: the chapter rail's well and the cream open tab (gate batch 1, F2-A5 and F2-A6; AD, 10-15)
 
 - **F2-A5** `plate-rail-well-{w}x48`, 18 widths, one per rail run (w = run + 16), drawn 1:1 at (x0 − 8, 40) on the painted layer before the tabs. The bottom is at y 88.
   - 1–6 full tabs: 168, 304, 440, 576, 712, 848.

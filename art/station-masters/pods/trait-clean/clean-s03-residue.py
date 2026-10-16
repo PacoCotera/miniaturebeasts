@@ -1,4 +1,4 @@
-"""The AD's S03 residue clean (brief boards/station-s03-residue-brief.md as relayed 10-15 05:02; by hand, 0 MXN): 18 trait plates,
+"""The AD's S03 residue clean (brief boards/station-s03-residue-brief.md as relayed 10-15 05:02; by hand): 18 trait plates,
 trait-S03-{scales-{between,few-fine,many-coarse},claws-{digging-wedges,pads,round-feet}}-{128x160,104x160,104x96}, each cleaned at its own size
 (never one size derived from another).
 Scales: a pixel is flagged when its saturation (HSV) is under 0.12 and its luma (Rec.709 on the sRGB values) is 25 or more below the 5x5 median of

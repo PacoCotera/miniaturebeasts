@@ -1,5 +1,5 @@
 # Fix 5 Pods P-A3: mibi-halo-empty-128x160 at (400, 232), the empty halo before Identify: the halo's soft mist alone, no silhouette,
-# cut by hand at 0 MXN from the signed halo set (its own mist colour, from mibi-halo-S01..S16-128x160-mist). One quiet upright oval,
+# cut by hand from the signed halo set (its own mist colour, from mibi-halo-S01..S16-128x160-mist). One quiet upright oval,
 # dimmer than any figure (alpha at most 56, against the figures' 107-115), so it reads as "something will stand here", not a creature.
 # usage: python3 -I make-halo-empty.py SLICES_DIR OUT_DIR
 import sys, os, glob, numpy as np

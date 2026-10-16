@@ -1,4 +1,4 @@
-# Fix 5 Pods P-A1, P-A2: the stages without their grey plates, 0 MXN, by hand
+# Fix 5 Pods P-A1, P-A2: the stages without their grey plates, by hand
 
 `recut-stages.py` takes the right part of each stage from the signed base stage `room-bench-stage`. That is the same painting without the plates. The seam is feathered over 24 px, at x 418 on the chapter stage and x 578 on the overview.
 
@@ -13,7 +13,7 @@ Proofs at 1×: `proof-chapter-1x.png` and `proof-overview-1x.png` (with the fix 
 
 **Status:** new. Signed in the whole Pods captures.
 
-## Gate batch 1: the chapter stage's heading band cleared (AD, 10-15, 0 MXN)
+## Gate batch 1: the chapter stage's heading band cleared (AD, 10-15)
 
 The heading row of the two-row chapter page (screen 360–952 × 88–136) ran over the painted hose, the gauge and the vent. `clear-heading-band.py` repaints the floor in x 340–960 from the floor's top edge to slice y 116, which removes the hose's top run, the gauge and the vent there.
 - **Tone:** a harmonic fill from the band's four edges, so the fill meets the signed paint with no step.

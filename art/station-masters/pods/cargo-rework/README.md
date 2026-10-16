@@ -1,6 +1,6 @@
 # Cargo rework (AD, 10-15 20:40; the owner rejected Cargo at 20:29: "not using the visual references we discussed")
 
-The containers are redrawn from the owner's ref-1…10 and the 10-10 haul rulings. Three Pro calls, 11.76 MXN.
+The containers are redrawn from the owner's ref-1…10 and the 10-10 haul rulings. Three Pro calls.
 
 - **The pod crate** comes from ref-4: a modern hard case with a warm yellow shell, black rubber corners, black latches and a black handle. A black label plate carries a white egg on the sealed crate and a cream picture frame on the sitting crate. It is no longer the rustic sage field case.
   - The case is Pro edits of the signed crates (`rw-crate-sealed`, `rw-crate-open`), each fitted to the signed crate's bounding box in its 432 × 272 canvas. Every crate id keeps its size and box, and the open crate's three wells stay where they were.
@@ -19,7 +19,7 @@ The containers are redrawn from the owner's ref-1…10 and the 10-10 haul ruling
 
 The grey pods in the open crate were the signed `pod-*-unknown`: the pod before Identify, which must never wear a species colour. The flat grey read as a placeholder at 1×.
 
-`paint-unknown-pod.py` repaints all five sizes (collection 88 × 112, large, medium, small and well) at the same ids and sizes, at 0 MXN. The unknown pod is now a found field egg, like the eggs in the Probe's window:
+`paint-unknown-pod.py` repaints all five sizes (collection 88 × 112, large, medium, small and well) at the same ids and sizes. The unknown pod is now a found field egg, like the eggs in the Probe's window:
 - a warm sand shell freckled with bark-brown speckles;
 - a cream cap and ribs;
 - earth dust on the foot;

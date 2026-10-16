@@ -1,5 +1,5 @@
 # Fix 5 Pods P-A1 and P-A2: the chapter and overview stages without their painted grey plates (and, on the overview, the old stamp
-# case at 856-1004 x 386-534), cut by hand at 0 MXN from the signed base stage (room-bench-stage, the same painting without plates):
+# case at 856-1004 x 386-534), cut by hand from the signed base stage (room-bench-stage, the same painting without plates):
 # the right part of each stage is taken from the base, with a 24 px feathered seam; the base's lower-right hose, which would run under
 # the page, is painted out with the case's own floor from 320 px to its left, feathered over 6 px.
 # usage: python3 -I recut-stages.py SLICES_DIR OUT_DIR

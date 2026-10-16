@@ -6,7 +6,7 @@ import base64, hashlib, json, os, sys, time, mimetypes
 import requests
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 REPO = os.path.abspath(os.path.join(ROOT, "..", "..", ".."))
-exec(open(os.path.join(HERE, "spendcap.py")).read(), globals())      # the owner's 250 MXN per Pacific day cap, counted from real tokens
+exec(open(os.path.join(HERE, "spendcap.py")).read(), globals())      # the owner's per-day cap
 SPEND = os.path.join(ROOT, "log/spend.json"); LOG = os.path.join(ROOT, "log/calls.jsonl")
 KEY = os.environ.get("GEMINI_API_KEY")
 def sha(b): return hashlib.sha256(b).hexdigest()

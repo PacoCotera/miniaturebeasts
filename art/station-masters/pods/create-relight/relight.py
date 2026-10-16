@@ -1,4 +1,4 @@
-"""Fix 5 Create CA1: the Create tray relit under the same id, chamber-back-400x320 (at 312, 232), by hand in code, 0 MXN.
+"""Fix 5 Create CA1: the Create tray relit under the same id, chamber-back-400x320 (at 312, 232), by hand in code.
 (a) One key light from the top left: the tray's back wall gains a soft gradient, x1.20 at its top-left corner to x0.84 at the
     bottom-right, in linear light (the frame untouched).
 (b) A floor plane, local rows 248-303 (screen 480-535): the back wall meets it in a soft 2 px crease at row 248; the floor is

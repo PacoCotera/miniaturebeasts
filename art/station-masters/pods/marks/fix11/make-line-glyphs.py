@@ -1,4 +1,4 @@
-"""Fix 11 (gate batch 1, G1 and G2; AD, 10-15, 0 MXN): the name-line glyphs redrawn so the form carrying the meaning is >= 12 px.
+"""Fix 11 (gate batch 1, G1 and G2; AD, 10-15): the name-line glyphs redrawn so the form carrying the meaning is >= 12 px.
 The signed family's colours and construction (pass 60): a bone rim lit at the top left, a fog rim shaded at the bottom right, a frostS
 body, the hidden look's ghost in mist on the lower right, a 2 px fog stem; no white, no ink ring (ink on the ground is invisible at 1x)
 except the keyline between the pair's two seeds.

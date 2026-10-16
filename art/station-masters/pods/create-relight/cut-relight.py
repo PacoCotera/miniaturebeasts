@@ -1,4 +1,4 @@
-"""Fix 5 Create CA1 + CA3, the cut of the studio edit (source/raw/ca1-create-relight.jpg, 1 Pro request, 3.71 MXN) back to the
+"""Fix 5 Create CA1 + CA3, the cut of the studio edit (source/raw/ca1-create-relight.jpg, 1 Pro request) back to the
 signed ids, by hand: the edit is reduced by area to the 1024x576 input frame; everything outside the bench's dark interior (the
 housing, frame, screws, handles) is the signed stage pixel for pixel; the painted dish is moved 62 px up and 32 px left so its centre sits under
 the pod's feet (axis 160, feet 408 on screen), its old place refilled from the edit's own wall light (a normalised blur with the

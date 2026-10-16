@@ -14,13 +14,13 @@ Three loader rules sit between the set and the call, said once each: **the plan 
 
 `sheets/validation-<species>.png`: the accepted Pip in the first row, then the type specimen and five individuals of S01, S09 and S12, each with its control (framed by the rule), its step 1 drawing, its step 2 painting, the derived Companion and token, and its status, calls, cost and checks. `sheets/validation-<species>-pass1.png` keep the first pass. `costs.json` has the numbers; every call is in `prompts.json` under prompt version 5.
 
-| | painted | step 1 first-attempt pass | calls a mibi | USD a mibi |
-| --- | ---: | ---: | ---: | ---: |
-| pass 1, as launched (18) | 6 of 18 | 0.22 | 2.11 | 0.376 |
-| after pass 2 on the seven served plain of S01 and S09 (18) | 11 of 18 | 0.44 | 2.17 | 0.383 |
-| S01 Loika | 5 of 6 | 0.50 | 2.33 | 0.416 |
-| S09 Belatz | 5 of 6 | 0.83 | 2.00 | 0.343 |
-| S12 Peplos | 1 of 6 | 0.00 | 2.17 | 0.390 |
+| | painted | step 1 first-attempt pass | calls a mibi |
+| --- | ---: | ---: | ---: |
+| pass 1, as launched (18) | 6 of 18 | 0.22 | 2.11 |
+| after pass 2 on the seven served plain of S01 and S09 (18) | 11 of 18 | 0.44 | 2.17 |
+| S01 Loika | 5 of 6 | 0.50 | 2.33 |
+| S09 Belatz | 5 of 6 | 0.83 | 2.00 |
+| S12 Peplos | 1 of 6 | 0.00 | 2.17 |
 
 Prompt v5 spent $12.38 over 70 calls (the three calibration passes on the type specimens, pass 1, pass 2, and eight calls a bug spent repainting the Belatz type specimen once per forced job, since fixed). Three life stages at this rate: $1.15 a mibi.
 

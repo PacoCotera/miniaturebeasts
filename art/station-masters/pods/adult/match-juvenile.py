@@ -1,5 +1,5 @@
 # An adult stand's colours matched to its signed juvenile by hand rule (the programme lead's 00:23: the adult is painted from the rig and
-# silhouette only, then its colour and face matched to the juvenile at 0 MXN), the S01 regrade's method: each colour group's luminance
+# silhouette only, then its colour and face matched to the juvenile), the S01 regrade's method: each colour group's luminance
 # is mapped from the adult's percentiles onto the juvenile's, taking the juvenile's hue; the adult's own shading is kept.
 # Groups by hue and saturation: teal (head, ears), mint (the pale coat), gold (the tail's bulb). Everything else is unchanged.
 # usage: python3 -I adult/match-juvenile.py SPECIES [GROUPS, e.g. teal,gold]   (run from pods/; rewrites adult/mibi-adult-SXX-*.png in place)

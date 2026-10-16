@@ -1,5 +1,5 @@
 # Gate batch 1, AR6: cargo-bay-shut-report-976x304, the shut door for the report state, cut by hand from the signed door
-# (slices/cargo-bay-shut-976x304.png) at 0 MXN. Between slice x 200 and 776 (screen 224-800) the slats give way to one plain sage
+# (slices/cargo-bay-shut-976x304.png). Between slice x 200 and 776 (screen 224-800) the slats give way to one plain sage
 # panel: the panel is the slats' own face tone with the grooves taken out (a 31 px vertical median, then a soft blur), so the
 # door's light (warm top left, cooler lower right) runs on across it. An 8 px moulded frame stands round the panel (stiles at
 # x 192-200 and 776-784, rails at y 29-37 and 275-283): a rounded rail lit from the top left, casting a 3 px shade into the

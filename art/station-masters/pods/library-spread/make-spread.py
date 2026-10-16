@@ -1,5 +1,5 @@
 import os
-"""T-20261015-05 step 2: the Library spread's masters, by hand over the fitted painted journal (fit-book.py), 0 MXN.
+"""T-20261015-05 step 2: the Library spread's masters, by hand over the fitted painted journal (fit-book.py).
 - library-stage-spread-1024x522: the journal (boards, two aged pages, the fold, the ribbon) + the sixteen empty ruled frames, each
   96x112 at the spread's places, printed into the paper: a 1 px bark ink rule, an 8 px mat a step darker than the page with a
   slight emboss (its outer edge lit on the top and left, shaded on the bottom and right; the inner edge the reverse, a shallow

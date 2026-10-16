@@ -1,4 +1,4 @@
-# Fix 6: the art requests, by hand, 0 MXN
+# Fix 6: the art requests, by hand
 
 **A1. `leaf-empty-16x20`** (replaces the 1 px outline that read as a dotted arc).
 - Shape: the full leaf's own alpha mask, blade, stem and tip.

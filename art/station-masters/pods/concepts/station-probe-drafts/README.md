@@ -1,11 +1,11 @@
 # Station Probe design drafts (Oct 10)
 
-The Station art director's PROBE DESIGN step (the spec says "as the project's Probe art draws it", but main has no Probe art; the owner, 2026-10-09 17:28: "the Probe showing a needle is wrong"). Two directions, one Pro request each (gemini-3-pro-image), no retry, cap 9 MXN, owner-approved ("paid art today up to the 250 MXN cap, in the art director's order"). Not slices: concept drafts for the art director to choose from.
+The Station art director's PROBE DESIGN step (the spec says "as the project's Probe art draws it", but main has no Probe art; the owner, 2026-10-09 17:28: "the Probe showing a needle is wrong"). Two directions, one Pro request each (gemini-3-pro-image), no retry, owner-approved ("paid art today, in the art director's order"). Not slices: concept drafts for the art director to choose from.
 
-| File | Direction | Cost |
-| --- | --- | --- |
-| `probe-draft-a-sampler-1376x768.jpg` | A, the sampler: a compact hand-sized sampling instrument, a sage body, a gathering chamber for two pods with a small round window, short folding skids, a carry handle | 4.56 MXN |
-| `probe-draft-b-scout-1376x768.jpg` | B, the scout: a small rugged rover on rubber tracks, a front scoop, a pod bay on top, one small lamp | 4.07 MXN |
+| File | Direction |
+| --- | --- |
+| `probe-draft-a-sampler-1376x768.jpg` | A, the sampler: a compact hand-sized sampling instrument, a sage body, a gathering chamber for two pods with a small round window, short folding skids, a carry handle |
+| `probe-draft-b-scout-1376x768.jpg` | B, the scout: a small rugged rover on rubber tracks, a front scoop, a pod bay on top, one small lamp |
 
 Both: sage and sand housing, dark rubber, matte, screws, white shield plates (three at tier 1) on the body, on a flat neutral ground, the Probe at three-quarter from the front left with a small silhouette beside it. Jobs: `source/work/probe-draft-{a,b}.json`; calls: `log/calls.jsonl`. References: the signed Home bay (open) and the sealed Cargo crate closer, for the maker's materials.
 

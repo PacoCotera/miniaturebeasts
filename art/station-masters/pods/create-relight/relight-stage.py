@@ -1,4 +1,4 @@
-"""Fix 5 Create CA1, the bench: room-bench-stage-create recut under the same id, by hand in code, 0 MXN. One key light from the
+"""Fix 5 Create CA1, the bench: room-bench-stage-create recut under the same id, by hand in code. One key light from the
 top left on the stage's dark interior wall: a soft linear-light gradient, x1.22 at the interior's top-left to x0.82 at its
 bottom-right, plus a broad falloff pool of light (x1.12 at its centre) on the wall behind the tray. The interior is the stage's
 own dark paint (luma under 80, filled); the housing, its frame, screws and handles are untouched. usage: relight-stage.py SRC OUT"""

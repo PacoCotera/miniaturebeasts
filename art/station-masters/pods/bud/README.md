@@ -1,4 +1,4 @@
-# Bud shapes, first trips (Oct 11), 0 MXN
+# Bud shapes, first trips (Oct 11)
 
 `bud-shape-S01-112x112` and `bud-shape-S03-112x112`, the species that the first trips bring (X2), for the bud-masters slot. They mean the ready bud glows with its species' shape (owner 10-08: "Ready keeps the shape glowing inside") rather than showing empty glass.
 

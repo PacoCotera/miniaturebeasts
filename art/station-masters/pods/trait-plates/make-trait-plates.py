@@ -1,4 +1,4 @@
-# Fix 5 Pods P-A4: the doing-trait plates for the chapter page, 128x160, cut by hand at 0 MXN from Pip's painted motion keys
+# Fix 5 Pods P-A4: the doing-trait plates for the chapter page, 128x160, cut by hand from Pip's painted motion keys
 # (concepts/mibi-motion-proof/keys): Drive = pip-air (mid-hop, with its own air shadow), Efficiency = pip-curl (curled to sleep).
 # One scale for both (the hop's span to 120 px), so the two plates show one animal at one size; the ground (the keys' row 306) on
 # plate row 152; centred on x 64. Reduced once with premultiplied alpha. Transparent outside the animal and its shadow.

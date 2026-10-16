@@ -1,4 +1,4 @@
-"""Gate batch 1 (AD, 10-15, 0 MXN): the trait crops whose subject was cut from a larger picture along straight lines (S01 crown,
+"""Gate batch 1 (AD, 10-15): the trait crops whose subject was cut from a larger picture along straight lines (S01 crown,
 S01 eyes, S03 scales) read as a box inside their well. Each file, at every size:
 1. the straight cut lines are found: a column (row) where a long run of the subject's boundary meets the crop's ground on one side
    (>= 15 % of the side's length);

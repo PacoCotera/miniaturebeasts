@@ -1,11 +1,11 @@
 # S01 floor: bare keys and crest overlays (Oct 11)
 
-Under internal boards/mibi-motion/s01-floor-studio-brief.md (passed 14:33) and bare-keys-plan.md §2, §7. The programme lead's go: hard stop 19.20 MXN on the trait-layers line.
+Under internal boards/mibi-motion/s01-floor-studio-brief.md (passed 14:33) and bare-keys-plan.md §2, §7. The programme lead's go: on the trait-layers line.
 
-| Request | Input | Cost |
-| --- | --- | --- |
-| F1 `floor-S01-juvenile-bare-b` | `guides/compose-juvenile.png` (P1 + the signed young stand in cell 5) | 3.65 MXN |
-| F2 `floor-S01-adult-bare-b` | `guides/compose-adult.png` (P2 + crouch-b in cell 2 + Pip in cell 6) | 3.88 MXN |
+| Request | Input |
+| --- | --- |
+| F1 `floor-S01-juvenile-bare-b` | `guides/compose-juvenile.png` (P1 + the signed young stand in cell 5) |
+| F2 `floor-S01-adult-bare-b` | `guides/compose-adult.png` (P2 + crouch-b in cell 2 + Pip in cell 6) |
 
 The round total is 7.52 of 19.20. No retries. Scales and offsets are in `guides/compose.json`.
 

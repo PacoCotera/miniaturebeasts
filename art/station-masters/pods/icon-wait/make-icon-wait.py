@@ -1,4 +1,4 @@
-# Fix 6 A3: icon-wait-16, the bud's wait on Create's Grow line: a 16x16 hourglass in sand and bark, typed by hand, 0 MXN.
+# Fix 6 A3: icon-wait-16, the bud's wait on Create's Grow line: a 16x16 hourglass in sand and bark, typed by hand.
 # Light from the top left: the caps' lit edge in clay, a paper glint on the glass's left; the sand runs top to bottom.
 # usage: python3 -I make-icon-wait.py OUT_DIR
 import sys, os

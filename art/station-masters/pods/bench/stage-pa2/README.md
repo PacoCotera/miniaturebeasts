@@ -1,4 +1,4 @@
-# PA2: the Probe stage recut for the upright cradle (AD, 10-15, 0 MXN)
+# PA2: the Probe stage recut for the upright cradle (AD, 10-15)
 
 `room-bench-stage-probe` keeps its id and size (1024 × 522, at screen (0, 40)).
 

@@ -1,6 +1,6 @@
 # The Probe held upright (AD, 10-15; the owner, 20:29: "you rotated the device to lay flat and it's held vertically")
 
-The approved concept (station-probe-merge 3f72186f, tier 1 with three plates) is now docked upright in a vertical cradle, as a hand-held scanner is set down. 4 Pro calls, 14.98 MXN.
+The approved concept (station-probe-merge 3f72186f, tier 1 with three plates) is now docked upright in a vertical cradle, as a hand-held scanner is set down. 4 Pro calls.
 
 | Id | Size | What |
 |---|---|---|

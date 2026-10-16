@@ -1,4 +1,4 @@
-# The calm "unknown" (fix 1b of the Station global fix plan), 0 MXN
+# The calm "unknown" (fix 1b of the Station global fix plan)
 
 This replaces the frost checkerboard: Create's founder (`mistyArt`), and the whole-body ghost (`ghostArt`) on Create and the Incubator. The art director signs this treatment. The builder implements it in the founder's picture.
 

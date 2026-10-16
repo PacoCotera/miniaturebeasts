@@ -1,4 +1,4 @@
-# S04 topline keys for the tier 2 test (Oct 11), 0 MXN
+# S04 topline keys for the tier 2 test (Oct 11)
 
 The input to builder 3's warp matrix (tier2-method.md §4; PR #151). Three keys of the young S04 at 304×312, 104×112 and 96×88, each in two layers:
 - `-body`: alpha is 0 or 255 only, with no soft fringe (the input prep ruled at 15:34);

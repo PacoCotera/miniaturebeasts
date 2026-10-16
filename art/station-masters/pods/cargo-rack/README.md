@@ -1,4 +1,4 @@
-# Fix 5 AR4: `cargo-rack-992x168`, 0 MXN, by hand
+# Fix 5 AR4: `cargo-rack-992x168`, by hand
 
 The device's sage strip under the Cargo bay, at (16, 384).
 

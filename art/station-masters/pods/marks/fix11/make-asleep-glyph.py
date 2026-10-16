@@ -1,4 +1,4 @@
-"""Fix 11 (gate batch 1; AD, 10-15, 0 MXN): mark-asleep-24x16 redrawn (same id and size, top 2). The pass 38 glyph was a slim
+"""Fix 11 (gate batch 1; AD, 10-15): mark-asleep-24x16 redrawn (same id and size, top 2). The pass 38 glyph was a slim
 crescent (2-4 px) with an ink keyline over four dots: at 1x it read as a pointer, and its meaning sat under 12 px. Now, in the name-
 line family's colours (no ink, no white): a full crescent moon 12 wide x 14 tall (bone rim lit at the top left, fog face, a mist
 shade on the inner curve), and three sleep dots rising to its right (fog, 2 x 2, the last one smaller). No Z's, no face.

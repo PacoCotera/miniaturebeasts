@@ -1,4 +1,4 @@
-"""Gate batch 1 (AD, 10-15, 0 MXN): room-bench-stage-chapter cleared for the two-row chapter page's heading band (screen
+"""Gate batch 1 (AD, 10-15): room-bench-stage-chapter cleared for the two-row chapter page's heading band (screen
 360-952 x 88-136, slice y 48-96). In x 340-960, from the floor's top edge (slice y 34) to y 116, the floor is repainted: its tone a
 harmonic (Laplace) fill from the band's four edges (the wall joint above, the floor below, left and right; the hose's crossing
 of the left edge interpolated), its grain from 90 rows lower, mirrored within the floor, no wrap (so no scuff repeats above itself and no wall line is copied), feathered 4 px.

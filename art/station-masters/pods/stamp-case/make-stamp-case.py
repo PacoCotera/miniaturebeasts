@@ -1,4 +1,4 @@
-# Fix 4 of the Station global fix plan: the stampCase look (the art director's hook, frame.json regions.stampSlot.look), cut by hand, 0 MXN.
+# Fix 4 of the Station global fix plan: the stampCase look (the art director's hook, frame.json regions.stampSlot.look), cut by hand.
 # The real stamp is placed as it is (never regenerated): its geometry, ink and plate stay. The look is how the label sits on the device:
 #   UNLIT  the label is in the device's shade, never lit: the whole label (plate and ink) multiplied in linear light by K_OPEN = 0.20
 #          on every screen without a case (Create, Incubator, one mibi up close); a 1 px EDGE hairline #3d434b all round; no fill of its own

@@ -1,4 +1,4 @@
-# The stamp's look (stampCase), fix 4: 0 MXN, by hand
+# The stamp's look (stampCase), fix 4, by hand
 
 The look is the art director's hook `stampCase` (frame.json regions.stampSlot.look). The rects are UI/UX's, unchanged:
 - Create 804,400;

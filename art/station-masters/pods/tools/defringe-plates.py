@@ -1,5 +1,5 @@
 # The magenta key's residue on the trait and roll plates (found 2026-10-12 00:23 at 1x: a 1 px bright magenta fringe round the
-# creature on S01, S02 and S03 plates). 0 MXN, no calls. Every opaque pixel that is magenta or its cast (green under 0.6x the lesser
+# creature on S01, S02 and S03 plates). No calls. Every opaque pixel that is magenta or its cast (green under 0.6x the lesser
 # of red and blue, that lesser above 60), or an edge pixel touching the ground with the key's faint cast (green under 0.75x, red and
 # blue within 60), takes the mean of its non-magenta, non-ground neighbours within 2 px (the creature's own
 # edge colour); if it has none, the plate's ground. Nothing else changes. Writes the plates in place and updates their manifest hashes.

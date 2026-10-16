@@ -1,4 +1,4 @@
-"""Pass 138: the art director's hand recut of Home's walk crate (0 MXN, no calls; the Station lead's yes, 2026-10-11).
+"""Pass 138: the art director's hand recut of Home's walk crate (no calls; the Station lead's yes, 2026-10-11).
 home-crate-48x40: the signed crate-sealed-256x176 (963f4eab), reduced uniformly (premultiplied Lanczos, never enlarged) to 46 px wide, 1 px clear each side, its feet on the box's bottom row 39, exactly as crate-sitting-48x40 (pass 137), so the walk and sitting crates in Home's bay are one object at one size. Nothing retouched.
 python3 -I tools/homecrate48.py [path to the old home-crate-48x40.png, for the proof's before row] -> slices/home-crate-48x40.png, marks/home-crate-recut-proof-1x.png, -4x.png"""
 import os, sys, json, hashlib

@@ -1,4 +1,4 @@
-# Cargo report recut (gate batch 1: AR5r, AR6, AR7; AD, 10-15, 0 MXN)
+# Cargo report recut (gate batch 1: AR5r, AR6, AR7; AD, 10-15)
 
 The report now sits in the housing, like the board's modules, instead of hanging on the shutter as a raised board.
 

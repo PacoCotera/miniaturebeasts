@@ -1,10 +1,10 @@
 # Cargo haul objects, owner's picks (Oct 10)
 
-The owner's pick: three distinct objects in the art director's SKETCHED shapes (not flasks): Energy, the battery cell (A); Data, the cartridge (C); Essence, the stoppered vial. One Pro request (gemini-3-pro-image), succeeded, no retry, cap 9 MXN, under the owner's standing approval in the art director's order. Image references: the art director's hand sketch (project-owned: `art/station-masters/pods/source/work/guides/haul-object-sketches.png`, cropped to the three objects with every caption removed: `reference-sketch-cleaned.png`) and the signed `crate-open-432x272`. The owner's reference pictures were never used. Prompt: no text, labels or captions, no glow, no gloss.
+The owner's pick: three distinct objects in the art director's SKETCHED shapes (not flasks): Energy, the battery cell (A); Data, the cartridge (C); Essence, the stoppered vial. One Pro request (gemini-3-pro-image), succeeded, no retry, under the owner's standing approval in the art director's order. Image references: the art director's hand sketch (project-owned: `art/station-masters/pods/source/work/guides/haul-object-sketches.png`, cropped to the three objects with every caption removed: `reference-sketch-cleaned.png`) and the signed `crate-open-432x272`. The owner's reference pictures were never used. Prompt: no text, labels or captions, no glow, no gloss.
 
-| File | Cost |
-| --- | --- |
-| `cargo-haul-2-energy-data-essence-1376x768.jpg` | 4.37 MXN |
+| File |
+| --- |
+| `cargo-haul-2-energy-data-essence-1376x768.jpg` |
 
 Job `source/work/cargo-haul-2.json`; call `log/calls.jsonl`. Not cut, nothing graded.
 

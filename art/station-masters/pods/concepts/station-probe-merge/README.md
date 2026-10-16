@@ -1,12 +1,12 @@
 # Probe merge, the slim handset in the matte rendering (Oct 10)
 
-The art director's approved edit: the owner's variant-2 proportion (slim, waisted handset) in the variant-4 rendering (matte, painterly), sage over sand, the target's speckled eggs. One Pro request (gemini-3-pro-image), succeeded, no retry. The cap was 4.5 MXN; it cost **4.83 MXN, over the cap by 0.33**. Day total **206.01 MXN of 250**. Job `source/work/probe-merge.json`; call `log/calls.jsonl`.
+The art director's approved edit: the owner's variant-2 proportion (slim, waisted handset) in the variant-4 rendering (matte, painterly), sage over sand, the target's speckled eggs. One Pro request (gemini-3-pro-image), succeeded, no retry. Job `source/work/probe-merge.json`; call `log/calls.jsonl`.
 
 References (project-owned crops under `source/work/guides/`, cleaned of captions, people, the red badge and the watermark): `mj-render-ref.png`, `mj-proportion-ref.png`, `mj-palette-ref.png`, `mj-silhouette-ref.png` (the 24x48 silhouette, 8x). The prompt asked for no text, no red, no glow, no hands or people.
 
-| File | Cost |
-| --- | --- |
-| `probe-merge-1376x768.jpg` | 4.83 MXN |
+| File |
+| --- |
+| `probe-merge-1376x768.jpg` |
 
 Notes. Tier 1 left, tier 2 right, three-quarter from front left on plain grey: a slim waisted handset, sage over sand with a dark rubber base, a rubber-ringed dark screen with a sky sweep and sky/green/amber dots only, three unlit lamps, speckled eggs stacked in a vertical window, a tall free antenna on the left, a small carry loop on top, a side grille left, lens and port right. Tier 2 adds a fitted sand module in a right-side socket. No text, red, people or glow.
 
@@ -15,7 +15,7 @@ Flaws: **plate count**: tier 1 shows four white plates (two per side), not three
 ## The tier 1 plate count, corrected by hand (Oct 11)
 
 The spec (internal boards/station-probe-merge.md) gives tier 1 three Shield plates and tier 2 a fourth. The painting gave tier 1 four.
-Tier 1's lower right plate is painted out by hand, at 0 MXN with no paid call. Each column under the plate was refilled from the
+Tier 1's lower right plate is painted out by hand, with no paid call. Each column under the plate was refilled from the
 clean paint above and below it: the green front, the sand side strip and the grey ground, with a light grain to match the matte
 rendering. The upper right plate is untouched. Tier 2 is unchanged: four plates and its module.
 

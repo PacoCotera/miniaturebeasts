@@ -1,11 +1,11 @@
 # Station Probe design drafts, round 3 (Oct 10)
 
-The Station art director's third PROBE brief. The owner: "the probe is the thing that the player has in the hand to detect things": a friendly handheld field detector. Two directions, one Pro request each (gemini-3-pro-image), no retry, cap 9 MXN, under the owner's standing approval in the art director's order. Concept drafts for the art director to choose from; not slices. References project-owned only (the signed `home-bay-shut` and `art/companion-concept/field-partner-concept.png`); the owner's pictures were never used.
+The Station art director's third PROBE brief. The owner: "the probe is the thing that the player has in the hand to detect things": a friendly handheld field detector. Two directions, one Pro request each (gemini-3-pro-image), no retry, under the owner's standing approval in the art director's order. Concept drafts for the art director to choose from; not slices. References project-owned only (the signed `home-bay-shut` and `art/companion-concept/field-partner-concept.png`); the owner's pictures were never used.
 
-| File | Direction | Cost |
-| --- | --- | --- |
-| `probe-draft-e-wand-1376x768.jpg` | E, the wand: a chunky upright dark rubber grip with a wrist cord loop at its foot, a short sage neck, a sand dome head with a ring of three small unlit lamps around a plain disc, white clip-on guards around the head's rim | 4.43 MXN |
-| `probe-draft-f-palm-detector-1376x768.jpg` | F, the palm detector: a rounded pebble-shaped sage and sand unit held flat, a thumb ring dial around a sensing window with three lamp dots, a cord loop, white clip-on segments around its rim | 4.11 MXN |
+| File | Direction |
+| --- | --- |
+| `probe-draft-e-wand-1376x768.jpg` | E, the wand: a chunky upright dark rubber grip with a wrist cord loop at its foot, a short sage neck, a sand dome head with a ring of three small unlit lamps around a plain disc, white clip-on guards around the head's rim |
+| `probe-draft-f-palm-detector-1376x768.jpg` | F, the palm detector: a rounded pebble-shaped sage and sand unit held flat, a thumb ring dial around a sensing window with three lamp dots, a cord loop, white clip-on segments around its rim |
 
 Each shows tier 1 (large), tier 2 beside it (the fourth guard and a fitted part in a visible socket) and a filled silhouette. Jobs `source/work/probe-draft-{e,f}.json`; calls `log/calls.jsonl`.
 

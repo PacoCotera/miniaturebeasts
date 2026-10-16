@@ -1,4 +1,4 @@
-# Idle full-screen seam (Oct 11, 0 MXN)
+# Idle full-screen seam (Oct 11)
 
 QA's diagnosis (internal 2f1da9f, boards/station-vivarium-polish-fullscreen.md). On all four Idle lights, the side fixtures (wall panels, feed line, mister pipe) started on a hard horizontal line at rows 114–118 under the out-of-focus canopy band. Pass 96's seam fix had blended only x 80–940. The programme lead's go (18:28) was for a local edit only.
 

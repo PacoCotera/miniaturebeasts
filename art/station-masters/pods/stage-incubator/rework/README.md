@@ -15,7 +15,7 @@
 | `base-336x96` | Pro edit; the signed alpha and foot light (`cut-base.py`) |
 | `leaf-full-16x20`, `leaf-empty-16x20` | by hand (`paint-leaves.py`) |
 
-3 Pro calls, 11.28 MXN.
+3 Pro calls.
 
 **Proof:** `proof/mock-incubator-growing-1x.png` and `proof/before-after-1x.png`, mocked into public station-gate 93bff40f `fix14/incubator-growing.png`.
 
@@ -23,7 +23,7 @@
 - The stamp label at the right is still the code-drawn flat grey plate. The fix needs no new art: the label in `plate-well-120x120`, as ruled for Habitat.
 - The chamber's inside wall (`dome-back` / `dome-inside-*`) is a soft flat gradient. It is the next candidate if the gate still reads the screen as flat.
 
-# T-20261015-07: IA2, the stage recut onto the layout grid (AD, 10-15, 0 MXN, by hand)
+# T-20261015-07: IA2, the stage recut onto the layout grid (AD, 10-15, by hand)
 
 `room-bench-stage-incubator`, the same id, 1024 × 522 at (0, 40), made by `recut-ia2.py` from the T-01 stage. Nothing is repainted in style: each object is lifted with its cast shadow as its deviation from the wall's tone and laid back at its move; the place it leaves is the wall's own tone and grain.
 

@@ -1,4 +1,4 @@
-# S01's adult stand-in is Pip (ad-adult-plan.md: "S01 = Pip, placed 1:1, shadow and small sizes by hand, 0 MXN"), from the accepted
+# S01's adult stand-in is Pip (ad-adult-plan.md: "S01 = Pip, placed 1:1, shadow and small sizes by hand"), from the accepted
 # art/miniature-lives/assets/rich-plain-300x310.png. Pip's body is alpha 224-254 with soft edges, and its painted shadow is a soft
 # alpha fall under the feet. The family's form is a hard body and the house shadow (#1e1a22 at alpha 110), so:
 #   body   = alpha >= 192, one component (stray specks dropped), holes filled, made opaque with its own colour

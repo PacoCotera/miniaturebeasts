@@ -267,22 +267,22 @@ palette-constrained and are listed for comparison; their Pillow-quantised copies
 
 ## Costs
 
-| Request | Style | Images | Cost | Time |
-| --- | --- | --- | --- | --- |
-| A1 | `rd_plus__low_res` 128², palette, pre-palette copies | 2 (+2 pre) | $0.12 | 1 s |
-| A2 | `rd_pro__topdown` 128², palette, 1 reference | 2 | $0.36 | 42 s |
-| A3 | `rd_pro__topdown` 64², palette, bg removed | 2 | $0.36 | 20 s |
-| A4 | `rd_pro__topdown` 128×96, palette, 1 reference | 2 | $0.36 | 105 s |
-| B1 | `rd_plus__environment` 512×304 | 2 | $0.12 | 19 s |
-| B2 | `rd_pro__default` 256×152, 3 references | 2 | $0.36 | 45 s |
-| B3 | `rd_plus__environment` 512×392 img2img | 1 | $0.06 | 19 s |
-| C1 | `rd_tile__single_tile` 32², seamless | 0 | $0 (3 failures refunded) | |
-| C1b | `rd_tile__single_tile` 32², palette | 1 | $0.06 | 10 s |
-| C2 | `rd_pro__default` 32², palette, bg removed, 2 references | 4 | $0.72 | 42 s |
-| C3 | `rd_plus__low_res` 32², seamless, palette | 2 | $0.12 | 23 s |
-| C4 | `rd_tile__tileset` 32 px | 1 sheet | $0.10 | 29 s |
-| C5 | `rd_advanced_animation__idle` 48², 8 frames, sheet | 1 sheet | $0.14 | 99 s |
-| **Total** | | **22** | **$2.88** | |
+| Request | Style | Images | Time |
+| --- | --- | --- | --- |
+| A1 | `rd_plus__low_res` 128², palette, pre-palette copies | 2 (+2 pre) | 1 s |
+| A2 | `rd_pro__topdown` 128², palette, 1 reference | 2 | 42 s |
+| A3 | `rd_pro__topdown` 64², palette, bg removed | 2 | 20 s |
+| A4 | `rd_pro__topdown` 128×96, palette, 1 reference | 2 | 105 s |
+| B1 | `rd_plus__environment` 512×304 | 2 | 19 s |
+| B2 | `rd_pro__default` 256×152, 3 references | 2 | 45 s |
+| B3 | `rd_plus__environment` 512×392 img2img | 1 | 19 s |
+| C1 | `rd_tile__single_tile` 32², seamless | 0 | |
+| C1b | `rd_tile__single_tile` 32², palette | 1 | 10 s |
+| C2 | `rd_pro__default` 32², palette, bg removed, 2 references | 4 | 42 s |
+| C3 | `rd_plus__low_res` 32², seamless, palette | 2 | 23 s |
+| C4 | `rd_tile__tileset` 32 px | 1 sheet | 29 s |
+| C5 | `rd_advanced_animation__idle` 48², 8 frames, sheet | 1 sheet | 99 s |
+| **Total** | | **22** | |
 
 Price is flat per image within a family regardless of size, so a 32 px sprite costs the same as
 a 256 px scene from the same model. RD Pro references are the expensive path: $0.18 per take.

@@ -211,19 +211,19 @@ Signed, art director, 2026-10-08. Failures: those listed in line three (no hand 
 
 ## Spend
 
-| Call | Tool | USD |
-| --- | --- | --- |
-| C48-T-r1-a1 ground grid, C48-P-r1-a1 props, C48-W-r1-a1 pawn | Pro, 1K each | 0.53 |
-| C48-R-r1-a1, a2 rain | Retro Diffusion rd_pro__topdown 96×96 | 0.36 |
-| C48-R-r2-water1, water2 | Retro Diffusion rd_pro__topdown 48×48 | 0.36 |
-| C48-S-r2 first sprite batch, 12 calls (superseded: magenta fringe on the inputs) | Retro Diffusion rd_pro__topdown | 2.16 |
-| C48-S-r2 second sprite batch, 12 calls | Retro Diffusion rd_pro__topdown | 2.16 |
-| C48-S-r2 stones batch (stone-plain2, stone-warm2, stone-charged2, stone-step), round 3 | Retro Diffusion rd_pro__topdown | 0.72 |
-| Round 4: no paid call (the pawn, the warm stone and the water variants are scripted) | | 0.00 |
-| C48-S-r2 outposts (lit, dark, dark2) and shaken bush, round 5 (the lit hut's first result, $0.18, was overwritten and is in `extra-spend.json`) | Retro Diffusion rd_pro__topdown | 0.72 |
-| C48-H-r6-a1 painted hut sheet, round 6 | Pro, 1K | 0.17 |
-| C48-H-r6 huts A to D, three states each, 12 calls, round 6 | Retro Diffusion rd_pro__topdown 64×58 | 2.16 |
-| **Total** | | **9.35** |
+| Call | Tool |
+| --- | --- |
+| C48-T-r1-a1 ground grid, C48-P-r1-a1 props, C48-W-r1-a1 pawn | Pro, 1K each |
+| C48-R-r1-a1, a2 rain | Retro Diffusion rd_pro__topdown 96×96 |
+| C48-R-r2-water1, water2 | Retro Diffusion rd_pro__topdown 48×48 |
+| C48-S-r2 first sprite batch, 12 calls (superseded: magenta fringe on the inputs) | Retro Diffusion rd_pro__topdown |
+| C48-S-r2 second sprite batch, 12 calls | Retro Diffusion rd_pro__topdown |
+| C48-S-r2 stones batch (stone-plain2, stone-warm2, stone-charged2, stone-step), round 3 | Retro Diffusion rd_pro__topdown |
+| Round 4: no paid call (the pawn, the warm stone and the water variants are scripted) | |
+| C48-S-r2 outposts (lit, dark, dark2) and shaken bush, round 5 (the lit hut's first result, $0.18, was overwritten and is in `extra-spend.json`) | Retro Diffusion rd_pro__topdown |
+| C48-H-r6-a1 painted hut sheet, round 6 | Pro, 1K |
+| C48-H-r6 huts A to D, three states each, 12 calls, round 6 | Retro Diffusion rd_pro__topdown 64×58 |
+| **Total** | |
 
 Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). The service's balance is topped up automatically, so it is not a limit.
 

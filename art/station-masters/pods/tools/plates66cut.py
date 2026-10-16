@@ -1,4 +1,4 @@
-"""Pass 80: the five S09 repaints (Sheen, Tufts, Carriage, Eyes, Colour; the owner approved up to 36 MXN, run through gen.py, 5 requests) cut the same way as pass 65 (tools/plates75.py) from source/raw/plate66-S09-*.jpg (928x1152), cut to 128x160 as trait-S09-<trait>-<look>-128x160.
+"""Pass 80: the five S09 repaints (Sheen, Tufts, Carriage, Eyes, Colour; run through gen.py, 5 requests) cut the same way as pass 65 (tools/plates75.py) from source/raw/plate66-S09-*.jpg (928x1152), cut to 128x160 as trait-S09-<trait>-<look>-128x160.
 The open page's rules: no frame, the cell tone `ground` (22, 42, 55), the content inside the centred 96x120 (the middle 75 percent) at (16, 20), reduced from the painting and never enlarged; the painting's own ground (the border's median colour) is keyed to the
 exact ground with a soft edge. Where the painted object runs off the painting's own edge (a cut edge, not a silhouette) the same keyed fade as the crops is applied along it (smoothstep over 12 px, finished inside the box).
 python3 -I tools/plates66cut.py"""

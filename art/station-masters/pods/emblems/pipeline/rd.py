@@ -5,7 +5,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); API = "https://api.retrodiffu
 PAL = os.path.join(HERE, "station-palette-62.png"); SPEND = os.path.join(HERE, "..", "..", "log", "spend.json")
 PROMPTS = {"tail": "a filled pixel art pictogram of an animal's tail, one solid bone-white silhouette, lit from the upper left, no outline",
            "leg": "a filled pixel art pictogram of an animal's hind leg with its paw, one solid bone-white silhouette, lit from the upper left, no outline"}
-exec(open(os.path.join(HERE, "..", "..", "tools", "spendcap.py")).read(), globals())      # the owner's 250 MXN per Pacific day cap
+exec(open(os.path.join(HERE, "..", "..", "tools", "spendcap.py")).read(), globals())      # the owner's per-day cap
 def b64f(p): return base64.b64encode(open(p, "rb").read()).decode()
 def req(method, url, body=None, headers=None):
     hd = {"X-RD-Token": os.environ["RETRO_DIFFUSION_API_KEY"], "Content-Type": "application/json", **(headers or {})}

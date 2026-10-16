@@ -1,4 +1,4 @@
-"""Gate batch 1 F2-A6: rail-tab-fill-open-full-152x40 recut as the board's cream label plate (AD, 10-15, 0 MXN). Same id, size,
+"""Gate batch 1 F2-A6: rail-tab-fill-open-full-152x40 recut as the board's cream label plate (AD, 10-15). Same id, size,
 slant (16) and alpha as the signed piece (pass 83's opaque right-end bevel kept): only the colours change. The face is the cream of
 label-plate-cream (229, 220, 203), with the same quiet fall toward the lower right; the signed 1 px bevel ring becomes the 1 px darker
 edge (its anti-aliased steps kept as blends toward it); the ring inside it is lit on the top row and the left slant, in shade on the

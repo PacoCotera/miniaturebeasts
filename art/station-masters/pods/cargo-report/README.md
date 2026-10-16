@@ -1,4 +1,4 @@
-# Fix 5 AR5: `cargo-report-plate-560x288`, the master, 0 MXN, by hand
+# Fix 5 AR5: `cargo-report-plate-560x288`, the master, by hand
 
 The stamp case's construction (room-stamp-case-152x152, 001bcd51) at 560 wide, moulded into the shut sage door.
 

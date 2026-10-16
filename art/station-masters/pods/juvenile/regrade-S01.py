@@ -1,5 +1,5 @@
 # The S01 juvenile regraded toward Pip (fix 1a, the creative director's gap ruling 00:00: S01's body is locked charcoal and Pip is
-# canonical, so the grown mibi must read as the same animal). 0 MXN, by hand rule, no generation.
+# canonical, so the grown mibi must read as the same animal). By hand rule, no generation.
 # Each colour group of the signed juvenile is moved onto Pip's own colour for that part, keeping the juvenile's shading: a pixel's
 # luminance is mapped from its group's percentiles in the juvenile onto the target group's in Pip, and it takes the target's hue.
 #   teal body              -> Pip's charcoal body (#3a3436 family, L 0.15-0.29)

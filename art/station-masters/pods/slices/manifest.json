@@ -3659,7 +3659,7 @@
    152,
    152
   ],
-  "src": "stamp-case/make-stamp-case.py, 0 MXN",
+  "src": "stamp-case/make-stamp-case.py",
   "made": "fix 4 stampCase: the case moulded into the sage housing, a dim well, lit top-left rim, rubber corners (stamp-case/README.md, 001bcd51); replaces the earlier grey plate case",
   "sha256": "793516357cb1670cc85cd4bb93be6c5a6c0c3f46d92d840f687883d09ab77544",
   "status": "signed",
@@ -3736,7 +3736,7 @@
   "sha256": "9048cd142f666635ef1caba8d025f3308d668a0839f997b677f8a0b491c5ead6",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: create-shape*, pods-chapter-page*, pods-compare",
-  "status_note": "new (10-15, gate batch 1 F2-A6): recut by the art director at 0 MXN, replacing the pass 83 slate open fill; signed in the Pods chapter-page and Create captures after fix 2's merge"
+  "status_note": "new (10-15, gate batch 1 F2-A6): recut by the art director, replacing the pass 83 slate open fill; signed in the Pods chapter-page and Create captures after fix 2's merge"
  },
  "rail-tab-fill-sealed-full-152x40": {
   "size": [
@@ -3906,7 +3906,7 @@
    152,
    152
   ],
-  "src": "stamp-case/make-stamp-case.py, 0 MXN",
+  "src": "stamp-case/make-stamp-case.py",
   "made": "fix 4 stampCase: the case's front glass, ground #1d232b at 48 %, no sheen (pods.json stampCaseFront)",
   "sha256": "fa704f60934f6e18cb598fb391e0370da6feb09f7d7ea2597b5e4513071e3f16",
   "status": "signed",
@@ -4769,7 +4769,7 @@
   "sha256": "324abc55af34e5d05fa0fff303a21ff2550d31249287b7429dc1729aa14dafb0",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted 10-15 by the art director at 0 MXN (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
+  "status_note": "repainted 10-15 by the art director (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
  },
  "pod-medium-unknown": {
   "size": [
@@ -4787,7 +4787,7 @@
   "sha256": "353115c5f9ad20d98148c235e2f927ba49be1871b0c56ac1a6a1acbb8cba5694",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted 10-15 by the art director at 0 MXN (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
+  "status_note": "repainted 10-15 by the art director (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
  },
  "pod-small-unknown": {
   "size": [
@@ -4805,7 +4805,7 @@
   "sha256": "6c66f668a5e44d703193e71dbaa3b68350dd93fb6bd0c58c9912f0539975e531",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted 10-15 by the art director at 0 MXN (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
+  "status_note": "repainted 10-15 by the art director (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
  },
  "pod-well-unknown": {
   "size": [
@@ -4823,7 +4823,7 @@
   "sha256": "e572bc320c52e03d783290321766495dbd8cad61a19cafd37bd52a074180e9c7",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted 10-15 by the art director at 0 MXN (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
+  "status_note": "repainted 10-15 by the art director (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
  },
  "pod-collection-crack": {
   "size": [
@@ -5039,7 +5039,7 @@
   "sha256": "aec5f8ca355e1f7ac4699f7f2c54afd5483fe52acee19c867a2b1f5271a42468",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted 10-15 by the art director at 0 MXN (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
+  "status_note": "repainted 10-15 by the art director (same id and size; the grey read as a placeholder); signed in the builder's Cargo and Pods (collection, unidentified overview) captures"
  },
  "trait-picture-frame-128x160": {
   "size": [
@@ -5091,7 +5091,7 @@
    1024,
    522
   ],
-  "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-overview and room-bench-stage, 0 MXN",
+  "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-overview and room-bench-stage",
   "made": "fix 5 Pods P-A2: the overview's stage with its grey plate and the old stamp case gone; the floor runs to the right wall (fix 4 places the stamp case at 788,384)",
   "sha256": "3581670aa531fb6f525f66985e52fdf3e5ce00e11e8565873e0ffe4c3847bd55",
   "status": "signed",
@@ -5109,12 +5109,12 @@
    1024,
    522
   ],
-  "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage, 0 MXN",
+  "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage",
   "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out); gate batch 1 (10-15): the heading band cleared (stage-recut/clear-heading-band.py): the floor in x 340-960 to slice y 116 repainted (harmonic tone from its edges, the floor's own grain), so the hose's top run, the gauge and the vent leave the two-row page's heading; the hose ends at x 330 in its own brass fitting",
   "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-chapter-page*, pods-sealed, pods-six-traits, pods-belatz-*, pods-eight-chapters, page-read",
-  "status_note": "recut 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page captures (one and two rows)"
+  "status_note": "recut 10-15 by the art director (same id and size); signed in the Pods chapter-page captures (one and two rows)"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -7287,7 +7287,7 @@
   "sha256": "9e3296786edbf527d372744555ea086317328a475c08ee100dd0128dfe701406",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
-  "status_note": "redrawn 10-15 by the art director at 0 MXN (same id and size, top 2); signed in the Pods chapter-page captures"
+  "status_note": "redrawn 10-15 by the art director (same id and size, top 2); signed in the Pods chapter-page captures"
  },
  "mark-breed-28x16": {
   "size": [
@@ -7388,7 +7388,7 @@
   "sha256": "0a541c6401b84a794bb41449383e24229271f1dd6a1b2fb572c83269fe67214f",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 18 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-144x176": {
@@ -7402,7 +7402,7 @@
   "sha256": "fbc71768bcbfee5b53209c80ffb38e475dcdb6a8e7c32c34bc545d666777b546",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 26 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-104x160": {
@@ -7416,7 +7416,7 @@
   "sha256": "33e3c1ae5b3a46ea6ad23aa729b57eb79265bf8eb0aa48a06b57eea24d877142",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 7 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-104x96": {
@@ -7430,7 +7430,7 @@
   "sha256": "dd80da2e685a994040b629e8627386b7f3336923b7efff08bf7bec4b9748a75e",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 19 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-leaf-crest-104x64": {
@@ -7444,7 +7444,7 @@
   "sha256": "4c546e5d8d52d9248c4a358a1be1381bef976f50272083ec98b7d4b6e6d833e1",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-eyes-between-small-and-large-128x160": {
@@ -7458,7 +7458,7 @@
   "sha256": "c1bf3e1fc6627a273bbeb46a8c56eea25c43104496b988c281bccb3e6aa92eea",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
   "size": [
@@ -7471,7 +7471,7 @@
   "sha256": "2b8b372f8d48a6a8896e05388112e28c78cf2df3fc051231b324933ad20fdb0d",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-104x160": {
   "size": [
@@ -7484,7 +7484,7 @@
   "sha256": "2b1061e8c34832451ee29f59f441bd7932014b744cccdbec07197bfe20408229",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-104x96": {
   "size": [
@@ -7497,7 +7497,7 @@
   "sha256": "2185de826b401cb756691f73ad69e5dce8cd2419e4050c0d950bee740ae0a25c",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-104x64": {
   "size": [
@@ -7510,7 +7510,7 @@
   "sha256": "7e1908f0367201183f12d46fa5d7524f4aa6430aed45863da5533d0c8ebb6221",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S12-colour-marigold-128x160": {
   "size": [
@@ -8270,7 +8270,7 @@
   "sha256": "13dd87f2dbc840de1ebf73990d043dc01b8a667ea4548f519cd05dba9579486e",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures"
+  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director; signed in the Pods chapter-page and -a-doing whole captures"
  },
  "mark-line-seed-pair-20x16": {
   "size": [
@@ -8284,7 +8284,7 @@
   "sha256": "32ca35ff6b0229ac381ea11db3d7be06f3ce983e3ed3897d7a6bb5ff0b1e985f",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page-a-doing",
-  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures"
+  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director; signed in the Pods chapter-page and -a-doing whole captures"
  },
  "mark-line-only-16x8": {
   "size": [
@@ -8775,7 +8775,7 @@
   "sha256": "dece508c5757e4210fef6ebf98f83a2f8a767933cc0580e63966ad460be2122d",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-crown-leaf-crest-40x40": {
   "size": [
@@ -8788,7 +8788,7 @@
   "sha256": "0e1d6fac57aa60034806115b0cc55c9bfd260e6ab0007f59298c333275417a84",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-56x56": {
   "size": [
@@ -8801,7 +8801,7 @@
   "sha256": "e41ecf8acf19b65054c5e8d41e729d0bb3467a3ec513b5b1f82f5ad5187481d1",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-small-and-large-40x40": {
   "size": [
@@ -8814,7 +8814,7 @@
   "sha256": "457a0f60dc5687a987bb0e94b15b7ad7f4ac3790dfccb3e24cbca7f49eabb458",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-markings-plain-56x56": {
   "size": [
@@ -9126,7 +9126,7 @@
   "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 06:03: the Habitat captures (public station-fix3c-habitat 5434b52f, station/img/fix3c-habitat: rest, meet, out, portrait, wild-armed), placed byte for byte; PAINTED",
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "guide-seal-32": {
   "size": [
@@ -9664,7 +9664,7 @@
   "sha256": "e663597c495f927495a35bceb82ae04846376eb79b7f5ad5803fe613742e6ecc",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "place-meadow-96x96": {
   "size": [
@@ -10434,7 +10434,7 @@
   "sha256": "d48e37b576f13f4f3bcedc347b2cdb7d35b39d33953d85ec7dd8ed6ed26a5a29",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg, 3.71 MXN) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 209f9fda09c7\u2026 (was signed); plus CA3, the dish pressed in by hand at the pod's place (create-relight/paint-dish.py, 0 MXN); signed in the Create retake"
+  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 209f9fda09c7\u2026 (was signed); plus CA3, the dish pressed in by hand at the pod's place (create-relight/paint-dish.py); signed in the Create retake"
  },
  "dome-front-304x272": {
   "size": [
@@ -10673,7 +10673,7 @@
   "sha256": "a4c77d5a04034b55ec616f72be5b59cdcbbaea6d10b51b285085c96b8cdffce1",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg, 3.71 MXN) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 1461315c8260\u2026 (was signed); signed in the Create retake"
+  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 1461315c8260\u2026 (was signed); signed in the Create retake"
  },
  "chamber-front-400x320": {
   "size": [
@@ -10800,7 +10800,7 @@
   "sha256": "e36e31b84bd563289693c0422f890a6da8b4d0476a476e835e4a34110e29248a",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-sitting-256x176": {
   "size": [
@@ -10813,7 +10813,7 @@
   "sha256": "bb5cdfaa6036ab0196f7d97cfc1925ebbc2e46f808c04f2af6494f4c6300ab42",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-open-432x272": {
   "size": [
@@ -10826,7 +10826,7 @@
   "sha256": "13d336dcb014c74ff86060d802d9a6a5e97805c1070c4f176243085c322a60e2",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-sealed-432x272": {
   "size": [
@@ -10839,7 +10839,7 @@
   "sha256": "ab6b5765579e92b1b307119c592ff58eeb87564230692255be2269cdc37f40f3",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-opening-432x272": {
   "size": [
@@ -10852,7 +10852,7 @@
   "sha256": "09324b287325201dc1863c6161d5a511d828d19b528c80712af707246951e2a8",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "cargo-energy-48x64": {
   "size": [
@@ -10865,7 +10865,7 @@
   "sha256": "da8f62219aaca7d009c424f9b92a7b90d6b744613d9b98cc8baa37bdfd353f7e",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "cargo-data-48x64": {
   "size": [
@@ -10878,7 +10878,7 @@
   "sha256": "e9bfa0cfc444cb7b9c04ac43704d6c8ca640f71903e2e0e33847f0b30ea45790",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "cargo-essence-48x64": {
   "size": [
@@ -10891,7 +10891,7 @@
   "sha256": "dbc5e346e953d7e89e109a9d8115e631f341cf97d70190e74a6273780a086b70",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-sitting-48x40": {
   "size": [
@@ -10904,7 +10904,7 @@
   "sha256": "2ec5a8133d197f44a580deca5e9f63c773ce1fe8764023be967742f4fba28d48",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "home-crate-48x40": {
   "size": [
@@ -10917,7 +10917,7 @@
   "sha256": "491b655f86348d539d3b57a78d6ccdf1ae1b794215383a8f04e59235bc8234db",
   "status": "new",
   "signed_in": null,
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "replaces": "home-crate-48x40 sha256 87d9a930ffd6 on main (art/station-masters/home-hand/slices, #116, signed): a walk crate typed by hand (source/home_marks.py), flat pixel work that read as another hand beside the painted bay and crates"
  },
  "trait-S01-crown-bare-head-144x176": {
@@ -10931,7 +10931,7 @@
   "sha256": "8ab79786ca51b3c81b8dd8b42b2f56d92742118163354c219127a1f19aec0b66",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 22 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-128x160": {
@@ -10945,7 +10945,7 @@
   "sha256": "dba54858b49d03d9edf4ac9e093876820f87a32ac1dfa68fd2da75917eae6525",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 21 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-104x160": {
@@ -10959,7 +10959,7 @@
   "sha256": "27f390347d7c111c9d6e6d1d90d42f9809cda53c353bcb4aa111ba389470d6be",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 17 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-104x96": {
@@ -10973,7 +10973,7 @@
   "sha256": "12c647de16d8eae60e8e163b95a59145ce7e5f7ac3f8e42750aa320d49331012",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 11 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-crown-bare-head-104x64": {
@@ -10987,7 +10987,7 @@
   "sha256": "3d8658652bac4e96da4bf74621fd0ea1a031d1ca38be678511caba3385f4204c",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 9 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "roll-S01-crown-bare-head-128x72": {
@@ -11029,7 +11029,7 @@
   "sha256": "f3520d466cc687ed5a02f1d0361f28276e55fc696666fbe945880b7e5e6072eb",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-thin-rings-128x160": {
   "size": [
@@ -11042,7 +11042,7 @@
   "sha256": "fa0ad22b79bad63240a560e13ac60f1d8e91c63520320c9d1ef802b27897d855",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-thin-rings-104x160": {
   "size": [
@@ -11055,7 +11055,7 @@
   "sha256": "960e488b03261c5b4a33dfd356196cde2d5f8b481960ed6bd610b20ba948775d",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-thin-rings-104x96": {
   "size": [
@@ -11068,7 +11068,7 @@
   "sha256": "2a7f001c78ed4f806c456b34c1cff40d44f260dbf90d5254444a874d6b9c8a0b",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-thin-rings-104x64": {
   "size": [
@@ -11081,7 +11081,7 @@
   "sha256": "5e58b0708cfe0d4a5d15d912c187784a9b8c7404e792b9bcdd97284e726167a4",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "roll-S01-eyes-thin-rings-128x72": {
   "size": [
@@ -11107,7 +11107,7 @@
   "sha256": "e487985ddf33387b976d0a12359dd86352682fc56dd11400bf38c07450a9d9e8",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-128x160": {
   "size": [
@@ -11120,7 +11120,7 @@
   "sha256": "10978b1443fb69da9bffd73a378edfa483b92f19a03b85f61e143c92d6220c86",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-104x160": {
   "size": [
@@ -11133,7 +11133,7 @@
   "sha256": "3fb864d5431105ee4397d5126d89ddce533267202dc6e757de295221ec5bc42c",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-104x96": {
   "size": [
@@ -11146,7 +11146,7 @@
   "sha256": "d13e799178c9a5e496c5f5a9057df272e331415f76c8ee05ebf5cbe18ce3f397",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-between-104x64": {
   "size": [
@@ -11159,7 +11159,7 @@
   "sha256": "85a925359b2c6bc438eae3ee7bec775810444e98b70e51d041ae24deeb351b58",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "roll-S01-eyes-between-128x72": {
   "size": [
@@ -11185,7 +11185,7 @@
   "sha256": "36a55a42f5b886f73c3d0fff0fae63479573305ab784b1e84fff4a4b26e5c40a",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-wide-pale-rings-128x160": {
   "size": [
@@ -11198,7 +11198,7 @@
   "sha256": "119c92cacfc8deaee8f6632b8a635d1a66abddeac3659bbdb04032f097090a3e",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: page-read",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-wide-pale-rings-104x160": {
   "size": [
@@ -11211,7 +11211,7 @@
   "sha256": "10dcde27c9eb04240c3f1783a0959e85d0f3183985178fbd9e22c932702004af",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S01-eyes-wide-pale-rings-104x96": {
   "size": [
@@ -11224,7 +11224,7 @@
   "sha256": "b336d592f3e66ae5b9a001de9f0c6e645bdf00093d810597f6cba54441ec45fd",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures",
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures",
   "defringed": "magenta key residue removed, 5 px (tools/defringe-plates.py, 2026-10-12)"
  },
  "trait-S01-eyes-wide-pale-rings-104x64": {
@@ -11238,7 +11238,7 @@
   "sha256": "82dacc9d532102b51f160ac4aeb213f6a51c9b6c8cdc18578c4f22b3c8e0013e",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "roll-S01-eyes-wide-pale-rings-128x72": {
   "size": [
@@ -13243,7 +13243,7 @@
   "sha256": "e1b4b8ab0a3e4c620ea3a6924acf5d5ad5a4a62b6c8915a231adf959d683d415",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-few-fine-128x160": {
   "size": [
@@ -13256,7 +13256,7 @@
   "sha256": "c3cc045351176b18081d84d885c8872d6e784ed9c05c11f85862c88ed76994e4",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-few-fine-104x160": {
   "size": [
@@ -13269,7 +13269,7 @@
   "sha256": "9fdd40d130ebdf36712014a81f2f110c72964e3dee5ea9abd973e408ec88c739",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-few-fine-104x96": {
   "size": [
@@ -13282,7 +13282,7 @@
   "sha256": "1aa1d4c05087ac0cd2d17354422f6f3e528b76b0e4096cd530ea458180897304",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-compare-four",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-few-fine-104x64": {
   "size": [
@@ -13295,7 +13295,7 @@
   "sha256": "0ececc44142680a011e57f1eddc2b20e3202aec8f66679c2fe2ca9f74307515c",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "roll-S03-scales-few-fine-128x72": {
   "size": [
@@ -13321,7 +13321,7 @@
   "sha256": "3e8c4513a0e1a28234f43fee10622798c5be19f92b4e24427cc72058d21bb44b",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-between-128x160": {
   "size": [
@@ -13334,7 +13334,7 @@
   "sha256": "0ae6bbe03ade69196823d043d5d81c0e8d02192a5d483947ce6f2011916907fb",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-between-104x160": {
   "size": [
@@ -13347,7 +13347,7 @@
   "sha256": "4c826e9a1b9702d882ae308d5e36e24f870ab69395dd5de6100161ca5c665489",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-between-104x96": {
   "size": [
@@ -13360,7 +13360,7 @@
   "sha256": "b5dcaab5dd835a8b58be54caacf7e4cec109045114d07daed9bd6ce0842909d1",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-compare-four",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-between-104x64": {
   "size": [
@@ -13373,7 +13373,7 @@
   "sha256": "1c0c5820b7be7f891bff68cb5796b4f9957afc0d594e576a2c015c46444f5b2e",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "roll-S03-scales-between-128x72": {
   "size": [
@@ -13399,7 +13399,7 @@
   "sha256": "8ac32c8eda70bf71de991bd28a130561ddc26d4d0ec7338705dcd0b83ead5431",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-many-coarse-128x160": {
   "size": [
@@ -13412,7 +13412,7 @@
   "sha256": "2190d20a066b1f87b8db87aed486c063dcab07049a5671961909ce7668ca9820",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-eight-chapters",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-many-coarse-104x160": {
   "size": [
@@ -13425,7 +13425,7 @@
   "sha256": "7364bc3f306741daa66d75ef3241673bb17c729614355acfc380f0b7b745b273",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-many-coarse-104x96": {
   "size": [
@@ -13438,7 +13438,7 @@
   "sha256": "befda61b4547c139de65e6fb2073686d4efcf21dbf92472a89f423f7a3c75d12",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-compare-four",
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "trait-S03-scales-many-coarse-104x64": {
   "size": [
@@ -13451,7 +13451,7 @@
   "sha256": "4d5221312b61c44a8721374b408139ec8ec478263ab6bab0f8a44b872450b03b",
   "status": "new",
   "signed_in": null,
-  "status_note": "re-keyed 10-15 by the art director at 0 MXN (same id and size); signed in the Pods chapter-page / read / compare captures"
+  "status_note": "re-keyed 10-15 by the art director (same id and size); signed in the Pods chapter-page / read / compare captures"
  },
  "roll-S03-scales-many-coarse-128x72": {
   "size": [
@@ -14333,7 +14333,7 @@
    992,
    320
   ],
-  "src": "concepts/cargo-bay: source/raw/cargo-bay-open-a.jpg (gemini-3-pro-image, 1 Pro request, 4.01 MXN), cut by tools/baycut.py",
+  "src": "concepts/cargo-bay: source/raw/cargo-bay-open-a.jpg (gemini-3-pro-image, 1 Pro request), cut by tools/baycut.py",
   "made": "the Cargo bay, open: sage rim, warm dark back wall, a plain sage floor shelf with a front lip (Oct 11)",
   "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
   "status": "signed",
@@ -14351,7 +14351,7 @@
    976,
    304
   ],
-  "src": "concepts/cargo-bay: source/raw/cargo-bay-shut-a.jpg (gemini-3-pro-image, 1 Pro edit, 3.66 MXN), cut by tools/baycut.py (whole door slats removed)",
+  "src": "concepts/cargo-bay: source/raw/cargo-bay-shut-a.jpg (gemini-3-pro-image, 1 Pro edit), cut by tools/baycut.py (whole door slats removed)",
   "made": "the Cargo bay's shut sage roller door, the inside rect, drawn over the open bay (Oct 11)",
   "sha256": "28c5bd98e365f724763dd2a71a23d0a83b9c1d0d78500834a9f5a3067ee32582",
   "status": "signed",
@@ -14369,7 +14369,7 @@
    992,
    168
   ],
-  "src": "cut by hand (cargo-rack/make-cargo-rack.py) from the signed cargo-bay-992x320 (its floor's paint and front lip) and crate-open-432x272 (its fitted foam), 0 MXN",
+  "src": "cut by hand (cargo-rack/make-cargo-rack.py) from the signed cargo-bay-992x320 (its floor's paint and front lip) and crate-open-432x272 (its fitted foam)",
   "made": "fix 5 AR4: the device's sage strip under the Cargo bay, with six fitted foam wells at (168 + 112 i, 24, 96, 128), lit lower-right lips, shaded top-left walls, dark foam floors; no labels, lamps, text or gold",
   "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
   "status": "new",
@@ -14387,11 +14387,11 @@
    560,
    288
   ],
-  "src": "device-plate/make-device-plate.py 560 288 --floor 1c222a --sage 121.7,133.2,109.9 (the fix 2 kit, cut from the signed housing; its sage the report door's plain panel), 0 MXN",
+  "src": "device-plate/make-device-plate.py 560 288 --floor 1c222a --sage 121.7,133.2,109.9 (the fix 2 kit, cut from the signed housing; its sage the report door's plain panel)",
   "made": "gate batch 1 AR5r master, replacing fix 5 AR5's raised moulding: the fix 2 kit's construction set into the report door's sage panel (1 px hairline, 5 px sage bezel lit from the top left, inner shade top and left, lit lip bottom and right), no raised rim, no rubber corners; floor #1c222a with the wall's grain (bone 13.5:1, mist 4.82:1 mean, 4.58:1 at the brightest floor pixel); the 20 shorter heights are derived from it",
   "sha256": "95cdc98970b6e0b3f3944a4f8e4d32f828cdc54d5f98a4f443030b178dfbe9eb",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
+  "status_note": "new (10-15, gate batch 1): by the art director, by hand; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
   "signed_in": null
  },
  "icon-wait-16": {
@@ -14400,7 +14400,7 @@
    16
   ],
   "rect": null,
-  "src": "typed by hand (icon-wait/make-icon-wait.py), 0 MXN",
+  "src": "typed by hand (icon-wait/make-icon-wait.py)",
   "made": "fix 6 A3: the bud's wait on Create's Grow line, an hourglass in sand and bark, the caps' lit edge in clay and a paper glint on the glass's left (light top left), the sand running top to bottom; sits after the price's three material marks",
   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
   "status": "signed",
@@ -14717,7 +14717,7 @@
    128,
    160
   ],
-  "src": "cut by hand (halo-empty/make-halo-empty.py) from the signed halo set's mist colour, 0 MXN",
+  "src": "cut by hand (halo-empty/make-halo-empty.py) from the signed halo set's mist colour",
   "made": "fix 5 Pods P-A3: the empty halo before Identify, the halo's soft mist alone in one quiet upright oval (alpha at most 50, against the figures' 107-115), no silhouette",
   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
   "status": "signed",
@@ -14730,7 +14730,7 @@
    160
   ],
   "rect": null,
-  "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-air-304x312, one scale for both plates, 0 MXN",
+  "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-air-304x312, one scale for both plates",
   "made": "fix 5 Pods P-A4: the doing-trait plate for Drive (Movement): Pip mid-hop, grounded on its own shadow at row 152, transparent around; no look suffix",
   "sha256": "c5302efbc3e91026b845aaaa9fc871e2fa1d1ae17ff11ab5f8cfdcc6c709d479",
   "status": "signed",
@@ -14743,7 +14743,7 @@
    160
   ],
   "rect": null,
-  "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-curl-304x312, one scale for both plates, 0 MXN",
+  "src": "cut by hand (trait-plates/make-trait-plates.py) from concepts/mibi-motion-proof/keys/pip-curl-304x312, one scale for both plates",
   "made": "fix 5 Pods P-A4: the doing-trait plate for Efficiency (Stamina): Pip curled to sleep, grounded on its own shadow at row 152, transparent around; no look suffix",
   "sha256": "ff10c5e59b5761212ec2f7135db7227939b48b97921c3b66906fe24373170cc0",
   "status": "signed",
@@ -14787,7 +14787,7 @@
    224,
    14
   ],
-  "src": "cut by hand (fix6/), 0 MXN",
+  "src": "cut by hand (fix6/)",
   "made": "fix 6 A2: the founder's contact shadow on Create's tray, the bench's shadow ink #060c12, a soft ellipse (alpha 153, core 3 px right) with two pads under the feet (170), clear at the ends",
   "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
   "status": "signed",
@@ -14805,7 +14805,7 @@
   "sha256": "23627459f292a4feb102e1f13142d1c5c134ba10ee2ae88fb27e9927abc1f1e5",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 06:03: the Habitat captures (public station-fix3c-habitat 5434b52f, station/img/fix3c-habitat: rest, meet, out, portrait, wild-armed), placed byte for byte; PAINTED",
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "gate-wild-open-48x48": {
   "size": [
@@ -14818,7 +14818,7 @@
   "sha256": "22aa57453638a881909bf67cb6244b1bf8336aa082e06ece5f4febab5a8c6bb6",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 06:03: the Habitat captures (public station-fix3c-habitat 5434b52f, station/img/fix3c-habitat: rest, meet, out, portrait, wild-armed), placed byte for byte; PAINTED",
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "chapter-plate-read-40x40": {
   "size": [
@@ -14831,7 +14831,7 @@
   "sha256": "01399fcf562404f2ba6831a7dbf97c3d7882a982128cfd31032da86c2538af8e",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 06:03: the Habitat captures (public station-fix3c-habitat 5434b52f, station/img/fix3c-habitat: rest, meet, out, portrait, wild-armed), placed byte for byte; PAINTED",
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "chapter-plate-unread-40x40": {
   "size": [
@@ -14844,7 +14844,7 @@
   "sha256": "35633c7e700eab12071e78a743c9d04bed08ab90c0ab9434f32be558f9210b0f",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 06:03: the Habitat captures (public station-fix3c-habitat 5434b52f, station/img/fix3c-habitat: rest, meet, out, portrait, wild-armed), placed byte for byte; PAINTED",
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "chapter-plate-sealed-40x40": {
   "size": [
@@ -14857,7 +14857,7 @@
   "sha256": "8c1b3687d57b127f71021a3e57128a324f043a9fcb6e879b53eac5874f0f63f7",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 06:03: the Habitat captures (public station-fix3c-habitat 5434b52f, station/img/fix3c-habitat: rest, meet, out, portrait, wild-armed), placed byte for byte; PAINTED",
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-320x88": {
   "size": [
@@ -14870,7 +14870,7 @@
   "sha256": "2d35fe1b820b0018507a0779e6fc8744e0e81e63026855552e8caab818cfb8cf",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-416x208": {
   "size": [
@@ -14883,7 +14883,7 @@
   "sha256": "0f8c764c96c1c3a86cc0d90693da2271665450818df2e19a0a267ea3245932dc",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-272x96": {
   "size": [
@@ -14896,7 +14896,7 @@
   "sha256": "39bf1272630355934e18f3c2fc9b6d1e972de6610e6b13b0fd31bdf2995dbefe",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-136x96": {
   "size": [
@@ -14909,7 +14909,7 @@
   "sha256": "ebf78ba0a093e26cd5db54253ef8891d94f9f1e2c2d4c9bbccf00b089a64beed",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-992x64": {
   "size": [
@@ -14922,7 +14922,7 @@
   "sha256": "017e5bb95cdd95eee5d36ee54ca0a0cf34633643f48a6e9276c601b2e5ab3068",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-416x424": {
   "size": [
@@ -14935,7 +14935,7 @@
   "sha256": "f478d1bb0c32e736f914a490becf3d29a404ed1af4830772c987c9407d0caeab",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-312x128": {
   "size": [
@@ -14948,7 +14948,7 @@
   "sha256": "2723b69930932df444950e164f8392ce061775e7d815dfaa31424f185722936c",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-312x248": {
   "size": [
@@ -14961,7 +14961,7 @@
   "sha256": "e1e3287420d71a3bff414b6fb20f1c577299e5a97e94cad480724e23ca6330f9",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-408x440": {
   "size": [
@@ -14974,7 +14974,7 @@
   "sha256": "a365d4630d67e54d8b7b1bdf2b33f46193a4de5e5612ce4d2c47e616367ea1d1",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-well-152x48": {
   "size": [
@@ -14987,7 +14987,7 @@
   "sha256": "11ef49fa84e5a426826e99f65e68068c648979e5fe41aad8a6f27e4d588e0a34",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-well-48x48": {
   "size": [
@@ -15000,7 +15000,7 @@
   "sha256": "2411d89979ae3415f76aa0ba7870d1097b35fc8420d3b90e20b0dd92f75014d6",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-408x300": {
   "size": [
@@ -15013,7 +15013,7 @@
   "sha256": "6d122b6acb9ec78f603a64049f4a0c6723abfda72fa2c4ae5b1e4a3076fb92bc",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-device-408x416": {
   "size": [
@@ -15026,7 +15026,7 @@
   "sha256": "7efa8a1daf4e5f98b4399c628083dfd9fab5f01d9fe58225b8f603a991e31c18",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-well-72x48": {
   "size": [
@@ -15039,7 +15039,7 @@
   "sha256": "ae2a94179e4c1dfa0b542e181246cfec2d123ba81512d7d27d23629983cb3d32",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-well-152x48-shown": {
   "size": [
@@ -15052,7 +15052,7 @@
   "sha256": "efd42aca554e0404c2d8fa4a35a979363596378ab219e8cd0d016494a56d8664",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-well-72x48-shown": {
   "size": [
@@ -15065,7 +15065,7 @@
   "sha256": "0e9702c101d82a0d60171b6f5c7fc15782df47eae49f199ba156afd255e69e88",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "plate-well-328x48": {
   "size": [
@@ -15078,7 +15078,7 @@
   "sha256": "a494a9d2c2d27ecb026b93b1c8904edf9b8421cd283aac5bc120b14f9970b121",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "mibi-juvenile-S02-304x312": {
   "size": [
@@ -15131,7 +15131,7 @@
   "sha256": "6a4cd91c5a0d35ab9efcfaca8d649bbe422bba3dbb5fc895d8e9ad574eb41258",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "roll-S01-efficiency-128x72": {
   "size": [
@@ -15144,7 +15144,7 @@
   "sha256": "1fe82de79e06eae2e6db7caeff1da6c24355ffafd8a39e1cf60996a5d6433fc5",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "icon-cross-16": {
   "size": [
@@ -15157,7 +15157,7 @@
   "sha256": "a191383a949e74a57e4da08dbfff8e2dc87bec25a244d8f7834fe7d5a5f25d6f",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the builder's whole-screen capture"
+  "status_note": "new (10-15): by the art director, by hand; signed in the builder's whole-screen capture"
  },
  "room-cradle-front-create-224x96": {
   "size": [
@@ -15170,7 +15170,7 @@
   "sha256": "7c933d3da94332df0d0ace023bbf4064ad2e55fbcb186cb37560cfb00764cc80",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): by the art director, by hand at 0 MXN; signed in the Create retake"
+  "status_note": "new (10-15): by the art director, by hand; signed in the Create retake"
  },
  "cargo-bay-shut-report-976x304": {
   "size": [
@@ -15183,11 +15183,11 @@
    976,
    304
   ],
-  "src": "cut by hand from the signed cargo-bay-shut-976x304 (cargo-report/recut/make-report-door.py), 0 MXN",
+  "src": "cut by hand from the signed cargo-bay-shut-976x304 (cargo-report/recut/make-report-door.py)",
   "made": "gate batch 1 AR6: the shut door for the report state; between slice x 200 and 776 the slats end at an 8 px moulded frame lit from the top left, round one plain sage panel (the slats' own face tone, the door's light kept); roll box and sill untouched; no text",
   "sha256": "1bc1ffad77c64ec3b854f2730e55b197ab909f5cc70ba4dedac3599d1c77c2de",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
+  "status_note": "new (10-15, gate batch 1): by the art director, by hand; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
   "signed_in": null
  },
  "label-plate-cream-216x32": {
@@ -15196,11 +15196,11 @@
    32
   ],
   "rect": null,
-  "src": "cargo-report/recut/make-label-cream.py 216 32, 0 MXN",
+  "src": "cargo-report/recut/make-label-cream.py 216 32",
   "made": "gate batch 1 AR7: the board's cream label plate (concept board frame 1, measured cream (229, 220, 203)), matte, r 3, a 1 px darker edge, lit top and left arris, shaded bottom and right; no gold, no text; ink reads at 13:1",
   "sha256": "48757b73c248bd31ed7385788d53c948097a408d951cbe1971dbdcc0a694deda",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1): by the art director, by hand at 0 MXN; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
+  "status_note": "new (10-15, gate batch 1): by the art director, by hand; signed in the cargo-report, -small, -waiting and cargo-opening-end captures",
   "signed_in": null
  },
  "plate-rail-well-168x48": {
@@ -15213,7 +15213,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 152: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "a245beb4a4228aff71ec216bed384f1599c8401c64dc9643e8558d7049690c78",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-304x48": {
@@ -15226,7 +15226,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 288: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "4a9fd279b8bb06e486bb5de79c9f1d45e42e41fe441eda84e17cca76c152410b",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-440x48": {
@@ -15239,7 +15239,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 424: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "f442927872faf685e28d8825feba62c668d05aecf22fda43e11aa9edbaea58d1",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-576x48": {
@@ -15252,7 +15252,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 560: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "8ef5d050ba53ceefa0ce83a6d31b844f265e1338538485cdf4426035cfe1b8d6",
   "status": "signed",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: create-*, pods-chapter-page*, pods-overview-*"
  },
  "plate-rail-well-712x48": {
@@ -15265,7 +15265,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 696: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "5cd5a80740c28dcf59aa72ad0bd8b699220833ff6fbead48e6f78758ebf93c52",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-848x48": {
@@ -15278,7 +15278,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 832: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "225b4e587640aeb49139b10b7cff0ffeafa58bc530adc23c4b174392342067a1",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-504x48": {
@@ -15291,7 +15291,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 488: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "6597d8d00be8347c8ffd36d90ea762f3976da7d832052bbeafe0e5b7ba99cba5",
   "status": "signed",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: img/pods-compare-four, -six"
  },
  "plate-rail-well-560x48": {
@@ -15304,7 +15304,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 544: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "22d9645b324a70a35ee5d67d057e3e509b731a662c465c5d3c02387215f8b0b7",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-616x48": {
@@ -15317,7 +15317,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 600: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "dd68b8556569d61e8ad60a12de8ba9b0a4c4abbd4b9c5af4f8e166c63ae25355",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-672x48": {
@@ -15330,7 +15330,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 656: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "92693c1cd6fe0533fcd6c56c5bec48fb0c46a7792fbcc79ecd9c5592f182d9f9",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-728x48": {
@@ -15343,7 +15343,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 712: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "54962fd5825626bf4d21f31cba6d9e7f6a802a0c75494a6eb20f76d251221b3e",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-784x48": {
@@ -15356,7 +15356,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 768: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "1e085e5e8daba7613cff458e9726780eff115befc82fe3e339c586534ffbe129",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-424x48": {
@@ -15369,7 +15369,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 408: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "3a9253aeaef3dc49ba94300340c3dc094f5e990cd82ac05a5fa3621fe392d486",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-480x48": {
@@ -15382,7 +15382,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 464: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "967810b2d5806ab5ad1d80bc79eb86a6674fbf6fc3cb5d088a2d63d19b1b2223",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-536x48": {
@@ -15395,7 +15395,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 520: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "93a9ee7dcd603314985699e6525930f58b9b7cad8afb4cb139ed7b9dd64d2a45",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-592x48": {
@@ -15408,7 +15408,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 576: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "9f133748611229d30682e7dbd9e6a6e85a651e5709dd51e7d0e471c93af518ba",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-648x48": {
@@ -15421,7 +15421,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 632: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "47d0c6cdc0d445e013572e1bc1ef98be93309eddcd58c1e2afc87a141a340f4d",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-rail-well-704x48": {
@@ -15434,7 +15434,7 @@
   "made": "fix 2 F11, the chapter rail's well for a run of 688: the kit's construction cut into the housing's top bezel, open to the top bar (no top wall, no top hairline, square top corners), 5 px sage walls left, right and below, the inner shade on the left wall, the lit lip bottom and right, the kit's floor; drawn 1:1 at (x0 - 8, 40) before the tabs",
   "sha256": "487c0847aafa2ef896808b2e745f889019a7f6554c70ea3fe44b554f811978bb",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand at 0 MXN; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
+  "status_note": "new (10-15, gate batch 1 F2-A5): by the art director, by hand; signed in the Incubator-ready, Pods chapter-page and Create-shape whole captures after fix 2's merge",
   "signed_in": null
  },
  "plate-well-136x168": {
@@ -15447,7 +15447,7 @@
   "made": "gate batch 1 C5 (D1), Pods chapter-page cells and Compare 1-2 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "700652b7023ad217be6e19c8c264148f19d200d07456066de138016f9c7e94fc",
   "status": "signed",
-  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director; signed in the Pods chapter-page and Compare whole captures",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page*, pods-compare, img/pods-compare-one, -two"
  },
  "plate-well-120x120": {
@@ -15460,7 +15460,7 @@
   "made": "gate batch 1 C5 (D1), the sealed find at (388, 252): the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "8fb2ad32e18fa70a3d0861300a3d71df0d67441ef61dd9169f8230cd990e4426",
   "status": "signed",
-  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director; signed in the Pods chapter-page and Compare whole captures",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page-sealed, img/pods-sealed"
  },
  "plate-well-112x168": {
@@ -15473,7 +15473,7 @@
   "made": "gate batch 1 C5 (D1), Compare 3 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "7bec12230770ecf27785451eb37718c676d29f9abc6ecc67bc4b9b306fe9ab9f",
   "status": "new",
-  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director; signed in the Pods chapter-page and Compare whole captures",
   "signed_in": null
  },
  "plate-well-112x104": {
@@ -15486,7 +15486,7 @@
   "made": "gate batch 1 C5 (D1), Compare 4-6 traits: the kit's well (1 px hairline, inner shade top and left, lit lip bottom and right, no bezel) with its floor exactly ground (29, 35, 43), flat (no grain, no fall), so the keyed crops meet it with no seam; drawn at P - (4, 4)",
   "sha256": "20cb709a34c7c9ea1e4abb0f4933c71306be54a86ae2d2948b50e66c45e2efaf",
   "status": "signed",
-  "status_note": "new (10-15, gate batch 1 C5): by the art director at 0 MXN; signed in the Pods chapter-page and Compare whole captures",
+  "status_note": "new (10-15, gate batch 1 C5): by the art director; signed in the Pods chapter-page and Compare whole captures",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: img/pods-compare-four, -six"
  },
  "mark-line-only-16x16": {
@@ -15499,7 +15499,7 @@
   "made": "fix 11 G1 (new id, replaces mark-line-only-16x8): one seed (12 x 10) standing on the signed plinth's three steps (fog top 10, mist front 14 x 2, stone foot 16); ink 16 x 14, rows 2-15; placed 1:1 after the name, top at line y + 2",
   "sha256": "162c369faea78c4ecc5cc8c12656c2d420df31457134f3a992a2361053453953",
   "status": "signed",
-  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures",
+  "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director; signed in the Pods chapter-page and -a-doing whole captures",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page"
  },
  "cargo-energy-72x96": {
@@ -15512,7 +15512,7 @@
   "made": "the Energy container: a battery cell, white shell with orange bands and black end caps, a tall glass window of glowing amber energy, terminals on top; 72x96, the larger set proposed for the bay (UI/UX places it)",
   "sha256": "0a145efecdebe126e54ba6e5203d83b0cce8dba8a3664eca349025719758ab86",
   "status": "new",
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "signed_in": null
  },
  "cargo-data-72x96": {
@@ -15525,7 +15525,7 @@
   "made": "the Data container: a rugged dark cartridge, black corner guards, a green glyph screen, a clear panel over stacked chips, gold pins; 72x96, the larger set proposed for the bay (UI/UX places it)",
   "sha256": "7b6ca5ac8ebfd79a419632afba4d03bd03294874794d55cd44fd0b6276b0e48b",
   "status": "new",
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "signed_in": null
  },
  "cargo-essence-72x96": {
@@ -15538,7 +15538,7 @@
   "made": "the Essence container: a clear glass vial, brass caps, a black rubber base, glowing green-teal liquid with a leaf in it; 72x96, the larger set proposed for the bay (UI/UX places it)",
   "sha256": "25a3dc1a2f958f0e795e7d180d8a3ed9cad6ea3bd2f4d61f94b6e2c5d3103a97",
   "status": "new",
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "signed_in": null
  },
  "cargo-store-shadow-72x21": {
@@ -15551,7 +15551,7 @@
   "made": "the larger stored container's cast shadow",
   "sha256": "b60f17222edb46ffc4cd0c6f9388dd421636077ebbca23f0052709d3e166736a",
   "status": "new",
-  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "signed_in": null
  },
  "library-stage-spread-1024x522": {

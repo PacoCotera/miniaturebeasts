@@ -1,10 +1,10 @@
 # Probe P1, the field scanner (Oct 10)
 
-The owner's pick of the art director's P1 sketch: an upright hand-held field scanner like a small walkie-talkie. One Pro request (gemini-3-pro-image), succeeded, no retry, cap 9 MXN, under the owner's standing approval in the art director's order. Image references: the art director's hand sketch of P1 (project-owned: `art/station-masters/pods/source/work/guides/probe-function-sketches.png`, P1 only, cropped with every label removed: `reference-sketch-cleaned.png`) and the signed `home-bay-shut`. The owner's reference pictures were never used. Prompt: no writing, no face, the round screen a screen, no glow or gloss.
+The owner's pick of the art director's P1 sketch: an upright hand-held field scanner like a small walkie-talkie. One Pro request (gemini-3-pro-image), succeeded, no retry, under the owner's standing approval in the art director's order. Image references: the art director's hand sketch of P1 (project-owned: `art/station-masters/pods/source/work/guides/probe-function-sketches.png`, P1 only, cropped with every label removed: `reference-sketch-cleaned.png`) and the signed `home-bay-shut`. The owner's reference pictures were never used. Prompt: no writing, no face, the round screen a screen, no glow or gloss.
 
-| File | Cost |
-| --- | --- |
-| `probe-p1-field-scanner-1376x768.jpg` | 4.31 MXN |
+| File |
+| --- |
+| `probe-p1-field-scanner-1376x768.jpg` |
 
 Job `source/work/probe-p1.json`; call `log/calls.jsonl`. Tier 1 (large, three-quarter from the front left), tier 2 beside it (a fourth plate and a fitted part), a filled black silhouette at the right.
 

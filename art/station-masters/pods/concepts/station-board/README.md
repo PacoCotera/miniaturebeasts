@@ -14,18 +14,17 @@ Each frame is the 1376x768 original centre-cropped to 1024:600 and reduced with 
 
 ## Call log (every request, tools/gen.py through tools/spendcap.py; full prompts, references with hashes and usageMetadata are in `log/calls.jsonl`)
 
-| # | Call | Model | Cost (MXN) | Running total for this job (MXN) | Tokens in / out / thinking |
-| --- | --- | --- | --- | --- | --- |
-| 1 | `board-home-draft` | gemini-3.1-flash-image | 4.3321 | 4.33 | 2102 / 1770 / None |
-| 2 | `board-pods-draft` | gemini-3.1-flash-image | 3.8805 | 8.21 | 1133 / 1598 / None |
-| 3 | `board-incubator-draft` | gemini-3.1-flash-image | 4.078 | 12.29 | 1149 / 1680 / None |
-| 4 | `board-home-pro` | gemini-3-pro-image | 4.4935 | 16.78 | 2178 / 1518 / 318 |
-| 5 | `board-pods-pro` | gemini-3-pro-image | 4.4044 | 21.19 | 1209 / 1503 / 312 |
-| 6 | `board-incubator-pro` | gemini-3-pro-image | 4.4314 | 25.62 | 1225 / 1510 / 316 |
-| 7 | `board-pods-pro-r2` | gemini-3-pro-image | 4.2565 | 29.88 | 1292 / 1471 / 281 |
-| 8 | `board-home-pro-notext` | gemini-3-pro-image | 3.9404 | 33.82 | 409 / 1443 / 192 |
+| # | Call | Model | Tokens in / out / thinking |
+| --- | --- | --- | --- |
+| 1 | `board-home-draft` | gemini-3.1-flash-image | 2102 / 1770 / None |
+| 2 | `board-pods-draft` | gemini-3.1-flash-image | 1133 / 1598 / None |
+| 3 | `board-incubator-draft` | gemini-3.1-flash-image | 1149 / 1680 / None |
+| 4 | `board-home-pro` | gemini-3-pro-image | 2178 / 1518 / 318 |
+| 5 | `board-pods-pro` | gemini-3-pro-image | 1209 / 1503 / 312 |
+| 6 | `board-incubator-pro` | gemini-3-pro-image | 1225 / 1510 / 316 |
+| 7 | `board-pods-pro-r2` | gemini-3-pro-image | 1292 / 1471 / 281 |
+| 8 | `board-home-pro-notext` | gemini-3-pro-image | 409 / 1443 / 192 |
 
-**Job total: 33.82 MXN** (the brief's cap is 73, the stop-and-report 50; the owner's own cap is 120). Today's total with this job: 210.53 of 250. The three Nano Banana 2 drafts (`gemini-3.1-flash-image`) are booked at Pro's rates in `log/spend.json` because the guard has no Flash rates yet, so their real cost is lower than shown.
 
 ## Originals and hashes (sha256)
 
@@ -54,22 +53,22 @@ Prompts: `source/work/station-board-drafts.json`, `station-board-pro.json`, `sta
 
 ![the board, v2](station-concept-board-v2.png)
 
-Pro only, three requests (the art director allowed five and a day total under 235 of 250 MXN): frame 1 `frame-1-home-v2-1024x600.png` (`source/raw/board-home-pro-r3.jpg`, a Pro edit of the no-text Home: the red pot and the teal lizard replaced by Loikas, an adult, a second adult and a juvenile, the pale edge strip removed), frame 2 `frame-2-pods-v2-1024x600.png` (`board-pods-pro-r3.jpg`: smooth patterned seed-shells with moss and dust on some, fewer lines in dark rubber hose, a small mister and vent, frame 1 as the style reference) and frame 3 `frame-3-incubator-v2-1024x600.png` (`board-incubator-pro-r3.jpg`: matte gauges set flush, dark rubber hoses, a sheltered recess with a hooded window, a plain warm bean on moss with no creature, frame 1 as the style reference). Each is the 1376x768 original centre-cropped to 1024:600 and reduced with Lanczos. The v1 board and frames above stay for the record.
+Pro only, three requests (the art director allowed five): frame 1 `frame-1-home-v2-1024x600.png` (`source/raw/board-home-pro-r3.jpg`, a Pro edit of the no-text Home: the red pot and the teal lizard replaced by Loikas, an adult, a second adult and a juvenile, the pale edge strip removed), frame 2 `frame-2-pods-v2-1024x600.png` (`board-pods-pro-r3.jpg`: smooth patterned seed-shells with moss and dust on some, fewer lines in dark rubber hose, a small mister and vent, frame 1 as the style reference) and frame 3 `frame-3-incubator-v2-1024x600.png` (`board-incubator-pro-r3.jpg`: matte gauges set flush, dark rubber hoses, a sheltered recess with a hooded window, a plain warm bean on moss with no creature, frame 1 as the style reference). Each is the 1376x768 original centre-cropped to 1024:600 and reduced with Lanczos. The v1 board and frames above stay for the record.
 
-| # | Call | Model | Cost (MXN) | Running total for the job (MXN) |
-| --- | --- | --- | --- | --- |
-| 1 | `board-home-draft` | gemini-3.1-flash-image | 4.3321 | 4.33 |
-| 2 | `board-pods-draft` | gemini-3.1-flash-image | 3.8805 | 8.21 |
-| 3 | `board-incubator-draft` | gemini-3.1-flash-image | 4.078 | 12.29 |
-| 4 | `board-home-pro` | gemini-3-pro-image | 4.4935 | 16.78 |
-| 5 | `board-pods-pro` | gemini-3-pro-image | 4.4044 | 21.19 |
-| 6 | `board-incubator-pro` | gemini-3-pro-image | 4.4314 | 25.62 |
-| 7 | `board-pods-pro-r2` | gemini-3-pro-image | 4.2565 | 29.88 |
-| 8 | `board-home-pro-notext` | gemini-3-pro-image | 3.9404 | 33.82 |
-| 9 | `board-home-pro-r3` | gemini-3-pro-image | 3.791 | 37.61 |
-| 10 | `board-pods-pro-r3` | gemini-3-pro-image | 4.2087 | 41.82 |
-| 11 | `board-incubator-pro-r3` | gemini-3-pro-image | 4.1322 | 45.95 |
+| # | Call | Model |
+| --- | --- | --- |
+| 1 | `board-home-draft` | gemini-3.1-flash-image |
+| 2 | `board-pods-draft` | gemini-3.1-flash-image |
+| 3 | `board-incubator-draft` | gemini-3.1-flash-image |
+| 4 | `board-home-pro` | gemini-3-pro-image |
+| 5 | `board-pods-pro` | gemini-3-pro-image |
+| 6 | `board-incubator-pro` | gemini-3-pro-image |
+| 7 | `board-pods-pro-r2` | gemini-3-pro-image |
+| 8 | `board-home-pro-notext` | gemini-3-pro-image |
+| 9 | `board-home-pro-r3` | gemini-3-pro-image |
+| 10 | `board-pods-pro-r3` | gemini-3-pro-image |
+| 11 | `board-incubator-pro-r3` | gemini-3-pro-image |
 
-**Job total after the fix round: 45.95 MXN** (the cap is 120, the stop-and-report 80). Today's total: 222.66 of 250 MXN, under the art director's 235 line. Originals (sha256): `source/raw/board-home-pro-r3.jpg` `0082b764771f6cdd7785f9e174cfedd40e2b6d0e6116f97d5b8c02484df8ee0d`; `source/raw/board-pods-pro-r3.jpg` `34d3f3343c7a0c9911855f7dae922b13875888770ae63787da305ca0615d5184`; `source/raw/board-incubator-pro-r3.jpg` `5925378627839760536a038998c83fa1a253adb1cc8a8b4bc0d148775afccdfc`; prompts in `source/work/station-board-r3a.json` and `station-board-r3b.json`.
+Originals (sha256): `source/raw/board-home-pro-r3.jpg` `0082b764771f6cdd7785f9e174cfedd40e2b6d0e6116f97d5b8c02484df8ee0d`; `source/raw/board-pods-pro-r3.jpg` `34d3f3343c7a0c9911855f7dae922b13875888770ae63787da305ca0615d5184`; `source/raw/board-incubator-pro-r3.jpg` `5925378627839760536a038998c83fa1a253adb1cc8a8b4bc0d148775afccdfc`; prompts in `source/work/station-board-r3a.json` and `station-board-r3b.json`.
 
 Honest notes on v2: the seed-shells still read a little like eggs (the patterned ovals); frame 3's hoses pass in front of the two lower gauges; frame 1's Loikas are redrawn by the model from the reference, as before; no text, letters or digits in the three frames (checked by eye).

@@ -1,4 +1,4 @@
-# Fix 5 AR5: cargo-report-plate-560x288, the master, cut by hand at 0 MXN: the stamp case's construction (room-stamp-case-152x152,
+# Fix 5 AR5: cargo-report-plate-560x288, the master, cut by hand: the stamp case's construction (room-stamp-case-152x152,
 # 001bcd51) at 560 wide, moulded into the shut sage door (cargo-bay-shut-976x304): a dim well, a lit top-left moulded rim, a shaded
 # lower-right, dark rubber corners, no glass, no sheen, no text. The floor is ground #1d232b (relative luminance 0.0164), so bone
 # reads at 13:1 and mist at 4.8:1 (the spec asks 7 and 4.5). Corners rounded r 10, transparent outside, so the door shows round them.

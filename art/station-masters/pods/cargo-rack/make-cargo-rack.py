@@ -1,5 +1,5 @@
 # Fix 5 AR4: cargo-rack-992x168 at (16, 384), the device's sage strip under the Cargo bay with six fitted foam wells, cut by hand
-# from the signed bay's rim and floor (cargo-bay-992x320) and the signed open crate's fitted foam (crate-open-432x272). 0 MXN.
+# from the signed bay's rim and floor (cargo-bay-992x320) and the signed open crate's fitted foam (crate-open-432x272).
 # Light: the key from the top left. No labels, lamps, text or gold.
 # usage: python3 -I make-cargo-rack.py SLICES_DIR OUT_DIR
 import sys, os, numpy as np

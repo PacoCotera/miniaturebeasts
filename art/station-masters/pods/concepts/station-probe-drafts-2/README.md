@@ -1,11 +1,11 @@
 # Station Probe design drafts, round 2 (Oct 10)
 
-The Station art director's second PROBE brief after the owner set aside A and B ("a small hand-carried container, not a vehicle"). Two directions, one Pro request each (gemini-3-pro-image), no retry, cap 9 MXN, inside the 250 MXN day cap under the owner's approval ("paid art today up to the 250 MXN cap, in the art director's order"). Not slices: concept drafts for the art director to choose from.
+The Station art director's second PROBE brief after the owner set aside A and B ("a small hand-carried container, not a vehicle"). Two directions, one Pro request each (gemini-3-pro-image), no retry, under the owner's approval ("paid art today, in the art director's order"). Not slices: concept drafts for the art director to choose from.
 
-| File | Direction | Cost |
-| --- | --- | --- |
-| `probe-draft-c-field-flask-1376x768.jpg` | C, the field flask: a hand-sized square-shouldered bottle, matte yellow body, dark rubber corner guards, one orange band, a window panel low on the front, a dark screw cap with a braided cord loop | 3.96 MXN |
-| `probe-draft-d-capsule-1376x768.jpg` | D, the capsule: a rounded upright capsule, matte yellow shell, a dark screw cap with a twisted rope loop, a round window in the lower half, a dark rubber foot ring, the plates as curved shell segments around its middle | 3.95 MXN |
+| File | Direction |
+| --- | --- |
+| `probe-draft-c-field-flask-1376x768.jpg` | C, the field flask: a hand-sized square-shouldered bottle, matte yellow body, dark rubber corner guards, one orange band, a window panel low on the front, a dark screw cap with a braided cord loop |
+| `probe-draft-d-capsule-1376x768.jpg` | D, the capsule: a rounded upright capsule, matte yellow shell, a dark screw cap with a twisted rope loop, a round window in the lower half, a dark rubber foot ring, the plates as curved shell segments around its middle |
 
 Both: matte, painted (not inked), the device's materials with dark rubber, one saturated matte yellow body (about #e9b22e), a dark screw cap with a cord loop, a small window onto the pod inside, three white shield plates with room for a fourth, on a flat neutral ground, the Probe standing at three-quarter from the front left with its filled silhouette beside it. No face, eye, lens ring, screen, needle, glow or gloss. Jobs: `source/work/probe-draft-{c,d}.json`; calls: `log/calls.jsonl`. **References: project-owned only**: the signed `home-bay-shut` and `art/companion-concept/field-partner-concept.png`; the owner's pictures were described in words only, never sent as image inputs, never traced.
 
