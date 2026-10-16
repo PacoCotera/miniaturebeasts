@@ -100,3 +100,39 @@ The pod opened and closed at 112×136 per species (spec §7). It comes from Pods
 - `proof/create-shape-S01-1x.png`: S01's shape state at 1×, with the bank of five drums, the Crown turned and focused.
 - `proof/comparison-create-S01.png`: the same beside Pods (focused and collection), the vivarium and the kit.
 - **Stand-ins (the build's):** the pod in the well (S01's shell from the signed pod-large layers, reduced), all live text, the focus ring and the founder's contact shadow.
+
+## T-20261016-69: drums you turn, the gene line as a feed, a re-proof with stand-ins
+The review (`results/review-art-2026-10-16b.md` §3) found three problems: the drums read as flat tiles, the gene line as a post, and the slip was blank.
+
+**The drums** (`create-drum-rest`, `-pinned`, `-capped`, `-clash`, 80 × 80; the window 64 × 64 at (8, 8) where the spec puts it):
+
+*How each reads as a drum:* a sage drum on a horizontal axle, sitting in a slot of the tray, with one face showing in its window.
+- **The round:** the 8 px above and below the window are the drum's surface turning away. They are bright above (toward the key) and fall into shade below.
+- **The grip:** ribs run across the round, parallel to the axle. They sit closer together as the surface turns away, and their crowns are worn pale at the centre, where a thumb turns them.
+- **The next faces:** their window edges show as thin dark slivers at the top and bottom of the round, so more faces wait above and below.
+- **The face:** the round's fall-off is carried over the window's top and bottom quarters at partial alpha (the middle half stays clear), so the picture sits on the drum, not in a frame. This is the drum master's only change inside the window; it was already drawn over the picture, with a partial-alpha inner shade.
+- **The axle:** the slot's dark cheeks at both ends, each with the axle's round boss, so the drum turns about a line across.
+- **Pinned:** the rings are engraved on the round below the window, foreshortened.
+- **Capped and clash:** as before, on the new drum.
+- **The notch and turn marks** (`create-drum-notch`, `-turn-up`, `-down`) are unchanged: they sit on the round, at the spec's offsets, and still read there.
+
+*The limit, reported:* at 80 × 80 with a 64 × 64 window, the drum keeps only 8 px of round above and below. At 1× it reads as a ribbed drum face in a slot, but the picture still takes 64 percent of the drum. A taller drum would show the round, and the next faces' pictures foreshortened in it, much more strongly: for example 80 × 96 with the window at (8, 16). The tray's 122 px holds that only if the chapter words move. Those are UI/UX's rects, so they are not changed here.
+
+**The gene line** (`create-gene-line`, 24 × 216 at (288, 192)): a braided hose, with two strands crossing.
+- It leaves the well's side through a sand ferrule at (288, 200), where the rect's corner touches the well's rim.
+- It bends down (radius 10) and runs to the tray with a little slack.
+- It goes into the tray's top wall through a dark rubber boot (rows 198 to 216).
+- Its soft shadow falls right and down on the bench.
+
+The 24 × 216 rect holds this route, so no new rect is needed.
+
+**The re-proof** (`proof/create-shape-S01-1x.png`; the sheet `proof/comparison-create-S01.png`; `proof/drums-and-line-before-after-2x.png`). Stand-ins (the build's):
+- **The chapter words:** Coat, Face, Movement, Stamina, 16 px `mist` at lineTop 414.
+- **The slip at the spec's longest case:** the heading, 4 changes and "and two more", the clash line with a drawn cross for `icon:cross:16`, then "Still a surprise" and 2 lines. The last line ends at y 360, within 376. S01 itself can change at most three traits, so the words are stand-ins for the fit.
+- **The founder's contact shadow** under its feet.
+- **The pod in the well, closed:** Pods' renderer has no open state, so the opened pod is not shown.
+
+**Reported, not the art's:**
+- **The clash line:** "✕ Crown and Eyes clash" is 180 px, over the 176 limit (copy).
+- **`mist` on the slip's paper** (the "Still a surprise" list) is hard to read at 1×. That is the spec's colour (UI/UX).
+- **The founder:** the S01 base painting's feet end at row 304 (screen 384), not at foot line 392, and its rear feet stand above the dish's top edge (372). The founder's placement is the spec's and the build's.

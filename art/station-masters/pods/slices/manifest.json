@@ -16244,11 +16244,11 @@
    216
   ],
   "src": "create-bench/make-create.py",
-  "made": "the braided line from the well's side to the tray; job: the drums are fed by this pod",
-  "sha256": "0da07277cc3b89a222c3df9ee1504f2b7acb3fb34bd2859cadc7bc8d09cca98d",
+  "made": "the gene line (T-20261016-69 repaint): a braided hose that leaves the well's side through a sand ferrule at (288, 200), bends down, runs to the tray with a little slack and goes into the tray's top wall through a dark rubber boot; its soft shadow on the bench. The drums are fed by this pod",
+  "sha256": "8f564bffbe918adde18bc5e80f5fa01ae84e75ada8db6a727f7ea749bc4ec397",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
+  "status_note": "repainted (10-16, T-20261016-69)"
  },
  "create-dish": {
   "size": [
@@ -16275,11 +16275,11 @@
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum at rest, its 64x64 window at (8, 8) clear; job: a gene you turn",
-  "sha256": "2215a9013259edd0449b45c3b25acbd751fad77a730b42084639c884bc8170be",
+  "made": "the drum (T-20261016-69 repaint): a moulded sage drum on a horizontal axle in a slot of the tray; the 8 px above and below the window are its round, lit above and falling into shade below, with grip ribs closer together as the surface turns away (worn pale at the centre) and the next faces' window edges as thin dark slivers; the round's fall-off carried over the window's top and bottom quarters at partial alpha (the middle half clear); the slot's dark cheeks with the axle's boss at both ends. The window 64 x 64 at (8, 8)",
+  "sha256": "d923c5e03bbb31448450fe9f996096c4dc8fc3fee04f40d6f2fdebba97c89071",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
+  "status_note": "repainted (10-16, T-20261016-69)"
  },
  "create-drum-pinned": {
   "size": [
@@ -16288,11 +16288,11 @@
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum of a doing: two linked rings engraved in its rim; job: breed to change",
-  "sha256": "646a2039e15d5aa7fa99b4b69b73ca520e22795bc9881723c672661459918845",
+  "made": "the drum (T-20261016-69 repaint) with two linked rings engraved on its round below the window, foreshortened: a doing, breed to change",
+  "sha256": "482c49b6438139f73656ec88d410c66c6d1b1675c72769a7798d08b18a1b500d",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
+  "status_note": "repainted (10-16, T-20261016-69)"
  },
  "create-drum-capped": {
   "size": [
@@ -16301,11 +16301,11 @@
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum under the frost veil; job: an unread chapter, still a surprise",
-  "sha256": "dd0580f903c504aeeac2a1dd45c829928d8b1ea8522c387d22a045d6471be24b",
+  "made": "the drum (T-20261016-69 repaint) with the frost veil over its window: an unread chapter",
+  "sha256": "004451f4c8f8d16ea3fcec689f2b8839cada97bdef41ebcd43c659b31dd95ac8",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
+  "status_note": "repainted (10-16, T-20261016-69)"
  },
  "create-drum-clash": {
   "size": [
@@ -16314,11 +16314,11 @@
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum with a red rim line; job: this change clashes",
-  "sha256": "b5775063147252bec0fefaa088574786f84c779ff8a28e0eaf46ca0cd83ccc44",
+  "made": "the drum (T-20261016-69 repaint) with a 2 px red line round it: a clashing change",
+  "sha256": "987784a5a9d94030ff03f875401c5f4ae3225047e10fa6da0c4b93fdeb2d3803",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
+  "status_note": "repainted (10-16, T-20261016-69)"
  },
  "create-drum-notch": {
   "size": [
