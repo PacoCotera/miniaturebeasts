@@ -5092,11 +5092,11 @@
    522
   ],
   "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-overview and room-bench-stage",
-  "made": "fix 5 Pods P-A2: the overview's stage with its grey plate and the old stamp case gone; the floor runs to the right wall (fix 4 places the stamp case at 788,384)",
-  "sha256": "3581670aa531fb6f525f66985e52fdf3e5ce00e11e8565873e0ffe4c3847bd55",
+  "made": "fix 5 Pods P-A2: the overview's stage with its grey plate and the old stamp case gone; the floor runs to the right wall (fix 4 places the stamp case at 788,384); T-20261016-35 (specs/station-pods-purpose.md \u00a74): the hose (from the top-left wall to the ground) and the wall gauge and vent (top right) lifted by stage-recut/t35/lift-props.py, the floor repainted in its own tone (harmonic fill) and grain; the dish, its light, the found-note's place and the sand prints pixel for pixel",
+  "sha256": "290a5a52a09b42a9a02b4edf961b49ce23c54af857d9ca907afe52ded5fc3d3c",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 05:53: the Pods retake (public station-fix4-fix5-pods 7e7b2444: chapter and overview goldens, station/img pods-*), placed byte for byte",
-  "status_note": "new (10-15): fix 5 P-A1/P-A2 follow-up, the hose paint-out's dark residue on the right wall and bottom-right corner lifted to the wall's tone, low frequency only (stage-recut/lift-hose-ghost.py); replaces df56a679983e\u2026; signed in the whole Pods captures"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "T-20261016-35 by the art director, same id and size; replaces 3581670aa531"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5110,11 +5110,11 @@
    522
   ],
   "src": "cut by hand (stage-recut/recut-stages.py) from room-bench-stage-chapter and room-bench-stage",
-  "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out); gate batch 1 (10-15): the heading band cleared (stage-recut/clear-heading-band.py): the floor in x 340-960 to slice y 116 repainted (harmonic tone from its edges, the floor's own grain), so the hose's top run, the gauge and the vent leave the two-row page's heading; the hose ends at x 330 in its own brass fitting",
-  "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
+  "made": "fix 5 Pods P-A1: the chapter page's stage with its painted grey plate gone; the case's floor runs to the right wall, the wall and lip restored, from the signed base stage (the lower-right hose painted out); gate batch 1 (10-15): the heading band cleared (stage-recut/clear-heading-band.py): the floor in x 340-960 to slice y 116 repainted (harmonic tone from its edges, the floor's own grain), so the hose's top run, the gauge and the vent leave the two-row page's heading; the hose ends at x 330 in its own brass fitting; T-20261016-35 (specs/station-pods-purpose.md \u00a74): the hose lifted by stage-recut/t35/lift-props.py, the floor repainted in its own tone (harmonic fill) and grain; the dish, its light, the found-note's place and the sand prints pixel for pixel",
+  "sha256": "0a74991ea43e22315ea495d1d68cfc584ff873afe09e4f14331a92890a053824",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 17:56: Station gate 4e522a3e (internal plans/station/gate-4e522a3e, 2db003d), whole-screen captures: pods-chapter-page*, pods-sealed, pods-six-traits, pods-belatz-*, pods-eight-chapters, page-read",
-  "status_note": "recut 10-15 by the art director (same id and size); signed in the Pods chapter-page captures (one and two rows)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "T-20261016-35 by the art director, same id and size; replaces 916835019f62"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -15871,5 +15871,95 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-16, T-20261016-16): by the art director; measured on the 1x proofs (stamp-plate/proof, the plate 1:1, the glyph lifted from the bc866c71 captures): plate rect p95 0.233, mean 0.158 (growing; ready and hatch-1100 0.233 / 0.157), under the R cap 0.34 and the chamber 0.574 - 0.08 = 0.494; placed by T-20261016-17"
+ },
+ "place-meadow-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   32
+  ],
+  "src": "place-meadow",
+  "made": "the meadow place picture (the collection well's place badge, specs/station-pods-purpose.md \u00a71): a painted miniature vignette reduced to 32x32 from the painting, muted (tools/build.py places()'s recipe at 32, places/t35/make-places-32.py; never scaled from the 48 or 64)",
+  "sha256": "118614d067d0a209aced8a09f94d527f8496ff5b4d09fc7b0abfb3a7de40001b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well"
+ },
+ "place-pond-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   32
+  ],
+  "src": "place-pond",
+  "made": "the pond place picture (the collection well's place badge, specs/station-pods-purpose.md \u00a71): a painted miniature vignette reduced to 32x32 from the painting, muted (tools/build.py places()'s recipe at 32, places/t35/make-places-32.py; never scaled from the 48 or 64)",
+  "sha256": "4ef54903dfb1e4421110cb89fc9bb7a8086e73eb2c0bd3b654496c7a2fbfb6d5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well"
+ },
+ "place-rock-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   32
+  ],
+  "src": "place-rock",
+  "made": "the rock place picture (the collection well's place badge, specs/station-pods-purpose.md \u00a71): a painted miniature vignette reduced to 32x32 from the painting, muted (tools/build.py places()'s recipe at 32, places/t35/make-places-32.py; never scaled from the 48 or 64)",
+  "sha256": "4ea54e0209690ac2adf3c6bcbb6169127276666028d2650ceca08313eb3ae881",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well"
+ },
+ "place-wood-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   32
+  ],
+  "src": "place-wood",
+  "made": "the wood place picture (the collection well's place badge, specs/station-pods-purpose.md \u00a71): a painted miniature vignette reduced to 32x32 from the painting, muted (tools/build.py places()'s recipe at 32, places/t35/make-places-32.py; never scaled from the 48 or 64)",
+  "sha256": "28dde9ed10079d6a8aa497904f5b4542ef02a42b9dbe017a4b7b6810acd76987",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well (the weakest of the five: a canopy from above, read as dense wood or scrub; distinct from the meadow by tone and texture)"
+ },
+ "place-cave-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   32
+  ],
+  "src": "place-cave",
+  "made": "the cave place picture (the collection well's place badge, specs/station-pods-purpose.md \u00a71): a painted miniature vignette reduced to 32x32 from the painting, muted (tools/build.py places()'s recipe at 32, places/t35/make-places-32.py; never scaled from the 48 or 64)",
+  "sha256": "00b9d5c45ab511847f11399819d0e5e1a5ff6adf261ab5dc574c42f332edb7ca",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well"
  }
 }

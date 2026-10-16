@@ -1543,12 +1543,14 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-overview": {
-  "status": "new",
-  "note": "10-15 recut, replaces e5558c15acd3"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "T-20261016-35: the hose (from the top-left wall to the ground) and the wall gauge and vent (top right) lifted; replaces 3581670aa531"
  },
  "room-bench-stage-chapter": {
-  "status": "new",
-  "note": "10-15 recut, replaces 823b2601475d"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "T-20261016-35: the hose lifted; replaces 916835019f62"
  },
  "ring-collection-idle-176x176": {
   "status": "signed",
@@ -4925,5 +4927,30 @@
   "status": "signed",
   "signed_in": "art director, create-shape at 1x (station-fix6a-create f9a9eb38)",
   "note": "fix 6 A2"
+ },
+ "place-meadow-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
+ },
+ "place-pond-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
+ },
+ "place-rock-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
+ },
+ "place-wood-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
+ },
+ "place-cave-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
+  "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
  }
 }
