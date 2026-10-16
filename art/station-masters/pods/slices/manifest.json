@@ -10655,11 +10655,11 @@
    1024,
    522
   ],
-  "src": "source/raw/rw-inc-stage.jpg (gemini-3-pro-image edit of the signed stage), cut by stage-incubator/rework/cut-stage.py",
-  "made": "T-20261015-01: the wall machinery (pipe rack, vents, boxes on brackets, the top-right vent unit) re-rendered as bevelled painted sage metal with louvres and cast shadows; taken only inside the two machinery regions, the frame, floor, hoses and gauges the signed pixels",
-  "sha256": "769c6ff00c62898ee37a1d9b4152418a28314573fe5414f40a6013b2519d3845",
+  "src": "the T-01 stage (e59d57f6) recut by stage-incubator/rework/recut-ia2.py; its painting from source/raw/rw-inc-stage.jpg (gemini-3-pro-image edit of the signed stage)",
+  "made": "T-20261015-07 (IA2): every painted object moved whole with its cast shadow onto the layout spec's grid, the T-01 pixels kept (no restyle): left column (-10, +12) with 4 riser rows taken out between the lower clamps, LM (+3, -1), RM (+3, +3), R group (+1, +6), gauges (-5, +3), (+10, +3), (+5, +3); the hoses keep their wall ends and their base ends rise 16 px; the wall left behind repainted as its own tone and grain. Before: T-20261015-01, the machinery re-rendered as painted sage metal",
+  "sha256": "293b716f7a00d7b2aa1d8609e66784a317ee8d38657244feda69732b14870a58",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures",
+  "signed_in": "art director at 1x, 2026-10-15 23:16 CST: T-20261015-07 (IA2), the whole-screen mock in today's incubator-growing capture with the base at 440 (stage-incubator/rework/proof-ia2); to re-check in the builder's whole captures incubator-empty, -growing, -ready and -hatch-1100 after place-masters",
   "status_note": "new (10-15): fix 5 IA1, the art director's recut under the same id (stage-incubator/paint-machinery.py): the chamber's machinery in the four paint zones only, all else the signed stage pixel for pixel; replaces 37c92cbd0239\u2026; signed in the whole Incubator captures"
  },
  "chamber-back-400x320": {
