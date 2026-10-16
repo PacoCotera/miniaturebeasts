@@ -1,0 +1,74 @@
+[
+ {
+  "name": "halo-S01-clear",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/halo-sil-S01.png",
+    "The creature's silhouette (white shape on black) to be turned into a figure of light; keep its outline exactly:"
+   ]
+  ],
+  "prompt": "Output a NEW image of exactly the same composition and the same silhouette: turn the white silhouette into a FIGURE OF SOFT, COOL LIGHT, as if the creature were made of pale cyan to frost-white glowing light, lit from the upper left. The light is a painted glow with volume: a brighter core inside the body's volume (the head and the back), falling off gently toward the edges into a soft halo about as wide as one twentieth of the figure's height beyond the contour, the upper-left contour a little brighter than the rest. Keep the creature's silhouette and posture readable. ABSOLUTELY NO eyes, no face details, no fur, feathers, scales, patterns, markings, no outline, no sparkles, no ring or halo disc above the head, nothing cartoon-ghost-like. Only the glowing figure on a perfectly flat pure black ground (hex 000000), nothing else in the picture."
+ },
+ {
+  "name": "halo-S09-clear",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/halo-sil-S09.png",
+    "The creature's silhouette (white shape on black) to be turned into a figure of light; keep its outline exactly:"
+   ]
+  ],
+  "prompt": "Output a NEW image of exactly the same composition and the same silhouette: turn the white silhouette into a FIGURE OF SOFT, COOL LIGHT, as if the creature were made of pale cyan to frost-white glowing light, lit from the upper left. The light is a painted glow with volume: a brighter core inside the body's volume (the head and the back), falling off gently toward the edges into a soft halo about as wide as one twentieth of the figure's height beyond the contour, the upper-left contour a little brighter than the rest. Keep the creature's silhouette and posture readable. ABSOLUTELY NO eyes, no face details, no fur, feathers, scales, patterns, markings, no outline, no sparkles, no ring or halo disc above the head, nothing cartoon-ghost-like. Only the glowing figure on a perfectly flat pure black ground (hex 000000), nothing else in the picture."
+ },
+ {
+  "name": "halo-S12-clear",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/halo-sil-S12.png",
+    "The creature's silhouette (white shape on black) to be turned into a figure of light; keep its outline exactly:"
+   ]
+  ],
+  "prompt": "Output a NEW image of exactly the same composition and the same silhouette: turn the white silhouette into a FIGURE OF SOFT, COOL LIGHT, as if the creature were made of pale cyan to frost-white glowing light, lit from the upper left. The light is a painted glow with volume: a brighter core inside the body's volume (the head and the back), falling off gently toward the edges into a soft halo about as wide as one twentieth of the figure's height beyond the contour, the upper-left contour a little brighter than the rest. Keep the creature's silhouette and posture readable. ABSOLUTELY NO eyes, no face details, no fur, feathers, scales, patterns, markings, no outline, no sparkles, no ring or halo disc above the head, nothing cartoon-ghost-like. Only the glowing figure on a perfectly flat pure black ground (hex 000000), nothing else in the picture."
+ },
+ {
+  "name": "place2-rock",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A ROCK FIELD seen from above: two or three ANGULAR, FLAT-FACED stones (blocky faceted boulders with straight edges and flat planes, NOT round, NOT egg-shaped, NOT smooth) of grey-lilac rock with a few tiny lichen specks, each throwing a HARD cast shadow to the lower right on bare brown ground with sparse dry grass; the stones are LOWER AND WIDER THAN TALL. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright, no pale or white areas), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-rock.png",
+    "The same kind of place in the game's pixel map (reference for colours and character only; do not copy its rounded shapes):"
+   ]
+  ]
+ },
+ {
+  "name": "place2-wood",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A WOOD seen from directly above: a dense canopy of round tree crowns in THREE OR FOUR different sizes, clearly overlapping, with DEEP DARK SHADOW GAPS between them, an overall darker canopy of deep greens, and one small LIGHTER CLEARING or path of pale ground visible between the crowns; woodland from above, not cabbages. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright, no pale or white areas), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-wood.png",
+    "The same kind of place in the game's pixel map (reference for colours and character only; do not copy its rounded shapes):"
+   ]
+  ]
+ },
+ {
+  "name": "place2-cave",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A CAVE seen from directly ABOVE (top-down, a bird's-eye view, no sky, no horizon): a dark rounded opening in the ground in a rocky grey-brown outcrop, the outcrop's lit upper-left faces and flat rock planes arranged around the mouth, soft shadows falling to the lower right, a little grass and a few stones at the rim. A single painted miniature vignette that fills the whole square canvas edge to edge: soft painterly shapes, a few big simple masses that stay readable when the picture is shrunk to 48 pixels, lit softly from the upper left, muted natural colours (nothing saturated, nothing bright, no pale or white areas), gentle depth. NOT pixel art, NOT a detailed postcard, no creatures, no people, no buildings, no text, no frame, no border.",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/placeref-rock.png",
+    "The same kind of place in the game's pixel map (reference for colours and character only; do not copy its rounded shapes):"
+   ]
+  ]
+ }
+]

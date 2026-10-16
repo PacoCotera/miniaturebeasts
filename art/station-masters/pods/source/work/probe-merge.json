@@ -1,0 +1,27 @@
+[
+ {
+  "name": "probe-merge",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/mj-render-ref.png",
+    "FIRST REFERENCE, THE RENDERING TO AIM FOR (matte, painterly, a dark screen with a calm sky radar sweep and sky dots; take the rendering only, not its shape; ignore the cut-out area at its right):"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/mj-proportion-ref.png",
+    "SECOND REFERENCE, THE PROPORTION (a slim waisted handset, a big rubber-ringed screen, a vertical window with two stacked eggs, a tall antenna on the left shoulder free of the head, a side grille, angled white plates on both sides; paint it matte, not as a sketch; ignore its bright lime-green colour and its lime radar, use sage and sky):"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/mj-palette-ref.png",
+    "THIRD REFERENCE, THE PALETTE AND DETAILS (muted sage over sand, a dark rubber base, a side lens and port on the right, speckled eggs; ignore its red radar dots, its flat patch on the lower body and its shadow):"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/mj-silhouette-ref.png",
+    "FOURTH REFERENCE, THE SILHOUETTE THE PROBE MUST KEEP (a 48 px black outline, enlarged: a free antenna at the left, a small loop on top, a waisted body, a wider base):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: a design painting of the Companion's hand-held field instrument, the PROBE, tier 1 and tier 2 side by side. WHAT IT IS: a SLIM, WAISTED HANDSET like a field radio, painted as a real MATTE object in a MATTE, PAINTERLY rendering (aim for the FIRST reference's rendering: soft matte painted forms with a calm dark screen), NOT glossy, NOT toy-like, NOT line-and-wash, no hard black outlines. PROPORTION (SECOND reference): a slim waisted handset, narrower at the waist; a BIG screen with a thick dark RUBBER RING around it; a VERTICAL WINDOW with TWO EGG-SHAPED PODS STACKED one above the other; a TALL ANTENNA on the LEFT shoulder, standing FREE of the head (a slim dark mast rising above the unit); a SIDE GRILLE (a small grille on the left side); ANGLED WHITE PLATES clipped on both sides. A SMALL CARRY LOOP on top (a small rubber loop, NOT a big handle). PALETTE AND DETAILS (THIRD reference): muted SAGE green over SAND, a DARK RUBBER BASE (a thick dark rubber foot with angled facets), a small side LENS and PORT on the RIGHT side (a small dark round port with a small lens, not an eye), and SPECKLED EGGS (two warm sand-coloured eggs with fine dark speckles) in the window. SCREEN: a dark matte round screen with concentric rings and cross lines, ONE calm SWEEP wedge in SKY BLUE and a few small dots in SKY BLUE, GREEN and AMBER ONLY: NO lime, NO red, NO yellow-green. THREE LAMPS in a row below the screen, UNLIT (small dark round bumps tinted green, amber and sky blue, never glowing). WHITE PLATES: matte white clip-on plates: THREE at tier 1 (two on the left side, one on the right side); at tier 2 FOUR (two on each side) PLUS a small FITTED PART: a small sand module plugged into a SIDE SOCKET on the right side. SILHOUETTE: the overall outline must match the FOURTH reference's black silhouette (a tall slim body with a free antenna at the left and a small loop on top, a waist, a wider base). COMPOSITION: both Probes seen THREE-QUARTER from the FRONT LEFT, standing upright, side by side: tier 1 on the left (large, about 85 percent of the picture's height), tier 2 on the right (a little smaller, about 75 percent of the height), on a PLAIN NEUTRAL mid-grey ground (uniform, no gradient, no horizon, only soft contact shadows). ABSOLUTELY NONE of: text, letters, digits, logos, badges, crosses or red marks, people, hands, silhouettes of people, watermarks, glow, glossy highlights, chrome, a face or eyes (the round screen is a screen), needles, nets, weapons, wood."
+ }
+]

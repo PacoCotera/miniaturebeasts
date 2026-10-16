@@ -1,0 +1,44 @@
+{
+ "304x312": {
+  "faint": {
+   "stripe_px": 1921,
+   "magenta_px": 0
+  },
+  "between": {
+   "stripe_px": 1921,
+   "magenta_px": 0
+  },
+  "bold": {
+   "stripe_px": 1921,
+   "magenta_px": 0
+  }
+ },
+ "104x112": {
+  "faint": {
+   "stripe_px": 129,
+   "magenta_px": 0
+  },
+  "between": {
+   "stripe_px": 129,
+   "magenta_px": 0
+  },
+  "bold": {
+   "stripe_px": 129,
+   "magenta_px": 0
+  }
+ },
+ "96x88": {
+  "faint": {
+   "stripe_px": 204,
+   "magenta_px": 0
+  },
+  "between": {
+   "stripe_px": 204,
+   "magenta_px": 0
+  },
+  "bold": {
+   "stripe_px": 204,
+   "magenta_px": 0
+  }
+ }
+}

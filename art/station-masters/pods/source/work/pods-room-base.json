@@ -1,0 +1,19 @@
+[
+ {
+  "name": "room-stage-base",
+  "aspect": "21:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE CASE (the signed direction: a rugged field case with fitted, worn cut-outs in dark matte foam, short dark rubber hoses, a small mister, a vent and a small matte gauge, in warm daylight from the upper left; keep this quality and rendering exactly):"
+   ],
+   [
+    "art/station-masters/pods/concepts/station-board/frame-1-home-v2-1024x600.png",
+    "HOME'S LIGHT AND RENDERING (the warm daylight and the sculpted miniature finish to match; take no content from it):"
+   ]
+  ],
+  "prompt": "Output a NEW image, very wide (21:9): the empty FLOOR of a rugged field case, seen perfectly flat from directly above and filling the whole canvas edge to edge, with no housing frame, no screws border and no bezel: only the inside of the case. Dark matte foam and rubber lining, scuffed and worn, a stitched canvas edge strip along the very top and bottom, and worn, fitted, EMPTY cut-outs pressed into the foam: one large oval pod-shaped cut-out at the left third of the picture (centred about 25 percent across and 72 percent down, about a fifth of the picture's width wide), and at the right a calm plain worn slate-grey rubberised panel area (about the right third of the width) with a few smaller shallow empty cut-outs. Two short dark matte rubber hoses along the edges, a small matte mister nozzle, a vent grille and one small matte gauge set flush near the bottom right. The centre of the picture is quiet worn foam. NO pods and no objects of any kind in the cut-outs; NO text, no letters, no digits, no logos, no symbols anywhere; NO glass, no chrome, no polished or shiny metal, no gloss, no spotlight cone or beam of light, no cool blue light, no glass dish, no hologram; nothing childish. Matte, worn, handled materials only: dark foam, rubber, canvas, braided-free dark rubber hose. One soft warm daylight key light from the upper left, the same warm light and the same sculpted, softly lit miniature rendering as the references. "
+ }
+]

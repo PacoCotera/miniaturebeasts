@@ -1,0 +1,19 @@
+[
+ {
+  "name": "vivarium-day",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/station-board/frame-1-home-v2-1024x600.png",
+    "THE SIGNED DIRECTION (frame 1: the vivarium inside the device: take its vivarium's light, rendering, materials and warmth exactly; paint the vivarium alone, wider, without the housing and without the creatures):"
+   ],
+   [
+    "art/visual-directions/02-miniature-lives.png",
+    "THE LIVING WORLD (Miniature Lives: sculpted, tactile, softly lit miniature landscape; take the craft and the warmth):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: the interior of a vivarium seen straight on, a living miniature world at small creatures' scale in warm daylight, composed in horizontal bands. TOP FIFTH (the top 20 percent of the height): only a soft canopy of leaves and warm light filtering through it, out of focus, with nothing else. MIDDLE (from 20 to 66 percent of the height): soft deep out-of-focus foliage and roots in warm hazy depth, a braided feed line coming down the left edge into the world, a small mister nozzle near the upper right letting off a fine mist, a vent grille set into the right edge, all small and matte, meeting the world's edges. GROUND BAND (from 66 to 97 percent of the height): at the creatures' scale, mossy ground, stones and roots, a small pool of still water at the lower middle, and a burrow entrance in the left half; the foreground ground is clear and open enough for small creatures to stand. The left 62 percent of the picture must work on its own as a complete picture (the burrow, the water's edge, moss and stones), and the right 38 percent continues it with more moss and the vent and mister. Warm soft daylight from the upper left, a few warm shafts through the canopy, soft shadows to the lower right; the same warm rendering as the signed direction. The lower 3 percent is plain dark soil. NO creatures, no animals, no figures of any kind anywhere; no text, no letters, no digits, no logos; no housing, no frame, no bezel, no screws, no UI: the picture is only the inside of the vivarium filling the canvas edge to edge. No glass reflections, no glossy surfaces, no spotlight cones, no cool blue light, no neon; nothing childish or toy-like. Matte, tactile, sculpted miniature landscape with real depth and soft focus behind, like the references (Miniature Lives)."
+ }
+]

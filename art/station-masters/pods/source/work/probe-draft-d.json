@@ -1,0 +1,19 @@
+[
+ {
+  "name": "probe-draft-d",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/home-bay-shut-176x72.png",
+    "THE STATION'S SIGNED LOOK (the matte sage field case with sand latches: same maker, same soft painted matte rendering, no ink):"
+   ],
+   [
+    "art/companion-concept/field-partner-concept.png",
+    "THE COMPANION'S WORLD (the Companion's own concept art: the same maker as the Station and the Companion, soft painted, matte):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a design draft of the Companion's field instrument, called the Probe: a small hand-carried container that goes out on expeditions, reaches into map cells, gathers two pods (at tier one) and comes home to be mended on the Station's tray. It is a small hand-carried container, NOT a vehicle. DIRECTION D, THE CAPSULE: a rounded, upright capsule, hand-sized: a matte yellow shell, a dark screw cap on top with a twisted rope loop, a round window in the lower half, a dark rubber foot ring at the base; the three white plates are curved shell segments around its middle, like panels set into the shell. MATERIALS AND LOOK: matte, painted in soft painted forms exactly like the Station's signed pictures (the references): NOT inked, no black outlines, no cartoon contour lines; hairline edges only; the device's materials with DARK RUBBER parts; ONE saturated body colour: a warm matte YELLOW (about #e9b22e). A dark screw cap with a cord loop at its top. A small window onto the pod inside (a plain small window showing a small pod inside, no glow). THREE WHITE SHIELD PLATES (matte white panels) on the body, with clear room left for a fourth. NEVER: a face, eyes, a lens ring, a screen, a needle, a syringe, a net, a drill, a weapon, any glow, any gloss, chrome, glass shine, blue or cool light. NO text, letters or digits. Soft warm daylight from the top left. COMPOSITION: ONE picture, 16:9, on a FLAT neutral mid-grey ground (uniform, no gradient, no horizon, only a soft contact shadow under the object). On the LEFT two thirds, ONE Probe standing upright on the ground, seen THREE-QUARTER from the front left, large (about 60 percent of the picture's height). On the RIGHT, small, the SAME Probe as a SOLID FILLED flat dark silhouette (one colour, completely filled in, no detail or line inside it), about one sixth of the large one's height, standing on the same ground, its outline reading at a glance. "
+ }
+]

@@ -1,0 +1,19 @@
+[
+ {
+  "name": "vivarium-near-dusk",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/vivarium-near-day.jpg",
+    "THE PICTURE TO EDIT (the vivarium up close by day: keep everything, change only the light):"
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-dusk-1024x568.png",
+    "THE LIGHT TO MATCH (the signed dusk painting of the same place from afar: take its colour and mood of light, not its composition):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same close-up vivarium picture at DUSK: the light is warmer and lower: a low golden-amber sun from the left, long soft warm shafts, deeper warm shadows stretching to the right, the foliage glowing amber and rose at its edges, the mist catching the warm light; calmer and a little darker than day but never dark; everything warm, no cool cast. Keep the picture EXACTLY the same in composition and content: the same burrow, stones, roots, moss, feed line, mist and plants in the same places and sizes, the same clear open moss across the centre of the lower part, the same matte sculpted miniature rendering; change ONLY the lighting and its colour. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]

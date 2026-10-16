@@ -1,0 +1,65 @@
+[
+ {
+  "name": "board-home-pro",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/companion-concept/field-partner-concept.png",
+    "HOUSING AND MATERIALS REFERENCE (the Companion, the Station's sibling: its matte sage-and-sand housing, dark rubber bumpers, screws, and its calm dark slate screen panels with cream text areas and orange for the one thing to do; take the materials and the calm, not its layout or its pixel-art creature):"
+   ],
+   [
+    "art/concept-homepage/hero-kit.png",
+    "THE KIT TEST (the Station's housing only: its sage-green matte shell, rubber corners, screws, braided strap and desk light; its blue glowing screen is a drift and must NOT be copied):"
+   ],
+   [
+    "art/visual-directions/02-miniature-lives.png",
+    "THE LIVING WORLD (Miniature Lives: sculpted, tactile creatures and a soft lit miniature landscape; take the craft and the warmth; no text):"
+   ],
+   [
+    "art/miniature-lives/assets/rich-plain-300x310.png",
+    "PIP, the accepted creature: place it as it is, do not reinvent it:"
+   ],
+   [
+    "art/station-masters/pods/concepts/station-board/refs/01-home.png",
+    "LAYOUT SKETCH (rectangles only, ignore every fill, label and annotation):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting, 16:9, of the SCREEN of a rugged handheld field instrument, seen perfectly flat on to the viewer and filling the whole canvas edge to edge: the screen content, with only a slim strip of the device's own housing along the canvas edges (matte sage-green and sand powder-coat, dark rubber corner bumpers, a few visible screws, engraved blank plates). No photograph of a device in a room, no table, no hands, no perspective on the housing. Same maker, same materials and the same light as the references: matte textured sage and sand housing, dark rubber, moulded polymer, canvas, braided hose, worn paper; MATTE, never glossy; one soft warm daylight key light from the top left. On screen: calm dark matte slate panels with crisp cream-coloured blank text areas (leave clear empty slots where type will go); a single small orange mark for the one thing to do; lamps and gauges small. ABSOLUTELY NO text, no letters, no digits, no logos, no readable symbols anywhere in the picture. NO glowing blue HUDs, no holograms, no neon, no scan lines, no chrome, no polished glass, no gloss, no brushed metal cabinetry, no sterile white lab, nothing childish or toy-like. It must feel supportive of life and cozy, but visibly tethered to the working equipment that keeps the life going: feed lines, water and air lines, vents, small gauges and lamps that tend; worn, practical, carried and looked after. FRAME: HOME. Layout as in the attached layout sketch (take its rectangles ONLY, none of its fills, boxes or text): a large vivarium panel at the left taking about two thirds of the screen, and a column of four stacked section modules at the right. The vivarium window is the only warm field on the screen, set in the housing like a window in field gear, never a showcase: a living miniature world at the creatures' scale, lit by warm daylight from the upper left and a pair of small grow lamps on a bar above: moss, small stones, roots, a little water, low plants and a burrow, soft depth behind. Living in it: Pip (the attached creature, placed exactly as in the reference: the squat dark charcoal four-legged creature with a cream belly, orange eyes with cream rings and three small green leaves on its head; do not redraw it differently) standing in the foreground, and two or three other small sculpted creatures of other kinds going about their routines (a rounded coral-red lidded pot-shaped one, a teal long-tailed one with a glowing yellow tail bulb). The life-support equipment meets the window's edges: a feed line, a small mister, a vent, a small lamp. The right column: four dark slate modules, each holding one small object: a bay with fitted sample crates, a pod rack with six wells, an incubator dome with a row of small leaf lamps, a probe in its cradle with small plates; one small orange lamp. Every engraved plate and every label is BLANK: no letters at all, not even on the housing. Render the creatures and the living world as sculpted, tactile, softly lit miniature figures and landscape (felted, moulded and painted materials, real depth and soft focus behind), a rich painted finish like the Miniature Lives reference, not a flat cartoon illustration and not a vector drawing."
+ },
+ {
+  "name": "board-pods-pro",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/companion-concept/field-partner-concept.png",
+    "HOUSING AND MATERIALS REFERENCE (the Companion, the Station's sibling: its matte sage-and-sand housing, dark rubber bumpers, screws, and its calm dark slate screen panels with cream text areas and orange for the one thing to do; take the materials and the calm, not its layout or its pixel-art creature):"
+   ],
+   [
+    "art/concept-homepage/hero-kit.png",
+    "THE KIT TEST (the Station's housing only: its sage-green matte shell, rubber corners, screws, braided strap and desk light; its blue glowing screen is a drift and must NOT be copied):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting, 16:9, of the SCREEN of a rugged handheld field instrument, seen perfectly flat on to the viewer and filling the whole canvas edge to edge: the screen content, with only a slim strip of the device's own housing along the canvas edges (matte sage-green and sand powder-coat, dark rubber corner bumpers, a few visible screws, engraved blank plates). No photograph of a device in a room, no table, no hands, no perspective on the housing. Same maker, same materials and the same light as the references: matte textured sage and sand housing, dark rubber, moulded polymer, canvas, braided hose, worn paper; MATTE, never glossy; one soft warm daylight key light from the top left. On screen: calm dark matte slate panels with crisp cream-coloured blank text areas (leave clear empty slots where type will go); a single small orange mark for the one thing to do; lamps and gauges small. ABSOLUTELY NO text, no letters, no digits, no logos, no readable symbols anywhere in the picture. NO glowing blue HUDs, no holograms, no neon, no scan lines, no chrome, no polished glass, no gloss, no brushed metal cabinetry, no sterile white lab, nothing childish or toy-like. It must feel supportive of life and cozy, but visibly tethered to the working equipment that keeps the life going: feed lines, water and air lines, vents, small gauges and lamps that tend; worn, practical, carried and looked after. FRAME: PODS, the whole level, full screen: the collection as the device's SAMPLE CASE. A field case seen flat on, lined with dark matte foam and canvas, rubber-edged, with rows of fitted worn cut-outs, each cradling one pod (a rounded capsule-shaped sample pod in a different place colour: moss green, pond teal, rock grey, wood brown, cave violet); the cut-outs are scuffed and handled; each pod has a small blank paper label tag tied to it and a few of the cut-outs are empty; one pod is lifted slightly out of its cut-out with an orange tag. A narrow slate strip along the bottom and a narrow one at the top for type, both blank. Lit by the soft daylight from the top left. Hoses and a small gauge tuck in at the case's edges. Every engraved plate and every label is BLANK: no letters at all, not even on the housing. Render the creatures and the living world as sculpted, tactile, softly lit miniature figures and landscape (felted, moulded and painted materials, real depth and soft focus behind), a rich painted finish like the Miniature Lives reference, not a flat cartoon illustration and not a vector drawing."
+ },
+ {
+  "name": "board-incubator-pro",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/companion-concept/field-partner-concept.png",
+    "HOUSING AND MATERIALS REFERENCE (the Companion, the Station's sibling: its matte sage-and-sand housing, dark rubber bumpers, screws, and its calm dark slate screen panels with cream text areas and orange for the one thing to do; take the materials and the calm, not its layout or its pixel-art creature):"
+   ],
+   [
+    "art/concept-homepage/hero-kit.png",
+    "THE KIT TEST (the Station's housing only: its sage-green matte shell, rubber corners, screws, braided strap and desk light; its blue glowing screen is a drift and must NOT be copied):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting, 16:9, of the SCREEN of a rugged handheld field instrument, seen perfectly flat on to the viewer and filling the whole canvas edge to edge: the screen content, with only a slim strip of the device's own housing along the canvas edges (matte sage-green and sand powder-coat, dark rubber corner bumpers, a few visible screws, engraved blank plates). No photograph of a device in a room, no table, no hands, no perspective on the housing. Same maker, same materials and the same light as the references: matte textured sage and sand housing, dark rubber, moulded polymer, canvas, braided hose, worn paper; MATTE, never glossy; one soft warm daylight key light from the top left. On screen: calm dark matte slate panels with crisp cream-coloured blank text areas (leave clear empty slots where type will go); a single small orange mark for the one thing to do; lamps and gauges small. ABSOLUTELY NO text, no letters, no digits, no logos, no readable symbols anywhere in the picture. NO glowing blue HUDs, no holograms, no neon, no scan lines, no chrome, no polished glass, no gloss, no brushed metal cabinetry, no sterile white lab, nothing childish or toy-like. It must feel supportive of life and cozy, but visibly tethered to the working equipment that keeps the life going: feed lines, water and air lines, vents, small gauges and lamps that tend; worn, practical, carried and looked after. FRAME: THE INCUBATOR, the bridge between research and the vivarium: the instrument that grows a life. At the left, feed lines, braided water and air hoses, small gauges, a bank of slate reading panels with blank cream bars and a row of small leaf-shaped lamps (the timer) lead into the centre; at the centre, a sheltered chamber set into the sage housing behind a clear window set in a rubber gasket with visible screws, warmly lit by a small grow lamp from above: a single small bud (a closed seed-bud with a few tiny green leaves, a hint of a sleeping creature curled inside) lies warm on a bed of green moss with a few stones. It reads as a working instrument that grows a life, never a small vivarium and never a lab jar. Hoses run from the instrument into the chamber; a vent and a small orange lamp. The right side has a slim slate column of blank reading panels. Every engraved plate and every label is BLANK: no letters at all, not even on the housing. Render the creatures and the living world as sculpted, tactile, softly lit miniature figures and landscape (felted, moulded and painted materials, real depth and soft focus behind), a rich painted finish like the Miniature Lives reference, not a flat cartoon illustration and not a vector drawing."
+ }
+]

@@ -1,0 +1,14 @@
+[
+{
+"name": "trait-S01-markings-a",
+"model": "gemini-3-pro-image",
+"aspect": "16:9",
+"size": "1K",
+"tries": 1,
+"refs": [
+["art/miniature-lives/assets/rich-plain-source.png", "Our accepted adult S01, Pip, plain (project-owned): the creature, exactly; the 'plain' look."],
+["art/miniature-lives/assets/rich-marked-source.png", "Our accepted adult S01, Pip, with pale patches (project-owned): the 'pale patches' look, exactly these patches."]
+],
+"prompt": "Paint TWO square panels side by side, a small gap between them, on plain flat solid magenta (#FF00FF) everywhere, no borders, no text. Both show the SAME creature as the references (charcoal skin, cream belly, same brush and matte painterly light from the top left) in the SAME framing: a medium close-up of the back and flank, from the shoulder to the rump, seen from the side, three-quarter, with the soft boundary of the cream belly along the lower edge and no face in the panel. LEFT panel, 'plain': the charcoal back and flank with no markings, as in the first reference. RIGHT panel, 'pale patches': the same back and flank carrying the soft cream pale patches of the second reference, painted with the same brushwork as the skin. Pose, framing, size and light identical in both. No props, no ground, no shadow, no glow."
+}
+]

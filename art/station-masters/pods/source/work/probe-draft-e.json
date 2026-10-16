@@ -1,0 +1,19 @@
+[
+ {
+  "name": "probe-draft-e",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/home-bay-shut-176x72.png",
+    "THE STATION'S SIGNED LOOK (the matte sage field case with sand latches: same maker, same soft painted matte rendering, no ink):"
+   ],
+   [
+    "art/companion-concept/field-partner-concept.png",
+    "THE COMPANION'S WORLD (the Companion's own concept art: same maker, soft painted, matte):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a design draft of the Companion's hand-held field instrument, called the Probe. DIRECTION E, THE WAND: a chunky UPRIGHT GRIP in dark rubber with a wrist cord loop at its foot, a short sage neck, and a rounded SENSING HEAD on top: the head is a sand dome with a RING OF THREE SMALL UNLIT LAMPS around a plain flat disc (a plain disc, not a lens); the white clip-on guards clip around the head's rim like petals. MATERIALS AND LOOK: a friendly, hand-held FIELD DETECTOR, held in one hand, the thing the player has in the hand to detect things: matte, in the Station's materials: SAGE green and SAND-coloured housing, a DARK RUBBER grip, a few SMALL UNLIT lamps (small round dark-glass-free bumps, never glowing), small screws; painted in soft painted forms exactly like the references (matte, NOT inked, no black outlines, hairline edges only). WHITE CLIP-ON SHIELD GUARDS: matte white clip-on guard plates on its body: THREE guards at tier 1 and, at tier 2, a FOURTH guard plus a visible FITTED PART plugged into a visible socket (a small sand-coloured module clipped into a round socket). A cord loop at the grip. NEVER: a needle or gauge needle, a net, a drill, a weapon or gun shape, a face, eyes, any screen or display, any glow, any gloss, chrome or glass shine, blue or cool light, wood. NO text, letters or digits, NO captions, NO labels, NO title anywhere. Soft warm daylight from the top left. COMPOSITION: ONE picture, 16:9, on a FLAT neutral mid-grey ground (uniform, no gradient, no horizon, only soft contact shadows), with NO writing anywhere. From the left: the LARGE Probe at TIER 1 (three guards, no fitted part), standing or held upright, seen THREE-QUARTER from the front left, about 55 percent of the picture's height; to its right, the SAME Probe at TIER 2, a little smaller (about 45 percent of the height), seen the same way, with its fourth guard and its fitted part in the socket; at the far right, small, the same Probe as a SOLID FILLED flat dark silhouette (one colour, completely filled, no detail inside), about one sixth of the tier 1 one's height, so its outline reads at a glance. "
+ }
+]

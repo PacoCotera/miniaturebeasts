@@ -1,0 +1,595 @@
+{
+ "palette": {
+  "file": "prototypes/ui/palettes/station.json",
+  "colours": 62,
+  "transparentIndex": 62
+ },
+ "columns": [
+  "unread",
+  "read",
+  "sealed"
+ ],
+ "rows": [
+  "coat",
+  "face",
+  "shape",
+  "legs-tail",
+  "movement",
+  "stamina",
+  "character",
+  "glow",
+  "charge"
+ ],
+ "sprites": {
+  "rail-emblem-coat-unread-24x24": {
+   "rect": [
+    2,
+    2,
+    24,
+    24
+   ],
+   "sha256": "01e18c2125c141a6b1bfc9162f52500d022f99f570cb664d35b4748e7542b18a"
+  },
+  "rail-emblem-coat-read-24x24": {
+   "rect": [
+    28,
+    2,
+    24,
+    24
+   ],
+   "sha256": "ca8bcf94563be3f860b5f981edcbe3a523410aa777337b16e82ac450dac42cea"
+  },
+  "rail-emblem-coat-sealed-24x24": {
+   "rect": [
+    54,
+    2,
+    24,
+    24
+   ],
+   "sha256": "2db580c2927ca9bb4d8351b9008310f9c190f2eb8760b06cb020aa6e15354b98"
+  },
+  "rail-emblem-face-unread-24x24": {
+   "rect": [
+    2,
+    28,
+    24,
+    24
+   ],
+   "sha256": "34e7df89deba960389ce267c49c38716eeefd1bb88b3ed0b78ad9a69288f940a"
+  },
+  "rail-emblem-face-read-24x24": {
+   "rect": [
+    28,
+    28,
+    24,
+    24
+   ],
+   "sha256": "0065f37420c576fbf533f34d25040031697021577e0749f80828e266576e53ea"
+  },
+  "rail-emblem-face-sealed-24x24": {
+   "rect": [
+    54,
+    28,
+    24,
+    24
+   ],
+   "sha256": "fbe93db1122fbdc9de0965a5dcb2e9a03fdd41e60a3a330e409a9b11df4fdbb7"
+  },
+  "rail-emblem-shape-unread-24x24": {
+   "rect": [
+    2,
+    54,
+    24,
+    24
+   ],
+   "sha256": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5"
+  },
+  "rail-emblem-shape-read-24x24": {
+   "rect": [
+    28,
+    54,
+    24,
+    24
+   ],
+   "sha256": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f"
+  },
+  "rail-emblem-shape-sealed-24x24": {
+   "rect": [
+    54,
+    54,
+    24,
+    24
+   ],
+   "sha256": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302"
+  },
+  "rail-emblem-legs-tail-unread-24x24": {
+   "rect": [
+    2,
+    80,
+    24,
+    24
+   ],
+   "sha256": "57c57f43be31091a193fb4fe1af57ad26405c3beebe7b36661d7134940412d4e"
+  },
+  "rail-emblem-legs-tail-read-24x24": {
+   "rect": [
+    28,
+    80,
+    24,
+    24
+   ],
+   "sha256": "d0701d8efc3807cf9131c465cff360f20517ee6c38afd42d20faaedb642d8621"
+  },
+  "rail-emblem-legs-tail-sealed-24x24": {
+   "rect": [
+    54,
+    80,
+    24,
+    24
+   ],
+   "sha256": "c9e45c73b91c36a8c898a35febc013909e22845efc18c4e69bd274f8fe434386"
+  },
+  "rail-emblem-movement-unread-24x24": {
+   "rect": [
+    2,
+    106,
+    24,
+    24
+   ],
+   "sha256": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242"
+  },
+  "rail-emblem-movement-read-24x24": {
+   "rect": [
+    28,
+    106,
+    24,
+    24
+   ],
+   "sha256": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02"
+  },
+  "rail-emblem-movement-sealed-24x24": {
+   "rect": [
+    54,
+    106,
+    24,
+    24
+   ],
+   "sha256": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600"
+  },
+  "rail-emblem-stamina-unread-24x24": {
+   "rect": [
+    2,
+    132,
+    24,
+    24
+   ],
+   "sha256": "87a1dd57ed7ef2ce89fb766094fea0fd176c8d39c787d46a760bcb4a1ed85bdc"
+  },
+  "rail-emblem-stamina-read-24x24": {
+   "rect": [
+    28,
+    132,
+    24,
+    24
+   ],
+   "sha256": "a969f9ba8ea742268fbea0b079bf8dfd640c6d8a2bd518d35d0759d6c159e927"
+  },
+  "rail-emblem-stamina-sealed-24x24": {
+   "rect": [
+    54,
+    132,
+    24,
+    24
+   ],
+   "sha256": "4d05d9639f062d230508d318b1b9ab80dcebf922a067f6972b76c8234f94de8f"
+  },
+  "rail-emblem-character-unread-24x24": {
+   "rect": [
+    2,
+    158,
+    24,
+    24
+   ],
+   "sha256": "96acef814e4e4bac154ddc26631e39585529024c9e423dd5a186d2e1490e3079"
+  },
+  "rail-emblem-character-read-24x24": {
+   "rect": [
+    28,
+    158,
+    24,
+    24
+   ],
+   "sha256": "73e8b0c40c09597463f2bdf80c2d648dc69bc83e3c9ef070fdb2a29a6fcf4948"
+  },
+  "rail-emblem-character-sealed-24x24": {
+   "rect": [
+    54,
+    158,
+    24,
+    24
+   ],
+   "sha256": "5e3233e2b16fd2b4a13ef96a27a8fce1c7936927ebca47b0abf824f27dd9168d"
+  },
+  "rail-emblem-glow-unread-24x24": {
+   "rect": [
+    2,
+    184,
+    24,
+    24
+   ],
+   "sha256": "ad415891525695b590521aa8dfc96420985676ebbe70bf9c4c6d4ad8db290aac"
+  },
+  "rail-emblem-glow-read-24x24": {
+   "rect": [
+    28,
+    184,
+    24,
+    24
+   ],
+   "sha256": "d3f6c2fba002309bd75d2ca460ecdbbb7d1028c147abc5184b8660caa1d3e7e4"
+  },
+  "rail-emblem-glow-sealed-24x24": {
+   "rect": [
+    54,
+    184,
+    24,
+    24
+   ],
+   "sha256": "dd36c355b9bb32becb2ba43bfa045b92e52f3eeabe6eedf23800dda7d3086b2e"
+  },
+  "rail-emblem-charge-unread-24x24": {
+   "rect": [
+    2,
+    210,
+    24,
+    24
+   ],
+   "sha256": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d"
+  },
+  "rail-emblem-charge-read-24x24": {
+   "rect": [
+    28,
+    210,
+    24,
+    24
+   ],
+   "sha256": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde"
+  },
+  "rail-emblem-charge-sealed-24x24": {
+   "rect": [
+    54,
+    210,
+    24,
+    24
+   ],
+   "sha256": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd"
+  }
+ },
+ "manifest": {
+  "rail-emblem-coat-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/coat.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "01e18c2125c141a6b1bfc9162f52500d022f99f570cb664d35b4748e7542b18a",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-coat-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/coat.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "ca8bcf94563be3f860b5f981edcbe3a523410aa777337b16e82ac450dac42cea",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-coat-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/coat.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "2db580c2927ca9bb4d8351b9008310f9c190f2eb8760b06cb020aa6e15354b98",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-face-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/face.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "34e7df89deba960389ce267c49c38716eeefd1bb88b3ed0b78ad9a69288f940a",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-face-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/face.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "0065f37420c576fbf533f34d25040031697021577e0749f80828e266576e53ea",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-face-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/face.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "fbe93db1122fbdc9de0965a5dcb2e9a03fdd41e60a3a330e409a9b11df4fdbb7",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-shape-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/shape.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-shape-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/shape.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-shape-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/shape.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-legs-tail-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/legs-tail.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "57c57f43be31091a193fb4fe1af57ad26405c3beebe7b36661d7134940412d4e",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-legs-tail-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/legs-tail.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "d0701d8efc3807cf9131c465cff360f20517ee6c38afd42d20faaedb642d8621",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-legs-tail-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/legs-tail.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "c9e45c73b91c36a8c898a35febc013909e22845efc18c4e69bd274f8fe434386",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-movement-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/movement.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-movement-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/movement.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-movement-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/movement.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-stamina-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/stamina.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "87a1dd57ed7ef2ce89fb766094fea0fd176c8d39c787d46a760bcb4a1ed85bdc",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-stamina-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/stamina.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "a969f9ba8ea742268fbea0b079bf8dfd640c6d8a2bd518d35d0759d6c159e927",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-stamina-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/stamina.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "4d05d9639f062d230508d318b1b9ab80dcebf922a067f6972b76c8234f94de8f",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-character-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/character.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "96acef814e4e4bac154ddc26631e39585529024c9e423dd5a186d2e1490e3079",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-character-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/character.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "73e8b0c40c09597463f2bdf80c2d648dc69bc83e3c9ef070fdb2a29a6fcf4948",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-character-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/character.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "5e3233e2b16fd2b4a13ef96a27a8fce1c7936927ebca47b0abf824f27dd9168d",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-glow-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/glow.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "ad415891525695b590521aa8dfc96420985676ebbe70bf9c4c6d4ad8db290aac",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-glow-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/glow.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "d3f6c2fba002309bd75d2ca460ecdbbb7d1028c147abc5184b8660caa1d3e7e4",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-glow-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/glow.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "dd36c355b9bb32becb2ba43bfa045b92e52f3eeabe6eedf23800dda7d3086b2e",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-charge-unread-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/charge.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-charge-read-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/charge.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  },
+  "rail-emblem-charge-sealed-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "rect": null,
+   "src": "emblems/source/charge.txt",
+   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
+   "sha256": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd",
+   "policy": "stationChrome",
+   "status": "round 2, for the art director's sign-off"
+  }
+ },
+ "status": "round 2: the picked motifs hand-pixelled, three states each"
+}

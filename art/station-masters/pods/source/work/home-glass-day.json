@@ -1,0 +1,15 @@
+[
+ {
+  "name": "home-glass-day",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "THE PLACE (the signed painting of the vivarium, wide: the SAME place, the same moss, stones, pool, roots, burrow, materials and warm daylight; recompose it for a taller, narrower window):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3 (nearly square): the SAME vivarium place as the reference, RECOMPOSED for a taller window, with the same materials, matte sculpted miniature rendering and warm soft daylight from the upper left. COMPOSITION from top to bottom. TOP 40 percent: the soft out-of-focus depth and canopy as in the reference, the braided feed line coming down at the LEFT edge into the world and, at the RIGHT edge, the small mister nozzle with its fine mist and the vent grille set into the right edge, both fully INSIDE the frame. MIDDLE (from 40 to 70 percent of the height): the ground band where small creatures walk, a clear, open, IN-FOCUS stretch of moss and soil running the whole width, with the burrow entrance at the LEFT and the small pool of still water to the RIGHT of centre; the walking stretch between them is clear moss and soil with only low pebbles. BOTTOM 30 percent: more moss and soil in the foreground, clear and open, in focus, with NO pool and nothing tall in it, ending in plain dark soil on the lowest 3 percent. NO creatures, no animals, no figures; no text, letters, digits or logos; no frame, no bezel, no screws, no UI: only the inside of the vivarium filling the canvas edge to edge. No glass reflections, no glossy surfaces, no cool blue light, no neon."
+ }
+]

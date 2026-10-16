@@ -1,0 +1,24 @@
+[
+ {
+  "name": "mibi-adult-S03-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S03-304x312.png",
+    "The adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a long low four-legged animal with a long thin tail."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S03-304x312.png",
+    "The same species as a juvenile (project-owned, signed): its colours, its face and its look. The adult must read as this animal grown up."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S03-128x160-clear.png",
+    "The species' signed silhouette (project-owned): the adult's outline."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the young creature in the second reference, grown up: the same species, the same colours and the same face, so anyone can see it is that juvenile fully grown. Take the body plan and proportions from the first reference (a longer, lower four-legged body, a long thin tail), but NOT its blockout geometry. Colours as the juvenile: a pale mint-white body and legs, a soft teal head with round teal ears, large round teal eyes with a pale highlight, a small calm mouth. This is the species' BARE BASE picture: NO spots, NO patches, NO stripes on the body (a plain pale mint-white coat, the teal only on the head and ears); a single short thin antenna on the head; a SHORT thin tail with a small round pale gold bulb at its tip that is UNLIT (no glow, no light, no halo). Soft, rounded, living forms; slim legs with small rounded paws. Matte painterly rendering like a children's book, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view from the front left, facing the viewer, calm, standing at rest on all four legs. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people. Never childish: a grown animal, not a baby."
+ }
+]

@@ -1,0 +1,16 @@
+[
+{
+"name": "motion-S01-adult-crouch-b",
+"model": "gemini-3-pro-image",
+"aspect": "1:1",
+"size": "1K",
+"tries": 1,
+"refs": [
+[
+"art/miniature-lives/assets/rich-plain-source.png",
+"Our signed adult S01, Pip (project-owned): the creature to repeat, exactly this Pip."
+]
+],
+"prompt": "Paint ONE key pose of the creature in the reference: the SAME creature (same species, face, eyes, markings, colours, three leaves, proportions, size and brush), same three-quarter view facing the same way, same light from the top left. Pose: a deep CROUCH, the anticipation before a hop: the body pressed low and squashed wider, belly almost touching the ground, all four legs clearly bent and folded under the body, the head lowered and pulled in, the back rounded, the leaves pressed back a little. The top of the head sits clearly lower than when standing, about three quarters of its standing height. Feet flat on the ground, a soft flat contact shadow under it. One full figure, centred, never touching the edges. Matte painterly rendering exactly as the reference. Plain flat solid magenta (#FF00FF) background everywhere, no borders, no text, no props, no ground, no glow."
+}
+]

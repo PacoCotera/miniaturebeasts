@@ -1,0 +1,520 @@
+{
+ "species": "S12",
+ "painting": "prototypes/workbench/grow/out/S12/2af58fb73ac5cbbd/station-portrait-600x620.png",
+ "size": [
+  600,
+  620
+ ],
+ "note": "hand-placed rectangles on the standard painting for round 1; the rig's index pass would place them exactly",
+ "traits": {
+  "coat/Colour": {
+   "chapter": "coat",
+   "trait": "Colour",
+   "look": "marigold",
+   "rect": [
+    230,
+    360,
+    470,
+    470
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      230,
+      265,
+      470,
+      565
+     ],
+     "source_px": [
+      240,
+      300
+     ],
+     "slice": "trait-S12-colour-marigold-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 81
+      },
+      {
+       "edge": "left",
+       "run_px": 65
+      },
+      {
+       "edge": "right",
+       "run_px": 54
+      }
+     ],
+     "pass_61": []
+    },
+    "144x176": {
+     "window": [
+      230,
+      268,
+      470,
+      562
+     ],
+     "source_px": [
+      240,
+      294
+     ],
+     "slice": "trait-S12-colour-marigold-144x176",
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      230,
+      230,
+      470,
+      600
+     ],
+     "source_px": [
+      240,
+      370
+     ],
+     "slice": "trait-S12-colour-marigold-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      230,
+      304,
+      470,
+      526
+     ],
+     "source_px": [
+      240,
+      222
+     ],
+     "slice": "trait-S12-colour-marigold-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      230,
+      341,
+      470,
+      489
+     ],
+     "source_px": [
+      240,
+      148
+     ],
+     "slice": "trait-S12-colour-marigold-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  },
+  "coat/Translucency": {
+   "chapter": "coat",
+   "trait": "Translucency",
+   "look": "between",
+   "rect": [
+    300,
+    100,
+    560,
+    350
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      300,
+      62,
+      560,
+      388
+     ],
+     "source_px": [
+      260,
+      326
+     ],
+     "slice": "trait-S12-translucency-between-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "bottom",
+       "run_px": 48
+      },
+      {
+       "edge": "left",
+       "run_px": 93
+      }
+     ],
+     "pass_61": [
+      "a closing of the matte in [(36, 40, 45, 86), (92, 70, 108, 92)] (+177 px, the wing's edge colour)"
+     ]
+    },
+    "144x176": {
+     "window": [
+      300,
+      66,
+      560,
+      384
+     ],
+     "source_px": [
+      260,
+      318
+     ],
+     "slice": "trait-S12-translucency-between-144x176",
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      300,
+      25,
+      560,
+      425
+     ],
+     "source_px": [
+      260,
+      400
+     ],
+     "slice": "trait-S12-translucency-between-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      295,
+      100,
+      565,
+      350
+     ],
+     "source_px": [
+      270,
+      250
+     ],
+     "slice": "trait-S12-translucency-between-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      194,
+      100,
+      600,
+      350
+     ],
+     "source_px": [
+      406,
+      250
+     ],
+     "slice": "trait-S12-translucency-between-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  },
+  "coat/Pattern": {
+   "chapter": "coat",
+   "trait": "Pattern",
+   "look": "plain",
+   "rect": [
+    370,
+    365,
+    470,
+    460
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      370,
+      350,
+      470,
+      475
+     ],
+     "source_px": [
+      100,
+      125
+     ],
+     "slice": "trait-S12-pattern-plain-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 90
+      },
+      {
+       "edge": "bottom",
+       "run_px": 76
+      },
+      {
+       "edge": "left",
+       "run_px": 117
+      },
+      {
+       "edge": "right",
+       "run_px": 16
+      }
+     ],
+     "pass_61": []
+    },
+    "144x176": {
+     "window": [
+      366,
+      346,
+      474,
+      478
+     ],
+     "source_px": [
+      108,
+      132
+     ],
+     "slice": "trait-S12-pattern-plain-144x176",
+     "flag": "the part is 100x95 px, smaller than the 108x132 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      370,
+      336,
+      470,
+      489
+     ],
+     "source_px": [
+      100,
+      153
+     ],
+     "slice": "trait-S12-pattern-plain-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      369,
+      365,
+      471,
+      460
+     ],
+     "source_px": [
+      102,
+      95
+     ],
+     "slice": "trait-S12-pattern-plain-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      343,
+      365,
+      497,
+      460
+     ],
+     "source_px": [
+      154,
+      95
+     ],
+     "slice": "trait-S12-pattern-plain-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  },
+  "coat/Trim": {
+   "chapter": "coat",
+   "trait": "Trim",
+   "look": "butter",
+   "rect": [
+    230,
+    440,
+    540,
+    560
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      230,
+      232,
+      540,
+      620
+     ],
+     "source_px": [
+      310,
+      388
+     ],
+     "slice": "trait-S12-trim-butter-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 72
+      },
+      {
+       "edge": "left",
+       "run_px": 49
+      }
+     ],
+     "pass_61": []
+    },
+    "144x176": {
+     "window": [
+      230,
+      241,
+      540,
+      620
+     ],
+     "source_px": [
+      310,
+      379
+     ],
+     "slice": "trait-S12-trim-butter-144x176",
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      230,
+      143,
+      540,
+      620
+     ],
+     "source_px": [
+      310,
+      477
+     ],
+     "slice": "trait-S12-trim-butter-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      230,
+      334,
+      540,
+      620
+     ],
+     "source_px": [
+      310,
+      286
+     ],
+     "slice": "trait-S12-trim-butter-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      230,
+      405,
+      540,
+      595
+     ],
+     "source_px": [
+      310,
+      190
+     ],
+     "slice": "trait-S12-trim-butter-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  },
+  "shape/Haunch": {
+   "chapter": "shape",
+   "trait": "Haunch",
+   "look": "between",
+   "rect": [
+    360,
+    440,
+    550,
+    545
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      360,
+      374,
+      550,
+      611
+     ],
+     "source_px": [
+      190,
+      237
+     ],
+     "slice": "trait-S12-haunch-between-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 27
+      },
+      {
+       "edge": "left",
+       "run_px": 52
+      }
+     ],
+     "pass_61": []
+    },
+    "144x176": {
+     "window": [
+      360,
+      376,
+      550,
+      609
+     ],
+     "source_px": [
+      190,
+      233
+     ],
+     "slice": "trait-S12-haunch-between-144x176",
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      360,
+      328,
+      550,
+      620
+     ],
+     "source_px": [
+      190,
+      292
+     ],
+     "slice": "trait-S12-haunch-between-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      360,
+      405,
+      550,
+      580
+     ],
+     "source_px": [
+      190,
+      175
+     ],
+     "slice": "trait-S12-haunch-between-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      360,
+      434,
+      550,
+      551
+     ],
+     "source_px": [
+      190,
+      117
+     ],
+     "slice": "trait-S12-haunch-between-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  }
+ }
+}

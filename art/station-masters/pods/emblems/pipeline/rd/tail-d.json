@@ -1,0 +1,38 @@
+{
+ "id": "tail-d",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__pixelate",
+ "size": "24x24",
+ "prompt": "a filled pixel art pictogram of an animal's tail, one solid bone-white silhouette, lit from the upper left, no outline",
+ "seed": 1,
+ "strength": 0.6,
+ "input_image": {
+  "file": "in96/tail-d-96.png",
+  "sha256": "15e9a2a2f3a3a4947d72d46c388764d8b34536835c237559aadeef4bbfcb0d7f"
+ },
+ "input_palette": {
+  "file": "station-palette-62.png",
+  "sha256": "fa12410a22a1cfa60f6d3572c8a115658da1922d8cb917f56fa947b73045ea5e"
+ },
+ "time": "2026-10-09T00:18:35Z",
+ "checkCost": {
+  "created_at": 1791505115,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 42.64000000000002
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "531112f0-44fa-456b-89ca-500b6a22c305",
+  "seconds": 36.5,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 42.28,
+  "file": "rd/tail-d-rd.png",
+  "sha256": "8f15a67c8f4684871a3c747fe9371ae6341d02760fd686f7f4e2d080ad8d2264"
+ }
+}

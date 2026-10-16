@@ -1,0 +1,28 @@
+[
+ {
+  "name": "vivarium-dusk",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/vivarium-day.jpg",
+    "THE PICTURE TO EDIT (the vivarium by day: keep everything, change only the light):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same vivarium picture at DUSK. The light is warmer and lower: a low golden-amber sun from the left, long soft warm shafts through the canopy, deeper warm shadows stretching to the right, the foliage glowing amber and rose at its edges, the sky-light in the canopy a soft apricot, the mist catching the warm light. Everything stays warm (no cool blue cast), calmer and a little darker than day but never dark. Keep the picture EXACTLY the same in composition and content: the same canopy band at the top, the same feed line, mister, vent, the same burrow, water, stones, roots, moss and plants in the same places and the same sizes, the same matte sculpted miniature rendering; change ONLY the lighting and its colour as described. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ },
+ {
+  "name": "vivarium-night",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/vivarium-day.jpg",
+    "THE PICTURE TO EDIT (the vivarium by day: keep everything, change only the light):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same vivarium picture at NIGHT. The light is warm and low: the scene is lit mostly by small warm glowing patches of glow-moss and a few tiny warm glowing mushrooms or lichen on the moss, stones and roots, a low warm lamp-like amber glow near the top left, soft deep warm-brown shadows; the moon appears ONLY as a thin cool pale rim of light along the upper edges of the leaves and the stones at the upper left, nothing blue anywhere else. It must stay readable: the whole picture is clearly visible, never black, with an average brightness of a mid-dark tone (about 30 percent), the burrow, water and moss details still visible, and a warm cosy feeling. Keep the picture EXACTLY the same in composition and content: the same canopy band at the top, the same feed line, mister, vent, the same burrow, water, stones, roots, moss and plants in the same places and the same sizes, the same matte sculpted miniature rendering; change ONLY the lighting and its colour as described. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]

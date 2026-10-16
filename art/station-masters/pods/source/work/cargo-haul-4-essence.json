@@ -1,0 +1,19 @@
+[
+ {
+  "name": "cargo-haul-4-essence",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/essence-e1-ref.png",
+    "FIRST REFERENCE, ESSENCE (the art director's hand sketch of the caged sample tube, E1: paint this object as a matte painted object, not as a sketch):"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/haul3-look-ref.png",
+    "SECOND REFERENCE, THE LOOK ONLY (the matte painted look, materials and light to match; do NOT paint these two objects):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: ONE small hand-carried cargo-haul container standing alone, centred, on a PLAIN NEUTRAL mid-grey ground (uniform, no gradient, no horizon, only a faint contact shadow), UPRIGHT in PORTRAIT (taller than wide, about 3:4, roughly 210 px wide by 280 px tall at the picture's scale), seen FRONT-ON with only a slight three-quarter turn, soft key light from the TOP LEFT. Paint it in the SAME MATTE PAINTED LOOK and light as the second reference's two objects (soft painted forms, matte, NOT line-and-wash, NOT inked, no sketch lines, no black outlines, hairline edges only). The object is the FIRST reference's E1, the CAGED SAMPLE TUBE: a SEALED GLASS SAMPLE TUBE, most of it visible clear glass, FILLED with GREEN ESSENCE (#5cbb4c family, flat saturated green, the upper part of the tube slightly emptier and pale); around it a LIGHT OPEN CAGE: TWO THIN STEEL BARS at the edges and TWO THIN STEEL HOOPS around the tube; DARK RUBBER END CAPS at the top and the foot, and a small STEEL CLIP on the top cap. The glass is plain matte-painted transparent glass with soft painted reflections only: NO glow, NO light-up, no gloss highlights. NO cork, NO rope, NO cord, NO label, NO text, NO letters, NO digits, no numbers, no captions, no circles or arrows. Ignore the first reference's other objects (E2 and E3), its title, its captions and its silhouettes."
+ }
+]

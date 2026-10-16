@@ -1,0 +1,15 @@
+[
+ {
+  "name": "idle-night-repaint",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "THE PICTURE TO EDIT (the signed vivarium by day: keep everything, change only the light):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same vivarium picture at NIGHT, under the device's lamp: the grow lamp is dimmed to a LOW, WARM glow coming from the top left, the only light. The canopy and the whole background fall into DEEP SHADOW: dark, quiet, a deep warm umber-olive, desaturated, no haze, no amber wash, no light shafts; the background is clearly darker than the ground. The moss, stones, roots, soil and burrow of the ground stay READABLE in soft, low, evenly spread warm light (the same warm tone across the ground, a calm mid-dark, not bright, no hot patches). NOTHING GLOWS FOR SHOW: no glowing mushrooms, no glow-moss, no glowing pools, no blooms, no sparkles, no halos, no lit-from-within objects. NO blue moon rims, NO pale or white leaf outlines, NO cool or blue light anywhere; all colour is warm brown, olive, amber-brown and moss green, dimmed. The brightness stays low overall (an average brightness of about a quarter of full), with nothing near white. Keep the picture EXACTLY the same in composition and content: the same burrow, pool, stones, roots, moss, plants, mister with its mist, vent and feed line in the same places and the same sizes, the same matte sculpted miniature rendering; change ONLY the light. NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]
