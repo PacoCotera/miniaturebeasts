@@ -30,11 +30,11 @@ Companion (592, 272, 272, 96) and Wild (872, 376, 136, 96) do not move. When a d
 
 | Row | At | Bonded / has notches | Not bonded / none |
 | --- | --- | --- | --- |
-| Bond | (16, 20), 24 high | `heart-full-24` at (16, 20), then "bonded" at (44, 20), 104 wide, 16 px, `bone` | "not bonded yet" at (16, 20), 112 wide, 16 px, `mist` (no heart) |
-| Skill | (16, 52), 24 high | 1 to 3 `notch-skill-16x24` at x 16, 40, 64 (pitch 24, left-aligned), then "skill" 4 px after the last notch, 16 px, `bone` | "no skill yet" at (16, 52), 112 wide, 16 px, `mist` (no notch, never an empty notch) |
+| Bond | (8, 20), 24 high | `heart-full-24` at (8, 20), then "bonded" at (36, 20), 92 wide, 16 px, `bone` | "not bonded yet" at (8, 20), 120 wide, 16 px, `mist` (no heart) |
+| Skill | (8, 52), 24 high | 1 to 3 `notch-skill-16x24` at x 8, 32, 56 (pitch 24, left-aligned), then "skill" 4 px after the last notch, 16 px, `bone` | "no skill yet" at (8, 52), 120 wide, 16 px, `mist` (no notch, never an empty notch) |
 
 - **The card's heart and notches go:** `card.heart` and `card.notches` are deleted. The panel is their one home. The code's row keeps only the code.
-- **Widths:** the longest row, three notches plus "skill", is 16 + 72 + 4 + about 30 = 122 ≤ 128 (the panel minus 8). "not bonded yet" must be ≤ 112 at 16 px. Measure both with the real measurer; if one does not fit, stop and report.
+- **Widths:** each row runs x 8 to 128 inside the panel, 120 wide, with 8 px padding each side (T-20261016-43: the rows were 16 to 128, and "not bonded yet" measured 113 at 16 px in a 112 row). The longest notch row is 8 + 72 + 4 + about 30 = 114 ≤ 128, and "not bonded yet" is 113 ≤ 120. Measure both with the real measurer; if one does not fit, stop and report.
 
 ### The `growth` panel (592, 376, 272 × 96)
 
