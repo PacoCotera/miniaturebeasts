@@ -1,0 +1,23 @@
+[
+ {
+  "name": "pods-room-sheet",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE CASE (the signed direction: fitted worn cut-outs in dark matte foam, rubber, sage-green and sand housing, matte, warm daylight; match this exactly):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/room-stage-base.jpg",
+    "THE FOAM FLOOR (the worn dark foam and rubberised slate panel of the case: the ground these pieces sit on):"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/sheet-guide.png",
+    "LAYOUT GUIDE (a plain sketch, NOT to be copied as a picture): each grey shape is one separate piece to be painted exactly at that position and size; the background stays plain worn dark foam:"
+   ]
+  ],
+  "prompt": "Output a NEW image: a sheet of nine separate pieces of the same rugged field case, each painted flat on (seen from directly above) on a plain worn dark foam background, each exactly at the position and size of the matching shape in the layout guide, with plain foam between them. The pieces: the three light-grey circles at the top left are three round fitted WELLS, matte rubber-edged circular recesses pressed into the case (a deep clean rubber rim and a shallow dark foam floor); the first is a plain empty well at rest, the second is the same well but with its rubber rim catching a little more warm light and slightly brighter, the third is an unused well: a smooth rubber plug filling it, nearly flush, darker, with no recess. The mid-grey rounded rectangle is a small matte hatch: a closed rubber-gasketed service hatch with two small screws and a worn edge, sage-green housing colour. The light-grey circle to its right is a small round fitted recess with a thin rubber rim. The tall mid-grey strip at the far right is a vertical strip of the sage-green and sand housing: matte powder-coat, two rows of screws, a dark rubber hose clip and a small matte vent grille, worn. The two big circles at the bottom left are two large round RING recesses (a wide rubber-lined circular groove around a recessed circular floor, a band about one tenth of the diameter wide): the lighter one is open and at rest, the darker one is closed with a worn matte rubber cover seated in it.  NO text, no letters, no digits, no symbols, no glass, no chrome, no gloss, no light cone, no cool blue light, no pods or objects inside the recesses. Matte, worn, handled materials; one soft warm daylight key light from the upper left; the same sculpted, softly lit miniature rendering as the references."
+ }
+]

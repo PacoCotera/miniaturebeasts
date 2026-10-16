@@ -1,0 +1,13 @@
+[
+{
+"name": "trait-S01-eyes-a",
+"model": "gemini-3-pro-image",
+"aspect": "21:9",
+"size": "1K",
+"tries": 1,
+"refs": [
+["art/miniature-lives/assets/rich-plain-source.png", "Our accepted adult S01, Pip (project-owned): the creature, exactly. Its cream eye rings are the 'between' look."]
+],
+"prompt": "Paint THREE panels side by side, equal size, slightly taller than wide, a small gap between them, on plain flat solid magenta (#FF00FF) everywhere, no borders, no text. All three show the SAME creature as the reference (same charcoal skin, cream muzzle, large orange eyes, same brush and matte painterly light from the top left) in the SAME framing: a close-up of the face, three-quarter view facing left as in the reference, the near eye large near the centre of the panel. Only the cream ring around each eye changes. LEFT panel, 'thin rings': a thin cream ring around each eye, about a quarter as wide as the reference's. MIDDLE panel, 'between': exactly the reference's cream rings. RIGHT panel, 'wide pale rings': a wide pale cream ring around each eye, about twice as wide as the reference's, soft-edged into the charcoal skin. The eyes themselves (size, orange iris, highlight), face, pose, size and light are identical in all three. No leaves visible needed, no props, no ground, no shadow, no glow."
+}
+]

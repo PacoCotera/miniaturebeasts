@@ -1,0 +1,20 @@
+[
+{
+"name": "mibi-juvenile-S02-b",
+"model": "gemini-3-pro-image",
+"aspect": "1:1",
+"size": "1K",
+"tries": 1,
+"refs": [
+[
+"scratch:ref-adult-S02.png",
+"The adult of this species (project-owned rig render): its body plan, colours and markings: a big round body under a broad flat cap or fold like a shell or mushroom cap, resting low on its belly, a small round head at the front. Its colours: the cap ochre-tan (#B89050) with pale sand (#E0C888) and soft peach (#F8A078) highlights; the body a warm chestnut brown (#785030) with a peach blush."
+],
+[
+"scratch:ref-halo-S02.png",
+"The species' signed silhouette (project-owned): the adult's outline."
+]
+],
+"prompt": "Paint the JUVENILE of the creature in the references, keeping its body plan exactly (a big round body under a broad flat cap or fold like a shell or mushroom cap, resting low on its belly, a small round head at the front) and EXACTLY ITS COLOURS: the cap ochre-tan with pale sand and soft peach highlights, the body warm chestnut brown with a soft peach blush on the face. NOT coral, NOT pink, NOT red. Young proportions: the head about 45 percent of its height with big eyes, the body plumper, the cap smaller and softer. Resting on its belly, three-quarter view from the front left, facing the viewer, cute and calm. Matte painterly rendering like a children's book, light from the top left, a soft flat contact shadow beneath it. One creature, centred, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+}
+]

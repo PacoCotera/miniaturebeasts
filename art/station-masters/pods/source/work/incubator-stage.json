@@ -1,0 +1,13 @@
+[
+ {
+  "name": "incubator-stage",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   ["art/station-masters/pods/slices/room-bench-stage-overview.png", "THE DEVICE FRAME AND FLOOR (the Pods room of the same device: the sage and sand housing rim with its screws and side plates, and the dark warm foam floor; paint the same frame and floor, same materials, same light; but without its nest, its panel and its plate):"],
+   ["art/station-masters/pods/slices/room-bench-stage-collection.png", "THE PLAIN FLOOR (the same floor with nothing on it: this level of plainness, dark and quiet, with the same fine foam grain):"]
+  ],
+  "prompt": "Output a NEW image, 16:9: the case floor of a research device seen straight from above, the SAME frame and floor as the references: the sage-and-sand housing rim all round with its screws and its two side plates, and inside it the dark warm slate-brown foam floor, matte, in the same soft warm light from the upper left, the same grain. Nothing glossy, no chrome, no blue light, no wood, no text, no letters, no digits. The floor is MOSTLY EMPTY and quiet. The LEFT THIRD of the floor is completely plain and dark: nothing at all on it. The whole CENTRE of the floor, a large central area about a third of the width across and most of the height, stays plain foam: nothing painted on it (a separate chamber will stand there later), and the plain area continues under it to the bottom rim. The RIGHT part above the middle is also plain. DETAILS, only low and at the sides: along the BOTTOM edge of the floor, one or two matte rubber hoses with metal ferrules run in from the LEFT rim and from the RIGHT rim and head toward the bottom centre, ending at the foot of the empty centre area, where they stop at the edge of the plain area (they do not cross it); and two or three SMALL round gauges, each about a twelfth of the floor's width across, set low on the floor, one near the lower left and one or two near the lower right, away from the centre. Every hose is routed CLEAR of every gauge: a hose never passes over, under or touching a gauge, with a clear gap of at least one gauge-width between any hose and any gauge. Gauges: matte sage-green bodies with a cream dial and a thin dark needle, no glass shine. No nest, no egg, no bean, no chamber, no window, no pod, no creature anywhere."
+ }
+]

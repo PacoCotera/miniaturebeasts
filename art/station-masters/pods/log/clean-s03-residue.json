@@ -1,0 +1,20 @@
+{
+ "trait-S03-scales-between-128x160": 28,
+ "trait-S03-scales-between-104x160": 19,
+ "trait-S03-scales-between-104x96": 16,
+ "trait-S03-scales-few-fine-128x160": 12,
+ "trait-S03-scales-few-fine-104x160": 12,
+ "trait-S03-scales-few-fine-104x96": 4,
+ "trait-S03-scales-many-coarse-128x160": 36,
+ "trait-S03-scales-many-coarse-104x160": 19,
+ "trait-S03-scales-many-coarse-104x96": 8,
+ "trait-S03-claws-digging-wedges-128x160": 179,
+ "trait-S03-claws-digging-wedges-104x160": 69,
+ "trait-S03-claws-digging-wedges-104x96": 104,
+ "trait-S03-claws-pads-128x160": 178,
+ "trait-S03-claws-pads-104x160": 63,
+ "trait-S03-claws-pads-104x96": 85,
+ "trait-S03-claws-round-feet-128x160": 149,
+ "trait-S03-claws-round-feet-104x160": 63,
+ "trait-S03-claws-round-feet-104x96": 98
+}

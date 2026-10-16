@@ -1,0 +1,47 @@
+{
+ "S09": {
+  "coat/Colour": "cobalt and jade",
+  "coat/Fluff": "short, straight",
+  "coat/Sheen": "between",
+  "coat/Feathers": "between",
+  "coat/Tufts": "tail",
+  "coat/Trim": "cream",
+  "face/Head": "between small and medium",
+  "face/Beak": "short",
+  "face/Crest": "between",
+  "face/Crown": "tall",
+  "face/Eyes": "small",
+  "shape/Waist": "thick",
+  "shape/Topline": "arched",
+  "shape/Haunch": "small",
+  "shape/Body": "pear",
+  "shape/Build": "low",
+  "legs-tail/Carriage": "straight",
+  "legs-tail/Tail": "between",
+  "movement/Flap": "between",
+  "movement/Turning": "wide turns",
+  "movement/Pace": "between",
+  "movement/Stride": "long steps",
+  "stamina/Strength": "between",
+  "stamina/Thrift": "between",
+  "stamina/Reserve": "tires soon",
+  "character/Curiosity": "seeking",
+  "character/Nerve": "unflappable"
+ },
+ "S01": {
+  "coat/Markings": "plain",
+  "face/Crown": "leaf crest",
+  "face/Eyes": "between small and large",
+  "movement/Drive": "between",
+  "stamina/Efficiency": "between"
+ },
+ "S12": {
+  "coat/Colour": "marigold",
+  "coat/Translucency": "between",
+  "coat/Pattern": "plain",
+  "coat/Trim": "butter",
+  "shape/Haunch": "between",
+  "movement/Turning": "between",
+  "stamina/Strength": "between"
+ }
+}

@@ -1,0 +1,27 @@
+[
+ {
+  "name": "cargo-haul-sheet-2-soft",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/crate-open-432x272.png",
+    "THE STATION'S CARGO CRATE (the matte sage field case with sand latches and dark rubber corners the containers are unloaded from: the same maker, same soft painted matte rendering):"
+   ],
+   [
+    "art/companion-48/review-place/work/ui/icon-energy.png",
+    "THE ENERGY ICON (its amber):"
+   ],
+   [
+    "art/companion-48/review-place/work/ui/icon-data.png",
+    "THE DATA ICON (its sky blue with white bars):"
+   ],
+   [
+    "art/companion-48/review-place/work/ui/icon-essence.png",
+    "THE ESSENCE ICON (its green):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: a design sheet with NO title, NO captions and NO labels anywhere, only the four containers on the plain ground. The family is the SOFT one: rounded capsules and a rounded jar with screw caps and rope loops, smooth soft shapes, sand and off-white bodies (warm sand and off-white matte), gentle and hand-held, with dark rubber caps and feet. Four small hand-carried CARGO HAUL CONTAINERS standing side by side in a row, evenly spaced with clear gaps, all the same height, each UPRIGHT, seen FRONT-ON with only a slight three-quarter turn, on a FLAT neutral mid-grey ground (uniform, no gradient, no horizon, only a faint contact shadow), soft key light from the TOP LEFT, MATTE soft painted forms, NOT inked, hairline edges only. Each container is about 3 to 4 times taller than wide (a portrait proportion, about 3:4 overall for its bounding box) and they fill the picture's width well, each roughly 210 wide by 280 tall at the picture's scale. All four share: a capped body, dark rubber ends and corners, a small carry loop or clip, and ONE window band with colour showing through that NEVER glows. From the left: the first, the ENERGY container: a dark tube-like container with a dim, warm AMBER core (#ffa83f) seen in a window band; the second, the DATA container: a matte banded canister with a SKY-BLUE window (#5bb9f3) carrying a short row of WHITE bar marks (three short vertical bars, no letters); the third, the ESSENCE container: a matte JAR with a dark screw cap and a cord loop, and a GREEN window (#5cbb4c); the fourth, the FIND container: ONE clear-windowed tube with a cap and a dark foot, completely EMPTY inside (nothing in it). The window colours match the references' icons. NEVER: text, letters, digits, logos, hazard marks or stripes, glow, light-up, displays, screens, faces, eyes, glossy highlights, chrome, clear glass over the whole body, blue or cool light on the bodies, wood.  Absolutely no writing of any kind anywhere in the picture: no title, no captions, no numbers, no names under the containers."
+ }
+]

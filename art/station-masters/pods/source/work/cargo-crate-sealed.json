@@ -1,0 +1,15 @@
+[
+ {
+  "name": "cargo-crate-sealed",
+  "aspect": "3:2",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/cargo-crate-open.jpg",
+    "THE PICTURE TO EDIT (the open field case: keep the case's body, its position, its size, its colours and its light EXACTLY, pixel for pixel where it is unchanged):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 3:2: the SAME field case as the reference, in exactly the SAME position and the SAME size on the same flat dark slate background, the same camera, the same light and the same materials, but now SEALED: the lid is SHUT, closed down flat on the case's body (no longer raised), the front latches CLOSED, and a small ORANGE paper SEAL TAG (a flat orange tag with a small string eyelet, blank, no writing) laid ACROSS the lid's seam at the front centre, tied to the carry handle's area, clearly visible. Everything else stays as in the reference: the sage moulded body, the sand latches, the dark rubber corner guards, the carry handle on the front, the matte soft painted rendering, the warm soft key light from the top left, soft shadows to the lower right. The case body below the lid line keeps its exact position and size; only the lid changes (shut). NO wood, no planks, no rope, no chrome, no glossy highlights, no blue light. NO text, letters or digits."
+ }
+]

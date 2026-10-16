@@ -5,8 +5,8 @@
    "file": "pods/base-336x96.png",
    "w": 336,
    "h": 96,
-   "sha256": "4130e141b41a1453dba1b2cf335f50c703c5d56beeb4096aff1a617d212bbe98",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "f5534c9b3d1140ed32ba6f61401f8ecad14842859da2c610016c53709d84d942",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "bench-cradle-empty-480x288": {
    "file": "pods/bench-cradle-empty-480x288.png",
@@ -782,8 +782,8 @@
    "file": "pods/dome-front-304x272.png",
    "w": 304,
    "h": 272,
-   "sha256": "dd60be032e0c821dc50661805bef519d5b8714a2c4ccd14177c2465b3113e0f7",
-   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
+   "sha256": "12a6190fdffa2e89f102380132083b365ede6657a9ab3a7f77f79f416c2645b2",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "dome-inside-ready-304x272": {
    "file": "pods/dome-inside-ready-304x272.png",
@@ -1377,8 +1377,8 @@
    "file": "pods/leaf-empty-16x20.png",
    "w": 16,
    "h": 20,
-   "sha256": "6f40440f3a15ba5f86419ac5d16c2bcd8930dcfe803d78a085bb8e9afe5b627c",
-   "signed": "named with --ids"
+   "sha256": "ba5b8fd579287034efe924b75129ce76f16fc44a1d258f31c33078b7880d4744",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "leaf-empty-8x12": {
    "file": "pods/leaf-empty-8x12.png",
@@ -1391,8 +1391,8 @@
    "file": "pods/leaf-full-16x20.png",
    "w": 16,
    "h": 20,
-   "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "d9f131ad97a74432c81a052ecc17a573b6398ee86a4e71be4bbf1d7d6c7f0773",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "leaf-full-8x12": {
    "file": "pods/leaf-full-8x12.png",
@@ -4787,8 +4787,8 @@
    "file": "pods/room-bench-stage-incubator.png",
    "w": 1024,
    "h": 522,
-   "sha256": "96c695a0f30fcbeacea19a10790a7dfd15ed32a21ff5723e831102d930ec62e1",
-   "signed": "station lead's brief (fix 5 Incubator/Probe): IA1, masters-pods bea42f4d; signed by the AD in the capture"
+   "sha256": "293b716f7a00d7b2aa1d8609e66784a317ee8d38657244feda69732b14870a58",
+   "signed": "art director at 1x, 2026-10-15 23:16 CST: T-20261015-07 (IA2), the whole-screen mock in today's incubator-growing capture with the base at 440 (stage-incubator/rework/proof-ia2); to re-check in the builder's whole captures incubator-empty, -growing, -ready and -hatch-1100 after place-masters"
   },
   "room-bench-stage-overview": {
    "file": "pods/room-bench-stage-overview.png",

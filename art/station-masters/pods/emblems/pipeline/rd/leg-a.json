@@ -1,0 +1,38 @@
+{
+ "id": "leg-a",
+ "tool": "retro-diffusion",
+ "style": "rd_pro__pixelate",
+ "size": "24x24",
+ "prompt": "a filled pixel art pictogram of an animal's hind leg with its paw, one solid bone-white silhouette, lit from the upper left, no outline",
+ "seed": 1,
+ "strength": 0.6,
+ "input_image": {
+  "file": "in96/leg-a-96.png",
+  "sha256": "db1a376ca1b9b38bfe22ccd5dc9c6bb110cb61d4aab612715a1d65944a69dba8"
+ },
+ "input_palette": {
+  "file": "station-palette-62.png",
+  "sha256": "fa12410a22a1cfa60f6d3572c8a115658da1922d8cb917f56fa947b73045ea5e"
+ },
+ "time": "2026-10-09T00:19:12Z",
+ "checkCost": {
+  "created_at": 1791505152,
+  "credit_cost": 0,
+  "balance_cost": 0.18,
+  "output_images": [],
+  "base64_images": [],
+  "output_urls": [],
+  "model": "check_cost",
+  "remaining_credits": 0,
+  "remaining_balance": 41.92000000000002
+ },
+ "result": {
+  "status": "succeeded",
+  "task_id": "73dfec5a-3096-43bc-9d96-330d3bc02c40",
+  "seconds": 57.1,
+  "balanceCostUSD": 0.18,
+  "remainingBalanceUSD": 41.74,
+  "file": "rd/leg-a-rd.png",
+  "sha256": "9ab0c2e5f99b6a8664a2425ebbcdb9b65e010aab34bd08ce712ff687dea8a3e2"
+ }
+}

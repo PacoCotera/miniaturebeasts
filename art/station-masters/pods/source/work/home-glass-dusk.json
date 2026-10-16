@@ -1,0 +1,19 @@
+[
+ {
+  "name": "home-glass-dusk",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/home-glass-day.jpg",
+    "THE PICTURE TO EDIT (the vivarium by day: keep everything, change only the light and the air):"
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-dusk-1024x568.png",
+    "THE LIGHT TO MATCH (the signed dusk painting of the same place from afar: take its colour and mood of light, not its composition):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same vivarium picture at DUSK: the light is warmer and lower: a low golden-amber sun from the left, long soft warm shafts through the canopy, deeper warm shadows stretching to the right, the foliage glowing amber and rose at its edges, the mist catching the warm light; calmer and a little darker than day but never dark; everything warm, no cool cast. Keep the picture EXACTLY the same in composition and content: the same burrow, pool, stones, roots, moss, feed line at the left, mister and vent at the right, plants and the same plain dark soil along the bottom, in the same places and sizes, the same matte sculpted miniature rendering; change ONLY the lighting, its colour and the air. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]

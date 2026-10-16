@@ -1,0 +1,16 @@
+[
+ {
+  "name": "trait-S02-flecks-fluff-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S02-b.jpg",
+    "Our signed young S02, Untuva (project-owned): the creature, exactly. Its cap is bare of flecks; its fluff is the middle look."
+   ]
+  ],
+  "prompt": "Paint SIX panels in a 3 by 2 grid, equal size, small gaps; the bottom-right panel stays empty magenta. Every used panel shows the SAME whole creature as the reference, large, with clear magenta around it. TOP ROW, left 'bare' (exactly the reference: a cap with no flecks), middle 'spots' (the same cap carrying small pale cream flecks scattered over its top), right: the same as top middle. BOTTOM ROW, the body's FLUFF, the cap bare: left 'short, straight' (a smooth short coat), middle 'long, swept' (long soft fur swept back along the body). Plain flat solid magenta (#FF00FF) background everywhere, no borders, no text, no numbers. Same brush and soft painterly light from the top left as the reference in every panel; only the named look changes. No props, no ground, no shadow, no glow."
+ }
+]

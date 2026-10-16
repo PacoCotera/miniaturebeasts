@@ -1,0 +1,16 @@
+[
+ {
+  "name": "trait-S04-stripes-base-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S04-a.jpg",
+    "Our signed young S04, Hiljan (project-owned): edit THIS picture."
+   ]
+  ],
+  "prompt": "Edit this picture. Keep everything exactly as it is: the same creature, pose, head, face, ears, eyes, tail, legs, feet, size, outline, colours, light, brush, and the same magenta background and shadow. Add ONLY soft tabby stripes in a darker warm brown of the coat, across the back, the flanks and the top of the tail: about six to eight gently curving stripes that wrap partly around the body, painted in the same soft brushwork as the coat, clearly visible but not harsh (a middle contrast). No stripes on the face, the cream legs or the cream chest. No other change, no text, no glow."
+ }
+]

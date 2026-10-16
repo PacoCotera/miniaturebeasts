@@ -1,0 +1,52 @@
+{
+ "juvenile-anchor": {
+  "crest_px": 1612,
+  "band_px": 212,
+  "diff_outside_mask": 0
+ },
+ "juvenile-crouch": {
+  "crest_px": 1764,
+  "band_px": 365,
+  "diff_outside_mask": 0
+ },
+ "juvenile-air": {
+  "crest_px": 1565,
+  "band_px": 225,
+  "diff_outside_mask": 0
+ },
+ "juvenile-curl": {
+  "crest_px": 722,
+  "band_px": 149,
+  "diff_outside_mask": 0
+ },
+ "juvenile-stand": {
+  "crest_px": 1614,
+  "band_px": 208,
+  "diff_outside_mask": 0
+ },
+ "adult-anchor": {
+  "crest_px": 6295,
+  "band_px": 390,
+  "diff_outside_mask": 0
+ },
+ "adult-crouch": {
+  "crest_px": 2101,
+  "band_px": 324,
+  "diff_outside_mask": 0
+ },
+ "adult-air": {
+  "crest_px": 5730,
+  "band_px": 361,
+  "diff_outside_mask": 0
+ },
+ "adult-curl": {
+  "crest_px": 2670,
+  "band_px": 576,
+  "diff_outside_mask": 0
+ },
+ "adult-stand": {
+  "crest_px": 6035,
+  "band_px": 399,
+  "diff_outside_mask": 0
+ }
+}

@@ -1,0 +1,106 @@
+[
+ {
+  "name": "plate-S09-colour",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Colour trait. the plumage colour of the reference bird as a close painted study: a patch of its body feathers, showing the cobalt blue of this individual with its natural light and shade, filling the subject area; no head, no eye, no beak, no wing outline. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-fluff",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Fluff trait. how fluffy the reference bird's feathers are: a close painted study of its body plumage showing the amount of fluff this individual has (a medium amount, between sleek and puffy); no head, no eye, no beak. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-sheen",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Sheen trait. how glossy the reference bird's plumage is: a close painted study of its feathers showing a medium sheen (between matte and glossy), with the soft highlights it would catch; no head, no eye, no beak. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-feathers",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Feathers trait. the feather surface of the reference bird as a quality: a close painted patch of its plumage, individual feathers visible, a medium amount of visible feather detail; no wing outline, no head, no eye, no beak. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-tufts",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Tufts trait. how far the fur reaches on the reference bird: a close painted study of the edge of its coat where fur tufts show, here the fur on the body only; no wing, no head, no eye, no beak. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-crest",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Crest trait. the feather crest of the reference bird alone, close up: the crest feathers on top of its head, a medium crest, no eye, no beak. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-eyes",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Eyes trait. one eye of the reference bird close up filling the subject area: iris, ring and lid, a small eye; no beak. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ },
+ {
+  "name": "plate-S09-carriage",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird, this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Carriage trait. the reference bird's hind body and tail as a small silhouette-like painted study showing how the tail is carried (held straight); the hind body and tail only, no head. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
+ }
+]

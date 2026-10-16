@@ -1,0 +1,19 @@
+[
+ {
+  "name": "cargo-haul-2",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/haul-sketch-clean.png",
+    "THE ART DIRECTOR'S HAND SKETCH of the three objects (shapes, proportions, colours and parts; flat sketch: paint them as real matte objects in exactly these shapes):"
+   ],
+   [
+    "art/station-masters/pods/slices/crate-open-432x272.png",
+    "THE STATION'S CARGO CRATE (the matte sage field case with sand latches and dark rubber corners the objects are unloaded from: same maker, same soft painted matte rendering):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: a design sheet of THREE small hand-carried cargo-haul objects standing side by side in a row, evenly spaced with clear gaps, each UPRIGHT, seen FRONT-ON with only a slight three-quarter turn, on a FLAT neutral mid-grey ground (uniform, no gradient, no horizon, only a faint contact shadow), soft key light from the TOP LEFT, MATTE soft painted forms (NOT inked, no black outlines, hairline edges only), each roughly 210 px wide by 280 px tall at the picture's scale (portrait proportion, about 3:4), the three the same height. The reference is a flat hand sketch of the three objects' SHAPES, colours and parts: paint each object in EXACTLY the sketched shape and proportions (the objects are NOT flasks or bottles except the vial), as real matte hand-held objects, not as flat graphics. ABSOLUTELY NO WRITING of any kind anywhere: no text, letters, digits, labels, captions, titles or names. LEFT, ENERGY, the BATTERY CELL: a chunky DARK RUBBER cell, a rounded-rectangle body about 1.5 times taller than wide, with a SAND-coloured inner shell, a small sand TERMINAL cap on top, and a CHARGE WINDOW in the middle of the front: a dark recessed window holding four horizontal AMBER bars (#ffa83f) stacked, with a small YELLOW lightning bolt over them (the bolt is a plain painted mark, nothing glowing). CENTRE, DATA, the CARTRIDGE: a DARK RUBBER cartridge, a rounded upright rectangle, with a few GRIP RIDGES (short horizontal grooves) across its top, a SKY-BLUE (#5bb9f3) LABEL WINDOW on the front carrying TWO short WHITE BARS (two plain white rectangular marks, not letters), and a short GOLD contact strip with fine contacts at its foot. RIGHT, ESSENCE, the VIAL: a STOPPERED FIELD VIAL: pale off-white glass with a wide conical shoulder and a narrow neck, GREEN essence (#5cbb4c) filling its lower part with a flat top surface, a DARK RUBBER STOPPER on the neck with a small sand CORD LOOP on top, and a dark RUBBER BASE. Windows and the essence show their colour and NEVER GLOW: no glow, no light-up, no screens, no gloss, no chrome, no clear glass over whole bodies, no hazard marks, no faces, no wood, no blue or cool light on the bodies."
+ }
+]

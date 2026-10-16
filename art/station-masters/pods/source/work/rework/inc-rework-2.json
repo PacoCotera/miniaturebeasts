@@ -1,0 +1,6 @@
+[
+ {"name": "rw-inc-base", "model": "gemini-3-pro-image", "aspect": "3:2", "size": "1K", "tries": 1,
+  "refs": [["art/station-masters/pods/source/work/rework/inc-base-input-3x2.png", "Our incubator's base (project-owned): a flat sand-coloured housing block with a recessed name plate in its middle and a thin sage light line along its foot, on plain grey. EDIT THIS IMAGE. Keep its exact outline, size and position, the plate's exact rectangle and the foot line."],
+           ["art/station-masters/pods/source/work/rework/rw-inc-dome-ref.jpg", "Our re-rendered chamber frame that stands on this base: match its rendering."]],
+  "prompt": "Edit the first image only. Re-render the base as a solid moulded sand-coloured housing block with real depth, matching the second image's painterly rendering: a rounded top edge lit from the top left, a front face softly shaded toward the lower right, slight wear on the corners, two small recessed screws at the front's left and right ends, and the name plate as a real recessed slot with a darker inner face, a shaded top inner wall and a lit bottom lip (keep the plate's rectangle exactly where it is, its face plain and empty, no text). The thin sage line along the foot stays a quiet unlit line. Keep the outline exactly. Matte, no glow, no text."}
+]

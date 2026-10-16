@@ -1,0 +1,19 @@
+[
+ {
+  "name": "incubator-sheet-a3",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/home-column-chamber-crop.png",
+    "THE CHAMBER (materials, light and mood: a sage powder-coat metal housing with a hooded window and a warm moss-bed chamber; take its materials and warm light, NOT its two windows, NOT its sprout, NOT its dot):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/incubator-sheet-a2.jpg",
+    "THE PREVIOUS SHEET (keep its soft painted rendering, the sage housing colour, the sand base with its blank plaque and sage foot line, and the moss nest EXACTLY as they are; redraw ONLY the chamber (1) with the corrections below):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same sprite sheet as the reference, with the base (2) and the nest (3) kept exactly as they are, same positions and sizes, and the chamber (1) REDRAWN with these corrections. SHAPE: the chamber is WIDER than tall, about 1.1 times wider than tall: its silhouette is a perfect half-circle on top (the half-circle's diameter is the full width of the housing) continuing into short straight vertical sides and a flat bottom with two small square feet, so it reads as a low wide dome-topped sage metal housing. ONE WINDOW ONLY: a single large arched opening, its top following the half-circle, set into the front, with a shallow hood lip above it and hairline edges (no highlight, no glass shine); the opening is CLEAR (see-through to the inside, no glass). INSIDE the opening, the back wall is a PLAIN, continuous, warm cream-lit wall: NO second window, NO second arch, NO door, NO frame or shape of any kind on the back wall; a small warm lamp hangs at the top inside; a plump moss bed with a soft hollow fills the bottom of the opening; the interior is EMPTY (no creature, no bean, no dot, no sprout, no egg). Front elevation, soft matte painted rendering, no ink outlines, nothing glossy, no chrome, no cool light, no wood, no text, letters or digits. Flat dark slate background, nothing touching."
+ }
+]

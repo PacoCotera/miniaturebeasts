@@ -1,0 +1,36 @@
+[
+ {
+  "name": "room-stage-overview-r2",
+  "aspect": "21:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/room-stage-base.jpg",
+    "THE BASE PICTURE (the empty floor of a field case, seen flat from above): keep its materials, lighting and rendering:"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/stage-guide-overview.png",
+    "LAYOUT GUIDE (a plain sketch, NOT to be copied as a picture): the white oval is where the dish goes, the light rounded bar is the ledge, the mid-grey areas are the panels; place each element EXACTLY there, at exactly that size and position:"
+   ]
+  ],
+  "prompt": "Output a NEW image, the same very wide picture as the base, with its layout changed to follow the layout guide exactly in position and size: remove the base's tall oval cut-out entirely, and put the dish, the ledge and the panels exactly where the guide's shapes are. The dish is ONE wide shallow oval fitted cut-out, a worn pressed dish in the foam; the ledge is a worn raised rubber rim directly under it, wider than the dish; the right-hand mid-grey area is a calm plain worn matte slate panel with a small dim unlit square plate set into it where the guide's small square is. Keep everything else exactly as in the base: the same worn dark foam, the canvas edge strips, the hoses, the matte gauge, vent and mister, the same warm daylight from the upper left, the same rendering. NO pods or objects in any cut-out; no text, letters or digits; no glass, chrome, gloss, light cone or cool blue light."
+ },
+ {
+  "name": "room-stage-chapter-r2",
+  "aspect": "21:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/room-stage-base.jpg",
+    "THE BASE PICTURE (the empty floor of a field case, seen flat from above): keep its materials, lighting and rendering:"
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/stage-guide-chapter.png",
+    "LAYOUT GUIDE (a plain sketch, NOT to be copied as a picture): the white oval is where the dish goes, the light rounded bar is the ledge, the mid-grey areas are the panels; place each element EXACTLY there, at exactly that size and position:"
+   ]
+  ],
+  "prompt": "Output a NEW image, the same very wide picture as the base, with its layout changed to follow the layout guide exactly in position and size: remove the base's tall oval cut-out entirely, and put the dish, the ledge and the panels exactly where the guide's shapes are. The dish is ONE wide shallow oval fitted cut-out, a worn pressed dish in the foam; the ledge is a worn raised rubber rim directly under it, wider than the dish; the mid-grey area on the right is ONE large flat matte page panel: a plain calm worn matte slate-grey rubberised rectangle with a thin rubber edge and nothing on it. Keep everything else exactly as in the base: the same worn dark foam, the canvas edge strips, the hoses, the matte gauge, vent and mister, the same warm daylight from the upper left, the same rendering. NO pods or objects in any cut-out; no text, letters or digits; no glass, chrome, gloss, light cone or cool blue light."
+ }
+]
