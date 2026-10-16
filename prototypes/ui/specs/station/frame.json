@@ -2,7 +2,7 @@
  "screen": "frame",
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#shared-frame-and-rules",
- "status": "fix 14 (boards/station-fix14-spec.md): one cased ring outside the object, parallel to its outline",
+ "status": "fix 14: one cased ring outside the object, parallel to its outline",
  "size": [1024, 600],
  "grid": 8,
  "regions": {
