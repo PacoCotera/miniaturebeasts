@@ -123,5 +123,20 @@
   "id": "bench-plate-strip-t2-192x48",
   "size": "192x48",
   "sha256": "9faa9a2e68da31ca3592f2ecf583f49dd0d39ab37254cdec9a794159e78a49f5"
+ },
+ {
+  "id": "bench-probe-upright-t1-288x432",
+  "size": "288x432",
+  "sha256": "2ba1e3e7e32173a7b311a139a98fc7e7d3860c34b579786139da6e3f09cb3840"
+ },
+ {
+  "id": "bench-probe-upright-t2-288x432",
+  "size": "288x432",
+  "sha256": "4c9f19c9df7590044f6787f9ef6768747c8556784aa027fd6aec814c49fe9dfd"
+ },
+ {
+  "id": "bench-cradle-upright-empty-288x432",
+  "size": "288x432",
+  "sha256": "340b18fe32cc4543d0e0914b6cfdbf620f3fb0f76cf049b8018b7375f4cd6833"
  }
 ]

@@ -5,7 +5,8 @@
    288
   ],
   "sha256": "e9d3dbf171cbfb9e86f4cbb081e11939a6d0d25f22833ad80b6882de65bb32f5",
-  "signed_in": "art director, Probe bench set (5f04d417)"
+  "signed_in": "art director, Probe bench set (5f04d417)",
+  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat"
  },
  "bench-deep-t2-40-new": {
   "size": [
@@ -69,7 +70,8 @@
    288
   ],
   "sha256": "7a511778d522893f1e82c8ab910ab0becd931cb279109a19abd9bb8458b93003",
-  "signed_in": "art director, Probe bench set (5f04d417)"
+  "signed_in": "art director, Probe bench set (5f04d417)",
+  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat"
  },
  "bench-probe-t2-480x288": {
   "size": [
@@ -77,7 +79,8 @@
    288
   ],
   "sha256": "93a7b84f9da1f2cd073cfd1e2520a60b3e5b14abd582db3d9354c4be12d64d50",
-  "signed_in": "art director, Probe bench set (5f04d417)"
+  "signed_in": "art director, Probe bench set (5f04d417)",
+  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat"
  },
  "bench-reach-t2-40-new": {
   "size": [
@@ -204,5 +207,41 @@
   "status": "signed",
   "note": "the Probe's plate strip, 4 recesses, placed 1:1 at (240, 432); the foam from the cradle's flat inside, matte, light from the top left, a baked contact shadow in rows 45-47; awaiting the art director's judgement (not signed)",
   "signed_in": "art director at 1x, 2026-10-15 05:32: the Probe captures (public station-fix5-incubator-probe 580a1607: page-bench, -away, -armed, -tier2, face/golden/bench), placed byte for byte"
+ },
+ "bench-probe-upright-t1-288x432": {
+  "size": [
+   288,
+   432
+  ],
+  "src": "source/raw/rw-probe-t1-cradle.jpg, rw-probe-t2-cradle-b.jpg, rw-probe-cradle-empty.jpg (gemini-3-pro-image edits of the approved station-probe-merge tier 1), cut by bench/upright/cut-upright.py",
+  "made": "the Probe tier 1 (three Shield plates) standing upright, docked in a vertical sage cradle: a base with a dark rubber cup the foot sits in, two side arms gripping its waist, a back plate; a contact shadow in the bench ink",
+  "sha256": "2ba1e3e7e32173a7b311a139a98fc7e7d3860c34b579786139da6e3f09cb3840",
+  "status": "new",
+  "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
+  "signed_in": null
+ },
+ "bench-probe-upright-t2-288x432": {
+  "size": [
+   288,
+   432
+  ],
+  "src": "source/raw/rw-probe-t1-cradle.jpg, rw-probe-t2-cradle-b.jpg, rw-probe-cradle-empty.jpg (gemini-3-pro-image edits of the approved station-probe-merge tier 1), cut by bench/upright/cut-upright.py",
+  "made": "tier 2: the same picture with the fourth plate, the sand add-on module and the side lens (composed by hand from an aligned tier-2 edit, the cradle identical)",
+  "sha256": "4c9f19c9df7590044f6787f9ef6768747c8556784aa027fd6aec814c49fe9dfd",
+  "status": "new",
+  "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
+  "signed_in": null
+ },
+ "bench-cradle-upright-empty-288x432": {
+  "size": [
+   288,
+   432
+  ],
+  "src": "source/raw/rw-probe-t1-cradle.jpg, rw-probe-t2-cradle-b.jpg, rw-probe-cradle-empty.jpg (gemini-3-pro-image edits of the approved station-probe-merge tier 1), cut by bench/upright/cut-upright.py",
+  "made": "the cradle empty while the Probe is out: the back plate, the arms, the rubber cup with two brass charging contacts",
+  "sha256": "340b18fe32cc4543d0e0914b6cfdbf620f3fb0f76cf049b8018b7375f4cd6833",
+  "status": "new",
+  "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
+  "signed_in": null
  }
 }
