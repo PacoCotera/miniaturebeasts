@@ -9,9 +9,9 @@
 //   from that manifest's own folder (a missing file refuses that manifest) and checks it with paletteTable (the core 48 with their
 //   names, colours and dark, light and dark2 tables as on the page, no gap in i, no repeated hex, every table index in range, dark2 the
 //   dark of its dark (dark[dark[i]]), at most 256 entries). A core entry's fog, fade and storm may differ from the page's: the place
-//   overrides (storm, optional, defaults to dark), counted per field in the summary. Every palette found must be the same (name and
+//   overrides (storm, optional: defaults to dark2 on an entry with mat "grass", else to dark), counted per field in the summary. Every palette found must be the same (name and
 //   entries), whatever the order of the manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its
-//   tRNS-0 slot included.
+//   tRNS-0 slot included, and a levelTone that uses light or dark needs at least one palette entry with mat "grass".
 // - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
@@ -21,7 +21,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { inflateSync } from "node:zlib";
-import { decodeExact, catalogue, coreMissing, paletteTable, overrideCounts, PLACE_OVERRIDES, QUADS, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, catalogue, coreMissing, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, LIP_STATES } from "../src/atlas.mjs";
 
 // The page's palette, read from index.html as the tests read it (the page's own PALETTE, HEX and RGB declarations).
 export function pageRGB() {
@@ -95,7 +95,7 @@ export function decodePNG(buf) {
 
 const isInt = v => Number.isInteger(v) && v >= 0;
 const pair = v => Array.isArray(v) && v.length === 2 && v.every(Number.isInteger);
-// The fields a piece must carry (§4.1, §15.2).
+// The fields a piece must carry.
 function fieldErrors(p, sheets) {
   const e = [];
   if (typeof p.name !== "string" || !p.name) e.push("missing field name");
@@ -135,7 +135,7 @@ function keyCounts(o, pre = "", out = []) {
   return out;
 }
 
-// The blocking kinds (§4.4, settled at M1) that are incomplete, so that the page would need the rock stand-in for some tile, while
+// The blocking kinds that are incomplete, so that the page would need the rock stand-in for some tile, while
 // the stand-in (face.w1 and material.rock) is not there: lip with any of its 4 × 7 quarter lists empty; face with face.w1 empty
 // (every other face list falls back to it); side with side.e.mid or side.w.mid empty; rock with no boulder of 48 × 48 or less.
 export function incompleteKinds(cat) {
@@ -165,8 +165,12 @@ export function check(files, log = console.log, { drop = false } = {}) {
   if (kinds.length > 1) { log("REFUSED palette: the manifests' palettes differ (" + used.map(m => m.pal.name + (m.pal.file ? " in " + path.relative(process.cwd(), path.dirname(m.pal.file)) : "")).join(", ") + ")"); refused++; }
   else if (pal.errors) { log("REFUSED palette " + pal.name + " (" + path.basename(pal.file) + "): " + pal.errors.join("; ")); refused++; pal = loadPalette(null); }
   else { log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
-    if (pal.table) { const oc = overrideCounts(pal.table, pageTables()); log("place overrides of the core 48: " + PLACE_OVERRIDES.map(f => f + " " + oc[f]).join(", ")); } }
+    if (pal.table) { const oc = overrideCounts(pal.table, pageTables()); log("place overrides of the core 48: " + PLACE_OVERRIDES.map(f => f + " " + oc[f]).join(", "));
+      const sg = stormOnGrass(pal.table, pageRGB().length); log("storm on grass: dark2 on " + sg.dark2 + " entries (core " + sg.core + ", biome " + sg.biome + "); explicit storm: " + sg.explicit); } }
   const RGB = pal.rgb, of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
+  // --drop: a level tone that lifts or darkens a level needs grass in the palette, or it would do nothing
+  if (drop) for (const m of used) { const lt = Array.isArray(m.man.levelTone) ? m.man.levelTone : [];
+    if (lt.some(t => t === "light" || t === "dark") && !(pal.table && pal.table.mat.some(x => x === "grass"))) { log("REFUSED manifest " + m.f + ": levelTone " + JSON.stringify(lt) + " uses light or dark, and no palette entry has mat \"grass\""); refused++; } }
   const image = file => {
     if (!images.has(file)) {
       let img; try { img = decodePNG(readFileSync(file)); } catch (e) { img = { err: e.message }; }
