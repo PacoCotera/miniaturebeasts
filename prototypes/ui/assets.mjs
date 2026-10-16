@@ -3,21 +3,9 @@
 // flagged until its master takes its id and size). A sprite's slot must equal its asset's size; the renderer refuses
 // anything else and counts it. Pictures are built lazily by the registered builder and kept in the cache by id
 // (today: drawn placeholders and the rig's renders; a master is a PNG file named in `file`, nothing else).
-import { footprintOf } from "./specs/derive.mjs";
 const ENTRIES = new Map();
 const BUILT = new Map();
 
-// A creature picture's footprint (fix 14, FR4), measured on its alpha when it is built or placed and kept on its manifest entry as `foot`, which the host sends on the `asset` message:
-//   a `mibi:` still, master or rig: [x, feetY, w]; a moving atlas, per cell: { stand, curl } for walk and close, { curl } for nap; a shadow atlas: { shadow }. `mibi-halo-*` is a glow, not a creature standing.
-// The atlas's cell layout comes from the host's moving sets (setFootCells, station/src/moving.mjs): id -> { cellName: [x, width] } or null for an id that is no atlas. Null when no ink is in the feet band.
-const CREATURE = /^mibi[:-](?!halo)/;
-let FOOT_CELLS = () => null;
-export const setFootCells = (fn) => { FOOT_CELLS = fn; };
-export function measureFoot(id, pic) {
-  const cells = FOOT_CELLS(id);
-  if (cells) { const out = {}; for (const [name, [x, w]] of Object.entries(cells)) { const f = footprintOf(pic, x, w); if (f) out[name] = f; } return Object.keys(out).length ? out : null; }
-  return CREATURE.test(id) ? footprintOf(pic) : null;
-}
 // Register an asset (idempotent for an id already registered with the same size).
 //   slice: [left, top, right, bottom] marks a nine-slice picture (its edges and middle are tiled, never scaled)
 export function registerAsset({ id, w, h, status = "placeholder", until = null, file = null, hash = null, slice = null, tile = null, build }) {
@@ -39,8 +27,7 @@ export function placeMaster({ id, w, h, file, hash, signed = null, slice = null,
   if (picture.w !== w || picture.h !== h) throw new Error(`master ${id}: the file is ${picture.w}×${picture.h}, the index says ${w}×${h}`);
   const have = ENTRIES.get(id);
   if (have && (have.w !== w || have.h !== h)) throw new Error(`master ${id} is ${w}×${h}; its stand-in is ${have.w}×${have.h}: a master takes its stand-in's size, never scaled`);
-  const foot = measureFoot(id, picture);
-  ENTRIES.set(id, { id, w, h, status, until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, ...(foot ? { foot } : {}), build: () => picture });
+  ENTRIES.set(id, { id, w, h, status, until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => picture });
   BUILT.delete(id); return ENTRIES.get(id);
 }
 // A slot: a place the design needs a picture where none is signed yet (a mark, a key cap, a face). It is in the manifest as status `empty` at its
@@ -62,7 +49,6 @@ export function asset(id, env = null) {
   const e = ENTRIES.get(id); if (!e) return null;
   if (!e.build) return null; b = e.build(e, env); if (!b) return null;
   if (b.w !== e.w || b.h !== e.h) throw new Error(`asset ${id} built at ${b.w}×${b.h}, registered at ${e.w}×${e.h}`);
-  { const foot = measureFoot(id, b); if (foot) e.foot = foot; else delete e.foot; }
   BUILT.set(id, b); return b;
 }
 export const dropAsset = (id) => { BUILT.delete(id); ENTRIES.delete(id); };

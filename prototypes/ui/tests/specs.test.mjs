@@ -829,6 +829,10 @@ test("fix 14, the shape rule: every focus target has a shape of the five kinds a
   }
   assert.ok(seen >= 30, "the targets were found: " + seen); assert.ok(pairs.size <= 6, "the face holds eight ring sources: at most six (radius, ground) pairs, found " + [...pairs]);
   assert.ok(!("ring" in frame.colours) && !("feet" in frame.focus), "frame.json: no colours.ring, no focus.feet");
+  // the holders (FR8): the placing spec names its face-ring roles; the width is frame.json's
+  const names = new Set(palette.colours.map(([n]) => n)), hab = STATION.find(([f]) => f === "habitat.json")[1];
+  for (const [who, sp] of [["frame.json", frame], ["habitat.json", hab]]) for (const k of ["faceRing", "faceRingAway"]) assert.ok(names.has(sp.colours[k]), `${who} colours.${k} is a palette name`);
+  assert.ok(Number.isInteger(frame.regions.marks.face.ringWidth) && frame.regions.marks.face.ringWidth >= 1, "frame.json regions.marks.face.ringWidth is an integer of 1 or more");
 });
 
 // the 2 px floor (§14.4): a creature ring's bands that reach 3:1 against the ground must add up to 2 px in every light. The thresholds come from the palette, never typed.
@@ -923,4 +927,13 @@ test("GB-R6: the Cargo report's heading is `ink` on a cream label plate that lie
   assert.ok(L.at[0] >= 6 && L.at[1] >= 6, "inside the plate by F3"); assert.ok(L.at[1] + L.size[1] + 12 <= rp.rows.first, "12 px above the first row");
   assert.equal(rp.heading.at[0], 24); assert.ok(rp.heading.at[0] >= L.at[0] && rp.heading.at[0] + 192 <= L.at[0] + L.size[0], "the heading's 191 px lies on the label");
   assert.equal(R.regions.bay.slices.report, "cargo-bay-shut-report-976x304");
+});
+
+test("fix 14: a moving set's contact shadow is as wide as its creature cell, at every stage (the shadow's footprint rides on the walk and close atlases in the cell's coordinates)", () => {
+  let n = 0;
+  for (const f of readdirSync(new URL("../specs/station/moving/", import.meta.url)).filter((f) => /^S\d{2}\.json$/.test(f))) {
+    const set = rd("../specs/station/moving/" + f);
+    for (const stage of ["juvenile", "adult"]) { const s = set[stage]; if (!s?.walk) continue; assert.equal(s.shadow.walk[0], s.walk.size[0], `${f} ${stage}: shadow.walk is the walk cell's width`); assert.equal(s.shadow.close[0], s.close.size[0], `${f} ${stage}: shadow.close is the close cell's width`); n++; }
+  }
+  assert.ok(n >= 3, "the sets were found: " + n);
 });

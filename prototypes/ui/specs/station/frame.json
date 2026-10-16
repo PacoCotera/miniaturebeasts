@@ -35,7 +35,7 @@
     "chip": "{ \"rect\": 0, \"chip\": 4 }: a target that is text: the drawn extent plus `chip` px each side, then as rect 0",
     "oval": "the ellipse through the drawn rect grown by `reach`",
     "circle": "{ \"circle\": { \"centre\": [dx, dy], \"r\": r } }: a circle of radius r + reach round (x + dx, y + dy); or { \"circle\": \"box\" }: radius (w >> 1) + reach round the box's centre",
-    "footprint": { "band": 6, "alpha": 128, "hDiv": 12, "hMin": 6, "hMax": 16,
+    "footprint": { "band": 6, "alpha": 128, "shadowAlpha": 1, "hDiv": 12, "hMin": 6, "hMax": 16,
      "weight": { "dawn": "default", "day": "default", "dusk": "default", "night": "default" },
      "floor": { "px": 2, "ratio": 3 },
      "light": { "insets": [1, 2, 3], "widths": [1, 1, 1], "roles": ["key", "core", "key"] },

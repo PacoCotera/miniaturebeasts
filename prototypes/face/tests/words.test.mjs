@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { withPolicy, amberLamp } from "./node-scene.mjs";
-import { focusRingOps, ringRaster } from "../../ui/rings.mjs";
+import { focusRingOps, ringRaster, ringDepartures } from "../../ui/rings.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -79,6 +79,7 @@ for (const c of rings) {
     const ring = focusRingOps(shape, c.box, T, o), roles = ringRaster(ring);
     frames(f); const before = []; for (let y = 0; y < ring.h; y++) for (let x = 0; x < ring.w; x++) before.push(f.pixel(ring.x + x, ring.y + y));
     assert.equal(ringOn(f, c.target, c.box, c.pic ? id : "", c.cell ?? ""), 0, "no node refused"); assert.deepEqual(f.errors(), []);
+    { let lg = null; for (let m; (m = f.poll("log"));) lg = m; assert.equal(lg.regions.find((r) => r.id === "focus" && r.layer === "chrome")?.ring, 1, "rule 1: one ring node in the focus region (a nine-slice inherits its source's flag)"); assert.deepEqual(ringDepartures(lg), []); }
     const key = rgbOf("void"), core = rgbOf(o.ground === "paper" ? "rust" : "focus"); let bad = 0, key_n = 0, core_n = 0;
     for (let y = 0; y < ring.h; y++) for (let x = 0; x < ring.w; x++) {
       const want = roles[y * ring.w + x] === 2 ? core : roles[y * ring.w + x] === 1 ? key : before[y * ring.w + x], got = f.pixel(ring.x + x, ring.y + y);

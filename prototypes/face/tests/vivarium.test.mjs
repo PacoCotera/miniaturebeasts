@@ -179,7 +179,7 @@ test("a walking resident keeps its box in 16..1008 and its feet in the band 296.
 
 // ---- Station M1 §3: residents with moving sets (stand-in atlases synthesized at the slot sizes; moving-scene.mjs) ----
 import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds, rule2Run, atlasPicture } from "./moving-scene.mjs";
-import { measureFoot } from "../../ui/assets.mjs";
+import { footOf } from "../../station/src/moving.mjs";
 import { footprintRing } from "../../ui/rings.mjs";
 const HOUSE = { adults: 6, juveniles: 5, s05: 1, sleepers: 3 };   // S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1, three bed sleepers breathing
 for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
@@ -245,7 +245,7 @@ test("asleep in place (UI/UX, M1): a focused sleeper's ring is the footprint of 
   const sc = movingScene("vivarium", { adults: 2, time: 23 * 3600, focus: "resident:0" }), f = await bootScene(sc);
   const x = f.M._face_test_mv(0, 0), feet = f.M._face_test_mv(0, 1), w = 144;
   f.frame((f.t += 40)); let lg = null; for (let m; (m = f.poll("log"));) lg = m; const ring = lg.regions.find((r) => r.id === "focus" && r.layer === "chrome").rect, tag = lg.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect;
-  const walk = movingIds("S01", "adult").walk, foot = measureFoot(walk, atlasPicture(walk)).curl; assert.ok(foot, "the curl cell has a footprint");
+  const walk = movingIds("S01", "adult").walk, foot = footOf(walk, atlasPicture(walk), atlasPicture).curl; assert.ok(foot, "the curl cell has a footprint");
   assert.deepEqual(ring, footprintRing(foot, [x, feet - 152, w, 152]), "the ring on the curl cell's footprint, on the ground"); assert.equal(tag[1], feet - 120, "the tag over the ink, no lift");
   let stirs1 = 0, prev1 = 0;
   for (let t = 0; t < 45000; t += 40) { f.frame((f.t += 40)); const s0 = STATE(f.M._face_test_state(0)), s1 = STATE(f.M._face_test_state(1)); assert.notEqual(s0.clip, CLIP.stir, "no stir begins on the focused sleeper"); assert.equal(s0.clip, CLIP.asleep); if (s1.clip === CLIP.stir && prev1 !== CLIP.stir) stirs1++; prev1 = s1.clip; }

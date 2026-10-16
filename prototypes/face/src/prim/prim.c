@@ -31,7 +31,7 @@ static uint32_t g_seq[MAX_OBJ];
 static lv_obj_t *g_nursery;
 static char g_text[1024];
 static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
-typedef struct { int w, h, layer; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
+typedef struct { int w, h, layer, ring; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
 static asset_t g_a[MAX_ASSET + MAX_SRC];
 /* the tag of the nodes now arriving, and the clip they are inside */
 static int g_layer = LAYER_CHROME, g_region;
@@ -222,7 +222,7 @@ int prim_source(const char *ops, int w, int h) {
   if (free_slot < 0) return -1;
   asset_t *s = &g_a[free_slot]; s->px = (uint8_t *)calloc((size_t)w * h, 4); if (!s->px) return -1;
   if (prim_compose(s->px, w, h, ops) < 0) { free(s->px); s->px = NULL; return -1; }
-  s->w = w; s->h = h; s->src_key = key; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return free_slot;
+  s->w = w; s->h = h; s->src_key = key; s->ring = g_ringdrawn; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return free_slot;
 }
 uint8_t *prim_asset_ptr(int handle) { return handle >= 0 && handle < MAX_ASSET ? g_a[handle].px : NULL; }
 /* the nine parts of a picture as views into its own pixels (no copy): the corners at the insets l, t, r, b, and the edges and the middle as one tile each (the first `tile` px
@@ -405,6 +405,7 @@ static int jstr(char *buf, int cap, int *n, const char *s) {   /* a JSON string,
   }
   if (*n + 2 >= cap) return 0; buf[(*n)++] = '"'; return 1;
 }
+static const char *v_fmt_ring(char *b, size_t n, int k) { snprintf(b, n, ",\"%s\":%d", "ring", k); return b; }   /* the entry's count of shown nodes holding a ring op (fix 14 rule 1) */
 /* a composed node whose dash or dot ops left a closed box: each of its four bounding edges is at least half covered (fix 14 rule 4: the focus ring is the one outline) */
 static int closed_box(const node_t *nd) {
   int w = nd->w, h = nd->h; if (w < 3 || h < 3) return 0; const uint8_t *px = nd->composed; int top = 0, bot = 0, lft = 0, rgt = 0;
@@ -421,17 +422,17 @@ int prim_log_json(char *buf, int cap) {
   PUT("{\"regions\":[");
   int first = 1;
   for (int r = 1; r < g_nreg; r++) for (int l = 0; l < 4; l++) {   /* one entry a region and layer: the union of its nodes' rects */
-    int x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30), any = 0, ring = 0, box = 0;
+    int x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30), any = 0, ring = 0, box = 0; char rb[24];
     for (int i = 0; i < g_n; i++) {
       node_t *nd = &g_o[i]; if (!nd->seen || nd->region != r || nd->layer != l || nd->kind == FN_CLIP) continue;
       if (nd->kind == FN_TEXT ? lv_obj_get_width(nd->obj) == 0 : (nd->w == 0 || nd->h == 0)) continue;   /* a node with no size is a slot kept for a step that has not come (§2.2): it draws nothing and is not in its region */
       int ax = nd->x, ay = nd->y; node_t *c = nd->parent ? find_node(nd->parent) : NULL; if (c) { ax += c->x; ay += c->y; }
       int ex = ax + (nd->kind == FN_TEXT ? lv_obj_get_width(nd->obj) : nd->w), ey = ay + (nd->kind == FN_TEXT ? lv_obj_get_height(nd->obj) : nd->h);
       if (c) { if (ax < c->x) ax = c->x; if (ay < c->y) ay = c->y; if (ex > c->x + c->w) ex = c->x + c->w; if (ey > c->y + c->h) ey = c->y + c->h; if (ex <= ax || ey <= ay) continue; }   /* a clip's child counts only where the clip shows it */
-      if (ax < x0) x0 = ax; if (ay < y0) y0 = ay; if (ex > x1) x1 = ex; if (ey > y1) y1 = ey; any = 1; if (nd->kind == FN_COMPOSED && nd->ring) ring = 1; if (nd->kind == FN_COMPOSED && nd->dd && nd->composed && closed_box(nd)) box = 1;
+      if (ax < x0) x0 = ax; if (ay < y0) y0 = ay; if (ex > x1) x1 = ex; if (ey > y1) y1 = ey; any = 1; if ((nd->kind == FN_COMPOSED && nd->ring) || ((nd->kind == FN_NINE || nd->kind == FN_SPRITE) && nd->a >= 0 && nd->a < MAX_ASSET + MAX_SRC && g_a[nd->a].ring)) ring++;   /* a nine-slice or a sprite of a face-owned source composed with a ring op counts */ if (nd->kind == FN_COMPOSED && nd->dd && nd->composed && closed_box(nd)) box = 1;
     }
     if (!any) continue;
-    PUT("%s{\"id\":", first ? "" : ","); STR(g_reg[r]); PUT(",\"layer\":\"%s\",\"rect\":[%d,%d,%d,%d]%s%s}", LAYERS[l], x0, y0, x1 - x0, y1 - y0, (ring ? ",\"ring\":true" : ""), box ? ",\"box\":true" : ""); first = 0;
+    PUT("%s{\"id\":", first ? "" : ","); STR(g_reg[r]); PUT(",\"layer\":\"%s\",\"rect\":[%d,%d,%d,%d]%s%s}", LAYERS[l], x0, y0, x1 - x0, y1 - y0, (ring ? v_fmt_ring(rb, sizeof rb, ring) : ""), box ? ",\"box\":true" : ""); first = 0;
   }
   PUT("],\"type\":[");
   first = 1;

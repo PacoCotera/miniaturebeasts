@@ -251,7 +251,7 @@ static void cross_objects(int dy) {
     int x = r[0] + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 0) + col * pitch, y = r[1] + dy + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 1);
     snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
     snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
-    if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
+    if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
   }
 }
 static void wild_objects(int dy) {
@@ -290,7 +290,7 @@ static void build_ring_under(const char *cur) {
   if (strcmp(cur, "resident") != 0 || spec_len("props", "overlay") >= 0) return;
   int r[4]; hrect("regions.resident.rect", r); v_region("focus", LAYER_CHROME);
   const mv_stage_t *S0 = close_set();   /* the footprint ring: on the ground under the creature, as on Home; a moving set's cell by name (curl asleep, stand otherwise), a still's whole picture */
-  if (S0) { char at[96]; snprintf(at, sizeof at, "%s", v_pstr("regions.resident.moving.close")); close_t f; close_now(S0, r, &f); word_focusRingFootprint("focus", S, "focus.targets.resident", at, strncmp(f.cell, "curl", 4) == 0 ? "curl" : "stand", r); }
+  if (S0) { char at[96]; snprintf(at, sizeof at, "%s", v_pstr("regions.resident.moving.close")); close_t f; close_now(S0, r, &f); word_focusRingFootprint("focus", S, "focus.targets.resident", at, strncmp(f.cell, "curl", 4) == 0 ? "curl" : f.sh75 ? "shadow" : "stand", r);   /* shadow: a hop's air tick that shows shadow-75 */ }
   else { char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr("regions.resident.picture")); word_focusRingFootprint("focus", S, "focus.targets.resident", pic, "", r); }
 }
 /* the ring on the focused target (the resident's is under the creature, drawn before it): a plate or a module lifted 2 px, a tile in its form, the name and the species word round */

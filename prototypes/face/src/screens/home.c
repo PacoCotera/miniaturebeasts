@@ -429,8 +429,8 @@ static int ent_focused(const ent_t *e, const char *cur) { return strncmp(cur, "r
 
 /* ---- a moving resident drawn in its slot (§2.3 item 8, UI/UX "Asleep in place" item 8): its shadow at the ground point (never lifted), the ring when focused, the picture (hidden while it dithers), the dither node, the lamp.
    In the asleep form the ring is the feet form on the ink box [fx − 48, feet − 88, 96, 88] and the lamp sits on the ink box's top right; the lift is 0. In the walker form, focused and stopped, the picture rises 4 px. ---- */
-/* the cell of a moving resident whose footprint its ring takes: curl in the asleep form, else stand, "-m" when the shown cell is the mirrored one (facing against native) */
-static const char *foot_cell(const mv_t *m, int asleep) { return asleep ? "curl" : m->facing != m->native ? "stand-m" : "stand"; }
+/* the cell of a moving resident whose footprint its ring takes (architect, fix 14): curl in the asleep form; shadow on a hop's air tick that shows shadow-75 (the ring stays on the ground, on the contact shadow's ink); else stand, "-m" when the shown cell is the mirrored one (facing against native) */
+static const char *foot_cell(const mv_t *m, int asleep) { return asleep ? "curl" : m->sh75 ? "shadow" : m->facing != m->native ? "stand-m" : "stand"; }
 static void mv_draw(const ent_t *e, int focused, int lift) {
   const mv_t *m = &g_m[e->mv]; const mv_stage_t *S = m->S; int asleep = mv_in_asleep_form(m);
   int up = focused && !asleep && m->clip != C_HOP && m->clip != C_WALK ? lift : 0;

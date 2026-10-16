@@ -33,7 +33,7 @@ export function expected(spec, props, cur) {
   for (let i = 0; i < AD.plates.count; i++) out.parts[`slot.plate.${i}`] = [n[0] + AD.plates.at[0] + AD.plates.pitch * i, n[1] + AD.plates.at[1], AD.plates.icon[0], AD.plates.icon[1]];
   for (const k of ["reach", "deep"]) out.parts[`slot.${k}`] = [n[0] + AD[k].at[0], n[1] + AD[k].at[1], AD[k].size[0], AD[k].size[1]];
   // the ring (fix 14): the object as drawn, its rectangle lifted by its lift (the plates: the union of the drawn plates, lifted), grown by 5
-  if (cur) { const o = cur === "plates" ? union(Object.entries(out.parts).filter(([k, v]) => k.startsWith("plates.") && v[2]).map(([, v]) => v)) : [R[cur].rect[0], R[cur].rect[1] - lift(cur), R[cur].rect[2], R[cur].rect[3]]; out.ring = o && [o[0] - 5, o[1] - 5, o[2] + 10, o[3] + 10]; }
+  if (cur) { const o = cur === "plates" ? union(Object.entries(out.parts).filter(([k, v]) => /^plates\.\d+$/.test(k) && v[2]).map(([, v]) => v)) : [R[cur].rect[0], R[cur].rect[1] - lift(cur), R[cur].rect[2], R[cur].rect[3]]; out.ring = o && [o[0] - 5, o[1] - 5, o[2] + 10, o[3] + 10]; }   // the plates, not the strip they stand on (a container: the ring may lie on it)
   return out;
 }
 

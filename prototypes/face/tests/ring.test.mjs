@@ -13,6 +13,8 @@ import path from "node:path";
 import { ringMask, tabRingMask, focusRingOps, ringRaster, footprintRing } from "../../ui/rings.mjs";
 import { footprintOf, footprintHeight } from "../../ui/specs/derive.mjs";
 import { encodePNG } from "../../ui/png.mjs";
+import { setMoving, footOf, cellsOf } from "../../station/src/moving.mjs";
+import { MOVING, atlasPicture, ids as movingIds } from "./moving-scene.mjs";
 import { compare, newBand } from "../tools/focus-diff-mask.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { installScene } from "./node-scene.mjs";
@@ -96,9 +98,13 @@ test("footprintOf: the feet band of the lowest 6 rows at alpha 128 or more, in i
   for (const w of range(1, 400)) assert.equal((footprintHeight(w, { hMin: 0, hMax: 1000 }) + 10) % 2, 0, `fh + 10 is even at w ${w}`);
 });
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
-test("no screen or station word writes a ring, tabRing or ellipse op: the holders go through v_faceHolder and the focus ring through the focusRing word", () => {
-  for (const dir of ["../src/screens", "../src/vocab/station"]) for (const f of readdirSync(path.resolve(here, dir)).filter((n) => /\.[ch]$/.test(n)))
-    assert.doesNotMatch(readFileSync(path.resolve(here, dir, f), "utf8"), /\\"(ring|tabRing|ellipse)\\"/, `${dir}/${f}`);
+test("no file of the face writes a ring or tabRing op but focusRing.c and, once, v_faceHolder in frame.c (rule 4's source scan, which pins the writers rule 1 counts at region level)", () => {
+  const src = path.resolve(here, "../src"), files = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === "test" || e.name === "vendor" ? [] : files(path.join(d, e.name))) : /\.[ch]$/.test(e.name) ? [path.join(d, e.name)] : []));
+  for (const f of files(src)) {
+    const rel = path.relative(src, f).split(path.sep).join("/"), n = (readFileSync(f, "utf8").match(/\\"(ring|tabRing)\\"/g) ?? []).length;
+    const allowed = rel === "vocab/common/focusRing.c" ? Infinity : rel === "vocab/common/frame.c" ? 1 : 0;
+    assert.ok(n <= allowed, `${rel} writes ${n} ring op string(s)`);
+  }
 });
 test("the focus diff mask: a pair that differs only in the ring's band is ring-only; one pixel outside it is content changed, and exits non-zero unless a reason is listed (which does not make it ring-only)", () => {
   const dir = mkdtempSync(path.join(tmpdir(), "fdm-")), mk = (name, edit) => { const d = path.join(dir, name); mkdirSync(d); const px = new Uint8Array(1024 * 600 * 4).fill(40); for (let i = 3; i < px.length; i += 4) px[i] = 255; edit?.(px);
@@ -111,4 +117,16 @@ test("the focus diff mask: a pair that differs only in the ring's band is ring-o
   assert.equal(quiet(() => compare(before, offRing, path.join(dir, "o2"))), 1, "an unlisted content change exits non-zero"); const v = read(path.join(dir, "o2"))["home-cargo-empty"]; assert.equal(v.verdict, "content changed"); assert.deepEqual(v.box, [300, 300, 1, 1]);
   mkdirSync(path.join(dir, "o3")); writeFileSync(path.join(dir, "o3", "reasons.json"), JSON.stringify({ "home-cargo-empty": "a test" }));
   assert.equal(quiet(() => compare(before, offRing, path.join(dir, "o3"))), 0, "a listed reason does not fail the run"); assert.equal(read(path.join(dir, "o3"))["home-cargo-empty"].verdict, "content changed", "and does not make it ring-only");
+});
+test("footOf (the architect's ruling): cells by name, S05's walk curl at index 7, the stand-in shadow (alpha 110) measures at shadowAlpha and not at 128, the shadow rides on the creature's atlas in its cell's coordinates, a shadow atlas carries none", () => {
+  setMoving(MOVING); const FP = T.shapes.footprint, I = movingIds("S05", "juvenile"), walk = atlasPicture(I.walk), cw = walk.h && MOVING.S05.juvenile.walk.size[0];
+  const cs = cellsOf("S05", "juvenile", "walk", cw, walk.h); assert.equal(cs.findIndex((c) => c.name === "curl" && !c.mirror), 7, "S05's walk has pass, stepa and stepb before curl"); assert.equal(cs.findIndex((c) => c.name === "stand"), 0);
+  const foot = footOf(I.walk, atlasPicture(I.walk), atlasPicture, FP); assert.deepEqual(foot.curl, footprintOf({ w: walk.w, h: walk.h, rgba: () => walk.data }, 1 + 7 * cw, cw, FP), "curl measured at its cell, by name");
+  assert.deepEqual(foot.stand, footprintOf({ w: walk.w, h: walk.h, rgba: () => walk.data }, 1, cw, FP));
+  const sh = atlasPicture(I.shadow), asPic = { w: sh.w, h: sh.h, rgba: () => sh.data };
+  { const d = new Uint8Array(20 * 6 * 4); for (let i = 0; i < 20 * 6; i++) d[4 * i + 3] = 110; const ink = { w: 20, h: 6, rgba: () => d }; assert.equal(footprintOf(ink, 0, 20, { band: FP.band, alpha: 128 }), null, "the stand-in shadow ink is alpha 110: null at 128"); assert.deepEqual(footprintOf(ink, 0, 20, { band: FP.band, alpha: FP.shadowAlpha }), [0, 6, 20], "and measured at shadowAlpha"); }
+  const own = footprintOf(asPic, 1, MOVING.S05.juvenile.shadow.walk[0], { band: FP.band, alpha: FP.shadowAlpha }); assert.ok(own, "and measured at shadowAlpha");
+  assert.deepEqual(foot.shadow, [own[0], own[1] + walk.h - MOVING.S05.juvenile.shadow.walk[1], own[2]], "in the creature cell's coordinates: feetY + h − the shadow's h");
+  assert.equal(footOf(I.shadow, sh, atlasPicture, FP), null, "a shadow atlas carries none"); assert.equal(FP.shadowAlpha, 1);
+  assert.deepEqual(footOf(movingIds("S05", "juvenile").nap, atlasPicture(movingIds("S05", "juvenile").nap), atlasPicture, FP) && Object.keys(footOf(movingIds("S05", "juvenile").nap, atlasPicture(movingIds("S05", "juvenile").nap), atlasPicture, FP)), ["curl"], "a nap atlas: curl only");
 });

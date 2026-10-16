@@ -21,7 +21,7 @@ import { vivariumStates } from "./vivarium-states.mjs";
 import { departures as vivariumDepartures } from "./vivarium-regions.mjs";
 import { habitatStates } from "./habitat-states.mjs";
 import { departures as habitatDepartures } from "./habitat-regions.mjs";
-import { focusRingOps, ringRaster } from "../../ui/rings.mjs";
+import { focusRingOps, ringRaster, ringDepartures } from "../../ui/rings.mjs";
 import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
 import { departures as benchDepartures } from "./bench-regions.mjs";
@@ -61,9 +61,9 @@ const reading = (screen) => async (name, page, fail) => {
       for (let y = 40; y < 562; y++) for (let x = 0; x < 1024; x++) { const p = F.pixel(x, y), hit = (p[0] === focus[0] && p[1] === focus[1] && p[2] === focus[2]) || (paper && p[0] === rust[0] && p[1] === rust[1] && p[2] === rust[2]);
         if (hit && rect && x >= rect[0] && y >= rect[1] && x < rect[0] + rect[2] && y < rect[1] + rect[3]) inside++;
         if (hit && (!rect || x < rect[0] || y < rect[1] || x >= rect[0] + rect[2] || y >= rect[1] + rect[3])) { outside++; if (!at) at = [x, y]; } }
-      F.pass(3); return { flagged: log.regions.filter((q) => q.ring).map((q) => q.id + "/" + q.layer), boxes: log.regions.filter((q) => q.box).map((q) => q.id + "/" + q.layer), outside, inside, at };
+      F.pass(3); return { log, hold: false, faces: (window.__st.props?.regions?.cross?.faces ?? []).length, focusTarget: !!(window.__st.props?.overlay?.focus?.cur || (window.__st.props?.focus?.cur && window.__st.props.focus.cur !== "room")), boxes: log.regions.filter((q) => q.box).map((q) => q.id + "/" + q.layer), outside, inside, at };
     }, { focus: [0xff, 0xe6, 0xad], rust: [0xa6, 0x42, 0x0c] });
-    for (const f of g.flagged) if (!(f === "focus/chrome" || f === "companion/art" || f === "cross/art")) fail(`${name}: a non-standard focus form (${f}): a ring op outside the focus word and the two face holders`);
+    for (const d of ringDepartures(g.log, g)) fail(`${name}: ${d}`);
     for (const b of g.boxes) fail(`${name}: ${b} makes a closed box of dashes or dots`);
     if (g.outside) fail(`${name}: focus colour outside the ring, ${g.outside} px at ${g.at}`);
     ringTxt = g.inside ? ` · ring ${g.inside} px` : "";

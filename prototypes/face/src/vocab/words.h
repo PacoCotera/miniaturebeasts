@@ -29,7 +29,7 @@ void word_leavesArc(const char *spec, const char *region, const char *emptyPic, 
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);
-void v_faceHolder(const char *id, int x, int y, int w, int h, int away);   /* a face picture's holder ring (art layer, regions.marks.face.ringWidth), until the picture is painted: not a focus mark */
+void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, int away);   /* a face picture's holder ring (art layer, regions.marks.face.ringWidth), until the picture is painted: not a focus mark */
 void word_bottomLine(void);
 void word_messagePlate(void);
 #endif
