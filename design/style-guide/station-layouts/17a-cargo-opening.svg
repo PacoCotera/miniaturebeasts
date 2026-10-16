@@ -12,10 +12,10 @@
 <text x="300" y="312" font-size="9" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crate, open 296,72 432×272</text>
 <rect x="296.5" y="325.5" width="431" height="23" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="359" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">shadow 296,325 432×24</text>
-<rect x="364.5" y="104.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="3 2"/>
-<rect x="468.5" y="104.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
-<rect x="572.5" y="104.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
-<text x="364" y="232" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">three places 104 apart, y 104</text>
+<rect x="364.5" y="108.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="468.5" y="108.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
+<rect x="572.5" y="108.5" width="87" height="111" fill="#e9e2f5" stroke="#7a6aa0" stroke-width="1"/>
+<text x="364" y="236" font-size="8" fill="#ddd" font-family="DejaVu Sans Mono, ui-monospace, monospace">three places 104 apart, y 108</text>
 <rect x="16.5" y="384.5" width="991" height="167" fill="#c9d0c6" stroke="#444" stroke-width="1"/>
 <text x="1000" y="398" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">rack 16,384 992×168 · the painted insert: six fitted wells 96×128 on a 112 pitch, as Pods' collection</text>
 <rect x="184.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
