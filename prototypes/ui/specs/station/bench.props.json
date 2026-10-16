@@ -19,6 +19,7 @@
    "required": [
     "bench",
     "cradle",
+    "strip",
     "switch",
     "slot"
    ],
@@ -55,6 +56,26 @@
       }
      }
     },
+    "strip": {
+     "type": "object",
+     "required": [
+      "picture",
+      "tier"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string",
+       "minLength": 1
+      },
+      "tier": {
+       "enum": [
+        1,
+        2
+       ]
+      }
+     }
+    },
     "plates": {
      "type": "object",
      "required": [
@@ -79,6 +100,7 @@
     "switch": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "lamp",
       "count",
@@ -86,6 +108,9 @@
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "off",
@@ -114,11 +139,15 @@
     "slot": {
      "type": "object",
      "required": [
+      "plate",
       "state",
       "lamp"
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "state": {
        "enum": [
         "dim",

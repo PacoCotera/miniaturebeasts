@@ -11,6 +11,8 @@ const union = (rs) => { rs = rs.filter(Boolean); if (!rs.length) return null; co
 export function expected(spec, props, cur) {
   const R = spec.regions, T = spec.focus.targets, lift = (id) => (cur === id ? T[id].lift : 0), docked = props.state === "docked", out = { parts: {} };
   const at = (o, a) => [o[0] + a[0], o[1] + a[1], a[2], a[3]];
+  // the plate strip (fix 5 P3): the tier's painted strip, in both states, under the plates
+  out.strip = R.strip.byTier[props.regions.strip.tier]; out.parts["plates.strip"] = out.strip;
   // the plates
   const P = R.plates, most = Math.max(...Object.values(P.places).map((t) => t.length));   // the stable plate nodes: as many as the longest table; away every one stays, with no size
   if (docked) { const tier = props.regions.plates.tier, whole = props.regions.plates.whole, places = P.places[tier]; if (!places) throw new Error("no table for tier " + tier); if (whole > places.length) throw new Error("whole above the table");
@@ -38,14 +40,15 @@ export function expected(spec, props, cur) {
 export function departures(log, spec, props, cur) {
   const out = [], R = spec.regions, regions = log.regions ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
-  const E = expected(spec, props, cur), pic = (id) => { const rs = [...got(id, "art"), ...got(id, "painted")].map((r) => r.rect); return union(rs); };
+  const E = expected(spec, props, cur), pic = (id) => { const rs = [...got(id, "art"), ...got(id, "painted")].map((r) => r.rect).filter((r) => !(r[2] >= 300 && r[3] >= 128 && (id === "switch" || id === "slot"))); return union(rs); };
   must(got("bench", "chrome").length === 1 && eq(got("bench", "chrome")[0].rect, R.bench.rect), `the stage ground ${got("bench", "chrome")[0]?.rect} is not ${R.bench.rect}`);
   for (const r of [...got("bench", "art"), ...got("bench", "painted")]) must(eq(r.rect, R.bench.rect), `the stage picture ${r.rect} is not ${R.bench.rect}`);
   must(got("cradle", "art").length + got("cradle", "painted").length >= 1 && eq(pic("cradle"), R.cradle.rect), `the cradle ${pic("cradle")} is not ${R.cradle.rect}`);
-  if (props.state === "docked") must(eq(pic("plates") ?? [], union(Object.entries(E.parts).filter(([k]) => k.startsWith("plates.")).map(([, v]) => (v[2] ? v : null))) ?? []), `the plates ${pic("plates")} are not the tier's places`);
+  must(eq(pic("strip") ?? [], E.strip), `the plate strip ${pic("strip")} is not the tier's ${E.strip}`); if (props.state === "docked" && pic("plates")) must(within(pic("plates"), E.strip), `the plates ${pic("plates")} leave their strip ${E.strip}`);
+  if (props.state === "docked") must(eq(pic("plates") ?? [], union(Object.entries(E.parts).filter(([k]) => /^plates\.\d/.test(k)).map(([, v]) => (v[2] ? v : null))) ?? []), `the plates ${pic("plates")} are not the tier's places`);
   else must(!got("plates", "art").length && !got("plates", "painted").length, "no plates drawn away");
   for (const [mod, panel, lampBox, keys] of [["switch", E.switchPanel, E.switchLamp, (k) => k.startsWith("switch.")], ["slot", E.slotPanel, E.slotLamp, (k) => k.startsWith("slot.")]]) {
-    const pan = got(mod, "chrome"); must(pan.length === 1 && eq(pan[0].rect, panel), `${mod}'s panel ${pan[0]?.rect} is not ${panel}`);
+    const pan = got(mod + ".plate", "painted").filter((r) => r.rect[2] === panel[2] && r.rect[3] === panel[3]); must(pan.length <= 1 && pan.every((r) => eq(r.rect, panel)), `${mod}'s plate ${pan[0]?.rect} is not ${panel}`); must(!got(mod, "chrome").length, `${mod} draws no fill, edge or bevel row (fix 2 F1)`);   // the plate stands where its master is placed at the module's size (312 wide once fix 5 moves the modules)
     const lamp = got(mod + ".lamp"); must(lamp.length >= 1 && lamp.every((r) => eq(r.rect, lampBox)), `${mod}'s lamp ${lamp.map((r) => r.rect)} is not ${lampBox}`);
     const want = union(Object.entries(E.parts).filter(([k, v]) => keys(k) && v[2]).map(([, v]) => v)); must(eq(pic(mod) ?? [], want ?? []), `${mod}'s pictures ${pic(mod)} are not the union of their places ${want}`);
     must(within(panel, [0, 0, 1024, 600]), `${mod}'s panel leaves the screen`);

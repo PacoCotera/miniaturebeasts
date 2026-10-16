@@ -4,9 +4,10 @@
 // Runs in Node, tested there (tests/incubator-props.test.mjs); the shape is incubator.props.json.
 //   m: { st, sv, settings, now, ui: { inc: { hatch } }, spec incubator.json, pods pods.json }
 import * as S from "../state.mjs";
+import { plateReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
-import { slot, maxTraits } from "./pods-props.mjs";
+import { slot } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
 import { mibiReq, movingProp } from "./home-props.mjs";
 
@@ -29,12 +30,12 @@ export function incubatorBuild(m, spec, pods) {
 
   // the bud being shown: the one in the chamber, or while the hatch plays the one that was opened (the rule has emptied the chamber)
   const species = hatch ? hatch.species : B?.species, fr = species ? frameOf(species) : null, kind = hatch ? hatch.kind : B?.kind, readIds = hatch ? hatch.read : B?.read;
-  // the rail: a tab a chapter, read once the bud knows it (a founder's clears across the wait), its pips filled with it; a sealed chapter still shut shows unread
+  // the rail: a tab a chapter, read once the bud knows it (a founder's clears across the wait), a sealed chapter still shut shows unread
   if (fr) {
     const known = hatch ? fr.chapters.filter((c) => (readIds || []).includes(c.id) || (kind !== "cross" && !(c.sealed && !settings.sealedOpen))).map((c) => c.id) : gs ? gs.known : knownChapters(st, B, settings, now);
     regions.rail = { focused: null, open: -1, star: req({ kind: "star", id: "star:12" }), tabs: fr.chapters.map((c) => {
-      const isKnown = known.includes(c.id), n = Math.min(c.traits.length, maxTraits(pods.regions.chapter.page));
-      return { id: c.id, word: c.name, state: isKnown ? "read" : "unread", pips: n, filled: isKnown ? n : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${c.id}:${isKnown ? "read" : "unread"}:24`, chapter: c.id, state: isKnown ? "read" : "unread" }) };
+      const isKnown = known.includes(c.id);
+      return { id: c.id, word: c.name, state: isKnown ? "read" : "unread", glint: false, emblem: req({ kind: "emblem", id: `emblem:${c.id}:${isKnown ? "read" : "unread"}:24`, chapter: c.id, state: isKnown ? "read" : "unread" }) };
     }) };
   }
   // the leaves (growing and ready): empty outlines, the full leaf, the filling one by its rows
@@ -54,13 +55,15 @@ export function incubatorBuild(m, spec, pods) {
       crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master"), front: slot(req, "bud-ready-front-128x160", R.bud.rect, signed) };
   }
   regions.base = { picture: slot(req, "base-336x96", R.base.rect, signed) };
-  regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
-  const waiting = (state === "hatch" || state === "ready") && (m.lamp === spec.strings.painting || m.lamp === spec.strings.offline);   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
-  regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp === spec.strings.offline ? "offline" : "waiting" };   // the lamp's node is there in every state
+  regions.plaque = spec.strings.plaque[state === "hatch" ? "ready" : state];   // the plaque never goes blank (fix 5 I3): "ready" through the hatch, then the hatch word, which the face picks at the step that sets the juvenile down
+  regions.plaqueAfter = state === "hatch" ? spec.strings.plaque.hatch : "";
+  const waiting = (state === "hatch" || state === "ready") && (m.lamp === "waiting" || m.lamp === "offline");   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
+  regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp };   // the lamp's node is there in every state
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon
   if (state !== "empty") {
     const known = hatch ? mb.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? mb.genome : B.genome, sz = stampSizing(fr, g);
-    regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}`, species, read: known, size: sz.size, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
+    const k = spec.colours.stampLabel.k;
+    regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, plate: plateReq(req, k), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}:k${kPct(k)}`, species, read: known, size: sz.size, k, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
     regions.code = codeText(hatch ? hatch.code : B.code);
   }
   if (state === "hatch") {
@@ -75,7 +78,7 @@ export function incubatorBuild(m, spec, pods) {
   if (state === "empty") { line = { ok: choosePod({ st, settings }) !== null ? Sg.choose : null, back: Sg.back, subject: Sg.empty, need: S.bayFull(st, settings) ? Sg.noBay : null }; }
   else if (state === "growing" || state === "ready") {
     const subject = kind === "cross" ? fill(Sg.crossBud, { A: S.cap(B.parents?.[0]?.name ?? ""), B: S.cap(B.parents?.[1]?.name ?? "") }) : fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) });
-    const bud = kind === "cross" && B.parents?.length === 2 ? subject : S.cap(S.aAn(S.spName(B))) + " bud";
+    const bud = kind === "cross" && B.parents?.length !== 2 ? fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) }) : subject;
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
       line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)

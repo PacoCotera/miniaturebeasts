@@ -61,7 +61,7 @@
 <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
 <text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
-<rect x="924.5" y="312.5" width="31" height="47" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
 <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
 <text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>

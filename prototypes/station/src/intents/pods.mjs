@@ -29,7 +29,7 @@ function read(h, p, ch) {
 // ✓ on a target, by its group.
 const CONFIRM = {
   place: (h, q, id) => { const p = h.ui.pods; p.cur = h.st.tray[+id.slice(6)].id; go(h, "overview", "pod"); },   // Open: the pod's overview
-  // ✓ on the pod: before Identify it identifies; once identified it opens Create (the line reads "Shape a founder", dimmed by what stops it), whatever has been read
+  // ✓ on the pod: before Identify it identifies; once identified it opens Create (the line reads "Create from this pod", dimmed by what stops it), whatever has been read
   pod: (h, q) => { if (!q.idd) return identify(h, q); openCreate(h, q); },
   rail: (h, q, id) => {
     const p = h.ui.pods, ch = chaptersOf(q)[+id.slice(5)]; if (!ch) return;

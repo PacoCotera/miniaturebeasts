@@ -191,6 +191,24 @@ uint8_t *prim_asset(int handle, int w, int h) {
   dsc_of(&g_a[handle].dsc, g_a[handle].px, w, h, w * 4);
   return g_a[handle].px;
 }
+/* Read-only queries on two held pictures of one size, in integers (fix 5 Create C8; the roll's gate): the bounding box of the pixels that are clear (alpha 0) in one and not the other (the silhouette box), or of the pixels that differ (alpha differs, or neither is clear
+   and the colour differs: the change box). 0 with out = x, y, w, h (all 0 when there is none); -1 for an empty slot, a handle out of range or pictures of different sizes. No allocation; not a node kind, an op or a word. */
+static int box_of(int fh, int th, int out[4], int diff) {
+  out[0] = out[1] = out[2] = out[3] = 0;
+  if (fh < 0 || th < 0 || fh >= MAX_ASSET || th >= MAX_ASSET) return -1;
+  const uint8_t *a = g_a[fh].px, *b = g_a[th].px; if (!a || !b) return -1;
+  int w = g_a[fh].w, h = g_a[fh].h; if (w != g_a[th].w || h != g_a[th].h) return -1;
+  int x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) {
+    const uint8_t *p = a + (y * w + x) * 4, *q = b + (y * w + x) * 4; int ca = p[3] == 0, cb = q[3] == 0, hit;
+    if (!diff) hit = ca != cb; else hit = p[3] != q[3] || (!ca && (p[0] != q[0] || p[1] != q[1] || p[2] != q[2]));
+    if (hit) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  if (x1 >= 0) { out[0] = x0; out[1] = y0; out[2] = x1 - x0 + 1; out[3] = y1 - y0 + 1; }
+  return 0;
+}
+int prim_asset_alpha_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 0); }
+int prim_asset_diff_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 1); }
 /* the layer a picture shows on, its asset's own (the host's policy: art or painted); a composed source has none and takes its node's */
 int prim_asset_layer_of(int handle) { return handle >= 0 && handle < MAX_ASSET && g_a[handle].layer ? g_a[handle].layer : LAYER_ART; }
 void prim_asset_layer(int handle, int layer) { if (handle >= 0 && handle < MAX_ASSET) g_a[handle].layer = layer; }
@@ -303,7 +321,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     if (strcmp(lv_label_get_text(o), g_text) != 0) lv_label_set_text(o, g_text);
     if (n->a != a) lv_obj_set_style_text_font(o, f, 0);
   }
-  if (n->fresh || n->x != px || n->y != py) lv_obj_set_pos(o, px, py);
+  if (n->fresh || n->x != px || n->y != py) { if (n->born && in_clip) lv_obj_set_pos(o, x, y); else lv_obj_set_pos(o, px, py); }   /* a clip's child born this frame stands on the nursery at its screen place, so moving it into its clip invalidates its own box, not the box at its clip-relative place */
   if (n->fresh || n->w != w || n->h != h) {
     if (kind == FN_TEXT) lv_obj_set_size(o, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     else lv_obj_set_size(o, w, h);
@@ -354,7 +372,7 @@ static void move_to(lv_obj_t *obj, int32_t idx) {
 void prim_end(void) {
   for (int again = 1; again;) { again = 0; for (int i = 0; i < g_n; i++) if (!g_o[i].seen) { drop(i); again = 1; break; } }
   { int any = 0; for (int i = 0; i < g_n; i++) if (g_o[i].born) any = 1;   /* the new root nodes have their places and sizes: they join the screen, and only now is anything invalidated */
-    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); g_o[i].born = 0; } } }
+    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); if (c) lv_obj_set_pos(g_o[i].obj, g_o[i].x, g_o[i].y); g_o[i].born = 0; } } }
   /* draw order is child order: put each object at its place in the sequence the page sent, among its siblings (the screen's, or its clip's) */
   int root = 0; for (int i = 0; i < g_n; i++) g_o[i].child_k = 0;
   for (int k = 0; k < g_nseq; k++) {

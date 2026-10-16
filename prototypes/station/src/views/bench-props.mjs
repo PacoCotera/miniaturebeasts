@@ -22,6 +22,8 @@ export function benchBuild(m, spec, frame) {
   const C = R.cradle.pictures, cradle = ph(!docked ? C.away : tier === 2 ? C.tier2 : C.tier1, R.cradle.rect.slice(2), !docked);
   if (ui?.install) ph(C.tier1, R.cradle.rect.slice(2));
   // the fixed pictures: the plates, the switch, the slot (the face reads their ids from bench.json)
+  const stripOf = (t) => ph(R.strip.slices[t], R.strip.byTier[t].slice(2), true);   // the tier's strip (fix 5 P3): both are registered, the face cuts t1 → t2 at the install's 300
+  stripOf(1); stripOf(2);
   ph(R.plates.slices.whole, R.plates.plate); ph(R.plates.slices.gone, R.plates.plate, true);
   const T = R.switch.toggle, MN = R.switch.meaning, AD = R.slot.adds;
   ph(T.track.off, T.size, true); ph(T.track.on, T.size); ph(T.knob.slice, T.knob.size); ph(MN.dock.slice, MN.dock.size); ph(MN.plates.whole, MN.plates.icon); ph(MN.plates.gone, MN.plates.icon, true);
@@ -30,12 +32,13 @@ export function benchBuild(m, spec, frame) {
   ph(AD.reach.slice, AD.reach.size); ph(AD.reach.newSlice, AD.reach.size); ph(AD.deep.slice, AD.deep.size); ph(AD.deep.newSlice, AD.deep.size);
 
   // the switch: set at any time, docked or away
-  const on = !!st.mendFull, sw = { state: on ? "on" : "off", lamp: on ? "well" : "off", count, whole: on ? count : Math.min(S.DOCK_MEND_FLOOR, count) };
+  const plate = (r) => req({ kind: "slot", id: `plate-device-${r.rect[2]}x${r.rect[3]}`, master: `plate-device-${r.rect[2]}x${r.rect[3]}`, size: r.rect.slice(2), until: "the device plate (fix 2: placed 1:1 at the module's rect)" });
+  const on = !!st.mendFull, sw = { plate: plate(R.switch), state: on ? "on" : "off", lamp: on ? "well" : "off", count, whole: on ? count : Math.min(S.DOCK_MEND_FLOOR, count) };
   // the slot, in order: tier 2 fitted; away dim; affordable ready (armed after the first ✓); else dim, short
   const ready = tier < 2 && docked && S.tier2Ready(st, settings), armed = ready && !!ui?.arm;
-  const slotState = tier === 2 ? "fitted" : !docked ? "dim" : ready ? (armed ? "armed" : "ready") : "dim", sl = { state: slotState, lamp: slotState === "dim" ? "off" : "well" };
+  const slotState = tier === 2 ? "fitted" : !docked ? "dim" : ready ? (armed ? "armed" : "ready") : "dim", sl = { plate: plate(R.slot), state: slotState, lamp: slotState === "dim" ? "off" : "well" };
 
-  const regions = { bench: { room }, cradle: { picture: cradle }, ...(docked ? { plates: { tier, whole } } : {}), switch: sw, slot: sl };
+  const regions = { bench: { room }, cradle: { picture: cradle }, strip: { picture: R.strip.slices[tier], tier }, ...(docked ? { plates: { tier, whole } } : {}), switch: sw, slot: sl };
   const targets = [...(docked ? [{ id: "plates", group: "plates", enabled: gone }] : []), { id: "switch", group: "module", enabled: true }, { id: "slot", group: "module", enabled: docked && tier === 1 }];
   let cur = ui?.f ?? null; if (cur !== "plates" && cur !== "switch" && cur !== "slot") cur = null;
   if (cur === "plates" && !docked) cur = "switch";

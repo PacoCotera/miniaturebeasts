@@ -3,19 +3,19 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#incubator-growing-and-ready",
  "frame": "frame.json",
- "status": "Slot R (Create and the Incubator; lvgl-switch.md §3): the states empty (an invitation to grow a bud), growing, ready and hatch (held); leafArc, the ninth layout rule, and the leaves word, arc form; the ready bud's shape; the chamber and base; the strings. Pass R (2026-10-10): the Incubator as the bridge between the research and the Vivarium, its ways in and out, the hand-off to one mibi up close (← Vivarium), the keys during a hold, the code's spaces, and every master the art reset makes stale kept as a labelled placeholder (placeholders)",
+ "status": "Slot R (Create and the Incubator; lvgl-switch.md §3): the states empty (an invitation to grow a bud), growing, ready and hatch (held); leafArc, the ninth layout rule, and the leaves word, arc form; the ready bud's shape; the chamber and base; the strings. Pass R (2026-10-10): the Incubator as the bridge between the research and the Vivarium, its ways in and out, the hand-off to one mibi up close (← Vivarium), the keys during a hold, the code's spaces, and every master the art reset makes stale kept as a labelled placeholder (placeholders). Fix 5 (boards/station-fix5-incubator-probe-spec.md): the wall painted as the chamber's machinery; the plaque never blank",
  "wireframes": ["design/style-guide/station-layouts/04-incubator-growing.png", "design/style-guide/station-layouts/05-incubator-ready.png", "design/style-guide/station-layouts/05b-incubator-hatch.png", "design/style-guide/station-layouts/05c-incubator-empty.png", "design/style-guide/station-layouts/05d-incubator-nav.png"],
  "note": "The one home of the Incubator numbers, transcribed from station-layouts.md (Incubator: growing and ready) and its wireframes 04-incubator-growing.svg to 05d-incubator-nav.svg. Rectangles are [x, y, w, h] in screen pixels. The Incubator is the bridge between the research and the Vivarium: the bud grown from the research lies warm in its sheltered chamber, the one warm, living thing, until Open hatches it into the Vivarium; the leaves arc over it and say how much of the wait is left; the rail above clears its surprises; the stamp and its code stand at the right.",
  "derived": {
   "no ring": "UI designer, 2026-10-09: no focus ring in any state. One subject and nothing to choose, so ✓ acts on the room, as on Home's room; ready reads from the glow, the full leaves, the plaque and the ✓ cap. A ring round the dome and its base would cross the leaf arcs",
   "leaf arcs": "UI designer, 2026-10-09; the rule leafArc, the ninth layout rule (architect, 13:24): two arcs centred on the bud's centre (512, 344), inner radius 216 and outer 244, each at most 20 leaves on an 8° pitch across ±76°; the inner fills first. The outer radius 244, not 248, keeps the outer arc's top leaf 10 px under the rail with the art director's 16×20 leaf (at 248 its box would start at y 86, 6 px under it)",
-  "leaf": "art director, 2026-10-09 13:28: one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, an outline in `metal`. Was a 24×12 lying leaf",
+  "leaf": "art director, 2026-10-09 13:28: one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, the leaf's own silhouette in one flat, unlit fill, no outline and no vein (art director, fix 6 A1). Was a 24×12 lying leaf",
   "leaf fill": "UI designer, 2026-10-09: the current leaf fills from its foot in 20 whole rows, a row every 3 s, carried in props (leaves.rows), never an event, so a still frame and reduced motion show the true wait",
   "glass and base": "art director, 2026-10-09 13:28 (concept measurements), on the grid by the UI designer: the glass 304×270, a half circle of radius 152 on (512, 354), its top at y 202, in the region 360, 200, 304, 272 (its ink 2 px down); the base 336×96 at 344, 456 (the concept's about 328×96). Were 304×296 at 360, 176 and 368×80 at 328, 464. Pass R: the geometry stays; the materials follow the art reset (derived.art reset)",
-  "glass lift": "UI designer, 2026-10-09; retired by the art director, 2026-10-10 10:48: nothing lifts or opens in the hatch; the chamber (dome, domeFront) stays drawn from 0 to the hand-off, its window has no pane, and the juvenile stands over it at 1000 (drawOrder). Dirty: each object invalidates only its own box; worst animation frame 96,064 px (15.6%), the juvenile's steps",
+  "glass lift": "UI designer, 2026-10-09; retired by the art director, 2026-10-10 10:48: nothing lifts or opens in the hatch; the chamber (dome, domeFront) stays drawn from 0 to the hand-off, its window has no pane, and the juvenile stands over it at 1000 (drawOrder). Dirty: each object invalidates only its own box; worst frame 97,188 px (15.8%) at 1000, the juvenile standing (94,848) with the plaque's cut to its hatch word; ceiling 98,944 (94,848 + the plaque plate 128 × 32 = 4,096; fix 5 I3); the steps 96,064",
   "juvenile": "UI designer, 2026-10-09: 304×312 at (360, 160), its feet at y 472 on the base's top. Pass R (2026-10-10 01:33): 304×312 is the size of one mibi up close's mibi (station-layouts.md 15c; habitat.json regions.resident, 144, 80, 304, 312), where the hand-off lands it; the same size across the dither is what makes it read as the same creature. Was \"the box the meet keeps\", which the meet's box at 144, 80 is not",
   "ready bud": "art director, 2026-10-09 13:28: the species' juvenile-proportion silhouette, from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat soft-edged dark warm shape, no eye, no detail; its ink at most 96×96 (measured at alpha ≥ 128), centred in the 112×112 box at (456, 288). Masters bud-shape-S01-112x112 to bud-shape-S16-112x112, bud-ready-128x160 behind it and bud-ready-front-128x160 over it; one generic bud-late-128x160. Not amber",
-  "empty": "The empty Incubator invites incubating: a standby light inside (a soft warm pool on the nest, about half the growing glow), the glass with the clean growing highlight, the base's foot light on, the nest lit and plump with its hollow visible, the plaque word `fog`. ✓ Choose a pod opens Pods when the rack holds a pod and a bay is free",
+  "empty": "The empty Incubator invites incubating: a standby light inside (a soft warm pool on the nest, about half the growing glow), the glass with the clean growing highlight, the base's foot light on, the nest lit and plump with its hollow visible, the plaque word `fog`. ✓ Choose a pod opens Pods when the rack holds a pod and a bay is free The chamber stands among the machinery that serves it (fix 5 IA1), never alone on a bare wall",
   "cross buds": "game designer, 2026-10-09 13:27: a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready; only a founder's bud clears every chapter",
   "code": "UI designer, 2026-10-09: 184 wide at (808, 424), centred on the stamp's x 900. Pass R (2026-10-10 01:33): the code in three groups with spaces, as codeText on main (\"K7Q 4MX P2D\"), no dots; the widest, \"WWW WWW WWW\", is 152 px in the face's Inter 16 (was \"WWW · WWW · WWW\", 168 to 171)",
   "bench": "architect, 2026-10-09 13:24: the frame word's stage part with the room's master; art director: room-bench-stage-incubator, signed (art director, d09acb12)",
@@ -29,6 +29,7 @@
   "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
   "needed": []
  },
+ "composed": { "empty": { "main": "dome", "rect": [360, 200, 304, 272] }, "growing": { "main": "bud", "rect": [448, 264, 128, 160] }, "ready": { "main": "bud", "rect": [448, 264, 128, 160] }, "hatch": { "main": "bud", "rect": [448, 264, 128, 160], "from1000": { "main": "juvenile", "rect": [360, 160, 304, 312] } }, "bareAllowed": { "empty": ["keepClear.leafBand", "keepClear.label"] } },
  "states": ["empty", "growing", "ready", "hatch"],
  "initial": "by the save: no bud, empty; a bud short of its minutes, growing; else ready. Arriving by Grow it (Create) or Cross them (Cross): growing",
  "entry": {
@@ -46,7 +47,7 @@
  },
  "stateRule": "growing and ready are the bud's two states (the chamber has growing and ready, nothing else). empty: no bud, and an invitation to grow one. hatch: from ✓ Open until the screen changes to one mibi up close, in the meet (screen id habitat; events.hatch), input held. A region with `inStates` exists only in those states",
  "regions": {
-  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-incubator" },
+  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-incubator", "recut": "fix 5 IA1 (boards/station-fix5-incubator-probe-spec.md): the chamber's machinery painted in the paint zones only", "paint": { "L": [80, 88, 160, 312], "R": [784, 88, 160, 144], "LM": [248, 320, 96, 80], "RM": [680, 320, 80, 88] }, "keepClear": { "leafBand": [248, 80, 528, 240], "chamber": [344, 200, 336, 352], "label": [768, 240, 184, 176] }, "kept": "everything below y 405 pixel for pixel (hoses, gauges, the floor lip)" },
   "rail": {
    "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "inStates": ["growing", "ready", "hatch"], "focusable": false, "glint": false, "open": null,
    "tabs": { "read": "known: read before Grow, or cleared while growing (a founder's bud only; never a sealed chapter that is still shut)", "unread": "still a surprise (a sealed chapter shows as unread here)" },
@@ -56,7 +57,7 @@
   "leaves": {
    "rect": [256, 88, 512, 216], "component": "leaves", "form": "arc", "layout": ["leafArc"], "inStates": ["growing", "ready"], "leaf": [16, 20], "max": 40,
    "pictures": { "empty": "leaf-empty-16x20", "full": "leaf-full-16x20" },
-   "states": { "empty": "the outline, `metal`", "filling": "the full leaf clipped from the bottom over the outline: its lowest `rows` rows of 20", "full": "the full leaf" },
+   "states": { "empty": "the leaf's silhouette, one flat fill (leaf-empty-16x20, fix 6 A1)", "filling": "the full leaf clipped from the bottom over the outline: its lowest `rows` rows of 20", "full": "the full leaf" },
    "props": "leaves: { total, full, rows }: total the bud's minutes, full the whole minutes passed, rows 0 to 19 of the current leaf, stepped every 3 s by the view; ready: full = total",
    "leafArc": {
     "centre": [512, 344], "arcs": { "inner": 216, "outer": 244 }, "span": [-76, 76], "pitch": 8, "half": 4, "perArc": 20, "offset": [-8, -10], "fill": ["inner", "outer"],
@@ -78,9 +79,9 @@
   "nestFront": { "rect": [408, 400, 208, 48], "component": "livingWindow", "part": "inside", "asset": "nest-front-208x48", "holds": "only the nest's front rim fibres", "over": "bud", "note": "drawn over the bud as room-cradle-front is over the pod (art director, 2026-10-09 13:47)" },
   "domeFront": { "rect": [360, 200, 304, 272], "inkTop": 2, "component": "livingWindow", "part": "frame", "slice": "dome-front-304x272", "states": { "empty": "the clean window, no highlight", "growing": "the window's edge, no highlight", "ready": "lit from inside; the window's edge unchanged, never a ring" }, "note": "the chamber's window front and its hood, drawn over the nest and the bud" },
   "base": { "rect": [344, 456, 336, 96], "component": "livingWindow", "part": "frame", "plate": [448, 496, 128, 32], "footLight": { "rect": [352, 548, 320, 2], "when": "on in every state (art director, 2026-10-09 13:28)", "painted": "in base-336x96" }, "lamp": { "rect": [652, 506, 12, 12], "slice": "home-lamp-sky-12x12", "when": "ready and hatch, while the new mibi's painting has not landed (props.painting: waiting or offline)", "note": "the waiting lamp, cool, never a word on the stage" }, "note": "the sand housing (`enamel`), matte; not wood, not machined enamel; the chamber, in the sage housing (`metal`), stands in it, its foot at y 472; the foot light `sage`" },
-  "plaque": { "rect": [448, 496, 128, 32], "component": "text", "px": 16, "weight": 400, "align": "centre", "centre": 512, "lineTop": 502, "words": 1, "noDigits": true, "text": { "empty": "strings.plaque.empty", "growing": "strings.plaque.growing", "ready": "strings.plaque.ready", "hatch": "" } },
-  "stamp": { "rect": [840, 296, 120, 120], "component": "stampLabel", "inStates": ["growing", "ready", "hatch"], "live": "the bud's stamp, its chapters filling as they clear", "fromDome": 176 },
-  "code": { "rect": [808, 424, 184, 24], "component": "text", "inStates": ["growing", "ready", "hatch"], "px": 16, "weight": 400, "align": "centre", "centre": 900, "lineTop": 426, "text": "the bud's code (genome.codeText): three groups with spaces, \"K7Q 4MX P2D\", live text, shareable; the widest, \"WWW WWW WWW\", 152 px" },
+  "plaque": { "rect": [448, 496, 128, 32], "component": "text", "px": 16, "weight": 400, "align": "centre", "centre": 512, "lineTop": 502, "words": 1, "noDigits": true, "text": { "empty": "strings.plaque.empty", "growing": "strings.plaque.growing", "ready": "strings.plaque.ready", "hatch": "strings.plaque.ready to 1000, then strings.plaque.hatch (fix 5 I3): never blank" } },
+  "stamp": { "rect": [804, 256, 120, 120], "component": "stampLabel", "look": "stampCase", "slot": "frame.json regions.stampSlot, raised 144 (label y 256, not 400): the stage's painted cable and right gauges fill x 746 to 954, y 414 to 527; the shared y 400 returns if the art director's stage clears that band", "offGrid": "x 804 centres the 120 label on the right column's axis 864, as on Create", "inStates": ["growing", "ready", "hatch"], "live": "the bud's stamp, its chapters filling as they clear", "fromDome": 140, "was": "840, 296 (its code at 808, 424 sat on the cable, y 418 to 440); UI/UX designer, 2026-10-11 23:59, fix 4 of the global fix plan: the stamp is a small label, never the brightest element on screen; its case look is the art director's hook stampCase (frame.json regions.stampSlot)" },
+  "code": { "rect": [776, 381, 176, 25], "component": "text", "inStates": ["growing", "ready", "hatch"], "px": 16, "weight": 400, "align": "centre", "offGrid": "the line box 381 to 405 keeps 8 px from the baseline (397) to the rule (405), as Create's code does", "centre": 864, "lineTop": 381, "baseline": 397, "rule": { "y": 405, "h": 1, "x": [776, 952] }, "slot": "frame.json regions.stampSlot code, moved with the label: 5 px under it, 8 px from baseline to rule, 9 px above the cable at x 932 (y 414)", "text": "the bud's code (genome.codeText): three groups with spaces, \"K7Q 4MX P2D\", live text, shareable; the widest, \"WWW WWW WWW\", 152 px" },
   "ribbon": { "rect": [312, 104, 400, 40], "component": "ribbon", "inStates": ["hatch"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "look": "the one ribbon look (cargo.json regions.ribbon)", "lines": 1, "words": "strings.hatchRibbon" },
   "juvenile": { "rect": [360, 160, 304, 312], "component": "specimen", "inStates": ["hatch"], "axis": 512, "feet": 472, "asset": "the new mibi in its standard painting if it has landed, else its placeholder (the stylised rig pass); a juvenile as habitat.json regions.resident.asset (the same id, the stage in it)", "lift": 4, "handoff": "its size, 304×312, is one mibi up close's mibi (144, 80, 304, 312), where the hand-off lands it" }
  },
@@ -94,11 +95,11 @@
   "hatch": {
    "kind": "hatch", "target": "room", "ms": 2600, "hold": 2780,
    "steps": [
-    { "at": 0, "do": "the leaves and the plaque's word go (a cut)" },
+    { "at": 0, "do": "the leaves go (a cut); the plaque keeps its word (fix 5 I3)" },
     { "at": 0, "ms": 600, "do": "a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps bud-ready-128x160, its shape and bud-ready-front-128x160 until 600 (art director, 2026-10-10 10:48: the lift is retired, the chamber stays; UI designer, 10:54)" },
     { "at": 600, "do": "the bud cracks (bud-crack-1)" },
     { "at": 800, "do": "the crack opens (bud-crack-2)" },
-    { "at": 1000, "do": "the bud goes; the juvenile stands in its box on the base (a cut), in its painting or its placeholder" },
+    { "at": 1000, "do": "the bud goes; the juvenile stands in its box on the base (a cut), in its painting or its placeholder; the plaque cuts to strings.plaque.hatch" },
     { "at": 1200, "do": "the ribbon shows the new mibi's words" },
     { "at": 1400, "ms": 200, "lift": [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]], "do": "the juvenile steps out: `lift` ([ms into the step, px above its feet line 472]), each a cut, whole pixels, no ease; the ribbon and the base's lamp stay (the meet's hop at half its period, habitat.json events.moment.placeholder; UI designer, 2026-10-10 09:15)" },
     { "at": 1800, "ms": 200, "lift": "the same table as the step at 1400", "do": "a second step, the same table" },
@@ -162,10 +163,11 @@
   "bud": { "bean": "peach", "light": "cream", "edge": "rust", "late": "blush", "shape": "bark", "note": "the bud pictures' colours, never a drawn glow" },
   "base": { "fill": "enamel", "light": "sand", "shade": "bevel", "edge": "hairline", "footLight": "sage", "plate": "painted in base-336x96 (#92846d)", "plateEdge": "hairline", "note": "the sand housing, matte, lit as Home's rest knob is (was lit frost); the foot light sage, a quiet alive-and-working line, never frost, never amber (art director, 2026-10-10 01:44)" },
   "plaque": { "empty": "ink", "growing": "ink", "ready": "ink", "floor": "4.5:1 on the painted plate (16 px, weight 400); ink 4.81:1" },
-  "leaves": { "full": "sage", "vein": "sageD", "empty": "metal" },
-  "stampLabel": { "fill": "bone", "edge": "slate" },
-  "code": "bone",
-  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" }
+  "leaves": { "full": "sage", "vein": "sageD", "empty": "sageD", "note": "the empty leaf: sageD #5d7a5f, one flat unlit fill painted in leaf-empty-16x20, no outline or vein; 1.43:1 on the wall, under the full leaf's 2.70:1 (art director, fix 6 A1, masters-pods cf3b0ac6)" },
+  "stampLabel": {"fill": "bone", "edge": "hairline", "k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"},
+  "codeRule": "hairline",
+  "code": "mist",
+  "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" }
  },
  "strings": {
   "title": "Incubator",
@@ -173,7 +175,7 @@
   "open": "Open",
   "choose": "Choose a pod",
   "back": "Home",
-  "plaque": { "empty": "empty", "growing": "growing", "ready": "ready" },
+  "plaque": { "empty": "empty", "growing": "growing", "ready": "ready", "hatch": "hatched", "hatchNote": "copywriter, final (fix 5 I3, 2026-10-15 04:37): one word for the plate under a hatched mibi, lowercase, no punctuation, at most 112 px at Inter 16 (measured by the real measurer, tests/vectors/metrics.json)" },
   "bud": "{a/an} {Species} bud",
   "crossBud": "{A} and {B}'s bud",
   "crossBudFallback": "a {Species} bud, past 208 px",
@@ -181,7 +183,7 @@
   "noBay": "no bay free",
   "noBayPlate": "No bay free. Return a mibi to the wild first.",
   "painting": "its painting is on its way",
-  "offline": "waiting for the cloud",
+  "offline": "waiting for a signal",
   "hatchRibbon": "{Name}, a young {Species}",
   "hatchRibbonExamples": ["Fig, a young Loika"],
   "by": "copywriter, 2026-10-09 13:27"

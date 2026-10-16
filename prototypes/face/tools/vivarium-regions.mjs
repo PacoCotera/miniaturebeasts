@@ -14,23 +14,25 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0) {
   for (const r of got("window", "chrome")) must(eq(r.rect, win), `the window's plates ${r.rect} are not the window ${win}`);   // edge to edge, no bezel
   for (const r of got("window", "painted")) must(eq(r.rect, win), `the window's painting ${r.rect} is not ${win}`);
   must(got("window", "painted").length === 0 || got("window", "chrome").length === 0, "the window's plates show under the light's painting");
-  for (const id of ["resident", "bed", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, win), `${id} (${r.layer}) ${r.rect} leaves the window ${win}`);   // clipped to the window
+  for (const id of ["resident", "bed", "bed.sleepers", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, win), `${id} (${r.layer}) ${r.rect} leaves the window ${win}`);   // clipped to the window
   { const w = R.resident.walk.ground; for (const r of [...got("resident", "art"), ...got("resident", "painted")]) must(r.rect[0] >= w[0] && r.rect[0] + r.rect[2] <= w[0] + w[2] && r.rect[1] + r.rect[3] >= w[1] && r.rect[1] + r.rect[3] <= w[1] + w[3] + 1, `the residents ${r.rect} leave the walk ground ${w}`); }
-  { const b = R.bed.rect, k = R.bed.markRect, pics = [...got("bed", "art"), ...got("bed", "painted")];   // the nest exactly at its rect, the Companion's mark exactly at its own; the sleepers within the nap's height above the bed
+  { const b = R.bed.rect, k = R.bed.markRect, pics = [...got("bed", "art"), ...got("bed", "painted")], up = [b[0], b[1] - 48, b[2], b[3] + 48];   // the nest exactly at its rect, the Companion's mark exactly at its own; the sleepers (their own region) within the nap's height above the bed
     must(pics.some((r) => eq(r.rect, b)), `the bed is not drawn exactly at ${b}`);
-    for (const r of pics) { if (eq(r.rect.slice(2), k.slice(2))) must(eq(r.rect, k), `the Companion mark ${r.rect} is not ${k}`); else if (!eq(r.rect, b)) must(within(r.rect, [b[0], b[1] - 48, b[2], b[3] + 48]), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); } }
-  if (state === "empty") for (const id of ["resident", "nameTag", "focus"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away)
+    for (const r of pics) must(eq(r.rect, b) || eq(r.rect, k), `a bed picture (${r.layer}) ${r.rect} is neither the bed ${b} nor the Companion mark ${k}`);
+    for (const r of [...got("bed.sleepers", "art"), ...got("bed.sleepers", "painted")]) must(within(r.rect, up), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); }
+  if (state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag", "focus"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away)
   { const tag = got("nameTag", "chrome")[0], txt = got("nameTag", "type")[0]; must(!!tag === /^resident\./.test(cur), `the name tag shows ${tag ? "" : "no "}when the ring is on ${cur}`);
     if (tag) { must(within(tag.rect, [win[0] + 8, win[1], win[2] - 16, win[3]]), `the name tag ${tag.rect} is not 8 px inside the window ${win}`); must(tag.rect[3] === R.nameTag.h, `the name tag is ${tag.rect[3]} tall, not ${R.nameTag.h}`); must(tag.rect[2] % R.nameTag.round === 0 && tag.rect[2] >= R.nameTag.min && tag.rect[2] <= R.nameTag.max, `the name tag's width ${tag.rect[2]} is not a multiple of ${R.nameTag.round} in ${R.nameTag.min} to ${R.nameTag.max}`); }
     if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); }
-  for (const r of got("strip", "chrome")) must(eq(r.rect, R.strip.rect), `the strip ${r.rect} is not ${R.strip.rect}`);
+  for (const r of got("strip", "painted")) must(r.rect[2] === 0 || eq(r.rect, R.strip.rect), `the strip's plate ${r.rect} is not ${R.strip.rect}`);
+  must(!got("strip", "chrome").length, "the strip draws no fill or edge (fix 2 F1)");
   if (n > 0) {   // a region a tile (tile.<i>): its box is the list's pitch at its place, lifted by the spec's lift while the ring is on it (one tile at most)
     const items = Array.from({ length: n }, (_, i) => listPitch(R.tiles, n, i)), lift = spec.focus.targets.tile.lift; let lifted = 0;
     for (let i = 0; i < n; i++) {
-      const parts = regions.filter((r) => r.id === `tile.${i}`); if (!parts.length) { out.push(`tile ${i} is not drawn`); continue; }
+      const plateOrChrome = (x) => x.layer === "chrome" || x.layer === "painted", parts = regions.filter((r) => r.id === `tile.${i}`); if (!parts.length) { out.push(`tile ${i} is not drawn`); continue; }
       for (const r of parts) {
-        const base = items[i], up = r.layer === "chrome" ? r.rect[1] === base[1] - lift : parts.some((x) => x.layer === "chrome" && x.rect[1] === base[1] - lift), box = up ? [base[0], base[1] - lift, base[2], base[3]] : base;
-        if (r.layer === "chrome") { if (up) lifted++; must(eq(r.rect, box), `tile ${i} ${r.rect} is not its place on the pitch ${base}`); } else must(within(r.rect, box), `tile ${i}'s ${r.layer} ${r.rect} leaves the tile ${box}`);
+        const base = items[i], up = plateOrChrome(r) ? r.rect[1] === base[1] - lift : parts.some((x) => plateOrChrome(x) && x.rect[1] === base[1] - lift), box = up ? [base[0], base[1] - lift, base[2], base[3]] : base;
+        if (plateOrChrome(r)) { if (up && r.layer === "chrome") lifted++; must(eq(r.rect, box), `tile ${i} ${r.rect} is not its place on the pitch ${base}`); } else must(within(r.rect, box), `tile ${i}'s ${r.layer} ${r.rect} leaves the tile ${box}`);
       }
     }
     must(lifted <= parts1(regions, n), "more than one tile is lifted");

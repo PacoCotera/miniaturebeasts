@@ -39,15 +39,15 @@ static void key_face(const char *id, const char *region, const int r[4], int foc
   v_region(region, LAYER_TYPE); v_text(v_fmt("%s.label", id), label, r[0] + v_half(r[2] - w), y + ni("regions.keys.label.lineTop", 10) + v_fdiv(20 - v_cap(px), 2), w, px, ink);
 }
 static void build_panel(void) {
-  int r[4], sh[2] = { nk("regions.panel.shadow", 0), nk("regions.panel.shadow", 1) }; nrect("regions.panel.rect", r);
-  v_region("panel", LAYER_CHROME); v_rect("panel.shadow", r[0] + sh[0], r[1] + sh[1], r[2], r[3], ncol("colours.panel.shadow"));   /* the report card's look: a void drop shadow, the fill, the hairline edge, a bevel top row */
-  word_panel("panel", r[0], r[1], r[2], r[3], ncol("colours.panel.fill"), ncol("colours.panel.edge")); v_rect("panel.top", r[0] + 1, r[1] + 1, r[2] - 2, 1, ncol("colours.panel.top"));
+  int r[4]; nrect("regions.panel.rect", r);
+  const char *pl = v_pstr("overlay.regions.panel.plate"); v_region("panel", LAYER_PAINTED); if (*pl) v_sprite("panel", pl, r[0], r[1], r[2], r[3]);   /* fix 2 F1/F8: the namer's device plate, 1:1, no drop shadow; no picture, no plate (F6) */
 }
 /* the name well: a panel (`ground`, `hairline`), the name 28 px, a selection rect behind it while selected and a caret after it while typing or empty */
 static void build_field(void) {
   int r[4]; nrect("regions.field.rect", r); const char *name = v_pstr("overlay.regions.field.name"), *state = v_pstr("overlay.regions.field.state"); int px = ni("regions.field.px", 28), tw = v_measure(name, px), x = nk("regions.field.nameAt", 0);
   int selected = strcmp(state, "selected") == 0 && *name, caret = strcmp(state, "selected") != 0, cx = *name ? x + tw + 2 : x;
-  v_region("field", LAYER_CHROME); word_panel("field", r[0], r[1], r[2], r[3], ncol("colours.field.fill"), ncol("colours.field.edge"));
+  { const char *pl = v_pstr("overlay.regions.field.plate"); v_region("field", LAYER_PAINTED); if (*pl) v_sprite("field", pl, r[0], r[1], r[2], r[3]); }   /* the name well (fix 2 F4): the well master, 1:1 */
+  v_region("field", LAYER_CHROME);
   v_rect("field.selection", x - 4, nk("regions.field.nameAt", 1), selected ? tw + 8 : 0, selected ? ni("regions.field.line", 36) : 0, ncol("colours.field.selection"));
   v_rect("field.caret", cx, nk("regions.field.nameAt", 1) + 4, caret ? 2 : 0, caret ? 28 : 0, ncol("colours.field.caret"));
   v_region("field", LAYER_TYPE); v_text("field.name", name, x, ni("regions.field.lineTop", 70) + v_fdiv(ni("regions.field.line", 36) - v_cap(px), 2), tw, px, ncol("colours.field.name"));

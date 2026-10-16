@@ -2,75 +2,75 @@
  "_note": "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants and growNow at two: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "incubator-empty": {
-   "hash": "2c617f46",
+   "hash": "1cd73654",
    "png": "incubator-empty.png"
   },
   "incubator-growing": {
-   "hash": "f25a2bef",
+   "hash": "6bf53823",
    "png": "incubator-growing.png"
   },
   "incubator-growing-late": {
-   "hash": "6e82481a",
+   "hash": "eaee870d",
    "png": "incubator-growing-late.png"
   },
   "incubator-ready": {
-   "hash": "3532ec3b",
+   "hash": "ff636016",
    "png": "incubator-ready.png"
   },
   "incubator-hatch-100": {
-   "hash": "dd1fa29c",
+   "hash": "18f5096d",
    "png": "incubator-hatch-100.png"
   },
   "incubator-hatch-300": {
-   "hash": "dd1fa29c",
+   "hash": "18f5096d",
    "png": "incubator-hatch-300.png"
   },
   "incubator-hatch-650": {
-   "hash": "d65d37fd",
+   "hash": "ccdf8520",
    "png": "incubator-hatch-650.png"
   },
   "incubator-hatch-850": {
-   "hash": "ad0f35f1",
+   "hash": "f79de058",
    "png": "incubator-hatch-850.png"
   },
   "incubator-hatch-1100": {
-   "hash": "f975eb50",
+   "hash": "ac6ac4ec",
    "png": "incubator-hatch-1100.png"
   },
   "incubator-hatch-1500": {
-   "hash": "1bc14f3d",
+   "hash": "072c5009",
    "png": "incubator-hatch-1500.png"
   },
   "incubator-hatch-2000": {
-   "hash": "8062be6d",
+   "hash": "733aa7e3",
    "png": "incubator-hatch-2000.png"
   },
   "incubator-hatch-moving-1090": {
-   "hash": "f4ae6f98",
+   "hash": "262415ac",
    "png": "incubator-hatch-moving-1090.png"
   },
   "incubator-hatch-moving-2500": {
-   "hash": "f26ba559",
+   "hash": "595aa251",
    "png": "incubator-hatch-moving-2500.png"
   },
   "incubator-hatch-moving-5440": {
-   "hash": "d63777f8",
+   "hash": "10546f79",
    "png": "incubator-hatch-moving-5440.png"
   },
   "incubator-hatch-moving-5840": {
-   "hash": "9ecf40b5",
+   "hash": "82f64427",
    "png": "incubator-hatch-moving-5840.png"
   },
   "incubator-hatch-moving-2720": {
-   "hash": "9ecf40b5",
+   "hash": "82f64427",
    "png": "incubator-hatch-moving-2720.png"
   },
   "incubator-growNow-200": {
-   "hash": "9c124104",
+   "hash": "8feb3a04",
    "png": "incubator-grownow-200.png"
   },
   "incubator-growNow-420": {
-   "hash": "acf9f7ec",
+   "hash": "3c95dba1",
    "png": "incubator-grownow-420.png"
   }
  }

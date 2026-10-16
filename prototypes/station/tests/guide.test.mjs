@@ -55,7 +55,7 @@ test("the face spread's clarity line: 'A typical Belatz, not one of yours.', the
 });
 
 test("the spec data the guide rests on: the strings, the jumps, the ring on paper and the species' wireframes", () => {
-  const pods = specs("pods.json"), frame = specs("frame.json"), lib = specs("library.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "the species"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
+  const pods = specs("pods.json"), frame = specs("frame.json"), lib = specs("library.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "every {species}"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
   assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "book" && j.spread === "guide")); assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "book" && j.spread === "guide")); assert.equal(frame.navigation.screens.book.back, "Library");
   assert.deepEqual(frame.focus.ring.colours.paper, { core: "rust", key: null }); assert.deepEqual([frame.focus.ring.gap, frame.focus.ring.reach, ...frame.focus.ring.bands.map((b) => b.w)], [1, 5, 1, 2, 1]);
   assert.equal(lib.regions.faceSpread.visit, "derived.faceVisit"); assert.deepEqual(lib.regions.faceSpread.stamp.rect, [832, 112, 120, 120]); assert.deepEqual(lib.regions.detail.carried.names.capTops, [124, 144]);

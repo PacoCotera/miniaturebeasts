@@ -80,6 +80,6 @@ test("the bottom line follows the ring: ✓ Type c (the mark's words), Capitals 
   assert.equal(L("key.0").ok, "Type A"); assert.equal(L("mod.space").ok, "Type a space"); assert.equal(L("mod.shift").ok, null); assert.equal(L("mod.shift").subject, "a name starts with a capital");
   assert.equal(L("mod.page").ok, "Accents"); assert.equal(L("act.suggest").ok, "Suggest a name"); n.sugg = 0; assert.equal(L("act.suggest").ok, "Another name");
   Object.assign(n, { fs: "typed", text: "Zinnia" }); assert.equal(L("act.done").ok, "Name it Zinnia"); assert.equal(L("act.done").back, "Delete"); assert.equal(L("mod.shift").ok, "Capitals"); n.shift = true; assert.equal(L("mod.shift").ok, "Small letters");
-  Object.assign(n, { fs: "typed", text: "A" }); assert.equal(L("act.done").dim, true, "the name cannot be saved"); Object.assign(n, { fs: "empty", text: "" }); assert.equal(L("act.done").back, spec.strings.backLeave.replace("{name}", m.name));
+  Object.assign(n, { fs: "typed", text: "A" }); assert.equal(L("act.done").ok, null, "the name cannot be saved: no verb, no name"); assert.equal(L("act.done").dim, undefined); Object.assign(n, { fs: "empty", text: "" }); assert.equal(L("act.done").back, spec.strings.backLeave.replace("{name}", m.name));
   Object.assign(n, { fs: "typed", text: "Wwwwwwwwww" }); assert.equal(L("key.1").dim, true, "a full field dims the letter's ✓ cap");
 });

@@ -3,69 +3,71 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#cargo",
  "frame": "frame.json",
- "status": "Cargo's detail spec: the bay with its sealed crates (the whole), one crate opening (the arrival), the report card, and the rack the pods land in, handed to Pods. Wireframes 17-cargo-bay.svg to 17d-cargo-nav.svg",
+ "status": "Cargo's detail spec: the bay with its sealed crates (the whole), one crate opening (the arrival), the report on the bay's door, and the rack the pods land in, handed to Pods. Wireframes 17-cargo-bay.svg to 17d-cargo-nav.svg. Fix 5 (boards/station-fix5-cargo-spec.md): the bay painted in every state, the door by contents, the plate on the door, the rack insert, cuts",
  "note": "Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The stage is the frame's (0, 40, 1024, 522); the top bar and the bottom line are the frame's.",
  "title": { "word": "Cargo", "mark": "Home" },
  "states": ["bay", "opening", "report"],
  "initial": "bay",
- "stateRule": "bay: the whole, the crates sealed in the bay (or none). opening: from ✓ Open the bay until the last crate has opened, one crate at a time, input held (events.opening). report: from the last crate's end until the next press, then bay, empty. A region with `inStates` exists only in those states",
- "conditions": { "away": "the Companion is not in the Caddy: no walk crates; the bay is shut unless a sitting crate is in it, and a ready sitting crate opens as docked", "docked": "the bay is open: one sealed crate per crate the Companion brought, at most three, or none" },
+ "stateRule": "bay: the whole, the crates sealed in the bay (or none). opening: from ✓ Open the bay until the last crate has opened, one crate at a time, input held (events.opening). report: from the last crate's end until the next press, then the bay (the shut door when it holds nothing, the waiting pods on the open bay when pods wait). A region with `inStates` exists only in those states",
+ "conditions": { "away": "the Companion is not in the Caddy: no walk crates; the door is shut unless a sitting crate or a waiting pod is in the bay, and a ready sitting crate opens as docked", "docked": "the door follows what the bay holds (R2): one sealed crate per crate the Companion brought, at most three, or a waiting pod, with the door open; with nothing, the door is shut" },
  "regions": {
-  "bay": { "rect": [16, 48, 992, 320], "component": "panel", "inStates": ["bay", "report"], "inside": [24, 56, 976, 304], "states": { "shut": "away: the bay's lid across the inside", "open": "docked: the inside, the crates on its floor" } },
+  "bay": { "rect": [16, 48, 992, 320], "build": "bay", "inStates": ["bay", "opening", "report"], "inside": [24, 56, 976, 304], "slices": { "open": "cargo-bay-992x320", "shut": "cargo-bay-shut-976x304", "report": "cargo-bay-shut-report-976x304" }, "door": [24, 56, 976, 304], "rule": "R2: open when it holds a walk crate, a ready sitting crate or a waiting pod, and in the opening; shut when it holds nothing, and in the report; in the report the door is slices.report (GB-R6); each change a cut. The open bay is the painting, drawn 1:1; the door goes 1:1 over it. The back wall runs from y 64 to about 238, the floor from about 240 to 352, its lip to 356, the rim 8 px (measured; nothing is placed by them but the feet lines)", "states": { "shut": "the door: nothing held, or the report", "open": "the painting: a walk crate, a ready sitting crate or a waiting pod, and the opening" } },
   "crates": {
    "rect": [64, 120, 896, 176], "build": "crates", "inStates": ["bay"],
    "crate": [256, 176], "pitch": 320, "max": 3,
-   "places": [[64, 120, 256, 176], [384, 120, 256, 176], [704, 120, 256, 176]],
-   "order": "left to right, the order they open; places with no crate show the bay's floor",
+      "byCount": { "1": [[384, 120, 256, 176]], "2": [[224, 120, 256, 176], [544, 120, 256, 176]], "3": [[64, 120, 256, 176], [384, 120, 256, 176], [704, 120, 256, 176]] },
+   "order": "walk crates left to right in the order they open, sitting crates after them; the places are fixed by n on the Dock frame (crates sliding in never re-centre)",
+   "shadow": { "slice": "crate-shadow-256x24", "at": [0, 150], "size": [256, 24], "feetY": 282, "offGrid": "centred on the feet", "when": "from the frame its crate has landed; a crate still sliding casts none" },
    "overflow": "more than three crates (developer only): the first three in bayCrates order show, walk crates first; no others are drawn; the context line counts all",
    "slices": { "sealed": "crate-sealed-256x176", "sitting": "crate-sitting-256x176" },
-   "sitting": { "places": "from the right: the first at 704, a second at 384; walk crates fill from the left; at most three show, walk crates first", "lamp": { "at": [122, 184], "size": [12, 12], "rule": "under its crate, at (place.x + 122, 304): the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when ready" }, "opens": "a ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away; its ribbon is strings.ribbon.sitting. It gets no row on the report; when only sitting crates opened, no report card shows and the bay shows at the end", "reveal": null, "revealNote": "what the opened sitting crate shows (its portrait's reveal) is not designed yet (station-layouts.md, Not designed yet); until it is, a build leaves sitting crates out of the bay" }
+   "sitting": { "places": "after the walk crates, at the group's right end; at most three crates show, walk crates first", "lamp": { "at": [122, 184], "size": [12, 12], "rule": "under its crate, at (place.x + 122, 304) of its place by count: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when ready" }, "opens": "a ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away; its ribbon is strings.ribbon.sitting. It gets no row on the report; when only sitting crates opened, no report card shows and the bay shows at the end", "reveal": null, "revealNote": "what the opened sitting crate shows (its portrait's reveal) is not designed yet (station-layouts.md, Not designed yet); until it is, a build leaves sitting crates out of the bay" }
   },
-  "waiting": { "rect": [968, 328, 24, 24], "build": "crates", "part": "waiting", "asset": "mark-waiting-24", "inStates": ["bay", "report"], "when": "pods wait in the bay for a free well" },
+  "waitingPods": { "rect": [352, 168, 320, 120], "build": "crates", "part": "waiting", "inStates": ["bay"], "max": 3, "pod": { "class": "collection", "size": [88, 112] }, "feetY": 280, "axes": { "1": [512], "2": [460, 564], "3": [408, 512, 616] }, "box": "(axis − 44, 168, 88, 112)", "shadow": { "slice": "pod-collection-shadow", "size": [104, 14], "place": "(axis − 52, 273, 104, 14), Pods' rule", "offGrid": "centred on the feet" }, "order": "st.waiting, oldest first; the context counts all", "when": "pods wait in the bay for a free well, in the bay state only; the mark leaves Cargo (it stays on Home's module)" },
   "rack": {
-   "rect": [176, 400, 672, 144], "component": "panel",
+   "rect": [16, 384, 992, 168], "build": "rack", "slice": "cargo-rack-992x168",
    "wells": { "first": [184, 408, 96, 128], "pitch": 112, "slots": 6, "rects": [[184, 408, 96, 128], [296, 408, 96, 128], [408, 408, 96, 128], [520, 408, 96, 128], [632, 408, 96, 128], [744, 408, 96, 128]], "order": "rack order, as Pods' collection" },
    "pod": { "class": "collection", "size": [88, 112], "at": [4, 8], "note": "the collection class, as Pods' collection draws it, rendered at 88×112" },
-   "rule": "the six places of the rack, the same pods in the same order as Pods' collection: an empty well, or its pod; a pod still travelling leaves its well empty until it lands"
+   "rule": "the six places of the rack, the same pods in the same order as Pods' collection: an empty well, or its pod; a pod still travelling leaves its well empty until it lands; the wells are the insert's painting (an object, not an outline): the face draws no panel, rule or well"
   },
-  "ribbon": { "rect": [208, 56, 608, 40], "component": "ribbon", "inStates": ["opening"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "lines": 1, "words": "strings.ribbon" },
+  "ribbon": { "rect": [208, 56, 608, 40], "component": "ribbon", "inStates": ["opening"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "lines": 1, "words": "strings.ribbon", "fit": { "w": "words + 2 × pad, rounded up to 8, at least 160", "x": "512 − w / 2", "maxWords": 6, "empty": "draws nothing" }, "bound": "the rect is the widest the ribbon may be; it shows only from 500 ms, 28 px above the closer's ink and 8 px above the pods' boxes" },
   "crate": {
-   "rect": [296, 120, 432, 272], "build": "crates", "part": "open", "inStates": ["opening"],
+   "rect": [296, 72, 432, 272], "build": "crates", "part": "open", "inStates": ["opening"], "feetY": 337, "shadow": { "slice": "crate-shadow-432x24", "rect": [296, 325, 432, 24], "offGrid": "centred on the feet", "steps": "every step of the opening" },
    "slices": { "sealed": "crate-sealed-432x272", "opening": "crate-opening-432x272", "open": "crate-open-432x272" },
-   "pods": { "size": [88, 112], "pitch": 104, "y": 152, "places": { "1": [[468, 152, 88, 112]], "2": [[416, 152, 88, 112], [520, 152, 88, 112]], "3": [[364, 152, 88, 112], [468, 152, 88, 112], [572, 152, 88, 112]] }, "more": "pods numbered i from 0 in well order; 0, 1, 2 stand left, middle, right; pod i ≥ 3 appears in the middle place as a cut at 1200 + 150·(i−1) and travels from there at 1200 + 150·i; a pod with no free well stays and no later pod appears; developer crates only (play has at most 3)" }
+   "pods": { "size": [88, 112], "pitch": 104, "y": 104, "places": { "1": [[468, 104, 88, 112]], "2": [[416, 104, 88, 112], [520, 104, 88, 112]], "3": [[364, 104, 88, 112], [468, 104, 88, 112], [572, 104, 88, 112]] }, "more": "pods numbered i from 0 in well order; 0, 1, 2 stand left, middle, right; pod i ≥ 3 appears in the middle place as a cut at 1200 + 150·(i−1) and travels from there at 1200 + 150·i; a pod with no free well stays and no later pod appears; developer crates only (play has at most 3)" }
   },
-  "stores": { "rect": [184, 320, 600, 64], "build": "crates", "part": "stores", "inStates": ["opening"], "size": [48, 64], "feetY": 384, "places": { "energy": [184, 320, 48, 64], "data": [240, 320, 48, 64], "essence": [736, 320, 48, 64] }, "pictures": { "energy": "cargo-energy-48x64", "data": "cargo-data-48x64", "essence": "cargo-essence-48x64" }, "show": "a material's container only when this crate brought it: play.gained.k > 0 (state.mjs openBay, what the crate carried with the top-up, before any mend), the same figure as the report's Gathered row; the dock's mend is the Probe row's, never the containers'", "at": "a cut at 800 ms with the counter tick, also with reduced motion; until the crate's end dither", "order": "travelling pods draw over the containers", "digits": "none", "rule": "presentation only: no capacity, never kept (game designer 11:35)" },
-  "travel": { "rect": [176, 104, 672, 440], "build": "crates", "part": "travel", "inStates": ["opening"], "pod": { "class": "collection", "size": [88, 112] }, "from": "its place in the open crate", "to": "its well's pod place: well + (4, 8)", "path": "a straight line, whole pixels, eased in and out; nothing is scaled; a pod never leaves this rectangle", "ease": "in-out: p = min(1000, t·1000/600); e = p·p·(3000 − 2p)/1000000 (64-bit); pos = from + (to − from)·e/1000, integer division truncating toward zero; at p = 1000 exactly to" },
+  "stores": { "rect": [184, 272, 600, 64], "build": "crates", "part": "stores", "inStates": ["opening"], "size": [48, 64], "feetY": 336, "places": { "energy": [184, 272, 48, 64], "data": [240, 272, 48, 64], "essence": [736, 272, 48, 64] }, "shadow": { "slice": "cargo-store-shadow-48x14", "at": [0, 57], "size": [48, 14], "offGrid": "centred on 336", "when": "with its container" }, "pictures": { "energy": "cargo-energy-48x64", "data": "cargo-data-48x64", "essence": "cargo-essence-48x64" }, "show": "a material's container only when this crate brought it: play.gained.k > 0 (state.mjs openBay, what the crate carried with the top-up, before any mend), the same figure as the report's Gathered row; the dock's mend is the Probe row's, never the containers'", "at": "a cut at 800 ms with the counter tick, also with reduced motion; until the crate's end", "order": "travelling pods draw over the containers", "digits": "none", "rule": "presentation only: no capacity, never kept (game designer 11:35)" },
+  "travel": { "rect": [176, 72, 672, 472], "build": "crates", "part": "travel", "inStates": ["opening"], "pod": { "class": "collection", "size": [88, 112] }, "from": "its place in the open crate", "to": "its well's pod place: well + (4, 8)", "path": "a straight line, whole pixels, eased in and out; nothing is scaled; a pod never leaves this rectangle", "ease": "in-out: p = min(1000, t·1000/600); e = p·p·(3000 − 2p)/1000000 (64-bit); pos = from + (to − from)·e/1000, integer division truncating toward zero; at p = 1000 exactly to" },
   "report": {
-   "rect": [232, 72, 560, 312], "maxHeight": 320, "component": "panel", "build": "reportCard", "inStates": ["report"], "pad": 16, "shadow": [2, 3], "noDigits": "but beside a material icon",
-   "heading": { "at": [16, 16], "h": 32, "px": 20, "capTop": 9, "baseline": 23 },
+   "rect": [232, 64, 560, 288], "maxHeight": 288, "build": "reportCard", "inStates": ["report"], "pad": 16, "y": "64 + 8 × floor((288 − h) / 16)", "slice": "cargo-report-plate-560x{h}", "heights": "128 to 288 by 8", "plate": "a plate set into the door's plain sage panel (GB-R6), the fix 2 kit's construction: a 1 px hairline, a 5 px sage bezel lit top left, the inner shade, a lit lip; the heading on a cream label plate (AR5r): the rim and shade are painted; the face draws no fill, edge, top rule or shadow", "noDigits": "but beside a material icon",
+   "label": { "slice": "label-plate-cream-216x32", "at": [12, 12], "size": [216, 32], "text": "heading", "textAt": "+12 inside the label, centred on its height" },
+   "heading": { "at": [24, 12], "h": 32, "px": 20, "capTop": 9, "baseline": 23 },
    "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "capTop": 6, "baseline": 18, "lead": [16, 128], "content": 152, "px": 16 },
    "crates": { "max": 3, "podIcon": 16, "podPitch": 20, "podMax": 8, "reachAt": 328, "rows": "the first three crates opened, one row each; later crates get no row; Gathered adds up every crate" },
    "gathered": { "gapAbove": 8, "icon": 16, "gap": 4, "between": 24 },
    "probe": { "plateIcon": 16, "platePitch": 20, "from": "the dock's mend { free, paid, broke } (state.mjs dockKey), kept in Cargo's UI state from the dock until the report: free or broke (a break is mended free) reads strings.report.mendedFree, paid reads strings.report.mendedPaid with ⚡ and the plates paid for; no mend, no row. It is not in the save: a reload loses it, and the report then has no Probe row" },
-   "world": { "gapAbove": 16, "max": 3, "bullet": [16, 10, 4, 4], "lineAt": 32, "from": "the last walk crate opened (dev crates carry no lines)" },
+   "world": { "gapAbove": 8, "max": 3, "bullet": [16, 10, 4, 4], "lineAt": 32, "from": "the last walk crate opened (dev crates carry no lines)" },
    "reach": { "thresholds": "r = explored/of: below 1/3 underThird; 1/3 to below 2/3 underTwoThirds; 2/3 to below 1 underAll; explored ≥ of all; of = 0 (a crate with no map) says nothing" },
    "goal": { "gapAbove": 8, "rowH": 24, "lead": [16, 128], "content": [152, 392], "when": "goalKey (frame.json strings.goal) is not null, computed after the crates", "meanwhile": "directly under (+24), only when the step is goOut, findPod, bud or short and goalKey's meanwhile is not null: strings.report.goal.meanwhileLead, then strings.report.goal.meanwhile (or .meanwhileGlint) with {species} and {chapter}, then the ◆ icon and the read's price", "text": "the goal row's content is the same strings.goal.step.* words and icons as Home's; a name too wide for 392 px with its icons falls back to the nameless sibling (props `plain`)" },
-   "height": "104 + 24 × (crates + probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), never past maxHeight 320: when the card would pass 320 the world lines drop from the last until it fits",
-   "full": { "heading": 88, "crates": [128, 152, 176], "gathered": 208, "probe": 232, "world": 272, "lines": [296, 320, 344], "bottom": 384 }
+   "height": "104 + 24 × (crates + probe row) + (world lines ? 32 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), never past maxHeight 288 (a multiple of 8, from 128): when the plate would pass 288 the world lines drop from the last until it fits",
+   "full": { "heading": 76, "crates": [120, 144, 168], "gathered": 200, "probe": 224, "world": 256, "lines": [280], "goal": 312, "bottom": 352, "at": "h 288, y 64" }
   }
  },
  "notes": {
-  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every step is a cut to its end. crateIn: the crates stand in their places on the frame of the dock, hold 0. The opening keeps its pace and its hold (crates × 3000 + 200): one crate every 3000 ms, each step at its time as a cut, because each crate's words, materials and world turn are read in turn; the report shows at the end. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts. With props.motion false the host sends events.opening once at 0 (ms and hold unchanged) and stages each step as props at its time, crate k from k·3000: sealed at 0, open at 200 (no opening slice), ribbon 500, counters at their new values 800, pod i in its well at 1200 + 150·i, turn 1650; the report at crates × 3000. The face only cuts."
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every step is a cut to its end. crateIn: the crates stand in their places on the frame of the dock, hold 0. The opening keeps its pace and its hold (crates × 3000 + 200): one crate every 3000 ms, each step at its time as a cut, because each crate's words, materials and world turn are read in turn; the report shows at the end. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts. With props.motion false the host sends events.opening once at 0 (ms and hold unchanged) and stages each step as props at its time, crate k from k·3000: sealed at 0, open at 200 (no opening slice), ribbon 500, counters at their new values 800, pod i in its well at 1200 + 150·i, turn 1650; the report at crates × 3000. The face only cuts. Cargo's own steps are cuts with or without motion (R8)."
  },
  "events": {
-  "crateIn": { "kind": "arrival", "target": "crates", "ms": "(crates − 1) × 250 + 500", "hold": 0, "when": "the Companion docks with crates while Cargo shows", "each": { "from": [0, -64], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay's inside (24, 56, 976, 304)" } },
+  "crateIn": { "kind": "arrival", "target": "crates", "ms": "(crates − 1) × 250 + 500", "hold": 0, "when": "the Companion docks with crates while Cargo shows: the door opens as a cut on the Dock frame (R2) and each crate's shadow appears on its landing frame", "each": { "from": [0, -64], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay's inside (24, 56, 976, 304)" } },
   "opening": {
    "kind": "arrival", "target": "crate", "ms": "crates × 3000 + 180", "hold": "crates × 3000 + 200", "byCrates": { "1": { "ms": 3180, "hold": 3200 }, "2": { "ms": 6180, "hold": 6200 }, "3": { "ms": 9180, "hold": 9200 }, "rule": "the host sends whole ms: crates × 3000 + 180 and the hold 20 ms longer, for 1 to 9 crates (hold ≤ 30000, lvgl-switch §2.7); in play at most 3. With 10 or more (developer only) the event plays the first nine; the rest are taken in by openBay, the counters and turn reach their final values at the end" }, "perCrate": 3000, "focus": "the room; no ring; no key moves it",
    "crate": [
-    { "at": 0, "ms": 180, "do": "the dither (16 levels) from the bay, or from the crate before, to this crate closer: regions.crate sealed, the ribbon, the rack" },
+    { "at": 0, "ms": 0, "do": "a cut to this crate's closer, sealed, on the open bay (R8): no dither, no veil" },
     { "at": 200, "ms": 300, "do": "the seal tag tears and the lid lifts: sealed → opening → open, its pods in their places" },
     { "at": 500, "do": "the ribbon shows this crate's words (a cut, no fade)" },
     { "at": 800, "do": "the counters tick this crate's materials (the top bar's own tick and flash)" },
     { "at": 1200, "each": 150, "ms": 600, "do": "each pod travels from the crate to its well (regions.travel), in well order; a pod with no free well stays in the crate" },
     { "at": 1650, "do": "the world turn jumps to the crate's turn (the top bar's tick)" }
    ],
-   "end": { "at": "crates × 3000", "ms": 180, "do": "the dither back to the bay, empty, with the report card over it (state report)" }
+   "end": { "at": "crates × 3000", "ms": 180, "do": "a cut to the report at crates × 3000: the door shut, the plate on it; the report stands still for the last 180 ms and the hold's 200" }
   }
  },
  "focus": {
@@ -80,24 +82,22 @@
  },
  "keys": {
   "confirm": { "bay": "a crate ready to open (walk crates while docked, a ready sitting crate): the opening (events.opening); else nothing, no ✓ cap", "report": "See the new pod or See the new pods (strings.newPods): the jump to Pods (frame.json navigation.jumps); with no new pod, Done: the card closes" },
-  "back": { "bay": "Home, the ring on the Cargo module", "opening": "waits", "report": "closes the card: the bay, empty" },
-  "dock": "the Caddy's Dock, a world event, never a Station key. Docked while the bay shows: the lid opens (a cut) and the crates slide in (events.crateIn). Lifted while the bay shows: the lid shuts (a cut). During the opening it waits until the report shows. No message plate: the bay, the top bar's Companion mark and the context line say it. A refused Dock shows its plate."
+  "back": { "bay": "Home, the ring on the Cargo module", "opening": "waits", "report": "closes the card: the door shut when the bay holds nothing, the waiting pods on the open bay when pods wait" },
+  "dock": "the Caddy's Dock, a world event, never a Station key. Docked while the bay shows: the door opens (a cut) and the crates slide in (events.crateIn). Lifted while the bay shows: the door shuts (a cut) when the bay then holds nothing. During the opening it waits until the report shows. No message plate: the bay, the top bar's Companion mark and the context line say it. A refused Dock shows its plate."
  },
  "line": {
-  "bay": { "crates": { "when": "a crate is ready to open: walk crates while docked, a ready sitting crate docked or away", "action": "strings.open", "subject": "strings.subjects.crates", "need": "the most pressing notice after the crates (home.json strings.needs)", "back": "Home" }, "empty": { "action": null, "subject": "strings.subjects.empty", "need": "the notice", "back": "Home" }, "away": { "action": null, "subject": "strings.subjects.away", "need": "the notice", "back": "Home" }, "waiting": { "action": null, "subject": "strings.subjects.waiting", "need": "the notice", "back": "Home" } },
+  "bay": { "crates": { "when": "a crate is ready to open: walk crates while docked, a ready sitting crate docked or away", "action": "strings.open", "subject": "strings.subjects.crates (while crates slide in, the count of crates drawn: a crate counts from the frame its slide starts, i × 250 ms after the Dock; with reduced motion every crate is in on the Dock frame)", "need": "the most pressing notice after the crates (home.json strings.needs)", "back": "Home" }, "empty": { "action": null, "subject": "strings.subjects.empty", "need": "the notice", "back": "Home" }, "away": { "action": null, "subject": "strings.subjects.away", "need": "the notice", "back": "Home" }, "waiting": { "action": null, "subject": "strings.subjects.waiting", "need": "the notice", "back": "Home" }, "order": ["crates", "waiting", "away", "empty"], "orderNote": "pods waiting while away: the waiting line comes before the away line, because the bay is open and shows them; \"the bay is empty\" reads over the shut door (copywriter 02:16)" },
   "opening": { "action": null, "subject": "strings.subjects.opening", "need": null, "back": null },
   "report": { "action": "strings.newPods (one or few), or strings.done", "subject": "strings.subjects.report", "need": null, "back": "Cargo" }
  },
  "handoff": {
   "to": "pods",
-  "rule": "a crate's pods land in the rack, the Station's six wells: Pods' collection shows them in the same wells, new until identified. ✓ See the new pods on the report jumps to Pods' collection with the ring on the pod that most needs the player; ← there reads Home. A pod with no free well waits in the bay (regions.waiting) and lands, oldest first, as a well frees"
+  "rule": "a crate's pods land in the rack, the Station's six wells: Pods' collection shows them in the same wells, new until identified. ✓ See the new pods on the report jumps to Pods' collection with the ring on the pod that most needs the player; ← there reads Home. A pod with no free well waits in the bay (regions.waitingPods) and lands, oldest first, as a well frees"
  },
  "colours": {
-  "bay": { "fill": "panel", "top": "bevel", "edge": "hairline", "inside": "ground", "rim": "enamel", "lid": "enamel", "seal": "deepTeal" },
   "crate": { "body": "metal", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },
-  "rack": { "fill": "panel", "top": "bevel", "edge": "hairline", "well": "ground", "wellShade": "void", "wellLip": "bevel" },
-  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" },
-  "report": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void", "heading": "bone", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel" }
+  "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" },
+  "report": { "heading": "ink", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel", "contrast": { "bone": 7, "mist": 4.5, "note": "measured on the plate floor behind each row box, at 1×" } }
  },
  "strings": {
   "title": "Cargo",
@@ -105,15 +105,19 @@
   "newPods": { "one": "See the new pod", "few": "See the new pods" },
   "done": "Done",
   "subjects": { "crates": "{count} sealed crates", "cratesOne": "a sealed crate", "empty": "the bay is empty", "away": "the bay is shut", "waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well", "opening": "the bay is opening", "report": "what came home" },
-  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "dev": "Developer crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); every dev crate reads dev; the land's reach is on the report card" },
+  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); a developer crate reads like any later crate (Another crate home) and is not counted; the land's reach is on the report card" },
   "report": {
-   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "devCrate": "Developer crate", "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
-   "reach": { "underThird": "a first look around", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
-   "gathered": "Gathered", "topUp": "with the top-up", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned", "goal": { "lead": "Next", "meanwhileLead": "While you wait", "meanwhile": "read {chapter} on the {species} pod", "meanwhileGlint": "{chapter} glints on the {species} pod", "content": "frame.json strings.goal.step.*, the same words and icons as Home's" }
+   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
+   "reach": { "underThird": "some of the land explored", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
+   "gathered": "Gathered", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned", "goal": { "lead": "Next", "meanwhileLead": "While you wait", "meanwhile": "read {chapter} on the {species} pod", "meanwhileGlint": "{chapter} glints on the {species} pod", "content": "frame.json strings.goal.step.*, the same words and icons as Home's" }
   }
  },
  "placeholders": {
-  "bay": "992×320 panel; the lid enamel with deepTeal seals",
+  "bay": "the signed masters cargo-bay-992x320 and cargo-bay-shut-976x304 (masters-pods)",
+  "rack": "cargo-rack-992x168: the insert; draws nothing until placed",
+  "report": "cargo-report-plate-560x128 to 560x288 by 8; draws nothing until placed",
+  "reportDoor": "cargo-bay-shut-report-976x304 and label-plate-cream-216x32: draw nothing until signed (rule 4)",
+  "shadows": "crate-shadow-256x24, crate-shadow-432x24 and cargo-store-shadow-48x14: draw nothing until placed",
   "pod": "88×112, the collection class",
   "ribbon": "608×40, the ribbon word",
   "icon-pod-16": "the report's Pod icon, 16×16: the signed master, shared with the Probe bench (masters-pods 5f04d417)",

@@ -2,59 +2,67 @@
  "_note": "Create's goldens: nothing read, the shape (as the pod is, changed, a clash, a doing, one look, short, busy, the first founder), the roll's dither halfway and the grow event at three instants: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "create-nothingRead": {
-   "hash": "5a04d866",
+   "hash": "454c525e",
    "png": "create-nothingread.png"
   },
   "create-shape": {
-   "hash": "9b164c3a",
+   "hash": "0c4757ab",
    "png": "create-shape.png"
   },
   "create-shape-changed": {
-   "hash": "ef0ff0c9",
+   "hash": "27c64fa9",
    "png": "create-shape-changed.png"
   },
   "create-shape-clash": {
-   "hash": "ec3276ac",
+   "hash": "10fc3837",
    "png": "create-shape-clash.png"
   },
   "create-shape-doing": {
-   "hash": "d59b6b2c",
+   "hash": "cca9c5b0",
    "png": "create-shape-doing.png"
   },
   "create-shape-onelook": {
-   "hash": "a7651c25",
+   "hash": "efb37da6",
    "png": "create-shape-onelook.png"
   },
   "create-shape-short": {
-   "hash": "4a12d2ad",
+   "hash": "aa1d9f9e",
    "png": "create-shape-short.png"
   },
   "create-shape-busy": {
-   "hash": "be8dfeeb",
+   "hash": "d70e67bf",
    "png": "create-shape-busy.png"
   },
+  "create-shape-samelook": {
+   "hash": "c1365e06",
+   "png": "create-shape-samelook.png"
+  },
+  "create-shape-sealed": {
+   "hash": "2f9c8675",
+   "png": "create-shape-sealed.png"
+  },
   "create-shape-first": {
-   "hash": "da7e808c",
+   "hash": "e4f509d5",
    "png": "create-shape-first.png"
   },
   "create-roll-100": {
-   "hash": "b7fb3e92",
+   "hash": "c9c2c1d0",
    "png": "create-roll-100.png"
   },
   "create-grow-150": {
-   "hash": "bde61247",
+   "hash": "d0fa1af4",
    "png": "create-grow-150.png"
   },
   "create-grow": {
-   "hash": "42fabc92",
+   "hash": "16632be2",
    "png": "create-grow.png"
   },
   "create-grow-end": {
-   "hash": "cac74c6a",
+   "hash": "16ef91cd",
    "png": "create-grow-end.png"
   },
   "create-grow-nothing": {
-   "hash": "411b04e3",
+   "hash": "cd7422c4",
    "png": "create-grow-nothing.png"
   }
  }

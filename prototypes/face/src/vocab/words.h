@@ -15,6 +15,7 @@ void word_specimen(const char *base);   /* the pod under the beam on its cradle;
 int word_pod_size(int out[2]);          /* the pod's box size from its class in the spec; 0 when the props name no class */
 void word_kin(const char *base);        /* the overview's kin rings and the hatch */
 void word_stamp(const char *base);      /* the overview's stamp label in its case */
+void word_stampCase(const char *spec, const char *base, int front);   /* the stamp case's back (front 0) or front glass (front 1): Pods' word_stamp and Create's stamp both call it */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 void word_list(void);    /* Pods' collection: the rack's places */
 /* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */

@@ -143,8 +143,9 @@ void word_bottomLine(void) {
     v_region("action", LAYER_TYPE);
     snprintf(a, sizeof a, "line.a.%d", k++); colour(dim || blocked ? "dim" : "verb", c); ax = v_run(a, s, ax, ty, A_px, c, V_ALIGN_LEFT).end;
     if (spec_str(P, "frame.line.price", t, sizeof t) > 0) {   /* the price: each material's icon and figure (the figure amber when short), the nodes the same whichever materials it names */
-      ax += A_gap; char cb[3][24], co[24]; const char *cols[3]; static const char *GLYPH[3] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86" };
-      for (int g = 0; g < 3; g++) { colour(blocked ? "dim" : (shorts[0] && strstr(shorts, GLYPH[g])) ? "need" : "price", cb[g]); cols[g] = cb[g]; }
+      ax += A_gap; char cb[V_PRICE_N][24], co[24]; const char *cols[V_PRICE_N]; static const char *GLYPH[V_PRICE_N] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };
+      for (int g = 0; g < V_PRICE_N; g++) { int wait = g == V_PRICE_N - 1; colour(blocked ? "dim" : (!wait && shorts[0] && strstr(shorts, GLYPH[g])) ? "need" : "price", cb[g]); cols[g] = cb[g]; }   /* the wait is never short: its figure is price, dim only when the action is blocked */
+      if (shorts[0] && strstr(shorts, GLYPH[V_PRICE_N - 1])) v_error("word: frame.line.short names the wait, which is never short");
       colour(blocked ? "dim" : "price", co); snprintf(a, sizeof a, "line.a.%d", k++); v_price(a, t, ax, ty, A_px, cols, co);
     }
   }

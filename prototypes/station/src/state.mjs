@@ -289,7 +289,8 @@ export function shortText(st, e, d, s) {
 // The two forms of a log line or a button: what is gained and what is spent. One place, so the answer on the wording is a one-line change (forms PLACEHOLDER until the UI designer and copywriter answer).
 export const gainText = (s) => "❀ +" + s;
 export const spendText = (e, d, s) => [e ? "⚡ −" + e : "", s ? "❀ −" + s : "", d ? "◆ −" + d : ""].filter(Boolean).join(" ") || "free";
-export const priceText = (e, d, s) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : ""].filter(Boolean).join(" ") || "free";
+// `w` the bud's wait in minutes, the last group (Create's Grow line, fix 6 N1a): "free" only when all four are 0
+export const priceText = (e, d, s, w = 0) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : "", w ? "⧗ " + w : ""].filter(Boolean).join(" ") || "free";
 
 // --- dock and the bay ------------------------------------------------------------------------------
 export function probeNow(st, sv) {
@@ -547,7 +548,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
   const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod waits" : "new pods wait"), act: "pods", label: "Look at the pods" };
+  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod in the rack" : "new pods in the rack"), act: "pods", label: "Look at the pods" };
   const glinting = st.tray.filter((p) => podGlints(st, p));
   if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
   if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };
@@ -628,6 +629,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   const crossOpen = !!doors && doors.cross === true, aT = settings.adultTurns ?? JUVENILE_TURNS;
   const living = st.mibis.filter((m) => !m.released).sort((a, b) => a.id - b.id), cs = bayCrates(st, sv), bud = st.bud;
   const short = (e, d, s) => ({ key: "short", icons: shortIcons(st, e, d, s), from: shortFrom(st, e, d, s) });
+  const kn = (sp) => (sp && st.knownIds.includes(sp) ? sp : null);   // a goal fact names a species only once the player knows it (a pod of it identified, or adults of it arrived): never before the first Identify (game designer, 2026-10-15 07:56)
   const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()) });
   // the pod chain for one species (or, with none named, for the first pod there is)
   const chain = (species) => {
@@ -635,10 +637,10 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     const mine = st.tray.filter((p) => !species || speciesOf(p) === species);
     const idd = mine.find((p) => p.idd);
     if (idd) { if (bud) return budStep(); if (bayFull(st, settings)) return { key: "noBay" };
-      const c = growCost(st, {}, settings); return canPay(st, c.e, c.d, c.s) ? { key: "grow", species: speciesOf(idd) } : short(c.e, c.d, c.s); }
+      const c = growCost(st, {}, settings); return canPay(st, c.e, c.d, c.s) ? { key: "grow", species: kn(speciesOf(idd)) } : short(c.e, c.d, c.s); }
     const fresh = mine.find((p) => !p.idd);
-    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: speciesOf(fresh) } : short(0, c, 0); }
-    return { key: "findPod", species: species || null };
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: kn(speciesOf(fresh)) } : short(0, c, 0); }
+    return { key: "findPod", species: kn(species) };
   };
   const speciesIn = (m) => speciesOf(m), members = (sp) => living.filter((m) => speciesIn(m) === sp);
   const unreadOf = (m) => { const fr = frameFor(m); return fr ? fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : null; };
@@ -657,7 +659,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   };
   let g = null;
   if (!living.length && !bud && !st.tray.length && !st.waiting.length && !cs.length) g = { key: "firstPod", step: { key: "goOut" } };
-  else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(st.tray[0] ? speciesOf(st.tray[0]) : null) };
+  else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(null) };   // no species named: the chain runs on the first pod there is
   else {
     const spOrder = [...new Set(living.map(speciesIn))], count = (sp) => members(sp).length + (bud && speciesOf(bud) === sp ? 1 : 0);
     if (!spOrder.some((sp) => count(sp) >= 2)) { const m = living[0], sp = speciesIn(m); g = { key: "pair", name: m.name, species: sp, step: chain(sp) }; }
@@ -677,7 +679,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     }
     if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
     // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
-    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && st.knownIds.includes(x) && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
   }
   // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
   if (!g && tierNow(st, sv) < 2) g = { key: "probe", step: st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };   // the Probe stands in; a save with no Probe goes out, never fits
@@ -703,7 +705,8 @@ export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, a
   const g = goalKey(st, sv, settings, doors); if (!g) return null;
   const step = g.step, p = { e: price.e || 0, d: price.d || 0, s: price.s || 0 }, grow = growCost(st, {}, settings), ident = { e: 0, d: identifyCost(st, settings), s: 0 };
   let next = null, who = {}, key = step.key;
-  if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
+  if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; if (step.species == null) return null;   // a goal that names no species has no nameless warning (ruling): silent, whether the act identifies another unknown pod or anything else
+     const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
   else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
   else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
   else if (step.key === "read" && g.key === "guide") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; }
@@ -817,7 +820,7 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   return { ok: true, bud: st.bud, cost };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
-const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
+export const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
 // The bud's chapters. A read chapter is known from the start. A bred bud (kind "cross") keeps every other chapter unread, always: while it grows, after Grow now and skipBud, at ready and after (what
 // the Station could be sure of is B.read, set from the parents). A founder (a missing kind counts as one) clears its unread chapters one by one across the wait: with U the unread chapters in frame order
 // (a shut sealed chapter is never among them) and n = |U|, U[k] is known when the bud is (k + 1) / (n + 1) grown.

@@ -1,0 +1,83 @@
+{
+ "_note": "fix 7 (the architect's ruling 2026-10-15 04:32, appendix): the oracle is light-grade.py at masters-pods 917a4801. lut: SHA-256 of LUT[light] (768 bytes, R0..R255 G0..G255 B0..B255). juvenile104x112: the SHA-256 of the placed source PNG and the SHA-256 of the graded RGBA at each light (straight alpha, rows top-down). The adult 144x152 rows (placed adult masters, sources 967e5ee0\u2026, 1362c334\u2026, 171ebe6d\u2026) are regenerated with the oracle at the gate.",
+ "lut": {
+  "dawn": "902f8a8929846c403cb31802ebd6c92e9a16387a1522064358b84a3f6ea9affa",
+  "day": "f3a25aa93aa2fbba28d79260535bbd6a5eb0fc1c24a8b0f04e12b484c1dfe363",
+  "dusk": "bc20be6d8012f6efe22a589c09f357c3ee783dea2759a8e71587d9aec11e4c55",
+  "night": "f8316b761b66eef8729598e331f96230f1ee908549a4d375753197074a0961bb"
+ },
+ "ties": {
+  "dawn": {
+   "G5": 4
+  },
+  "night": {
+   "G1": 0,
+   "G5": 2,
+   "G9": 4
+  }
+ },
+ "juvenile104x112": {
+  "S01": {
+   "file": "pods/mibi-juvenile-S01-104x112.png",
+   "source": "3a0bf9b7ce973d6fb06852d946c227fd9094117cd8a020655578562e3bcab049",
+   "rgba": {
+    "dawn": "5596d238a2db5fb7a2fbf6278a2020b0b21a39537de215d429e367fbe0cf8491",
+    "day": "4039f559741fb5f0849225e99c2b2724718de8dc35756a1ab7bdc0202d228578",
+    "dusk": "475d2f2f0ed4104d591cf6213f51cd7cace78a710c9f5356f4ef8435809922be",
+    "night": "34193694fac83b7ed61c06ec9c51d3a664c40eabcc9ede3505b56f1f2caa846e"
+   }
+  },
+  "S02": {
+   "file": "pods/mibi-juvenile-S02-104x112.png",
+   "source": "3d5ff0d119505aeb378c8f9bb591236c3d21fa05d63809a5fcaa7e1bce73e013",
+   "rgba": {
+    "dawn": "b2aff8f92bda88616d75bf2035a454528234a503f48fb11251cccba1aa3cb38f",
+    "day": "258a85c5df391bf7c8d30664e41d5c22228a9ac0612820682614dfd5d0616dc8",
+    "dusk": "a781abcc20743cbc9c876626eddcb01751df9e04ffc2d9521c03c3db440cab5e",
+    "night": "b73c5fd1c1a666b575021c5e3f632c7170a278dac2dd9e26621289f4c3a383ac"
+   }
+  },
+  "S03": {
+   "file": "pods/mibi-juvenile-S03-104x112.png",
+   "source": "c0fd88f15c7bfad7606c16669b01c1aababdad22f25289a51f43c5c4eeaf2b78",
+   "rgba": {
+    "dawn": "3f66ddb57afdbb0b241e47a4bd9b5bdb458796c0e16ec0af1a8dd843f245e097",
+    "day": "85a7112939a338710aa6b7ec09768759dec8bb22ebf08676498604251f8dd707",
+    "dusk": "db761a4fe7b87eabc2b1284954896edb2271f6fd946f09a9d214200ac6c8962f",
+    "night": "2cf04d820f40d7c07c75c569b5d6807d3c747612060a90c15c2759a4dab3e9b1"
+   }
+  }
+ },
+ "adult144x152": {
+  "S01": {
+   "file": "pods/mibi-adult-S01-144x152.png",
+   "source": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
+   "rgba": {
+    "dawn": "89abbe86d43057c92102927e2b4c17651952146e624def068669da6e13c268c6",
+    "day": "1a9f229abab21b6275be5729ca70e3d14f717902bf146678ffaec15b9671fac4",
+    "dusk": "15db1ee6f613214ee3822f536943612e0fa288ed27fe22c3c47a7545fbb02af3",
+    "night": "cb89e40354aa417de78ec3018d3336b4090fa2cdb61457f72362d9c100aa3c6a"
+   }
+  },
+  "S02": {
+   "file": "pods/mibi-adult-S02-144x152.png",
+   "source": "1362c33472a99649a99c223d21c30d2ee57f9b66e05fa784b54b1f5f9f5044c9",
+   "rgba": {
+    "dawn": "9f1040bce047b99a09b97b702ebec5ef501b6e35e581c1e7041ac75e66e404b5",
+    "day": "5088702da8fe4a9a7a2111db3f6be42a85538914a4f260d764c996f2e23b7978",
+    "dusk": "19c26f6a5eba8637897ae43fc005e61ca9c2231d4c340b59878d9ccd05f6f4c9",
+    "night": "8afaa6d8df84f5b43b4e1f6e942b79a615fa9ed3f4fd8f0ec23e8cf4710947de"
+   }
+  },
+  "S03": {
+   "file": "pods/mibi-adult-S03-144x152.png",
+   "source": "171ebe6dc4d0fcc8edd6137b1dec038f7ace5e5f3d0c0c6f263fe34e3b2e4543",
+   "rgba": {
+    "dawn": "63f63ca0c7adf2e7aa37a7d9696d9602568733cb604bd372ecebba14f574dd49",
+    "day": "c25006281de56945a606f8d287b899da721183bb6d76e81da0d712aa56321036",
+    "dusk": "dbb25a94898a253001ef08bcfdb5163c0c4f81a98979e1da36d07c58958da6b0",
+    "night": "c8ebef8229e37200a2014492c1fcb0c3c7d2c7228fa364b96ae962813e0cec22"
+   }
+  }
+ }
+}

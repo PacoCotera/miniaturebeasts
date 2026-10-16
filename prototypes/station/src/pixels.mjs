@@ -15,6 +15,12 @@ const DARK = PALETTE.map(([n]) => C[DARK_OF[n]]);
 const LIGHT = PALETTE.map(([n]) => C[LIGHT_OF[n]]);
 export const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 export const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
+// The ramp of a palette colour A for the rack pod, by name: its lighter and darker neighbours (station.json lighter, darker) and its outline, the last colour of A's darker chain
+// before `ink` or `void` (`ink` where that would be `night`, which on `panel` is about 1.05:1; never `void`).
+export function rampOf(A) {
+  let c = A; for (let n = DARK_OF[c]; n && n !== "ink" && n !== "void" && n !== c; n = DARK_OF[c]) c = n;
+  return { A, light: LIGHT_OF[A], shade: DARK_OF[A], outline: c === "night" || c === "void" ? "ink" : c };
+}
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 export const bay = (x, y) => BAYER[(y & 3) * 4 + (x & 3)];
 // The nearest palette colour to an RGB triple (cached), for rendered images on their way into a buffer.

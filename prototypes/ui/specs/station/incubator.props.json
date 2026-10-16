@@ -1,13 +1,13 @@
 {
  "$comment": "The props of the Incubator (lvgl-switch.md §2.1): what views/incubator-props.mjs gives the face, beside the frame's. Props name what, never where: the state, counts, strings, flags and asset ids; no rectangle, no measure, no layout rule, no colour (the words read those from incubator.json and the palette). From growing on every part is named in every state, whether or not it shows, so the face keeps its nodes (§2.2); the empty state names only the chamber, the base and the plaque. The ready bud's front is registered and never named here; the base master carries the plaque plate and the foot light.",
  "$defs": {
-  "tab": { "type": "object", "required": ["id", "word", "state", "pips", "filled", "glint", "emblem"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read"] }, "pips": { "type": "integer" }, "filled": { "type": "integer" }, "glint": { "type": "boolean" }, "emblem": { "type": "string" } } },
+  "tab": { "type": "object", "required": ["id", "word", "state", "glint", "emblem"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read"] }, "glint": { "type": "boolean" }, "emblem": { "type": "string" } } },
   "pic": { "type": "string" }
  },
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["empty", "growing", "ready", "hatch"] },
-  "regions": { "type": "object", "required": ["bench", "dome", "nest", "nestFront", "domeFront", "base", "plaque", "lamp"], "additionalProperties": false, "properties": {
+  "regions": { "type": "object", "required": ["bench", "dome", "nest", "nestFront", "domeFront", "base", "plaque", "plaqueAfter", "lamp"], "additionalProperties": false, "properties": {
    "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "$ref": "pic" } } } },
    "rail": { "type": "object", "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": "null" }, "open": { "type": "integer" }, "star": { "type": "string" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
    "leaves": { "type": "object", "required": ["total", "full", "rows", "empty", "filled"], "additionalProperties": false, "properties": { "total": { "type": "integer", "minimum": 0, "maximum": 40 }, "full": { "type": "integer", "minimum": 0, "maximum": 40 }, "rows": { "type": "integer", "minimum": 0, "maximum": 19 }, "empty": { "$ref": "pic" }, "filled": { "$ref": "pic" } } },
@@ -17,9 +17,9 @@
    "domeFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
    "bud": { "type": "object", "required": ["stage", "early", "late", "ready", "crack1", "crack2", "shape", "front"], "additionalProperties": false, "properties": { "stage": { "enum": ["early", "late", "ready", "hatch"] }, "early": { "$ref": "pic" }, "late": { "$ref": "pic" }, "ready": { "$ref": "pic" }, "crack1": { "$ref": "pic" }, "crack2": { "$ref": "pic" }, "shape": { "$ref": "pic" }, "front": { "$ref": "pic" } } },
    "base": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
-   "plaque": { "type": "string" },
+   "plaque": { "type": "string" }, "plaqueAfter": { "type": "string" },
    "lamp": { "type": "object", "required": ["picture", "on", "why"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "on": { "type": "boolean" }, "why": { "enum": ["", "waiting", "offline"] } } },
-   "stamp": { "type": "object", "required": ["size", "N", "cell", "asset"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "asset": { "$ref": "pic" } } },
+   "stamp": { "type": "object", "required": ["size", "N", "cell", "plate", "asset"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "$ref": "pic" } } },
    "code": { "type": "string" },
    "juvenile": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "moving": { "oneOf": [{ "enum": [""] }, { "type": "object", "required": ["set", "close", "shadow"], "additionalProperties": false, "properties": { "set": { "type": "string" }, "close": { "type": "string" }, "shadow": { "type": "string" } } }], "description": "Station M1 §2.5: the hatch's first motion for a juvenile with a moving set" } } },
    "ribbon": { "type": "string" }

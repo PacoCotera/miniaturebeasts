@@ -10,6 +10,10 @@ export function departures(log, spec, frame, state = "growing") {
   const lift = Math.max(R.juvenile.lift, ...(spec.events?.hatch?.moving?.steps ?? []).flatMap((x) => (Array.isArray(x.lift) ? x.lift : [])), R.juvenile.rect[1] + R.juvenile.rect[3] - STANDIN_FEET);   // the step-out's lift, the moving hatch's first hop (Station M1 §2.5), or the stand-in's anchor
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const r of got("bench")) must(eq(r.rect, R.bench.rect), `the bench ${r.rect} is not ${R.bench.rect}`);
+  { const tabs = regions.filter((x) => x.id === "rail.tab"), wells = regions.filter((x) => x.id === "rail.well" && x.layer === "painted" && x.rect[2] > 0);   // fix 2 F11: the rail sits in its well, one painted node at y 40, 48 tall (to y 88), covering every tab; no tab, no well
+    must(wells.length <= 1, "the rail has one well");
+    for (const w of wells) { must(w.rect[1] === 40 && w.rect[3] === 48, `the rail's well ${w.rect} is not at y 40, 48 tall`); for (const t of tabs) must(t.rect[0] >= w.rect[0] && t.rect[0] + t.rect[2] <= w.rect[0] + w.rect[2] && t.rect[1] >= w.rect[1] && t.rect[1] + t.rect[3] <= w.rect[1] + w.rect[3], `the rail's ${t.layer} ${t.rect} leaves its well ${w.rect}`); }
+    must(!wells.length || tabs.length > 0, "a well with no tab: the rail with no tabs has no well (F5)"); }
   for (const r of regions.filter((x) => x.id === "rail.tab")) must(within(r.rect, [R.rail.rect[0] - 16, R.rail.rect[1], R.rail.rect[2] + 32, R.rail.rect[3] + 16]), `the rail's ${r.layer} ${r.rect} leaves the rail ${R.rail.rect}`);
   for (const r of got("leaves")) must(within(r.rect, R.leaves.rect), `the leaves ${r.rect} leave ${R.leaves.rect}`);
   for (const r of got("dome")) must(eq(r.rect, R.dome.rect), `the chamber's back ${r.rect} is not ${R.dome.rect}`);
@@ -21,7 +25,7 @@ export function departures(log, spec, frame, state = "growing") {
   for (const r of got("plaque")) must(within(r.rect, R.plaque.rect), `the plaque ${r.rect} leaves ${R.plaque.rect}`);
   for (const r of got("lamp")) must(eq(r.rect, R.base.lamp.rect), `the lamp ${r.rect} is not ${R.base.lamp.rect}`);
   for (const r of got("juvenile")) must(within(r.rect, [R.juvenile.rect[0], R.juvenile.rect[1] - lift, R.juvenile.rect[2], R.juvenile.rect[3] + lift + 2]),   /* + 2: the moving hatch's crouch, drawn 2 px lower */ `the juvenile ${r.rect} leaves ${R.juvenile.rect} by more than its ${lift} px step or anchor`);
-  for (const r of got("stamp", "chrome")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
+  for (const r of got("stamp.plate", "painted")) must(eq(r.rect, R.stamp.rect), `the stamp label ${r.rect} is not ${R.stamp.rect}`);
   for (const r of [...got("stamp", "painted"), ...got("stamp", "art")]) must(within(r.rect, R.stamp.rect), `the stamp ${r.rect} leaves its label ${R.stamp.rect}`);
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
   for (const r of got("ribbon", "chrome")) must(eq(r.rect, R.ribbon.rect), `the ribbon ${r.rect} is not ${R.ribbon.rect}`);
@@ -30,10 +34,10 @@ export function departures(log, spec, frame, state = "growing") {
   for (const id of ["footLight", "focus"]) must(got(id).length === 0, `${id} draws nothing (incubator.json base.footLight, derived.no ring)`);
   // what each state draws
   if (state === "empty") for (const id of ["rail.tab", "leaves", "bud", "stamp", "code", "juvenile"]) must(got(id).length === 0 && !type.some((t) => t.region === id), `the empty Incubator draws no ${id}`);
-  else { must(regions.some((r) => r.id === "rail.tab"), "the rail is drawn"); must(got("stamp", "chrome").length === 1, "the stamp label is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn"); }
+  else { must(regions.some((r) => r.id === "rail.tab"), "the rail is drawn"); must(got("stamp.plate", "painted").length === 1, "the stamp label (its dimmed plate) is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn"); }
   must(state === "hatch" || got("juvenile").length === 0, "the juvenile is drawn only in the hatch");
   must(state === "hatch" || got("ribbon", "chrome").length === 0 || got("ribbon", "chrome").every((r) => r.rect[2] === 0), "the ribbon shows only in the hatch");
   must(got("dome").length > 0 && got("domeFront").length > 0, "the chamber's back and window front are drawn"); must(got("base").length > 0 && got("nest").length > 0, "the nest and the base are drawn");
-  must(type.some((t) => t.region === "plaque") === (state !== "hatch"), `the plaque's word ${state === "hatch" ? "is gone in the hatch" : "is drawn"}`);
+  must(type.some((t) => t.region === "plaque" && t.text), "the plaque always holds a word (fix 5 I3)");
   return out;
 }

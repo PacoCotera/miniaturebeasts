@@ -23,12 +23,14 @@ export function goalWords(goal, docked, frame) {
   if (st.key === "read" && goal.key === "guide") { const fr = frameOf(st.species), ch = fr && fr.chapters.find((c) => c.id === st.chapter); return out(fill(G.step.readPod, { chapter: ch ? ch.name : st.chapter, species: speciesWord(st.species) })); }
   if (st.key === "read") return out(fill(G.step.read, vals), G.step.readNoName);
   if (st.key === "findPod" && !vals.species) return out(G.step.goOut);
+  if (st.key === "identify" && !(st.species ?? goal.species)) return out(G.step.identifyAny);   // no species known yet: "identify a pod"
   const t = G.step[st.key]; if (typeof t !== "string") return null;
   return out(fill(t, { ...vals, species: speciesWord(st.species ?? goal.species), a: article(speciesWord(st.species ?? goal.species)) }));
 }
 // The pre-spend warning's words (frame.json strings.goalWarn): goalSpendWarn's { step, species | name, icons } for the notice zone; null when the spend warns of nothing.
 export function warnWords(st, sv, settings, frame, price, act) {
   const w = S.goalSpendWarn(st, sv, settings, price, act); if (!w) return null;
+  if ((w.step === "identify" || w.step === "grow") && !w.species) return null;   // GB1 C3: the species warnings name a known species only; with none, no warning and the right slot stays empty
   return fill(frame.strings.goalWarn[w.step], { species: speciesWord(w.species), name: w.name, icons: w.icons });
 }
 // The read the report suggests while the step is a wait: { text, price }, from goalKey's meanwhile ({ pod, chapter, glint, cost }) and cargo.json strings.report.goal.

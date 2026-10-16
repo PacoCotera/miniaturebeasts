@@ -43,3 +43,18 @@ test("a held figure shows its mist in both states: no fade at any share of chapt
   const mist = layer(1, 1, () => [90, 90, 90, 255]), clear = layer(1, 1, () => [250, 250, 250, 255]);
   assert.deepEqual([...figureComposite(mist, clear, figureAlpha(["held"], 1))], [90, 90, 90, 255]);
 });
+
+// the rack pod: 1-bit layer masks, each layer's on pixels take its fill in order, later over earlier; alpha 255 where the body is on
+import { composeRackPod } from "../podlayers.mjs";
+test("the rack pod: every layer's pixel takes its fill, the order holds (later over earlier), off the body the alpha is 0", () => {
+  const w = 4, h = 1, mask = (on) => layer(w, h, (i) => (on.includes(i) ? [255, 255, 255, 255] : [0, 0, 0, 0]));
+  const masks = { body: mask([0, 1, 2]), light: mask([0, 1]), shade: mask([1, 2]), accent: mask([2]), outline: mask([0, 3]), pattern: mask([]) };
+  const fills = { body: [1, 1, 1], light: [2, 2, 2], shade: [3, 3, 3], accent: [4, 4, 4], outline: [5, 5, 5], pattern: [6, 6, 6] };
+  const o = composeRackPod(masks, ["body", "light", "shade", "accent", "pattern", "outline"], fills, w, h);
+  assert.deepEqual([...o.slice(0, 4)], [5, 5, 5, 255], "pixel 0: body, light, then the outline over both");
+  assert.deepEqual([...o.slice(4, 8)], [3, 3, 3, 255], "pixel 1: the shade over the light");
+  assert.deepEqual([...o.slice(8, 12)], [4, 4, 4, 255], "pixel 2: the accent over the shade");
+  assert.deepEqual([...o.slice(12, 16)], [0, 0, 0, 0], "pixel 3: off the body, transparent whatever a layer says");
+  const rev = composeRackPod(masks, ["outline", "accent", "shade", "light", "body"], fills, w, h);
+  assert.deepEqual([...rev.slice(0, 4)], [1, 1, 1, 255], "reversed, the body is last and wins: the order is the spec's");
+});

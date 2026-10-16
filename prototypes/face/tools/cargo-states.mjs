@@ -1,5 +1,5 @@
-// Cargo in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: the bay (`cargo-bay`, one to three walk crates; `cargo-bay-empty`; `cargo-bay-away`, the bay shut;
-// the waiting mark), one crate opening at each step of events.opening.crate (at 0, 200, 500, 800, 1200 and 1650 ms of a crate) and at its end, and the report (`cargo-report`, `cargo-report-waiting`).
+// Cargo in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: the bay (`cargo-bay`, one to three walk crates; `cargo-bay-empty` and `cargo-bay-away`, the door shut;
+// the waiting pods on the floor), one crate opening at each step of events.opening.crate (at 0, 200, 500, 800, 1200 and 1650 ms of a crate) and at its end, and the report (`cargo-report`, `cargo-report-waiting`).
 // The still states are taken with reduced motion on a virtual clock the tool steps (every event at its end; the opening's cuts at their times); the opening's steps and the crates sliding in are taken with motion on, at exact
 // instants of the face's clock. Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
@@ -31,8 +31,8 @@ const SCENES = {
   "report-small":   { open: 1, set: (w) => { w.adults(2); w.crates(1, 1); } },
   "report-waiting": { open: 2, set: (w) => { w.young(2); for (const m of window.__st.ST.mibis) m.born += 10; window.__st.seedPod("S04", 3); window.__st.seedPod("S04", 4); w.identified(2); w.pods(4); window.__st.ST.probe.tier = 2; w.crates(2, 2, { lines: w.LINES.slice(0, 1) }); w.mend({ free: 2, paid: 0, broke: true, spent: 0 }); } },
 };
-// the opening, one crate of three pods, at the instants of its steps (events.opening.crate) and at its end: motion on, the face's own clock ("at 0" is the first frame, 1 ms in, with the dither still fully over the stage; `opening-90` is the dither half cleared)
-const STEPS = { "opening-0": 1, "opening-90": 90, "opening-200": 200, "opening-500": 500, "opening-800": 800, "opening-1200": 1200, "opening-1650": 1650, "opening-end": 3090 };
+// the opening, one crate of three pods, at the instants of its steps (events.opening.crate) and at its end: motion on, the face's own clock ("at 0" is the first frame, 1 ms in: the closer, sealed, on the open bay; Cargo's own steps are cuts, so there is no dither to catch half cleared)
+const STEPS = { "opening-0": 1, "opening-200": 200, "opening-500": 500, "opening-800": 800, "opening-1200": 1200, "opening-1650": 1650, "opening-end": 3090 };
 const TIMED = { "crates-arriving": { set: (w) => { w.adults(2); w.away(); w.crates(3, 2); }, at: 375, go: () => window.__st.dockKey() } };
 
 async function apply(page, sc, name, motion) {
