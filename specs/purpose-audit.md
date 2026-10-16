@@ -104,7 +104,7 @@ Creative director, ticket T-20261016-26. Written 2026-10-16 (America/Mexico_City
 | The selected pod on the ground, with its tag | This pod | Keep |
 | Found-note ("Found at the pond edge…") with its little picture | Where it came from: makes it *yours* | Keep (the Incubator should carry it on) |
 | Hose from the top left into the ground | **None** | **Cut** |
-| Wall gauge and louvred vent, top right (`-overview-unidentified`) | **None** (the same retro set dressing as the Incubator) | **Cut** |
+| Wall gauge and louvred vent, top right (`-overview-unidentified`) | **None** (equipment that works for nothing, the Incubator's fault; the style guide allows gauges and vents only when they work for the life) | **Cut** |
 | Small plate with a leaf, bottom right | Unclear (the identify slot? Create?) | Change: make its job readable, or cut |
 | Chapter tabs (Coat, Face, Movement, Stamina) | Choose the chapter to read: a real job here | Keep |
 | Compare's two pages | See the difference between two pods | Keep |
@@ -146,7 +146,7 @@ Creative director, ticket T-20261016-26. Written 2026-10-16 (America/Mexico_City
 | Plate row under the Probe | Plates fitted (whole or worn) | Keep |
 | Mend module (switch, plate marks) | Mend plates | Keep |
 | Upgrade module (part, cost marks, two dials) | Fit the next tier | Keep. The two round dials at its foot have no readable job: change or cut |
-| Brass stopwatch gauge with a cable | **None** | **Cut** (style direction §3) |
+| Brass stopwatch gauge with a cable | **None** (reads nothing) | **Cut**, or give it a reading a player uses (the guide allows small gauges that work) |
 | Wrench | **None** (decoration) | **Cut** |
 | Screwdriver | **None** | **Cut** |
 | Cable from the Probe through the gauge to a loose plug | **None** (it connects nothing the player uses) | Cut, or make it the dock's charge line if the dock mends (then it must read as mending) |
@@ -193,7 +193,7 @@ Creative director, ticket T-20261016-26. Written 2026-10-16 (America/Mexico_City
 
 1. **Probe bench.** Three props have no job (gauge, wrench, screwdriver) and the cable leads nowhere. The screen doesn't say why mending matters for the next trip. Of the screens not under T-25 or T-02, this is the closest to the Incubator's failure.
 2. **Wait time, Station-wide (Home, Idle, Cargo).** Nothing anywhere says *when*: when the bud is ready, when crates land, when a young mibi grows. This is the owner's "invite the user to check it", and it is not only the Incubator's problem.
-3. **Pods.** The retro set dressing (hose, gauge, vent) carries no job. The identical sealed pods don't show what's new or unread. The small leaf plate is unclear.
+3. **Pods.** The hose, gauge and vent carry no job. The identical sealed pods don't show what's new or unread. The small leaf plate is unclear.
 4. **Habitat card.** It shows a shut door (Portrait) and unexplained marks (heart, three bars). Growth has no signal.
 5. **Companion.** Developer text is on the player face, and progress is a percentage table. This is provisional on old captures.
 6. **Home, Idle and Vivarium wall cable.** It is the one fixture with no visible job in an otherwise purposeful scene. The module dots' three colours can't be learnt.
