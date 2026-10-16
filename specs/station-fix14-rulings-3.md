@@ -1,7 +1,7 @@
 # Fix 14: UI/UX rulings on builder 4's three findings (F2 floor, rule 6 holds, §5 examples)
 
 UI/UX specification owner, for the Station lead and builder 4. Written Thu 2026-10-15, 18:30 to 18:50 (America/Mexico_City).
-- **Ruled against:** the fix 14 spec (signed 07:06, amended 07:18) and the architect's two notes (06:57, 08:12). Decisions.md and the code on main win over the spec. The whole-screen gate and the visible-change freeze stand.
+- **Ruled against:** the fix 14 spec (signed 07:06, amended 07:18) and the architect's two notes (06:57, 08:12). The owner's recorded decisions and the code on main win over the spec. The whole-screen gate and the visible-change freeze stand.
 - **Read at:** public `main` `bd0e64c8` and `station-fix14` `cd3163ad` (gate `4e522a3e` merged in), in shallow read-only clones in my scratch space. Nothing pushed, no repository added, no spend.
 - **Verified / not verified.** I read the code; I could not build the face or run `layer-check` here (no emsdk, no browser).
   - (1) The WARN path and `FLOOR_STRICT` are verified in `tools/layer-check.mjs` :31–:75. The counts "1–6 of 36–66 cross-sections" are the builder's and **not verified**.

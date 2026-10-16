@@ -10,7 +10,7 @@ UI/UX, for the Station lead. Written 2026-10-15 21:20 (America/Mexico_City). Pla
   - 2: containers that show what they carry, at a size that reads beside the 432 crate;
   - 4: each on the floor with its own contact shadow;
   - 5: even gaps, measured.
-- Station-layouts.md "Gaps: at least 8 px between regions; no region touches another" is a doc on main, and it binds the rects below.
+- station-layouts.md "Gaps: at least 8 px between regions; no region touches another" is a doc on main, and it binds the rects below.
 - No paid call; no new art is asked.
 - Amends R5 "Containers" and "Containers' shadows" of `specs/station-fix5-cargo-spec.md`, as amended 08:05 (the report in the housing). Every other rule there stands.
 - The open crate's pods are not this spec's: the art is the AD's (masters-pods 51cb3c98, the found field egg). Their places stay:
