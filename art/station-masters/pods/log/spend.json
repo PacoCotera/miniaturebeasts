@@ -4412,5 +4412,22 @@
    "thoughtsTokenCount": 242,
    "totalTokenCount": 2307
   }
+ },
+ {
+  "tag": "rw-lib-spread try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187094,
+  "mxn": 3.7419,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-15",
+  "time": "2026-10-16T04:02:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 787,
+   "candidatesTokenCount": 1315,
+   "thoughtsTokenCount": 231,
+   "totalTokenCount": 2333
+  }
  }
 ]

@@ -15553,5 +15553,305 @@
   "status": "new",
   "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "signed_in": null
+ },
+ "library-stage-spread-1024x522": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": null,
+  "src": "source/raw/rw-lib-spread.jpg (gemini-3-pro-image, 1 call), fitted by library-spread/fit-book.py; frames by library-spread/make-spread.py",
+  "made": "the Library spread's stage: a painted leather field journal open in the device's tray (stitched boards, two aged pages curving into the fold, the red ribbon over the gutter), fitted to the spec's boards, pages and gutter; the sixteen empty frames printed into the paper (bark ink rule, an embossed 8 px mat, a soft drop shade) and the caption rules; no plates, no words",
+  "sha256": "1b2024ca343b294e4793e0dc72efe1178d5cc4eb9eb778776a3fcd516e5722a2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-plate-S01-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "the painted mibi-adult-S01-304x312, downsampled (never enlarged) by library-spread/make-spread.py",
+  "made": "the found plate of S01: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "1fc4f9886aac1b709333ee266fb00d50c298d03548de97b54556f9a6cd5e2add",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-plate-S02-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "the painted mibi-adult-S02-304x312, downsampled (never enlarged) by library-spread/make-spread.py",
+  "made": "the found plate of S02: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "4b15fe0962648789cec56e59b2542fb83fae3d5d048721d340fbc9302eff2d10",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-plate-S03-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "the painted mibi-adult-S03-304x312, downsampled (never enlarged) by library-spread/make-spread.py",
+  "made": "the found plate of S03: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "1a44e0230f92e2a6bb7449423d903b10c65b4d04ea7d39ea3bfc0a693ddb0134",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-plate-S09-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "the painted source/raw/mibi-adult-S09-a.jpg, downsampled (never enlarged) by library-spread/make-spread.py",
+  "made": "the found plate of S09: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "09dbcff4bb47f1d962491ee4b02b20152f28bd46b5317d86becb2b0a35bbeabb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C01-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C01-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "7abce3c4eff0c17571cfe7118c6314d3197bddfa2cb9868706f7a8191fa174ba",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C02-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C02-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "2ff8d6f06a41bff8a4424952992ad707153823246e708893acddb654b0c3ec1e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C03-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C03-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "2db1439574d37740aab7742d8c91c8e44576a66e0e7958691cadcdf582edde1b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C04-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C04-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "c9fab649f7592beacf2ed54e3de8a265d8f28c33a442edc0fa9fb378c69735a9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C05-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C05-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "b350253060ad9c19b82f0fe92e933db7104063b520cb3f9e538762828d98247b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C06-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C06-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "0719b748850b028325ebd8ad427ac6bae778b25ec6cacaf9a6a00b01ca85e7ac",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C07-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C07-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "1c8138ae073c254c2cff977a7aee8f16a612f7c94f68b81ae9ee36621837c487",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C08-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C08-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "dfd76364bf1b0d03d99da19c743cae32f396a4fd26f2569273f9e72896ec5c51",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C09-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C09-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "11ed0878459a94ba2272e0bc4ad97dae7c6e68096485b186b2a3259806ec096d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C10-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C10-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "a7eb30d0de364f22626805958e8b36f973f7455283968619cc6efc5adf243a11",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C11-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C11-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "d5a3f1f7a2cc064b8a95db5b78251be3bfdcef3357e923b6f2e71e980e9c66f9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C12-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C12-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "e1c50da730f46296d052d10436e5fd0922e97c406c72a2f5215677b012fc2f07",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C13-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C13-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "20becd9c08d1cce11ebc492ed97cfe35b97ce7b5d6b354a167a3442bddf8aa21",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C14-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C14-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "0a4854e2c0761741b520fc959a360cdeaaec8cb0b8b784cf5eff7f8eb28bca8a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C15-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C15-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "815188d629b9d76e4aee14da0e806d3d3173492847b7fbf316ee762e6f430229",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "clan-roundel-C16-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "mark-clan-C16-24x24 (signed) redrawn at 16 by library-spread/make-spread.py",
+  "made": "the clan's roundel at 16 (was 12x12): the clan's shape and centre dot in the clan's ink (clanColours), a stamp on the paper",
+  "sha256": "4c5b2eabaeab12fb3d153dbc3c6ee0f0b1726e18c5162dffea6c187ab0b6c6d3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-progress-full-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "library-spread/make-spread.py, by hand",
+  "made": "a step of the guide reached: a pressed seed inked in bark, lit top left (was 8x8)",
+  "sha256": "13ed81d7074b97349cb80de31b12537ab9746583f512ed264021e3072a053125",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-progress-empty-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "library-spread/make-spread.py, by hand",
+  "made": "a step not reached: the same seed in clay outline on the paper (was 8x8)",
+  "sha256": "8c7cc8713eb336f18c041ce86f032eb03decfeb23a29715eb665a23d58bad492",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-gilt-corner-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "library-spread/make-spread.py, by hand",
+  "made": "the gilt photo corner of a portrayed species: a gold-leaf pocket along the top and right edges, lit top left",
+  "sha256": "7b7b95274472ff3f8be92ade9c6c9c0502e3eb15e50d17c6b25581623ae99495",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "spread-seal-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "guide-seal-32 downsampled (premultiplied Lanczos)",
+  "made": "the seal of a complete guide at the spread's size",
+  "sha256": "5fb39721f9fa0ba2802564820780252101c22ec19bcd29d68a4cef99248efb8c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
  }
 }
