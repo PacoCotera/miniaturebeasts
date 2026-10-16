@@ -293,9 +293,6 @@
     "back": "Home"
    },
    {
-    "plate": "Its Book needs its pod identified"
-   },
-   {
     "key": "left",
     "said": [
      {
@@ -377,9 +374,6 @@
     "back": "Home"
    },
    {
-    "plate": "Nothing is known here yet"
-   },
-   {
     "key": "up",
     "said": [
      {
@@ -443,9 +437,6 @@
     "ok": null,
     "subject": "Tuikis",
     "back": "Home"
-   },
-   {
-    "plate": "Its Book is not open yet"
    },
    {
     "key": "back",

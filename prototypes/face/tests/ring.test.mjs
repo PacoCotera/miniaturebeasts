@@ -76,9 +76,9 @@ test("rule V: the bands of a rect ring (R 5 and 11), an oval, a circle, a footpr
     assert.deepEqual(partition(tab, () => one.mask), { overlap: 0, differ: 0 }, `tab ${body}`);
   }
 });
-test("the cased ring: the key bands go on paper and the core stays; the nine-slice source is 2R + 4; a ring box under 2R is refused", () => {
-  const paper = focusRingOps({ rect: 0 }, [30, 30, 40, 40], T, { ground: "paper" }), dflt = focusRingOps({ rect: 0 }, [30, 30, 40, 40], T);
-  assert.deepEqual(paper.ops.map((o) => o.band), ["core"]); assert.deepEqual(dflt.ops.map((o) => o.band), ["key", "core", "key"]); assert.equal(dflt.S, 14); assert.equal(focusRingOps({ rect: 6 }, [0, 0, 40, 40], T).S, 26);
+test("the cased ring has its keys on every ground; the nine-slice source is 2R + 4; a ring box under 2R is refused", () => {
+  const dflt = focusRingOps({ rect: 0 }, [30, 30, 40, 40], T);
+  assert.deepEqual(dflt.ops.map((o) => o.band), ["key", "core", "key"]); assert.equal(dflt.S, 14); assert.equal(focusRingOps({ rect: 6 }, [0, 0, 40, 40], T).S, 26);
   assert.deepEqual([dflt.x, dflt.y, dflt.w, dflt.h], [25, 25, 50, 50], "5 px outside, 50 x 50 on a 40 x 40 object");
   assert.throws(() => focusRingOps({ rect: 6 }, [0, 0, 10, 40], T), /under 2R/);
 });

@@ -87,12 +87,11 @@
    ]
   },
   {
-   "name": "rect 0, on paper",
+   "name": "rect 0, a Library frame",
    "target": {
     "shape": {
      "rect": 0
-    },
-    "ground": "paper"
+    }
    },
    "box": [
     60,

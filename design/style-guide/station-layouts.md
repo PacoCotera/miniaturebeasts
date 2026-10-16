@@ -280,7 +280,7 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
   | --- | --- | --- | --- |
   | Pods, overview | (804, 400, 120, 120), case (788, 384, 152, 152) | none | the slot; was 872, 400 in the case at 856, 384 |
   | Create | (804, 336, 120, 120), in its case (788, 320, 152, 152) | (776, 481, 176, 25), baseline 497, rule 505 | raised 64 so the small chamber, the case and the code read as one column (fix 5 Create); `nothingRead` draws the pod's stamp |
-  | Incubator (growing, ready, hatch) | (804, 256, 120, 120) | (776, 381, 176, 25), baseline 397, rule y 405, x 776 to 952 | raised 144: the stage's painted cable and right gauges fill x 746 to 954, y 414 to 527 (measured on `incubator-empty`). The label takes 804, 400 if the art director's stage clears that band. It was 840, 296, with its code at 808, 424 on the cable |
+  | Incubator (growing, ready, hatch) | (804, 232, 120, 120) | (776, 357, 176, 25), baseline 373, rule y 381, x 792 to 936 | raised 168, the right column's label place under the R machinery. It was 804, 256, and before that 840, 296, with its code at 808, 424 on the cable |
   | One mibi up close (Habitat: rest, meet, out) | (872, 64, 120, 120), in the card | the card's own line (608, 160) | the slot would land on the Cross and Wild modules; the rect stays and the look demotes it. No asset: nothing drawn |
   | Book | (832, 112, 120, 120) | none | the page's label; outside fix 4 |
 - **Never the brightest element.** At 1×, the label rect's mean and its 95th-percentile relative luminance are each below the same measures of the state's main object ([Every state composed](#every-state-composed-one-rule-every-screen)). On main 0a46bf1c the label measured a mean of 59 to 76 % and a p95 of 100 %, against the main object's mean of 20 to 34 % and p95 of 40 to 80 % (Create, Incubator, Pods overview, up close). It was the brightest thing on every one of those screens.
@@ -1380,11 +1380,11 @@ The Incubator is the bridge between the research and the Vivarium: a bud grown f
 4. **The rail**: which surprises remain.
 5. **The stamp label** at the right, then the code under it.
 
-Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The chamber stands centred among the machinery that serves it, painted on the wall at both sides; the wall over the chamber stays clear for the leaves, and the label's place stays clear at the right (fix 5).
+Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The chamber stands centred among the machinery that serves it, painted on the wall at both sides; the wall over the chamber stays clear for the leaves, and the label's place stays clear at the right (fix 5). The wall holds three columns on one 8 px grid, mirrored on x 512 (88–232, 248–776, 792–936), one 16 px gutter between neighbours, margins 17 left and right and 18 at the bottom, every standing object on the line y 530.
 
 ### 4. Art direction
 
-- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing. **Fix 5 (IA1):** the stage's wall carries the chamber's service machinery (lines, a vent, small units in the sage `metal`, the sand `enamel` and the hose rubber, joined to the hoses at the foot) painted in four paint zones only: L (80, 88, 160, 312), R (784, 88, 160, 144), LM (248, 320, 96, 80), RM (680, 320, 80, 88). It never paints in the keep-clear zones: the leaf band (248, 80, 528, 240), the chamber and its base (344, 200, 336, 352), the label's place (768, 240, 184, 176); everything the stage paints below y 405 stays pixel for pixel. Nothing in it is lit and it has no text: inside each zone the 95th-percentile relative luminance is at or below that of the stage's gauge housings and the mean at or below the empty chamber's back. No bare rectangle of wall of 160×160 or more remains outside the leaf band and the label's place; in the empty state those two stay bare wall, the only bare fields accepted.
+- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing. **Fix 5 (IA1):** the stage's wall carries the chamber's service machinery (lines, a vent, small units in the sage `metal`, the sand `enamel` and the hose rubber, joined to the hoses at the foot) painted in four paint zones only: L (88, 104, 144, 296), R (792, 104, 144, 112), LM (248, 336, 80, 64), RM (696, 336, 80, 64); the gauges in GL (88, 464, 72, 66) and GR (784, 464, 152, 66), their ink to y 529. It never paints in the keep-clear zones: the leaf band (248, 80, 528, 240), the chamber and its base (344, 200, 336, 336), the label's place (792, 232, 144, 152); the floor lip and the hoses' wall ends stay pixel for pixel. Nothing in it is lit and it has no text: inside each zone the 95th-percentile relative luminance is at or below that of the stage's gauge housings and the mean at or below the empty chamber's back. No bare rectangle of wall of 160×160 or more remains outside the leaf band and the label's place; in the empty state those two stay bare wall, the only bare fields accepted.
 - **The sage housing for the chamber, the sand housing for the base and the outer frame, matte;** the window set in the chamber with a `hairline` edge and no highlight; the hood a shallow lip, not a canopy; leaf greens for the timer.
 - **The chamber's ink** (window and hood) stays inside the arch outline (the chamber window row below), so the leaf arcs keep their clearance.
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
@@ -1419,11 +1419,11 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Chamber window (`dome`) | 360, 200, 304, 272 | The window and its hood keep their ink inside an arch: a half circle of radius 152 on (512, 354), its top at y 202 (2 px into the region), over a body to y 472 (the old bell jar's outline, kept as the limit) |
 | **Bud (focal)** | 448, 264, 128, 160 | Rendered at size, centred on (512, 344). Ready: the species' shape at 456, 288, 112×112, its ink at most 96×96 (measured at alpha ≥ 128) |
 | Nest | 408, 400, 208, 48 | Empty: lit and plump, its hollow visible |
-| Base | 344, 456, 336, 96 | The sand housing, not wood; the chamber stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
-| Plaque | 448, 496, 128, 32 | One word, 16 px, centred on x 512, its line box 502 to 522 |
-| Waiting lamp | 652, 506, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
-| **Stamp label** | 804, 256, 120, 120 | 140 px from the chamber window; the shared slot raised clear of the cable and gauges (The stamp label) |
-| Code | 776, 381, 176, 25 | 16 px, centred on x 864, line box 381 to 405, baseline 397, a 1 px rule at y 405 from x 776 to 952 (the shared slot, as Create); three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
+| Base | 344, 440, 336, 96 | The sand housing, not wood; the chamber stands in it, behind its lip; the foot light 352, 532, 320, 2; the plaque's plate 448, 480, 128, 32 (the concept's about 328×96 on the grid) |
+| Plaque | 448, 480, 128, 32 | One word, 16 px, centred on x 512, its line box 486 to 506 |
+| Waiting lamp | 652, 490, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
+| **Stamp label** | 804, 232, 120, 120 | 140 px from the chamber window; the shared slot raised 168, the right column's label place under R (The stamp label) |
+| Code | 776, 357, 176, 25 | 16 px, centred on x 864, line box 357 to 381, baseline 373, a 1 px rule at y 381 from x 792 to 936 (the shared slot, as Create); three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
 | Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; 304×312 is the size of one mibi up close's mibi, where the hand-off lands it ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
 
@@ -1439,10 +1439,10 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
 | `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking: crack-1 then crack-2 over the ready bud |
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
-| `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
-| `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
-| `stamp` | 804, 256, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
-| `code` | 776, 381, 176, 25 | text | growing, ready, hatch | — |
+| `base` | 344, 440, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
+| `plaque` | 448, 480, 128, 32 | text | | empty, growing, ready; blank in the hatch |
+| `stamp` | 804, 232, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
+| `code` | 776, 357, 176, 25 | text | growing, ready, hatch | — |
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
 | `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting, else its signed juvenile stand-in; the step lift |
 
@@ -1505,7 +1505,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | The arcs stay; the empty leaf repainted as a flat silhouette (fix 6, A1) |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |
-| Stage | 1024×522, `room-bench-stage-incubator`, signed (d09acb12); recut, fix 5 IA1 | The wall carries the chamber's machinery in the four paint zones |
+| Stage | 1024×522, `room-bench-stage-incubator`, signed (d09acb12); recut, fix 5 IA1; IA2 (onto the grid) | The wall carries the chamber's machinery in the four paint zones |
 | Juvenile | 304×312: the new mibi's painting, or its signed juvenile stand-in (mibi-juvenile-<species>-304x312) | Carried |
 
 ---
@@ -2137,7 +2137,7 @@ The Library's whole, its overview level ([The screen map](#the-screen-map)): Hom
 
 <img src="station-layouts/20a-library-spread-empty.png" width="1024" alt="The Library spread with the journal empty: sixteen empty frames, the ring on the first">
 
-*20a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap; the message plate a press shows. 1×, measured ([SVG](station-layouts/20a-library-spread-empty.svg)).*
+*20a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap, and a press does nothing. 1×, measured ([SVG](station-layouts/20a-library-spread-empty.svg)).*
 
 <img src="station-layouts/20b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows; the ring on Belatz over its gilt corner and seal">
 
@@ -2198,23 +2198,22 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Boards (in the slice) | 8, 48, 1008, 504 | — | The 8 px around them: the device's panel |
 | Pages (in the slice) | 24, 56, 480, 488 and 520, 56, 480, 488 | — | Gutter 504 to 520 |
 | Margin life (in the slice) | 40, 464, 448, 72 and 536, 464, 400, 72 | — | Never over a frame, a rule, a name or a mark |
-| Cloth marker (in the slice) | 500, 48, 24, 264 | — | Centred on x 512, 4 px off the grid as a centred region may be |
-| Left page's frames | 40, 88, 464, 368 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
-| Right page's frames | 536, 88, 464, 368 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
+| Cloth marker (in the slice) | 488, 48, 48, 288 | — | The painted ribbon (ink 491–532 × 54–329), centred on x 512 |
+| Left page's frames | 40, 88, 464, 376 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
+| Right page's frames | 536, 88, 464, 376 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
 | Frame columns | x 48, 160, 272, 384; 544, 656, 768, 880 | | Rows y 112 and 296 |
 | **Found plate (focal)** | frame + (8, 8), 80×96 | sprite `spread-plate-<SNN>-80x96` | In the 8 px mat; rendered or downsampled, never enlarged |
 | Met study | frame + (8, 8), 80×96 | sprite `spread-study-<SNN>-80x96` | |
-| Clan roundel | frame + (0, −18), 12×12 | sprite `clan-roundel-<Cnn>-12x12` | Centred on the rule's line (y 100 and 284); found and met only |
-| Clan rule | frame + (16, −14), 80×4 | rect in the clan's colour | y 98 to 102 and 282 to 286, 4 px after the roundel, 10 px of paper above the frame; found and met only |
+| Clan roundel | frame + (−2, −23), 16×16 | sprite `clan-roundel-<Cnn>-16x16` | Centred on the rule's line (y 97 and 281), 2 px clear of the ring's outer key; found and met only |
+| Clan rule | frame + (18, −17), 78×4 | rect in the clan's colour | y 95 to 98 and 279 to 282, 4 px after the roundel, 13 px of paper above the frame; found and met only |
 | Name | frame + (0, 120), 96×20 | text, 16 px, centred | y 232 and 416, on the caption rule at y 256 and 440 (the slice's). Widest today: Untuva, 53 px |
 | Gilt corner | frame + (88, −8), 16×16 | sprite `spread-gilt-corner-16x16` | Centred on the frame's top right corner; found and portrayed |
-| Progress | frame + (26, 152), 44×8 | four sprites, `spread-progress-full-8x8` or `spread-progress-empty-8x8`, 8×8 on a 12 pitch | y 264 and 448, centred on the frame, 8 px under the caption rule, 8 px over the next row's roundel and the margin life; found only |
+| Progress | frame + (21, 150), 54×12 | four sprites, `spread-progress-full-12x12` or `spread-progress-empty-12x12`, 12×12 on a 14 pitch | y 262 and 446, centred on the frame, 5 px under the caption rule, 5 px over the next row's clan rule and 6 px over the margin life; found only |
 | Seal | frame + (88, 104), 16×16 | sprite `spread-seal-16x16` | Centred on the frame's bottom right corner; found and complete |
-| Focus | frame outset 5, radius 5: 106×122 | the ring | `rust` on paper, no keys; nothing lifts; drawn last, over the gilt corner and the seal (their offsets stand) |
+| Focus | frame outset 5, radius 5: 106×122 | the ring | The default cased ring, 106×122 r 5: void, cream, void; the focused picture lifts 2; drawn last, over the gilt corner and the seal (their offsets stand) |
 | Page-turn corner | 968, 512, 24, 24 | sprite `book-corner-turn-24x24`, part of `spreadPage` | Its own region, never in the stage slice; only with a second spread |
-| Message plate | centred on x 512, bottom at y 550 | the frame's | 225×36 for "Nothing is known here yet" (193 px of text and 2 × 16 padding); 271×36 for "Its Book needs its pod identified" (239 px) |
 
-`spreadPage` is a composition, not a word (the region does not clip; every part lies inside the region rect): a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is the ring's `rust` (C01 is `tealD`).
+`spreadPage` is a composition, not a word (the region does not clip; every part lies inside the region rect): a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is a ring colour (C01 is `tealD`).
 
 ### 6. Interactions
 
@@ -2223,13 +2222,13 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Arrive | From Home's Library module or the Library key, the ring on the frame it was last on; a fresh world, on the first frame. From the Book's ←, the ring on that species |
 | ◀ ▶ | Along a row, across the gutter to the other page's same row; the outer edges stop, never a wrap |
 | ▲ ▼ | Between the page's two rows; the edges stop |
-| ✓ on a found frame | `✓ Open its Book`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library). The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
-| ✓ on a met frame | No ✓ cap; the context "{species}, only seen"; a press shows the message plate "Its Book needs its pod identified" and nothing opens |
-| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press shows the message plate "Nothing is known here yet" and nothing opens |
+| ✓ on a found frame | `✓ Open its Book`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library); until slot 8 a found frame has no ✓ cap and a press does nothing. The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
+| ✓ on a met frame | No ✓ cap; the context "{species}, only seen"; a press does nothing; the context says the next step |
+| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press does nothing |
 | The notice | The frame's notice, as on every screen |
 | ← | Home, the ring on the Library module |
 
-**Focus as data** (`library.json` `spread.focus`): sixteen targets `frame.<SNN>`, found, met or unmet, all enabled, each its frame's place with the round ring; ✓ on any of them reaches the intent table (target `frame.<SNN>`), which opens a found species' Book or shows a plate, and the bottom line drops the cap on met and unmet frames. One group `frame` whose four edges are `{ "nearestIn": "frame", "ahead": true }`, `fallback` `none`. Fourteen vectors play it with `ui/focus.mjs`, among them S04 ▶ S09 and S13 ◀ S08 across the gutter, S01 ▼ S05, and S01 ◀, S12 ▶ and S16 ▼ staying put.
+**Focus as data** (`library.json` `spread.focus`): sixteen targets `frame.<SNN>`, found, met or unmet, all enabled, each its frame's place with the round ring; ✓ on any of them reaches the intent table (target `frame.<SNN>`), which opens a found species' Book (once the Book is open) and otherwise does nothing, and the bottom line drops the cap on met and unmet frames. One group `frame` whose four edges are `{ "nearestIn": "frame", "ahead": true }`, `fallback` `none`. Fourteen vectors play it with `ui/focus.mjs`, among them S04 ▶ S09 and S13 ◀ S08 across the gutter, S01 ▼ S05, and S01 ◀, S12 ▶ and S16 ▼ staying put.
 
 **Events:** none of its own (`spread.events` is empty). ✓ on a found frame is a cut to the Book (`spread.keys.confirm`); ← from the Book is a cut back with the ring on that species (`spread.keys.library`); the screen change is the host's, as everywhere.
 
@@ -2248,8 +2247,6 @@ The copywriter's slots (`spread.strings`), signed by the copywriter.
 | Context, found | Six words or fewer, no digits | "{species}" |
 | Context, met | Six words or fewer, no digits; tells met from found in words | "{species}, only seen" (the widest, "Untuva, only seen", 132 px) |
 | Context, unmet | Six words or fewer, no digits | "an empty frame" |
-| Plate on a met frame | One sentence, at most 608 px of text | "Its Book needs its pod identified" |
-| Plate on an unmet frame | One sentence | "Nothing is known here yet" |
 | Way back | One word | "Home" |
 
 ### Masters for the spread
@@ -2262,8 +2259,8 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The code rig's type specimen at 80×96 for all sixteen |
 | `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
 | `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `clay` L, 4 px thick, along the top and right edges |
-| `clan-roundel-<Cnn>-12x12` | 12×12 | Sixteen: the clan's roundel beside its rule, in the clan's colour; signed, placed in L | A disc in the clan's colour, edged `bark` |
-| `spread-progress-full-8x8`, `spread-progress-empty-8x8` | 8×8 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it; signed and placed | An 8×8 `bark` disc; an 8×8 `clay` outline |
+| `clan-roundel-<Cnn>-16x16` | 16×16 | Sixteen: the clan's roundel beside its rule, in the clan's colour; signed, placed in L | A disc in the clan's colour, edged `bark` |
+| `spread-progress-full-12x12`, `spread-progress-empty-12x12` | 12×12 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it; signed and placed | A 12×12 `bark` disc; a 12×12 `clay` outline |
 | `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `sand` disc edged `bark` |
 
 ### Not designed yet

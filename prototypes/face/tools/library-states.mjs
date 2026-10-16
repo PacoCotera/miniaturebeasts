@@ -1,10 +1,7 @@
 // The Library spread in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `library-spread` (the wireframe 20 scene: Loika found and portrayed, Untuva, Tuikis
 // and Belatz found at progress one, three and four with the guide complete, Hiljan met, the rest empty, the ring on Tuikis), `library-spread-empty` (a fresh world: sixteen empty frames, the ring on the first), `library-spread-complete` (the ring
-// on a portrayed, complete frame: over the gilt corner and the seal) and `library-book-shut` (✓ on a found frame: the spread, the same ring, the plate "Its Book is not open yet"). Each is reached by the page's own state and asserted (screen, state, ring) before `visit(name, page, fail)`
-// is called. Taken with reduced motion, except `library-book-shut`, a timed pass (the Book shut: ✓ on a found frame, the plate 400 ms into its 4 s event, motion on, virtual clock). Returns { fails }.
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+// on a portrayed, complete frame: over the gilt corner and the seal) and `library-book-shut` (✓ on a found frame before slot 8: the spread, the same ring, no plate: fix 8). Each is reached by the page's own state and asserted (screen, state, ring) before `visit(name, page, fail)`
+// is called. Taken with reduced motion, except `library-book-shut`, a timed pass (✓ on a found frame, taken 400 ms after the press, motion on, virtual clock). Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
 
@@ -55,11 +52,10 @@ async function stillStates(visit) {
   } finally { await close(); }
   return { fails };
 }
-// the timed pass: motion on, a virtual clock. The message plate is an event (4 s, no fade), so the key is pressed after the screen change's dither is over and the frame is taken `timed` ms into the event.
+// the timed pass: motion on, a virtual clock. The key is pressed after the screen change's dither is over and the frame is taken `timed` ms after it; no plate may be drawn (fix 8: no shut door).
 async function timedStates(visit) {
   const { page, fails, fail, step, close } = await openStation({ motion: true, clock: true });
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const shut = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/library.json"), "utf8")).spread.strings.bookShut;
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       if (!sc.timed) continue;
@@ -67,8 +63,7 @@ async function timedStates(visit) {
       await page.evaluate((press) => window.__st.intent(press), sc.press); await step(sc.timed);
       await assertScene(page, name, sc, fail);
       const p = await page.evaluate(() => ({ msg: window.__st.msg, type: window.__st.check().log.type ?? [] }));
-      if (p.msg !== shut) fail(`library-${name}: the message plate says "${p.msg}", not "${shut}"`);
-      if (!p.type.some((t) => t.region === "plate" && t.text === shut)) fail(`library-${name}: the face drew no plate with "${shut}"`);
+      if (p.msg || p.type.some((t) => t.region === "plate")) fail(`library-${name}: a plate was drawn (fix 8: no shut door)`);
       await visit("library-" + name, page, fail); await step(4000);
     }
     await noErrors(page, fail);

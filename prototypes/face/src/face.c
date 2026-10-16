@@ -158,7 +158,7 @@ int face_test_offpalette(void) {
   for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0]) && !prim_painted_at(i % FACE_W, i / FACE_W)) bad++; }   /* (a painted picture covers its own pixels: on the chrome and art passes they are not findings) */
   return bad;
 }
-/* test mode: one focus ring word on a rect, from a target given as JSON ({"shape": "oval" | "footprint" | "tab" | {"rect": r} | {"circle": ...}, "ground": "paper"}), replacing the scene (the checks of the word alone).
+/* test mode: one focus ring word on a rect, from a target given as JSON ({"shape": "oval" | "footprint" | "tab" | {"rect": r} | {"circle": ...}, "ground": "default"}), replacing the scene (the checks of the word alone).
    `picture` and `cell` name the creature picture a footprint shape reads its `foot` from (the asset message gave it); "" for the other shapes. */
 int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *picture, const char *cell) {
   size_t n = strlen(form_json) + 16; char *wrap = (char *)malloc(n); if (!wrap) return -1; snprintf(wrap, n, "{\"t\":%s}", form_json);
