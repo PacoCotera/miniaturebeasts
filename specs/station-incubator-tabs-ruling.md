@@ -106,12 +106,12 @@ Each chapter that clears is a reveal, and the reason to come back. Every object 
 
 | Block | Lines | Type |
 | --- | --- | --- |
-| Name | the species name ("Loika") | 24 px, weight 500 |
-| Found-note | Pods' found sentence, up to 2 lines (a cross: "laid at home, of {A} and {B}") | 14 px, `mist` |
-| Your changes | heading, then up to 3 lines "{Trait}: {look}" (none for a cross; the block is not drawn) | 16 px heading; 14 px lines |
-| Cleared while growing | heading, then one line per cleared chapter, newest first, "{Chapter}: {look words}", up to 6; then "{n in words} still to come" while any remain (a founder); a cross: "read it when it's out" | 16 px heading; 14 px lines, the last in `mist` |
+| Name | the species name ("Loika") | 20 px, weight 500 |
+| Found-note | Pods' found sentence, up to 2 lines (a cross: "laid at home, of {A} and {B}") | 16 px, `mist` |
+| Your changes | heading, then up to 3 lines "{Trait}: {look}" (none for a cross; the block is not drawn) | 16 px, weight 500 heading; 16 px lines |
+| Cleared while growing | heading, then one line per cleared chapter, newest first, "{Chapter}: {look words}", up to 5; then "{n in words} still to come" while any remain (a founder); a cross: "read it when it's out" | 16 px, weight 500 heading; 16 px lines, the last in `mist` |
 
-- **Fit:** line pitch 20 for 14 px and 24 for 16 px, with 8 between blocks. The longest case (2 found lines, 3 changes, 6 cleared and the "still to come" line) is 32 + 40 + 8 + 24 + 60 + 8 + 24 + 120 + 20 = 336 ≤ 376 (the slip minus padding). Measure every line at its size with the real measurer: ≤ 176 px, or the line is cut at a word with "…" and reported.
+- **Fit:** the face has three type sizes, 16, 20 and 28 (lead, 13:08). Pitch 32 for the 20 px name and 24 for 16 px lines, with 8 between blocks. The longest case (2 found lines, 3 changes, 5 cleared and the "still to come" line) is 32 + 48 + 8 + 24 + 72 + 8 + 24 + 144 = 360 ≤ 376 (the slip minus padding). Measure every line at 16 px with the real measurer: ≤ 176 px, or the line is cut at a word with "…" and reported.
 - **States:** shown in growing, ready and hatch; not drawn when empty.
 
 **The card** (728, 96, 208 × 240), panel ground. Offsets are from the card's origin:
@@ -121,7 +121,7 @@ Each chapter that clears is a reveal, and the reason to come back. Every object 
 | Heading | (16, 12), 176 × 24, 16 px, `sand` | "Just cleared". Before the first clearing: "Next to clear" |
 | Picture | (24, 44), 160 × 128 | The cleared chapter's first trait that has a picture: `trait-{species}-{trait}-{look}-160x128`, a new crop at this size (art), 1:1. Before the first clearing: that chapter's emblem `rail-emblem-{chapter}-unread-24x24`, centred |
 | Trait | (16, 188), 176 × 24, 16 px, weight 500, `bone` | The chapter word ("Movement") |
-| Look | (16, 212), 176 × 20, 14 px, `mist` | The look in words ("a quick trot"). Before the first clearing: nothing |
+| Look | (16, 212), 176 × 24, 16 px, `mist` | The look in words ("a quick trot"). Before the first clearing: nothing |
 
 - **When it is shown:**
   - a founder with at least one chapter to clear, in growing and ready;

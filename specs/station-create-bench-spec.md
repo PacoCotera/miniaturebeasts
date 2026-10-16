@@ -20,7 +20,7 @@ The player came from a pod with `✓ Shape a founder`. They decide what their ne
 | `well` | 96, 96, 192, 192 | The pod's fitted well, as on Pods: the source of every look | all |
 | `pod` | 136, 128, 112, 136 | The player's own pod: open in shape, closed from Grow 300; its species' shell from Pods' renderer, with its place's dust or moss | all; carried out by `travel` |
 | `name` | 104, 304, 176, 24 | The species name on a name plate (Pods' `plate-name` series, max 176), centred on 192 | all |
-| `found` | 88, 336, 208, 40 | Pods' found sentence, 2 lines, 14 px, `mist`, centred on 192 | all |
+| `found` | 88, 336, 208, 48 | Pods' found sentence, 2 lines, 16 px (pitch 24), `mist`, centred on 192 | all |
 | `geneLine` | 288, 192, 24, 216 | The braided line from the well's side into the bank: the drums are fed by this pod | all |
 | `founder` | 360, 80, 304, 312, feet 392 | What they are making. Unread chapters' parts frosted, never guessed. The largest and warmest object | all |
 | `dish` | 312, 372, 400, 28 | The moss pad in a shallow cut-out; the founder's contact shadow lies on it | all |
@@ -47,7 +47,7 @@ The player came from a pod with `✓ Shape a founder`. They decide what their ne
 ## 3. The gene bank
 
 - **The tray** is 88, 408, 848 × 122. The **window** is x 104–920, the tray minus 16 each side.
-- **Chapter words:** 14 px, `mist`, the rail's words ("Coat", "Legs and tail" …), lineTop 416, left-aligned at the group's first drum.
+- **Chapter words:** 16 px, `mist`, the rail's words ("Coat", "Legs and tail" …), lineTop 414 (ends 436, 4 above the drums), left-aligned at the group's first drum.
 - **Drums:** 80 × 80, y 440–520, pitch 88 within a chapter, plus 16 between chapters, in chapter order, then the frame's trait order.
 - **What a drum holds** (offsets from its origin):
   - the window, 64 × 64 at (8, 8), with the look's close-up (`look-{species}-{trait}-{look}-64x64`);
@@ -80,18 +80,18 @@ The player came from a pod with `✓ Shape a founder`. They decide what their ne
 
 | Block | Lines | Type |
 | --- | --- | --- |
-| Your changes | heading, then one line per changed trait, "{Trait}: {look}", newest first, up to 5; then "and {n in words} more" | 16 px heading; 14 px lines |
-| | none changed: "none yet" (nothing read: "none: read a chapter first") | 14 px, `mist` |
-| | a clash adds "✕ {A} and {B} clash", in `red`, under the changes | 14 px |
-| Still a surprise | heading, then the unread chapters' words, comma-joined, up to 2 lines | 16 px heading; 14 px, `mist` |
+| Your changes | heading, then one line per changed trait, "{Trait}: {look}", newest first, up to 4; then "and {n in words} more" | 16 px, weight 500 heading; 16 px lines |
+| | none changed: "none yet" (nothing read: "none: read a chapter first") | 16 px, `mist` |
+| | a clash adds "✕ {A} and {B} clash", in `red`, under the changes | 16 px |
+| Still a surprise | heading, then the unread chapters' words, comma-joined, up to 2 lines | 16 px, weight 500 heading; 16 px, `mist` |
 | | none unread: the block is not drawn | |
 
-- **Fit:** the longest case is 24 + 6 × 20 + 20 (the clash) + 8 + 24 + 2 × 20 = 236 ≤ 264. Every line must be ≤ 176 px, measured; otherwise cut at a word with "…" and report.
+- **Fit:** the face has three type sizes, 16, 20 and 28 (lead, 13:08). The longest case at pitch 24 is 24 + 5 × 24 (4 changes and "and n more") + 24 (the clash) + 8 + 24 + 2 × 24 = 248 ≤ 264. Every line must be ≤ 176 px, measured; otherwise cut at a word with "…" and report.
 - **At Grow 0:**
   - the lists cut away, and the slip is printed;
   - the stamp prints at **772, 128, 120 × 120**, row by row as the existing `events.grow` step (0–300);
   - at 300, the code at **744, 264, 176 × 25** (lineTop 264, baseline 280, rule y 288 from 744 to 920);
-  - "to the Incubator" at lineTop 316, 14 px, `mist`, centred on 832.
+  - "to the Incubator" at lineTop 316, 16 px, `mist`, centred on 832.
 - **The bottom line:**
   - ✓ Grow it, then the price as now (`state.growCost`, icon before figure), **without `⧗ n`**;
   - the context: the focused drum's "{Trait}: {look}", or as the drum's state says ("Stamina is still a surprise", "breed to change", "{A} and {B} clash");
@@ -135,7 +135,7 @@ The player came from a pod with `✓ Shape a founder`. They decide what their ne
 - **Focus vectors:** ◀ ▶ along the drums with stops; ▲ ▼ turns; ✓ from any drum; a capped drum ignores ▲ ▼.
 - **Goldens:**
   - retake all 16 Create goldens (`create-*`) and `journey-create.json` (focus targets change: report the keys);
-  - **add** `create-shape-slid` (S03, focus on its 12th drum) and `create-shape-many-changes` (6 changes: the "and n more" line);
+  - **add** `create-shape-slid` (S03, focus on its 12th drum) and `create-shape-many-changes` (5 changes: the "and n more" line);
   - no other screen's golden may move.
 
 ## 7. Art (T-20261016-41, the art director, by hand)
