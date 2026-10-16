@@ -167,13 +167,9 @@ static void build_tag(void) {
 }
 
 /* ---- the card ---- */
-static void card_sprite(const char *id, const char *pic, int x, int y, int w, int h) { v_name("card"); if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), x, y); }
 static void build_card(void) {
   int c[4]; hrect("regions.card.rect", c);
   { const char *pl = v_pstr("regions.card.plate"); v_region("card", LAYER_PAINTED); if (*pl) v_sprite("card", pl, c[0], c[1], c[2], c[3]); }   /* fix 2 F1: the card is its device plate, 1:1, the region's first node; no picture, no plate (F6) */
-  card_sprite("card.heart", v_pstr("regions.card.heart"), c[0] + hk("regions.card.heart.at", 0), c[1] + hk("regions.card.heart.at", 1), hk("regions.card.heart.size", 0), hk("regions.card.heart.size", 1));
-  int n = v_pint("regions.card.notches.count", 0); if (n > 3) n = 3; const char *np = v_pstr("regions.card.notches.picture"); int nw = hk("regions.card.notches.notch", 0), nh = hk("regions.card.notches.notch", 1);
-  for (int i = 0; i < 3; i++) { int x = i < n ? hk(v_fmt("regions.card.notches.places.%d.%d", n, i), 0) : 0, y = i < n ? hk(v_fmt("regions.card.notches.places.%d.%d", n, i), 1) : 0; if (i < n) card_sprite(v_fmt("card.notch.%d", i), np, x, y, nw, nh); else card_sprite(v_fmt("card.notch.%d", i), "", 0, 0, 0, 0); }
 }
 static void build_speciesLine(void) {
   int r[4]; hrect("regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"), *mark = v_pstr("regions.card.species.mark"); int px = hi("regions.speciesLine.px", 16), w = v_measure(text, px);
@@ -258,9 +254,38 @@ static void wild_objects(int dy) {
   int r[4]; hrect("regions.wild.rect", r); const char *g = v_pstr("regions.wild.gate"); int gx = hk("regions.wild.gate.at", 0), gy = hk("regions.wild.gate.at", 1), gw = hk("regions.wild.gate.size", 0), gh = hk("regions.wild.gate.size", 1);
   v_name("wild"); if (has(g)) v_sprite("wild.gate", g, r[0] + gx, r[1] + dy + gy, gw, gh); else v_sprite_hidden("wild.gate", v_pstr("regions.glass.picture"), r[0], r[1]);
 }
+/* the bond panel stands in the Portrait module's place while that door is shut (specs/station-habitat-card-purpose.md): the heart and "bonded", or "not bonded yet"; the skill notches and "skill", or "no skill yet". Not a target, so it never lifts */
+static void bond_sprite(const char *id, const char *pic, int x, int y, int w, int h) { v_name("bond"); if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), x, y); }
+static void build_bond(void) {
+  int r[4]; hrect("regions.bond.rect", r); const char *plate = v_pstr("regions.bond.plate");
+  v_region("bond.plate", LAYER_PAINTED); if (*plate) v_sprite("bond", plate, r[0], r[1], r[2], r[3]);
+  int px = 16, bonded = v_pbool("regions.bond.bonded", 0), hx = r[0] + hk("regions.bond.rows.bond.heart.at", 0), hy = r[1] + hk("regions.bond.rows.bond.heart.at", 1);
+  char text[V_STR], col[24]; snprintf(text, sizeof text, "%s", v_pstr("regions.bond.text"));
+  { char hp[96]; snprintf(hp, sizeof hp, "%s", v_pstr("regions.bond.heart")); bond_sprite("bond.heart", hp, hx, hy, hk("regions.bond.rows.bond.heart.size", 0), hk("regions.bond.rows.bond.heart.size", 1)); }
+  { const char *k = bonded ? "regions.bond.rows.bond.on" : "regions.bond.rows.bond.off"; spec_str(S, v_fmt("%s.colour", k), col, sizeof col);
+    int tx = r[0] + hk(v_fmt("%s.at", k), 0), ty = r[1] + hk(v_fmt("%s.at", k), 1) + v_fdiv(24 - v_cap(px), 2);
+    v_region("bond", LAYER_TYPE); v_text("bond.text", text, tx, ty, v_measure(text, px), px, col); }
+  int n = v_pint("regions.bond.notches.count", 0); if (n > 3) n = 3; const char *np = v_pstr("regions.bond.notches.picture"); char npic[96]; snprintf(npic, sizeof npic, "%s", np);
+  int nw = hk("regions.bond.rows.skill.notch", 0), nh = hk("regions.bond.rows.skill.notch", 1);
+  for (int i = 0; i < 3; i++) { int x = r[0] + hk(v_fmt("regions.bond.rows.skill.places.%d", i), 0), y = r[1] + hk(v_fmt("regions.bond.rows.skill.places.%d", i), 1); if (i < n) bond_sprite(v_fmt("bond.notch.%d", i), npic, x, y, nw, nh); else bond_sprite(v_fmt("bond.notch.%d", i), "", 0, 0, 0, 0); }
+  snprintf(text, sizeof text, "%s", v_pstr("regions.bond.skill"));
+  { const char *k = n ? "regions.bond.rows.skill.on" : "regions.bond.rows.skill.off"; spec_str(S, v_fmt("%s.colour", k), col, sizeof col);
+    int tx = n ? r[0] + hk("regions.bond.rows.skill.places.0", 0) + (n - 1) * hi("regions.bond.rows.skill.pitch", 24) + nw + hi("regions.bond.rows.skill.gap", 4) : r[0] + hk("regions.bond.rows.skill.off.at", 0);
+    int ty = r[1] + hk("regions.bond.rows.skill.places.0", 1) + v_fdiv(24 - v_cap(px), 2);
+    v_region("bond", LAYER_TYPE); v_text("bond.skill", text, tx, ty, v_measure(text, px), px, col); }
+}
+/* the growth panel stands in the Cross module's place while that door is shut: the module's plate and word, and the one line that says when the young mibi grows up */
+static void build_growth(void) {
+  int r[4]; hrect("regions.growth.rect", r); build_module(S, "growth", 0, "");
+  char line[V_STR], col[24]; snprintf(line, sizeof line, "%s", v_pstr("regions.growth.line")); spec_str(S, "regions.growth.line.colour", col, sizeof col);
+  int px = hi("regions.growth.line.px", 16), lx = r[0] + hk("regions.growth.line.at", 0), ly = r[1] + hk("regions.growth.line.at", 1) + v_fdiv(20 - v_cap(px), 2);
+  v_region("growth", LAYER_TYPE); v_text("growth.line", line, lx, ly, v_measure(line, px), px, col);
+}
 static const char *MODS[4] = { "door", "portrait", "cross", "wild" };
 static void build_modules(const char *cur) {
   for (int m = 0; m < 4; m++) {
+    if ((m == 1 || m == 2) && spec_len("props", v_fmt("regions.%s", MODS[m])) < 0) continue;   /* a door that cannot open is not drawn (fix 8): no props, no module */
+    if (m == 3) { if (spec_len("props", "regions.bond") >= 0) build_bond(); if (spec_len("props", "regions.growth") >= 0) build_growth(); }   /* drawn after the doors' modules, before Wild */
     int dy = strcmp(cur, MODS[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODS[m]), 2) : 0;
     build_module(S, MODS[m], dy, "");
     if (m == 0) door_objects(dy); else if (m == 1) portrait_objects(dy); else if (m == 2) cross_objects(dy); else wild_objects(dy);

@@ -152,8 +152,6 @@
     "card",
     "plates",
     "door",
-    "portrait",
-    "cross",
     "wild",
     "strip",
     "tiles"
@@ -293,8 +291,6 @@
      "type": "object",
      "required": [
       "plate",
-      "heart",
-      "notches",
       "species",
       "story",
       "code",
@@ -304,25 +300,6 @@
      "properties": {
       "plate": {
        "type": "string"
-      },
-      "heart": {
-       "type": "string"
-      },
-      "notches": {
-       "type": "object",
-       "required": [
-        "count",
-        "picture"
-       ],
-       "additionalProperties": false,
-       "properties": {
-        "count": {
-         "type": "integer"
-        },
-        "picture": {
-         "type": "string"
-        }
-       }
       },
       "species": {
        "type": "object",
@@ -542,6 +519,67 @@
      "additionalProperties": false,
      "properties": {
       "plate": {
+       "type": "string"
+      }
+     }
+    },
+    "bond": {
+     "type": "object",
+     "required": [
+      "plate",
+      "bonded",
+      "text",
+      "heart",
+      "notches",
+      "skill"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "bonded": {
+       "type": "boolean"
+      },
+      "text": {
+       "type": "string"
+      },
+      "heart": {
+       "type": "string"
+      },
+      "notches": {
+       "type": "object",
+       "required": [
+        "count",
+        "picture"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "count": {
+         "type": "integer"
+        },
+        "picture": {
+         "type": "string"
+        }
+       }
+      },
+      "skill": {
+       "type": "string"
+      }
+     }
+    },
+    "growth": {
+     "type": "object",
+     "required": [
+      "plate",
+      "line"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "line": {
        "type": "string"
       }
      }

@@ -22,14 +22,11 @@
 <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="612" y="81" font-size="16" fill="#222">your Loika, young</text>
-<rect x="750.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
 <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="612" y="105" font-size="16" fill="#6b6880">of Burr</text>
 <text x="612" y="129" font-size="16" fill="#6b6880">and Fig</text>
 <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="612" y="177" font-size="16" fill="#222">QX4 MBA 7RW</text>
-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
 <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
 <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
 <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
@@ -49,7 +46,7 @@
 <path d="M801 215h38v3h-38z" fill="#c4c4c4"/>
 <path d="M801 224h38v3h-38z" fill="#c4c4c4"/>
 <path d="M801 233h38v3h-38z" fill="#c4c4c4"/>
-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
+<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
 <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
 <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
@@ -62,12 +59,13 @@
 <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
 <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<text x="880" y="309" font-size="16" fill="#888">not bonded yet</text>
+<text x="880" y="341" font-size="16" fill="#888">no skill yet</text>
+<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
 <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
+<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
+<text x="608" y="440" font-size="16" fill="#222">grows up in two turns</text>
+<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
 <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
 <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>

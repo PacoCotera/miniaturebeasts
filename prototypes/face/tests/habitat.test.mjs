@@ -14,6 +14,7 @@ import { setFrames, frameOf } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { habitatBuild } from "../../station/src/views/habitat-props.mjs";
 import { namerBuild } from "../../station/src/views/namer-props.mjs";
+import { testOpenDoors } from "../../station/src/nav.mjs";
 import { departures } from "../tools/habitat-regions.mjs";
 import { dirty, dirtyRects } from "./dirty.mjs";
 import { footOf } from "../../station/src/moving.mjs";
@@ -33,11 +34,13 @@ function scene(o = {}) {
   if (o.waiting) st.mibis[0].paint = { state: "sent" };
   if (o.portrait) { st.sitting = { source: "dev", key: null, at: 0 }; if (o.portrait === "portrayed") st.mibis[0].portrait = { state: "delivered", ...(o.digest ? { digest: o.digest } : {}) }; }   // a sitting held; portrayed: its portrait came, with its picture when the digest is named
   if (o.bonded) { st.mibis[0].bonded = true; st.mibis[0].notches = 3; }
+  if (o.juvenile) st.mibis[0].born = st.turn;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
   const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, armed: !!o.armed };
+  testOpenDoors(o.doors ?? []);   // the shipped state: Portrait, Cross and the Book are shut, their modules not drawn; a scene behind a door holds it open
   const b = habitatBuild(m, spec, frameSpec, homeSpec);
   if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; b.requests = [...b.requests, ...nb.requests]; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
-  return { ...b, st, m };
+  return { ...b, st, m, doors: o.doors ?? [] };
 }
 const frameProps = (line = {}) => ({ top: { screen: "habitat", title: "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Vivarium", need: "", ...line }, plate: { text: "" } });
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -66,7 +69,7 @@ const SCENES = {
   "a bonded mibi: the heart, three notches": { bonded: true, focus: "plate.0" },
   "its painting on its way: the placeholder's lamp": { waiting: true, focus: "resident" },
   "twelve bays, compact tiles": { bays: 12, adults: 12, focus: "tile:3" },
-  "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross" }, "the ring on Wild, armed": { focus: "wild", armed: true },
+  "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross", doors: ["cross"] }, "the ring on Wild, armed": { focus: "wild", armed: true },
   "by the light of dusk": { light: "dusk", focus: "resident" },
   "the namer over the meet": { meet: true, namer: true }, "the namer, typed, the accents page": { namer: true, fs: "typed", text: "Mo", page: "accents", nf: "key.3" }, "the namer, a refusal": { namer: true, say: { text: "Start with a letter", tone: "refused" } },
 };
@@ -74,7 +77,7 @@ for (const [name, o] of Object.entries(SCENES)) {
   test(`one mibi up close, ${name}: draws without an error or a refusal inside the budgets, with no region departing from habitat.json`, { skip }, async () => {
     const b = scene({ ...o, focus: o.focus?.startsWith("tile:") ? undefined : o.focus }); if (o.focus?.startsWith("tile:")) { b.props.focus.cur = "tile." + b.st.mibis[+o.focus.slice(5)].id; }
     const f = await start(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
-    const lg = logOf(f); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, !!b.props.overlay), []);
+    const lg = logOf(f); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, !!b.props.overlay, null, b.doors), []);
     const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
     assert.ok(JSON.stringify(b.props).length + JSON.stringify(b.line).length < 32 * 1024, "props under 32 KiB");
     if (b.props.overlay) { assert.ok(!lg.regions.some((r) => r.id === "focus" && r.layer === "chrome" && !(r.rect[0] >= 588)), "habitat draws no ring of its own while the namer is open"); }
@@ -84,8 +87,8 @@ for (const [name, o] of Object.entries(SCENES)) {
 
 test("the departure check bites: the card moved, a plate off its pitch, a module off its rectangle, the name tag off the glass, a word past the field are each found", { skip }, async () => {
   const b = scene({ focus: "resident", namer: true }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
-  const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, n, true); };
-  assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, n, true), []);
+  const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, n, true, null, b.doors); };
+  assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, n, true, null, b.doors), []);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "card" && r.layer === "painted").rect[0] += 8; })[0], /card/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "door.plate" && r.layer === "painted" && r.rect[2] === 272).rect[1] += 8; })[0], /door module/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome" && r.rect[2] > 2).rect[0] = 2; })[0], /tag/);
@@ -124,7 +127,7 @@ test("habitat's node order is unchanged by the namer: the regions in the log bef
 });
 
 test("the keys on the screen: ✓ ← and the room keys are intents on the focused target, the pad moves the ring by habitat.json's graph (▶ from the resident is the name, ▼ its tile), the host's `tile.shown` selector lands ▼ on the shown tile", { skip }, async () => {
-  const b = scene({ focus: "resident" }), f = await start(b), cur0 = b.props.focus.cur;
+  const b = scene({ focus: "resident", doors: ["sitting", "cross", "book"] }), f = await start(b), cur0 = b.props.focus.cur;   // every door held open: the full graph
   for (const [k, verb] of [["confirm", "confirm"], ["back", "back"], ["home", "room:home"], ["research", "room:research"], ["library", "room:library"], ["habitat", "room:habitat"]]) { const m = key(f, k); assert.deepEqual(m.map((x) => [x.t, x.screen, x.target, x.verb]), [["intent", "habitat", cur0, verb]], k); }
   const go = (k) => { const m = key(f, k); if (m[0]?.t === "focus") withFocus(f, m[0].target); return m; };
   let m = go("right"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "name"]]); m = go("right"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "species"]]);
@@ -220,7 +223,7 @@ test("S05 up close (the animator's ruling): no hop: an eager step twice on the h
 const painted = (lg, id) => lg.regions.filter((r) => r.id === id && r.layer === "painted" && r.rect[2] > 0).map((r) => r.rect), chromeOf = (lg, id) => lg.regions.filter((r) => r.id === id && r.layer === "chrome" && r.rect[2] > 2);
 test("fix 2 F1, F2: the card and the four modules are their plates, 1:1 at the spec's rectangles and painted, with no fill, edge or bevel row; the focused module's plate lifts with it", { skip }, async () => {
   for (const focus of ["resident", "door", "wild"]) {
-    const b = scene({ focus }), f = await start(b), lg = logOf(f);
+    const b = scene({ focus, doors: ["sitting", "cross"] }), f = await start(b), lg = logOf(f);
     assert.deepEqual(painted(lg, "card").filter((r) => r[2] === 416), [R.card.rect], "the card's plate");
     assert.equal(chromeOf(lg, "card").length, 0, "no card fill, edge or top row");
     for (const m of ["door", "portrait", "cross", "wild"]) {
@@ -256,7 +259,7 @@ test("fix 2 F4: the strip's tiles name their well by form and state (full or com
   }
 });
 test("fix 2 F6: no plate picture, no plate: a module whose plate master is not there draws no fill and keeps no plate", { skip }, async () => {
-  const b = scene({ focus: "resident" }); b.requests = b.requests.filter((r) => !/^plate-/.test(r.id));
+  const b = scene({ focus: "resident", doors: ["sitting", "cross"] }); b.requests = b.requests.filter((r) => !/^plate-/.test(r.id));
   const f = await start(b), lg = logOf(f);
   assert.equal(painted(lg, "card").length, 0); assert.equal(chromeOf(lg, "card").length, 0, "nothing falls back to a fill");
   for (const m of ["door", "portrait", "cross", "wild"]) assert.equal(chromeOf(lg, m).filter((r) => r[2] === R[m].rect[2]).length, 0);
@@ -267,27 +270,27 @@ test("the Portrait picture: one node after the frame, at 920,316 resting and 920
   const reg = (lg, layer) => lg.regions.find((r) => r.id === "portrait" && r.layer === layer && r.rect[2] > 0);
   const objects = {};
   for (const [focus, dy] of [["resident", 0], ["portrait", -2]]) {
-    const b = scene({ portrait: "portrayed", digest: D, focus }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    const b = scene({ portrait: "portrayed", digest: D, focus, doors: ["sitting"] }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
     assert.equal(b.props.regions.portrait.picture, id); assert.deepEqual(reg(lg, "painted").rect, [920, 316 + dy, 40, 30]); assert.deepEqual(reg(lg, "art").rect, [916, 312 + dy, 48, 40]);
-    assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
+    assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false, null, b.doors), []);
     objects[focus] = f.objects(); f.pass(3); for (const [x, y] of win(dy)) assert.deepEqual(f.pixel(x, y), colour(id), `the picture shows at ${x},${y} (drawn after the frame)`);
     assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40:48x40"), "the frame's rail beside the window");
   }
   for (const [o, focus] of [[{ portrait: "portrayed" }, "resident"], [{ portrait: "held" }, "portrait"], [{}, "resident"]]) {
-    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
-    const dy = focus === "portrait" ? -2 : 0, fr = b.props.regions.portrait.frame.id ?? b.props.regions.portrait.frame; f.pass(3); assert.deepEqual(f.pixel(940, 330 + dy), colour(fr), "the frame's own window shows"); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
+    const b = scene({ ...o, focus, doors: ["sitting"] }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
+    const dy = focus === "portrait" ? -2 : 0, fr = b.props.regions.portrait.frame.id ?? b.props.regions.portrait.frame; f.pass(3); assert.deepEqual(f.pixel(940, 330 + dy), colour(fr), "the frame's own window shows"); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false, null, b.doors), []);
   }
-  const b = scene({ portrait: "portrayed", digest: D, focus: "resident" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false); };
+  const b = scene({ portrait: "portrayed", digest: D, focus: "resident", doors: ["sitting"] }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false, null, b.doors); };
   assert.match(bad((c) => { reg(c, "painted").rect[0] += 1; })[0], /portrait/, "proved to fail on a moved picture");
 });
 
 test("fix 3c-habitat: with no Wild gate, chapter plate or guide mark master placed nothing is drawn at the gate (916,416), the plates' grounds (608+48i,200) or the guide mark; with them, each is drawn", { skip }, async () => {
   const drawn = (lg, id) => lg.regions.filter((r) => r.id === id && (r.layer === "art" || r.layer === "painted") && r.rect[2] > 0);   // the picture layers (the emblems on the plates are art too, 24 high; a ground is 40)
   try {
-    const b = scene({ focus: "resident" }), ids = new Set(b.requests.filter((r) => r.kind === "slot" && /^(gate-wild|chapter-plate|mark-guide)/.test(r.id)).map((r) => r.id)); assert.ok(ids.size >= 3, [...ids].join());
+    const b = scene({ focus: "resident", doors: ["book"] }), ids = new Set(b.requests.filter((r) => r.kind === "slot" && /^(gate-wild|chapter-plate|mark-guide)/.test(r.id)).map((r) => r.id)); assert.ok(ids.size >= 3, [...ids].join());
     UNSIGNED = ids; const f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []);
     assert.deepEqual(drawn(lg, "wild"), [], "no gate at 916,416"); assert.deepEqual(drawn(lg, "speciesLine"), [], "no guide mark"); assert.ok(drawn(lg, "plates").every((r) => r.rect[3] < 40), "no plate ground at 608+48i,200: only the emblems");
-    UNSIGNED = null; const g = await start(scene({ focus: "resident" })), lg2 = logOf(g);
+    UNSIGNED = null; const g = await start(scene({ focus: "resident", doors: ["book"] })), lg2 = logOf(g);
     assert.deepEqual(drawn(lg2, "wild").map((r) => r.rect), [[916, 416, 48, 48]], "the gate, placed"); assert.ok(drawn(lg2, "plates").some((r) => r.rect[1] === 200 && r.rect[3] === 40), "the plates' grounds, placed"); assert.deepEqual(drawn(lg2, "speciesLine").map((r) => r.rect[2] + "x" + r.rect[3]), ["16x16"], "the guide mark, placed");
   } finally { UNSIGNED = null; }
 });
@@ -303,4 +306,20 @@ test("a resident's ring is its footprint on the ground: the 4 px lift moves the 
   const lg = logOf(f) ?? f.lastLog, ring = lg.regions.find((q) => q.id === "focus" && q.layer === "chrome").rect, foot = footOf(pid, pic, () => null); assert.ok(foot, "the resident's picture has a footprint");
   assert.deepEqual(ring, footprintRing(foot, box), "the ring is the footprint of the unlifted box");
   const pr = lg.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); assert.ok(pr && pr.rect[1] < box[1], "the picture itself has risen");
+});
+
+test("no shut door: while Portrait, Cross and the Book cannot open, no module, guide mark or target stands for them; ▶ from the name goes on to the first plate, ▼ walks the Companion then Wild; the bond and growth panels draw their words in rest, meet and out (fix 8; specs/station-habitat-card-purpose.md)", { skip }, async () => {
+  const b = scene({ focus: "resident" }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []);
+  assert.ok(!lg.regions.some((r) => /^(portrait|cross)/.test(r.id)), "no Portrait or Cross module"); assert.ok(!lg.regions.some((r) => r.id === "speciesLine" && (r.layer === "art" || r.layer === "painted") && r.rect[2] > 0), "no guide mark");
+  assert.deepEqual(b.props.focus.targets.filter((x) => ["portrait", "cross", "species"].includes(x.id)), [], "no such target");
+  const go = (k) => { const m = key(f, k); if (m[0]?.t === "focus") withFocus(f, m[0].target); return m; };
+  let m = go("right"); assert.equal(m[0].target, "name"); m = go("right"); assert.equal(m[0].target, "plate.0", "the guide mark is gone: the name's ▶ is the first plate"); m = go("down"); assert.equal(m[0].target, "door"); m = go("down"); assert.equal(m[0].target, "wild"); m = go("up"); assert.equal(m[0].target, "door");
+  const words = (lg2, panel) => lg2.type.filter((t) => t.region === panel).map((t) => t.text);
+  for (const [name, o, bond, skill, grow] of [["rest", { focus: "resident" }, "not bonded yet", "no skill yet", "grown"], ["meet", { meet: true, focus: "resident" }, "not bonded yet", "no skill yet", "grown"], ["out", { carry: [0], away: true, focus: "name", bonded: true }, "bonded", "skill", "grows with care, out with you"]]) {   // a bonded young mibi waits for care (state.mjs stageAt)
+    const bb = scene(o), ff = await start(bb), l2 = logOf(ff); assert.deepEqual(ff.errors(), [], name); assert.deepEqual(departures(l2, spec, namerSpec, bb.props.state, bb.props.focus.cur, bb.props.regions.tiles.items.length, false, null, []), [], name);
+    assert.ok(words(l2, "bond").includes(bond) && words(l2, "bond").includes(skill), `${name}: the bond panel says "${bond}" and "${skill}": ${words(l2, "bond")}`); assert.ok(words(l2, "growth").includes("Growth") && words(l2, "growth").includes(grow), `${name}: the growth panel says Growth and "${grow}": ${words(l2, "growth")}`);
+  }
+  { const bb = scene({ bonded: true, focus: "resident" }), ff = await start(bb), l2 = logOf(ff);   // a bonded mibi with three notches: the heart, "bonded", three notches, "skill"
+    assert.deepEqual(words(l2, "bond"), ["bonded", "skill"]); const pics = l2.regions.filter((r) => r.id === "bond" && (r.layer === "art" || r.layer === "painted") && r.rect[2] > 0); assert.deepEqual(pics.map((r) => r.rect), [[880, 292, 64, 56]], "the heart (880, 292, 24 × 24) and the three notches (880, 904, 928 at y 324, 16 × 24): their union"); }
+  { const bb = scene({ focus: "resident", juvenile: true }), ff = await start(bb), l2 = logOf(ff); assert.ok(words(l2, "growth").some((w) => /^grows up in (one|two) turns?$/.test(w)), "a young mibi: the growth line counts the turns " + words(l2, "growth")); }
 });

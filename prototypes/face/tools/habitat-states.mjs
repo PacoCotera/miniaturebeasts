@@ -21,11 +21,11 @@ const SCENES = {
   plate: { shown: 0, f: "plate.1", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[0], fr = window.__st.frameOf("S01"); m.read = fr.chapters.filter((c, i) => i !== 1 && !c.sealed).map((c) => c.id); window.__st.ST.d = 9; } },
   door: { shown: 0, f: "door", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1]); window.__st.intent({ screen: "habitat", target: "door", verb: "confirm" }); } },
   "door-away": { shown: 0, f: "door", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1, 2]); w.away(); } },
-  cross: { shown: 0, f: "cross", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1]); w.away(); } },
-  portrait: { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const st = window.__st.ST; st.sitting = { source: "dev", key: null, at: 0 }; Object.assign(st.mibis[0], { habits: ["calm"], walked: ["wood"], places: ["wood"] }); } },   // a pose seen and a place been to: the sitting is held and nothing blocks it, so the golden proves "portraits are not open yet"
-  "portrait-painting": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "painting" }; } },
-  "portrait-portrayed": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "delivered" }; } },
-  "portrait-pictured": { shown: 0, f: "portrait", state: "rest", pictured: true, set: (w) => { w.bays(8); w.adults(4); window.__st.ST.sitting = { source: "dev", key: null, at: 0 }; } },   // its portrait came and its picture landed: the test card over the frame's window (not a portrait, not art)
+  cross: { shown: 0, f: "cross", state: "rest", doors: ["cross"], set: (w) => { w.bays(8); w.adults(4); w.carry([1]); w.away(); } },
+  portrait: { shown: 0, f: "portrait", state: "rest", doors: ["sitting"], set: (w) => { w.bays(8); w.adults(4); const st = window.__st.ST; st.sitting = { source: "dev", key: null, at: 0 }; Object.assign(st.mibis[0], { habits: ["calm"], walked: ["wood"], places: ["wood"] }); } },   // a pose seen and a place been to: the sitting is held and nothing blocks it, so the golden proves "portraits are not open yet"
+  "portrait-painting": { shown: 0, f: "portrait", state: "rest", doors: ["sitting"], set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "painting" }; } },
+  "portrait-portrayed": { shown: 0, f: "portrait", state: "rest", doors: ["sitting"], set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "delivered" }; } },
+  "portrait-pictured": { shown: 0, f: "portrait", state: "rest", doors: ["sitting"], pictured: true, set: (w) => { w.bays(8); w.adults(4); window.__st.ST.sitting = { source: "dev", key: null, at: 0 }; } },   // its portrait came and its picture landed: the test card over the frame's window (not a portrait, not art)
   "young-night": { shown: 1, f: "resident", state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(1); w.young(1); } },   // a juvenile up close at 304x312, the largest graded picture (fix 7)  "wild-armed": { shown: 3, f: "wild", state: "rest", arm: true, set: (w) => { w.bays(8); w.adults(3); w.young(1); const st = window.__st.ST; st.mibis[3].born = st.turn - 4; } },
   tile: { shown: 2, f: "tile:2", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
   twelve: { shown: 5, f: "resident", state: "rest", set: (w) => { w.bays(12); w.adults(12); } },
@@ -44,14 +44,14 @@ const SCENES = {
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, spec]) => {
-    const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st, ST = S.ST; S.UI.idle = false; S.UI.hab.namer = null; S.UI.hab.wildArm = 0; S.settings.light = spec.light ?? "day";
+    const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st, ST = S.ST; S.testOpenDoors(spec.doors ?? []); S.UI.idle = false; S.UI.hab.namer = null; S.UI.hab.wildArm = 0; S.settings.light = spec.light ?? "day";
     const id = ST.mibis[spec.shown].id; S.UI.hab.id = id; S.UI.meet = spec.meet ? id : null; S.UI.hab.f = spec.f.startsWith("tile:") ? "tile." + ST.mibis[+spec.f.slice(5)].id : spec.f;
     if (spec.pictured) { const r = S.portraitSource(spec.digest, eval(`(${spec.fixture})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); ST.mibis[spec.shown].portrait = { state: "delivered", digest: spec.digest }; }   // the session store only (pixels, never the save); the digest goes on ST as every scene sets ST
     S.goto("habitat"); S.UI.hab.f = spec.f.startsWith("tile:") ? "tile." + ST.mibis[+spec.f.slice(5)].id : spec.f; S.UI.hab.id = spec.f.startsWith("tile:") ? ST.mibis[+spec.f.slice(5)].id : id;
     if (spec.arm) S.UI.hab.wildArm = 1;
     if (spec.open) S.intent(spec.open === true ? { screen: "habitat", target: "resident", verb: "confirm" } : { screen: "habitat", target: "name", verb: "confirm" });
     for (const k of spec.keys ?? []) { const [t, v] = k.startsWith("x:") ? ["act.done", k.slice(2)] : [k, "confirm"]; S.intent({ screen: "namer", target: t, verb: v }); }
-  }, [sc.set.toString(), { shown: sc.shown, f: sc.f, meet: !!sc.meet, light: sc.light ?? null, arm: !!sc.arm, open: sc.open ?? null, keys: sc.keys ?? null, pictured: !!sc.pictured, digest: PICTURED, fixture: portraitFixture.toString() }]);
+  }, [sc.set.toString(), { shown: sc.shown, f: sc.f, meet: !!sc.meet, light: sc.light ?? null, arm: !!sc.arm, open: sc.open ?? null, keys: sc.keys ?? null, pictured: !!sc.pictured, doors: sc.doors ?? [], digest: PICTURED, fixture: portraitFixture.toString() }]);
 }
 // Station M1: Greet up close on S01's stand-in close cells under the developer switch, on the virtual clock at 0, 450, 900 and 1350 ms of the moment
 async function moments(visit) {

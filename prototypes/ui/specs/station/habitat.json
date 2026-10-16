@@ -15,7 +15,7 @@
   "design/style-guide/station-layouts/19e-vivarium-mibi-wild.png"
  ],
  "note": "The one home of the numbers of one mibi up close, transcribed from station-layouts.md (The Vivarium: the whole and one mibi up close) and its wireframes 19-vivarium-mibi.svg to 19e-vivarium-mibi-wild.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. One mibi up close: the mibi in the living window at the left with its name on a tag under it, its card at the top right, four modules under the card, the strip of bays along the foot. Its parent is the Vivarium's whole (vivarium.json); ← goes there.",
- "purpose": "Be with one mibi and choose its next step: greet it, name it, read who it is (its species and stage, where it came from, what it remembers, its code, the heart when it is bonded, its skill notches, its chapters and its stamp), read a bred child's chapter still unread (at home or out with the Companion), take it along or bring it home, have it sit for its portrait, cross it, or return it to the wild. Reads first: the mibi; then its name, then the card",
+ "purpose": "Be with one mibi and choose its next step: greet it, name it, read who it is (its species and stage, where it came from, what it remembers, its code, its chapters and its stamp; whether it is bonded and its skill (the bond panel), when it grows up (the growth panel)), read a bred child's chapter still unread (at home or out with the Companion), take it along or bring it home, have it sit for its portrait, cross it, or return it to the wild. Reads first: the mibi; then its name, then the card",
  "notes": {
   "name tag": "the mibi's name sits on a tag under it inside the living window, as on Home, so it does not float and the chrome carries system information only; the card does not repeat it. 20 px medium; the box holds ten of the widest letter (200 px, NAME_MAX 10), so the tag is at most 224 wide and a name is never clipped",
   "meet box": "the resident's box is 304×312, the box the juvenile stood in on the Incubator's hatch (incubator.json regions.juvenile), so the new mibi reads as the same creature across the hand-off's dither",
@@ -140,27 +140,7 @@
    "rect": [592, 48, 416, 208],
    "plate": "plate-device-416x208",
    "component": "panel",
-   "inStates": ["rest", "meet", "out"],
-   "heart": {
-    "at": [240, 16],
-    "size": [24, 24],
-    "slice": "heart-full-24",
-    "when": "the mibi is bonded (m.bonded); unbonded: nothing drawn",
-    "look": "a small enamel heart painted in the house light; never a flat emoji heart, no face, no sparkle"
-   },
-   "notches": {
-    "rect": [768, 160, 88, 24],
-    "at": [176, 112, 88, 24],
-    "notch": [16, 24],
-    "pitch": 24,
-    "right": 856,
-    "slice": "notch-skill-16x24",
-    "places": {"1": [[840, 160]], "2": [[816, 160], [840, 160]], "3": [[792, 160], [816, 160], [840, 160]]},
-    "count": "min(m.notches, 3): the places for that count; nothing at zero",
-    "when": "one to three filled notches, right-aligned to x 856 on the code's row; nothing at zero; never an empty notch, never a figure",
-    "until": "a labelled placeholder: a 16×24 `bone` bar with a `hairline` edge",
-    "note": "sprites the card holds, as the heart; not a focus target"
-   }
+   "inStates": ["rest", "meet", "out"]
   },
   "speciesLine": {
    "rect": [608, 64, 216, 24],
@@ -169,7 +149,7 @@
    "px": 16,
    "lineTop": 66,
    "text": "strings.speciesLine",
-   "mark": {"slice": "mark-guide-16", "size": [16, 16], "gap": 4, "at": "4 px after the line's last word, on the line's centre"},
+   "mark": {"slice": "mark-guide-16", "size": [16, 16], "gap": 4, "at": "4 px after the line's last word, on the line's centre", "when": "doorOpen(book)"},
    "target": "species"
   },
   "story": {
@@ -233,6 +213,7 @@
    "rect": [872, 272, 136, 96],
    "plate": "plate-device-136x96",
    "component": "panel",
+   "when": "doorOpen(sitting)",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
    "word": [16, 12],
@@ -257,6 +238,7 @@
    "rect": [592, 376, 272, 96],
    "plate": "plate-device-272x96",
    "component": "panel",
+   "when": "doorOpen(cross)",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
    "word": [16, 12],
@@ -291,6 +273,30 @@
    "lamp": null,
    "gate": {"at": [44, 40], "size": [48, 48], "slices": {"shut": "gate-wild-shut-48x48", "armed": "gate-wild-open-48x48"}},
    "states": {"shut": "at rest", "armed": "after the first ✓: the gate ajar"}
+  },
+  "bond": {
+   "rect": [872, 272, 136, 96],
+   "plate": "plate-device-136x96",
+   "component": "panel",
+   "inStates": ["rest", "meet", "out"],
+   "when": "doorOpen(sitting) is false: the panel stands in the Portrait module's place; not a focus target, not pressable (specs/station-habitat-card-purpose.md)",
+   "rows": {
+    "bond": {"at": [8, 20], "h": 24, "heart": {"at": [8, 20], "size": [24, 24], "slice": "heart-full-24"}, "on": {"at": [36, 20], "w": 92, "px": 16, "colour": "bone"}, "off": {"at": [8, 20], "w": 120, "px": 16, "colour": "mist"}},
+    "skill": {"at": [16, 52], "h": 24, "notch": [16, 24], "places": [[8, 52], [32, 52], [56, 52]], "pitch": 24, "slice": "notch-skill-16x24", "gap": 4, "on": {"px": 16, "colour": "bone"}, "off": {"at": [8, 52], "w": 120, "px": 16, "colour": "mist"}}
+   },
+   "rule": "bonded (m.bonded): the heart, then \"bonded\"; otherwise \"not bonded yet\" in mist, no heart. One to three skill notches (min(m.notches, 3)), then \"skill\" 4 px after the last; none: \"no skill yet\" in mist, never an empty notch, never a figure. The card's heart and notches are this panel's, nowhere else",
+   "states": {"rest": "as the rule", "meet": "as the rule", "out": "as the rule: the facts do not change while it is out"}
+  },
+  "growth": {
+   "rect": [592, 376, 272, 96],
+   "plate": "plate-device-272x96",
+   "component": "panel",
+   "build": "module",
+   "inStates": ["rest", "meet", "out"],
+   "when": "doorOpen(cross) is false: the panel stands in the Cross module's place; not a focus target, not pressable (specs/station-habitat-card-purpose.md)",
+   "word": [16, 12],
+   "lamp": null,
+   "line": {"at": [16, 48], "w": 240, "px": 16, "colour": "bone", "lines": 1, "noDigits": true, "text": "strings.growth: young, bondedYoung or grown"}
   },
   "strip": {"rect": [16, 488, 992, 64], "plate": "plate-device-992x64", "component": "panel"},
   "tiles": {
@@ -327,15 +333,17 @@
   "resident lamp",
   "nameTag",
   "meetRibbon",
-  "card (its heart and notches)",
+  "card",
   "speciesLine",
   "story",
   "code",
   "stamp",
   "plates",
   "door",
-  "portrait (its frame, then its picture)",
-  "cross",
+  "portrait (its frame, then its picture; only while doorOpen(sitting))",
+  "cross (only while doorOpen(cross))",
+  "bond (while the Portrait door is shut)",
+  "growth (while the Cross door is shut)",
   "wild",
   "strip",
   "tiles",
@@ -426,12 +434,12 @@
   "graph": {
    "fallback": "none",
    "resident": {"right": ["name", "species"], "down": "tile.shown", "left": "none", "up": "none"},
-   "name": {"right": "species", "up": ["resident", "none"], "left": ["resident", "none"], "down": "tile.shown"},
+   "name": {"right": ["species", "plate.0"], "up": ["resident", "none"], "left": ["resident", "none"], "down": "tile.shown"},
    "species": {"left": ["name", "resident"], "up": ["name", "resident"], "down": "plate.0", "right": "none"},
    "plate": {
     "left": [{"nearestIn": "plate", "ahead": true}, "resident", "name"],
     "right": [{"nearestIn": "plate", "ahead": true}, "none"],
-    "up": "species",
+    "up": ["species", "name"],
     "down": {"nearestIn": "top"}
    },
    "top": {
@@ -468,7 +476,7 @@
     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
    },
-   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "doorOpen(book); until slot 8 read-only (no ✓ cap, bottomLine.species.shut)"},
+   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "when": "doorOpen(book)", "enabled": "doorOpen(book); a target only while the Book is open (until slot 8 the line is plain text: no guide mark, no target, no shut line)"},
    "plate": {
     "group": "plate",
     "id": "plate.<i>, i from 0 in ring order",
@@ -485,6 +493,7 @@
     "enabled": "always on a shown mibi: ✓ Take when it is not in the set as it will be (state.projectCarried) and that set holds fewer than three; ✓ Bring when it is carried (state.carriedIds) and no request for it waits; otherwise read-only, no ✓ cap: a request for it waits (state.pendingCarry) or the set is full, and the context says which (bottomLine.door)"
    },
    "portrait": {
+    "when": "doorOpen(sitting)",
     "group": "top",
     "shape": { "rect": 6 },
     "box": "regions.portrait.rect",
@@ -492,6 +501,7 @@
     "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (until slot 9 read-only, bottomLine.portrait.shut)"
    },
    "cross": {
+    "when": "doorOpen(cross)",
     "group": "low",
     "shape": { "rect": 6 },
     "box": "regions.cross.rect",
@@ -620,6 +630,8 @@
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
   "card": {"species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
+  "bond": {"on": "bone", "off": "mist"},
+  "growth": {"line": "bone"},
   "stampLabel": {"k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "Habitat GB2 (art director's ruling): the label's plate is the signed plate-well-120x120 at (872, 64), the C5 well with its ground floor, drawn 1:1; the stamp is printed in it as before, multiplied in linear light by k × warm (art director, masters-pods 001bcd51), centred; the 1 px #3d434b edge is dropped, the well's own hairline replaces it; no fill, light, glow, frame or pane of its own"},
   "module": {"word": "metal"},
   "faceRing": "bevel",
@@ -688,11 +700,15 @@
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
   "painting": "its painting is on its way",
   "offline": "waiting for a signal",
+  "bond": {"bonded": "bonded", "not": "not bonded yet"},
+  "skill": {"has": "skill", "none": "no skill yet"},
+  "growthExamples": ["grows up in one turn", "grows up in two turns", "grows up in three turns", "grows up in four turns", "grows up in five turns", "grows up in six turns", "grows up in seven turns", "grows up in eight turns", "grows up in nine turns", "grows up in ten turns", "grows up in eleven turns"],
+  "growth": {"word": "Growth", "young": "grows up in {n} {turn|turns}", "bondedYoung": "grows with care, out with you", "grown": "grown"},
   "shut": {
    "cross": "crossing is not open yet",
    "portrait": "portraits are not open yet",
    "guide": "the guide is not open yet",
-   "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; until slots 7, 8, 9 (doorOpen)"
+   "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; kept, but not shown on this screen: a door that cannot open is not drawn (fix 8; specs/station-habitat-card-purpose.md)"
   },
   "guide": "Open the guide",
   "every": "every {Species}",
@@ -730,7 +746,7 @@
   "watchPlateExamples": ["Fig is seen digging", "Moss is seen curled up asleep"],
   "watchHabits": { "shake-dry": "shaking itself dry", "calm": "calming a creature", "sleep-curled": "curled up asleep", "sniff": "sniffing", "puff": "puffing out its down", "dig": "digging", "glow": "glowing" },
   "out": "out with the Companion",
-  "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
+  "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "growth": "Growth", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
   "partnersRule": "n counts only the partners that can be picked (not out with the Companion while it is away)",

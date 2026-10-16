@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, genomeDigest } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
+import { testOpenDoors } from "../src/nav.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -37,7 +38,8 @@ const world = (bays = 8) => { const st = S.freshSt("w1", 3, T0); S.normalize(st)
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (const m of w.st.mibis) m.paint = { state: "landed" }; return w.st.mibis; };
-const build = ({ st, settings }, sv, over = {}) => habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home);
+const ALL_DOORS = ["sitting", "cross", "book"];   // the scenes that read a module behind a shut door hold it open (the harness hook); `doors: []` is the shipped state
+const build = ({ st, settings }, sv, over = {}) => (testOpenDoors(over.doors ?? ALL_DOORS), habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home));
 
 function scenes() {
   const out = {};
@@ -71,9 +73,9 @@ test("the state: rest, meet (the new mibi until its first press), out (with the 
 
 test("the card: the species line with the stage word, the story (a founder: where it came from; a bred mibi: its parents), the code in three groups, the heart only when bonded, the notches (at most three, none at zero) and the stamp of the chapters read", () => {
   const S0 = scenes(), card = (n, o) => build(S0[n].w, S0[n].sv, o).props.regions.card, w = S0.rest.w, m = w.st.mibis[0];
-  const c = card("rest"); assert.equal(c.species.text, "your Loika, adult"); assert.deepEqual(c.story, ["from the meadow"]); assert.match(c.code, /^\w{3} \w{3} \w{3}$/); assert.equal(c.heart, ""); assert.equal(c.notches.count, 0);
+  const c = card("rest"); assert.equal(c.species.text, "your Loika, adult"); assert.deepEqual(c.story, ["from the meadow"]); assert.match(c.code, /^\w{3} \w{3} \w{3}$/); assert.ok(!("heart" in c) && !("notches" in c), "the heart and the notches are the bond panel's");
   assert.equal(card("juvenile").species.text, "your Loika, young");
-  const b = card("bonded"); assert.equal(b.heart, "heart-full-24"); assert.equal(b.notches.count, 3, "min(notches, 3)"); assert.equal(b.notches.picture, "notch-skill-16x24");
+  const bp = (n, o = {}) => build(S0[n].w, S0[n].sv, { doors: [], ...o }).props.regions.bond, b = bp("bonded"); assert.equal(b.heart, "heart-full-24"); assert.equal(b.notches.count, 3, "min(notches, 3)"); assert.equal(b.notches.picture, "notch-skill-16x24"); assert.deepEqual([b.text, b.skill], ["bonded", "skill"]); assert.deepEqual([bp("rest").text, bp("rest").skill, bp("rest").heart, bp("rest").notches], ["not bonded yet", "no skill yet", "", { count: 0, picture: "" }], "a fresh mibi: the words, no heart, never an empty notch");
   const fr = frameOf("S01"); m.from = { ...m.from, of: ["Moss", "Fig"] }; m.mem = "pond"; assert.deepEqual(card("rest").story, ["of Moss", "and Fig", "remembers the pond edge"]); m.from = { g: "meadow" };
   m.read = [fr.chapters[0].id]; const s = card("rest").stamp; assert.deepEqual([s.size > 0, s.size <= 104, s.asset.startsWith("stamp:") && s.asset.endsWith(":" + s.size + ":k20")], [true, true, true]); assert.ok(s.asset.includes(":" + fr.chapters[0].id + ":"), "only the chapters read");
   assert.ok(S0.rest.w.st.mibis.length && build(S0.rest.w, S0.rest.sv).requests.some((r) => r.kind === "stamp" && r.mibi === m.id), "the stamp is a request by mibi (the hatch's form)");
@@ -101,8 +103,8 @@ test("the Companion module: the set as it will be in its order (an add request w
 
 test("Cross: a face a partner (an adult or an elder of the species), a partner out with the Companion while it is away dimmed and not counted, a juvenile none; the module's context says why it cannot", () => {
   const w = world(); dock(w.st); const m = mibis(w, 4), sv = sv0({ carried: [m[1].id] });
-  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.ok(b.props.regions.cross.faces.every((f) => !f.away)); assert.equal(b.line.ok, null, "the door is shut: no ✓ cap"); assert.equal(b.line.subject, "crossing is not open yet"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, false);
-  dock(w.st, false); b = build(w, sv, { focus: "cross" }); assert.deepEqual(b.props.regions.cross.faces.map((f) => f.away), [true, false, false]); assert.equal(b.line.subject, "crossing is not open yet", "the shut line stands whatever the partners");
+  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.ok(b.props.regions.cross.faces.every((f) => !f.away)); assert.equal(b.line.ok, "Cross Dot"); assert.equal(b.line.subject, "three Loika to pair with"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, true, "the door held open: an adult with partners may cross");
+  dock(w.st, false); b = build(w, sv, { focus: "cross" }); assert.deepEqual(b.props.regions.cross.faces.map((f) => f.away), [true, false, false]); assert.match(b.line.subject, /Loika to pair with/);
   const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "pairs when you dock"); assert.equal(b.line.ok, null);
   b = build(w, sv0({ carried: [m[0].id] }), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "out"); assert.equal(b.line.subject, "crosses when you dock");
   m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []);
@@ -120,7 +122,7 @@ test("Portrait: none, held, its portrait on the way, portrayed; the context name
   const line = (o) => build(w, sv, { focus: "portrait", ...o }).line, st = (o) => build(w, sv, { focus: "portrait", ...o }).props.regions.portrait.state;
   assert.equal(st(), "none"); assert.equal(line().subject, "no sitting held");
   w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(st(), "held"); assert.equal(line().subject, "no pose seen yet"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, false);
-  m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, null); assert.equal(l.subject, "portraits are not open yet", "a mibi that has seen a pose and been to a place may sit, but the door is shut until slot 9");
+  m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, "Portray " + m[0].name, "a mibi that has seen a pose and been to a place may sit (the door held open by the harness)");
   m[0].portrait = { state: "painting" }; assert.equal(st(), "painting"); assert.equal(line().subject, "its portrait is on its way"); m[0].portrait = { state: "delivered" }; assert.equal(st(), "portrayed"); assert.equal(line().subject, "already portrayed");
 });
 
@@ -158,7 +160,7 @@ test("the bottom line: the resident greets (in the meet it names), the name rena
   const S0 = scenes(), m = S0.rest.w.st.mibis, L = (o, n = "rest") => build(S0[n].w, S0[n].sv, o).line;
   assert.deepEqual([L({ focus: "resident" }).ok, L({ focus: "resident" }).subject], [`Greet ${m[0].name}`, "an adult Loika"]); assert.equal(L({ focus: "resident" }).back, "Vivarium");
   assert.equal(L({ focus: "resident", ...S0.meet.over }, "meet").ok, `Name ${m[0].name}`, "in the meet the first ✓ names");
-  assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], [null, "the guide is not open yet"]);
+  assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], ["Open the guide", "every Loika"]);
   assert.equal(L({ focus: "tile." + m[2].id, habId: m[2].id }).ok, `Greet ${m[2].name}`); assert.match(L({ focus: "name" }, "bonded").subject, /^a bonded (young|adult|elder) Loika$/);
   assert.equal(L({ focus: "name" }, "out").subject, "out with the Companion");
 });
@@ -185,4 +187,22 @@ test("fix 7: the close view's resident takes the scene's light; the Companion's 
   const reqs = (light) => build(w, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
   assert.ok(day.every((r) => !("light" in r)));
   for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light), big = got.filter((r) => r.size[0] > 48); assert.equal(got.length, day.length); assert.ok(big.length >= 1 && big.every((r) => r.light === light && r.id.endsWith(":" + light)), light); assert.ok(got.filter((r) => r.size[0] === 48).every((r) => !("light" in r))); }
+});
+
+test("no shut door: while a door cannot open its module (Portrait, Cross) and the guide mark are not drawn and are not targets, no bottom line names a shut screen, and the bond and growth panels stand in the modules' places (fix 8; specs/station-habitat-card-purpose.md)", () => {
+  const S0 = scenes(), shutStrings = Object.values(spec.strings.shut).filter((s) => typeof s === "string");
+  for (const [name, { w, sv, over }] of Object.entries(S0)) {
+    const b = build(w, sv, { ...over, doors: [] }), R = b.props.regions, T = b.props.focus.targets.map((x) => x.id);
+    assert.deepEqual(validate(b.props, schema), [], name); assert.ok(!("portrait" in R) && !("cross" in R), `${name}: no Portrait or Cross module`); assert.ok(R.bond && R.growth, `${name}: the two panels`);
+    for (const id of ["portrait", "cross", "species"]) assert.ok(!T.includes(id), `${name}: ${id} is not a target`); assert.equal(R.card.species.mark, "", `${name}: no guide mark`);
+    for (const f of ["resident", "name", "door", "wild", "plate.0"]) { const l = build(w, sv, { ...over, doors: [], focus: f }).line; assert.ok(!shutStrings.includes(l.subject), `${name}/${f}: no shut line`); }
+    assert.ok(!JSON.stringify(b.props).includes("sitting-frame") && !JSON.stringify(b.props).includes("face-"), `${name}: nothing of the shut modules is requested`);
+  }
+  const open = build(S0.rest.w, S0.rest.sv, { doors: ALL_DOORS }).props; assert.ok(open.regions.portrait && open.regions.cross && !open.regions.bond && !open.regions.growth, "doors held open: the modules, not the panels");
+});
+test("the growth line: young and not bonded counts the world turns left in words; young and bonded grows with care; adult and elder: grown; the facts do not change while it is out", () => {
+  const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0(), line = (o = {}, id = m[0].id) => build(w, sv, { doors: [], habId: id, ...o }).props.regions.growth.line;
+  m[0].born = w.st.turn; assert.equal(line(), "grows up in two turns", "two turns left"); w.st.turn += 1; assert.equal(line(), "grows up in one turn", "one turn left: the singular"); w.st.turn += 5; m[0].born = w.st.turn - 1; assert.ok(/^grows up in (one|two) turns?$/.test(line()));
+  m[1].born = w.st.turn; m[1].bonded = true; assert.equal(line({}, m[1].id), "grows with care, out with you"); assert.equal(line({}, m[2].id), "grown");
+  assert.equal(build(w, sv0({ carried: [m[0].id] }), { doors: [], habId: m[0].id }).props.regions.growth.line, line(), "out with the Companion: the same facts");
 });

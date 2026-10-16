@@ -10,7 +10,8 @@ const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const grow = (r, k) => [r[0] - k, r[1] - k, r[2] + 2 * k, r[3] + 2 * k];
 
-export function departures(log, spec, namer, state = "rest", cur = "resident", n = 0, open = false, foot = null) {
+// `doors`: the doors held open by the harness (["sitting", "cross", "book"]); a door that is shut draws no module (fix 8) and its panel stands in its place (specs/station-habitat-card-purpose.md)
+export function departures(log, spec, namer, state = "rest", cur = "resident", n = 0, open = false, foot = null, doors = []) {
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), glass = R.glass.rect, must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const id of ["notBuilt.stage", "notBuilt.line"]) must(got(id).length === 0, `one mibi up close draws no ${id}`);
@@ -38,7 +39,16 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   for (const r of got("plates")) if (r.rect[2] > 0) must(within(r.rect, grow(R.plates.rect, 2)) || within(r.rect, [R.plates.rect[0], R.plates.rect[1] - 2, 8 * 48, 44]), `a plate ${r.rect} leaves its row ${R.plates.rect}`);
   void np;
   // the four modules: the panel at the spec's rectangle (lifted by the lift while the ring is on it); their words and objects inside
-  for (const m of ["door", "portrait", "cross", "wild"]) {
+  const sittingOpen = doors.includes("sitting"), crossOpen = doors.includes("cross");
+  for (const [m, isOpen] of [["portrait", sittingOpen], ["cross", crossOpen]]) if (!isOpen) must(!regions.some((r) => r.id === m || r.id === m + ".plate" || r.id === m + ".word"), `the ${m} module is drawn while its door is shut (fix 8)`);
+  for (const [panel, isShut, word] of [["bond", !sittingOpen, false], ["growth", !crossOpen, true]]) {   // the panels stand in the shut modules' places, drawn with no lift and no target
+    const rect = R[panel].rect, ps = got(panel + ".plate", "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
+    if (!isShut) { must(!regions.some((r) => r.id === panel || r.id === panel + ".plate"), `the ${panel} panel is drawn with its door open`); continue; }
+    must(ps.length === 1 && eq(ps[0].rect, rect), `the ${panel} panel's plate is not at ${rect}`); const tx = type.filter((t) => t.region === panel);
+    must(tx.length >= (word ? 1 : 2), `the ${panel} panel draws ${tx.length} words`); for (const t of tx.filter((q) => q.rect)) must(within(t.rect, rect), `the ${panel} panel's "${t.text}" ${t.rect} leaves ${rect}`);
+    for (const r of regions.filter((x) => x.id === panel && x.rect[2] > 0 && x.layer !== "chrome")) must(within(r.rect, rect), `the ${panel} panel's ${r.layer} ${r.rect} leaves it`);
+  }
+  for (const m of ["door", ...(sittingOpen ? ["portrait"] : []), ...(crossOpen ? ["cross"] : []), "wild"]) {
     const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m + ".plate", "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
     must(ps.length >= 1 && ps.every((r) => eq(r.rect, [rect[0], rect[1] - lifted, rect[2], rect[3]]) || (lifted && eq(r.rect, rect))), `the ${m} module is not at ${rect} (lifted ${lifted})`);
     if (cur === m && !open) { const rings = got("focus"), want = [rect[0] - 5, rect[1] - lifted - 5, rect[2] + 10, rect[3] + 10]; must(rings.length === 0 || (rings.length === 1 && eq(rings[0].rect, want)), `the ${m} ring ${rings[0]?.rect} is not ${want} (fix 14: the module as drawn grown by 5)`); }
