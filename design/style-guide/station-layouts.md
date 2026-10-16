@@ -931,8 +931,8 @@ The device's own painted parts, one key light top left: the bay is the signed pa
 | --- | --- | --- |
 | `ribbon` | 208, 56, 608, 40 as the bound; the width fits its words (words + 32, up to 8, at least 160) centred on 512 | 20 px medium, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third and a developer crate (uncounted) "Another crate home"; a sitting crate "Fig's portrait". It shows from 500 ms, 8 px above the pods' boxes. A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
 | `crate` | 296, 72, 432, 272 | The crate closer, the whole case, centred on 512, standing on the floor (feet 337) with `crate-shadow-432x24` at (296, 325) in every step, 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
-| Containers | 48×64 at (184, 272), (240, 272), (736, 272), feet on 336, each with `cargo-store-shadow-48x14` at y 329, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end; the travelling pods draw over them; no digits, never kept |
-| Its pods | 88×112, 104 apart on y 104 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
+| Containers | 72×96 at (216, 240), (736, 240), (816, 240), feet on 336, each with `cargo-store-shadow-72x21` at y 325 (its core row 11 on 336), opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-72x96`, `cargo-data-72x96`, `cargo-essence-72x96`; energy left of the closer, data then essence right of it, 8 px between rects; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end; the travelling pods draw over them; no digits, never kept |
+| Its pods | 88×112, 104 apart on y 108 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
 | `travel` | 176, 72, 672, 472 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
 | `rack` | as in the bay | A well stays empty until its pod lands; the bay is open and drawn in the opening |
 
@@ -997,7 +997,7 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 | Crate in the bay | 256×176, `crate-sealed-256x176`, `crate-sitting-256x176` |
 | Crate closer | 432×272, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
-| Rack insert, placed (`cargo-rack-992x168`), report plate, 21 heights (`cargo-report-plate-560x128` to `560x288`), contact shadows (`crate-shadow-256x24`, `crate-shadow-432x24`, `cargo-store-shadow-48x14`) | 992×168; 560×128 to 288; 256×24, 432×24, 48×14 |
+| Rack insert, placed (`cargo-rack-992x168`), report plate, 21 heights (`cargo-report-plate-560x128` to `560x288`), contact shadows (`crate-shadow-256x24`, `crate-shadow-432x24`, `cargo-store-shadow-72x21`) | 992×168; 560×128 to 288; 256×24, 432×24, 72×21 |
 | Waiting mark | 24×24, `mark-waiting-24` |
 
 ---

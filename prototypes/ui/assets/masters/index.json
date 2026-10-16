@@ -225,6 +225,13 @@
    "sha256": "e9bfa0cfc444cb7b9c04ac43704d6c8ca640f71903e2e0e33847f0b30ea45790",
    "signed": "Paco Cotera"
   },
+  "cargo-data-72x96": {
+   "file": "pods/cargo-data-72x96.png",
+   "w": 72,
+   "h": 96,
+   "sha256": "7b6ca5ac8ebfd79a419632afba4d03bd03294874794d55cd44fd0b6276b0e48b",
+   "signed": "Paco Cotera"
+  },
   "cargo-energy-48x64": {
    "file": "pods/cargo-energy-48x64.png",
    "w": 48,
@@ -232,11 +239,25 @@
    "sha256": "da8f62219aaca7d009c424f9b92a7b90d6b744613d9b98cc8baa37bdfd353f7e",
    "signed": "Paco Cotera"
   },
+  "cargo-energy-72x96": {
+   "file": "pods/cargo-energy-72x96.png",
+   "w": 72,
+   "h": 96,
+   "sha256": "0a145efecdebe126e54ba6e5203d83b0cce8dba8a3664eca349025719758ab86",
+   "signed": "Paco Cotera"
+  },
   "cargo-essence-48x64": {
    "file": "pods/cargo-essence-48x64.png",
    "w": 48,
    "h": 64,
    "sha256": "dbc5e346e953d7e89e109a9d8115e631f341cf97d70190e74a6273780a086b70",
+   "signed": "Paco Cotera"
+  },
+  "cargo-essence-72x96": {
+   "file": "pods/cargo-essence-72x96.png",
+   "w": 72,
+   "h": 96,
+   "sha256": "25a3dc1a2f958f0e795e7d180d8a3ed9cad6ea3bd2f4d61f94b6e2c5d3103a97",
    "signed": "Paco Cotera"
   },
   "cargo-rack-992x168": {
@@ -400,6 +421,13 @@
    "sha256": "2eda8ac44d6c299b6216a81b79d771d1d7ff5f97f57d34078d9dc688305aaf68",
    "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
+  "cargo-store-shadow-72x21": {
+   "file": "pods/cargo-store-shadow-72x21.png",
+   "w": 72,
+   "h": 21,
+   "sha256": "b60f17222edb46ffc4cd0c6f9388dd421636077ebbca23f0052709d3e166736a",
+   "signed": "Paco Cotera"
+  },
   "cell-outline-unread-128x160": {
    "file": "pods/cell-outline-unread-128x160.png",
    "w": 128,
@@ -558,14 +586,14 @@
    "file": "pods/crate-open-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "9e91c2807f2966f0c6ef1485a5ea34206a45677823d237652e07a9798cf338ab",
+   "sha256": "13d336dcb014c74ff86060d802d9a6a5e97805c1070c4f176243085c322a60e2",
    "signed": "Paco Cotera"
   },
   "crate-opening-432x272": {
    "file": "pods/crate-opening-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "ea6b8ae6f7222d5f9067ff7c2c843eb7b83ae8562aebb66243ed3c5bfc55412f",
+   "sha256": "09324b287325201dc1863c6161d5a511d828d19b528c80712af707246951e2a8",
    "signed": "Paco Cotera"
   },
   "crate-sealed-256x176": {
@@ -579,7 +607,7 @@
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "4eaed705a22a1ff8dbd5a98b87ef800f1548bae189a8eadb40dba7f55ca67dd9",
+   "sha256": "ab6b5765579e92b1b307119c592ff58eeb87564230692255be2269cdc37f40f3",
    "signed": "Paco Cotera"
   },
   "crate-shadow-256x24": {
