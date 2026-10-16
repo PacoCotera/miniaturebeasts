@@ -48,7 +48,7 @@ The browser sandbox is the place where the loop and its interactions are defined
 | Palettes, fonts (Mibi 7×9 glyph sheets, Inter baked by `lv_font_conv` from the OFL file), the asset manifest and every asset at its pixel size | The component library, once, in C on LVGL for all three devices: same names, same behaviour | The page's fit and scale code, `localStorage` |
 | The save schema, migration ids and fixture saves | The renderer (indexed buffer on the ESP32s; layered 32-bit frame on the Pi) | Playwright hooks (a host build of the device code takes their place) |
 | Species frames, catalogue, genome and stamp formats; **on the Station, the rules, genome, rig, stamp and Caddy client as code** (§4.3) | Input (GPIO keys to the same key events) and storage (flash or SD on the ESP32s, a file on the Pi; same save layout) | The developer panel's HTML (its settings contract carries; the device gets a hidden menu) |
-| The Caddy service's four routes and their contracts | The Caddy service itself, as ESP-IDF firmware | |
+| The Caddy service's four routes and the dock's two (§4.4), and their contracts | The Caddy service itself, as ESP-IDF firmware | |
 
 **On the Station nothing of the face is re-expressed.** The sandbox's Station face is the device's own C, compiled to WebAssembly (§8, lvgl-switch.md): the component library, the renderer, focus and input run the same on the Pi, which adds only its platform layer, the Node host and the image cache (lvgl-switch.md §2.9). The middle column above holds for the Companion and the Caddy, whose words are the Station's `common/` words under their own profiles (lvgl-switch.md §2.2).
 
@@ -78,7 +78,7 @@ The Companion's pixel model (8-bit indexed colour: a palette of up to 256 entrie
 
 Native C on ESP-IDF, with **LVGL 9** for chrome, lists and menus, and an indexed renderer of our own for the Companion's world view (tile map and sprites) inside it. The world view is a game renderer, not a widget. LVGL is MIT-licensed, proven on the S3 in v1, and drives an e-paper through a custom flush. The Caddy firmware is mostly service work (Wi-Fi, TLS, SD storage, a small HTTP server for the Station, the printer) with a quiet four-gray UI, so its service contract matters more than the toolkit. Both start when the loop is stable. **Fallback: Slint** (GPLv3 or a paid licence on embedded, and younger on the S3 than LVGL).
 
-**Wi-Fi between Station and Caddy:** the Caddy brokers the portrait at the sitting over Wi-Fi, and the four HTTP routes of the Caddy service are the contract. The Station's client queues in `outbox`, so the kit plays on when the Caddy is unreachable.
+**Wi-Fi between Station and Caddy:** the Caddy brokers the portrait at the sitting over Wi-Fi, and the four HTTP routes of the Caddy service, and the dock's two (§4.4), are the contract. The Station's client queues in `outbox`, so the kit plays on when the Caddy is unreachable.
 
 ### 4.3 The Station's runtime, within the Pi 4
 
@@ -95,6 +95,55 @@ The Station has two halves. **The face** (screens, focus, animation, drawing) is
 The budgets the Pi must meet are lvgl-switch.md §2.10.
 
 **Fallback: S2,** the same face with the logic ported to C in one process (tens of MB), used only if a JavaScript runtime on the device is ruled out. Its price is a second genome model: the genome, rig, stamp and cross would exist in JavaScript in the workbench and in C on the Station, and every workbench change would be ported and re-verified with test vectors.
+
+### 4.4 The dock: seated and lifted
+
+The Caddy senses each cradle with a hall sensor and lights its lamp ([devices.md, the cradles](../devices.md#the-cradles-seat-sensing-and-lamps)); this is the event it sends. Purpose: the Caddy knows a handheld is seated, lights its cradle, and tells the Station within about 0.5 s ([dock moments](../../specs/dock-moments.md) §4). The event carries **presence only**. It never accepts cargo, moves a mibi or awards anything ([devices.md](../devices.md), working rule): accepting is still the player's Open the bay (`openBay`, docked only).
+
+**Two routes, added to the Caddy service's four.**
+
+| Call | Does |
+| --- | --- |
+| `GET /caddy-api/v1/dock` | The snapshot: both cradles' current state, as below, with `snapshot: true` |
+| `GET /caddy-api/v1/dock/events` | A server-sent event stream (`text/event-stream`, `esp_http_server` on the device). On connect it sends the snapshot first, then one `dock` event per change, and a comment line every 5 s as a heartbeat |
+
+**Payload** (one JSON object per cradle, the `data` of an event named `dock`, its `id` the `seq`):
+
+```json
+{ "v": 1, "caddy": "<caddy id>", "boot": "<boot id>", "seq": 42, "cradle": "companion", "state": "seated", "seats": 17, "ms": 812345, "charging": null, "snapshot": false }
+```
+
+- `cradle`: `companion` or `station`. The cradle's shape names the device; the Companion's identity and summary come over its own link (below).
+- `state`: `seated` or `lifted`. **The event is a state, not a toggle**: applying the state the Station already holds changes nothing, so a repeat, a replay or a snapshot never plays a second arrival.
+- `seats`: the cradle's seat count, kept in the Caddy's flash across restarts, one more at every debounced seat. It lets a reconnect see a lift and reseat it missed.
+- `seq`: one more at every event, per boot; `boot` changes at every Caddy restart. `ms`: the Caddy's monotonic milliseconds at the debounced edge. No wall-clock time is relied on (the Caddy may not have one).
+- `charging`: the charger's status line for that cradle once the charger chip is chosen (`true`, `false`), else `null`. For diagnosis only; it never makes or cancels a seat.
+
+**Timing**, from the handheld touching down (t = 0 of dock moments is the debounced seat):
+
+| Step | Budget |
+| --- | --- |
+| Hall sensor output switches | under 1 ms (always-on sensor) |
+| Debounce: the level must hold **150 ms** for a seat, **300 ms** for a lift (a jostle in the cradle is not a lift) | 150 ms (seat) |
+| The Caddy lights or darkens the lamp and starts the e-paper's partial refresh, locally, then writes the event | under 10 ms |
+| Wi-Fi to the Station (the Caddy keeps its station link awake; it runs from the wall) | typically under 50 ms, budget 150 ms |
+| The Station's client hands it to the logic, the logic runs the dock, the face gets props | budget 150 ms |
+| **Seat to the Station reacting** | **under 0.5 s** |
+
+**What the Station does with it.** The Station's Caddy client (beside the `outbox` client, §4.2) holds the stream and calls the same dock rule the play page calls today: a `seated` on the Companion's cradle when the save says lifted runs `dockKey` (the dock: `st.dock`, `dockN`, the mend, `mergeCare`), a `lifted` when the save says docked runs the lift. The screen's response is the frame's `dock` intent (`station/src/intents/frame.mjs` `dock`) as now, and the arrival of dock moments when it is built. The Station's own cradle is published the same way; no game behaviour is attached to it yet (none is specified). The Companion's summary (crates, carried mibis, the Probe, the turn) is a separate message on the relay that is still undesigned (the real transfer of crates, [game.md](../game.md)): **a seat never says "no crates"**, so the Station must not read an empty bay from a `seated` alone.
+
+**Offline and restarts.**
+
+- **The stream drops** (Wi-Fi, the Caddy off): after 15 s with no heartbeat the client marks the Caddy unreachable, as the outbox's "waiting for a signal" does, and reconnects at 1, 2, 4, 8, 16, then every 30 s. The Station keeps the last dock state it applied and **never invents a seat or a lift** from a lost stream.
+- **On reconnect** the snapshot is reconciled against the save: a different state is applied as one event; the same state with a higher `seats` than last applied means a lift and a seat were missed, and both are applied in order (the dock's rules are already safe to repeat: `mergeCare` is max/OR only, crates are accepted once by id). This is dock moments' case "already docked, crates arrive later": the arrival plays when the Station hears it.
+- **The Station restarts** (Node or the Pi): it connects, reads the snapshot and reconciles the same way.
+- **The Caddy restarts:** `boot` changes, `seq` starts again, each cradle's state is read from its sensor's level (truthful at boot), and a handheld that stayed seated through the restart is not counted as a new seat. The Station reconciles by state and `seats`, never by `seq` across boots.
+- **The Caddy has no Station:** the lamp and the e-paper still follow the seat; nothing is queued, because the snapshot is the truth when the Station returns.
+- **The Companion:** it learns it is seated from the Caddy over the relay link once that is designed (its own charger line, if its board has one, is a second reading). Until then, nothing on the Companion depends on the event.
+
+**The play page's Dock control stands in for it.** In the sandbox there is no sensor: the Dock control beside the Caddy (and its key, `D` on the Station page, `Shift` on the play page) is the seat and the lift. It produces the same event object (`cradle: "companion"`, the opposite of the current state, `seats` one more on a seat) and hands it to the same entry the device's stream feeds, so the path from an event to `dockKey` and the frame's `dock` intent is the one the Pi runs. Being state-based, a second press while the event plays is a lift, never a second dock. The sandbox's Caddy service gains the two routes only when a build ticket asks for them; a test can then post seats and lifts to its mock stream.
+
+**Deferred: sound and haptics.** No device plays a sound or buzzes on a seat or a lift; when they come, they key on these same events.
 
 ## 5. The structure
 
@@ -242,7 +291,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save chang
 | --- | --- | --- | --- | --- |
 | Station (Pi 4) | LVGL 9 in C: WebAssembly in the sandbox, DRM on the Pi | The sandbox's JavaScript, headless under Node on the Pi | `localStorage` in the sandbox; a file on the Pi | The face in the sandbox, screen by screen (lvgl-switch.md §3); the Pi at P1 |
 | Companion (ESP32-S3) | LVGL 9 for chrome, an indexed renderer for the world view, the `common/` words | C, checked against the JavaScript reference's test vectors | Flash or SD | C1, C2a and C2b in the sandbox; the device at P1 |
-| Caddy (ESP32-S3) | LVGL 9 in four grays, the `common/` words | C firmware: Wi-Fi, TLS, SD, the four routes, the printer | SD | P1 |
+| Caddy (ESP32-S3) | LVGL 9 in four grays, the `common/` words | C firmware: Wi-Fi, TLS, SD, the four routes and the dock's two (§4.4), the cradles' sensing and lamps, the printer | SD | P1 |
 
 <a id="8-assessment-the-real-lvgl-face-in-the-sandbox-now"></a>
 
@@ -266,4 +315,5 @@ The face's build plan, bridge, words, checks, budgets and milestones are [lvgl-s
 
 - Generating the layout spec's tables and wireframes from the spec files.
 - The form of the spec files compiled to C tables for the Companion and the Caddy.
+- The relay of the Companion's summary to the Station at a seat (BLE or Wi-Fi from the Companion to the Caddy), and what the Station shows if the summary is late after a `seated` (§4.4).
 - The asset policy for the Companion's 8-bit indexed colour: whether `palette48` becomes one `palette256` policy or one policy per biome.
