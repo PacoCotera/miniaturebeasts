@@ -9659,12 +9659,12 @@
    56
   ],
   "rect": null,
-  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
-  "made": "the sitting Cargo crate for Home's bay, 80x56: the whole sealed crate (2 px clear) with the tag painted out and the small brass plate (24x16, the old glyph's size) on the lid; it replaces the old teal crate-sitting-80x56 of pass 89 (pass 122)",
-  "sha256": "5fae512ce5434aac5aad5d0f99d5708633456cbf475c457079a801c4bb35495c",
-  "status": "signed",
-  "signed_in": "art director, verdict (963f4eab)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 48.7, mean R-B 27.0, over the +-8 band only because the brass plate (the mark) is a tenth of so small a crate; the case is the signed 256 reduced"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the sitting crate for Home's bay (75x48 at 2,4)",
+  "sha256": "e663597c495f927495a35bceb82ae04846376eb79b7f5ad5803fe613742e6ecc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "place-meadow-96x96": {
   "size": [
@@ -10795,12 +10795,12 @@
    176
   ],
   "rect": null,
-  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
-  "made": "the sealed Cargo crate for the bay's places, 256x176: the whole sealed crate reduced uniformly into the box with 8 px clear on every side (never enlarged) (pass 122) (fringe cleaned in pass 139: 894 of 1865 edge pixels, two passes)",
-  "sha256": "fe1d90c956076ff72bdb5b9f7d4c68b4ccc521e8355890745156dc2b29a0160f",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
-  "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces 071a4b591c83\u2026; signed in the whole Cargo capture"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the sealed crate for the bay's places, reduced into the signed box (235x150 at 10,13)",
+  "sha256": "e36e31b84bd563289693c0422f890a6da8b4d0476a476e835e4a34110e29248a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-sitting-256x176": {
   "size": [
@@ -10808,12 +10808,12 @@
    176
   ],
   "rect": null,
-  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
-  "made": "the sitting Cargo crate, 256x176: the whole sealed crate (8 px clear on every side) with the tag painted out (the handle part from its mirror image) and a small matte brass plate (gold frame, a panel inside, 48x32, lit from the top left) on the lid instead; replaces the old teal crate-sitting-80x56 look (pass 122) (fringe cleaned in pass 139: 894 of 1865 edge pixels, two passes)",
-  "sha256": "c038db37c311c8919064407959383439a2c6c64086cea1da4b4adc2b77b9fd6e",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
-  "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces a83fbf87442b\u2026; signed in the whole Cargo capture"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the sitting crate: the sealed crate whose label plate carries a cream picture-frame glyph instead of the egg",
+  "sha256": "bb5cdfaa6036ab0196f7d97cfc1925ebbc2e46f808c04f2af6494f4c6300ab42",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-open-432x272": {
   "size": [
@@ -10821,12 +10821,12 @@
    272
   ],
   "rect": null,
-  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
-  "made": "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale) (pass 122) (fringe cleaned in pass 139: 987 of 2199 edge pixels, two passes)",
-  "sha256": "e2149ccb7c106fa6f0214fc4b1ae4d3c635a78738407acd32b19f0f511e9d5cc",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
-  "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces f2db8bbbb51a\u2026; signed in the whole Cargo capture"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the open crate: the yellow hard case, a black rubber rim, charcoal foam with the three pod wells where they were, moss in each",
+  "sha256": "9e91c2807f2966f0c6ef1485a5ea34206a45677823d237652e07a9798cf338ab",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-sealed-432x272": {
   "size": [
@@ -10834,12 +10834,12 @@
    272
   ],
   "rect": null,
-  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
-  "made": "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel (pass 122) (fringe cleaned in pass 139: 1895 of 3461 edge pixels, two passes)",
-  "sha256": "6b0c821533733378aaa997781a78db74179dd9144c6e9c227946c55ba24fc53e",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 05:00: the Cargo captures (public station-fix5-cargo 94790b0c, the 10 retaken crate goldens), placed byte for byte",
-  "status_note": "new (10-15): the art director's recut round 2 (crate-recut/recut-crates-2.py) cut to the crate body: the broken side protrusions removed, the edge softened; replaces 9ab374686299\u2026; signed in the whole Cargo capture"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the sealed Cargo crate, closer: the owner's ref-4 hard case (warm yellow shell, black rubber corners, black latches and handle), a black label plate with a white egg; same box as the signed crate",
+  "sha256": "4eaed705a22a1ff8dbd5a98b87ef800f1548bae189a8eadb40dba7f55ca67dd9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-opening-432x272": {
   "size": [
@@ -10847,12 +10847,12 @@
    272
   ],
   "rect": null,
-  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
-  "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122) (fringe cleaned in pass 139: 2238 of 3472 edge pixels, two passes)",
-  "sha256": "d73667a3675789df4a93a0d1c66a407435dd32c012c855db41e906d706761003",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-15 06:23: the Cargo retake (public station-fix5-cargo 5614a972, the 9 changed goldens), placed byte for byte",
-  "status_note": "new (10-15): rebuilt from the round-2 sealed crate (crate-recut/make-crate-opening.py): the lid lifted 6 px, a shaded gap across the body proper only, the tag torn at the seam; the old composite's wing residue and jagged seam gone (QA, 10-15); replaces 5094478bd4d6\u2026 (was signed); signed in the Cargo retake"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the opening frame: the sealed crate's lid (above y 176) lifted 6 px over a dark gap",
+  "sha256": "ea6b8ae6f7222d5f9067ff7c2c843eb7b83ae8562aebb66243ed3c5bfc55412f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "cargo-energy-48x64": {
   "size": [
@@ -10860,12 +10860,12 @@
    64
   ],
   "rect": null,
-  "src": "source/raw/cargo-haul-3.jpg (gemini-3-pro-image)",
-  "made": "the Energy haul container: the banded steel battery cell with dark rubber corners, a cap terminal and a charge window of three flat amber bars (#ffa83f); a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
-  "sha256": "bab3edbd4fd91201be7a1f403cd93c115d4c778edf0c49be5453f4abfb0d1d9a",
-  "status": "signed",
-  "signed_in": "art director, the haul trio (owner's yes)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 46.8, mean R-B 21.2, sat 15.4, 0.0 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED (a painting, cut and graded, hand-touched); the riveted, banded cell, three amber cells in its window"
+  "src": "source/raw/rw-haul-trio.jpg (gemini-3-pro-image, from owner refs 6, 7, 9, 10), cut by cargo-rework/cut-haul.py",
+  "made": "the Energy container: a battery cell, white shell with orange bands and black end caps, a tall glass window of glowing amber energy, terminals on top; 48x64, the same id and box",
+  "sha256": "da8f62219aaca7d009c424f9b92a7b90d6b744613d9b98cc8baa37bdfd353f7e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "cargo-data-48x64": {
   "size": [
@@ -10873,12 +10873,12 @@
    64
   ],
   "rect": null,
-  "src": "source/raw/cargo-haul-3.jpg (gemini-3-pro-image)",
-  "made": "the Data haul container: the rugged ribbed cartridge standing upright, its connector at the foot, a flat sky window (#5bb9f3); a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
-  "sha256": "0e9f79a8ebd4ba63a66c1a753fdcc5ba3ddc06065d1b839d65d845140ec13fd4",
-  "status": "signed",
-  "signed_in": "art director, the haul trio (owner's yes)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 49.5, mean R-B -14.2, sat 22.1, 0.0 percent above L* 70 (window capped at L* 69.5), in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED; redrawn by hand to the trio's weight (the owner: the card looked heavier than the other two): a thick card seen nearly face-on, a 31 px face with a 2 px side, dark corner bumpers, short ribs, a smaller recessed sky window with two bars, gold contacts at the foot; 1773 opaque px, between Energy (2448) and Essence (1431)"
+  "src": "source/raw/rw-haul-trio.jpg (gemini-3-pro-image, from owner refs 6, 7, 9, 10), cut by cargo-rework/cut-haul.py",
+  "made": "the Data container: a rugged dark cartridge, black corner guards, a green glyph screen, a clear panel over stacked chips, gold pins; 48x64, the same id and box",
+  "sha256": "e9bfa0cfc444cb7b9c04ac43704d6c8ca640f71903e2e0e33847f0b30ea45790",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "cargo-essence-48x64": {
   "size": [
@@ -10886,12 +10886,12 @@
    64
   ],
   "rect": null,
-  "src": "source/raw/cargo-haul-4-essence.jpg (gemini-3-pro-image)",
-  "made": "the Essence haul container: the caged sealed glass sample tube (the art director's E1 sketch) with flat green essence (#5cbb4c), a light open cage of two bars and two hoops, dark rubber end caps and a steel clip on the top cap; a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
-  "sha256": "78288e63687cef819586b77e0adb8c74a9a578f31611d899c88c6c0608648bc9",
-  "status": "signed",
-  "signed_in": "art director, the haul trio (owner's yes)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 49.3, mean R-B 5.9, sat 28.5, 0.0 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED (a painting, cut and graded, hand-touched); the sealed sample tube in a light cage, the green one continuous liquid (one hoop above it)"
+  "src": "source/raw/rw-haul-trio.jpg (gemini-3-pro-image, from owner refs 6, 7, 9, 10), cut by cargo-rework/cut-haul.py",
+  "made": "the Essence container: a clear glass vial, brass caps, a black rubber base, glowing green-teal liquid with a leaf in it; 48x64, the same id and box",
+  "sha256": "dbc5e346e953d7e89e109a9d8115e631f341cf97d70190e74a6273780a086b70",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "crate-sitting-48x40": {
   "size": [
@@ -10899,12 +10899,12 @@
    40
   ],
   "rect": null,
-  "src": "slices/crate-sitting-256x176.png (signed 963f4eab), by hand",
-  "made": "the sitting Cargo crate at Home's crate size (home.json cargo.sittingCrates asset, sitting.json): the signed crate-sitting-256x176 reduced uniformly (scale 0.1917, never enlarged) to 46x29, 1 px clear at each side, the feet on the box's bottom row as home-crate-48x40; nothing retouched: the 48x32 brass plate reduces to a 10x7 mark that reads at 1x; replaces crate-sitting-80x56 for Home (pass 137)",
-  "sha256": "e9af94a27c29680e4b63be600a9e923169a6706e6171ba98f78bfa23aa1c25c9",
-  "status": "signed",
-  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
-  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 49.7, mean R-B 14.3, 3.2 percent above L* 70; the 256 crate reduced, the plate a 10x7 brass mark; inside the crate band (L* 48.0 +-4, mean R-B 13.5 +-8)"
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "the sitting crate at Home's crate size (46x29 at 1,11)",
+  "sha256": "2ec5a8133d197f44a580deca5e9f63c773ce1fe8764023be967742f4fba28d48",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10"
  },
  "home-crate-48x40": {
   "size": [
@@ -10912,12 +10912,12 @@
    40
   ],
   "rect": null,
-  "src": "slices/crate-sealed-256x176.png (signed 963f4eab), by hand",
-  "made": "Home's walk crate, the bay's sealed crate (home.json cargo.cratePicture): the signed crate-sealed-256x176 reduced uniformly (scale 0.1917, never enlarged) to 46x29, 1 px clear at each side, the feet on row 39, as crate-sitting-48x40; the orange seal tag kept, nothing retouched (pass 138)",
-  "sha256": "a896513a48c395d956fb3f9a89a0475fdcf5649b54f911ce12ada4550ffea053",
-  "status": "signed",
-  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
-  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 50.7, mean R-B 14.8, 3.3 percent above L* 70; one object with the sitting crate and Cargo's crates, beside the open bay (pass 137)",
+  "src": "source/raw/rw-crate-sealed.jpg, rw-crate-open.jpg (gemini-3-pro-image edits of the signed crates, owner ref-4), cut by cargo-rework/cut-crates.py + derive-crates.py",
+  "made": "Home's walk crate: the sealed crate at 46x29 at 1,11",
+  "sha256": "491b655f86348d539d3b57a78d6ccdf1ae1b794215383a8f04e59235bc8234db",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
   "replaces": "home-crate-48x40 sha256 87d9a930ffd6 on main (art/station-masters/home-hand/slices, #116, signed): a walk crate typed by hand (source/home_marks.py), flat pixel work that read as another hand beside the painted bay and crates"
  },
  "trait-S01-crown-bare-head-144x176": {
@@ -15501,5 +15501,57 @@
   "status": "signed",
   "status_note": "new (10-15, gate batch 1 fix 11): redrawn by the art director at 0 MXN; signed in the Pods chapter-page and -a-doing whole captures",
   "signed_in": "art director at 1x, 2026-10-15 15:12: public station-gate 6f854874, whole-screen goldens (face/golden create, pods, habitat) and station/img: pods-chapter-page"
+ },
+ "cargo-energy-72x96": {
+  "size": [
+   72,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/rw-haul-trio.jpg (gemini-3-pro-image, from owner refs 6, 7, 9, 10), cut by cargo-rework/cut-haul.py",
+  "made": "the Energy container: a battery cell, white shell with orange bands and black end caps, a tall glass window of glowing amber energy, terminals on top; 72x96, the larger set proposed for the bay (UI/UX places it)",
+  "sha256": "0a145efecdebe126e54ba6e5203d83b0cce8dba8a3664eca349025719758ab86",
+  "status": "new",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "signed_in": null
+ },
+ "cargo-data-72x96": {
+  "size": [
+   72,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/rw-haul-trio.jpg (gemini-3-pro-image, from owner refs 6, 7, 9, 10), cut by cargo-rework/cut-haul.py",
+  "made": "the Data container: a rugged dark cartridge, black corner guards, a green glyph screen, a clear panel over stacked chips, gold pins; 72x96, the larger set proposed for the bay (UI/UX places it)",
+  "sha256": "7b6ca5ac8ebfd79a419632afba4d03bd03294874794d55cd44fd0b6276b0e48b",
+  "status": "new",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "signed_in": null
+ },
+ "cargo-essence-72x96": {
+  "size": [
+   72,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/rw-haul-trio.jpg (gemini-3-pro-image, from owner refs 6, 7, 9, 10), cut by cargo-rework/cut-haul.py",
+  "made": "the Essence container: a clear glass vial, brass caps, a black rubber base, glowing green-teal liquid with a leaf in it; 72x96, the larger set proposed for the bay (UI/UX places it)",
+  "sha256": "25a3dc1a2f958f0e795e7d180d8a3ed9cad6ea3bd2f4d61f94b6e2c5d3103a97",
+  "status": "new",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "signed_in": null
+ },
+ "cargo-store-shadow-72x21": {
+  "size": [
+   72,
+   21
+  ],
+  "rect": null,
+  "src": "cargo-store-shadow-48x14 scaled 1.5x",
+  "made": "the larger stored container's cast shadow",
+  "sha256": "b60f17222edb46ffc4cd0c6f9388dd421636077ebbca23f0052709d3e166736a",
+  "status": "new",
+  "status_note": "rework 10-15 20:40 (owner rejected Cargo 20:29): new, by the art director (Pro, 3 calls, 11.76 MXN); signed only in the builder's whole Cargo 1x captures beside ref-1...10",
+  "signed_in": null
  }
 }
