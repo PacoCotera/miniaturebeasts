@@ -16,6 +16,7 @@ import { incubatorBuild } from "../../station/src/views/incubator-props.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 import { departures } from "../tools/incubator-regions.mjs";
 import { dirty } from "./dirty.mjs";
+import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), distNode = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")) && existsSync(path.join(distNode, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), incSpec = J("incubator");
@@ -255,4 +256,28 @@ test("the S05 hatch (the animator's ruling): at 5120 one step, not a hop: stepa 
   const f = await hatchMoving({ id: "S05" }), cells = MSETS.S05.juvenile.close.cells, seen = []; let last = null;
   for (let t = 16; t <= 6300; t += 16) { f.frame((f.t += 16)); const c = f.M._face_test_hatch_cell(), n = c === -50 ? "none" : c < 0 ? "dither" : cells[c]; if (n !== last) { seen.push([t, n]); last = n; } }
   const step = seen.find(([, n]) => n === "stepa"); assert.ok(step && step[0] >= 5120 && step[0] <= 5136, JSON.stringify(seen)); const after = seen.find(([t, n]) => t > step[0] && n !== "stepa"); assert.equal(after[1], "stand"); assert.ok(after[0] >= 5440 && after[0] <= 5456);
+});
+
+// The luminance caps and the chamber condition (specs/station-incubator-brightness-ruling.md, specs/station-incubator-layout-spec.md §3): on the goldens' 1x captures, relative linear luminance
+// (sRGB decoded, 0.2126 R + 0.7152 G + 0.0722 B), percentiles by the linear method. Each zone's p95 and mean stay under its cap; the p95 over the lit glass (dome-front-304x272, alpha >= 128, at 360, 200)
+// stands at least 0.08 above the highest zone p95 of that state.
+test("the recut machinery stays under its luminance caps and the chamber's lit glass stays the brightest object, in all four states", () => {
+  const lin = (c) => { const v = c / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }, Y = (d, i) => 0.2126 * lin(d[i]) + 0.7152 * lin(d[i + 1]) + 0.0722 * lin(d[i + 2]);
+  const pct = (a, p) => { const s = Float64Array.from(a).sort(), k = (s.length - 1) * p, lo = Math.floor(k); return s[lo] + (s[Math.min(lo + 1, s.length - 1)] - s[lo]) * (k - lo); };
+  const ZONES = { L: [[88, 104, 144, 296], 0.48], R: [[792, 104, 144, 112], 0.34], LM: [[248, 336, 80, 64], 0.46], RM: [[696, 336, 80, 64], 0.30] }, MEAN = 0.287;
+  const glass = decodePNG(readFileSync(path.resolve(here, "../../ui/assets/masters/pods/dome-front-304x272.png")));
+  const mask = []; for (let y = 0; y < glass.height; y++) for (let x = 0; x < glass.width; x++) if (glass.data[(y * glass.width + x) * 4 + 3] >= 128) mask.push([360 + x, 200 + y]);
+  for (const state of ["empty", "growing", "ready", "hatch-1100"]) {
+    const png = decodePNG(readFileSync(path.resolve(here, `../golden/incubator/incubator-${state}.png`))); assert.deepEqual([png.width, png.height], [1024, 600]);
+    const lum = (x, y) => Y(png.data, (y * 1024 + x) * 4); let top = 0;
+    for (const [z, [[x0, y0, w, h], cap]] of Object.entries(ZONES)) {
+      const v = []; for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) v.push(lum(x, y));
+      const p95 = pct(v, 0.95), mean = v.reduce((a, b) => a + b, 0) / v.length; top = Math.max(top, p95);
+      assert.ok(p95 <= cap, `${state} ${z}: p95 ${p95.toFixed(3)} over ${cap}`); assert.ok(mean <= MEAN, `${state} ${z}: mean ${mean.toFixed(3)} over ${MEAN}`);
+    }
+    const chamber = pct(mask.map(([x, y]) => lum(x, y)), 0.95); console.log(`incubator-${state}: chamber ${chamber.toFixed(3)}, highest zone p95 ${top.toFixed(3)}, difference ${(chamber - top).toFixed(3)} (${mask.length} px)`);
+    { const v = []; for (let y = 232; y < 352; y++) for (let x = 804; x < 924; x++) v.push(lum(x, y)); const plate = pct(v, 0.95); console.log(`incubator-${state}: stamp plate p95 ${plate.toFixed(3)}`);
+      assert.ok(plate <= 0.34, `${state}: the stamp plate's p95 ${plate.toFixed(3)} is over the R cap 0.34`); assert.ok(plate <= chamber - 0.08, `${state}: the plate's p95 ${plate.toFixed(3)} is within 0.08 of the chamber's ${chamber.toFixed(3)}`); }
+    assert.ok(chamber - top >= 0.08, `${state}: the chamber's p95 ${chamber.toFixed(3)} is ${(chamber - top).toFixed(3)} over the highest zone p95 ${top.toFixed(3)}, under 0.08`);
+  }
 });

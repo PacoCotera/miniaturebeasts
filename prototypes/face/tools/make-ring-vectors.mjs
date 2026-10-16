@@ -40,20 +40,20 @@ R("bottom above slantTo", [tab({ bottom: 79 })]); R("top at bottom", [tab({ top:
 const jops = (ring) => JSON.stringify(ring.ops.map((op) => (op.shape === "tab" ? ["tabRing", op.x, op.y, op.body, op.width, op.slant, op.outside, op.top, op.slantTo, op.bottom, op.radius, op.tabTop, op.band === "core" ? "focus" : "void"]
   : ["ring", op.shape, op.x, op.y, op.w, op.h, op.width, op.radius, op.band === "core" ? "focus" : "void"])));
 const cased = (kind, ring, extra = {}) => cases.push({ op: "cased", kind, w: ring.w, h: ring.h, ...(ring.kind === "nine" ? { S: ring.S, R: ring.R } : {}), ...extra, ops: jops(ring), sha256: sha(ringRaster(ring)) });
-for (const r of [0, 6]) for (const ground of ["default", "paper"]) {
+for (const r of [0, 6]) for (const ground of ["default"]) {
   const R = r + T.reach;
   for (const w of [2 * R, 2 * R + 1, 2 * R + 2, ...range(2 * R + 8, 400, 56)]) for (const h of [2 * R, 2 * R + 1, ...range(2 * R + 8, 200, 48)]) cased("nine", focusRingOps({ rect: r }, [T.reach, T.reach, w - 2 * T.reach, h - 2 * T.reach], T, { ground }), { r, ground });
 }
 for (const w of range(20, 220, 10)) for (const h of [16, 18, 20, 22, 24, 26]) { cased("ellipse", focusRingOps("oval", [5, 5, w - 10, h - 10], T), { shape: "oval" }); cased("ellipse", focusRingOps("footprint", [0, 0, w, 40], T, { foot: [5, 20 + (h - 10) / 2, w - 10] }), { shape: "footprint" }); cased("ellipse", focusRingOps("footprint", [0, 0, w, 40], T, { foot: [5, 20 + (h - 10) / 2, w - 10], light: true }), { shape: "footprint", weight: "light" }); }
 for (const d of range(66, 186, 20)) cased("ellipse", focusRingOps({ circle: { centre: [d / 2 - 5, d / 2 - 5], r: d / 2 - 5 } }, [5, 5, 0, 0], T), { shape: "circle" });
-for (const body of [56, 136, 137, 8, 200]) for (const ground of ["default", "paper"]) cased("composed", focusRingOps("tab", [20, 40, body, 40], T, { ground, tabTop }), { shape: "tab", ground });
+for (const body of [56, 136, 137, 8, 200]) for (const ground of ["default"]) cased("composed", focusRingOps("tab", [20, 40, body, 40], T, { ground, tabTop }), { shape: "tab", ground });
 // the focusRing word on the face (tests/vectors/focus-ring-words.json): each case is a target (its `shape` and `ground` as the screen spec writes them), the rect the screen drew, and for a footprint the picture and cell it reads; words.test.mjs draws it on the
 // face and compares every pixel of the ring's box with the roles this oracle gives (focusRingOps, ringRaster).
 const wordCases = [
   { name: "rect 0, a wide target", target: { shape: { rect: 0 } }, box: [100, 100, 200, 80] }, { name: "rect 0, a square target", target: { shape: { rect: 0 } }, box: [300, 300, 40, 40] },
   { name: "rect 0, the smallest", target: { shape: { rect: 0 } }, box: [500, 200, 10, 10] }, { name: "rect 6, a plate (lifted)", target: { shape: { rect: 6 } }, box: [688, 38, 320, 88] },
   { name: "rect 6, a well", target: { shape: { rect: 6 } }, box: [32, 492, 152, 48] }, { name: "rect 0 with a chip, a text", target: { shape: { rect: 0, chip: 4 } }, box: [604, 64, 120, 24] },
-  { name: "rect 0, on paper", target: { shape: { rect: 0 }, ground: "paper" }, box: [60, 400, 96, 112] }, { name: "oval, a pod", target: { shape: "oval" }, box: [196, 240, 120, 152] },
+  { name: "rect 0, a Library frame", target: { shape: { rect: 0 } }, box: [60, 400, 96, 112] }, { name: "oval, a pod", target: { shape: "oval" }, box: [196, 240, 120, 152] },
   { name: "circle, a kin", target: { shape: { circle: "box" } }, box: [600, 224, 56, 56] }, { name: "circle, Pods' place", target: { shape: { circle: { centre: [96, 88], r: 88 } } }, box: [64, 64, 176, 176] },
   { name: "tab, a full tab", target: { shape: "tab" }, box: [100, 40, 136, 40] }, { name: "tab, a compact tab", target: { shape: "tab" }, box: [300, 40, 56, 40] },
   { name: "footprint, a juvenile walker", target: { shape: "footprint" }, box: [200, 300, 104, 112], pic: { w: 104, h: 112, foot: { stand: [10, 100, 56], curl: [14, 108, 70] } }, cell: "stand" },

@@ -21,3 +21,6 @@ export function labelPlate(size, plate, edge, k) {
 // The label's two requests for the host (kind "stampplate" and the dimmed "stamp"): the ids carry k, so a stamp at another k is another picture.
 export const kPct = (k) => Math.round(k * 100);
 export const plateReq = (req, k) => req({ kind: "stampplate", id: `stamp-plate-120-k${kPct(k)}`, size: 120, k });
+// The Incubator's plate is not the look's: it is the painted master of the room's machinery, placed 1:1 with its own edge, no K × WARM and no hairline (CD ruling, specs/station-stamp-plate-ruling.md). The stamp on it keeps the look.
+export const PLATE_MASTER = "stamp-plate-120x120";
+export const plateMasterReq = (req) => req({ kind: "slot", id: `${PLATE_MASTER}:120x120`, master: PLATE_MASTER, size: [120, 120], until: "its master (the Incubator's painted plate)" });

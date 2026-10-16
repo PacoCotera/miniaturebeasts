@@ -1,7 +1,7 @@
 /* The focus ring (station-layouts.md, "States shared by every screen"; lvgl-switch.md §2.2; fix 14): one ring per screen, one solid cased line outside the object and parallel to its outline, composed by the
    face from the ring and tabRing ops, never a picture from the host. The target's `shape` in its screen spec picks the form: { "rect": r } (a nine-slice of a composed source, the object's radius r),
    { "rect": 0, "chip": n } (a text target, n px each side), "oval", { "circle": { "centre": [cx, cy], "r": r } } or { "circle": "box" }, "footprint" (a creature's feet on the ground) and "tab" (the rail tab);
-   its `ground` ("paper", else default) picks the colours. The bands, gap, reach, colours and shapes are frame.json's focus.ring; a screen passes only the rect it drew and which target it is. */
+   its ground is always the default (fix 14: one form; the paper ground is retired). The bands, gap, reach, colours and shapes are frame.json's focus.ring; a screen passes only the rect it drew and which target it is. */
 #include "../vocab.h"
 #include "../words.h"
 #include "../../prim/prim.h"
@@ -41,7 +41,7 @@ static int bands_ops(char *ops, int cap, const char *shape, int W, int H, int R,
   }
   snprintf(ops + n, (size_t)(cap - n), "]"); return 0;
 }
-static void ground_of(const char *spec, const char *target, char *g, int cap) { char p[160]; snprintf(p, sizeof p, "%s.ground", target); if (spec_str(spec, p, g, cap) <= 0 || strcmp(g, "paper") != 0) snprintf(g, (size_t)cap, "default"); }
+static void ground_of(const char *spec, const char *target, char *g, int cap) { (void)spec; (void)target; snprintf(g, (size_t)cap, "default"); }   /* one form on every ground: the paper ground is retired (specs/station-library-spec.md) */
 
 /* a rect ring round `r` (the object's drawn rect), the object's corner radius `rad`: a nine-slice of S = 2R + 4 with R = rad + reach */
 static void ring_rect(const char *id, const int r[4], int rad, int chip, const bands_t *b) {

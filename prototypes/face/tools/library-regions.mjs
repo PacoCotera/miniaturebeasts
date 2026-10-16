@@ -36,7 +36,7 @@ export function departures(log, spec, props, cur) {
 
 // Check 1 per part (the node check beside the per-page union): the box of every frame's every node as the face holds it, against spread.item at the frame's place.
 // boxOf(id): the node's [x, y, w, h] by its id string, or null when no node has the id (face_test_node_box, the test build); spec: library.json; props: the spread's props.
-// A part the status gives is at its place + at exactly (a picture, a rule, a roundel, a gilt corner, a seal, a seed 8 × 8); a part the status does not give is a node of no size (hidden, never destroyed);
+// A part the status gives is at its place + at exactly (a picture, lifted `item.lift` px on the focused frame, a rule, a roundel, a gilt corner, a seal, a seed 8 × 8); a part the status does not give is a node of no size (hidden, never destroyed);
 // every part lies inside its page's rectangle. Returns the list of departures, empty when none.
 export function partDepartures(boxOf, spec, props) {
   const out = [], R = spec.spread.regions, I = spec.spread.item, must = (ok, m) => { if (!ok) out.push(m); };
@@ -44,7 +44,7 @@ export function partDepartures(boxOf, spec, props) {
     const page = R[key];
     props.regions[key].items.forEach((it, k) => {
       const f = listPitch(page.places, 8, k), found = it.status === "found", known = it.status !== "unmet", at = (a) => [f[0] + a[0], f[1] + a[1], a[2], a[3]];
-      const parts = [["picture", known, at(I.plate.at)], ["rule", known, at(I.clanRule.at)], ["roundel", known, at(I.roundel.at)], ["gilt", found && !!it.portrayed, at(I.gilt.at)], ["seal", found && !!it.complete, at(I.seal.at)]];
+      const parts = [["picture", known, at(I.plate.at).map((v, i) => (i === 1 && props.focus?.cur === `frame.${it.id}` ? v - (I.lift ?? 0) : v))], ["rule", known, at(I.clanRule.at)], ["roundel", known, at(I.roundel.at)], ["gilt", found && !!it.portrayed, at(I.gilt.at)], ["seal", found && !!it.complete, at(I.seal.at)]];
       for (let n = 0; n < I.progress.places.length; n++) parts.push([`seed.${n}`, found && it.progress > 0, [f[0] + I.progress.places[n][0], f[1] + I.progress.places[n][1], I.progress.seed[0], I.progress.seed[1]]]);
       for (const [part, given, want] of parts) {
         const id = `frame.${it.id}.${part}`, b = boxOf(id);

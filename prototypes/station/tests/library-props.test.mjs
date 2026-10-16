@@ -58,7 +58,7 @@ test("found, met and unmet frames: the plate, the study, the name, the clan and 
   const st = world(); st.knownIds = ["S01", "S02", "S03"]; st.metIds = ["S04"]; S.seedAdults(st, "S05", 4, 1, settings);
   const b = build(st, { page: 0, i: 2 }), its = items(b), by = Object.fromEntries(its.map((i) => [i.id, i]));
   assert.deepEqual(validate(b.props, schema), [], "validates");
-  for (const id of ["S01", "S02", "S03", "S05"]) { const i = by[id]; assert.equal(i.status, "found", id); assert.equal(i.picture, `spread-plate-${id}-80x96`); assert.match(i.roundel, /^clan-roundel-C\d\d-12x12$/); assert.ok(i.name && !/\d/.test(i.name)); assert.ok(i.progress >= 1 && i.progress <= 4); }
+  for (const id of ["S01", "S02", "S03", "S05"]) { const i = by[id]; assert.equal(i.status, "found", id); assert.equal(i.picture, `spread-plate-${id}-80x96`); assert.match(i.roundel, /^clan-roundel-C\d\d-16x16$/); assert.ok(i.name && !/\d/.test(i.name)); assert.ok(i.progress >= 1 && i.progress <= 4); }
   assert.deepEqual([by.S04.status, by.S04.picture, by.S04.progress, by.S04.portrayed, by.S04.complete], ["met", "spread-study-S04-80x96", null, false, false]); assert.match(by.S04.roundel, /^clan-roundel-/); assert.ok(by.S04.name);
   assert.deepEqual([by.S06.status, by.S06.name, by.S06.picture, by.S06.roundel], ["unmet", null, null, null]);
   assert.equal(b.props.focus.cur, "frame.S03"); assert.equal(b.line.ok, null, "found: no ✓ cap until slot 8 (the Book is shut)"); assert.equal(b.line.subject, by.S03.name);
