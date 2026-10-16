@@ -5,7 +5,7 @@ UI/UX, ticket T-20261015-03. Written 2026-10-15 22:25 (America/Mexico_City). It 
 **Contract (read first).**
 - Precedence: (recorded decision) and the docs and code on main win over every design document, this one included.
 - The visible-change freeze and the whole-screen gate stand. This spec changes nothing on its own. It lands through a builder item on station-gate, and the goldens are taken once, last.
-- "Every state composed" (station-layouts.md rules 1–5) applies to every state.
+- "Every state composed" (design/style-guide/station-layouts.md rules 1–5) applies to every state.
 - The judge is `specs/gate-recalibration.md` (f4126b0), check 5: even outer margins, objects on a grid, and the gaps to the bezel and between modules measured.
 - The owner's words ((recorded decision) 2026-10-15 20:29): "grow screen has issues with margins"; "grow screen is okish ... looks flat". The flat look is closed by T-20261015-01 (art). This spec closes the margins.
 - No paid call. The one art ask (§3, IA2) is 0 hand work.
@@ -649,7 +649,7 @@ index fb757b5..e27046c 100644
    - `incubator.test.mjs`: no number changes; keep every ceiling.
 6. **Wireframes and docs.**
    - Apply the SVG patch (§7 of specs/station-incubator-layout-spec.md, embedded) to 04, 05, 05b and 05c in `design/style-guide/station-layouts/`. Re-render the four PNGs.
-   - Edit `station-layouts.md` at :283, :1383, :1387, :1422–1426, :1442–1445 and :1508 as in §7.
+   - Edit `design/style-guide/station-layouts.md` at :283, :1383, :1387, :1422–1426, :1442–1445 and :1508 as in §7.
 7. **Goldens, last, after IA2 is placed.**
    - Retake all 18 Incubator goldens and their hashes, plus the captures `page-incubator`, `page-incubator-empty` and `fix14/incubator-growing`.
    - No other golden may move.

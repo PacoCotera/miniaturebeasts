@@ -1,7 +1,7 @@
 # Fix 14: UI/UX rulings on builder 4's three findings (F2 floor, rule 6 holds, §5 examples)
 
 UI/UX specification owner, for the Station lead and builder 4. Written Thu 2026-10-15, 18:30 to 18:50 (America/Mexico_City).
-- **Ruled against:** `specs/station-fix14-spec.md` (signed 07:06, amended 07:18), `specs/station-fix14-architect.md` (06:57) and `specs/station-fix14-architect-q2.md` (08:12). Decisions.md and the code on main win over the spec. The whole-screen gate and the visible-change freeze stand.
+- **Ruled against:** the fix 14 spec (signed 07:06, amended 07:18) and the architect's two notes (06:57, 08:12). Decisions.md and the code on main win over the spec. The whole-screen gate and the visible-change freeze stand.
 - **Read at:** public `main` `bd0e64c8` and `station-fix14` `cd3163ad` (gate `4e522a3e` merged in), in shallow read-only clones in my scratch space. Nothing pushed, no repository added, no spend.
 - **Verified / not verified.** I read the code; I could not build the face or run `layer-check` here (no emsdk, no browser).
   - (1) The WARN path and `FLOOR_STRICT` are verified in `tools/layer-check.mjs` :31–:75. The counts "1–6 of 36–66 cross-sections" are the builder's and **not verified**.
@@ -106,11 +106,11 @@ So the drawn union is (272, 438, 128, 32) at 3 and (248, 438, 176, 32) at 4, and
 **Rule 6 (holds).**
 > Main wins: keep the code as it is at `cd3163ad` (ring off for holds on Home/Habitat chrome, tiles and the namer; on through the Probe's mend/install and every creature footprint).
 > Read `ringDepartures`' `hold` as "a hold that drops the ring" and pass true only in rule 6's dropping states; no other test changes.
-> No golden, pixel or §10 count moves; wording in rulings-3 §2.
+> No golden, pixel or §10 count moves; wording in station-fix14-rulings-3 §2.
 
 **§5 (examples).**
 > The face stands for the Probe: the spec now says (267, 433, 138, 42) at 3 and (243, 433, 186, 42) at 4, lifted at fix 5's places; assert those.
 > Species: the face's code gives x 599 (608 − 4 − 5), which matches §5; if your head draws 595 the chip is applied twice, so fix the face.
-> No golden, pixel or §10 count moves; edits in rulings-3 §3.
+> No golden, pixel or §10 count moves; edits in station-fix14-rulings-3 §3.
 
 Signed: UI/UX, 18:50 (America/Mexico_City), Thu 2026-10-15

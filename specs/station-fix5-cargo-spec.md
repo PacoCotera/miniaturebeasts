@@ -1,6 +1,6 @@
 # Fix 5, Cargo: no dead fields (UI/UX layout spec)
 
-**Amended 2026-10-15 08:05 (America/Mexico_City), UI/UX, gate batch 1** (X35 blocker b; `specs/station-gate-batch1-plan.md`, accepted by the programme lead at 08:00): the report sits in the housing. See "Amendment, gate batch 1: the report in the housing" at the end. It supersedes R6's construction, §4's report bullet and AR5's look. R6's rects, heights and rows stand.
+**Amended 2026-10-15 08:05 (America/Mexico_City), UI/UX, gate batch 1** (X35 blocker b; the gate batch 1 plan, accepted by the programme lead at 08:00): the report sits in the housing. See "Amendment, gate batch 1: the report in the housing" at the end. It supersedes R6's construction, §4's report bullet and AR5's look. R6's rects, heights and rows stand.
 
 Fresh UI/UX designer, for the Station lead. Written 2026-10-15 from 02:09 (America/Mexico_City). Layout, rules and states only. The art is the art director's (§9 asks for it), the build is the builder's, and the architecture stays as it is on main. The Station lead commits this file.
 
@@ -9,7 +9,7 @@ Fresh UI/UX designer, for the Station lead. Written 2026-10-15 from 02:09 (Ameri
 **Authority** (precedence: (recorded decision) and the code on main win over every design document):
 - the creative director's ranked list, (audit record) (final 5b32e68): fix 5 ("Cargo's bay: the crates on a painted bay floor; the report inside the device, not a dark modal"), fix 2 (one device-material kit; "Cargo (bay floor, report)"), fix 9 ("the checker dim on Cargo goes", UI/UX) and fix 10 (crate fringes, haul items grounded). Its Cargo verdict is "Fail (the weakest): near-black field; the report is a dark modal".
 - the audits, (audit record) (Cargo B: the bay is a black void; the teal banner; the report dim; N: the report panel overruns the bay frame and is a navy card; the pod tray is hairline boxes; the crates have a dark fringe and one crate is pinned left with 700 px of black) and `report-design.md` (Cargo B: a black void; a black frame 0 and a dithered grey veil at the end; the report is a text table).
-- my predecessor's inputs, (audit record) F5 (the bare field and the teal banner; crates centred as a group; the ribbon sized to its words) and F1, and `specs/station-global-fix-plan.md` fix 5 ("0; the bay floor is in the approved ≤ 11.7").
+- my predecessor's inputs, (audit record) F5 (the bare field and the teal banner; crates centred as a group; the ribbon sized to its words) and F1, and the global fix plan fix 5 ("0; the bay floor is in the approved ≤ 11.7").
 - the rules in force:
   - the painted language (decided);
   - "Every state composed", `design/style-guide/station-layouts.md` rules 1–5 on `station-global-specs` 28613a87;

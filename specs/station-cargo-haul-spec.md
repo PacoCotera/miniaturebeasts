@@ -5,7 +5,7 @@ UI/UX, for the Station lead. Written 2026-10-15 21:20 (America/Mexico_City). Pla
 **Contract (read first).**
 - Precedence: (recorded decision) and the docs and code on main win over every design document, this one included.
 - The visible-change freeze and the whole-screen gate stand.
-- "Every state composed" (station-layouts.md rules 1–5) applies.
+- "Every state composed" (design/style-guide/station-layouts.md rules 1–5) applies.
 - The judge is `specs/gate-recalibration.md` (f4126b0), all seven checks. The ones this answers are:
   - 2: containers that show what they carry, at a size that reads beside the 432 crate;
   - 4: each on the floor with its own contact shadow;
@@ -164,7 +164,7 @@ You place the larger haul on Cargo's opening on your own branch off `station-gat
    - If the metrics vectors check names the new ids, regenerate them with the house measurer.
 5. **Wireframe and docs.**
    - Apply the SVG patch to `design/style-guide/station-layouts/17a-cargo-opening.svg` and re-render its PNG. The patch puts the containers at 216, 736 and 816 (y 240, 72 × 96) and the shadows at y 325, 72 × 21.
-   - In `station-layouts.md`, the Cargo "Containers" row and the masters table row take the ids and rects of step 2.
+   - In `design/style-guide/station-layouts.md`, the Cargo "Containers" row and the masters table row take the ids and rects of step 2.
 6. **Goldens, last.**
    - Retake `cargo-opening-800`, `cargo-opening-1200`, `cargo-opening-1650` and the hashes. No other golden may move; stop and report if one does.
    - Print the 800 ms frame (expect about 22,896, ≤ 24,576) and the crate-to-crate cut (≤ 306,064).
@@ -189,4 +189,4 @@ UI/UX, 2026-10-16. Asked after the art director moved `crate-sealed/opening/open
 - **Ribbon:** unchanged. Bound `[208, 56, 608, 40]`, fitted `(512 − w/2, 56, w, 40)`, bottom 96.
 - **Asserts** (`specs.test.mjs`, "the ribbon's bottom above the crate's pods"): pods y 108 − 96 = **12** (was 8); the open closer's ink top 72 + 56 = 128, so 128 − 96 = **32** (was 28). Keep the 8 px region rule as a floor (≥ 8) beside the exact 12.
 - **Text:** R9's clearance line in `station-fix5-cargo-spec.md` reads "ink starts at +56 (y 128) … 32 px above that ink and 12 px above the pods' boxes (108)".
-- **Unchanged:** the dirty-area numbers (no ribbon move; the ceilings in §3 stand), the wireframe's ribbon, `station-layouts.md`'s ribbon row, and the goldens: none moves beyond the haul's three frames and the crate-shift goldens already listed.
+- **Unchanged:** the dirty-area numbers (no ribbon move; the ceilings in §3 stand), the wireframe's ribbon, `design/style-guide/station-layouts.md`'s ribbon row, and the goldens: none moves beyond the haul's three frames and the crate-shift goldens already listed.

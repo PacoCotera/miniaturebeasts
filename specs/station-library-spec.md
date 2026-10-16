@@ -8,7 +8,7 @@ UI/UX, ticket T-20261015-06. Written 2026-10-15 22:40 (America/Mexico_City). It 
 **Contract (read first).**
 - Precedence: (recorded decision) and the docs and code on main win over every design document, this one included.
 - The visible-change freeze and the whole-screen gate stand. This spec lands through a builder item on station-gate, and the goldens are taken once, last.
-- "Every state composed" (station-layouts.md rules 1–5) applies.
+- "Every state composed" (design/style-guide/station-layouts.md rules 1–5) applies.
 - The verdict this answers is the CD's, 2026-10-15 19:17: "Library: fail. ... focus is a red rectangle, not fix 14's form; 'Its Book is not open yet' is a shut door (fix 8); the spread is flat clip-art, not the device's painted language (fix 2); the marks over the frames are under 12 px (fix 11)."
   - Fix 2 and fix 11 are closed by T-05's art.
   - This spec closes fix 14 (§1) and fix 8 (§2), and relays out what the new sizes require (§3).
@@ -30,7 +30,7 @@ UI/UX, ticket T-20261015-06. Written 2026-10-15 22:40 (America/Mexico_City). It 
 - Public `masters-pods` f365361b (T-05):
   - `library-stage-spread-1024x522`, `clan-roundel-C01/04/07/09/13/16-16x16`, `spread-progress-full-12x12`;
   - the proofs `mock-library-spread-1x.png` and `-empty-1x.png`.
-- Internal captures `plans/station/gate-library-idle-da22f323/face/golden/library/` (spread, empty, complete, book-shut).
+- Captures from the station-gate face build (`face/golden/library/`, re-render them with the build) (spread, empty, complete, book-shut).
 - **"Both spreads"** is read as the two pages of the Library spread (left S01–S08, right S09–S16), in both its captures, filled and empty.
   - The Book's face and guide spreads are slot 8 and are not built: no target of theirs is drawn today.
   - §1.4 gives them the same rule, with their numbers owed by slot 8's spec.
@@ -61,7 +61,7 @@ UI/UX, ticket T-20261015-06. Written 2026-10-15 22:40 (America/Mexico_City). It 
   - The `paper` colour set is retired from `frame.json` (§5).
 - **Contrast** on paper (luminance 0.800):
   - each `void` key reaches (0.800 + 0.05) / (0.0034 + 0.05) = **15.9:1**, so every cross-section has 2 px at ≥ 3:1;
-  - fix 14's F2 floor ((a) area and (b) no hole, rulings-3 §1) holds by construction, as on any light ground;
+  - fix 14's F2 floor ((a) area and (b) no hole, station-fix14-rulings-3 §1) holds by construction, as on any light ground;
   - the cream core reads as the ring's body between two dark lines, the same mark as on Home and Pods.
 - **The shape:** `{ rect: 0 }`. The ring box is the frame grown 5, with radii 5 / 4 / 2 (outer key / core / inner key), concentric with the square frame. It is never larger and never inside the frame.
 - **The lift, 2 px, as chrome lifts on the other screens.**
