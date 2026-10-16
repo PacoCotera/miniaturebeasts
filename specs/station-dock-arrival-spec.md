@@ -119,3 +119,17 @@ They are measured with the real measurer. If one does not fit, the copywriter sh
 ## 6. Wireframe
 
 The game designer's `specs/dock-moments/station-arrival.png` stands for the show. This spec's rects replace its rough ones. No new wireframe is drawn here: the parts are Cargo's own regions plus the band and the strip, given above.
+
+## Amendments (T-20261016-67): what the art and the devices can carry today
+
+**No walk cycles exist.** Only S01 has motion keys, and none of them is a walk. So no part of the arrival or the send-off walks. What changes:
+- **The send-off (§4), restated with existing art.** Each sleeper on the bed, right to left in carried order, starting 200 ms apart:
+  - **wake:** the nap pose cuts to the resident's own standing painting (the one the Vivarium draws), in its box on the bed, feet on footY;
+  - **hop:** one hop by the table the hatch already uses (`incubator.json events.hatch` steps, `lift` [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]]);
+  - **dither out:** 400 ms in place (the frame's 16-level dither) into the bed's away state.
+  
+  The bed's away mark appears when the last one is gone. The dirty area per frame is one resident's box (≤ 144 × 152 + 4). It stays a show: no press, the screen never changes.
+- **The arrival's faces (§1.1).** A species with no `face-{species}-24` yet (S04 to S16 today) shows the register's placeholder look in its place (a 24 × 24 `stone` plate with a `mist` edge) until its painting and face land. Nothing is drawn in words instead.
+- **The Companion's "home" and "Off we go" frames** need a Companion screen spec first. That is T-20261016-91 (UI/UX). Until it lands, the Companion frame on the play page shows only its crate marks clearing in step (T-58).
+- **The Caddy's two lines and icons** need a Caddy view to draw into; none exists (`prototypes/caddy` is the painting server). That is T-20261016-92 (the architect's: a 792 × 272 four-gray view on the play page that reads §5's lines). Until it lands, T-58 writes the Caddy's line text under the play page's Dock control.
+

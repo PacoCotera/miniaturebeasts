@@ -158,3 +158,27 @@ The work list's ranking (1–7), per screen: what changes in the bottom line, th
 - **What the owner compares:** press count (the same), whether the landing ever surprised them, and whether a third card slows the Grow decision.
 - **The record:** the build records which card was pressed in the session's log (`logEv`), so the owner's own play can be read back.
 - **Other jumps:** the same flag will apply to Cross them once Cross is built. Home's "what needs you" ✓ always uses the arrival plate (both designers agree it is a jump by nature).
+
+# Amendments (T-20261016-67, 2026-10-16): what T-50 could not build at its base
+
+**Cut 4, ✓ skips a hold, is a face rule.** The face drops every key but a room key while an event holds input (`face/src/screens/screens.c screens_key`, `anim_holding()`). Today only events with `cut: true` end on a press, and only when nothing holds.
+
+**The rule:**
+- An event may carry **`"skip": true`**. While it holds input, the face takes ✓ (and only ✓) as the intent `skip` on the event's target. It cuts the event to its last frame (as `anim_cut` does) and says it done on that frame.
+- The host ends the hold at once and runs what follows the event's end on the same frame, exactly as reduced motion does with hold 0.
+- A room key during the hold behaves as now.
+- **Which events get it:** only the bay's opening (`cargo.json events.byCrates`) and the hatch (`incubator.json events.hatch` and `hatch.moving`). Both have a fixed end state: every crate opened and the report, or the hatched mibi and what follows.
+- **Which do not:** growNow (400 ms), the install and the mend are not worth a skip and stay as they are.
+- **The line** shows "✓ Skip" only while a skippable hold runs.
+
+It is the architect's: T-20261016-90 (the face, the wire, the host's hold end, the `design/proposals/lvgl-switch.md` entry and the two events). T-50 no longer carries cut 4.
+
+**The "on the page" rows, against the code at the T-50 base:**
+
+| Row | Disposition |
+| --- | --- |
+| Pods, the leaf plate | Goes with the Return panel, T-20261016-51. The line stays as built until the panel replaces the arm |
+| Create, a drum | Goes with the gene bench, T-20261016-42. There is no drum at this base |
+| **Incubator, growing** | **T-50 builds it:** while a bud grows, the context zone says "ready in about {n} min" (n = the minutes left rounded, at least 1) instead of the bud's name. Ready keeps `strings.bud`. This is owner ruling 3; the Incubator option B build (T-40) keeps the same line |
+| Vivarium, Take or Bring; Library, Pin it | Go with those actions when they are built. Nothing at this base |
+| **Probe bench, the plates** | **T-50 builds it, reworded to 6 words:** "the Shield takes {n in words} strikes", with n = the whole plates *after* this press (the mend's result), so the line says what the press buys |
