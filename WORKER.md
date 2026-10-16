@@ -18,7 +18,9 @@ You are a worker on Miniature Beasts. You do not need to know who writes tickets
 - Never read, print or copy credentials.
 - Times come from `TZ=America/Mexico_City date`, never guessed.
 - Do not design: rects, colours, words and art are given by the ticket. If the ticket and the code disagree, park and report; do not choose.
-- Run the public guard before every push to the public repository: `node .github/public-guard/guard.mjs --base <base>`.
+- Never write money figures (costs, spend, prices, budgets in any currency) in any file, commit message or result. Spending is private.
+- Stage only the paths you changed (never `git add -A`); run `git status` before every commit.
+- Run the public guard before every push to the public repository: `node .github/public-guard/guard.mjs --base <base>; echo exit=$?` (never behind a pipe that hides its exit code).
 
 ## Batches
 A ticket's `batch` names the package it ships in. Build tickets of one batch commit to the same branch, `batch/<batch id>` in the public repository, one after another (pull before you start, push when done). Do not open pull requests; the lead opens one per batch when every ticket in it is done.
