@@ -45,7 +45,7 @@ This is a variant of the T-45 panel for choices that belong under what they are 
 | Part | Rect | Notes |
 | --- | --- | --- |
 | Strip | 92, 376, 840, 160 | The panel's look (T-20261016-47), radius 12. Never the cream `plate` |
-| Cards | y 392–520 (128 high), from x 108, 2 × 396, gap 16 | Picture-led like the panel's cards (T-45 §1.3), short form: a picture 96 × 96 at (16, 16); then to its right at x 128: the name (20, ≤ 3 words) at y 16, the costs (icons) at y 52, and one line (16, ≤ 6 words) at y 80 |
+| Cards | y 392–520 (128 high), from x 108, 2 × 396, gap 16 | Picture-led like the panel's cards (`specs/station-decision-panel-spec.md`, section 1.3), short form: a picture 96 × 96 at (16, 16); then to its right at x 128: the name (20, ≤ 3 words) at y 16, the costs (icons) at y 52, and one line (16, ≤ 6 words) at y 80 |
 
 | Card | Picture | Name | Costs | Line |
 | --- | --- | --- | --- | --- |
