@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
+<title>grow-arrival: the decision panel (T-20261016-45), 1x, layout only.</title>
+<rect width="1024" height="600" fill="#1d1f24"/><rect x="0" y="0" width="1024" height="40" fill="#23262d"/>
+<text x="48" y="27" font-size="20" font-weight="500" fill="#e9e2d0" text-anchor="start">Create</text>
+<text x="600" y="26" font-size="16" font-weight="400" fill="#e9e2d0" text-anchor="start">⚡ 9  ◆ 4  ❀ 6</text>
+<rect x="0" y="40" width="1024" height="522" fill="#7d8f7a"/><rect x="71" y="59" width="882" height="489" rx="14" fill="#3b3631"/>
+<g opacity="0.3"><circle cx="192" cy="192" r="96" fill="#2a2622"/><rect x="360" y="80" width="304" height="312" fill="#4a4a52"/><rect x="88" y="408" width="848" height="122" fill="#2a2622"/></g>
+<rect x="0" y="40" width="1024" height="522" fill="#000" opacity="0.3"/>
+<rect x="92.5" y="80.5" width="839" height="439" rx="12" fill="#e6dcc4" stroke="#8b7f66" stroke-width="2"/>
+<rect x="124.5" y="96.5" width="63" height="63" rx="6" fill="#d9d0bc" stroke="#8b7f66"/>
+<text x="156" y="132" font-size="16" font-weight="400" fill="#8b7f66" text-anchor="middle">pic</text>
+<text x="204" y="124" font-size="28" font-weight="600" fill="#2f2a22" text-anchor="start">Grow this founder?</text>
+<text x="204" y="152" font-size="16" font-weight="400" fill="#5f574a" text-anchor="start">Loika, found at the pond edge · two changes</text>
+<text x="124" y="200" font-size="20" font-weight="500" fill="#2f2a22" text-anchor="start">Grow it now, or keep shaping?</text>
+<rect x="124.5" y="216.5" width="379" height="223" rx="10" fill="#f3ecdc" stroke="#e8743b" stroke-width="3"/>
+<text x="140" y="248" font-size="20" font-weight="500" fill="#2f2a22" text-anchor="start">Grow it</text>
+<text x="140" y="284" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">⚡ 2  ❀ 4  ◆ 2</text>
+<text x="140" y="312" font-size="16" font-weight="400" fill="#5f574a" text-anchor="start">You get</text>
+<text x="140" y="332" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">a Loika bud with your two</text>
+<text x="140" y="352" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">changes; Stamina stays a</text>
+<text x="140" y="372" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">surprise until it grows</text>
+<text x="140" y="404" font-size="16" font-weight="400" fill="#5f574a" text-anchor="start">Then: the Incubator</text>
+<text x="140" y="428" font-size="16" font-weight="400" fill="#b23a2a" text-anchor="start">the pod is used</text>
+<rect x="520.5" y="216.5" width="379" height="223" rx="10" fill="#f3ecdc" stroke="#8b7f66" stroke-width="1"/>
+<text x="536" y="248" font-size="20" font-weight="500" fill="#2f2a22" text-anchor="start">Keep shaping</text>
+<text x="536" y="284" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">nothing spent</text>
+<text x="536" y="312" font-size="16" font-weight="400" fill="#5f574a" text-anchor="start">You keep</text>
+<text x="536" y="332" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">the bench as it is, your</text>
+<text x="536" y="352" font-size="16" font-weight="400" fill="#2f2a22" text-anchor="start">changes and the pod</text>
+<text x="536" y="404" font-size="16" font-weight="400" fill="#5f574a" text-anchor="start">Then: stay here</text>
+<text x="124" y="488" font-size="16" font-weight="400" fill="#5f574a" text-anchor="start">◀ ▶ choose  ·  ✓ do it  ·  ← Keep shaping</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23262d"/>
+<text x="16" y="588" font-size="16" font-weight="400" fill="#e8743b" text-anchor="start">✓ Grow it ⚡ 2 ❀ 4 ◆ 2</text>
+<text x="512" y="588" font-size="16" font-weight="400" fill="#9aa0a8" text-anchor="middle">to the Incubator</text>
+<text x="1008" y="588" font-size="16" font-weight="400" fill="#e9e2d0" text-anchor="end">← Keep shaping</text>
+<text x="92" y="76" font-size="8" fill="#9a2f2f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">panel 92,80 840×440 · pad 32 · picture 124,96 64×64 · title 204,96 (28) · subtitle 204,140 (16) · question 124,176 (20)</text>
+<text x="124" y="212" font-size="8" fill="#9a2f2f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">cards y 216–440 (224 high), 2 × 380 wide, gap 16</text>
+<text x="124" y="508" font-size="8" fill="#9a2f2f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">hint 124,472 (16) · ring: the focused card, 4 px out</text>
+<text x="932" y="76" font-size="8" fill="#9a2f2f" text-anchor="end" font-family="DejaVu Sans Mono, monospace">jump: arrival (then the plate "Incubator: your Loika bud is growing")</text>
+</svg>
