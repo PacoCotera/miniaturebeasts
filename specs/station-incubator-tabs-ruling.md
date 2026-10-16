@@ -102,7 +102,7 @@ Each chapter that clears is a reveal, and the reason to come back. Every object 
 
 ## 5. The slip and the card
 
-**The slip** (88, 96, 208 × 408). It is the Create slip at one size for both screens; T-20261016-38 uses this size. Paper ground, padding 16; text left at x 104:
+**The slip** (88, 96, 208 × 408). It is the Create slip's paper and width (208); Create's slip is 296 tall, so its bank can span the bench (`specs/station-create-bench-spec.md` §4). Paper ground, padding 16; text left at x 104:
 
 | Block | Lines | Type |
 | --- | --- | --- |
