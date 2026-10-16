@@ -16,7 +16,7 @@ sealed = np.asarray(Image.open(os.path.join(src, 'crate-sealed-432x272.png')).co
 H, W = sealed.shape[:2]
 def save(a, n): Image.fromarray(np.clip(np.round(a), 0, 255).astype(np.uint8), 'RGBA').save(os.path.join(out, n + '.png'))
 # opening
-SEAM, LIFT = 176, 6
+SEAM, LIFT = 180, 6                                     # the seam, after the 4 px drop of the 432 crates
 op = np.zeros_like(sealed); op[SEAM:] = sealed[SEAM:]
 op[:SEAM - LIFT] = sealed[LIFT:SEAM]
 body = sealed[SEAM:SEAM + 1, :, 3] > 200

@@ -214,8 +214,8 @@
    432
   ],
   "src": "source/raw/rw-probe-t1-cradle.jpg, rw-probe-t2-cradle-b.jpg, rw-probe-cradle-empty.jpg (gemini-3-pro-image edits of the approved station-probe-merge tier 1), cut by bench/upright/cut-upright.py",
-  "made": "the Probe tier 1 (three Shield plates) standing upright, docked in a vertical sage cradle: a base with a dark rubber cup the foot sits in, two side arms gripping its waist, a back plate; a contact shadow in the bench ink",
-  "sha256": "2ba1e3e7e32173a7b311a139a98fc7e7d3860c34b579786139da6e3f09cb3840",
+  "made": "the Probe tier 1 (three Shield plates) standing upright, docked in a vertical sage cradle: a base with a dark rubber cup the foot sits in, two side arms gripping its waist, a back plate; a contact shadow in the bench ink; PA3 (10-15 21:40): the key's specks and outline wood cleared; the base the same pixels in all three (the empty cradle differs only in the cup, x 131-216, y 336-383)",
+  "sha256": "ed4407ee305f4c37cf758db5da739c9fd504cdde4f40fb38caa6ba88ecbab988",
   "status": "new",
   "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
   "signed_in": null
@@ -226,8 +226,8 @@
    432
   ],
   "src": "source/raw/rw-probe-t1-cradle.jpg, rw-probe-t2-cradle-b.jpg, rw-probe-cradle-empty.jpg (gemini-3-pro-image edits of the approved station-probe-merge tier 1), cut by bench/upright/cut-upright.py",
-  "made": "tier 2: the same picture with the fourth plate, the sand add-on module and the side lens (composed by hand from an aligned tier-2 edit, the cradle identical)",
-  "sha256": "4c9f19c9df7590044f6787f9ef6768747c8556784aa027fd6aec814c49fe9dfd",
+  "made": "tier 2: the same picture with the fourth plate, the sand add-on module and the side lens (composed by hand from an aligned tier-2 edit, the cradle identical); PA3 (10-15 21:40): the key's specks and outline wood cleared; the base the same pixels in all three (the empty cradle differs only in the cup, x 131-216, y 336-383)",
+  "sha256": "784f50368edf366a29e4111ba0dfe5de009b317f8c777e0a9774997761b06cd0",
   "status": "new",
   "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
   "signed_in": null
@@ -238,8 +238,8 @@
    432
   ],
   "src": "source/raw/rw-probe-t1-cradle.jpg, rw-probe-t2-cradle-b.jpg, rw-probe-cradle-empty.jpg (gemini-3-pro-image edits of the approved station-probe-merge tier 1), cut by bench/upright/cut-upright.py",
-  "made": "the cradle empty while the Probe is out: the back plate, the arms, the rubber cup with two brass charging contacts",
-  "sha256": "340b18fe32cc4543d0e0914b6cfdbf620f3fb0f76cf049b8018b7375f4cd6833",
+  "made": "the cradle empty while the Probe is out: the back plate, the arms, the rubber cup with two brass charging contacts; PA3 (10-15 21:40): the key's specks and outline wood cleared; the base the same pixels in all three (the empty cradle differs only in the cup, x 131-216, y 336-383)",
+  "sha256": "fb05ee58bbf4c7534d5208b74a7430a405c14207900eddf520c7678896f3b819",
   "status": "new",
   "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
   "signed_in": null

@@ -127,16 +127,16 @@
  {
   "id": "bench-probe-upright-t1-288x432",
   "size": "288x432",
-  "sha256": "2ba1e3e7e32173a7b311a139a98fc7e7d3860c34b579786139da6e3f09cb3840"
+  "sha256": "ed4407ee305f4c37cf758db5da739c9fd504cdde4f40fb38caa6ba88ecbab988"
  },
  {
   "id": "bench-probe-upright-t2-288x432",
   "size": "288x432",
-  "sha256": "4c9f19c9df7590044f6787f9ef6768747c8556784aa027fd6aec814c49fe9dfd"
+  "sha256": "784f50368edf366a29e4111ba0dfe5de009b317f8c777e0a9774997761b06cd0"
  },
  {
   "id": "bench-cradle-upright-empty-288x432",
   "size": "288x432",
-  "sha256": "340b18fe32cc4543d0e0914b6cfdbf620f3fb0f76cf049b8018b7375f4cd6833"
+  "sha256": "fb05ee58bbf4c7534d5208b74a7430a405c14207900eddf520c7678896f3b819"
  }
 ]
