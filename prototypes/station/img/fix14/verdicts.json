@@ -11,6 +11,10 @@
   "verdict": "ring-only",
   "differing": 2428
  },
+ "chapter page, unread": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
  "overview, identified, pod focused": {
   "verdict": "ring-only",
   "differing": 2428
@@ -28,6 +32,14 @@
   "differing": 720
  },
  "chapter page": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "chapter page, a doing": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "chapter page, sealed": {
   "verdict": "ring-only",
   "differing": 720
  },
@@ -81,15 +93,15 @@
  },
  "home-resident-focused": {
   "verdict": "ring-only",
-  "differing": 1426
+  "differing": 718
  },
  "home-sleeper-focused": {
   "verdict": "ring-only",
-  "differing": 675
+  "differing": 790
  },
  "home-moving-asleep": {
   "verdict": "ring-only",
-  "differing": 694
+  "differing": 663
  },
  "create-shape": {
   "verdict": "ring-only",
@@ -119,6 +131,10 @@
   "verdict": "ring-only",
   "differing": 856
  },
+ "create-shape-samelook": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
  "create-shape-first": {
   "verdict": "ring-only",
   "differing": 856
@@ -127,25 +143,13 @@
   "verdict": "ring-only",
   "differing": 856
  },
- "create-grow-150": {
-  "verdict": "ring-only",
-  "differing": 856
- },
- "create-grow": {
-  "verdict": "ring-only",
-  "differing": 856
- },
- "create-grow-end": {
-  "verdict": "ring-only",
-  "differing": 856
- },
  "habitat-rest": {
   "verdict": "ring-only",
-  "differing": 2300
+  "differing": 1304
  },
  "habitat-meet": {
   "verdict": "ring-only",
-  "differing": 1264
+  "differing": 1271
  },
  "habitat-out": {
   "verdict": "ring-only",
@@ -175,9 +179,21 @@
   "verdict": "ring-only",
   "differing": 996
  },
- "habitat-wild-armed": {
+ "habitat-portrait-painting": {
   "verdict": "ring-only",
   "differing": 996
+ },
+ "habitat-portrait-portrayed": {
+  "verdict": "ring-only",
+  "differing": 996
+ },
+ "habitat-portrait-pictured": {
+  "verdict": "ring-only",
+  "differing": 996
+ },
+ "habitat-young-night": {
+  "verdict": "ring-only",
+  "differing": 1271
  },
  "habitat-tile": {
   "verdict": "ring-only",
@@ -185,23 +201,23 @@
  },
  "habitat-twelve": {
   "verdict": "ring-only",
-  "differing": 1888
+  "differing": 1304
  },
  "habitat-docked-dawn": {
   "verdict": "ring-only",
-  "differing": 2300
+  "differing": 1304
  },
  "habitat-docked-day": {
   "verdict": "ring-only",
-  "differing": 2300
+  "differing": 1304
  },
  "habitat-docked-dusk": {
   "verdict": "ring-only",
-  "differing": 2300
+  "differing": 1304
  },
  "habitat-docked-night": {
   "verdict": "ring-only",
-  "differing": 2300
+  "differing": 1304
  },
  "habitat-namer": {
   "verdict": "ring-only",
@@ -229,27 +245,27 @@
  },
  "habitat-moment-S01-0": {
   "verdict": "ring-only",
-  "differing": 1890
+  "differing": 1261
  },
  "habitat-moment-S01-450": {
   "verdict": "ring-only",
-  "differing": 1890
+  "differing": 1532
  },
  "habitat-moment-S01-900": {
   "verdict": "ring-only",
-  "differing": 1890
+  "differing": 1261
  },
  "habitat-moment-S01-1350": {
   "verdict": "ring-only",
-  "differing": 1890
+  "differing": 1532
  },
  "vivarium-docked": {
   "verdict": "ring-only",
-  "differing": 682
+  "differing": 790
  },
  "vivarium-away": {
   "verdict": "ring-only",
-  "differing": 1016
+  "differing": 718
  },
  "vivarium-mibi-out": {
   "verdict": "ring-only",
@@ -261,31 +277,31 @@
  },
  "vivarium-sleeper": {
   "verdict": "ring-only",
-  "differing": 682
+  "differing": 790
  },
  "vivarium-twelve": {
   "verdict": "ring-only",
-  "differing": 1426
+  "differing": 718
  },
  "vivarium-docked-dawn": {
   "verdict": "ring-only",
-  "differing": 682
+  "differing": 790
  },
  "vivarium-docked-day": {
   "verdict": "ring-only",
-  "differing": 682
+  "differing": 790
  },
  "vivarium-docked-dusk": {
   "verdict": "ring-only",
-  "differing": 682
+  "differing": 790
  },
  "vivarium-docked-night": {
   "verdict": "ring-only",
-  "differing": 682
+  "differing": 790
  },
  "vivarium-walk-8000ms": {
   "verdict": "ring-only",
-  "differing": 1426
+  "differing": 718
  },
  "vivarium-moving-8000ms": {
   "verdict": "ring-only",
@@ -303,20 +319,24 @@
   "verdict": "ring-only",
   "differing": 28
  },
+ "library-book-shut": {
+  "verdict": "ring-only",
+  "differing": 28
+ },
  "bench": {
   "verdict": "ring-only",
-  "differing": 2536
+  "differing": 2472
  },
  "bench-armed": {
   "verdict": "ring-only",
-  "differing": 2596
+  "differing": 2308
  },
  "bench-away": {
   "verdict": "ring-only",
-  "differing": 2116
+  "differing": 1828
  },
  "bench-tier2": {
   "verdict": "ring-only",
-  "differing": 2596
+  "differing": 2308
  }
 }
