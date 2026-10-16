@@ -133,4 +133,44 @@ With 1–6 the same loop is **8 ✓ presses: 5 decisions, each with its conseque
 **Recommendation for the owner (3 lines).**
 1. Yes to bigger screens, but only for the few real decisions (Grow it, Cross them, Return to the wild, a large Grow now, spending a sitting). Each shows its consequence and named choices, including where to go next; every other press gets fewer screens, not more.
 2. Cut the ceremony: Home's ✓ does what its line says needs you, one verb means one act ("Open" only for the bay and the bud), and no jump lands the player somewhere they didn't choose.
-3. Say "what is this for, what next" on every screen where the eye is, not only in the bottom line. The loop drops from 12 ✓ presses to about 8, and each one is a decision the player means.
+3. Show every choice's options, cost and outcome before the press, on the page or in the panel (the work list below). The loop drops from 12 ✓ presses to about 8, and each one is a decision the player means.
+
+---
+
+## The work list
+
+*Draft by the game designer, for UI/UX to amend. The owner, 13:19: "allowing the user be intentional, show the options and costs, and the actions and outcomes makes the game more engaging, invites to explore and make choices." The lead turns this list into spec and build tickets.*
+
+### Decision points, screen by screen
+
+Each one shows its options, its cost and its outcome **before** the press. "On the page" means the choice is drawn where the eye already is, with no extra screen. "Panel" means the larger decision panel from the game designer's section, point 4, which also offers where to go next.
+
+| Screen | Decision | Options shown | Cost shown | Outcome shown before the press | Form |
+| --- | --- | --- | --- | --- | --- |
+| Pods, a sealed pod | What to do with this pod | Identify · Return to the wild · Not now | ◆ 1 · ❀ +1 | "the species shows" (and "a new species: its page opens in the Library" for a first) · "its well frees; it is gone" | On the page, three named choices |
+| Pods, a pod's chapters | Which chapter to read | Every unread chapter, with its glint | ◆ n on each tab | "shows both copies of its traits"; the glint says "something new here" | On the page (the rail) |
+| Pods, an identified pod | How to make a founder | Shape a founder · Grow it as it is | Grow's full price on both | "nothing is spent until Grow" | On the page |
+| Create | Each gene | The drum's faces (the pod's own looks) | ◆ 1 each changed, in the line | The founder's part changes as the drum turns | On the page (the gene bench) |
+| Create | **Grow it** | Grow it · Keep shaping; then Watch it grow · Back to the pods · Home | ⚡ ❀ ◆ and the wait | The founder large, its changes, what stays a surprise, "the pod is used; this can't be undone" | **Panel** |
+| Incubator | Wait or grow now | Wait · Grow now | free, "about n min" · ❀ n | "it opens now" | On the page; a **panel** when the price is more than a few Essence |
+| Incubator | The hatch, then the name | Keep "Moss" · Choose another; then Say hello · Take it with you · Home | none | The young mibi, its name, where it will live | **Panel** (after the payoff) |
+| Vivarium, up close | Who goes on the next trip | Take with you · Bring home | none | "goes at the next dock" · "home at the next dock" | On the page |
+| Vivarium, up close | **Return to the wild** | Return it · Keep it | ❀ +2 | "gone for good; its place remembers it and later sheds one pod of its line" | **Panel** (replaces "Again: return Moss") |
+| Cross | Pick the partner | Each eligible adult, with kin in words | — | The forecast for the pair | On the page |
+| Cross | **Cross them** | Cross them · Pick another; then Watch it grow · Home | ⚡ 2 ❀ 4, 20 min | The forecast, the kin, "one child, its own mibi" | **Panel** |
+| Vivarium, up close | **Spend a sitting** | Sit for a portrait · Not now | the sitting | "a portrait comes to the bay in a few hours"; the warning when a held sitting would be lost | **Panel** |
+| Probe bench | Mend | Mend a plate · Leave it | ⚡ 1 each | "Shield n of n for the next trip" | On the page |
+| Probe bench | **Upgrade** | Fit it · Not now | ⚡ 12 ◆ 4 | "reaches further; carries 3 pods" | **Panel** |
+| Library | Pin a wish | Each look in the field guide | free | "pods and pairs that carry it glint" | On the page |
+
+### Ceremony to remove, ranked
+
+Ranked by how often the player meets it and how much it costs them.
+
+1. **Home → Cargo → Open the bay.** Home's ✓ on "crates wait in the bay" opens the bay in one press. It happens on every trip.
+2. **Home → Incubator → Open.** Home's ✓ on "your Loika is ready" goes straight to the hatch. It happens for every mibi.
+3. **"✓ again" double presses** (Return to the wild, the pod's return arm). The panel replaces them, so ✓ never means "press twice to be sure".
+4. **Eaten presses during the bay's opening and the hatch.** ✓ skips to the end instead of doing nothing.
+5. **Jumps after Grow it, Cross them and the hatch.** The panel's "where next" choices replace them. No press is saved, but the landing becomes the player's choice.
+6. **"Open" for four acts.** "Open" stays for the bay and the bud; the rest say where they go ("Look at this pod", "Go to the Incubator").
+7. **The bare "Keep Moss".** It becomes the hatch panel's name choice.
