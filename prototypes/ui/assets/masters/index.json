@@ -64,12 +64,26 @@
    "sha256": "a6e66e3621481c0c5a56a781b637d4c9bfa6ac6d07ee518abce69e726603bdc4",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "bench-plate-gone-48x48": {
+   "file": "pods/bench-plate-gone-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "43a793bc3bb31515cdcb07bb75134cae855ab64a96dbb7bf717313da78146930",
+   "signed": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)"
+  },
   "bench-plate-strip-t1-144x48": {
    "file": "pods/bench-plate-strip-t1-144x48.png",
    "w": 144,
    "h": 48,
    "sha256": "aadf24f64afae389e7eb37463bbc564a5d65d4df4ae48d98be30366abe444479",
    "signed": "station lead's brief (fix 5 Incubator/Probe): PA1, masters-pods bea42f4d; signed by the AD in the capture"
+  },
+  "bench-plate-strip-t1-176x64": {
+   "file": "pods/bench-plate-strip-t1-176x64.png",
+   "w": 176,
+   "h": 64,
+   "sha256": "0c551edb0a32d1e380209b87614022c5d4480ddf932ffbd70e290222396c03eb",
+   "signed": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)"
   },
   "bench-plate-strip-t2-192x48": {
    "file": "pods/bench-plate-strip-t2-192x48.png",
@@ -78,12 +92,26 @@
    "sha256": "9faa9a2e68da31ca3592f2ecf583f49dd0d39ab37254cdec9a794159e78a49f5",
    "signed": "station lead's brief (fix 5 Incubator/Probe): PA1, masters-pods bea42f4d; signed by the AD in the capture"
   },
+  "bench-plate-strip-t2-232x64": {
+   "file": "pods/bench-plate-strip-t2-232x64.png",
+   "w": 232,
+   "h": 64,
+   "sha256": "6b7d247aadcbaa5ce51dc1b5e0b5ee3ebb73f40ced2dcfdecdc6c09b3559bc8e",
+   "signed": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)"
+  },
   "bench-plate-whole-32x32": {
    "file": "pods/bench-plate-whole-32x32.png",
    "w": 32,
    "h": 32,
    "sha256": "a6fb19925510e664dfe2704da40dacbce3cc2b44cea128572001504870c68000",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  },
+  "bench-plate-whole-48x48": {
+   "file": "pods/bench-plate-whole-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "0cf9d089989ee327b32ea63489f2788019e99b48733a044b36d15172cb8f3001",
+   "signed": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)"
   },
   "bench-probe-t1-480x288": {
    "file": "pods/bench-probe-t1-480x288.png",
@@ -2585,6 +2613,13 @@
    ],
    "tile": 32
   },
+  "place-cave-32x32": {
+   "file": "pods/place-cave-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "00b9d5c45ab511847f11399819d0e5e1a5ff6adf261ab5dc574c42f332edb7ca",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
+  },
   "place-cave-48x48": {
    "file": "pods/place-cave-48x48.png",
    "w": 48,
@@ -2598,6 +2633,13 @@
    "h": 64,
    "sha256": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "place-meadow-32x32": {
+   "file": "pods/place-meadow-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "118614d067d0a209aced8a09f94d527f8496ff5b4d09fc7b0abfb3a7de40001b",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
   },
   "place-meadow-48x48": {
    "file": "pods/place-meadow-48x48.png",
@@ -2613,6 +2655,13 @@
    "sha256": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-pond-32x32": {
+   "file": "pods/place-pond-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "4ef54903dfb1e4421110cb89fc9bb7a8086e73eb2c0bd3b654496c7a2fbfb6d5",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
+  },
   "place-pond-48x48": {
    "file": "pods/place-pond-48x48.png",
    "w": 48,
@@ -2627,6 +2676,13 @@
    "sha256": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-rock-32x32": {
+   "file": "pods/place-rock-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "4ea54e0209690ac2adf3c6bcbb6169127276666028d2650ceca08313eb3ae881",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
+  },
   "place-rock-48x48": {
    "file": "pods/place-rock-48x48.png",
    "w": 48,
@@ -2640,6 +2696,13 @@
    "h": 64,
    "sha256": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "place-wood-32x32": {
+   "file": "pods/place-wood-32x32.png",
+   "w": 32,
+   "h": 32,
+   "sha256": "28dde9ed10079d6a8aa497904f5b4542ef02a42b9dbe017a4b7b6810acd76987",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
   },
   "place-wood-48x48": {
    "file": "pods/place-wood-48x48.png",
@@ -4759,8 +4822,8 @@
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
-   "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
-   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+   "sha256": "0a74991ea43e22315ea495d1d68cfc584ff873afe09e4f14331a92890a053824",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
@@ -4794,15 +4857,15 @@
    "file": "pods/room-bench-stage-overview.png",
    "w": 1024,
    "h": 522,
-   "sha256": "3581670aa531fb6f525f66985e52fdf3e5ce00e11e8565873e0ffe4c3847bd55",
-   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+   "sha256": "290a5a52a09b42a9a02b4edf961b49ce23c54af857d9ca907afe52ded5fc3d3c",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)"
   },
   "room-bench-stage-probe": {
    "file": "pods/room-bench-stage-probe.png",
    "w": 1024,
    "h": 522,
-   "sha256": "fb5bf87677abc99cb9c1d46f74110b49b06261c0290a1d5549a6fd60cbeec04e",
-   "signed": "Paco Cotera"
+   "sha256": "2c6ac410f453e3677c71f60ebd992589cf13478602c231864f4f020f145cdeb3",
+   "signed": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)"
   },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",

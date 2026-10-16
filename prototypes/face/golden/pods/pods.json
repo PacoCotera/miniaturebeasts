@@ -2,47 +2,47 @@
  "_note": "Pods' goldens: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "collection": {
-   "hash": "62a0405e",
+   "hash": "e9eba8d5",
    "png": "pods-collection.png"
   },
   "overview, unidentified": {
-   "hash": "7e854074",
+   "hash": "957efd2e",
    "png": "pods-overview-unidentified.png"
   },
   "overview, identify warns": {
-   "hash": "7e7b0ebe",
+   "hash": "3dbc520c",
    "png": "pods-overview-identify-warns.png"
   },
   "chapter page, unread": {
-   "hash": "fbf239ae",
+   "hash": "33f669e9",
    "png": "pods-chapter-page-unread.png"
   },
   "overview, identified, pod focused": {
-   "hash": "aacb9f2d",
+   "hash": "ddf1c876",
    "png": "pods-overview-identified-pod-focused.png"
   },
   "overview, kin focused": {
-   "hash": "497be95b",
+   "hash": "047af414",
    "png": "pods-overview-kin-focused.png"
   },
   "overview, hatch focused": {
-   "hash": "ff3de703",
+   "hash": "5a0a7368",
    "png": "pods-overview-hatch-focused.png"
   },
   "overview, a rail tab focused": {
-   "hash": "8d08e120",
+   "hash": "9b6efe9f",
    "png": "pods-overview-a-rail-tab-focused.png"
   },
   "chapter page": {
-   "hash": "9d17f644",
+   "hash": "3f7f1087",
    "png": "pods-chapter-page.png"
   },
   "chapter page, a doing": {
-   "hash": "9cdb00d6",
+   "hash": "60fe50a5",
    "png": "pods-chapter-page-a-doing.png"
   },
   "chapter page, sealed": {
-   "hash": "8d9b4620",
+   "hash": "110483c3",
    "png": "pods-chapter-page-sealed.png"
   },
   "compare": {
