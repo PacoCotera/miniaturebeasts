@@ -15853,5 +15853,23 @@
   "sha256": "5fb39721f9fa0ba2802564820780252101c22ec19bcd29d68a4cef99248efb8c",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+ },
+ "stamp-plate-120x120": {
+  "size": [
+   120,
+   120
+  ],
+  "rect": [
+   804,
+   232,
+   120,
+   120
+  ],
+  "src": "stamp-plate/paint-stamp-plate.py slices/room-bench-stage-incubator.png (by hand in code)",
+  "made": "T-20261016-16, the Incubator's stamp plate as a box of the R machinery (CD ruling, specs/station-stamp-plate-ruling.md, work-queue): placed 1:1 at (804, 232) with no K x WARM and no code hairline; the stamp glyph alone keeps K 0.20 x WARM, drawn centred on it. The R vent hood's build (paint-machinery.py's height field, lambert from the top left, matte): an 8 px raised frame with a 2.5 px rounded outer bevel and the hood's lit rim (204, 211, 181) on its top and left, a 1 px contact shade bottom and right, four sand bolts, a recess at 8..112 for the glyph (up to 104 x 104) with its top and left walls in shade; albedos measured on the hood (face (117, 130, 113), bolts (98, 91, 73)); the stage's own shade at the rect carried on, the wall's grain, the corners outside a 1.5 px radius the stage's wall pixel for pixel; alpha 255 everywhere. The code text stays under it at (776, 357, 176, 25).",
+  "sha256": "9dcf1942d8c36ac6da75497ad4d91820a420ae0df6e62e3dbc6edbc067226184",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-16, T-20261016-16): by the art director; measured on the 1x proofs (stamp-plate/proof, the plate 1:1, the glyph lifted from the bc866c71 captures): plate rect p95 0.233, mean 0.158 (growing; ready and hatch-1100 0.233 / 0.157), under the R cap 0.34 and the chamber 0.574 - 0.08 = 0.494; placed by T-20261016-17"
  }
 }
