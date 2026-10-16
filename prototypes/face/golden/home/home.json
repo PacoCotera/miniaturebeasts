@@ -6,19 +6,19 @@
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "d0fa5440",
+   "hash": "c639bd14",
    "png": "home-docked.png"
   },
   "home-docked-dawn": {
-   "hash": "0010f3e3",
+   "hash": "5cc6f99f",
    "png": "home-docked-dawn.png"
   },
   "home-docked-dusk": {
-   "hash": "0f8dcd42",
+   "hash": "80f9856a",
    "png": "home-docked-dusk.png"
   },
   "home-docked-night": {
-   "hash": "6993e624",
+   "hash": "cbc60c84",
    "png": "home-docked-night.png"
   },
   "home-goal-docked": {
@@ -110,7 +110,7 @@
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "00a9aa50",
+   "hash": "5b2bb9cd",
    "png": "home-crates-arriving.png"
   }
  }
