@@ -142,3 +142,6 @@ The shadow goes over the light: it is where the founder blocks it.
 - **Proofs** (`proof/`, both species): `incubator-b-{S01,S03}-{empty,cool,warm,glowing,ready,hatch-1100}-1x.png`, and the `-noshadow` frames for each growing step.
   - The slip and card carry stand-in content at the ruling §5 longest case.
   - **Lines over 176 px at 16:** "Found at the pond edge,", "Found under the rock ledge,", "Movement: a slow wade". The first is Pods' real found sentence's first line, so it is for the copywriter or the build's cut at a word.
+
+
+**Re-taken on the 224 × 272 class (T-20261016-63):** the shells in the proofs are now the `incubator` class 1:1 and the overlays are cut on its own silhouette; the five measures in `proof/measures.json` are all still met (see `../pod-incubator/README.md`).

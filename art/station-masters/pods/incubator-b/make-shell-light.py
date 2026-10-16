@@ -22,7 +22,7 @@ W, H, S = 224, 272, 8
 def lin(c): c = np.asarray(c, float) / 255; return np.where(c <= .04045, c / 12.92, ((c + .055) / 1.055) ** 2.4)
 def srgb(l): l = np.clip(l, 0, 1); return np.where(l <= .0031308, l * 12.92, 1.055 * l ** (1 / 2.4) - .055) * 255
 al = lambda n: np.asarray(Image.open(f"{sl}/pod-{cls}-{n}.png").convert("RGBA"))[..., 3].astype(float) / 255
-body, acc, full = al("mask-body"), al("mask-accent"), al("identified")
+body, acc, full = al("mask-body"), al("mask-accent"), al("shade")   # the shade layer's alpha is the renderer's silhouette
 h0, w0 = full.shape
 yy, xx = (np.mgrid[0:H * S, 0:W * S] + .5) / S
 sy, sx = yy / H * h0 - .5, xx / W * w0 - .5

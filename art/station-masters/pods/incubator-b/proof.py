@@ -4,7 +4,7 @@ review's five measures (T-62 step 5).
 The composite order (the build's, T-62 step 2): the shell; the step's light (incubator-shell-{step}); the founder's shadow at the ruling's
 opacity (cool 0.25, warm 0.45, glowing 0.65, ready 0.8); the seams (ready); the nest's front for the step (incubator-cradle-front-{step}).
 Stand-ins, said so on every proof and in the README (they are the build's, not masters):
-- the pod at 224 x 272: the species' shell composed by pods.json podLayers.compose from the signed pod-large layers (144 x 176) and SCALED;
+- the pod at 224 x 272: the species' shell composed by pods.json podLayers.compose from the pod-incubator layers (T-20261016-63, 1:1);
 - the founder's shadow: the juvenile's silhouette, fitted to the 160 x 192 shadow box, blurred, at the step's opacity;
 - the slip's and the card's content, typed in Inter at the ruling §5 sizes at its longest case (2 found lines, 3 changes, 5 cleared and the
   "still to come" line), ink on the paper; the card's picture is a crop of a signed trait picture at 144 x 128 (the 160 x 128 crop is owed);
@@ -28,16 +28,18 @@ SLIP = {"S01": ["Found at the pond edge,", "as a Loika shook dry.", "Crown: leaf
         "S03": ["Found under the rock ledge,", "in a dry crack.", "Crest: tall crest", "Scales: many coarse", "Tail: long thick",
                 "Movement: a slow wade", "Stamina: steady", "Senses: sharp by day", "Habits: basks at noon", "Voice: a dry rattle", "three still to come"]}
 CARD = {"S01": ("Face", "a leaf crest", "trait-S01-crown-leaf-crest-144x176"), "S03": ("Tail", "long and thick", "trait-S03-tail-long-thick-128x160")}
+CLS = "incubator" if os.path.exists(f"{sl}/pod-incubator-shade.png") else "large"   # the 224 x 272 class (T-20261016-63), else the large class scaled
 def shell(sp):
     _, a, b, pat = SPECIES[sp]
-    g = lambda n: np.asarray(L(f"{sl}/pod-large-{n}.png")).astype(float)
+    g = lambda n: np.asarray(L(f"{sl}/pod-{CLS}-{n}.png")).astype(float)
     shade = g("shade"); body, acc = g("mask-body")[..., 3] / 255, g("mask-accent")[..., 3] / 255
     pt = g(f"pattern-{pat}")[..., 3] / 255
-    rel = g(f"pattern-{pat}-relief")[..., :3].mean(2) / 255 if os.path.exists(f"{sl}/pod-large-pattern-{pat}-relief.png") else None
+    rel = g(f"pattern-{pat}-relief")[..., :3].mean(2) / 255 if os.path.exists(f"{sl}/pod-{CLS}-pattern-{pat}-relief.png") else None
     A, B = hexrgb(a), hexrgb(b)
     col = (A * (body * (1 - pt))[..., None] + B * np.minimum(1, acc + pt)[..., None]) * (2 * shade[..., :3] / 255) * (2 * rel[..., None] if rel is not None else 1.0)
-    alpha = np.maximum(body, acc) * (g("identified")[..., 3] / 255 > 0)
-    return Image.fromarray(np.dstack([np.clip(col, 0, 255), alpha * 255]).astype(np.uint8), "RGBA").resize((224, 272), Image.LANCZOS)
+    alpha = np.maximum(body, acc) * (g("shade")[..., 3] / 255 > 0)
+    im = Image.fromarray(np.dstack([np.clip(col, 0, 255), alpha * 255]).astype(np.uint8), "RGBA")
+    return im if im.size == (224, 272) else im.resize((224, 272), Image.LANCZOS)
 def founder_shadow(sp, opacity):
     j = L(f"{sl}/mibi-juvenile-{sp}-304x312.png"); a = np.asarray(j)[..., 3].astype(float) / 255
     ys, xs = np.nonzero(a > 0.5); crop = a[ys.min():ys.max() + 1, xs.min():xs.max() + 1]

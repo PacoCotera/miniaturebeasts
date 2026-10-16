@@ -1,0 +1,197 @@
+{
+ "pod-incubator-crack": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
+  "sha256": "5c0c64fd76d0c996e637451a5af40ec7a3b91df45577ae92697e105ad0f081ea"
+ },
+ "pod-incubator-shade": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
+  "sha256": "2fca85b4d7ae34ffc2efdde8ab1fd19af585c2338eca34f8ec74675c07d77cf9"
+ },
+ "pod-incubator-mask-body": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
+  "sha256": "b55908e9d946b273c42534704e27f4891394044a9da89906986d4043466dd488"
+ },
+ "pod-incubator-mask-accent": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
+  "sha256": "89d389748934c41587c296e0a66d6f58f5ca46cf9baf2c39e62b49db1b7c08d3"
+ },
+ "pod-incubator-pattern-dots": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
+  "sha256": "5648994951f24b1493d5b47c520be61a0a4dfe3f97dd3bf3e162b02b66414abb"
+ },
+ "pod-incubator-pattern-stripes": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
+  "sha256": "e366c67f7a63158e1e0aa99da293ac5a997ee91c15013b4769f7f8af59935f29"
+ },
+ "pod-incubator-pattern-bands": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
+  "sha256": "aa0e781d96447286ee8fabcbdd6f6298bda91a89541247c0a0962bf916d3c394"
+ },
+ "pod-incubator-pattern-ribs": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "b1c68bec40c43d5f9edba03688f43dec2d09885e56a715d973436888b65535fa"
+ },
+ "pod-incubator-pattern-segments": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "0928d7769bc658f50edaaf9b6843cae40f8c6b91975a7a8124254e3c8a433fe4"
+ },
+ "pod-incubator-pattern-segments-relief": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "sha256": "c5d493cb53a9470c1d9da32ec9dc6e8e6affefa17659ec0ffba2471fcb16bec0"
+ },
+ "pod-incubator-pattern-plates": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "sha256": "87d4051e1ded0a7bf49b85580a13b4efdf912f000de64c53f4b786632f0ada48"
+ },
+ "pod-incubator-pattern-plates-relief": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   null,
+   null,
+   224,
+   272
+  ],
+  "src": "procedural, on the sphere of the pod",
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "sha256": "0cfc46fddd2a6447e87f95277d140835f12905d1f5b2c57ff8ab7d0e4c77bb0c"
+ },
+ "pod-incubator-shadow": {
+  "size": [
+   240,
+   14
+  ],
+  "rect": [
+   512,
+   385,
+   240,
+   14
+  ],
+  "src": "procedural ramp",
+  "made": "contact shadow: centred on x 632 with its middle on the foot line y 392",
+  "sha256": "99f2835a0a38578878bc8d799f4d245ba65cac5f1b971945ca02c3e16c549dbb"
+ }
+}

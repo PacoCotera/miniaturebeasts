@@ -16100,11 +16100,11 @@
    272
   ],
   "src": "incubator-b/make-shell-light.py",
-  "made": "the candling light, cool (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the large class's silhouette redrawn at 224 x 272",
-  "sha256": "b2a3664489757c7222e881d5cf681d74e8acb56ada35431370e6c5547bee042f",
+  "made": "the candling light, cool (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the incubator class's own silhouette and seams at 224 x 272 (T-20261016-63)",
+  "sha256": "c937229b6f09a7ecbfa1c34ade73cca82485e09bb8702feaffd0509fb451a22f",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
-  "status_note": "re-painted (10-16, T-20261016-62)"
+  "status_note": "re-painted (10-16, T-20261016-62); re-cut on the incubator class (T-20261016-63)"
  },
  "incubator-shell-warm": {
   "size": [
@@ -16118,11 +16118,11 @@
    272
   ],
   "src": "incubator-b/make-shell-light.py",
-  "made": "the candling light, warm (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the large class's silhouette redrawn at 224 x 272",
-  "sha256": "fa0b9f2d4aa7c1ce0b030974ac6b718315a763505e04ff46c1ab101203ab6ab1",
+  "made": "the candling light, warm (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the incubator class's own silhouette and seams at 224 x 272 (T-20261016-63)",
+  "sha256": "0add25e49f6d9d4ae36c05b4737449f0d141d6b727919502c135c1e4ac9b5656",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
-  "status_note": "re-painted (10-16, T-20261016-62)"
+  "status_note": "re-painted (10-16, T-20261016-62); re-cut on the incubator class (T-20261016-63)"
  },
  "incubator-shell-glowing": {
   "size": [
@@ -16136,11 +16136,11 @@
    272
   ],
   "src": "incubator-b/make-shell-light.py",
-  "made": "the candling light, glowing (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the large class's silhouette redrawn at 224 x 272",
-  "sha256": "62d836d6df436bf2257a8701dbe10229079421e59127ef91e85ea9ffe5f01c8b",
+  "made": "the candling light, glowing (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the incubator class's own silhouette and seams at 224 x 272 (T-20261016-63)",
+  "sha256": "45efe274add5a6d3cf2112887a12f74b7f86dac4eb44e905b64fbc61719f853b",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
-  "status_note": "re-painted (10-16, T-20261016-62)"
+  "status_note": "re-painted (10-16, T-20261016-62); re-cut on the incubator class (T-20261016-63)"
  },
  "incubator-shell-seams": {
   "size": [
@@ -16155,10 +16155,10 @@
   ],
   "src": "incubator-b/make-shell-light.py",
   "made": "the shell light overlay, seams: placed over the pod's shell 1:1, never tinted (ready: the light through the seams). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
-  "sha256": "4446cc15e20f9a8b4a639a005834669afafae1057d3519a0e73cb794163d05ac",
+  "sha256": "9ab64d86d7affec285632ffd602266aaa195fb350031368e4ea5d8410bb198f0",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "status_note": "new (10-16, T-20261016-27); re-cut on the incubator class (T-20261016-63)"
  },
  "incubator-shell-crack-1": {
   "size": [
@@ -16173,10 +16173,10 @@
   ],
   "src": "incubator-b/make-shell-light.py",
   "made": "the shell light overlay, crack-1: placed over the pod's shell 1:1, never tinted (hatch 600). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
-  "sha256": "2c61ced7823a817c7d411656907934781ba7be9dae4a1ac9d8208fcb72a17a64",
+  "sha256": "950782308e6fda63942d1c6e99f7f2a6933543cad5650f215c6e279703949251",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "status_note": "new (10-16, T-20261016-27); re-cut on the incubator class (T-20261016-63)"
  },
  "incubator-shell-crack-2": {
   "size": [
@@ -16191,10 +16191,10 @@
   ],
   "src": "incubator-b/make-shell-light.py",
   "made": "the shell light overlay, crack-2: placed over the pod's shell 1:1, never tinted (hatch 800). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
-  "sha256": "82d593205c0f1fbc1c65a8380bfeea62ea2fa44ae210ca97c3c984f13f71f209",
+  "sha256": "fe072de93b3e8a2363b1b211f353c645c5c6599308859ced7c45aba2853f1e5f",
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "status_note": "new (10-16, T-20261016-27); re-cut on the incubator class (T-20261016-63)"
  },
  "create-bench": {
   "size": [
@@ -16863,5 +16863,777 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
   "status_note": "new (10-16, T-20261016-62)"
+ },
+ "pod-incubator-band": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "the sealing band as a layer; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "43249e0d84b5661b25a3a2608f4118cce6e3d67c89064e423755b327676baf7a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-crack": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "5c0c64fd76d0c996e637451a5af40ec7a3b91df45577ae92697e105ad0f081ea",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-mask-accent": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "89d389748934c41587c296e0a66d6f58f5ca46cf9baf2c39e62b49db1b7c08d3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-mask-body": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "b55908e9d946b273c42534704e27f4891394044a9da89906986d4043466dd488",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-bands": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "aa0e781d96447286ee8fabcbdd6f6298bda91a89541247c0a0962bf916d3c394",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-dots": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "5648994951f24b1493d5b47c520be61a0a4dfe3f97dd3bf3e162b02b66414abb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-plates": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "87d4051e1ded0a7bf49b85580a13b4efdf912f000de64c53f4b786632f0ada48",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-plates-relief": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "0cfc46fddd2a6447e87f95277d140835f12905d1f5b2c57ff8ab7d0e4c77bb0c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-ribs": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "b1c68bec40c43d5f9edba03688f43dec2d09885e56a715d973436888b65535fa",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-segments": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "0928d7769bc658f50edaaf9b6843cae40f8c6b91975a7a8124254e3c8a433fe4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-segments-relief": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "c5d493cb53a9470c1d9da32ec9dc6e8e6affefa17659ec0ffba2471fcb16bec0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-pattern-stripes": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "e366c67f7a63158e1e0aa99da293ac5a997ee91c15013b4769f7f8af59935f29",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-shade": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "2fca85b4d7ae34ffc2efdde8ab1fd19af585c2338eca34f8ec74675c07d77cf9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "pod-incubator-shadow": {
+  "size": [
+   240,
+   14
+  ],
+  "rect": [
+   512,
+   385,
+   240,
+   14
+  ],
+  "src": "pod-incubator/make-pod-incubator.py: tools/build.py pods() for the class \"incubator\" (224 x 272), from the signed pod painting, reduced with Lanczos, never enlarged",
+  "made": "contact shadow: centred on x 632 with its middle on the foot line y 392; the class key \"incubator\" (pods.json classes.pod: [224, 272], the build adds it)",
+  "sha256": "99f2835a0a38578878bc8d799f4d245ba65cac5f1b971945ca02c3e16c549dbb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-crown-bare-head-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a window [113, 0, 633, 416] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "50c6c3b2619b75648422ab16ebfed8b17e12cadcd068209e83087e6130f85d29",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-crown-leaf-crest-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a window [770, 0, 1290, 416] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "8b2d85d0b5f1b3a5dc46da35715a245aad234c71e4e6182a9fd1339e2aa12082",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-eyes-thin-rings-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a window [130, 132, 550, 468] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "c73e10b602b03fe1cce156775422b73c7ea514ea70d2a919117cd2649c58eeb4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-eyes-between-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a window [635, 132, 1055, 468] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "17315b4997e58a4081edf4f2151848b7003c023f78fbdef327765bb295b8259d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-eyes-wide-pale-rings-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a window [1145, 132, 1565, 468] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "339e81f009a399d93432b7ded31148a87a2c9ccae8d22184874187ebd19b8f2e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-markings-plain-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b window [320, 310, 720, 630] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "e60ea0590184f6c2e0d34586765c7d9e5ac5d8b09a22e792e767c647aede64c0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S01-markings-pale-patches-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b window [970, 310, 1370, 630] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "929bd85986b633f78f6b770c5ff4a38d3a4960d04d38397084bb5271671b9619",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-markings-plain-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a window [150, 158, 530, 462] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "379dcb1a669f7f09c7be18910f89e24b5c3eef8f3b5002423477f11e147fb9ab",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-markings-stripes-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a window [750, 158, 1130, 462] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "936465749363c27e1a7b4fb117e6ea80c071f0d0d64ef227c89b25e9587eabb8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-markings-spots-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a window [150, 592, 530, 896] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "b39510b391e02fa666b03c2a1f9df8f00d04095bfadd7815fc7a728c19d9f0b0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-markings-stripes-and-spots-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a window [750, 592, 1130, 896] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "4add92775b6bed0f9fcbd33c9d192c67b0f7af5062a61918c59ddf1d3af9e988",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-crest-low-crest-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a window [90, 0, 510, 336] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "ebe099e6eb5b73c5477f474bd28d888ae723af040735430e474cfd6de07737bf",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-crest-between-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a window [620, 0, 1040, 336] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "7220c53a43d004359171cf6e5719380fe645464ba14ed0df27fc13974e9dbd92",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-crest-tall-crest-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a window [1150, 0, 1570, 336] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "b94d36a8fa93478e1212f5cf358aada07ca3770a7b70a9772f05a059312ab4d6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-spots-bare-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a window [70, 46, 530, 414] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "b32a3414060f86662f025119aa0e5431386fdd4a47ffe294b47863c81b0ebc54",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-spots-bands-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a window [670, 46, 1130, 414] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "627f0837165fa580428f0ab96d15dc5cc178f3843e70021e362054d160726693",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-spots-spots-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a window [70, 486, 530, 854] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "22c95bee7bf7778cf1e16efb88dc4146eb4f5a003062c8c4770ed3abc32d5340",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-spots-bands-and-spots-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a window [670, 486, 1130, 854] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "7ccadc3c96995173718b9622c7ce1be5d2050427c7ab967a8db0ccb502fe2a9a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-span-small-cap-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a window [22, 120, 522, 520] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "c984b10dbf5fd02fee874334bffc7e3f645cbbfc04879df9640339d8e6f4351a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-span-between-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a window [540, 120, 1040, 520] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "929bb3e54f44381efffb199e0d9f80feae3d00fa3d9adbaca1537a4f190cd043",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-span-wide-cap-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a window [1058, 120, 1558, 520] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "d40c06ef4f410d6c8db872ff23e8009b2d1415d0ee4fd38f68397fafbca65ecd",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-tail-short-thin-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a window [15, 70, 415, 390] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "dfbbe878b56a3fd46b969d962d5eba162f3022dd63e5520ac99a08ce27b802c8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-tail-between-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a window [436, 70, 836, 390] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "e93064bf5439587522c0e3a455dc8a92d994b1f136545f0afae3944fd5bfee5c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-tail-long-thick-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a window [857, 70, 1257, 390] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "ad9f7d133c67e5063087fbabaa8cd0d1659f83a22c7188826e497b3ef5e64e34",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-carriage-hangs-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a window [15, 494, 415, 814] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "8d59b19eac5ed03d683d8a302d5437f05593c3d7aec24fe48e75a1f7fc462101",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-carriage-straight-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a window [436, 494, 836, 814] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "2493e42bcaa069a4f4e1c237d605531340b994a156845ef1e8c97271138a6e6d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-carriage-curls-up-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a window [857, 494, 1257, 814] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "8bfd3fe3c1c667b5a8daa850541775e86219e9ea978d41f58cc917b89e0fc022",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-claws-round-feet-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a window [20, 78, 400, 382] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
+  "sha256": "c25ec30cb27d3d97e11bd6f0f067c344d537ca3d924968938a2d16b691fed639",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-claws-pads-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a window [441, 78, 821, 382] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
+  "sha256": "b259a0376cd30caea83dd6a3136e0599c873a89d84629003223e6a94284da331",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-claws-digging-wedges-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a window [862, 78, 1242, 382] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
+  "sha256": "9d468e91316a863824472fa95bb477b5b9403bef315f478f16ad32a27bfbb530",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-scales-few-fine-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a window [20, 452, 400, 756] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
+  "sha256": "54a2095019103f49b1b39596967b22761ba020ae732185dbb82f5b4517e2f5e8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-scales-between-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a window [441, 452, 821, 756] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
+  "sha256": "95df38361a6aa6edd136ebc57856186579cde82ed13e39f9662ede26ea891d26",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S03-scales-many-coarse-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a window [862, 452, 1242, 756] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
+  "sha256": "df1129895b346f38d551e02a9f1fc9bd314956eddce3ad27c2669fbd5c38e1b5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-flecks-bare-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a window [5, 40, 405, 360] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "06aad88884b7e8af4e737ebfb1166b2d88ad08158f5778a192a7e6e53c2423e0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-flecks-spots-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a window [426, 40, 826, 360] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "61b875f332cd0431a06bb556981933a6a3bb3dc11a8c89de60a89affd5b978e4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-fluff-short-straight-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a window [5, 464, 405, 784] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "74d250a1bccc1de3f30b5e675a497fad4d78c4e73b3210df333db1e24df3117a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S02-fluff-long-swept-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a window [426, 464, 826, 784] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "064adf8e5bf91f6cca320dc38c3d450c86fc644d9e57b48fcfe4ccd3d08e1ece",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S04-stripes-faint-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/floor/S04/stripes/stripes-sheet window [60, 133, 240, 277] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "43ff12bff6d0e301192df2a9ed7f80c32c7e8a4a1a1392c0d3986d2318dda27c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S04-stripes-between-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/floor/S04/stripes/stripes-sheet window [364, 133, 544, 277] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "ee64951feb280bf9bdc1bf4aafdf663b1eb8fafbf8ad4013c96d41108c8cbe8a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
+ },
+ "trait-S04-stripes-bold-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "source/raw/floor/S04/stripes/stripes-sheet window [668, 133, 848, 277] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
+  "sha256": "aae75476f9a61b9a9400b01787fed2510f1477540e3167184f8b4632307e0470",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-63)"
  }
 }
