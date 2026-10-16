@@ -114,7 +114,7 @@ Everything else is navigation or a payoff: going to a screen, opening the bay, o
 5. **Naming is a choice, not a default.** The hatch panel offers the suggested name beside "choose another". It is never accepted by a bare ✓ on a line the player didn't read.
 6. **Payoffs keep their ceremony, but give control back.** Opening the bay and hatching are the game's rewards and should feel like events. While one plays, ✓ skips to its end instead of being eaten.
 
-With 1–6 the same loop is **8 ✓ presses: 5 decisions, each with its consequence on screen, 2 payoffs and 1 navigation.** It's fewer presses, and each one is a press the player means.
+With 1–6 the same loop is **11 ✓ presses** (corrected: an earlier draft said 8, which was miscounted). Points 1 and 2 remove two navigation presses. The Grow panel adds one, and its confirming choice also picks where to go next ("Grow it and watch", "Grow it, back to the pods"), so the fork costs no further press. The hatch panel's name choice takes the place of "Keep Moss". The count barely moves; what changes is that every decision shows its consequence before the press, and the player chooses every landing.
 
 ### How the player should choose navigation and actions
 
@@ -133,11 +133,14 @@ With 1–6 the same loop is **8 ✓ presses: 5 decisions, each with its conseque
 - **Jumps.** The game designer would turn every jump into a fork with named choices (after Grow: watch it, or go on; after the hatch: meet it, or go Home). UI/UX would offer a fork only where the paths lead to different games (after Identify: read, shape, or return). Elsewhere it keeps the jump, but the panel's "Next" names it beforehand and a 2-second arrival line names it after, with ← back to where the jump came from.
   - **The difference:** a fork is one press more and the player chooses the room; the arrival line costs nothing, but the room is chosen for them.
   - **UI/UX's view:** test both on the Grow → Incubator jump first, the one the owner is most likely to have felt.
+  - **The game designer's view:** after a commitment the fork costs no press, because the panel's confirming choice names the room ("Grow it and watch"). It costs one only after the hatch. The game designer agrees with the arrival line for Home's "what needs you" ✓, which is a jump by nature, and agrees to the test.
+- **Where the verb lives.** UI/UX keeps the bottom line as the one place that says what ✓ does, and makes it name the destination. The game designer agrees, and would also put the next step where the eye already is (the slip, the card, the panel), because the bottom line is at the screen's edge. This is a small difference, for the screen specs to settle.
+- **The count.** The game designer's first draft said 8 presses; that was miscounted. With both sets of changes the main loop is **11** (UI/UX's section says "about 9", from that draft): two fewer navigation presses, one more for the Grow panel.
 
 **Recommendation for the owner (3 lines).**
-1. Yes to bigger screens, but only for the few real decisions (Grow it, Cross them, Return to the wild, a large Grow now, spending a sitting). Each shows its consequence and named choices, including where to go next; every other press gets fewer screens, not more.
-2. Cut the ceremony: Home's ✓ does what its line says needs you, one verb means one act ("Open" only for the bay and the bud), and no jump lands the player somewhere they didn't choose.
-3. Show every choice's options, cost and outcome before the press, on the page or in the panel (the work list below). The loop drops from 12 ✓ presses to about 8, and each one is a decision the player means.
+1. Yes to bigger screens, but only for the few real decisions (Grow it, Cross them, Return to the wild, the Probe upgrade, a large Grow now, spending a sitting). Each shows its consequence and named choices, including where to go next; every other press gets fewer screens, not more.
+2. Cut the ceremony: Home's ✓ does what its line says needs you, one verb means one act ("Open" only for the bay and the bud), ✓ never changes meaning on the same object, and no jump lands the player anywhere unannounced (a fork or an arrival line; test both on Grow → Incubator first).
+3. Show every choice's options, cost and outcome before the press, on the page or in the panel (the work list below). The loop goes from 12 ✓ presses to 11. The count barely changes; what changes is that each press is a decision the player means.
 
 ---
 
