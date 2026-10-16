@@ -1861,7 +1861,7 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 3. **The Mend module**, top right.
 4. **The Upgrade module** under it.
 
-Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 × 432), the tools zone with the plates' box under it (368, 96, 208 × 352; the plates' box 368, 464, 208 × 64, axis x 472) and the column (624, 96, 312 wide). The margins are 18 to 19, the modules 48 apart, and one bottom line on y 520 holds the cradle's ink, the Upgrade module and both strips (fix 2 rework, 2026-10-16).
+Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 × 432), the tools zone with the plates' box under it (368, 96, 208 × 352; the plates' box 368, 464, 208 × 64, axis x 472) and the column (624, 96, 312 wide). The margins are 18 to 19, the modules 48 apart, and one bottom line on y 520 holds the cradle's ink, the Upgrade module and both strips (the upright rework).
 
 ### 4. Art direction
 
