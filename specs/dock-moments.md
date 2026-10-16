@@ -25,7 +25,7 @@ t = 0 is the moment the Caddy senses the Companion seated. "Crosses" is what pas
 | 0.5–1.5 | Each crate mark on its HUD pulses once in turn | E-paper settles: "Companion home · 2 crates" with the crate icons | The ribbon "The Companion is home". The link light runs in from the bay's left edge ("from the Caddy") and the sealed crates slide into the bay, one per crate, in step with the Companion's pulses. A crate holding a new species glints (where, never what) | — |
 | 1.5–2.5 | A mibi coming home walks off the Companion's screen edge | — | The mibi walks in on the right and into the vivarium panel; one staying with the Companion curls up on the with-you bed, as today | The carry set: who is home, who stays out (already requested Take and Bring) |
 | 2.5–3.5 | The Shield plates refill | — | The Probe's plates refill: "two plates mended, free" (the dock's free mend, as today). The world turn's sun mark ticks if the world turned | The mend; the turn |
-| 3.5 | Stays on its home frame, charging | — | **The choice**, in the decision panel's row form (T-45): **✓ Open the bay** (the crate count, "free", "the pods go to the rack") or **Later** ("they stay in the bay while it is docked") | — |
+| 3.5 | Stays on its home frame, charging | — | **The choice**, in the decision panel's row form (T-45), picture-led: **✓ Open the bay** with its outcome drawn (the crates → the pods in the rack's wells) or **Later** (the crates stay → Home's Cargo module with its amber lamp) | — |
 
 **After the choice.**
 
@@ -39,7 +39,7 @@ t = 0 is the moment the Caddy senses the Companion seated. "Crosses" is what pas
 | **A haul, no new pod** | No glint. The choice is the same |
 | **A new pod** | The crate holding it glints from its slide-in. After the opening, the report's ✓ reads "Look at the new pod" (today's "See the new pod") |
 | **An empty trip** (no crates: the Companion came home without ending an expedition, or carried nothing) | No crates and no choice. The ribbon "The Companion is home", who came home, and the mend, then the arrival closes by itself at 2.5 s and the player is back where they were. The Caddy shows "Companion home · charging" |
-| **A broken Probe** (nothing came home; the pods dropped where it broke) | The ribbon says it straight: "The Companion is home. Nothing came back this time." The Probe panel shows the break mended free. Closes by itself |
+| **A broken Probe** (nothing came home; the pods dropped where it broke) | The same ribbon. The bay stays empty and the Probe's broken plates refill, so the pictures say what happened with no extra words. Closes by itself |
 | **A mibi coming home** (a Bring was asked) | Beat 1.5: it walks off the Companion and into the vivarium. The Companion's carried slot empties |
 | **A mibi leaving** (a Take was asked) | Beat 1.5, reversed: it walks out of the vivarium's edge on the Station and appears on the Companion, curling up beside the partner. The Station's with-you bed fills |
 | **The player is mid-decision** (a decision panel open, Create or Cross with an unpaid choice, the namer, the Sitting: today's list of screens that "stay where they are") | The arrival does not interrupt. A slim ribbon "The Companion is home" shows over the top bar for 2 s, and the arrival screen plays when the player leaves that screen |
@@ -68,13 +68,15 @@ A send-off, never a takeover. t = 0 is the Caddy sensing the lift.
 
 ![The Station's arrival screen](dock-moments/station-arrival.png)
 
-*dock-moments/station-arrival.png: wireframe, 1×, layout only, with its label printed inside the image (source: station-arrival.svg).*
+*dock-moments/station-arrival.png: wireframe, 1×, layout only, with its label printed inside the image (source: station-arrival.svg). The blue dashed notes are annotations, not on screen.*
+
+**Picture-led** (owner, 13:26: the panels lead with pictures and carry little text). The screen holds three pieces of text: the ribbon "The Companion is home", the two verbs "Open the bay" and "Later", and the bottom line. Everything else is a picture: the crates themselves, a star on the one holding a pod new to the player, the mibi coming home, the Probe with its plates refilling, and each choice's outcome drawn as crates → pods in the rack, or crates staying → Home's Cargo lamp.
 
 - **It is the bay.** It is drawn on Cargo's stage, with the bay as today. The owner's "pop-up" is the bay rising over the screen at the dock, so the arrival is not a new room; it is Cargo coming to the player.
 - **It shows what came back and who came home:** the sealed crates (count, and a glint for a new species), the mibis coming home or leaving, and the Probe's mend. It never shows what is inside a crate. Opening is the payoff, and the player chooses it.
 - **The hand-over.** The choice uses the decision panel's row form (T-45): two named rows, each with its cost and outcome. ✓ Open the bay leads into today's opening, then its report, then Pods. Later goes back to where the player was.
 - **Skip.** Any key during the show jumps to the choice. During the opening, ✓ skips to the report (ceremony cut 4 in specs/station-decision-points.md).
-- **Words.** The ribbon "The Companion is home" (20 px). The panels' headings are 16 px, the choice rows 20 and 16 px. Counts are spelled out; no digits but beside an icon.
+- **Words.** Only the ribbon (20 px), the two verbs (20 px) and the bottom line (16 px; "two crates home"). There are no headings and no captions. Counts are shown as the crates themselves, and in the bottom line spelled out.
 
 ## 4. What each device can do: today, and what needs new hardware or firmware
 
@@ -90,6 +92,6 @@ For the architect. "Reference hardware" is design/devices.md's.
 
 ## 5. Needs
 
-- **UI/UX.** The arrival screen's layout on Cargo's stage (the ribbon, the crates, who came home, the Probe, the choice rows). The interrupt rule: which screens defer the arrival, which matches today's "stay where they are" list. The send-off's motion in the frame and on the with-you bed. The new strings at their longest: "The Companion is home", "Nothing came back this time", "the crates went out with the Companion", "Moss goes at the next dock", and the Caddy's two lines.
+- **UI/UX.** The arrival screen's layout on Cargo's stage, picture-led (the ribbon, the crates, who came home, the Probe, the choice rows with their drawn outcomes; no headings or captions). The interrupt rule: which screens defer the arrival, which matches today's "stay where they are" list. The send-off's motion in the frame and on the with-you bed. The new strings at their longest: "The Companion is home", "two crates home", "the crates went out with the Companion", "Moss goes at the next dock", and the Caddy's two lines.
 - **Art (AD).** The link light into the bay. The sealed crates' slide-in, using today's crates. The with-you bed's sleepers waking and walking out (Home and Idle). The Companion's "home" and "Off we go" frames in HiBit. The Caddy's four-gray crate and Companion icons.
 - **Build.** A seated and lifted event on the play page's Dock control, driving all three frames at once. The Station's arrival state on Cargo with the choice. The Companion's crate marks clearing on each confirmation. The Caddy's view lines. Later, for the architect: the Caddy service's seated and lifted events, and the presence sensing.

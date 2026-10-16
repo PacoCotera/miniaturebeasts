@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600" font-family="Inter, Helvetica, Arial, sans-serif">
-  <!-- The Station's arrival screen at about 3.5 s: the show has played, the choice is up. 1x wireframe, layout only. -->
+  <!-- The Station's arrival screen at about 3.5 s, picture-led. 1x wireframe, layout only. Dashed blue notes are annotations, not on screen. -->
   <rect width="1024" height="600" fill="#1d1f24"/>
-  <!-- top bar: the Companion glyph lit (docked), its faces back -->
   <rect x="0" y="0" width="1024" height="40" fill="#23262d"/>
   <text x="20" y="26" font-size="20" fill="#e9e2d0">Arrival</text>
   <text x="430" y="26" font-size="16" fill="#e9e2d0">⚡ 4   ◆ 3   ❀ 6</text>
@@ -9,60 +8,70 @@
   <circle cx="812" cy="20" r="12" fill="#3a3f44" stroke="#5fb3a6" stroke-width="2"/>
   <text x="980" y="26" font-size="16" fill="#e9e2d0">☀ 6</text>
 
-  <!-- stage: the bay, as Cargo, with the link from the Caddy -->
   <rect x="0" y="40" width="1024" height="522" fill="#7d8f7a"/>
-  <rect x="16" y="48" width="992" height="320" rx="10" fill="#3b3631" stroke="#2a2622" stroke-width="4"/>
-  <!-- the ribbon -->
+  <!-- the bay -->
+  <rect x="16" y="48" width="992" height="336" rx="10" fill="#3b3631" stroke="#2a2622" stroke-width="4"/>
+  <!-- the one line of words on the stage -->
   <rect x="312" y="60" width="400" height="40" rx="6" fill="#e6dcc4"/>
   <text x="512" y="87" font-size="20" fill="#2f2a22" text-anchor="middle">The Companion is home</text>
-  <!-- the link light: where the crates came through -->
-  <path d="M16 236 L120 236" stroke="#f3c27a" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
-  <text x="24" y="226" font-size="11" fill="#e9e2d0">from the Caddy</text>
-  <!-- crates, sealed, slid in -->
-  <rect x="150" y="196" width="150" height="110" rx="10" fill="#d8b23a" stroke="#2a2622" stroke-width="3"/>
-  <rect x="210" y="184" width="30" height="20" rx="3" fill="#e8743b"/>
-  <text x="225" y="262" font-size="13" fill="#2f2a22" text-anchor="middle">sealed crate</text>
-  <rect x="320" y="196" width="150" height="110" rx="10" fill="#d8b23a" stroke="#2a2622" stroke-width="3"/>
-  <rect x="380" y="184" width="30" height="20" rx="3" fill="#e8743b"/>
-  <path d="M452 186 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 l12 -5 z" fill="#fff4c8"/>
-  <text x="395" y="262" font-size="13" fill="#2f2a22" text-anchor="middle">sealed crate</text>
-  <text x="395" y="280" font-size="11" fill="#2f2a22" text-anchor="middle">glint: a pod new to you</text>
-  <!-- who came home -->
-  <rect x="560" y="128" width="200" height="200" rx="10" fill="#4f6a3e" stroke="#9aa79a" stroke-width="2"/>
-  <ellipse cx="660" cy="258" rx="56" ry="40" fill="#3a3a40"/>
-  <text x="660" y="262" font-size="13" fill="#e9e2d0" text-anchor="middle">Moss</text>
-  <text x="660" y="152" font-size="14" fill="#e9e2d0" text-anchor="middle">Moss comes home</text>
-  <text x="660" y="312" font-size="11" fill="#e9e2d0" text-anchor="middle">walks into the vivarium</text>
-  <!-- the Probe, mended at the dock -->
-  <rect x="784" y="128" width="200" height="200" rx="10" fill="#3a3f44" stroke="#9aa79a" stroke-width="2"/>
-  <text x="884" y="152" font-size="14" fill="#e9e2d0" text-anchor="middle">The Probe</text>
-  <rect x="824" y="190" width="28" height="56" rx="4" fill="#e9e2d0"/>
-  <rect x="870" y="190" width="28" height="56" rx="4" fill="#e9e2d0"/>
-  <rect x="916" y="190" width="28" height="56" rx="4" fill="none" stroke="#e9e2d0" stroke-width="2" stroke-dasharray="4 3"/>
-  <text x="884" y="278" font-size="13" fill="#e9e2d0" text-anchor="middle">two plates mended, free</text>
 
-  <!-- the choice: the decision panel's row form -->
-  <rect x="192" y="384" width="640" height="160" rx="10" fill="#2f3236" stroke="#9aa79a" stroke-width="2"/>
-  <rect x="208" y="400" width="608" height="56" rx="8" fill="#3a3f44" stroke="#f0e6c8" stroke-width="3"/>
-  <text x="228" y="434" font-size="20" fill="#e8743b">✓ Open the bay</text>
-  <text x="440" y="434" font-size="16" fill="#cfc6b4">two crates · free · the pods go to the rack</text>
-  <rect x="208" y="468" width="608" height="56" rx="8" fill="#3a3f44"/>
-  <text x="228" y="502" font-size="20" fill="#e9e2d0">Later</text>
-  <text x="440" y="502" font-size="16" fill="#cfc6b4">they stay in the bay while it is docked</text>
+  <!-- the link light from the Caddy into the bay -->
+  <path d="M16 260 L132 260" stroke="#f3c27a" stroke-width="8" stroke-linecap="round" opacity="0.85"/>
+  <!-- the crates, large, sealed -->
+  <rect x="148" y="176" width="184" height="152" rx="12" fill="#d8b23a" stroke="#2a2622" stroke-width="3"/>
+  <rect x="222" y="162" width="36" height="24" rx="4" fill="#e8743b"/>
+  <rect x="352" y="176" width="184" height="152" rx="12" fill="#d8b23a" stroke="#2a2622" stroke-width="3"/>
+  <rect x="426" y="162" width="36" height="24" rx="4" fill="#e8743b"/>
+  <path d="M514 150 l7 16 l16 7 l-16 7 l-7 16 l-7 -16 l-16 -7 l16 -7 z" fill="#fff4c8"/>
+  <!-- who came home: the mibi itself, stepping into the vivarium -->
+  <rect x="584" y="128" width="168" height="216" rx="10" fill="#4f6a3e"/>
+  <ellipse cx="668" cy="300" rx="62" ry="10" fill="#2b3420" opacity="0.6"/>
+  <ellipse cx="668" cy="262" rx="54" ry="40" fill="#3a3a40"/>
+  <circle cx="650" cy="250" r="6" fill="#e9e2d0"/><circle cx="676" cy="250" r="6" fill="#e9e2d0"/>
+  <!-- the Probe and its plates, refilled -->
+  <rect x="784" y="128" width="208" height="216" rx="10" fill="#3a3f44"/>
+  <rect x="868" y="148" width="40" height="96" rx="12" fill="#9aa79a"/>
+  <rect x="826" y="270" width="32" height="56" rx="4" fill="#e9e2d0"/>
+  <rect x="872" y="270" width="32" height="56" rx="4" fill="#e9e2d0"/>
+  <rect x="918" y="270" width="32" height="56" rx="4" fill="none" stroke="#e9e2d0" stroke-width="2" stroke-dasharray="4 3"/>
 
-  <!-- bottom line -->
+  <!-- the choice: two picture rows -->
+  <rect x="192" y="396" width="640" height="152" rx="10" fill="#2f3236" stroke="#9aa79a" stroke-width="2"/>
+  <rect x="208" y="408" width="608" height="60" rx="8" fill="#3a3f44" stroke="#f0e6c8" stroke-width="3"/>
+  <text x="228" y="445" font-size="20" fill="#e8743b">✓ Open the bay</text>
+  <rect x="520" y="420" width="44" height="36" rx="6" fill="#d8b23a"/><rect x="572" y="420" width="44" height="36" rx="6" fill="#d8b23a"/>
+  <text x="640" y="446" font-size="24" fill="#e9e2d0">→</text>
+  <circle cx="700" cy="438" r="16" fill="#5b7790"/><circle cx="740" cy="438" r="16" fill="#5b7790"/><circle cx="780" cy="438" r="16" fill="none" stroke="#9aa0a8" stroke-width="2"/>
+  <rect x="208" y="476" width="608" height="60" rx="8" fill="#3a3f44"/>
+  <text x="228" y="513" font-size="20" fill="#e9e2d0">Later</text>
+  <rect x="520" y="488" width="44" height="36" rx="6" fill="#d8b23a" opacity="0.6"/><rect x="572" y="488" width="44" height="36" rx="6" fill="#d8b23a" opacity="0.6"/>
+  <text x="640" y="514" font-size="24" fill="#e9e2d0">↺</text>
+  <rect x="690" y="490" width="100" height="32" rx="6" fill="#9aa79a"/><circle cx="776" cy="498" r="5" fill="#e8b04a"/>
+
   <rect x="0" y="562" width="1024" height="38" fill="#23262d"/>
   <text x="20" y="587" font-size="16" fill="#e8743b">✓ Open the bay</text>
-  <text x="430" y="587" font-size="16" fill="#9aa0a8">two crates, a pod new to you</text>
+  <text x="430" y="587" font-size="16" fill="#9aa0a8">two crates home</text>
   <text x="1004" y="587" font-size="16" fill="#e9e2d0" text-anchor="end">← Later</text>
 
+  <!-- annotations: not on screen -->
+  <g font-size="11" fill="#9cc8ff">
+    <rect x="148" y="332" width="388" height="40" fill="none" stroke="#9cc8ff" stroke-dasharray="4 3"/>
+    <text x="156" y="348">note: one crate per crate home; the star = a pod</text>
+    <text x="156" y="364">new to you (where, never what)</text>
+    <text x="588" y="140">note: the mibi coming home</text>
+    <text x="788" y="140">note: the Probe, plates refilled</text>
+    <text x="24" y="250">note: from the Caddy</text>
+    <text x="526" y="474" font-size="10">note: crates → pods in the rack</text>
+    <text x="526" y="544" font-size="10">note: crates stay → amber lamp on Home's Cargo</text>
+  </g>
+
   <!-- the label, printed inside the image -->
-  <rect x="16" y="384" width="164" height="160" rx="6" fill="#1d1f24" opacity="0.9"/>
-  <text x="26" y="408" font-size="13" fill="#f0e6c8" font-weight="bold">WIREFRAME, 1×</text>
-  <text x="26" y="428" font-size="12" fill="#f0e6c8">layout only, not art</text>
-  <text x="26" y="452" font-size="12" fill="#f0e6c8">The Station's arrival</text>
-  <text x="26" y="470" font-size="12" fill="#f0e6c8">screen at 3.5 s: the</text>
-  <text x="26" y="488" font-size="12" fill="#f0e6c8">show has played, the</text>
-  <text x="26" y="506" font-size="12" fill="#f0e6c8">choice is up</text>
-  <text x="26" y="532" font-size="11" fill="#b9b0a0">T-20261016-46</text>
+  <rect x="16" y="396" width="164" height="152" rx="6" fill="#1d1f24" opacity="0.92"/>
+  <text x="26" y="420" font-size="13" fill="#f0e6c8" font-weight="bold">WIREFRAME, 1×</text>
+  <text x="26" y="440" font-size="12" fill="#f0e6c8">layout only, not art</text>
+  <text x="26" y="464" font-size="12" fill="#f0e6c8">Station arrival screen</text>
+  <text x="26" y="482" font-size="12" fill="#f0e6c8">at 3.5 s, picture-led</text>
+  <text x="26" y="506" font-size="11" fill="#9cc8ff">blue dashed: notes,</text>
+  <text x="26" y="522" font-size="11" fill="#9cc8ff">not on screen</text>
+  <text x="26" y="540" font-size="11" fill="#b9b0a0">T-20261016-46</text>
 </svg>
