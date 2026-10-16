@@ -40,6 +40,7 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   for (const m of ["door", "portrait", "cross", "wild"]) {
     const rect = R[m].rect, lifted = cur === m ? R[m].lift ?? 2 : 0, ps = got(m + ".plate", "painted").filter((r) => r.rect[2] === rect[2] && r.rect[3] === rect[3]);
     must(ps.length >= 1 && ps.every((r) => eq(r.rect, [rect[0], rect[1] - lifted, rect[2], rect[3]]) || (lifted && eq(r.rect, rect))), `the ${m} module is not at ${rect} (lifted ${lifted})`);
+    if (cur === m && !open) { const rings = got("focus"), want = [rect[0] - 5, rect[1] - lifted - 5, rect[2] + 10, rect[3] + 10]; must(rings.length === 0 || (rings.length === 1 && eq(rings[0].rect, want)), `the ${m} ring ${rings[0]?.rect} is not ${want} (fix 14: the module as drawn grown by 5)`); }
     for (const r of regions.filter((x) => x.id === m && x.rect[2] > 0 && x.layer !== "chrome")) must(within(r.rect, [rect[0], rect[1] - 2, rect[2], rect[3] + 2]), `the ${m} module's ${r.layer} ${r.rect} leaves it`);
     if (m === "portrait") {   // the frame (art) at rect + frame.at and its size; the picture (painted) at rect + frame.at + frame.picture.at and its size (ruling (c)), both lifted with the ring
       const F = R.portrait.frame, P = F.picture;

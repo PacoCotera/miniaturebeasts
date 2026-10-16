@@ -144,7 +144,7 @@ bands.
 | `deepTeal` | `#2a2a2d` | Dark rubber: bumpers, hoses, gaskets, crate bodies | `void` · `bar` | Frame 1: the corner bumpers; frame 3: the hoses |
 | `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
 | `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
-| `focus` | `#ffe6ad` | The focus ring, warm cream; with the amber lamp and Confirm's orange, one of the panels' only warm marks | `sand` · `white` | Not on the board: the focus ring |
+| `focus` | `#ffe6ad` | The focus ring's cream, between `void` keys; with the amber lamp and Confirm's orange, one of the panels' only warm marks | `sand` · `white` | Not on the board: the focus ring |
 
 <img src="ui-kit/station-palette-1x.png" width="950" alt="The Station palette as a swatch strip, 1×">
 

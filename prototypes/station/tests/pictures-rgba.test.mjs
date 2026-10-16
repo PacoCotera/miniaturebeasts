@@ -433,3 +433,18 @@ test("Create founder A (interim): with the species' placed adult master the foun
   assert.deepEqual(a(ghost), a(clear), "nothing read: the body alone is greyed, the alpha is unchanged"); assert.notDeepEqual([...ghost.rgba()], [...d]);
   assert.equal(founderArt(fr, g, all, w, h, painted), founderArt(fr, g, all, w, h, painted), "cached per picture");
 });
+
+// fix 14 (the architect's ruling): grading copies alpha and footOf reads alpha only, so a graded copy of a placed master measures as the master does, at every light
+describe("a graded creature picture has its master's footprint", () => {
+  test("a placed juvenile master of S01 and of S05, at dawn, dusk and night", async () => {
+    const { readFileSync, readdirSync } = await import("node:fs"), { decodePNG } = await import("../../ui/png.mjs"), { grade } = await import("../src/light-grade.mjs"), { footOf } = await import("../src/moving.mjs");
+    const root = new URL("../../ui/assets/masters/", import.meta.url), idx = JSON.parse(readFileSync(new URL("index.json", root), "utf8")).masters; let n = 0;
+    for (const sp of ["S01", "S05"]) {
+      const id = Object.keys(idx).find((k) => new RegExp(`^mibi-juvenile-${sp}-\\d+x\\d+$`).test(k)); if (!id) continue;
+      const png = decodePNG(readFileSync(new URL(idx[id].file, root))), pic = { w: png.width, h: png.height, rgba: () => png.data }, day = footOf(`mibi:t${sp}:juvenile:${pic.w}x${pic.h}`, pic, () => null);
+      assert.ok(day, `${id} has a footprint`);
+      for (const light of ["dawn", "dusk", "night"]) { const g = grade(pic, light); assert.deepEqual(footOf(`mibi:t${sp}:juvenile:${pic.w}x${pic.h}:${light}`, { w: g.w, h: g.h, rgba: () => g.rgba() }, () => null), day, `${sp} at ${light}`); n++; }
+    }
+    assert.ok(n >= 3, "graded copies were measured: " + n);
+  });
+});

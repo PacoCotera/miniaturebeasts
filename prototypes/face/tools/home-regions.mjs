@@ -26,6 +26,10 @@ export function departures(log, spec, frame, cur = "room") {
     must(within(panel[0]?.rect ?? [0, 0, 0, 0], box), `${m}'s panel leaves its box`);
   }
   for (const r of got("focus")) must(within(r.rect, frame.regions.stage.rect), `the ring ${r.rect} leaves the stage`);
+  // fix 14, rule 5: a chrome target's ring is the object as drawn (lifted where it lifts) grown by 5 (a resident's is its footprint, checked by the words and the vivarium tests)
+  { const grow = (b) => [b[0] - 5, b[1] - 5, b[2] + 10, b[3] + 10], rings = got("focus"); let want = null;
+    if (cur === "vivarium") want = grow(R.bezel.rect); else if (cur === "knob") want = grow(R.knob.states.focused.rect); else if (MODULES.includes(cur)) want = grow([R[cur].rect[0], R[cur].rect[1] - lift, R[cur].rect[2], R[cur].rect[3]]);
+    if (want && rings.length) must(rings.length === 1 && eq(rings[0].rect, want), `the ring ${rings[0]?.rect} is not ${want}: the object as drawn grown by 5`); }
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;
 }
