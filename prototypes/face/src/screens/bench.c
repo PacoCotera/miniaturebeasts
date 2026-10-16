@@ -90,6 +90,18 @@ static void build_plates(int docked, const char *cur) {
   }
 }
 
+/* ---- the Shield block's words (specs/station-probe-purpose.md): "Shield" over the plates and the reason under them, centred on the axis, in both states; the same text word the modules' words use ---- */
+static void shield_text(const char *region, const char *id, const char *text, int cx, int y, int px, const char *col) {
+  if (!*text) return; int w = v_measure(text, px); v_region(region, LAYER_TYPE); v_text(id, text, cx - v_half(w), y, w, px, col);
+}
+static void build_shield(void) {
+  char t[96], col[24]; int axis = bi("regions.strip.axis", 472), r[4];
+  brect("regions.shieldWord.rect", r); int px = bi("regions.shieldWord.px", 16); spec_str(S, "strings.shield", t, sizeof t); spec_str(S, "regions.shieldWord.colour", col, sizeof col);
+  shield_text("shieldWord", "shield.word", t, axis, r[1] + 5, px, col);   /* the module word's zone: a 24 px zone, the cap top 5 below its top */
+  brect("regions.shieldLine.rect", r); px = bi("regions.shieldLine.px", 16); int pitch = bi("regions.shieldLine.pitch", 20); spec_str(S, "regions.shieldLine.colour", col, sizeof col);
+  for (int i = 0; i < 2; i++) { char id[24]; snprintf(id, sizeof id, "shield.line.%d", i); spec_str(S, v_fmt("strings.shieldLine.%d", i), t, sizeof t); shield_text("shieldLine", id, t, axis, bi(v_fmt("regions.shieldLine.lineTops.%d", i), r[1] + pitch * i) + v_fdiv(pitch - v_cap(px), 2), px, col); }
+}
+
 /* ---- the Mend module: the switch (track, knob), the dock mark and the plates it leaves whole ---- */
 static void build_switch(const char *cur, int cnt_cap) {
   int r[4]; brect("regions.switch.rect", r); int dy = -lift_of("switch", cur), mx = r[0], my = r[1] + dy;
@@ -146,6 +158,11 @@ static void build_slot(const char *cur) {
   for (int i = 0; i < n; i++) add_piece(v_fmt("slot.plate.%d", i), "plates", ax + i * pitch, ay, bk("regions.slot.adds.plates.icon", 0), bk("regions.slot.adds.plates.icon", 1), i >= n - nw, level);
   add_piece("slot.reach", "reach", mx + bk("regions.slot.adds.reach.at", 0), my + bk("regions.slot.adds.reach.at", 1), bk("regions.slot.adds.reach.size", 0), bk("regions.slot.adds.reach.size", 1), 1, level);
   add_piece("slot.deep", "deep", mx + bk("regions.slot.adds.deep.at", 0), my + bk("regions.slot.adds.deep.at", 1), bk("regions.slot.adds.deep.size", 0), bk("regions.slot.adds.deep.size", 1), 1, level);
+  /* the dials' captions: one word each under its dial, centred on it (specs/station-probe-purpose.md); they ride the module's lift */
+  { static const char *K[2] = { "reachWord", "deepWord" }, *W[2] = { "reach", "deep" };
+    for (int i = 0; i < 2; i++) { char t[40], col[24], id[24]; spec_str(S, v_fmt("strings.addCaptions.%s", W[i]), t, sizeof t); spec_str(S, v_fmt("regions.slot.adds.%s.colour", K[i]), col, sizeof col);
+      int px = bi(v_fmt("regions.slot.adds.%s.px", K[i]), 16), cx = mx + bk(v_fmt("regions.slot.adds.%s.at", K[i]), 0) + bk(v_fmt("regions.slot.adds.%s.size", K[i]), 0) / 2, ty = my + bk(v_fmt("regions.slot.adds.%s.at", K[i]), 1) + v_fdiv(bk(v_fmt("regions.slot.adds.%s.size", K[i]), 1) - v_cap(px), 2);
+      snprintf(id, sizeof id, "slot.%s", K[i]); shield_text("slot", id, t, cx, ty, px, col); } }
 }
 
 /* ---- the targets as the words drew them, in the props' order ---- */
@@ -178,7 +195,7 @@ void bench_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   int docked = strcmp(v_pstr("state"), "docked") == 0;
   int cap = longest(NULL); { anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) cap = spec_len(S, "regions.plates.places.1"); }   /* the meaning picture's count cuts 3 → 4 at 300 */
-  build_stage(); build_cradle(); build_strip(); build_plates(docked, cur); build_switch(cur, cap); build_slot(cur); build_ring(cur);
+  build_stage(); build_cradle(); build_strip(); build_plates(docked, cur); build_shield(); build_switch(cur, cap); build_slot(cur); build_ring(cur);
 }
 
 /* a key on the bench: ✓ ← and the room keys say an intent on the focused target; the pad moves the ring by bench.json focus.graph (the hold, in screens_key, lets only a room key through) */

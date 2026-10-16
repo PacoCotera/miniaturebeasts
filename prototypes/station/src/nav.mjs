@@ -26,7 +26,9 @@ export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium"
 export const isBuilt = (screen) => BUILT.includes(screen);
 // A door is open when the screen it leads to is built: cross and sitting open when listed in BUILT; the species' Book when a "book" is bound. A shut door is shut in place (no ✓ cap, its screen's shut line).
 const DOOR_SCREEN = { cross: "cross", sitting: "sitting", book: "book" };
-export const doorOpen = (id) => !!DOOR_SCREEN[id] && isBuilt(DOOR_SCREEN[id]);
+const TEST_OPEN = new Set();   // the test harness only: a door held open so a scene behind a shut door (the Portrait module) can still be captured
+export const testOpenDoors = (ids) => { TEST_OPEN.clear(); for (const id of ids || []) TEST_OPEN.add(id); };
+export const doorOpen = (id) => !!DOOR_SCREEN[id] && (isBuilt(DOOR_SCREEN[id]) || TEST_OPEN.has(id));
 
 // --- the room keys -----------------------------------------------------------------------------------------------------------------
 // Each opens the top of its room from anywhere, even from inside it. `leaving` lists the places whose unpaid choices a room key drops.

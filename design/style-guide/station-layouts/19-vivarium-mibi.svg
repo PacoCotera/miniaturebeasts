@@ -13,8 +13,8 @@
 <ellipse cx="296" cy="392" rx="160" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
 <text x="152" y="112" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">One mibi up close: the Vivarium's closest level.</text>
 <text x="152" y="125" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Reads: the mibi, its name, the card, the modules,</text>
-<text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the bays, the stamp. The heart: bonded. Two filled</text>
-<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches: its skill (none drawn at zero, never a</text>
+<text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the bays, the stamp. The bond panel: the heart, bonded. Two</text>
+<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches, skill (none: "no skill yet", never a</text>
 <text x="152" y="164" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">figure). ✓ on the mibi: Greet. ✓ on the tag: Rename,</text>
 <text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the namer over the right column (592,48 416×424).</text>
 <text x="152" y="190" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">← Vivarium: the whole, the ring on this mibi.</text>
@@ -25,17 +25,11 @@
 <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="612" y="81" font-size="16" fill="#222">your Loika, adult</text>
-<rect x="740.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
-<rect x="832.5" y="64.5" width="23" height="23" fill="#e36a5c" stroke="#8a2b22" stroke-width="1"/>
 <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="612" y="105" font-size="16" fill="#6b6880">from the rock field</text>
 <text x="612" y="129" font-size="16" fill="#6b6880">remembers the pond edge</text>
 <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="612" y="177" font-size="16" fill="#222">3MB W21 1BB</text>
-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
-<rect x="816.5" y="160.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
-<rect x="840.5" y="160.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
 <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
 <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
 <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
@@ -47,7 +41,7 @@
 <rect x="712.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
 <rect x="752.5" y="200.5" width="39" height="39" fill="#f3f4f5" stroke="#444" stroke-width="1"/>
 <rect x="760.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
+<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
 <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
 <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
@@ -60,15 +54,16 @@
 <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
 <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="880.5" y="292.5" width="23" height="23" fill="#e36a5c" stroke="#8a2b22" stroke-width="1"/>
+<text x="908" y="309" font-size="16" fill="#222">bonded</text>
+<rect x="880.5" y="324.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
+<rect x="904.5" y="324.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
+<text x="924" y="341" font-size="16" fill="#222">skill</text>
+<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
 <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
-<circle cx="620" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
-<circle cx="652" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
-<circle cx="684" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
+<text x="608" y="440" font-size="16" fill="#222">grown</text>
+<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
 <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
 <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>

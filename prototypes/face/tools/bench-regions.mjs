@@ -53,6 +53,9 @@ export function departures(log, spec, props, cur) {
     const want = union(Object.entries(E.parts).filter(([k, v]) => keys(k) && v[2]).map(([, v]) => v)); must(eq(pic(mod) ?? [], want ?? []), `${mod}'s pictures ${pic(mod)} are not the union of their places ${want}`);
     must(within(panel, [0, 0, 1024, 600]), `${mod}'s panel leaves the screen`);
   }
+  // the Shield block's words (specs/station-probe-purpose.md), in both states: "Shield" and the two lines of the reason, centred on the axis 472, and the dials' captions under the dials
+  { const type = log.type ?? [], tx = (region, text) => type.some((q) => q.region === region && q.text === text), St = spec.strings;
+    must(tx("shieldWord", St.shield), `the word "${St.shield}" is drawn`); for (const l of St.shieldLine) must(tx("shieldLine", l), `the line "${l}" is drawn`); for (const w of ["reach", "deep"]) must(tx("slot", St.addCaptions[w]), `the caption "${St.addCaptions[w]}" is drawn`); }
   const rings = got("focus"); must(rings.length === 1 && !!E.ring, `one ring on the focused target (${rings.length} drawn, ${cur})`); if (rings.length === 1 && E.ring) must(eq(rings[0].rect, E.ring), `the ring ${rings[0].rect} is not ${E.ring}`);
   return out;
 }

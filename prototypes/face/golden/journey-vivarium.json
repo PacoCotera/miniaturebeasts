@@ -376,23 +376,6 @@
      {
       "t": "focus",
       "screen": "habitat",
-      "target": "species"
-     }
-    ],
-    "screen": "habitat",
-    "state": "rest",
-    "ring": "species",
-    "ok": null,
-    "price": null,
-    "subject": "the guide is not open yet",
-    "back": "Vivarium"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "habitat",
       "target": "plate.0"
      }
     ],
@@ -462,23 +445,6 @@
      {
       "t": "focus",
       "screen": "habitat",
-      "target": "species"
-     }
-    ],
-    "screen": "habitat",
-    "state": "rest",
-    "ring": "species",
-    "ok": null,
-    "price": null,
-    "subject": "the guide is not open yet",
-    "back": "Vivarium"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "habitat",
       "target": "plate.0"
      }
     ],
@@ -532,23 +498,6 @@
    },
    {
     "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "habitat",
-      "target": "cross"
-     }
-    ],
-    "screen": "habitat",
-    "state": "rest",
-    "ring": "cross",
-    "ok": null,
-    "price": null,
-    "subject": "crosses once adult",
-    "back": "Vivarium"
-   },
-   {
-    "key": "right",
     "said": [
      {
       "t": "focus",
@@ -679,23 +628,6 @@
      {
       "t": "focus",
       "screen": "habitat",
-      "target": "species"
-     }
-    ],
-    "screen": "habitat",
-    "state": "rest",
-    "ring": "species",
-    "ok": null,
-    "price": null,
-    "subject": "the guide is not open yet",
-    "back": "Vivarium"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "habitat",
       "target": "plate.0"
      }
     ],
@@ -726,23 +658,6 @@
    },
    {
     "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "habitat",
-      "target": "cross"
-     }
-    ],
-    "screen": "habitat",
-    "state": "rest",
-    "ring": "cross",
-    "ok": null,
-    "price": null,
-    "subject": "crossing is not open yet",
-    "back": "Vivarium"
-   },
-   {
-    "key": "right",
     "said": [
      {
       "t": "focus",

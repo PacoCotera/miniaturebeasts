@@ -371,16 +371,23 @@ const atRect = (r, o) => [r[0] + o[0], r[1] + o[1], o[2], o[3]];
 test("one mibi up close (habitat.json) agrees with its wireframes, region by region; its focus graph plays its vectors", () => {
   const hab = rd("../specs/station/habitat.json"), R = hab.regions, B = boxesOf("19-vivarium-mibi.svg"), M = boxesOf("19a-vivarium-mibi-meet.svg"), A = boxesOf("19c-vivarium-mibi-out.svg"), E = A;
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "speciesLine", "story", "code", "stamp", "door", "portrait", "cross", "wild", "strip"]) is(R[k].rect, k);
-  for (const [set, w] of [[B, "19"], [A, "19c"]]) is(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), "heart (" + w + ", bonded)", set); assert.ok(!M.has(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]).join(",")), "no heart on an unbonded mibi (19a)");
-  assert.equal(R.bond, undefined, "the bond is not a region"); assert.equal(R.heart, undefined, "the heart is a state on the card, not a region"); assert.equal("target" in R.card.heart, false, "the heart is no focus target");
-  assert.deepEqual(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), [832, 64, 24, 24]); { const hr = atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]); assert.ok(inside(hr, R.card.rect) && apart(hr, R.speciesLine.rect) && apart(hr, R.stamp.rect), "the heart inside the card, clear of the species line and the stamp"); }
+  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "speciesLine", "story", "code", "stamp", "door", "bond", "growth", "wild", "strip"]) is(R[k].rect, k);
+  // a door that cannot open is not drawn (fix 8; specs/station-habitat-card-purpose.md): the modules and the guide mark wait for their doors, the panels stand in their places
+  assert.ok(!("heart" in R.card) && !("notches" in R.card), "no heart or notches under card: the bond panel is their one home");
+  assert.deepEqual([R.portrait.when, R.cross.when, R.speciesLine.mark.when, hab.focus.targets.species.when, hab.focus.targets.portrait.when, hab.focus.targets.cross.when], ["doorOpen(sitting)", "doorOpen(cross)", "doorOpen(book)", "doorOpen(book)", "doorOpen(sitting)", "doorOpen(cross)"]);
+  for (const f of readdirSync(new URL("../../../design/style-guide/station-layouts/", import.meta.url)).filter((x) => /^19.*\.svg$/.test(x))) { const svg = readFileSync(new URL("../../../design/style-guide/station-layouts/" + f, import.meta.url), "utf8"); assert.ok(!/>(Portrait|Cross)</.test(svg), `${f}: no Portrait or Cross module drawn (their doors are shut)`); assert.ok(/>Growth</.test(svg) && />(bonded|not bonded yet)</.test(svg), `${f}: the two panels are drawn`); } assert.deepEqual(R.bond.rect, R.portrait.rect); assert.deepEqual(R.growth.rect, R.cross.rect);
+  assert.deepEqual([R.bond.plate, R.growth.plate], [R.portrait.plate, R.cross.plate], "the panels reuse the modules' plates"); for (const k of ["bond", "growth"]) assert.ok(!(k in hab.focus.targets), k + " is no focus target");
+  const BR = R.bond.rows, bAt = (a) => atRect(R.bond.rect, a), hr = bAt([...BR.bond.heart.at, ...BR.bond.heart.size]);
+  for (const [set, w] of [[B, "19"], [A, "19c"]]) is(hr, "heart (" + w + ", bonded)", set); assert.ok(!M.has(hr.join(",")), "no heart on an unbonded mibi (19a)"); assert.deepEqual(hr, [880, 292, 24, 24]); assert.ok(inside(hr, R.bond.rect), "the heart inside the panel");
   for (const k of ["bezel", "glass", "strip", "card", "door"]) is(R[k].rect, k + " (out)", E); is(R.resident.out.rect, "the out mark", E); assert.ok(!E.has(R.resident.rect.join(",")), "no mibi drawn while it is out");
   assert.deepEqual([R.resident.out.rect[0] + R.resident.out.rect[2] / 2, R.resident.out.rect[1] + R.resident.out.rect[3]], [R.resident.axis, R.resident.feet], "the out mark on the axis, its foot on the feet line"); assert.ok(inside(R.resident.out.rect, R.resident.rect));
-  // the skill notches: filled only, one to three, right-aligned to 856 on the code's row, inside the card, clear of the code and the stamp; two in the wireframe
-  const NT = R.card.notches; assert.deepEqual(atRect(R.card.rect, NT.at), NT.rect); assert.ok(inside(NT.rect, R.card.rect) && gapOk(NT.rect, R.code.rect) && apart(NT.rect, R.stamp.rect), "the notches clear of the code and the stamp");
-  for (const [n, xs] of Object.entries(NT.places)) { assert.equal(xs.length, +n); assert.equal(xs.at(-1)[0] + NT.notch[0], NT.right); xs.forEach(([x, y], i) => { assert.ok(inside([x, y, ...NT.notch], NT.rect)); if (i) assert.equal(x - xs[i - 1][0], NT.pitch); }); }
-  assert.ok(!("0" in NT.places), "nothing at zero"); for (const [x, y] of NT.places[2]) is([x, y, ...NT.notch], "a notch"); assert.equal(R.code.rect[2], 152, "the code's box holds WWW WWW WWW (152 at 16 px)");
+  // the bond panel's skill row: filled notches only, one to three, left-aligned from 16 on a 24 pitch, then "skill" 4 px after the last; the rows' words measured with the real measurer's vectors
+  const SK = BR.skill, MV = rd("../../face/tests/vectors/metrics.json"), wd = (s) => { const c = (MV.cases ?? MV).find((x) => x.px === 16 && x.text === s); assert.ok(c, `"${s}" is in the metrics vectors`); return c.width; };
+  SK.places.forEach(([x, y], i) => { assert.ok(inside(bAt([x, y, ...SK.notch]), R.bond.rect), "a notch inside the panel"); if (i) assert.equal(x - SK.places[i - 1][0], SK.pitch); }); assert.equal(SK.places[0][0], 8);
+  assert.ok(SK.places[2][0] + SK.notch[0] + SK.gap + wd(hab.strings.skill.has) <= R.bond.rect[2] - 8, "three notches and \"skill\" fit the panel minus 8: " + (SK.places[2][0] + SK.notch[0] + SK.gap + wd(hab.strings.skill.has)));
+  assert.ok(wd(hab.strings.bond.bonded) <= BR.bond.on.w && wd(hab.strings.bond.not) <= BR.bond.off.w && wd(hab.strings.skill.none) <= SK.off.w, "the bond and skill words fit their widths: " + [hab.strings.bond.bonded, hab.strings.bond.not, hab.strings.skill.none].map(wd));
+  assert.ok(BR.bond.on.at[0] === BR.bond.heart.at[0] + BR.bond.heart.size[0] + 4 && R.bond.rows.bond.off.at[0] === 8); for (const [x, y] of SK.places.slice(0, 2)) is(bAt([x, y, ...SK.notch]), "a notch"); assert.equal(R.code.rect[2], 152, "the code's box holds WWW WWW WWW (152 at 16 px)");
+  { const G = R.growth, line = G.line; assert.ok(line.w <= G.rect[2] - 32 && line.at[1] > G.word[1], "the growth line inside the panel under its word"); const lines = [...hab.strings.growthExamples, hab.strings.growth.bondedYoung, hab.strings.growth.grown]; assert.ok(hab.strings.growthExamples.every((s, i) => s === hab.strings.growth.young.replace("{n}", ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"][i]).replace("{turn|turns}", i ? "turns" : "turn")), "the examples are the line for one to eleven turns"); for (const s of lines) { assert.ok(wd(s) <= line.w, `"${s}" is ${wd(s)} px, the line is ${line.w}`); assert.ok(!/\d/.test(s), "no digit"); } assert.equal(hab.strings.growth.word, hab.strings.modules.growth); }
   is(R.meetRibbon.rect, "meet ribbon", M); is(R.resident.lamp.rect, "waiting lamp", M);
   lintRegions(hab); assert.deepEqual(hab.states, ["rest", "meet", "out"]); assert.deepEqual([hab.section, hab.level, hab.strings.title, hab.strings.back], ["vivarium", "mibi", "Vivarium", "Vivarium"]); assert.deepEqual(hab.rules.needed, []); assert.deepEqual(hab.rules.used, ["listPitch"]);
   assert.deepEqual([R.bezel.rect[0] + R.bezel.inset, R.bezel.rect[1] + R.bezel.inset, R.bezel.rect[2] - 2 * R.bezel.inset, R.bezel.rect[3] - 2 * R.bezel.inset], R.glass.rect, "the 8 px bezel");
@@ -392,7 +399,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   assert.ok(R.nameTag.rect[1] >= R.resident.feet + 12 + 8, "the tag 8 px or more under the feet ring"); assert.ok(R.nameTag.rect[1] + R.nameTag.rect[3] + 8 <= glass[1] + glass[3], "the tag 8 px inside the glass");
   assert.ok(inside(R.nameTag.rect, R.meetRibbon.rect), "the ribbon in the tag's place"); assert.deepEqual([R.nameTag.px, R.nameTag.weight, R.nameTag.h], [frame.type.title, frame.type.weight[20], 32], "the tag at 20 px medium, 32 tall");
   assert.equal(R.nameTag.max, 200 + 2 * R.nameTag.pad, "the tag holds ten of the widest letter at 20 px (200) and its pads"); assert.equal(R.nameTag.rect[2], R.nameTag.max); assert.equal(R.nameTag.rect[0] + R.nameTag.rect[2] / 2, R.resident.axis); assert.ok(R.nameTag.min % R.nameTag.round === 0 && R.nameTag.max % R.nameTag.round === 0);
-  assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
+  assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild", "bond", "growth"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
   assert.ok(inside(R.resident.lamp.rect, res) && R.resident.lamp.rect[0] + 12 === res[0] + res[2] && R.resident.lamp.rect[1] === res[1], "the lamp at the box's top right");
   assert.equal(hab.focus.targets.resident.shape, "footprint", "the resident wears its footprint (fix 14)");
   for (const spec of [hab]) for (const [k, t] of Object.entries(spec.focus.targets)) assert.ok(isShape(t.shape) && !("ring" in t), k + ": a ring shape of frame.json, no `ring`");
@@ -795,13 +802,13 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   assert.ok(S.masters["spread-plate-{SNN}-80x96"] && S.masters["spread-study-{SNN}-80x96"] && S.masters["library-stage-spread-1024x522"]);
 });
 
-test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 48 pitch, centred on the plates' axis 472, every place at y 480 inside the plates' box", async () => {
+test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 56 pitch, centred on the plates' axis 472, every place at y 280 inside the plates' box", async () => {
   const { TIER } = await import("../../station/src/state.mjs"), be = JSON.parse(readFileSync(new URL("../specs/station/bench.json", import.meta.url), "utf8")), P = be.regions.plates, axis = be.regions.plates.axis;
   assert.deepEqual(Object.keys(P.places).sort(), Object.keys(TIER).sort(), "a table for every tier");
   assert.equal(be.regions.switch.meaning.plates.offWhole, (await import("../../station/src/state.mjs")).DOCK_MEND_FLOOR, "the switch off leaves the plates the dock mends free: state.mjs DOCK_MEND_FLOOR");
   for (const [t, places] of Object.entries(P.places)) {
     assert.equal(places.length, TIER[t].shield, `tier ${t}: a place for each of its ${TIER[t].shield} plates`);
-    places.forEach((pl, i) => { assert.equal(pl[1], 480, `tier ${t} place ${i} at y 480`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 48 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
+    places.forEach((pl, i) => { assert.equal(pl[1], 280, `tier ${t} place ${i} at y 280`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 56 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
     assert.equal(places[0][0] + (places.at(-1)[0] + P.plate[0] - places[0][0]) / 2, axis, `tier ${t} centred on ${axis}`);
   }
 });
@@ -919,12 +926,12 @@ test("the Incubator's paint zones lie inside the wall, clear of the keep-clear z
 });
 
 // ---- fix 5, the Probe (boards/station-fix5-incubator-probe-spec.md P1 to P3) ----
-test("the Probe stands upright in three columns on the floor; each outer margin is 16 to 24 and one bottom line is 520; each module is the size of what it holds; each tier's strip is centred on the axis 472, holds its places with 8 px a side and clears the stage's tools (rework)", () => {
+test("the Probe stands upright in three columns on the floor; each outer margin is 16 to 24 and one bottom line is 520; each module is the size of what it holds; each tier's strip is centred on the axis 472, holds its places with 8 px a side, and the Shield block stands clear of the cradle and the column (rework; specs/station-probe-purpose.md)", () => {
   const be = rd("../specs/station/bench.json"), R = be.regions, FLOORX = [66, 955], FLOORY = [77, 538], cr = R.cradle;
   assert.deepEqual(cr.rect, [40, 96, 288, 432]); assert.deepEqual(cr.ink, [44, 4, 232, 420]); assert.equal(cr.axis, 184);
   const inkL = cr.rect[0] + cr.ink[0], inkB = cr.rect[1] + cr.ink[1] + cr.ink[3];
   for (const [what, m] of [["left", inkL - FLOORX[0]], ["right", FLOORX[1] - (R.slot.rect[0] + R.slot.rect[2])], ["top", cr.rect[1] - FLOORY[0]], ["bottom", FLOORY[1] - inkB]]) assert.ok(m >= 16 && m <= 24, `the ${what} margin ${m} is 16 to 24`);
-  assert.equal(inkB, 520, "the cradle's ink on the bottom line 520"); assert.equal(R.slot.rect[1] + R.slot.rect[3], 520, "the slot on 520"); assert.ok(Object.values(R.strip.byTier).every((s) => s[1] + s[3] === 520), "both strips on 520");
+  assert.equal(inkB, 520, "the cradle's ink on the bottom line 520"); assert.equal(R.slot.rect[1] + R.slot.rect[3], 520, "the slot on 520"); assert.ok(Object.values(R.strip.byTier).every((s) => s[1] + s[3] <= 520), "both strips above the bottom line 520");
   assert.equal(R.switch.rect[1], 96, "the switch at y 96"); assert.equal(R.slot.rect[1] - (R.switch.rect[1] + R.switch.rect[3]), 48, "the modules 48 apart");
   assert.deepEqual([R.switch.rect, R.slot.rect], [[624, 96, 312, 128], [624, 272, 312, 248]]); assert.deepEqual([R.switch.lamp, R.slot.lamp], [[284, 12, 12, 12], [284, 12, 12, 12]]);
   // every module object ends at or before w - 16
@@ -932,20 +939,27 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
     [L, L.socket.at[0] + L.socket.size[0]], [L, L.part.at[0] + L.part.size[0]], [L, L.adds.pods.at[0] + (L.adds.pods.count - 1) * L.adds.pods.pitch + L.adds.pods.icon[0]], [L, L.adds.plates.at[0] + (L.adds.plates.count - 1) * L.adds.plates.pitch + L.adds.plates.icon[0]], [L, L.adds.reach.at[0] + L.adds.reach.size[0]], [L, L.adds.deep.at[0] + L.adds.deep.size[0]], [L, L.lamp[0] + L.lamp[2]]];
   for (const [m, end] of ends) assert.ok(end <= m.rect[2] - 16, `an object ends at ${end}, past ${m.rect[2] - 16}`);
   // the strips
-  const TOOLS = { "tools zone": R.bench.tools }, P = R.plates;
-  assert.equal(R.strip.axis, 472); assert.equal(P.axis, 472); assert.deepEqual(R.bench.keepClear, { cradle: [40, 96, 288, 432], plates: [364, 458, 216, 72], column: [620, 90, 320, 432] });
-  assert.ok(apart(P.rect, R.bench.tools), "the plates' box clear of the tools zone"); assert.ok(apart(R.bench.tools, cr.rect), "the tools zone clear of the cradle"); assert.ok(apart(R.bench.tools, R.bench.keepClear.column), "the tools zone clear of the column's rings");
+  const P = R.plates, K = R.bench.keepClear, BLOCK = [344, 240, 256, 144], WORD = R.shieldWord.rect, LINE = R.shieldLine.rect;
+  assert.equal(R.strip.axis, 472); assert.equal(P.axis, 472); assert.deepEqual(K, { cradle: [40, 96, 288, 432], plates: [344, 232, 256, 160], column: [620, 90, 320, 432] }); assert.ok(!("tools" in R.bench), "the tools zone is retired");
+  // the Shield block (specs/station-probe-purpose.md): the word over the plates over the reason, on the axis 472, clear of the cradle and the column; no bare 160 × 160 in the middle column; the cradle's base and Upgrade share the bottom line 520
+  assert.deepEqual([WORD, LINE], [[344, 240, 256, 24], [344, 344, 256, 40]]); assert.ok(inside(WORD, BLOCK) && inside(P.rect, BLOCK) && inside(LINE, BLOCK), "word, plates and line inside the block"); assert.equal(WORD[1] + WORD[3], 264); assert.equal(P.rect[1], 264, "the plates' box under the word"); assert.equal(LINE[1] - (P.rect[1] + P.rect[3]), 0, "the line under the plates");
+  assert.ok(apart(BLOCK, cr.rect) && apart(BLOCK, K.column), "the block clear of the cradle and the column's rings"); for (const r of [WORD, LINE]) assert.equal(r[0] + r[2] / 2, 472, "centred on the axis 472");
+  { const MID = [328, 96, 292, 432], free = [[MID[0], MID[1], MID[2], BLOCK[1] - MID[1]], [MID[0], BLOCK[1] + BLOCK[3], MID[2], MID[1] + MID[3] - BLOCK[1] - BLOCK[3]]]; assert.deepEqual(free.map((r) => r.slice(2)), [[292, 144], [292, 144]], "above and below the block: 292 × 144 each"); assert.ok(free.every((r) => r[3] < 160), "no bare 160 × 160 in the middle column: the block leaves 144 above and below"); }
+  { const MV = rd("../../face/tests/vectors/metrics.json"), wd = (s) => { const c = (MV.cases ?? MV).find((x) => x.px === 16 && x.text === s); assert.ok(c, `"${s}" is in the metrics vectors`); return c.width; };
+    for (const s of be.strings.shieldLine) assert.ok(wd(s) <= LINE[2], `"${s}" is ${wd(s)} px at 16, the line box is ${LINE[2]}`); assert.ok(wd(be.strings.shield) <= WORD[2]);
+    const A = R.slot.adds, rw = wd(be.strings.addCaptions.reach), dw = wd(be.strings.addCaptions.deep); assert.ok(rw <= A.reachWord.size[0] && dw <= A.deepWord.size[0], "the captions fit their boxes");
+    const centre = (w) => w.at[0] + w.size[0] / 2, gap = centre(A.deepWord) - centre(A.reachWord) - (rw + dw) / 2; assert.ok(gap >= 8, `reach and deep ${gap} px apart (8 at least)`); assert.equal(centre(A.reachWord), A.reach.at[0] + 20, "centred on its dial"); assert.equal(centre(A.deepWord), A.deep.at[0] + 20);
+    assert.deepEqual([A.reachWord.px, A.deepWord.px, R.shieldLine.px, R.shieldWord.px], [16, 16, 16, 16], "the face's body size: it has no 14 or 12"); }
   for (const t of ["1", "2"]) {
     const st = R.strip.byTier[t], places = P.places[t], first = places[0], last = places.at(-1);
     assert.equal(st[0] + st[2] / 2, R.strip.axis, `strip t${t} centred on the axis 472`); assert.ok(inside(st, P.rect), `strip t${t} inside the plates' box`);
-    assert.ok(places.every((p) => p[1] === 480), "the plates at y 480"); assert.equal((first[0] + last[0] + P.plate[0]) / 2, 472, `t${t} places centred on 472`);
+    assert.ok(places.every((p) => p[1] === 280), "the plates at y 280"); assert.equal((first[0] + last[0] + P.plate[0]) / 2, 472, `t${t} places centred on 472`);
     assert.deepEqual([first[0] - st[0], st[0] + st[2] - (last[0] + P.plate[0]), first[1] - st[1], st[1] + st[3] - (first[1] + P.plate[1])], [8, 8, 8, 8], `strip t${t}: 8 px of strip on every side of its plates`);
-    for (let i = 1; i < places.length; i++) assert.equal(places[i][0] - places[i - 1][0], P.pitch, "pitch 48");
-    for (const [n, r] of Object.entries(TOOLS)) assert.ok(apart(st, r), `strip t${t} is clear of the ${n}`);
+    for (let i = 1; i < places.length; i++) assert.equal(places[i][0] - places[i - 1][0], P.pitch, "pitch 56");
     assert.equal(R.strip.slices[t], `bench-plate-strip-t${t}-${st[2]}x${st[3]}`); assert.ok(be.masters.list.includes(R.strip.slices[t]));
   }
-  assert.deepEqual(R.plates.rect, [368, 464, 208, 64]); assert.equal(R.plates.rect[0] + R.plates.rect[2] / 2, 472); assert.equal(R.plates.rect[1] + R.plates.rect[3] / 2, 496, "the plates' centre y 496, so ▶ finds the slot (396) before the switch (160)");
-  assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[364, 458, 216, 72\], switch \[620, 90, 320, 136\], slot \[620, 266, 320, 256\]/)?.length, 1, "the rings from the spec");
+  assert.deepEqual(R.plates.rect, [352, 264, 240, 80]); assert.equal(R.plates.rect[0] + R.plates.rect[2] / 2, 472); assert.equal(R.plates.rect[1] + R.plates.rect[3] / 2, 304, "the plates' centre y 304, so ▶ finds the slot (396) before the switch (160)");
+  assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[348, 258, 248, 88\], switch \[620, 90, 320, 136\], slot \[620, 266, 320, 256\]/)?.length, 1, "the rings from the spec");
 });
 
 test("GB-R6: the Cargo report's heading is `ink` on a cream label plate that lies at least 6 px inside the plate and ends at least 12 px above the first row, and the report door is the report slice", () => {

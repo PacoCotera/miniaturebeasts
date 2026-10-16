@@ -1759,15 +1759,15 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 **Reading order:**
 
 1. **The Probe standing upright in its cradle**, in the left column, on the axis x 184.
-2. **The plates** on their strip, in the middle column under the tools zone.
+2. **The plates** on their strip, in the middle column on the Probe's middle, under the word Shield (48 px, with the reason, "each plate takes one strike / no plates: the trip ends", under them).
 3. **The Mend module**, top right.
 4. **The Upgrade module** under it.
 
-Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 × 432), the tools zone with the plates' box under it (368, 96, 208 × 352; the plates' box 368, 464, 208 × 64, axis x 472) and the column (624, 96, 312 wide). The margins are 18 to 19, the modules 48 apart, and one bottom line on y 520 holds the cradle's ink, the Upgrade module and both strips (the upright rework).
+Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 × 432), the Shield block (344, 240, 256 × 144: the word, the plates' box 352, 264, 240 × 80 on axis x 472, the reason under it) and the column (624, 96, 312 wide). The margins are 18 to 19, the modules 48 apart, and one bottom line on y 520 holds the cradle's ink and the Upgrade module (the upright rework; the strips moved up with the Shield block, specs/station-probe-purpose.md).
 
 ### 4. Art direction
 
-- **Room:** the device's work tray: the Probe stands upright in its cradle, as it is held, with the field tools and small gauges beside it in the tools zone, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
+- **Room:** the device's work tray: the Probe stands upright in its cradle, as it is held, with its Shield beside it, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
 - **The Probe** is the same device the Companion draws, as the project's Probe art draws it, never a needle, painted at the bench's size, one picture a tier. Away, the cradle on the tray is drawn empty, so the Probe reads as out, never missing.
 - **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
 - **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`home-lamp-sprout-12x12`) or off (`home-lamp-hairline-12x12`).
@@ -1784,8 +1784,11 @@ Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 �
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | **Cradle (focal)** | 40, 96, 288, 432 | The Probe standing upright in its cradle, as it is held, one painted picture a tier; away, the empty cradle. Axis x 184; first ink at y 100, ink box (44, 4, 232, 420) in the slice |
-| Plate strip | tier 1: 400, 472, 144, 48; tier 2: 376, 472, 192, 48 (axis y 472) | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
-| Plates | 368, 464, 208, 64 | Plates 32×32 at y 480, centred in the region, on a 48 pitch: tier 1 at x 408, 456, 504; tier 2 at 384, 432, 480, 528; centred on x 472; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Plate strip | tier 1: 384, 272, 176, 64; tier 2: 356, 272, 232, 64 (axis x 472; t2's x is 4 off the grid, centred on the axis) | `bench-plate-strip-t1-176x64`, `bench-plate-strip-t2-232x64`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
+| Shield word | 344, 240, 256, 24 | "Shield", centred on 472, 16 px, weight 400, the module title's colour; docked and away |
+| Plates | 352, 264, 240, 80 | Plates 48×48 at y 280, centred in the region, on a 56 pitch: tier 1 at x 392, 448, 504; tier 2 at 364, 420, 476, 532; centred on x 472; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Shield line | 344, 344, 256, 40 | Two lines, tops 344 and 364, centred on 472, 16 px, `mist`: "each plate takes one strike" / "no plates: the trip ends"; docked and away (specs/station-probe-purpose.md; the spec asked 14 px, the face has 16, 20 and 28) |
+| Dial captions | slot + (192, 208, 56, 16) and (248, 208, 56, 16) | "reach" and "deep", 16 px, `mist`, centred under the two dials (816 + 28 = 844 and 900), 16 px apart by the real measurer |
 | Mend module | 624, 96, 312, 128 | Word at (16, 12), lamp at (284, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
 | Upgrade module | 624, 272, 312, 248 | Word at (16, 12), lamp at (284, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
 
@@ -1797,14 +1800,16 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | --- | --- | --- | --- | --- |
 | `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`, signed) | | — |
 | `cradle` | 40, 96, 288, 432 | specimen (focal) | | tier 1, tier 2, empty |
-| `strip` | 376, 472, 192, 48 (bound; by tier) | picture, painted | | tier 1, tier 2 (both states) |
-| `plates` | 368, 464, 208, 64 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
+| `strip` | 356, 272, 232, 64 (bound; by tier) | picture, painted | | tier 1, tier 2 (both states) |
+| `shieldWord` | 344, 240, 256, 24 | text | docked, away | "Shield" |
+| `shieldLine` | 344, 344, 256, 40 | text, two lines | docked, away | the reason under the plates |
+| `plates` | 352, 264, 240, 80 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
 | `switch` | 624, 96, 312, 128 | panel, build `module` | | off, on |
 | `slot` | 616, 248, 312, 248 | panel, build `module` | | dim, ready, armed, fitted |
 
 **Draw order:** bench, cradle, strip, plates, switch, slot, ring, frame, message plate.
 
-Rings (4 px out, 2 px lift): plates 364, 458, 216, 72; switch 620, 90, 320, 136; slot 620, 266, 320, 256.
+Rings (4 px out, 2 px lift): plates 348, 258, 248, 88; switch 620, 90, 320, 136; slot 620, 266, 320, 256.
 
 ### 6. Interactions
 
@@ -1847,8 +1852,8 @@ With `motion: false` every event jumps to its end.
 | --- | --- |
 | `room-bench-stage-probe` | 1024×522 |
 | `bench-probe-upright-t1-288x432`, `bench-probe-upright-t2-288x432`, `bench-cradle-upright-empty-288x432` | 288×432, rows 0 to 3 kept empty |
-| `bench-plate-whole-32x32`, `bench-plate-gone-32x32` | 32×32 |
-| `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48` | 144×48; 192×48 (fix 5 PA1, masters-pods bea42f4d) |
+| `bench-plate-whole-48x48`, `bench-plate-gone-48x48` | 48×48 (redrawn at 48, art T-20261016-33) |
+| `bench-plate-strip-t1-176x64`, `bench-plate-strip-t2-232x64` | 176×64; 232×64 (art T-20261016-33; were 144×48 and 192×48, fix 5 PA1) |
 | `bench-switch-track-off-80x40`, `bench-switch-track-on-80x40`; `bench-switch-knob-40x40` | 80×40; 40×40 |
 | `mark-dock-24x24` | 24×24 |
 | `icon-shield-16`, `icon-shield-16-new`, `icon-shield-gone-16` | 16×16 |
