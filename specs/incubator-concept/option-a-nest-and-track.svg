@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600" font-family="Inter, Helvetica, Arial, sans-serif">
+  <!-- Incubator concept, option A: the nest under the lamp, time as a track. 1x wireframe, layout and content only; not a layout spec. Growing, about two thirds through. -->
+  <rect width="1024" height="600" fill="#1d1f24"/>
+  <rect x="0" y="0" width="1024" height="40" fill="#23262d"/>
+  <text x="20" y="26" font-size="20" fill="#e9e2d0">Incubator</text>
+  <text x="430" y="26" font-size="16" fill="#e9e2d0">⚡ 7   ◆ 2   ❀ 9</text>
+  <rect x="0" y="40" width="1024" height="522" fill="#7d8f7a"/>
+  <rect x="48" y="56" width="928" height="490" rx="18" fill="#2f3236" stroke="#22252a" stroke-width="4"/>
+
+  <!-- the pod's tag, left -->
+  <rect x="80" y="88" width="208" height="160" rx="6" fill="#e6dcc4" stroke="#8b7f66" stroke-width="2"/>
+  <text x="96" y="126" font-size="28" fill="#2f2a22">Loika</text>
+  <text x="96" y="152" font-size="14" fill="#5f574a">found at the pond edge,</text>
+  <text x="96" y="170" font-size="14" fill="#5f574a">as a Loika shook dry</text>
+  <text x="96" y="204" font-size="14" fill="#2f2a22">Crown: only leafy</text>
+  <text x="96" y="224" font-size="14" fill="#2f2a22">Markings: only pale</text>
+
+  <!-- the lamp, in scale, wholly in frame, its pool on the nest -->
+  <rect x="468" y="84" width="88" height="34" rx="14" fill="#9aa79a" stroke="#55625a" stroke-width="3"/>
+  <rect x="504" y="64" width="16" height="22" fill="#55625a"/>
+  <path d="M478 118 L380 400 L644 400 L546 118 Z" fill="#f3c27a" opacity="0.18"/>
+  <text x="600" y="108" font-size="11" fill="#b9b0a0">warming lamp</text>
+
+  <!-- the nest and the player's pod -->
+  <ellipse cx="512" cy="398" rx="170" ry="34" fill="#55625a" stroke="#9aa79a" stroke-width="3"/>
+  <ellipse cx="512" cy="390" rx="130" ry="20" fill="#6e7d45"/>
+  <ellipse cx="512" cy="276" rx="100" ry="122" fill="#5b7790" stroke="#c9d3dc" stroke-width="3"/>
+  <ellipse cx="490" cy="230" rx="40" ry="50" fill="#f3c27a" opacity="0.25"/>
+  <text x="512" y="270" font-size="14" fill="#e9e2d0" text-anchor="middle">your pod,</text>
+  <text x="512" y="288" font-size="14" fill="#e9e2d0" text-anchor="middle">its own shell,</text>
+  <text x="512" y="306" font-size="14" fill="#e9e2d0" text-anchor="middle">glowing as it grows</text>
+
+  <!-- cleared chapters, right -->
+  <g font-size="14">
+    <rect x="744" y="88" width="200" height="72" rx="8" fill="#3a3f44" stroke="#9aa79a" stroke-width="2"/>
+    <rect x="752" y="96" width="56" height="56" fill="#d9d0bc"/><text x="820" y="118" fill="#e9e2d0">Coat</text><text x="820" y="138" fill="#cfc6b4">cleared</text>
+    <rect x="744" y="168" width="200" height="72" rx="8" fill="#3a3f44" stroke="#9aa79a" stroke-width="2"/>
+    <rect x="752" y="176" width="56" height="56" fill="#d9d0bc"/><text x="820" y="198" fill="#e9e2d0">Face</text><text x="820" y="218" fill="#cfc6b4">cleared</text>
+    <rect x="744" y="248" width="200" height="72" rx="8" fill="#3a3f44" stroke="#e9c27a" stroke-width="2"/>
+    <rect x="752" y="256" width="56" height="56" fill="#d9d0bc"/><text x="820" y="278" fill="#e9c27a">Movement</text><text x="820" y="298" fill="#cfc6b4">just cleared</text>
+    <rect x="744" y="328" width="200" height="72" rx="8" fill="none" stroke="#6c6a66" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="820" y="370" fill="#8a857a">Stamina</text>
+  </g>
+  <!-- stamp, shared slot, bottom left -->
+  <rect x="80" y="280" width="120" height="120" rx="6" fill="#4b4741" stroke="#9aa79a" stroke-width="2"/>
+  <text x="140" y="344" font-size="12" fill="#e9e2d0" text-anchor="middle">stamp</text>
+
+  <!-- the growth track across the front -->
+  <rect x="80" y="456" width="864" height="40" rx="20" fill="#454a4f"/>
+  <rect x="80" y="456" width="590" height="40" rx="20" fill="#9fc47a"/>
+  <g font-size="11" fill="#e9e2d0" text-anchor="middle">
+    <circle cx="296" cy="476" r="14" fill="#2f3236" stroke="#e9e2d0" stroke-width="2"/><text x="296" y="480">C</text>
+    <circle cx="512" cy="476" r="14" fill="#2f3236" stroke="#e9e2d0" stroke-width="2"/><text x="512" y="480">F</text>
+    <circle cx="660" cy="476" r="14" fill="#2f3236" stroke="#e9c27a" stroke-width="2"/><text x="660" y="480">M</text>
+    <circle cx="804" cy="476" r="14" fill="#2f3236" stroke="#6c6a66" stroke-width="2"/><text x="804" y="480">S</text>
+    <circle cx="928" cy="476" r="14" fill="#2f3236" stroke="#e9c27a" stroke-width="2"/><text x="928" y="480">✦</text>
+  </g>
+  <text x="80" y="520" font-size="12" fill="#b9b0a0">pod in</text>
+  <text x="944" y="520" font-size="12" fill="#b9b0a0" text-anchor="end">it opens</text>
+
+  <rect x="0" y="562" width="1024" height="38" fill="#23262d"/>
+  <text x="20" y="587" font-size="16" fill="#e8743b">✓ Grow now</text>
+  <text x="128" y="587" font-size="16" fill="#e9e2d0">❀ 4</text>
+  <text x="430" y="587" font-size="16" fill="#9aa0a8">ready in about 7 min</text>
+  <text x="1004" y="587" font-size="16" fill="#e9e2d0" text-anchor="end">← Home</text>
+</svg>

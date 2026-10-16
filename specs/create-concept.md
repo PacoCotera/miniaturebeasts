@@ -49,7 +49,7 @@ The founder stands at the centre on a **growth dish**: a shallow cut-out in the 
 
 All four of the pass list's needs (founder, changes, surprises, cost) are visible at once: the dish, the drums and slip, the slip, the bottom line.
 
-**Grow.** The drums lock, the genome stamp prints onto the slip and its code appears, the pod's shell closes, and the pod is carried out at the right toward the Incubator (the jump). The pod the player collected is the object that travels: it is what sits in the Incubator next (the Incubator concept, T-20261016-25).
+**Grow.** The drums lock, the genome stamp prints onto the slip and its code appears, the pod's shell closes, and the pod is carried out at the right toward the Incubator (the jump). The pod the player collected is the object that travels: it is what sits in the Incubator next ([the Incubator concept](incubator-concept.md)).
 
 ## What leaves the current screen
 
