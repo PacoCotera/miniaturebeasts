@@ -6,19 +6,19 @@
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "c639bd14",
+   "hash": "3b2dc911",
    "png": "home-docked.png"
   },
   "home-docked-dawn": {
-   "hash": "5cc6f99f",
+   "hash": "2b4afb26",
    "png": "home-docked-dawn.png"
   },
   "home-docked-dusk": {
-   "hash": "80f9856a",
+   "hash": "a72f9293",
    "png": "home-docked-dusk.png"
   },
   "home-docked-night": {
-   "hash": "cbc60c84",
+   "hash": "dcc073e1",
    "png": "home-docked-night.png"
   },
   "home-goal-docked": {
@@ -42,39 +42,39 @@
    "png": "home-bed-none.png"
   },
   "home-cargo-empty": {
-   "hash": "fb961e03",
+   "hash": "34fe19d0",
    "png": "home-cargo-empty.png"
   },
   "home-incubator-empty": {
-   "hash": "cff24af9",
+   "hash": "cfb7aad6",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-growing": {
-   "hash": "505146a3",
+   "hash": "bb69c770",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-ready": {
-   "hash": "773ca814",
+   "hash": "c903fffb",
    "png": "home-incubator-ready.png"
   },
   "home-probe-docked": {
-   "hash": "dcc50a2d",
+   "hash": "d30a1ff6",
    "png": "home-probe-docked.png"
   },
   "home-probe-away": {
-   "hash": "ad06066d",
+   "hash": "9921ae9a",
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
-   "hash": "347bb681",
+   "hash": "94e14bc2",
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
-   "hash": "30e0c083",
+   "hash": "95375a70",
    "png": "home-library-empty.png"
   },
   "home-library-pages": {
-   "hash": "e20e74d0",
+   "hash": "78ff376f",
    "png": "home-library-pages.png"
   },
   "home-knob-rest": {
@@ -86,7 +86,7 @@
    "png": "home-knob-focused.png"
   },
   "home-vivarium-focused": {
-   "hash": "ba56a037",
+   "hash": "d1eff4c0",
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
@@ -110,7 +110,7 @@
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "5b2bb9cd",
+   "hash": "d864a59c",
    "png": "home-crates-arriving.png"
   }
  }

@@ -30,7 +30,7 @@
    },
    {
     "ready": "ready",
-    "ok": "Open"
+    "ok": "Open the bud"
    },
    {
     "key": "confirm",
@@ -82,7 +82,7 @@
     ],
     "screen": "pods",
     "state": "collection",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "price": null,
     "subject": "Loika is partly read"
    },

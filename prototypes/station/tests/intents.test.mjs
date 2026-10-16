@@ -361,3 +361,19 @@ test("the Dock key on the bench: lifted, the ring on the plates moves to the swi
   h.ui.screen = "bench"; h.ui.bench.f = "plates"; h.ui.bench.arm = 1; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, false); assert.deepEqual([h.ui.bench.f, h.ui.bench.arm], ["switch", 0]);
   h.ui.bench.f = "slot"; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, true); assert.equal(h.ui.bench.f, "slot", "away to docked: the ring stays");
 });
+
+test("T-50 cuts 1 and 2: Home's room ✓ opens the bay in one press (Cargo, then the opening) and opens the ready bud in one press (the Incubator, then the hatch); a growing bud only looks", () => {
+  const st = world(); S.seedCrate(st, "S01", 1, 4101, T0); st.dock = { docked: true, at: T0 };
+  const h = host(st); h.motion = () => true;
+  assert.equal(S.needKey(st, h.sv, settings, h.ui).key, "crates");
+  INTENTS.home.intent(h, "room", "confirm");
+  assert.deepEqual([h.went.at(-1), h.ui.cargo.state], ["cargo", "opening"], "one ✓ on Home: the bay is opening");
+  assert.ok(h.played.some((e) => e.kind === "arrival" && e.target === "crate") && st.tray.length === 1, "the rule opened the crate");
+  const h2 = host(world()); h2.motion = () => true; h2.specs.incubator = incubatorSpec; const st2 = h2.st, q = pod(st2, "S01", chapters("S01")), now = Date.now();
+  assert.ok(S.grow(st2, q, {}, settings, now).ok); assert.ok(!S.budReady(st2, settings, now));
+  assert.equal(S.needKey(st2, h2.sv, settings, h2.ui).key, "budGrowing"); INTENTS.home.intent(h2, "room", "confirm");
+  assert.deepEqual([h2.went.at(-1), h2.played.some((e) => e.kind === "hatch"), !!st2.bud], ["incubator", false, true], "a growing bud: Home's ✓ only looks");
+  const h3 = host(world()); h3.motion = () => true; h3.specs.incubator = incubatorSpec; const st3 = h3.st, q3 = pod(st3, "S01", chapters("S01")); S.grow(st3, q3, {}, settings, T0); S.instantGrow(st3, settings, T0);
+  assert.equal(S.needKey(st3, h3.sv, settings, h3.ui).key, "budReady"); INTENTS.home.intent(h3, "room", "confirm");
+  assert.deepEqual([h3.went.at(-1), h3.played.some((e) => e.kind === "hatch"), !!h3.ui.inc.hatch, st3.bud], ["incubator", true, true, null], "one ✓ on Home: the hatch plays");
+});

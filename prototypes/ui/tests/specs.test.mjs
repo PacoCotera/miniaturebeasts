@@ -30,7 +30,7 @@ test("Pods in three states: the collection's six places, rings, labels and the w
   assert.ok(apart(A.waiting.rect, places[3]) && A.waiting.rect[1] + A.waiting.rect[3] <= 552, "the waiting mark under the places");
   assert.deepEqual(pods.classes.pod.collection, [88, 112]);
   assert.ok(!("selected" in A.ring.masters)); assert.equal(A.ring.masters.closed, "ring-collection-closed-176x176"); assert.deepEqual(A.ring.focus, { form: "targets.place.shape" }, "the place ring is the target's shape: no copy of the tokens"); assert.deepEqual(pods.targets.place.shape, { circle: { centre: A.ring.centre, r: A.ring.slice[2] / 2 } }, "the ring round the gauge slice's radius 88"); assert.equal(A.glint.slice, "glint-star-12x12"); assert.deepEqual(A.ring.slice, [8, 0, 176, 176]); assert.equal(A.ring.slice[0] + 88, A.ring.centre[0]); assert.equal(A.ring.slice[1] + 88, A.ring.centre[1]); assert.ok(!("collectionRing" in pods.colours), "the build draws no arcs"); assert.ok(!("ringRead" in pods.colours), "one home for the ring's colours");
-  assert.equal(pods.strings.openChapter, "Open {chapter}"); assert.equal(pods.strings.wayBack.chapter, "{name}");
+  assert.equal(pods.strings.openChapter, "Turn to {chapter}"); assert.equal(pods.strings.wayBack.chapter, "{name}");
 });
 
 // P1 (fix 5): the painted floor of the case runs x 64 to 952 and y 88 to 535 (pixels, inclusive) on every Pods stage; the rail and the bottom line are the frame's
@@ -767,7 +767,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   // the frame: the title and its mark, the way back, the room key, the jumps; Home's Library module opens it
   assert.equal(frame.strings.titles.library, S.strings.title); assert.equal(frame.regions.title.marks.library, S.title.mark); const BC = S.buildChanges.find((c) => c.key === "navigation.screens.library"); assert.deepEqual(BC.now, { parent: "home", back: "Home" }); assert.deepEqual(frame.navigation.screens.library, BC.becomes, "the build made the change: the tree names the spread and its spec"); assert.deepEqual(BC.becomes, { ...BC.now, states: S.states, spec: "library.json" });
   assert.equal(frame.navigation.roomKeys.library.state, "spread"); assert.equal(frame.navigation.screens.book.back, "Library"); assert.equal(S.strings.back, frame.navigation.screens.library.back);
-  const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Open the Library"); assert.ok(/spread/.test(home.keys.library));
+  const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Go to the Library"); assert.ok(/spread/.test(home.keys.library));
   // the words: an action of four words or fewer, contexts of six or fewer, no digits; no ✓ cap on an empty frame
   assert.ok(wordsIn(S.strings.open) <= 4); for (const s of stringsOf(S.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.equal(S.line.unmet.action, null); assert.equal(S.line.found.action, "strings.open"); assert.equal(S.line.met.action, null, "a met species does not open the Book");

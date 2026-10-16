@@ -7,7 +7,7 @@
     "said": [],
     "screen": "home",
     "focus": "room",
-    "ok": "Open Cargo",
+    "ok": "Open the bay",
     "subject": "",
     "idle": false
    },
@@ -22,17 +22,32 @@
   ],
   "home-bay": [
    {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "cargo"
+     }
+    ],
+    "screen": "home",
+    "focus": "cargo",
+    "ok": "Go to Cargo",
+    "subject": "two sealed crates",
+    "idle": false
+   },
+   {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
       "screen": "home",
-      "target": "room",
+      "target": "cargo",
       "verb": "confirm"
      }
     ],
     "screen": "cargo",
-    "focus": "room",
+    "focus": "cargo",
     "ok": "Open the bay",
     "subject": "two sealed crates",
     "idle": false
@@ -41,7 +56,7 @@
     "key": "down",
     "said": [],
     "screen": "cargo",
-    "focus": "room",
+    "focus": "cargo",
     "ok": "Open the bay",
     "subject": "two sealed crates",
     "idle": false
@@ -58,7 +73,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "two sealed crates",
     "idle": false
    },
@@ -158,7 +173,7 @@
     ],
     "screen": "pods",
     "focus": "cargo",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    },
@@ -174,7 +189,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    }
@@ -191,7 +206,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    },
@@ -221,7 +236,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "the Incubator is empty",
     "idle": false
    },
@@ -236,7 +251,7 @@
     ],
     "screen": "home",
     "focus": "probe",
-    "ok": "Open the Probe",
+    "ok": "Go to the Probe",
     "subject": "the Probe in its cradle",
     "idle": false
    },
@@ -251,7 +266,7 @@
     ],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the field journal",
     "idle": false
    },
@@ -305,7 +320,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "one mibi at home",
     "idle": false
    },
@@ -320,7 +335,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    },
@@ -379,7 +394,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    },
@@ -411,7 +426,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "the Incubator is empty",
     "idle": false
    },
@@ -443,7 +458,7 @@
     ],
     "screen": "home",
     "focus": "probe",
-    "ok": "Open the Probe",
+    "ok": "Go to the Probe",
     "subject": "the Probe in its cradle",
     "idle": false
    },
@@ -475,7 +490,7 @@
     ],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the field journal",
     "idle": false
    },
@@ -523,7 +538,7 @@
     ],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    },
@@ -639,7 +654,7 @@
     ],
     "screen": "pods",
     "focus": "knob",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    }
@@ -666,7 +681,7 @@
     "said": [],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    },

@@ -202,13 +202,13 @@
   "stages": { "juvenile": "young", "adult": "adult", "elder": "elder" },
   "modules": { "cargo": "Cargo", "pods": "Pods", "incubator": "Incubator", "probe": "Probe", "library": "Library" },
   "actions": {
-   "vivarium": "Open the Vivarium",
+   "vivarium": "Go to the Vivarium",
    "resident": "Look at {name}",
-   "cargo": "Open Cargo",
+   "cargo": "Go to Cargo",
    "pods": "Look at the pods",
-   "incubator": "Open the Incubator",
-   "probe": "Open the Probe",
-   "library": "Open the Library",
+   "incubator": "Go to the Incubator",
+   "probe": "Go to the Probe",
+   "library": "Go to the Library",
    "knob": "Rest"
   },
   "subjects": {
@@ -226,8 +226,8 @@
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
    "order": ["crates", "budReady", "meet", "newPods", "glints", "waitingPods", "couldGrow", "toRead", "budGrowing"],
-   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)" },
-   "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the Incubator" },
+   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open the bay", "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)" },
+   "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the bud" },
    "meet": { "module": null, "notice": "meet {name}", "action": "Meet {name}" },
    "newPods": { "module": "pods", "notice": "{count} new pods in the rack", "noticeOne": "a new pod in the rack", "action": "Look at the pods" },
    "glints": { "module": "pods", "notice": "{count} pods glint", "noticeOne": "a pod glints", "action": "Look at the pods" },

@@ -204,23 +204,23 @@ function lineOf(m, spec, p, chapters, ci, view, frame) {
   if (!st.tray.length) return empty;
   if (view.mode === "collection") {
     const q = f && f.startsWith("place.") ? st.tray[+f.slice(6)] : null; if (!q) return { back: "Home" };
-    return { ok: "Open", back: "Home", subject: state(q), need: glintOf(q) };
+    return { ok: Sg.lookAtPod, back: "Home", subject: state(q), need: glintOf(q) };
   }
   if (!p) return { back: "Home" };
   const back = view.mode === "chapter" ? S.cap(S.spName(p)) : "Pods", glintPod = glintOf(p);
   if (f === "pod") {
-    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "◆"), dim: st.d < cost, back, subject: state(p), need: st.d < cost ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : warn({ d: cost }, { key: "identify", pod: p }) }; }
-    const b = S.growBlock(st, p, {}, settings, []); return { ok: Sg.toCreate, price: "", dim: !!b, back, subject: state(p), need: blockNeed(b, Sg) ?? glintPod };
+    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "◆"), dim: st.d < cost, back, subject: st.knownIds.includes(S.speciesOf(p)) ? Sg.outcomes.identify : Sg.outcomes.identifyNew, need: st.d < cost ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : warn({ d: cost }, { key: "identify", pod: p }) }; }
+    const b = S.growBlock(st, p, {}, settings, []); return { ok: Sg.toCreate, price: "", dim: !!b, back, subject: Sg.outcomes.create, need: blockNeed(b, Sg) ?? glintPod };
   }
   if (f && f.startsWith("rail.")) {
     const ch = chapters[+f.slice(5)]; if (!ch) return { back };
     const b = S.readBlock(st, p, ch.id, settings), word = railWord(ch, spec), here = S.glint(st, p, ch.id) ? Sg.glintHere : glintPod;
     const states = b === null ? Sg.states.read : b.startsWith("sealed") ? Sg.states.sealed : Sg.states.unread, subject = fill(Sg.subjectIs, { name: word, state: states });
-    if (view.mode === "overview") return { ok: "Open " + word, back, subject, need: here };   // ✓ on a tab opens its page, free (the read and its price are on the page)
+    if (view.mode === "overview") return { ok: fill(Sg.openChapter, { chapter: word }), back, subject, need: here };   // ✓ on a tab opens its page, free (the read and its price are on the page)
     if (b === null) return { back, subject, need: here };
     if (b.startsWith("sealed")) return { back, subject, need: here };
     const cost = S.readCost(st, p, ch.id, settings);
-    return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject, need: (b && /^needs/.test(b) ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : blockNeed(b, Sg)) ?? (b === "" ? warn({ d: cost }, { key: "read", pod: p }) : null) ?? here };
+    return { ok: "Read " + word, price: priceOf(cost, "◆"), dim: !!b, back, subject: Sg.outcomes.read, need: (b && /^needs/.test(b) ? fill(Sg.needMoreFrom[S.shortFrom(st, 0, cost, 0)], { icons: "◆" }) : blockNeed(b, Sg)) ?? (b === "" ? warn({ d: cost }, { key: "read", pod: p }) : null) ?? here };
   }
   if (f && f.startsWith("kin.")) { const q = S.podById(st, view.kin[+f.slice(4)]?.id); return q ? { ok: "Compare", back, subject: state(q), need: glintOf(q) } : { back }; }
   if (f === "hatch") return { ok: ui.wildArm ? "Again: return it" : "Return to the wild", price: S.gainText(1), back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };

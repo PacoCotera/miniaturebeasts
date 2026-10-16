@@ -172,7 +172,7 @@
  "strings": {
   "title": "Incubator",
   "grow": "Grow now",
-  "open": "Open",
+  "open": "Open the bud",
   "choose": "Choose a pod",
   "back": "Home",
   "plaque": { "empty": "empty", "growing": "growing", "ready": "ready", "hatch": "hatched", "hatchNote": "copywriter, final (fix 5 I3, 2026-10-15 04:37): one word for the plate under a hatched mibi, lowercase, no punctuation, at most 112 px at Inter 16 (measured by the real measurer, tests/vectors/metrics.json)" },
