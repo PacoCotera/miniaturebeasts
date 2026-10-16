@@ -6,14 +6,13 @@ never a fill"), and each option's outcome stands lit on a small stage, so the ch
   left, its inset well floored with the stage wall's own paint), radius 12.
 - panel-card-{248,380,776}x288 and -focused: the option tile, the kit's recessed well at each card width (hairline, inner shade, lit lip); the
   focused tile is the kit's well one step up (--shown), so the focused option's ground lifts; the frame's ring is drawn over it by code.
-- panel-stage-{216,348,744}x48: the outcome's stage, bottom-centred under the picture slot's floor (card y 136-184): a low moulded sage plinth
-  (the housing's sage ramp, lit rim) topped with the vivarium's own moss, in a soft pool of warm light behind it, so the outcome stands lit.
-  The pool is light, not a glow: matte, it only warms the well floor round the plinth.
+- panel-stage-{216,348,744}x48, panel-glow-/panel-light-{w}x160, panel-contact-shadow-128x16, panel-scene-wild-{w}x152: the outcome's stage
+  and its light, and the Return outcome's ground (T-20261016-70; see their sections and the README).
 - panel-chip-40x20: the cost chip, a dark rubber pill (nine-slice, insets 10 left and right, 0 top and bottom) the build stretches round an
   icon and its figure.
 - panel-veil-1024x522: the veil's treatment, a flat layer (stageGround at 62 %, a little deeper at the edges) placed over the stage; not a
   dither (the guide: flat panels are never dithered).
-usage: python3 -I decision-panel/make-panel.py VIVARIUM_DAY.png OUT_DIR   (run in art/station-masters/pods)"""
+usage: python3 -I decision-panel/make-panel.py VIVARIUM_DAY.png OUT_DIR IDLE_VIVARIUM_DAY.png   (run in art/station-masters/pods)"""
 import sys, os, importlib.util, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -28,34 +27,77 @@ save("panel-housing-840x440", kit.plate(840, 440, bezel=6, radius=12))
 for w in (248, 380, 776):
     save(f"panel-card-{w}x288", kit.plate(w, 288, well=True, radius=10))
     save(f"panel-card-{w}x288-focused", kit.plate(w, 288, well=True, shown=True, radius=10))
-# the outcome's stage
-V = np.asarray(Image.open(viv).convert("RGB")).astype(float); moss = V[466:500, 760:984]
+# the outcome's stage (T-20261016-70): a sage plinth with depth, its top a disc of the vivarium's moss in a warm pool of light, so the
+# outcome stands ON it. Its top's centre line is stage row 32, which is the card's y + 168, the picture slot's floor: the build puts the
+# picture's feet (its lowest row with alpha >= 128; the mibi families' ground row) on that line, centred, over panel-contact-shadow.
+moss = np.asarray(Image.open(sys.argv[3]).convert("RGB")).astype(float)[452:486, 720:944]   # the idle vivarium painting's bright moss bed
 def stage(w):
     H, S = 48, 4; yy, xx = (np.mgrid[0:H * S, 0:w * S] + .5) / S
-    pw = min(w - 24, 200 if w < 300 else 260); cx = w / 2
+    pw = min(w - 24, 196 if w < 300 else 244); cx = w / 2; T, RY, F = 32.0, 6.5, 8.5     # the top's centre row and half-height; the front face's depth
     ex = (xx - cx) / (pw / 2)
-    top = (ex ** 2 + ((yy - 30) / 7) ** 2) <= 1                              # the plinth's top, an ellipse seen from the front
-    side = (np.abs(ex) <= 1) & (yy >= 30) & (yy <= 40)
-    bottom = (ex ** 2 + ((yy - 40) / 7) ** 2) <= 1
-    body = side | bottom
+    top = (ex ** 2 + ((yy - T) / RY) ** 2) <= 1
+    front = ((np.abs(ex) <= 1) & (yy >= T) & (yy <= T + F)) | ((ex ** 2 + ((yy - T - F) / RY) ** 2) <= 1)
+    body = front & ~top
     u = np.clip(ex, -1, 1); nrm = np.dstack([u, np.zeros_like(u), np.sqrt(np.clip(1 - u * u, 0, 1))])
     lam = np.clip(nrm @ L, 0, 1) / L[2]
-    col = lin([98, 102, 79]) * (0.5 + 0.6 * lam)[..., None]
-    rim = top & ~((ex ** 2 + ((yy - 30) / 5.5) ** 2) <= ((pw / 2 - 3) / (pw / 2)) ** 2)
-    my = np.clip((yy - 23) / 14 * 33.99, 0, 33.99); mx = 223.99 - np.abs(((xx - cx + 2000 + 61) % 447.98) - 223.99)   # the mirror's turn kept off the centre
-    ms = np.stack([nd.map_coordinates(moss[..., c], [my, mx], order=1, mode="nearest") for c in range(3)], -1)
-    col[top] = (lin(ms) * 0.85)[top]
-    col[rim] = (lin([136, 142, 112]) * 1.05)[None] if rim.any() else col[rim]
-    A = (top | body).astype(float)
-    pool = np.exp(-(((xx - cx) / (pw * 0.6)) ** 2 + ((yy - 33) / 9) ** 2)) * np.clip((yy - 4) / 18, 0, 1) ** 2 * (1 - A)   # the warm light round it, on the well's floor, faded out before the top rows
+    fy = np.clip((yy - T) / (F + RY), 0, 1)                                   # the front face darkens toward the floor
+    col = lin([110, 115, 88]) * ((0.45 + 0.65 * lam) * (1 - 0.35 * fy))[..., None]
+    lip = body & (yy < T + 1.6 + RY * np.sqrt(np.clip(1 - ex ** 2, 0, 1)))  # the top's front edge, a lit moulded lip
+    col[lip] = (lin([150, 156, 124]) * (0.8 + 0.4 * lam[lip])[..., None])
+    my = np.clip((yy - (T - RY)) / (2 * RY) * 33.99, 0, 33.99); mx = 223.99 - np.abs(((xx - cx + 2000 + 61) % 447.98) - 223.99)
+    ms = lin(np.stack([nd.map_coordinates(moss[..., c], [my, mx], order=1, mode="nearest") for c in range(3)], -1))
+    pool = np.exp(-(((xx - cx) / (pw * 0.30)) ** 2 + ((yy - T) / (RY * 0.9)) ** 2))       # the warm pool, on the top, round the feet
+    warm = lin([255, 196, 120])
+    mcol = ms * (0.78 + 0.75 * pool)[..., None] + warm * (0.14 * pool)[..., None]
+    col[top] = mcol[top]
+    A = (top | front).astype(float)
+    spill = np.exp(-(((xx - cx) / (pw * 0.62)) ** 2 + ((yy - T) / 11) ** 2)) * (1 - A) * np.clip((yy - 6) / 16, 0, 1)   # the pool's light on the well round it
     dn = lambda img: img.reshape(H, S, w, S, *img.shape[2:]).mean((1, 3))
-    a1, c1, p1 = dn(A), dn(col * A[..., None]), dn(pool)
-    warm = lin([214, 168, 104])
-    Ap = a1 + p1 * 0.32 * (1 - a1)
-    C = (c1 + warm[None, None] * (p1 * 0.32 * (1 - a1))[..., None]) / np.maximum(Ap, 1e-6)[..., None]
+    a1, c1, p1 = dn(A), dn(col * A[..., None]), dn(spill)
+    Ap = a1 + p1 * 0.30 * (1 - a1)
+    C = (c1 + warm[None, None] * 0.75 * (p1 * 0.30 * (1 - a1))[..., None]) / np.maximum(Ap, 1e-6)[..., None]
     img = np.dstack([srgb(C), Ap * 255]); img[Ap <= 0] = 0
     return Image.fromarray(np.clip(np.rint(img), 0, 255).astype(np.uint8), "RGBA")
 for w in (216, 348, 744): save(f"panel-stage-{w}x48", stage(w))
+# the pool's light (T-20261016-70), two layers at the picture slot (x + 16, y + 16, w - 32 x 160):
+# - panel-glow-{w}x160, under the picture: the pool's warm light rising on the well's back wall behind the subject, so the tile is lit, not empty;
+# - panel-light-{w}x160, over the picture: the pool lighting the subject from below, warm at partial alpha, strongest at the feet line, so
+#   the subject is rimmed by its own stage's light. Both are matte light, not glow: no bloom past the slot.
+def light(w, over):
+    H = 160; yy, xx = np.mgrid[0:H, 0:w] + .5; cx = w / 2; fy = 152.0                 # the feet line: slot row 152 = card y + 168
+    pw = min(w - 24, 196 if w < 300 else 244)
+    if over:
+        a = np.exp(-(((xx - cx) / (pw * 0.42)) ** 2)) * np.clip(1 - (fy - yy) / 70, 0, 1) ** 2.2 * (yy < fy + 4) * 0.30
+        c = lin([255, 190, 112])
+    else:
+        a = np.exp(-(((xx - cx) / (pw * 0.55)) ** 2 + ((yy - fy) / 105) ** 2)) * 0.26 * np.clip((fy + 6 - yy) / 12, 0, 1)
+        c = lin([214, 160, 96])
+    img = np.dstack([np.broadcast_to(srgb(c), (H, w, 3)), a * 255])
+    return Image.fromarray(np.clip(np.rint(img), 0, 255).astype(np.uint8), "RGBA")
+for w in (216, 348, 744):
+    save(f"panel-glow-{w}x160", light(w, False)); save(f"panel-light-{w}x160", light(w, True))
+# the contact shadow (T-20261016-70): the house shadow (#1e1a22) as a soft ellipse, 128 x 16, centred on the feet line under the subject;
+# the build stretches it across the subject's foot span plus 16 (a blur, so a horizontal stretch keeps it soft)
+yy, xx = np.mgrid[0:16, 0:128] + .5
+d = ((xx - 64) / 58) ** 2 + ((yy - 8) / 5) ** 2
+a = nd.gaussian_filter((d <= 1).astype(float), 2.2) * 0.62
+cs = np.dstack([np.broadcast_to([0x1e, 0x1a, 0x22], (16, 128, 3)), a * 255])
+save("panel-contact-shadow-128x16", Image.fromarray(np.clip(np.rint(cs), 0, 255).astype(np.uint8), "RGBA"))
+# the Return outcome's picture (T-20261016-70): the wild beyond, from the vivarium's own painting (idle-vivarium-day: sunlight through the
+# forest, the moss ground in front), cut per card width at the slot's size, faded into the well at its top and sides and into the plinth's
+# moss at its foot. One master per card width for the outcome "back to the wild"; the build composites the mibi on it (see the README).
+IV = Image.open(sys.argv[3]).convert("RGB")
+SCENE = {216: (300, 118, 700, 400), 348: (240, 140, 840, 402), 744: (60, 236, 880, 404)}
+def scene(w):
+    H = 152; x0, y0, x1, y1 = SCENE[w]; assert (x1 - x0) >= w and (y1 - y0) >= H
+    im = np.asarray(IV.crop((x0, y0, x1, y1)).resize((w, H), Image.LANCZOS)).astype(float)
+    yy, xx = np.mgrid[0:H, 0:w] + .5
+    n = 3.0; s = (np.abs((xx - w / 2) / (w / 2)) ** n + np.abs((yy - H * 0.62) / (H * 0.62)) ** n) ** (1 / n)
+    a = np.clip((1 - s) * min(w / 2, H * 0.62) / 18, 0, 1); a = a * a * (3 - 2 * a)
+    a = np.where(yy > H * 0.62, np.clip((H - yy) / 10, 0, 1) * np.clip((1 - np.abs((xx - w / 2) / (w / 2)) ** 4) * 3, 0, 1), a)   # the foot: into the plinth
+    c = srgb(lin(im) * 0.88)
+    return Image.fromarray(np.clip(np.rint(np.dstack([c, a * 255])), 0, 255).astype(np.uint8), "RGBA")
+for w in SCENE: save(f"panel-scene-wild-{w}x152", scene(w))
 # the cost chip: a dark rubber pill, 40 x 20, nine-slice
 S = 8; yy, xx = (np.mgrid[0:20 * S, 0:40 * S] + .5) / S
 cxx = np.clip(xx, 10, 30); d = 10 - np.hypot(xx - cxx, yy - 10)

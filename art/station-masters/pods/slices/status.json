@@ -5571,18 +5571,18 @@
  },
  "panel-stage-216x48": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
-  "note": "T-20261016-47, the decision panel kit"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
  },
  "panel-stage-348x48": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
-  "note": "T-20261016-47, the decision panel kit"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
  },
  "panel-stage-744x48": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
-  "note": "T-20261016-47, the decision panel kit"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
  },
  "cargo-link-light-976x8": {
   "status": "signed",
@@ -5618,5 +5618,60 @@
   "status": "signed",
   "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
   "note": "T-20261016-68, the shadow's body clip"
+ },
+ "panel-glow-216x160": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-light-216x160": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-scene-wild-216x152": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-glow-348x160": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-light-348x160": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-scene-wild-348x152": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-glow-744x160": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-light-744x160": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-scene-wild-744x152": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "panel-contact-shadow-128x16": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
+ },
+ "mibi-juvenile-S01-176x128": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "note": "T-20261016-70, the decision panel's moment"
  }
 }

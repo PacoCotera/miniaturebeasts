@@ -25,3 +25,46 @@ The style is `design/art-direction.md` and `design/style-guide/README.md`. Every
 - `panel-grow-over-create-1x.png`: Grow this founder?, arrival mode, two cards, over station-gate 54bde362 `create-shape`.
 - `panel-return-over-vivarium-1x.png`: Return Pip?, a loss and a way out, over `habitat-card`.
 - **Stand-ins (the build's):** the words, the icons (cropped from the golden's top bar) and the focus ring.
+
+## T-20261016-70: the subject stands on a lit stage; the chips; the Return outcome as one picture
+The review (`results/review-art-2026-10-16b.md` §4) found four problems:
+- the subject floated about 10 px over a flat coaster;
+- the pool was a faint band;
+- the chips were missing;
+- Return was a pasted square.
+
+**The stage, repainted** (`panel-stage-{216,348,744}x48`, at (x + 16, y + 136)):
+- **The plinth has depth:** its top is a disc of the vivarium painting's own moss (the old one sampled soil from the golden). Its front face is moulded sage with a lit lip, darkening toward the floor.
+- **The pool:** a warm pool lies on the top round the feet and spills onto the well beside it.
+
+**The light, new** (both at the picture slot (x + 16, y + 16)):
+- `panel-glow-{w}x160`, under the picture: the pool's warm light rising on the well's back wall, so the tile is lit, not an empty dark well.
+- `panel-light-{w}x160`, over the picture: the pool lighting the subject from below at partial alpha, strongest at the feet line, so the subject is rimmed by its stage's light.
+
+**The composite rule** (per card, in order):
+1. `panel-glow-{w}x160`, or for "back to the wild" `panel-scene-wild-{w}x152`;
+2. `panel-stage-{w}x48`;
+3. `panel-contact-shadow-128x16`, centred on the feet line and stretched across the feet's span plus 16;
+4. the picture, 1:1 and centred, with its **feet line on y + 168**. The feet line is its lowest row with alpha ≥ 128 (the mibi families' ground row). This is the slot's floor and the plinth top's centre line;
+5. `panel-light-{w}x160`.
+
+**The subject's height per tile** (the slot is 160 tall, so half is 80):
+
+| Picture | Figure height | In the 248 / 380 / 776 tiles |
+| --- | --- | --- |
+| `mibi-juvenile-S01-176x128` (new) | 110 px | 69 % of the slot (fits the 216 slot width) |
+| `mibi-adult-S01-144x152` | 138 px | 86 % |
+| `mibi-juvenile-S01-104x112` (the spec's §1.6 picture) | 69 px | 43 %, under half: replaced in the proofs by the 176 × 128 |
+
+- **The new juvenile:** `mibi-juvenile-S01-176x128` is made by `make-subject.py`. It is the 304 × 312 painting, its empty top cut away, reduced ×176/304 (never enlarged). UI/UX names it in §1.6 in place of the 104 × 112; other species need the same cut from their 304 juvenile.
+- **The rule for any picture:** it must stand at least 80 px tall.
+
+**The chips:** each cost group sits on `panel-chip-40x20`, nine-sliced (10 px caps, the middle stretched), with the icon 8 px in and 8 px between groups.
+
+**The Return outcome:** `panel-scene-wild-{216,348,744}x152`, one master per card width for the outcome "back to the wild".
+- **The ground:** the vivarium's own painting (`idle-vivarium-day`: sunlight through the forest, the moss in front), faded into the well at its top and sides and into the plinth's moss at its foot.
+- **The mibi:** the build composites it on the scene by the rule above, 72 px right of centre, facing the light. The scene stays the same for every species.
+- **"Kept":** this outcome has no scene. It is the mibi as it is, on the stage with the glow.
+- **Places:** a scene per place (the meadow and the rest) would come from each place's own painting, if the game wants it.
+
+**Proofs** (`proof/`, labelled inside each image): `panel-grow-over-create-1x.png` and `panel-return-over-vivarium-1x.png`. Stand-ins: the words, the icons and the ring.

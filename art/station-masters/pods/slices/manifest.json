@@ -17779,11 +17779,11 @@
   ],
   "rect": null,
   "src": "decision-panel/make-panel.py",
-  "made": "the outcome's stage under a 216-wide picture slot (card y 136-184): a low moulded sage plinth topped with the vivarium's moss in a soft pool of warm light; job: the outcome stands lit, as an event",
-  "sha256": "40cfaaadbf2eb2e0d1efbf469b7053bdf6f2aa18608140a891099aefd1cd134c",
+  "made": "the outcome's stage under a 216-wide picture slot (card y 136-184), repainted (T-20261016-70): a sage plinth with depth (its moss top and a moulded front face with a lit lip), the moss the vivarium painting's own, a warm pool on its top round the feet and spilling onto the well; the top's centre line is stage row 32 = card y + 168, where the picture's feet go",
+  "sha256": "d9ebe8909d2c500b5340b2b29002da80fb2a7072a4e87a027a9cf25cea3dd6a6",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
-  "status_note": "new (10-16, T-20261016-47)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "repainted (10-16, T-20261016-70)"
  },
  "panel-stage-348x48": {
   "size": [
@@ -17792,11 +17792,11 @@
   ],
   "rect": null,
   "src": "decision-panel/make-panel.py",
-  "made": "the outcome's stage under a 348-wide picture slot (card y 136-184): a low moulded sage plinth topped with the vivarium's moss in a soft pool of warm light; job: the outcome stands lit, as an event",
-  "sha256": "06f29cf31d906c64ec6aa8a36779ec107125bae3f52f9461fb63bd6ae2926860",
+  "made": "the outcome's stage under a 348-wide picture slot (card y 136-184), repainted (T-20261016-70): a sage plinth with depth (its moss top and a moulded front face with a lit lip), the moss the vivarium painting's own, a warm pool on its top round the feet and spilling onto the well; the top's centre line is stage row 32 = card y + 168, where the picture's feet go",
+  "sha256": "07a9257e88cd99bf867a45a6cffed71730f30ede957c2eec4f7b8fdba0766eb7",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
-  "status_note": "new (10-16, T-20261016-47)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "repainted (10-16, T-20261016-70)"
  },
  "panel-stage-744x48": {
   "size": [
@@ -17805,11 +17805,11 @@
   ],
   "rect": null,
   "src": "decision-panel/make-panel.py",
-  "made": "the outcome's stage under a 744-wide picture slot (card y 136-184): a low moulded sage plinth topped with the vivarium's moss in a soft pool of warm light; job: the outcome stands lit, as an event",
-  "sha256": "af8a35dca8a0454a188df255cb392064ae051efca3c51f9b95ae5c42c6562915",
+  "made": "the outcome's stage under a 744-wide picture slot (card y 136-184), repainted (T-20261016-70): a sage plinth with depth (its moss top and a moulded front face with a lit lip), the moss the vivarium painting's own, a warm pool on its top round the feet and spilling onto the well; the top's centre line is stage row 32 = card y + 168, where the picture's feet go",
+  "sha256": "1c0957c6c503b65793562253edad5b346a2401ef214d8c2b6c7174b1081adfb2",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
-  "status_note": "new (10-16, T-20261016-47)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "repainted (10-16, T-20261016-70)"
  },
  "cargo-link-light-976x8": {
   "size": [
@@ -17911,5 +17911,148 @@
   "status": "signed",
   "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
   "status_note": "new (10-16, T-20261016-68)"
+ },
+ "panel-glow-216x160": {
+  "size": [
+   216,
+   160
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the pool's warm light rising on the well's back wall behind the subject, at the picture slot (x + 16, y + 16), under the picture; matte light, no bloom past the slot",
+  "sha256": "90d94449df36cc7bda8790b4d68ece0ad09e3721e1e1ffaaef50be86cf5517b0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-light-216x160": {
+  "size": [
+   216,
+   160
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the pool lighting the subject from below, at the picture slot, over the picture: warm at partial alpha, strongest at the feet line, so the subject is rimmed by its stage's light",
+  "sha256": "8237bde40b3c47ade62ac52659b76db71c5b7bb3ada6f16b06486143439ef2b7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-scene-wild-216x152": {
+  "size": [
+   216,
+   152
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py (from slices/idle-vivarium-day-1024x568)",
+  "made": "the Return outcome's picture ground, back to the wild: the vivarium's own painting (sunlight through the forest, the moss in front) reduced to the slot, faded into the well at its top and sides and into the plinth at its foot; at (x + 16, y + 16), the mibi composited on it by the feet rule",
+  "sha256": "2f898a28f180df520072f139b91f311ddfd58e5a9a5f8a7d31494f5c9fc13d8d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-glow-348x160": {
+  "size": [
+   348,
+   160
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the pool's warm light rising on the well's back wall behind the subject, at the picture slot (x + 16, y + 16), under the picture; matte light, no bloom past the slot",
+  "sha256": "ea1ae973b0dd68887f5e0486350dd6b4241a694db0f1c7f362f91c18589fce6f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-light-348x160": {
+  "size": [
+   348,
+   160
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the pool lighting the subject from below, at the picture slot, over the picture: warm at partial alpha, strongest at the feet line, so the subject is rimmed by its stage's light",
+  "sha256": "1db637898e58679878c9d75c1115c926c4b1f444d66d9369bfce16fe2168d0bc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-scene-wild-348x152": {
+  "size": [
+   348,
+   152
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py (from slices/idle-vivarium-day-1024x568)",
+  "made": "the Return outcome's picture ground, back to the wild: the vivarium's own painting (sunlight through the forest, the moss in front) reduced to the slot, faded into the well at its top and sides and into the plinth at its foot; at (x + 16, y + 16), the mibi composited on it by the feet rule",
+  "sha256": "269ce55e1b6d09d171f9487a19fa8625658ec459a3003e317d8824e6b8761649",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-glow-744x160": {
+  "size": [
+   744,
+   160
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the pool's warm light rising on the well's back wall behind the subject, at the picture slot (x + 16, y + 16), under the picture; matte light, no bloom past the slot",
+  "sha256": "9272363c0e899265d743e357a77f4cef850d41b583eabf743ea62498a0a4a7c1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-light-744x160": {
+  "size": [
+   744,
+   160
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the pool lighting the subject from below, at the picture slot, over the picture: warm at partial alpha, strongest at the feet line, so the subject is rimmed by its stage's light",
+  "sha256": "7f0e2b1b421485efe26d90abe920e8681d2292994466d1f6b2050183b9f24fc9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-scene-wild-744x152": {
+  "size": [
+   744,
+   152
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py (from slices/idle-vivarium-day-1024x568)",
+  "made": "the Return outcome's picture ground, back to the wild: the vivarium's own painting (sunlight through the forest, the moss in front) reduced to the slot, faded into the well at its top and sides and into the plinth at its foot; at (x + 16, y + 16), the mibi composited on it by the feet rule",
+  "sha256": "e0c7f9d895b84cd39bd0ecddc9e8ad74c992a4316b1027500a525eaabff1d49f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "panel-contact-shadow-128x16": {
+  "size": [
+   128,
+   16
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the subject's contact shadow on the stage: the house shadow #1e1a22 as a soft ellipse, centred on the feet line, stretched by the build across the feet's span plus 16",
+  "sha256": "441cd51ec369ab027ac0428fe53875a143afcd948d24b3766f0eb88eedbf40fb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
+ },
+ "mibi-juvenile-S01-176x128": {
+  "size": [
+   176,
+   128
+  ],
+  "rect": null,
+  "src": "decision-panel/make-subject.py (from mibi-juvenile-S01-304x312)",
+  "made": "S01's juvenile at the panel's size: the 304 x 312 picture's empty top cut away and reduced x176/304 (never enlarged), premultiplied; the figure 110 px tall, its feet on row 123, so the Grow it outcome stands in the tile",
+  "sha256": "5ebad11fb8bab70f11564d6334ebf95d8f1aebfaf3075ce6f5e07f20cdf92f84",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
+  "status_note": "new (10-16, T-20261016-70)"
  }
 }
