@@ -130,7 +130,7 @@ export function zoneRange(pngBytes, scene, shadow = STAND_IN_SHADOW) {
 }
 
 // ---- rule 1 (fix 14, one focus form), on the test-mode region log: the log has one entry per region and layer, and `ring: n` counts the entry's shown nodes whose picture holds a ring or tabRing op (a composed node, or a nine-slice
-// or sprite of a face-owned source composed with one). Allowed: `focus` / chrome with n = 1 when no hold is on and the state has a focus target; `companion` / art with n <= 1 (the top bar's holder); `cross` / art with n <= `faces`
+// or sprite of a face-owned source composed with one). Allowed: `focus` / chrome with n = 1 when no hold that drops the ring is on (`hold`: only on Home and Habitat chrome targets, tiles and the namer; the Probe's ring stays through its mend and install and every creature footprint ring stays, as on main) and the state has a focus target; `companion` / art with n <= 1 (the top bar's holder); `cross` / art with n <= `faces`
 // (Habitat's holders). Rule 4's source scan pins the only two writers of a ring op (focusRing.c, v_faceHolder), so the region level cannot be fooled. Returns the departures.
 export function ringDepartures(log, { hold = false, faces = 0, focusTarget = true } = {}) {
   const out = [];

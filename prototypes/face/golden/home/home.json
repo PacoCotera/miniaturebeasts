@@ -42,39 +42,39 @@
    "png": "home-bed-none.png"
   },
   "home-cargo-empty": {
-   "hash": "09e5e50f",
+   "hash": "fb961e03",
    "png": "home-cargo-empty.png"
   },
   "home-incubator-empty": {
-   "hash": "ec5998d5",
+   "hash": "cff24af9",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-growing": {
-   "hash": "cc14fa07",
+   "hash": "505146a3",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-ready": {
-   "hash": "ee4c78b0",
+   "hash": "773ca814",
    "png": "home-incubator-ready.png"
   },
   "home-probe-docked": {
-   "hash": "db289b15",
+   "hash": "dcc50a2d",
    "png": "home-probe-docked.png"
   },
   "home-probe-away": {
-   "hash": "7d081315",
+   "hash": "ad06066d",
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
-   "hash": "9c753b1d",
+   "hash": "347bb681",
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
-   "hash": "c2e8338b",
+   "hash": "30e0c083",
    "png": "home-library-empty.png"
   },
   "home-library-pages": {
-   "hash": "271706c8",
+   "hash": "e20e74d0",
    "png": "home-library-pages.png"
   },
   "home-knob-rest": {
@@ -82,23 +82,23 @@
    "png": "home-knob-rest.png"
   },
   "home-knob-focused": {
-   "hash": "7fce0e13",
+   "hash": "7377b31f",
    "png": "home-knob-focused.png"
   },
   "home-vivarium-focused": {
-   "hash": "9655d6eb",
+   "hash": "ba56a037",
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
-   "hash": "1fe15d0c",
+   "hash": "69c52c55",
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "e1bf5cc8",
+   "hash": "afced35f",
    "png": "home-sleeper-focused.png"
   },
   "home-moving-asleep": {
-   "hash": "123a8287",
+   "hash": "2aaea5ed",
    "png": "home-moving-asleep.png"
   },
   "home-knob-pressed": {

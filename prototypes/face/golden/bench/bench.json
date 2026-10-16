@@ -2,19 +2,19 @@
  "_note": "The Probe bench: docked with the ring on the plates, the upgrade armed, the Probe away, and the upgrade fitted: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "bench": {
-   "hash": "ba89ddb5",
+   "hash": "d69a3ae5",
    "png": "bench.png"
   },
   "bench-armed": {
-   "hash": "479e88ad",
+   "hash": "b1a3e9b1",
    "png": "bench-armed.png"
   },
   "bench-away": {
-   "hash": "9ccdc7ac",
+   "hash": "eb9ce661",
    "png": "bench-away.png"
   },
   "bench-tier2": {
-   "hash": "d0fbc86a",
+   "hash": "fbb04bee",
    "png": "bench-tier2.png"
   }
  }
