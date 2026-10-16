@@ -25,12 +25,12 @@
   "trait-S01-eyes-thin-rings-160x128",
   "trait-S01-eyes-a",
   [
-   130,
-   132,
-   550,
-   468
+   100,
+   108,
+   580,
+   492
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S01-eyes-between-160x128",
@@ -47,12 +47,12 @@
   "trait-S01-eyes-wide-pale-rings-160x128",
   "trait-S01-eyes-a",
   [
-   1145,
-   132,
-   1565,
-   468
+   1104,
+   108,
+   1584,
+   492
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S01-markings-plain-160x128",
@@ -168,34 +168,34 @@
   "trait-S02-spots-bands-160x128",
   "trait-S02-spots-a",
   [
-   670,
-   46,
-   1130,
-   414
+   631,
+   6,
+   1171,
+   438
   ],
-  7
+  "recut T-20261016-68"
  ],
  [
   "trait-S02-spots-spots-160x128",
   "trait-S02-spots-a",
   [
-   70,
-   486,
-   530,
-   854
+   31,
+   451,
+   571,
+   883
   ],
-  9
+  "recut T-20261016-68"
  ],
  [
   "trait-S02-spots-bands-and-spots-160x128",
   "trait-S02-spots-a",
   [
-   670,
-   486,
-   1130,
-   854
+   631,
+   451,
+   1171,
+   883
   ],
-  16
+  "recut T-20261016-68"
  ],
  [
   "trait-S02-span-small-cap-160x128",
@@ -301,66 +301,66 @@
   "trait-S03-claws-scales-a",
   [
    20,
-   78,
+   52,
    400,
-   382
+   356
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S03-claws-pads-160x128",
   "trait-S03-claws-scales-a",
   [
    441,
-   78,
+   52,
    821,
-   382
+   356
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S03-claws-digging-wedges-160x128",
   "trait-S03-claws-scales-a",
   [
-   862,
-   78,
-   1242,
-   382
+   848,
+   52,
+   1228,
+   356
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S03-scales-few-fine-160x128",
   "trait-S03-claws-scales-a",
   [
-   20,
-   452,
+   60,
+   430,
    400,
-   756
+   702
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S03-scales-between-160x128",
   "trait-S03-claws-scales-a",
   [
-   441,
-   452,
+   481,
+   430,
    821,
-   756
+   702
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S03-scales-many-coarse-160x128",
   "trait-S03-claws-scales-a",
   [
-   862,
-   452,
+   902,
+   430,
    1242,
-   756
+   702
   ],
-  0
+  "recut T-20261016-68"
  ],
  [
   "trait-S02-flecks-bare-160x128",

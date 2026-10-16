@@ -39,3 +39,35 @@ For `pods.json classes.pod`: `"incubator": [224, 272]` (the build adds it).
 - The Incubator proofs in `../incubator-b/proof/` now use these shells 1:1.
 
 **Not in scope:** the origin dust or moss (the renderer has no layer for it).
+
+## T-20261016-68: eleven crops re-cut clean
+The review (§2) found 11 crops dirty at 1×. The causes:
+- traitcut's rectangular 12 px fade;
+- its white key, meant for the crown sheet's white margin, which took the cream highlights and the claw tips to ground and left grey specks;
+- windows that crossed a panel edge (S01's eyes) or cut the creature (S02's side bulb).
+
+`recut-card-crops.py` re-cuts them. For each crop:
+- **The window:** inside its panel, 5:4, reduced (never enlarged) into the owner's 75 percent box (120 × 96, centred).
+- **The key:**
+  - the sheet's magenta only, keyed to `#162a37` at the sheet's size;
+  - each fringe pixel takes the nearest solid colour;
+  - a small enclosed key gap (under 400 px) is filled from its surround, not shown as ground (it made the dot on the claws' leg);
+  - reduced premultiplied.
+- **The edge:** where the window still cuts the creature, a superellipse mask fades into ground. This is pass 79's fix for the same verdict (`tools/guideplates2.py`'s mask). S02's three hold the whole creature, so they need none.
+
+| Crop (`-160x128`) | Window on the sheet | Picture |
+| --- | --- | --- |
+| `trait-S03-claws-round-feet`, `-pads`, `-digging-wedges` | 380 × 304 (x 20 / 441 / 848, y 52) | the two front feet whole, keyed; the body above fades out on a curve |
+| `trait-S03-scales-few-fine`, `-between`, `-many-coarse` | 340 × 272 (x 60 / 481 / 902, y 430) | the flank: the back's line, the patches and the scales, in a rounded patch |
+| `trait-S02-spots-bands`, `-spots`, `-bands-and-spots` | 540 × 432 (the whole creature) | the whole creature with its side bulb, keyed, no mask |
+| `trait-S01-eyes-thin-rings`, `-wide-pale-rings` | 480 × 384, on the eye | the eye and its ring in a round fade; nothing from past the panel |
+
+**Measured:**
+- magenta-cast pixels: 0 in ten crops and 1 in `claws-pads`;
+- pixels outside the 120 × 96 box that aren't ground: 0 in all eleven.
+
+**The sheet:** `proof/card-crops-160x128-1x.png` is rewritten with the eleven in their cells.
+
+**Left, reported:**
+- The scales panels are painted as a close-up of the flank, so the crop reads as a patch of scaled coat, not the whole animal. The painting has no clean silhouette at this scale.
+- Two crops not in this ticket show the same defects: `trait-S01-eyes-between` (the panel's frame) and `trait-S02-spots-bare` (the cut bulb). They now sit beside their re-cut looks at a different scale. The same script re-cuts them if a ticket names them.

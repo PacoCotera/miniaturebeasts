@@ -17148,12 +17148,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S01-eyes-a window [130, 132, 550, 468] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "c73e10b602b03fe1cce156775422b73c7ea514ea70d2a919117cd2649c58eeb4",
+  "src": "source/raw/trait-S01-eyes-a window [100, 108, 580, 492] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "2d8bb19695991db30ef30e99ef36819e2c0240841f6424247ba54fa18f2aae98",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S01-eyes-between-160x128": {
   "size": [
@@ -17174,12 +17174,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S01-eyes-a window [1145, 132, 1565, 468] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "339e81f009a399d93432b7ded31148a87a2c9ccae8d22184874187ebd19b8f2e",
+  "src": "source/raw/trait-S01-eyes-a window [1104, 108, 1584, 492] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "c755b4d8713615e77ea39bf3bb885ac6736a2c5ba5ff8f813f0dc1e3ee5ddb6a",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S01-markings-plain-160x128": {
   "size": [
@@ -17317,12 +17317,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S02-spots-a window [670, 46, 1130, 414] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "627f0837165fa580428f0ab96d15dc5cc178f3843e70021e362054d160726693",
+  "src": "source/raw/trait-S02-spots-a window [631, 6, 1171, 438] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "9a24184e0eae7e6a766369e21c4edc8e71fe0d8e302751566b3cae6fd349b73d",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S02-spots-spots-160x128": {
   "size": [
@@ -17330,12 +17330,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S02-spots-a window [70, 486, 530, 854] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "22c95bee7bf7778cf1e16efb88dc4146eb4f5a003062c8c4770ed3abc32d5340",
+  "src": "source/raw/trait-S02-spots-a window [31, 451, 571, 883] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "8fc5a7966055b3d75accf5a4e61fb44a80d56695c1b1c89abe48245800cd72eb",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S02-spots-bands-and-spots-160x128": {
   "size": [
@@ -17343,12 +17343,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S02-spots-a window [670, 486, 1130, 854] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "7ccadc3c96995173718b9622c7ce1be5d2050427c7ab967a8db0ccb502fe2a9a",
+  "src": "source/raw/trait-S02-spots-a window [631, 451, 1171, 883] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "12b328211d8913b943ebfaa97a9a76b4d381428da7c58b230c93e9d002382587",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S02-span-small-cap-160x128": {
   "size": [
@@ -17473,12 +17473,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S03-claws-scales-a window [20, 78, 400, 382] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
-  "sha256": "c25ec30cb27d3d97e11bd6f0f067c344d537ca3d924968938a2d16b691fed639",
+  "src": "source/raw/trait-S03-claws-scales-a window [20, 52, 400, 356] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "715052f1dc4c8ab8fdb62ce033e998c975261fd622fbb188220a570add132f05",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S03-claws-pads-160x128": {
   "size": [
@@ -17486,12 +17486,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S03-claws-scales-a window [441, 78, 821, 382] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
-  "sha256": "b259a0376cd30caea83dd6a3136e0599c873a89d84629003223e6a94284da331",
+  "src": "source/raw/trait-S03-claws-scales-a window [441, 52, 821, 356] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "c8717a65a6942221b01fd3e65eaa08da56ecc2e4627d41ef65828ff716517759",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S03-claws-digging-wedges-160x128": {
   "size": [
@@ -17499,12 +17499,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S03-claws-scales-a window [862, 78, 1242, 382] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
-  "sha256": "9d468e91316a863824472fa95bb477b5b9403bef315f478f16ad32a27bfbb530",
+  "src": "source/raw/trait-S03-claws-scales-a window [848, 52, 1228, 356] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "76dc922ebd3b210c8cc870837a6ba015621940b4ce9df0d06c95a8e9270f8ccc",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S03-scales-few-fine-160x128": {
   "size": [
@@ -17512,12 +17512,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S03-claws-scales-a window [20, 452, 400, 756] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
-  "sha256": "54a2095019103f49b1b39596967b22761ba020ae732185dbb82f5b4517e2f5e8",
+  "src": "source/raw/trait-S03-claws-scales-a window [60, 430, 400, 702] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "9af53c52750b1479eba5b3f7bb0171f77afb19f9b1b9d9949e356548f87cfaa0",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S03-scales-between-160x128": {
   "size": [
@@ -17525,12 +17525,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S03-claws-scales-a window [441, 452, 821, 756] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
-  "sha256": "95df38361a6aa6edd136ebc57856186579cde82ed13e39f9662ede26ea891d26",
+  "src": "source/raw/trait-S03-claws-scales-a window [481, 430, 821, 702] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "f96764f0042031dea28efd3ef0bea54df67c39f69c94fade879b0723240864d7",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S03-scales-many-coarse-160x128": {
   "size": [
@@ -17538,12 +17538,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S03-claws-scales-a window [862, 452, 1242, 756] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule), and the S03 residue pass (trait-clean/clean-s03-residue-2.py, twice)",
-  "sha256": "df1129895b346f38d551e02a9f1fc9bd314956eddce3ad27c2669fbd5c38e1b5",
+  "src": "source/raw/trait-S03-claws-scales-a window [902, 430, 1242, 702] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-68): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "715fae6d415b2dd94a0ab403c5e17a693f569bf69e9c6f347e54066c3154d7b4",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-68)"
  },
  "trait-S02-flecks-bare-160x128": {
   "size": [
@@ -17893,5 +17893,23 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
   "status_note": "new (10-16, T-20261016-57)"
+ },
+ "incubator-shell-body-clip": {
+  "size": [
+   224,
+   272
+  ],
+  "rect": [
+   400,
+   144,
+   224,
+   272
+  ],
+  "src": "incubator-b/make-body-clip.py",
+  "made": "the shell's translucent body as a clip for the founder's shadow: alpha = pod-incubator-mask-body, zero wherever mask-accent (cap and straps) or band is half opaque or more, inside the shade's silhouette; white. The build multiplies the shadow's alpha by it (or draws band, cap and accent over the shadow), so the shadow shows only through the body",
+  "sha256": "a47c342b496f0ddc3e8a3c5eac8fa0ecf38446d0a39a20068857551817fbbfc3",
+  "status": "signed",
+  "signed_in": "art director at 1x and 2x, 2026-10-16: T-20261016-68, in pod-incubator/proof/card-crops-160x128-1x.png (the 11 re-cut) and incubator-b/proof (the shadow clipped to the body; no shadow pixel on the cap, band or straps); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-68)"
  }
 }

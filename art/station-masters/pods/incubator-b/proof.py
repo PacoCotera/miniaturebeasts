@@ -1,8 +1,10 @@
 """T-20261016-27 / T-20261016-62 proofs: the Incubator, option B, at 1x for two species (S01 Loika, a dark shell; S03 Tuikis, a light one), in
 empty, cool, warm, glowing, ready and hatch-1100, with the masters at the ruling's rects (specs/station-incubator-tabs-ruling.md §2), and the
 review's five measures (T-62 step 5).
-The composite order (the build's, T-62 step 2): the shell; the step's light (incubator-shell-{step}); the founder's shadow at the ruling's
-opacity (cool 0.25, warm 0.45, glowing 0.65, ready 0.8); the seams (ready); the nest's front for the step (incubator-cradle-front-{step}).
+The composite order (the build's, T-20261016-68): the shell body; the step's light (incubator-shell-{step}); the founder's shadow at the
+ruling's opacity (cool 0.25, warm 0.45, glowing 0.65, ready 0.8), clipped by incubator-shell-body-clip; the band, cap and accent; the seams
+(ready); the nest's front for the step (incubator-cradle-front-{step}). Here the shell is one pass, so the clip stands for drawing the band,
+cap and accent over the shadow: the shadow's alpha is multiplied by the clip.
 Stand-ins, said so on every proof and in the README (they are the build's, not masters):
 - the pod at 224 x 272: the species' shell composed by pods.json podLayers.compose from the pod-incubator layers (T-20261016-63, 1:1);
 - the founder's shadow: the juvenile's silhouette, fitted to the 160 x 192 shadow box, blurred, at the step's opacity;
@@ -29,6 +31,7 @@ SLIP = {"S01": ["Found at the pond edge,", "as a Loika shook dry.", "Crown: leaf
                 "Movement: a slow wade", "Stamina: steady", "Senses: sharp by day", "Habits: basks at noon", "Voice: a dry rattle", "three still to come"]}
 CARD = {"S01": ("Face", "a leaf crest", "trait-S01-crown-leaf-crest-144x176"), "S03": ("Tail", "long and thick", "trait-S03-tail-long-thick-128x160")}
 CLS = "incubator" if os.path.exists(f"{sl}/pod-incubator-shade.png") else "large"   # the 224 x 272 class (T-20261016-63), else the large class scaled
+CLIP = np.asarray(L(f"{md}/incubator-shell-body-clip.png"))[..., 3].astype(float) / 255   # T-20261016-68: the body-only clip
 def shell(sp):
     _, a, b, pat = SPECIES[sp]
     g = lambda n: np.asarray(L(f"{sl}/pod-{CLS}-{n}.png")).astype(float)
@@ -92,7 +95,9 @@ def frame(sp, state, shadow=True):
         put("cradle", L(f"{md}/incubator-cradle-{light}.png"), (392, 392))
         pod = shell(sp); pod.alpha_composite(L(f"{md}/incubator-shell-{light}.png"))       # the shell, then its light
         if shadow:
-            sh, sil = founder_shadow(sp, op); pod.alpha_composite(sh, (32 - 16, 48 - 16))   # then the founder's shadow over the light
+            sh, sil = founder_shadow(sp, op); lay = Image.new("RGBA", (224, 272)); lay.alpha_composite(sh, (32 - 16, 48 - 16))
+            la = np.asarray(lay).copy(); la[..., 3] = np.round(la[..., 3] * CLIP).astype(np.uint8)   # then the founder's shadow, clipped to the body
+            pod.alpha_composite(Image.fromarray(la, "RGBA"))                                       # (T-68), so the cap, band and straps stay over it
             sil_abs = np.zeros((600, 1024), bool); sil_abs[144 + 48:144 + 48 + 192, 400 + 32:400 + 32 + 160] = sil[16:-16, 16:-16]
         if state == "ready": pod.alpha_composite(L(f"{md}/incubator-shell-seams.png"))
         pod = Image.fromarray(np.dstack([np.asarray(pod)[..., :3], np.asarray(shell(sp))[..., 3]]), "RGBA")

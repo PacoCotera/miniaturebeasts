@@ -145,3 +145,38 @@ The shadow goes over the light: it is where the founder blocks it.
 
 
 **Re-taken on the 224 × 272 class (T-20261016-63):** the shells in the proofs are now the `incubator` class 1:1 and the overlays are cut on its own silhouette; the five measures in `proof/measures.json` are all still met (see `../pod-incubator/README.md`).
+
+## T-20261016-68: the founder's shadow clipped to the translucent body
+
+The shadow was drawn over the whole shell, so it darkened the opaque cap and straps (S03's gold cap and straps; a notch on S01's cap). Light can't pass through them, so neither can a shadow.
+
+**The clip:** `incubator-shell-body-clip` (224 × 272, at the pod's rect 400, 144), made by `make-body-clip.py` from the `incubator` class's own layers. White; alpha = `pod-incubator-mask-body`, zero wherever `pod-incubator-mask-accent` (the cap and straps) or `pod-incubator-band` is half opaque or more, inside the `shade` silhouette.
+
+**The composite order (the build's, replacing the one above):**
+1. the shell body;
+2. `incubator-shell-{step}` (the interior light);
+3. the founder's shadow, at the ruling's opacity, clipped by `incubator-shell-body-clip` (its alpha multiplied by the clip's);
+4. the band, cap and accent;
+5. `incubator-shell-seams` (ready);
+6. `incubator-cradle-front-{step}`.
+
+Pods' renderer (`pods.json podLayers.compose`) draws the shell in one pass. The build splits nothing out: multiplying the shadow's alpha by the clip in step 3 is the same as drawing step 4 over it, and the proofs do exactly that. If the build prefers to split, the layers that go after the shadow are the `B · mask-accent` term of the compose and `pod-incubator-band`.
+
+**The 2× check:** `proof/shadow-clip-before-after-2x.png` (S01 above S03; warm, glowing and ready; each before | after).
+- **What was measured:** on the frames, the pixels of the cap, band and straps (accent or band alpha ≥ 0.5; 10 417 px), changed by the shadow (with the shadow against without).
+  - Before: S01 glowing 3 286, S03 glowing 1 232.
+  - After: 0 in S01 warm and glowing, and 0 in S03 warm and glowing.
+  - Ready uses the same clip.
+- **On the body the shadow is kept:** body pixels darkened, S01 glowing 17 368 before and 17 315 after; S03 glowing 15 369 before and 15 354 after.
+
+**The five measures, re-taken** (`proof/measures.json`): all met.
+
+| Species | Under-light (bottom ≥ top in warm, glowing, ready; R−B rises from cool) | Steps (≥ 12/255) | Lamp (≥ 1.5) | Shadow (≥ 15/255) | Brightness margin (≥ 0.08) |
+| --- | --- | --- | --- | --- | --- |
+| S01 | 0.171 ≥ 0.162; 0.218 ≥ 0.171; 0.206 ≥ 0.181. R−B 4.1 → 43.5, 43.8, 42.0 | 17.0; 16.2 | 1.88× | 41.2 | 0.260, 0.204, 0.288, 0.303 |
+| S03 | 0.238 ≥ 0.182; 0.281 ≥ 0.191; 0.269 ≥ 0.201. R−B −44.6 → 15.8, 28.0, 26.7 | 17.5; 14.3 | 1.71× | 54.2 | 0.222, 0.159, 0.251, 0.261 |
+
+- **Shadow:** lower than T-63's 48.8 and 58.0, because the silhouette's pixels on the straps no longer change.
+- **Brightness margin:** higher, because the pod's brightest pixels (the lit cap) are no longer darkened.
+
+**The owner's proof:** `proof/incubator-b-S01-glowing-1x.png`.
