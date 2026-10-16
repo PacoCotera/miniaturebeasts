@@ -165,3 +165,8 @@ test("the ring is unchanged between focused and armed on the slot (fix 14, rule 
   const a = await band({ f: "slot", arm: 0 }), b = await band({ f: "slot", arm: 1 });
   assert.deepEqual(a.r, b.r, "the same rect"); assert.deepEqual(a.px, b.px, "the same pixels in its four bands");
 });
+
+test("the plates' ring is the drawn plates' union grown by 5, lifted: (267, 433, 138, 42) at three plates and (243, 433, 186, 42) at four (spec §5, fix 5's places)", { skip }, async () => {
+  const ring = async (o) => logOf(await start(scene(o))).regions.find((q) => q.id === "focus" && q.layer === "chrome").rect;
+  assert.deepEqual(await ring({ f: "plates" }), [267, 433, 138, 42]); assert.deepEqual(await ring({ tier: 2, shield: 4, f: "plates" }), [243, 433, 186, 42]);
+});

@@ -36,7 +36,7 @@ function floorProblems(name, rect, withRing, ground) {
   const [x0, y0, W, H] = rect, ring = focusRingOps("oval", [x0 + 5, y0 + 5, W - 10, H - 10], frame.focus.ring), roles = ringRaster(ring), inner = ringRaster({ ...ring, ops: [ring.ops[ring.ops.length - 1]] });
   const col = { 1: rgbOf("void"), 2: rgbOf("focus") }, at = (arr, x, y) => [arr[3 * (y * W + x)], arr[3 * (y * W + x) + 1], arr[3 * (y * W + x) + 2]], same = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
   const visible = (x, y) => roles[y * W + x] > 0 && same(at(withRing, x, y), col[roles[y * W + x]]);
-  let bad = 0, total = 0, first = null;
+  let bad = 0, total = 0, none = 0, px3 = 0, first = null; const under = new Set();
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     if (!inner[y * W + x] || !visible(x, y)) continue;   // pixels under the body are skipped
     const dx = (x + 0.5 - W / 2) / (W / 2) ** 2, dy = (y + 0.5 - H / 2) / (H / 2) ** 2, horiz = Math.abs(dx) > Math.abs(dy), step = horiz ? [Math.sign(dx) || 1, 0] : [0, Math.sign(dy) || 1];
@@ -45,9 +45,16 @@ function floorProblems(name, rect, withRing, ground) {
     if (run.some(([px, py]) => !visible(px, py))) continue;   // a cross-section the body covers in part is under the body, not the line's
     total++;
     for (const [px, py] of run) { const L1 = lum(col[roles[py * W + px]]), L2 = lum(at(ground, px, py)), r = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05); if (r >= 3) n++; }
+    if (n < 1) none++;
+    px3 += n;
+    if (n < 2) { under.add(y * W + x); }
     if (n < 2) { bad++; if (!first) { first = [x0 + x, y0 + y]; if (process.env.FLOORDEBUG) console.error(name, "first failing run:", run.map(([px, py]) => { const L1 = lum(col[roles[py * W + px]]), g = at(ground, px, py), L2 = lum(g); return `${roles[py * W + px] === 2 ? "core" : "key"}@${x0 + px},${y0 + py} ground ${g} ${((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)).toFixed(2)}`; }).join(" | ")); } }
   }
-  return bad ? `${name}: ${bad} of ${total} cross-sections under 2 px at ${first}` : null;
+  // the longest run of neighbouring cross-sections under 2 px (8-connected inner-band pixels)
+  let longest = 0; const seen = new Set(); for (const k of under) { if (seen.has(k)) continue; let n = 0; const stack = [k]; seen.add(k); while (stack.length) { const q = stack.pop(); n++; const qx = q % W, qy = (q - qx) / W; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nk = (qy + dy) * W + qx + dx; if (under.has(nk) && !seen.has(nk)) { seen.add(nk); stack.push(nk); } } } if (n > longest) longest = n; }
+  // the rule (UI/UX, 18:52): (a) the ring pixels at 3:1 are at least 2 x the visible cross-sections and (b) every cross-section has at least 1 px at 3:1
+  const sum = `${bad} of ${total} under 2 px, longest run ${longest}`;
+  return { text: `${name}: ${sum}`, fail: px3 < 2 * total || none > 0 ? `${name}: ${sum}; ${px3 < 2 * total ? `ring pixels at 3:1 ${px3} < 2 x ${total}` : ""}${none ? ` ${none} cross-sections with none at 3:1 (first under 2 px at ${first})` : ""}` : null, first };
 }
 let failed = 0;
 const reading = (screen) => async (name, page, fail) => {
@@ -61,7 +68,7 @@ const reading = (screen) => async (name, page, fail) => {
       for (let y = 40; y < 562; y++) for (let x = 0; x < 1024; x++) { const p = F.pixel(x, y), hit = (p[0] === focus[0] && p[1] === focus[1] && p[2] === focus[2]) || (paper && p[0] === rust[0] && p[1] === rust[1] && p[2] === rust[2]);
         if (hit && rect && x >= rect[0] && y >= rect[1] && x < rect[0] + rect[2] && y < rect[1] + rect[3]) inside++;
         if (hit && (!rect || x < rect[0] || y < rect[1] || x >= rect[0] + rect[2] || y >= rect[1] + rect[3])) { outside++; if (!at) at = [x, y]; } }
-      F.pass(3); return { log, hold: false, faces: (window.__st.props?.regions?.cross?.faces ?? []).length, focusTarget: !!(window.__st.props?.overlay?.focus?.cur || (window.__st.props?.focus?.cur && window.__st.props.focus.cur !== "room")), boxes: log.regions.filter((q) => q.box).map((q) => q.id + "/" + q.layer), outside, inside, at };
+      F.pass(3); return { log, hold: window.__st.holding() && window.__st.props?.screen !== "bench" && !/^resident/.test(window.__st.props?.overlay?.focus?.cur ?? window.__st.props?.focus?.cur ?? ""), faces: (window.__st.props?.regions?.cross?.faces ?? []).length, focusTarget: !!(window.__st.props?.overlay?.focus?.cur || (window.__st.props?.focus?.cur && window.__st.props.focus.cur !== "room")), boxes: log.regions.filter((q) => q.box).map((q) => q.id + "/" + q.layer), outside, inside, at };
     }, { focus: [0xff, 0xe6, 0xad], rust: [0xa6, 0x42, 0x0c] });
     for (const d of ringDepartures(g.log, g)) fail(`${name}: ${d}`);
     for (const b of g.boxes) fail(`${name}: ${b} makes a closed box of dashes or dots`);
@@ -70,9 +77,8 @@ const reading = (screen) => async (name, page, fail) => {
     if (FLOOR_STATES.test(name)) {
       const fr = await page.evaluate(() => { const F = window.__st.face, r = window.__st.check().log.regions.find((q) => q.id === "focus" && q.layer === "chrome")?.rect; if (!r) return null; const grab = () => { const o = []; for (let y = r[1]; y < r[1] + r[3]; y++) for (let x = r[0]; x < r[0] + r[2]; x++) o.push(...F.pixel(x, y)); return o; };
         const withRing = grab(); F.hide("focus"); const ground = grab(); F.hide(""); return { r, withRing, ground }; });
-      if (!fr) fail(`${name}: no ring to measure for the 2 px floor`); else { const bad = floorProblems(name, fr.r, fr.withRing, fr.ground);
-        // held for a ruling (reported to the programme lead): on a grainy painted ground the per-pixel reading leaves a few cross-sections under 2 px, where the spec's by-construction argument holds for a uniform ground. FLOOR_STRICT=1 fails on it.
-        if (bad && process.env.FLOOR_STRICT) fail(bad); else if (bad) { ringTxt += " · floor WARN " + bad.slice(name.length + 2); console.warn("WARN " + bad); } else ringTxt += " · floor 2 px"; }
+      if (!fr) fail(`${name}: no ring to measure for the 2 px floor`); else { const res = floorProblems(name, fr.r, fr.withRing, fr.ground);
+        ringTxt += " · floor " + res.text.slice(name.length + 2); if (res.fail) fail(res.fail); }
     } }
   let extra = "";
   if (screen === "home") {
