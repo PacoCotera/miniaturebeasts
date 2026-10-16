@@ -88,7 +88,7 @@ V = np.asarray(Image.open(viv).convert("RGB")).astype(float)
 moss = np.vstack([V[466:500, 760:984]] * 1)                                  # the vivarium's moss bed, 224 x 34
 mx = 223.99 - np.abs((xx % 447.98) - 223.99)                     # the moss mirrored, never repeated with a seam
 my = np.clip((yy - 3) / 21 * 33.99, 0, 33.99)
-ms = np.stack([nd.map_coordinates(moss[..., c], [my, mx], order=1) for c in range(3)], -1)
+ms = np.stack([nd.map_coordinates(moss[..., c], [my, mx], order=1, mode="nearest") for c in range(3)], -1)
 pad = d_in > 0
 mound = np.clip(d_in / 6, 0, 1)
 coll[pad] = (lin(ms) * (0.6 + 0.4 * mound)[..., None])[pad]
