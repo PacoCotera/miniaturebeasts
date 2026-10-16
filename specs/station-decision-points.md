@@ -34,9 +34,9 @@ The owner, 2026-10-16 13:16: "it's a 'click-accept-fest', you need better bigger
 **What I recommend instead:**
 
 1. **A decision panel at each real commitment, and only there.**
-   - **Where:** Identify, Read, Grow it, Open, Return to the wild, Fit the upgrade (the game designer confirms the list).
+   - **Where:** the game designer's list (Grow it, Cross them, Return to the wild, a large Grow now, spending a sitting) plus Fit the upgrade. Not Identify or Read: they are small, frequent spends whose price is already on the line, and a panel there is ceremony (I first listed them; the game designer is right).
    - **What it shows:** a large panel (640 × 392, over the dimmed screen) with *what you give*, *what you get*, and *where you go next*, plus two named choices: `✓ Grow it` / `← Keep shaping`.
-   - **What it costs in presses:** it replaces the "✓ again" arming, so Return to the wild and the upgrade cost the same two presses as today, but now you can read them. Identify, Grow and Open gain one press each, so the game designer's 12-press loop goes to 15 (not about 20). Each added press is one where the player is actually choosing.
+   - **What it costs in presses:** it replaces the "✓ again" arming, so Return to the wild and the upgrade cost the same two presses as today, but now you can read them. In the main loop only Grow gains a press. With the game designer's cuts, the loop lands at about 9.
    - **Repeats:** a free, repeatable action (turning a drum, opening a page) gets no panel.
 2. **✓ never changes meaning on the same object.**
    - Spending and moving are two different targets: Identify and Read are actions with a price on the panel, and Create is reached by its own "Shape a founder" control. The pod itself only ever *opens*.
@@ -126,9 +126,13 @@ With 1–6 the same loop is **8 ✓ presses: 5 decisions, each with its conseque
 
 ## Joint
 
-*Draft by the game designer, to be amended by UI/UX. Where we disagree goes here once both sections are written.*
+*Drafted by the game designer, amended by UI/UX.*
 
-**Where we disagree.** *(UI/UX to add.)*
+**Where we disagree.**
+- **Panels.** No disagreement left: UI/UX first put panels on Identify and Read too, and takes the game designer's narrower list.
+- **Jumps.** The game designer would turn every jump into a fork with named choices (after Grow: watch it, or go on; after the hatch: meet it, or go Home). UI/UX would offer a fork only where the paths lead to different games (after Identify: read, shape, or return). Elsewhere it keeps the jump, but the panel's "Next" names it beforehand and a 2-second arrival line names it after, with ← back to where the jump came from.
+  - **The difference:** a fork is one press more and the player chooses the room; the arrival line costs nothing, but the room is chosen for them.
+  - **UI/UX's view:** test both on the Grow → Incubator jump first, the one the owner is most likely to have felt.
 
 **Recommendation for the owner (3 lines).**
 1. Yes to bigger screens, but only for the few real decisions (Grow it, Cross them, Return to the wild, a large Grow now, spending a sitting). Each shows its consequence and named choices, including where to go next; every other press gets fewer screens, not more.
