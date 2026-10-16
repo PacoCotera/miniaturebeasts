@@ -91,8 +91,8 @@ const reading = (screen) => async (name, page, fail) => {
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "habitat") {
-    const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur ?? "resident", n: window.__st.props?.regions?.tiles?.items?.length ?? 0, open: !!window.__st.props?.overlay, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = habitatDepartures(c.log, habitat, namerSpec, c.state, c.cur, c.n, c.open); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur ?? "resident", n: window.__st.props?.regions?.tiles?.items?.length ?? 0, open: !!window.__st.props?.overlay, foot: window.__st.props?.regions?.resident?.moving ? null : (window.__st.manifest().find((e) => e.id === window.__st.props?.regions?.resident?.picture)?.foot) ?? null, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
+    const d = habitatDepartures(c.log, habitat, namerSpec, c.state, c.cur, c.n, c.open, c.foot); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KB)`);
   }
   if (screen === "library") {

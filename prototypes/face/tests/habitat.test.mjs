@@ -16,6 +16,8 @@ import { habitatBuild } from "../../station/src/views/habitat-props.mjs";
 import { namerBuild } from "../../station/src/views/namer-props.mjs";
 import { departures } from "../tools/habitat-regions.mjs";
 import { dirty, dirtyRects } from "./dirty.mjs";
+import { footOf } from "../../station/src/moving.mjs";
+import { footprintRing } from "../../ui/rings.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("habitat"), namerSpec = J("namer"), homeSpec = J("home");
@@ -288,4 +290,17 @@ test("fix 3c-habitat: with no Wild gate, chapter plate or guide mark master plac
     UNSIGNED = null; const g = await start(scene({ focus: "resident" })), lg2 = logOf(g);
     assert.deepEqual(drawn(lg2, "wild").map((r) => r.rect), [[916, 416, 48, 48]], "the gate, placed"); assert.ok(drawn(lg2, "plates").some((r) => r.rect[1] === 200 && r.rect[3] === 40), "the plates' grounds, placed"); assert.deepEqual(drawn(lg2, "speciesLine").map((r) => r.rect[2] + "x" + r.rect[3]), ["16x16"], "the guide mark, placed");
   } finally { UNSIGNED = null; }
+});
+
+// fix 14, rule 6: the ring says where you are, not what you can do (unchanged between focused, armed and read-only on the same target: its rect and the pixels of its bands), and a creature's ring does not move with its 4 px lift
+test("the Wild module's ring is the same armed and not (fix 14, rule 6)", { skip }, async () => {
+  const band = async (armed) => { const f = await start(scene({ focus: "wild", armed, adults: 3, shown: 0 })), r = logOf(f)?.regions.find((q) => q.id === "focus" && q.layer === "chrome")?.rect ?? f.lastLog?.regions.find((q) => q.id === "focus" && q.layer === "chrome")?.rect; assert.ok(r, "a ring"); const px = [];
+    for (let y = 0; y < r[3]; y++) for (let x = 0; x < r[2]; x++) if (x < 4 || y < 4 || x >= r[2] - 4 || y >= r[3] - 4) px.push(f.pixel(r[0] + x, r[1] + y)); return { r, px }; };
+  const a = await band(false), b = await band(true); assert.deepEqual(a.r, b.r, "the same rect"); assert.deepEqual(a.px, b.px, "the same pixels in its four bands");
+});
+test("a resident's ring is its footprint on the ground: the 4 px lift moves the creature and not the ring (fix 14, rule 6)", { skip }, async () => {
+  const b = scene({ focus: "resident" }), f = await start(b), rg = b.props.regions.resident, pid = rg.picture, box = R.resident.rect, req = b.requests.find((q) => q.id === pid), pic = standIn(pid, sizeOf(req ?? { size: box.slice(2) }));
+  const lg = logOf(f) ?? f.lastLog, ring = lg.regions.find((q) => q.id === "focus" && q.layer === "chrome").rect, foot = footOf(pid, pic, () => null); assert.ok(foot, "the resident's picture has a footprint");
+  assert.deepEqual(ring, footprintRing(foot, box), "the ring is the footprint of the unlifted box");
+  const pr = lg.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); assert.ok(pr && pr.rect[1] < box[1], "the picture itself has risen");
 });

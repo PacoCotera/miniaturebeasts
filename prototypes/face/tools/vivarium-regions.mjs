@@ -39,6 +39,8 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0) {
     must(!regions.some((r) => r.id.startsWith("tile.") && Number(r.id.slice(5)) >= n), "a tile past the bays is drawn");
   }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
+  // fix 14, rule 5: a tile's ring is the tile as drawn (lifted) grown by 5
+  if (/^tile\./.test(cur) && got("focus").length) { const ring = got("focus")[0].rect, tiles = regions.filter((x) => /^tile\./.test(x.id) && x.layer === "chrome").map((x) => [x.rect[0] - 5, x.rect[1] - 5, x.rect[2] + 10, x.rect[3] + 10]); must(tiles.some((b) => eq(ring, b)), `the ${cur} ring ${ring} is not a tile as drawn grown by 5`); }
   for (const t of type) must([16, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
   for (const r of regions.filter((x) => x.layer === "type" && x.id !== "nameTag" && within(x.rect, [0, 40, 1024, 520]))) out.push(`the whole sets a word (${r.id}) in the window or the strip: no word there but the name tag`);
   return out;
