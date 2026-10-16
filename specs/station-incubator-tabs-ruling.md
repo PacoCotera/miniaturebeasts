@@ -9,7 +9,7 @@ UI/UX, ticket T-20261016-23, 2026-10-16 (America/Mexico_City). Base: station-gat
 - this file's earlier version (no rail, the band left bare). Its finding stands: the tabs are the shared `chapterRail`, which Pods, Create and Cross keep;
 - `specs/station-incubator-layout-spec.md` §§1–3 (grid, paint zones, the IA2 recut);
 - the zone caps of `specs/station-incubator-brightness-ruling.md` §2 (the condition is restated in §6 below);
-- the build ticket T-20261016-29 (rewritten in place as the build for this spec).
+- my earlier build ticket for the no-rail version (removed from the queue in ff2b2a37). The build for this spec is T-20261016-40.
 
 **The wireframes:** `specs/station-incubator-tabs-wireframes.patch` replaces 04, 05, 05b and 05c.
 
@@ -158,7 +158,7 @@ Each chapter that clears is a reveal, and the reason to come back. Every object 
 
 The Home module, the Idle tag and their lamps are in the concept (§1). They are not in this ticket's rects: Home and Idle are their own screens, and they need their own ticket. **The lead should write one.** This spec only gives the event the Incubator raises: a chapter cleared, not yet seen (a `seen` flag set when the Incubator is shown with the card for it).
 
-## 8. Art (one ticket for the art director, by hand)
+## 8. Art (for T-20261016-27, the queued Incubator art ticket; by hand)
 
 | Id | Size | Notes |
 | --- | --- | --- |
@@ -171,6 +171,6 @@ The Home module, the Idle tag and their lamps are in the concept (§1). They are
 
 The founder's shadow is derived by the build from Create's picture, not painted.
 
-## 9. Build: T-20261016-29 (rewritten in place)
+## 9. Build: T-20261016-40
 
-The edit list (incubator.json regions, states, focus, strings, events; props; face; tests; goldens; wireframes) is in the ticket.
+The edit list (incubator.json regions, states, focus, strings, events; props; face; tests; goldens; wireframes) is in the ticket. T-20261016-28 (already queued) draws the pod's shell in `pod`; T-40 builds everything else here.
