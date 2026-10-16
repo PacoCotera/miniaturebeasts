@@ -1,0 +1,27 @@
+diff --git a/design/style-guide/station-layouts/17a-cargo-opening.svg b/design/style-guide/station-layouts/17a-cargo-opening.svg
+index 5c496cc..3a7bbc2 100644
+--- a/design/style-guide/station-layouts/17a-cargo-opening.svg
++++ b/design/style-guide/station-layouts/17a-cargo-opening.svg
+@@ -28,13 +28,15 @@
+ <rect x="632.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
+ <rect x="744.5" y="408.5" width="95" height="127" fill="#2a313a" stroke="#555" stroke-width="1"/>
+ <text x="188" y="556" font-size="8" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">pod 88×112 at well + (4, 8)</text>
+-<rect x="184.5" y="272.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+-<rect x="184.5" y="329.5" width="47" height="13" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="240.5" y="272.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+-<rect x="240.5" y="329.5" width="47" height="13" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="736.5" y="272.5" width="47" height="63" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
+-<rect x="736.5" y="329.5" width="47" height="13" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="32" y="268" font-size="8" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">containers 48×64, feet on 336, from 800 ms</text>
++<rect x="216.5" y="240.5" width="71" height="95" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
++<rect x="216.5" y="325.5" width="71" height="20" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
++<rect x="736.5" y="240.5" width="71" height="95" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
++<rect x="736.5" y="325.5" width="71" height="20" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
++<rect x="816.5" y="240.5" width="71" height="95" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
++<rect x="816.5" y="325.5" width="71" height="20" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="2 2"/>
++<text x="32" y="212" font-size="8" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">containers 72×96, feet on 336,</text>
++<text x="32" y="222" font-size="8" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">shadows 72×21 at y 325; from 800 ms</text>
++<text x="32" y="232" font-size="8" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">energy 216 | data 736, essence 816</text>
+ <path d="M408 216L568 408" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+ <rect x="440.5" y="240.5" width="87" height="111" fill="none" stroke="#7a6aa0" stroke-width="1" stroke-dasharray="2 2"/>
+ <text x="712" y="100" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the travel 176,72 672×472:</text>
