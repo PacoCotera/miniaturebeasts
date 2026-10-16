@@ -14,3 +14,23 @@ The containers are redrawn from the owner's ref-1…10 and the 10-10 haul ruling
   - `beside-refs-1x.png` sets the opening capture beside ref-4, 6, 7 and 9;
   - the 72 × 96 placement sketch is for UI/UX only.
 - **Status:** new. These are signed only in the builder's whole Cargo 1× captures beside ref-1…10.
+
+## The pods in the crate (10-15 21:05, PL ruling (2))
+
+The grey pods in the open crate were the signed `pod-*-unknown`: the pod before Identify, which must never wear a species colour. The flat grey read as a placeholder at 1×.
+
+`paint-unknown-pod.py` repaints all five sizes (collection 88 × 112, large, medium, small and well) at the same ids and sizes, at 0 MXN. The unknown pod is now a found field egg, like the eggs in the Probe's window:
+- a warm sand shell freckled with bark-brown speckles;
+- a cream cap and ribs;
+- earth dust on the foot;
+- the sealing band.
+
+It is still never a species colour pair. `tools/build.py unknownpod()` now returns early, so a rebuild can't bring the grey back.
+
+The crate's wells stay where they were in `crate-open-432x272`, so the pods land as before:
+- the pods in the crate are at (364 / 468 / 572, 104), 88 × 112;
+- the rack pods are at well + (4, 8).
+
+The change also shows on Pods: the collection and the unidentified overview use the same ids.
+
+Proof: `proof/mock-cargo-opening-800-pods-1x.png`.

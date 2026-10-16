@@ -510,6 +510,7 @@ def unknownpod():
     """pod-{large,medium,small,well}-unknown: the pod before its species is known (the art director): the body mask in a neutral grey (#6e6e72), the accent (cap and ribs) a warm light grey (#bcb6aa),
     no pattern layer, the sealing band on (the band layer over it), the pod's own shade layer shading it as painted (no remap), and no species colour pair anywhere. The crack layer is left off. The
     pod set carries no separate glow layer (the sprout's glow is baked into the identified composite only), so no bone core is drawn here."""
+    return   # superseded 10-15: the unknown pods are painted by cargo-rework/paint-unknown-pod.py (the found field egg); this grey would overwrite them
     for cls in ("large", "medium", "small", "collection", "well"):
         L = lambda n: np.asarray(Image.open(OUT + f"pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
         sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]
