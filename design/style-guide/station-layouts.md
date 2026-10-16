@@ -931,8 +931,8 @@ The device's own painted parts, one key light top left: the bay is the signed pa
 | --- | --- | --- |
 | `ribbon` | 208, 56, 608, 40 as the bound; the width fits its words (words + 32, up to 8, at least 160) centred on 512 | 20 px medium, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third and a developer crate (uncounted) "Another crate home"; a sitting crate "Fig's portrait". It shows from 500 ms, 8 px above the pods' boxes. A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
 | `crate` | 296, 72, 432, 272 | The crate closer, the whole case, centred on 512, standing on the floor (feet 337) with `crate-shadow-432x24` at (296, 325) in every step, 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
-| Containers | 48×64 at (184, 272), (240, 272), (736, 272), feet on 336, each with `cargo-store-shadow-48x14` at y 329, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end; the travelling pods draw over them; no digits, never kept |
-| Its pods | 88×112, 104 apart on y 104 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
+| Containers | 72×96 at (216, 240), (736, 240), (816, 240), feet on 336, each with `cargo-store-shadow-72x21` at y 325 (its core row 11 on 336), opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-72x96`, `cargo-data-72x96`, `cargo-essence-72x96`; energy left of the closer, data then essence right of it, 8 px between rects; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end; the travelling pods draw over them; no digits, never kept |
+| Its pods | 88×112, 104 apart on y 108 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
 | `travel` | 176, 72, 672, 472 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
 | `rack` | as in the bay | A well stays empty until its pod lands; the bay is open and drawn in the opening |
 
@@ -997,7 +997,7 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 | Crate in the bay | 256×176, `crate-sealed-256x176`, `crate-sitting-256x176` |
 | Crate closer | 432×272, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
-| Rack insert, placed (`cargo-rack-992x168`), report plate, 21 heights (`cargo-report-plate-560x128` to `560x288`), contact shadows (`crate-shadow-256x24`, `crate-shadow-432x24`, `cargo-store-shadow-48x14`) | 992×168; 560×128 to 288; 256×24, 432×24, 48×14 |
+| Rack insert, placed (`cargo-rack-992x168`), report plate, 21 heights (`cargo-report-plate-560x128` to `560x288`), contact shadows (`crate-shadow-256x24`, `crate-shadow-432x24`, `cargo-store-shadow-72x21`) | 992×168; 560×128 to 288; 256×24, 432×24, 72×21 |
 | Waiting mark | 24×24, `mark-waiting-24` |
 
 ---
@@ -1812,7 +1812,7 @@ Where the build departs from this layout is listed in `habitat.json` and `vivari
 
 ## Probe bench
 
-The Probe section: the one screen whose subject is a machine, the Probe on its work tray. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
+The Probe section: the one screen whose subject is a machine, the Probe standing upright in its cradle, as it is held. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
 
 **As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×32, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
 
@@ -1856,16 +1856,16 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 
 **Reading order:**
 
-1. **The Probe in its cradle**, left of centre, on the axis x 336.
-2. **The plates** under it.
+1. **The Probe standing upright in its cradle**, in the left column, on the axis x 184.
+2. **The plates** on their strip, in the middle column under the tools zone.
 3. **The Mend module**, top right.
 4. **The Upgrade module** under it.
 
-The cradle (480), a 40 gap and the column (312) form one group centred on x 512, from 96 to 928, inside the floor (x 66 to 955) (fix 5 P1).
+Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 × 432), the tools zone with the plates' box under it (368, 96, 208 × 352; the plates' box 368, 464, 208 × 64, axis x 472) and the column (624, 96, 312 wide). The margins are 18 to 19, the modules 48 apart, and one bottom line on y 520 holds the cradle's ink, the Upgrade module and both strips (the upright rework).
 
 ### 4. Art direction
 
-- **Room:** the device's work tray: the Probe lies on it among field tools and small gauges, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
+- **Room:** the device's work tray: the Probe stands upright in its cradle, as it is held, with the field tools and small gauges beside it in the tools zone, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
 - **The Probe** is the same device the Companion draws, as the project's Probe art draws it, never a needle, painted at the bench's size, one picture a tier. Away, the cradle on the tray is drawn empty, so the Probe reads as out, never missing.
 - **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
 - **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`home-lamp-sprout-12x12`) or off (`home-lamp-hairline-12x12`).
@@ -1881,11 +1881,11 @@ The cradle (480), a 40 gap and the column (312) form one group centred on x 512,
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| **Cradle (focal)** | 96, 104, 480, 288 | The Probe standing in its cradle, one painted picture a tier; away, the empty cradle. Axis x 336; first ink at y 108 |
-| Plate strip | tier 1: 264, 432, 144, 48; tier 2: 240, 432, 192, 48 | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
-| Plates | 232, 424, 208, 64 | Plates 32×32 at y 440, centred in the region, on a 48 pitch: tier 1 at x 272, 320, 368; tier 2 at 248, 296, 344, 392; centred on x 336; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
-| Mend module | 616, 104, 312, 128 | Word at (16, 12), lamp at (284, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
-| Upgrade module | 616, 248, 312, 248 | Word at (16, 12), lamp at (284, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
+| **Cradle (focal)** | 40, 96, 288, 432 | The Probe standing upright in its cradle, as it is held, one painted picture a tier; away, the empty cradle. Axis x 184; first ink at y 100, ink box (44, 4, 232, 420) in the slice |
+| Plate strip | tier 1: 400, 472, 144, 48; tier 2: 376, 472, 192, 48 (axis y 472) | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
+| Plates | 368, 464, 208, 64 | Plates 32×32 at y 480, centred in the region, on a 48 pitch: tier 1 at x 408, 456, 504; tier 2 at 384, 432, 480, 528; centred on x 472; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Mend module | 624, 96, 312, 128 | Word at (16, 12), lamp at (284, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
+| Upgrade module | 624, 272, 312, 248 | Word at (16, 12), lamp at (284, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
 
 Each module's objects start 8 px or more under its word's baseline (y + 28).
 
@@ -1894,15 +1894,15 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Region (`bench.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
 | `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`, signed) | | — |
-| `cradle` | 96, 104, 480, 288 | specimen (focal) | | tier 1, tier 2, empty |
-| `strip` | 240, 432, 192, 48 (bound; by tier) | picture, painted | | tier 1, tier 2 (both states) |
-| `plates` | 232, 424, 208, 64 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
-| `switch` | 616, 104, 312, 128 | panel, build `module` | | off, on |
+| `cradle` | 40, 96, 288, 432 | specimen (focal) | | tier 1, tier 2, empty |
+| `strip` | 376, 472, 192, 48 (bound; by tier) | picture, painted | | tier 1, tier 2 (both states) |
+| `plates` | 368, 464, 208, 64 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
+| `switch` | 624, 96, 312, 128 | panel, build `module` | | off, on |
 | `slot` | 616, 248, 312, 248 | panel, build `module` | | dim, ready, armed, fitted |
 
 **Draw order:** bench, cradle, strip, plates, switch, slot, ring, frame, message plate.
 
-Rings (4 px out, 2 px lift): plates 228, 418, 216, 72; switch 612, 98, 320, 136; slot 612, 242, 320, 256.
+Rings (4 px out, 2 px lift): plates 364, 458, 216, 72; switch 620, 90, 320, 136; slot 620, 266, 320, 256.
 
 ### 6. Interactions
 
@@ -1944,7 +1944,7 @@ With `motion: false` every event jumps to its end.
 | Master | Pixel size |
 | --- | --- |
 | `room-bench-stage-probe` | 1024×522 |
-| `bench-probe-t1-480x288`, `bench-probe-t2-480x288`, `bench-cradle-empty-480x288` | 480×288, rows 0 to 3 kept empty |
+| `bench-probe-upright-t1-288x432`, `bench-probe-upright-t2-288x432`, `bench-cradle-upright-empty-288x432` | 288×432, rows 0 to 3 kept empty |
 | `bench-plate-whole-32x32`, `bench-plate-gone-32x32` | 32×32 |
 | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48` | 144×48; 192×48 (fix 5 PA1, masters-pods bea42f4d) |
 | `bench-switch-track-off-80x40`, `bench-switch-track-on-80x40`; `bench-switch-knob-40x40` | 80×40; 40×40 |

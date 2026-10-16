@@ -212,13 +212,13 @@ const openedWith = (st, sv, stg) => {
 const storesOf = (st, sv, stg, k = 0) => { const h = openedWith(st, sv, stg); return { h, stores: cargoBuild({ st, sv, settings: stg, docked: true, ui: h.ui }, spec, home, frameSpec).props.regions.opening.crates[k].stores }; };
 test("a crate that brought Energy and Essence shows those two containers, in the order Energy, Data, Essence, and validates", () => {
   const st = world(), sv = sv0([crate(1, 1, { e: 1, d: 0, s: 2 })]), { h, stores } = storesOf(st, sv, settings);
-  assert.deepEqual(stores, ["cargo-energy-48x64", "cargo-essence-48x64"]);
+  assert.deepEqual(stores, ["cargo-energy-72x96", "cargo-essence-72x96"]);
   assert.deepEqual(validate(cargoBuild({ st, sv, settings, docked: true, ui: h.ui }, spec, home, frameSpec).props, schema), []);
 });
 test("the developer top-up (loose economy) gives all three containers, a developer crate only what it carries", () => {
   const loose = { ...settings, economy: "loose" }, st = world(), sv = sv0([crate(1, 1, { e: 0, d: 0, s: 0 }), crate(2, 1, { dev: true, e: 0, d: 2, s: 0 })]);
-  assert.deepEqual(storesOf(st, sv, loose, 0).stores, ["cargo-energy-48x64", "cargo-data-48x64", "cargo-essence-48x64"]);
-  assert.deepEqual(storesOf(world(), sv0([crate(1, 1, { e: 0, d: 0, s: 0 }), crate(2, 1, { dev: true, e: 0, d: 2, s: 0 })]), loose, 1).stores, ["cargo-data-48x64"]);
+  assert.deepEqual(storesOf(st, sv, loose, 0).stores, ["cargo-energy-72x96", "cargo-data-72x96", "cargo-essence-72x96"]);
+  assert.deepEqual(storesOf(world(), sv0([crate(1, 1, { e: 0, d: 0, s: 0 }), crate(2, 1, { dev: true, e: 0, d: 2, s: 0 })]), loose, 1).stores, ["cargo-data-72x96"]);
 });
 test("a mend that spends the Energy a crate brought still shows its Energy container, while the top bar's Energy is unchanged", () => {
   const st = world(); st.e = 0; st.probe = { shield: 2, smax: 3, tier: 1, seq: 1 }; st.mendFull = true; const sv = sv0([crate(1, 1, { e: 1, d: 0, s: 0 })]);
@@ -226,5 +226,5 @@ test("a mend that spends the Energy a crate brought still shows its Energy conta
   assert.equal(st.probe.shield, 3, "the rule mended one plate from the Energy the crate brought"); assert.equal(run.crates[0].gained.e, 1);
   h.timers.filter((t) => t.ms <= 800).forEach((t) => t.fn());
   assert.equal(h.ui.cargo.shown.e, before, "the top bar's Energy tick is the net of the mend: unchanged");
-  assert.deepEqual(cargoBuild({ st, sv, settings, docked: true, ui: h.ui }, spec, home, frameSpec).props.regions.opening.crates[0].stores, ["cargo-energy-48x64"]);
+  assert.deepEqual(cargoBuild({ st, sv, settings, docked: true, ui: h.ui }, spec, home, frameSpec).props.regions.opening.crates[0].stores, ["cargo-energy-72x96"]);
 });

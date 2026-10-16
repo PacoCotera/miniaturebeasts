@@ -267,23 +267,31 @@ for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates open (918
 });
 
 test("the opening's two state changes are one-frame cuts held to Cargo's ruled ceilings (lvgl-switch.md §2.10): the bay to the first closer at 0 ≤ 306,064 px, the last crate to the report at crates × 3000 ≤ 346,478 px, never a full-screen redraw", { skip }, async () => { const o = { crates: 2, podsEach: 2, lines: ["a"] }, f = await start(scene(o), { t0: 1000 }), cut = (b, ev) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); if (ev) f.send(ev); f.frame((f.t += 16)); return dirty(f); }; frames(f); dirty(f); const open = cut(scene({ ...o, open: true }), { t: "event", kind: "arrival", target: "crate", ms: 6180, hold: 6200 }); frames(f, 4); dirty(f); const report = cut(scene({ ...o, open: true, state: "report" })); console.log(`# Cargo's cuts: the bay to the closer ${open} px, the last crate to the report ${report} px`); assert.ok(open <= 306064, `the cut to the closer redrew ${open} px`); assert.ok(report <= 346478, `the cut to the report redrew ${report} px`); assert.deepEqual(f.errors(), []); });
+test("the crate-to-crate cut (the next closer, sealed, at the next crate's start) redraws at most 306,064 px", { skip }, async () => {
+  const o = { crates: 2, podsEach: 2, lines: ["a"], open: true }, first = scene(o), f = await start(first, { t0: 1000 });
+  const cut = (b) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); return dirty(f); };
+  const at = (crate, ms) => { first.ui.cargo.crate = crate; first.ui.cargo.at = ms; return buildOf(first.st, first.sv, first.ui); };
+  frames(f); dirty(f); cut(at(0, 2800)); frames(f, 4); dirty(f);
+  const next = cut(at(1, 0)); console.log(`# Cargo's crate-to-crate cut ${next} px`); assert.ok(next <= 306064, `the cut to the next closer redrew ${next} px`); assert.deepEqual(f.errors(), []);
+});
 
 // ---- the haul's containers (regions.stores): one for each material the crate brought, cut in at the counters' step, gone at the end ----
 const STORE = (m) => { const p = R.stores.places[m], [w, h] = R.stores.size; return [p[0] + (w >> 1), p[1] + (h >> 1)]; }, MATS = ["energy", "data", "essence"];
 const shownStores = (f, b) => MATS.filter((m) => pixelIs(f, ...STORE(m), R.stores.pictures[m]));
 test("the containers stand at their places from 800 ms, one for each material the crate brought, and not before", { skip }, async () => {
   const b = scene({ ...OPEN, podsEach: 2, gain: { e: 1, d: 0, s: 2 } }), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f);
-  assert.deepEqual(b.props.regions.opening.crates[0].stores, ["cargo-energy-48x64", "cargo-essence-48x64"]);
+  assert.deepEqual(b.props.regions.opening.crates[0].stores, ["cargo-energy-72x96", "cargo-essence-72x96"]);
   f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
   for (const t of [40, 400, 799]) { f.frame(t0 + t); assert.deepEqual(shownStores(f, b), [], `none at ${t}`); }
   f.frame(t0 + 800); assert.deepEqual(shownStores(f, b), ["energy", "essence"], "from 800: energy and essence, no data");
   f.frame(t0 + 2000); assert.deepEqual(shownStores(f, b), ["energy", "essence"], "until the crate's end"); assert.deepEqual(f.errors(), []);
 });
-test("a crate that brought all three shows all three; the 800 ms cut redraws at most 12288 px (the dirty test above holds the worst refresh to a quarter of the screen)", { skip }, async () => {
+test("a crate that brought all three shows all three; the 800 ms cut redraws at most 24576 px (the dirty test above holds the worst refresh to a quarter of the screen)", { skip }, async () => {
   const b = scene({ ...OPEN, podsEach: 2 }), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
-  f.frame(t0 + 760); dirty(f); f.frame(t0 + 800); const add = dirty(f); assert.deepEqual(shownStores(f, b), MATS); assert.ok(add <= 12288, `the 800 frame redrew ${add} px`);
+  f.frame(t0 + 760); dirty(f); f.frame(t0 + 800); const add = dirty(f); assert.deepEqual(shownStores(f, b), MATS); assert.ok(add <= 24576, `the 800 frame redrew ${add} px`);
   { const lg = logOf(f) ?? (f.frame(t0 + 800), logOf(f)); f.frame(t0 + 900); const lg2 = logOf(f) ?? lg, st = lg2.regions.filter((r) => r.id.startsWith("stores.")); assert.deepEqual(st.map((r) => r.id).sort(), ["stores.data", "stores.energy", "stores.essence"], "the containers are logged one region each");
     assert.deepEqual(departures(lg2, cargoSpec, frameSpec, "opening"), [], "all three shown: each at its place is no departure");
+    assert.deepEqual(st.find((r) => r.id === "stores.data").rect, [736, 240, 72, 106], "the data container's logged rect: its place and its shadow");
     assert.ok(departures({ regions: [{ id: "stores", layer: "painted", rect: [184, 320, 640, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a span under the old shared id is a departure");
     { const c = JSON.parse(JSON.stringify(lg2)), d = c.regions.find((r) => r.id === "stores.data"); d.rect = [d.rect[0] + 8, d.rect[1], d.rect[2], d.rect[3]];
       const out = departures(c, cargoSpec, frameSpec, "opening"); assert.ok(out.some((m) => /the data container/.test(m)), "the data container moved 8 px inside the span is found: " + JSON.stringify(out)); } }
@@ -294,6 +302,6 @@ test("with reduced motion the containers are the same props step, a cut at 800 m
   f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2);
   const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); };
   stage(799); assert.deepEqual(shownStores(f, b0), []); stage(800); assert.deepEqual(shownStores(f, b0), ["data"]);
-  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores.data"); assert.equal(st.length, 1, "the one container is logged as stores.data"); assert.deepEqual(st[0].rect, [R.stores.places.data[0], R.stores.places.data[1], 48, R.stores.shadow.at[1] + R.stores.shadow.size[1]], "the container and its shadow under it (feet 336, the shadow centred on them)"); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: [200, 272, 48, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
+  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores.data"); assert.equal(st.length, 1, "the one container is logged as stores.data"); assert.deepEqual(st[0].rect, [R.stores.places.data[0], R.stores.places.data[1], R.stores.size[0], R.stores.shadow.at[1] + R.stores.shadow.size[1]], "the container and its shadow under it (feet 336, the shadow's core row on them)"); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: [200, 240, 72, 96] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
   const r = scene({ ...OPEN, state: "report" }), g = await start(r); logOf(g); assert.deepEqual(shownStores(g, r), [], "the report has no containers");
 });
