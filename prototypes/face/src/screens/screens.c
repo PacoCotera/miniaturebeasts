@@ -50,11 +50,11 @@ static void stage_dither(void) {
   v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
 /* a target's ring shape (lvgl-switch.md §2.6; fix 14): "oval", "footprint", "tab", { "rect": r >= 0 [, "chip": n >= 0] }, { "circle": "box" } or { "circle": { "centre": [x, y], "r": r > 0 } }, and nothing else;
-   its `ground` is "default" or "paper"; the old `ring` key is refused */
+   its `ground`, when present, is "default" (the paper ground is retired); the old `ring` key is refused */
 static int vet_ring(const char *screen, const char *name, char *err, int cap) {
   char R[96], C[112], Q[128], why[80] = "";
   snprintf(Q, sizeof Q, "targets.%s.ring", name); if (spec_raw(screen, Q, NULL)) { snprintf(err, (size_t)cap, "spec %s: targets.%s: `ring` is replaced by `shape`", screen, name); return -1; }
-  snprintf(Q, sizeof Q, "targets.%s.ground", name); if (spec_raw(screen, Q, NULL)) { char g[12]; spec_str(screen, Q, g, sizeof g); if (strcmp(g, "default") && strcmp(g, "paper")) { snprintf(err, (size_t)cap, "spec %s: %s is \"default\" or \"paper\"", screen, Q); return -1; } }
+  snprintf(Q, sizeof Q, "targets.%s.ground", name); if (spec_raw(screen, Q, NULL)) { char g[12]; spec_str(screen, Q, g, sizeof g); if (strcmp(g, "default")) { snprintf(err, (size_t)cap, "spec %s: %s: the paper ground is retired (specs/station-library-spec.md)", screen, Q); return -1; } }
   snprintf(R, sizeof R, "targets.%s.shape", name); int rl; const char *raw = spec_raw(screen, R, &rl); if (!raw) return 0;
   if (raw[0] == '"') { char f[16]; spec_str(screen, R, f, sizeof f); if (strcmp(f, "oval") && strcmp(f, "footprint") && strcmp(f, "tab")) snprintf(why, sizeof why, "%.30s is not a ring shape", f); }
   else if (raw[0] == '{') {

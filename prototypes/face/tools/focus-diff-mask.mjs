@@ -43,7 +43,7 @@ function newBand(screen, cur, r) {
   const add = (roles, ox, oy, rw, rh) => { for (let j = 0; j < rh; j++) for (let i = 0; i < rw; i++) if (roles[j * rw + i]) set.add((oy + j) * 1024 + ox + i); };
   if (/^rail\./.test(cur)) { const ring = focusRingOps("tab", [x + 5, 40, w - 26, 40], T, { tabTop }); add(ringRaster(ring), ring.x, ring.y, ring.w, ring.h); return set; }
   if (/^(place|kin)\./.test(cur) || cur === "pod" || /^resident/.test(cur)) { const ring = focusRingOps("oval", [x + 5, y + 5, w - 10, h - 10], T); add(ringRaster(ring), ring.x, ring.y, ring.w, ring.h); return set; }
-  for (const rad of [0, 6]) { let ring; try { ring = focusRingOps({ rect: rad }, [x + 5, y + 5, w - 10, h - 10], T, { ground: screen === "library" ? "paper" : "default" }); } catch { continue; } add(ringRaster(ring), ring.x, ring.y, ring.w, ring.h); }   // a radius the box is too small for is not drawn
+  for (const rad of [0, 6]) { let ring; try { ring = focusRingOps({ rect: rad }, [x + 5, y + 5, w - 10, h - 10], T, { ground: "default" }); } catch { continue; } add(ringRaster(ring), ring.x, ring.y, ring.w, ring.h); }   // a radius the box is too small for is not drawn
   return set;
 }
 

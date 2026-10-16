@@ -80,13 +80,13 @@ for (const c of rings) {
     frames(f); const before = []; for (let y = 0; y < ring.h; y++) for (let x = 0; x < ring.w; x++) before.push(f.pixel(ring.x + x, ring.y + y));
     assert.equal(ringOn(f, c.target, c.box, c.pic ? id : "", c.cell ?? ""), 0, "no node refused"); assert.deepEqual(f.errors(), []);
     { let lg = null; for (let m; (m = f.poll("log"));) lg = m; assert.equal(lg.regions.find((r) => r.id === "focus" && r.layer === "chrome")?.ring, 1, "rule 1: one ring node in the focus region (a nine-slice inherits its source's flag)"); assert.deepEqual(ringDepartures(lg), []); }
-    const key = rgbOf("void"), core = rgbOf(o.ground === "paper" ? "rust" : "focus"); let bad = 0, key_n = 0, core_n = 0;
+    const key = rgbOf("void"), core = rgbOf("focus"); let bad = 0, key_n = 0, core_n = 0;
     for (let y = 0; y < ring.h; y++) for (let x = 0; x < ring.w; x++) {
       const want = roles[y * ring.w + x] === 2 ? core : roles[y * ring.w + x] === 1 ? key : before[y * ring.w + x], got = f.pixel(ring.x + x, ring.y + y);
       if (roles[y * ring.w + x] === 2) core_n++; if (roles[y * ring.w + x] === 1) key_n++;
       if (!want.every((v, k) => v === got[k])) bad++;
     }
-    assert.equal(bad, 0, `${bad} pixels of ${ring.w}x${ring.h} at (${ring.x}, ${ring.y}) differ from the oracle`); assert.ok(core_n > 0 && (o.ground === "paper" ? key_n === 0 : key_n > 0), "a core, and keys but on paper");
+    assert.equal(bad, 0, `${bad} pixels of ${ring.w}x${ring.h} at (${ring.x}, ${ring.y}) differ from the oracle`); assert.ok(core_n > 0 && key_n > 0, "a core and keys");
   });
 }
 test("the focus ring word refuses a ring box under 2R, a footprint with no foot, and a shape it does not know; the nine-slice sources are kept once each", { skip }, async () => {
@@ -97,7 +97,6 @@ test("the focus ring word refuses a ring box under 2R, a footprint with no foot,
   let log = null; const seen = (n, target, boxes) => { for (const box of boxes) { ringOn(f, target, box); for (let m; (m = f.poll("log"));) log = m; } assert.equal(log.pictures, PICTURES.length + n, `${n} ring sources beside the host's pictures`); assert.equal(log.table, 1); };
   seen(1, { shape: { rect: 0 } }, [[10, 10, 40, 40], [200, 100, 90, 90], [300, 300, 50, 70]]);   // 14 x 14 whatever the target's size
   seen(2, { shape: { rect: 6 } }, [[10, 10, 40, 40], [200, 100, 300, 90]]);                         // and 26 x 26 for the plates
-  seen(3, { shape: { rect: 0 }, ground: "paper" }, [[10, 10, 40, 40]]);                           // and the paper's own, without its keys
 });
 test("the footprint ring's weight follows the light of its picture (the 2 px floor): a map of equal values needs no light; a map that differs reads the id's suffix; an unknown suffix is refused", { skip }, async () => {
   const withMap = async (weight) => { const f = await bootFace(pathToFileURL(dist + "/"), { test: true }), fs = JSON.parse(JSON.stringify(frameSpec)); fs.focus.ring.shapes.footprint.weight = weight;

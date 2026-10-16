@@ -28,8 +28,7 @@
  "focus": { "ring": {
    "line": "solid", "gap": 1, "bands": [{ "w": 1, "role": "key" }, { "w": 2, "role": "core" }, { "w": 1, "role": "key" }], "reach": 5,
    "radius": "the object's radius + the band's outer offset (5, 4, 2)",
-   "colours": { "default": { "core": "focus", "key": "void" }, "paper": { "core": "rust", "key": null } },
-   "paperScreens": ["library", "book.face", "book.guide"],
+   "colours": { "default": { "core": "focus", "key": "void" } },
    "shapes": {
     "rect": "{ \"rect\": r }: a rounded rectangle, the object's drawn rect grown by `reach`, outer radius r + reach; a ring box under 2R on an axis is refused",
     "chip": "{ \"rect\": 0, \"chip\": 4 }: a target that is text: the drawn extent plus `chip` px each side, then as rect 0",
@@ -89,7 +88,7 @@
   "strings": { "line": "one sentence, six words or fewer, no digits", "order": ["crates", "budReady", "budGrowing", "out"], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags. `out` only while the Companion is away with mibis carried; docked, nothing about them", "crates": { "1": "a crate waits in the bay", "2": "two crates wait in the bay", "3": "three crates wait in the bay", "many": "crates wait in the bay" }, "budReady": "the bud is ready", "budGrowing": "a bud is growing", "out": { "1": "{name} is out with the Companion", "2": "two mibis are with the Companion", "3": "three mibis are with the Companion" }, "none": "" }
  },
  "notBuilt": {
-  "doors": "no target in play opens a not-built screen: a door to one is shut in place, with no ✓ cap and its screen's shut line (habitat.json strings.shut, library.json spread.strings.bookShut). The composition stays for a screen reached any other way (a developer jump, the journey's not-built steps)",
+  "doors": "no target in play opens a not-built screen: a door to one is shut in place, with no ✓ cap and its screen's shut line (habitat.json strings.shut). The composition stays for a screen reached any other way (a developer jump, the journey's not-built steps)",
   "spec": "design/style-guide/station-layouts.md#not-built-yet",
   "status": "the composition a screen shows while the face has no binding table for it; wireframes station-layouts/13-not-built.svg (on Home) and 13b-not-built-idle.svg (Idle)",
   "purpose": "say plainly that this screen is not built yet, keep the frame and navigation working, and promise nothing the screen cannot do",

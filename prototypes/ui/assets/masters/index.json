@@ -491,117 +491,117 @@
    "sha256": "35633c7e700eab12071e78a743c9d04bed08ab90c0ab9434f32be558f9210b0f",
    "signed": "named with --ids"
   },
-  "clan-roundel-C01-12x12": {
-   "file": "pods/clan-roundel-C01-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "7bab21d5e210b0786e126c115b51683ff390cd74ef1aadb2240a72acee4f4945",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C01-16x16": {
+   "file": "pods/clan-roundel-C01-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "7abce3c4eff0c17571cfe7118c6314d3197bddfa2cb9868706f7a8191fa174ba",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C02-12x12": {
-   "file": "pods/clan-roundel-C02-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "e8ee46f6b98cfe994c7315a942a3f70a6119832d00e5d65989152f196a7840cd",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C02-16x16": {
+   "file": "pods/clan-roundel-C02-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "2ff8d6f06a41bff8a4424952992ad707153823246e708893acddb654b0c3ec1e",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C03-12x12": {
-   "file": "pods/clan-roundel-C03-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "8a5cec16bd5c04af863c3a2179c532a785ef04bcfe4d2034bbf8ffbcb1849db0",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C03-16x16": {
+   "file": "pods/clan-roundel-C03-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "2db1439574d37740aab7742d8c91c8e44576a66e0e7958691cadcdf582edde1b",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C04-12x12": {
-   "file": "pods/clan-roundel-C04-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "20c4e0bb77b2be41f052b0ffb0db5125e00791bf6f264732b1b00049184c81c0",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C04-16x16": {
+   "file": "pods/clan-roundel-C04-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "c9fab649f7592beacf2ed54e3de8a265d8f28c33a442edc0fa9fb378c69735a9",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C05-12x12": {
-   "file": "pods/clan-roundel-C05-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c653524070fa6b2cc6453d4521db201edc1627d69eb9413063036492fa0865cc",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C05-16x16": {
+   "file": "pods/clan-roundel-C05-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "b350253060ad9c19b82f0fe92e933db7104063b520cb3f9e538762828d98247b",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C06-12x12": {
-   "file": "pods/clan-roundel-C06-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c6b1b589b00f74cf0b9698a03e29e08544cd7805972f08400c30b11c5cdc0fbd",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C06-16x16": {
+   "file": "pods/clan-roundel-C06-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "0719b748850b028325ebd8ad427ac6bae778b25ec6cacaf9a6a00b01ca85e7ac",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C07-12x12": {
-   "file": "pods/clan-roundel-C07-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "9b3179450cd8aa565677e55ecf2581d86dd0488e805c0704ab15f0c09fa61d1a",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C07-16x16": {
+   "file": "pods/clan-roundel-C07-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "1c8138ae073c254c2cff977a7aee8f16a612f7c94f68b81ae9ee36621837c487",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C08-12x12": {
-   "file": "pods/clan-roundel-C08-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "017552ef7295be11681339c1ab59dcdb79a4e903b0031aad3e6e7fe7111459c6",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C08-16x16": {
+   "file": "pods/clan-roundel-C08-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "dfd76364bf1b0d03d99da19c743cae32f396a4fd26f2569273f9e72896ec5c51",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C09-12x12": {
-   "file": "pods/clan-roundel-C09-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c7510489e0a52797367c78bde4e50abf9284d0dbb3d395ab8257e76bca30b4a8",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C09-16x16": {
+   "file": "pods/clan-roundel-C09-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "11ed0878459a94ba2272e0bc4ad97dae7c6e68096485b186b2a3259806ec096d",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C10-12x12": {
-   "file": "pods/clan-roundel-C10-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "017df447de616bde50c3632dec11f2bb57442f0b948049fbf46f638cc2d204c1",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C10-16x16": {
+   "file": "pods/clan-roundel-C10-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "a7eb30d0de364f22626805958e8b36f973f7455283968619cc6efc5adf243a11",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C11-12x12": {
-   "file": "pods/clan-roundel-C11-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "52e06fbb8c59e449f873548896835b380b6722d178ad1f06ff32bab3ed71f406",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C11-16x16": {
+   "file": "pods/clan-roundel-C11-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "d5a3f1f7a2cc064b8a95db5b78251be3bfdcef3357e923b6f2e71e980e9c66f9",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C12-12x12": {
-   "file": "pods/clan-roundel-C12-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "9a8f4535a923b4240e933321c5d25ff350af039a02da9cb36bbe9131ea134849",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C12-16x16": {
+   "file": "pods/clan-roundel-C12-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "e1c50da730f46296d052d10436e5fd0922e97c406c72a2f5215677b012fc2f07",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C13-12x12": {
-   "file": "pods/clan-roundel-C13-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "3d64e08ccc57ced3b7857d5b33733b839db79a4cbd123cbfee4e72c3b7e99800",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C13-16x16": {
+   "file": "pods/clan-roundel-C13-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "20becd9c08d1cce11ebc492ed97cfe35b97ce7b5d6b354a167a3442bddf8aa21",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C14-12x12": {
-   "file": "pods/clan-roundel-C14-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "ce465d7452880d9bf1b71291741d1af14aa0f6999486b548112463011447fdeb",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C14-16x16": {
+   "file": "pods/clan-roundel-C14-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "0a4854e2c0761741b520fc959a360cdeaaec8cb0b8b784cf5eff7f8eb28bca8a",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C15-12x12": {
-   "file": "pods/clan-roundel-C15-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "dca90b590d8dbbca9fe609d6e91ed10261c91298e813480c168835e3cf2b36b4",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C15-16x16": {
+   "file": "pods/clan-roundel-C15-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "815188d629b9d76e4aee14da0e806d3d3173492847b7fbf316ee762e6f430229",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C16-12x12": {
-   "file": "pods/clan-roundel-C16-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "08178e9744f4eb41f6ec21dc6efbd32f324cb68fcf9ad07df80b99472cceb792",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C16-16x16": {
+   "file": "pods/clan-roundel-C16-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "4c5b2eabaeab12fb3d153dbc3c6ee0f0b1726e18c5162dffea6c187ab0b6c6d3",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
   "crate-open-432x272": {
    "file": "pods/crate-open-432x272.png",
@@ -1400,6 +1400,13 @@
    "h": 12,
    "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a",
    "signed": "art director, verdict (d09acb12)"
+  },
+  "library-stage-spread-1024x522": {
+   "file": "pods/library-stage-spread-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "1b2024ca343b294e4793e0dc72efe1178d5cc4eb9eb778776a3fcd516e5722a2",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
@@ -4874,19 +4881,61 @@
    "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
    "signed": "named with --ids"
   },
-  "spread-progress-empty-8x8": {
-   "file": "pods/spread-progress-empty-8x8.png",
-   "w": 8,
-   "h": 8,
-   "sha256": "f6eeb286a2828a9336c469b78335c3c44b3100b5d3e6c428710c7efb27184d83",
-   "signed": "art director (home hand masters, #112 and #116)"
+  "spread-gilt-corner-16x16": {
+   "file": "pods/spread-gilt-corner-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "7b7b95274472ff3f8be92ade9c6c9c0502e3eb15e50d17c6b25581623ae99495",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "spread-progress-full-8x8": {
-   "file": "pods/spread-progress-full-8x8.png",
-   "w": 8,
-   "h": 8,
-   "sha256": "71beb5ba2d7b7619bf9fb33bf1d46e5fb1fca2d8745be3d55336560f6e80d98f",
-   "signed": "art director (home hand masters, #112 and #116)"
+  "spread-plate-S01-80x96": {
+   "file": "pods/spread-plate-S01-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "1fc4f9886aac1b709333ee266fb00d50c298d03548de97b54556f9a6cd5e2add",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S02-80x96": {
+   "file": "pods/spread-plate-S02-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "4b15fe0962648789cec56e59b2542fb83fae3d5d048721d340fbc9302eff2d10",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S03-80x96": {
+   "file": "pods/spread-plate-S03-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "1a44e0230f92e2a6bb7449423d903b10c65b4d04ea7d39ea3bfc0a693ddb0134",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S09-80x96": {
+   "file": "pods/spread-plate-S09-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "09dbcff4bb47f1d962491ee4b02b20152f28bd46b5317d86becb2b0a35bbeabb",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-progress-empty-12x12": {
+   "file": "pods/spread-progress-empty-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "8c7cc8713eb336f18c041ce86f032eb03decfeb23a29715eb665a23d58bad492",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-progress-full-12x12": {
+   "file": "pods/spread-progress-full-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "13ed81d7074b97349cb80de31b12537ab9746583f512ed264021e3072a053125",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-seal-16x16": {
+   "file": "pods/spread-seal-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "5fb39721f9fa0ba2802564820780252101c22ec19bcd29d68a4cef99248efb8c",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
   "stamp-label-120x120": {
    "file": "pods/stamp-label-120x120.png",

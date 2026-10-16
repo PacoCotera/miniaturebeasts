@@ -737,12 +737,13 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   const at = (f, a) => [f[0] + a[0], f[1] + a[1], a[2], a[3]];
   for (const [i, f] of all.entries()) {
     const progress = at(f, I.progress.at), roundel = at(f, I.roundel.at), plate = at(f, I.plate.at), rule = at(f, I.clanRule.at), name = at(f, I.name.at), gilt = at(f, I.gilt.at), seal = at(f, I.seal.at);
-    assert.deepEqual(plate, [f[0] + 8, f[1] + 8, 80, 96]); assert.deepEqual(I.study.at, I.plate.at); assert.equal(f[1] - (rule[1] + rule[3]), 10);
-    assert.equal(name[1], f[1] + f[3] + 8); assert.equal(name[2], f[2]); assert.deepEqual([gilt[0] + 8, gilt[1] + 8], [f[0] + f[2], f[1]]); assert.equal(rule[0] - (roundel[0] + roundel[2]), 4, "the roundel beside the rule"); assert.equal(roundel[1] + roundel[3] / 2, rule[1] + rule[3] / 2, "on the rule's centre line"); assert.ok(apart(roundel, gilt) && roundel[1] + roundel[3] <= f[1] - 4, "clear of the ring"); assert.deepEqual([seal[0] + 8, seal[1] + 8], [f[0] + f[2], f[1] + f[3]]);
+    assert.deepEqual(plate, [f[0] + 8, f[1] + 8, 80, 96]); assert.deepEqual(I.study.at, I.plate.at); assert.equal(f[1] - (rule[1] + rule[3]), 13);
+    assert.equal(name[1], f[1] + f[3] + 8); assert.equal(name[2], f[2]); assert.deepEqual([gilt[0] + 8, gilt[1] + 8], [f[0] + f[2], f[1]]); assert.equal(rule[0] - (roundel[0] + roundel[2]), 4, "the roundel beside the rule"); assert.equal(roundel[1] + roundel[3] / 2, rule[1] + rule[3] / 2, "on the rule's centre line"); assert.ok(apart(roundel, gilt) && roundel[1] + roundel[3] <= f[1] - 7, "2 px clear of the ring's outer key (f − 5)");
+    const ringBox = [f[0] - 5, f[1] - 5, 106, 122]; assert.ok(inside(ringBox, i < 8 ? L : Rp), "the ring inside its page"); assert.ok(all.every((g) => g === f || gapOk(ringBox, g, 11)), "the ring 11 px from every other frame"); assert.ok(apart(ringBox, P.marker), "the ring clear of the marker"); assert.ok(inside(progress, i < 8 ? R.leftPage.rect : R.rightPage.rect), "the progress inside its page region"); assert.deepEqual([seal[0] + 8, seal[1] + 8], [f[0] + f[2], f[1] + f[3]]);
     for (const m of [gilt, seal]) { assert.ok(apart(m, plate) && apart(m, name), "a mark clear of the plate and the name"); assert.ok(all.every((g) => g === f || gapOk(m, g, 8)), "8 px from the next frame"); }
     assert.ok(all.every((g) => g === f || apart(name, at(g, I.name.at))), "the names apart"); for (const b of P.marginLife) assert.ok(apart(b, f) && apart(b, name) && apart(b, seal), "the margin life clear");
-    const page = i < 8 ? L : Rp; const capRule = f[1] + f[3] + 32; assert.equal(progress[1], capRule + 8, "8 px under the caption rule"); assert.equal(progress[0] + progress[2] / 2, f[0] + f[2] / 2, "centred on the frame");
-    for (const r of [roundel, plate, rule, name, gilt, seal]) assert.ok(apart(progress, r), "the progress clear of " + r); for (const g of all) if (g !== f) for (const a of [I.roundel.at, I.clanRule.at, I.gilt.at]) assert.ok(gapOk(progress, at(g, a), 8), "8 px from the next row's marks"); for (const b of P.marginLife) assert.ok(gapOk(progress, b, 8), "8 px over the margin life");
+    const page = i < 8 ? L : Rp; const capRule = f[1] + f[3] + 32; assert.equal(progress[1], capRule + 6, "5 px of paper under the caption rule"); assert.equal(progress[0] + progress[2] / 2, f[0] + f[2] / 2, "centred on the frame");
+    for (const r of [roundel, plate, rule, name, gilt, seal]) assert.ok(apart(progress, r), "the progress clear of " + r); for (const g of all) if (g !== f) for (const a of [I.roundel.at, I.clanRule.at, I.gilt.at]) assert.ok(gapOk(progress, at(g, a), 5), "5 px from the next row's marks"); for (const b of P.marginLife) assert.ok(gapOk(progress, b, 5), "5 px over the margin life");
     I.progress.places.forEach(([dx, dy], k) => { assert.ok(inside([f[0] + dx, f[1] + dy, ...I.progress.seed], progress)); assert.equal(dx, I.progress.at[0] + I.progress.pitch * k); });
     for (const r of [progress, roundel, plate, rule, name, gilt, seal]) assert.ok(inside(r, page), "inside its page"); assert.ok(apart(P.marker, gilt) && apart(P.marker, f));
   }
@@ -750,7 +751,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   const shown = { 0: "found", 1: "found", 2: "found", 3: "met", 8: "found" };
   for (const [i, f] of all.entries()) for (const a of [I.plate.at, I.clanRule.at, I.roundel.at, I.name.at, ...(shown[i] === "met" ? [] : [I.progress.at])]) { const r = at(f, a); assert.equal(B.has(r.join(",")), i in shown, `frame ${i} ${r}`); assert.ok(!E.has(r.join(",")), "20a draws no part"); }
   is(at(all[0], I.gilt.at), "gilt corner"); is(at(all[8], I.seal.at), "seal"); assert.ok(!B.has(at(all[3], I.progress.at).join(",")), "no progress on a met frame"); assert.ok(!B.has(at(all[1], I.gilt.at).join(",")) && !B.has(at(all[1], I.seal.at).join(",")));
-  assert.equal(I.lift, 0); assert.ok(I.name.fit.includes("Untuva"));
+  assert.equal(I.lift, 2); assert.deepEqual(P.marker, [488, 48, 48, 288]); assert.deepEqual([R.leftPage.rect[3], R.rightPage.rect[3]], [376, 376]); assert.ok(I.name.fit.includes("Untuva"));
   // the names fit their 96 px at 16 (the widest of the sixteen frames, by the face's metrics when the table is built)
   // (the built table when there is one, else the committed metrics vectors, which hold every frame's name at 16)
   const mfile = new URL("../../face/dist/metrics.json", import.meta.url), vfile = new URL("../../face/tests/vectors/metrics.json", import.meta.url);
@@ -759,7 +760,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   for (let k = 1; k <= 16; k++) { const id = "S" + String(k).padStart(2, "0"), n = JSON.parse(readFileSync(new URL(`../../workbench/frames/species-${id}.json`, import.meta.url), "utf8")).species.name; assert.ok(w(n) <= I.name.at[2] - 16, `${n} fits its caption`); }
   // the focus: one group, nearestIn ahead on every edge, the round ring on every frame; the vectors played by ui/focus.mjs on the sixteen places
   const G = S.focus.graph; assert.equal(graphProblem(G), null); assert.equal(G.fallback, "none"); for (const k of STEP_KEYS) assert.ok(edgeOk(G.frame[k], new Set(["frame"])), k);
-  assert.deepEqual(S.focus.targets.frame.shape, { rect: 0 }); assert.equal(S.focus.targets.frame.ground, "paper"); assert.equal(S.focus.targets.frame.lift, 0); assert.ok(frame.focus.ring.paperScreens.includes("library"));
+  assert.deepEqual(S.focus.targets.frame.shape, { rect: 0 }); assert.equal(S.focus.targets.frame.ground, undefined); assert.equal(S.focus.targets.frame.lift, 0); assert.ok(!("paperScreens" in frame.focus.ring) && !("paper" in frame.focus.ring.colours), "one form: no paper ground");
   const T = all.map((r, i) => ({ id: "frame.S" + String(i + 1).padStart(2, "0"), rect: r, group: "frame" }));
   for (const v of S.focus.vectors) assert.equal(moveFocus(G, T, v.from, v.key).to, v.to, `${v.from} ${v.key} → ${v.to}`);
   assert.ok(S.focus.vectors.some((v) => v.from === "frame.S04" && v.to === "frame.S09"), "across the gutter"); assert.ok(S.focus.vectors.length >= 12);
@@ -770,14 +771,14 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   // the words: an action of four words or fewer, contexts of six or fewer, no digits; no ✓ cap on an empty frame
   assert.ok(wordsIn(S.strings.open) <= 4); for (const s of stringsOf(S.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.equal(S.line.unmet.action, null); assert.equal(S.line.found.action, "strings.open"); assert.equal(S.line.met.action, null, "a met species does not open the Book");
-  assert.ok(S.strings.met && S.strings.unmet, "a plate for a met and for an empty frame"); assert.notEqual(S.strings.subjects.found, S.strings.subjects.met, "the context tells found from met");
+  for (const k of ["met", "unmet", "bookShut"]) assert.ok(!(k in S.strings), k + ": no plate on the spread (fix 8)"); assert.notEqual(S.strings.subjects.found, S.strings.subjects.met, "the context tells found from met");
   assert.deepEqual(S.events, {}); assert.ok(/frame\.<SNN>/.test(S.keys.confirm) && !/sp:/.test(S.keys.confirm)); assert.ok(S.focus.targets.frame.enabled.includes("all sixteen"));
   // the clan rule keys on the frame's clan id, never the pigment, and waits for the table; the gilt corner is any delivered portrait of the species, released or not
   assert.ok(/taxonomy\.clan/.test(S.derived.clan) && /never the pod pigment/.test(S.derived.clan));
   const CC = Object.fromEntries(Object.entries(S.clanColours).filter(([k]) => /^C\d\d$/.test(k))); assert.equal(Object.keys(CC).length, 16); assert.equal(new Set(Object.values(CC)).size, 16, "sixteen distinct roles"); assert.deepEqual(paletteBad(CC), []);
   for (let k = 1; k <= 16; k++) { const id = "S" + String(k).padStart(2, "0"); assert.ok(CC[JSON.parse(readFileSync(new URL(`../../workbench/frames/species-${id}.json`, import.meta.url), "utf8")).taxonomy.clan], id + "'s clan has a colour"); }
   for (const c of ["orange", "amber", "red"]) assert.ok(!Object.values(CC).includes(c), "never " + c);
-  assert.ok(!Object.values(CC).includes(frame.focus.ring.colours.paper.core), "no clan colour is the ring's colour on paper"); assert.equal(CC.C01, "tealD"); assert.ok(!("ringClash" in S.clanColours)); assert.ok(/faceChoices/.test(S.derived.portrayed) && !/^faceOf/.test(S.derived.portrayed));
+  assert.ok(!Object.values(CC).includes("focus") && !Object.values(CC).includes("void"), "no clan colour is a ring colour"); assert.equal(CC.C01, "tealD"); assert.ok(!("ringClash" in S.clanColours)); assert.ok(/faceChoices/.test(S.derived.portrayed) && !/^faceOf/.test(S.derived.portrayed));
   assert.deepEqual(paletteBad(S.colours), []); for (const v of Object.values(I.name.colour)) assert.deepEqual(paletteBad({ v }), []);
   // the progress: four steps from the share of looks found, integers only; complete is 4 and the seal
   const step = (found, unseen) => Math.min(4, Math.floor((4 * found) / (found + unseen)) + 1); assert.deepEqual([[0, 10], [2, 8], [3, 7], [5, 5], [7, 3], [8, 2], [10, 0]].map(([a, b]) => step(a, b)), [1, 1, 2, 3, 3, 4, 4]);

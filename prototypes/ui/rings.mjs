@@ -70,10 +70,10 @@ export function footprintRing(foot, drawn, mirrored = false, cellW = drawn[2], t
 }
 
 // ---- fix 14: the focus ring as the face composes it (lvgl-switch.md §2.2): three bands (key, core, key) outside the object, each band's outer shape the previous band's inner shape ----
-// `T` is frame.json focus.ring. `drawn` is the object's rect as the screen drew it (lifted where it lifts); `o`: { ground: "default" | "paper", foot: [x, feetY, w] and mirrored for a footprint, light: the footprint's light weight, tabTop }.
+// `T` is frame.json focus.ring. `drawn` is the object's rect as the screen drew it (lifted where it lifts); `o`: { foot: [x, feetY, w] and mirrored for a footprint, light: the footprint's light weight, tabTop }.
 // Returns { x, y, w, h, kind, ops, nine? }: the ring's box and its bands as ops { band: "key" | "core", shape: "round" | "ellipse" | "tab", x, y, w, h, width, radius, ... } in the ring's own pixels. Pure, integers only.
 export function focusRingOps(shape, drawn, T, o = {}) {
-  const b = T.bands.map((k) => k.w), reach = T.reach, ground = o.ground ?? "default", hasKey = T.colours[ground].key != null, ins = [0, b[0], b[0] + b[1]], band = (k) => (k === 1 ? "core" : "key");
+  const b = T.bands.map((k) => k.w), reach = T.reach, ground = "default", hasKey = T.colours[ground].key != null, ins = [0, b[0], b[0] + b[1]], band = (k) => (k === 1 ? "core" : "key");
   const ellipse = (x, y, w, h, insets = ins, widths = b) => ({ x, y, w, h, kind: "composed", ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "ellipse", x: insets[k], y: insets[k], w: w - 2 * insets[k], h: h - 2 * insets[k], width: widths[k], radius: 0 })) });
   if (shape === "oval") return ellipse(drawn[0] - reach, drawn[1] - reach, drawn[2] + 2 * reach, drawn[3] + 2 * reach);
   if (shape === "footprint") {

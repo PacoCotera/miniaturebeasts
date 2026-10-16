@@ -59,17 +59,17 @@ function floorProblems(name, rect, withRing, ground) {
 let failed = 0;
 const reading = (screen) => async (name, page, fail) => {
   const r = await page.evaluate(() => window.__st.snapshot());
-  // fix 14, on every screen and state: (rule 1) a ring is the one focus word's, or a named holder's; (rule 2) on pass 1, in the stage, every pixel of `focus` (and of `rust` on the paper) lies inside the focus region, none when there is no ring;
+  // fix 14, on every screen and state: (rule 1) a ring is the one focus word's, or a named holder's; (rule 2) on pass 1, in the stage, every pixel of `focus` lies inside the focus region, none when there is no ring;
   // (rule 4, runtime) no composed node of dashes or dots makes a closed box. The focus region's rect is the log's, taken in the same capture.
   let ringTxt = "";
-  { const g = await page.evaluate(({ focus, rust }) => {
-      const F = window.__st.face, log = window.__st.check().log, paper = window.__st.props?.screen === "library", fr = log.regions.filter((r) => r.id === "focus" && r.layer === "chrome"), rect = fr[0]?.rect ?? null;
+  { const g = await page.evaluate(({ focus }) => {
+      const F = window.__st.face, log = window.__st.check().log, fr = log.regions.filter((r) => r.id === "focus" && r.layer === "chrome"), rect = fr[0]?.rect ?? null;
       F.pass(1); let outside = 0, inside = 0, at = null;
-      for (let y = 40; y < 562; y++) for (let x = 0; x < 1024; x++) { const p = F.pixel(x, y), hit = (p[0] === focus[0] && p[1] === focus[1] && p[2] === focus[2]) || (paper && p[0] === rust[0] && p[1] === rust[1] && p[2] === rust[2]);
+      for (let y = 40; y < 562; y++) for (let x = 0; x < 1024; x++) { const p = F.pixel(x, y), hit = (p[0] === focus[0] && p[1] === focus[1] && p[2] === focus[2]);
         if (hit && rect && x >= rect[0] && y >= rect[1] && x < rect[0] + rect[2] && y < rect[1] + rect[3]) inside++;
         if (hit && (!rect || x < rect[0] || y < rect[1] || x >= rect[0] + rect[2] || y >= rect[1] + rect[3])) { outside++; if (!at) at = [x, y]; } }
       F.pass(3); return { log, hold: window.__st.holding() && window.__st.props?.screen !== "bench" && !/^resident/.test(window.__st.props?.overlay?.focus?.cur ?? window.__st.props?.focus?.cur ?? ""), faces: (window.__st.props?.regions?.cross?.faces ?? []).length, focusTarget: !!(window.__st.props?.overlay?.focus?.cur || (window.__st.props?.focus?.cur && window.__st.props.focus.cur !== "room")), boxes: log.regions.filter((q) => q.box).map((q) => q.id + "/" + q.layer), outside, inside, at };
-    }, { focus: [0xff, 0xe6, 0xad], rust: [0xa6, 0x42, 0x0c] });
+    }, { focus: [0xff, 0xe6, 0xad] });
     for (const d of ringDepartures(g.log, g)) fail(`${name}: ${d}`);
     for (const b of g.boxes) fail(`${name}: ${b} makes a closed box of dashes or dots`);
     if (g.outside) fail(`${name}: focus colour outside the ring, ${g.outside} px at ${g.at}`);
