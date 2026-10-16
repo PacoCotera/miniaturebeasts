@@ -1,14 +1,16 @@
 diff --git a/design/style-guide/station-layouts/04-incubator-growing.svg b/design/style-guide/station-layouts/04-incubator-growing.svg
-index 80a06cc..927ec31 100644
+index 80a06cc..0064d9b 100644
 --- a/design/style-guide/station-layouts/04-incubator-growing.svg
 +++ b/design/style-guide/station-layouts/04-incubator-growing.svg
-@@ -1,26 +1,8 @@
- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+@@ -1,148 +1,60 @@
+-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
 -<title>Incubator, growing: 22 leaves on two arcs, 9 full and the tenth filling, three chapters known and one a surprise, no ring, ✓ Grow now, 1024×600 at 1×, measured. Layout only, no art.</title>
-+<title>Incubator, growing: 22 leaves on two arcs, 9 full and the tenth filling, three chapters known and one a surprise on the stamp, no rail (T-20261016-23), no ring, ✓ Grow now, 1024×600 at 1×, measured. Layout only, no art.</title>
- <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
++<title>Incubator, growing: a founder of four chapters, two cleared (Coat at a third, Face at two thirds…), the ring at 0.55, the ring on the pod. 1024×600 at 1×, measured. Layout only, no art. Incubator option B, candling (T-20261016-23).</title>
++<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
  <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
- <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+-<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
 -<rect x="96.5" y="40.5" width="831" height="39" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
 -<polygon points="232,40 368,40 384,80 248,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
 -<rect x="250.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
@@ -27,35 +29,197 @@ index 80a06cc..927ec31 100644
 -<rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#bbb" stroke-width="1"/>
 -<text x="690" y="60" font-size="11" fill="#8d8aa6">Stamina</text>
 -<rect x="719.5" y="71.5" width="5" height="5" fill="#fff" stroke="#8d8aa6" stroke-width="1"/>
- <rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
- <text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
- <text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
-@@ -86,10 +68,10 @@
- <text x="24" y="200" font-size="10" fill="#2b6cb0">No ring: one subject; ✓ acts</text>
- <text x="24" y="213" font-size="10" fill="#2b6cb0">on the room. Pad: nothing.</text>
- <text x="24" y="226" font-size="10" fill="#2b6cb0"></text>
+-<rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+-<text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
+-<text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+-<text x="808" y="270" font-size="9" fill="#777">140 from the window</text>
+-<rect x="776.5" y="357.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="792" y1="381.5" x2="936" y2="381.5" stroke="#3c4b57" stroke-width="1"/>
+-<text x="864" y="373" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+-<text x="864" y="392" font-size="9" fill="#777" text-anchor="middle">code 776,357 176×25 · rule 792–936</text>
+-<rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="260" y="100" font-size="9" fill="#5d7a5f">leaves 256,88 512×216</text>
+-<path d="M 302 301 C 296 296, 297 286, 302 282.5 C 307 286, 308 296, 302 301 Z" transform="rotate(40 302 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 312 272 C 306 267, 307 257, 312 253.5 C 317 257, 318 267, 312 272 Z" transform="rotate(40 312 263)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 325 245 C 319 240, 320 230, 325 226.5 C 330 230, 331 240, 325 245 Z" transform="rotate(40 325 236)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 342 220 C 336 215, 337 205, 342 201.5 C 347 205, 348 215, 342 220 Z" transform="rotate(40 342 211)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 362 198 C 356 193, 357 183, 362 179.5 C 367 183, 368 193, 362 198 Z" transform="rotate(40 362 189)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 385 178 C 379 173, 380 163, 385 159.5 C 390 163, 391 173, 385 178 Z" transform="rotate(40 385 169)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 411 162 C 405 157, 406 147, 411 143.5 C 416 147, 417 157, 411 162 Z" transform="rotate(40 411 153)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 438 150 C 432 145, 433 135, 438 131.5 C 443 135, 444 145, 438 150 Z" transform="rotate(40 438 141)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 467 142 C 461 137, 462 127, 467 123.5 C 472 127, 473 137, 467 142 Z" transform="rotate(40 467 133)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<clipPath id="lc0"><rect x="489" y="131" width="16" height="8"/></clipPath><path d="M 497 138 C 491 133, 492 123, 497 119.5 C 502 123, 503 133, 497 138 Z" transform="rotate(40 497 129)" fill="#84ae78" clip-path="url(#lc0)"/>
+-<path d="M 497 138 C 491 133, 492 123, 497 119.5 C 502 123, 503 133, 497 138 Z" transform="rotate(40 497 129)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 527 138 C 521 133, 522 123, 527 119.5 C 532 123, 533 133, 527 138 Z" transform="rotate(40 527 129)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 557 142 C 551 137, 552 127, 557 123.5 C 562 127, 563 137, 557 142 Z" transform="rotate(40 557 133)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 586 150 C 580 145, 581 135, 586 131.5 C 591 135, 592 145, 586 150 Z" transform="rotate(40 586 141)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 613 162 C 607 157, 608 147, 613 143.5 C 618 147, 619 157, 613 162 Z" transform="rotate(40 613 153)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 639 178 C 633 173, 634 163, 639 159.5 C 644 163, 645 173, 639 178 Z" transform="rotate(40 639 169)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 662 198 C 656 193, 657 183, 662 179.5 C 667 183, 668 193, 662 198 Z" transform="rotate(40 662 189)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 682 220 C 676 215, 677 205, 682 201.5 C 687 205, 688 215, 682 220 Z" transform="rotate(40 682 211)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 699 245 C 693 240, 694 230, 699 226.5 C 704 230, 705 240, 699 245 Z" transform="rotate(40 699 236)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 712 272 C 706 267, 707 257, 712 253.5 C 717 257, 718 267, 712 272 Z" transform="rotate(40 712 263)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 722 301 C 716 296, 717 286, 722 282.5 C 727 286, 728 296, 722 301 Z" transform="rotate(40 722 292)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 495 110 C 489 105, 490 95, 495 91.5 C 500 95, 501 105, 495 110 Z" transform="rotate(40 495 101)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 529 110 C 523 105, 524 95, 529 91.5 C 534 95, 535 105, 529 110 Z" transform="rotate(40 529 101)" fill="none" stroke="#717c86" stroke-width="1"/>
+-<path d="M 360.5 471.5 L 360.5 354 A 151.5 151.5 0 0 1 663.5 354 L 663.5 471.5" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1.5"/>
+-<path d="M 392 300 A 120 120 0 0 1 452 230" fill="none" stroke="#ffffff" stroke-width="3"/>
+-<rect x="360.5" y="200.5" width="303" height="271" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+-<text x="368" y="452" font-size="9" fill="#777">chamber window 360,200 304×272 · ink inside the arch, top 202, r152 on 512,354 · placeholder</text>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
+-<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
+-<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+-<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
+-<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+-<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+-<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+-<rect x="448.5" y="264.5" width="127" height="159" fill="#ffe2c4" stroke="#c45f12" stroke-width="2"/>
+-<text x="452" y="280" font-size="10" fill="#222">BUD 128×160</text>
+-<text x="452" y="291" font-size="9" fill="#777">448,264 128×160</text>
+-<text x="452" y="303" font-size="9" fill="#777">(focal) early</text>
+-<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
+-<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
+-<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
+-<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
+-<text x="512" y="501" font-size="13" fill="#c6c4d8" text-anchor="middle">growing</text>
+-<text x="24" y="96" font-size="10" fill="#2b6cb0">Leaves (the word leaves, rule</text>
+-<text x="24" y="109" font-size="10" fill="#2b6cb0">leafArc): one a minute; inner</text>
+-<text x="24" y="122" font-size="10" fill="#2b6cb0">arc r216 first (to 20), then</text>
+-<text x="24" y="135" font-size="10" fill="#2b6cb0">outer r244; each run centred</text>
+-<text x="24" y="148" font-size="10" fill="#2b6cb0">on the top. Leaf 16×20, leaning</text>
+-<text x="24" y="161" font-size="10" fill="#2b6cb0">40°; the current one fills from</text>
+-<text x="24" y="174" font-size="10" fill="#2b6cb0">its foot, a row every 3 s.</text>
+-<text x="24" y="187" font-size="10" fill="#2b6cb0"></text>
+-<text x="24" y="200" font-size="10" fill="#2b6cb0">No ring: one subject; ✓ acts</text>
+-<text x="24" y="213" font-size="10" fill="#2b6cb0">on the room. Pad: nothing.</text>
+-<text x="24" y="226" font-size="10" fill="#2b6cb0"></text>
 -<text x="24" y="239" font-size="10" fill="#2b6cb0">A founder's tabs clear in ring</text>
 -<text x="24" y="252" font-size="10" fill="#2b6cb0">order as the wait passes; a</text>
 -<text x="24" y="265" font-size="10" fill="#2b6cb0">cross bud's unknown chapters</text>
 -<text x="24" y="278" font-size="10" fill="#2b6cb0">stay unread.</text>
-+<text x="24" y="239" font-size="10" fill="#2b6cb0">No rail: the band under the top</text>
-+<text x="24" y="252" font-size="10" fill="#2b6cb0">bar is the bench, as in empty.</text>
-+<text x="24" y="265" font-size="10" fill="#2b6cb0">A founder's chapters clear on</text>
-+<text x="24" y="278" font-size="10" fill="#2b6cb0">the stamp as the wait passes.</text>
- <text x="760" y="512" font-size="9" fill="#5d7a5f">arcs centred on the bud, 512,344</text>
- <line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
+-<text x="760" y="512" font-size="9" fill="#5d7a5f">arcs centred on the bud, 512,344</text>
+-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
++<rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
++<text x="949" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">interior 71,59 882×489 (bezel inner edges, measured on incubator-empty)</text>
++<rect x="88.5" y="80.5" width="847" height="449" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="2 4"/>
++<text x="92" y="77" font-size="7" fill="#999" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margins: 17 left/right, 21 top (80), 18 bottom (530)</text>
++<line x1="512.5" y1="80" x2="512.5" y2="530" stroke="#eef" stroke-dasharray="2 6"/>
  <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
+-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+-<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
+-<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+-<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+-<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
++<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Incubator</text>
+ <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+-<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+-<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+-<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+-<text x="36" y="587" font-size="14" fill="#c4500f">Grow now</text>
+-<text x="127.2" y="587" font-size="13" fill="#222">❀ 7</text>
+-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">a Loika bud</text>
+-<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+-<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+-<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+-<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+-<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
+-<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
+-<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
+-<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
+-<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
+-<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
+-<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+-<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
+-<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
+-<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+-<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
++<text x="36" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Grow now</text><text x="144" y="588" font-size="16" fill="#222" text-anchor="start">❀ 5</text>
++<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">ready in about 9 min</text>
++<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
++<rect x="88.5" y="96.5" width="207" height="407" fill="#f5f0e4" stroke="#8b7f66" stroke-width="1"/>
++<text x="92" y="93" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slip 88,96 208×408 (the Create slip, one size)</text>
++<text x="104" y="124" font-size="24" fill="#2f2a22" text-anchor="start">Loika</text>
++<text x="104" y="156" font-size="14" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
++<text x="104" y="178" font-size="14" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
++<text x="104" y="200" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
++<text x="104" y="224" font-size="14" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
++<text x="104" y="246" font-size="14" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
++<text x="104" y="268" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
++<text x="104" y="292" font-size="14" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
++<text x="104" y="314" font-size="14" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
++<text x="104" y="336" font-size="14" fill="#5f574a" text-anchor="start">two still to come</text>
++<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#d7dadd" stroke-width="24" opacity="1"/>
++<text x="512" y="82" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring: arc centre 512,288, r 176–200, open 96° at the bottom; fills clockwise from 228° to 132°</text>
++<path d="M372.3 413.8 A188.0 188.0 0 0 1 554.9 105.0" fill="none" stroke="#9fb59a" stroke-width="24" opacity="1"/>
++<rect x="315.5" y="240.5" width="23" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="327" y="255" font-size="8" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Coat</text>
++<rect x="416.5" y="107.5" width="23" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="428" y="122" font-size="8" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Face</text>
++<rect x="583.5" y="107.5" width="23" height="23" fill="#f3f3f3" stroke="#8d8aa6" stroke-width="1" stroke-dasharray="2 2"/>
++<text x="595" y="122" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Move</text>
++<rect x="684.5" y="240.5" width="23" height="23" fill="#f3f3f3" stroke="#8d8aa6" stroke-width="1" stroke-dasharray="2 2"/>
++<text x="696" y="255" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Stam</text>
++<ellipse cx="512" cy="280" rx="111.5" ry="135.5" fill="#eef2f5" stroke="#3c4b57" stroke-width="1.5"/>
++<text x="512" y="170" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">pod 400,144 224×272: the bud's own shell (Pods' renderer)</text>
++<rect x="432.5" y="192.5" width="159" height="191" fill="none" stroke="#8d8aa6" stroke-width="1" stroke-dasharray="3 3"/>
++<text x="512" y="290" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">founder shadow 432,192 160×192</text>
++<text x="512" y="302" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">(known looks only)</text>
++<rect x="392.5" y="392.5" width="239" height="95" fill="#e8ece4" stroke="#5a6672" stroke-width="1"/>
++<text x="512" y="470" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle, moss nest, candling light 392,392 240×96</text>
++<rect x="728.5" y="96.5" width="207" height="239" fill="#eceef1" stroke="#444" stroke-width="1"/>
++<text x="932" y="93" font-size="7" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 728,96 208×240</text>
++<text x="744" y="124" font-size="16" fill="#8a6a1e" text-anchor="start">Just cleared</text>
++<rect x="752.5" y="140.5" width="159" height="127" fill="#ffffff" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
++<text x="832" y="208" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the trait's picture, 1:1, centred</text>
++<text x="744" y="296" font-size="16" fill="#222" text-anchor="start" font-weight="500">Face</text>
++<text x="744" y="318" font-size="14" fill="#6b6880" text-anchor="start">wide eyes</text>
++<rect x="772.5" y="352.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
++<text x="832" y="410" font-size="9" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">STAMP 772,352 120</text>
++<text x="832" y="497" font-size="16" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
++<line x1="728" y1="504.5" x2="936" y2="504.5" stroke="#444"/>
++<text x="932" y="516" font-size="7" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">code 744,480 176×25 · baseline 496 · rule 504, 728–936</text>
++<ellipse cx="512" cy="280" rx="119" ry="143" fill="none" stroke="#d9a21b" stroke-width="2"/>
++<text x="512" y="436" font-size="7" fill="#d9a21b" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring on the pod (initial): the pod box + 4</text>
+ </svg>
 diff --git a/design/style-guide/station-layouts/05-incubator-ready.svg b/design/style-guide/station-layouts/05-incubator-ready.svg
-index bc5ae07..aeeef3d 100644
+index bc5ae07..e5bc35d 100644
 --- a/design/style-guide/station-layouts/05-incubator-ready.svg
 +++ b/design/style-guide/station-layouts/05-incubator-ready.svg
-@@ -1,26 +1,8 @@
- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+@@ -1,145 +1,62 @@
+-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
 -<title>Incubator, ready: every leaf full, every chapter known, the chamber lit, the species' shape in the bud, the plaque says ready, ✓ Open, the waiting lamp while the painting is on its way, 1024×600 at 1×, measured. Layout only, no art.</title>
-+<title>Incubator, ready: every leaf full, every chapter known on the stamp, no rail (T-20261016-23), the chamber lit, the species' shape in the bud, the plaque says ready, ✓ Open, the waiting lamp while the painting is on its way, 1024×600 at 1×, measured. Layout only, no art.</title>
- <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
++<title>Incubator, ready: the arc full, every cut read, seam light, the shadow the whole founder. 1024×600 at 1×, measured. Layout only, no art. Incubator option B, candling (T-20261016-23).</title>
++<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
  <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
- <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+-<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
 -<rect x="96.5" y="40.5" width="831" height="39" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
 -<polygon points="232,40 368,40 384,80 248,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
 -<rect x="250.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
@@ -74,20 +238,196 @@ index bc5ae07..aeeef3d 100644
 -<rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
 -<text x="690" y="60" font-size="11" fill="#222">Stamina</text>
 -<rect x="719.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
- <rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
- <text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
- <text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+-<rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+-<text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
+-<text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+-<text x="808" y="270" font-size="9" fill="#777">140 from the window</text>
+-<rect x="776.5" y="357.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="792" y1="381.5" x2="936" y2="381.5" stroke="#3c4b57" stroke-width="1"/>
+-<text x="864" y="373" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+-<text x="864" y="392" font-size="9" fill="#777" text-anchor="middle">code 776,357 176×25 · rule 792–936</text>
+-<rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
+-<path d="M 302 301 C 296 296, 297 286, 302 282.5 C 307 286, 308 296, 302 301 Z" transform="rotate(40 302 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 312 272 C 306 267, 307 257, 312 253.5 C 317 257, 318 267, 312 272 Z" transform="rotate(40 312 263)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 325 245 C 319 240, 320 230, 325 226.5 C 330 230, 331 240, 325 245 Z" transform="rotate(40 325 236)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 342 220 C 336 215, 337 205, 342 201.5 C 347 205, 348 215, 342 220 Z" transform="rotate(40 342 211)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 362 198 C 356 193, 357 183, 362 179.5 C 367 183, 368 193, 362 198 Z" transform="rotate(40 362 189)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 385 178 C 379 173, 380 163, 385 159.5 C 390 163, 391 173, 385 178 Z" transform="rotate(40 385 169)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 411 162 C 405 157, 406 147, 411 143.5 C 416 147, 417 157, 411 162 Z" transform="rotate(40 411 153)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 438 150 C 432 145, 433 135, 438 131.5 C 443 135, 444 145, 438 150 Z" transform="rotate(40 438 141)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 467 142 C 461 137, 462 127, 467 123.5 C 472 127, 473 137, 467 142 Z" transform="rotate(40 467 133)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 497 138 C 491 133, 492 123, 497 119.5 C 502 123, 503 133, 497 138 Z" transform="rotate(40 497 129)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 527 138 C 521 133, 522 123, 527 119.5 C 532 123, 533 133, 527 138 Z" transform="rotate(40 527 129)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 557 142 C 551 137, 552 127, 557 123.5 C 562 127, 563 137, 557 142 Z" transform="rotate(40 557 133)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 586 150 C 580 145, 581 135, 586 131.5 C 591 135, 592 145, 586 150 Z" transform="rotate(40 586 141)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 613 162 C 607 157, 608 147, 613 143.5 C 618 147, 619 157, 613 162 Z" transform="rotate(40 613 153)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 639 178 C 633 173, 634 163, 639 159.5 C 644 163, 645 173, 639 178 Z" transform="rotate(40 639 169)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 662 198 C 656 193, 657 183, 662 179.5 C 667 183, 668 193, 662 198 Z" transform="rotate(40 662 189)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 682 220 C 676 215, 677 205, 682 201.5 C 687 205, 688 215, 682 220 Z" transform="rotate(40 682 211)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 699 245 C 693 240, 694 230, 699 226.5 C 704 230, 705 240, 699 245 Z" transform="rotate(40 699 236)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 712 272 C 706 267, 707 257, 712 253.5 C 717 257, 718 267, 712 272 Z" transform="rotate(40 712 263)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 722 301 C 716 296, 717 286, 722 282.5 C 727 286, 728 296, 722 301 Z" transform="rotate(40 722 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 495 110 C 489 105, 490 95, 495 91.5 C 500 95, 501 105, 495 110 Z" transform="rotate(40 495 101)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 529 110 C 523 105, 524 95, 529 91.5 C 534 95, 535 105, 529 110 Z" transform="rotate(40 529 101)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
+-<path d="M 360.5 471.5 L 360.5 354 A 151.5 151.5 0 0 1 663.5 354 L 663.5 471.5" fill="#fff7e8" stroke="#b9772f" stroke-width="2" stroke-dasharray="6 2"/>
+-<path d="M 392 300 A 120 120 0 0 1 452 230" fill="none" stroke="#ffffff" stroke-width="3"/>
+-<rect x="360.5" y="200.5" width="303" height="271" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+-<text x="368" y="452" font-size="9" fill="#777">chamber window 360,200 304×272 · ink inside the arch, top 202, r152 on 512,354 · placeholder · glowing</text>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
+-<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
+-<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+-<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
+-<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+-<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+-<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+-<rect x="448.5" y="264.5" width="127" height="159" fill="#fff0d6" stroke="#c45f12" stroke-width="2"/>
+-<text x="452" y="280" font-size="10" fill="#222">BUD ready</text>
+-<rect x="456.5" y="288.5" width="111" height="111" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="3 2"/>
+-<rect x="464.5" y="296.5" width="95" height="95" fill="#d9b89a" stroke="none" stroke-width="1"/>
+-<text x="468" y="312" font-size="9" fill="#222">shape: ink ≤ 96</text>
+-<text x="468" y="323" font-size="9" fill="#555">456,288 112×112</text>
+-<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
+-<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
+-<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
+-<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
+-<text x="512" y="501" font-size="13" fill="#f1ebdf" text-anchor="middle">ready</text>
+-<rect x="652.5" y="490.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
+-<text x="668" y="516" font-size="9" fill="#1e5196" text-anchor="end">waiting lamp 652,490</text>
+-<text x="24" y="96" font-size="10" fill="#2b6cb0">Ready reads across a table:</text>
+-<text x="24" y="109" font-size="10" fill="#2b6cb0">the full leaves, the glowing</text>
+-<text x="24" y="122" font-size="10" fill="#2b6cb0">chamber, the plaque, ✓ Open.</text>
+-<text x="24" y="135" font-size="10" fill="#2b6cb0">No ring.</text>
+-<text x="24" y="148" font-size="10" fill="#2b6cb0"></text>
+-<text x="24" y="161" font-size="10" fill="#2b6cb0">The shape: the species'</text>
+-<text x="24" y="174" font-size="10" fill="#2b6cb0">juvenile silhouette, sitting,</text>
+-<text x="24" y="187" font-size="10" fill="#2b6cb0">one dark warm shape; the bud's</text>
+-<text x="24" y="200" font-size="10" fill="#2b6cb0">front drawn over it.</text>
+-<text x="24" y="213" font-size="10" fill="#2b6cb0"></text>
+-<text x="24" y="226" font-size="10" fill="#2b6cb0">No bay free: a guard only (a</text>
+-<text x="24" y="239" font-size="10" fill="#2b6cb0">dimmed ✓, a plate, the notice).</text>
+-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
++<rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
++<text x="949" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">interior 71,59 882×489 (bezel inner edges, measured on incubator-empty)</text>
++<rect x="88.5" y="80.5" width="847" height="449" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="2 4"/>
++<text x="92" y="77" font-size="7" fill="#999" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margins: 17 left/right, 21 top (80), 18 bottom (530)</text>
++<line x1="512.5" y1="80" x2="512.5" y2="530" stroke="#eef" stroke-dasharray="2 6"/>
+ <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
+-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+-<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
+-<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+-<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+-<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
++<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Incubator</text>
+ <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+-<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+-<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+-<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+-<text x="36" y="587" font-size="14" fill="#c4500f">Open</text>
+-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">a Loika bud</text>
+-<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+-<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+-<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+-<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+-<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
+-<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
+-<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
+-<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
+-<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
+-<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
+-<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+-<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
+-<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
+-<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+-<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
++<text x="36" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Open</text>
++<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">a Loika bud</text>
++<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
++<rect x="88.5" y="96.5" width="207" height="407" fill="#f5f0e4" stroke="#8b7f66" stroke-width="1"/>
++<text x="92" y="93" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slip 88,96 208×408 (the Create slip, one size)</text>
++<text x="104" y="124" font-size="24" fill="#2f2a22" text-anchor="start">Loika</text>
++<text x="104" y="156" font-size="14" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
++<text x="104" y="178" font-size="14" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
++<text x="104" y="200" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
++<text x="104" y="224" font-size="14" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
++<text x="104" y="246" font-size="14" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
++<text x="104" y="268" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
++<text x="104" y="292" font-size="14" fill="#2f2a22" text-anchor="start">Stamina: steady</text>
++<text x="104" y="314" font-size="14" fill="#2f2a22" text-anchor="start">Movement: a quick trot</text>
++<text x="104" y="336" font-size="14" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
++<text x="104" y="358" font-size="14" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
++<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#d7dadd" stroke-width="24" opacity="1"/>
++<text x="512" y="82" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring: arc centre 512,288, r 176–200, open 96° at the bottom; fills clockwise from 228° to 132°</text>
++<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#9fb59a" stroke-width="24" opacity="1"/>
++<rect x="315.5" y="240.5" width="23" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="327" y="255" font-size="8" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Coat</text>
++<rect x="416.5" y="107.5" width="23" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="428" y="122" font-size="8" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Face</text>
++<rect x="583.5" y="107.5" width="23" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="595" y="122" font-size="8" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Move</text>
++<rect x="684.5" y="240.5" width="23" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="696" y="255" font-size="8" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">Stam</text>
++<ellipse cx="512" cy="280" rx="111.5" ry="135.5" fill="#eef2f5" stroke="#3c4b57" stroke-width="1.5"/>
++<text x="512" y="170" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">pod 400,144 224×272: the bud's own shell (Pods' renderer)</text>
++<rect x="432.5" y="192.5" width="159" height="191" fill="none" stroke="#8d8aa6" stroke-width="1" stroke-dasharray="3 3"/>
++<text x="512" y="290" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">founder shadow 432,192 160×192</text>
++<text x="512" y="302" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">(known looks only)</text>
++<text x="512" y="212" font-size="8" fill="#c4500f" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">seam light: ready</text>
++<rect x="392.5" y="392.5" width="239" height="95" fill="#e8ece4" stroke="#5a6672" stroke-width="1"/>
++<text x="512" y="470" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle, moss nest, candling light 392,392 240×96</text>
++<rect x="728.5" y="96.5" width="207" height="239" fill="#eceef1" stroke="#444" stroke-width="1"/>
++<text x="932" y="93" font-size="7" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 728,96 208×240</text>
++<text x="744" y="124" font-size="16" fill="#8a6a1e" text-anchor="start">Just cleared</text>
++<rect x="752.5" y="140.5" width="159" height="127" fill="#ffffff" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
++<text x="832" y="208" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the trait's picture</text>
++<text x="744" y="296" font-size="16" fill="#222" text-anchor="start" font-weight="500">Stamina</text>
++<text x="744" y="318" font-size="14" fill="#6b6880" text-anchor="start">steady</text>
++<rect x="772.5" y="352.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
++<text x="832" y="410" font-size="9" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">STAMP 772,352 120</text>
++<text x="832" y="497" font-size="16" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
++<line x1="728" y1="504.5" x2="936" y2="504.5" stroke="#444"/>
++<text x="932" y="516" font-size="7" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">code 744,480 176×25 · baseline 496 · rule 504, 728–936</text>
++<ellipse cx="512" cy="280" rx="119" ry="143" fill="none" stroke="#d9a21b" stroke-width="2"/>
++<text x="512" y="436" font-size="7" fill="#d9a21b" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring on the pod (initial): the pod box + 4</text>
+ </svg>
 diff --git a/design/style-guide/station-layouts/05b-incubator-hatch.svg b/design/style-guide/station-layouts/05b-incubator-hatch.svg
-index 28b48fa..66dc4f6 100644
+index 28b48fa..1f77f14 100644
 --- a/design/style-guide/station-layouts/05b-incubator-hatch.svg
 +++ b/design/style-guide/station-layouts/05b-incubator-hatch.svg
-@@ -1,26 +1,8 @@
- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+@@ -1,122 +1,41 @@
+-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
 -<title>Incubator, the hatch at 1500 ms: the chamber window lifted out of sight, the bud gone, the juvenile on the base, the ribbon, input held 2780 ms, then one mibi up close, in the meet, 1024×600 at 1×, measured. Layout only, no art.</title>
-+<title>Incubator, the hatch at 1500 ms: the chamber window lifted out of sight, the bud gone, the juvenile on the base, the ribbon, no rail (T-20261016-23), input held 2780 ms, then one mibi up close, in the meet, 1024×600 at 1×, measured. Layout only, no art.</title>
- <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
++<title>Incubator, the hatch at 1500 ms: the ring and card gone, the shell open, the juvenile on the nest, the ribbon; input held. 1024×600 at 1×, measured. Layout only, no art. Incubator option B, candling (T-20261016-23).</title>
++<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
  <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
- <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+-<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
 -<rect x="96.5" y="40.5" width="831" height="39" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
 -<polygon points="232,40 368,40 384,80 248,80" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
 -<rect x="250.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
@@ -106,6 +446,251 @@ index 28b48fa..66dc4f6 100644
 -<rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
 -<text x="690" y="60" font-size="11" fill="#222">Stamina</text>
 -<rect x="719.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
- <rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
- <text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
- <text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+-<rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+-<text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
+-<text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+-<text x="808" y="270" font-size="9" fill="#777">140 from the window</text>
+-<rect x="776.5" y="357.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="792" y1="381.5" x2="936" y2="381.5" stroke="#3c4b57" stroke-width="1"/>
+-<text x="864" y="373" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+-<text x="864" y="392" font-size="9" fill="#777" text-anchor="middle">code 776,357 176×25 · rule 792–936</text>
+-<line x1="668" y1="300" x2="668" y2="96" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+-<text x="674" y="200" font-size="9" fill="#2b6cb0">window swings up on its hinge,</text>
+-<text x="674" y="211" font-size="9" fill="#2b6cb0">3 slices in 0–600 ms (placeholder:</text>
+-<text x="674" y="222" font-size="9" fill="#2b6cb0">lifts 384 px), clipped at y 88</text>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
+-<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
+-<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+-<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
+-<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+-<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+-<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+-<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
+-<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
+-<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
+-<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
+-<rect x="360.5" y="160.5" width="303" height="311" fill="#ffe2c4" fill-opacity="0.55" stroke="#c45f12" stroke-width="2"/>
+-<text x="368" y="182" font-size="11" fill="#222">JUVENILE 304×312</text>
+-<text x="368" y="193" font-size="9" fill="#777">360,160 304×312</text>
+-<text x="368" y="205" font-size="9" fill="#777">feet 512,472 on the base · steps 4 px at 1400, 1800</text>
+-<line x1="400" y1="472.5" x2="624" y2="472.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+-<rect x="312.5" y="104.5" width="399" height="39" fill="#0f4c50" stroke="#45d8be" stroke-width="1"/>
+-<text x="512" y="130" font-size="16" fill="#f1ebdf" text-anchor="middle">Fig, a young Loika</text>
+-<text x="716" y="116" font-size="9" fill="#777">ribbon 312,104 400×40</text>
+-<rect x="652.5" y="490.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
+-<text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms,</text>
+-<text x="24" y="109" font-size="10" fill="#2b6cb0">a held state):</text>
+-<text x="24" y="122" font-size="10" fill="#2b6cb0">0 the leaves go (plaque keeps "ready");</text>
+-<text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the window opens;</text>
+-<text x="24" y="148" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
+-<text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands; plaque "hatched"</text>
+-<text x="24" y="174" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>
+-<text x="24" y="187" font-size="10" fill="#2b6cb0">1200 the ribbon;</text>
+-<text x="24" y="200" font-size="10" fill="#2b6cb0">1400, 1800 it steps 4 px;</text>
+-<text x="24" y="213" font-size="10" fill="#2b6cb0">2600 dither (180 ms) to</text>
+-<text x="24" y="226" font-size="10" fill="#2b6cb0">  one mibi up close, the meet:</text>
+-<text x="24" y="239" font-size="10" fill="#2b6cb0">  304×312 at 144,80, the ring on it,</text>
+-<text x="24" y="252" font-size="10" fill="#2b6cb0">  ← Vivarium.</text>
+-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
++<rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
++<text x="949" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">interior 71,59 882×489 (bezel inner edges, measured on incubator-empty)</text>
++<rect x="88.5" y="80.5" width="847" height="449" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="2 4"/>
++<text x="92" y="77" font-size="7" fill="#999" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margins: 17 left/right, 21 top (80), 18 bottom (530)</text>
++<line x1="512.5" y1="80" x2="512.5" y2="530" stroke="#eef" stroke-dasharray="2 6"/>
+ <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
+-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+-<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
+-<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+-<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+-<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
++<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Incubator</text>
+ <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+-<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+-<text x="16" y="587" font-size="9" fill="#999">(no ✓ cap)</text>
+-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">its painting is on its way</text>
+-<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+-<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+-<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+-<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+-<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
+-<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
+-<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
+-<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
+-<text x="512" y="501" font-size="13" fill="#c6c4d8" text-anchor="middle">ready</text><text x="512" y="529" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plaque: "ready" to 1000, then "hatched"</text>
+-<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
+-<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
+-<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+-<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
+-<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
+-<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+-<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
++<text x="36" y="588" font-size="16" fill="#c4500f" text-anchor="start"></text>
++<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle"></text>
++<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
++<rect x="88.5" y="96.5" width="207" height="407" fill="#f5f0e4" stroke="#8b7f66" stroke-width="1"/>
++<text x="92" y="93" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slip 88,96 208×408 (the Create slip, one size)</text>
++<text x="104" y="124" font-size="24" fill="#2f2a22" text-anchor="start">Loika</text>
++<text x="104" y="156" font-size="14" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
++<text x="104" y="178" font-size="14" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
++<text x="104" y="200" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
++<text x="104" y="224" font-size="14" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
++<text x="104" y="246" font-size="14" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
++<text x="104" y="268" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
++<text x="104" y="292" font-size="14" fill="#2f2a22" text-anchor="start">Stamina: steady</text>
++<text x="104" y="314" font-size="14" fill="#2f2a22" text-anchor="start">Movement: a quick trot</text>
++<text x="104" y="336" font-size="14" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
++<text x="104" y="358" font-size="14" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
++<rect x="392.5" y="392.5" width="239" height="95" fill="#e8ece4" stroke="#5a6672" stroke-width="1"/>
++<text x="512" y="470" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle, moss nest, candling light 392,392 240×96</text>
++<rect x="360.5" y="144.5" width="303" height="311" fill="#f3f6f8" stroke="#3c4b57" stroke-width="1.5"/>
++<text x="512" y="300" font-size="10" fill="#3c4b57" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">juvenile 360,144 304×312, feet 456</text>
++<rect x="312.5" y="96.5" width="399" height="39" fill="#4b3b2b" stroke="#444" stroke-width="1"/>
++<text x="512" y="121" font-size="16" fill="#f2e6c9" text-anchor="middle">Fig, a young Loika</text>
++<text x="512" y="92" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ribbon 312,96 400×40 (from 1200)</text>
++<rect x="772.5" y="352.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
++<text x="832" y="410" font-size="9" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">STAMP 772,352 120</text>
++<text x="832" y="497" font-size="16" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
++<line x1="728" y1="504.5" x2="936" y2="504.5" stroke="#444"/>
++<text x="932" y="516" font-size="7" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">code 744,480 176×25 · baseline 496 · rule 504, 728–936</text>
+ </svg>
+diff --git a/design/style-guide/station-layouts/05c-incubator-empty.svg b/design/style-guide/station-layouts/05c-incubator-empty.svg
+index e27046c..9523423 100644
+--- a/design/style-guide/station-layouts/05c-incubator-empty.svg
++++ b/design/style-guide/station-layouts/05c-incubator-empty.svg
+@@ -1,92 +1,22 @@
+-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+-<title>Incubator, empty: an invitation to grow a bud. The standby light on the lit, plump nest, the clean window, the base's foot light, ✓ Choose a pod, 1024×600 at 1×, measured. Layout only, no art.</title>
+-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
++<title>Incubator, empty: the nest lit, the cradle empty, the ring a bare track; no slip, card, stamp or code. 1024×600 at 1×, measured. Layout only, no art. Incubator option B, candling (T-20261016-23).</title>
++<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+ <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+-<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+-<path d="M 360.5 471.5 L 360.5 354 A 151.5 151.5 0 0 1 663.5 354 L 663.5 471.5" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1.5"/>
+-<path d="M 392 300 A 120 120 0 0 1 452 230" fill="none" stroke="#ffffff" stroke-width="3"/>
+-<rect x="360.5" y="200.5" width="303" height="271" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+-<text x="368" y="452" font-size="9" fill="#777">chamber window 360,200 304×272 · ink inside the arch, top 202, r152 on 512,354 · placeholder</text>
+-<ellipse cx="512" cy="414" rx="96" ry="30" fill="#f6e3c0" stroke="#e6c98c" stroke-width="1"/>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="#f2dfb8" stroke="#bf9157" stroke-width="1.5"/>
+-<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
+-<ellipse cx="512" cy="416" rx="60" ry="9" fill="#e6c98c" stroke="#bf9157" stroke-width="1"/>
+-<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+-<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
+-<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+-<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+-<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+-<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
+-<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
+-<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
+-<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
+-<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
+-<text x="512" y="501" font-size="13" fill="#c6c4d8" text-anchor="middle">empty</text>
+-<text x="512" y="386" font-size="9" fill="#7d5435" text-anchor="middle">standby light: a soft warm pool, half the growing glow</text>
+-<text x="24" y="96" font-size="10" fill="#2b6cb0">Empty (an invitation:</text>
+-<text x="24" y="109" font-size="10" fill="#2b6cb0">it invites incubating).</text>
+-<text x="24" y="122" font-size="10" fill="#2b6cb0">The standby light on the nest,</text>
+-<text x="24" y="135" font-size="10" fill="#2b6cb0">the nest lit and plump with its</text>
+-<text x="24" y="148" font-size="10" fill="#2b6cb0">hollow, the clean window, the</text>
+-<text x="24" y="161" font-size="10" fill="#2b6cb0">foot light; the plaque in fog.</text>
+-<text x="24" y="174" font-size="10" fill="#2b6cb0">No rail, leaves, stamp or code.</text>
+-<text x="24" y="187" font-size="10" fill="#2b6cb0"></text>
+-<text x="24" y="200" font-size="10" fill="#2b6cb0">✓ Choose a pod: Pods with the</text>
+-<text x="24" y="213" font-size="10" fill="#2b6cb0">ring on the first identified pod,</text>
+-<text x="24" y="226" font-size="10" fill="#2b6cb0">when the rack holds a pod and a</text>
+-<text x="24" y="239" font-size="10" fill="#2b6cb0">bay is free; else no ✓ cap.</text>
+-<text x="24" y="252" font-size="10" fill="#2b6cb0">Notice: none, but no bay free.</text>
+-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
++<rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
++<text x="949" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">interior 71,59 882×489 (bezel inner edges, measured on incubator-empty)</text>
++<rect x="88.5" y="80.5" width="847" height="449" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="2 4"/>
++<text x="92" y="77" font-size="7" fill="#999" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margins: 17 left/right, 21 top (80), 18 bottom (530)</text>
++<line x1="512.5" y1="80" x2="512.5" y2="530" stroke="#eef" stroke-dasharray="2 6"/>
+ <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
+-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+-<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
+-<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+-<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+-<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+-<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
++<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Incubator</text>
+ <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+-<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+-<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+-<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+-<text x="36" y="587" font-size="14" fill="#c4500f">Choose a pod</text>
+-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">ready for a new bud</text>
+-<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+-<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+-<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+-<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+-<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
+-<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
+-<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
+-<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
+-<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
+-<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+-<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
+-<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+-<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
+-<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
+-<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+-<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+-<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
++<text x="36" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Choose a pod</text>
++<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">the nest is empty</text>
++<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
++<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#d7dadd" stroke-width="24" opacity="1"/>
++<text x="512" y="82" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring: arc centre 512,288, r 176–200, open 96° at the bottom; fills clockwise from 228° to 132°</text>
++<rect x="392.5" y="392.5" width="239" height="95" fill="#e8ece4" stroke="#5a6672" stroke-width="1"/>
++<text x="512" y="470" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle, moss nest, candling light 392,392 240×96</text>
++<text x="192" y="300" font-size="9" fill="#999" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">(no slip: left column bare)</text>
++<text x="832" y="300" font-size="9" fill="#999" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">(no card, stamp or code)</text>
+ </svg>
