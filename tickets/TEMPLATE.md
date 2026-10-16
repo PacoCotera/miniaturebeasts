@@ -12,6 +12,8 @@ budget: 0 (no paid calls)
 ---
 ## Purpose (screens and art: required)
 What the player does here and why they come back; the job of each object this ticket adds or changes. An object with no job is not built (owner, 2026-10-16 10:51: "eye candy is ok, but needs to serve a purpose").
+## Style (art, design, review tickets: required)
+`design/art-direction.md` and `design/style-guide/README.md` on station-gate; cite the section that governs this work.
 ## Goal
 ## Inputs (exact commit ids, file paths; everything the worker needs is here or in the repo)
 ## Steps

@@ -18,6 +18,7 @@ You are a worker on Miniature Beasts. You do not need to know who writes tickets
 - Never read, print or copy credentials.
 - Times come from `TZ=America/Mexico_City date`, never guessed.
 - Purpose first (owner, 2026-10-16): on any screen or art ticket, if the ticket does not say what the player does there and what each object is for, park it and ask for the purpose. Reviews judge purpose before polish: an object that serves no player purpose is a fail, however well painted.
+- One style, no drift (owner, 2026-10-16 10:57: "you have a very clear style defined for the station and miniature lives. don't let the art designers drift."): the style is `design/art-direction.md` (Miniature Lives) and `design/style-guide/README.md` (the Station: rugged, matte field gear, the Companion's sibling), on station-gate. Every art, design and review ticket cites them and is judged against them. No ticket, ruling or direction file may introduce another style (no retro mid-century industrial, no new motif family). A wanted departure is the owner's call: park and ask.
 - Do not design: rects, colours, words and art are given by the ticket. If the ticket and the code disagree, park and report; do not choose.
 - Never write money figures (costs, spend, prices, budgets in any currency) in any file, commit message or result. Spending is private.
 - Stage only the paths you changed (never `git add -A`); run `git status` before every commit.
