@@ -17810,5 +17810,88 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
   "status_note": "new (10-16, T-20261016-47)"
+ },
+ "cargo-link-light-976x8": {
+  "size": [
+   976,
+   8
+  ],
+  "rect": [
+   24,
+   296,
+   976,
+   8
+  ],
+  "src": "dock/make-dock.py",
+  "made": "the link light: the Caddy's link reaching the bay, a matte warm-white pool along the bay's floor line; the build reveals it in 4 steps of 244 px",
+  "sha256": "3c73091e5a9e9d66303e717bb54ea4549ba7d094e4a6cb58c8c7129ed468d331",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-57)"
+ },
+ "mark-home-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "dock/make-dock.py",
+  "made": "who came home: a sage door with an arrow going in (before the coming-home faces in the home band)",
+  "sha256": "fded6152272f79225ca2472e3ea0745e8ebd853e04815d5a48845987bdcf824f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-57)"
+ },
+ "mark-out-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "dock/make-dock.py",
+  "made": "who left: a sage door with an arrow coming out (before the leaving faces)",
+  "sha256": "eda797ec7a81ce7565f6b75496851a5e9d4c37571a49db1040c1bbf962b57447",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-57)"
+ },
+ "face-S01-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "dock/make-dock.py",
+  "made": "the S01 face: its head and crown cut from the signed adult painting, reduced to 24; the home band's word for that mibi",
+  "sha256": "1cc1a26cce48268c2ec864ab9350175e1fc68301011a88e9a6434f2ac4d2ec1f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-57)"
+ },
+ "face-S02-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "dock/make-dock.py",
+  "made": "the S02 face: its head and crown cut from the signed adult painting, reduced to 24; the home band's word for that mibi",
+  "sha256": "c72d5096ff25e4732f06a3111881523ffcaf194bf08783339e2d4e8ae6dfbc69",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-57)"
+ },
+ "face-S03-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "dock/make-dock.py",
+  "made": "the S03 face: its head and crown cut from the signed adult painting, reduced to 24; the home band's word for that mibi",
+  "sha256": "f627c9af7e2ba50ca8992694d3b38940956c4a7c5f29addd470dba44b70075b7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-57)"
  }
 }
