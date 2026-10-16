@@ -378,15 +378,15 @@ const hpressC = async (k, ms = 200) => { await said(); await press(k, ms); const
 stepOf("create-walk");
 await hpressC("confirm", 500);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Create");
-{ const p = await props(), c = await page.evaluate(() => window.__st.check()); expect(p.state === "shape" && p.frame.line.back === "Loika" && p.focus.cur === "roll" && JSON.stringify(p.focus.targets) === JSON.stringify([{ id: "roll", group: "roll" }]), "Create is built: the ring on the roll, its way back names the pod: " + JSON.stringify([p.state, p.focus, p.frame.line]));
-  expect(!c.log.type.some((t) => /not built/.test(t.text)) && c.log.regions.some((r) => r.id === "roll") && c.log.regions.some((r) => r.id === "founder"), "Create draws its roll and its founder"); await frameShot("page-create", true); }
-const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
+{ const p = await props(), c = await page.evaluate(() => window.__st.check()); expect(p.state === "shape" && p.frame.line.back === "Loika" && p.focus.cur === "drum.0" && p.focus.targets.length === p.regions.bank.drums.length && p.focus.targets.every((x, i) => x.id === `drum.${i}` && x.group === "drum"), "Create is built: the ring on the first drum, a target a drum, its way back names the pod: " + JSON.stringify([p.state, p.focus, p.frame.line]));
+  expect(!c.log.type.some((t) => /not built/.test(t.text)) && c.log.regions.some((r) => r.id === "bank") && c.log.regions.some((r) => r.id === "founder"), "Create draws its bank and its founder"); await frameShot("page-create", true); }
+const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
 for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
-expect((await cui()).f === eyeIndex, "◀ ▶ walk the read traits: the ring is on Eye rings");
-{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4 ⧗ 20" && !("leaves" in p.regions) && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4 ⧗ 20, no leaf grid: " + JSON.stringify(L)); }
-await hpressC("down", 300);
+expect((await cui()).f === eyeIndex, "◀ ▶ walk the drums: the ring is on Eye rings");
+{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4" && !("leaves" in p.regions) && p.regions.bank.drums[eyeIndex].face === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4, no ⧗ n (owner ruling 3), no leaf grid: " + JSON.stringify(L)); }
+await hpressC("up", 300);
 { const p = await props(), cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost));
-  expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "▼ rolls the look: the tag, the price with ◆ 1 and the wait ⧗ 21: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price])); }
+  expect(p.regions.bank.drums[eyeIndex].face === 1 && p.regions.bank.drums[eyeIndex].state === "changed" && p.regions.slip.lines.length === 1 && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1", "▲ turns the drum: the notch, the slip's line and the price with ◆ 1: " + JSON.stringify([p.regions.bank.drums[eyeIndex], p.regions.slip.lines, p.frame.line.price])); }
 { const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a room key on Create forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
   await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
@@ -394,7 +394,7 @@ await hpressC("down", 300);
   await page.evaluate((id) => window.__st.podsGo(id, "pod"), crPod); await page.waitForTimeout(400); await hpressC("confirm", 500);
   expect((await page.evaluate(() => window.__st.UI.screen === "create" && Object.keys(window.__st.UI.create.choices).length === 0)), "back on Create it starts fresh");
   for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
-  await hpressC("down", 300); }
+  await hpressC("up", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
 await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Grow it, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)

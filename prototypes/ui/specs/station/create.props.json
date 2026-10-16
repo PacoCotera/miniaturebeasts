@@ -1,30 +1,32 @@
 {
- "$comment": "The props of Create (lvgl-switch.md §2.1): what views/create-props.mjs gives the face, beside the frame's. Props name what, never where: the state, the chosen look, strings, flags, counts and asset ids, and the one focus target; no rectangle, no measure, no layout rule, no colour (the words read those from create.json and the palette). The breed mark and the busy bud are named in every state, whether or not they show: the face keeps their nodes (§2.2). The notches and the pips are the words' chrome rects; the fronts of the work tray and the small chamber are named in every state and drawn, the tray's over the founder and the chamber's over the bud and the travelling pod; the changed tag's plate is named in every state, as the breed mark.",
+ "$comment": "The props of Create (lvgl-switch.md §2.1): what views/create-props.mjs gives the face, beside the frame's. Props name what, never where: the state, the drums and their faces, strings, flags, counts and asset ids, and the focused drum; no rectangle, no measure, no layout rule, no colour (the words read those from create.json and the palette). The bank names which drums it shows (`first`, `last`) and the more marks; the face places them from create.json regions.bank. The gene bench's art is named in every state, whether or not it shows: the face keeps its nodes (§2.2).",
  "$defs": {
-  "tab": { "type": "object", "required": ["id", "word", "state", "glint", "emblem", "mark"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read", "sealed"] }, "glint": { "type": "boolean" }, "emblem": { "type": "string" }, "mark": { "enum": ["clash", "changed", ""] } } }
+  "drum": { "type": "object", "required": ["chapter", "group", "trait", "name", "state", "faces", "face", "closeUp", "word", "lead"], "additionalProperties": false, "properties": { "chapter": { "type": "string" }, "group": { "type": "integer" }, "trait": { "type": "string" }, "name": { "type": "string" }, "state": { "enum": ["rest", "changed", "oneFace", "pinned", "capped", "clash"] }, "faces": { "enum": [1, 2, 3] }, "face": { "enum": [0, 1, 2] }, "closeUp": { "type": "string" }, "word": { "type": "string" }, "lead": { "type": "boolean" } } }
  },
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["nothingRead", "shape", "grow"] },
-  "regions": { "type": "object", "required": ["bench", "rail", "traitLine", "chamber", "chamberFront", "founder", "pod", "cradle", "origin", "dome", "domeFront", "bud", "podShadow", "founderShadow", "stamp", "code"], "additionalProperties": false, "properties": {
+  "regions": { "type": "object", "required": ["bench", "well", "pod", "name", "found", "geneLine", "dish", "founder", "bank", "slip", "stamp", "code", "toIncubator"], "additionalProperties": false, "properties": {
    "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "type": "string" } } } },
-   "rail": { "type": "object", "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": "null" }, "open": { "type": "integer" }, "star": { "type": "string" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
-   "roll": { "type": "object", "required": ["form", "chosen", "clash", "pictures", "notches", "shown"], "additionalProperties": false, "properties": { "form": { "enum": ["roll", "single"] }, "chosen": { "enum": [0, 1, 2] }, "clash": { "type": "boolean" }, "pictures": { "type": "array", "items": { "type": "string" } }, "notches": { "type": "boolean" }, "shown": { "type": "boolean" } } },
-   "traitLine": { "type": "object", "required": ["text", "changed", "breed", "doing", "clash"], "additionalProperties": false, "properties": { "text": { "type": "string" }, "changed": { "type": "boolean" }, "breed": { "type": "string" }, "doing": { "type": "boolean" }, "clash": { "type": "boolean" } } },
-   "chamber": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
-   "chamberFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "well": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "pod": { "type": "object", "required": ["picture", "closed"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "closed": { "type": "string" } } },
+   "name": { "type": "string" },
+   "found": { "type": "array", "items": { "type": "string" } },
+   "geneLine": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "dish": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
    "founder": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
-   "pod": { "type": "object", "required": ["sizeClass", "picture", "dome"], "additionalProperties": false, "properties": { "sizeClass": { "enum": ["large", "medium", "small"] }, "picture": { "type": "string" }, "dome": { "type": "string" } } },
-   "cradle": { "type": "object", "required": ["front"], "additionalProperties": false, "properties": { "front": { "type": "string" } } },
-   "origin": { "type": "array", "items": { "type": "string" } },
-   "podShadow": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
-   "founderShadow": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
-   "dome": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
-   "domeFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
-   "bud": { "type": "object", "required": ["picture", "busy"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "busy": { "type": "boolean" } } },
-   "stamp": { "type": "object", "required": ["size", "N", "cell", "plate", "asset", "case"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "type": "string" }, "case": { "type": "object", "required": ["back", "front"], "additionalProperties": false, "properties": { "back": { "type": "string" }, "front": { "type": "string" } } } } },
-   "code": { "type": "string" }
+   "bank": { "type": "object", "required": ["first", "last", "moreLeft", "moreRight", "locked", "cross", "more", "pictures", "drums"], "additionalProperties": false, "properties": {
+    "first": { "type": "integer" }, "last": { "type": "integer" }, "moreLeft": { "type": "boolean" }, "moreRight": { "type": "boolean" }, "locked": { "type": "boolean" }, "cross": { "type": "string" },
+    "more": { "type": "object", "required": ["left", "right"], "additionalProperties": false, "properties": { "left": { "type": "string" }, "right": { "type": "string" } } },
+    "pictures": { "type": "object", "required": ["rest", "pinned", "capped", "clash", "notch", "up", "down"], "additionalProperties": false, "properties": { "rest": { "type": "string" }, "pinned": { "type": "string" }, "capped": { "type": "string" }, "clash": { "type": "string" }, "notch": { "type": "string" }, "up": { "type": "string" }, "down": { "type": "string" } } },
+    "drums": { "type": "array", "items": { "$ref": "drum" } } } },
+   "slip": { "type": "object", "required": ["picture", "heading", "lines", "more", "none", "clash", "surprise", "printed"], "additionalProperties": false, "properties": {
+    "picture": { "type": "string" }, "heading": { "type": "string" }, "lines": { "type": "array", "items": { "type": "string" } }, "more": { "type": "string" }, "none": { "type": "string" }, "clash": { "type": "string" },
+    "surprise": { "anyOf": [{ "type": "null" }, { "type": "object", "required": ["heading", "words"], "additionalProperties": false, "properties": { "heading": { "type": "string" }, "words": { "type": "string" } } }] }, "printed": { "type": "boolean" } } },
+   "stamp": { "type": "object", "required": ["size", "N", "cell", "plate", "asset"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "type": "string" } } },
+   "code": { "type": "string" },
+   "toIncubator": { "type": "string" }
   } },
-  "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "enum": ["roll", "room"] }, "targets": { "type": "array", "items": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "enum": ["roll"] }, "group": { "enum": ["roll"] } } } } } }
+  "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "type": "string", "pattern": "^(room|drum\\.\\d+)$" }, "targets": { "type": "array", "items": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "type": "string", "pattern": "^drum\\.\\d+$" }, "group": { "enum": ["drum"] } } } } } }
  }
 }

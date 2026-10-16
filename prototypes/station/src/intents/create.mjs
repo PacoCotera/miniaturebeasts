@@ -1,20 +1,25 @@
-// Create's intents (create.json keys, events): ◀ ▶ walk the read traits, ▲ ▼ roll a trait's look, ✓ Grows the founder, ← goes up to the pod's overview. The roll is the screen's state (`h.ui.create`):
-//   { podId, choices, f, clash, grown }   grown: what ✓ Grow it made ({ code, cost, pod }) while the screen holds, until the jump to the Incubator
+// Create's intents (create.json keys, events): ◀ ▶ move the ring along the drums (the face's focus graph; the host keeps the drum in `ui.create.f`), ▲ ▼ turn the focused drum's face, ✓ Grows the founder, ← goes up to the pod's overview.
+// A turn is the shape intent on that trait. The screen's own state is `h.ui.create`:
+//   { podId, choices, order, f, first, clash, grown }   order: the traits turned, the newest last (the slip lists them newest first); f the focused drum and first the bank's first shown drum; grown: what ✓ Grow it made ({ code, cost, pod }) while the screen holds, until the jump to the Incubator
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
-import { reviewTraits, createPod, founderPicture } from "../views/create-props.mjs";
+import { drumsOf, firstDrum, createPod, founderPicture } from "../views/create-props.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const drumIndex = (target) => { const m = /^drum\.(\d+)$/.exec(target ?? ""); return m ? +m[1] : null; };
+// The face moved the ring onto a drum (a `focus` message): the host keeps it, and the bank slides at the next props.
+export function focus(h, target) { const cr = h.ui.create, i = drumIndex(target); if (cr && !cr.grown && i !== null) cr.f = i; }
 // The screen's own state names the pod (h.ui.create.podId); its frame is the species'. Nothing else is on the wire: { screen, target, verb }.
 export function intent(h, target, verb) {
   const cr = h.ui.create, p = cr && createPod(h.st, cr); if (!p || cr.grown) return;
-  const frame = frameOf(S.speciesOf(p)), list = reviewTraits(p, frame), spec = h.specs.create;
-  if (verb === "step:left" || verb === "step:right") cr.f = clamp(cr.f + (verb === "step:right" ? 1 : -1), 0, Math.max(0, list.length - 1));
-  else if (verb === "step:up" || verb === "step:down") {
-    const cur = list[clamp(cr.f, 0, list.length - 1)]; if (!cur) return; const opts = S.rollOptions(p, cur.t.id);
-    if (opts.length <= 1) return;   // a doing, one look or a trait that cannot be shaped: nothing, no plate (the trait line says why)
+  const frame = frameOf(S.speciesOf(p)), drums = drumsOf(frame), spec = h.specs.create;
+  if (verb === "step:up" || verb === "step:down") {
+    const i = drumIndex(target) ?? cr.f, d = drums[clamp(i, 0, drums.length - 1)]; if (!d) return; cr.f = drums.indexOf(d);
+    if (!p.read.includes(d.c.id)) return;   // a capped drum: an unread chapter's trait stays a surprise
+    const opts = S.rollOptions(p, d.t.id); if (opts.length <= 1) return;   // a doing, one look or a trait that cannot be shaped: nothing, no plate (the context line says why)
     const size = spec.regions.founder.rect.slice(2), was = founderPicture(p, cr.choices, size).id;
-    const i = cr.choices[cur.t.id] || 0, n = (i + (verb === "step:down" ? 1 : opts.length - 1)) % opts.length; if (n) cr.choices[cur.t.id] = n; else delete cr.choices[cur.t.id];
+    const at = cr.choices[d.t.id] || 0, n = (at + (verb === "step:up" ? 1 : opts.length - 1)) % opts.length;   // ▲ the next face, ▼ the previous, wrapping
+    cr.order = (cr.order ?? []).filter((id) => id !== d.t.id); if (n) { cr.choices[d.t.id] = n; cr.order.push(d.t.id); } else delete cr.choices[d.t.id];
     cr.clash = S.clashTraits(p, cr.choices);
     const now = founderPicture(p, cr.choices, size).id; if (now !== was) { cr.prev = was; h.play({ kind: "dither", target: spec.events.roll.target, from: was, ms: spec.events.roll.ms, hold: spec.events.roll.hold }); h.at(spec.events.roll.ms, () => { cr.prev = null; }); }   // the founder cross-dithers to the new picture
   }
@@ -30,5 +35,5 @@ export function intent(h, target, verb) {
   }
   else if (verb === "back") { h.ui.create = null; h.ui.pods.cur = p.id; h.ui.pods.view = "overview"; h.ui.pods.focus.set("pod"); h.goto("pods"); }
 }
-// Create opens on a pod: nothing chosen, the first read trait.
-export function openCreate(h, p) { h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.goto("create"); }
+// Create opens on a pod: nothing chosen, the ring on the first drum whose chapter is read, the bank at its start.
+export function openCreate(h, p) { h.ui.create = { podId: p.id, choices: {}, order: [], f: firstDrum(p, frameOf(S.speciesOf(p))), first: 0, clash: [], grown: null }; h.goto("create"); }

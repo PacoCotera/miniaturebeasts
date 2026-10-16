@@ -148,7 +148,9 @@ export function cargoBody() {
 // ---- Create ----
 // The founder's shaping: Create's state is the UI's (UI.create), the pod and the rules are the rules'. The ring is on the roll when a trait is read, else on nothing.
 export function createBody() {
-  return createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods);
+  const body = createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods);
+  if (UI.create && !UI.create.grown) { const b = body.props.regions.bank; UI.create.first = b.first; const i = /^drum\.(\d+)$/.exec(body.props.focus.cur); if (i) UI.create.f = +i[1]; }   // the host keeps the drum in focus and where the bank slid (the face moves the ring; the tray follows at the next props)
+  return body;
 }
 
 // ---- Incubator ----
@@ -255,6 +257,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "library") { if (UI.screen === "library" && UI.lib.f === "spread") INTENTS.library.focus(h, m.target); return; }
+    if (m.screen === "create") { if (UI.screen === "create") INTENTS.create.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;

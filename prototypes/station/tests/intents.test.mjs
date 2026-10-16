@@ -197,32 +197,34 @@ test("one mibi up close, Cross: only a partner at home can be picked (the first 
   st.dock = { docked: true, at: T0 }; INTENTS.habitat.openCross(h, a); assert.equal(h.went.at(-1), "cross", "docked, the carried mibi crosses as any adult");
 });
 
-test("Create: ◀ ▶ walk the read traits, ← returns to the pod's overview with nothing spent", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null };
-  INTENTS.create.intent(h, "x", "step:right"); assert.equal(h.ui.create.f, 1); INTENTS.create.intent(h, "x", "step:left"); assert.equal(h.ui.create.f, 0);
-  INTENTS.create.intent(h, "x", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.create], ["pods", "overview", "pod", null]); assert.equal(st.tray.length, 1);
+test("Create: the face's focus message keeps the drum in focus, ← returns to the pod's overview with nothing spent", () => {
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, order: [], f: 0, first: 0, clash: [], grown: null };
+  INTENTS.create.focus(h, "drum.3"); assert.equal(h.ui.create.f, 3); INTENTS.create.focus(h, "drum.1"); assert.equal(h.ui.create.f, 1); INTENTS.create.focus(h, "roll"); assert.equal(h.ui.create.f, 1, "not a drum: unchanged");
+  INTENTS.create.intent(h, "drum.1", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.create], ["pods", "overview", "pod", null]); assert.equal(st.tray.length, 1);
 });
 
-test("Create ▲ ▼: a trait that rolls changes its look and the founder cross-dithers (a dither on the founder from the old picture's id, 200 ms, no hold); a doing or a trait with one look does nothing, no plate", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st), fr = frameOf("S01"); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null };
-  const list = fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits), at = list.findIndex((t) => S.rollOptions(p, t.id).length > 1), still = list.findIndex((t) => S.rollOptions(p, t.id).length <= 1);
-  assert.ok(at >= 0, "a trait that rolls");
-  h.ui.create.f = at; INTENTS.create.intent(h, "roll", "step:down");
-  assert.equal(h.ui.create.choices[list[at].id], 1); const ev = h.played.at(-1);
-  assert.deepEqual([ev.kind, ev.target, ev.ms, ev.hold, typeof ev.from], ["dither", "founder", 200, 0, "string"]); assert.match(ev.from, /^founder:S01:/); assert.equal(h.ui.create.prev, ev.from);
-  INTENTS.create.intent(h, "roll", "step:up"); assert.equal(h.ui.create.choices[list[at].id], undefined, "back to the pod's own look");
-  if (still >= 0) { h.played.length = 0; h.said.length = 0; h.ui.create.f = still; INTENTS.create.intent(h, "roll", "step:down"); assert.deepEqual([h.played.length, h.said.length], [0, 0]); }
+test("Create ▲ ▼: ▲ turns the focused drum to its next face and ▼ to the previous, wrapping; the founder cross-dithers (a dither on the founder from the old picture's id, 200 ms, no hold); a capped drum, a doing or a trait with one look does nothing, no plate", () => {
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st), fr = frameOf("S01"); h.ui.create = { podId: p.id, choices: {}, order: [], f: 0, first: 0, clash: [], grown: null };
+  const list = fr.chapters.flatMap((c) => c.traits.map((t) => ({ c, t }))), at = list.findIndex(({ c, t }) => p.read.includes(c.id) && S.rollOptions(p, t.id).length > 1), still = list.findIndex(({ c, t }) => p.read.includes(c.id) && S.rollOptions(p, t.id).length <= 1), capped = list.findIndex(({ c }) => !p.read.includes(c.id));
+  assert.ok(at >= 0, "a trait that rolls"); const id = list[at].t.id, n = S.rollOptions(p, id).length;
+  INTENTS.create.intent(h, `drum.${at}`, "step:up");
+  assert.equal(h.ui.create.choices[id], 1, "▲ the next face"); assert.equal(h.ui.create.f, at); const ev = h.played.at(-1);
+  assert.deepEqual([ev.kind, ev.target, ev.ms, ev.hold, typeof ev.from], ["dither", "founder", 200, 0, "string"]); assert.match(ev.from, /^founder:S01:/); assert.equal(h.ui.create.prev, ev.from); assert.deepEqual(h.ui.create.order, [id]);
+  INTENTS.create.intent(h, `drum.${at}`, "step:down"); assert.equal(h.ui.create.choices[id], undefined, "▼ back to the pod's own look"); assert.deepEqual(h.ui.create.order, []);
+  INTENTS.create.intent(h, `drum.${at}`, "step:down"); assert.equal(h.ui.create.choices[id], n - 1, "▼ from the first face wraps to the last");
+  if (still >= 0) { h.played.length = 0; h.said.length = 0; INTENTS.create.intent(h, `drum.${still}`, "step:up"); assert.deepEqual([h.played.length, h.said.length], [0, 0]); }
+  if (capped >= 0) { h.played.length = 0; h.said.length = 0; INTENTS.create.intent(h, `drum.${capped}`, "step:up"); assert.deepEqual([h.played.length, h.said.length, h.ui.create.choices[list[capped].t.id]], [0, 0, undefined], "a capped drum ignores ▲ ▼"); }
 });
 
 test("Create ✓: the rule pays and the grow event plays (900 ms, input held 1080), the code is the screen's while it holds, and the jump to the Incubator comes at 900 ms from the timer; with reduced motion the jump is on the frame of ✓", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.ui.pods.cur = p.id;
-  INTENTS.create.intent(h, "roll", "confirm");
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, order: [], f: 0, first: 0, clash: [], grown: null }; h.ui.pods.cur = p.id;
+  INTENTS.create.intent(h, "drum.0", "confirm");
   assert.deepEqual([h.saved, h.ui.pods.cur], [1, null], "✓ Grow saves the spend and the bud, and pods.cur no longer names the pod that left the rack");
   assert.ok(st.bud); assert.ok(!st.tray.includes(p), "the pod is gone from the rack"); assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.ms, e.hold]), [["grow", "pod", 900, 1080]]);
   assert.deepEqual([h.went.length, h.ui.create.grown.code, typeof h.ui.create.grown.cost.e], [0, st.bud.code, "number"], "still on Create, holding"); assert.deepEqual(h.timers.map((t) => t.ms), [900]); assert.deepEqual(h.said, [], "no plate");
-  INTENTS.create.intent(h, "roll", "confirm"); INTENTS.create.intent(h, "roll", "step:down"); assert.equal(h.timers.length, 1, "nothing acts while it grows");
+  INTENTS.create.intent(h, "drum.0", "confirm"); INTENTS.create.intent(h, "drum.0", "step:down"); assert.equal(h.timers.length, 1, "nothing acts while it grows");
   h.timers[0].fn(); assert.deepEqual([h.went.at(-1), h.ui.create], ["incubator", null]);
-  const st2 = world(), p2 = pod(st2, "S01", []), h2 = host(st2); h2.moving = false; h2.ui.create = { podId: p2.id, choices: {}, f: 0, clash: [], grown: null };
+  const st2 = world(), p2 = pod(st2, "S01", []), h2 = host(st2); h2.moving = false; h2.ui.create = { podId: p2.id, choices: {}, order: [], f: 0, first: 0, clash: [], grown: null };
   INTENTS.create.intent(h2, "room", "confirm"); assert.deepEqual([h2.went.at(-1), h2.ui.create, h2.played.length, h2.timers.length], ["incubator", null, 0, 0], "a cut: nothing to wait for");
 });
 

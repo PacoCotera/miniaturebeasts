@@ -2,7 +2,7 @@
 <title>Create: the navigation map and keys, 1024×600 at 1×.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
-<text x="16" y="24" font-size="14" fill="#222" font-weight="600">Create: what each key does (the ring stays on the chosen roll picture)</text>
+<text x="16" y="24" font-size="14" fill="#222" font-weight="600">Create: what each key does (the ring is on a drum of the bank)</text>
 <rect x="16.5" y="88.5" width="151" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <text x="92" y="108" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Pods overview</text>
 <text x="92" y="124" font-size="9" fill="#777" text-anchor="middle">an identified pod</text>
@@ -29,10 +29,10 @@
 <line x1="680" y1="112" x2="782" y2="112" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
 <text x="731" y="106" font-size="9" fill="#2b6cb0" text-anchor="middle">a jump, 1080 ms</text>
 <path d="M 300 176 C 300 206, 396 206, 396 178" fill="none" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
-<text x="348" y="214" font-size="9" fill="#c45f12" text-anchor="middle">◀ ▶ ▲ ▼ step</text>
+<text x="348" y="214" font-size="9" fill="#c45f12" text-anchor="middle">◀ ▶ move · ▲ ▼ turn</text>
 <rect x="16.5" y="232.5" width="511" height="263" fill="#fff" stroke="#bbb" stroke-width="1"/>
 <rect x="132.5" y="238.5" width="279" height="19" fill="#eceff1" stroke="#5a6672" stroke-width="1"/>
-<text x="272" y="250" font-size="9" fill="#555" text-anchor="middle">rail: not a target; the open tab follows ◀ ▶</text>
+<text x="272" y="250" font-size="9" fill="#555" text-anchor="middle">drums: one target each; the bank slides to the ring</text>
 <rect x="168.5" y="270.5" width="63" height="35" fill="#e9edf0" stroke="#666" stroke-width="1"/>
 <rect x="240.5" y="270.5" width="63" height="35" fill="#e9edf0" stroke="#666" stroke-width="1"/>
 <rect x="312.5" y="270.5" width="63" height="35" fill="#e9edf0" stroke="#666" stroke-width="1"/>
@@ -46,20 +46,20 @@
 <line x1="272" y1="312" x2="272" y2="322" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
 <line x1="232" y1="288" x2="210" y2="288" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
 <line x1="312" y1="288" x2="334" y2="288" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="16" y="514" font-size="10" fill="#555">Mini Create (shape) at half scale. Orange: ▲ ▼ roll the trait among its looks (step:up,</text>
-<text x="16" y="527" font-size="10" fill="#555">step:down; wraps among three; a single look: nothing). Blue: ◀ ▶ the previous or next read</text>
-<text x="16" y="540" font-size="10" fill="#555">trait in ring order (the ends stop). The ring never moves off the roll. Nothing read: no ring.</text>
+<text x="16" y="514" font-size="10" fill="#555">Mini Create (shape) at half scale. Orange: ▲ ▼ turn the focused drum among its faces (step:up,</text>
+<text x="16" y="527" font-size="10" fill="#555">step:down; wraps among three; one face, pinned or capped: nothing). Blue: ◀ ▶ the previous or next</text>
+<text x="16" y="540" font-size="10" fill="#555">drum (the ends stop; the tray slides when the ring lands on a hidden one). Nothing read: the ring on the first drum.</text>
 <text x="560" y="248" font-size="13" fill="#222" font-weight="700">Keys on Create</text>
 <text x="560" y="268" font-size="11" fill="#222" font-weight="600">opens on</text>
-<text x="656" y="268" font-size="11" fill="#222">shape: the roll, the first read trait, as the pod is;</text>
+<text x="656" y="268" font-size="11" fill="#222">shape: the first read drum, as the pod is;</text>
 <text x="560" y="283" font-size="11" fill="#222" font-weight="600"></text>
-<text x="656" y="283" font-size="11" fill="#222">nothing read: the ring on nothing</text>
+<text x="656" y="283" font-size="11" fill="#222">nothing read: the first drum, every drum capped</text>
 <text x="560" y="298" font-size="11" fill="#222" font-weight="600">◀ ▶</text>
-<text x="656" y="298" font-size="11" fill="#222">the previous, next read trait; the ends stop</text>
+<text x="656" y="298" font-size="11" fill="#222">previous, next drum; the ends stop</text>
 <text x="560" y="313" font-size="11" fill="#222" font-weight="600">▲ ▼</text>
-<text x="656" y="313" font-size="11" fill="#222">the trait's look among its three; a single: nothing</text>
+<text x="656" y="313" font-size="11" fill="#222">▲ next face, ▼ previous (wraps); else nothing</text>
 <text x="560" y="328" font-size="11" fill="#222" font-weight="600">arrows</text>
-<text x="656" y="328" font-size="11" fill="#222">nothing read: nothing</text>
+<text x="656" y="328" font-size="11" fill="#222">nothing read: ▲ ▼ do nothing</text>
 <text x="560" y="343" font-size="11" fill="#222" font-weight="600">✓</text>
 <text x="656" y="343" font-size="11" fill="#222">Grow it: checked whole, then paid (03c)</text>
 <text x="560" y="358" font-size="11" fill="#222" font-weight="600">✓ blocked</text>

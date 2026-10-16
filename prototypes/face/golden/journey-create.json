@@ -19,17 +19,16 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4",
+    "subject": "Markings: plain"
    },
    {
     "key": "right",
     "said": [
      {
-      "t": "intent",
+      "t": "focus",
       "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
+      "target": "drum.1"
      }
     ],
     "screen": "create",
@@ -39,17 +38,16 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4",
+    "subject": "Crown: one look in this pod"
    },
    {
     "key": "right",
     "said": [
      {
-      "t": "intent",
+      "t": "focus",
       "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
+      "target": "drum.2"
      }
     ],
     "screen": "create",
@@ -59,17 +57,17 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4",
+    "subject": "Eyes: between"
    },
    {
-    "key": "down",
+    "key": "up",
     "said": [
      {
       "t": "intent",
       "screen": "create",
-      "target": "roll",
-      "verb": "step:down"
+      "target": "drum.2",
+      "verb": "step:up"
      }
     ],
     "screen": "create",
@@ -81,8 +79,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4 ◆ 1",
+    "subject": "Eyes: thin rings"
    },
    {
     "key": "research",
@@ -90,7 +88,7 @@
      {
       "t": "intent",
       "screen": "create",
-      "target": "roll",
+      "target": "drum.2",
       "verb": "room:research"
      }
     ],
@@ -117,17 +115,16 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4",
+    "subject": "Markings: plain"
    },
    {
     "key": "right",
     "said": [
      {
-      "t": "intent",
+      "t": "focus",
       "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
+      "target": "drum.1"
      }
     ],
     "screen": "create",
@@ -137,17 +134,16 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4",
+    "subject": "Crown: one look in this pod"
    },
    {
     "key": "right",
     "said": [
      {
-      "t": "intent",
+      "t": "focus",
       "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
+      "target": "drum.2"
      }
     ],
     "screen": "create",
@@ -157,17 +153,17 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4",
+    "subject": "Eyes: between"
    },
    {
-    "key": "down",
+    "key": "up",
     "said": [
      {
       "t": "intent",
       "screen": "create",
-      "target": "roll",
-      "verb": "step:down"
+      "target": "drum.2",
+      "verb": "step:up"
      }
     ],
     "screen": "create",
@@ -179,8 +175,8 @@
      "grown": false
     },
     "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "two chapters unread"
+    "price": "⚡ 2 ❀ 4 ◆ 1",
+    "subject": "Eyes: thin rings"
    }
   ],
   "create-grow": [
@@ -190,7 +186,7 @@
      {
       "t": "intent",
       "screen": "create",
-      "target": "roll",
+      "target": "drum.2",
       "verb": "confirm"
      }
     ],

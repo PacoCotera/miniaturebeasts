@@ -31,7 +31,7 @@ const TARGETS = {
   library: (state, spec) => { const R = spec.spread.regions, out = []; [R.leftPage, R.rightPage].forEach((pg, p) => { for (let k = 0; k < 8; k++) out.push({ id: "frame.S" + String(p * 8 + k + 1).padStart(2, "0"), rect: listPitch(pg.places, 8, k), group: "frame" }); }); return out; },
   // the Probe bench: the plates (docked only), then the switch and the slot, each its region's rectangle; one graph for both states
   bench: (state, spec) => { const R = spec.regions; return [...(state === "away" ? [] : [{ id: "plates", rect: R.plates.rect, group: "plates" }]), { id: "switch", rect: R.switch.rect, group: "module" }, { id: "slot", rect: R.slot.rect, group: "module" }]; },
-  create: (state, spec) => (state === "shape" ? [{ id: "roll", rect: spec.regions.roll.forms.roll.pictures[1], group: "roll" }] : []),   // the chosen picture's rectangle: the middle one stands for it
+  create: (state, spec) => (state === "grow" ? [] : [0, 1, 2].map((i) => ({ id: "drum." + i, rect: [spec.regions.bank.span[0] + i * spec.regions.bank.drum.pitch + (i > 0 ? spec.regions.bank.drum.chapterGap : 0) * (i > 0 ? 1 : 0), spec.regions.bank.drum.y, ...spec.regions.bank.drum.size], group: "drum" }))),   // the first three drums of the bank, 88 apart (a chapter gap after the first)
 };
 const cases = [];
 for (const screen of screens) {
