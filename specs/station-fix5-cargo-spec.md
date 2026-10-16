@@ -128,7 +128,7 @@ No stage dither, no veil and no dim are drawn behind the report: the door is beh
 - **Width:** w = the words' width + 2 × 16, rounded up to 8, at least 160. x = 512 − w / 2: centred, 4 px off the grid at most, as the layouts allow on an axis.
 - **Example:** the longest, "Developer crate home" (212 px), gives 248 → x 388. Shorter words take at least 160 (x 432).
 - **Words** never exceed 6. With no words (before 500 ms) the ribbon draws nothing.
-- **Clearance:** it shows only from 500 ms, when the closer is `open`, whose ink starts at +52 (y 124). The ribbon's bottom (96) is 28 px above that ink and 8 px above the pods' boxes (104). It does not overlap the sealed or opening slices, because it is not drawn while they show.
+- **Clearance:** it shows only from 500 ms, when the closer is `open`, whose ink starts at +56 (y 128). The ribbon's bottom (96) is 32 px above that ink and 12 px above the pods' boxes (108). It does not overlap the sealed or opening slices, because it is not drawn while they show.
 - **Colours:** `colours.ribbon` is fix 9's first-wave edit (bark, gold, bone), not this spec's.
 
 ## 4. Art direction (for the art director's look, not the layout)
