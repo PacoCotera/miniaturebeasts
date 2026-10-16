@@ -511,6 +511,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Name label | centred on place + (96, 184), hugging, kept inside the place, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
 | Can-grow mark | place + (216, 104, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it |
 | Glint star | place + (148, 16, 12, 12) | `glint-star-12x12`, on the ring's band at its top right |
+| Place badge | place + (192, 144, 32, 32) | `place-{place}-32x32`, where the pod was found (a new master, painted at 32, never scaled from the 64); every pod with a known place, sealed or identified, so two sealed pods of one species can be told apart. 16 px right of the ring, 24 under the can-grow mark, 8 over the name plate; not a focus target (specs/station-pods-purpose.md) |
 | Waiting beyond the rack | 16, 528, 24, 24 | `mark-waiting-24`. One quiet mark, never a number |
 
 **B · Pod overview**
@@ -530,6 +531,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Where it came from | place picture 600, 120, 64, 64 (`place-<place>-64x64`, a new master painted from the same painting at 64, never scaled); sentence 680, 128, 328, 40 | The origin sentence ([Words on Pods](#words-on-pods)), "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits |
 | Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | The ring is the master `ring-kin-56x56`, placed 1:1; the pod is the 40×48 list class. Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred |
+| Hatch caption | 600, 448, 176, 24 | "back to the ‹place›", 16 px weight 400, `mist`, left-aligned at 600, drawn with the hatch plate (8 over it, 12 left of the stamp case): the plate says before it is focused what it does (specs/station-pods-purpose.md) |
 | Stamp case and front glass | 788, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`) |
 | **Stamp label** | 804, 400, 120, 120 | Small, on the shared stamp slot (The stamp label); 476 px from the pod's box. Appears at Identify |
 | Ribbon ("New species") | 680, 128, 328, 40 | In the origin sentence's rectangle, 6 s, the read tab's cool look |
@@ -623,7 +625,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | B | ✓ on the pod | Sealed: `✓ Identify   ◆ 1`. Identified, read or not: `✓ Shape a founder` opens Create (nothing read: its [nothing-read state](#create)); dimmed, with the reason in the notice, when the incubator is busy or no bay is free. A chapter opens from the rail, ▲ then `✓ Open ‹Chapter›`. Identifying is enough to grow an unedited founder |
 | B | ✓ on a tab | `✓ Open Coat`, with no price: opening a chapter is free. The read and its price are on the page (C), where ✓ reads, and the price is on the bottom line while the open tab has the focus there. So no price shows on a tab, and none shows for an action that costs nothing |
 | B | ✓ on a kin pod | `✓ Compare` (free, so no price) |
-| B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   ❀ +1`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms |
+| B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   ❀ +1`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms. The plate's caption "back to the ‹place›" stands beside it in every state, so the sprig says what it does before it is focused |
 | B | ← | Back to A, the ring on this pod: the way back reads "← Pods" |
 | C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
 | C | ✓ | On an unread chapter, `✓ Read Coat   ◆ 3` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |

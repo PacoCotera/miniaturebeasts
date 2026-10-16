@@ -41,6 +41,8 @@ void word_list(void) {
     if (v_pbool(v_fmt("%s.empty", P), 0)) continue;
     const char *pod = v_pstr(v_fmt("%s.pod", P));
     if (*pod) { v_region("place.pod", LAYER_PAINTED); v_sprite(v_fmt("%s.pod", pid), pod, r[0] + sa(C ".pod.centre", 0, 0) - podW / 2, r[1] + sa(C ".pod.centre", 1, 0) - podH / 2, podW, podH); }
+    const char *origin = v_pstr(v_fmt("%s.origin", P));   /* the place badge: where the pod was found (pods.json collection.origin), a picture; none for an unknown place */
+    if (*origin) { v_region("place.origin", LAYER_PAINTED); v_sprite(v_fmt("%s.origin", pid), origin, r[0] + sa(C ".origin.at", 0, 0), r[1] + sa(C ".origin.at", 1, 0), sa(C ".origin.at", 2, 0), sa(C ".origin.at", 3, 0)); }
     char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("%s.name", P)));
     int nx = r[0] + sa(C ".name.at", 0, 0), ny = r[1] + sa(C ".name.at", 1, 0), tw = v_measure(text, npx);
     int pw = layout_plate_width(S, C ".name", tw);

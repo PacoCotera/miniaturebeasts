@@ -110,6 +110,12 @@ void word_kin(const char *base) {
   }
   const char *hatch = v_pstr("regions.hatch");
   if (has(hatch)) { int hr[4]; srect(base, "hatch.rect", hr); v_region("hatch", LAYER_PAINTED); v_sprite("kin.hatch", hatch, hr[0], hr[1], hr[2], hr[3]); }
+  /* the leaf plate's caption (pods.json overview.hatchWord), drawn with the plate: "back to the {place}", left-aligned in its rect */
+  char word[V_STR]; snprintf(word, sizeof word, "%s", v_pstr("regions.hatchWord"));
+  if (*word && spec_len(S, v_fmt("%s.hatchWord", base)) >= 0) {
+    int wr[4]; srect(base, "hatchWord.rect", wr); int px = spec_int(S, v_fmt("%s.hatchWord.px", base), 16); char col[24]; spec_str(S, v_fmt("%s.hatchWord.colour", base), col, sizeof col);
+    v_region("hatchWord", LAYER_TYPE); v_text("kin.hatchWord", word, wr[0], wr[1] + v_fdiv(wr[3] - v_cap(px), 2), v_measure(word, px), px, col);
+  }
 }
 
 /* the stamp label in its case (station-layouts.md, "The stamp label"): the case's back under it, the label's dimmed plate (120 x 120, a 1 px edge; stampCase, k × warm in linear light), the dimmed stamp centred on it, the case's front glass over it */

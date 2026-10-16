@@ -40,7 +40,7 @@ export function podsBuild(m, spec) {
   const rail = railOf(m, spec, cur, chapters, req, view.mode === "chapter" ? ci : -1, focusRail);
   view.rail = rail;
   view.specimen = specimenOf(m, spec, cur, R, req, view.mode);
-  view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
+  view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.hatchWord = null; view.stampCase = null;
   if (view.mode === "chapter") {
     const ch = chapters[ci];
     view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, null), plate: "" };
@@ -55,6 +55,7 @@ export function podsBuild(m, spec) {
     const kin = cur.idd ? st.tray.filter((q) => q !== cur && q.idd && S.canCompare(st, cur, q)).slice(0, R.kin.max) : [];
     view.kin = kin.map((q) => ({ id: q.id, ring: req({ kind: "kinring", id: `kinring:${R.kin.first[2]}`, size: R.kin.first[2], band: R.kin.band }), pod: req({ kind: "pod", id: `pod:${S.speciesOf(q)}:i:${R.kin.pod.join("x")}`, species: S.speciesOf(q), state: "identified", size: R.kin.pod }) }));
     view.hatch = req({ kind: "hatch", id: `hatch:${R.hatch.rect.slice(2).join("x")}`, size: R.hatch.rect.slice(2) });
+    view.hatchWord = view.hatch ? spec.strings.hatchWord.replace("{place}", spec.strings.hatchPlace[cur.g] ?? "wild") : null;   // the leaf plate's caption, with the plate
   }
   view.line = ownLine(lineOf(m, spec, cur, chapters, ci, view, m.frameSpec));
   view.targets = targetsOf(view, st, spec, cur);
@@ -127,6 +128,7 @@ function collectionView(view, m, spec, req) {
       name,
       grow: q.idd && q.read.length && !closed ? req({ kind: "grow", id: "grow:16" }) : null,
       glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : null,
+      origin: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: "place:" + q.g + ":32", place: q.g, size: 32 }) : null,   // where it was found: tells two pods of one species apart (specs/station-pods-purpose.md)
     });
   }
   view.bench = [slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the collection's room master"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];
@@ -252,7 +254,7 @@ export function podsProps(m, spec, frame) {
   else {
     const sp = v.specimen; regions.bench = { room: [sp.room.bench, sp.room.benchAny] };
     const { bench, benchAny, ...room } = sp.room; regions.specimen = { ...sp, room };
-    regions.rail = v.rail; regions.page = v.page; regions.stamp = v.stamp ? { ...v.stamp, case: v.stampCase } : null; regions.kin = v.kin; regions.hatch = v.hatch;
+    regions.rail = v.rail; regions.page = v.page; regions.stamp = v.stamp ? { ...v.stamp, case: v.stampCase } : null; regions.kin = v.kin; regions.hatch = v.hatch; regions.hatchWord = v.hatchWord;
   }
   // the view's answers to the spec's selectors (the graph's `rail.last`, `rail.open`, `kin.first`); null when there is nothing, and the spec's list carries the way on
   const nTabs = v.rail?.tabs?.length ?? 0, ci = v.mode === "compare" ? m.ui?.cmp?.ci : m.ui?.ci, ciSel = nTabs ? "rail." + Math.max(0, Math.min(ci || 0, nTabs - 1)) : null;   // in Compare rail.open is rail.<ui.cmp.ci>

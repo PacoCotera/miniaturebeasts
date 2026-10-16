@@ -243,3 +243,19 @@ test("P8: a sealed chapter of a pod that glints on another chapter says glintPod
   st.readOnce.S02 = [fr.chapters[0].id]; st.guide.S02 = {}; assert.ok(S.podGlints(st, st.tray[0]), "the pod now glints on its first chapter");
   assert.equal(line().need, spec.strings.glintPod, "another chapter glints: glintPod");
 });
+
+// ---- the place badge and the leaf plate's caption (specs/station-pods-purpose.md) ----
+test("a well carries where its pod was found: a sealed pod from the pond asks for the pond's 32 picture, two sealed pods of one species from two places ask for two, an unknown place asks for none", () => {
+  const st = stock(["S01", "S01", "S01"]); st.tray[0].g = "pond"; st.tray[1].g = "meadow"; st.tray[2].g = "the moon";
+  const places = bodyOf(model(st, { ui: { view: "collection" }, focus: "place.0" })).props.regions.list.places, bad = validate(bodyOf(model(st, { ui: { view: "collection" } })).props, schema);
+  assert.deepEqual(bad, []); assert.deepEqual(places.slice(0, 3).map((q) => q.origin), ["place:pond:32", "place:meadow:32", null], "pond and meadow differ; an unknown g draws none");
+  assert.ok(places.slice(0, 2).every((q) => !q.pod.includes(":i:")), "both pods are sealed (the same shell): only the badge tells them apart");
+  const reqs = bodyOf(model(st, { ui: { view: "collection" } })).requests; assert.ok(reqs.some((r) => r.kind === "place" && r.id === "place:pond:32" && r.size === 32 && r.place === "pond"), "the request names the pond at 32");
+  assert.ok(places.slice(3).every((q) => q.empty), "an empty place has no badge");
+});
+test("the leaf plate's caption comes with the plate: 'back to the <place>' on the overview, none with no plate (the collection, the chapter page), 'wild' for an unknown place", () => {
+  const st = rich(["S01"]); readSome(st, 0); st.tray[0].g = "pond"; const o = (g) => { st.tray[0].g = g; return bodyOf(model(st, { ui: { view: "overview" }, focus: "rail.0" })).props.regions; };
+  assert.equal(o("pond").hatchWord, "back to the pond"); assert.ok(o("pond").hatch); assert.equal(o("meadow").hatchWord, "back to the meadow"); assert.equal(o("the moon").hatchWord, "back to the wild");
+  assert.deepEqual(validate(bodyOf(model(st, { ui: { view: "overview" } })).props, schema), []);
+  assert.ok(!("hatchWord" in bodyOf(model(st, { ui: { view: "collection" } })).props.regions), "no caption in the collection"); assert.equal(bodyOf(model(st, { ui: { view: "chapter", ci: 0 } })).props.regions.hatchWord, null, "no caption on the chapter page");
+});

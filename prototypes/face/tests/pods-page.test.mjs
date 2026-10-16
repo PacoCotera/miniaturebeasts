@@ -35,10 +35,10 @@ const standIn = (w, h) => { const d = new Uint8ClampedArray(w * h * 4); for (let
 const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const isPlaced = (r) => r.kind !== "slot" || (placed[r.master] && placed[r.master].w === r.size[0] && placed[r.master].h === r.size[1]);
 const frameProps = (line) => ({ top: { screen: "pods", title: "Pods", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "", timed: false } });
-async function draw(sc, { extra = [], without = [] } = {}) {
+async function draw(sc, { extra = [], without = [], pic = null } = {}) {
   const body = podsProps(sc.m, podsSpec, frameSpec), f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
-  for (const r of body.requests) if (isPlaced(r) && !without.includes(r.id)) f.handleOf(r.id, withPolicy(() => standIn(...sizeOf(r))));
+  for (const r of body.requests) if (isPlaced(r) && !without.includes(r.id)) f.handleOf(r.id, withPolicy(() => (pic ? pic(r) : standIn(...sizeOf(r)))));
   for (const id of extra) { const [w, h] = id.match(/(\d+)x(\d+)$/).slice(1).map(Number); f.handleOf(id, withPolicy(() => standIn(w, h))); }
   assert.equal(f.props({ screen: "pods", ...body.props, motion: false, frame: frameProps(body.line) }), 0, f.errors().join("; ")); f.t = 0; for (let i = 0; i < 3; i++) f.frame((f.t += 16));
   let lg = null; for (let m; (m = f.poll("log"));) lg = m;
@@ -102,4 +102,19 @@ test("no page cell ends right of x 952 for any frame of S01 to S16, and every re
           }
     void chapterIndex;
   }
+});
+
+// ---- the place badge (specs/station-pods-purpose.md): two sealed pods of one species from two places draw two different badges, at the well's (192, 144, 32, 32) ----
+test("two sealed pods of one species from different places draw different badges at their places' (192, 144), 32 × 32; a pod from an unknown place draws none", { skip }, async () => {
+  const st = S.freshSt("w1", 3, 1000); S.normalize(st); st.e = st.d = st.s = 99; for (let i = 0; i < 4; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000);
+  [st.tray[0].g, st.tray[1].g, st.tray[2].g, st.tray[3].g] = ["pond", "meadow", "pond", "the moon"];
+  const hashed = (r) => { let h = 2166136261; for (const c of r.id) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } const [w, hh] = sizeOf(r), d = new Uint8ClampedArray(w * hh * 4); for (let i = 0; i < d.length; i += 4) { d[i] = h & 255; d[i + 1] = (h >> 8) & 255; d[i + 2] = (h >> 16) & 255; d[i + 3] = 255; } return { w, h: hh, data: d }; };
+  const sc = { m: { st, settings, docked: true, crates: 0, present: {}, focus: "place.0", ui: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0 } } };
+  const { f, lg, body } = await draw(sc, { pic: hashed }), P = podsSpec.regions.collection.places, O = podsSpec.regions.collection.origin;
+  const places = body.props.regions.list.places, boxAt = (i) => [P.first[0] + P.pitch[0] * (i % P.grid[0]) + O.at[0], P.first[1] + P.pitch[1] * Math.floor(i / P.grid[0]) + O.at[1], O.at[2], O.at[3]];
+  const px = (i) => { const [x, y, w, h] = boxAt(i); return [...f.pixel(x + w / 2, y + h / 2)]; };
+  assert.deepEqual(places.slice(0, 4).map((q) => q.origin), ["place:pond:32", "place:meadow:32", "place:pond:32", null]);
+  assert.notDeepEqual(px(0), px(1), "a pond badge and a meadow badge differ"); assert.deepEqual(px(0), px(2), "two pods from one place draw the same badge");
+  const badges = lg.regions.filter((r) => r.id === "place.origin"), U = [0, 1, 2].map(boxAt), x0 = Math.min(...U.map((b) => b[0])), y0 = Math.min(...U.map((b) => b[1])), x1 = Math.max(...U.map((b) => b[0] + b[2])), y1 = Math.max(...U.map((b) => b[1] + b[3]));
+  assert.equal(badges.length, 1, "the badges' painted union, one region"); assert.deepEqual(badges[0].rect, [x0, y0, x1 - x0, y1 - y0], "the union of three badges, each at its place's (192, 144, 32, 32): none for the fourth pod (an unknown place)");
 });

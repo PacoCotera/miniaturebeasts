@@ -131,6 +131,12 @@
     "only": "where the ring and the seal do not say it",
     "slice": "mark-can-grow-16"
    },
+   "origin": {
+    "at": [192, 144, 32, 32],
+    "slice": "place-{place}-32x32",
+    "when": "a pod whose place is known (PLACE_KEYS)",
+    "note": "where it was found: tells two pods of one species apart (specs/station-pods-purpose.md)"
+   },
    "glint": {
     "at": [
      148,
@@ -361,6 +367,15 @@
      24
     ],
     "note": "the leaf sprig mark, 24×24 centred (plate 28, 16; screen 628, 496), is painted in ring-hatch-80x56: no node of its own (UI/UX, AD note 1, 2026-10-15)"
+   },
+   "hatchWord": {
+    "rect": [600, 448, 176, 24],
+    "px": 16,
+    "weight": 400,
+    "colour": "mist",
+    "align": "left",
+    "text": "strings.hatchWord",
+    "with": "hatch"
    },
    "stampCase": {
     "offGrid": "x on the shared stamp slot (frame.json regions.stampSlot): the label at 804 centres on the right column's axis 864, 4 px off the grid, as on Create",
@@ -1440,6 +1455,8 @@
   },
   "unknownSubject": "sealed until identified",
   "backTo": "Back to the {place}",
+  "hatchWord": "back to the {place}",
+  "hatchWordExamples": ["back to the meadow", "back to the pond", "back to the rock", "back to the wood", "back to the cave", "back to the wild"],
   "needMore": "needs more {icons}",
   "needMoreFrom": {
    "field": "needs more {icons}: go out",
