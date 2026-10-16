@@ -1,22 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
-<title>Probe bench, away: the cradle empty, no plates, the slot dim (its adds not dimmed); the ring on the switch (lifted 2 px); ✓ Switch on. 1024×600 at 1×, measured.</title>
+<title>Probe bench, away: the cradle empty, no plates, the slot dim (its adds not dimmed); the ring on the switch (lifted 2 px); ✓ Switch on. No field tools; the Shield block (T-20261016-30). 1024×600 at 1×, measured.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="40.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
 <text x="1012" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">stage 0,40 1024×522: room-bench-stage-probe (until it lands, room-bench-stage-collection)</text>
-<rect x="368.5" y="96.5" width="207" height="351" fill="none" stroke="#b7a37a" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="376" y="110" font-size="7" fill="#8a6a1e" font-family="DejaVu Sans Mono, ui-monospace, monospace">tools zone 368,96 208×352: the stage's gauge,</text>
-<text x="376" y="119" font-size="7" fill="#8a6a1e" font-family="DejaVu Sans Mono, ui-monospace, monospace">screwdriver and wrench, recut (PA2)</text>
 <line x1="66" y1="520.5" x2="955" y2="520.5" stroke="#c9d2da" stroke-dasharray="2 4"/>
-<text x="950" y="531" font-size="6" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">shared bottom line y 520: the cradle's base, the strip, Upgrade</text>
+<text x="950" y="531" font-size="6" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">shared bottom line y 520: the cradle's base and Upgrade (the Shield block stands on the Probe's middle)</text>
 <rect x="40.5" y="96.5" width="287" height="431" fill="#f6f6f6" stroke="#3c4b57" stroke-width="1.5" stroke-dasharray="3 2"/>
 <text x="46" y="92" font-size="8" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle 40,96 288×432: bench-cradle-upright-empty-288x432 (painted; the Probe is out)</text>
-<line x1="472.5" y1="456" x2="472.5" y2="536" stroke="#c9d2da" stroke-dasharray="2 4"/>
-<rect x="400.5" y="472.5" width="143" height="47" fill="#d7dadd" stroke="#6b737a" stroke-width="1"/>
-<rect x="408.5" y="480.5" width="31" height="31" fill="none" stroke="#6b737a" stroke-width="1" stroke-dasharray="1 2"/>
-<rect x="456.5" y="480.5" width="31" height="31" fill="none" stroke="#6b737a" stroke-width="1" stroke-dasharray="1 2"/>
-<rect x="504.5" y="480.5" width="31" height="31" fill="none" stroke="#6b737a" stroke-width="1" stroke-dasharray="1 2"/>
-<text x="472" y="534" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate strip t1 144×48 at 400,472 (painted, both states; away: empty slots)</text>
+<line x1="472.5" y1="264" x2="472.5" y2="344" stroke="#c9d2da" stroke-dasharray="2 4"/>
+<rect x="384.5" y="272.5" width="175" height="63" fill="#d7dadd" stroke="#6b737a" stroke-width="1"/>
+<rect x="392.5" y="280.5" width="47" height="47" fill="none" stroke="#6b737a" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="448.5" y="280.5" width="47" height="47" fill="none" stroke="#6b737a" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="504.5" y="280.5" width="47" height="47" fill="none" stroke="#6b737a" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="472" y="232" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate strip t1 176×64 at 384,272 (painted, both states; away: empty slots)</text>
 <rect x="624.5" y="96.5" width="311" height="127" fill="none" stroke="#9aa3ab" stroke-width="1" stroke-dasharray="2 3"/>
 <rect x="624.5" y="94.5" width="311" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/>
 <text x="640" y="122" font-size="16" fill="#8a947b">Mend</text>
@@ -54,13 +51,21 @@
 <text x="920" y="348" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">three pods</text>
 <text x="928" y="396" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">four plates</text>
 <text x="928" y="456" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">reach, deep</text>
-<text x="824" y="490" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">what it adds; the one each adds</text>
-<text x="824" y="500" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">in its -new slice (green), never dim</text>
+<text x="824" y="508" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">what it adds; the one each adds</text>
+<text x="824" y="516" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">in its -new slice (green), never dim</text>
 <rect x="621" y="91" width="318" height="134" fill="none" stroke="#d9a21b" stroke-width="2" rx="6"/>
 <text x="588" y="87" font-size="7" fill="#d9a21b" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring 620,90 320×136: 4 px outside the lifted box; stays drawn through holds</text>
 <text x="376" y="132" font-size="8" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">Away: the Probe is out with the Companion.</text>
 <text x="376" y="144" font-size="8" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">The cradle empty, no plates; the slot dim.</text>
 <text x="376" y="156" font-size="8" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">◀ from the column does nothing.</text>
+<rect x="344.5" y="240.5" width="255" height="23" fill="none" stroke="#9aa3ab" stroke-width="1" stroke-dasharray="2 3"/>
+<text x="472" y="258" font-size="16" fill="#222" text-anchor="middle">Shield</text>
+<rect x="344.5" y="344.5" width="255" height="39" fill="none" stroke="#9aa3ab" stroke-width="1" stroke-dasharray="2 3"/>
+<text x="472" y="360" font-size="16" fill="#6b6880" text-anchor="middle">each plate takes one strike</text>
+<text x="472" y="380" font-size="16" fill="#6b6880" text-anchor="middle">no plates: the trip ends</text>
+<text x="600" y="222" font-size="7" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">shieldWord 344,240 256×24 · shieldLine 344,344 256×40 (both states)</text>
+<text x="844" y="494" font-size="16" fill="#444" text-anchor="middle">reach</text>
+<text x="900" y="494" font-size="16" fill="#444" text-anchor="middle">deep</text>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <image x="16" y="8" width="24" height="24" style="image-rendering:pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAArklEQVR4nO1UyQ2AMAwLLNLhmIBJmKDDdZLyQgrgJE4FDyQs8UA57ERxRb6OyQqUunWvsC2rWasxjzRnc0TABLrQUsnkHDhNwBbqWDQJXBFqXurWjy8SAAk8JZFKL36b4KrsWqzjzBRwRRbYtdAEmWuhCdBKmHMNCVATVrWX97qTTwSsgdjmIsZjl2nQlnXyjoF2MsqxHK//h04PwTJkymgerBfgMQJE8hoyR/JDdj1ramvW3GfvAAAAAElFTkSuQmCC"/>
 <text x="48" y="27" font-size="20" fill="#222" font-weight="500">Probe</text>

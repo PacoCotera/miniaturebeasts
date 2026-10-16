@@ -797,13 +797,13 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   assert.ok(S.masters["spread-plate-{SNN}-80x96"] && S.masters["spread-study-{SNN}-80x96"] && S.masters["library-stage-spread-1024x522"]);
 });
 
-test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 48 pitch, centred on the plates' axis 472, every place at y 480 inside the plates' box", async () => {
+test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 56 pitch, centred on the plates' axis 472, every place at y 280 inside the plates' box", async () => {
   const { TIER } = await import("../../station/src/state.mjs"), be = JSON.parse(readFileSync(new URL("../specs/station/bench.json", import.meta.url), "utf8")), P = be.regions.plates, axis = be.regions.plates.axis;
   assert.deepEqual(Object.keys(P.places).sort(), Object.keys(TIER).sort(), "a table for every tier");
   assert.equal(be.regions.switch.meaning.plates.offWhole, (await import("../../station/src/state.mjs")).DOCK_MEND_FLOOR, "the switch off leaves the plates the dock mends free: state.mjs DOCK_MEND_FLOOR");
   for (const [t, places] of Object.entries(P.places)) {
     assert.equal(places.length, TIER[t].shield, `tier ${t}: a place for each of its ${TIER[t].shield} plates`);
-    places.forEach((pl, i) => { assert.equal(pl[1], 480, `tier ${t} place ${i} at y 480`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 48 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
+    places.forEach((pl, i) => { assert.equal(pl[1], 280, `tier ${t} place ${i} at y 280`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 56 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
     assert.equal(places[0][0] + (places.at(-1)[0] + P.plate[0] - places[0][0]) / 2, axis, `tier ${t} centred on ${axis}`);
   }
 });
@@ -921,12 +921,12 @@ test("the Incubator's paint zones lie inside the wall, clear of the keep-clear z
 });
 
 // ---- fix 5, the Probe (boards/station-fix5-incubator-probe-spec.md P1 to P3) ----
-test("the Probe stands upright in three columns on the floor; each outer margin is 16 to 24 and one bottom line is 520; each module is the size of what it holds; each tier's strip is centred on the axis 472, holds its places with 8 px a side and clears the stage's tools (rework)", () => {
+test("the Probe stands upright in three columns on the floor; each outer margin is 16 to 24 and one bottom line is 520; each module is the size of what it holds; each tier's strip is centred on the axis 472, holds its places with 8 px a side, and the Shield block stands clear of the cradle and the column (rework; specs/station-probe-purpose.md)", () => {
   const be = rd("../specs/station/bench.json"), R = be.regions, FLOORX = [66, 955], FLOORY = [77, 538], cr = R.cradle;
   assert.deepEqual(cr.rect, [40, 96, 288, 432]); assert.deepEqual(cr.ink, [44, 4, 232, 420]); assert.equal(cr.axis, 184);
   const inkL = cr.rect[0] + cr.ink[0], inkB = cr.rect[1] + cr.ink[1] + cr.ink[3];
   for (const [what, m] of [["left", inkL - FLOORX[0]], ["right", FLOORX[1] - (R.slot.rect[0] + R.slot.rect[2])], ["top", cr.rect[1] - FLOORY[0]], ["bottom", FLOORY[1] - inkB]]) assert.ok(m >= 16 && m <= 24, `the ${what} margin ${m} is 16 to 24`);
-  assert.equal(inkB, 520, "the cradle's ink on the bottom line 520"); assert.equal(R.slot.rect[1] + R.slot.rect[3], 520, "the slot on 520"); assert.ok(Object.values(R.strip.byTier).every((s) => s[1] + s[3] === 520), "both strips on 520");
+  assert.equal(inkB, 520, "the cradle's ink on the bottom line 520"); assert.equal(R.slot.rect[1] + R.slot.rect[3], 520, "the slot on 520"); assert.ok(Object.values(R.strip.byTier).every((s) => s[1] + s[3] <= 520), "both strips above the bottom line 520");
   assert.equal(R.switch.rect[1], 96, "the switch at y 96"); assert.equal(R.slot.rect[1] - (R.switch.rect[1] + R.switch.rect[3]), 48, "the modules 48 apart");
   assert.deepEqual([R.switch.rect, R.slot.rect], [[624, 96, 312, 128], [624, 272, 312, 248]]); assert.deepEqual([R.switch.lamp, R.slot.lamp], [[284, 12, 12, 12], [284, 12, 12, 12]]);
   // every module object ends at or before w - 16
@@ -934,20 +934,27 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
     [L, L.socket.at[0] + L.socket.size[0]], [L, L.part.at[0] + L.part.size[0]], [L, L.adds.pods.at[0] + (L.adds.pods.count - 1) * L.adds.pods.pitch + L.adds.pods.icon[0]], [L, L.adds.plates.at[0] + (L.adds.plates.count - 1) * L.adds.plates.pitch + L.adds.plates.icon[0]], [L, L.adds.reach.at[0] + L.adds.reach.size[0]], [L, L.adds.deep.at[0] + L.adds.deep.size[0]], [L, L.lamp[0] + L.lamp[2]]];
   for (const [m, end] of ends) assert.ok(end <= m.rect[2] - 16, `an object ends at ${end}, past ${m.rect[2] - 16}`);
   // the strips
-  const TOOLS = { "tools zone": R.bench.tools }, P = R.plates;
-  assert.equal(R.strip.axis, 472); assert.equal(P.axis, 472); assert.deepEqual(R.bench.keepClear, { cradle: [40, 96, 288, 432], plates: [364, 458, 216, 72], column: [620, 90, 320, 432] });
-  assert.ok(apart(P.rect, R.bench.tools), "the plates' box clear of the tools zone"); assert.ok(apart(R.bench.tools, cr.rect), "the tools zone clear of the cradle"); assert.ok(apart(R.bench.tools, R.bench.keepClear.column), "the tools zone clear of the column's rings");
+  const P = R.plates, K = R.bench.keepClear, BLOCK = [344, 240, 256, 144], WORD = R.shieldWord.rect, LINE = R.shieldLine.rect;
+  assert.equal(R.strip.axis, 472); assert.equal(P.axis, 472); assert.deepEqual(K, { cradle: [40, 96, 288, 432], plates: [344, 232, 256, 160], column: [620, 90, 320, 432] }); assert.ok(!("tools" in R.bench), "the tools zone is retired");
+  // the Shield block (specs/station-probe-purpose.md): the word over the plates over the reason, on the axis 472, clear of the cradle and the column; no bare 160 × 160 in the middle column; the cradle's base and Upgrade share the bottom line 520
+  assert.deepEqual([WORD, LINE], [[344, 240, 256, 24], [344, 344, 256, 40]]); assert.ok(inside(WORD, BLOCK) && inside(P.rect, BLOCK) && inside(LINE, BLOCK), "word, plates and line inside the block"); assert.equal(WORD[1] + WORD[3], 264); assert.equal(P.rect[1], 264, "the plates' box under the word"); assert.equal(LINE[1] - (P.rect[1] + P.rect[3]), 0, "the line under the plates");
+  assert.ok(apart(BLOCK, cr.rect) && apart(BLOCK, K.column), "the block clear of the cradle and the column's rings"); for (const r of [WORD, LINE]) assert.equal(r[0] + r[2] / 2, 472, "centred on the axis 472");
+  { const MID = [328, 96, 292, 432], free = [[MID[0], MID[1], MID[2], BLOCK[1] - MID[1]], [MID[0], BLOCK[1] + BLOCK[3], MID[2], MID[1] + MID[3] - BLOCK[1] - BLOCK[3]]]; assert.deepEqual(free.map((r) => r.slice(2)), [[292, 144], [292, 144]], "above and below the block: 292 × 144 each"); assert.ok(free.every((r) => r[3] < 160), "no bare 160 × 160 in the middle column: the block leaves 144 above and below"); }
+  { const MV = rd("../../face/tests/vectors/metrics.json"), wd = (s) => { const c = (MV.cases ?? MV).find((x) => x.px === 16 && x.text === s); assert.ok(c, `"${s}" is in the metrics vectors`); return c.width; };
+    for (const s of be.strings.shieldLine) assert.ok(wd(s) <= LINE[2], `"${s}" is ${wd(s)} px at 16, the line box is ${LINE[2]}`); assert.ok(wd(be.strings.shield) <= WORD[2]);
+    const A = R.slot.adds, rw = wd(be.strings.addCaptions.reach), dw = wd(be.strings.addCaptions.deep); assert.ok(rw <= A.reachWord.size[0] && dw <= A.deepWord.size[0], "the captions fit their boxes");
+    const centre = (w) => w.at[0] + w.size[0] / 2, gap = centre(A.deepWord) - centre(A.reachWord) - (rw + dw) / 2; assert.ok(gap >= 8, `reach and deep ${gap} px apart (8 at least)`); assert.equal(centre(A.reachWord), A.reach.at[0] + 20, "centred on its dial"); assert.equal(centre(A.deepWord), A.deep.at[0] + 20);
+    assert.deepEqual([A.reachWord.px, A.deepWord.px, R.shieldLine.px, R.shieldWord.px], [16, 16, 16, 16], "the face's body size: it has no 14 or 12"); }
   for (const t of ["1", "2"]) {
     const st = R.strip.byTier[t], places = P.places[t], first = places[0], last = places.at(-1);
     assert.equal(st[0] + st[2] / 2, R.strip.axis, `strip t${t} centred on the axis 472`); assert.ok(inside(st, P.rect), `strip t${t} inside the plates' box`);
-    assert.ok(places.every((p) => p[1] === 480), "the plates at y 480"); assert.equal((first[0] + last[0] + P.plate[0]) / 2, 472, `t${t} places centred on 472`);
+    assert.ok(places.every((p) => p[1] === 280), "the plates at y 280"); assert.equal((first[0] + last[0] + P.plate[0]) / 2, 472, `t${t} places centred on 472`);
     assert.deepEqual([first[0] - st[0], st[0] + st[2] - (last[0] + P.plate[0]), first[1] - st[1], st[1] + st[3] - (first[1] + P.plate[1])], [8, 8, 8, 8], `strip t${t}: 8 px of strip on every side of its plates`);
-    for (let i = 1; i < places.length; i++) assert.equal(places[i][0] - places[i - 1][0], P.pitch, "pitch 48");
-    for (const [n, r] of Object.entries(TOOLS)) assert.ok(apart(st, r), `strip t${t} is clear of the ${n}`);
+    for (let i = 1; i < places.length; i++) assert.equal(places[i][0] - places[i - 1][0], P.pitch, "pitch 56");
     assert.equal(R.strip.slices[t], `bench-plate-strip-t${t}-${st[2]}x${st[3]}`); assert.ok(be.masters.list.includes(R.strip.slices[t]));
   }
-  assert.deepEqual(R.plates.rect, [368, 464, 208, 64]); assert.equal(R.plates.rect[0] + R.plates.rect[2] / 2, 472); assert.equal(R.plates.rect[1] + R.plates.rect[3] / 2, 496, "the plates' centre y 496, so ▶ finds the slot (396) before the switch (160)");
-  assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[364, 458, 216, 72\], switch \[620, 90, 320, 136\], slot \[620, 266, 320, 256\]/)?.length, 1, "the rings from the spec");
+  assert.deepEqual(R.plates.rect, [352, 264, 240, 80]); assert.equal(R.plates.rect[0] + R.plates.rect[2] / 2, 472); assert.equal(R.plates.rect[1] + R.plates.rect[3] / 2, 304, "the plates' centre y 304, so ▶ finds the slot (396) before the switch (160)");
+  assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[348, 258, 248, 88\], switch \[620, 90, 320, 136\], slot \[620, 266, 320, 256\]/)?.length, 1, "the rings from the spec");
 });
 
 test("GB-R6: the Cargo report's heading is `ink` on a cream label plate that lies at least 6 px inside the plate and ends at least 12 px above the first row, and the report door is the report slice", () => {
