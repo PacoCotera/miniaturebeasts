@@ -4944,6 +4944,13 @@
    "sha256": "474f93f940e3d682378c8943d2532816f5b811a52bbfba97bbb344eb53faef39",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "stamp-plate-120x120": {
+   "file": "pods/stamp-plate-120x120.png",
+   "w": 120,
+   "h": 120,
+   "sha256": "9dcf1942d8c36ac6da75497ad4d91820a420ae0df6e62e3dbc6edbc067226184",
+   "signed": "named with --ids"
+  },
   "trait-S01-crown-bare-head-104x160": {
    "file": "pods/trait-S01-crown-bare-head-104x160.png",
    "w": 104,

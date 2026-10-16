@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";
 import { registerAsset, asset, dropAsset } from "../../ui/assets.mjs";
-import { dimRGBA, dimPicture, labelPlate, WARM } from "../src/stamplook.mjs";
+import { dimRGBA, dimPicture, labelPlate, WARM, plateReq, plateMasterReq, PLATE_MASTER } from "../src/stamplook.mjs";
 import { beamArt, UNREAD_REGION, treatmentOf, builtOf, founderArt, drawnDigest, mibiArt, dropSpecks } from "../src/art.mjs";
 import { typeSpecimen, genomeDigest } from "../../workbench/framework/species.mjs";
 import { fitCamera } from "../../workbench/framework/raster.mjs";
@@ -447,4 +447,20 @@ describe("a graded creature picture has its master's footprint", () => {
     }
     assert.ok(n >= 3, "graded copies were measured: " + n);
   });
+});
+
+// ---- the Incubator's plate is the painted master, placed 1:1 (CD ruling, specs/station-stamp-plate-ruling.md); Create and the Habitat card keep the look's plate ----
+test("the Incubator's plate is the master stamp-plate-120x120 at 1:1, no K x WARM, no hairline; Create's plate is still labelPlate(120, bone, hairline, 0.20)", () => {
+  const asked = []; const req = (r) => { asked.push(r); return r.id; };
+  assert.equal(plateMasterReq(req), `${PLATE_MASTER}:120x120`); assert.deepEqual(asked[0], { kind: "slot", id: "stamp-plate-120x120:120x120", master: "stamp-plate-120x120", size: [120, 120], until: asked[0].until });
+  assert.equal(plateReq(req, 0.2), "stamp-plate-120-k20"); assert.deepEqual(asked[1], { kind: "stampplate", id: "stamp-plate-120-k20", size: 120, k: 0.2 }, "Create keeps the look's plate request");
+  const here = new URL(".", import.meta.url), master = decodePNG(readFileSync(new URL("../../ui/assets/masters/pods/stamp-plate-120x120.png", here)));
+  assert.deepEqual([master.width, master.height], [120, 120]); assert.ok(master.data.every((v, i) => i % 4 !== 3 || v === 255), "opaque");
+  // on the Incubator's goldens (growing, ready, hatch-1100) the plate's pixels outside the glyph's 104 x 104 recess are the master's, untouched
+  for (const state of ["growing", "ready", "hatch-1100"]) {
+    const cap = decodePNG(readFileSync(new URL(`../../face/golden/incubator/incubator-${state}.png`, here))); let bad = 0, n = 0;
+    for (let y = 0; y < 120; y++) for (let x = 0; x < 120; x++) { if (x >= 8 && x < 112 && y >= 8 && y < 112) continue; n++; for (let c = 0; c < 3; c++) if (cap.data[((232 + y) * cap.width + 804 + x) * 4 + c] !== master.data[(y * 120 + x) * 4 + c]) { bad++; break; } }
+    assert.equal(bad, 0, `${state}: ${bad} of ${n} plate pixels outside the recess differ from the master`);
+  }
+  const bone = RGB[C.bone], hair = RGB[C.hairline]; assert.deepEqual([...labelPlate(120, bone, hair, 0.20).rgba().slice(0, 4)], [...hair, 255], "Create's plate keeps its hairline");
 });

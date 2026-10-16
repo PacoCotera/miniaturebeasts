@@ -276,6 +276,8 @@ test("the recut machinery stays under its luminance caps and the chamber's lit g
       assert.ok(p95 <= cap, `${state} ${z}: p95 ${p95.toFixed(3)} over ${cap}`); assert.ok(mean <= MEAN, `${state} ${z}: mean ${mean.toFixed(3)} over ${MEAN}`);
     }
     const chamber = pct(mask.map(([x, y]) => lum(x, y)), 0.95); console.log(`incubator-${state}: chamber ${chamber.toFixed(3)}, highest zone p95 ${top.toFixed(3)}, difference ${(chamber - top).toFixed(3)} (${mask.length} px)`);
+    { const v = []; for (let y = 232; y < 352; y++) for (let x = 804; x < 924; x++) v.push(lum(x, y)); const plate = pct(v, 0.95); console.log(`incubator-${state}: stamp plate p95 ${plate.toFixed(3)}`);
+      assert.ok(plate <= 0.34, `${state}: the stamp plate's p95 ${plate.toFixed(3)} is over the R cap 0.34`); assert.ok(plate <= chamber - 0.08, `${state}: the plate's p95 ${plate.toFixed(3)} is within 0.08 of the chamber's ${chamber.toFixed(3)}`); }
     assert.ok(chamber - top >= 0.08, `${state}: the chamber's p95 ${chamber.toFixed(3)} is ${(chamber - top).toFixed(3)} over the highest zone p95 ${top.toFixed(3)}, under 0.08`);
   }
 });
