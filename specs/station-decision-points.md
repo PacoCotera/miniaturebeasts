@@ -10,7 +10,52 @@ The owner, 2026-10-16 13:16: "it's a 'click-accept-fest', you need better bigger
 
 ## UI/UX
 
-*UI/UX designer: this section is yours.*
+*Signed: UI/UX designer, 2026-10-16.*
+
+**The count.** I take the game designer's table below as the reference: 12 ✓ presses, from the recorded journeys. I read the same path from the intents (`prototypes/station/src/intents/*.mjs` at 54bde362) and reach the same shape: 11 presses without reading a chapter, 14 with one.
+
+**The diagnosis is right; the proposed cure is half right.** You get lost for three reasons, none of which is "the screens are too small":
+
+1. **One key does three different jobs, and the same object changes job.**
+   - ✓ on a pod identifies it (you spend ◆), and the next ✓ on the same pod opens Create (you go somewhere).
+   - ✓ on a chapter tab opens its page (free), and on the page the same ✓ reads it (◆ 3).
+   - Only the bottom line's words say which, at 16 px, at the screen's edge.
+2. **Presses land you in another room without saying so.**
+   - Home's ✓ jumps wherever the need is.
+   - The crate report's ✓ jumps to Pods.
+   - Grow jumps to the Incubator.
+   - Open hatches and then jumps to the Vivarium, where ← no longer leads back.
+   
+   Each jump is correct by the rules, but the player never chose the destination, and nothing at the landing says "you are here because…".
+3. **The irreversible commitments look like everything else.** Return to the wild, Grow (the pod is used up) and the Probe upgrade are guarded only by "✓ again" on a small plate. The guard asks you to press twice; it does not show what you lose.
+
+**Why "bigger modals everywhere" would make it worse.** A modal on every action adds a press to every action. That turns 11 presses into about 20, all of them accepts: the click-accept-fest the owner named, only bigger. The cure is a modal where a decision is, and *none* where there is no decision.
+
+**What I recommend instead:**
+
+1. **A decision panel at each real commitment, and only there.**
+   - **Where:** Identify, Read, Grow it, Open, Return to the wild, Fit the upgrade (the game designer confirms the list).
+   - **What it shows:** a large panel (640 × 392, over the dimmed screen) with *what you give*, *what you get*, and *where you go next*, plus two named choices: `✓ Grow it` / `← Keep shaping`.
+   - **What it costs in presses:** it replaces the "✓ again" arming, so Return to the wild and the upgrade cost the same two presses as today, but now you can read them. Identify, Grow and Open gain one press each, so the game designer's 12-press loop goes to 15 (not about 20). Each added press is one where the player is actually choosing.
+   - **Repeats:** a free, repeatable action (turning a drum, opening a page) gets no panel.
+2. **✓ never changes meaning on the same object.**
+   - Spending and moving are two different targets: Identify and Read are actions with a price on the panel, and Create is reached by its own "Shape a founder" control. The pod itself only ever *opens*.
+   - This removes the most confusing press without adding one.
+3. **An arrival line after every jump.**
+   - **What:** for 2 seconds, the ribbon names where you are and why ("Incubator: your Loika bud is growing"; "Pods: one new pod from the crate").
+   - **Behaviour:** no press is needed, and the next key dismisses it.
+   - **Back:** ← always returns to where the jump came from until you move on.
+4. **The bottom line stays the one place that says what ✓ does.** It must always name the destination when ✓ leaves the screen ("✓ Grow it → Incubator").
+
+**The example** (rough, 1×, layout only; the face's type sizes 16, 20 and 28): the Grow panel on Create. Today's single Grow press becomes the panel plus ✓. The added press is the one where the player commits the pod and its price, and the panel says what that buys and where they go next.
+
+![Grow decision panel](station-decision-points/uiux-grow-panel.png)
+
+*station-decision-points/uiux-grow-panel.png (source: uiux-grow-panel.svg).*
+
+**Cost.**
+- **Building:** one panel component, drawn by the face's existing words (a plate, text, a picture slot); one arrival ribbon (the existing ribbon look).
+- **Specs:** the per-screen edits are small, because each commitment already has its strings for price and consequence.
 
 ---
 

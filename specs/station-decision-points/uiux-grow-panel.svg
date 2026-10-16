@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
+<title>Create, the Grow decision panel (UI/UX example, rough, 1x). Layout only, no art.</title>
+<rect width="1024" height="600" fill="#1d1f24"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23262d"/><text x="48" y="27" font-size="20" fill="#e9e2d0">Create</text>
+<text x="600" y="26" font-size="16" fill="#e9e2d0">⚡ 9   ◆ 4   ❀ 6</text>
+<rect x="0" y="40" width="1024" height="522" fill="#7d8f7a"/>
+<rect x="71" y="59" width="882" height="489" rx="14" fill="#3b3631"/>
+<!-- the bench behind, dimmed -->
+<g opacity="0.35">
+<circle cx="192" cy="192" r="96" fill="#2a2622" stroke="#9aa79a" stroke-width="5"/>
+<rect x="360" y="80" width="304" height="312" fill="#4a4a52"/>
+<rect x="728" y="96" width="208" height="296" fill="#e6dcc4"/>
+<rect x="88" y="408" width="848" height="122" rx="8" fill="#2a2622"/>
+</g>
+<rect x="71" y="59" width="882" height="489" rx="14" fill="#000" opacity="0.35"/>
+<!-- the panel -->
+<rect x="192" y="104" width="640" height="392" rx="12" fill="#e6dcc4" stroke="#8b7f66" stroke-width="2"/>
+<text x="224" y="152" font-size="28" fill="#2f2a22">Grow this founder?</text>
+<rect x="224" y="176" width="192" height="200" rx="8" fill="#d9d0bc" stroke="#8b7f66"/>
+<text x="320" y="270" font-size="16" fill="#5f574a" text-anchor="middle">the founder</text>
+<text x="320" y="292" font-size="16" fill="#5f574a" text-anchor="middle">as shaped</text>
+<text x="448" y="196" font-size="16" fill="#2f2a22" font-weight="600">You give</text>
+<text x="448" y="222" font-size="20" fill="#2f2a22">⚡ 2   ❀ 4   ◆ 2</text>
+<text x="448" y="248" font-size="16" fill="#5f574a">and this pod: it goes into the Incubator</text>
+<text x="448" y="288" font-size="16" fill="#2f2a22" font-weight="600">You get</text>
+<text x="448" y="314" font-size="16" fill="#2f2a22">a Loika bud with your two changes:</text>
+<text x="448" y="338" font-size="16" fill="#5f574a">Crown: only leafy · Eyes: wide</text>
+<text x="448" y="362" font-size="16" fill="#5f574a">Stamina stays a surprise until it grows</text>
+<line x1="224" y1="400" x2="800" y2="400" stroke="#8b7f66"/>
+<text x="224" y="428" font-size="16" fill="#2f2a22" font-weight="600">Next</text>
+<text x="288" y="428" font-size="16" fill="#2f2a22">the Incubator: watch it grow, then open it</text>
+<rect x="224" y="448" width="176" height="32" rx="6" fill="#e8743b"/><text x="312" y="470" font-size="16" fill="#1d1f24" text-anchor="middle">✓ Grow it</text>
+<rect x="416" y="448" width="176" height="32" rx="6" fill="none" stroke="#5f574a"/><text x="504" y="470" font-size="16" fill="#2f2a22" text-anchor="middle">← Keep shaping</text>
+<!-- the bottom line names the same two choices -->
+<rect x="0" y="562" width="1024" height="38" fill="#23262d"/>
+<text x="20" y="587" font-size="16" fill="#e8743b">✓ Grow it</text>
+<text x="430" y="587" font-size="16" fill="#9aa0a8">grow this founder?</text>
+<text x="1004" y="587" font-size="16" fill="#e9e2d0" text-anchor="end">← Keep shaping</text>
+<!-- annotations -->
+<text x="840" y="120" font-size="16" fill="#f0e6c8">one panel,</text>
+<text x="840" y="140" font-size="16" fill="#f0e6c8">only where</text>
+<text x="840" y="160" font-size="16" fill="#f0e6c8">you commit</text>
+</svg>
