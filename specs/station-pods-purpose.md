@@ -92,4 +92,4 @@ No "new" mark is added. A pod is fresh until identified (`fresh` clears at Ident
 ## 6. Open
 
 - Words: "back to the {place}" (copywriter).
-- Whether five place pictures read at 32 px (art director). If they cannot, the fallback is the place's word in 12 px `mist` under the ring. That is the UI designer's call, and is to be ruled only if the AD reports a failure.
+- Whether five place pictures read at 32 px (art director). If they cannot, the fallback is the place's word in 16 px `mist` (the face's smallest size) under the ring. That is the UI designer's call, and is to be ruled only if the AD reports a failure.

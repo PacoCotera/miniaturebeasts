@@ -39,16 +39,16 @@ The Shield block stands in the middle column (between the cradle's keep-clear at
 | `shieldWord` (new, text) | — | **344, 240, 256, 24**: "Shield", centred on 472, 16 px, weight 400, the module title's colour (`regions.switch.word`'s style) | docked, away |
 | `strip` | t1 400, 472, 144 × 48; t2 376, 472, 192 × 48 (bound 376, 472, 192, 48) | **t1 384, 272, 176 × 64; t2 356, 272, 232 × 64** (bound 356, 272, 232, 64). t2's x is 4 off the grid, centred on the axis 472 (allowed on an axis) | docked, away (away: empty slots) |
 | `plates` | 368, 464, 208 × 64; plate 32 × 32, pitch 48; t1 x 408, 456, 504; t2 x 384, 432, 480, 528; y 480 | **352, 264, 240 × 80**; plate **48 × 48, pitch 56**; t1 x **392, 448, 504**; t2 x **364, 420, 476, 532**; y **280** | docked |
-| `shieldLine` (new, text, two lines) | — | **344, 344, 256, 40**: line tops 344 and 364, centred on 472, 14 px, weight 400, `mist`. Words: "each plate takes one strike" / "no plates: the trip ends" (copywriter to confirm; until then these) | docked, away |
-| `slot.adds.reachWord` (new) | — | at **(192, 208), 56 × 16** in the slot (abs. 816, 480): "reach", centred on the dial (844), 12 px, `mist` | both |
-| `slot.adds.deepWord` (new) | — | at **(248, 208), 56 × 16** (abs. 872, 480): "deep", centred on 900, 12 px, `mist` | both |
+| `shieldLine` (new, text, two lines) | — | **344, 344, 256, 40**: line tops 344 and 364, centred on 472, 16 px (lead amendment 13:08: the face has 16, 20 and 28 only), weight 400, `mist`. Words: "each plate takes one strike" / "no plates: the trip ends" (copywriter to confirm; until then these) | docked, away |
+| `slot.adds.reachWord` (new) | — | at **(192, 208), 56 × 16** in the slot (abs. 816, 480): "reach", centred on the dial (844), 16 px, `mist` | both |
+| `slot.adds.deepWord` (new) | — | at **(248, 208), 56 × 16** (abs. 872, 480): "deep", centred on 900, 16 px, `mist` | both |
 | Ring on the plates | 364, 458, 216 × 72 | **348, 258, 248 × 88** (4 px out, 2 px lift, as before) | docked, focused |
 | `bench.keepClear.plates` | 364, 458, 216, 72 | **344, 232, 256, 160** (the Shield block, word to line) | — |
 | `bench.tools` | 368, 96, 208, 352 | **deleted** | — |
 
 - **The fit.** t2's run is 4 × 48 + 3 × 8 = 216 in a 232 strip; t1's is 160 in 176. The block spans y 240–384.
 - **No dead field:** above the block in the middle column (y 96–240) and below it (384–528) are each 292 × 144. No bare 160 × 160 remains there, which is the same test as fix 5.
-- **Text widths:** measure "each plate takes one strike" at 14 px with the real measurer; it must fit 256. "reach" and "deep" at 12 px must stay ≥ 8 apart (about 15 expected). If either fails, stop and report.
+- **Text widths:** measure "each plate takes one strike" at 16 px with the real measurer; it must fit 256. "reach" and "deep" at 16 px must stay ≥ 8 apart (about 15 expected). If either fails, stop and report.
 - **Focus:** unchanged. The plates are still one target, with the ring on the new box. The graph (plates ▶ the slot, ▲ ▼ switch and slot) stands.
 - **Dirty area:** a plate seating redraws one 48 × 48 box (was 32 × 32). Every other ceiling stays. Print the plate frame.
 

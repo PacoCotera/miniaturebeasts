@@ -1,5 +1,5 @@
 diff --git a/design/style-guide/station-layouts/04-incubator-growing.svg b/design/style-guide/station-layouts/04-incubator-growing.svg
-index 80a06cc..0064d9b 100644
+index 80a06cc..a00c117 100644
 --- a/design/style-guide/station-layouts/04-incubator-growing.svg
 +++ b/design/style-guide/station-layouts/04-incubator-growing.svg
 @@ -1,148 +1,60 @@
@@ -164,16 +164,16 @@ index 80a06cc..0064d9b 100644
 +<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
 +<rect x="88.5" y="96.5" width="207" height="407" fill="#f5f0e4" stroke="#8b7f66" stroke-width="1"/>
 +<text x="92" y="93" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slip 88,96 208×408 (the Create slip, one size)</text>
-+<text x="104" y="124" font-size="24" fill="#2f2a22" text-anchor="start">Loika</text>
-+<text x="104" y="156" font-size="14" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
-+<text x="104" y="178" font-size="14" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
-+<text x="104" y="200" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
-+<text x="104" y="224" font-size="14" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
-+<text x="104" y="246" font-size="14" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
-+<text x="104" y="268" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
-+<text x="104" y="292" font-size="14" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
-+<text x="104" y="314" font-size="14" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
-+<text x="104" y="336" font-size="14" fill="#5f574a" text-anchor="start">two still to come</text>
++<text x="104" y="124" font-size="20" fill="#2f2a22" text-anchor="start">Loika</text>
++<text x="104" y="156" font-size="16" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
++<text x="104" y="180" font-size="16" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
++<text x="104" y="204" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
++<text x="104" y="228" font-size="16" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
++<text x="104" y="252" font-size="16" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
++<text x="104" y="276" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
++<text x="104" y="300" font-size="16" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
++<text x="104" y="324" font-size="16" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
++<text x="104" y="348" font-size="16" fill="#5f574a" text-anchor="start">two still to come</text>
 +<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#d7dadd" stroke-width="24" opacity="1"/>
 +<text x="512" y="82" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring: arc centre 512,288, r 176–200, open 96° at the bottom; fills clockwise from 228° to 132°</text>
 +<path d="M372.3 413.8 A188.0 188.0 0 0 1 554.9 105.0" fill="none" stroke="#9fb59a" stroke-width="24" opacity="1"/>
@@ -198,7 +198,7 @@ index 80a06cc..0064d9b 100644
 +<rect x="752.5" y="140.5" width="159" height="127" fill="#ffffff" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
 +<text x="832" y="208" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the trait's picture, 1:1, centred</text>
 +<text x="744" y="296" font-size="16" fill="#222" text-anchor="start" font-weight="500">Face</text>
-+<text x="744" y="318" font-size="14" fill="#6b6880" text-anchor="start">wide eyes</text>
++<text x="744" y="318" font-size="16" fill="#6b6880" text-anchor="start">wide eyes</text>
 +<rect x="772.5" y="352.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
 +<text x="832" y="410" font-size="9" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">STAMP 772,352 120</text>
 +<text x="832" y="497" font-size="16" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
@@ -208,7 +208,7 @@ index 80a06cc..0064d9b 100644
 +<text x="512" y="436" font-size="7" fill="#d9a21b" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring on the pod (initial): the pod box + 4</text>
  </svg>
 diff --git a/design/style-guide/station-layouts/05-incubator-ready.svg b/design/style-guide/station-layouts/05-incubator-ready.svg
-index bc5ae07..e5bc35d 100644
+index bc5ae07..b0358bc 100644
 --- a/design/style-guide/station-layouts/05-incubator-ready.svg
 +++ b/design/style-guide/station-layouts/05-incubator-ready.svg
 @@ -1,145 +1,62 @@
@@ -370,17 +370,17 @@ index bc5ae07..e5bc35d 100644
 +<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
 +<rect x="88.5" y="96.5" width="207" height="407" fill="#f5f0e4" stroke="#8b7f66" stroke-width="1"/>
 +<text x="92" y="93" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slip 88,96 208×408 (the Create slip, one size)</text>
-+<text x="104" y="124" font-size="24" fill="#2f2a22" text-anchor="start">Loika</text>
-+<text x="104" y="156" font-size="14" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
-+<text x="104" y="178" font-size="14" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
-+<text x="104" y="200" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
-+<text x="104" y="224" font-size="14" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
-+<text x="104" y="246" font-size="14" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
-+<text x="104" y="268" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
-+<text x="104" y="292" font-size="14" fill="#2f2a22" text-anchor="start">Stamina: steady</text>
-+<text x="104" y="314" font-size="14" fill="#2f2a22" text-anchor="start">Movement: a quick trot</text>
-+<text x="104" y="336" font-size="14" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
-+<text x="104" y="358" font-size="14" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
++<text x="104" y="124" font-size="20" fill="#2f2a22" text-anchor="start">Loika</text>
++<text x="104" y="156" font-size="16" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
++<text x="104" y="180" font-size="16" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
++<text x="104" y="204" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
++<text x="104" y="228" font-size="16" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
++<text x="104" y="252" font-size="16" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
++<text x="104" y="276" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
++<text x="104" y="300" font-size="16" fill="#2f2a22" text-anchor="start">Stamina: steady</text>
++<text x="104" y="324" font-size="16" fill="#2f2a22" text-anchor="start">Movement: a quick trot</text>
++<text x="104" y="348" font-size="16" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
++<text x="104" y="372" font-size="16" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
 +<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#d7dadd" stroke-width="24" opacity="1"/>
 +<text x="512" y="82" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring: arc centre 512,288, r 176–200, open 96° at the bottom; fills clockwise from 228° to 132°</text>
 +<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#9fb59a" stroke-width="24" opacity="1"/>
@@ -406,7 +406,7 @@ index bc5ae07..e5bc35d 100644
 +<rect x="752.5" y="140.5" width="159" height="127" fill="#ffffff" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
 +<text x="832" y="208" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the trait's picture</text>
 +<text x="744" y="296" font-size="16" fill="#222" text-anchor="start" font-weight="500">Stamina</text>
-+<text x="744" y="318" font-size="14" fill="#6b6880" text-anchor="start">steady</text>
++<text x="744" y="318" font-size="16" fill="#6b6880" text-anchor="start">steady</text>
 +<rect x="772.5" y="352.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
 +<text x="832" y="410" font-size="9" fill="#222" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">STAMP 772,352 120</text>
 +<text x="832" y="497" font-size="16" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
@@ -416,7 +416,7 @@ index bc5ae07..e5bc35d 100644
 +<text x="512" y="436" font-size="7" fill="#d9a21b" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring on the pod (initial): the pod box + 4</text>
  </svg>
 diff --git a/design/style-guide/station-layouts/05b-incubator-hatch.svg b/design/style-guide/station-layouts/05b-incubator-hatch.svg
-index 28b48fa..1f77f14 100644
+index 28b48fa..7e42858 100644
 --- a/design/style-guide/station-layouts/05b-incubator-hatch.svg
 +++ b/design/style-guide/station-layouts/05b-incubator-hatch.svg
 @@ -1,122 +1,41 @@
@@ -555,17 +555,17 @@ index 28b48fa..1f77f14 100644
 +<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
 +<rect x="88.5" y="96.5" width="207" height="407" fill="#f5f0e4" stroke="#8b7f66" stroke-width="1"/>
 +<text x="92" y="93" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slip 88,96 208×408 (the Create slip, one size)</text>
-+<text x="104" y="124" font-size="24" fill="#2f2a22" text-anchor="start">Loika</text>
-+<text x="104" y="156" font-size="14" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
-+<text x="104" y="178" font-size="14" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
-+<text x="104" y="200" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
-+<text x="104" y="224" font-size="14" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
-+<text x="104" y="246" font-size="14" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
-+<text x="104" y="268" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
-+<text x="104" y="292" font-size="14" fill="#2f2a22" text-anchor="start">Stamina: steady</text>
-+<text x="104" y="314" font-size="14" fill="#2f2a22" text-anchor="start">Movement: a quick trot</text>
-+<text x="104" y="336" font-size="14" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
-+<text x="104" y="358" font-size="14" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
++<text x="104" y="124" font-size="20" fill="#2f2a22" text-anchor="start">Loika</text>
++<text x="104" y="156" font-size="16" fill="#5f574a" text-anchor="start">found at the pond edge,</text>
++<text x="104" y="180" font-size="16" fill="#5f574a" text-anchor="start">as a Loika shook dry</text>
++<text x="104" y="204" font-size="16" fill="#2f2a22" text-anchor="start">Your changes</text>
++<text x="104" y="228" font-size="16" fill="#2f2a22" text-anchor="start">Crown: only leafy</text>
++<text x="104" y="252" font-size="16" fill="#2f2a22" text-anchor="start">Markings: only pale</text>
++<text x="104" y="276" font-size="16" fill="#2f2a22" text-anchor="start">Cleared while growing</text>
++<text x="104" y="300" font-size="16" fill="#2f2a22" text-anchor="start">Stamina: steady</text>
++<text x="104" y="324" font-size="16" fill="#2f2a22" text-anchor="start">Movement: a quick trot</text>
++<text x="104" y="348" font-size="16" fill="#2f2a22" text-anchor="start">Face: wide eyes</text>
++<text x="104" y="372" font-size="16" fill="#2f2a22" text-anchor="start">Coat: soft fur</text>
 +<rect x="392.5" y="392.5" width="239" height="95" fill="#e8ece4" stroke="#5a6672" stroke-width="1"/>
 +<text x="512" y="470" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle, moss nest, candling light 392,392 240×96</text>
 +<rect x="360.5" y="144.5" width="303" height="311" fill="#f3f6f8" stroke="#3c4b57" stroke-width="1.5"/>
