@@ -1,3 +1,12 @@
 {
-  "effortLevel": "medium"
+  "effortLevel": "medium",
+  "permissions": {
+    "allow": [
+      "Bash(node ui/tools/place-masters.mjs:*)",
+      "Bash(node prototypes/ui/tools/place-masters.mjs:*)",
+      "Bash(git merge:*)",
+      "Bash(git push -u origin station-*)",
+      "Bash(git push origin station-*)"
+    ]
+  }
 }
