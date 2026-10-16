@@ -6,9 +6,10 @@ share one silhouette and one set of seams. The overlays are cut from that silhou
 - the shell (mask-body + mask-accent) and its seams (where the straps and the cap meet the panels: the 1.6 px line where the two masks meet) of the
   class given (default: large, 144 x 176), redrawn at 224 x 272 as smooth curves (the alpha bicubic on an 8x grid, thresholded, box-reduced),
   never scaled pixels. Re-run this on the class the build finally uses at 224 x 272 (no class at that size exists today: see the result).
-- the light: the candling lens under the nest, below the shell's foot. Each step is that light seen through the shell: strongest at the foot
-  and the centre line, falling off upward and toward the sides, inside the shell only. cool: a pale cool white, <= 14 %; warm: amber, <= 30 %;
-  glowing: amber, <= 48 %, a brighter core low in the shell.
+- the light (T-20261016-62, candling): the lens under the nest lights the shell from below and the shell lets it through. Each step darkens
+  the shell's top (the room is dim; the top-left key stays for form only) and shows the interior light from the foot upward, warm, falling off
+  toward the top and sides. cool: just on, pale, up to 40 % from the lower third; warm: amber, 82 %, from above the middle, a core; glowing:
+  pale amber, 95 %, from the top down, a bright core low in the body. The build composites: shell, this step, the founder's shadow, seams, the nest's front.
 - seams: the light breaking through the gaps, a warm cream line with a 1 px glow on the shell beside it (ready).
 - crack-1: broken stretches of the upper seams opened (a dark fissure, its lower lip lit by the light inside); crack-2: longer stretches down
   the seams, wider. Never a whole seam: no outline (the style has no ink outlines).
@@ -31,23 +32,29 @@ B, A_ = up(body) > 0.5, up(acc) > 0.5
 gap = shell & nd.binary_dilation(B, iterations=int(0.8 * S)) & nd.binary_dilation(A_, iterations=int(0.8 * S))   # the seams: where the straps and cap meet the panels, a 1.6 px line
 dn = lambda img: img.reshape(H, S, W, S, *img.shape[2:]).mean((1, 3))
 shell1 = dn(shell.astype(np.float32))
-# the light from below the foot: a source at (112, 300) (the lens, under the nest), seen through the shell
-ys, xs = np.nonzero(shell); foot = ys.max() / S
-d = np.hypot((xx - W / 2) / 1.25, (yy - (foot + 28)))
-side = np.exp(-((xx - W / 2) / (W * 0.42)) ** 2)
-def light(reach, core):
-    f = np.exp(-np.clip(d - 28, 0, None) / reach) * side
-    if core: f = f + 0.6 * np.exp(-(((xx - W / 2) / 40) ** 2 + ((yy - (foot - 70)) / 46) ** 2))
-    return np.clip(f, 0, 1)
-def overlay(colour, amax, f, mask):
-    a = dn((f * mask).astype(np.float32)) * amax
-    img = np.zeros((H, W, 4)); img[..., :3] = np.array(colour, float); img[..., 3] = a * 255; img[img[..., 3] <= 0] = 0
-    return np.clip(np.rint(img), 0, 255).astype(np.uint8)
-res = {
-    "incubator-shell-cool": overlay([226, 232, 236], 0.14, light(70, False), shell),
-    "incubator-shell-warm": overlay([255, 205, 128], 0.30, light(110, False), shell),
-    "incubator-shell-glowing": overlay([255, 196, 110], 0.48, light(170, True), shell),
+# the candling light (T-20261016-62): the lens under the nest lights the shell from below and the shell lets it through. Each step is one
+# over-layer: the shell's top darkened (the room is dim; the top-left key stays for form only) and the interior light showing through from the
+# foot upward, warm, falling off toward the top and the sides; the step sets how far it reaches and how much of the shell it lets through.
+ys, xs = np.nonzero(shell); top, foot = ys.min() / S, ys.max() / S
+v = np.clip((yy - top) / (foot - top), 0, 1)                                 # 0 at the shell's top, 1 at its foot
+side = np.exp(-((xx - W / 2) / (W * 0.40)) ** 2)
+STEPS = {   # top darkened, interior light (max alpha, reach from the foot (v0), core), its colour
+    "cool":    dict(dark=0.22, glow=0.40, v0=0.62, core=0.00, col=(236, 206, 168)),
+    "warm":    dict(dark=0.42, glow=0.82, v0=0.24, core=0.45, col=(255, 184, 108)),
+    "glowing": dict(dark=0.42, glow=0.95, v0=0.00, core=1.10, col=(255, 214, 150)),
 }
+def step_layer(p):
+    rise = np.clip((v - p["v0"]) / (1 - p["v0"]), 0, 1) ** 1.3
+    g = rise * side + p["core"] * np.exp(-(((xx - W / 2) / 46) ** 2 + ((v - 0.66) / 0.17) ** 2))
+    ag = np.clip(g, 0, 1) * p["glow"]
+    ad = p["dark"] * np.clip(1 - v / 0.55, 0, 1) ** 1.5
+    A = 1 - (1 - ad) * (1 - ag)
+    D, G = np.array([16, 13, 12.]), np.array(p["col"], float)
+    C = (D * (ad * (1 - ag))[..., None] + G * ag[..., None]) / np.maximum(A, 1e-6)[..., None]
+    a1 = dn((A * shell).astype(np.float32)); c1 = dn(C * (A * shell)[..., None]) / np.maximum(a1, 1e-6)[..., None]
+    img = np.dstack([c1, a1 * 255]); img[a1 <= 0] = 0
+    return np.clip(np.rint(img), 0, 255).astype(np.uint8)
+res = {f"incubator-shell-{k}": step_layer(p) for k, p in STEPS.items()}
 # the seams lit: the gap line itself, and a 1 px glow on the shell beside it
 gl = nd.binary_dilation(gap, iterations=S) & shell & ~gap
 sa = dn(gap.astype(np.float32)) * 0.92 + dn(gl.astype(np.float32)) * 0.35

@@ -1,74 +1,75 @@
 {
- "S01 empty": {
-  "cradle": 0.306
+ "S01": {
+  "cool: top / bottom mean": [
+   0.187,
+   0.126
+  ],
+  "cool: bottom R-B": 4.0,
+  "cool: moss band mean": 0.116,
+  "cool: pod p95 - highest other": 0.206,
+  "warm: top / bottom mean": [
+   0.146,
+   0.163
+  ],
+  "warm: bottom R-B": 43.0,
+  "warm: moss band mean": 0.161,
+  "warm: pod p95 - highest other": 0.082,
+  "glowing: top / bottom mean": [
+   0.15,
+   0.206
+  ],
+  "glowing: bottom R-B": 43.2,
+  "glowing: moss band mean": 0.219,
+  "glowing: pod p95 - highest other": 0.256,
+  "ready: top / bottom mean": [
+   0.159,
+   0.194
+  ],
+  "ready: bottom R-B": 41.3,
+  "ready: moss band mean": 0.219,
+  "ready: pod p95 - highest other": 0.262,
+  "steps: cool->warm mean abs /255": 16.9,
+  "steps: warm->glowing mean abs /255": 16.1,
+  "lamp: moss glowing / cool": 1.89,
+  "shadow: warm, with vs without, inside the silhouette, mean abs /255": 48.7
  },
- "S01 growing-cool": {
-  "ring": 0.259,
-  "cradle": 0.27,
-  "pod": 0.706,
-  "slip": 0.339,
-  "card": 0.138,
-  "stamp": 0.233,
-  "pod - highest other": 0.367
+ "S03": {
+  "cool: top / bottom mean": [
+   0.217,
+   0.226
+  ],
+  "cool: bottom R-B": -44.0,
+  "cool: moss band mean": 0.132,
+  "cool: pod p95 - highest other": 0.202,
+  "warm: top / bottom mean": [
+   0.174,
+   0.232
+  ],
+  "warm: bottom R-B": 15.6,
+  "warm: moss band mean": 0.169,
+  "warm: pod p95 - highest other": 0.136,
+  "glowing: top / bottom mean": [
+   0.181,
+   0.274
+  ],
+  "glowing: bottom R-B": 27.3,
+  "glowing: moss band mean": 0.225,
+  "glowing: pod p95 - highest other": 0.241,
+  "ready: top / bottom mean": [
+   0.19,
+   0.261
+  ],
+  "ready: bottom R-B": 25.9,
+  "ready: moss band mean": 0.225,
+  "ready: pod p95 - highest other": 0.243,
+  "steps: cool->warm mean abs /255": 17.4,
+  "steps: warm->glowing mean abs /255": 14.3,
+  "lamp: moss glowing / cool": 1.7,
+  "shadow: warm, with vs without, inside the silhouette, mean abs /255": 57.7
  },
- "S01 growing": {
-  "ring": 0.281,
-  "cradle": 0.271,
-  "pod": 0.698,
-  "slip": 0.339,
-  "card": 0.138,
-  "stamp": 0.233,
-  "pod - highest other": 0.359
- },
- "S01 ready": {
-  "ring": 0.338,
-  "cradle": 0.278,
-  "pod": 0.698,
-  "slip": 0.339,
-  "card": 0.138,
-  "stamp": 0.233,
-  "pod - highest other": 0.359
- },
- "S01 hatch-1100": {
-  "cradle": 0.684,
-  "juvenile": 0.788,
-  "slip": 0.339,
-  "stamp": 0.233
- },
- "S03 empty": {
-  "cradle": 0.306
- },
- "S03 growing-cool": {
-  "ring": 0.259,
-  "cradle": 0.286,
-  "pod": 0.644,
-  "slip": 0.339,
-  "card": 0.138,
-  "stamp": 0.233,
-  "pod - highest other": 0.305
- },
- "S03 growing": {
-  "ring": 0.281,
-  "cradle": 0.287,
-  "pod": 0.626,
-  "slip": 0.339,
-  "card": 0.138,
-  "stamp": 0.233,
-  "pod - highest other": 0.287
- },
- "S03 ready": {
-  "ring": 0.338,
-  "cradle": 0.296,
-  "pod": 0.652,
-  "slip": 0.339,
-  "card": 0.138,
-  "stamp": 0.233,
-  "pod - highest other": 0.313
- },
- "S03 hatch-1100": {
-  "cradle": 0.42,
-  "juvenile": 0.799,
-  "slip": 0.339,
-  "stamp": 0.233
- }
+ "slip lines over 176 px": [
+  "Found at the pond edge,",
+  "Found under the rock ledge,",
+  "Movement: a slow wade"
+ ]
 }

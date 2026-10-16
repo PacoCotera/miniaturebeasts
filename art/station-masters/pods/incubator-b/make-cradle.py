@@ -1,5 +1,7 @@
-"""T-20261016-27 (Incubator option B; specs/station-incubator-tabs-ruling.md §2 cradle and cradleFront, §8): incubator-cradle (with the pod's
-contact shadow), incubator-cradle-empty, incubator-cradle-front; 240 x 96 at (392, 392). By hand in code, no paid call.
+"""T-20261016-27, T-20261016-62 (Incubator option B; specs/station-incubator-tabs-ruling.md §2 cradle and cradleFront, §8):
+incubator-cradle-{cool,warm,glowing} (with the pod's contact shadow), incubator-cradle-front-{cool,warm,glowing}, incubator-cradle-empty; 240 x 96
+at (392, 392). The lens's light grows with the shell's steps (T-62): it rises through the moss round the pod's foot, warming and lighting it, and
+the pedestal's rim nearest the nest catches it; cool 0.5, warm 1.3, glowing 2.6 (ready uses glowing; the empty nest, cool). By hand in code, no paid call.
 The one device on the screen, and its job is visible: it holds the pod in a moss nest and lights the shell from below.
 - The pedestal: moulded sage polymer, the housing's own sage ramp (measured on the signed stage, as the plate kit: mid (136, 142, 112),
   shade (98, 102, 79)); a rounded body (x 22-218 at its foot, 8-232 at its rim, radius 10), a rounded rim lit from the top left with the housing's
@@ -54,7 +56,7 @@ pc = pc + lin([214, 150, 62])[None, None] * 0.10 * glow_face[..., None] * ped[..
 V = np.asarray(Image.open(viv).convert("RGB")).astype(float)
 moss_src = V[466:500, 760:984]                                              # 224 x 34, the vivarium's moss bed
 mx, my = (xx - 8).clip(0, 223.99), ((yy - 8) / 36 * 33.99).clip(0, 33.99)
-ms = np.stack([nd.map_coordinates(moss_src[..., c], [my, mx], order=1) for c in range(3)], -1)
+ms = np.stack([nd.map_coordinates(moss_src[..., c], [my, mx], order=1, mode="nearest") for c in range(3)], -1)
 ex, ey = (xx - 120) / 104, (yy - 26) / 18
 er = np.hypot(ex, ey)
 rng = np.random.default_rng(392)
@@ -62,13 +64,16 @@ fray = nd.gaussian_filter(rng.normal(0, 1, (H * S, W * S)), (4.0, 7.0)); fray = 
 nest = er + fray < 1.0
 mound = np.sqrt(np.clip(1 - er ** 2, 0, 1))                                 # lighter on the mound's top, darker at its foot
 mc = lin(ms) * (0.62 + 0.42 * mound * (1 - 0.35 * np.clip(ey, 0, 1)))[..., None]
-lamp = np.exp(-(((xx - 120) / 70) ** 2 + ((yy - 30) / 14) ** 2))           # the candling light rising through the nest
-mc = mc * (1 + 0.55 * lamp[..., None]) + lin([214, 150, 62])[None, None] * 0.06 * lamp[..., None]
-def compose(contact, front_only):
+lamp = np.exp(-(((xx - 120) / 84) ** 2 + ((yy - 27) / 16) ** 2))           # the candling light rising through the nest round the pod's foot
+rimlit = np.exp(-(((xx - 120) / 96) ** 2)) * (ped & (yy < top + 9))          # the pedestal's rim nearest the nest, catching it
+AMBER = lin([226, 158, 70])
+STEP_K = {"cool": 0.5, "warm": 1.3, "glowing": 2.6}                       # the light's strength per step, with the shell's (make-shell-light.py)
+def compose(contact, front_only, k):
     col = np.zeros((H * S, W * S, 3)); A = np.zeros((H * S, W * S))
-    col[ped] = pc[ped]; A[ped] = 1
+    pk = pc + AMBER[None, None] * (0.30 * k * rimlit)[..., None]
+    col[ped] = pk[ped]; A[ped] = 1
     m = nest.copy()
-    cc = mc.copy()
+    cc = mc * (1 + 0.55 * k * lamp[..., None]) + AMBER[None, None] * (0.05 * k * lamp)[..., None]
     if contact:                                                             # the pod's contact shadow: the shell's foot on the moss
         cs = np.exp(-(((xx - 120) / 58) ** 2 + ((yy - 23) / 7) ** 2))
         cc = cc * (1 - 0.55 * cs[..., None])
@@ -84,7 +89,9 @@ def compose(contact, front_only):
         c1 = (c1 * a1[..., None] + G * sh[..., None]) / np.maximum(Aall, 1e-6)[..., None]; a1 = Aall
     img = np.dstack([srgb(c1), np.clip(a1, 0, 1) * 255]); img[a1 <= 0] = 0
     return np.clip(np.rint(img), 0, 255).astype(np.uint8)
-for name, contact, front in (("incubator-cradle", True, False), ("incubator-cradle-empty", False, False), ("incubator-cradle-front", True, True)):
-    im = compose(contact, front); Image.fromarray(im, "RGBA").save(os.path.join(out, name + ".png"))
+OUT = [("incubator-cradle-empty", False, False, STEP_K["cool"])]               # the empty nest: its light on, at the first step
+for st, k in STEP_K.items(): OUT += [(f"incubator-cradle-{st}", True, False, k), (f"incubator-cradle-front-{st}", True, True, k)]
+for name, contact, front, k in OUT:
+    im = compose(contact, front, k); Image.fromarray(im, "RGBA").save(os.path.join(out, name + ".png"))
     Y = lin(im[..., :3]) @ [.2126, .7152, .0722]; op = im[..., 3] > 128
     print(name, "opaque px", int(op.sum()), "rel. lum p95 %.3f" % np.percentile(Y[op], 95))

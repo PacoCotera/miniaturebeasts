@@ -15980,24 +15980,6 @@
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
   "status_note": "new (10-16, T-20261016-27)"
  },
- "incubator-cradle": {
-  "size": [
-   240,
-   96
-  ],
-  "rect": [
-   392,
-   392,
-   240,
-   96
-  ],
-  "src": "incubator-b/make-cradle.py",
-  "made": "the cradle with the pod's contact shadow: moulded sage polymer pedestal, the vivarium's own moss as a nest, the candling lens under it. Job: holds the pod and lights its shell from below",
-  "sha256": "eac0ce1840170cf3c6fe3f79a1004dba9788db43ab340d00db658253560abced",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
- },
  "incubator-cradle-empty": {
   "size": [
    240,
@@ -16011,28 +15993,10 @@
   ],
   "src": "incubator-b/make-cradle.py",
   "made": "the cradle with no pod (empty, and under the juvenile at the hatch). Job: the nest waiting for a pod",
-  "sha256": "0bb5621e8c9a88ad6215819ffafde1bf9c8beff9c7a04b1cf76fb6615192fd9b",
+  "sha256": "a3102f7d30c7e1b98a0ba07555e73e41ca52d9e013c393eaaf5e31d4d223594c",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
- },
- "incubator-cradle-front": {
-  "size": [
-   240,
-   96
-  ],
-  "rect": [
-   392,
-   392,
-   240,
-   96
-  ],
-  "src": "incubator-b/make-cradle.py",
-  "made": "the nest's near lip, drawn over the pod's foot. Job: the pod sits in the moss, not on it",
-  "sha256": "1ee904b6477414b9be19d6f4b3dde9eee66e17af4f7824c45d4905c528bdb5c7",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "re-cut (10-16, T-20261016-62): the lamp on at the cool step"
  },
  "incubator-ring-fill": {
   "size": [
@@ -16136,11 +16100,11 @@
    272
   ],
   "src": "incubator-b/make-shell-light.py",
-  "made": "the shell light overlay, cool: placed over the pod's shell 1:1, never tinted (the light just on (f < 1/3)). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
-  "sha256": "f715202f8b7c2c366d3ce22e723d8d0c557abfc5712100cfa3bb90079d904e50",
+  "made": "the candling light, cool (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the large class's silhouette redrawn at 224 x 272",
+  "sha256": "b2a3664489757c7222e881d5cf681d74e8acb56ada35431370e6c5547bee042f",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "re-painted (10-16, T-20261016-62)"
  },
  "incubator-shell-warm": {
   "size": [
@@ -16154,11 +16118,11 @@
    272
   ],
   "src": "incubator-b/make-shell-light.py",
-  "made": "the shell light overlay, warm: placed over the pod's shell 1:1, never tinted (f < 2/3). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
-  "sha256": "03bf6ae48a10715c895e32d0637535233907b08f932b4abab05035d60ed8495e",
+  "made": "the candling light, warm (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the large class's silhouette redrawn at 224 x 272",
+  "sha256": "fa0b9f2d4aa7c1ce0b030974ac6b718315a763505e04ff46c1ab101203ab6ab1",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "re-painted (10-16, T-20261016-62)"
  },
  "incubator-shell-glowing": {
   "size": [
@@ -16172,11 +16136,11 @@
    272
   ],
   "src": "incubator-b/make-shell-light.py",
-  "made": "the shell light overlay, glowing: placed over the pod's shell 1:1, never tinted (f >= 2/3 and ready). Cut from the large pod class's silhouette and seams redrawn at 224 x 272; works on every species of that class. Job: the candling light visibly lighting the pod",
-  "sha256": "3f172ed0d105926e7c56eb086e7a2e75b7bb85178e5e580cefde63d72b269aff",
+  "made": "the candling light, glowing (T-20261016-62): the shell's top darkened and the interior light shown through from the foot upward, warm, falling off toward the top and sides, so the founder's shadow (composited over this layer) reads; placed over the shell 1:1, never tinted. Cut from the large class's silhouette redrawn at 224 x 272",
+  "sha256": "62d836d6df436bf2257a8701dbe10229079421e59127ef91e85ea9ffe5f01c8b",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "re-painted (10-16, T-20261016-62)"
  },
  "incubator-shell-seams": {
   "size": [
@@ -16791,5 +16755,113 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new (10-16, T-20261016-41): copied 1:1 from the S01 floor set, which its README marks 'not signed yet' (adult fringe clean-up open); signs with that set"
+ },
+ "incubator-cradle-cool": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the cradle with the pod's contact shadow, the lens's light at the cool step: rising through the moss round the pod's foot, the rim nearest the nest catching it (ready uses glowing)",
+  "sha256": "a49eb84be268170ac604b013ba5546cee87e5ed62cddc00e228e9b5deeff0944",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-62)"
+ },
+ "incubator-cradle-front-cool": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the nest's near lip over the pod's foot, its moss lit at the cool step (ready uses glowing)",
+  "sha256": "e153d842f6dde98a09d0fc1237a761c7de69ed7ea03e328319b5ef55e8daaae2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-62)"
+ },
+ "incubator-cradle-warm": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the cradle with the pod's contact shadow, the lens's light at the warm step: rising through the moss round the pod's foot, the rim nearest the nest catching it (ready uses glowing)",
+  "sha256": "faec57f3d882ca8e81282d49849da776e0a23606f1c6e7dae842d8dc2093b6b9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-62)"
+ },
+ "incubator-cradle-front-warm": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the nest's near lip over the pod's foot, its moss lit at the warm step (ready uses glowing)",
+  "sha256": "f19387d18b6949b7ecc8b0efce5d7a1c4d9aa34a8465b70390dce8630d149cee",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-62)"
+ },
+ "incubator-cradle-glowing": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the cradle with the pod's contact shadow, the lens's light at the glowing step: rising through the moss round the pod's foot, the rim nearest the nest catching it (ready uses glowing)",
+  "sha256": "d08ee0ef5fef2f56d2de499935aeb4cc2047a4a96bd6b8ec47690de3d4a4b546",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-62)"
+ },
+ "incubator-cradle-front-glowing": {
+  "size": [
+   240,
+   96
+  ],
+  "rect": [
+   392,
+   392,
+   240,
+   96
+  ],
+  "src": "incubator-b/make-cradle.py",
+  "made": "the nest's near lip over the pod's foot, its moss lit at the glowing step (ready uses glowing)",
+  "sha256": "12ed98ce24226bcb8021f534f0825ef05aee67ccefb852f228ff5dd1009c8d27",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "status_note": "new (10-16, T-20261016-62)"
  }
 }

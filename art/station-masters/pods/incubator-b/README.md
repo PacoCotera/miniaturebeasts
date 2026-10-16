@@ -107,3 +107,38 @@ These are measured on the stand-in shells, so the build re-measures on its own.
 1. **No pod class at 224 × 272.** Pods' renderer composes shells only at its classes: collection 88 × 112, medium 120 × 152, large 144 × 176 (`pods.json classes.pod`). At 224 × 272 it falls back to its palette drawing. Either a 224 × 272 layer set is painted (an art ticket), or the pod's rect changes to a class.
 2. **The card's crops** (`trait-{species}-{trait}-{look}-160x128`, ruling §8) are not in this ticket's steps and are owed. They are cut from the trait paintings in `source/raw`, which are landscape enough.
 3. **Home's module and Idle's tag** (concept §1) need their own ticket (ruling §7).
+
+
+## T-20261016-62: candling (AD, 10-16)
+
+The creative director's review (`results/review-incubator-b-art.md`, work-queue) failed the light: the pod was not lit from below, the steps barely changed, the lamp lit almost nothing and the shell was too opaque for the shadow. Repainted:
+- **`incubator-shell-cool`, `-warm`, `-glowing`:** each step darkens the shell's top (the room is dim; the top-left key stays for form only) and shows the interior light through the shell from the foot upward, warm, falling off toward the top and sides.
+  - cool: just on, pale, from the lower third;
+  - warm: amber, from above the middle, with a core;
+  - glowing: pale amber, through the whole shell, with a bright core low in the body.
+- **The cradle, per step (new):** `incubator-cradle-cool`, `-warm`, `-glowing` and `incubator-cradle-front-cool`, `-warm`, `-glowing`. The lens's light rises through the moss round the pod's foot and the rim nearest the nest catches it (strength 0.5, 1.3, 2.6; ready uses glowing). `incubator-cradle-empty` is re-cut with the lamp on at cool.
+- **Withdrawn:** the single `incubator-cradle` and `incubator-cradle-front` (superseded; never placed).
+- **Unchanged:** `-seams`, `-crack-1` and `-crack-2`.
+
+**The composite order (the build's):**
+1. the shell (Pods' renderer);
+2. `incubator-shell-{step}` (the interior light through the shell);
+3. the founder's shadow, at the ruling's opacity (cool 0.25, warm 0.45, glowing 0.65, ready 0.8);
+4. `incubator-shell-seams` (ready);
+5. `incubator-cradle-front-{step}`.
+
+The shadow goes over the light: it is where the founder blocks it.
+
+**The five measures** (`proof/measures.json`):
+- **Method:** relative linear luminance; pod box (400, 144, 224, 272); top rows 144–279, bottom rows 280–415; moss band (400, 400, 224, 40).
+- **Inputs:** the steps and the shadow are measured on the `-noshadow` frames against the full ones. Brightness is the pod's p95 against the visible part of every other region (a later object takes its pixels).
+
+| Species | Under-light (bottom ≥ top; bottom warmer than cool) | Steps distinct (cool→warm; warm→glowing, ≥ 12/255) | Lamp (moss glowing ÷ cool, ≥ 1.5) | Shadow (warm, inside the silhouette, ≥ 15/255) | Brightness margin (≥ 0.08) |
+| --- | --- | --- | --- | --- | --- |
+| S01 | warm 0.163 ≥ 0.146; glowing 0.206 ≥ 0.15; ready 0.194 ≥ 0.159. R−B: cool 4.0 → warm 43.0, glowing 43.2, ready 41.3 | 16.9; 16.1 | 1.89× | 48.7 | cool 0.206, warm 0.082, glowing 0.256, ready 0.262 |
+| S03 | warm 0.232 ≥ 0.174; glowing 0.274 ≥ 0.181; ready 0.261 ≥ 0.19. R−B: cool -44.0 → warm 15.6, glowing 27.3, ready 25.9 | 17.4; 14.3 | 1.7× | 57.7 | cool 0.202, warm 0.136, glowing 0.241, ready 0.243 |
+
+- **The shadow reads as a creature shape at 1×:** on S03 from warm on, and clearly in glowing and ready; on S01 (the dark shell) from warm, clearly from glowing.
+- **Proofs** (`proof/`, both species): `incubator-b-{S01,S03}-{empty,cool,warm,glowing,ready,hatch-1100}-1x.png`, and the `-noshadow` frames for each growing step.
+  - The slip and card carry stand-in content at the ruling §5 longest case.
+  - **Lines over 176 px at 16:** "Found at the pond edge,", "Found under the rock ledge,", "Movement: a slow wade". The first is Pods' real found sentence's first line, so it is for the copywriter or the build's cut at a word.

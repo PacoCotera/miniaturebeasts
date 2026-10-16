@@ -4959,19 +4959,17 @@
   "note": "T-20261016-27, Incubator option B"
  },
  "incubator-cradle": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "status": "withdrawn",
+  "note": "superseded by the per-step incubator-cradle-{cool,warm,glowing} and -front-{step} (T-20261016-62); never placed"
  },
  "incubator-cradle-empty": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62"
  },
  "incubator-cradle-front": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "status": "withdrawn",
+  "note": "superseded by the per-step incubator-cradle-{cool,warm,glowing} and -front-{step} (T-20261016-62); never placed"
  },
  "incubator-ring-fill": {
   "status": "signed",
@@ -5000,18 +4998,18 @@
  },
  "incubator-shell-cool": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling"
  },
  "incubator-shell-warm": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling"
  },
  "incubator-shell-glowing": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling"
  },
  "incubator-shell-seams": {
   "status": "signed",
@@ -5225,5 +5223,35 @@
  "founder-S01-crown-leaf-crest-304x312": {
   "status": "new",
   "note": "T-20261016-41 founder layer; signs with the S01 floor set"
+ },
+ "incubator-cradle-cool": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling, per step"
+ },
+ "incubator-cradle-front-cool": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling, per step"
+ },
+ "incubator-cradle-warm": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling, per step"
+ },
+ "incubator-cradle-front-warm": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling, per step"
+ },
+ "incubator-cradle-glowing": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling, per step"
+ },
+ "incubator-cradle-front-glowing": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-62 (candling), in incubator-b/proof (S01 and S03, cool, warm, glowing, ready, with stand-in slip and card content), the five measures in proof/measures.json met; to re-check in the builder's captures",
+  "note": "T-20261016-62 candling, per step"
  }
 }
