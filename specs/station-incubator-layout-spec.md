@@ -171,7 +171,11 @@ One 8 px grid. Every region and zone rect is on it. The two exceptions are the o
   - nothing lit, no text, no gold, teal or amber;
   - no new object;
   - the leaf band, the chamber's keep-clear, the label place and the zones' outsides are kept pixel for pixel, except where an object left or arrived.
-- **The luminance cap of IA1 stands:** in each zone p95 ≤ 0.162 and the mean ≤ 0.287.
+- **The luminance cap (restated; ruling `specs/station-incubator-brightness-ruling.md`, T-20261016-14; X37):** the machinery may be lit, but no zone's p95 or mean exceeds its cap, and the chamber's lit glass stays the brightest object.
+  - Luminance: relative linear luminance on the 1× capture (1024×600): sRGB decoded to linear, then 0.2126 R + 0.7152 G + 0.0722 B; percentiles by numpy's default (linear) method.
+  - Caps, on the zone rects of §2: p95 **L ≤ 0.48, R ≤ 0.34, LM ≤ 0.46, RM ≤ 0.30**; mean **≤ 0.287** in each zone. Measured after the recut (T-20261015-07): p95 L 0.459, R 0.315, LM 0.437, RM 0.273; means L 0.163, R 0.130, LM 0.170, RM 0.099. All are under the caps.
+  - **The brightest-object condition.** The chamber value is the p95 of the capture's luminance over the pixels where `dome-front-304x272` has alpha ≥ 128, the slice placed at (360, 200) (34,194 px with T-01's slice; the mask comes from the placed slice file, not the capture). In each of the four states (`incubator-empty`, `-growing`, `-ready`, `-hatch-1100`), the chamber value minus the highest zone p95 in that state is **≥ 0.08**. It is asserted in `incubator.test.mjs` on the captures taken after T-20261015-08 places T-01's glass.
+  - Checked: 0.574 against 0.459 (difference 0.115) on the three existing captures composed with T-01's glass. `-ready` and `-hatch-1100` are UNVERIFIED until the build captures them.
 - **The AD signs IA2** in the builder's whole 1× captures `incubator-empty`, `-growing`, `-ready` and `-hatch-1100`, beside the concept board (18c17261), with the gate's check 5 measured by the numbers in §0.
 - **Until IA2 lands,** the old stage draws its objects at the old places. Build and test with it, and take the goldens only after `place-masters --only --ids room-bench-stage-incubator`.
 
@@ -654,6 +658,11 @@ index fb757b5..e27046c 100644
    - Retake all 18 Incubator goldens and their hashes, plus the captures `page-incubator`, `page-incubator-empty` and `fix14/incubator-growing`.
    - No other golden may move.
    - Print the hatch beats (t = 0, 600, 800, 1000, 1200, the steps), the growNow worst and cut, and the wipe. All must stay at or under 55,808 / 20,480 / 98,944 / 16,000 / 96,064 / 153,600 / 162,432 / 47,680. Expect 97,188 at 1000, as today.
+8. **The luminance test** (`incubator.test.mjs`, on the captures of step 7; §3 and `specs/station-incubator-brightness-ruling.md`).
+   - Luminance as §3: linear sRGB, 0.2126 R + 0.7152 G + 0.0722 B, 1× capture, linear-method percentiles.
+   - In each of `incubator-empty`, `-growing`, `-ready` and `-hatch-1100`, per zone (L [88,104,144,296], R [792,104,144,112], LM [248,336,80,64], RM [696,336,80,64]): p95 ≤ L 0.48, R 0.34, LM 0.46, RM 0.30; mean ≤ 0.287.
+   - In each of the four states: the p95 over the mask `dome-front-304x272` alpha ≥ 128 at (360, 200), minus the highest zone p95 of that state, is ≥ 0.08. Assert the difference, not a floor. Print the four chamber values and differences (expected about 0.574 and 0.115).
+   - If a cap or the 0.08 fails, stop and report. Do not lower a cap or the margin.
 
 ## 9. Open points
 
