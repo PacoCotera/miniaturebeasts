@@ -44,18 +44,17 @@ This is a variant of the T-45 panel for choices that belong under what they are 
 
 | Part | Rect | Notes |
 | --- | --- | --- |
-| Strip | 92, 376, 840, 160 | Panel look (`plate`, `plateEdge`, `plateShadow`), radius 12 |
-| Cards | y 392–520 (128 high), from x 108, 2 × 396, gap 16 | Rows: name (16, 12; 20), cost (16, 48; 16), outcome (16, 72; 16; one line), Then (16, 96; 16) |
-| Hint | none | The bottom line says the keys |
+| Strip | 92, 376, 840, 160 | The panel's look (T-20261016-47), radius 12. Never the cream `plate` |
+| Cards | y 392–520 (128 high), from x 108, 2 × 396, gap 16 | Picture-led like the panel's cards (T-45 §1.3), short form: a picture 96 × 96 at (16, 16); then to its right at x 128: the name (20, ≤ 3 words) at y 16, the costs (icons) at y 52, and one line (16, ≤ 6 words) at y 80 |
 
-| Card | Name | Cost | Outcome | Then |
+| Card | Picture | Name | Costs | Line |
 | --- | --- | --- | --- | --- |
-| 1 (initial focus) | Open the bay | "free" | "{n in words} crates; the pods go to the rack" | the opening |
-| 2 | Later | "nothing" | "they wait in the bay while it is docked" | back to {the screen it came over} |
+| 1 (initial focus) | the crates, open, small (a crop of `crate-open` at 96) | Open the bay | none (free) | "{n in words} crates to the rack" |
+| 2 | the crates, sealed, small | Later | none | "they wait while docked" |
 
 - **Keys:** ◀ ▶ move between the two cards. ✓ does the focused card. ← is Later. A room key is Later, then acts.
-- **The bottom line:** ✓ + the card's name; subject "to {Then}"; back "Back".
-- **Line widths:** at 16, a card's line is ≤ 364 px, measured.
+- **The bottom line:** ✓ + the card's name; subject: the card's line; back "Back".
+- **Line widths:** at 16, a card's line is ≤ 252 px (396 − 128 − 16), measured.
 - **Open the bay:** the strip goes (a cut) and today's opening runs (cut 4 applies: ✓ skips to the report).
 - **Later:** the dither back to the screen the arrival came over, as it was.
 - **The component:** the strip form joins the component of T-49 as `form: "strip"`. The arrival's build adds it if T-49 has not.
@@ -101,9 +100,9 @@ They are measured with the real measurer. If one does not fit, the copywriter sh
 | "The Companion is home" | ribbon | 20 | ribbon fit (words + 32, ≤ 608) |
 | "The Companion is home. Nothing came back this time." | ribbon | 20 | ≤ 576 words (608 − 32) |
 | "{n in words} mended, free" | band | 16 | "three mended, free" ≤ 160 |
-| "Open the bay", "Later" | strip names | 20 | ≤ 364 |
-| "three crates; the pods go to the rack" | strip outcome | 16 | ≤ 364 |
-| "they wait in the bay while it is docked" | strip outcome | 16 | ≤ 364 |
+| "Open the bay", "Later" | strip names | 20 | ≤ 252 |
+| "three crates to the rack" | strip line | 16 | ≤ 252 |
+| "they wait while docked" | strip line | 16 | ≤ 252 |
 | "the crates went out with the Companion" | plate | 16 | ≤ 608 (plate max 640 − 2 × 16) |
 | "{Name} goes at the next dock" (name ≤ 10 letters, `namer.json nameMax`) | plate | 16 | ≤ 608 |
 | "Look at the new pod" | Cargo report action | 16 | action zone, ≤ 4 words |
