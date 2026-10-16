@@ -17635,5 +17635,180 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
   "status_note": "new (10-16, T-20261016-63)"
+ },
+ "panel-housing-840x440": {
+  "size": [
+   840,
+   440
+  ],
+  "rect": [
+   92,
+   80,
+   840,
+   440
+  ],
+  "src": "decision-panel/make-panel.py",
+  "made": "the decision panel's housing: the house device plate (sage bezel, dark matte well), radius 12; job: the moment is a piece of the device, not a paper form",
+  "sha256": "0fa476aa72a875494d88c9049e4259c78bf5a958867c94d215538d7692c78b7b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-chip-40x20": {
+  "size": [
+   40,
+   20
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the cost chip: a dark rubber pill, a nine-slice (insets 10 left and right) the build stretches round an icon and its figure",
+  "sha256": "064590ce92716f656a1fda55fed78ae045fda609d26a2bd78b7fa66c55df31ee",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)",
+  "nine": {
+   "insets": {
+    "left": 10,
+    "top": 0,
+    "right": 10,
+    "bottom": 0
+   },
+   "edgeTile": "stretch"
+  }
+ },
+ "panel-veil-1024x522": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "decision-panel/make-panel.py",
+  "made": "the veil: a flat layer (stageGround at 62 %, deeper at the edges) over the stage under an open panel; not a dither",
+  "sha256": "99cb083927d3bdd2c69575a4d8a2f416f05208036ff3b33d23a64c99ca6ce539",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-card-248x288": {
+  "size": [
+   248,
+   288
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "an option tile, 248 wide: the kit's recessed well; job: one choice",
+  "sha256": "760cdbaebd2aedca8262cb6f65889d963bf0049f8c1d5a28672132966298db6c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-card-248x288-focused": {
+  "size": [
+   248,
+   288
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the focused option tile, 248 wide: the well one step up (the frame's ring drawn over it by code)",
+  "sha256": "8c62551743aca86a3a4a685d21fb94480dc29bc5dd4ac13a8045608058025908",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-card-380x288": {
+  "size": [
+   380,
+   288
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "an option tile, 380 wide: the kit's recessed well; job: one choice",
+  "sha256": "974beabf861cf357bc1943a72f4063e00110897b43ac83a49741d99662c92077",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-card-380x288-focused": {
+  "size": [
+   380,
+   288
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the focused option tile, 380 wide: the well one step up (the frame's ring drawn over it by code)",
+  "sha256": "f85efc30a8f3c599c5606de60b2202daec26ddc0ddff5f0b8baca16b8b1ad0b0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-card-776x288": {
+  "size": [
+   776,
+   288
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "an option tile, 776 wide: the kit's recessed well; job: one choice",
+  "sha256": "f2ae2e19dd2fef388d68825eea971f8884ac585b6cd1a78dadce310351af59f1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-card-776x288-focused": {
+  "size": [
+   776,
+   288
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the focused option tile, 776 wide: the well one step up (the frame's ring drawn over it by code)",
+  "sha256": "25da4ef8bde9e72379c4f08ccdab122d7be5e1931192f8dfc5068c315f8d3170",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-stage-216x48": {
+  "size": [
+   216,
+   48
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the outcome's stage under a 216-wide picture slot (card y 136-184): a low moulded sage plinth topped with the vivarium's moss in a soft pool of warm light; job: the outcome stands lit, as an event",
+  "sha256": "40cfaaadbf2eb2e0d1efbf469b7053bdf6f2aa18608140a891099aefd1cd134c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-stage-348x48": {
+  "size": [
+   348,
+   48
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the outcome's stage under a 348-wide picture slot (card y 136-184): a low moulded sage plinth topped with the vivarium's moss in a soft pool of warm light; job: the outcome stands lit, as an event",
+  "sha256": "06f29cf31d906c64ec6aa8a36779ec107125bae3f52f9461fb63bd6ae2926860",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
+ },
+ "panel-stage-744x48": {
+  "size": [
+   744,
+   48
+  ],
+  "rect": null,
+  "src": "decision-panel/make-panel.py",
+  "made": "the outcome's stage under a 744-wide picture slot (card y 136-184): a low moulded sage plinth topped with the vivarium's moss in a soft pool of warm light; job: the outcome stands lit, as an event",
+  "sha256": "af8a35dca8a0454a188df255cb392064ae051efca3c51f9b95ae5c42c6562915",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+  "status_note": "new (10-16, T-20261016-47)"
  }
 }
