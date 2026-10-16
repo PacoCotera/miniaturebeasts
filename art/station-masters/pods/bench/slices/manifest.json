@@ -183,11 +183,11 @@
    1024,
    522
   ],
-  "sha256": "fb5bf87677abc99cb9c1d46f74110b49b06261c0290a1d5549a6fd60cbeec04e",
-  "signed_in": null,
-  "status": "new",
-  "made": "PA2 recut (10-15): the gauge, screwdriver and wrench lifted off the floor (the floor repainted: harmonic tone from around them + its own grain) and laid in the tools zone (screen 368, 96, 208 x 352) with drawn contact shadows; the dock's cable from under the cradle's back plate through the zone to a plug on the floor; no empty 96 x 96 in the zone (largest 94)",
-  "status_note": "PA2 by the art director, same id and size; signed in the builder's bench, bench-tier2 and bench-away 1x captures"
+  "sha256": "2c6ac410f453e3677c71f60ebd992589cf13478602c231864f4f020f145cdeb3",
+  "signed_in": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)",
+  "status": "signed",
+  "made": "T-20261016-33 (specs/station-probe-purpose.md \u00a74): the gauge, wrench, screwdriver and the dock's cable with its plug lifted; the stage is PA2's own stage-clean (stage-pa2/lift-tools.py on the pre-PA2 stage, c9261a63^), checked byte-exact: compose-zone.py over it rebuilds the PA2 stage with 0 pixels differing. Nothing new painted; the 28869 pixels that change lie in the old tools zone (screen 368, 96, 208 x 352), the cable's run from under the cradle and their shadows (slice x 154-578, y 70-405); everything else pixel for pixel",
+  "status_note": "T-20261016-33 by the art director, same id and size; was PA2 (fb5bf876...)"
  },
  "bench-plate-strip-t1-144x48": {
   "size": [
@@ -246,5 +246,49 @@
   "status": "new",
   "status_note": "rework 10-15 (owner 20:29: 'you rotated the device to lay flat and it's held vertically'): new, by the art director (Pro, 4 calls); signed in the builder's whole Probe 1x captures beside station-probe-merge and the Midjourney target",
   "signed_in": null
+ },
+ "bench-plate-whole-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "src": "plates-48/make-plates-48.py: the signed 32 px plate redrawn at 48 (its silhouette as a smooth curve on an 8x grid, its own measured tones, rims at 48's own widths), not scaled up",
+  "sha256": "0cf9d089989ee327b32ea63489f2788019e99b48733a044b36d15172cb8f3001",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)",
+  "note": "the Shield plate, whole: body (185, 186, 180), lit top edge, shaded bottom, soft shade down-right; replaces bench-plate-whole-32x32 on the bench (purpose spec \u00a74)"
+ },
+ "bench-plate-gone-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "src": "plates-48/make-plates-48.py: the signed 32 px plate redrawn at 48 (its silhouette as a smooth curve on an 8x grid, its own measured tones, rims at 48's own widths), not scaled up",
+  "sha256": "43a793bc3bb31515cdcb07bb75134cae855ab64a96dbb7bf717313da78146930",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)",
+  "note": "the plate's empty seat: floor (88, 90, 76), walls in shade top and left, lip lit bottom and right, the screw hole; replaces bench-plate-gone-32x32 on the bench"
+ },
+ "bench-plate-strip-t1-176x64": {
+  "size": [
+   176,
+   64
+  ],
+  "src": "plates-48/make-plate-strips-48.py: PA1's construction (plate-strip-notes.md) at the new size, foam from bench-cradle-empty-480x288 crop (106, 122, 232, 61), recesses from bench-plate-gone-48x48's alpha at (8 + 56 k, 8)",
+  "sha256": "0c551edb0a32d1e380209b87614022c5d4480ddf932ffbd70e290222396c03eb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)",
+  "note": "three recesses, placed 1:1 at (384, 272); baked contact shadow rows 61-63"
+ },
+ "bench-plate-strip-t2-232x64": {
+  "size": [
+   232,
+   64
+  ],
+  "src": "plates-48/make-plate-strips-48.py: PA1's construction (plate-strip-notes.md) at the new size, foam from bench-cradle-empty-480x288 crop (106, 122, 232, 61), recesses from bench-plate-gone-48x48's alpha at (8 + 56 k, 8)",
+  "sha256": "6b7d247aadcbaa5ce51dc1b5e0b5ee3ebb73f40ced2dcfdecdc6c09b3559bc8e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)",
+  "note": "four recesses, placed 1:1 at (356, 272); baked contact shadow rows 61-63"
  }
 }

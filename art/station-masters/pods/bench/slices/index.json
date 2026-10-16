@@ -112,7 +112,7 @@
  {
   "id": "room-bench-stage-probe",
   "size": "1024x522",
-  "sha256": "fb5bf87677abc99cb9c1d46f74110b49b06261c0290a1d5549a6fd60cbeec04e"
+  "sha256": "2c6ac410f453e3677c71f60ebd992589cf13478602c231864f4f020f145cdeb3"
  },
  {
   "id": "bench-plate-strip-t1-144x48",
@@ -138,5 +138,25 @@
   "id": "bench-cradle-upright-empty-288x432",
   "size": "288x432",
   "sha256": "fb05ee58bbf4c7534d5208b74a7430a405c14207900eddf520c7678896f3b819"
+ },
+ {
+  "id": "bench-plate-whole-48x48",
+  "size": "48x48",
+  "sha256": "0cf9d089989ee327b32ea63489f2788019e99b48733a044b36d15172cb8f3001"
+ },
+ {
+  "id": "bench-plate-gone-48x48",
+  "size": "48x48",
+  "sha256": "43a793bc3bb31515cdcb07bb75134cae855ab64a96dbb7bf717313da78146930"
+ },
+ {
+  "id": "bench-plate-strip-t1-176x64",
+  "size": "176x64",
+  "sha256": "0c551edb0a32d1e380209b87614022c5d4480ddf932ffbd70e290222396c03eb"
+ },
+ {
+  "id": "bench-plate-strip-t2-232x64",
+  "size": "232x64",
+  "sha256": "6b7d247aadcbaa5ce51dc1b5e0b5ee3ebb73f40ced2dcfdecdc6c09b3559bc8e"
  }
 ]

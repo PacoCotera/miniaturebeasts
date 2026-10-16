@@ -67,3 +67,21 @@ y 440, the switch icons at [152,68] and the slot's plate icons at [200,112]. `sl
 - **Readability at recess 0, 1x (luma 0-255, Rec.709):** the recess floor 42.2. The whole plate (p50 185.1) is +142.9 above it, WCAG contrast 7.3:1: it reads as a whole white plate. The gone plate's lit rim (p95 118.1) is +75.9 above it, 3.15:1: it reads as an outline.
 - **Readings to confirm:** where two listed rules meet on one pixel they apply in the notes' order: the edge's top-right and bottom-left pixels take both multipliers (1.30 then 0.60 or 0.60 then 1.30), and a wall thin enough to be in both bands takes the shadow band. The corner radius 3 clears the one corner pixel whose centre lies outside the circle. Rounding is ties-to-even throughout, the shadow alphas 115, 76 and 38.
 - **A layout fact:** the stage's painted screwdriver ends at about x 265, so t2 (placed from x 240) covers its tip; t1 starts where it ends.
+
+## T-20261016-33: the field tools lifted, the plates and strips at 48 (signed)
+
+The Probe bench's purpose (`specs/station-probe-purpose.md`, work-queue): the player gets the Probe ready for the next trip, and the plates are how many strikes it can take, the second read. The gauge, wrench, screwdriver and cable had no job, so they go. The plates move into the middle column at 48. Nothing new is painted.
+
+| Id | Size | How |
+| --- | --- | --- |
+| `room-bench-stage-probe` | 1024×522 | PA2's own `stage-clean` (`stage-pa2/lift-tools.py` on the pre-PA2 stage, `git show c9261a63^:…/slices/room-bench-stage-probe.png`). Proven exact: `compose-zone.py` over it rebuilds the PA2 stage with 0 pixels differing. The 28,869 changed pixels are the old tools zone, the cable's run and their shadows only |
+| `bench-plate-whole-48x48` | 48×48 | `plates-48/make-plates-48.py`: the signed 32 redrawn at 48 (its silhouette as a smooth curve on an 8× grid, its own measured tones, rims at 48's own widths), not scaled up |
+| `bench-plate-gone-48x48` | 48×48 | the same, the empty seat with its screw hole |
+| `bench-plate-strip-t1-176x64` | 176×64 | `plates-48/make-plate-strips-48.py`: PA1's construction (`plate-strip-notes.md`) at the new size; recesses at (8 + 56k, 8) from the gone-48 mask; foam crop (106, 122, 232, 61) of the cradle, luma 55.3, std 0.31 |
+| `bench-plate-strip-t2-232x64` | 232×64 | the same, four recesses |
+
+The 32 px plates and the 144/192 strips are retired from the bench only (they stay in this folder). `icon-shield-16` is Cargo's and is untouched.
+
+Proofs (`plates-48/proof/`): `before-after-middle-1x.png` (station-gate 69ea1d23 golden `bench`, middle column, before and after; the after has the stage swapped and t1 with three whole plates at the spec places; the words "Shield" and the line are the build's, T-20261016-34), `after-bench-1x.png`, `mock-t2-1x.png`, `strips-2x.png`, `plates-32-vs-48-4x.png` and `stage-before-after-1x.png`.
+
+Signed by the art director at 1× in these mocks, 2026-10-16; to re-check in the builder's captures.
