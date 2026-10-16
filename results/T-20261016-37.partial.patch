@@ -1,0 +1,906 @@
+diff --git a/design/style-guide/station-layouts/19-vivarium-mibi.svg b/design/style-guide/station-layouts/19-vivarium-mibi.svg
+index add8fae7..8d17598b 100644
+--- a/design/style-guide/station-layouts/19-vivarium-mibi.svg
++++ b/design/style-guide/station-layouts/19-vivarium-mibi.svg
+@@ -13,8 +13,8 @@
+ <ellipse cx="296" cy="392" rx="160" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
+ <text x="152" y="112" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">One mibi up close: the Vivarium's closest level.</text>
+ <text x="152" y="125" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Reads: the mibi, its name, the card, the modules,</text>
+-<text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the bays, the stamp. The heart: bonded. Two filled</text>
+-<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches: its skill (none drawn at zero, never a</text>
++<text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the bays, the stamp. The bond panel: the heart, bonded. Two</text>
++<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches, skill (none: "no skill yet", never a</text>
+ <text x="152" y="164" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">figure). ✓ on the mibi: Greet. ✓ on the tag: Rename,</text>
+ <text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the namer over the right column (592,48 416×424).</text>
+ <text x="152" y="190" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">← Vivarium: the whole, the ring on this mibi.</text>
+@@ -25,17 +25,11 @@
+ <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="81" font-size="16" fill="#222">your Loika, adult</text>
+-<rect x="740.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
+-<rect x="832.5" y="64.5" width="23" height="23" fill="#e36a5c" stroke="#8a2b22" stroke-width="1"/>
+ <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="105" font-size="16" fill="#6b6880">from the rock field</text>
+ <text x="612" y="129" font-size="16" fill="#6b6880">remembers the pond edge</text>
+ <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="177" font-size="16" fill="#222">3MB W21 1BB</text>
+-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
+-<rect x="816.5" y="160.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
+-<rect x="840.5" y="160.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
+-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
+ <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
+ <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
+ <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
+@@ -47,7 +41,7 @@
+ <rect x="712.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+ <rect x="752.5" y="200.5" width="39" height="39" fill="#f3f4f5" stroke="#444" stroke-width="1"/>
+ <rect x="760.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
++<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
+ <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
+ <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
+@@ -60,15 +54,16 @@
+ <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+ <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
+ <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
+-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
+-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<rect x="888.5" y="292.5" width="23" height="23" fill="#e36a5c" stroke="#8a2b22" stroke-width="1"/>
++<text x="916" y="309" font-size="16" fill="#222">bonded</text>
++<rect x="888.5" y="324.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
++<rect x="912.5" y="324.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
++<text x="932" y="341" font-size="16" fill="#222">skill</text>
++<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
+ <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
+-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
+-<circle cx="620" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="652" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="684" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
++<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
++<text x="608" y="440" font-size="16" fill="#222">grown</text>
++<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
+ <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
+ <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>
+diff --git a/design/style-guide/station-layouts/19a-vivarium-mibi-meet.svg b/design/style-guide/station-layouts/19a-vivarium-mibi-meet.svg
+index 08c50d58..8405d8f0 100644
+--- a/design/style-guide/station-layouts/19a-vivarium-mibi-meet.svg
++++ b/design/style-guide/station-layouts/19a-vivarium-mibi-meet.svg
+@@ -17,21 +17,18 @@
+ <text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">in the tag's place until the first press; ✓ opens</text>
+ <text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the namer with the default name; any other key keeps</text>
+ <text x="152" y="164" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">it and does what it does. A juvenile: no partners,</text>
+-<text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">no notches. The lamp until its painting lands.</text>
++<text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">"no skill yet". The lamp until its painting lands.</text>
+ <rect x="144.5" y="416.5" width="303" height="39" fill="#1f5f66" stroke="#4fb8b0" stroke-width="1"/>
+ <text x="296" y="442" font-size="20" fill="#f1ebdf" text-anchor="middle" font-weight="500">Meet Moss</text>
+ <text x="30" y="444" font-size="8" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">meet ribbon 144,416 304×40</text>
+ <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="81" font-size="16" fill="#222">your Loika, young</text>
+-<rect x="750.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
+ <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="105" font-size="16" fill="#6b6880">of Burr</text>
+ <text x="612" y="129" font-size="16" fill="#6b6880">and Fig</text>
+ <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="177" font-size="16" fill="#222">QX4 MBA 7RW</text>
+-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
+-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
+ <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
+ <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
+ <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
+@@ -45,7 +42,7 @@
+ <rect x="752.5" y="200.5" width="39" height="39" fill="#f6f6f6" stroke="#9aa0a6" stroke-width="1"/>
+ <rect x="755.5" y="203.5" width="33" height="33" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+ <rect x="760.5" y="208.5" width="23" height="23" fill="#f1f1f1" stroke="#b0b0b0" stroke-width="1"/>
+-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
++<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
+ <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
+ <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
+@@ -58,12 +55,13 @@
+ <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+ <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
+ <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
+-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
+-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="888" y="309" font-size="16" fill="#888">not bonded yet</text>
++<text x="888" y="341" font-size="16" fill="#888">no skill yet</text>
++<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
+ <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
+-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
++<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
++<text x="608" y="440" font-size="16" fill="#222">grows up in two turns</text>
++<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
+ <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
+ <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>
+diff --git a/design/style-guide/station-layouts/19b-vivarium-mibi-child.svg b/design/style-guide/station-layouts/19b-vivarium-mibi-child.svg
+index 87530809..1d37c1a2 100644
+--- a/design/style-guide/station-layouts/19b-vivarium-mibi-child.svg
++++ b/design/style-guide/station-layouts/19b-vivarium-mibi-child.svg
+@@ -22,14 +22,11 @@
+ <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="81" font-size="16" fill="#222">your Loika, young</text>
+-<rect x="750.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
+ <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="105" font-size="16" fill="#6b6880">of Burr</text>
+ <text x="612" y="129" font-size="16" fill="#6b6880">and Fig</text>
+ <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="177" font-size="16" fill="#222">QX4 MBA 7RW</text>
+-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
+-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
+ <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
+ <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
+ <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
+@@ -49,7 +46,7 @@
+ <path d="M801 215h38v3h-38z" fill="#c4c4c4"/>
+ <path d="M801 224h38v3h-38z" fill="#c4c4c4"/>
+ <path d="M801 233h38v3h-38z" fill="#c4c4c4"/>
+-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
++<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
+ <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
+ <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
+@@ -62,12 +59,13 @@
+ <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+ <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
+ <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
+-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
+-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="888" y="309" font-size="16" fill="#888">not bonded yet</text>
++<text x="888" y="341" font-size="16" fill="#888">no skill yet</text>
++<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
+ <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
+-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
++<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
++<text x="608" y="440" font-size="16" fill="#222">grows up in two turns</text>
++<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
+ <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
+ <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>
+diff --git a/design/style-guide/station-layouts/19c-vivarium-mibi-out.svg b/design/style-guide/station-layouts/19c-vivarium-mibi-out.svg
+index c967b114..1098df97 100644
+--- a/design/style-guide/station-layouts/19c-vivarium-mibi-out.svg
++++ b/design/style-guide/station-layouts/19c-vivarium-mibi-out.svg
+@@ -14,7 +14,7 @@
+ <text x="152" y="112" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Out: Pip is with the Companion, away.</text>
+ <text x="152" y="125" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Its place is kept by the out mark; no</text>
+ <text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">greet, so the ring opens on its name.</text>
+-<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Its card, notch, chapters and modules</text>
++<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Its card, bond panel, chapters and modules</text>
+ <text x="152" y="164" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">read as at home; its unread chapters</text>
+ <text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">can be read while it is out.</text>
+ <rect x="184.5" y="416.5" width="223" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+@@ -25,16 +25,11 @@
+ <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="81" font-size="16" fill="#222">your Loika, adult</text>
+-<rect x="740.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
+-<rect x="832.5" y="64.5" width="23" height="23" fill="#e36a5c" stroke="#8a2b22" stroke-width="1"/>
+ <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="105" font-size="16" fill="#6b6880">from the meadow</text>
+ <text x="612" y="129" font-size="16" fill="#6b6880">remembers the cave</text>
+ <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="177" font-size="16" fill="#222">7PL K2Q W9A</text>
+-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
+-<rect x="840.5" y="160.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
+-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
+ <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
+ <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
+ <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
+@@ -46,7 +41,7 @@
+ <rect x="712.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+ <rect x="752.5" y="200.5" width="39" height="39" fill="#f3f4f5" stroke="#444" stroke-width="1"/>
+ <rect x="760.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
++<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
+ <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
+ <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
+@@ -59,14 +54,15 @@
+ <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+ <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
+ <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
+-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
+-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<rect x="888.5" y="292.5" width="23" height="23" fill="#e36a5c" stroke="#8a2b22" stroke-width="1"/>
++<text x="916" y="309" font-size="16" fill="#222">bonded</text>
++<rect x="888.5" y="324.5" width="15" height="23" fill="#efe7d2" stroke="#3c4b57" stroke-width="1"/>
++<text x="908" y="341" font-size="16" fill="#222">skill</text>
++<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
+ <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
+-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
+-<circle cx="620" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="652" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
++<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
++<text x="608" y="440" font-size="16" fill="#222">grown</text>
++<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
+ <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
+ <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>
+diff --git a/design/style-guide/station-layouts/19d-vivarium-mibi-carried.svg b/design/style-guide/station-layouts/19d-vivarium-mibi-carried.svg
+index b9102b77..7d4c9c57 100644
+--- a/design/style-guide/station-layouts/19d-vivarium-mibi-carried.svg
++++ b/design/style-guide/station-layouts/19d-vivarium-mibi-carried.svg
+@@ -23,13 +23,10 @@
+ <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="81" font-size="16" fill="#222">your Loika, adult</text>
+-<rect x="740.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
+ <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="105" font-size="16" fill="#6b6880">from the pond edge</text>
+ <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="177" font-size="16" fill="#222">F1G 8NN 2KT</text>
+-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
+-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
+ <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
+ <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
+ <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
+@@ -41,7 +38,7 @@
+ <rect x="712.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+ <rect x="752.5" y="200.5" width="39" height="39" fill="#f3f4f5" stroke="#444" stroke-width="1"/>
+ <rect x="760.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
++<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
+ <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
+ <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
+@@ -56,15 +53,13 @@
+ <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
+ <rect x="588" y="266" width="280" height="104" rx="6" fill="none" stroke="#d9a21b" stroke-width="2"/>
+ <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
+-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
+-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="888" y="309" font-size="16" fill="#888">not bonded yet</text>
++<text x="888" y="341" font-size="16" fill="#888">no skill yet</text>
++<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
+ <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
+-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
+-<circle cx="620" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="652" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="684" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
++<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
++<text x="608" y="440" font-size="16" fill="#222">grown</text>
++<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
+ <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
+ <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>
+diff --git a/design/style-guide/station-layouts/19e-vivarium-mibi-wild.svg b/design/style-guide/station-layouts/19e-vivarium-mibi-wild.svg
+index 4e848abe..e188ab50 100644
+--- a/design/style-guide/station-layouts/19e-vivarium-mibi-wild.svg
++++ b/design/style-guide/station-layouts/19e-vivarium-mibi-wild.svg
+@@ -1,5 +1,5 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+-<title>One mibi up close, Wild armed: Dot, unbonded and adult, no heart and no notches; the gate ajar, the second ✓ returns it. 1024×600 at 1×, measured; no art.</title>
++<title>One mibi up close, Wild armed: Dot, unbonded and adult, the bond panel says not bonded yet and no skill yet; the gate ajar, the second ✓ returns it. 1024×600 at 1×, measured; no art.</title>
+ <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+ <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+ <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+@@ -13,9 +13,9 @@
+ <text x="152" y="112" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Wild, armed: the first ✓ opened the gate; the second</text>
+ <text x="152" y="125" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">returns Dot (it dithers out to the next mibi in bay</text>
+ <text x="152" y="138" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">order, or to the whole, empty, when none is left).</text>
+-<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Any other key clears the arm. Unbonded, so no heart;</text>
+-<text x="152" y="164" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">no skill yet, so no notch: nothing drawn, never an</text>
+-<text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">empty notch or a figure.</text>
++<text x="152" y="151" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Any other key clears the arm. Unbonded: "not bonded yet";</text>
++<text x="152" y="164" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">"no skill yet": no notch drawn, never an</text>
++<text x="152" y="177" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">empty notch or a figure. No Portrait or Cross door.</text>
+ <rect x="184.5" y="416.5" width="223" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+ <rect x="256.5" y="416.5" width="79" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+ <text x="296" y="438" font-size="20" fill="#f1ebdf" text-anchor="middle" font-weight="500">Dot</text>
+@@ -23,13 +23,10 @@
+ <rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="81" font-size="16" fill="#222">your Loika, adult</text>
+-<rect x="740.5" y="68.5" width="15" height="15" fill="#e9e4d6" stroke="#888" stroke-width="1"/>
+ <rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="105" font-size="16" fill="#6b6880">from the rock field</text>
+ <rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+ <text x="612" y="177" font-size="16" fill="#222">D0T 4MM 8QX</text>
+-<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-dasharray="1 2"/>
+-<text x="764" y="194" font-size="7" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">notches 768,160 88×24 · 16×24 on 24, right to 856</text>
+ <rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f0" stroke="#444" stroke-width="1"/>
+ <text x="932" y="124" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">stamp 120</text>
+ <text x="932" y="136" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,64</text>
+@@ -41,7 +38,7 @@
+ <rect x="712.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+ <rect x="752.5" y="200.5" width="39" height="39" fill="#f3f4f5" stroke="#444" stroke-width="1"/>
+ <rect x="760.5" y="208.5" width="23" height="23" fill="#efe7d2" stroke="#666" stroke-width="1"/>
+-<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · heart 832,64 24×24 · plates 40×40 on 48</text>
++<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">card 592,48 416×208 · plates 40×40 on 48</text>
+ <rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="608" y="300" font-size="16" fill="#6f7a5e">Companion</text>
+ <text x="596" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,272 272×96</text>
+@@ -54,15 +51,13 @@
+ <rect x="777.5" y="313.5" width="45" height="45" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+ <text x="860" y="286" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">places 48 on a 64 pitch</text>
+ <rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="888" y="300" font-size="16" fill="#6f7a5e">Portrait</text>
+-<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,272 136×96</text>
+-<rect x="916.5" y="312.5" width="47" height="39" fill="#ffffff" stroke="#444" stroke-width="1"/>
++<text x="888" y="309" font-size="16" fill="#888">not bonded yet</text>
++<text x="888" y="341" font-size="16" fill="#888">no skill yet</text>
++<text x="876" y="364" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">bond panel 872,272 136×96 · rows 20 and 52</text>
+ <rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+-<text x="608" y="404" font-size="16" fill="#6f7a5e">Cross</text>
+-<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">592,376 272×96</text>
+-<circle cx="620" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="652" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
+-<circle cx="684" cy="444" r="12" fill="#fdebd6" stroke="#8a6a44" stroke-width="1"/>
++<text x="608" y="404" font-size="16" fill="#6f7a5e">Growth</text>
++<text x="608" y="440" font-size="16" fill="#222">grown</text>
++<text x="596" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">growth panel 592,376 272×96 · line at 16,48</text>
+ <rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+ <text x="888" y="404" font-size="16" fill="#6f7a5e">Wild</text>
+ <text x="876" y="468" font-size="7" fill="#999" font-family="DejaVu Sans Mono, ui-monospace, monospace">872,376 136×96</text>
+diff --git a/prototypes/station/src/main.mjs b/prototypes/station/src/main.mjs
+index 6974ff32..33573c90 100644
+--- a/prototypes/station/src/main.mjs
++++ b/prototypes/station/src/main.mjs
+@@ -15,6 +15,7 @@ import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCo
+ import { buildDevPanel, genomesText } from "./dev.mjs";
+ import * as caddy from "./caddy.mjs";
+ import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
++import { testOpenDoors } from "./nav.mjs";
+ import { stampArt } from "./art.mjs";
+ import { loadPodSprites } from "./podsprites.mjs";
+ import { loadMasters } from "./masters.mjs";
+@@ -235,6 +236,7 @@ window.__st = { ready, renderErrors, portraitSource: (digest, rgba) => { const r
+   forecastOf: (aId, bId) => S.forecastOf(G.st, mibiById(aId), mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
+   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
+   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
++  testOpenDoors,   // the test hook: hold a door open (["sitting"]) so a scene behind a shut door can still be captured
+   openCross: (aId) => openCrossAt(H, mibiById(aId)),   // the test hook: the Cross screen is not reachable by a press while its door is shut (doorOpen(cross))
+   podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); },
+   motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()), scene: () => ({ t: sceneTime(clock.now), beat: sceneBeat(clock.now), ms: SCENE_MS }),
+diff --git a/prototypes/station/src/nav.mjs b/prototypes/station/src/nav.mjs
+index 6f39174f..f3a80ae5 100644
+--- a/prototypes/station/src/nav.mjs
++++ b/prototypes/station/src/nav.mjs
+@@ -26,7 +26,9 @@ export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium"
+ export const isBuilt = (screen) => BUILT.includes(screen);
+ // A door is open when the screen it leads to is built: cross and sitting open when listed in BUILT; the species' Book when a "book" is bound. A shut door is shut in place (no ✓ cap, its screen's shut line).
+ const DOOR_SCREEN = { cross: "cross", sitting: "sitting", book: "book" };
+-export const doorOpen = (id) => !!DOOR_SCREEN[id] && isBuilt(DOOR_SCREEN[id]);
++const TEST_OPEN = new Set();   // the test harness only: a door held open so a scene behind a shut door (the Portrait module) can still be captured
++export const testOpenDoors = (ids) => { TEST_OPEN.clear(); for (const id of ids || []) TEST_OPEN.add(id); };
++export const doorOpen = (id) => !!DOOR_SCREEN[id] && (isBuilt(DOOR_SCREEN[id]) || TEST_OPEN.has(id));
+ 
+ // --- the room keys -----------------------------------------------------------------------------------------------------------------
+ // Each opens the top of its room from anywhere, even from inside it. `leaving` lists the places whose unpaid choices a room key drops.
+diff --git a/prototypes/station/src/views/habitat-props.mjs b/prototypes/station/src/views/habitat-props.mjs
+index 351e852f..89ec76af 100644
+--- a/prototypes/station/src/views/habitat-props.mjs
++++ b/prototypes/station/src/views/habitat-props.mjs
+@@ -33,6 +33,7 @@ export function habitatBuild(m, spec, frame, home) {
+   const plate = (w, h) => slot(`plate-device-${w}x${h}`, [w, h], "the device plate (fix 2: placed 1:1)");
+   const well = (name) => slot(name, name.match(/(\d+)x(\d+)/).slice(1).map(Number), "the device well (fix 2: placed 1:1)");
+ 
++  const bookOpen = doorOpen("book"), sittingOpen = doorOpen("sitting"), crossOpen = doorOpen("cross");   // a door that cannot open is not drawn (fix 8)
+   const regions = {};
+   regions.stage = { room: [slot("room-vivarium-stage-habitat", R.stage.rect.slice(2), "the up-close stage master")] };
+   regions.glass = { picture: slot(`${spec.light.pictures[m.light]}-${spec.light.size.join("x")}`, spec.light.size, "the near Vivarium master (the light)") };
+@@ -53,9 +54,7 @@ export function habitatBuild(m, spec, frame, home) {
+   const sz = stampSizing(fr, shown.genome), read = fr.chapters.filter((c) => (shown.read || []).includes(c.id)).map((c) => c.id);   // the stamp of the chapters read: never an unread or a shut sealed one (the Incubator hatch's form, so the meet keeps the hatch's picture)
+   regions.card = {
+     plate: plate(416, 208),
+-    heart: shown.bonded ? slot("heart-full-24", R.card.heart.size, "the heart master") : "",
+-    notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
+-    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "slot", id: "mark-guide-16:16x16", master: "mark-guide-16", size: [16, 16], until: "the guide mark master (AD G1)" }) },
++    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: bookOpen ? req({ kind: "slot", id: "mark-guide-16:16x16", master: "mark-guide-16", size: [16, 16], until: "the guide mark master (AD G1)" }) : "" },
+     story, code: codeText(shown.code),
+     stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: slot("plate-well-120x120", [120, 120], "the label's well (Habitat GB2)"), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
+   };
+@@ -76,12 +75,19 @@ export function habitatBuild(m, spec, frame, home) {
+ 
+   // the Portrait module
+   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
+-  regions.portrait = { plate: plate(136, 96), state: pst, frame: req({ kind: "slot", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40:48x40`, master: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, size: [48, 40], until: "the sitting frame master (AD, candidates)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
++  if (sittingOpen) regions.portrait = { plate: plate(136, 96), state: pst, frame: req({ kind: "slot", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40:48x40`, master: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, size: [48, 40], until: "the sitting frame master (AD, candidates)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
+ 
+   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
+   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);
+   const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : "adult";
+-  regions.cross = { plate: plate(272, 96), state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
++  if (crossOpen) regions.cross = { plate: plate(272, 96), state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
++
++  // the bond panel stands in the Portrait module's place while that door is shut: bonded and skill, as words and the card's two marks (fix 8; specs/station-habitat-card-purpose.md)
++  const notchN = Math.min(shown.notches || 0, 3);
++  if (!sittingOpen) regions.bond = { plate: plate(136, 96), bonded: !!shown.bonded, text: shown.bonded ? Sg.bond.bonded : Sg.bond.not, heart: shown.bonded ? slot("heart-full-24", R.bond.rows.bond.heart.size, "the heart master") : "", notches: { count: notchN, picture: notchN ? slot("notch-skill-16x24", R.bond.rows.skill.notch, "the skill notch master") : "" }, skill: notchN ? Sg.skill.has : Sg.skill.none };
++  // the growth panel stands in the Cross module's place while that door is shut: when the young mibi grows up
++  const turnsLeft = Math.max(1, (settings.adultTurns ?? S.JUVENILE_TURNS) - (st.turn - (shown.born || 0)));
++  if (!crossOpen) regions.growth = { plate: plate(272, 96), line: stage === "juvenile" ? (shown.bonded ? Sg.growth.bondedYoung : fill(Sg.growth.young.replace("{turn|turns}", turnsLeft === 1 ? "turn" : "turns"), { n: WORDS[Math.min(turnsLeft, 11)] })) : Sg.growth.grown };
+ 
+   // the Wild module: shut at rest, ajar once armed
+   const wildBlock = S.returnMibiBlock(st, sv, shown), armed = !!m.armed && !wildBlock;
+@@ -102,11 +108,11 @@ export function habitatBuild(m, spec, frame, home) {
+   const targets = [];
+   if (state !== "out") targets.push({ id: "resident", group: "resident", enabled: true });
+   if (state !== "meet") targets.push({ id: "name", group: "name", enabled: true });
+-  targets.push({ id: "species", group: "species", enabled: doorOpen("book") });
++  if (bookOpen) targets.push({ id: "species", group: "species", enabled: true });
+   plates.forEach((p, i) => targets.push({ id: "plate." + i, group: "plate", enabled: unread(p) }));
+   targets.push({ id: "door", group: "top", enabled: dKind === "take" || dKind === "bring" });
+-  targets.push({ id: "portrait", group: "top", enabled: !!sitting && doorOpen("sitting") });
+-  targets.push({ id: "cross", group: "low", enabled: crossState === "adult" && doorOpen("cross") });
++  if (sittingOpen) targets.push({ id: "portrait", group: "top", enabled: !!sitting });
++  if (crossOpen) targets.push({ id: "cross", group: "low", enabled: crossState === "adult" });
+   targets.push({ id: "wild", group: "low", enabled: !wildBlock });
+   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile", enabled: true });
+   const has = (id) => targets.some((t) => t.id === id), cur = m.focus && has(m.focus) ? m.focus : out ? "name" : "resident";
+@@ -120,7 +126,7 @@ export function habitatBuild(m, spec, frame, home) {
+   const id = cur.startsWith("tile.") ? "resident" : cur;
+   if (id === "resident") line = { ok: meet ? fill(Sg.name, named) : fill(Sg.greet, named), subject: painting ?? contextOf, back: Sg.back, need: null };
+   else if (id === "name") line = { ok: fill(Sg.rename, named), subject: out ? Sg.out : painting ?? contextOf, back: Sg.back, need: null };
+-  else if (id === "species") line = doorOpen("book") ? { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null } : { ok: null, subject: Sg.shut.guide, back: Sg.back, need: null };
++  else if (id === "species") line = { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null };
+   else if (id.startsWith("plate.")) {
+     const p = plates[+id.slice(6)], ch = fr.chapters[+id.slice(6)], Chapter = ch.name;
+     if (p.state === "read") line = { ok: null, subject: fill(Sg.plateRead, { Chapter }), back: Sg.back, need: null };
+@@ -135,11 +141,10 @@ export function habitatBuild(m, spec, frame, home) {
+       : { ok: null, subject: Sg.full };
+     line = { ...line, back: Sg.back, need: null };
+   } else if (id === "portrait") {
+-    const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
++    const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : null;
+     line = why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
+   } else if (id === "cross") {
+-    line = crossState === "adult" && !doorOpen("cross") ? { ok: null, subject: Sg.shut.cross }
+-      : crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners.replace("{n in words}", "{n}"), { n: WORDS[Math.min(pickable.length, 11)], Species: species }) }
++    line = crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners.replace("{n in words}", "{n}"), { n: WORDS[Math.min(pickable.length, 11)], Species: species }) }
+       : { ok: null, subject: crossState === "out" ? Sg.crossOut : crossState === "away" ? Sg.crossAway : crossState === "alone" ? fill(Sg.noPartner, { Species: species }) : Sg.crossLater };
+     line = { ...line, back: Sg.back, need: null };
+   } else if (id === "wild") {
+diff --git a/prototypes/station/tests/habitat-props.test.mjs b/prototypes/station/tests/habitat-props.test.mjs
+index 1571dd03..a5d404cd 100644
+--- a/prototypes/station/tests/habitat-props.test.mjs
++++ b/prototypes/station/tests/habitat-props.test.mjs
+@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
+ import { setFrames, frameOf, genomeDigest } from "../src/genome.mjs";
+ import * as S from "../src/state.mjs";
+ import { habitatBuild } from "../src/views/habitat-props.mjs";
++import { testOpenDoors } from "../src/nav.mjs";
+ 
+ const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+@@ -37,7 +38,8 @@ const world = (bays = 8) => { const st = S.freshSt("w1", 3, T0); S.normalize(st)
+ const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
+ const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
+ const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (const m of w.st.mibis) m.paint = { state: "landed" }; return w.st.mibis; };
+-const build = ({ st, settings }, sv, over = {}) => habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home);
++const ALL_DOORS = ["sitting", "cross", "book"];   // the scenes that read a module behind a shut door hold it open (the harness hook); `doors: []` is the shipped state
++const build = ({ st, settings }, sv, over = {}) => (testOpenDoors(over.doors ?? ALL_DOORS), habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home));
+ 
+ function scenes() {
+   const out = {};
+@@ -71,9 +73,9 @@ test("the state: rest, meet (the new mibi until its first press), out (with the
+ 
+ test("the card: the species line with the stage word, the story (a founder: where it came from; a bred mibi: its parents), the code in three groups, the heart only when bonded, the notches (at most three, none at zero) and the stamp of the chapters read", () => {
+   const S0 = scenes(), card = (n, o) => build(S0[n].w, S0[n].sv, o).props.regions.card, w = S0.rest.w, m = w.st.mibis[0];
+-  const c = card("rest"); assert.equal(c.species.text, "your Loika, adult"); assert.deepEqual(c.story, ["from the meadow"]); assert.match(c.code, /^\w{3} \w{3} \w{3}$/); assert.equal(c.heart, ""); assert.equal(c.notches.count, 0);
++  const c = card("rest"); assert.equal(c.species.text, "your Loika, adult"); assert.deepEqual(c.story, ["from the meadow"]); assert.match(c.code, /^\w{3} \w{3} \w{3}$/); assert.ok(!("heart" in c) && !("notches" in c), "the heart and the notches are the bond panel's");
+   assert.equal(card("juvenile").species.text, "your Loika, young");
+-  const b = card("bonded"); assert.equal(b.heart, "heart-full-24"); assert.equal(b.notches.count, 3, "min(notches, 3)"); assert.equal(b.notches.picture, "notch-skill-16x24");
++  const bp = (n, o = {}) => build(S0[n].w, S0[n].sv, { doors: [], ...o }).props.regions.bond, b = bp("bonded"); assert.equal(b.heart, "heart-full-24"); assert.equal(b.notches.count, 3, "min(notches, 3)"); assert.equal(b.notches.picture, "notch-skill-16x24"); assert.deepEqual([b.text, b.skill], ["bonded", "skill"]); assert.deepEqual([bp("rest").text, bp("rest").skill, bp("rest").heart, bp("rest").notches], ["not bonded yet", "no skill yet", "", { count: 0, picture: "" }], "a fresh mibi: the words, no heart, never an empty notch");
+   const fr = frameOf("S01"); m.from = { ...m.from, of: ["Moss", "Fig"] }; m.mem = "pond"; assert.deepEqual(card("rest").story, ["of Moss", "and Fig", "remembers the pond edge"]); m.from = { g: "meadow" };
+   m.read = [fr.chapters[0].id]; const s = card("rest").stamp; assert.deepEqual([s.size > 0, s.size <= 104, s.asset.startsWith("stamp:") && s.asset.endsWith(":" + s.size + ":k20")], [true, true, true]); assert.ok(s.asset.includes(":" + fr.chapters[0].id + ":"), "only the chapters read");
+   assert.ok(S0.rest.w.st.mibis.length && build(S0.rest.w, S0.rest.sv).requests.some((r) => r.kind === "stamp" && r.mibi === m.id), "the stamp is a request by mibi (the hatch's form)");
+@@ -101,8 +103,8 @@ test("the Companion module: the set as it will be in its order (an add request w
+ 
+ test("Cross: a face a partner (an adult or an elder of the species), a partner out with the Companion while it is away dimmed and not counted, a juvenile none; the module's context says why it cannot", () => {
+   const w = world(); dock(w.st); const m = mibis(w, 4), sv = sv0({ carried: [m[1].id] });
+-  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.ok(b.props.regions.cross.faces.every((f) => !f.away)); assert.equal(b.line.ok, null, "the door is shut: no ✓ cap"); assert.equal(b.line.subject, "crossing is not open yet"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, false);
+-  dock(w.st, false); b = build(w, sv, { focus: "cross" }); assert.deepEqual(b.props.regions.cross.faces.map((f) => f.away), [true, false, false]); assert.equal(b.line.subject, "crossing is not open yet", "the shut line stands whatever the partners");
++  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.ok(b.props.regions.cross.faces.every((f) => !f.away)); assert.equal(b.line.ok, "Cross Dot"); assert.equal(b.line.subject, "three Loika to pair with"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, true, "the door held open: an adult with partners may cross");
++  dock(w.st, false); b = build(w, sv, { focus: "cross" }); assert.deepEqual(b.props.regions.cross.faces.map((f) => f.away), [true, false, false]); assert.match(b.line.subject, /Loika to pair with/);
+   const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "pairs when you dock"); assert.equal(b.line.ok, null);
+   b = build(w, sv0({ carried: [m[0].id] }), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "out"); assert.equal(b.line.subject, "crosses when you dock");
+   m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []);
+@@ -120,7 +122,7 @@ test("Portrait: none, held, its portrait on the way, portrayed; the context name
+   const line = (o) => build(w, sv, { focus: "portrait", ...o }).line, st = (o) => build(w, sv, { focus: "portrait", ...o }).props.regions.portrait.state;
+   assert.equal(st(), "none"); assert.equal(line().subject, "no sitting held");
+   w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(st(), "held"); assert.equal(line().subject, "no pose seen yet"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, false);
+-  m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, null); assert.equal(l.subject, "portraits are not open yet", "a mibi that has seen a pose and been to a place may sit, but the door is shut until slot 9");
++  m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, "Portray " + m[0].name, "a mibi that has seen a pose and been to a place may sit (the door held open by the harness)");
+   m[0].portrait = { state: "painting" }; assert.equal(st(), "painting"); assert.equal(line().subject, "its portrait is on its way"); m[0].portrait = { state: "delivered" }; assert.equal(st(), "portrayed"); assert.equal(line().subject, "already portrayed");
+ });
+ 
+@@ -158,7 +160,7 @@ test("the bottom line: the resident greets (in the meet it names), the name rena
+   const S0 = scenes(), m = S0.rest.w.st.mibis, L = (o, n = "rest") => build(S0[n].w, S0[n].sv, o).line;
+   assert.deepEqual([L({ focus: "resident" }).ok, L({ focus: "resident" }).subject], [`Greet ${m[0].name}`, "an adult Loika"]); assert.equal(L({ focus: "resident" }).back, "Vivarium");
+   assert.equal(L({ focus: "resident", ...S0.meet.over }, "meet").ok, `Name ${m[0].name}`, "in the meet the first ✓ names");
+-  assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], [null, "the guide is not open yet"]);
++  assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], ["Open the guide", "every Loika"]);
+   assert.equal(L({ focus: "tile." + m[2].id, habId: m[2].id }).ok, `Greet ${m[2].name}`); assert.match(L({ focus: "name" }, "bonded").subject, /^a bonded (young|adult|elder) Loika$/);
+   assert.equal(L({ focus: "name" }, "out").subject, "out with the Companion");
+ });
+@@ -186,3 +188,21 @@ test("fix 7: the close view's resident takes the scene's light; the Companion's
+   assert.ok(day.every((r) => !("light" in r)));
+   for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light), big = got.filter((r) => r.size[0] > 48); assert.equal(got.length, day.length); assert.ok(big.length >= 1 && big.every((r) => r.light === light && r.id.endsWith(":" + light)), light); assert.ok(got.filter((r) => r.size[0] === 48).every((r) => !("light" in r))); }
+ });
++
++test("no shut door: while a door cannot open its module (Portrait, Cross) and the guide mark are not drawn and are not targets, no bottom line names a shut screen, and the bond and growth panels stand in the modules' places (fix 8; specs/station-habitat-card-purpose.md)", () => {
++  const S0 = scenes(), shutStrings = Object.values(spec.strings.shut).filter((s) => typeof s === "string");
++  for (const [name, { w, sv, over }] of Object.entries(S0)) {
++    const b = build(w, sv, { ...over, doors: [] }), R = b.props.regions, T = b.props.focus.targets.map((x) => x.id);
++    assert.deepEqual(validate(b.props, schema), [], name); assert.ok(!("portrait" in R) && !("cross" in R), `${name}: no Portrait or Cross module`); assert.ok(R.bond && R.growth, `${name}: the two panels`);
++    for (const id of ["portrait", "cross", "species"]) assert.ok(!T.includes(id), `${name}: ${id} is not a target`); assert.equal(R.card.species.mark, "", `${name}: no guide mark`);
++    for (const f of ["resident", "name", "door", "wild", "plate.0"]) { const l = build(w, sv, { ...over, doors: [], focus: f }).line; assert.ok(!shutStrings.includes(l.subject), `${name}/${f}: no shut line`); }
++    assert.ok(!JSON.stringify(b.props).includes("sitting-frame") && !JSON.stringify(b.props).includes("face-"), `${name}: nothing of the shut modules is requested`);
++  }
++  const open = build(S0.rest.w, S0.rest.sv, { doors: ALL_DOORS }).props; assert.ok(open.regions.portrait && open.regions.cross && !open.regions.bond && !open.regions.growth, "doors held open: the modules, not the panels");
++});
++test("the growth line: young and not bonded counts the world turns left in words; young and bonded grows with care; adult and elder: grown; the facts do not change while it is out", () => {
++  const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0(), line = (o = {}, id = m[0].id) => build(w, sv, { doors: [], habId: id, ...o }).props.regions.growth.line;
++  m[0].born = w.st.turn; assert.equal(line(), "grows up in two turns", "two turns left"); w.st.turn += 1; assert.equal(line(), "grows up in one turn", "one turn left: the singular"); w.st.turn += 5; m[0].born = w.st.turn - 1; assert.ok(/^grows up in (one|two) turns?$/.test(line()));
++  m[1].born = w.st.turn; m[1].bonded = true; assert.equal(line({}, m[1].id), "grows with care, out with you"); assert.equal(line({}, m[2].id), "grown");
++  assert.equal(build(w, sv0({ carried: [m[0].id] }), { doors: [], habId: m[0].id }).props.regions.growth.line, line(), "out with the Companion: the same facts");
++});
+diff --git a/prototypes/ui/specs/station/habitat.json b/prototypes/ui/specs/station/habitat.json
+index e73a0e45..84d7a64e 100644
+--- a/prototypes/ui/specs/station/habitat.json
++++ b/prototypes/ui/specs/station/habitat.json
+@@ -15,7 +15,7 @@
+   "design/style-guide/station-layouts/19e-vivarium-mibi-wild.png"
+  ],
+  "note": "The one home of the numbers of one mibi up close, transcribed from station-layouts.md (The Vivarium: the whole and one mibi up close) and its wireframes 19-vivarium-mibi.svg to 19e-vivarium-mibi-wild.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. One mibi up close: the mibi in the living window at the left with its name on a tag under it, its card at the top right, four modules under the card, the strip of bays along the foot. Its parent is the Vivarium's whole (vivarium.json); ← goes there.",
+- "purpose": "Be with one mibi and choose its next step: greet it, name it, read who it is (its species and stage, where it came from, what it remembers, its code, the heart when it is bonded, its skill notches, its chapters and its stamp), read a bred child's chapter still unread (at home or out with the Companion), take it along or bring it home, have it sit for its portrait, cross it, or return it to the wild. Reads first: the mibi; then its name, then the card",
++ "purpose": "Be with one mibi and choose its next step: greet it, name it, read who it is (its species and stage, where it came from, what it remembers, its code, its chapters and its stamp; whether it is bonded and its skill (the bond panel), when it grows up (the growth panel)), read a bred child's chapter still unread (at home or out with the Companion), take it along or bring it home, have it sit for its portrait, cross it, or return it to the wild. Reads first: the mibi; then its name, then the card",
+  "notes": {
+   "name tag": "the mibi's name sits on a tag under it inside the living window, as on Home, so it does not float and the chrome carries system information only; the card does not repeat it. 20 px medium; the box holds ten of the widest letter (200 px, NAME_MAX 10), so the tag is at most 224 wide and a name is never clipped",
+   "meet box": "the resident's box is 304×312, the box the juvenile stood in on the Incubator's hatch (incubator.json regions.juvenile), so the new mibi reads as the same creature across the hand-off's dither",
+@@ -140,27 +140,7 @@
+    "rect": [592, 48, 416, 208],
+    "plate": "plate-device-416x208",
+    "component": "panel",
+-   "inStates": ["rest", "meet", "out"],
+-   "heart": {
+-    "at": [240, 16],
+-    "size": [24, 24],
+-    "slice": "heart-full-24",
+-    "when": "the mibi is bonded (m.bonded); unbonded: nothing drawn",
+-    "look": "a small enamel heart painted in the house light; never a flat emoji heart, no face, no sparkle"
+-   },
+-   "notches": {
+-    "rect": [768, 160, 88, 24],
+-    "at": [176, 112, 88, 24],
+-    "notch": [16, 24],
+-    "pitch": 24,
+-    "right": 856,
+-    "slice": "notch-skill-16x24",
+-    "places": {"1": [[840, 160]], "2": [[816, 160], [840, 160]], "3": [[792, 160], [816, 160], [840, 160]]},
+-    "count": "min(m.notches, 3): the places for that count; nothing at zero",
+-    "when": "one to three filled notches, right-aligned to x 856 on the code's row; nothing at zero; never an empty notch, never a figure",
+-    "until": "a labelled placeholder: a 16×24 `bone` bar with a `hairline` edge",
+-    "note": "sprites the card holds, as the heart; not a focus target"
+-   }
++   "inStates": ["rest", "meet", "out"]
+   },
+   "speciesLine": {
+    "rect": [608, 64, 216, 24],
+@@ -169,7 +149,7 @@
+    "px": 16,
+    "lineTop": 66,
+    "text": "strings.speciesLine",
+-   "mark": {"slice": "mark-guide-16", "size": [16, 16], "gap": 4, "at": "4 px after the line's last word, on the line's centre"},
++   "mark": {"slice": "mark-guide-16", "size": [16, 16], "gap": 4, "at": "4 px after the line's last word, on the line's centre", "when": "doorOpen(book)"},
+    "target": "species"
+   },
+   "story": {
+@@ -233,6 +213,7 @@
+    "rect": [872, 272, 136, 96],
+    "plate": "plate-device-136x96",
+    "component": "panel",
++   "when": "doorOpen(sitting)",
+    "build": "module",
+    "inStates": ["rest", "meet", "out"],
+    "word": [16, 12],
+@@ -257,6 +238,7 @@
+    "rect": [592, 376, 272, 96],
+    "plate": "plate-device-272x96",
+    "component": "panel",
++   "when": "doorOpen(cross)",
+    "build": "module",
+    "inStates": ["rest", "meet", "out"],
+    "word": [16, 12],
+@@ -292,6 +274,30 @@
+    "gate": {"at": [44, 40], "size": [48, 48], "slices": {"shut": "gate-wild-shut-48x48", "armed": "gate-wild-open-48x48"}},
+    "states": {"shut": "at rest", "armed": "after the first ✓: the gate ajar"}
+   },
++  "bond": {
++   "rect": [872, 272, 136, 96],
++   "plate": "plate-device-136x96",
++   "component": "panel",
++   "inStates": ["rest", "meet", "out"],
++   "when": "doorOpen(sitting) is false: the panel stands in the Portrait module's place; not a focus target, not pressable (specs/station-habitat-card-purpose.md)",
++   "rows": {
++    "bond": {"at": [16, 20], "h": 24, "heart": {"at": [16, 20], "size": [24, 24], "slice": "heart-full-24"}, "on": {"at": [44, 20], "w": 104, "px": 16, "colour": "bone"}, "off": {"at": [16, 20], "w": 112, "px": 16, "colour": "mist"}},
++    "skill": {"at": [16, 52], "h": 24, "notch": [16, 24], "places": [[16, 52], [40, 52], [64, 52]], "pitch": 24, "slice": "notch-skill-16x24", "gap": 4, "on": {"px": 16, "colour": "bone"}, "off": {"at": [16, 52], "w": 112, "px": 16, "colour": "mist"}}
++   },
++   "rule": "bonded (m.bonded): the heart, then \"bonded\"; otherwise \"not bonded yet\" in mist, no heart. One to three skill notches (min(m.notches, 3)), then \"skill\" 4 px after the last; none: \"no skill yet\" in mist, never an empty notch, never a figure. The card's heart and notches are this panel's, nowhere else",
++   "states": {"rest": "as the rule", "meet": "as the rule", "out": "as the rule: the facts do not change while it is out"}
++  },
++  "growth": {
++   "rect": [592, 376, 272, 96],
++   "plate": "plate-device-272x96",
++   "component": "panel",
++   "build": "module",
++   "inStates": ["rest", "meet", "out"],
++   "when": "doorOpen(cross) is false: the panel stands in the Cross module's place; not a focus target, not pressable (specs/station-habitat-card-purpose.md)",
++   "word": [16, 12],
++   "lamp": null,
++   "line": {"at": [16, 48], "w": 240, "px": 16, "colour": "bone", "lines": 1, "noDigits": true, "text": "strings.growth: young, bondedYoung or grown"}
++  },
+   "strip": {"rect": [16, 488, 992, 64], "plate": "plate-device-992x64", "component": "panel"},
+   "tiles": {
+    "rect": [32, 496, 952, 48],
+@@ -327,15 +333,17 @@
+   "resident lamp",
+   "nameTag",
+   "meetRibbon",
+-  "card (its heart and notches)",
++  "card",
+   "speciesLine",
+   "story",
+   "code",
+   "stamp",
+   "plates",
+   "door",
+-  "portrait (its frame, then its picture)",
+-  "cross",
++  "portrait (its frame, then its picture; only while doorOpen(sitting))",
++  "cross (only while doorOpen(cross))",
++  "bond (while the Portrait door is shut)",
++  "growth (while the Cross door is shut)",
+   "wild",
+   "strip",
+   "tiles",
+@@ -426,12 +434,12 @@
+   "graph": {
+    "fallback": "none",
+    "resident": {"right": ["name", "species"], "down": "tile.shown", "left": "none", "up": "none"},
+-   "name": {"right": "species", "up": ["resident", "none"], "left": ["resident", "none"], "down": "tile.shown"},
++   "name": {"right": ["species", "plate.0"], "up": ["resident", "none"], "left": ["resident", "none"], "down": "tile.shown"},
+    "species": {"left": ["name", "resident"], "up": ["name", "resident"], "down": "plate.0", "right": "none"},
+    "plate": {
+     "left": [{"nearestIn": "plate", "ahead": true}, "resident", "name"],
+     "right": [{"nearestIn": "plate", "ahead": true}, "none"],
+-    "up": "species",
++    "up": ["species", "name"],
+     "down": {"nearestIn": "top"}
+    },
+    "top": {
+@@ -468,7 +476,7 @@
+     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
+     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
+    },
+-   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "doorOpen(book); until slot 8 read-only (no ✓ cap, bottomLine.species.shut)"},
++   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "when": "doorOpen(book)", "enabled": "doorOpen(book); a target only while the Book is open (until slot 8 the line is plain text: no guide mark, no target, no shut line)"},
+    "plate": {
+     "group": "plate",
+     "id": "plate.<i>, i from 0 in ring order",
+@@ -485,6 +493,7 @@
+     "enabled": "always on a shown mibi: ✓ Take when it is not in the set as it will be (state.projectCarried) and that set holds fewer than three; ✓ Bring when it is carried (state.carriedIds) and no request for it waits; otherwise read-only, no ✓ cap: a request for it waits (state.pendingCarry) or the set is full, and the context says which (bottomLine.door)"
+    },
+    "portrait": {
++    "when": "doorOpen(sitting)",
+     "group": "top",
+     "shape": { "rect": 6 },
+     "box": "regions.portrait.rect",
+@@ -492,6 +501,7 @@
+     "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (until slot 9 read-only, bottomLine.portrait.shut)"
+    },
+    "cross": {
++    "when": "doorOpen(cross)",
+     "group": "low",
+     "shape": { "rect": 6 },
+     "box": "regions.cross.rect",
+@@ -620,6 +630,8 @@
+   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
+   "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
+   "card": {"species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
++  "bond": {"on": "bone", "off": "mist"},
++  "growth": {"line": "bone"},
+   "stampLabel": {"k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "Habitat GB2 (art director's ruling): the label's plate is the signed plate-well-120x120 at (872, 64), the C5 well with its ground floor, drawn 1:1; the stamp is printed in it as before, multiplied in linear light by k × warm (art director, masters-pods 001bcd51), centred; the 1 px #3d434b edge is dropped, the well's own hairline replaces it; no fill, light, glow, frame or pane of its own"},
+   "module": {"word": "metal"},
+   "faceRing": "bevel",
+@@ -688,11 +700,14 @@
+   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
+   "painting": "its painting is on its way",
+   "offline": "waiting for a signal",
++  "bond": {"bonded": "bonded", "not": "not bonded yet"},
++  "skill": {"has": "skill", "none": "no skill yet"},
++  "growth": {"word": "Growth", "young": "grows up in {n} {turn|turns}", "bondedYoung": "grows with care, out with you", "grown": "grown"},
+   "shut": {
+    "cross": "crossing is not open yet",
+    "portrait": "portraits are not open yet",
+    "guide": "the guide is not open yet",
+-   "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; until slots 7, 8, 9 (doorOpen)"
++   "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; kept, but not shown on this screen: a door that cannot open is not drawn (fix 8; specs/station-habitat-card-purpose.md)"
+   },
+   "guide": "Open the guide",
+   "every": "every {Species}",
+@@ -730,7 +745,7 @@
+   "watchPlateExamples": ["Fig is seen digging", "Moss is seen curled up asleep"],
+   "watchHabits": { "shake-dry": "shaking itself dry", "calm": "calming a creature", "sleep-curled": "curled up asleep", "sniff": "sniffing", "puff": "puffing out its down", "dig": "digging", "glow": "glowing" },
+   "out": "out with the Companion",
+-  "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
++  "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "growth": "Growth", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
+   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",
+   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
+   "partnersRule": "n counts only the partners that can be picked (not out with the Companion while it is away)",
+diff --git a/prototypes/ui/specs/station/habitat.props.json b/prototypes/ui/specs/station/habitat.props.json
+index 81db7e1d..a36ffd48 100644
+--- a/prototypes/ui/specs/station/habitat.props.json
++++ b/prototypes/ui/specs/station/habitat.props.json
+@@ -152,8 +152,6 @@
+     "card",
+     "plates",
+     "door",
+-    "portrait",
+-    "cross",
+     "wild",
+     "strip",
+     "tiles"
+@@ -293,8 +291,6 @@
+      "type": "object",
+      "required": [
+       "plate",
+-      "heart",
+-      "notches",
+       "species",
+       "story",
+       "code",
+@@ -305,25 +301,6 @@
+       "plate": {
+        "type": "string"
+       },
+-      "heart": {
+-       "type": "string"
+-      },
+-      "notches": {
+-       "type": "object",
+-       "required": [
+-        "count",
+-        "picture"
+-       ],
+-       "additionalProperties": false,
+-       "properties": {
+-        "count": {
+-         "type": "integer"
+-        },
+-        "picture": {
+-         "type": "string"
+-        }
+-       }
+-      },
+       "species": {
+        "type": "object",
+        "required": [
+@@ -545,6 +522,67 @@
+        "type": "string"
+       }
+      }
++    },
++    "bond": {
++     "type": "object",
++     "required": [
++      "plate",
++      "bonded",
++      "text",
++      "heart",
++      "notches",
++      "skill"
++     ],
++     "additionalProperties": false,
++     "properties": {
++      "plate": {
++       "type": "string"
++      },
++      "bonded": {
++       "type": "boolean"
++      },
++      "text": {
++       "type": "string"
++      },
++      "heart": {
++       "type": "string"
++      },
++      "notches": {
++       "type": "object",
++       "required": [
++        "count",
++        "picture"
++       ],
++       "additionalProperties": false,
++       "properties": {
++        "count": {
++         "type": "integer"
++        },
++        "picture": {
++         "type": "string"
++        }
++       }
++      },
++      "skill": {
++       "type": "string"
++      }
++     }
++    },
++    "growth": {
++     "type": "object",
++     "required": [
++      "plate",
++      "line"
++     ],
++     "additionalProperties": false,
++     "properties": {
++      "plate": {
++       "type": "string"
++      },
++      "line": {
++       "type": "string"
++      }
++     }
+     }
+    }
+   },
+diff --git a/prototypes/ui/tests/specs.test.mjs b/prototypes/ui/tests/specs.test.mjs
+index 784fb0fa..bd10db5e 100644
+--- a/prototypes/ui/tests/specs.test.mjs
++++ b/prototypes/ui/tests/specs.test.mjs
+@@ -364,16 +364,23 @@ const atRect = (r, o) => [r[0] + o[0], r[1] + o[1], o[2], o[3]];
+ test("one mibi up close (habitat.json) agrees with its wireframes, region by region; its focus graph plays its vectors", () => {
+   const hab = rd("../specs/station/habitat.json"), R = hab.regions, B = boxesOf("19-vivarium-mibi.svg"), M = boxesOf("19a-vivarium-mibi-meet.svg"), A = boxesOf("19c-vivarium-mibi-out.svg"), E = A;
+   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
+-  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "speciesLine", "story", "code", "stamp", "door", "portrait", "cross", "wild", "strip"]) is(R[k].rect, k);
+-  for (const [set, w] of [[B, "19"], [A, "19c"]]) is(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), "heart (" + w + ", bonded)", set); assert.ok(!M.has(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]).join(",")), "no heart on an unbonded mibi (19a)");
+-  assert.equal(R.bond, undefined, "the bond is not a region"); assert.equal(R.heart, undefined, "the heart is a state on the card, not a region"); assert.equal("target" in R.card.heart, false, "the heart is no focus target");
+-  assert.deepEqual(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), [832, 64, 24, 24]); { const hr = atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]); assert.ok(inside(hr, R.card.rect) && apart(hr, R.speciesLine.rect) && apart(hr, R.stamp.rect), "the heart inside the card, clear of the species line and the stamp"); }
++  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "speciesLine", "story", "code", "stamp", "door", "bond", "growth", "wild", "strip"]) is(R[k].rect, k);
++  // a door that cannot open is not drawn (fix 8; specs/station-habitat-card-purpose.md): the modules and the guide mark wait for their doors, the panels stand in their places
++  assert.ok(!("heart" in R.card) && !("notches" in R.card), "no heart or notches under card: the bond panel is their one home");
++  assert.deepEqual([R.portrait.when, R.cross.when, R.speciesLine.mark.when, hab.focus.targets.species.when, hab.focus.targets.portrait.when, hab.focus.targets.cross.when], ["doorOpen(sitting)", "doorOpen(cross)", "doorOpen(book)", "doorOpen(book)", "doorOpen(sitting)", "doorOpen(cross)"]);
++  for (const f of readdirSync(new URL("../../../design/style-guide/station-layouts/", import.meta.url)).filter((x) => /^19.*\.svg$/.test(x))) { const svg = readFileSync(new URL("../../../design/style-guide/station-layouts/" + f, import.meta.url), "utf8"); assert.ok(!/>(Portrait|Cross)</.test(svg), `${f}: no Portrait or Cross module drawn (their doors are shut)`); assert.ok(/>Growth</.test(svg) && />(bonded|not bonded yet)</.test(svg), `${f}: the two panels are drawn`); } assert.deepEqual(R.bond.rect, R.portrait.rect); assert.deepEqual(R.growth.rect, R.cross.rect);
++  assert.deepEqual([R.bond.plate, R.growth.plate], [R.portrait.plate, R.cross.plate], "the panels reuse the modules' plates"); for (const k of ["bond", "growth"]) assert.ok(!(k in hab.focus.targets), k + " is no focus target");
++  const BR = R.bond.rows, bAt = (a) => atRect(R.bond.rect, a), hr = bAt([...BR.bond.heart.at, ...BR.bond.heart.size]);
++  for (const [set, w] of [[B, "19"], [A, "19c"]]) is(hr, "heart (" + w + ", bonded)", set); assert.ok(!M.has(hr.join(",")), "no heart on an unbonded mibi (19a)"); assert.deepEqual(hr, [888, 292, 24, 24]); assert.ok(inside(hr, R.bond.rect), "the heart inside the panel");
+   for (const k of ["bezel", "glass", "strip", "card", "door"]) is(R[k].rect, k + " (out)", E); is(R.resident.out.rect, "the out mark", E); assert.ok(!E.has(R.resident.rect.join(",")), "no mibi drawn while it is out");
+   assert.deepEqual([R.resident.out.rect[0] + R.resident.out.rect[2] / 2, R.resident.out.rect[1] + R.resident.out.rect[3]], [R.resident.axis, R.resident.feet], "the out mark on the axis, its foot on the feet line"); assert.ok(inside(R.resident.out.rect, R.resident.rect));
+-  // the skill notches: filled only, one to three, right-aligned to 856 on the code's row, inside the card, clear of the code and the stamp; two in the wireframe
+-  const NT = R.card.notches; assert.deepEqual(atRect(R.card.rect, NT.at), NT.rect); assert.ok(inside(NT.rect, R.card.rect) && gapOk(NT.rect, R.code.rect) && apart(NT.rect, R.stamp.rect), "the notches clear of the code and the stamp");
+-  for (const [n, xs] of Object.entries(NT.places)) { assert.equal(xs.length, +n); assert.equal(xs.at(-1)[0] + NT.notch[0], NT.right); xs.forEach(([x, y], i) => { assert.ok(inside([x, y, ...NT.notch], NT.rect)); if (i) assert.equal(x - xs[i - 1][0], NT.pitch); }); }
+-  assert.ok(!("0" in NT.places), "nothing at zero"); for (const [x, y] of NT.places[2]) is([x, y, ...NT.notch], "a notch"); assert.equal(R.code.rect[2], 152, "the code's box holds WWW WWW WWW (152 at 16 px)");
++  // the bond panel's skill row: filled notches only, one to three, left-aligned from 16 on a 24 pitch, then "skill" 4 px after the last; the rows' words measured with the real measurer's vectors
++  const SK = BR.skill, MV = rd("../../face/tests/vectors/metrics.json"), wd = (s) => { const c = (MV.cases ?? MV).find((x) => x.px === 16 && x.text === s); assert.ok(c, `"${s}" is in the metrics vectors`); return c.width; };
++  SK.places.forEach(([x, y], i) => { assert.ok(inside(bAt([x, y, ...SK.notch]), R.bond.rect), "a notch inside the panel"); if (i) assert.equal(x - SK.places[i - 1][0], SK.pitch); }); assert.equal(SK.places[0][0], 16);
++  assert.ok(SK.places[2][0] + SK.notch[0] + SK.gap + wd(hab.strings.skill.has) <= R.bond.rect[2] - 8, "three notches and \"skill\" fit the panel minus 8: " + (SK.places[2][0] + SK.notch[0] + SK.gap + wd(hab.strings.skill.has)));
++  assert.ok(wd(hab.strings.bond.bonded) <= BR.bond.on.w && wd(hab.strings.bond.not) <= BR.bond.off.w && wd(hab.strings.skill.none) <= SK.off.w, "the bond and skill words fit their widths: " + [hab.strings.bond.bonded, hab.strings.bond.not, hab.strings.skill.none].map(wd));
++  assert.ok(BR.bond.on.at[0] === BR.bond.heart.at[0] + BR.bond.heart.size[0] + 4 && R.bond.rows.bond.off.at[0] === 16); for (const [x, y] of SK.places.slice(0, 2)) is(bAt([x, y, ...SK.notch]), "a notch"); assert.equal(R.code.rect[2], 152, "the code's box holds WWW WWW WWW (152 at 16 px)");
++  { const G = R.growth, line = G.line; assert.ok(line.w <= G.rect[2] - 32 && line.at[1] > G.word[1], "the growth line inside the panel under its word"); const lines = [hab.strings.growth.young.replace("{n}", "three").replace("{turn|turns}", "turns"), hab.strings.growth.bondedYoung, hab.strings.growth.grown]; for (const s of lines) { assert.ok(wd(s) <= line.w, `"${s}" is ${wd(s)} px, the line is ${line.w}`); assert.ok(!/\d/.test(s), "no digit"); } assert.equal(hab.strings.growth.word, hab.strings.modules.growth); }
+   is(R.meetRibbon.rect, "meet ribbon", M); is(R.resident.lamp.rect, "waiting lamp", M);
+   lintRegions(hab); assert.deepEqual(hab.states, ["rest", "meet", "out"]); assert.deepEqual([hab.section, hab.level, hab.strings.title, hab.strings.back], ["vivarium", "mibi", "Vivarium", "Vivarium"]); assert.deepEqual(hab.rules.needed, []); assert.deepEqual(hab.rules.used, ["listPitch"]);
+   assert.deepEqual([R.bezel.rect[0] + R.bezel.inset, R.bezel.rect[1] + R.bezel.inset, R.bezel.rect[2] - 2 * R.bezel.inset, R.bezel.rect[3] - 2 * R.bezel.inset], R.glass.rect, "the 8 px bezel");
+@@ -385,7 +392,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
+   assert.ok(R.nameTag.rect[1] >= R.resident.feet + 12 + 8, "the tag 8 px or more under the feet ring"); assert.ok(R.nameTag.rect[1] + R.nameTag.rect[3] + 8 <= glass[1] + glass[3], "the tag 8 px inside the glass");
+   assert.ok(inside(R.nameTag.rect, R.meetRibbon.rect), "the ribbon in the tag's place"); assert.deepEqual([R.nameTag.px, R.nameTag.weight, R.nameTag.h], [frame.type.title, frame.type.weight[20], 32], "the tag at 20 px medium, 32 tall");
+   assert.equal(R.nameTag.max, 200 + 2 * R.nameTag.pad, "the tag holds ten of the widest letter at 20 px (200) and its pads"); assert.equal(R.nameTag.rect[2], R.nameTag.max); assert.equal(R.nameTag.rect[0] + R.nameTag.rect[2] / 2, R.resident.axis); assert.ok(R.nameTag.min % R.nameTag.round === 0 && R.nameTag.max % R.nameTag.round === 0);
+-  assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
++  assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild", "bond", "growth"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
+   assert.ok(inside(R.resident.lamp.rect, res) && R.resident.lamp.rect[0] + 12 === res[0] + res[2] && R.resident.lamp.rect[1] === res[1], "the lamp at the box's top right");
+   assert.equal(hab.focus.targets.resident.shape, "footprint", "the resident wears its footprint (fix 14)");
+   for (const spec of [hab]) for (const [k, t] of Object.entries(spec.focus.targets)) assert.ok(isShape(t.shape) && !("ring" in t), k + ": a ring shape of frame.json, no `ring`");
