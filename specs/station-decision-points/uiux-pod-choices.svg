@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
+<title>Pods, the choices for an identified pod (UI/UX example, rough, 1x). Layout only, no art.</title>
+<rect width="1024" height="600" fill="#1d1f24"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23262d"/><text x="48" y="27" font-size="20" fill="#e9e2d0">Pods</text>
+<text x="600" y="26" font-size="16" fill="#e9e2d0">⚡ 9   ◆ 4   ❀ 6</text>
+<rect x="0" y="40" width="1024" height="522" fill="#7d8f7a"/>
+<rect x="71" y="59" width="882" height="489" rx="14" fill="#3b3631"/>
+<g opacity="0.35"><ellipse cx="256" cy="300" rx="72" ry="88" fill="#5b7790"/><rect x="600" y="120" width="64" height="64" fill="#5b7790"/></g>
+<rect x="71" y="59" width="882" height="489" rx="14" fill="#000" opacity="0.35"/>
+<!-- panel -->
+<rect x="96" y="80" width="832" height="440" rx="12" fill="#e6dcc4" stroke="#8b7f66" stroke-width="2"/>
+<ellipse cx="160" cy="136" rx="28" ry="34" fill="#5b7790" stroke="#2f2a22"/>
+<text x="208" y="128" font-size="28" fill="#2f2a22">Your Loika pod</text>
+<text x="208" y="154" font-size="16" fill="#5f574a">found at the pond edge · two of four chapters read</text>
+<text x="128" y="204" font-size="20" fill="#2f2a22">What do you want to do with it?</text>
+<!-- option cards: 248 wide, 16 gaps -->
+<g>
+<rect x="128" y="224" width="248" height="232" rx="10" fill="#f3ecdc" stroke="#e8743b" stroke-width="3"/>
+<text x="144" y="256" font-size="20" fill="#2f2a22">Read Face</text>
+<text x="144" y="288" font-size="16" fill="#2f2a22" font-weight="600">Costs</text><text x="216" y="288" font-size="16" fill="#2f2a22">◆ 3</text>
+<text x="144" y="320" font-size="16" fill="#2f2a22" font-weight="600">You learn</text>
+<text x="144" y="344" font-size="16" fill="#5f574a">its eyes and ears, and</text>
+<text x="144" y="368" font-size="16" fill="#5f574a">which you can change</text>
+<text x="144" y="368" font-size="16" fill="#5f574a"></text>
+<text x="144" y="408" font-size="16" fill="#2f2a22" font-weight="600">Then</text><text x="200" y="408" font-size="16" fill="#5f574a">its page opens</text>
+<text x="144" y="440" font-size="16" fill="#8a6a1e">or another chapter ▲ ▼</text>
+</g>
+<g>
+<rect x="392" y="224" width="248" height="232" rx="10" fill="#f3ecdc" stroke="#8b7f66"/>
+<text x="408" y="256" font-size="20" fill="#2f2a22">Shape a founder</text>
+<text x="408" y="288" font-size="16" fill="#2f2a22" font-weight="600">Costs</text><text x="480" y="288" font-size="16" fill="#2f2a22">nothing yet</text>
+<text x="408" y="320" font-size="16" fill="#2f2a22" font-weight="600">You get</text>
+<text x="408" y="344" font-size="16" fill="#5f574a">to try its looks on the</text>
+<text x="408" y="368" font-size="16" fill="#5f574a">bench; Grow costs ⚡ 2 ❀ 4</text>
+<text x="408" y="408" font-size="16" fill="#2f2a22" font-weight="600">Then</text><text x="464" y="408" font-size="16" fill="#5f574a">Create</text>
+<text x="408" y="440" font-size="16" fill="#5f574a">Face and Stamina stay hidden</text>
+</g>
+<g>
+<rect x="656" y="224" width="248" height="232" rx="10" fill="#f3ecdc" stroke="#8b7f66"/>
+<text x="672" y="256" font-size="20" fill="#2f2a22">Return to the wild</text>
+<text x="672" y="288" font-size="16" fill="#2f2a22" font-weight="600">You get</text><text x="752" y="288" font-size="16" fill="#2f2a22">❀ 1</text>
+<text x="672" y="320" font-size="16" fill="#2f2a22" font-weight="600">You lose</text>
+<text x="672" y="344" font-size="16" fill="#5f574a">this pod, for good; it</text>
+<text x="672" y="368" font-size="16" fill="#5f574a">goes back to the pond</text>
+<text x="672" y="408" font-size="16" fill="#2f2a22" font-weight="600">Then</text><text x="728" y="408" font-size="16" fill="#5f574a">back to your pods</text>
+<text x="672" y="440" font-size="16" fill="#c62828">cannot be undone</text>
+</g>
+<text x="128" y="496" font-size="16" fill="#5f574a">◀ ▶ choose · ✓ do it · ← look again later (nothing spent)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23262d"/>
+<text x="20" y="587" font-size="16" fill="#e8743b">✓ Read Face  ◆ 3</text>
+<text x="430" y="587" font-size="16" fill="#9aa0a8">learn its eyes and ears</text>
+<text x="1004" y="587" font-size="16" fill="#e9e2d0" text-anchor="end">← Not now</text>
+</svg>

@@ -36,7 +36,7 @@ The owner, 2026-10-16 13:16: "it's a 'click-accept-fest', you need better bigger
 1. **A decision panel at each real commitment, and only there.**
    - **Where:** the game designer's list (Grow it, Cross them, Return to the wild, a large Grow now, spending a sitting) plus Fit the upgrade. Not Identify or Read: they are small, frequent spends whose price is already on the line, and a panel there is ceremony (I first listed them; the game designer is right).
    - **What it shows:** a large panel (640 × 392, over the dimmed screen) with *what you give*, *what you get*, and *where you go next*, plus two named choices: `✓ Grow it` / `← Keep shaping`.
-   - **What it costs in presses:** it replaces the "✓ again" arming, so Return to the wild and the upgrade cost the same two presses as today, but now you can read them. In the main loop only Grow gains a press. With the game designer's cuts, the loop lands at about 9.
+   - **What it costs in presses:** it replaces the "✓ again" arming, so Return to the wild and the upgrade cost the same two presses as today, but now you can read them. In the main loop only Grow gains a press. With the game designer's cuts, the loop is 11 (see the joint section's count).
    - **Repeats:** a free, repeatable action (turning a drum, opening a page) gets no panel.
 2. **✓ never changes meaning on the same object.**
    - Spending and moving are two different targets: Identify and Read are actions with a price on the panel, and Create is reached by its own "Shape a founder" control. The pod itself only ever *opens*.
@@ -47,7 +47,17 @@ The owner, 2026-10-16 13:16: "it's a 'click-accept-fest', you need better bigger
    - **Back:** ← always returns to where the jump came from until you move on.
 4. **The bottom line stays the one place that says what ✓ does.** It must always name the destination when ✓ leaves the screen ("✓ Grow it → Incubator").
 
-**The example** (rough, 1×, layout only; the face's type sizes 16, 20 and 28): the Grow panel on Create. Today's single Grow press becomes the panel plus ✓. The added press is the one where the player commits the pod and its price, and the panel says what that buys and where they go next.
+**The example** (rough, 1×, layout only; the face's type sizes 16, 20 and 28), after the owner's 13:19 direction ("show the options and costs, and the actions and outcomes"). It shows what to do with an identified pod.
+- **The options:** three cards side by side: read the next chapter, shape a founder, return it to the wild.
+- **On each card:** what it costs, what you get or lose, and where you land.
+- **Keys:** ◀ ▶ choose, ✓ does it, and ← leaves with nothing spent.
+- **The irreversible card** says so in red on the card. That one line replaces "✓ again".
+
+![The choices for an identified pod](station-decision-points/uiux-pod-choices.png)
+
+*station-decision-points/uiux-pod-choices.png (source: uiux-pod-choices.svg).*
+
+A single commitment uses the same panel with one option and its way out. This is the Grow panel on Create:
 
 ![Grow decision panel](station-decision-points/uiux-grow-panel.png)
 
@@ -146,7 +156,7 @@ With 1–6 the same loop is **11 ✓ presses** (corrected: an earlier draft said
 
 ## The work list
 
-*Draft by the game designer, for UI/UX to amend. The owner, 13:19: "allowing the user be intentional, show the options and costs, and the actions and outcomes makes the game more engaging, invites to explore and make choices." The lead turns this list into spec and build tickets.*
+*Drafted by the game designer, amended by UI/UX (the notes after the ranking). The owner, 13:19: "allowing the user be intentional, show the options and costs, and the actions and outcomes makes the game more engaging, invites to explore and make choices." The lead turns this list into spec and build tickets.*
 
 ### Decision points, screen by screen
 
@@ -181,3 +191,15 @@ Ranked by how often the player meets it and how much it costs them.
 5. **Jumps after Grow it, Cross them and the hatch.** The panel's "where next" choices replace them. No press is saved, but the landing becomes the player's choice.
 6. **"Open" for four acts.** "Open" stays for the bay and the bud; the rest say where they go ("Look at this pod", "Go to the Incubator").
 7. **The bare "Keep Moss".** It becomes the hatch panel's name choice.
+
+### UI/UX notes on the list
+
+- **One panel form for every row marked Panel and for every on-page fork.**
+  - Up to three option cards, 248 wide, side by side.
+  - Each card: its name (20 px); then **Costs** or **You get**; **You learn** or **You lose**; and **Then** (16 px).
+  - Keys: ◀ ▶ choose, ✓ does the focused card, ← leaves with nothing spent.
+  - The bottom line repeats the focused card's verb and price, so the line and the panel never disagree.
+- **Irreversible options** carry "cannot be undone" in red on their card and take one ✓. No row keeps "✓ again".
+- **The two Pods rows** ("a pod's chapters" and "an identified pod") are one fork in the UI/UX example: read the next chapter, shape a founder, return it. Whether it is drawn on the overview itself or as a panel over it is for the Pods spec, by room. The overview's right column holds the found-note, the kin and the stamp today.
+- **Type:** 16, 20 and 28 only. Every string on a card must fit its card at 16 px in at most two lines, measured, or the copywriter shortens it.
+
