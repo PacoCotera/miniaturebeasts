@@ -16231,5 +16231,565 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
   "status_note": "new (10-16, T-20261016-27)"
+ },
+ "create-bench": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "create-bench/make-create.py (ground: incubator-b/make-stage.py --ground)",
+  "made": "the gene bench: one matte work surface inside the bezel (the Pods ground), the well's seat, the dish's cut-out and the tray recessed; job: everything sits on it",
+  "sha256": "06cef27dc00e8139c39180154419793844a3526e69ca397c03a32b54f6c6c473",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-well": {
+  "size": [
+   192,
+   192
+  ],
+  "rect": [
+   96,
+   96,
+   192,
+   192
+  ],
+  "src": "create-bench/make-create.py from source/raw/pods-room-sheet.jpg (200, 500) r 168",
+  "made": "Pods' fitted well at 192, cut from the Pods room sheet as the 176 was; job: the pod's own seat, the source of every look",
+  "sha256": "463240ca22f959e10deb226dff3f65dbba34e1af3b2c9ec0703b576394048e98",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-gene-line": {
+  "size": [
+   24,
+   216
+  ],
+  "rect": [
+   288,
+   192,
+   24,
+   216
+  ],
+  "src": "create-bench/make-create.py",
+  "made": "the braided line from the well's side to the tray; job: the drums are fed by this pod",
+  "sha256": "0da07277cc3b89a222c3df9ee1504f2b7acb3fb34bd2859cadc7bc8d09cca98d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-dish": {
+  "size": [
+   400,
+   28
+  ],
+  "rect": [
+   312,
+   372,
+   400,
+   28
+  ],
+  "src": "create-bench/make-create.py",
+  "made": "the moss pad in a moulded sage rim; job: the founder stands on it",
+  "sha256": "22d0c32dc2ef2be204c3b48a186fe62e357df7b6724c0ef4daddf1b788d8efbc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-rest": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the drum at rest, its 64x64 window at (8, 8) clear; job: a gene you turn",
+  "sha256": "2215a9013259edd0449b45c3b25acbd751fad77a730b42084639c884bc8170be",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-pinned": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the drum of a doing: two linked rings engraved in its rim; job: breed to change",
+  "sha256": "646a2039e15d5aa7fa99b4b69b73ca520e22795bc9881723c672661459918845",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-capped": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the drum under the frost veil; job: an unread chapter, still a surprise",
+  "sha256": "dd0580f903c504aeeac2a1dd45c829928d8b1ea8522c387d22a045d6471be24b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-clash": {
+  "size": [
+   80,
+   80
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the drum with a red rim line; job: this change clashes",
+  "sha256": "b5775063147252bec0fefaa088574786f84c779ff8a28e0eaf46ca0cd83ccc44",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-notch": {
+  "size": [
+   12,
+   8
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the cream changed notch, at (34, 0) on a drum; job: this drum is turned",
+  "sha256": "f6be049889c77b702c146d805524cfc0cd8ea63aa71063986fe364fb726bfd4e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-turn-up": {
+  "size": [
+   16,
+   8
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the turn mark up, at (32, 0) on the focused drum",
+  "sha256": "7a8ac23b598b3ff68264b2b9fb0fdf68cc34add4f4494cae49cc66431a28c2d2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-drum-turn-down": {
+  "size": [
+   16,
+   8
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the turn mark down, at (32, 72) on the focused drum",
+  "sha256": "91d6b6782ace7582ab4a959412c7c3df19657272e329ae5908994d16d116c7ad",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-bank-more-left": {
+  "size": [
+   16,
+   80
+  ],
+  "rect": [
+   104,
+   440,
+   16,
+   80
+  ],
+  "src": "create-bench/make-create.py",
+  "made": "the edge mark: more drums past the left edge",
+  "sha256": "7b617674d7efed4233b4ca8e0ba301f3c1d19f414e80b620090ac81dd2abd9ff",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "create-bank-more-right": {
+  "size": [
+   16,
+   80
+  ],
+  "rect": [
+   904,
+   440,
+   16,
+   80
+  ],
+  "src": "create-bench/make-create.py",
+  "made": "the edge mark: more drums past the right edge",
+  "sha256": "029332cd1db4cae850eec479eddb26570a861399c70a23d11f77ae2513ffdc3a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-markings-plain-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "fd38838f75fd59b245740a71be6254de2ecfb4d59ec383c69080179d8e9b2158",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-markings-pale-patches-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "89a384e09a68f4cecb9ce917d545db54b4b1d68f9db33b842539b4370c0a2101",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-crown-bare-head-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "25465a9f87c4e670edf5af259675cd65009765c613e1f1f39f6d6164fcc42204",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-crown-leaf-crest-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "db5721b647d0ddf2003f349ffe75489cf81aa801d02ae288240e60566455a98f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-eyes-thin-rings-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "c5224d54806074aafd5d79df1fcdd121a55e15e62370947ecd4d3ff8a4b2d840",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-eyes-between-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "b7ba610b9eb3b31374a25eaaaa31714ad211678a3461c701116eb415dc860656",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-eyes-wide-pale-rings-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "55232a1b1d0ca66e84cd03a18f387f755aab2d38dc60ce453a05a9512feedaf3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-drive-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "d0baedbb696688aca1d6ddad3e4858cbf3c69b4d4e47dbfc1de3e8cb1025de93",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S01-efficiency-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "5c34285505e4ab675fc763fd481c7636419bf34048f5d0a82a9d7e5aef7ec295",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-markings-plain-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "6ee7f45bfa0c59693e09cc02600c469b24ba19a5d0db916406333a446cd28ba0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-markings-stripes-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "cd1990c043431ce7fb6d6b8ee1939ffe9cd24f04c05fc7f6031f9f45ac2a68d0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-markings-spots-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "d3c59167d01d7709729ba9ee161f8df788644436f2585db3d834289e339545ae",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-markings-stripes-and-spots-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "82fd02efff534961cb8c2ed6923691e4874e62695837e3985dcaf4243d50b9d6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-scales-few-fine-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "e5c33950c01c9ede9ce06ac0ddc36f302f71bead8edc404d2415d3bc9bd60feb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-scales-between-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "7b6f371985b11887277775663b23c359560793db3d337463aaf2a75cf1988f80",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-scales-many-coarse-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "1a9abc043d57bf8ffc27161611b8d364e553eef051caf1d25de391e714771aaa",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-crest-low-crest-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "0747a0fd2f1e66e57afbd6d4a6e7d80fbc8ebf57a4af91fccb0c096baf53fbeb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-crest-between-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "d4c9f97acbd2494e8042287cdde57570558d2ff89138220e2e6dafdcbbe85aee",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-crest-tall-crest-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "694c54f4dfee39c988fab401156fbac0dbf98a09b0d8d5ea2f050333e7ed6446",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-tail-short-thin-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "be9b664f1716699cdcbe0e31bf95fba2c91370c51ffb6828beb11670a03e6c3f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-tail-between-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "e6646f7befbb0622ce4cf25fa4797cbccbe47d233ba67fd01805a72817e07bbf",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-tail-long-thick-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "55c5838086ebcc9055d6f2acd8496b5df8d7b7971e39dddf83c58124016b5a7b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-carriage-hangs-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "89522485451116aab8ad8860ccd80940c658cffad5c4e285098787f83b845446",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-carriage-straight-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "7856257da448b4de9138bb1a5383320dc3ed9e733e28b1049d1a5e2bf20e619d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "look-S03-carriage-curls-up-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "create-bench/make-looks-64.py from the signed trait-*-128x160",
+  "made": "the drum's close-up: the signed look plate recipe (tools/guideplates2.py) at 64, the centred square of the picture's content reduced to 60 on ground, faded over 3 px",
+  "sha256": "48d3415c59cba4be4508c156b2a772d413cb66537b3a8f625c6353189fe5dee5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
+  "status_note": "new (10-16, T-20261016-41)"
+ },
+ "founder-S01-base-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": [
+   360,
+   80,
+   304,
+   312
+  ],
+  "src": "create-bench/make-looks-64.py from floor/S01 (keys/mibi-adult-S01-base-stand-304x312)",
+  "made": "the founder's body with a bare head (the crown's bare look is this body alone)",
+  "sha256": "3601caa878feb073e100291c777097de34fabc5cea5e2bcc87e93d45b3adb356",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-16, T-20261016-41): copied 1:1 from the S01 floor set, which its README marks 'not signed yet' (adult fringe clean-up open); signs with that set"
+ },
+ "founder-S01-crown-leaf-crest-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": [
+   360,
+   80,
+   304,
+   312
+  ],
+  "src": "create-bench/make-looks-64.py from floor/S01 (overlays/mibi-adult-S01-stand-crest-304x312)",
+  "made": "the founder's crown, leaf crest: the part only, placed over the base",
+  "sha256": "6155e482d012004571d6c7ea76d4ba0ec11922563f05d7c1eb485a346c501052",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-16, T-20261016-41): copied 1:1 from the S01 floor set, which its README marks 'not signed yet' (adult fringe clean-up open); signs with that set"
  }
 }

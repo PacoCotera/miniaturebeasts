@@ -8,11 +8,11 @@ By hand in code, no paid call. The device's own stage, as on Pods (the concept's
   clockwise from 228 to 132 (12 o'clock = 0), so the 96-degree gap at the bottom holds the cradle; rounded end caps. A recess 2 px deep with
   rounded 1.5 px walls, lambert from the top left (the wall nearer the light in shade, the far wall catching it), its floor the slate x0.62,
   its lip a soft 1 px contact shade. Matte; nothing else is painted.
-usage: python3 -I make-stage.py SLICES_DIR OUT.png"""
+usage: python3 -I make-stage.py SLICES_DIR OUT.png [--ground]"""
 import sys, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
-sl, out = sys.argv[1:3]
+sl, out = sys.argv[1:3]; ground_only = "--ground" in sys.argv   # --ground: the calm ground alone, no track (Create's bench starts from it, T-20261016-41)
 a = np.asarray(Image.open(sl + "/room-bench-stage-overview.png").convert("RGBA")).astype(float); rgb = a[..., :3].copy(); H, W = rgb.shape[:2]
 yy, xx = np.mgrid[0:H, 0:W]
 def lin(c): c = np.asarray(c, float) / 255; return np.where(c <= .04045, c / 12.92, ((c + .055) / 1.055) ** 2.4)
@@ -42,6 +42,8 @@ for _ in range(400):
 w = np.clip(np.minimum.reduce([xx - FX0, FX1 - 1 - xx, yy - FY0, FY1 - 1 - yy]) / 10.0, 0, 1) * floor   # feathered over 10 px into the case's edge shade
 rgb = rgb * (1 - w[..., None]) + (tone + grain) * w[..., None]
 print("floor repainted", int((w > 0).sum()), "px; marks excluded from the tone", int(marks.sum()), "px; grain unresolved", int((~done).sum()))
+if ground_only:
+    a[..., :3] = np.clip(np.rint(rgb), 0, 255); Image.fromarray(a.astype(np.uint8), "RGBA").save(out); sys.exit(0)
 # 2. the ring's track, supersampled 4x
 S = 4; CX, CY, R0, R1 = 512, 248, 176, 200; A0, SPAN = 228, 264
 Y4, X4 = (np.mgrid[0:H * S, 0:W * S] + .5) / S
