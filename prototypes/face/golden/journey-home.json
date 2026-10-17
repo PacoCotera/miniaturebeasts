@@ -169,16 +169,14 @@
     "report": true,
     "rows": [
      [
-      "First crate",
       1,
       "",
-      "half the land explored"
+      2
      ],
      [
-      "Another crate",
       1,
       "",
-      ""
+      0
      ]
     ],
     "gathered": [
@@ -188,16 +186,10 @@
      null
     ],
     "probe": {
-     "lead": "Probe",
      "plates": 1,
-     "text": "mended for ⚡ 1"
+     "spent": "1"
     },
-    "world": {
-     "lead": "Meanwhile, the world turned",
-     "lines": [
-      "The pond edge filled with rain"
-     ]
-    }
+    "goal": "identify the Loika pod"
    },
    {
     "key": "confirm",

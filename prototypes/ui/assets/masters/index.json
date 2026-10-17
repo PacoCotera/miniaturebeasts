@@ -246,6 +246,13 @@
    "sha256": "1bc1ffad77c64ec3b854f2730e55b197ab909f5cc70ba4dedac3599d1c77c2de",
    "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
   },
+  "cargo-crate-64x64": {
+   "file": "pods/cargo-crate-64x64.png",
+   "w": 64,
+   "h": 64,
+   "sha256": "9f78ebe827d5fd2b4c1237b4a44bac20fc54b6725348cf1b70e370c423478b29",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
+  },
   "cargo-data-48x64": {
    "file": "pods/cargo-data-48x64.png",
    "w": 48,
@@ -314,7 +321,7 @@
    "w": 560,
    "h": 136,
    "sha256": "35778a3b75904d00e23786b93ffa196dffff3eb97a63578e01276adc410e0247",
-   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-report-plate-560x144": {
    "file": "pods/cargo-report-plate-560x144.png",
@@ -349,7 +356,7 @@
    "w": 560,
    "h": 176,
    "sha256": "48740e1e961c6220fcd44bec1d54ececf8d5ddb4a81cb7a62a030d1a3a37de26",
-   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-report-plate-560x184": {
    "file": "pods/cargo-report-plate-560x184.png",
@@ -377,7 +384,7 @@
    "w": 560,
    "h": 208,
    "sha256": "79f42234480106b8a5d8856a12bfe00ec44b0e7782df20be6f3a6d6b2277e90a",
-   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-report-plate-560x216": {
    "file": "pods/cargo-report-plate-560x216.png",
@@ -1330,6 +1337,13 @@
    "h": 16,
    "sha256": "a191383a949e74a57e4da08dbfff8e2dc87bec25a244d8f7834fe7d5a5f25d6f",
    "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
+  },
+  "icon-map-14x12": {
+   "file": "pods/icon-map-14x12.png",
+   "w": 14,
+   "h": 12,
+   "sha256": "f807b32461b9ec0b218d81a120d044309cdd7e74415cfe69584dd1ca5c7c6897",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",

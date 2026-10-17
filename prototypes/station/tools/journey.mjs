@@ -162,10 +162,10 @@ await page.waitForTimeout(900); await frameShot("home-docked", true);
   u = await hpress("back", 200); expect(u.screen === "cargo" && (await props()).state === "opening", "home-bay: ← waits while the crates open (✓ would skip to the report): " + JSON.stringify(u));
   await page.waitForTimeout(6600);
   p = await props(); l = p.frame.line; s = await st();
-  expect(p.state === "report" && p.regions.report.crates.length === 2 && p.regions.report.crates[0].lead === "First crate" && !(await page.evaluate(() => window.__st.holding())), "home-bay: after both crates the report shows, input free: " + JSON.stringify([p.state, p.regions.report?.crates, p.regions.report?.gathered]));
+  expect(p.state === "report" && p.regions.report.crates.length === 2 && p.regions.report.crates[0].pods > 0 && !(await page.evaluate(() => window.__st.holding())), "home-bay: after both crates the report shows, input free: " + JSON.stringify([p.state, p.regions.report?.crates, p.regions.report?.gathered]));
   expect(l.ok === "See the new pods" && l.back === "Cargo" && l.subject === "what came home", "home-bay: ✓ See the new pods, ← Cargo, what came home: " + JSON.stringify(l));
   expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1 && s.tray.length === 4, "home-bay: both crates accepted once, four pods in the wells: " + s.tray.length);
-  { const total = p.regions.report.gathered; cur.push({ report: true, rows: p.regions.report.crates.map((r) => [r.lead, r.pods, r.text, r.reach]), gathered: [total.e, total.d, total.s, total.top], probe: p.regions.report.probe, world: p.regions.report.world }); }
+  { const total = p.regions.report.gathered; cur.push({ report: true, rows: p.regions.report.crates.map((r) => [r.pods, r.more, r.reach]), gathered: [total.e, total.d, total.s, total.top], probe: p.regions.report.probe, goal: p.regions.report.goal?.text ?? null }); }
   u = await hpress("confirm", 600); const need = s.tray.find((q) => !q.idd) ?? s.tray[0];
   expect(u.screen === "pods" && u.view === "collection" && (await page.evaluate(() => window.__st.UI.pods.cur)) === need.id, "home-bay: ✓ on the report lands on Pods' collection with the ring on the pod that most needs the player: " + JSON.stringify(u));
   u = await hpress("back", 500); expect(u.screen === "home", "home-bay: ← from the collection is Home: " + JSON.stringify(u));

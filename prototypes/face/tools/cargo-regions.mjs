@@ -37,17 +37,12 @@ export function departures(log, spec, frame, state = "bay") {
   // each container is its own region (cargo.c names them stores.<material>): each logged id is its place or its shadow; no other stores id is legal
   for (const k of Object.keys(R.stores.places)) { const p = R.stores.places[k], sh = [p[0] + R.stores.shadow.at[0], p[1] + R.stores.shadow.at[1], ...R.stores.shadow.size]; const both = union(p, sh); for (const r of art(`stores.${k}`)) must(within(r.rect, both) && r.rect[0] === p[0], `the ${k} container and its shadow ${r.rect} are not inside ${both} (its place ${p}, its shadow ${sh})`); }
   for (const r of regions) if (/^stores(\.|$)/.test(r.id)) must(Object.hasOwn(R.stores.places, r.id.slice(7)), `${r.id} is not a container of cargo.json (stores.energy, stores.data, stores.essence)`);
-  // the report (R6): the signed plate of its exact height (a multiple of 8, 128 to 288) at y = 64 + 8 × floor((288 − h) / 16), 560 wide; no panel, rule or shadow
+  // the report (R6, T-20261016-144): the signed plate of its exact height (136, 176 or 208) at y = 64 + 8 × floor((288 − h) / 16), 560 wide; no panel, rule, shadow or label
   { const c = R.report.rect, mh = R.report.maxHeight;
-    for (const r of art("report").filter((x) => x.rect[2] === c[2])) must(r.rect[0] === c[0] && r.rect[2] === c[2] && r.rect[3] % 8 === 0 && r.rect[3] >= 128 && r.rect[3] <= mh && r.rect[1] === c[1] + 8 * Math.floor((mh - r.rect[3]) / 16) && r.rect[1] + r.rect[3] <= R.bay.door[1] + R.bay.door[3] - 8, `the report plate ${r.rect} is not the plate of its height at (${c[0]}, y(h)) 560 wide inside the door`);
+    for (const r of art("report").filter((x) => x.rect[2] === c[2])) must(r.rect[0] === c[0] && r.rect[2] === c[2] && [136, 176, 208].includes(r.rect[3]) && r.rect[1] === c[1] + 8 * Math.floor((mh - r.rect[3]) / 16) && r.rect[1] + r.rect[3] <= R.bay.door[1] + R.bay.door[3] - 8, `the report plate ${r.rect} is not the plate of its height at (${c[0]}, y(h)) 560 wide inside the door`);
     for (const r of got("report", "chrome")) out.push(`the report ${r.rect}: the plate is painted, the face draws no fill, edge, rule or shadow`);
-    for (const id of ["report.heading", "report.crate", "report.gathered", "report.probe", "report.world", "report.goal"]) for (const r of got(id)) must(within(r.rect, [c[0], c[1], c[2], mh]), `${id} (${r.layer}) ${r.rect} leaves the plate`); }
-  if (state === "report") {   // GB-R6: the heading stands on the cream label plate, 12 px in from the plate's top and left, the label's words inside it
-    const pl = art("report").find((x) => x.rect[2] === R.report.rect[2]), L = R.report.label, lab = pl && [pl.rect[0] + L.at[0], pl.rect[1] + L.at[1], L.size[0], L.size[1]], hd = got("report.heading", "type")[0];
-    must(!!lab && within(lab, pl.rect), "the cream label plate lies inside the plate");   // the log holds one painted union where the plate and the label are both placed masters
-    must(!!lab && !!hd && within(hd.rect, lab), `the heading ${hd?.rect} leaves its label plate ${lab}`);
-    must(!!lab && lab[0] - pl.rect[0] >= 6 && lab[1] - pl.rect[1] >= 6 && lab[1] + lab[3] + 12 <= pl.rect[1] + R.report.rows.first, "the label lies 6 px inside the plate and ends 12 px above the first row (fix 2 F3)");
-  }
+    for (const id of ["report.crate", "report.pods", "report.reach", "report.gathered", "report.probe", "report.goal", "report.meanwhile"]) for (const r of got(id)) must(within(r.rect, [c[0], c[1], c[2], mh]), `${id} (${r.layer}) ${r.rect} leaves the plate`); }
+  must(state !== "report" || got("report.heading").length === 0, "the report has no heading and no label plate");
   must(state === "report" || got("report").length === 0, "the report plate shows only in the report");
   must(state === "opening" || (got("crate").length === 0 && got("travel").length === 0 && (state === "arrival" || got("ribbon").length === 0)), "the ribbon (also in the arrival), the crate and the travelling pods show only in the opening");
   must(state === "opening" || !regions.some((r) => /^stores(\.|$)/.test(r.id)), "the containers show only in the opening");
@@ -56,7 +51,7 @@ export function departures(log, spec, frame, state = "bay") {
   // what each state must draw (a node with no size is not in the log, so a region that vanished is found here)
   must(state === "arrival" || art("rack").some((r) => eq(r.rect, R.rack.rect)), "the rack insert is drawn");   // the arrival draws the apron in its place during the show and the rack at the choice (tested there)
   if (state === "opening") must(got("crate").length >= 1, "the crate closer is drawn");
-  if (state === "report") must(art("report").filter((x) => x.rect[2] === R.report.rect[2]).length === 1 && got("report.heading", "type").length === 1, "the report plate is drawn");
+  if (state === "report") must(art("report").filter((x) => x.rect[2] === R.report.rect[2]).length === 1, "the report plate is drawn");
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;
 }

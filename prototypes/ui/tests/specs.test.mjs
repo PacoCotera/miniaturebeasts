@@ -662,14 +662,14 @@ test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate o
   { const S = R.stores, ink = (m) => [S.places[m][0] + S.ink[m][0], S.places[m][0] + S.ink[m][1]], gaps = [ink("energy") && R.stores.closerInk[0] - ink("energy")[1], ink("data")[0] - S.closerInk[1], ink("essence")[0] - ink("data")[1]];
     gaps.forEach((g) => assert.ok(g >= 24 && g <= 48, `the ink gap ${g} is 24 to 48`)); assert.equal(S.places.data[0] - (R.crate.rect[0] + R.crate.rect[2]), 8, "8 px from the closer's rect"); assert.equal(R.crate.rect[0] - (S.places.energy[0] + S.size[0]), 8); assert.equal(S.places.essence[0] - (S.places.data[0] + S.size[0]), 8); }
   assert.ok(inside(R.crate.rect, R.travel.rect) && wells.every((w) => inside(w, R.travel.rect)), "the travel holds the crate and the wells"); assert.ok(R.crate.rect[1] + R.crate.rect[3] < R.rack.rect[1]);
-  // the report (R6): a plate set into the door, 128 to 288 tall by 8, centred on the door's middle; its fullest is 288 at y 64, the bottom 352 inside the door (360)
-  const hOf = (rows, worldLines, goalRows) => 104 + 24 * rows + (worldLines ? 32 + 24 * worldLines : 0) + (goalRows ? 8 + 24 * goalRows : 0);
-  assert.equal(hOf(4, 1, 1), 288); assert.equal(R.report.maxHeight, 288); assert.deepEqual(R.report.rect, [232, 64, 560, 288]); is(R.report.rect, "report", P); assert.equal(R.report.rect[0] + R.report.rect[2] / 2, 512);
-  assert.equal(R.report.world.gapAbove, 8); assert.equal(R.report.gathered.gapAbove, 8); assert.equal(R.report.goal.gapAbove, 8, "the same rhythm");
-  for (let h = 128; h <= 288; h += 8) { const y = 64 + 8 * Math.floor((288 - h) / 16); assert.ok(y % 8 === 0 && y >= R.report.rect[1] && y + h <= R.bay.door[1] + R.bay.door[3] - 8, `h ${h} at y ${y} sits on the door, 8 px inside its bottom`); assert.ok(Math.abs((y + h / 2) - 208) <= 8, `h ${h} centred on the door's middle (208)`); }
-  assert.equal(R.report.rect[1] + R.report.rect[3], R.report.full.bottom); assert.equal(R.report.full.bottom, 352); assert.equal(R.rack.rect[1] - R.report.full.bottom, 32);
-  assert.equal(R.report.full.heading, R.report.rect[1] + R.report.heading.at[1]); assert.equal(R.report.full.crates[0], R.report.rect[1] + R.report.rows.first); assert.equal(R.report.full.goal + 24 + 0, R.report.full.bottom - 16, "the goal row ends 16 px above the bottom: the pad");
-  assert.deepEqual(R.report.full.crates.map((y) => y - R.report.rect[1]), [56, 80, 104]); assert.equal(R.report.full.gathered, R.report.full.crates.at(-1) + 24 + 8); assert.equal(R.report.full.probe, R.report.full.gathered + 24); assert.equal(R.report.full.world, R.report.full.probe + 24 + 8); assert.equal(R.report.full.lines[0], R.report.full.world + 24); assert.equal(R.report.full.goal, R.report.full.lines[0] + 24 + 8);
+  // the report (R6, T-20261016-144): a plate set into the door, 136, 176 or 208 tall, centred on the door's middle; its fullest is 208 at y 104, the bottom 312 inside the door (360)
+  const hOf = (goal, read) => 16 + 64 + 16 + 24 + 16 + (goal ? 24 + 16 : 0) + (goal && read ? 32 : 0);
+  assert.deepEqual([hOf(0, 0), hOf(1, 0), hOf(1, 1)], [136, 176, 208]); assert.equal(R.report.maxHeight, 288); assert.deepEqual(R.report.rect, [232, 64, 560, 288]); is(R.report.rect, "report", P); assert.equal(R.report.rect[0] + R.report.rect[2] / 2, 512);
+  assert.deepEqual(R.report.crates.tile, [160, 64]); assert.equal(R.report.crates.pitch, 184); assert.deepEqual(R.report.crates.at, [16, 16]); assert.equal(R.report.crates.max, 3); assert.equal(16 + 184 * 2 + 160 + 16, 560, "three tiles fill the card's width with the pad");
+  assert.equal(R.report.gathered.y, 16 + 64 + 16); assert.equal(R.report.goal.y, R.report.gathered.y + 24 + 16); assert.equal(R.report.meanwhile.y, R.report.goal.y + 32, "the read sits 8 px into the goal row's pad");
+  for (const h of [136, 176, 208]) { const y = 64 + 8 * Math.floor((288 - h) / 16); assert.ok(y % 8 === 0 && y >= R.report.rect[1] && y + h <= R.bay.door[1] + R.bay.door[3] - 8, `h ${h} at y ${y} sits on the door, 8 px inside its bottom`); assert.ok(Math.abs((y + h / 2) - 208) <= 8, `h ${h} centred on the door's middle (208)`); }
+  assert.equal(R.report.heading, undefined, "no heading"); assert.equal(R.report.label, undefined, "no label plate"); assert.equal(R.report.world, undefined, "no world lines"); assert.equal(cg.strings.report, undefined, "no sentence on the card but the goal's");
+  for (const c of Object.values(cg.colours.report).filter((v) => typeof v === "string")) assert.ok(!/amber|orange|gold|bark/.test(c), "no amber on the card: " + c);
   assert.equal(R.report.colours, undefined); assert.equal(cg.colours.report.contrast.bone, 7); assert.equal(cg.colours.report.contrast.mist, 4.5); assert.equal(cg.colours.bay, undefined, "the bay is painted"); assert.equal(cg.colours.rack, undefined, "the rack is painted");
   // the stage ground shows only its seams (16 px or less): beside the bay, between it and the rack, under the rack
   for (const g of [R.bay.rect[0], 1024 - (R.bay.rect[0] + R.bay.rect[2]), R.rack.rect[1] - (R.bay.rect[1] + R.bay.rect[3]), R.bay.rect[1] - 40, 562 - (R.rack.rect[1] + R.rack.rect[3])]) assert.ok(g <= 16, "a seam of " + g);
@@ -941,11 +941,9 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
   assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[364, 458, 216, 72\], switch \[620, 90, 320, 136\], slot \[620, 266, 320, 256\]/)?.length, 1, "the rings from the spec");
 });
 
-test("GB-R6: the Cargo report's heading is `ink` on a cream label plate that lies at least 6 px inside the plate and ends at least 12 px above the first row, and the report door is the report slice", () => {
-  const R = rd("../specs/station/cargo.json"), rp = R.regions.report, L = rp.label;
-  assert.equal(R.colours.report.heading, "ink"); assert.equal(L.slice, "label-plate-cream-216x32"); assert.deepEqual(L.size, [216, 32]);
-  assert.ok(L.at[0] >= 6 && L.at[1] >= 6, "inside the plate by F3"); assert.ok(L.at[1] + L.size[1] + 12 <= rp.rows.first, "12 px above the first row");
-  assert.equal(rp.heading.at[0], 24); assert.ok(rp.heading.at[0] >= L.at[0] && rp.heading.at[0] + 192 <= L.at[0] + L.size[0], "the heading's 191 px lies on the label");
+test("GB-R6 (T-20261016-144): the Cargo report has no heading and no cream label plate, and the report door is the report slice", () => {
+  const R = rd("../specs/station/cargo.json");
+  assert.equal(R.regions.report.label, undefined); assert.equal(R.regions.report.heading, undefined); assert.equal(R.colours.report.heading, undefined);
   assert.equal(R.regions.bay.slices.report, "cargo-bay-shut-report-976x304");
 });
 

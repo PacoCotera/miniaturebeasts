@@ -11,12 +11,11 @@ import { shellSpecies } from "./pods-props.mjs";
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
-// The reach of a crate's walk in the words of the spec (strings.report.reach): thirds of the land, "all" when the whole of it; a crate with no map says nothing.
-export const reachWord = (spec, c) => { const band = S.reachBand(c); return band ? spec.strings.report.reach[band] : ""; };
+// The reach of a crate's walk as a step 0 to 4 (cargo.json regions.report.crates.reach): thirds of the land, 4 when the whole of it; 0 for a crate with no map (no map icon, no pips).
+const BANDS = ["", "underThird", "underTwoThirds", "underAll", "all"];
+export const reachStep = (c) => BANDS.indexOf(S.reachBand(c));
 // A crate's ribbon: a developer crate reads like any later crate and is not counted; the ordinal counts walk crates only (first, second, third; a walk crate past the third, never from play, reads later). `walk`: the crate's place among the walk crates opened, from 0.
 export const ribbonOf = (spec, c, walk) => (c.dev ? spec.strings.ribbon.later : [spec.strings.ribbon.first, spec.strings.ribbon.second, spec.strings.ribbon.third][walk] ?? spec.strings.ribbon.later);
-// A report row's lead, by the same ordinal: First, Second, Third crate, Another crate (a developer crate is uncounted: Another crate).
-export const leadOf = (spec, c, walk) => (c.dev ? spec.strings.report.laterCrate : spec.strings.report.crate[walk] ?? spec.strings.report.laterCrate);
 // The crates ready to open in the bay: the walk crates while docked, at most the bay's three shown.
 export const walkCrates = (st, sv, docked) => (docked ? S.bayCrates(st, sv) : []);
 
@@ -53,7 +52,7 @@ export function cargoBuild(m, spec, home, frame) {
       crates: run.crates.map((k) => ({ ribbon: k.ribbon, sealed: slice("sealed"), opening: slice("opening"), open: slice("open"), shadow: slot(R.crate.shadow.slice, R.crate.shadow.rect.slice(2)), storeShadow: slot(R.stores.shadow.slice, R.stores.shadow.size), stores: ["energy", "data", "essence"].filter((m, i) => k.gained["eds"[i]] > 0).map((m) => ph(`cargo-${m}-${R.stores.size.join("x")}`, R.stores.size)), pods: k.pods.map((p) => ({ picture: podPic(anyPod(p.id)), well: p.well })) })),
     };
   }
-  if (state === "report") regions.report = reportOf(run.report, spec, ph, slot);
+  if (state === "report") regions.report = reportOf(run.report, spec, ph, slot, req);
   if (state === "arrival") regions.arrival = arrivalRegion(m, spec, ph, slot, req);
 
   // the line: the action, the subject, the notice and the way back of the state (cargo.json line)
@@ -73,27 +72,21 @@ export function cargoBuild(m, spec, home, frame) {
   return { props, line, requests, need };
 }
 
-// The report card's rows as the face sets them, from what the opening made (c.run.report, in words): the heading, one row a crate, what was gathered, the Probe, and the world's turn.
-// The card never passes maxHeight (cargo.json regions.report.height): when the goal rows would take it past, the world lines drop from the last until it fits.
-function trimWorld(rp, spec) {
-  if (!rp.world) return null; const R = spec.regions.report, rowH = R.rows.h, goal = rp.goal ? R.goal.gapAbove + rowH * (1 + (rp.meanwhile ? 1 : 0)) : 0;
-  const base = R.rows.first + R.gathered.gapAbove + rowH + R.pad, fixed = base + rowH * (rp.crates.length + (rp.probe ? 1 : 0)) + goal;
-  let n = rp.world.lines.length; while (n > 0 && fixed + R.world.gapAbove + rowH + rowH * n > R.maxHeight) n--;
-  return n ? { lead: rp.world.lead, lines: rp.world.lines.slice(0, n) } : null;
+// The report card as the face sets it, from what the opening made (c.run.report): a tile for each of the first three crates (its pods, its reach step), what was gathered, the Probe's plates and cost, the goal and the read to suggest.
+// The plate's height (cargo.json regions.report.height) is 136, 176 or 208, so the signed plate of that exact height is the one drawn; the face computes the same from the props it is given.
+export function reportHeight(rp) {
+  return 16 + 64 + 16 + 24 + 16 + (rp.goal ? 24 + 16 : 0) + (rp.goal && rp.meanwhile ? 32 : 0);
 }
-// The plate's height (cargo.json regions.report.height): a multiple of 8, from 128 to 288, so the signed plate of that exact height is the one drawn. The face computes the same from the props it is given.
-export function reportHeight(rp, world, spec) {
-  const R = spec.regions.report, rowH = R.rows.h, goal = rp.goal ? R.goal.gapAbove + rowH * (1 + (rp.meanwhile ? 1 : 0)) : 0;
-  return R.rows.first + R.gathered.gapAbove + rowH + R.pad + rowH * (rp.crates.length + (rp.probe ? 1 : 0)) + (world ? R.world.gapAbove + rowH + rowH * world.lines.length : 0) + goal;
-}
-function reportOf(rp, spec, ph, slot) {
-  const S1 = spec.regions.report, icon = S1.crates.podIcon, world = trimWorld(rp, spec), h = Math.min(reportHeight(rp, world, spec), S1.maxHeight);
-  const podIcon = ph(`icon-pod-${icon}`, [icon, icon]), shieldIcon = ph(`icon-shield-${S1.probe.plateIcon}`, [S1.probe.plateIcon, S1.probe.plateIcon]);
+function reportOf(rp, spec, ph, slot, req) {
+  const S1 = spec.regions.report, h = reportHeight(rp), icon = S1.crates.pods.icon, pl = S1.probe.plateIcon;
   return {
-    plate: slot(S1.slice.replace("{h}", h), [S1.rect[2], h], "the signed report plate of this height (cargo.json report)"), label: slot(S1.label.slice, S1.label.size, "the cream label plate (GB-R6)"), heading: rp.heading, podIcon, shieldIcon,
-    crates: rp.crates.map((r) => ({ lead: r.lead, pods: r.pods, text: r.text, reach: r.reach })),
-    gathered: rp.gathered, probe: rp.probe, world,
-    goal: rp.goal ? { lead: spec.strings.report.goal.lead, ...rp.goal } : null, meanwhile: rp.goal && rp.meanwhile ? { lead: spec.strings.report.goal.meanwhileLead, ...rp.meanwhile } : null,
+    plate: slot(S1.slice.replace("{h}", h), [S1.rect[2], h], "the signed report plate of this height (cargo.json report)"),
+    crate: slot(S1.crates.crate.slice, S1.crates.crate.size, "the walk crate's picture (T-20261016-149)"), map: slot(S1.crates.reach.map.slice, S1.crates.reach.map.size, "the map icon (T-20261016-149)"),
+    podIcon: ph(`icon-pod-${icon}`, [icon, icon]), emptyPod: ph(`icon-pod-empty-${icon}`, [icon, icon], true), shieldIcon: ph(`icon-shield-${pl}`, [pl, pl]), probeIcon: ph(`icon-probe-${S1.probe.icon[0]}`, S1.probe.icon), arrow: ph(`icon-arrow-${S1.goal.arrow[0]}`, S1.goal.arrow),
+    crates: rp.crates.map((r) => ({ pods: r.pods, more: r.more ? "+" + r.more : "", reach: r.reach })),
+    gathered: rp.gathered, probe: rp.probe ? { plates: rp.probe.plates, spent: rp.probe.spent ? String(rp.probe.spent) : "" } : null,
+    goal: rp.goal ?? null,
+    meanwhile: rp.goal && rp.meanwhile ? { emblem: req({ kind: "emblem", id: `emblem:${rp.meanwhile.chapter}:unread:${S1.meanwhile.emblem[0]}`, chapter: rp.meanwhile.chapter, state: "unread" }), glint: rp.meanwhile.glint ? req({ kind: "star", id: "star:12" }) : "", price: rp.meanwhile.price } : null,
   };
 }
 

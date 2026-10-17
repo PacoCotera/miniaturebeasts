@@ -50,18 +50,23 @@
    "autoClose": { "at": 2500, "rule": "an empty trip and a broken Probe have no choice: at 2500 the arrival dithers back (frame.json idle wake transition, 180 ms) to the screen it came over" },
    "skip": "any key during the show cuts to the show's end (✓, ← or the pad); a room key is Later, then it acts; reduced motion: every beat is a cut on its time, a mibi appears as a cut with no hop"
   },
-  "report": { "rect": [232, 64, 560, 288], "maxHeight": 288, "build": "reportCard", "inStates": ["report"], "pad": 16, "y": "64 + 8 × floor((288 − h) / 16)", "slice": "cargo-report-plate-560x{h}", "heights": "128 to 288 by 8", "plate": "a plate set into the door's plain sage panel (GB-R6), the fix 2 kit's construction: a 1 px hairline, a 5 px sage bezel lit top left, the inner shade, a lit lip; the heading on a cream label plate (AR5r): the rim and shade are painted; the face draws no fill, edge, top rule or shadow", "noDigits": "but beside a material icon",
-   "label": { "slice": "label-plate-cream-216x32", "at": [12, 12], "size": [216, 32], "text": "heading", "textAt": "+12 inside the label, centred on its height" },
-   "heading": { "at": [24, 12], "h": 32, "px": 20, "capTop": 9, "baseline": 23 },
-   "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "capTop": 6, "baseline": 18, "lead": [16, 128], "content": 152, "px": 16 },
-   "crates": { "max": 3, "podIcon": 16, "podPitch": 20, "podMax": 8, "reachAt": 328, "rows": "the first three crates opened, one row each; later crates get no row; Gathered adds up every crate" },
-   "gathered": { "gapAbove": 8, "icon": 16, "gap": 4, "between": 24 },
-   "probe": { "plateIcon": 16, "platePitch": 20, "from": "the dock's mend { free, paid, broke } (state.mjs dockKey), kept in Cargo's UI state from the dock until the report: free or broke (a break is mended free) reads strings.report.mendedFree, paid reads strings.report.mendedPaid with ⚡ and the plates paid for; no mend, no row. It is not in the save: a reload loses it, and the report then has no Probe row" },
-   "world": { "gapAbove": 8, "max": 3, "bullet": [16, 10, 4, 4], "lineAt": 32, "from": "the last walk crate opened (dev crates carry no lines)" },
-   "reach": { "thresholds": "r = explored/of: below 1/3 underThird; 1/3 to below 2/3 underTwoThirds; 2/3 to below 1 underAll; explored ≥ of all; of = 0 (a crate with no map) says nothing" },
-   "goal": { "gapAbove": 8, "rowH": 24, "lead": [16, 128], "content": [152, 392], "when": "goalKey (frame.json strings.goal) is not null, computed after the crates", "meanwhile": "directly under (+24), only when the step is goOut, findPod, bud or short and goalKey's meanwhile is not null: strings.report.goal.meanwhileLead, then strings.report.goal.meanwhile (or .meanwhileGlint) with {species} and {chapter}, then the ◆ icon and the read's price", "text": "the goal row's content is the same strings.goal.step.* words and icons as Home's; a name too wide for 392 px with its icons falls back to the nameless sibling (props `plain`)" },
-   "height": "104 + 24 × (crates + probe row) + (world lines ? 32 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), never past maxHeight 288 (a multiple of 8, from 128): when the plate would pass 288 the world lines drop from the last until it fits",
-   "full": { "heading": 76, "crates": [120, 144, 168], "gathered": 200, "probe": 224, "world": 256, "lines": [280], "goal": 312, "bottom": 352, "at": "h 288, y 64" }
+  "report": {
+   "rect": [232, 64, 560, 288], "maxHeight": 288, "build": "reportCard", "inStates": ["report"], "pad": 16, "y": "64 + 8 × floor((288 − h) / 16)", "slice": "cargo-report-plate-560x{h}", "heights": "136, 176 or 208",
+   "plate": "a plate set into the door's plain sage panel (GB-R6), the fix 2 kit's construction: a 1 px hairline, a 5 px sage bezel lit top left, the inner shade, a lit lip; no heading and no label plate (T-20261016-144); the rim and shade are painted; the face draws no fill, edge, top rule or shadow",
+   "noDigits": "but beside a material icon, a pod icon or a price icon",
+   "words": "at most 6 on the card, the goal line's (frame.json strings.goal.step.*); everything else is a picture or a mark; a figure stands only beside an icon",
+   "rows": { "h": 24, "px": 16, "iconAt": 4 },
+   "crates": { "max": 3, "at": [16, 16], "pitch": 184, "tile": [160, 64], "crate": { "slice": "cargo-crate-64x64", "size": [64, 64], "at": [0, 0] },
+    "pods": { "at": [72, 8], "pitch": 20, "icon": 16, "perRow": 4, "max": 8, "past": 7, "more": "past 8, 7 icons and +n, n = pods − 7, a figure beside the pod icons at the 8th place", "empty": "no pods: one dashed empty pod outline at the first place" },
+    "reach": { "map": { "slice": "icon-map-14x12", "size": [14, 12], "at": [72, 48] }, "pips": { "at": [92, 50], "size": [12, 8], "pitch": 14, "max": 4 }, "thresholds": "r = explored/of: below 1/3 one pip; 1/3 to below 2/3 two; 2/3 to below 1 three; explored ≥ of all four; of = 0 (a crate with no map): no map, no pips" },
+    "rows": "the first three walk crates opened, one tile each; later crates get no tile; Gathered adds up every crate" },
+   "gathered": { "y": 96, "at": 16, "pitch": 72, "icon": 16, "gap": 4, "note": "Energy, Data and Essence icons, each with +n beside it" },
+   "probe": { "at": 320, "icon": [16, 16], "plateIcon": 16, "platePitch": 20, "paid": "⚡ and the Energy the plates cost, only when paid; mended free, the plates alone",
+    "from": "the dock's mend { free, paid, broke, spent } (state.mjs dockKey), kept in Cargo's UI state from the dock until the report: one plate icon for each plate mended, free or paid (a break is mended free); no mend, nothing at x 320. It is not in the save: a reload loses it, and the report then has no Probe" },
+   "goal": { "y": 136, "arrowAt": 16, "arrow": [16, 16], "textAt": 40, "content": [40, 504], "when": "goalKey (frame.json strings.goal) is not null, computed after the crates",
+    "text": "the goal row's content is the same strings.goal.step.* words and icons as Home's; a name too wide for its room with its icons falls back to the nameless sibling (props `plain`)" },
+   "meanwhile": { "y": 168, "podAt": 40, "emblemAt": 64, "emblem": [24, 24], "priceAt": 96, "glintAt": [16, -4], "when": "only when the goal's step is goOut, findPod, bud or short and goalKey's meanwhile is not null: the pod icon, the chapter's emblem (rail-emblem-{chapter}-unread-24x24; the star glints at its corner when the read is a glint) and the ◆ icon with the read's price" },
+   "height": "16 + 64 + 16 + 24 + 16 + (goal ? 24 + 16 : 0) + (meanwhile ? 32 : 0): 136 without a goal, 176 with one, 208 with the read too; it never passes 208 ≤ maxHeight 288"
   }
  },
  "overlays": { "panel": { "spec": "panel.json", "id": "dock", "from": "the Companion's dock, at the show's end (regions.arrival.end): the strip form", "closes": "Later, ← or a room key: the arrival dithers back to the screen it came over, as it was; Open the bay: the strip goes and the opening runs" } },
@@ -118,7 +123,7 @@
  "colours": {
   "crate": { "body": "metal", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },
   "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" },
-  "report": { "heading": "ink", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel", "contrast": { "bone": 7, "mist": 4.5, "note": "measured on the plate floor behind each row box, at 1×" } }
+  "report": { "line": "bone", "figure": "bone", "pipLit": "mint", "pipDim": "bevel", "contrast": { "bone": 7, "mist": 4.5, "note": "measured on the plate floor behind each row box, at 1×" } }
  },
  "strings": {
   "title": "Cargo",
@@ -128,22 +133,22 @@
   "newPods": { "one": "See the new pod", "few": "See the new pods" },
   "done": "Done",
   "subjects": { "crates": "{count} sealed crates", "cratesOne": "a sealed crate", "empty": "the bay is empty", "away": "the bay is shut", "waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well", "opening": "the bay is opening", "report": "what came home" },
-  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); a developer crate reads like any later crate (Another crate home) and is not counted; the land's reach is on the report card" },
-  "report": {
-   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
-   "reach": { "underThird": "some of the land explored", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
-   "gathered": "Gathered", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned", "goal": { "lead": "Next", "meanwhileLead": "While you wait", "meanwhile": "read {chapter} on the {species} pod", "meanwhileGlint": "{chapter} glints on the {species} pod", "content": "frame.json strings.goal.step.*, the same words and icons as Home's" }
-  }
+  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); a developer crate reads like any later crate (Another crate home) and is not counted; the land's reach is on the report card" }
  },
  "placeholders": {
   "bay": "the signed masters cargo-bay-992x320 and cargo-bay-shut-976x304 (masters-pods)",
   "rack": "cargo-rack-992x168: the insert; draws nothing until placed",
   "report": "cargo-report-plate-560x128 to 560x288 by 8; draws nothing until placed",
-  "reportDoor": "cargo-bay-shut-report-976x304 and label-plate-cream-216x32: draw nothing until signed (rule 4)",
+  "reportDoor": "cargo-bay-shut-report-976x304: draws nothing until signed (rule 4); the report has no label plate (T-20261016-144)",
   "shadows": "crate-shadow-256x24, crate-shadow-432x24 and cargo-store-shadow-72x21: draw nothing until placed",
   "pod": "88×112, the collection class",
   "ribbon": "608×40, the ribbon word",
   "icon-pod-16": "the report's Pod icon, 16×16: the signed master, shared with the Probe bench (masters-pods 5f04d417)",
-  "icon-shield-16": "the report's Shield icon, 16×16, one per plate mended (a lost plate is not shown): the signed master, shared with the Probe bench (masters-pods 5f04d417)"
+  "icon-shield-16": "the report's Shield icon, 16×16, one per plate mended (a lost plate is not shown): the signed master, shared with the Probe bench (masters-pods 5f04d417)",
+   "cargo-crate-64x64": "the report's crate tile picture, 64×64: the signed master (masters-pods 09edac93), painted at 64 from the bay's crate, not scaled",
+   "icon-map-14x12": "the report's map icon beside the reach pips, 14×12: the signed master (masters-pods 09edac93)",
+   "icon-pod-empty-16": "the report's dashed empty pod outline, 16×16, for a crate that gave no pods: a labelled placeholder until its master",
+   "icon-probe-16": "the report's Probe icon, 16×16, before the plates mended: a labelled placeholder until its master",
+   "icon-arrow-16": "the report's arrow mark, 16×16, bone, before the goal words: a labelled placeholder until its master"
  }
 }

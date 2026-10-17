@@ -150,86 +150,71 @@ static void build_opening(int k, int lt) {
   }
 }
 
-/* ---- the report card ---- */
+/* ---- the report card (T-20261016-144): pictures, figures beside icons, and the goal line; no heading, no leads ---- */
 static void text_row(const char *id, const char *s, int x, int rowY, const char *colour, int px, int maxw) {
   char fit[V_STR]; v_clip(s, maxw, px, fit, sizeof fit);
   v_text(id, fit, x, rowY + v_fdiv(ci("regions.report.rows.h", 24) - v_cap(px), 2), v_measure(fit, px), px, colour);
 }
+/* an icon and its figure beside it: the icon at the row's iconAt, the figure after a gap; returns the x after the figure */
+static int icon_figure(const char *id, const char *icon, const char *fig, int x, int rowY, int px, const char *colour) {
+  int ic = ci("regions.report.gathered.icon", 16), gap = ci("regions.report.gathered.gap", 4);
+  v_name("report.gathered"); v_sprite(v_fmt("%s.icon", id), icon, x, rowY + ci("regions.report.rows.iconAt", 4), ic, ic);
+  int tw = v_measure(fig, px); v_region("report.gathered", LAYER_TYPE); text_row(v_fmt("%s.fig", id), fig, x + ic + gap, rowY, colour, px, tw + 1);
+  return x + ic + gap + tw;
+}
 static void build_reportCard(void) {
-  int r[4]; crect("regions.report.rect", r); int pad = ci("regions.report.pad", 16), rowH = ci("regions.report.rows.h", 24), px = ci("regions.report.rows.px", 16);
-  int nc = v_plen("regions.report.crates"), hasProbe = *v_pstr("regions.report.probe.lead") != 0, nl = v_plen("regions.report.world.lines"), hasWorld = nl > 0;
-  if (nl > ci("regions.report.world.max", 3)) nl = ci("regions.report.world.max", 3);
-  int gapG = ci("regions.report.gathered.gapAbove", 8), gapW = ci("regions.report.world.gapAbove", 16);
-  int base = ci("regions.report.rows.first", 56) + gapG + rowH + pad, worldExtra = gapW + rowH;   /* the card: its first row, the gap above Gathered, Gathered, the pad = 104; the world: its gap and its heading = 40 (cargo.json regions.report.height) */
-  /* the goal rows (cargo.json regions.report.goal): the last rows of the card, 8 px below the row above, and the meanwhile row directly under; the card grows by 8 + 24 x (1 + meanwhile), never past maxHeight, and
-     the world lines drop from the last until it fits (the view trims them too; the face never draws past the card) */
-  int hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.text") != 0, gapGoal = ci("regions.report.goal.gapAbove", 8), maxH = ci("regions.report.maxHeight", 288);
-  int goalExtra = hasGoal ? gapGoal + rowH * (1 + (hasMw ? 1 : 0)) : 0;
-  int h = base + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? worldExtra + rowH * nl : 0) + goalExtra;
-  while (h > maxH && nl > 0) { nl--; h -= rowH; if (nl == 0) { h -= worldExtra; hasWorld = 0; } }
-  if (h > maxH) h = maxH;
+  int r[4]; crect("regions.report.rect", r); int rowH = ci("regions.report.rows.h", 24), px = ci("regions.report.rows.px", 16), maxH = ci("regions.report.maxHeight", 288), pad = ci("regions.report.pad", 16);
+  int nc = v_plen("regions.report.crates"), hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.price") != 0;
+  int gy = ci("regions.report.gathered.y", 96), goalY = ci("regions.report.goal.y", 136), mwY = ci("regions.report.meanwhile.y", 168);
+  /* the card: the pad, the tiles' 64, a gap, the gathered row, the pad; the goal row and its gap; the read's 32: 136, 176 or 208 (cargo.json regions.report.height) */
+  int h = pad + ck("regions.report.crates.tile", 1) + 16 + rowH + pad + (hasGoal ? rowH + 16 : 0) + (hasMw ? 32 : 0); if (h > maxH) h = maxH;
   /* the plate: the signed picture of this exact height, set into the door, centred on the door's middle (y = 64 + 8 × floor((288 − h) / 16)); the rim and shade are painted, so the face draws no fill, edge, rule or shadow */
-  int x0 = r[0], y0 = r[1] + 8 * ((maxH - h) / 16), cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
+  int x0 = r[0], y0 = r[1] + 8 * ((maxH - h) / 16);
   v_region("report", LAYER_ART); v_name("report"); v_sprite("report.plate", v_pstr("regions.report.plate"), x0, y0, r[2], h);
-  v_sprite("report.label", v_pstr("regions.report.label"), x0 + ck("regions.report.label.at", 0), y0 + ck("regions.report.label.at", 1), ck("regions.report.label.size", 0), ck("regions.report.label.size", 1));   /* GB-R6: the heading's cream label plate, 1:1 inside the plate */
-  int hy = y0 + ck("regions.report.heading.at", 1), hpx = ci("regions.report.heading.px", 20), hh = ci("regions.report.heading.h", 32), leadW = ck("regions.report.rows.lead", 1);
-  const char *lead = colr("colours.report.lead"), *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *heading = colr("colours.report.heading");
-  v_region("report.heading", LAYER_TYPE); { const char *hd = v_pstr("regions.report.heading"); v_text("report.heading", hd, x0 + ck("regions.report.heading.at", 0), hy + v_fdiv(hh - v_cap(hpx), 2), v_measure(hd, hpx), hpx, heading); }
-  int y, podPitch = ci("regions.report.crates.podPitch", 20), podIcon = ci("regions.report.crates.podIcon", 16), iconAt = ci("regions.report.rows.iconAt", 4);
-  y = y0 + ci("regions.report.rows.first", 56);   /* the first row: 56 under the card's top (the pad, the heading's 32 and 8 more) */
-  for (int i = 0; i < nc; i++, y += rowH) {
+  const char *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *pipLit = colr("colours.report.pipLit"), *pipDim = colr("colours.report.pipDim");   /* colr rings through 8 buffers: read each colour once, before any loop */
+  /* the crates: a tile each, the crate's picture, its pods (4 a row, 8 at most; past 8, 7 and "+n"; none, a dashed empty outline), the map and the reach pips */
+  int pi = ci("regions.report.crates.pods.icon", 16), pp = ci("regions.report.crates.pods.pitch", 20), per = ci("regions.report.crates.pods.perRow", 4);
+  for (int i = 0; i < nc; i++) {
     char P[56]; snprintf(P, sizeof P, "regions.report.crates.%d", i);
-    v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.lead", i), v_pstr(v_fmt("%s.lead", P)), x0 + pad, y, lead, px, leadW);
-    int pods = v_pint(v_fmt("%s.pods", P), 0); const char *txt = v_pstr(v_fmt("%s.text", P)), *rc = v_pstr(v_fmt("%s.reach", P));
-    for (int q = 0; q < pods; q++) { v_name("report.pods"); v_sprite(v_fmt("report.c%d.pod.%d", i, q), v_pstr("regions.report.podIcon"), cx + q * podPitch, y + iconAt, podIcon, podIcon); }
-    if (*txt) { v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.text", i), txt, cx, y, line, px, reach - cx - 8); }
-    if (*rc) { v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.reach", i), rc, reach, y, line, px, x0 + r[2] - pad - reach); }
-  }
-  y += gapG;
-  { v_region("report.gathered", LAYER_TYPE); text_row("report.g.lead", v_pstr("regions.report.gathered.lead"), x0 + pad, y, lead, px, leadW);
-    static const char *K[3] = { "e", "d", "s" }, *N[3] = { "energy", "data", "essence" };
-    int x = cx, ic = ci("regions.report.gathered.icon", 16), gap = ci("regions.report.gathered.gap", 4), between = ci("regions.report.gathered.between", 24);
-    for (int m = 0; m < 3; m++) {
-      const char *figure = v_pstr(v_fmt("regions.report.gathered.%s", K[m])); char a[32]; snprintf(a, sizeof a, "icon:%s:16", N[m]);
-      v_name("report.gathered"); v_sprite(v_fmt("report.g.icon.%d", m), a, x, y + iconAt, ic, ic);
-      v_region("report.gathered", LAYER_TYPE); int tw = v_measure(figure, px); text_row(v_fmt("report.g.%d", m), figure, x + ic + gap, y, fig, px, tw + 1);
-      x += ic + gap + tw + between;
+    int tx = x0 + ck("regions.report.crates.at", 0) + i * ci("regions.report.crates.pitch", 184), ty = y0 + ck("regions.report.crates.at", 1);
+    v_name("report.crate"); v_sprite(v_fmt("report.c%d.crate", i), v_pstr("regions.report.crate"), tx + ck("regions.report.crates.crate.at", 0), ty + ck("regions.report.crates.crate.at", 1), ck("regions.report.crates.crate.size", 0), ck("regions.report.crates.crate.size", 1));
+    int pods = v_pint(v_fmt("%s.pods", P), 0), px0 = tx + ck("regions.report.crates.pods.at", 0), py0 = ty + ck("regions.report.crates.pods.at", 1); const char *more = v_pstr(v_fmt("%s.more", P));
+    if (pods == 0) { v_name("report.pods"); v_sprite(v_fmt("report.c%d.empty", i), v_pstr("regions.report.emptyPod"), px0, py0, pi, pi); }
+    for (int q = 0; q < pods; q++) { v_name("report.pods"); v_sprite(v_fmt("report.c%d.pod.%d", i, q), v_pstr("regions.report.podIcon"), px0 + (q % per) * pp, py0 + (q / per) * pp, pi, pi); }
+    if (*more) { v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.more", i), more, px0 + (pods % per) * pp, py0 + (pods / per) * pp - (rowH - pi) / 2, fig, px, 2 * pp); }
+    int reach = v_pint(v_fmt("%s.reach", P), 0);
+    if (reach > 0) {
+      v_name("report.reach"); v_sprite(v_fmt("report.c%d.map", i), v_pstr("regions.report.map"), tx + ck("regions.report.crates.reach.map.at", 0), ty + ck("regions.report.crates.reach.map.at", 1), ck("regions.report.crates.reach.map.size", 0), ck("regions.report.crates.reach.map.size", 1));
+      int n = ci("regions.report.crates.reach.pips.max", 4); v_region("report.reach", LAYER_CHROME);
+      for (int p = 0; p < n; p++) v_rect(v_fmt("report.c%d.pip.%d", i, p), tx + ck("regions.report.crates.reach.pips.at", 0) + p * ci("regions.report.crates.reach.pips.pitch", 14), ty + ck("regions.report.crates.reach.pips.at", 1), ck("regions.report.crates.reach.pips.size", 0), ck("regions.report.crates.reach.pips.size", 1), p < reach ? pipLit : pipDim);
     }
   }
-  y += rowH;
-  if (hasProbe) {
-    v_region("report.probe", LAYER_TYPE); text_row("report.p.lead", v_pstr("regions.report.probe.lead"), x0 + pad, y, lead, px, leadW);
-    int plates = v_pint("regions.report.probe.plates", 0), pi = ci("regions.report.probe.plateIcon", 16), pp = ci("regions.report.probe.platePitch", 20);
-    for (int q = 0; q < plates; q++) { v_name("report.probe"); v_sprite(v_fmt("report.p.plate.%d", q), v_pstr("regions.report.shieldIcon"), cx + q * pp, y + iconAt, pi, pi); }
-    const char *pt = v_pstr("regions.report.probe.text"); int tx = cx + plates * pp + ci("regions.report.gathered.gap", 4);
-    if (*pt) { v_region("report.probe", LAYER_TYPE); v_run("report.p.text", pt, tx, y + v_fdiv(rowH - v_cap(px), 2), px, line, V_ALIGN_LEFT); }
-    y += rowH;
-  }
-  if (hasWorld) {
-    y += gapW; v_region("report.world", LAYER_TYPE); text_row("report.w.lead", v_pstr("regions.report.world.lead"), x0 + pad, y, lead, px, r[2] - 2 * pad);
-    y += rowH;
-    for (int i = 0; i < nl; i++, y += rowH) {
-      v_region("report.world", LAYER_CHROME); v_rect(v_fmt("report.w.bullet.%d", i), x0 + ck("regions.report.world.bullet", 0), y + ck("regions.report.world.bullet", 1), ck("regions.report.world.bullet", 2), ck("regions.report.world.bullet", 3), colr("colours.report.bullet"));
-      v_region("report.world", LAYER_TYPE); text_row(v_fmt("report.w.%d", i), v_pstr(v_fmt("regions.report.world.lines.%d", i)), x0 + ci("regions.report.world.lineAt", 32), y, line, px, r[2] - ci("regions.report.world.lineAt", 32) - pad);
+  /* gathered: the three materials, an icon and "+n" each, on a 72 px pitch; and the Probe from x 320: its icon, a plate icon for each plate mended, "⚡ n" when it was paid */
+  { int ry = y0 + gy; static const char *K[3] = { "e", "d", "s" }, *N[3] = { "energy", "data", "essence" };
+    for (int m = 0; m < 3; m++) { char a[32]; snprintf(a, sizeof a, "icon:%s:16", N[m]); icon_figure(v_fmt("report.g.%d", m), a, v_pstr(v_fmt("regions.report.gathered.%s", K[m])), x0 + ci("regions.report.gathered.at", 16) + m * ci("regions.report.gathered.pitch", 72), ry, px, fig); }
+    if (v_pint("regions.report.probe.plates", -1) >= 0) {
+      int x = x0 + ci("regions.report.probe.at", 320), pi2 = ci("regions.report.probe.plateIcon", 16), pp2 = ci("regions.report.probe.platePitch", 20), plates = v_pint("regions.report.probe.plates", 0), iy = ry + ci("regions.report.rows.iconAt", 4);
+      v_name("report.probe"); v_sprite("report.p.icon", v_pstr("regions.report.probeIcon"), x, iy, ck("regions.report.probe.icon", 0), ck("regions.report.probe.icon", 1)); x += pp2;
+      for (int q = 0; q < plates; q++, x += pp2) { v_name("report.probe"); v_sprite(v_fmt("report.p.plate.%d", q), v_pstr("regions.report.shieldIcon"), x, iy, pi2, pi2); }
+      const char *sp = v_pstr("regions.report.probe.spent"); if (*sp) { x += ci("regions.report.gathered.gap", 4); icon_figure("report.p.spent", "icon:energy:16", sp, x, ry, px, fig); }
     }
   }
   if (hasGoal) {
-    y += gapGoal; int room = ci("regions.report.goal.content.1", 392);
+    int ry = y0 + goalY, room = ck("regions.report.goal.content", 1), ax = x0 + ci("regions.report.goal.arrowAt", 16), tx = x0 + ci("regions.report.goal.textAt", 40);
+    v_name("report.goal"); v_sprite("report.goal.arrow", v_pstr("regions.report.arrow"), ax, ry + ci("regions.report.rows.iconAt", 4), ck("regions.report.goal.arrow", 0), ck("regions.report.goal.arrow", 1));
     const char *words = v_pstr("regions.report.goal.text"), *icons = v_pstr("regions.report.goal.icons"), *plain = v_pstr("regions.report.goal.plain"); int ni = 0;
     for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;
     if (v_run_width(words, px) + 20 * ni > room && *plain) words = plain;   /* a name too wide: the nameless sibling (the face's own sum) */
-    v_region("report.goal", LAYER_TYPE); text_row("report.goal.lead", v_pstr("regions.report.goal.lead"), x0 + pad, y, lead, px, leadW);
-    text_row("report.goal.text", words, cx, y, line, px, room - 20 * ni);
-    { char fit[V_STR]; v_clip(words, room - 20 * ni, px, fit, sizeof fit); int ix = cx + v_measure(fit, px) + 4;
+    v_region("report.goal", LAYER_TYPE); text_row("report.goal.text", words, tx, ry, line, px, room - 20 * ni);
+    { char fit[V_STR]; v_clip(words, room - 20 * ni, px, fit, sizeof fit); int ix = tx + v_measure(fit, px) + 4;
       for (const char *q = icons; *q; ) { const char *nm = NULL; if (!strncmp(q, "\xe2\x9a\xa1", 3)) nm = "icon:energy:16"; else if (!strncmp(q, "\xe2\x97\x86", 3)) nm = "icon:data:16"; else if (!strncmp(q, "\xe2\x9d\x80", 3)) nm = "icon:essence:16";
-        if (nm) { v_name("report.goal"); v_sprite(v_fmt("report.goal.icon.%d", (int)(ix)), nm, ix, y + iconAt, 16, 16); ix += 20; q += 3; } else q++; } }
-    y += rowH;
-    if (hasMw) {
-      v_region("report.goal", LAYER_TYPE); text_row("report.mw.lead", v_pstr("regions.report.meanwhile.lead"), x0 + pad, y, lead, px, leadW);
-      const char *mt = v_pstr("regions.report.meanwhile.text"), *mp = v_pstr("regions.report.meanwhile.price"); char fit[V_STR]; v_clip(mt, room - 60, px, fit, sizeof fit);
-      text_row("report.mw.text", fit, cx, y, line, px, room - 60); int ix = cx + v_measure(fit, px) + 4;
-      v_name("report.goal"); v_sprite("report.mw.icon", "icon:data:16", ix, y + iconAt, 16, 16);
-      v_region("report.goal", LAYER_TYPE); text_row("report.mw.price", mp, ix + 20, y, fig, px, v_measure(mp, px) + 1);
+        if (nm) { v_name("report.goal"); v_sprite(v_fmt("report.goal.icon.%d", (int)(ix)), nm, ix, ry + ci("regions.report.rows.iconAt", 4), 16, 16); ix += 20; q += 3; } else q++; } }
+    if (hasMw) {   /* while you wait: the pod icon, the chapter's emblem (a star at its corner when the read glints) and ◆ with the read's price */
+      int my = y0 + mwY, ex = x0 + ci("regions.report.meanwhile.emblemAt", 64), ey = my + (rowH - ck("regions.report.meanwhile.emblem", 1)) / 2;
+      v_name("report.meanwhile"); v_sprite("report.mw.pod", v_pstr("regions.report.podIcon"), x0 + ci("regions.report.meanwhile.podAt", 40), my + ci("regions.report.rows.iconAt", 4), 16, 16);
+      v_sprite("report.mw.emblem", v_pstr("regions.report.meanwhile.emblem"), ex, ey, ck("regions.report.meanwhile.emblem", 0), ck("regions.report.meanwhile.emblem", 1));
+      if (*v_pstr("regions.report.meanwhile.glint")) v_sprite("report.mw.glint", v_pstr("regions.report.meanwhile.glint"), ex + ck("regions.report.meanwhile.glintAt", 0), ey + ck("regions.report.meanwhile.glintAt", 1), 12, 12);
+      icon_figure("report.mw.price", "icon:data:16", v_pstr("regions.report.meanwhile.price"), x0 + ci("regions.report.meanwhile.priceAt", 96), my, px, fig);
     }
   }
 }
