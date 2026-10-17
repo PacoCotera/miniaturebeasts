@@ -97,3 +97,19 @@ None of them changes the layout or the read.
 - `specs/station-genome-screen/01`–`07` `.png` read at 1× (1024 × 600 each).
 - `specs/station-genome-screen-spec.md` and `specs/editing-life.md` read in full.
 - `art/references/genome-field/01`, `05` and `06` compared for anything replicated: only the corner-bracket focus.
+
+## The game designer's sign-off (2026-10-17)
+
+The creative director's read of section 2 is confirmed, with one correction. My own review is results/T-20261016-132.md. It agrees on the direction and adds the fixes listed below.
+
+1. **The copy-chosen mark: confirmed, with one precision.** "First copy twice" draws the pair as two identical copies, and the rejected copy's outline is gone. That is the visible proof that the player chose which inherited copy the mibi keeps. **The two copies take the chosen copy's own look colour, not a fixed bone or sand.** A fixed colour would read as a state, and the state is already carried by the lit ring and the notch. The pair should show *which* copy survived.
+2. **The asleep example: corrected.** It must not stay on S03's Legs. The real S03 (Tuikis) frame (station-gate `prototypes/workbench/frames/species-S03.json`) has one switch, `appearance.marking-switch`, in **Coat**, with five sleeping loci behind it (marking layout, extent, scale, orientation and contrast). That is the design doc's own example: "a plain Tuikis still carries the layout, extent, scale, angle and contrast of markings it does not wear". **Fix:** on 01, 03 and 07's example, draw the gate bar on the Coat row after the marking switch's gene, with the markings' genes dark behind it, and show no sleeping genes on Legs. The owner's proof then shows real data, and the best moment on the screen (waking the markings) is one the player can actually have with a Tuikis. This adds to T-20261016-134.
+
+**Fixes from my review that the creative director's list doesn't hold,** for the lead to add to T-134:
+- One star means two things. The glint keeps the house's four-point star; "a first" needs another silhouette.
+- The wish mark: the four-point glint lit in the wish yellow, shown only when a wish is pinned for the species.
+- A refused turn: ▲ ▼ on a pinned drum pulses its mark once toward the Cross mark or the place badge.
+- 05 plays after the T-45 Grow panel, which carries the before and after.
+- 07 lists the sealed mark, and the CD reads it as drawn. If 07 holds it as a drawn mark, my fix 5 is met; if only as a sentence, draw it.
+
+On the CD's fix 2 (the bay leads with the two copies, and the repeated look goes): agreed from game design. The copies are what only the bay can show, and the founder carries the look.
