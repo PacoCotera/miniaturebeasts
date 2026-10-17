@@ -12,7 +12,7 @@ A mibi's genome never changes after birth: no copy, digest or stamp ever moves. 
 **The record:**
 - `mibi.seen = { [chapterId]: key }`, where `key` is the chapter's state as last shown up close: `"r"` when read, plus the marks of its self-changing traits, e.g. `"r:glow=2"`.
 - **Set** when the chapter has been on screen up close: Habitat, the genome tree, or the Library entry for that mibi.
-- **The mint glint shows** when the chapter is read and its key differs from `seen[chapterId]`. That covers newly read and mark moved.
+- **The glint shows** when the chapter is read and its key differs from `seen[chapterId]`. That covers newly read and mark moved. There is one glint, the house **gold** "something new here" (the creative director's correction: lit mint means "changed by you" in the marks register).
 - **Starting state:** a mibi born before this record exists starts with `seen` equal to its current keys, so nothing glints on a save just loaded.
 
 It is one small object per mibi, additive, with no schema bump and nothing on the stamp. The Station owns it; the framework needs nothing new.
@@ -22,7 +22,7 @@ It is one small object per mibi, additive, with no schema bump and nothing on th
 An unread chapter on a resident is not evidence that anything new is there. The house glint means "something new here, never what" (`glint` in `state.mjs`, computed per chapter from looks the species' guide hasn't seen).
 
 - **Unread chapter:** draw its emblem in the unread state (frosted). No glint.
-- **Optional, and true:** the house **gold** glint on an unread chapter only where the code's own rule says so: the species has had that chapter read on some pod, and this mibi carries a look the guide hasn't seen. The same function can be applied to a mibi's genome, but it must not be the mint "changed" glint.
+- **Optional, and true:** the house **gold** glint on an unread chapter only where the code's own rule says so: the species has had that chapter read on some pod, and this mibi carries a look the guide hasn't seen. The same function can be applied to a mibi's genome, and it is the same gold glint as a changed chapter.
 - **Sealed and shut:** the find's emblem, nothing else.
 
 ## 3. Kin to mark softly
@@ -48,7 +48,7 @@ From the record:
 | The glance may show | Never |
 | --- | --- |
 | Emblems read, unread or sealed, from `mibi.read` and `chapter.sealed` | Any look of an unread chapter, as a word, a picture or a colour |
-| The mint "changed" glint per the `seen` rule above (read chapters only) | A hidden copy, or that a hidden copy exists, unless the chapter is read. Once read, "hides a pale copy" is known, but it belongs in Habitat or the tree, not on the glance |
+| The gold glint per the `seen` rule above (read chapters only) | A hidden copy, or that a hidden copy exists, unless the chapter is read. Once read, "hides a pale copy" is known, but it belongs in Habitat or the tree, not on the glance |
 | The gold "new here" glint only by the code's `glint` rule | A forecast as a fact |
 | Kin marks from recorded parents | Kinship numbers, identity scores, or relations inferred from looking alike |
 | The drawn stand from `drawnLooks` (T-190) | A stand look that `drawnLooks` would not give |
