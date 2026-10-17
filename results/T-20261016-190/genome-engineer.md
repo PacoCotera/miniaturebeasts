@@ -10,7 +10,7 @@ Genome engineer, 2026-10-17. This is for the art director to plan layered stands
   - Hidden copies never draw, by construction.
   - A switch that is off draws as off, so sleeping markings stay asleep.
   - A blend draws its bin.
-- **If its chapter is unread:** the stand's declared default for that trait (§4). This is never a guess at the mibi's own look.
+- **If its chapter is unread:** the species' modal look for that trait (§4). This is never a guess at the mibi's own look.
 - **Doings draw nothing on a stand.** That covers Movement, Stamina and Character, plus Glow and Charge. Glow's emission and Charge's phase already follow `builtOf`'s unread rule on the founder; on Home they would be a light effect, not a stand part.
 
 The stand's variant key is the species, stage and size plus the sorted `trait=look` pairs of the traits the stand carries. Home, the Vivarium, a mibi up close and the Companion all call the same function, so "the same individual everywhere" holds by construction. A child read later redraws, because its key changes; nothing else does.
@@ -58,7 +58,7 @@ Recommendations:
 
 | Pod seed (`gs`) | Draws | Digest | Its copies (Markings, Crown, Eyes) |
 | --- | --- | --- | --- |
-| 12 | plain, leaf crest, wide pale rings (the stand as painted) | S01-e2dd6eaf | off/on (**carries pale, hidden**), on/on, huge/huge |
+| 12 | plain, leaf crest, wide pale rings | S01-e2dd6eaf | off/on (**carries pale, hidden**), on/on, huge/huge |
 | 13 | pale patches, leaf crest, between | S01-2a2e1a81 | on/on, off/on (carries bare), huge/large (a blend) |
 | 14 | plain, bare head, thin rings | S01-676d24c7 | off/on (carries pale), off/off, large/large |
 | 107 | pale patches, bare head, wide pale rings | S01-1cb031b7 | on/on, off/off, huge/huge |
@@ -70,8 +70,8 @@ Pods 12 and 14 hide a pale copy that nothing on the stand shows. That is right, 
 The type specimen is the wrong default. It is defined as every open part switch on and the middle of each pool, so it draws S01 with pale patches, which only 22% of Loikas show. A child with an unread Coat would then wear patches it probably doesn't carry.
 
 The proposal:
-- Each stand declares its default look per trait, and that default **is the stand as painted today**. For the Loika on the Home golden that is plain, leaf crest and wide pale rings.
-- The data check: each declared default must be a look the species' pool can produce. I'll add the test once the art director names the defaults.
+- **Agreed with the game designer and the art director (2026-10-17):** an unread trait draws the species' **modal** look, the look most pods show, measured in `stand-looks.json` (`podShare`). For S01 that is **plain, leaf crest, eyes between**, which is also the art director's stand base.
+- The data check: the default is the modal shown look over 300 pods, and the pool produces it. It runs as a test when the build lands.
 - On Home, an unread trait draws the default **with no veil**, since the cozy window stays clean. T-191's glance marks the chapter as unread, so the player can tell "not read yet" from "this is its look" one press away.
 
 ## 5. For the other species (planning order, from `stand-looks.json`)
