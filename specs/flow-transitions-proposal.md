@@ -27,9 +27,9 @@
 - The ← rule in the frame's key table (the build).
 - No new screens.
 
-## The game designer's sign-off (changes 2, 4 and 5)
+## The game designer's sign-off (changes 2, 3, 4 and 5)
 
-All three are signed, on the meanings below. Change 1's carry also replaces the arrival line (specs/station-decision-points.md, recommendation 3) on the four hand-offs it covers, since the moving pod already says where the player is and why. The ribbon stays only for a jump with no carry.
+All four are signed, on the meanings below. Change 1's carry also replaces the arrival line (specs/station-decision-points.md, recommendation 3) on the four hand-offs it covers, since the moving pod already says where the player is and why. The ribbon stays only for a jump with no carry.
 
 **2. What counts as "seen".**
 - An event notice (a chapter cleared, grown up, an elder, a portrait come) clears when its own thing is on screen once the screen has settled, after its carry. Passing through a screen does not count, and opening the room without the thing in view does not count.
@@ -56,5 +56,12 @@ Every other spend (Identify, Read, Mend) is one press, with its price on the bot
 - Home's ✓ on "two crates wait" opens the bay directly, with no panel, because that choice is already made.
 
 The same edit brings the dock moment in line with the Cargo redesign: no report card, no rack wells, and the gold glint (not the star, which is now the wish) on a crate holding a pod new to the player.
+
+**3. What ← names.** ← goes one step back along the path that led here, and the bottom line names that screen:
+- on a panel, ← is the safe option's verb, and nothing is spent;
+- from a room entered from Home, or from a Home or Idle notice, ← names Home;
+- after a jump (Grow → the Incubator, Open the bay → Pods, the hatch → the Vivarium), ← returns to where the jump came from, until the player moves on;
+- if the action used up that screen's subject (the pod grown, the crates opened, the bud hatched), ← skips that screen. It names the step before it, or Home, so ← never lands on an empty bench, an empty bay or an empty chamber;
+- during a carry, ← waits until the screen has settled.
 
 Signed: game designer.
