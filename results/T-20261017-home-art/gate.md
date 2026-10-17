@@ -23,3 +23,13 @@
 - **All three:** the wished species holds most of the cycle. The crossfade between species is slow (about 2 s).
 
 The architect's Pi 4 read follows.
+
+## The owner's ruling, and what it teaches
+
+The owner, at 16:24: "the three are reskinned versions of the same concept… i need diverging options. and you're edging into childish territory." All three directions are stopped, and the held retries are cancelled.
+
+**My read of the miss:**
+- I fixed one structure (the vivarium centre, a vessel on the right) and varied only the vessel. That is three skins, not three concepts.
+- The round portrait tokens, the glows and the face-bulb pushed it toward toy-like.
+
+The next frames come from four independent concept artists, at the lead's call under the owner's rule of fresh minds. I gate those only: fidelity to Miniature Lives, not childish, and buildable.
