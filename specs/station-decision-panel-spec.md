@@ -74,7 +74,7 @@ A string over its limit or over its word budget fails the build's test with the 
 - **The ring:** the focused card's rect, the frame ring `{ "rect": 10 }`, 4 px out. No lift.
 - **The bottom line while the panel is open:**
   - action: ✓ + the focused card's name + its cost;
-  - subject: the focused card's line, else "to {the room}" when it has a destination mark (≤ 6 words);
+  - subject: "to {the room}" when the focused card has a destination mark, else empty (≤ 6 words). The card's own line (up to 8 words) stays in the card and is not repeated here, since the subject zone holds 6;
   - need: what is short, if anything;
   - back: "Back".
   
