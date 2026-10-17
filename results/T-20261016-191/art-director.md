@@ -4,9 +4,10 @@ UI/UX owns the glance's content, placement and life (`ui-ux.md`). This part cove
 
 | | Shows |
 | --- | --- |
-| `glance-painted-moss.png` | Moss focused on the moss: the ring under its feet, the glance 8 below it, gold glint on Coat (unread). Kin on Bean, mostly behind Dot's feet |
+| `glance-painted-moss.png` | Moss focused on the moss: the ring under its feet, the glance 8 below it. Coat is unread, so it recedes, with no glint. Kin on Bean, mostly behind Dot's feet |
+| `glance-painted-glint-s03.png` | an S03 founder focused: Glow read and changed since last looked (as a partner), the one true glint. Stamina and Character unread |
 | `glance-painted-bed.png` | Bean focused in the bed: the glance above its head (placement rule 2), no glint. Kin on Moss, on the soil |
-| `glance-reading-sheet.png` | at 3×: the ring and the kin mark on moss, bed and soil; the glance's states (read, unread, sealed, glint) |
+| `glance-reading-sheet.png` | at 3×: the ring and the kin mark on moss, bed and soil; the glance's states (read, unread, sealed, read and changed with its glint) |
 
 ## The call: the glance is a small piece of Home's own face
 
@@ -14,11 +15,11 @@ The glance belongs to the instrument, not the life. So it is painted as the inst
 
 - **Ground:** an opaque slate pane (`panel`), radius 8, with the pane's `hairline` edge and a `bevel` lip at the top left. It uses the same material as the module column, so the eye reads it as the machine reaching into the window. It is not glass, and not a label laid on the scene.
 - **Marks in wells.** Each 24 px mark sits in its own small recess: `ground`, dark at the top left and lit at the bottom right, like the column's recesses (T-192, round 2). It reads as a row of sockets, not as stickers on a bar.
-  - **Read:** the bone mark.
-  - **Unread:** the frost mark inside a dotted `mist` edge, so the content never shows.
+  - **Read:** the bright `bone` mark.
+  - **Unread:** the mark recedes to `fog` at about 40% in its dark well, inside a dotted `mist` edge. The step from read is one of value, so it holds at 1× without the glint. It stays darker than the ring, and the content never shows.
   - **Sealed:** the mark faint, under three slats.
 - **Shadow:** the scene's one light, from the top left, gives a tight contact shadow (about 1 right, 2 down, soft over 2 px, `ground` at about 60%). This is what stops it floating. Without the shadow it is a sticker over the painting. With a long, soft shadow it would hover. Tight, it rests where it is.
-- **The glint** is the one colour on the glance: the four-point glint in `gold`, 12 px, with a 1 px `ground` keyline so it holds on both the pane and the painting. It sits at (16, −4) and breaks over the pane's top edge, as on Create.
+- **The glint** is the one colour on the glance, with one meaning: something new here. It never fires for unread alone (the genome engineer's rule). It is the signed four-point glint in `gold` (`genome-glint-gold-12x12`), with a 1 px `ground` keyline so it holds on both the pane and the painting. It sits at (16, −4) and breaks over the pane's top edge, as on Create.
 - **Quieter than the ring.** The pane has no light edge and no glow. The ring is the only focus-colour stroke on the window, so the eye goes to the animal first and to the glance second.
 - **Not drawn:** no pointer or tail to the animal (that is a tooltip), no translucency, no lift. The tie to the resident comes from being centred on its footprint and appearing and leaving with the ring.
 
@@ -29,6 +30,12 @@ The glance belongs to the instrument, not the life. So it is painted as the inst
   - On soil it reads without help.
   - On the bed's lit moss, the 2 px `focus` stroke alone dissolves into the light, and the keyline holds it.
 - **Kin** is 2 px `fog`, dashed (dashes about 4 px), with the same keyline. It is quieter than the ring in two ways: the colour (fog against focus) and the broken line. The keyline is what makes it read on moss at all, which answers the wireframe's "barely reads". Where a relative's feet are hidden, the mark is hidden with them: in `glance-painted-moss.png`, little of Bean's mark shows behind Dot.
+
+## Round 2 (the creative director's not-yet, 90ce92e0)
+
+- **The unread Coat has no glint.** An unread chapter is not evidence of anything new.
+- **Unread reads by itself, by value:** bright bone against fog receding in the well. On `glance-painted-moss.png` at 1×, Coat now reads as not yet at a glance, and it stays calmer than the ring.
+- **Where the glint is true:** `glance-painted-glint-s03.png`. An S03 founder's Glow, read and changed since last looked, carries the only glint on the window. The founder is the signed S03 adult master at Home's scale, with its ring drawn under it. Its name and origin are placeholders.
 
 ## Two corrections to the wireframes
 

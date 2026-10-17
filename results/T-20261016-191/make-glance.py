@@ -53,15 +53,14 @@ def keyline_ellipse(im, box, colour, dash=0):
 
 
 def glint(im, x, y):
-    """The four-point glint, gold, 12 x 12, with a ground keyline."""
-    pts = [(8, 1), (9.4, 6.6), (15, 8), (9.4, 9.4), (8, 15), (6.6, 9.4), (1, 8), (6.6, 6.6)]
-    m = Image.new('L', (64, 64), 0)
-    ImageDraw.Draw(m).polygon([(px * 4, py * 4) for px, py in pts], fill=255)
-    m = m.resize((16, 16), Image.BOX)
-    for col, a in ((C['ground'], m.filter(ImageFilter.MaxFilter(3))), (C['gold'], m)):
-        l = Image.new('RGBA', (16, 16), col + (255,))
-        l.putalpha(a)
-        im.alpha_composite(l, (x - 2, y - 2))
+    """The four-point glint: the signed gold slice (genome-glint-gold-12x12), with a 1 px ground keyline."""
+    g = Image.open(f'{SRC}/genome-glint-gold-12x12.png').convert('RGBA')
+    k = Image.new('RGBA', (14, 14), C['ground'] + (255,))
+    m = Image.new('L', (14, 14), 0)
+    m.paste(g.getchannel('A'), (1, 1))
+    k.putalpha(m.filter(ImageFilter.MaxFilter(3)))
+    im.alpha_composite(k, (x - 1, y - 1))
+    im.alpha_composite(g, (x, y))
 
 
 def well(d, x, y, state):
@@ -96,6 +95,10 @@ def pane(im, x, y, chapters, states, glints):
         mx = 8 + i * 32
         well(d, mx, 4, st)
         e = emblem(ch, st)
+        if st == 'unread':  # recedes to fog: a value step from the read bone, never brighter than the ring
+            fogged = Image.new('RGBA', e.size, C['fog'] + (255,))
+            fogged.putalpha(e.getchannel('A').point(lambda a: a * 42 // 100))
+            e = fogged
         if st == 'sealed':
             e.putalpha(e.getchannel('A').point(lambda a: a * 45 // 100))
         p.alpha_composite(e, (mx, 4))
@@ -105,7 +108,7 @@ def pane(im, x, y, chapters, states, glints):
                 d.line((mx + 3, 5 + sy, mx + 20, 5 + sy), fill=C['ground'])
     im.alpha_composite(p, (x, y))
     for i in glints:
-        glint(im, x + 8 + i * 32 + 16, y + 4 - 4)
+        glint(im, x + 8 + i * 32 + 16, y + 4 - 4)  # at (16, -4) of the emblem
     return w, h
 
 
@@ -162,7 +165,7 @@ base = Image.open(f'{SRC}/home-docked.png').convert('RGBA')
 a = base.copy()
 kin(a, 574, 503, 30, 7, base)
 focus(a, 318, 482, 24, 6, base)
-glance_at(a, 318, 488, 420, S01, ['unread', 'read', 'read', 'read'], [0])
+glance_at(a, 318, 488, 420, S01, ['unread', 'read', 'read', 'read'], [])
 bottom_line(a, 'Look at Moss', 'child of Dot and Bean')
 a.save(f'{OUT}/glance-painted-moss.png')
 
@@ -174,7 +177,25 @@ glance_at(b, 574, 510, 428, S01, ['read', 'read', 'read', 'read'], [])
 bottom_line(b, 'Look at Bean', 'from a meadow pod')
 b.save(f'{OUT}/glance-painted-bed.png')
 
-# C: the reading sheet: ring and kin on moss, bed and soil, and the glance's states, at 3x
+# C: an S03 founder focused on the moss: Glow read and changed since last looked (as a partner), the one true glint
+S03 = ['coat', 'face', 'shape', 'legs-tail', 'movement', 'stamina', 'character', 'glow']
+c = base.copy()
+m3 = Image.open(f'{SRC}/mibi-adult-S03-304x312.png').convert('RGBA').crop((83, 136, 222, 307))
+m3 = m3.resize((m3.width * 58 // 100, m3.height * 58 // 100), Image.LANCZOS)
+fx, fy = 480, 396
+sh = Image.new('L', c.size, 0)
+ImageDraw.Draw(sh).ellipse((fx - 34, fy - 7, fx + 34, fy + 5), fill=150)
+dk = Image.new('RGBA', c.size, C['ground'] + (255,))
+dk.putalpha(sh.filter(ImageFilter.GaussianBlur(3)))
+c.alpha_composite(dk)
+focus(c, fx, fy, 30, 7)  # drawn before the sprite: the ring lies under the feet
+c.alpha_composite(m3, (fx - m3.width // 2, fy - m3.height + 2))
+glance_at(c, fx, fy + 6, fy - m3.height, S03,
+          ['read', 'read', 'read', 'read', 'read', 'unread', 'unread', 'read'], [7])
+bottom_line(c, 'Look at Lumen', 'from a cave pod')
+c.save(f'{OUT}/glance-painted-glint-s03.png')
+
+# D: the reading sheet: ring and kin on moss, bed and soil, and the glance's states, at 3x
 sheet = Image.new('RGBA', (1024, 600), C['ground'] + (255,))
 grounds = [('moss', (430, 430)), ('bed', (600, 512)), ('soil', (200, 520))]
 for i, (name, (gx, gy)) in enumerate(grounds):
@@ -183,7 +204,7 @@ for i, (name, (gx, gy)) in enumerate(grounds):
     kin(t, 72, 20, 20, 6)
     sheet.alpha_composite(t.resize((300, 120), Image.NEAREST), (24 + i * 332, 24))
 t = base.crop((180, 420, 520, 560)).copy()
-pane(t, 20, 40, ['coat', 'face', 'movement', 'stamina'], ['unread', 'read', 'read', 'read'], [0])
+pane(t, 20, 40, ['coat', 'face', 'movement', 'stamina'], ['unread', 'read', 'read', 'read'], [])
 pane(t, 180, 40, ['glow', 'charge', 'stamina', 'shape'], ['read', 'unread', 'sealed', 'read'], [0])
 sheet.alpha_composite(t.crop((0, 20, 340, 100)).resize((1020, 240), Image.NEAREST), (2, 200))
 sheet.convert('RGB').save(f'{OUT}/glance-reading-sheet.png')
