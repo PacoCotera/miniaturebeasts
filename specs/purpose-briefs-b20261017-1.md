@@ -11,7 +11,7 @@ The rules are station-gate design/ (game, research and breeding, genomics, world
 **Purpose, in one sentence:** *the life you designed on Create is being grown here, and each time you look it is further along and you know more about it.*
 
 **What a first-time player must understand at a glance:**
-1. **Something alive is being grown, by a machine, from a genome.** The screen should read as growing life, not as an egg on a cushion. The allegory is the creative director's. The game requires that it shows (a) the genome feeding in, (b) a body forming from it, and (c) the machine doing the work.
+1. **Something alive is growing inside the pod, and the machine is candling it.** The candling idea stays (owner, 00:43: "yes, the candling idea is ok, the execution was terrible"). The creative director sets its new execution in T-20261016-168. The game requires that the candling shows (a) the founder forming inside the pod, read through the light; (b) the genome it grows from; and (c) the machine's light doing the work. It must read as a lab instrument candling life, not as an egg with a shadow on a moss cushion.
 2. **How far along it is, and how long is left.** This holds as ruled: the ring of time and "ready in about n min". Its colour is a science colour, never cream (owner).
 3. **What has just been revealed about their mibi, and what it means.** This is the part the owner could not read ("just cleared", "character unflappable").
 
@@ -19,7 +19,7 @@ The rules are station-gate design/ (game, research and breeding, genomics, world
 
 | Revealed | Show it as | Example (S03 Tuikis) |
 | --- | --- | --- |
-| **A look** (Coat, Face, Shape, Legs & tail) | The part itself, on the growing body, coming into focus. The picture is the founder's own part, large, never a pixel glyph | Markings appear on its flank |
+| **A look** (Coat, Face, Shape, Legs & tail) | The part itself, coming into focus on the founder seen through the candled pod, and shown large beside it as the founder's own part, never a pixel glyph | Markings appear on its flank |
 | **A doing** (Movement, Stamina, Character, Glow) | **A short behaviour moment**, a few seconds of the mibi doing it, because a doing is behaviour, not a look. Two or three words name it in play language | **Nerve: unflappable** is shown as a shadow passing overhead while the mibi stays put and keeps sniffing; a jumpy one would dart into its burrow. **Curiosity: seeking**: it walks toward a new object. **Stamina: thrift**: it keeps going on a long walk while a typical one sits down |
 
 - **The meaning is the behaviour, not the adjective.** "Unflappable" means nothing on its own; a creature not flinching when the others do means everything. Each doing trait needs one moment per look at its ends (and the middle reads as between). These are animation pieces, per species body plan, from the species' own routines. The frames already name the looks (`jumpy`, `between`, `unflappable` for `nerve`).
@@ -28,7 +28,7 @@ The rules are station-gate design/ (game, research and breeding, genomics, world
 
 **What it must make them feel:** anticipation (it's coming, and I can see it forming) and ownership (that's the one I made). They should come back because something new is revealed each visit.
 
-**What goes:** the candled egg with its shadow, the moss cradle, the "just cleared" card with a glyph and an adjective, cream, brown on brown, and the plastic plaque. The **genome code stays, with its text id** (owner).
+**What goes:** the execution of the candled egg (a flat shadow on an egg), the moss cradle, the "just cleared" card with a glyph and an adjective, cream, brown on brown, and the plastic plaque. The **genome code stays, with its text id** (owner).
 
 **Crossed bud:** it starts knowing its forecast-certain chapters, and the rest stay frosted through ready (T-136 fix 12). Its reveals come after it opens, at the vivarium.
 
@@ -118,7 +118,7 @@ The creative director and I judge each concept against these, before the lead. A
 
 | Screen | In three seconds, a first-time player can say… |
 | --- | --- |
-| Incubator | "Something alive is being grown here by the machine; it's about this far along; and this is what it just showed about my mibi" (pointing at the part or the behaviour, without reading the trait's name) |
+| Incubator | "The machine is candling something alive growing in the pod; it's about this far along; and this is what it just showed about my mibi" (pointing at the part or the behaviour, without reading the trait's name) |
 | Cargo | "This crate is from that trip; these came out of it; the energy (data, essence) went to my stock; the pods went to the rack" |
 | Decision panel | "If I pick this, that happens; if I pick that, this happens", pointing at two pictures that look different, words covered |
 | Genome screen | "This row is its coat (face, legs…); this gene I can change, this one only breeding changes; this is what I changed" |
