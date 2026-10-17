@@ -28,3 +28,9 @@ This part is built on the game designer's rule (`specs/sittings-never-lost.md`, 
 - **Nothing negative:** gilt, unlit edge, no amber or coral, no count.
 - **Pictures over words:** with the words covered, one frame reads as "a sitting held", and two stacked as "and another after it".
 - **For the build:** `home.json` gets the frame's rect in the T-192 well and an `owed` edge (the same slice, unlit, offset −4, −4) drawn under the held frame when `st.owed > 0` (or `welcomePending`).
+
+## Agreed (the creative director, 2026-10-17)
+
+- **The mark is agreed:** the gilt frame, and the unlit edge of one more behind it while any are owed, with no number or word.
+- **Its place on Home waits for the T-199 direction.** The game designer's architecture puts the held sitting on the Library's pursuit. The T-192 Probe-well placement above is superseded with T-192's Home.
+- **The Habitat's Portrait plate** is today's golden (`habitat-portrait`), unchanged, with no queue edge.
