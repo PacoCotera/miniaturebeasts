@@ -94,7 +94,7 @@
 <circle cx="559" cy="151" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
 <circle cx="554" cy="151" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
 <rect x="565" y="148" width="3" height="6" fill="#fff4a6"/>
-<text x="565" y="146" font-size="10" fill="#d89b14" text-anchor="middle">★</text>
+<path d="M565 139L570 147L560 147Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/>
 <path d="M540 141V135H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <path d="M572 141V135H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <path d="M540 161V167H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
@@ -166,7 +166,7 @@
 <line x1="604" y1="287" x2="720" y2="287" stroke="#56605a" stroke-dasharray="2 2"/>
 <text x="726" y="291" font-size="10" fill="#8d8aa6" text-anchor="middle">⨯</text>
 <rect x="510.5" y="277.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<text x="529" y="282" font-size="10" fill="#d89b14" text-anchor="middle">★</text>
+<path d="M529 273.5L530.65 277.35L534.5 279L530.65 280.65L529 284.5L527.35 280.65L523.5 279L527.35 277.35Z" fill="#d89b14"/>
 <rect x="546.5" y="277.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
 <rect x="582.5" y="277.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
 <rect x="476.5" y="309.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>

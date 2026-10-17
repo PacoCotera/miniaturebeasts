@@ -4,7 +4,7 @@
 <rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Create</text>
-<text x="1012" y="16" font-size="8" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, monospace">27 traits (S09), the tray slid to Character: the screen still holds the whole genome; focus on a doing (breed to change)</text>
+<text x="1012" y="16" font-size="8" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, monospace">27 traits (S09), the tray slid to Character: the screen still holds the whole genome; ▲ on a doing is refused: its line to the Cross lights</text>
 <text x="1012" y="30" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, monospace">1024×600 at 1×, measured. Grey = layout only; the genome screen drawn in its intended marks (art paints them). T-20261016-126</text>
 <rect x="88.5" y="364.5" width="319" height="27" fill="#e8ece4" stroke="#5a6672" stroke-width="1" rx="10"/>
 <rect x="96.5" y="76.5" width="303" height="311" fill="#f3f6f8" stroke="#3c4b57" stroke-width="1.5"/>
@@ -18,28 +18,28 @@
 <text x="156" y="470" font-size="8" fill="#888" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">in its port</text>
 <rect x="240.5" y="424.5" width="15" height="95" fill="#cfd5da" stroke="none" stroke-width="1"/>
 <text x="248" y="476" font-size="12" fill="#444" text-anchor="middle">‹</text>
-<text x="296" y="416" font-size="16" fill="#6b6880" text-anchor="start">Movement</text>
-<rect x="296.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
-<rect x="304.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="336" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
-<rect x="384.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
-<rect x="392.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="424" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
-<text x="488" y="416" font-size="16" fill="#6b6880" text-anchor="start">Stamina</text>
-<rect x="488.5" y="424.5" width="79" height="95" fill="#e9edf2" stroke="#444" stroke-width="1" stroke-dasharray="3 2" rx="8"/>
-<rect x="496.5" y="440.5" width="63" height="63" fill="#e9edf2" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="576.5" y="424.5" width="79" height="95" fill="#e9edf2" stroke="#444" stroke-width="1" stroke-dasharray="3 2" rx="8"/>
-<rect x="584.5" y="440.5" width="63" height="63" fill="#e9edf2" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="664.5" y="424.5" width="79" height="95" fill="#e9edf2" stroke="#444" stroke-width="1" stroke-dasharray="3 2" rx="8"/>
-<rect x="672.5" y="440.5" width="63" height="63" fill="#e9edf2" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="768" y="416" font-size="16" fill="#6b6880" text-anchor="start">Character</text>
-<rect x="768.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
-<rect x="776.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="808" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
-<rect x="856.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
-<rect x="864.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="896" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
-<rect x="852.5" y="420.5" width="87" height="103" fill="none" stroke="#d9a21b" stroke-width="2" rx="10"/>
+<text x="280" y="416" font-size="16" fill="#6b6880" text-anchor="start">Movement</text>
+<rect x="280.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="288.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="320" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
+<rect x="368.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="376.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="408" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
+<text x="472" y="416" font-size="16" fill="#6b6880" text-anchor="start">Stamina</text>
+<rect x="472.5" y="424.5" width="79" height="95" fill="#e9edf2" stroke="#444" stroke-width="1" stroke-dasharray="3 2" rx="8"/>
+<rect x="480.5" y="440.5" width="63" height="63" fill="#e9edf2" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="560.5" y="424.5" width="79" height="95" fill="#e9edf2" stroke="#444" stroke-width="1" stroke-dasharray="3 2" rx="8"/>
+<rect x="568.5" y="440.5" width="63" height="63" fill="#e9edf2" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="648.5" y="424.5" width="79" height="95" fill="#e9edf2" stroke="#444" stroke-width="1" stroke-dasharray="3 2" rx="8"/>
+<rect x="656.5" y="440.5" width="63" height="63" fill="#e9edf2" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="752" y="416" font-size="16" fill="#6b6880" text-anchor="start">Character</text>
+<rect x="752.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="760.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="792" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
+<rect x="840.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="848.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="880" y="476" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pinned</text>
+<rect x="836.5" y="420.5" width="87" height="103" fill="none" stroke="#d9a21b" stroke-width="2" rx="10"/>
 <rect x="424.5" y="80.5" width="511" height="311" fill="#84ae78" stroke="#5d7a5f" stroke-width="1" rx="10"/>
 <rect x="430.5" y="86.5" width="499" height="299" fill="#2a2a2d" stroke="none" stroke-width="1" rx="4"/>
 <rect x="432.5" y="88.5" width="495" height="295" fill="#1f2427" stroke="#0c0a12" stroke-width="1"/>
@@ -212,6 +212,7 @@
 <path d="M572 311V305H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <path d="M540 331V337H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <path d="M572 331V337H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
+<rect x="568" y="320" width="152" height="3" fill="#adf6e0"/>
 <rect x="744.5" y="96.5" width="175" height="279" fill="#252b2e" stroke="#56605a" stroke-width="1" rx="4"/>
 <rect x="752.5" y="104.5" width="159" height="127" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="832" y="172" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the doing now</text>
@@ -219,7 +220,7 @@
 <circle cx="844" cy="280" r="10" fill="none" stroke="#8d8aa6" stroke-width="3"/>
 <text x="894" y="286" font-size="16" fill="#8d8aa6" text-anchor="middle">⨯</text>
 <rect x="860" y="279" width="22" height="2" fill="#8d8aa6"/>
-<text x="424" y="74" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">six genes a row fit (S09 Coat); every row of every species fits: no overflow</text>
+<text x="424" y="74" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">▲ on a pinned drum: the line from its gene to ⨯ lights 400 ms (refused: breed to change)</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Grow it</text>
 <text x="105" y="588" font-size="16" fill="#222" text-anchor="start">⚡ 2 ❀ 4 ◆ 3</text>
