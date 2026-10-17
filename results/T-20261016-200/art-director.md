@@ -89,3 +89,5 @@ Periwinkle read as a plastic toy: the brightest, most synthetic colour on the mo
 - **Fawn is warm.** It sits beside russet in hue but well apart in value, and it stays clear of the cream belly. Its cream patches read softer than on the dark coats.
 - **Ash is cool.** It stands apart from the moss and from both other pigments in hue as well as value, and its patches read clearly.
 - **My pick:** ash, if a catalogue version is cheap. Otherwise fawn, in marigold's slot, which costs nothing now.
+
+**Settled: ash** (catalogue 10, #8e98a4, the genome engineer at 29e291b1). The creative director passed it (24605129). The range (`loika-range-likely-frame.png`) and `loika-four-grey.png` are redrawn with ash, and `home-window-four-v4-pods-ash.png` with its four-grey twin is the window. The periwinkle and fawn files stay as the record.

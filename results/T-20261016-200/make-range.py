@@ -157,8 +157,8 @@ def stand_v2(colour, pattern):
 
 # the genome engineer's likely frame: three co-dominant pigments, six looks; every Loika marked
 RAMPS2 = {'charcoal': ((22, 21, 25), (52, 50, 56), (104, 100, 108)), 'russet': RAMPS['russet'],
-          'periwinkle': ((52, 40, 104), (128, 108, 210), (204, 190, 248))}   # the third pigment (a catalogue pigment): a value step above russet, cool against it
-COLOURS2 = ['charcoal', 'russet', 'periwinkle', 'charcoal and russet', 'charcoal and periwinkle', 'russet and periwinkle']
+          'ash': ((70, 78, 90), (142, 152, 164), (204, 210, 218))}   # the third pigment (catalogue 10, #8e98a4): light, muted, cool
+COLOURS2 = ['charcoal', 'russet', 'ash', 'charcoal and russet', 'charcoal and ash', 'russet and ash']
 PATTERNS = ['stripes', 'patches', 'stripes and patches']
 CW2, CH2 = 160, 172
 sh2 = Image.new('RGBA', (190 + len(PATTERNS) * CW2 + 16, 56 + len(COLOURS2) * CH2 + 16), (29, 35, 43, 255))
@@ -168,7 +168,7 @@ for j, pt in enumerate(PATTERNS):
     d2.text((190 + j * CW2 + CW2 // 2, 44), pt, font=F13, fill=(198, 196, 216), anchor='mm')
 for i, col in enumerate(COLOURS2):
     y = 56 + i * CH2
-    d2.text((16, y + CH2 // 2), col.replace(' and periwinkle', ' and\nperiwinkle'), font=F13, fill=(198, 196, 216), anchor='lm')
+    d2.text((16, y + CH2 // 2), col, font=F13, fill=(198, 196, 216), anchor='lm')
     for j, pt in enumerate(PATTERNS):
         s_ = fit(stand_v2(col, pt), 144, 152)
         x = 190 + j * CW2 + (CW2 - s_.width) // 2
