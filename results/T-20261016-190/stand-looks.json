@@ -1,0 +1,3267 @@
+{
+ "rule": "drawnLooks(frame, mibi): per look trait outside a sealed chapter, the look the mibi SHOWS (traitState(...).shows) if its chapter is read, else the stand's declared default. Hidden and sleeping copies never draw. Doings draw nothing.",
+ "species": {
+  "S01": {
+   "name": "Loika",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Markings",
+     "id": "markings",
+     "loci": [
+      "appearance.marking-switch"
+     ],
+     "part": "whole body",
+     "craft": "pattern layer",
+     "looks": [
+      "plain",
+      "pale patches"
+     ],
+     "typeSpecimen": "pale patches",
+     "podShare": {
+      "plain": 0.78,
+      "pale patches": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Crown",
+     "id": "crown",
+     "loci": [
+      "anatomy.crown-presence"
+     ],
+     "part": "head top",
+     "craft": "part on/off",
+     "looks": [
+      "bare head",
+      "leaf crest"
+     ],
+     "typeSpecimen": "leaf crest",
+     "podShare": {
+      "leaf crest": 0.7,
+      "bare head": 0.3
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eye-rings",
+     "loci": [
+      "growth.exterior-eye-size-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "thin rings",
+      "between",
+      "wide pale rings"
+     ],
+     "typeSpecimen": "wide pale rings",
+     "podShare": {
+      "between": 0.46,
+      "thin rings": 0.27,
+      "wide pale rings": 0.27
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S02": {
+   "name": "Untuva",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "coral",
+      "raspberry",
+      "marigold",
+      "plum",
+      "two side by side"
+     ],
+     "typeSpecimen": "coral",
+     "podShare": {
+      "two side by side": 0.75,
+      "plum": 0.07,
+      "raspberry": 0.07,
+      "coral": 0.06,
+      "marigold": 0.05
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Spots",
+     "id": "markings",
+     "loci": [
+      "appearance.marking-switch",
+      "appearance.marking-layout",
+      "appearance.marking-extent",
+      "appearance.marking-scale",
+      "appearance.marking-orientation",
+      "appearance.marking-contrast"
+     ],
+     "part": "whole body",
+     "craft": "pattern layer",
+     "looks": [
+      "bare",
+      "bands",
+      "spots",
+      "bands and spots"
+     ],
+     "typeSpecimen": "bands",
+     "podShare": {
+      "bare": 0.69,
+      "bands and spots": 0.13,
+      "spots": 0.09,
+      "bands": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Fluff",
+     "id": "fluff",
+     "loci": [
+      "appearance.fur-length",
+      "appearance.fur-flow"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "short, straight",
+      "between",
+      "long, swept"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.47,
+      "short, straight": 0.28,
+      "long, swept": 0.25
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Tint",
+     "id": "cap-colour",
+     "loci": [
+      "appearance.cap-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "coral",
+      "coral and raspberry",
+      "coral and marigold",
+      "coral and plum",
+      "raspberry",
+      "raspberry and marigold",
+      "raspberry and plum",
+      "marigold",
+      "marigold and plum",
+      "plum"
+     ],
+     "typeSpecimen": "coral",
+     "podShare": {
+      "coral and raspberry": 0.14,
+      "raspberry and plum": 0.14,
+      "coral and marigold": 0.14,
+      "coral and plum": 0.14,
+      "marigold and plum": 0.11,
+      "raspberry and marigold": 0.1,
+      "marigold": 0.08,
+      "coral": 0.08,
+      "plum": 0.04,
+      "raspberry": 0.04
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Flecks",
+     "id": "cap-spots",
+     "loci": [
+      "appearance.cap-spots"
+     ],
+     "part": "whole body",
+     "craft": "pattern layer",
+     "looks": [
+      "bare",
+      "spots"
+     ],
+     "typeSpecimen": "bare",
+     "podShare": {
+      "spots": 0.78,
+      "bare": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Roundness",
+     "id": "roundness",
+     "loci": [
+      "growth.radial-cross-radius"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "flat",
+      "between",
+      "plump"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.53,
+      "plump": 0.27,
+      "flat": 0.2
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.56,
+      "barrel": 0.33,
+      "egg": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Span",
+     "id": "cap-size",
+     "loci": [
+      "growth.wing-span-ratio",
+      "growth.wing-chord-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small cap",
+      "between",
+      "wide cap"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.54,
+      "wide cap": 0.23,
+      "small cap": 0.23
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S03": {
+   "name": "Tuikis",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "lagoon",
+      "jade",
+      "marigold",
+      "periwinkle",
+      "two side by side"
+     ],
+     "typeSpecimen": "lagoon",
+     "podShare": {
+      "two side by side": 0.77,
+      "marigold": 0.07,
+      "lagoon": 0.06,
+      "periwinkle": 0.05,
+      "jade": 0.05
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "milk-mint",
+      "cream",
+      "ice",
+      "slate",
+      "two side by side"
+     ],
+     "typeSpecimen": "milk-mint",
+     "podShare": {
+      "two side by side": 0.76,
+      "milk-mint": 0.07,
+      "slate": 0.06,
+      "cream": 0.06,
+      "ice": 0.06
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Markings",
+     "id": "markings",
+     "loci": [
+      "appearance.marking-switch",
+      "appearance.marking-layout",
+      "appearance.marking-extent",
+      "appearance.marking-scale",
+      "appearance.marking-orientation",
+      "appearance.marking-contrast"
+     ],
+     "part": "whole body",
+     "craft": "pattern layer",
+     "looks": [
+      "plain",
+      "stripes",
+      "spots",
+      "stripes and spots"
+     ],
+     "typeSpecimen": "stripes",
+     "podShare": {
+      "plain": 0.74,
+      "stripes and spots": 0.14,
+      "spots": 0.07,
+      "stripes": 0.05
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Scales",
+     "id": "scales",
+     "loci": [
+      "appearance.anatomical-covering-extent",
+      "appearance.anatomical-scale-size"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "few, fine",
+      "between",
+      "many, coarse"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.52,
+      "few, fine": 0.24,
+      "many, coarse": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Crest",
+     "id": "crest",
+     "loci": [
+      "growth.crown-height-ratio"
+     ],
+     "part": "head top",
+     "craft": "proportion swap",
+     "looks": [
+      "low crest",
+      "between",
+      "tall crest"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.57,
+      "tall crest": 0.22,
+      "low crest": 0.21
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.76,
+      "big, wide": 0.13,
+      "small, close": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Snout",
+     "id": "snout",
+     "loci": [
+      "growth.muzzle-projection-ratio",
+      "growth.muzzle-width-ratio"
+     ],
+     "part": "muzzle",
+     "craft": "proportion swap",
+     "looks": [
+      "short, narrow",
+      "between",
+      "long, broad"
+     ],
+     "typeSpecimen": "long, broad",
+     "podShare": {
+      "between": 0.57,
+      "long, broad": 0.34,
+      "short, narrow": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "slim",
+     "podShare": {
+      "between": 0.53,
+      "slim": 0.33,
+      "stout": 0.14
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.5,
+      "full": 0.27,
+      "small": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Topline",
+     "id": "back-line",
+     "loci": [
+      "growth.region-bend"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "dipping",
+      "level",
+      "arched"
+     ],
+     "typeSpecimen": "level",
+     "podShare": {
+      "level": 0.47,
+      "dipping": 0.27,
+      "arched": 0.26
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Legs",
+     "id": "legs",
+     "loci": [
+      "growth.support-drop-ratio",
+      "growth.support-radius-ratio"
+     ],
+     "part": "legs and feet",
+     "craft": "proportion swap",
+     "looks": [
+      "short, fine",
+      "between",
+      "long, stout"
+     ],
+     "typeSpecimen": "short, fine",
+     "podShare": {
+      "between": 0.56,
+      "short, fine": 0.36,
+      "long, stout": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Claws",
+     "id": "feet",
+     "loci": [
+      "anatomy.contact-terminal-form",
+      "growth.terminal-length-ratio",
+      "growth.terminal-depth-ratio"
+     ],
+     "part": "legs and feet",
+     "craft": "form swap",
+     "looks": [
+      "round feet",
+      "pads",
+      "digging wedges"
+     ],
+     "typeSpecimen": "rounded",
+     "podShare": {
+      "root": 0.31,
+      "hoof": 0.27,
+      "webbed": 0.15,
+      "pad": 0.13,
+      "wedge": 0.13,
+      "rounded": 0.01
+     },
+     "changedBy": "breeding"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Tail",
+     "id": "tail",
+     "loci": [
+      "growth.axial-tail-length-ratio",
+      "growth.axial-tail-width-ratio"
+     ],
+     "part": "tail",
+     "craft": "proportion swap",
+     "looks": [
+      "short, thin",
+      "between",
+      "long, thick"
+     ],
+     "typeSpecimen": "long, thick",
+     "podShare": {
+      "between": 0.54,
+      "short, thin": 0.24,
+      "long, thick": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Carriage",
+     "id": "tail-curl",
+     "loci": [
+      "growth.axial-tail-bend"
+     ],
+     "part": "tail",
+     "craft": "proportion swap",
+     "looks": [
+      "hangs",
+      "straight",
+      "curls up"
+     ],
+     "typeSpecimen": "curls up",
+     "podShare": {
+      "straight": 0.49,
+      "hangs": 0.27,
+      "curls up": 0.24
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S04": {
+   "name": "Hiljan",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Fluff",
+     "id": "fluff",
+     "loci": [
+      "appearance.fur-length",
+      "appearance.fur-flow"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "short, straight",
+      "between",
+      "long, swept"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.5,
+      "short, straight": 0.27,
+      "long, swept": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.78,
+      "small, close": 0.13,
+      "big, wide": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Topline",
+     "id": "back-line",
+     "loci": [
+      "growth.region-bend"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "dipping",
+      "level",
+      "arched"
+     ],
+     "typeSpecimen": "level",
+     "podShare": {
+      "level": 0.47,
+      "arched": 0.28,
+      "dipping": 0.25
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S05": {
+   "name": "Tepor",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "marigold",
+      "marigold and coral",
+      "coral"
+     ],
+     "typeSpecimen": "marigold",
+     "podShare": {
+      "marigold and coral": 0.51,
+      "coral": 0.27,
+      "marigold": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.78,
+      "big, wide": 0.11,
+      "small, close": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.48,
+      "full": 0.28,
+      "small": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.55,
+      "barrel": 0.33,
+      "egg": 0.13
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Carriage",
+     "id": "tail-curl",
+     "loci": [
+      "growth.axial-tail-bend"
+     ],
+     "part": "tail",
+     "craft": "proportion swap",
+     "looks": [
+      "hangs",
+      "straight",
+      "curls up"
+     ],
+     "typeSpecimen": "straight",
+     "podShare": {
+      "straight": 0.49,
+      "curls up": 0.27,
+      "hangs": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Legs",
+     "id": "legs",
+     "loci": [
+      "growth.support-drop-ratio",
+      "growth.support-radius-ratio",
+      "growth.support-splay-ratio"
+     ],
+     "part": "legs and feet",
+     "craft": "proportion swap",
+     "looks": [
+      "short, fine",
+      "between",
+      "long, stout"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.56,
+      "short, fine": 0.31,
+      "long, stout": 0.13
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S06": {
+   "name": "Pesko",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "charcoal",
+      "charcoal and marigold",
+      "charcoal and russet",
+      "marigold",
+      "marigold and russet",
+      "russet"
+     ],
+     "typeSpecimen": "charcoal",
+     "podShare": {
+      "charcoal and russet": 0.26,
+      "charcoal and marigold": 0.24,
+      "marigold and russet": 0.19,
+      "russet": 0.13,
+      "charcoal": 0.09,
+      "marigold": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Sheen",
+     "id": "sheen",
+     "loci": [
+      "appearance.sheen"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "matte",
+      "between",
+      "glossy"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.47,
+      "matte": 0.28,
+      "glossy": 0.25
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "small, low",
+     "podShare": {
+      "between": 0.74,
+      "big, raised": 0.14,
+      "small, low": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Topline",
+     "id": "back-line",
+     "loci": [
+      "growth.region-bend"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "dipping",
+      "level",
+      "arched"
+     ],
+     "typeSpecimen": "level",
+     "podShare": {
+      "level": 0.5,
+      "dipping": 0.26,
+      "arched": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.52,
+      "full": 0.27,
+      "small": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.59,
+      "barrel": 0.3,
+      "egg": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Tail",
+     "id": "tail",
+     "loci": [
+      "growth.axial-tail-length-ratio",
+      "growth.axial-tail-width-ratio"
+     ],
+     "part": "tail",
+     "craft": "proportion swap",
+     "looks": [
+      "short, thin",
+      "between",
+      "long, thick"
+     ],
+     "typeSpecimen": "short, thin",
+     "podShare": {
+      "between": 0.5,
+      "short, thin": 0.26,
+      "long, thick": 0.24
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S07": {
+   "name": "Azkon",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "russet",
+      "russet and charcoal",
+      "charcoal"
+     ],
+     "typeSpecimen": "russet",
+     "podShare": {
+      "russet and charcoal": 0.52,
+      "charcoal": 0.26,
+      "russet": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Fluff",
+     "id": "fluff",
+     "loci": [
+      "appearance.fur-length",
+      "appearance.fur-flow"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "short, straight",
+      "between",
+      "long, swept"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.45,
+      "short, straight": 0.28,
+      "long, swept": 0.27
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Tufts",
+     "id": "fur-reach",
+     "loci": [
+      "appearance.fur-reach"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "body only",
+      "tail",
+      "tail and ears"
+     ],
+     "typeSpecimen": "body only",
+     "podShare": {
+      "tail and ears": 0.55,
+      "tail": 0.33,
+      "body only": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Sheen",
+     "id": "sheen",
+     "loci": [
+      "appearance.sheen"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "matte",
+      "between",
+      "glossy"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.48,
+      "matte": 0.27,
+      "glossy": 0.25
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "cream",
+      "cream and peach",
+      "cream and ice",
+      "peach",
+      "peach and ice",
+      "ice"
+     ],
+     "typeSpecimen": "cream",
+     "podShare": {
+      "peach and ice": 0.22,
+      "cream and ice": 0.22,
+      "cream and peach": 0.21,
+      "cream": 0.12,
+      "peach": 0.12,
+      "ice": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.79,
+      "small, close": 0.12,
+      "big, wide": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Snout",
+     "id": "snout",
+     "loci": [
+      "growth.muzzle-projection-ratio",
+      "growth.muzzle-width-ratio"
+     ],
+     "part": "muzzle",
+     "craft": "proportion swap",
+     "looks": [
+      "short, narrow",
+      "between",
+      "long, broad"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.55,
+      "long, broad": 0.31,
+      "short, narrow": 0.14
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.76,
+      "small, low": 0.13,
+      "big, raised": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Ears",
+     "id": "ear-tilt",
+     "loci": [
+      "anatomy.ear-tilt"
+     ],
+     "part": "ears",
+     "craft": "proportion swap",
+     "looks": [
+      "upright",
+      "drooping"
+     ],
+     "typeSpecimen": "upright",
+     "podShare": {
+      "upright": 0.75,
+      "drooping": 0.25
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.54,
+      "barrel": 0.34,
+      "egg": 0.13
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Legs",
+     "id": "legs",
+     "loci": [
+      "growth.support-drop-ratio",
+      "growth.support-radius-ratio",
+      "growth.support-splay-ratio"
+     ],
+     "part": "legs and feet",
+     "craft": "proportion swap",
+     "looks": [
+      "short, fine",
+      "between",
+      "long, stout"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.58,
+      "short, fine": 0.33,
+      "long, stout": 0.09
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S08": {
+   "name": "Rupar",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "russet",
+      "russet and charcoal",
+      "russet and jade",
+      "charcoal",
+      "charcoal and jade",
+      "jade"
+     ],
+     "typeSpecimen": "russet",
+     "podShare": {
+      "russet and jade": 0.26,
+      "russet and charcoal": 0.21,
+      "charcoal and jade": 0.18,
+      "russet": 0.14,
+      "charcoal": 0.11,
+      "jade": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Tufts",
+     "id": "fur-reach",
+     "loci": [
+      "appearance.fur-reach"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "body only",
+      "tail",
+      "tail and ears"
+     ],
+     "typeSpecimen": "body only",
+     "podShare": {
+      "tail and ears": 0.57,
+      "tail": 0.3,
+      "body only": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "butter",
+      "butter and milk-mint",
+      "butter and cream",
+      "milk-mint",
+      "milk-mint and cream",
+      "cream"
+     ],
+     "typeSpecimen": "butter",
+     "podShare": {
+      "butter and cream": 0.28,
+      "butter and milk-mint": 0.25,
+      "milk-mint and cream": 0.18,
+      "butter": 0.1,
+      "milk-mint": 0.1,
+      "cream": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.77,
+      "big, wide": 0.13,
+      "small, close": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "small, low",
+     "podShare": {
+      "between": 0.8,
+      "small, low": 0.1,
+      "big, raised": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Ears",
+     "id": "ear-tilt",
+     "loci": [
+      "anatomy.ear-tilt"
+     ],
+     "part": "ears",
+     "craft": "proportion swap",
+     "looks": [
+      "upright",
+      "drooping"
+     ],
+     "typeSpecimen": "upright",
+     "podShare": {
+      "upright": 0.73,
+      "drooping": 0.27
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Horns",
+     "id": "horns",
+     "loci": [
+      "growth.horn-curl",
+      "anatomy.horn-branching"
+     ],
+     "part": "head top",
+     "craft": "proportion swap",
+     "looks": [
+      "straight",
+      "between",
+      "curled antlers"
+     ],
+     "typeSpecimen": "straight",
+     "podShare": {
+      "between": 0.52,
+      "straight": 0.25,
+      "curled antlers": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.51,
+      "full": 0.26,
+      "small": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "slim",
+     "podShare": {
+      "between": 0.53,
+      "slim": 0.35,
+      "stout": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Waist",
+     "id": "waist",
+     "loci": [
+      "growth.join-throat-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "thin",
+      "between",
+      "thick"
+     ],
+     "typeSpecimen": "thick",
+     "podShare": {
+      "between": 0.47,
+      "thick": 0.27,
+      "thin": 0.26
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S09": {
+   "name": "Belatz",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "cobalt",
+      "cobalt and lagoon",
+      "cobalt and periwinkle",
+      "cobalt and jade",
+      "lagoon",
+      "lagoon and periwinkle",
+      "lagoon and jade",
+      "periwinkle",
+      "periwinkle and jade",
+      "jade"
+     ],
+     "typeSpecimen": "cobalt",
+     "podShare": {
+      "lagoon and jade": 0.16,
+      "periwinkle and jade": 0.14,
+      "cobalt and periwinkle": 0.14,
+      "cobalt and jade": 0.12,
+      "lagoon and periwinkle": 0.12,
+      "cobalt and lagoon": 0.1,
+      "lagoon": 0.08,
+      "cobalt": 0.05,
+      "periwinkle": 0.05,
+      "jade": 0.04
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Fluff",
+     "id": "fluff",
+     "loci": [
+      "appearance.fur-length",
+      "appearance.fur-flow"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "short, straight",
+      "between",
+      "long, swept"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.47,
+      "short, straight": 0.3,
+      "long, swept": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Sheen",
+     "id": "sheen",
+     "loci": [
+      "appearance.sheen"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "matte",
+      "between",
+      "glossy"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.47,
+      "matte": 0.27,
+      "glossy": 0.26
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Feathers",
+     "id": "feathers",
+     "loci": [
+      "appearance.feather-length"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "short",
+      "between",
+      "long"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.52,
+      "short": 0.25,
+      "long": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Tufts",
+     "id": "fur-reach",
+     "loci": [
+      "appearance.fur-reach"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "body only",
+      "tail",
+      "tail and ears"
+     ],
+     "typeSpecimen": "body only",
+     "podShare": {
+      "tail and ears": 0.5,
+      "tail": 0.37,
+      "body only": 0.14
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "butter",
+      "butter and ice",
+      "butter and cream",
+      "ice",
+      "ice and cream",
+      "cream"
+     ],
+     "typeSpecimen": "butter",
+     "podShare": {
+      "butter and cream": 0.23,
+      "butter and ice": 0.22,
+      "ice and cream": 0.17,
+      "butter": 0.14,
+      "ice": 0.12,
+      "cream": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.76,
+      "small, low": 0.12,
+      "big, raised": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Beak",
+     "id": "beak",
+     "loci": [
+      "growth.beak-length-ratio"
+     ],
+     "part": "muzzle",
+     "craft": "proportion swap",
+     "looks": [
+      "short",
+      "between",
+      "long"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.48,
+      "short": 0.28,
+      "long": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Crest",
+     "id": "feather-crest",
+     "loci": [
+      "growth.feather-crest"
+     ],
+     "part": "head top",
+     "craft": "surface",
+     "looks": [
+      "low",
+      "between",
+      "tall"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.51,
+      "tall": 0.25,
+      "low": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Crown",
+     "id": "crown",
+     "loci": [
+      "growth.crown-height-ratio"
+     ],
+     "part": "head top",
+     "craft": "proportion swap",
+     "looks": [
+      "low",
+      "between",
+      "tall"
+     ],
+     "typeSpecimen": "tall",
+     "podShare": {
+      "between": 0.5,
+      "tall": 0.26,
+      "low": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.73,
+      "small, close": 0.13,
+      "big, wide": 0.13
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Waist",
+     "id": "waist",
+     "loci": [
+      "growth.join-throat-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "thin",
+      "between",
+      "thick"
+     ],
+     "typeSpecimen": "thick",
+     "podShare": {
+      "between": 0.46,
+      "thick": 0.28,
+      "thin": 0.26
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Topline",
+     "id": "back-line",
+     "loci": [
+      "growth.region-bend"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "dipping",
+      "level",
+      "arched"
+     ],
+     "typeSpecimen": "level",
+     "podShare": {
+      "level": 0.52,
+      "dipping": 0.25,
+      "arched": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.51,
+      "full": 0.25,
+      "small": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.58,
+      "barrel": 0.34,
+      "egg": 0.07
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "slim",
+     "podShare": {
+      "between": 0.56,
+      "slim": 0.32,
+      "stout": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Carriage",
+     "id": "tail-curl",
+     "loci": [
+      "growth.axial-tail-bend"
+     ],
+     "part": "tail",
+     "craft": "proportion swap",
+     "looks": [
+      "hangs",
+      "straight",
+      "curls up"
+     ],
+     "typeSpecimen": "straight",
+     "podShare": {
+      "straight": 0.49,
+      "hangs": 0.28,
+      "curls up": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Tail",
+     "id": "tail",
+     "loci": [
+      "growth.axial-tail-length-ratio",
+      "growth.axial-tail-width-ratio"
+     ],
+     "part": "tail",
+     "craft": "proportion swap",
+     "looks": [
+      "short, thin",
+      "between",
+      "long, thick"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.49,
+      "short, thin": 0.27,
+      "long, thick": 0.24
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S10": {
+   "name": "Igara",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "russet",
+      "russet and charcoal",
+      "russet and jade",
+      "charcoal",
+      "charcoal and jade",
+      "jade"
+     ],
+     "typeSpecimen": "russet",
+     "podShare": {
+      "charcoal and jade": 0.23,
+      "russet and jade": 0.21,
+      "russet and charcoal": 0.19,
+      "russet": 0.13,
+      "charcoal": 0.13,
+      "jade": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Sheen",
+     "id": "sheen",
+     "loci": [
+      "appearance.sheen"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "matte",
+      "between",
+      "glossy"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.44,
+      "matte": 0.28,
+      "glossy": 0.28
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Tufts",
+     "id": "fur-reach",
+     "loci": [
+      "appearance.fur-reach"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "body only",
+      "tail",
+      "tail and ears"
+     ],
+     "typeSpecimen": "body only",
+     "podShare": {
+      "tail and ears": 0.48,
+      "tail": 0.41,
+      "body only": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "peach",
+      "peach and cream",
+      "peach and slate",
+      "cream",
+      "cream and slate",
+      "slate"
+     ],
+     "typeSpecimen": "peach",
+     "podShare": {
+      "cream and slate": 0.26,
+      "peach and cream": 0.22,
+      "peach and slate": 0.18,
+      "cream": 0.14,
+      "peach": 0.11,
+      "slate": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.78,
+      "small, close": 0.12,
+      "big, wide": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Ears",
+     "id": "ear-tilt",
+     "loci": [
+      "anatomy.ear-tilt"
+     ],
+     "part": "ears",
+     "craft": "proportion swap",
+     "looks": [
+      "upright",
+      "drooping"
+     ],
+     "typeSpecimen": "upright",
+     "podShare": {
+      "upright": 0.75,
+      "drooping": 0.25
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.81,
+      "small, low": 0.1,
+      "big, raised": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "slim",
+     "podShare": {
+      "between": 0.59,
+      "slim": 0.33,
+      "stout": 0.08
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Topline",
+     "id": "back-line",
+     "loci": [
+      "growth.region-bend"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "dipping",
+      "level",
+      "arched"
+     ],
+     "typeSpecimen": "level",
+     "podShare": {
+      "level": 0.53,
+      "arched": 0.24,
+      "dipping": 0.23
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S11": {
+   "name": "Kilpo",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "jade",
+      "jade and russet",
+      "jade and lagoon",
+      "russet",
+      "russet and lagoon",
+      "lagoon"
+     ],
+     "typeSpecimen": "jade",
+     "podShare": {
+      "jade and russet": 0.27,
+      "jade and lagoon": 0.21,
+      "russet and lagoon": 0.16,
+      "jade": 0.12,
+      "russet": 0.12,
+      "lagoon": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Scutes",
+     "id": "shell-plates",
+     "loci": [
+      "appearance.shell-plates"
+     ],
+     "part": "shell",
+     "craft": "proportion swap",
+     "looks": [
+      "smooth",
+      "plated"
+     ],
+     "typeSpecimen": "smooth",
+     "podShare": {
+      "plated": 0.71,
+      "smooth": 0.29
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Sheen",
+     "id": "sheen",
+     "loci": [
+      "appearance.sheen"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "matte",
+      "between",
+      "glossy"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.49,
+      "glossy": 0.29,
+      "matte": 0.22
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "butter",
+      "butter and peach",
+      "butter and milk-mint",
+      "peach",
+      "peach and milk-mint",
+      "milk-mint"
+     ],
+     "typeSpecimen": "butter",
+     "podShare": {
+      "peach and milk-mint": 0.25,
+      "butter and milk-mint": 0.25,
+      "butter and peach": 0.19,
+      "peach": 0.12,
+      "butter": 0.1,
+      "milk-mint": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Snout",
+     "id": "snout",
+     "loci": [
+      "growth.muzzle-projection-ratio",
+      "growth.muzzle-width-ratio"
+     ],
+     "part": "muzzle",
+     "craft": "proportion swap",
+     "looks": [
+      "short, narrow",
+      "between",
+      "long, broad"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.58,
+      "long, broad": 0.32,
+      "short, narrow": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "tiny",
+     "podShare": {
+      "between small and large": 0.15,
+      "between small and tiny": 0.13,
+      "between large and tiny": 0.13,
+      "between medium and tiny": 0.12,
+      "between small and medium": 0.11,
+      "between medium and large": 0.1,
+      "large": 0.08,
+      "small": 0.08,
+      "tiny": 0.05,
+      "medium": 0.05
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.75,
+      "big, wide": 0.14,
+      "small, close": 0.12
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.55,
+      "slim": 0.34,
+      "stout": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Shell",
+     "id": "shell",
+     "loci": [
+      "growth.shell-dome-ratio"
+     ],
+     "part": "shell",
+     "craft": "proportion swap",
+     "looks": [
+      "low",
+      "between",
+      "high dome"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.54,
+      "high dome": 0.26,
+      "low": 0.21
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.53,
+      "barrel": 0.33,
+      "egg": 0.14
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Waist",
+     "id": "waist",
+     "loci": [
+      "growth.join-throat-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "thin",
+      "between",
+      "thick"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.5,
+      "thin": 0.28,
+      "thick": 0.22
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S12": {
+   "name": "Peplos",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "marigold",
+      "marigold and coral",
+      "marigold and charcoal",
+      "marigold and raspberry",
+      "coral",
+      "coral and charcoal",
+      "coral and raspberry",
+      "charcoal",
+      "charcoal and raspberry",
+      "raspberry"
+     ],
+     "typeSpecimen": "marigold",
+     "podShare": {
+      "coral and charcoal": 0.14,
+      "charcoal and raspberry": 0.14,
+      "coral and raspberry": 0.13,
+      "marigold and charcoal": 0.13,
+      "marigold and raspberry": 0.12,
+      "marigold and coral": 0.09,
+      "raspberry": 0.09,
+      "charcoal": 0.07,
+      "coral": 0.05,
+      "marigold": 0.04
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Translucency",
+     "id": "translucency",
+     "loci": [
+      "appearance.flap-translucency"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "opaque",
+      "between",
+      "see-through"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.5,
+      "opaque": 0.27,
+      "see-through": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Pattern",
+     "id": "flap-markings",
+     "loci": [
+      "appearance.flap-marking"
+     ],
+     "part": "flaps",
+     "craft": "pattern layer",
+     "looks": [
+      "plain",
+      "spots",
+      "bars",
+      "bars and spots"
+     ],
+     "typeSpecimen": "plain",
+     "podShare": {
+      "bars": 0.36,
+      "spots": 0.34,
+      "bars and spots": 0.24,
+      "plain": 0.07
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "butter",
+      "butter and peach",
+      "butter and cream",
+      "peach",
+      "peach and cream",
+      "cream"
+     ],
+     "typeSpecimen": "butter",
+     "podShare": {
+      "butter and cream": 0.24,
+      "peach and cream": 0.23,
+      "butter and peach": 0.21,
+      "butter": 0.13,
+      "peach": 0.1,
+      "cream": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.47,
+      "full": 0.27,
+      "small": 0.27
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S13": {
+   "name": "Oskol",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "charcoal",
+      "charcoal and marigold",
+      "charcoal and russet",
+      "marigold",
+      "marigold and russet",
+      "russet"
+     ],
+     "typeSpecimen": "charcoal",
+     "podShare": {
+      "charcoal and marigold": 0.25,
+      "marigold and russet": 0.22,
+      "charcoal and russet": 0.2,
+      "marigold": 0.11,
+      "russet": 0.11,
+      "charcoal": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Trim",
+     "id": "second-colour",
+     "loci": [
+      "appearance.underside-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "slate",
+      "slate and milk-mint",
+      "slate and peach",
+      "milk-mint",
+      "milk-mint and peach",
+      "peach"
+     ],
+     "typeSpecimen": "slate",
+     "podShare": {
+      "milk-mint and peach": 0.22,
+      "slate and peach": 0.22,
+      "slate and milk-mint": 0.2,
+      "peach": 0.16,
+      "milk-mint": 0.11,
+      "slate": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.78,
+      "big, raised": 0.11,
+      "small, low": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.76,
+      "small, close": 0.14,
+      "big, wide": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "barrel",
+     "podShare": {
+      "pear": 0.56,
+      "barrel": 0.34,
+      "egg": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Waist",
+     "id": "waist",
+     "loci": [
+      "growth.join-throat-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "thin",
+      "between",
+      "thick"
+     ],
+     "typeSpecimen": "thick",
+     "podShare": {
+      "between": 0.48,
+      "thick": 0.28,
+      "thin": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.51,
+      "full": 0.24,
+      "small": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Sheaths",
+     "id": "wing-cases",
+     "loci": [
+      "growth.wing-case-extent",
+      "anatomy.wing-case-seam"
+     ],
+     "part": "flaps",
+     "craft": "proportion swap",
+     "looks": [
+      "short, closed",
+      "between",
+      "long, parted"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.5,
+      "long, parted": 0.25,
+      "short, closed": 0.25
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S14": {
+   "name": "Usvel",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "plum",
+      "plum and periwinkle",
+      "plum and raspberry",
+      "periwinkle",
+      "periwinkle and raspberry",
+      "raspberry"
+     ],
+     "typeSpecimen": "plum",
+     "podShare": {
+      "plum and periwinkle": 0.24,
+      "plum and raspberry": 0.23,
+      "periwinkle and raspberry": 0.22,
+      "periwinkle": 0.12,
+      "raspberry": 0.1,
+      "plum": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "small, close",
+     "podShare": {
+      "between": 0.75,
+      "small, close": 0.13,
+      "big, wide": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.5,
+      "full": 0.25,
+      "small": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "slim",
+     "podShare": {
+      "between": 0.55,
+      "slim": 0.35,
+      "stout": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Topline",
+     "id": "back-line",
+     "loci": [
+      "growth.region-bend"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "dipping",
+      "level",
+      "arched"
+     ],
+     "typeSpecimen": "level",
+     "podShare": {
+      "level": 0.53,
+      "arched": 0.24,
+      "dipping": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Skirt",
+     "id": "skirt",
+     "loci": [
+      "growth.foot-skirt-width-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "narrow",
+      "between",
+      "wide"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.49,
+      "narrow": 0.26,
+      "wide": 0.25
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S15": {
+   "name": "Lehten",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "jade",
+      "jade and russet",
+      "jade and lagoon",
+      "jade and charcoal",
+      "russet",
+      "russet and lagoon",
+      "russet and charcoal",
+      "lagoon",
+      "lagoon and charcoal",
+      "charcoal"
+     ],
+     "typeSpecimen": "jade",
+     "podShare": {
+      "russet and lagoon": 0.15,
+      "jade and russet": 0.14,
+      "lagoon and charcoal": 0.13,
+      "russet and charcoal": 0.13,
+      "jade and lagoon": 0.12,
+      "jade and charcoal": 0.11,
+      "russet": 0.07,
+      "charcoal": 0.05,
+      "jade": 0.05,
+      "lagoon": 0.05
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Coat",
+     "trait": "Sheen",
+     "id": "sheen",
+     "loci": [
+      "appearance.sheen"
+     ],
+     "part": "whole body",
+     "craft": "surface",
+     "looks": [
+      "matte",
+      "between",
+      "glossy"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.46,
+      "glossy": 0.28,
+      "matte": 0.26
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.78,
+      "big, wide": 0.11,
+      "small, close": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.81,
+      "small, low": 0.11,
+      "big, raised": 0.08
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Haunch",
+     "id": "hind-body",
+     "loci": [
+      "growth.region-taper"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "small",
+      "between",
+      "full"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.51,
+      "small": 0.26,
+      "full": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Roundness",
+     "id": "roundness",
+     "loci": [
+      "growth.radial-cross-radius"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "flat",
+      "between",
+      "plump"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.48,
+      "flat": 0.28,
+      "plump": 0.24
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Leaves",
+     "id": "leaves",
+     "loci": [
+      "growth.leaf-count",
+      "growth.leaf-length-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "few short",
+      "between",
+      "many long"
+     ],
+     "typeSpecimen": "few short",
+     "podShare": {
+      "between": 0.49,
+      "many long": 0.28,
+      "few short": 0.23
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.57,
+      "barrel": 0.32,
+      "egg": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Legs & tail",
+     "trait": "Rays",
+     "id": "rays",
+     "loci": [
+      "growth.free-proximal-ratio",
+      "growth.free-distal-ratio",
+      "growth.support-radius-ratio"
+     ],
+     "part": "legs & tail",
+     "craft": "proportion swap",
+     "looks": [
+      "short, fine",
+      "between",
+      "long, stout"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.49,
+      "long, stout": 0.27,
+      "short, fine": 0.24
+     },
+     "changedBy": "player"
+    }
+   ]
+  },
+  "S16": {
+   "name": "Blikur",
+   "traits": [
+    {
+     "chapter": "Coat",
+     "trait": "Colour",
+     "id": "colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "part": "whole body",
+     "craft": "palette",
+     "looks": [
+      "periwinkle",
+      "periwinkle and cobalt",
+      "periwinkle and plum",
+      "cobalt",
+      "cobalt and plum",
+      "plum"
+     ],
+     "typeSpecimen": "periwinkle",
+     "podShare": {
+      "periwinkle and cobalt": 0.24,
+      "periwinkle and plum": 0.22,
+      "cobalt and plum": 0.21,
+      "cobalt": 0.13,
+      "plum": 0.1,
+      "periwinkle": 0.1
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Eyes",
+     "id": "eyes",
+     "loci": [
+      "growth.exterior-eye-size-ratio",
+      "growth.exterior-eye-spacing-ratio"
+     ],
+     "part": "eyes",
+     "craft": "proportion swap",
+     "looks": [
+      "small, close",
+      "between",
+      "big, wide"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.79,
+      "small, close": 0.12,
+      "big, wide": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Face",
+     "trait": "Head",
+     "id": "head",
+     "loci": [
+      "growth.head-length-ratio",
+      "growth.head-width-ratio",
+      "growth.head-depth-ratio",
+      "growth.head-lift-ratio"
+     ],
+     "part": "head",
+     "craft": "proportion swap",
+     "looks": [
+      "small, low",
+      "between",
+      "big, raised"
+     ],
+     "typeSpecimen": "between",
+     "podShare": {
+      "between": 0.78,
+      "small, low": 0.14,
+      "big, raised": 0.08
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Body",
+     "id": "body",
+     "loci": [
+      "anatomy.region-longitudinal-form"
+     ],
+     "part": "whole body",
+     "craft": "form swap",
+     "looks": [
+      "egg",
+      "barrel",
+      "pear"
+     ],
+     "typeSpecimen": "egg",
+     "podShare": {
+      "pear": 0.58,
+      "barrel": 0.32,
+      "egg": 0.09
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Build",
+     "id": "build",
+     "loci": [
+      "growth.core-width-ratio",
+      "growth.core-depth-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "slim",
+      "between",
+      "stout"
+     ],
+     "typeSpecimen": "slim",
+     "podShare": {
+      "between": 0.55,
+      "slim": 0.34,
+      "stout": 0.11
+     },
+     "changedBy": "player"
+    },
+    {
+     "chapter": "Shape",
+     "trait": "Waist",
+     "id": "waist",
+     "loci": [
+      "growth.join-throat-ratio"
+     ],
+     "part": "whole body",
+     "craft": "proportion swap",
+     "looks": [
+      "thin",
+      "between",
+      "thick"
+     ],
+     "typeSpecimen": "thin",
+     "podShare": {
+      "between": 0.51,
+      "thin": 0.27,
+      "thick": 0.22
+     },
+     "changedBy": "player"
+    }
+   ]
+  }
+ }
+}
