@@ -40,3 +40,19 @@ All three are principles we already hold ("one machine", "the machine shows what
 ## For Home, in one line
 
 Keep the warm life as the window. Make the instrument side read as working machines joined by visible flow, each showing its state by its own light, in our slate kit. Don't use their white plastic, their holograms or their text.
+
+## UI/UX's structure read (in summary; their findings, folded in)
+
+UI/UX saw all 13 screenshots, the Gameplay trailer at a frame every 4 s and the Demo trailer at one every 3 s. Like me, they couldn't play it or see continuous motion.
+
+- **The hall is the dashboard.** One glance at the room reads production. The management panels appear only when you choose to manage.
+- **Asset cards:** a silhouette, a name, one plain status line and a gear. For us, a pod or resident card is its shell or stand plus one line.
+- **One tracker and one alert:** a single standing objective, a toast for news, red only for real harm. It confirms our single ✓ need.
+- **Every route shown on its key:** small key chips on the controls. UI/UX proposes key-colour chips on Home, so the routes sit on the hardware.
+- **Ghost before commit:** the outcome is shown before you press, as in our decision windows. It should be a reduced-opacity image on a static ground, never translucency over the living window.
+- **Don't take:**
+  - the text density (hotkey legends, cost lists, stat strips);
+  - the management overlays, which are lists of cards with gears, the menu the owner rejected for Home;
+  - the branded white-and-orange look.
+
+**Where we agree:** state as light on the machine, the card as picture plus one line, red only for harm, and the instrument's own screen. **One note from the look side:** if key chips land on Home, they take the device's own key colours and sit on its face as small marks, never as a strip of labels.
