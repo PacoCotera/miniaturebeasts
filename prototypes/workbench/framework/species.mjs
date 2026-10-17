@@ -110,6 +110,20 @@ export const VOCAB = [
   ["charge", "phase", "Phase", ["physiology.phase"], ["solid", "between", "faint"]],
   ["charge", "pull", "Pull", ["physiology.pull"], ["weak", "between", "strong"]],
 ];
+// The self-changing traits (creatures-and-genomics, Self-changing traits; the owner's third kind of locus, 2026-10-09):
+// the mibi changes them within its own life, never the player and never a cross. Each names the end its mark moves
+// toward and what moves it: the places a partner enters on an expedition (the Station's place ids), or a storm passing
+// over the partner (the trip's storm flag). The mark is kept beside the copies, never in them (SELF_MARK).
+export const SELF_CHANGING = {
+  glow: { toward: "bright", places: ["cave", "wood"], storm: false },
+  "light-feeding": { toward: "high", places: ["meadow", "pond", "rock"], storm: false },
+  phase: { toward: "solid", places: [], storm: true },
+};
+// The mark's rules: a step is 1/16 of the species' pool range, at most one a dock when the trigger was met, up to four
+// steps; three partner expeditions without the trigger take one step back. Only the partner changes; a child starts at none.
+export const SELF_MARK = { stepOf: 16, maxSteps: 4, fadeAfter: 3 };
+// Who changes a locus (the owner's kinds): the species (locked), the player (a configurable look), breeding only, or the mibi itself.
+export const changedByOf = (row, trait) => (row.kind === "locked" ? "species" : SELF_CHANGING[trait?.id] ? "self" : trait?.shapeable ?? row.shapeable ? "player" : "breeding");
 const vocabTrait = (id) => { const t = VOCAB.find((v) => v[1] === id); if (!t) throw new Error(`vocabulary has no trait ${id}`); return { chapter: t[0], id: t[1], name: t[2], loci: t[3], looks: t[4] }; };
 
 // --- the frame -------------------------------------------------------------------------------------
@@ -240,6 +254,15 @@ export function buildFrame(spec, options = {}) {
 
 function shuffle(r, list) { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
+// A self-changing trait's entry in a frame: its rule, with the end it moves toward checked against the species' pool
+// (a frame whose pool does not hold that end cannot carry the trait as self-changing: the build stops, nothing is guessed).
+function selfChangingOf(t, pools) {
+  const rule = SELF_CHANGING[t.id], pool = pools[t.loci[0]] ?? [];
+  if (t.loci.length !== 1) throw new Error(`self-changing trait ${t.id} must be one locus, has ${t.loci.length}`);
+  if (!pool.includes(rule.toward)) throw new Error(`self-changing trait ${t.id}: its end "${rule.toward}" is not in the pool [${pool.join(", ")}]`);
+  return { toward: rule.toward, places: [...rule.places], storm: rule.storm, ...SELF_MARK };
+}
+
 function finishFrame(frame, spec) {
   const { _pools: pools, _locked: locked, _traits: traits, _sealed: sealed, _typical: typical = {} } = frame;
   const plan = planFacts(frame.plan.key, frame.plan.extras);
@@ -264,15 +287,16 @@ function finishFrame(frame, spec) {
       const t = traitOf[id];
       const [onNow] = ownerOn(id, vOn), [offNow] = ownerOn(id, vOff);
       if (!onNow) throw new Error(`${frame.species.id}: open locus ${id} is switched off by the frame (an invisible trait)`);
-      const shapeable = t.shapeable ?? nature === "look";
+      const shapeable = SELF_CHANGING[t.id] ? false : t.shapeable ?? nature === "look";
       const kind = t.chapter in sealed ? "sealed" : !offNow && !isPartSwitch(id) ? "sleeping" : `heritable-${nature}`;
       row.kind = kind; row.nature = nature; row.chapter = t.chapter; row.trait = t.id; row.shapeable = shapeable; row.alleles = pools[id]; row.looks = looksFor(locus, pools[id]);
       row.guard = kind === "sleeping" ? `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on` : locus.consumer;
+      row.changedBy = changedByOf(row, { id: t.id, shapeable });
       if (typical[id]) row.typical = typical[id];
     } else {
       row.kind = "locked"; row.lockReason = isPartSwitch(id) ? "switch" : "fixed"; row.chapter = null; row.trait = null; row.shapeable = false;
       row.copies = locked[id]; row.looks = looksFor(locus, [locked[id][0]]); row.guard = locus.consumer;
-      row.nature = nature;
+      row.nature = nature; row.changedBy = "species";
     }
     rows.push(row);
   }
@@ -282,14 +306,14 @@ function finishFrame(frame, spec) {
     const ts = traits.filter((t) => t.chapter === ch);
     if (!ts.length) continue;
     chapters.push({ id: ch, name: CHAPTER_NAMES[ch], sealed: ch in sealed, ...(ch in sealed ? { opensWith: sealed[ch], findKind: findKindOf(sealed[ch]) } : {}),
-      traits: ts.map((t) => ({ id: t.id, name: t.name, loci: t.loci, looks: t.looks ?? looksFor(LOCI.get(t.loci[0]), pools[t.loci[0]]), nature: isDoing(t.loci[0]) ? "doing" : "look", shapeable: t.shapeable ?? !isDoing(t.loci[0]), ...(t.override ? { override: t.override } : {}), verdict: t.verdict ?? null })) });
+      traits: ts.map((t) => ({ id: t.id, name: t.name, loci: t.loci, looks: t.looks ?? looksFor(LOCI.get(t.loci[0]), pools[t.loci[0]]), nature: isDoing(t.loci[0]) ? "doing" : "look", shapeable: SELF_CHANGING[t.id] ? false : t.shapeable ?? !isDoing(t.loci[0]), ...(t.override ? { override: t.override } : {}), ...(SELF_CHANGING[t.id] ? { selfChanging: selfChangingOf(t, pools) } : {}), verdict: t.verdict ?? null })) });
   }
   frame.chapters = chapters;
   const count = (p) => rows.filter(p).length;
   frame.counts = {
     carried: rows.length, trunk: count((x) => x.scope === "trunk"), branch: count((x) => x.scope === "branch"), absent: frame.absent.length,
     locked: count((x) => x.kind === "locked"), lockedBy: { switch: count((x) => x.lockReason === "switch"), fixed: count((x) => x.lockReason === "fixed") },
-    heritableLook: count((x) => x.kind === "heritable-look"), heritableDoing: count((x) => x.kind === "heritable-doing"), sleeping: count((x) => x.kind === "sleeping"), sealed: count((x) => x.kind === "sealed"),
+    heritableLook: count((x) => x.kind === "heritable-look"), heritableDoing: count((x) => x.kind === "heritable-doing"), selfChanging: count((x) => x.changedBy === "self"), sleeping: count((x) => x.kind === "sleeping"), sealed: count((x) => x.kind === "sealed"),
     open: count((x) => x.kind !== "locked"), traits: traits.length,
     byChapter: Object.fromEntries(chapters.map((c) => [c.name, { loci: c.traits.reduce((s, t) => s + t.loci.length, 0), traits: c.traits.length }])),
     fieldGuideLooks: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + x.looks.length, 0),
