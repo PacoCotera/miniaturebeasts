@@ -7,7 +7,7 @@ written: 2026-10-17 11:00
 ---
 # Home, from UI/UX
 
-Source: the Home goldens on `batch/B-20261016-4` (`prototypes/face/golden/home/`): docked, fresh, away, waiting, goal-docked, incubator-ready, moving-asleep. All were judged at 1×. Numbered marks: `results/T-20261016-186-uiux/home-callouts.png`.
+Source: the Home goldens on `batch/B-20261016-4` (`prototypes/face/golden/home/`): docked, fresh, away, waiting, goal-docked, incubator-ready, moving-asleep. All were judged at 1×. Numbered marks: `results/T-20261016-186/ui-ux-home-callouts.png`.
 
 My lens is how fast a glance answers three questions: *what is alive*, *what is waiting for me*, and *what does ✓ do*. I also ask whether that answer serves the cozy reading and the curious reading, and the step between them.
 
@@ -57,6 +57,24 @@ My lens is how fast a glance answers three questions: *what is alive*, *what is 
    - When one is waiting, only the lamp and the focus ring say so.
    - The calm modules have no way to step back.
    - The window frame is a pale bezel rather than the recess the device rules ask for. That is a question for the art director, not for me.
+
+## Navigation, focus and hand-offs (against the T-181 flow, `specs/flow-pass-spec.md`)
+
+1. **Focus lands right.** When a notice leads, focus sits on the module it names, and ✓ does what the bottom line says (`home-incubator-ready`). That is frame 01 of the flow pass. Keep it.
+2. **There are two focus styles on one screen.**
+   - A module gets the house ring.
+   - A mibi gets an ellipse under its feet plus a name tag (`home-moving-asleep`).
+   - Proposal: one focus language. On a mibi, use the house ring around its spot, with its name in the middle slot rather than a floating tag over the picture.
+3. **Home is where every carry ends.**
+   - After the hatch, ← goes to Home and the new mibi is in the window.
+   - Home should treat a returning carry as its moment: the arrival is the only motion, and no notice describes it as well.
+4. **The words drift from the rooms.**
+   - "three new pods in the rack" names a rack.
+   - The Pods screen is a case with wells.
+   - Notices should use the room's own nouns, or the hand-off from word to picture breaks.
+5. **The way to depth is hidden.**
+   - From Home, the genome of a mibi sits behind "Look at Dot", and nothing on Home says it exists.
+   - Proposal 1 below fixes this with a glance, not a new route. The ← table and the flow stay as they are.
 
 ## Proposals, ranked
 
