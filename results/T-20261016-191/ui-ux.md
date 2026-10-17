@@ -68,7 +68,7 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 | Slot | Holds |
 | --- | --- |
 | left | ✓ **Look at {name}** (today's verb; the name lives here) |
-| middle | its origin, without the name (the verb carries it; the game designer, `results/T-20261016-191/game-designer.md`): "child of Moss and Fig", "from a pond pod". An open event replaces it until visited: "just grew up", "an elder now". If the names overflow: "Moss's child" |
+| middle | its origin, without the name (the verb carries it; the game designer, `results/T-20261016-191/game-designer.md`): "child of Moss and Fig", "from a pond pod". An open event replaces it until visited: "just grew up", "an elder now". If both parents' names together overflow 208 px: "{first parent}'s child" ("Dot's child") |
 | right | a notice only when it is about something other than ✓ (the T-186 slot rule); otherwise the player's thread |
 
 - **Read together:** "Look at Dot · child of Moss and Fig".
