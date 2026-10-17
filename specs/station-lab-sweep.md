@@ -32,6 +32,8 @@ Creative director, 2026-10-17 (America/Mexico_City).
 | 9 | Style guide Research rows ("the work tray … among field tools"; Create's and the Probe's "Vibe: Research: the work tray") | Workbench framing | Framing | **The lab's instruments:** the genome editor (Create), the splicer (Cross and Wish), the Probe's service dock | CD (style/lab) |
 | 10 | Home, Habitat, mibi up close (style guide) | "the name is on the tag under the resident"; "its name on a tag under its feet" | Wording only (drawn as dark plates) | "name plate" | CD (style/lab) |
 
+| 11 | Create and the Incubator (T-126 widened) | The genome field (`art/references/genome-field/`) | The machine's screen | **The lab machine's main screen:** a dark matte display in the sage housing, drawing the founder's genome as a live field of linked loci, in the device's own marks. The references' neon-on-navy look is dropped (`specs/slip-visual-intent.md`, "Widened") | Game designer and UI/UX (T-126), CD on the world |
+
 **The Library is exempt.** Its book, pages, paper labels, ink and the ring on paper stay as they are.
 
 ## 2. Amendments made with this ticket (work-queue)

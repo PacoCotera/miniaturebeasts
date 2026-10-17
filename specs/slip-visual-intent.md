@@ -50,3 +50,28 @@ Written 2026-10-17 (America/Mexico_City), as the CD's input to UI/UX's T-2026101
 `slip-208x288`, `slip-208x408`, the text lists on both screens, and Pods' found sentence on the Incubator. The just-cleared card stays: it is the reveal, with a picture.
 
 **Why a screen, and not paper:** what the player changes must update live, so the object that shows it must be one that updates: the machine's display (the gate's check 10, `specs/gate-recalibration.md` §5).
+
+## Widened (T-126, owner 04:10): the genome field is the machine's screen
+
+**What it is in the world, in one sentence:** the genome field is the main screen of the lab's genome-editing machine. It is a large dark, matte display let into the sage housing, on which the machine draws the founder's genome live, as a woven field of linked loci. The drums are the machine's controls, and the founder on the dish is what they make.
+
+**On the Incubator,** the same machine screen shows the same field beside the pod, its unknown nodes clearing as the chapters clear.
+
+**The readout above becomes the field's compact form.** Its marks (unlit ring, lit disc, frost, red cross, joined rings) are the field's node states, not a separate box.
+
+**Kept in the Station style** (`art/references/genome-field/` 01, 05, 06 are references for structure, not for look):
+- **Keep the structure:**
+  - regions as clustered neighbourhoods;
+  - each locus a node with its two copies;
+  - state by shape (known, carried, unknown, changed), never by a sentence;
+  - focus by corner brackets;
+  - a change expanding in place, before against after, with the field still visible (05);
+  - detail on request, returning to the same spot (06).
+- **Drop the references' look:** the navy ground with glowing neon lines, the pixel-terminal type, the baked words, the resources and the knob. The guide's Never list ("glowing HUDs, holograms, neon … sterile labs") rules them out.
+- **In its place:**
+  - the display is dark matte slate, flush in the sage housing with a rubber gasket and screws, no gloss or reflection;
+  - lines and nodes are drawn in the device's own marks: mint (`lampOn`) for lit, the frost for unknown, red only for a clash;
+  - lit marks are small, with at most a 1–2 px soft edge and no bloom;
+  - type is Inter, crisp, and only in the opened detail (gate check 8).
+- **Letters and codes** live only in the opened detail, never on the field (the locus is abstracted from the player).
+- **On the Incubator** the field must stay at least 0.08 under the pod's p95 (the brightness rule): the pod stays the brightest thing.
