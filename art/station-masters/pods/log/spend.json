@@ -4650,5 +4650,39 @@
    "thoughtsTokenCount": 361,
    "totalTokenCount": 2953
   }
+ },
+ {
+  "tag": "vivarium-day-tall try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191158,
+  "mxn": 3.8232,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:16:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 539,
+   "candidatesTokenCount": 1333,
+   "thoughtsTokenCount": 251,
+   "totalTokenCount": 2123
+  }
+ },
+ {
+  "tag": "vivarium-day-tall-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.179026,
+  "mxn": 3.5805,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:17:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 593,
+   "candidatesTokenCount": 1315,
+   "thoughtsTokenCount": 167,
+   "totalTokenCount": 2075
+  }
  }
 ]

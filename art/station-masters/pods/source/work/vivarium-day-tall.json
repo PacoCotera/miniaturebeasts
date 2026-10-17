@@ -1,0 +1,16 @@
+[
+ {
+  "name": "vivarium-day-tall",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:4",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "The signed day vivarium (project-owned): THE SAME PLACE to paint again: its moss bed, stones, roots, burrow mound and small pool, in its warm daylight from the top left and its painted matte style. Paint this same scene, framed taller and lower and closer."
+   ]
+  ],
+  "prompt": "Paint the same vivarium place as the reference, in the same painted matte style and the same warm daylight from the top left, with the same moss, stones, roots, burrow and water, but in a TALL PORTRAIT framing: the camera low and close on the floor. The lower 75 to 80 percent of the picture is the floor: a moss bed deep enough, front to back, for six small animals to stand at two depths without crowding, the burrow mound rising at ONE side, and a small pool of water. The floor's walking line is level and clear, so animals standing on it would read as standing on the ground. Soil shows only as a thin edge along the very bottom. The TOP 20 percent is one calm band of canopy and light, softly out of focus. Keep OUT of the picture: any device wall, bezel, frame, hose or mister; any animals, creatures, birds, insects or people; any text, numbers, labels or marks. No glow effects, no borders."
+ }
+]
