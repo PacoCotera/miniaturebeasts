@@ -63,3 +63,6 @@ Tickets, the specs they cite (`specs/`), and results live on this branch. Code l
 
 ## Freeze on visual work until the style guide is rewritten (lead, 2026-10-17 06:55 UTC)
 No new visual concepts, art or UI builds start until T-20261016-172 lands. T-172 rewrites design/style-guide/ into one binding guide; it is not a new file beside it. Non-visual work continues: genome and framework code, Companion data, tests, and the device sheet tool. Design changes are made in the design documents themselves. A spec in work-queue specs/ is a draft until the documentation lead folds it into design/.
+
+## The owner steers; experts propose (owner, 2026-10-17 16:29 UTC)
+"experts must propose, nut just receive my feedback as narrow commands. what I do is more steering than prescribing" Treat the owner's examples as signals of what is missing, not as the content or the structure. Design roles bring their craft: they propose the structure, fill the gaps the owner didn't name, and say why. A brief that turns an owner example into a checklist is wrong; push back on it.
