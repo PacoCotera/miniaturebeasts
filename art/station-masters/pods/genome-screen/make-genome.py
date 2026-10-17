@@ -8,13 +8,17 @@ is the one lit hue; red only for a clash. Nothing here is taken from art/referen
   grain, no picture; four screws in the bezel's corners.
 - genome-gene-{open,open-lit,open-clash,closed,self}-24x24: the gene marks without the pair (the pair goes at (4, 7)): open, a ring with three
   tumbler ticks, its inside slate (so the tree's lines stop at it); lit, the ring in mint with the notch 3 x 6 at (21, 9); clash, the ring's rim red; closed, a shut disc with the joined rings
-  (inherited-only); self, a small ring with four step marks (3 x 3, unlit) round it.
+  (inherited-only); self, the shut disc with four step marks (T-138).
 - genome-pair-{front,blend,first,second}-{dim,lit}-16x10: the copy pair. Copy 1 bone, copy 2 sand. front: copy 1 solid in front, copy 2 an
   outline behind; blend: one lens, half each; first: copy 1 twice; second: copy 2 twice. dim at the unlit level; lit at full level.
 - genome-frost-24x24 (a 20 x 20 chip at (2, 2)), genome-frost-160x128: still a surprise, the house frost on slate.
 - genome-hub-{S01..S16}-24x24: the species' own glyph (its frame's 5 x 5 glyph) in a ring; genome-lock-8x10: the lock.
-- genome-cross-12x12 (toward the Cross: a small x), genome-glint-{gold,wish}-10x10 (the house four-point glint), genome-first-10x8 (a
-  point-up triangle, cream with a gold edge, never a star), genome-place-{meadow,pond,rock,wood,cave}-12x12 (the place badge, cut from place-{p}-32x32).
+- genome-cross-12x12 (toward the Cross: a small x), genome-glint-gold-12x12 (the chapter's glint, on its emblem) and genome-glint-wish-10x10
+  (the house four-point glint), genome-first-10x8 (a point-up triangle, cream with a gold edge, never a star),
+  genome-place-{cave,wood,meadow,pond-edge,rock-field}-10x10 (a trigger place's badge, cut from place-{p}-32x32).
+- T-20261016-138 (the framework's delta, T-136): genome-gene-only-24x24 and genome-pair-only-16x10 (one look: the ring without ticks, two
+  equal fog discs); genome-gene-self-24x24 redrawn as the inherited-only disc with four step marks; the 12 x 12 places and the 10 x 10 gold
+  glint withdrawn (not made).
 - genome-sealed-{crystal,pearl,shard}-24x24 (the find's picture, from find-{f}-112x112), genome-veil-160x128 (the dim veil),
   genome-focus-32x32 (the house focus ring at gene scale: 2 px focus, radius 15).
 usage: python3 -I genome-screen/make-genome.py SLICES_DIR FRAMES_DIR OUT_DIR   (run in art/station-masters/pods)"""
@@ -83,6 +87,7 @@ TICK = (0, 120, 240)
 open_ring = np.maximum(ring(8.6, 10.6), ticks(9.5, 12.0, TICK, w=2.0))
 inner = soft(8.9 - r)                                                       # the ring's inside, slate: the branch line stops at the mark
 save("genome-gene-open-24x24", layers(24, 24, [(inner, SLATE), (open_ring, DIM_RING)]))
+save("genome-gene-only-24x24", layers(24, 24, [(inner, SLATE), (ring(8.6, 10.6), DIM_RING)]))     # T-138: one look, no ticks (it does not turn)
 notch = np.minimum(np.minimum(soft(x - 21), soft(24 - x)), np.minimum(soft(y - 9), soft(15 - y)))
 save("genome-gene-open-lit-24x24", layers(24, 24, [(inner, SLATE), (open_ring, P("mint")), (notch, P("mint"))]))
 save("genome-gene-open-clash-24x24", layers(24, 24, [(inner, SLATE), (open_ring, DIM_RING), (ring(9.0, 11.2), P("red")), (ticks(10.0, 12.0, TICK), P("red"))]))
@@ -90,9 +95,10 @@ disc = soft(10.6 - r)
 jr = lambda cx: np.minimum(soft(np.hypot(x - cx, y - 12) - 2.6), soft(3.9 - np.hypot(x - cx, y - 12)))
 save("genome-gene-closed-24x24", layers(24, 24, [(disc, [62, 64, 76]), (np.maximum(jr(10.0), jr(14.0)), P("mist"))]))
 steps = np.zeros_like(r)
-for cx, cy in ((3.5, 3.5), (20.5, 3.5), (3.5, 20.5), (20.5, 20.5)):
+for cx, cy in ((2.0, 2.0), (22.0, 2.0), (2.0, 22.0), (22.0, 22.0)):
     steps = np.maximum(steps, np.minimum(soft(1.5 - np.abs(x - cx)), soft(1.5 - np.abs(y - cy))))
-save("genome-gene-self-24x24", layers(24, 24, [(soft(7.0 - r), SLATE), (ring(6.8, 8.6), DIM_RING), (steps, [70, 84, 76])]))
+# T-138: self-changing is the inherited-only mark (the shut disc, the joined rings) with four step marks round it, always unlit here
+save("genome-gene-self-24x24", layers(24, 24, [(soft(9.6 - r), [62, 64, 76]), (np.maximum(jr(10.0), jr(14.0)), P("mist")), (steps, [70, 84, 76])]))
 # ---------- the copy pair, 16 x 10: two copies side by side, the front one edged in slate so the two never merge
 y, x = grid(16, 10)
 dsc = lambda cx, rr=3.9: soft(rr - np.hypot(x - cx, y - 5))
@@ -106,6 +112,8 @@ for lvl, k in (("dim", 0.62), ("lit", 1.0)):
     save(f"genome-pair-blend-{lvl}-16x10", layers(16, 10, [(lens * (x < 8), c1), (lens * (x >= 8), c2), (np.minimum(lens, seam), SLATE)]))
     save(f"genome-pair-first-{lvl}-16x10", layers(16, 10, [(dsc(10.8), c1 * 0.9), (edge(5.2), SLATE), (dsc(5.2), c1)]))
     save(f"genome-pair-second-{lvl}-16x10", layers(16, 10, [(dsc(10.8), c2 * 0.9), (edge(5.2), SLATE), (dsc(5.2), c2)]))
+cf = P("fog") * 0.62 + SLATE * 0.38                                       # T-138: one look, two equal fog discs, unlit
+save("genome-pair-only-16x10", layers(16, 10, [(dsc(10.8), cf), (edge(5.2), SLATE), (dsc(5.2), cf)]))
 # ---------- frost
 def frost(w, h, inset, rad, name):
     yy, xx = np.mgrid[0:h, 0:w] + .5
@@ -138,20 +146,22 @@ save("genome-lock-8x10", layers(8, 10, [(np.maximum(body, sh), P("mist")), (key,
 y, x = grid(12, 12)
 xm = np.maximum(soft(0.8 - np.abs((x - 6) - (y - 6)) / 1.414), soft(0.8 - np.abs((x - 6) + (y - 6)) / 1.414)) * soft(4.2 - np.hypot(x - 6, y - 6))
 save("genome-cross-12x12", layers(12, 12, [(xm, P("mist"))]))
-# ---------- the glints, 10 x 10: the house four-point glint (an astroid, as glint-star-12x12)
+# ---------- the glints: the house four-point glint (an astroid, as glint-star-12x12). T-138: the gold one is the chapter's, 12 x 12 on its
+# emblem (never on a gene); the wish glint stays 10 x 10 on a gene
 y, x = grid(10, 10); dx, dy = np.abs(x - 5) / 4.9, np.abs(y - 5) / 4.9
-star = soft((1 - (dx ** (2 / 3) + dy ** (2 / 3))) * 4.0)
-save("genome-glint-gold-10x10", layers(10, 10, [(star, P("gold"))])); save("genome-glint-wish-10x10", layers(10, 10, [(star, P("yellow"))]))
+save("genome-glint-wish-10x10", layers(10, 10, [(soft((1 - (dx ** (2 / 3) + dy ** (2 / 3))) * 4.0), P("yellow"))]))
+y, x = grid(12, 12); dx, dy = np.abs(x - 6) / 5.9, np.abs(y - 6) / 5.9
+save("genome-glint-gold-12x12", layers(12, 12, [(soft((1 - (dx ** (2 / 3) + dy ** (2 / 3))) * 4.8), P("gold"))]))
 # ---------- the first mark, 10 x 8: a point-up triangle in cream with a gold edge (never a star)
 y, x = grid(10, 8)
 tri = lambda inset: soft(np.minimum(7.4 - inset - y, ((y - 0.6) * 4.4 - np.abs(x - 5) * 6.8) / 8.1 - inset))
 save("genome-first-10x8", layers(10, 8, [(tri(0), P("gold") * 0.75), (tri(1.0), P("cream"))]))
-# ---------- the place badges, 12 x 12, cut from the signed place pictures
-y, x = grid(12, 12); circ = soft(5.6 - np.hypot(x - 6, y - 6)); rim = np.minimum(soft(np.hypot(x - 6, y - 6) - 5.0), circ)
-for pl_ in ("meadow", "pond", "rock", "wood", "cave"):
-    im = np.asarray(Image.open(os.path.join(sl, f"place-{pl_}-32x32.png")).convert("RGB").resize((12 * S, 12 * S), Image.LANCZOS)).astype(float)
-    col = lin(im) * (1 - rim[..., None] * 0.6); a1 = down(circ, 12, 12); c1 = down(col * circ[..., None], 12, 12) / np.maximum(a1, 1e-6)[..., None]
-    save(f"genome-place-{pl_}-12x12", np.dstack([srgb(c1), a1 * 255]))
+# ---------- the place badges, 10 x 10 (T-138), cut from the signed place pictures: one per trigger place, stacked at (25, -2 + 11k)
+y, x = grid(10, 10); circ = soft(4.6 - np.hypot(x - 5, y - 5)); rim = np.minimum(soft(np.hypot(x - 5, y - 5) - 4.0), circ)
+for kind, pl_ in (("cave", "cave"), ("wood", "wood"), ("meadow", "meadow"), ("pond-edge", "pond"), ("rock-field", "rock")):
+    im = np.asarray(Image.open(os.path.join(sl, f"place-{pl_}-32x32.png")).convert("RGB").resize((10 * S, 10 * S), Image.LANCZOS)).astype(float)
+    col = lin(im) * (1 - rim[..., None] * 0.6); a1 = down(circ, 10, 10); c1 = down(col * circ[..., None], 10, 10) / np.maximum(a1, 1e-6)[..., None]
+    save(f"genome-place-{kind}-10x10", np.dstack([srgb(c1), a1 * 255]))
 # ---------- the sealed finds, 24 x 24, from the signed find pictures
 for f_ in ("crystal", "pearl", "shard"):
     im = Image.open(os.path.join(sl, f"find-{f_}-112x112.png")).convert("RGBA"); a = np.asarray(im).astype(float); pm = a.copy(); pm[..., :3] *= a[..., 3:] / 255

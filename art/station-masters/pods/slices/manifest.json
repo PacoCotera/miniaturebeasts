@@ -18300,11 +18300,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "a self-changing gene: a small ring with four step marks round it (unlit on a founder); the pair at (4, 7), the place badge at (25, -4)",
-  "sha256": "6c092c283e93665cdbde562a5f3ed12fd0a5e0ddd0b226a923adaa69941dd722",
+  "made": "a self-changing gene (only S03 Glow, S15 Basking, S16 Phase): the inherited-only mark (the shut disc, the joined rings) with four step marks round it, always unlit on Create and the Incubator; its trigger places' badges stacked at (25, -2 + 11k)",
+  "sha256": "c8e80dc38243908234e14516cb11cb6dca986c6d8e1b483f6f38e61ddd880965",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "redrawn (10-17, T-20261016-138)"
  },
  "genome-glint-gold-10x10": {
   "size": [
@@ -18315,9 +18315,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "the house four-point glint, gold: something new under the frost",
   "sha256": "0965983f853486422ccb63e64d07ad6163e6b66697797c8eb6b918edd8e76961",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-138): the gold glint is the chapter's, 12 x 12 on its emblem, never on a gene"
  },
  "genome-glint-wish-10x10": {
   "size": [
@@ -18666,9 +18666,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "the place badge (cave) that moves a self-changing gene: cut from place-cave-32x32",
   "sha256": "1bd0c749f8d7ceaa4da77a5bb41a35976e72b26a47a6930ef951a8aa1f616655",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-138): the badges are 10 x 10, one per trigger place"
  },
  "genome-place-meadow-12x12": {
   "size": [
@@ -18679,9 +18679,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "the place badge (meadow) that moves a self-changing gene: cut from place-meadow-32x32",
   "sha256": "cdbec0033c464ad823943b81d3098840700ace1e82e3d9a4210f7a6daa7d2c1d",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-138): the badges are 10 x 10, one per trigger place"
  },
  "genome-place-pond-12x12": {
   "size": [
@@ -18692,9 +18692,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "the place badge (pond) that moves a self-changing gene: cut from place-pond-32x32",
   "sha256": "d12bfa880ecade85bff9fcfeda163e246b49a4047e1fa6e4a9db8914e52b69d5",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-138): the badges are 10 x 10, one per trigger place"
  },
  "genome-place-rock-12x12": {
   "size": [
@@ -18705,9 +18705,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "the place badge (rock) that moves a self-changing gene: cut from place-rock-32x32",
   "sha256": "43b8efef2f6e141a8f584597a1d285f8200da9816fe6e590e395c9f7f4f464bd",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-138): the badges are 10 x 10, one per trigger place"
  },
  "genome-place-wood-12x12": {
   "size": [
@@ -18718,9 +18718,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "the place badge (wood) that moves a self-changing gene: cut from place-wood-32x32",
   "sha256": "1e9b6074e49a7f64ff6d229b35d67a994c7f0d84547cf14e293667d59bcaefda",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-138): the badges are 10 x 10, one per trigger place"
  },
  "genome-sealed-crystal-24x24": {
   "size": [
@@ -18845,5 +18845,109 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
   "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-gene-only-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "one look (only): the open ring without ticks (it does not turn); the pair genome-pair-only at (4, 7)",
+  "sha256": "1bc257ee69ff334531490aa4e7fc6f654d9ded5be7908564e8eb0fb1d417a161",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-pair-only-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "one look: two equal discs in fog, unlit: both copies the same, nothing to choose",
+  "sha256": "c60cfed4fdce685468f41c42714727b70bde7cbab044af292453fd8917cdb56e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-glint-gold-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the chapter's glint, once per unread chapter where the pod glints: the house four-point glint in gold, 12 x 12 at (16, -4) of the emblem (on the compact Incubator, of the row's first gene); never on a gene",
+  "sha256": "3894362bf6f7802844f7522ac56978ed3f8d0f47ed5baecff020aa37054eebf2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-place-cave-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: cave, cut from place-cave-32x32; stacked at (25, -2 + 11k)",
+  "sha256": "8f19eca5cd84a7a8fb6b12835d28d85d11a519abfe0364c4146d4ed9452bcd13",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-place-wood-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: wood, cut from place-wood-32x32",
+  "sha256": "809703c838a44bdf0d094b4bd468986746753515852372c91cf9c223fc71c8a1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-place-meadow-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: meadow, cut from place-meadow-32x32",
+  "sha256": "47906b20d73997743023dfec78d349033c831c56c6255f28fed6e8f9a340ec74",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-place-pond-edge-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: pond edge, cut from place-pond-32x32",
+  "sha256": "e35407654e0e8d834e52dcdcf95ed8a3800fc4031d556fb6cc9ee4711263eadf",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
+ },
+ "genome-place-rock-field-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: rock field, cut from place-rock-32x32",
+  "sha256": "c7dffd26b914f41d3c3ca3be81e8c3e9bfaee0fca5e3e9a93a964b3bedcbe62b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "status_note": "new (10-17, T-20261016-138)"
  }
 }

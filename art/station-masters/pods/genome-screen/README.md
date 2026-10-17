@@ -56,3 +56,30 @@ The bench's main screen and its compact twin on the Incubator (`specs/station-ge
 | ready | 0.675 | 0.230 | 0.445 |
 
 **Placement:** masters-pods has no `place-masters.mjs`, so the build places them with: `node prototypes/ui/tools/place-masters.mjs --from <masters-pods>/art/station-masters/pods --only --ids <the ids above> --group pods`.
+
+## T-20261016-138: the delta after the framework's fidelity fixes (T-136)
+The genome engineer checked the screen against the real frames (T-135), and T-136 redrew the spec and wireframes 01–09. The art follows them.
+
+**Changed or new** (all signed):
+- **One look** (`only`), new: `genome-gene-only-24x24`, the ring without ticks (it does not turn), and `genome-pair-only-16x10`, two equal `fog` discs. It is the commonest configurable state.
+- **Self-changing,** redrawn: `genome-gene-self-24x24` is now the inherited-only mark (the shut disc and joined rings) with four step marks round it, always unlit here. It is only on the traits the frame flags: S03 Glow, S15 Basking and S16 Phase.
+- **Trigger places,** new: `genome-place-{cave,wood,meadow,pond-edge,rock-field}-10x10`, one per trigger place, stacked at (25, −2 + 11k). They are cut from the signed place pictures; pond edge and rock field are the pond and rock places.
+- **The chapter's glint,** new: `genome-glint-gold-12x12`, once per unread chapter, on its emblem at (16, −4). On the compact Incubator it sits at the row's first gene. It is never on a gene.
+
+**Withdrawn** (not deleted): `genome-place-*-12x12` and `genome-glint-gold-10x10`.
+
+**Standing unchanged:** the housings, every other gene mark and pair, the frost, the hubs, the lock, the cross, the wish glint, the first mark, the sealed finds, the veil and the focus ring. They rebuild byte for byte.
+
+**Geometry only** (the face's, no art): clash is now a set of red rims, mirrored on the drums, with no link. The switch's dots turn `bone` when the pod's switch is on. An unread row shows no bar or dots. The Cross line runs only from a breed-only last gene.
+
+**Owed:** the storm badge for S16 Phase. No storm picture exists, and the badges are cut from place paintings, never invented symbols. Phase sits in a sealed chapter (Charge), so the badge is first seen when that chapter opens.
+
+**Proofs, redone at 1×** against the redrawn wireframes (`proof/`):
+- **`genome-create-S03-1x.png` (01):** S03 from its frame.
+  - **Rows:** Colour changed (copy 1 kept); Markings the switch with its sleeping loci; Scales, Snout, Haunch and Tail one look; Eyes kept and new to the guide (focused); Topline with the wish glint; Claws inherited-only; Movement toward the Cross; Stamina frosted with its glint on the emblem; Character frosted; Glow self-changing (cave, wood) and Duration breed-only, carrying the Cross line.
+  - **The bay:** the eye's copies show the gene's mark (S03's eyes have no picture yet), copy 1 under the veil and copy 2 in the mint frame.
+- **`genome-create-S03-clash-1x.png` (02):** a clash set (Eyes, Build), red rims only, mirrored on the drums.
+- **`genome-incubator-S03-{cool,warm,glowing,ready}-1x.png` (06):** Stamina just cleared, Character frosted with its glint at the row's first gene. The compact rows leave out the place badges, because the 28 px pitch has no room.
+- **`genome-marks-1x.png` and `-4x.png`:** the mark family with the delta.
+
+**Brightness (Incubator), re-taken:** margins of 0.388, 0.337, 0.466 and 0.473 (cool, warm, glowing, ready), against a minimum of 0.08.

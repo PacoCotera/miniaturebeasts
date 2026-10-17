@@ -1,4 +1,4 @@
-"""T-20261016-130 proofs at 1x, composed at specs/station-genome-screen-spec.md's rects, labelled inside each image.
+"""T-20261016-130 proofs at 1x (redone for T-20261016-138 against the redrawn wireframes 01, 02 and 06: the real S03 frame), composed at specs/station-genome-screen-spec.md's rects, labelled inside each image.
 - genome-create-S03-1x.png: Create, shape, S03 (8 chapters, 4 look rows). Coat: Colour as the pod is, Trim a blend, Markings the switch with
   its five sleeping loci behind the gate bar, Scales changed (copy 2 chosen, lit, the notch). Face: Crest changed and a first (focused: the
   focus ring; the bay shows its two copies, copy 1 dropped under the veil, copy 2 kept in the mint frame). Legs and tail: Feet inherited-only.
@@ -23,58 +23,52 @@ def lin(c): c = np.asarray(c, float) / 255; return np.where(c <= .04045, c / 12.
 Y = lambda a: lin(a[..., :3]) @ np.array([.2126, .7152, .0722])
 LINE, DOT = C("sageD"), C("stone")
 def rect(f, x, y, w, h, col): ImageDraw.Draw(f).rectangle([x, y, x + w - 1, y + h - 1], fill=col)
-def gene(f, x, y, kind, pair=None, first=False, glint=None, place=None):
+def gene(f, x, y, kind, pair=None, first=False, wish=False, places=()):
     f.alpha_composite(S(f"genome-gene-{kind}-24x24"), (x, y))
     if pair: f.alpha_composite(S(f"genome-pair-{pair}-16x10"), (x + 4, y + 7))
-    if first: f.alpha_composite(S("genome-first-10x8"), (x + 16, y))
-    if glint: f.alpha_composite(S(f"genome-glint-{glint}-10x10"), (x + 16, y))
-    if place: f.alpha_composite(S(f"genome-place-{place}-12x12"), (x + 25, y - 4))
-def frost(f, x, y, glint=False):
-    f.alpha_composite(S("genome-frost-24x24"), (x, y))
-    if glint: f.alpha_composite(S("genome-glint-gold-10x10"), (x + 16, y))
-# S03's rows, as the proof's bud has them: (chapter, read, [(kind, pair, first, glint, place) or "frost"/("frost", glint)])
-ROWS = [("coat", True, [("open", "front-dim"), ("open", "blend-dim"), ("open", "front-dim", "switch"), ("open-lit", "second-lit")]),
-        ("face", True, [("open-lit", "second-lit", "first"), ("open", "front-dim"), ("open", "front-dim")]),
-        ("shape", True, [("open", "front-dim"), ("open", "front-dim"), ("open", "front-dim")]),
-        ("legs-tail", True, [("open", "front-dim"), ("closed",), ("open", "front-dim"), ("open", "front-dim")]),
-        ("movement", True, [("closed",)] * 4),
-        ("stamina", False, ["frost-glint", "frost", "frost"]),
-        ("character", False, ["frost", "frost"]),
-        ("glow", True, [("self", "front-dim", None, None, "meadow"), ("self", "front-dim")])]
-def tree(f, ox, oy, gx0, pitch, compact=False, clash=False, rows=ROWS, pulse_row=None):
+    if wish: f.alpha_composite(S("genome-glint-wish-10x10"), (x + 16, y))
+    elif first: f.alpha_composite(S("genome-first-10x8"), (x + 16, y))
+    for k, pl_ in enumerate(places): f.alpha_composite(S(f"genome-place-{pl_}-10x10"), (x + 25, y - 2 + 11 * k))
+def frost(f, x, y): f.alpha_composite(S("genome-frost-24x24"), (x, y))
+# S03's rows from its frame (T-136, wireframe 01): (chapter, read, glint on the chapter, [gene]); a gene is a dict
+G = lambda kind, pair=None, **k: dict(kind=kind, pair=pair, **k)
+ROWS = [("coat", True, False, [G("open-lit", "first-lit"), G("open", "front-dim"), G("open", "front-dim", switch=True), G("only", "only")]),
+        ("face", True, False, [G("open", "front-dim"), G("open-lit", "second-lit", first=True), G("only", "only")]),
+        ("shape", True, False, [G("open", "front-dim"), G("only", "only"), G("open", "front-dim", wish=True)]),
+        ("legs-tail", True, False, [G("open", "front-dim"), G("closed"), G("only", "only"), G("open", "blend-dim")]),
+        ("movement", True, False, [G("closed")] * 4),
+        ("stamina", False, True, ["frost"] * 3),
+        ("character", False, False, ["frost"] * 2),
+        ("glow", True, False, [G("self", places=("cave", "wood")), G("closed")])]
+def tree(f, ox, oy, gx0, pitch, compact=False, clash=(), rows=ROWS, pulse_row=None):
     tops = [oy + 5 + 34 * i for i in range(len(rows))]; trunk = ox + (30 if not compact else 2)
-    rect(f, trunk, tops[0] + 16, 2, tops[-1] - tops[0] + 2, LINE)                    # the trunk
+    rect(f, trunk, tops[0] + 16, 2, tops[-1] - tops[0] + 2, LINE)                    # the frame line
     if not compact:
         Lr = 4; hy = oy + 5 + 34 * Lr - 13; f.alpha_composite(S("genome-hub-S03-24x24"), (ox, hy)); f.alpha_composite(S("genome-lock-8x10"), (ox + 8, hy - 12))
-    for i, (ch, read, genes) in enumerate(rows):
+    for i, (ch, read, glint, genes) in enumerate(rows):
         t = tops[i]; n = len(genes); xend = gx0 + pitch * (n - 1) + 24
-        rect(f, trunk + 2, t + 15, xend - trunk - 2, 2, LINE)                            # the branch
-        if not compact: f.alpha_composite(S(f"rail-emblem-{ch}-{'read' if read else 'unread'}-24x24"), (ox + 36, t + 4))
+        rect(f, trunk + 2, t + 15, xend - trunk - 2, 2, LINE)                            # the chapter line
+        if not compact:
+            f.alpha_composite(S(f"rail-emblem-{ch}-{'read' if read else 'unread'}-24x24"), (ox + 36, t + 4))
+            if glint: f.alpha_composite(S("genome-glint-gold-12x12"), (ox + 36 + 16, t + 4 - 4))   # once per chapter, on its emblem
+        elif glint: f.alpha_composite(S("genome-glint-gold-12x12"), (gx0 + 16, t + 4 - 4))           # compact: at the row's first gene
         for j, g in enumerate(genes):
             x, y = gx0 + pitch * j, t + 4
-            if isinstance(g, str): frost(f, x, y, g == "frost-glint"); continue
-            kind = g[0]; pr = g[1] if len(g) > 1 else None
-            if clash and ((ch == "face" and j == 0) or (ch == "shape" and j == 0)): kind = "open-clash"
-            gene(f, x, y, kind, pr, first=(len(g) > 2 and g[2] == "first"), place=(g[4] if len(g) > 4 else None))
-            if len(g) > 2 and g[2] == "switch":                                          # the gate bar and the sleeping loci
+            if g == "frost": frost(f, x, y); continue
+            kind = "open-clash" if (ch, j) in clash else g["kind"]
+            gene(f, x, y, kind, g["pair"], first=g.get("first", False), wish=g.get("wish", False), places=(() if compact else g.get("places", ())))
+            if g.get("switch") and read:                                                 # the gate bar and the sleeping loci (never on an unread row)
                 if compact: rect(f, x + 25, y + 2, 2, 20, DOT)
                 else:
                     rect(f, x + 26, y + 2, 2, 20, DOT)
                     for k in range(5): rect(f, x + 30, y + 3 + 4 * k, 3, 3, DOT)
             if pulse_row == i:                                                           # a chapter just cleared: the 2 px mint pulse
-                d = ImageDraw.Draw(f); d.rectangle([x - 2, y - 2, x + 25, y + 25], outline=C("mint"), width=2)
-        if ch == "movement":                                                             # toward the Cross: the dotted line, the cross mark
+                ImageDraw.Draw(f).rectangle([x - 2, y - 2, x + 25, y + 25], outline=C("mint"), width=2)
+        last = genes[-1]
+        if read and isinstance(last, dict) and last["kind"] == "closed":                 # to the Cross: only from a breed-only last gene
             cx = (720 if not compact else 264); xs = xend + 2
             while xs < cx - 2: rect(f, xs, t + 16, 1, 1, DOT); xs += 3
             f.alpha_composite(S("genome-cross-12x12"), (cx, t + 10))
-    if clash and not compact:                                                            # the dashed red link: crest (row 1) to build (row 2)
-        a = (gx0, tops[1] + 16); b = (gx0, tops[2] + 16); xm = gx0 - 7
-        def dash(x0, y0, x1, y1):
-            if y0 == y1:
-                for xx in range(min(x0, x1), max(x0, x1), 6): rect(f, xx, y0 - 1, min(4, max(x0, x1) - xx), 2, C("red"))
-            else:
-                for yy in range(min(y0, y1), max(y0, y1), 6): rect(f, x0 - 1, yy, 2, min(4, max(y0, y1) - yy), C("red"))
-        dash(xm, a[1], a[0], a[1]); dash(xm, a[1], xm, b[1]); dash(xm, b[1], b[0], b[1])
     return tops
 def pod_s03(w, h):
     g = lambda n: np.asarray(Lo(f"{sl}/pod-large-{n}.png")).astype(float)
@@ -96,31 +90,33 @@ def create(clash=False):
     sh = ndi.gaussian_filter((e < 1).astype(float), 2.5) * 0.55; fr = np.asarray(f).astype(float); fr[..., :3] *= (1 - sh)[..., None]; f = Image.fromarray(fr.astype(np.uint8), "RGBA")
     f.alpha_composite(S("mibi-adult-S03-304x312"), (96, 76))
     f.alpha_composite(S("create-genome-screen-512x312"), (424, 80))
-    tree(f, 440, 96, 508, 36, clash=clash)
-    f.alpha_composite(S("genome-focus-32x32"), (508 - 4, 96 + 5 + 34 + 4 - 4))
-    f.alpha_composite(S("trait-S03-crest-low-crest-160x128"), (752, 100)); f.alpha_composite(S("genome-veil-160x128"), (752, 100))
-    f.alpha_composite(S("trait-S03-crest-tall-crest-160x128"), (752, 244))
+    tree(f, 440, 96, 508, 36, clash=(("face", 1), ("shape", 0)) if clash else ())
+    f.alpha_composite(S("genome-focus-32x32"), (508 + 36 - 4, 96 + 5 + 34 + 4 - 4))
+    # the bay: S03's Eyes have no picture yet, so each copy's frame shows the gene's mark, centred (spec §2.3, "No picture")
+    for yb in (100, 244): rect(f, 752, yb, 160, 128, (30, 35, 40))
+    gene(f, 752 + 68, 100 + 52, "open", "first-dim"); f.alpha_composite(S("genome-veil-160x128"), (752, 100))
+    gene(f, 752 + 68, 244 + 52, "open-lit", "second-lit")
     d = ImageDraw.Draw(f); d.rectangle([752, 244, 752 + 159, 244 + 127], outline=C("mint"), width=2)
     f.alpha_composite(S("genome-pair-second-lit-16x10"), (744 + 80, 96 + 135))
     # the bank (window 240-920): S03's drums, g 8, the chapter gap 24; Crest focused and turned
-    drums = [("rest", None), ("rest", None), ("rest", "look-S03-markings-plain-64x64"), ("rest", "look-S03-scales-many-coarse-64x64"),
-             ("clash" if clash else "rest", "look-S03-crest-tall-crest-64x64"), ("rest", None), ("rest", None)]
+    drums = [("rest", None), ("rest", None), ("rest", "look-S03-markings-plain-64x64"), ("rest", "look-S03-scales-between-64x64"),
+             ("clash" if clash else "rest", "look-S03-crest-between-64x64"), ("clash" if clash else "rest", None), ("rest", None)]
     xs = [240, 328, 416, 504, 608, 696, 784]
     for k, ((st, look), x) in enumerate(zip(drums, xs)):
         if look: f.alpha_composite(S(look), (x + 8, 440))
         f.alpha_composite(S(f"create-drum-{st}"), (x, 424)); f.alpha_composite(S("create-drum-shade-80x96"), (x, 424))
-        if k in (3, 4): f.alpha_composite(S("create-drum-notch"), (x + 72, 464))
-        if k == 4: f.alpha_composite(S("create-drum-turn-up"), (x + 32, 424)); f.alpha_composite(S("create-drum-turn-down"), (x + 32, 512))
+        if k in (0, 5): f.alpha_composite(S("create-drum-notch"), (x + 72, 464))
+        if k == 5: f.alpha_composite(S("create-drum-turn-up"), (x + 32, 424)); f.alpha_composite(S("create-drum-turn-down"), (x + 32, 512))
     f.alpha_composite(S("create-bank-more-right"), (904, 424))
     d = ImageDraw.Draw(f)
     for wd, x in (("Coat", 240), ("Face", 608)): d.text((x, 400), wd, font=F("Regular", 16), fill=C("mist"))
-    label(f, "PROOF T-20261016-130: Create, S03, shape" + (", Crest and Build clash" if clash else ": a change, a first, Crest focused") + ", 1x. Pod, founder, words: stand-ins", 538)
+    label(f, "PROOF T-20261016-138: Create, S03 (its frame), shape" + (", a clash set (Eyes, Build)" if clash else ": Eyes kept, new to the guide, focused") + ", 1x. Pod, founder, words: stand-ins", 538)
     return f.convert("RGB")
 create().save(os.path.join(out, "genome-create-S03-1x.png")); create(True).save(os.path.join(out, "genome-create-S03-clash-1x.png"))
 # the Incubator: the compact screen in the slip's place; Stamina just cleared
 st = Lo(os.path.join(sl, "incubator-stage.png"))
-inc_rows = [r if r[0] != "stamina" else ("stamina", True, [("closed",)] * 3) for r in ROWS]
-inc_rows = [r if r[0] != "glow" else ("glow", False, ["frost", "frost"]) for r in inc_rows]
+inc_rows = [r if r[0] != "stamina" else ("stamina", True, False, [G("closed")] * 3) for r in ROWS]
+inc_rows = [r if r[0] != "character" else ("character", False, True, ["frost"] * 2) for r in inc_rows]
 meas = {}
 for state in ("cool", "warm", "glowing", "ready"):
     f = Lo(os.path.join(incf, f"incubator-b-S03-{state}-1x.png"))
@@ -130,18 +126,18 @@ for state in ("cool", "warm", "glowing", "ready"):
     a = np.asarray(f.convert("RGB")).astype(float); y = Y(a)
     pod = float(np.percentile(y[144:416, 400:624], 95)); scr = float(np.percentile(y[96:408, 88:296], 95))
     meas[state] = {"pod p95": round(pod, 3), "screen p95": round(scr, 3), "margin": round(pod - scr, 3)}
-    label(f, f"PROOF T-20261016-130: the Incubator, S03, {state}: the compact screen, Stamina just cleared, 1x. Card, slip words: stand-ins", 538)
+    label(f, f"PROOF T-20261016-138: the Incubator, S03, {state}: Stamina just cleared, Character frosted (its glint), 1x. Card: stand-in", 538)
     f.convert("RGB").save(os.path.join(out, f"genome-incubator-S03-{state}-1x.png"))
 json.dump(meas, open(os.path.join(out, "brightness.json"), "w"), indent=1); print(json.dumps(meas))
 # the mark family at 1x and 4x on the slate, and the chapter emblems checked on the slate (read and unread)
 sheet = Image.new("RGBA", (8 + 7 * 34, 8 + 3 * 34 + 8), (24, 28, 32, 255))
-fam = [("open", "front-dim"), ("open", "blend-dim"), ("open-lit", "second-lit"), ("open-lit", "first-lit"), ("open-clash", "front-dim"), ("closed", None), ("self", "front-dim")]
-for i, (k, p) in enumerate(fam): gene(sheet, 8 + i * 34, 8, k, p, first=(i == 3), place=("meadow" if k == "self" else None))
-frost(sheet, 8, 42, True); gene(sheet, 42, 42, "open", "front-dim", glint="wish"); sheet.alpha_composite(S("genome-sealed-crystal-24x24"), (76, 42))
-sheet.alpha_composite(S("genome-sealed-pearl-24x24"), (110, 42)); sheet.alpha_composite(S("genome-sealed-shard-24x24"), (144, 42))
-sheet.alpha_composite(S("genome-hub-S03-24x24"), (178, 42)); sheet.alpha_composite(S("genome-lock-8x10"), (186, 30 + 0)); sheet.alpha_composite(S("genome-cross-12x12"), (212, 48))
+fam = [("open", "front-dim"), ("open", "blend-dim"), ("only", "only"), ("open-lit", "second-lit"), ("open-lit", "first-lit"), ("open-clash", "front-dim"), ("closed", None)]
+for i, (k, p) in enumerate(fam): gene(sheet, 8 + i * 34, 8, k, p, first=(i == 4))
+frost(sheet, 8, 42); gene(sheet, 42, 42, "open", "front-dim", wish=True); sheet.alpha_composite(S("genome-sealed-crystal-24x24"), (76, 42))
+sheet.alpha_composite(S("genome-sealed-pearl-24x24"), (110, 42)); gene(sheet, 144, 42, "self", places=("cave", "wood"))
+sheet.alpha_composite(S("genome-hub-S03-24x24"), (186, 42)); sheet.alpha_composite(S("genome-glint-gold-12x12"), (202, 38)); sheet.alpha_composite(S("genome-cross-12x12"), (216, 48))
 sheet.alpha_composite(S("genome-focus-32x32"), (4, 72)); gene(sheet, 8, 76, "open", "front-dim")
-for i, pl_ in enumerate(("meadow", "pond", "rock", "wood", "cave")): sheet.alpha_composite(S(f"genome-place-{pl_}-12x12"), (48 + i * 16, 82))
+for i, pl_ in enumerate(("cave", "wood", "meadow", "pond-edge", "rock-field")): sheet.alpha_composite(S(f"genome-place-{pl_}-10x10"), (48 + i * 14, 84))
 sheet.convert("RGB").save(os.path.join(out, "genome-marks-1x.png")); sheet.resize((sheet.width * 4, sheet.height * 4), Image.NEAREST).convert("RGB").save(os.path.join(out, "genome-marks-4x.png"))
 EMB = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"]
 em = Image.new("RGBA", (8 + len(EMB) * 32, 8 + 2 * 32), (24, 28, 32, 255))

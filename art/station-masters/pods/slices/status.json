@@ -5756,13 +5756,13 @@
  },
  "genome-gene-self-24x24": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, redrawn"
  },
  "genome-glint-gold-10x10": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-138: superseded"
  },
  "genome-glint-wish-10x10": {
   "status": "signed",
@@ -5895,29 +5895,29 @@
   "note": "T-20261016-130, the genome screen"
  },
  "genome-place-cave-12x12": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-138: superseded"
  },
  "genome-place-meadow-12x12": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-138: superseded"
  },
  "genome-place-pond-12x12": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-138: superseded"
  },
  "genome-place-rock-12x12": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-138: superseded"
  },
  "genome-place-wood-12x12": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-138: superseded"
  },
  "genome-sealed-crystal-24x24": {
   "status": "signed",
@@ -5963,5 +5963,45 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-128, in stage-recut/t128/proof (pods-overview and a chapter page with the tag cut; the Cargo report with the device plate)",
   "note": "T-20261016-128, the device plate"
+ },
+ "genome-gene-only-24x24": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-pair-only-16x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-glint-gold-12x12": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-place-cave-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-place-wood-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-place-meadow-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-place-pond-edge-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
+ },
+ "genome-place-rock-field-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
+  "note": "T-20261016-138, the genome screen's delta"
  }
 }
