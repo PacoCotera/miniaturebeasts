@@ -21,7 +21,7 @@ Game designer, 2026-10-17. It answers the owner's 13:00 ruling: "the information
 
 **What follows for space:**
 - **The pursuit (1) and the life (2) hold the most space at all times.** They are the why and the who.
-- **Pods (3)** hold a steady, readable strip, because it is the daily "what can I do".
+- **Pods (3)** hold a steady, readable third place, because it is the daily "what can I do". A strip is one form; a direction may choose another.
 - **The Incubator (4) and Cargo (5)** are **state-sized**: small and quiet when idle, and the forward thing when they hold something to act on. Neither may spend space on emptiness (the owner: "the incubator takes a lot of space just to show emptiness").
 - **The Probe (7)** is a status mark, not a module.
 - **Cross (6) and the sitting (8)** have no place of their own on Home.
@@ -73,7 +73,7 @@ The Companion's chip shows: docked or away, the partner with it, and the Probe's
 
 ## How this checks in the gate: "prominence matches loop weight"
 
-- At rest (nothing waiting), the pursuit and the life together hold most of the screen, and Pods reads as a strip.
+- The gate measures the **order** of weight, not a geometry (agreed with the creative director). At rest (nothing waiting), the pursuit and the life together hold most of the screen, and Pods is third, whatever its form: a strip is one answer.
 - Cargo and the Incubator are small.
 - The Probe is a mark.
 - When something waits, it comes forward without moving the others' places.
