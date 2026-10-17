@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
-import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS } from "../framework/species.mjs";
+import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK } from "../framework/species.mjs";
 import { cross, forecast, kinship, identity, relatedness, children, SPREAD } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
@@ -87,6 +87,34 @@ test("every sealed chapter names its find's kind beside its words: crystal, pear
   }
   for (const words of Object.values(FINDS)) assert.ok(findKindOf(words), `every chapter's default find is one the studio paints (${words})`);
   assert.equal(findKindOf("a find"), null, "a chapter sealed with no named find has no kind: the page keeps the stand-in card");
+});
+
+test("every locus names who changes it: the species, the player, breeding, or the mibi itself (Glow, Basking, Phase)", () => {
+  const PLACES = ["meadow", "pond", "rock", "wood", "cave"];   // the Station's place ids (station/src/state.mjs PLACE_WORD)
+  const selfTraits = Object.fromEntries(frames.flatMap((f) => f.chapters.flatMap((c) => c.traits.filter((t) => t.selfChanging).map((t) => [`${f.species.id}.${t.id}`, t.selfChanging]))));
+  assert.deepEqual(selfTraits, {
+    "S03.glow": { toward: "bright", places: ["cave", "wood"], storm: false, ...SELF_MARK },
+    "S15.light-feeding": { toward: "high", places: ["meadow", "pond", "rock"], storm: false, ...SELF_MARK },
+    "S16.phase": { toward: "solid", places: [], storm: true, ...SELF_MARK },
+  });
+  assert.deepEqual(SELF_MARK, { stepOf: 16, maxSteps: 4, fadeAfter: 3 });
+  for (const f of frames) {
+    const traits = new Map(f.chapters.flatMap((c) => c.traits.map((t) => [t.id, t])));
+    for (const l of f.loci) {
+      const t = traits.get(l.trait), want = l.kind === "locked" ? "species" : t.selfChanging ? "self" : t.shapeable ? "player" : "breeding";
+      assert.equal(l.changedBy, want, `${f.species.id} ${l.id}`);
+      if (l.changedBy === "player") assert.equal(t.nature, "look", `${f.species.id} ${l.id}: only a look is the player's`);
+    }
+    for (const t of traits.values()) if (t.selfChanging) {
+      assert.equal(t.shapeable, false, `${f.species.id} ${t.id}: the player never sets a self-changing trait`);
+      assert.equal(t.nature, "doing");
+      assert.deepEqual(t.loci.length, 1);
+      assert.ok(f.pools[t.loci[0]].includes(t.selfChanging.toward), `${f.species.id} ${t.id}: its end is in the pool`);
+      assert.ok(t.selfChanging.places.every((p) => PLACES.includes(p)) && (t.selfChanging.places.length > 0) !== t.selfChanging.storm, `${f.species.id} ${t.id}: one trigger, places or a storm`);
+      assert.deepEqual(t.selfChanging, { ...SELF_CHANGING[t.id], ...SELF_MARK });
+    }
+    assert.equal(f.counts.selfChanging, f.loci.filter((l) => l.changedBy === "self").length);
+  }
 });
 
 test("an individual resolves against its frame: sleeping parts, absent parts, foreign loci", () => {
