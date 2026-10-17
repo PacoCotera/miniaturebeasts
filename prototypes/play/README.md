@@ -34,10 +34,15 @@ One device has the keys: the ring on its shell, its filled tab and, in the short
 | `` ` `` | next device: Station, Companion, Bench |
 | Shift+`` ` `` | previous device |
 | Shift+D | the Dock control |
+| Shift+C | the Caddy's screen: pins it up, or lowers it (wide tier with the bench shelf only) |
 | Shift+T | developer tools |
 | Shift+/ (?) | the keys panel |
 
 Every other key reaches the device untouched. Drawn keys press exactly as the keyboard does: `pointerdown` gives the device the keys and sends it a `keydown`, `pointerup` sends the `keyup`. They carry glyphs only; the names are `aria-label`s.
+
+## The Caddy's screen
+
+The Caddy's 792 × 272 four-gray e-paper (`src/caddy.mjs`) shows its two lines for the dock: "Companion home" with the crates, "charging", "{n} crates home" with the new pods after the opening, or "Companion out" with the partner. It is a sheet raised from the cradle at 734, 760, 808, 288 lp, the view inside it at 1 lp per view pixel, over the right of the bench shelf; nothing moves under it. It rises at each seat or lift and at the opening's end, stays 6000 ms (a new line restarts it), and lowers; Shift+C pins it up until Shift+C again. The paper redraws once per change of its lines and never animates. Only the wide tier with the bench shelf has room for it; in every other tier the bar's note shows the two lines as one for 4000 ms at the same moments. The Station posts what it needs in `mb-caddy` (`opened`, `partner`).
 
 ## The Dock control, the cradle and the seat
 
