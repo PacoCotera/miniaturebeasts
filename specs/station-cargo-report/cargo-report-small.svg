@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect width="1024" height="600" fill="#fff"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Cargo</text>
+<text x="1012" y="16" font-size="8" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, monospace">the report, small case: one crate with one pod, gathered, the goal; no Probe row (no mend), no read to wait on</text>
+<text x="1012" y="30" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, monospace">1024×600 at 1×, measured. Grey = layout only; the card drawn in its intended marks (art paints them). T-20261016-144</text>
+<rect x="16.5" y="48.5" width="991" height="319" fill="#c9d4c2" stroke="#5d7a5f" stroke-width="1" rx="10"/>
+<text x="24" y="360" font-size="8" fill="#5d7a5f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the bay door (unchanged)</text>
+<rect x="16.5" y="384.5" width="991" height="167" fill="#d5dccf" stroke="#5d7a5f" stroke-width="1"/>
+<text x="24" y="546" font-size="8" fill="#5d7a5f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the rack (unchanged)</text>
+<rect x="232.5" y="120.5" width="559" height="175" fill="#2b3038" stroke="#84ae78" stroke-width="5" rx="6"/>
+<rect x="238.5" y="126.5" width="547" height="163" fill="#1f2427" stroke="#0c0a12" stroke-width="1"/>
+<text x="232" y="114" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the door's display 232,120 560×176 (plate kit unchanged; no cream label, no heading)</text>
+<rect x="248.5" y="136.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<rect x="248.5" y="136.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
+<text x="280" y="172" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
+<text x="280" y="182" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
+<ellipse cx="328" cy="152" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<rect x="320.5" y="184.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
+<path d="M324 184V196M329 184V196" stroke="#5d5974"/>
+<rect x="340" y="186" width="12" height="8" fill="#adf6e0"/>
+<rect x="354" y="186" width="12" height="8" fill="#3d434b"/>
+<rect x="368" y="186" width="12" height="8" fill="#3d434b"/>
+<rect x="382" y="186" width="12" height="8" fill="#3d434b"/>
+<path d="M257 221L251 229H256L254 235L261 226H256Z" fill="#ffd441"/>
+<text x="268" y="233" font-size="16" fill="#f1ebdf" text-anchor="start">+5</text>
+<path d="M328 221L334 228L328 235L322 228Z" fill="#5bb9f3"/>
+<text x="340" y="233" font-size="16" fill="#f1ebdf" text-anchor="start">+6</text>
+<path d="M400 221C406 228 405 235 400 235C395 235 394 228 400 221Z" fill="#5cbb4c"/>
+<text x="412" y="233" font-size="16" fill="#f1ebdf" text-anchor="start">+8</text>
+<path d="M248 268H262M257 263L262 268L257 273" stroke="#f1ebdf" stroke-width="2" fill="none"/>
+<text x="272" y="273" font-size="16" fill="#f1ebdf" text-anchor="start">identify the Loika pod</text>
+<text x="232" y="316" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">height = 16 + 64 + 16 + 24 + 16 + goal 24 (+ 8 + 24 meanwhile) + 16; 176 to 208; y = 64 + 8 × floor((288 − h) / 16)</text>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">See the new pod</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">what came home</text>
+<text x="1008" y="588" font-size="16" fill="#222" text-anchor="end">Cargo</text>
+</svg>

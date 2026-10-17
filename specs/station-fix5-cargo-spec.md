@@ -424,3 +424,30 @@ Signed (amendment): UI/UX, 08:05 (America/Mexico_City), Thu 2026-10-15
 
 ## Addendum (2026-10-15 21:20, UI/UX): the larger haul
 R5 "Containers" and "Containers' shadows" are superseded by `specs/station-cargo-haul-spec.md`: 72 × 96 containers, energy (216, 240) left of the closer, data (736, 240) and essence (816, 240) right of it, feet on 336, `cargo-store-shadow-72x21` with its core on 336; the 800 ms ceiling 12,288 → 24,576.
+
+## Amendment (T-20261016-144, UI/UX): the report, picture-led
+
+**Purpose, in one sentence:** the report shows at a glance what the walk brought home (each crate's pods and how much land it explored, the materials gathered, what the Probe's mend cost) and what to do next. Gate check 8 (words load, `specs/gate-recalibration.md`) failed it: about 12 lines of words. Wireframes: `specs/station-cargo-report/cargo-report-picture-led.png` (longest case) and `cargo-report-small.png`.
+
+**What it is in the world:** the bay door's display, the same plate kit as R6 (sage bezel, dim floor). It has **no heading and no label plate**: the cream `label-plate-cream-216x32` and "Home from the field" go. The door, the crates and the bottom line's "what came home" say it. This supersedes the lab sweep's row 6 (re-cut the label), since there is no label.
+
+**Words budget, hard: at most 6 words on the card**, and they are the goal line's (Home's `strings.goal.step.*`, at most 6, for example "fit the Probe upgrade"). Figures appear only beside an icon. Everything else is a picture or a mark.
+
+**Layout** (the card at 232, y, 560 × h; offsets from its origin; pad 16):
+
+| Row | At | Content |
+| --- | --- | --- |
+| Crates | (16 + 184k, 16), tiles 160 × 64, k = 0..2 | One tile for each of the first three walk crates opened (later crates get no tile; Gathered sums every crate). Tile: the crate picture `cargo-crate-64x64` at (0, 0); its pods as 16 px pod icons at (72 + 20i, 8 + 20j), 4 a row, up to 8; past 8, 7 icons and "+n" (a figure beside the pod icons); no pods, one dashed empty pod outline. **Reach:** the map icon 14 × 12 at (72, 48) and 4 pips 12 × 8 at (92 + 14p, 50), lit `mint` 1, 2, 3 or 4 for the reach thresholds (under a third, under two thirds, under all, all); no map, no pips |
+| Gathered and Probe | y 96 | Energy, Data, Essence icons with "+n" at (16 + 72m, 100). The Probe at x 320: the Probe icon, then one plate icon a mended plate (20 pitch), then "⚡ n" when it was paid; mended free, the plates alone. No mend, nothing at x 320 |
+| Next | y 136 | The arrow mark (bone) and the goal words with their icons, at x 40. No goal, no row |
+| While you wait | y 168 (+8) | Only when the goal's step is a wait and a read is suggested: the pod icon, the chapter's emblem (24 × 24, `rail-emblem-*`) and "◆ n" (the read's price). It glints (the emblem's glint) when the meanwhile is a glint |
+
+**Height:** h = 16 (pad) + 64 (crates) + 16 + 24 (gathered and Probe) + 16 (pad) + (goal ? 24 + 16 : 0) + (meanwhile ? 32 : 0), with the goal's 16 being the gap above it: 136 without a goal, 176 with one, 208 with the read too (multiples of 8); y = 64 + 8 × floor((288 − h) / 16). It never needs a drop rule: the longest case is 208 ≤ 288.
+
+**Gone:** the row leads ("First crate", "Second crate", "Third crate", "Another crate", "Gathered", "Probe", "Next", "While you wait"), the reach words, "no pods", "many pods", "mended free" and "mended for {price}", and the world lines.
+
+**The world lines ("Meanwhile, the world turned") leave the card.** They arrive from the Companion as free sentences (`c.lines`), so they cannot be drawn as pictures, and three lines of words fail check 8. If they are to return as a picture (the place badge `place-{g}-32x32` and a change mark), the crate must carry them as structured events ({ place, kind }), which is a Companion and data change: open, for the lead.
+
+**Colour:** no amber (as R6: "nothing on Cargo's stage is amber"). `mint` only for the reach pips; `bone` for figures, the goal and the arrow.
+
+**Art:** T-20261016-149. **Build:** T-20261016-150.
