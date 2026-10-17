@@ -42,64 +42,55 @@
 <circle cx="932" cy="84" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
 <circle cx="428" cy="388" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
 <circle cx="932" cy="388" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
-<rect x="470" y="113" width="2" height="238" fill="#56605a"/>
-<rect x="440.5" y="224.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="12"/>
-<text x="452" y="240" font-size="8" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">S03</text>
+<rect x="470" y="110" width="2" height="252" fill="#56605a"/>
+<g transform="translate(440 224) scale(1.0)">
+<rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="12"/>
+<text x="12" y="16" font-size="8" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">S03</text>
+</g>
 <rect x="464" y="235" width="6" height="2" fill="#56605a"/>
-<rect x="456" y="222" width="8" height="6" fill="#8a947b"/>
-<rect x="457.5" y="218.5" width="5" height="5" fill="none" stroke="#8a947b" stroke-width="1" rx="3"/>
-<rect x="476.5" y="105.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="121" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Co</text>
-<path d="M498 101L499.8 105.2L504 107L499.8 108.8L498 113L496.2 108.8L492 107L496.2 105.2Z" fill="#d89b14"/>
-<rect x="470" y="116" width="158" height="2" fill="#56605a"/>
-<rect x="510.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<circle cx="520" cy="117" r="15" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<rect x="546.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="582.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="618.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="139.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="155" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Fa</text>
-<rect x="470" y="150" width="122" height="2" fill="#56605a"/>
-<rect x="510.5" y="141.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="141.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="582.5" y="141.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="173.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="189" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Sh</text>
-<rect x="470" y="184" width="122" height="2" fill="#56605a"/>
-<rect x="510.5" y="175.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="175.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="582.5" y="175.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="207.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="223" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Le</text>
-<rect x="470" y="218" width="158" height="2" fill="#56605a"/>
-<rect x="510.5" y="209.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="209.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="582.5" y="209.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="618.5" y="209.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="241.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="257" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Mo</text>
-<rect x="470" y="252" width="158" height="2" fill="#56605a"/>
-<rect x="510.5" y="243.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="243.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="582.5" y="243.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="618.5" y="243.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="275.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="291" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">St</text>
-<path d="M498 271L499.8 275.2L504 277L499.8 278.8L498 283L496.2 278.8L492 277L496.2 275.2Z" fill="#d89b14"/>
-<rect x="470" y="286" width="122" height="2" fill="#56605a"/>
-<rect x="510.5" y="277.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="277.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="582.5" y="277.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="309.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="325" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Ch</text>
-<rect x="470" y="320" width="86" height="2" fill="#56605a"/>
-<rect x="510.5" y="311.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="311.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="476.5" y="343.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
-<text x="488" y="359" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Gl</text>
-<rect x="470" y="354" width="86" height="2" fill="#56605a"/>
-<rect x="510.5" y="345.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<rect x="546.5" y="345.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
+<rect x="456" y="221" width="8" height="6" fill="#8a947b"/>
+<rect x="457.5" y="217.5" width="5" height="5" fill="none" stroke="#8a947b" stroke-width="1" rx="3"/>
+<g transform="translate(476 98) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Co</text><path d="M22 -4L23.8 0.20000000000000018L28 2L23.8 3.8L22 8L20.2 3.8L16 2L20.2 0.20000000000000018Z" fill="#d89b14"/></g>
+<rect x="470" y="109" width="194" height="2" fill="#56605a"/>
+<g transform="translate(508 98) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/><circle cx="12" cy="12" r="15" fill="none" stroke="#ffe6ad" stroke-width="2"/></g>
+<g transform="translate(556 98) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(604 98) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(652 98) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 134) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Fa</text></g>
+<rect x="470" y="145" width="146" height="2" fill="#56605a"/>
+<g transform="translate(508 134) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 134) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(604 134) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 170) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Sh</text></g>
+<rect x="470" y="181" width="146" height="2" fill="#56605a"/>
+<g transform="translate(508 170) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 170) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(604 170) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 206) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Le</text></g>
+<rect x="470" y="217" width="194" height="2" fill="#56605a"/>
+<g transform="translate(508 206) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 206) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(604 206) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(652 206) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 242) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Mo</text></g>
+<rect x="470" y="253" width="194" height="2" fill="#56605a"/>
+<g transform="translate(508 242) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 242) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(604 242) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(652 242) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 278) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">St</text><path d="M22 -4L23.8 0.20000000000000018L28 2L23.8 3.8L22 8L20.2 3.8L16 2L20.2 0.20000000000000018Z" fill="#d89b14"/></g>
+<rect x="470" y="289" width="146" height="2" fill="#56605a"/>
+<g transform="translate(508 278) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 278) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(604 278) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 314) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Ch</text></g>
+<rect x="470" y="325" width="98" height="2" fill="#56605a"/>
+<g transform="translate(508 314) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 314) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(476 350) scale(1.0)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Gl</text></g>
+<rect x="470" y="361" width="98" height="2" fill="#56605a"/>
+<g transform="translate(508 350) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
+<g transform="translate(556 350) scale(1.0)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/></g>
 <rect x="744.5" y="96.5" width="175" height="279" fill="#252b2e" stroke="#56605a" stroke-width="1" rx="4"/>
 <rect x="752.5" y="100.5" width="159" height="127" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>
 <rect x="752.5" y="244.5" width="159" height="127" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>

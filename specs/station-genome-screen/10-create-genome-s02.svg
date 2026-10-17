@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><pattern id="fr" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#a9b5c8"/><path d="M0 4L4 0" stroke="#cbd5e2" stroke-width="1"/></pattern></defs>
+<rect width="1024" height="600" fill="#fff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Create</text>
+<text x="1012" y="16" font-size="8" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, monospace">S02 Untuva, tier M (R ≤ 6, G ≤ 5): marks 32; Spots is a switch with its five sleeping loci; Character sealed behind a crystal</text>
+<text x="1012" y="30" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, monospace">1024×600 at 1×, measured. Grey = layout only; the genome screen drawn in its intended marks (art paints them). T-20261016-126</text>
+<rect x="88.5" y="364.5" width="319" height="27" fill="#e8ece4" stroke="#5a6672" stroke-width="1" rx="10"/>
+<rect x="96.5" y="76.5" width="303" height="311" fill="#f3f6f8" stroke="#3c4b57" stroke-width="1.5"/>
+<text x="248" y="214" font-size="11" fill="#3c4b57" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the founder 96,76 304×312</text>
+<text x="248" y="230" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">feet 388 on the dish 88,364 320×28</text>
+<text x="248" y="246" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the turned part: light, reaction, old look fades</text>
+<rect x="88.5" y="400.5" width="847" height="129" fill="#e3e6e8" stroke="#5a6672" stroke-width="1" rx="8"/>
+<rect x="96.5" y="404.5" width="127" height="121" fill="#d5dade" stroke="#5a6672" stroke-width="1" rx="10"/>
+<ellipse cx="156" cy="462" rx="55.5" ry="67.5" fill="#fff" stroke="#444"/>
+<text x="156" y="458" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the pod</text>
+<text x="156" y="470" font-size="8" fill="#888" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">in its port</text>
+<text x="240" y="416" font-size="16" fill="#6b6880" text-anchor="start">Coat</text>
+<rect x="240.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="248.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="328.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="336.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="416.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="424.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="504.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="512.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="576.5" y="464.5" width="7" height="15" fill="#fff4a6" stroke="#8a6a1e" stroke-width="1"/>
+<rect x="500.5" y="420.5" width="87" height="103" fill="none" stroke="#d9a21b" stroke-width="2" rx="10"/>
+<rect x="592.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="600.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="696" y="416" font-size="16" fill="#6b6880" text-anchor="start">Shape</text>
+<rect x="696.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="704.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="784.5" y="424.5" width="79" height="95" fill="#fff" stroke="#444" stroke-width="1" rx="8"/>
+<rect x="792.5" y="440.5" width="63" height="63" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="904.5" y="424.5" width="15" height="95" fill="#cfd5da" stroke="none" stroke-width="1"/>
+<text x="912" y="476" font-size="12" fill="#444" text-anchor="middle">›</text>
+<rect x="424.5" y="80.5" width="511" height="311" fill="#84ae78" stroke="#5d7a5f" stroke-width="1" rx="10"/>
+<rect x="430.5" y="86.5" width="499" height="299" fill="#2a2a2d" stroke="none" stroke-width="1" rx="4"/>
+<rect x="432.5" y="88.5" width="495" height="295" fill="#1f2427" stroke="#0c0a12" stroke-width="1"/>
+<circle cx="428" cy="84" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
+<circle cx="932" cy="84" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
+<circle cx="428" cy="388" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
+<circle cx="932" cy="388" r="2" fill="#3d4a3e" stroke="none" stroke-width="1"/>
+<rect x="478" y="152" width="2" height="168" fill="#56605a"/>
+<g transform="translate(440 220) scale(1.3333333333333333)">
+<rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="12"/>
+<text x="12" y="16" font-size="8" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">S02</text>
+</g>
+<rect x="472" y="235" width="6" height="2" fill="#56605a"/>
+<rect x="461" y="217" width="8" height="6" fill="#8a947b"/>
+<rect x="462.5" y="213.5" width="5" height="5" fill="none" stroke="#8a947b" stroke-width="1" rx="3"/>
+<g transform="translate(484 136) scale(1.3333333333333333)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Co</text></g>
+<rect x="478" y="151" width="222" height="2" fill="#56605a"/>
+<g transform="translate(524 136) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="6" ry="4.2" fill="#f1ebdf"/><path d="M12 7.8A6 4.2 0 0 1 12 16.2Z" fill="#e6c98c"/></g>
+<rect x="597" y="138" width="2" height="28" fill="#8a947b"/>
+<rect x="600" y="139" width="3" height="3" fill="#4a544e"/>
+<rect x="600" y="143" width="3" height="3" fill="#4a544e"/>
+<rect x="600" y="147" width="3" height="3" fill="#4a544e"/>
+<rect x="600" y="151" width="3" height="3" fill="#4a544e"/>
+<rect x="600" y="155" width="3" height="3" fill="#4a544e"/>
+<g transform="translate(564 136) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="15" cy="12" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/><circle cx="10" cy="12" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/></g>
+<g transform="translate(604 136) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><circle cx="9" cy="12" r="3.6" fill="#c6c4d8" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#c6c4d8" stroke="none" stroke-width="1"/></g>
+<g transform="translate(644 136) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#adf6e0" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/><circle cx="12" cy="12" r="15" fill="none" stroke="#ffe6ad" stroke-width="2"/></g>
+<g transform="translate(684 136) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="6" ry="4.2" fill="#f1ebdf"/><path d="M12 7.8A6 4.2 0 0 1 12 16.2Z" fill="#e6c98c"/></g>
+<g transform="translate(484 192) scale(1.3333333333333333)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Sh</text></g>
+<rect x="478" y="207" width="142" height="2" fill="#56605a"/>
+<g transform="translate(524 192) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><circle cx="9" cy="12" r="3.6" fill="#c6c4d8" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#c6c4d8" stroke="none" stroke-width="1"/></g>
+<g transform="translate(564 192) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="15" cy="12" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/><circle cx="10" cy="12" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/></g>
+<g transform="translate(604 192) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="6" ry="4.2" fill="#f1ebdf"/><path d="M12 7.8A6 4.2 0 0 1 12 16.2Z" fill="#e6c98c"/></g>
+<g transform="translate(484 248) scale(1.3333333333333333)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Mo</text></g>
+<rect x="478" y="263" width="142" height="2" fill="#56605a"/>
+<line x1="636" y1="264" x2="720" y2="264" stroke="#56605a" stroke-dasharray="2 2"/>
+<text x="726" y="268" font-size="10" fill="#8d8aa6" text-anchor="middle">⨯</text>
+<g transform="translate(524 248) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><circle cx="15" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/></g>
+<g transform="translate(564 248) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><circle cx="15" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/></g>
+<g transform="translate(604 248) scale(1.3333333333333333)"><circle cx="12" cy="12" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><circle cx="15" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/></g>
+<g transform="translate(484 304) scale(1.3333333333333333)"><rect x="0.5" y="0.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/><text x="12" y="16" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Ch</text></g>
+<rect x="478" y="319" width="6" height="2" fill="#56605a"/>
+<g transform="translate(524 304) scale(1.3333333333333333)">
+<rect x="0.5" y="0.5" width="23" height="23" fill="#3a3f44" stroke="#a87bf3" stroke-width="1" rx="4"/>
+<text x="12" y="17" font-size="12" fill="#a87bf3" text-anchor="middle">◆</text>
+</g>
+<rect x="560" y="318" width="156" height="4" fill="#3a3f44"/>
+<rect x="744.5" y="96.5" width="175" height="279" fill="#252b2e" stroke="#56605a" stroke-width="1" rx="4"/>
+<rect x="752.5" y="100.5" width="159" height="127" fill="#9d978a" stroke="#56605a" stroke-width="1"/>
+<text x="832" y="156" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 1: coral</text>
+<text x="832" y="168" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">dropped out: dim veil</text>
+<rect x="752.5" y="244.5" width="159" height="127" fill="#d9d0bc" stroke="#adf6e0" stroke-width="2"/>
+<text x="832" y="300" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 2: plum</text>
+<text x="832" y="312" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">kept twice: mint frame</text>
+<circle cx="829" cy="236" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
+<circle cx="836" cy="236" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
+<text x="424" y="74" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">tier M: marks 32, rows spread (up to 56), genes up to 40 apart; dots sit in the 8 px gap</text>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Grow it</text>
+<text x="105" y="588" font-size="16" fill="#222" text-anchor="start">⚡ 2 ❀ 4 ◆ 1</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">Tint: plum</text>
+<text x="1008" y="588" font-size="16" fill="#222" text-anchor="end">← Untuva</text>
+</svg>

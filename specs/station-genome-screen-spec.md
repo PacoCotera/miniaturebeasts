@@ -50,6 +50,25 @@ Ticket T-20261016-126, 2026-10-16 (America/Mexico_City). It replaces the paper s
 | Genes | 508 + 36j, top + 4, 24 × 24 | One per trait, in the frame's order; at most 6 (S09's Coat) ends at 712. Each gene's kind comes from the frame row: `changedBy` (`species` / `player` / `breeding` / `self`), `trait.selfChanging`, the switch and `chapter.sealed` (T-20261016-137), never from the chapter's name |
 | To the Cross | a 1 px dotted line from the row's last gene to the cross mark 12 × 12 at (720, top + 10) | Drawn from a breed-only gene only (`changedBy` `breeding`): when a read row's last gene is breed-only, the line runs from it. S03's Glow row: from Duration, not from the self-changing Glow. A breed-only gene mid-row (S03 Claws) wears its rings without a line |
 
+### 2.1a The tree fills its area (T-20261016-158)
+
+The fixed positions in the table above are tier S. A small genome must fill the instrument too, so the tree takes one of four tiers by its rows **R** (chapters) and the most genes in one chapter **G**, measured on the frame. The rects below override the table's for the other tiers. Tree area: 440, 96, 296 × 280.
+
+| Tier | When | Mark m | Row pitch cap | Species (16 frames) |
+| --- | --- | --- | --- | --- |
+| XL | R ≤ 5 and G ≤ 2 | 48 | 72 | S01, S04 |
+| L | R ≤ 5 and G ≤ 4 (not XL) | 40 | 64 | S06, S12, S14 |
+| M | R ≤ 6 and G ≤ 5 (not above) | 32 | 56 | S02, S05, S08, S10, S11, S13 |
+| S | otherwise | 24 | 40 | S03, S07, S09, S15, S16 |
+
+**The rule** (integer px; the build computes it and the specs test runs it on every frame):
+- **Rows:** pitch r = min(floor((280 − m) / (R − 1)), cap), rounded down to even. The block H = (R − 1) r + m is centred in the area: top0 = 96 + floor((280 − H) / 2). Row i's top is top0 + r i, and its centre is top + m / 2.
+- **Columns:** the hub is at x 440 (m × m). The frame line is at 440 + m + 6, the emblem at the frame line + 6 (m × m), and the first gene at g0 = emblem + m + 8. **Genes:** pitch p = min(2m, floor((716 − g0 − m) / (G − 1))), rounded down to a multiple of 4 (G = 1: one gene). So every row ends by 716, and the cross mark stays at 724.
+- **Hub:** centred on the frame line between the last look row and the first doings row, as in §2.1. The lock sits above it.
+- **Marks at every tier are slices at that tier's size, never scaled:** gene marks, pairs, frost, glints, the first mark, the hub, the focus ring and the emblems at 32, 40 and 48 (art ask, below). The place badges (10), the cross mark (12), the gate bar and the loci dots keep their size. The bar sits at gene + (m + 1, 2), 2 × (m − 4); the dots at gene + (m + 4, 3 + 4k). The self-changing badges sit at gene + (m + 1, −2 + 11k), only in tier S today (S03, S15, S16).
+- **Results:** S01 (XL) has rows 72 apart and its two Face genes 96 apart, filling the area. S09 (S) keeps today's 24 px marks, with rows spread from 34 to 40. S03 (S, 8 rows) has rows at 36. The bay is unchanged. The Incubator's compact tree is unchanged (§5).
+- **Wireframes:** `08-create-genome-s01.png` (XL), `09-create-genome-s12.png` (L), `10-create-genome-s02.png` (M), `04-create-genome-deep.png` (S09, S) and `01`–`05` (S03, S).
+
 ### 2.2 A gene's mark (24 × 24, one family)
 
 | Kind or state | Mark | What the player reads |
