@@ -55,7 +55,8 @@ def tree(f, ox, oy, gx0, pitch, compact=False, clash=(), rows=ROWS, pulse_row=No
         for j, g in enumerate(genes):
             x, y = gx0 + pitch * j, t + 4
             if g == "frost": frost(f, x, y); continue
-            kind = "open-clash" if (ch, j) in clash else g["kind"]
+            kind = g["kind"]
+            if (ch, j) in clash: kind = "open-lit-clash" if kind == "open-lit" else "open-clash"
             gene(f, x, y, kind, g["pair"], first=g.get("first", False), wish=g.get("wish", False), places=(() if compact else g.get("places", ())))
             if g.get("switch") and read:                                                 # the gate bar and the sleeping loci (never on an unread row)
                 if compact: rect(f, x + 25, y + 2, 2, 20, DOT)
@@ -90,7 +91,8 @@ def create(clash=False):
     sh = ndi.gaussian_filter((e < 1).astype(float), 2.5) * 0.55; fr = np.asarray(f).astype(float); fr[..., :3] *= (1 - sh)[..., None]; f = Image.fromarray(fr.astype(np.uint8), "RGBA")
     f.alpha_composite(S("mibi-adult-S03-304x312"), (96, 76))
     f.alpha_composite(S("create-genome-screen-512x312"), (424, 80))
-    tree(f, 440, 96, 508, 36, clash=(("face", 1), ("shape", 0)) if clash else ())
+    rows = ROWS if not clash else [r if r[0] != "shape" else ("shape", True, False, [G("open-lit", "second-lit"), G("only", "only"), G("open", "front-dim", wish=True)]) for r in ROWS]
+    tree(f, 440, 96, 508, 36, clash=(("face", 1), ("shape", 0)) if clash else (), rows=rows)
     f.alpha_composite(S("genome-focus-32x32"), (508 + 36 - 4, 96 + 5 + 34 + 4 - 4))
     # the bay: S03's Eyes have no picture yet, so each copy's frame shows the gene's mark, centred (spec §2.3, "No picture")
     for yb in (100, 244): rect(f, 752, yb, 160, 128, (30, 35, 40))
@@ -99,45 +101,69 @@ def create(clash=False):
     d = ImageDraw.Draw(f); d.rectangle([752, 244, 752 + 159, 244 + 127], outline=C("mint"), width=2)
     f.alpha_composite(S("genome-pair-second-lit-16x10"), (744 + 80, 96 + 135))
     # the bank (window 240-920): S03's drums, g 8, the chapter gap 24; Crest focused and turned
-    drums = [("rest", None), ("rest", None), ("rest", "look-S03-markings-plain-64x64"), ("rest", "look-S03-scales-between-64x64"),
-             ("clash" if clash else "rest", "look-S03-crest-between-64x64"), ("clash" if clash else "rest", None), ("rest", None)]
-    xs = [240, 328, 416, 504, 608, 696, 784]
-    for k, ((st, look), x) in enumerate(zip(drums, xs)):
+    if not clash:                                                                   # Coat and Face in the window; Eyes focused
+        drums = [(240, "rest", None, False), (328, "rest", None, False), (416, "rest", "look-S03-markings-plain-64x64", False), (504, "rest", "look-S03-scales-between-64x64", False),
+                 (608, "rest", "look-S03-crest-between-64x64", False), (696, "rest", None, True), (784, "rest", None, False)]
+        notched = (240, 696); focus_x = 696
+    else:                                                                           # the tray slid: Face and Shape in view, the clash set red
+        f.alpha_composite(S("create-bank-more-left"), (240, 424))
+        drums = [(264, "rest", "look-S03-crest-between-64x64", False), (352, "clash", None, True), (440, "rest", None, False),
+                 (544, "clash", None, False), (632, "rest", None, False), (720, "rest", None, False)]
+        notched = (352, 544); focus_x = 352
+    for x, st, look, foc in drums:
         if look: f.alpha_composite(S(look), (x + 8, 440))
         f.alpha_composite(S(f"create-drum-{st}"), (x, 424)); f.alpha_composite(S("create-drum-shade-80x96"), (x, 424))
-        if k in (0, 5): f.alpha_composite(S("create-drum-notch"), (x + 72, 464))
-        if k == 5: f.alpha_composite(S("create-drum-turn-up"), (x + 32, 424)); f.alpha_composite(S("create-drum-turn-down"), (x + 32, 512))
+        if x in notched: f.alpha_composite(S("create-drum-notch"), (x + 72, 464))
+        if foc: f.alpha_composite(S("create-drum-turn-up"), (x + 32, 424)); f.alpha_composite(S("create-drum-turn-down"), (x + 32, 512))
     f.alpha_composite(S("create-bank-more-right"), (904, 424))
     d = ImageDraw.Draw(f)
-    for wd, x in (("Coat", 240), ("Face", 608)): d.text((x, 400), wd, font=F("Regular", 16), fill=C("mist"))
-    label(f, "PROOF T-20261016-138: Create, S03 (its frame), shape" + (", a clash set (Eyes, Build)" if clash else ": Eyes kept, new to the guide, focused") + ", 1x. Pod, founder, words: stand-ins", 538)
+    for wd, x in ((("Coat", 240), ("Face", 608)) if not clash else (("Face", 264), ("Shape", 544))): d.text((x, 400), wd, font=F("Regular", 16), fill=C("mist"))
+    bar = f.getpixel((300, 590)); d.rectangle([930, 566, 1016, 594], fill=bar)               # the bottom line's stand-in: "← Tuikis" on S03
+    d.text((1008, 579), "Tuikis", font=F("Regular", 16), fill=(0xc6, 0xc4, 0xd8), anchor="rm"); d.text((1008 - 56 - 8, 579), "\u2190", font=F("Regular", 16), fill=(0xc6, 0xc4, 0xd8), anchor="rm")
+    if clash:                                                                       # no ✓ cap in clash: Grow it is not offered
+        d.rectangle([8, 566, 120, 594], fill=bar); d.text((16, 579), "Grow it", font=F("Regular", 16), fill=C("stone"), anchor="lm")
+    label(f, "PROOF T-20261016-145: Create, S03 (its frame), shape" + (": clash set Eyes + Build, tray slid, no Grow" if clash else ": Eyes kept, new to the guide, focused") + ", 1x. Pod, founder, words: stand-ins", 538)
     return f.convert("RGB")
 create().save(os.path.join(out, "genome-create-S03-1x.png")); create(True).save(os.path.join(out, "genome-create-S03-clash-1x.png"))
 # the Incubator: the compact screen in the slip's place; Stamina just cleared
 st = Lo(os.path.join(sl, "incubator-stage.png"))
-inc_rows = [r if r[0] != "stamina" else ("stamina", True, False, [G("closed")] * 3) for r in ROWS]
-inc_rows = [r if r[0] != "character" else ("character", False, True, ["frost"] * 2) for r in inc_rows]
+def inc_rows_for(state):                                                            # Stamina clears at 1/3, Character at 2/3 (k+1)/(n+1)
+    st_ = ("stamina", True, False, [G("closed")] * 3) if state != "cool" else ("stamina", False, True, ["frost"] * 3)
+    chr_ = ("character", True, False, [G("closed")] * 2) if state in ("glowing", "ready") else ("character", False, True, ["frost"] * 2)
+    rows = [st_ if r[0] == "stamina" else chr_ if r[0] == "character" else r for r in ROWS]
+    pulse = {"warm": 5, "glowing": 6}.get(state)
+    card = {"cool": ("stamina", False, "Stamina", None), "warm": ("stamina", True, "Stamina", "goes long"),
+            "glowing": ("character", True, "Character", "unflappable"), "ready": ("character", True, "Character", "unflappable")}[state]
+    return rows, pulse, card
 meas = {}
 for state in ("cool", "warm", "glowing", "ready"):
     f = Lo(os.path.join(incf, f"incubator-b-S03-{state}-1x.png"))
     f.paste(st.crop((88, 56, 310, 464)), (88, 96))                                       # the slip's place (and its overflowing words), back to the stage
     f.alpha_composite(S("incubator-genome-screen-208x312"), (88, 96))
-    tree(f, 104, 104, 114, 28, compact=True, rows=inc_rows, pulse_row=5)
+    rows_, pulse_, (ech, eread, cword, clook) = inc_rows_for(state)
+    tree(f, 104, 104, 114, 28, compact=True, rows=rows_, pulse_row=pulse_)
+    f.alpha_composite(Lo(os.path.join(sl, "incubator-card-ground.png")), (728, 96)); d = ImageDraw.Draw(f)   # the card: the chapter just cleared
+    d.text((744, 108), "Just cleared" if eread else "Next to clear", font=F("Regular", 16), fill=C("sand"))
+    em = Lo(os.path.join(sl, f"rail-emblem-{ech}-{'read' if eread else 'unread'}-24x24.png")).resize((72, 72), Image.NEAREST)   # doings have no picture: the emblem (§5)
+    rect(f, 752, 140, 160, 128, (22, 42, 55)); f.alpha_composite(em, (752 + 44, 140 + 28)); d = ImageDraw.Draw(f)
+    d.text((744, 284), cword, font=F("Medium", 16), fill=C("bone"))
+    if clook: d.text((744, 308), clook, font=F("Regular", 16), fill=(0x8d, 0x8a, 0xa6))
     a = np.asarray(f.convert("RGB")).astype(float); y = Y(a)
     pod = float(np.percentile(y[144:416, 400:624], 95)); scr = float(np.percentile(y[96:408, 88:296], 95))
     meas[state] = {"pod p95": round(pod, 3), "screen p95": round(scr, 3), "margin": round(pod - scr, 3)}
-    label(f, f"PROOF T-20261016-138: the Incubator, S03, {state}: Stamina just cleared, Character frosted (its glint), 1x. Card: stand-in", 538)
+    label(f, f"PROOF T-20261016-145: the Incubator, S03, {state}: " + {"cool": "Stamina and Character unread", "warm": "Stamina just cleared", "glowing": "Character just cleared", "ready": "every chapter known"}[state] + ", 1x. Card words: stand-ins", 538)
     f.convert("RGB").save(os.path.join(out, f"genome-incubator-S03-{state}-1x.png"))
 json.dump(meas, open(os.path.join(out, "brightness.json"), "w"), indent=1); print(json.dumps(meas))
 # the mark family at 1x and 4x on the slate, and the chapter emblems checked on the slate (read and unread)
-sheet = Image.new("RGBA", (8 + 7 * 34, 8 + 3 * 34 + 8), (24, 28, 32, 255))
+sheet = Image.new("RGBA", (8 + 8 * 34, 8 + 3 * 34 + 8), (24, 28, 32, 255))
 fam = [("open", "front-dim"), ("open", "blend-dim"), ("only", "only"), ("open-lit", "second-lit"), ("open-lit", "first-lit"), ("open-clash", "front-dim"), ("closed", None)]
 for i, (k, p) in enumerate(fam): gene(sheet, 8 + i * 34, 8, k, p, first=(i == 4))
 frost(sheet, 8, 42); gene(sheet, 42, 42, "open", "front-dim", wish=True); sheet.alpha_composite(S("genome-sealed-crystal-24x24"), (76, 42))
 sheet.alpha_composite(S("genome-sealed-pearl-24x24"), (110, 42)); gene(sheet, 144, 42, "self", places=("cave", "wood"))
+sheet.alpha_composite(S("genome-sealed-shard-24x24"), (178 + 34 + 30, 76)); gene(sheet, 178 + 34 + 64 - 34, 76, "self", places=("storm",)); gene(sheet, 8 + 7 * 34, 8, "open-lit-clash", "second-lit")
 sheet.alpha_composite(S("genome-hub-S03-24x24"), (186, 42)); sheet.alpha_composite(S("genome-glint-gold-12x12"), (202, 38)); sheet.alpha_composite(S("genome-cross-12x12"), (216, 48))
 sheet.alpha_composite(S("genome-focus-32x32"), (4, 72)); gene(sheet, 8, 76, "open", "front-dim")
-for i, pl_ in enumerate(("cave", "wood", "meadow", "pond-edge", "rock-field")): sheet.alpha_composite(S(f"genome-place-{pl_}-10x10"), (48 + i * 14, 84))
+for i, pl_ in enumerate(("cave", "wood", "meadow", "pond", "rock", "storm")): sheet.alpha_composite(S(f"genome-place-{pl_}-10x10"), (48 + i * 14, 84))
 sheet.convert("RGB").save(os.path.join(out, "genome-marks-1x.png")); sheet.resize((sheet.width * 4, sheet.height * 4), Image.NEAREST).convert("RGB").save(os.path.join(out, "genome-marks-4x.png"))
 EMB = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"]
 em = Image.new("RGBA", (8 + len(EMB) * 32, 8 + 2 * 32), (24, 28, 32, 255))

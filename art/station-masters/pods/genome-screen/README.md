@@ -111,3 +111,24 @@ The review (`results/review-genome-screen-art.md` §1) passed the marks but foun
     - Legs: short and fine, between, long and stout;
     - Claws: round feet, pads, digging wedges. Claws is breed-only, so these are needed only if its pinned drum shows a face.
 - **Copy faces for the bay, `trait-S03-{trait}-{look}-160x128`, 28 owed:** the same looks, less Claws, whose three crops exist.
+
+## T-20261016-145: the framework check's fixes (`results/review-genome-screen-art.md` §3)
+**Slices:**
+- **Added:**
+  - `genome-place-storm-10x10`: S16 Phase's storm, in the badge family, painted by hand because no storm painting exists. A dark cloud over a pale sky, rain and one flash.
+  - `genome-gene-open-lit-clash-24x24`: a changed gene that clashes, lit mint with its notch under the red rim. Only changed traits clash, so the clash set needs it.
+- **Renamed to the frame ids:** `genome-place-pond-10x10` and `genome-place-rock-10x10`. `genome-place-pond-edge-10x10` and `-rock-field-10x10` are withdrawn, not deleted.
+
+**The marks sheet** now has the shard find, the storm badge and the lit clash mark.
+
+**The proofs, re-rendered:**
+- **The clash (02):** the set is Eyes and Build. Both are changed, so both are lit under their red rims. The tray is slid to Face and Shape, so the red drums are Eyes and Build; Crest is not red. "Grow it" shows without its ✓ (no cap in clash).
+- **The bottom line:** "← Tuikis" on S03's Create screens.
+- **The Incubator (06):** the chapters clear on (k + 1) / (n + 1).
+  - **cool:** Stamina and Character are frosted with their glints, and the card shows Stamina's emblem before it clears.
+  - **warm:** Stamina has just cleared ("goes long").
+  - **glowing:** Character has just cleared ("unflappable").
+  - **ready:** every chapter is known.
+  - **The card's picture:** the doings have no picture, so it is the chapter's emblem, as the card's fallback (tabs ruling §5).
+- **The owner's Incubator proof:** `proof/genome-incubator-S03-glowing-1x.png`.
+- **Brightness, re-taken:** margins of 0.361, 0.337, 0.476 and 0.486 (minimum 0.08).

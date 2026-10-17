@@ -18933,9 +18933,9 @@
   "src": "genome-screen/make-genome.py",
   "made": "a self-changing gene's trigger place: pond edge, cut from place-pond-32x32",
   "sha256": "e35407654e0e8d834e52dcdcf95ed8a3800fc4031d556fb6cc9ee4711263eadf",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
-  "status_note": "new (10-17, T-20261016-138)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-145): renamed to the frame id, genome-place-pond-10x10"
  },
  "genome-place-rock-field-10x10": {
   "size": [
@@ -18946,8 +18946,60 @@
   "src": "genome-screen/make-genome.py",
   "made": "a self-changing gene's trigger place: rock field, cut from place-rock-32x32",
   "sha256": "c7dffd26b914f41d3c3ca3be81e8c3e9bfaee0fca5e3e9a93a964b3bedcbe62b",
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-145): renamed to the frame id, genome-place-rock-10x10"
+ },
+ "genome-place-pond-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: pond (frame id), cut from place-pond-32x32; stacked at (25, -2 + 11k)",
+  "sha256": "e35407654e0e8d834e52dcdcf95ed8a3800fc4031d556fb6cc9ee4711263eadf",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
-  "status_note": "new (10-17, T-20261016-138)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "status_note": "new (10-17, T-20261016-145)"
+ },
+ "genome-place-rock-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene's trigger place: rock (frame id), cut from place-rock-32x32",
+  "sha256": "c7dffd26b914f41d3c3ca3be81e8c3e9bfaee0fca5e3e9a93a964b3bedcbe62b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "status_note": "new (10-17, T-20261016-145)"
+ },
+ "genome-place-storm-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "S16 Phase's trigger, a storm (selfChanging.storm), in the badge family: the same round cut and rim, painted by hand (no storm painting exists): a dark cloud over a pale sky, rain, one flash",
+  "sha256": "6f177cddad1a5b78aab3b0493f0bd51b9779d50670cbd7e5fe34e21a01d442a3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "status_note": "new (10-17, T-20261016-145)"
+ },
+ "genome-gene-open-lit-clash-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a changed gene that clashes (only changed traits clash): the ring lit mint with the notch, under the red rim",
+  "sha256": "c6292a3f5c1c77b63392cc231de1cad8b54ca1c9f51af232bc2f436b276e6731",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "status_note": "new (10-17, T-20261016-145)"
  }
 }

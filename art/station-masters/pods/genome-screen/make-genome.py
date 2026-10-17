@@ -7,7 +7,7 @@ is the one lit hue; red only for a clash. Nothing here is taken from art/referen
   slate; a 2 px rubber gasket at (6, 6); the screen 496 x 296 (192 x 296) at (8, 8), recessed (its top and left inner edge in shade), matte
   grain, no picture; four screws in the bezel's corners.
 - genome-gene-{open,open-lit,open-clash,closed,self}-24x24: the gene marks without the pair (the pair goes at (4, 7)): open, a ring with three
-  tumbler ticks, its inside slate (so the tree's lines stop at it); lit, the ring in mint with the notch 3 x 6 at (21, 9); clash, the ring's rim red; closed, a shut disc with the joined rings
+  tumbler ticks, its inside slate (so the tree's lines stop at it); lit, the ring in mint with the notch 3 x 6 at (21, 9); clash, the ring's rim red (open-lit-clash: a changed gene that clashes, mint under the red rim; T-145); closed, a shut disc with the joined rings
   (inherited-only); self, the shut disc with four step marks (T-138).
 - genome-pair-{front,blend,first,second}-{dim,lit}-16x10: the copy pair. Copy 1 bone, copy 2 sand. front: copy 1 solid in front, copy 2 an
   outline behind; blend: one lens, half each; first: copy 1 twice; second: copy 2 twice. dim at the unlit level; lit at full level.
@@ -15,7 +15,8 @@ is the one lit hue; red only for a clash. Nothing here is taken from art/referen
 - genome-hub-{S01..S16}-24x24: the species' own glyph (its frame's 5 x 5 glyph) in a ring; genome-lock-8x10: the lock.
 - genome-cross-12x12 (toward the Cross: a small x), genome-glint-gold-12x12 (the chapter's glint, on its emblem) and genome-glint-wish-10x10
   (the house four-point glint), genome-first-10x8 (a point-up triangle, cream with a gold edge, never a star),
-  genome-place-{cave,wood,meadow,pond-edge,rock-field}-10x10 (a trigger place's badge, cut from place-{p}-32x32).
+  genome-place-{cave,wood,meadow,pond,rock}-10x10 (a trigger place's badge, cut from place-{p}-32x32, named by frame id; T-145) and
+  genome-place-storm-10x10 (S16 Phase's storm, painted by hand in the same family; T-145).
 - T-20261016-138 (the framework's delta, T-136): genome-gene-only-24x24 and genome-pair-only-16x10 (one look: the ring without ticks, two
   equal fog discs); genome-gene-self-24x24 redrawn as the inherited-only disc with four step marks; the 12 x 12 places and the 10 x 10 gold
   glint withdrawn (not made).
@@ -90,6 +91,7 @@ save("genome-gene-open-24x24", layers(24, 24, [(inner, SLATE), (open_ring, DIM_R
 save("genome-gene-only-24x24", layers(24, 24, [(inner, SLATE), (ring(8.6, 10.6), DIM_RING)]))     # T-138: one look, no ticks (it does not turn)
 notch = np.minimum(np.minimum(soft(x - 21), soft(24 - x)), np.minimum(soft(y - 9), soft(15 - y)))
 save("genome-gene-open-lit-24x24", layers(24, 24, [(inner, SLATE), (open_ring, P("mint")), (notch, P("mint"))]))
+save("genome-gene-open-lit-clash-24x24", layers(24, 24, [(inner, SLATE), (open_ring, P("mint")), (notch, P("mint")), (ring(9.0, 11.2), P("red")), (ticks(10.0, 12.0, TICK), P("red"))]))   # T-145
 save("genome-gene-open-clash-24x24", layers(24, 24, [(inner, SLATE), (open_ring, DIM_RING), (ring(9.0, 11.2), P("red")), (ticks(10.0, 12.0, TICK), P("red"))]))
 disc = soft(10.6 - r)
 jr = lambda cx: np.minimum(soft(np.hypot(x - cx, y - 12) - 2.6), soft(3.9 - np.hypot(x - cx, y - 12)))
@@ -158,10 +160,24 @@ tri = lambda inset: soft(np.minimum(7.4 - inset - y, ((y - 0.6) * 4.4 - np.abs(x
 save("genome-first-10x8", layers(10, 8, [(tri(0), P("gold") * 0.75), (tri(1.0), P("cream"))]))
 # ---------- the place badges, 10 x 10 (T-138), cut from the signed place pictures: one per trigger place, stacked at (25, -2 + 11k)
 y, x = grid(10, 10); circ = soft(4.6 - np.hypot(x - 5, y - 5)); rim = np.minimum(soft(np.hypot(x - 5, y - 5) - 4.0), circ)
-for kind, pl_ in (("cave", "cave"), ("wood", "wood"), ("meadow", "meadow"), ("pond-edge", "pond"), ("rock-field", "rock")):
+for kind, pl_ in (("cave", "cave"), ("wood", "wood"), ("meadow", "meadow"), ("pond", "pond"), ("rock", "rock")):   # T-145: named by frame id
     im = np.asarray(Image.open(os.path.join(sl, f"place-{pl_}-32x32.png")).convert("RGB").resize((10 * S, 10 * S), Image.LANCZOS)).astype(float)
     col = lin(im) * (1 - rim[..., None] * 0.6); a1 = down(circ, 10, 10); c1 = down(col * circ[..., None], 10, 10) / np.maximum(a1, 1e-6)[..., None]
     save(f"genome-place-{kind}-10x10", np.dstack([srgb(c1), a1 * 255]))
+# T-20261016-145: the storm (S16 Phase's trigger, selfChanging.storm), in the badge family: the same round cut and rim, painted by hand (no
+# storm painting exists): a low slate sky, a dark cloud mass over it, rain falling and one pale flash
+yy, xx = (np.mgrid[0:10 * S, 0:10 * S] + .5) / S
+rng = np.random.default_rng(16); n = nd.gaussian_filter(rng.normal(0, 1, yy.shape), S * 0.6); n /= n.std()
+sky = lin([120, 134, 160]) * (0.80 + 0.30 * (yy / 10))[..., None]
+cloud = np.clip((5.0 - yy + 0.9 * n) / 1.2, 0, 1)                           # the cloud mass in the upper half, its lower edge ragged
+col = sky * (1 - cloud[..., None]) + lin([30, 32, 42]) * (0.85 + 0.25 * np.clip(-n, 0, 1))[..., None] * cloud[..., None]
+rain = (np.abs(((xx + yy * 0.35) % 2.2) - 1.1) < 0.18) & (yy > 4.6)
+col[rain] = col[rain] * 0.6 + lin([150, 162, 180]) * 0.4
+fl = (np.abs((xx - 5.2) - 0.55 * np.where(yy < 6.4, yy - 4.4, 2 * (6.4 - 4.4) - (yy - 4.4))) < 0.42) & (yy > 4.2) & (yy < 8.4)
+col[fl] = lin([236, 236, 214])                                             # the flash
+col = col * (1 - rim[..., None] * 0.6) if rim.shape == col.shape[:2] else col
+a1 = down(circ, 10, 10); c1 = down(col * circ[..., None], 10, 10) / np.maximum(a1, 1e-6)[..., None]
+save("genome-place-storm-10x10", np.dstack([srgb(c1), a1 * 255]))
 # ---------- the sealed finds, 24 x 24, from the signed find pictures
 for f_ in ("crystal", "pearl", "shard"):
     im = Image.open(os.path.join(sl, f"find-{f_}-112x112.png")).convert("RGBA"); a = np.asarray(im).astype(float); pm = a.copy(); pm[..., :3] *= a[..., 3:] / 255

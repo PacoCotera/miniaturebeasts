@@ -1,8 +1,8 @@
 {
  "cool": {
   "pod p95": 0.59,
-  "screen p95": 0.202,
-  "margin": 0.388
+  "screen p95": 0.229,
+  "margin": 0.361
  },
  "warm": {
   "pod p95": 0.539,
@@ -11,12 +11,12 @@
  },
  "glowing": {
   "pod p95": 0.668,
-  "screen p95": 0.202,
-  "margin": 0.466
+  "screen p95": 0.192,
+  "margin": 0.476
  },
  "ready": {
   "pod p95": 0.675,
-  "screen p95": 0.202,
-  "margin": 0.473
+  "screen p95": 0.189,
+  "margin": 0.486
  }
 }

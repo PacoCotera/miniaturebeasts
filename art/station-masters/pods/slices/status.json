@@ -5995,13 +5995,33 @@
   "note": "T-20261016-138, the genome screen's delta"
  },
  "genome-place-pond-edge-10x10": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
-  "note": "T-20261016-138, the genome screen's delta"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-145: renamed genome-place-pond-10x10"
  },
  "genome-place-rock-field-10x10": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-145: renamed genome-place-rock-10x10"
+ },
+ "genome-place-pond-10x10": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-138, in genome-screen/proof (Create S03 and its clash set, the Incubator S03 every step, against the redrawn wireframes 01, 02, 06; the mark family)",
-  "note": "T-20261016-138, the genome screen's delta"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "note": "T-20261016-145"
+ },
+ "genome-place-rock-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "note": "T-20261016-145"
+ },
+ "genome-place-storm-10x10": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "note": "T-20261016-145"
+ },
+ "genome-gene-open-lit-clash-24x24": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
+  "note": "T-20261016-145"
  }
 }
