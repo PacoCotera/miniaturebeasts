@@ -84,3 +84,18 @@ The block keeps its heading picture (the world turn's sun mark) and no sentences
 - **Confirm the kinds and their `n`** (§2), especially `grown`'s three variants, and whether `herd` keeps its direction.
 - **The partner on the storm row** (§4, last point): wanted or not.
 - **`shallows` and `cliff`:** they appear in outpost lines only. Either they get badges, or an outpost there shows the plain land mark.
+
+### The game designer's calls (2026-10-17)
+
+The proposal is confirmed as written, with these calls:
+
+1. **The ten kinds and their `n`: confirmed.**
+   - **`grown`:** the card draws one sprout and the mibi's face for all three variants. For `n` 1 (leads) and 2 (can lead now), the face wears the partner ring (the teal ring the top bar uses for carried mibis). The fact the player can act on is "this one can now be your partner", and only those two variants say it. `n` 0 (home) is the plain face.
+   - **`herd` keeps its direction.** Where a species went is what the player acts on in the next trip (where to find it), so the arrow is information, not decoration. With `n` 0 (spread out) there is no arrow, as proposed.
+2. **The partner on the storm row: yes, but only when the storm moved one of its genes.** That is when the crate's trip had a partner, the trip's `storm` flag is true, and the partner carries a self-changing trait that storms move (Phase, S16 Blikur, per specs/genome-screen-calls.md). Then the storm row wears the partner's face beside the bolt, so the trigger is felt at the moment it pays off.
+   - Use the trip's flag (a storm over the Probe and partner), not the event's `place`. The two can differ.
+   - In every other case, no face: a face on every storm row would be noise.
+   - Glow and Basking are triggered by places entered, which are not world events. They get no row; their step shows on the Vivarium, as T-137 says.
+3. **`shallows` and `cliff`: the plain land mark for now.** They appear only in outpost lines (`lampLow`, `lampOut`). The world beyond the first terrain slice is not designed yet (design/art-direction.md), so new badges would be drawn ahead of their places. The outpost's lamp and the plain land mark carry the event; the Companion's map shows which outpost. Give them badges when those lands get their world art.
+
+Nothing else is open from the game designer.
