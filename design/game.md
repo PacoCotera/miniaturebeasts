@@ -12,6 +12,8 @@ It is also a genetics toy. Appearance and abilities follow inherited traits, and
 the player learns how through pictures, comparison and consequences rather than
 lessons or notation.
 
+**How this page is built.** It is written for the designers, artists and developers who make the game, in the order they need it. It opens with the **pillars**, the few things the game must always be, which settle arguments, and the **rules** every mechanic keeps. Then it covers the **loop**, the moment-to-moment play and its verbs, and the **systems** that loop runs on. After that come the **economy** that paces them, the **progression** that makes them add up, **engagement** (why players come back, and what we refuse to do to make them), and the **devices**, where all of it is played. It ends with the **mechanics reference** and the **open questions**. Each section says what the game does and why, and links to the document that holds the rules and numbers. When something here and a rules document disagree, the rules document is fixed. The game is a prototype and changes as it is played; the direction of the game's owner overrides anything on this page.
+
 ## Who it is for
 
 The game works for two audiences at once. Children explore, uncover and pursue
@@ -19,188 +21,19 @@ possibilities visually, without any genetics vocabulary. Curious parents and STE
 enthusiasts can dig into the real genetics, one press away and never required. It
 is never a text-heavy school lesson, and never childish, in tone or in reward. It
 is a sandbox: a pretty mibi, a rare one and a capable one are all valid goals.
-What the Station shows of the genetics is in
-[research and breeding](research-and-breeding.md#what-the-player-sees-of-the-genetics).
 
-This page is the high-level design guideline: what playing feels like, what holds
-the player, and what we refuse. Every mechanic, screen and change is judged by it.
-Its counterpart for the look is [art direction](art-direction.md); the rules are
-in the documents it links. The game is still a prototype and changes as it is
-played. Direction from the game's owner overrides any principle here.
+## Pillars
 
-## The feel
+Every design decision is checked against these four. A feature that serves none of them is cut; a feature that breaks one needs a very good reason.
 
-**A naturalist's expedition that ends in a home full of life.** You go out with a
-small device, notice something alive and strange, carry it home, find out what it
-holds, and make a creature that is yours. Then you live with it, and it changes
-where you can go next.
+1. **Discover something alive.** The world is full of creatures and secrets, and the player finds them by going out and looking. Exploration rewards curiosity, never reflexes. *Rules out:* combat, timed challenges, grinding for drops.
+2. **Author life you understand.** The player reads real genetics as pictures and shapes a creature from what a pod really carries. Every result is explained by what was inherited, never by luck at the moment of creation. *Rules out:* random rolls on creation, hidden stats, notation the player must learn.
+3. **Live with what you made.** Each mibi is an individual with a name, an origin and a family. It grows, walks with you, opens places and has children. Attachment comes from its story. *Rules out:* disposable units, rarity tiers as the point, mibis as currency.
+4. **Respect the player's time.** The game rewards attention and never demands attendance. Nothing is lost by being away, and every choice is shown before it is made. *Rules out:* decay, streaks, FOMO, paid speed or randomness, hidden costs.
 
-The feel is **curious, unhurried and warm**. It is a hobby you return to, not a
-job. Something is always worth a look; nothing is ever lost by looking away. The
-pleasure is in discovery (what is in this pod?), in authorship (I made this one),
-and in attachment (that is Moss, and Moss came from the pond trip).
+## The rules every mechanic keeps
 
-References, for the feel, not to copy: the curiosity of turning over stones in a
-nature walk; the quiet ownership of *Neko Atsume*, where you check in to see who
-came; the lineage pride of breeding games like *Creatures*, which made real
-genetics into pets.
-
-## The loop and the arcs around it
-
-The **core loop** is one trip and what comes of it: go out, bring something home,
-find out what it is, make a mibi from it, live with it.
-
-```mermaid
-flowchart TD
-  Explore[Explore the world on the Companion] --> Gather[Deliberately collect samples and supplies]
-  Gather --> Return[Send the cargo home; the Station accepts it once]
-  Return --> Identify[Identify the sample's species]
-  Identify --> Create[Create a founder: unedited, or with researched changes]
-  Identify --> Research[Optionally research what the sample carries]
-  Research --> Create
-  Create --> Open[Incubate, then open to meet that same mibi]
-  Open --> Live[Keep it, or bond with it and raise it]
-  Live --> Help[A bonded partner helps you reach new places]
-  Live --> Breed[Breed within the species for new individuals]
-  Help --> Purpose[A new question, need or species to pursue]
-  Breed --> Purpose
-  Purpose --> Explore
-```
-
-Around that loop sit **longer arcs**, each with its own pull:
-
-| Arc | Its span | Its question |
-| --- | --- | --- |
-| **The trip** | one expedition on the Companion | What is out there today, and what do I bring back? |
-| **The pod** | from the crate to the hatch | What does this one carry, and what will I make of it? |
-| **The mibi** | from the hatch through growing up | Who is this one, and what can it do with me? |
-| **The species** | every pod and mibi of one kind | What looks can this species have? (the field guide) |
-| **The family** | crosses across generations | Can I breed toward the mibi I imagine? (the wish) |
-| **The world** | the map, turn by turn | What changed while I was away, and where can my partner take me now? |
-
-Each arc feeds the next. A trip fills the rack; the rack feeds the bench; the bench
-makes mibis; mibis become partners that open new places, and parents that make
-families. The design keeps every arc optional except the first: a player who only
-explores and hatches is playing the game.
-
-## What holds the player: the hooks we use
-
-Each hook is a known pattern, chosen because it fits a game about living things
-and is honest with the player.
-
-- **The curiosity gap, honestly paid.** A sealed pod, a frosted chapter, a glint
-  that says "something new is here" but never what. The question is real, and the
-  answer is always in the game and always worth the look. Unlike a loot box, the
-  pod's contents are fixed when it is found; reading reveals, it never rolls.
-- **Authorship.** The player shapes their founder, choosing which inherited copy
-  each gene keeps, and sees the animal change under their hand. People care most
-  about what they made.
-- **Ownership and origin.** Every mibi is a specific individual with a name, a pod
-  it came from and the place where that pod was found. Attachment grows from that
-  story, not from a rarity badge.
-- **Collection with meaning.** The field guide fills look by look; a species is
-  complete when every look has been seen. Collection pulls because each entry is
-  something the player actually found and understood.
-- **Mastery of a real system.** The genetics are real: dominance, blends, hidden
-  copies, sleeping traits. A player who learns them breeds better, and the game
-  shows that learning through results, not tests.
-- **A gentle appointment.** A bud grows in real time and each visit reveals a
-  little more. The wait creates a reason to come back that rewards the visit and
-  never punishes the absence.
-- **Goals the player sets.** The wish lets the player pin the mibi they dream of;
-  the game then shows which pods and pairs carry pieces of it. The long goal is
-  theirs, not ours.
-- **Physical ritual.** Docking the Companion is a moment: the three devices react
-  together, and the trip comes home. The hardware makes the loop tangible.
-
-## The hooks we refuse
-
-These are common in games for children and in free-to-play design. We refuse them
-because they trade trust for attention.
-
-- **No punishment for absence.** Nothing dies, decays, sickens or runs away while
-  the player is gone. Care helps a bonded mibi grow; missing it loses nothing.
-  (Tamagotchi's guilt is the pattern we refuse.)
-- **No streaks, daily-login rewards or "don't break the chain".**
-- **No fear of missing out:** no limited-time events, vanishing offers or
-  countdowns to loss.
-- **No paid randomness and no paid speed.** Nothing random is ever sold, and
-  waiting can be shortened only with what the player found in play, never with
-  money.
-- **No nagging.** The devices signal what is new or ready; they never hurry,
-  scold or guilt.
-- **No comparison pressure:** no global rankings and no "first to find".
-- **No manipulative choices:** no pre-ticked options, no shaming the "no" answer,
-  no hiding the cost.
-
-## What shows progression
-
-Progress is shown as the world and the collection getting richer, never as levels,
-experience bars or scores. The only numbers are prices and supplies.
-
-- **The field guide and the Library** fill frame by frame and look by look.
-- **The vivarium** fills with mibis, and each grows from juvenile to adult to elder.
-- **A pod's ring** fills chapter by chapter as it is read.
-- **The world map** clears of fog, and outposts and beacons stay lit.
-- **The Probe** gains a tier: it reaches further and carries more.
-- **Families** grow into lineages the player can trace, and a wish comes closer as
-  more of its pieces light up.
-- **Portraits** mark the mibis the player's research has earned a sitting for.
-
-## What makes you come back
-
-| Span | The pull |
-| --- | --- |
-| **Minutes** | A bud's next reveal; a chapter clearing; a crate waiting in the bay |
-| **A day** | A trip to take; the bench's small daily Data from watching a mibi; a young mibi growing toward adulthood |
-| **Weeks and longer** | A species' field guide nearly complete; a wish one generation away; a new place a grown partner can open; a portrait on its way |
-
-The Station shows all of this at a glance from across the room (Home and Idle), so
-the player sees why to come back without opening anything. The return is always
-to something new, never to fix a loss.
-
-## Three devices, one world
-
-Each device does what only it can, and they react to each other.
-
-- **The Companion** is for going out: the trip, the place, the creatures met, the
-  mibis walking with you. Play there is active and moment to moment.
-- **The Station** is home: reading, shaping, growing and living with mibis. Play
-  there is reflective; it is where decisions are made with time to think.
-- **The Caddy** is the bridge: it charges both, carries the cargo across at the
-  dock and keeps a printed record.
-
-**The dock is the shared moment.** When the Companion docks, all three devices react
-in step, and the trip comes home as an event, not a sync. Cargo moves only then,
-and nothing is accepted without the player opening it.
-
-## How decisions are communicated
-
-- **Browsing is free.** Looking, comparing and previewing never spend.
-- **Every choice shows its options, its cost and its outcome before the press.**
-  The outcome is a picture: what will happen to the pod, the mibi or the device.
-- **Only real decisions ask.** A spend, a commitment, something irreversible or a
-  fork in the path opens a decision panel. Everything else is one press with no
-  confirmation.
-- **Irreversible means said once, plainly.** The panel shows what is lost; it
-  never asks twice and never frightens.
-- **The player chooses where they land.** No choice drops them somewhere they
-  didn't pick.
-
-## What it is not
-
-- Not a care chore: no needs meters, no decay, no guilt.
-- Not a slot machine: no paid randomness, and no randomness at the moment of
-  purchase.
-- Not a lesson: no quizzes, no notation required, no wall of text.
-- Not a race: no leaderboards, no timers that punish.
-- Not a battler: mibis are companions and partners, never fighters ranked by
-  power.
-- Not childish: never babyish in tone, art or reward.
-
-## Design principles
-
-These hold across every mechanic.
+These hold across every system, below the pillars.
 
 - **Curiosity must be actionable.** Show enough of a place, creature or clue to
   support a choice. Variety must change what you can do or what happens, not just
@@ -227,24 +60,155 @@ These hold across every mechanic.
   if the game has waits, they belong to research or incubation running in the
   background.
 
-## Gaps in this guideline
+## The core loop
 
-These are honestly open, and the hooks above depend on them:
+One trip and what comes of it: **go out, bring something home, find out what it is, make a mibi from it, live with it.** Each step is a verb the player does, on a device:
 
-- **What partners do.** Partners are said to open places and finds, but no species'
-  ability is designed yet. Until it is, the mibi arc's "what can it do with me?"
-  has no answer in play.
-- **What care and bonding mean.** Bonding has rules but little felt meaning beyond
-  growth. What a bond gives the player is undesigned.
-- **The long term.** A complete field guide and a reached wish are the longest
-  goals. What a player does after them (new species in drops, deeper lineages) is
-  not yet designed.
-- **The first session.** How a new player meets the loop, and how fast the first
-  mibi arrives, is not designed as an experience.
-- **The Caddy's printing in play.** It is a keepsake today; whether print and scan
-  are part of play is open.
-- **The economy's pacing.** Prices and waits are set low so the loop can be played
-  through; how fast it should feel in the finished game is unset.
+```mermaid
+flowchart TD
+  Explore[Explore the world on the Companion] --> Gather[Deliberately collect samples and supplies]
+  Gather --> Return[Send the cargo home; the Station accepts it once]
+  Return --> Identify[Identify the sample's species]
+  Identify --> Create[Create a founder: unedited, or with researched changes]
+  Identify --> Research[Optionally research what the sample carries]
+  Research --> Create
+  Create --> Open[Incubate, then open to meet that same mibi]
+  Open --> Live[Keep it, or bond with it and raise it]
+  Live --> Help[A bonded partner helps you reach new places]
+  Live --> Breed[Breed within the species for new individuals]
+  Help --> Purpose[A new question, need or species to pursue]
+  Breed --> Purpose
+  Purpose --> Explore
+```
+
+| Step | The player… | Device | Pillar |
+| --- | --- | --- | --- |
+| Explore | picks a start, walks the reach, calls, reads the weather, enters places | Companion | 1 |
+| Gather | digs up pods, gathers materials, causes creature moments for Data, lights outposts and beacons | Companion | 1 |
+| Send home | ends the expedition; the hold seals into a crate; docking brings it home | Companion, Caddy | 1, 4 |
+| Open | opens the bay, crate by crate | Station | 1 |
+| Identify and read | breaks a pod's seal, reads chapters, follows glints, compares | Station | 2 |
+| Shape and grow | turns genes, sees the founder change, grows it | Station | 2 |
+| Incubate and hatch | checks on the candled pod, sees what clears, opens it | Station | 2, 3 |
+| Live | names, greets, tends, takes mibis out, returns them to the wild | Station, Companion | 3 |
+| Partner | brings a grown mibi on the next trip; it opens places and finds | Companion | 1, 3 |
+| Cross | pairs two adults toward a wish; reads the forecast | Station | 2, 3 |
+
+**The arcs around the loop.** The loop repeats inside longer arcs, each with its own question: the **trip** (what's out there?), the **pod** (what does it carry?), the **mibi** (who is this one?), the **species** (what looks can it have?), the **family** (can I breed what I imagine?) and the **world** (what changed while I was away?). Every arc is optional except the trip. A player who only explores and hatches is playing the game.
+
+## Systems
+
+The loop runs on these systems. Each has one purpose; its rules are in the linked document.
+
+| System | Its purpose | What it takes in, and what it gives | Rules |
+| --- | --- | --- | --- |
+| **World and exploration** | A living, fogged world worth walking | Probe reach and Shield in; pods, materials, finds, Data, map knowledge out. The world turns once per expedition | [World and exploration](world-and-exploration.md) |
+| **The Probe** | The player's reach and risk | Mending and upgrades in; reach, pod capacity and survival out | [World and exploration](world-and-exploration.md) |
+| **Cargo** | The trip coming home as an event | The sealed hold in; crates opened once at the Station | [Architecture](architecture.md) |
+| **Research** | Knowing what a pod carries | Data in; chapters read, glints, the field guide out | [Research and breeding](research-and-breeding.md) |
+| **Creation** | Making one fixed founder from one pod | A read pod, Energy, Essence and Data in; a committed genome out | [Research and breeding](research-and-breeding.md) |
+| **Incubation** | The wait between choice and meeting | A bud in; time, reveals and a hatch out; Grow now spends Essence for time | [Research and breeding](research-and-breeding.md) |
+| **Life** | Mibis as individuals over time | Growth stages, care, bonding, the carried set, partners, self-changing traits | This page's table below; [Genomics](creatures-and-genomics.md) |
+| **Breeding** | Families toward a wish | Two adults, Energy and Essence in; one child with real parents out | [Research and breeding](research-and-breeding.md), [Genomics](creatures-and-genomics.md) |
+| **Genomics** | The truth underneath everything | Species frames, loci, copies, inheritance; never shown as notation | [Genomics](creatures-and-genomics.md) |
+| **Collection** | The record of what the player knows | The Library and field guides, wishes, portraits earned by research | [Research and breeding](research-and-breeding.md) |
+
+**How the systems connect.** Exploration feeds research (pods, Data). Research feeds creation (read genes can be shaped). Creation feeds life (a mibi). Life feeds exploration (partners open places) and breeding (adults cross). Breeding feeds research (children to read) and collection (looks never seen). Every system both receives and gives, so no part of the game is a dead end.
+
+## Economy
+
+Three supplies pace the game. Each has one job, so the player learns what each is for by using it.
+
+| Supply | Its job | Comes from | Spent on | The pressure it creates |
+| --- | --- | --- | --- | --- |
+| **Energy** (bolt) | runs the machines | charged and warm stones, found and caused in the world | growing, crossing, mending, upgrading, lighting outposts | The scarce one: it makes the player choose between growing now and preparing the next trip |
+| **Data** (diamond) | buys knowledge | creature moments the player causes; a little each day at the bench | identifying, reading, shaping | Where curiosity goes: read this pod or that one; the glint says where it's worth it |
+| **Essence** (drop) | builds bodies | dew, pressed fruit, tufts; returning pods and mibis to the wild | growing, crossing, Grow now | The body budget: more mibis or faster ones |
+
+- **Knowledge never costs twice.** What is read stays read; looking again is free.
+- **Running out limits what you can do, never what you know.**
+- **Time is a resource the player can trade for Essence,** never for money.
+- **Nothing in the economy is ever sold.** The paid cloud layer adds services, never supplies, speed or randomness.
+- Prices and waits are set low so the loop can be played through quickly. Their final pacing is an open question.
+
+## Progression
+
+Progression is the world and the collection getting richer, never levels, experience or scores. The only numbers on screen are prices and supplies.
+
+| What grows | How the player sees it |
+| --- | --- |
+| **Knowledge** | pods' rings fill chapter by chapter; species' field guides fill look by look; the Library's frames go from empty to met to found |
+| **The collection** | the vivarium fills; mibis grow from juvenile to adult to elder |
+| **Capability** | the Probe's tier (reach and capacity); partners that open places and finds; outposts and beacons lit |
+| **The world** | the map clears of fog; the world turns, with consequences the player can read |
+| **Lineage** | families traced across generations; a wish coming closer as its pieces light up |
+| **Recognition** | portraits earned by research, arriving as an event |
+
+## Engagement
+
+### Why players come back
+
+| Span | The pull |
+| --- | --- |
+| **Minutes** | a bud's next reveal; a chapter clearing; crates waiting in the bay |
+| **A day** | a trip to take; the bench's small daily Data; a young mibi growing up |
+| **Weeks and longer** | a field guide nearly complete; a wish one generation away; a place a grown partner can open; a portrait on its way |
+
+The Station shows what is new or ready at a glance, from Home and Idle, so the reason to come back is visible without opening anything. The return is always to something new, never to repair a loss.
+
+### The hooks we use
+
+- **The curiosity gap, honestly paid.** A sealed pod, a frosted chapter, a glint that says "something new is here" but never what. The answer is fixed when the pod is found; reading reveals, it never rolls. (The opposite of a loot box.)
+- **Authorship.** The player shapes their founder and sees it change under their hand. People care most about what they made.
+- **Ownership and origin.** Every mibi has a name, a pod it came from and a place where that pod was found.
+- **Collection with meaning.** Each field guide entry is something the player found and understood.
+- **Mastery of a real system.** Learning the genetics makes better breeding; the game teaches by results.
+- **A gentle appointment.** A bud grows in real time and rewards each visit with a reveal.
+- **Goals the player sets.** The wish turns the player's dream mibi into a long goal the game helps with.
+- **Physical ritual.** Docking makes three devices react together; the trip comes home as an event.
+
+References for these patterns, not to copy: the check-in pleasure of *Neko Atsume*, the genetic pets of *Creatures*, and the partner bond of the *Pokémon* games, without their battling.
+
+### The hooks we refuse
+
+- **Punishing absence:** nothing dies, sickens, decays or leaves while the player is away (the Tamagotchi pattern).
+- **Streaks and daily-login rewards.**
+- **Fear of missing out:** no limited-time events, vanishing offers or countdowns to loss.
+- **Paid randomness and paid speed.**
+- **Nagging:** the devices signal what is new; they never hurry, scold or guilt.
+- **Comparison pressure:** no global rankings and no "first to find".
+- **Manipulative choices:** no pre-ticked options, no shaming the "no", no hidden cost.
+
+## Devices and interactions
+
+**Three devices, one world.** Each does what only it can:
+- **The Companion** is for going out. Play there is active and in the moment: the place, the pawn, the creatures, the mibis walking with you.
+- **The Station** is home. Play there is reflective: reading, shaping, growing, living with mibis and deciding with time to think.
+- **The Caddy** is the bridge. It charges both handhelds, carries the cargo across at the dock, and prints.
+
+**The dock is the shared moment.** When the Companion docks, all three react in step and the trip comes home as an event. Cargo moves only then, and nothing is accepted until the player opens it.
+
+**Input.** Both handhelds use a few physical keys, and each means one thing everywhere. The pad moves (and on Create turns the focused gene). ✓ does exactly what the bottom line says. ← goes back. The Companion adds Call, which sends a signal that things answer. The Station adds room keys that jump to Home, Research, the Library and the Vivarium. Details are in [Interaction](interaction.md).
+
+**How decisions are communicated.**
+- **Browsing is free.** Looking, comparing and previewing never spend.
+- **Every choice shows its options, its cost and its outcome before the press,** with the outcome as a picture.
+- **Only real decisions ask.** A spend, a commitment, something irreversible or a fork opens a decision panel. Everything else is one press with no confirmation.
+- **Irreversible is said once, plainly.** It is never asked twice and never meant to frighten.
+- **The player chooses where they land.** No choice drops them somewhere they didn't pick.
+
+## Feel and tone
+
+A naturalist's expedition that ends in a home full of life: curious, unhurried and warm, a hobby you return to rather than a job. The look and the voice are in [art direction](art-direction.md), "The look and feel".
+
+## What it is not
+
+- Not a care chore: no needs meters, decay or guilt.
+- Not a slot machine: no paid randomness, and no randomness at the moment of creation.
+- Not a lesson: no quizzes, no required notation, no wall of text.
+- Not a race or a ladder: no leaderboards and no punishing timers.
+- Not a battler: mibis are companions and partners, never fighters ranked by power.
+- Not childish: never babyish in tone, art or reward.
 
 ## Mechanics
 
@@ -282,3 +246,9 @@ These are honestly open, and the hooks above depend on them:
 - Research and breeding's open questions, prices among them, are in
   [research and breeding](research-and-breeding.md#not-designed-yet).
 - Vivariums beyond the first as living ecosystems: food, light and environmental constraints that shape a mibi population.
+- **What partners do** carries the mibi arc's "what can it do with me?". Until it is designed, Live has no payoff on the Companion beyond company.
+- **What bonding gives the player,** beyond growth.
+- **The long term:** what a player does after completing a field guide or reaching a wish, beyond new species in drops.
+- **The first session:** how a new player meets the loop, and how soon their first mibi arrives.
+- **Printing in play:** whether the Caddy's print and scan are part of play or keepsakes only.
+- **The economy's pacing** in the finished game.
