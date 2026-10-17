@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#84ae78" stroke="none" stroke-width="1" rx="0"/>
+<rect x="12" y="44" width="1000" height="512" fill="#163a52" stroke="#0c0a12" stroke-width="2" rx="14"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="16" y="27" font-size="18" fill="#f1ebdf" text-anchor="start"  font-weight="500">Create · genome concept G3: "the scanner's body map"</text>
+<text x="1008" y="17" font-size="9" fill="#c6c4d8" text-anchor="end" >the instrument shows a sculpted map of the species body; genes sit on their regions</text>
+<text x="1008" y="31" font-size="9" fill="#8d8aa6" text-anchor="end" >CONCEPT SKETCH, 1024×600 at 1×: composition only, for the art director to paint. Not a spec. T-20261016-166 / -163</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<ellipse cx="170" cy="275.0" rx="67.5" ry="41.25" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2"/>
+<ellipse cx="230.0" cy="237.5" rx="33.75" ry="30.0" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2"/>
+<ellipse cx="241.25" cy="233.75" rx="5.25" ry="5.25" fill="#1a1725" stroke="none" stroke-width="1"/>
+<rect x="125.0" y="305.0" width="10.5" height="30.0" fill="#6aa094" stroke="#2b5c55" stroke-width="2" rx="4"/>
+<rect x="200.0" y="305.0" width="10.5" height="30.0" fill="#6aa094" stroke="#2b5c55" stroke-width="2" rx="4"/>
+<path d="M104.0 267.5 q -40 -30 -30 -70" stroke="#2b5c55" stroke-width="4.5" fill="none"/>
+<path d="M222.5 209.0 l 6 -22 l 8 20" stroke="#2b5c55" fill="#98d85c" stroke-width="2"/>
+<ellipse cx="170" cy="350" rx="110" ry="12" fill="#3d5a3a" stroke="none" stroke-width="1"/>
+<rect x="340" y="56" width="660" height="480" fill="#0f2c40" stroke="#4b7a8f" stroke-width="1.5" rx="12"/>
+<text x="352" y="76" font-size="12" fill="#adf6e0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">GENOME · Tuikis</text>
+<ellipse cx="640" cy="308.0" rx="125.99999999999999" ry="77.0" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2"/>
+<ellipse cx="752.0" cy="238.0" rx="62.99999999999999" ry="56.0" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2"/>
+<ellipse cx="773.0" cy="231.0" rx="9.799999999999999" ry="9.799999999999999" fill="#1a1725" stroke="none" stroke-width="1"/>
+<rect x="556.0" y="364.0" width="19.599999999999998" height="56.0" fill="#6aa094" stroke="#2b5c55" stroke-width="2" rx="4"/>
+<rect x="696.0" y="364.0" width="19.599999999999998" height="56.0" fill="#6aa094" stroke="#2b5c55" stroke-width="2" rx="4"/>
+<path d="M516.8 294.0 q -40 -30 -30 -70" stroke="#2b5c55" stroke-width="8.399999999999999" fill="none"/>
+<path d="M738.0 184.8 l 6 -22 l 8 20" stroke="#2b5c55" fill="#98d85c" stroke-width="2"/>
+<rect x="560" y="140" width="34" height="34" fill="#d9d0bc" stroke="#adf6e0" stroke-width="2" rx="6"/>
+<rect x="590" y="152" width="4" height="10" fill="#fff4a6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="610" y="140" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="760" y="150" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="800" y="195" width="34" height="34" fill="#d9d0bc" stroke="#adf6e0" stroke-width="2" rx="6"/>
+<rect x="830" y="207" width="4" height="10" fill="#fff4a6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="820" y="240" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="560" y="330" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="610" y="330" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="470" y="250" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="500" y="420" width="34" height="34" fill="#d9d0bc" stroke="#4b7a8f" stroke-width="1.5" rx="6"/>
+<rect x="680" y="430" width="34" height="34" fill="#d9d0bc" stroke="#8d8aa6" stroke-width="1.5" rx="6"/>
+<ellipse cx="693" cy="456" rx="4" ry="4" fill="#3a3f44" stroke="#f1ebdf" stroke-width="1"/>
+<ellipse cx="701" cy="456" rx="4" ry="4" fill="#3a3f44" stroke="#f1ebdf" stroke-width="1"/>
+<rect x="352" y="470" width="636" height="56" fill="#123247" stroke="#4b7a8f" stroke-width="1" rx="8"/>
+<text x="362" y="490" font-size="11" fill="#f1ebdf" text-anchor="start" >behaviour strip: Movement · Stamina · Character · Glow (pictures)</text>
+<text x="16" y="556" font-size="7.5" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the species body as a sculpted reference view (no unknown anatomy); each gene a picture tile on the region it shapes; behaviour along the bottom. Risk: crowding on S09 (27 genes)</text>
+<text x="16" y="588" font-size="14" fill="#f2671b" text-anchor="start" >✓ Grow it</text>
+<text x="1008" y="588" font-size="14" fill="#f1ebdf" text-anchor="end" >← Tuikis</text>
+</svg>
