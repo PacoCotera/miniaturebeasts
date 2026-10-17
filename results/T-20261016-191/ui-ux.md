@@ -50,13 +50,13 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
   - S01 (4 chapters) is 128 wide.
   - S03 (8 chapters, the most) is 264 wide.
 - **States:** read, unread (a dotted edge, never its content) and sealed (slats).
-- **The glint** (mint, one per chapter) marks a chapter that is unread, or one that **changed since the player last looked** (a self-changing trait that moved).
+- **The glint** (mint, one per chapter) marks a chapter that is unread (a bred child's surprise), or one that **changed since the player last looked**. Only the self-changing traits can change: Glow (S03), Basking (S15) and Phase (S16), as a partner. A Loika's chapters never glint for a change.
   - The glint makes one pass when the glance appears, then rests lit. The timing is per guide §9.
   - The glint must stay distinct from a first's mark.
   - It clears when that chapter is read, or when the change has been seen up close (`05`).
 - **Placement, applied in order:**
   1. Centred on the footprint, 8 below the ring.
-  2. If its bottom would pass y 536 (the glass less 8), it sits above the resident's box instead, 8 over its head (`03`).
+  2. If its bottom would pass y 536 (the glass less 8), it sits above the resident's box instead, 8 over its head (`03`, a founder with nothing new, so no glint).
   3. It is clamped inside the glass, 8 from each side (x 32 to 656).
   4. It may cross another resident, but never the focused one.
 - **Life:** the glance is drawn only while a resident holds the ring and is gone the moment the ring leaves. Nothing stays on the window.
@@ -68,20 +68,12 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 | Slot | Holds |
 | --- | --- |
 | left | ✓ **Look at {name}** (today's verb; the name lives here) |
-| middle | its origin, in at most six words (the game designer, `results/T-20261016-191/game-designer.md`): "Dot, child of Moss and Fig" or "Pip, from a pond pod". An open event replaces it until visited ("Moss has grown up") |
+| middle | its origin, without the name (the verb carries it; the game designer, `results/T-20261016-191/game-designer.md`): "child of Moss and Fig", "from a pond pod". An open event replaces it until visited: "just grew up", "an elder now". If the names overflow: "Moss's child" |
 | right | a notice only when it is about something other than ✓ (the T-186 slot rule); otherwise the player's thread |
 
-**The width of the middle slot.** The subject zone is 208 wide (`frame.json regions.subject`, 408 to 616, 16 px). I measured the lines in the wireframe font:
-
-| Line | Width |
-| --- | --- |
-| "Moss, child of Dot and Bean" | 213: over, so the fallback applies |
-| "Dot, child of Moss and Fig" | 197 |
-| "Pip, from a rock field pod" | 191 |
-
-Two four-letter parents already use the whole slot, so the fallback ("Moss, Dot's child", as in `01` and `05`) will fire often. The build measures the real font.
-
-**A proposal to the game designer:** drop the name from the context line. The verb already says it ("Look at Moss"), so the bottom line says the name twice. "child of Dot and Bean" (about 160) always fits and keeps both parents.
+- **Read together:** "Look at Dot · child of Moss and Fig".
+- **Not in the slot:** an unread or changed chapter. Both are the glance's marks, each on its own chapter, so naming them in the slot would say them twice.
+- **The width:** the subject zone is 208 wide (`frame.json regions.subject`, 408 to 616, 16 px). "child of Dot and Bean" measures about 160 in the wireframe font, so the fallback is rare. The build measures the real font.
 
 ## 5. ✓ goes down
 
@@ -107,7 +99,7 @@ Judge it in the device sheet with `01`, `04` and `05` side by side.
 
 ## 8. Asks to the other owners
 
-- **The game designer:** answered (the origin line). One open question: whether the line drops the name, since the verb already carries it (§4).
+- **The game designer:** answered. The origin line, without the name (§4).
 - **The genome engineer:**
   - That "changed since last looked" can be known per mibi and per chapter (it needs a seen mark).
   - The kin relations to show.
