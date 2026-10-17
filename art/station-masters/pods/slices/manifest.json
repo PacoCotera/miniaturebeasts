@@ -15937,12 +15937,12 @@
    32,
    32
   ],
-  "src": "place-wood",
-  "made": "the wood place picture (the collection well's place badge, specs/station-pods-purpose.md \u00a71): a painted miniature vignette reduced to 32x32 from the painting, muted (tools/build.py places()'s recipe at 32, places/t35/make-places-32.py; never scaled from the 48 or 64)",
-  "sha256": "28dde9ed10079d6a8aa497904f5b4542ef02a42b9dbe017a4b7b6810acd76987",
+  "src": "source/raw/sitting-backdrop-wood.jpg (10, 450, 170, 610); places/t98/make-wood-32.py",
+  "made": "the wood place badge, re-made (T-20261016-98): the wood place's sitting backdrop's left trunk fanning into roots, lit on their edges, reduced to 32 by the badges' recipe (saturation x0.85, highlights compressed), mean grey 70; the two wood place paintings are top-down canopies, which read as pebbles at 32",
+  "sha256": "fe229e5bb7060da0a0dde9cb88362a68bbff7d8dc124be9f4b67a5dd40eb724a",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
-  "status_note": "new (10-16, T-20261016-35): reads as its place at 1x on the collection well (the weakest of the five: a canopy from above, read as dense wood or scrub; distinct from the meadow by tone and texture)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-98, in places/t98/proof (the five badges on pods-collection) and pod-incubator/proof/card-crops-160x128-1x.png",
+  "status_note": "re-made (10-17, T-20261016-98)"
  },
  "place-cave-32x32": {
   "size": [
@@ -17161,12 +17161,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S01-eyes-a window [635, 132, 1055, 468] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "17315b4997e58a4081edf4f2151848b7003c023f78fbdef327765bb295b8259d",
+  "src": "source/raw/trait-S01-eyes-a window [605, 108, 1085, 492] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-98): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "3af875d77e1951db99991da0633e1361604f8202e812abfec111df75cf299329",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-98, in places/t98/proof (the five badges on pods-collection) and pod-incubator/proof/card-crops-160x128-1x.png",
+  "status_note": "re-cut (10-17, T-20261016-98)"
  },
  "trait-S01-eyes-wide-pale-rings-160x128": {
   "size": [
@@ -17304,12 +17304,12 @@
    128
   ],
   "rect": null,
-  "src": "source/raw/trait-S02-spots-a window [70, 46, 530, 414] (pod-incubator/make-card-crops.py: tools/traitcut.py cut())",
-  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): the look cut to 160 x 128 by Pods' trait cutter (the 75 percent rule, never enlarged, on ground), the key's residue removed (the defringe rule)",
-  "sha256": "b32a3414060f86662f025119aa0e5431386fdd4a47ffe294b47863c81b0ebc54",
+  "src": "source/raw/trait-S02-spots-a window [31, 6, 571, 438] (pod-incubator/recut-card-crops.py)",
+  "made": "the just-cleared card's picture (incubator ruling \u00a75, at (24, 44) in the card, 1:1): re-cut clean (T-20261016-98): a window inside its panel reduced into the 75 percent box (never enlarged), the sheet's magenta keyed to ground at the sheet's size, the fringe filled from the nearest solid colour, and a superellipse mask fading into ground where the window cuts the creature; no rectangular feather, no sheet ground, no residue",
+  "sha256": "15e20d7361f430de2c4dbe4f45771819cfb8ab384ed9695dd03f312c76f6a7d6",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-63)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-98, in places/t98/proof (the five badges on pods-collection) and pod-incubator/proof/card-crops-160x128-1x.png",
+  "status_note": "re-cut (10-17, T-20261016-98)"
  },
  "trait-S02-spots-bands-160x128": {
   "size": [

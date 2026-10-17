@@ -4945,8 +4945,8 @@
  },
  "place-wood-32x32": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
-  "note": "the collection well's place badge, painted from the same painting at 32, never scaled"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-98, in places/t98/proof (the five badges on pods-collection) and pod-incubator/proof/card-crops-160x128-1x.png",
+  "note": "T-20261016-98, the wood badge re-made"
  },
  "place-cave-32x32": {
   "status": "signed",
@@ -5341,8 +5341,8 @@
  },
  "trait-S01-eyes-between-160x128": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "note": "T-20261016-63, the card crop"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-98, in places/t98/proof (the five badges on pods-collection) and pod-incubator/proof/card-crops-160x128-1x.png",
+  "note": "T-20261016-98, the card crop re-cut"
  },
  "trait-S01-eyes-wide-pale-rings-160x128": {
   "status": "signed",
@@ -5396,8 +5396,8 @@
  },
  "trait-S02-spots-bare-160x128": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-63, in pod-incubator/proof (S01 and S03 at 224x272 beside the upscale; the crops' sheet) and incubator-b/proof (the light steps on these shells); to re-check in the builder's captures",
-  "note": "T-20261016-63, the card crop"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-98, in places/t98/proof (the five badges on pods-collection) and pod-incubator/proof/card-crops-160x128-1x.png",
+  "note": "T-20261016-98, the card crop re-cut"
  },
  "trait-S02-spots-bands-160x128": {
   "status": "signed",

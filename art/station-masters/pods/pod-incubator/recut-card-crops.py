@@ -1,4 +1,4 @@
-"""T-20261016-68: eleven of the card's 160 x 128 crops re-cut clean (results/review-art-2026-10-16b.md §2).
+"""T-20261016-68 (eleven) and T-20261016-98 (two more): the card's 160 x 128 crops re-cut clean (results/review-art-2026-10-16b.md §2).
 What made them dirty: traitcut's rectangular 12 px fade; its white key (meant for the crown sheet's white margin), which took the cream highlights
 and the claw tips to ground and left grey specks; and windows that crossed a panel edge (the eyes) or cut the creature (S02's side bulb).
 Here, per crop:
@@ -30,6 +30,8 @@ JOBS = {
  "trait-S02-spots-bands-and-spots": ("trait-S02-spots-a", 631, 451, 540, None),
  "trait-S01-eyes-thin-rings": ("trait-S01-eyes-a", 100, 108, 480, (60, 48, 45, 45, 6, 2.0)),
  "trait-S01-eyes-wide-pale-rings": ("trait-S01-eyes-a", 1104, 108, 480, (64, 48, 45, 45, 6, 2.0)),
+ "trait-S01-eyes-between": ("trait-S01-eyes-a", 605, 108, 480, (60, 48, 45, 45, 6, 2.0)),               # T-20261016-98
+ "trait-S02-spots-bare": ("trait-S02-spots-a", 31, 6, 540, None),                                          # T-20261016-98
 }
 made = []
 for name, (sh, x0, y0, ww, m) in JOBS.items():
@@ -49,7 +51,7 @@ for name, (sh, x0, y0, ww, m) in JOBS.items():
     box = GROUND + (np.clip(rc, 0, 255) - GROUND) * ra[..., None]
     cell = np.tile(GROUND, (H, W, 1)); cell[(H - BH) // 2:(H - BH) // 2 + BH, (W - BW) // 2:(W - BW) // 2 + BW] = box
     Image.fromarray(np.clip(np.rint(cell), 0, 255).astype(np.uint8)).save(f"slices/{name}-160x128.png", optimize=True)
-    made.append([f"{name}-160x128", sh, [x0, y0, x0 + ww, y0 + wh], "recut T-20261016-68"])
+    made.append([f"{name}-160x128", sh, [x0, y0, x0 + ww, y0 + wh], "recut T-20261016-98" if name in ("trait-S01-eyes-between", "trait-S02-spots-bare") else "recut T-20261016-68"])
 cc = json.load(open("pod-incubator/card-crops.json")); ix = {r[0]: i for i, r in enumerate(cc)}
 for r in made: cc[ix[r[0]]] = r
 json.dump(cc, open("pod-incubator/card-crops.json", "w"), indent=1)
