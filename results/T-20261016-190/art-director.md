@@ -16,9 +16,11 @@ The doings (Drive, Efficiency) are behaviour, not stand parts. They show in moti
 
 Four Loikas from these layers already read as four individuals at a glance: in `S01-four-stands.png` and `home-window-four-loikas.png`, the silhouette (crest or not) and the patches carry it. The eye rings are the subtlest of the three, and are best read up close.
 
+*`home-window-four-loikas.png`: four real pods, chosen to differ. It is not a typical rack.*
+
 ## What the build draws
 
-- **Read looks only.** A trait whose chapter is unread draws the species' typical look: the Loika with its crest, plain, eyes between. Hidden copies never show; the layer is the expressed look.
+- **Read looks only.** A trait whose chapter is unread draws the species' most common look on pods (the game designer's call). For the Loika that is the base: crest, plain, eyes between, not the painted stand's wide rings. Hidden copies never show; the layer is the expressed look.
 - **The same individual everywhere.** The same layer choice drives the Home and Vivarium stand, the up-close 304, the Companion's HiBit resident and the 48 px token. Those are derived from the Station painting, never painted small.
 - **Sizes:** layers are authored at 304×312 and derived down for Home and the Vivarium (about 110–150 px tall). Nothing is upscaled.
 - **One scale and pose rules:** size is not a locus, so every adult draws at one scale. The facing and the pose come from the resident's routine, not its genes.

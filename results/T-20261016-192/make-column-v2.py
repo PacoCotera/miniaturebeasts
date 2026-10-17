@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """T-20261016-192, round 2: one face. The living window and the modules are recesses cut into one slate face of the
 machine, in fixed places and of unequal sizes, each the shape of what it holds; no labels, no boxes in boxes.
-Forward: the recess lit from within, its object brought forward, its amber lamp. Live: at rest, its ring running.
+Forward: the recess lit from within, its object brought forward, its amber lamp on that recess. Live: at rest, unlit,
+its ring running (only forward is lit; that is what tells growing from ready).
 Quiet: at rest (the bay door shut, the chamber empty and dark). Composited from signed art; no generated pixels.
 
   python3 make-column-v2.py SRC FONTS OUT
@@ -124,18 +125,18 @@ def home(state_src, st, out, label):
     cm = recess(im, cb, 10)
     if st['cargo'] == 'forward':
         light_in(im, cb, cm)
-        d.rectangle((704, 66, 980, 82), fill=(56, 62, 70))                   # the shutter, rolled up
-        for i in range(3): d.line((704, 66 + i * 6, 980, 66 + i * 6), fill=(84, 90, 98))
+        d.rectangle((704, 66, 966, 82), fill=(56, 62, 70))                   # the shutter, rolled up
+        for i in range(3): d.line((704, 66 + i * 6, 966, 66 + i * 6), fill=(84, 90, 98))
         c = src('crate-sitting-80x56.png')
         for i, x in enumerate((760, 852)):
             im.alpha_composite(contact(70, 10, 0.6), (x - 70 // 2 + 40 - 35, 152))
             im.alpha_composite(c, (x - 40 + 40 - 40 + 0, 104))
-        lamp(im, d, 980, 44 + 2, True)
+        lamp(im, d, 976, 66, True)                                           # the lamp on its own recess
     else:                                                                     # the door shut, at rest
         for i in range(12):
             y = 66 + i * 8
-            d.rectangle((696, y, 988, y + 6), fill=(46, 52, 60)); d.line((696, y, 988, y), fill=(66, 72, 80))
-        lamp(im, d, 980, 46, False)
+            d.rectangle((696, y, 966 if i < 2 else 988, y + 6), fill=(46, 52, 60)); d.line((696, y, 966 if i < 2 else 988, y), fill=(66, 72, 80))
+        lamp(im, d, 976, 66, False)
     # Pods: three sockets cut straight into the face
     for i, code in enumerate(('S01', 'S03', 'S05')):
         sx = 716 + i * 96
@@ -149,20 +150,25 @@ def home(state_src, st, out, label):
     # Incubator: the tall arched candling chamber, its rim the ring
     ib = (688, 284, 836, 546)
     imk = recess(im, ib, 14, 'arch')
-    if st['inc'] in ('growing', 'ready'):
-        if st['inc'] == 'ready':
-            light_in(im, ib, imk)
-        pool = Image.new('L', (148, 262), 0); ImageDraw.Draw(pool).ellipse((30, 200, 118, 250), fill=140 if st['inc'] == 'ready' else 80)
+    if st['inc'] == 'ready':                                                  # forward: lit from within, candled
+        light_in(im, ib, imk)
+        pool = Image.new('L', (148, 262), 0); ImageDraw.Draw(pool).ellipse((30, 200, 118, 250), fill=140)
         pl = Image.new('RGBA', (148, 262), (200, 250, 236, 0)); pl.putalpha(ImageChops.multiply(pool.filter(ImageFilter.GaussianBlur(8)), imk))
         im.alpha_composite(pl, (688, 284))
-        pod = species_pod('S01').resize((66, 84) if st['inc'] == 'ready' else (58, 74), Image.LANCZOS)
+        pod = species_pod('S01').resize((66, 84), Image.LANCZOS)
         a = np.asarray(pod, dtype=float); yy = np.linspace(0, 1, a.shape[0])[:, None, None] ** 1.3
-        a[..., :3] = a[..., :3] + (np.array([226, 252, 242]) - a[..., :3]) * ((0.78 if st['inc'] == 'ready' else 0.5) * yy)
+        a[..., :3] = a[..., :3] + (np.array([226, 252, 242]) - a[..., :3]) * (0.78 * yy)
         pod = Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
         im.alpha_composite(pod, (762 - pod.width // 2, 520 - pod.height))
         d.rounded_rectangle((742, 526, 782, 530), 2, fill=C['mint'])
-        im.alpha_composite(ring_arc(140, 1.0 if st['inc'] == 'ready' else 0.55), (692, 288))
-        lamp(im, d, 820, 288, st['inc'] == 'ready')
+        im.alpha_composite(ring_arc(140, 1.0), (692, 288))
+        lamp(im, d, 820, 288, True)
+    elif st['inc'] == 'growing':                                              # live: at rest, unlit, the ring running
+        pod = shade(species_pod('S01').resize((58, 74), Image.LANCZOS), 0.62)
+        im.alpha_composite(contact(52, 8, 0.5), (736, 516)); im.alpha_composite(pod, (762 - pod.width // 2, 520 - pod.height))
+        d.rounded_rectangle((742, 526, 782, 530), 2, fill=C['hairline'])
+        im.alpha_composite(ring_arc(140, 0.55), (692, 288))
+        lamp(im, d, 820, 288, False)
     else:
         lamp(im, d, 820, 288, False)                                         # empty: dark, no ring
     # Probe: upright in its clamp
