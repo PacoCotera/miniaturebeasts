@@ -5751,8 +5751,8 @@
  },
  "genome-gene-open-lit-24x24": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, on palette"
  },
  "genome-gene-self-24x24": {
   "status": "signed",
@@ -5861,8 +5861,8 @@
  },
  "genome-pair-blend-lit-16x10": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, on palette"
  },
  "genome-pair-first-dim-16x10": {
   "status": "signed",
@@ -5871,8 +5871,8 @@
  },
  "genome-pair-first-lit-16x10": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, on palette"
  },
  "genome-pair-front-dim-16x10": {
   "status": "signed",
@@ -5881,8 +5881,8 @@
  },
  "genome-pair-front-lit-16x10": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, on palette"
  },
  "genome-pair-second-dim-16x10": {
   "status": "signed",
@@ -5891,8 +5891,8 @@
  },
  "genome-pair-second-lit-16x10": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "note": "T-20261016-130, the genome screen"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, on palette"
  },
  "genome-place-cave-12x12": {
   "status": "withdrawn",
@@ -6021,8 +6021,8 @@
  },
  "genome-gene-open-lit-clash-24x24": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
-  "note": "T-20261016-145"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, on palette"
  },
  "cargo-crate-64x64": {
   "status": "signed",
@@ -6033,5 +6033,10 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
   "note": "T-20261016-149, the picture-led report"
+ },
+ "genome-key-research-12x12": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "note": "T-145 / T-140, the R mark"
  }
 }

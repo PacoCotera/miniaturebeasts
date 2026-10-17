@@ -18287,11 +18287,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "a gene changed by you: the ring lit mint and the notch 3 x 6 at (21, 9); no bloom",
-  "sha256": "b9c6589becc57c62a377ea52efeff4ebbd46145dcc8c215e8aae455cc490dad5",
+  "made": "a gene changed by you: the ring lit mint and the notch 3 x 6 at (21, 9); no bloom; on palette (T-140): opaque, its soft edge one painted ring of aqua, no alpha",
+  "sha256": "06bbb2f19966a1928894509eb7cf004f86b0ab4402d1d914c915a8af84c891fa",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-20261016-130); on palette (10-17, T-140 in T-145)"
  },
  "genome-gene-self-24x24": {
   "size": [
@@ -18573,11 +18573,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "the copy pair, lit: one lens, half each copy; copy 1 bone, copy 2 sand",
-  "sha256": "8af22547891001a8a0bda11550966175e95c3fe7003c8788dc57f463233d9288",
+  "made": "the copy pair, lit: one lens, half each copy; copy 1 bone, copy 2 sand; on palette (T-140): opaque, its soft edge one painted ring of aqua, no alpha",
+  "sha256": "44b9d6fec462335448b7b2d8b2600e1e9698dea27341d85e7a3afff520136a27",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-20261016-130); on palette (10-17, T-140 in T-145)"
  },
  "genome-pair-first-dim-16x10": {
   "size": [
@@ -18599,11 +18599,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "the copy pair, lit: copy 1 twice (copy 1 kept); copy 1 bone, copy 2 sand",
-  "sha256": "4e1c0f43c54eac84fece070134ef73b3536ee98682128f2ea92002fe0fed7787",
+  "made": "the copy pair, lit: copy 1 twice (copy 1 kept); copy 1 bone, copy 2 sand; on palette (T-140): opaque, its soft edge one painted ring of aqua, no alpha",
+  "sha256": "ac22fe9f354544607bb66d467d8394509befb0918f722e8fbc64a08ae32efb8b",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-20261016-130); on palette (10-17, T-140 in T-145)"
  },
  "genome-pair-front-dim-16x10": {
   "size": [
@@ -18625,11 +18625,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "the copy pair, lit: copy 1 solid in front, copy 2 an outline behind; copy 1 bone, copy 2 sand",
-  "sha256": "4d517a9757449181a35e03d59e7e7c353c1aa4d9bee16c369b4eeabe564527b6",
+  "made": "the copy pair, lit: copy 1 solid in front, copy 2 an outline behind; copy 1 bone, copy 2 sand; on palette (T-140): opaque, its soft edge one painted ring of aqua, no alpha",
+  "sha256": "044624728d3132ba429d96eb151befe870ffb89abf93d6c33c7eee12a80f3b72",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-20261016-130); on palette (10-17, T-140 in T-145)"
  },
  "genome-pair-second-dim-16x10": {
   "size": [
@@ -18651,11 +18651,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "the copy pair, lit: copy 2 twice (copy 2 kept); copy 1 bone, copy 2 sand",
-  "sha256": "12a053a98253525f1427df9c74a288c04967c10152edc55ad7da1438007f1cca",
+  "made": "the copy pair, lit: copy 2 twice (copy 2 kept); copy 1 bone, copy 2 sand; on palette (T-140): opaque, its soft edge one painted ring of aqua, no alpha",
+  "sha256": "67b48046cc32f5bc9e08896e5047a2f338b9b9664e3e0bd8f767606727da1d6b",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
-  "status_note": "new (10-17, T-20261016-130)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-20261016-130); on palette (10-17, T-140 in T-145)"
  },
  "genome-place-cave-12x12": {
   "size": [
@@ -18996,11 +18996,11 @@
   ],
   "rect": null,
   "src": "genome-screen/make-genome.py",
-  "made": "a changed gene that clashes (only changed traits clash): the ring lit mint with the notch, under the red rim",
-  "sha256": "c6292a3f5c1c77b63392cc231de1cad8b54ca1c9f51af232bc2f436b276e6731",
+  "made": "a changed gene that clashes (only changed traits clash): the ring lit mint with the notch, under the red rim; on palette (T-140): opaque, its soft edge one painted ring of aqua, no alpha",
+  "sha256": "f68941ceab587857d4672376ef7def24240cb69cc64dcc1639c3e23437f7e71e",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
-  "status_note": "new (10-17, T-20261016-145)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-20261016-145); on palette (10-17, T-140 in T-145)"
  },
  "cargo-crate-64x64": {
   "size": [
@@ -19027,5 +19027,18 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
   "status_note": "new (10-17, T-20261016-149)"
+ },
+ "genome-key-research-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py (from shell-key-research-24)",
+  "made": "the Research key's mark on the sample bay at (156, 4): the shell's own key icon reduced 2:1, strokes held; R opens the gene's detail on Create (spec \u00a78)",
+  "sha256": "9e46ae52b8703a734f56af6b4a760ca751f48f03e0cab0c588b86fda02b69b49",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
+  "status_note": "new (10-17, T-140 in T-145)"
  }
 }

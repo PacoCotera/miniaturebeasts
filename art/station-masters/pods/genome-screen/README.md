@@ -132,3 +132,9 @@ The review (`results/review-genome-screen-art.md` §1) passed the marks but foun
   - **The card's picture:** the doings have no picture, so it is the chapter's emblem, as the card's fallback (tabs ruling §5).
 - **The owner's Incubator proof:** `proof/genome-incubator-S03-glowing-1x.png`.
 - **Brightness, re-taken:** margins of 0.361, 0.337, 0.476 and 0.486 (minimum 0.08).
+
+**T-140's additions, done in T-145's round** (by the lead's routing):
+- **The lit marks on palette:** `genome-gene-open-lit`, `-open-lit-clash` and the four `genome-pair-*-lit`. Each pixel is opaque, so its alpha is 0 or 255. Covered pixels take the mark's own palette colour (mint, red, bone, sand, with `ink` inside the ring), and the soft edge is one painted ring of `aqua`. 0 off-palette pixels, measured.
+- **The R mark, new:** `genome-key-research-12x12`, the shell's own Research key icon reduced 2:1 with its strokes held. It sits on the bay at (156, 4) in the Create proofs.
+
+**Compact Glow on the Incubator (UI/UX):** the same 24 × 24 self-changing mark, with no place badges. The badges appear only on Create and in the detail view. The proofs already show this.

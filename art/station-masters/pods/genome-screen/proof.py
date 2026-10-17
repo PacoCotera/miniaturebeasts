@@ -100,6 +100,7 @@ def create(clash=False):
     gene(f, 752 + 68, 244 + 52, "open-lit", "second-lit")
     d = ImageDraw.Draw(f); d.rectangle([752, 244, 752 + 159, 244 + 127], outline=C("mint"), width=2)
     f.alpha_composite(S("genome-pair-second-lit-16x10"), (744 + 80, 96 + 135))
+    f.alpha_composite(S("genome-key-research-12x12"), (744 + 156, 96 + 4))              # T-140: the R mark on the bay
     # the bank (window 240-920): S03's drums, g 8, the chapter gap 24; Crest focused and turned
     if not clash:                                                                   # Coat and Face in the window; Eyes focused
         drums = [(240, "rest", None, False), (328, "rest", None, False), (416, "rest", "look-S03-markings-plain-64x64", False), (504, "rest", "look-S03-scales-between-64x64", False),
@@ -209,6 +210,7 @@ def create_s01():
     d = ImageDraw.Draw(f); d.rectangle([752, 100, 752 + 159, 100 + 127], outline=C("mint"), width=2)
     f.alpha_composite(S("trait-S01-eyes-wide-pale-rings-160x128"), (752, 244)); f.alpha_composite(S("genome-veil-160x128"), (752, 244))   # copy 2, carried
     f.alpha_composite(S("genome-pair-front-dim-16x10"), (744 + 80, 96 + 135))
+    f.alpha_composite(S("genome-key-research-12x12"), (744 + 156, 96 + 4))              # T-140: the R mark on the bay
     # the bank: S01's five drums at the spec's spacing (g 28, the chapter gap 84), each with its close-up and its neighbours' faces
     drums = [(240, "rest", "markings", ["plain", "pale-patches"], 0), (404, "rest", "crown", ["bare-head", "leaf-crest"], 1),
              (512, "rest", "eyes", ["thin-rings", "between", "wide-pale-rings"], 0), (676, "pinned", "drive", None, 0), (840, "pinned", "efficiency", None, 0)]

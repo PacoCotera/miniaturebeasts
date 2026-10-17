@@ -20,6 +20,8 @@ is the one lit hue; red only for a clash. Nothing here is taken from art/referen
 - T-20261016-138 (the framework's delta, T-136): genome-gene-only-24x24 and genome-pair-only-16x10 (one look: the ring without ticks, two
   equal fog discs); genome-gene-self-24x24 redrawn as the inherited-only disc with four step marks; the 12 x 12 places and the 10 x 10 gold
   glint withdrawn (not made).
+- T-140 (in T-145's round): the lit marks (genome-gene-open-lit, -open-lit-clash, genome-pair-*-lit) on palette: opaque, their soft
+  edge one painted ring of aqua, no alpha; genome-key-research-12x12, the Research key's mark on the bay.
 - genome-sealed-{crystal,pearl,shard}-24x24 (the find's picture, from find-{f}-112x112), genome-veil-160x128 (the dim veil),
   genome-focus-32x32 (the house focus ring at gene scale: 2 px focus, radius 15).
 usage: python3 -I genome-screen/make-genome.py SLICES_DIR FRAMES_DIR OUT_DIR   (run in art/station-masters/pods)"""
@@ -48,6 +50,14 @@ def layers(w, h, items):
         c = np.clip(cov, 0, 1); col = col * (1 - c[..., None]) + lin(rgb)[None, None] * c[..., None]; A = A + c * (1 - A)
     a1 = down(A, w, h); c1 = down(col, w, h) / np.maximum(a1, 1e-6)[..., None]
     return np.dstack([srgb(c1), a1 * 255])
+def onpal(rgba, cols):
+    """T-140: a lit mark stays on palette. Each pixel is opaque or clear: covered (alpha >= 0.6) takes the nearest of the mark's own palette
+    colours; its edge (0.15-0.6) is one ring of aqua (the mint ramp's darker step), painted, not alpha; below that, clear."""
+    a = rgba[..., 3] / 255; c = rgba[..., :3]; cols = np.array(cols, float)
+    near = cols[np.argmin(((c[:, :, None, :] - cols[None, None]) ** 2).sum(-1), -1)]
+    out = np.zeros_like(rgba); full = a >= 0.6; ring = (a >= 0.15) & ~full
+    out[full, :3] = near[full]; out[full, 3] = 255; out[ring, :3] = P("aqua"); out[ring, 3] = 255
+    return out
 soft = lambda d, e=0.6: np.clip(d / e + 0.5, 0, 1)                          # coverage from a signed distance, a 1 px soft edge at most
 # ---------- the housings
 def housing(W, H, name):
@@ -90,8 +100,8 @@ inner = soft(8.9 - r)                                                       # th
 save("genome-gene-open-24x24", layers(24, 24, [(inner, SLATE), (open_ring, DIM_RING)]))
 save("genome-gene-only-24x24", layers(24, 24, [(inner, SLATE), (ring(8.6, 10.6), DIM_RING)]))     # T-138: one look, no ticks (it does not turn)
 notch = np.minimum(np.minimum(soft(x - 21), soft(24 - x)), np.minimum(soft(y - 9), soft(15 - y)))
-save("genome-gene-open-lit-24x24", layers(24, 24, [(inner, SLATE), (open_ring, P("mint")), (notch, P("mint"))]))
-save("genome-gene-open-lit-clash-24x24", layers(24, 24, [(inner, SLATE), (open_ring, P("mint")), (notch, P("mint")), (ring(9.0, 11.2), P("red")), (ticks(10.0, 12.0, TICK), P("red"))]))   # T-145
+save("genome-gene-open-lit-24x24", onpal(layers(24, 24, [(inner, P("ink")), (open_ring, P("mint")), (notch, P("mint"))]), [P("ink"), P("mint")]))
+save("genome-gene-open-lit-clash-24x24", onpal(layers(24, 24, [(inner, P("ink")), (open_ring, P("mint")), (notch, P("mint")), (ring(9.0, 11.2), P("red")), (ticks(10.0, 12.0, TICK), P("red"))]), [P("ink"), P("mint"), P("red")]))   # T-145
 save("genome-gene-open-clash-24x24", layers(24, 24, [(inner, SLATE), (open_ring, DIM_RING), (ring(9.0, 11.2), P("red")), (ticks(10.0, 12.0, TICK), P("red"))]))
 disc = soft(10.6 - r)
 jr = lambda cx: np.minimum(soft(np.hypot(x - cx, y - 12) - 2.6), soft(3.9 - np.hypot(x - cx, y - 12)))
@@ -108,12 +118,15 @@ outl = lambda cx, rr=3.9: np.minimum(soft(np.hypot(x - cx, y - 5) - (rr - 1.1)),
 edge = lambda cx, rr=3.9: soft(rr + 0.9 - np.hypot(x - cx, y - 5))      # the slate edge round the front copy
 B1, B2 = P("bone"), P("sand")
 for lvl, k in (("dim", 0.62), ("lit", 1.0)):
+    lit = lvl == "lit"; G0 = P("ink") if lit else SLATE                   # lit: on palette (T-140); dim: unchanged
     c1, c2 = B1 * k + SLATE * (1 - k), B2 * k + SLATE * (1 - k)
-    save(f"genome-pair-front-{lvl}-16x10", layers(16, 10, [(outl(10.8), c2), (edge(6.0), SLATE), (dsc(6.0), c1)]))
+    fin = (lambda r, cols: onpal(r, cols)) if lit else (lambda r, cols: r)
+    pc = [P("bone"), P("sand"), P("ink")]
+    save(f"genome-pair-front-{lvl}-16x10", fin(layers(16, 10, [(outl(10.8), c2), (edge(6.0), G0), (dsc(6.0), c1)]), pc))
     lens = soft((1 - np.hypot((x - 8) / 6.8, (y - 5) / 4.2)) * 4.2); seam = soft(0.45 - np.abs(x - 8))
-    save(f"genome-pair-blend-{lvl}-16x10", layers(16, 10, [(lens * (x < 8), c1), (lens * (x >= 8), c2), (np.minimum(lens, seam), SLATE)]))
-    save(f"genome-pair-first-{lvl}-16x10", layers(16, 10, [(dsc(10.8), c1 * 0.9), (edge(5.2), SLATE), (dsc(5.2), c1)]))
-    save(f"genome-pair-second-{lvl}-16x10", layers(16, 10, [(dsc(10.8), c2 * 0.9), (edge(5.2), SLATE), (dsc(5.2), c2)]))
+    save(f"genome-pair-blend-{lvl}-16x10", fin(layers(16, 10, [(lens * (x < 8), c1), (lens * (x >= 8), c2), (np.minimum(lens, seam), G0)]), pc))
+    save(f"genome-pair-first-{lvl}-16x10", fin(layers(16, 10, [(dsc(10.8), c1 * (0.9 if not lit else 1)), (edge(5.2), G0), (dsc(5.2), c1)]), pc))
+    save(f"genome-pair-second-{lvl}-16x10", fin(layers(16, 10, [(dsc(10.8), c2 * (0.9 if not lit else 1)), (edge(5.2), G0), (dsc(5.2), c2)]), pc))
 cf = P("fog") * 0.62 + SLATE * 0.38                                       # T-138: one look, two equal fog discs, unlit
 save("genome-pair-only-16x10", layers(16, 10, [(dsc(10.8), cf), (edge(5.2), SLATE), (dsc(5.2), cf)]))
 # ---------- frost
@@ -185,6 +198,12 @@ for f_ in ("crystal", "pearl", "shard"):
     al = np.clip(ch[3], 0, 255); rgb = np.stack(ch[:3], -1) / np.maximum(al, 1e-3)[..., None] * 255
     gd = np.abs(rgb - P("ground")).max(2); al = al * np.clip((gd - 10) / 30, 0, 1)        # the picture's cell ground keyed out
     save(f"genome-sealed-{f_}-24x24", np.dstack([np.clip(rgb, 0, 255), al]))
+# ---------- the Research key's mark, 12 x 12 (T-140): the shell's own key icon (shell-key-research-24, pixel art) reduced 2:1 by keeping
+# a pixel where any of its 2 x 2 is set, so its strokes hold; its own colour; on the bay's top right (156, 4)
+KEY = os.path.join(frames, "..", "..", "ui", "assets", "masters", "shell", "shell-key-research-24.png")
+ka = np.asarray(Image.open(KEY).convert("RGBA")).astype(float)
+kb = ka.reshape(12, 2, 12, 2, 4); m2 = (kb[..., 3] > 128).any((1, 3))
+kc = np.where(m2[..., None], kb[..., :3].max((1, 3)), 0); save("genome-key-research-12x12", np.dstack([kc, m2 * 255.0]))
 # ---------- the veil, 160 x 128, and the focus ring, 32 x 32
 save("genome-veil-160x128", np.dstack([np.broadcast_to(SLATE, (128, 160, 3)), np.full((128, 160), 0.62 * 255)]))
 y, x = grid(32, 32); rf = np.hypot(x - 16, y - 16)
