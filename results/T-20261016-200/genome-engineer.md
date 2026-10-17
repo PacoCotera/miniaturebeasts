@@ -80,3 +80,13 @@ Four real version-4 pods, `podGenome(S01 v4, gs)`:
 - Plain shows as a found look only once seen, never as an empty frame.
 - A wish can pin plain only once it has been seen.
 - This is the guide's rule, for the build (T-201 and the Library).
+
+## Saves across the version change (the game designer's condition)
+
+Checked on all 16 species: `genome-s01-v4` at 29e291b1, against station-gate's frames.
+
+- **Saved genomes are kept.** The Station stores every pod's and mibi's genome in the save. `normalize()` re-derives from the seed only when a genome is missing (pre-genome saves). The Companion crate path keeps a carried genome when `checkGenome` passes.
+- **Every version-3 genome is valid under version 4:** 300/300 for each of the 16 species.
+- **The re-derive path** (old saves only), 500 seeds per species:
+  - S02–S16 give the identical digest, 500/500 each.
+  - S01 gives the new version-4 Loika, by design.
