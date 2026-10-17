@@ -14,7 +14,7 @@ A panel appears only at a real decision. It shows each option as **what will hap
 
 | # | The owner | Answered by |
 | --- | --- | --- |
-| 1 | "Colors are brown on brown on brown for all the pannels, that doesn't look right." | Every panel is a pane of the machine's display: deep blue (as the research-hands concept), one bevel. No brown panel, no cream |
+| 1 | "Colors are brown on brown on brown for all the pannels, that doesn't look right." | Every panel is a pane of the machine's display, on the guide's dark matte slate with one bevel; the outcome paintings carry the colour. No brown panel, no cream. (The sketches' deep blue is a question for the owner: it would change the guide) |
 | 2 | "side by side the two options look the same with the exception of some tiny text and a "wild" background." | Each option is its outcome, a different scene: Return shows Pip small in its place's wide landscape, walking away with a glance back; Keep shows Pip big and close at home in the Vivarium, facing you. They differ in distance, size, direction, setting and light |
 | 3 | "This screen needs a rethinking and more work, the quality expected is not there." | Painted outcomes at the research-hands bar, and one frame shared by every panel |
 
@@ -39,6 +39,6 @@ Shown on Grow in `P1-shared-look-grow.png`:
 ## Asks
 
 - **The game designer:** the outcome scene for each option of every panel (what Pip is doing in each), and the consequence line.
-- **The creative director:** the shared panel look, and P1 against P2.
+- **The creative director**: the shared panel look, and P1 against P2. The outcome scenes for each option follow the game designer's §3 in `specs/purpose-briefs-b20261017-1.md`.
 - **The art director** (T-20261016-170): paint P1 and P2 for Return to the wild (Pip, a pond-edge place), and P1 on Grow, to the research-hands bar.
 - **The lead:** builds on panels stay parked until the owner chooses.

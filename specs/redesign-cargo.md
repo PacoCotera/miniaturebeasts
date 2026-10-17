@@ -30,7 +30,7 @@ Cargo is where the crates the Companion carried home are opened. The player sees
 
 | Concept | Sketch | What it is | Strength | Risk |
 | --- | --- | --- | --- | --- |
-| **C1, the unloading bay** (UI/UX's pick) | `C1-unloading-bay.png` | The crates open side by side on the bay floor. In front of each lie its pods and material piles. The pods flow to the Pods hatch and the materials to the store tanks | Shows what came in and where it goes in one picture; the opening animation plays naturally (lid, contents, flow) | Three crates of contents need room; past three crates, a "+n crates" pile |
+| **C1, the unloading bay** (UI/UX's pick) | `C1-unloading-bay.png` | The crates open side by side on the bay floor. In front of each lie its pods and material piles. Per the game designer (`specs/purpose-briefs-b20261017-1.md`), the materials fly from each crate into the top bar's totals (no wall tanks and no separate materials row), and the pods fly into the Pods rack only during the flight (no standing pod rail). The sketch's tanks are superseded by the top bar | Shows what came in and where it goes in one picture; the opening animation plays naturally (lid, contents, flow) | Three crates of contents need room; past three crates, a "+n crates" pile |
 | **C2, crate by crate** | `C2-crate-by-crate.png` | One crate opens big; its contents lie out front; then the next; the stores fill as each empties | The largest pictures; the most ceremony | Slow with three crates; the whole haul is never seen at once |
 | **C3, the manifest** | `C3-manifest.png` | The door's display lists each crate as a row of painted contents, with the tanks beside it | Closest to today | Still a list; the weakest at "where things go" |
 
@@ -39,6 +39,6 @@ Cargo is where the crates the Companion carried home are opened. The player sees
 ## Asks
 
 - **The game designer:** confirm that reach and world events leave Cargo, and where they go; confirm the pods' destination (the Pods hatch, with waiting pods on the floor).
-- **The creative director:** what the bay is in the world (a dock, a hold, a receiving bay of the lab), and C1 against C2.
+- **The creative director**: what the bay is in the world (a dock, a hold, a receiving bay of the lab), and C1 against C2.
 - **The art director** (T-20261016-171): paint C1 and C2 at 1024 × 600, labelled, to the research-hands bar.
 - **The lead:** builds on Cargo stay parked until the owner chooses.
