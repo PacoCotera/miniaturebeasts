@@ -7,9 +7,10 @@
 <text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >P1 on Fit: the Probe as it will be against as it is (T-162's pictures sit in the windows)</text>
 <text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >LAYOUT, 1024×600 at 1×, on slate (guide §2): rects for the art director to paint into. T-20261016-165 (P1)</text>
 <rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
-<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Choose</text>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Fit it</text>
+<text x="102" y="588" font-size="16" fill="#ffe6ad" text-anchor="start" >⚡ 12 ◆ 4</text>
 <rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
-<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Probe</text>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Not now</text>
 <rect x="92" y="80" width="840" height="440" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="12"/>
 <path d="M104 80.5H920M92.5 92V508" stroke="#565c63"/>
 <text x="512" y="124" font-size="28" fill="#f1ebdf" text-anchor="middle"  font-weight="600">Fit the upgrade?</text>
