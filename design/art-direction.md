@@ -49,6 +49,34 @@ saved Pip and a pale-marked comparison, at Companion and Station size.
   bytes and hashes. Generated images are labelled as generated.
 - **Text is separate.** Never bake numbers or labels into artwork.
 
+## Information density
+
+*Written by the game designer. The numbers that put these principles into practice (words per element, mark sizes, counts) are in the [style guide](style-guide/README.md); this section is the reason behind them.*
+
+<table><tr><td valign="top"><img src="../prototypes/face/golden/home/home-docked.png" width="480" alt="Home, docked"><br><em>Home: one living subject, a column of quiet modules, one line of words. Capture.</em></td>
+<td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="420" alt="Station research concept"><br><em>station-research-hands: one lit subject on a clean display. Approved concept, generated.</em></td></tr></table>
+
+- **One subject per screen.** Every screen is about one thing the player cares about: a mibi, a pod, a crate, a choice. That thing is the largest, best-lit and most detailed thing there. Everything else is smaller, quieter and in its service.
+- **Show what the player acts on or watches change, and nothing else.** An object earns its place by doing something the player can see, or by changing over time. Equipment that serves nothing, decoration that explains nothing, and a second picture of something already shown all go.
+- **Rich where it matters, calm everywhere else.** The life is dense: fur, markings, moss, light. The machine around it is sparse: a few panes, a few lit marks. Detail is spent on what the player came to see, never spread evenly.
+- **Depth is present but folded.** The genome, the rules between copies and the numbers behind a forecast are really there, one press away, for the curious. The first view gives a child the whole meaning without them; the folded view gives a parent the mechanism.
+- **A glance before a read.** Each screen is understood in a few seconds by looking, before any word is read: what it is for, what changed, what is waiting. If understanding needs reading, the screen is too dense or draws the wrong thing.
+- **Every mark means one thing, everywhere.** A mark the player learns on one screen means the same on every screen and on both devices. Meaning never depends on a legend, a tiny glyph or colour alone.
+- **The Companion says less than the Station.** It is a smaller screen carried outdoors, held in a moment of play. It shows the place, the pawn and the next step; the Station holds the reflection, the comparison and the depth.
+
+## Tone of voice
+
+*Written by the game designer. The words budget per element is in the [style guide](style-guide/README.md).*
+
+- **The devices speak little, and plainly.** Words name things and say what happens; they never explain what a picture already shows. A line is short enough to read in a glance, and most screens need only the bottom line.
+- **Warm, never cute.** The voice is a calm, kind field companion who knows these animals well. It is never babyish, never gushing, never a lab report. "Moss has grown up", not "Yay! Moss levelled up!" and not "Specimen 12 reached maturity".
+- **Play language, not science words.** Pods, mibis, looks, chapters, what it does. Never locus, allele, phenotype, specimen or percentage on the main view. The real terms live in the detail view, for those who open it.
+- **Talk about this animal.** "Your Loika", "Moss", "this pod": the player's own mibi by name, the species by its name alone. The device never calls a mibi a creature, a unit or an item.
+- **Say what a choice will do, not what to press.** A choice reads as its outcome ("Gone for good. Its place will remember it."), not as an instruction ("Press ✓ to confirm release"). A loss is said once, plainly, and never as a scare.
+- **Describe, never promise.** A trait is told by what the animal looks like or does ("nothing ruffles it"), never by an effect the game doesn't have. The voice never sells, nags or hurries the player. Waiting is described ("ready in about ten minutes"), never pushed.
+- **Never punish absence.** Coming back is invited by something new to see, never by guilt. There is no "you missed", "hurry" or "don't forget"; there is "Face cleared on your Loika".
+- **Honest about the unknown.** What isn't known yet is a surprise, not a blank. "Still a surprise", "something new is under here": the voice makes the unknown tempting, and never guesses.
+
 ## From genome to creature
 
 A mibi's genome is the seed of its look. The rig sets its structure, proportions
