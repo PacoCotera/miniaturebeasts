@@ -83,3 +83,5 @@ The Companion records, per expedition and per partner, whether each trigger was 
 - **The vivarium, up close:** the steps lit to the mark, and the words the rules already give ("brighter after walks in caves and woods").
 
 **Agreed with the genome engineer (2026-10-17):** the frames carry `changedBy` (species / player / breeding / self) on every locus and `selfChanging: { toward, places, storm }` on the three traits above. The rules are held as framework constants.
+
+**Amended (T-173):** the wish mark is no longer the four-point glint in yellow. It gets its own silhouette, so it doesn't differ from the gold glint by colour alone; the art director draws it in the style guide. The rule above (when it shows) is unchanged.
