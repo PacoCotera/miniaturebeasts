@@ -73,3 +73,19 @@ These are the genome engineer's seeds, each drawn from its read looks on T-190's
 - **The creative director's check:** gs 168's stripes and gs 10's stripes and patches read as two looks.
 - **Four-grey** (`home-window-four-v4-pods-four-grey.png`): the four still separate. Charcoal is dark, russet middle, periwinkle light, and the two-tone splits dark back from light legs.
 - **The proof's honest limit:** the bare head and the eye rings are T-190's proof edits, and the colours and marks are applied by code. The masters are painted layers, after the lead's approval.
+
+## The third pigment, fourth try (the creative director's not-yet, 168ae71c)
+
+Periwinkle read as a plastic toy: the brightest, most synthetic colour on the moss. It stays only as the record (`home-window-four-v4-pods.png`). The brief: light (a value step above russet), a muted natural animal colour in the vivarium's warm light, not green, and in the catalogue.
+
+- **The catalogue has no muted light pigment.** Its body pigments are charcoal, russet, jade, lagoon, cobalt, periwinkle, plum, raspberry, coral and marigold. The framework only names the pigment, though, and its paint is the art's. So there are two ways to meet the brief, both shown in the same window with their four-grey twins:
+
+| Option | The window | Four-grey | Cost |
+| --- | --- | --- | --- |
+| **Marigold, painted as a warm fawn** (shadow #623c24, mid #bc8858, highlight #eac498) | `home-window-four-v4-pods-marigold.png` | `…-marigold-four-grey.png` | None: it is in the catalogue. Only its word in the guide reads "marigold" for a fawn coat; the genome engineer says whether the look's label can say "fawn" |
+| **Ash, a dove grey-blue** (shadow #464e5a, mid #8e98a4, highlight #ccd2da) | `home-window-four-v4-pods-ash.png` | `…-ash-four-grey.png` | Not in the catalogue. Adding it is a catalogue version; the genome engineer gives the cost |
+
+- **Both pass four-grey:** light, a clear step above russet, and every two-tone splits into two values. Both are muted, natural and not green.
+- **Fawn is warm.** It sits beside russet in hue but well apart in value, and it stays clear of the cream belly. Its cream patches read softer than on the dark coats.
+- **Ash is cool.** It stands apart from the moss and from both other pigments in hue as well as value, and its patches read clearly.
+- **My pick:** ash, if a catalogue version is cheap. Otherwise fawn, in marigold's slot, which costs nothing now.
