@@ -81,3 +81,13 @@ With the words covered, Grow still reads as "into the chamber, at this price" ag
 - **Keep is close and nested, an interior.** The camera is in at the burrow's mouth. Pip is near and large, with its household crowding the frame's edges: one dozing at the left, one at the right.
 
 **Still owed:** Release's wide sky is the pond backdrop's soft haze. It is the part of the proof that most needs the painted master.
+
+## Grow, after the owner's ruling: a structure rough (`grow-rough.png`, `grow-rough-covered.png`, `make-grow-rough.py`)
+
+This follows the game designer's weights (`grow-structure.md`). The settings are blocked in values only; the paint follows Home's direction (T-199).
+
+- **The founder they made** is the subject of both windows: two thirds of the window's height, at the same scale and in the same place, with their changed parts in mint scan light.
+- **Grow it, the chamber:** dark around, the light rising from the lamp below. The founder's own pod, sealed, wraps it at full size, nearly the window's height. The shell is translucent, so the founder reads through it, and candled, so it is brightest at its base.
+- **Keep shaping, the bench:** a lit work surface the founder stands on, the work light from the top left, and the genes open in a column at the right.
+- **Cut:** the empty chamber, the ring, the small pod and the wait.
+- **Covered,** the two read as two places: inside a lit pod, against standing on the bench. The founder is the largest thing in each, and no empty area is larger than it.
