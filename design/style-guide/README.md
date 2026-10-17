@@ -2,6 +2,8 @@
 
 One look for every screen. Pictures lead; rules stay short. Per screen: [Companion screens](companion-screens.md) · [Station screens](station-screens.md).
 
+**What the devices are for.** The **Station** is the home lab: a genome-editing machine that keeps small lives going. The player reads, shapes and grows life there, and lives with it. The **Companion** is the field device the player carries out to explore, gather and walk with their mibis. Both are the same maker's gear. Every screen on either shows something the player acts on or watches change; nothing is there for decoration. What each screen and element must communicate is in [What every screen communicates](#what-every-screen-communicates). This guide is binding: a builder or artist who needs something it doesn't cover parks the ticket, and never invents it.
+
 ## Miniature Lives on each device
 
 Creatures are sculpted, rounded and tactile, lit from the top left, with expressive eyes, clear markings and saturated, playful colour. The **Companion** draws them in HiBit: detailed pixel art that keeps that volume at 450×600. The **Station** draws the same creature at full resolution with clean light and shading, keeping the same trait boundaries. The same individual survives both, and four-gray and paper.
