@@ -28,7 +28,7 @@ test("every look a pod can carry is among the looks the guide could still lack, 
 // The looks a field guide counts are the frame's own player words (research-loop.md §4, game design 2026-10-09): a blend's bins, "between" one look, never the catalogue's pair
 // labels. Two frames still name fewer looks than their pool can show, which the copywriter fills; they are listed here so a third cannot arrive unseen, and so each one is
 // removed from the list the day it is fixed.
-const FRAME_GAPS = { "S03:feet": "the frame names 3 of the 6 foot forms its pool can carry", "S11:head": "the frame names 3 looks for a pool of 4 head sizes" };
+const FRAME_GAPS = { "S03:feet": "the frame names 3 of the 6 foot forms its pool can carry" };
 test("each species' look count matches its frame: every trait enumerates to the frame's own looks, bar the two listed gaps", () => {
   const seen = new Set(); let total = 0;
   for (const id of frameIds()) {

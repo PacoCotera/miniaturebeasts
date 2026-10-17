@@ -33,8 +33,12 @@ export function lookOf(frame, trait, genome, opts = {}) {
   if (trait.looks?.length === labels.length && labels.includes(label)) return trait.looks[labels.indexOf(label)];
   if (trait.looks?.length === values.length && values.includes(value)) return trait.looks[values.indexOf(value)];
   const bins = binLooks(frame, trait); if (bins) { const l = bins.of(genome); if (l != null) return l; }   // the frame's own bins, where the pair labels would otherwise show
+  const words = FORM_WORDS[id]?.[typeof JSON.parse(value) === "string" ? JSON.parse(value) : ""]; if (words) return words;   // a form the trait's words do not name (S03's Claws: six forms, three words) in the player's words, never its id
   return label;
 }
+// A form in the player's words where a trait's own looks do not name it (the game designer's words, T-20261016-193): S03's
+// Claws pool holds all six foot forms while its trait names three; "hooves", "webbed feet" and "roots" are for the others.
+const FORM_WORDS = { "anatomy.contact-terminal-form": { rounded: "round feet", pad: "padded feet", wedge: "digging wedges", hoof: "hooves", webbed: "webbed feet", root: "roots" } };
 
 // A trait's looks as the frame's own bins (the player's words a read gives), for the traits whose looks are not one per pair of the pool: a blend's bins in order of value
 // ("between" is the middle bin, one look), a two-colour coat's four pure colours and "two side by side", the markings' bare, bands, spots, bands and spots.
@@ -46,6 +50,10 @@ export function binLooks(frame, trait) {
   if (locus.operator === "copy-mean" && looks.length === pool.length) {
     const order = [...pool].sort((a, b) => copyValue(locus, a) - copyValue(locus, b));
     return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; const v = resolveCopies(locus, c); let best = null, d = Infinity; for (const a of order) { const e = Math.abs(copyValue(locus, a) - v); if (e < d) { d = e; best = a; } } return looks[order.indexOf(best)]; } };
+  }
+  if (locus.operator === "copy-mean" && looks.length !== pool.length) {   // a blend whose pool has more (or fewer) sizes than the trait has words (S11's Head: four sizes, three words): the pool's value range in equal bins, one a word
+    const vs = pool.map((a) => copyValue(locus, a)), lo = Math.min(...vs), hi = Math.max(...vs);
+    return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; const v = resolveCopies(locus, c); if (hi <= lo) return looks[0]; return looks[Math.min(looks.length - 1, Math.max(0, Math.floor(((v - lo) / (hi - lo)) * looks.length)))]; } };
   }
   if (locus.operator === "partition-map" && looks.length === pool.length + 1) {
     return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; return c[0] === c[1] ? looks[pool.indexOf(c[0])] ?? null : looks[pool.length]; } };
@@ -64,6 +72,7 @@ export function traitLooks(frame, trait, opts = {}) {
   for (let i = 0; i < pool.length; i++) for (let j = i; j < pool.length; j++) { const l = labelOf([pool[i], pool[j]]); if (!labels.includes(l)) labels.push(l); const v = JSON.stringify(resolveCopies(locus, [pool[i], pool[j]])); if (!values.includes(v)) values.push(v); }
   if (trait.looks?.length === labels.length || trait.looks?.length === values.length) return [...trait.looks];
   const b = binLooks(frame, trait); if (b) return [...b.looks];
+  const words = FORM_WORDS[id]; if (words) return [...new Set(values.map((v) => words[JSON.parse(v)] ?? JSON.parse(v)))];   // every form in the player's words (S03's Claws)
   return labels;
 }
 
