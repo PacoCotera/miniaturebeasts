@@ -9,10 +9,10 @@ ci: not run (review only)
 
 | Proof | Purpose and style (CD) | Framework (genome engineer) | Owner |
 | --- | --- | --- | --- |
-| `genome-incubator-S03-{cool,warm,glowing,ready}-1x.png` (06) | **PASS** | pending (§3) | **`genome-incubator-S03-glowing-1x.png`**, once the framework check passes |
-| `genome-create-S03-1x.png` (01) | **FAIL as an owner proof:** the bay and half the drums are empty (S03's looks are owed) | pending | none yet: S01's proof (T-143) |
-| `genome-create-S03-clash-1x.png` (02) | PASS (the clash reads as a set: red rims on screen and drums, no link, no sentence) | pending | not shown; it's a state, not the read |
-| `genome-marks-1x.png` | PASS (one family, every state a shape) | pending | not shown |
+| `genome-incubator-S03-{cool,warm,glowing,ready}-1x.png` (06) | **PASS** | **FAIL** on clear timing (cool, glowing, ready) and the card; warm passes | **`genome-incubator-S03-glowing-1x.png`**, after T-145 |
+| `genome-create-S03-1x.png` (01) | **FAIL as an owner proof:** the bay and half the drums are empty (S03's looks are owed) | **PASS** on every mark (the bottom line's "← Loika" stand-in should read Tuikis) | none yet: S01's proof (T-143) |
+| `genome-create-S03-clash-1x.png` (02) | PASS on style (the clash reads as a set, no sentence) | **FAIL:** the wrong drums are red (Crest, not Build); Build is not shown changed; the ✓ cap stays | not shown |
+| `genome-marks-1x.png` | PASS on style (one family, every state a shape) | **FAIL:** no storm badge (S16 Phase); place slices named pond-edge and rock-field, not the frame's pond and rock; the shard find missing | not shown |
 | T-128 `pods-overview-tag-cut-1x.png`, `pods-chapter-page-tag-cut-1x.png` | **PASS** | n/a | not needed (a removal) |
 | T-128 `cargo-report-device-plate-1x.png` | **PASS** | n/a | not needed |
 
@@ -50,9 +50,38 @@ ci: not run (review only)
 - **Cargo report:** "Home from the field" now sits on an engraved sage device plate, part of the machine, not a cream label.
 - **For the lead (not T-128's scope):** the report card itself is about 12 lines of words, and fails gate check 8 (words load). It needs a UI/UX ticket of its own; the purpose audit noted it too.
 
-## 3. The genome engineer's framework check
+## 3. The genome engineer's framework check (S03's frame, slices at 91bf3c17)
 
-I asked the genome engineer for PASS or FAIL per proof, against the framework for S03. **Their answer is pending.** It will be added here, and the owner's Incubator proof waits on it.
+The genome engineer's verdict, folded in as received:
+- **Create tree (01): PASS on every mark.**
+  - The rows are 4, 3, 3, 4, 4, 3, 2, 2 in ring order, and the hub is S03's glyph.
+  - Colour changed; Markings is the switch with its gate bar and five dots; Eyes kept with the first mark.
+  - Shape is all configurable, with the wish glint on Topline; Claws is breed-only; Movement is breed-only with the Cross line.
+  - Stamina and Character are frosted, with the glint on the emblem.
+  - Glow is self-changing, with cave and wood; Duration is breed-only, carrying the line.
+  - Stand-in words: "← Loika" should be Tuikis.
+- **Clash (02): FAIL.**
+  - The set is Eyes and Build, but the red drums are Crest and Eyes.
+  - Build's gene needs to show changed (lit, with the notch) under the red rim, because only changed traits clash.
+  - There should be no ✓ cap in clash.
+- **Incubator (06): the marks are right, but the clear timing is wrong.** By (k+1)/(n+1), with two unread chapters, Stamina clears at 1/3 and Character at 2/3.
+  - cool: FAIL (Stamina is shown cleared);
+  - warm: PASS;
+  - glowing: FAIL (Character should be cleared);
+  - ready: FAIL (every chapter should be cleared; S03 has no shut sealed chapter);
+  - the card can't be Tail, which was read on Create. It should be a Stamina trait (Strength, Reserve or Thrift).
+- **Marks sheet: FAIL.**
+  - No storm badge: S16 Phase's trigger is a storm (`selfChanging.storm`).
+  - The place slices are named pond-edge and rock-field, but the frame ids are pond and rock.
+  - The shard find (`genome-sealed-shard-24x24`) is missing from the sheet.
+- **For UI/UX, not the art:** the compact Glow gene on the Incubator shows its step marks but no place badges. The 4 px gap has no room, and spec §5 doesn't say what to do (routed to the lead).
+
+**The CD's note:** I passed 02's style and the sheet's, but the framework check is the binding one for data. The fixes are in **T-20261016-145** (art).
+
+## 4. What the owner sees, and when
+- **Incubator:** `genome-incubator-S03-glowing-1x.png`, after T-145 (Character cleared, the right card).
+- **Create:** `genome-create-S01-1x.png`, after T-143.
+- **Nothing from this round goes to the owner as it stands.**
 
 ## Proof (commands run and their result lines)
 - `results/T-20261016-138/*.png` and `results/T-20261016-128/*.png` read at 1×. The T-128 crops are at 1×; the Cargo plate is in context.
