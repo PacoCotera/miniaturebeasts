@@ -5048,28 +5048,28 @@
  },
  "create-drum-rest": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "note": "T-20261016-69, repainted"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "note": "T-20261016-96, the drum at 80 x 96"
  },
  "create-drum-pinned": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "note": "T-20261016-69, repainted"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "note": "T-20261016-96, the drum at 80 x 96"
  },
  "create-drum-capped": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "note": "T-20261016-69, repainted"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "note": "T-20261016-96, the drum at 80 x 96"
  },
  "create-drum-clash": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "note": "T-20261016-69, repainted"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "note": "T-20261016-96, the drum at 80 x 96"
  },
  "create-drum-notch": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "note": "T-20261016-41, Create gene bench"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "note": "T-20261016-96, the drum at 80 x 96"
  },
  "create-drum-turn-up": {
   "status": "signed",
@@ -5693,5 +5693,10 @@
   "status": "signed",
   "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-105, in dock/proof (the light alone on the open bay, the arrival in place, both ends at 3x)",
   "note": "T-20261016-97, the link light on the floor"
+ },
+ "create-drum-shade-80x96": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "note": "T-20261016-96, the drum's shade"
  }
 }

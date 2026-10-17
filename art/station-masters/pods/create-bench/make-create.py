@@ -122,81 +122,82 @@ mound = np.clip(d_in / 6, 0, 1)
 coll[pad] = (lin(ms) * (0.6 + 0.4 * mound)[..., None])[pad]
 a = (d_out > 0).astype(np.float32)
 save("create-dish", dn(coll * a[..., None], S3) / np.maximum(dn(a, S3), 1e-6)[..., None], dn(a, S3))
-# ---------- the drums 80 x 80 (T-20261016-69): a moulded sage drum on a horizontal axle, sitting in a slot of the tray. One face shows in the
-# window (64 x 64 at (8, 8), left clear). It reads as a drum by:
-# - the round: the 8 px above and below the window are the drum's surface turning away from the eye, lit above and falling into shade below,
-#   and the next faces' window edges show there as thin dark slivers, foreshortened, so more faces wait above and below;
-# - the grip: ribs across the drum's round (parallel to the axle), closer together as the surface turns away, worn pale at the centre where
-#   a thumb turns it;
-# - the face: the round's fall-off carried over the window at partial alpha (its middle half clear), so the
-#   picture sits on the drum, not in a frame;
-# - the axle: the slot's dark cheeks at both ends with the axle's round boss, so it turns about a line across.
-S4 = 8; N = 80
-yy, xx = (np.mgrid[0:N * S4, 0:N * S4] + .5) / S4
-RC = 41.0; th = np.arcsin(np.clip((yy - 40) / RC, -0.999, 0.999))          # the drum's round: the angle of the surface at each row
-cheek = (xx < 5) | (xx > 75)                                               # the slot's cheeks at the ends
-d_win = rrect_d(xx, yy, 8, 8, 72, 72, 3)
-drum_ = ~cheek
-# height: the round, the ribs, the window's lip and the next faces' window slivers
-ribphase = th / np.radians(6.5)                                            # a rib every 6.5 degrees of turn
-ribs = np.where((d_win <= 0) & ((yy < 8) | (yy > 72)), 0.6 * np.cos(ribphase * 2 * np.pi), 0)   # on the round only
-nrm = np.dstack([np.zeros_like(th), np.sin(th), np.cos(th)])              # the round's normal (the axle is horizontal)
-# ribs bend the normal along y
+# ---------- the drums 80 x 96 (T-20261016-96, specs/station-create-bench-spec.md as amended by T-20261016-95): a moulded sage drum on a
+# horizontal axle, sitting in a slot of the tray, seen side-on. Rows (offsets from the drum's origin):
+# - 0-8 and 88-96: the round turning away above and below, lit above and falling into shade below, with grip ribs (parallel to the axle)
+#   closer together as it turns away, their crowns worn pale at the centre where a thumb turns it; the turn marks sit here (32, 0), (32, 88);
+# - 8-16 and 80-88: the face bands. The build draws the previous face's last 8 rows and the next face's first 8 rows there, under
+#   create-drum-shade-80x96. The drum itself paints its plain round there (a one-face drum shows that), with a dark seam at each face's edge;
+# - 16-80: the window, 64 x 64 at (8, 16), left clear (only a 2 px inner shade on its top and left walls at partial alpha);
+# - x 0-6 and 74-80: the slot's dark cheeks, each with the axle's round boss at mid-height; the changed notch rides the right rim (72, 40).
+S4 = 8; NW, NH = 80, 96
+yy, xx = (np.mgrid[0:NH * S4, 0:NW * S4] + .5) / S4
+RC = 50.0; th = np.arcsin(np.clip((yy - 48) / RC, -0.999, 0.999))          # the drum's round: the surface angle at each row
+cheek = (xx < 6) | (xx > 74)
+d_win = rrect_d(xx, yy, 8, 16, 72, 80, 3)
+rim = (yy < 8) | (yy > 88)
+ribphase = th / np.radians(5.5)
+ribs = np.where(~cheek & (rim | (((yy >= 8) & (yy < 16)) | ((yy > 80) & (yy <= 88)))), 0.6 * np.cos(ribphase * 2 * np.pi), 0)
+nrm = np.dstack([np.zeros_like(th), np.sin(th), np.cos(th)])
 gy = np.gradient(ribs, axis=0) * S4
 nrm = nrm + np.dstack([np.zeros_like(gy), -gy * 0.8, np.zeros_like(gy)]); nrm /= np.linalg.norm(nrm, axis=2, keepdims=True)
 lamr = np.clip(nrm @ L, 0, 1) / L[2]
 coll = SAGE_SH * (0.30 + 0.85 * lamr)[..., None] * 1.12
 sheen = np.clip((nrm @ L - 0.86) / 0.14, 0, 1) * (d_win <= 0)
 coll = coll + RIM * (0.35 * sheen)[..., None]
-wear = np.exp(-(((xx - 40) / 13) ** 2)) * ((yy < 8) | (yy > 72)) * np.clip(np.cos(ribphase * 2 * np.pi), 0, 1)
-coll = coll * (1 - 0.25 * wear[..., None]) + SAND * (0.30 * wear)[..., None]            # the ribs' crowns worn pale where a thumb turns it
-# the next faces: their window edges, foreshortened, in the round above and below (dark slivers with a lit lip)
-for yc, hgt in ((2.2, 1.4), (77.8, 1.4)):
-    sl_ = (np.abs(yy - yc) < hgt / 2) & (xx > 10) & (xx < 70)
-    coll[sl_] = coll[sl_] * 0.22
-# the window's own lip: lit on its lower edge of the top band (the far wall, facing the key) and in shade on the bottom band
-lipT = (yy > 6.6) & (yy < 8) & (xx > 8) & (xx < 72); coll[lipT] = coll[lipT] * 1.25 + RIM[None] * 0.12
-lipB = (yy > 72) & (yy < 73.4) & (xx > 8) & (xx < 72); coll[lipB] = coll[lipB] * 0.45
-# the ends: the drum's rim meets the slot as a dark gap; the cheeks are the tray's dark rubber, the axle boss lit from the top left
-gap = (np.abs(xx - 5) < .7) | (np.abs(xx - 75) < .7)
-cv = np.clip((yy - 40) / 40, -1, 1); lamc = np.clip(np.dstack([np.zeros_like(cv), cv * 0.6, np.ones_like(cv)]) @ L, 0, 1) / L[2]
+wear = np.exp(-(((xx - 40) / 13) ** 2)) * rim * np.clip(np.cos(ribphase * 2 * np.pi), 0, 1)
+coll = coll * (1 - 0.25 * wear[..., None]) + SAND * (0.30 * wear)[..., None]
+band = np.where(yy < 48, 0.5 + 0.75 * np.clip(yy / 16, 0, 1), 0.85 - 0.6 * np.clip((yy - 80) / 16, 0, 1))   # the round: bright above
+coll = coll * band[..., None]
+for yc in (8.0, 16.0, 80.0, 88.0):                                         # the faces' edges: a dark seam, its lower lip lit
+    seam = (np.abs(yy - yc) < 0.55) & (xx > 8) & (xx < 72); coll[seam] = coll[seam] * 0.3
+    lip = (yy > yc + 0.55) & (yy < yc + 1.3) & (xx > 8) & (xx < 72); coll[lip] = coll[lip] * 1.18
+gap = (np.abs(xx - 6) < .7) | (np.abs(xx - 74) < .7)
+cv = np.clip((yy - 48) / 48, -1, 1); lamc = np.clip(np.dstack([np.zeros_like(cv), cv * 0.6, np.ones_like(cv)]) @ L, 0, 1) / L[2]
 ccol = RUBBER * (0.55 + 0.45 * lamc)[..., None] * 0.9
-for cx_ in (2.5, 77.5):
-    r = np.hypot(xx - cx_, yy - 40); boss = r < 2.3
-    bn = np.dstack([(xx - cx_) / 2.3, (yy - 40) / 2.3, np.sqrt(np.clip(1 - r ** 2 / 2.3 ** 2, 0, 1))])
+for cx_ in (3.0, 77.0):
+    r = np.hypot(xx - cx_, yy - 48); boss = r < 2.6
+    bn = np.dstack([(xx - cx_) / 2.6, (yy - 48) / 2.6, np.sqrt(np.clip(1 - r ** 2 / 2.6 ** 2, 0, 1))])
     lb = np.clip(bn @ L, 0, 1) / L[2]
     ccol[boss] = (SAGE_SH * 0.9 * (0.4 + 0.8 * lb)[..., None])[boss]
 coll[cheek] = ccol[cheek]; coll[gap] = lin([12, 12, 14])
-# the whole rounds off at the top and bottom edges into the slot's shadow
-edge = np.clip(np.minimum(yy, 80 - yy) / 1.6, 0, 1)
+edge = np.clip(np.minimum(yy, NH - yy) / 1.6, 0, 1)
 coll = coll * (0.35 + 0.65 * edge[..., None])
-band = np.where(yy < 40, 0.5 + 0.75 * np.clip(yy / 8, 0, 1), 0.85 - 0.6 * np.clip((yy - 72) / 8, 0, 1))   # the round: bright at the top
-coll = np.where(cheek[..., None], coll, coll * band[..., None])                                       # window's lip, dark at the bottom
-outline = rrect_d(xx, yy, 0, 0, N, N, 3)
+outline = rrect_d(xx, yy, 0, 0, NW, NH, 3)
 body = (outline > 0) & (d_win <= 0)
-wshade = (d_win > 0) & (np.minimum(yy - 8, xx - 8) < 2.2)
-# over the window, at partial alpha: the round carried across the face, so the picture sits on the drum (its middle half stays clear)
 win = d_win > 0
-fall = np.clip((np.abs(yy - 40) - 14) / 18, 0, 1) ** 1.4 * np.where(yy > 40, 0.62, 0.42)       # turning away: more below, away from the key
+wshade = win & (np.minimum(yy - 16, xx - 8) < 2.2)
+fall = np.clip((np.abs(yy - 48) - 14) / 18, 0, 1) ** 1.4 * np.where(yy > 48, 0.55, 0.38)      # the round's fall-off over the window's quarters
 def drum(kind):
     c = coll.copy(); a = body.astype(np.float32)
     c[win] = lin([10, 12, 14]); a[win] = fall[win]
-    c[wshade] = lin([14, 16, 18]); a[wshade] = np.maximum(a[wshade], 0.45 * (1 - np.clip(np.minimum(yy - 8, xx - 8)[wshade] / 2.2, 0, 1)))
-    if kind == "pinned":                                                   # two linked rings, engraved on the round below the window
+    c[wshade] = lin([14, 16, 18]); a[wshade] = np.maximum(a[wshade], 0.45 * (1 - np.clip(np.minimum(yy - 16, xx - 8)[wshade] / 2.2, 0, 1)))
+    if kind == "pinned":                                                   # two linked rings, engraved on the bottom round, foreshortened
         for cx in (36.5, 43.5):
-            r = np.hypot((xx - cx), (yy - 76.2) * 1.6)                       # foreshortened on the round
+            r = np.hypot((xx - cx), (yy - 92.2) * 1.6)
             e = (np.abs(r - 2.7) < 0.75) & body
             c[e] = c[e] * 0.25
-    if kind == "capped":                                                   # the frost veil over the window
-        fr = d_win > 0
+    if kind == "capped":                                                   # the frost veil over the window and both face bands: unread
+        fr = win | ((xx > 8) & (xx < 72) & (((yy > 8) & (yy < 16)) | ((yy > 80) & (yy < 88))))
         rng = np.random.default_rng(80); nse = nd.gaussian_filter(rng.normal(0, 1, fr.shape), 6); nse = nse / nse.std()
-        c[fr] = lin(P("frost"))[None] * (0.86 + 0.04 * nse[fr])[..., None] * (1 - 0.18 * ((yy[fr] - 8) / 64))[..., None]
+        c[fr] = lin(P("frost"))[None] * (0.86 + 0.04 * nse[fr])[..., None] * (1 - 0.18 * ((yy[fr] - 8) / 80))[..., None]
         a[fr] = 0.88
     if kind == "clash":                                                    # a 2 px red line round the drum
         e = (outline > 0) & (outline < 2.0)
         c[e] = lin(P("red")); a[e] = 1.0
     return save(f"create-drum-{kind}", dn(c * a[..., None], S4) / np.maximum(dn(a, S4), 1e-6)[..., None], dn(a, S4))
 for kd in ("rest", "pinned", "capped", "clash"): drum(kd)
+# create-drum-shade-80x96: the curvature shade over the two face bands (8, 8, 64, 8) and (8, 80, 64, 8), drawn over the faces the build puts
+# there, so they read as turning away: darker toward the band's outer edge (the top of the top band, the bottom of the bottom one), the
+# lower band darker (away from the key), with a thin lit line where each band meets the window's face
+sh_a = np.zeros((NH * S4, NW * S4)); inb = (xx > 8) & (xx < 72)
+tb = inb & (yy >= 8) & (yy < 16); bb = inb & (yy >= 80) & (yy < 88)
+sh_a[tb] = (0.42 + 0.48 * ((16 - yy[tb]) / 8) ** 1.2); sh_a[bb] = (0.52 + 0.42 * ((yy[bb] - 80) / 8) ** 1.2)
+sh_c = np.broadcast_to(lin([10, 12, 14]), sh_a.shape + (3,)).copy()
+for y0 in (15.0, 80.0):                                                    # the face's edges, where the window meets each band: a dark seam
+    sm = inb & (yy >= y0) & (yy < y0 + 1.0); sh_a[sm] = 0.92
+lit = inb & (yy >= 16.0) & (yy < 16.8); sh_c[lit] = lin([214, 220, 190]); sh_a[lit] = 0.35                   # the window's top lip, lit
+save("create-drum-shade-80x96", dn(sh_c * sh_a[..., None], S4) / np.maximum(dn(sh_a, S4), 1e-6)[..., None], dn(sh_a, S4))
 # ---------- the small marks
 def mark(name, w, h, poly, colour, engrave=True):
     Sx = 8; img = Image.new("L", (w * Sx, h * Sx), 0); ImageDraw.Draw(img).polygon([(x * Sx, y * Sx) for x, y in poly], fill=255)
@@ -207,7 +208,7 @@ def mark(name, w, h, poly, colour, engrave=True):
         A = np.maximum(m, sh * 0.5); C = (c * m[..., None] + lin([20, 20, 22]) * (sh * 0.5 * (1 - m))[..., None]) / np.maximum(A, 1e-6)[..., None]
         return save(name, C, A)
     return save(name, c, m)
-mark("create-drum-notch", 12, 8, [(0, 0), (12, 0), (8, 7), (4, 7)], P("cream"))
+mark("create-drum-notch", 8, 16, [(7.5, 0), (7.5, 16), (1.5, 12), (1.5, 4)], P("cream"))   # T-20261016-96: 8 x 16 on the right rim
 mark("create-drum-turn-up", 16, 8, [(8, 0.5), (15, 7), (1, 7)], P("bone"))
 mark("create-drum-turn-down", 16, 8, [(1, 0.5), (15, 0.5), (8, 7)], P("bone"))
 for side in ("left", "right"):

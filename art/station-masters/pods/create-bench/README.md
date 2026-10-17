@@ -136,3 +136,43 @@ The 24 × 216 rect holds this route, so no new rect is needed.
 - **The clash line:** "✕ Crown and Eyes clash" is 180 px, over the 176 limit (copy).
 - **`mist` on the slip's paper** (the "Still a surprise" list) is hard to read at 1×. That is the spec's colour (UI/UX).
 - **The founder:** the S01 base painting's feet end at row 304 (screen 384), not at foot line 392, and its rear feet stand above the dish's top edge (372). The founder's placement is the spec's and the build's.
+
+## T-20261016-96: the drums at 80 × 96
+The spec as amended by T-20261016-95 (the drum 80 × 96, the window at (8, 16), the face bands at (8, 8) and (8, 80), the notch 8 × 16 at (72, 40), the turn marks at (32, 0) and (32, 88)).
+
+**Repainted:**
+- **`create-drum-rest`, `-pinned`, `-capped`, `-clash`:** the drum seen side-on on its axle in a slot.
+  - **The round:** rows 0–8 and 88–96 turn away, lit above and falling into shade below, with grip ribs closing up and worn pale at the centre.
+  - **The face bands:** painted as its plain round, with a dark seam at each face's edge. The build draws the previous face's last 8 rows and the next face's first 8 there; a one-face drum shows the plain round.
+  - **The window:** clear in its middle.
+  - **The sides:** the slot's cheeks with the axle boss.
+  - **The states:** capped frosts the window and both bands, pinned's rings sit on the bottom round, and clash keeps its red rim.
+- **`create-drum-notch`:** an 8 × 16 cream wedge on the right rim.
+
+**New:** `create-drum-shade-80x96`, drawn over the bands after the faces.
+- The bands darken toward their outer edges, the lower one more.
+- A dark seam sits where each band meets the window.
+- The window's top lip is lit.
+- So the neighbouring faces read as turning away.
+
+**The order per drum:**
+1. the close-up in the window;
+2. the drum;
+3. the neighbouring faces' rows in the bands;
+4. the shade;
+5. the notch and turn marks.
+
+**Unchanged:** the turn marks (16 × 8; only their offsets moved, which is the build's).
+
+**Owed, not painted here (reported):** the amendment also changes masters this ticket says stay:
+- the bench slice's tray (88, 360, 848 × 130) and dish cut-out (312, 324);
+- `create-gene-line` at 24 × 208;
+- `create-bank-more-left` and `-right` at 16 × 96;
+- `slip-208x288`.
+
+The re-proof draws the amended rects with T-69's bench, gene line and slip, so the dish sits 8 px above its cut-out and the chapter words straddle the old tray's edge.
+
+**Proofs** (`proof/`):
+- `create-shape-S01-1x.png`, **the owner's proof**, at the amended rects with T-69's stand-ins;
+- `drums-80x96-before-after-2x.png`;
+- `comparison-create-S01.png`.

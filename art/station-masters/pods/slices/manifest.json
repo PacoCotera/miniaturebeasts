@@ -16271,67 +16271,67 @@
  "create-drum-rest": {
   "size": [
    80,
-   80
+   96
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum (T-20261016-69 repaint): a moulded sage drum on a horizontal axle in a slot of the tray; the 8 px above and below the window are its round, lit above and falling into shade below, with grip ribs closer together as the surface turns away (worn pale at the centre) and the next faces' window edges as thin dark slivers; the round's fall-off carried over the window's top and bottom quarters at partial alpha (the middle half clear); the slot's dark cheeks with the axle's boss at both ends. The window 64 x 64 at (8, 8)",
-  "sha256": "d923c5e03bbb31448450fe9f996096c4dc8fc3fee04f40d6f2fdebba97c89071",
+  "made": "the drum at 80 x 96 (T-20261016-96, spec amended by T-20261016-95): a moulded sage drum on a horizontal axle in a slot, seen side-on; its round above and below (rows 0-8, 88-96) lit above and falling into shade below, with grip ribs closing up as it turns away and worn pale at the centre; the face bands (8, 8) and (8, 80) painted as its plain round, with a dark seam at each face's edge, for the build to draw the neighbouring faces' rows over; the window 64 x 64 at (8, 16) clear in its middle; the slot's cheeks with the axle boss",
+  "sha256": "dfd01baa1331d1c6c175c748d2702392a7ba16d778473af9f548da04629059c1",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "status_note": "repainted (10-16, T-20261016-69)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "status_note": "repainted at the amended size (10-17, T-20261016-96)"
  },
  "create-drum-pinned": {
   "size": [
    80,
-   80
+   96
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum (T-20261016-69 repaint) with two linked rings engraved on its round below the window, foreshortened: a doing, breed to change",
-  "sha256": "482c49b6438139f73656ec88d410c66c6d1b1675c72769a7798d08b18a1b500d",
+  "made": "the drum at 80 x 96 with two linked rings engraved on its bottom round, foreshortened: a doing, breed to change",
+  "sha256": "c1d1e124cf64462e6528672f82a25fc56df4cbcafc2763f7b5a08a883e0e44b2",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "status_note": "repainted (10-16, T-20261016-69)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "status_note": "repainted at the amended size (10-17, T-20261016-96)"
  },
  "create-drum-capped": {
   "size": [
    80,
-   80
+   96
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum (T-20261016-69 repaint) with the frost veil over its window: an unread chapter",
-  "sha256": "004451f4c8f8d16ea3fcec689f2b8839cada97bdef41ebcd43c659b31dd95ac8",
+  "made": "the drum at 80 x 96 with the frost veil over its window and both face bands: an unread chapter",
+  "sha256": "db48c39527779b4ad4f5b2fa57ea3a350afe7dbb1d40d4f67818b5eb3d5469c3",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "status_note": "repainted (10-16, T-20261016-69)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "status_note": "repainted at the amended size (10-17, T-20261016-96)"
  },
  "create-drum-clash": {
   "size": [
    80,
-   80
+   96
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the drum (T-20261016-69 repaint) with a 2 px red line round it: a clashing change",
-  "sha256": "987784a5a9d94030ff03f875401c5f4ae3225047e10fa6da0c4b93fdeb2d3803",
+  "made": "the drum at 80 x 96 with a 2 px red line round it: a clashing change",
+  "sha256": "af5990da610d171ed9452b3a91727737d5fd97bac2153599915ab28582d5db70",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "status_note": "repainted (10-16, T-20261016-69)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "status_note": "repainted at the amended size (10-17, T-20261016-96)"
  },
  "create-drum-notch": {
   "size": [
-   12,
-   8
+   8,
+   16
   ],
   "rect": null,
   "src": "create-bench/make-create.py",
-  "made": "the cream changed notch, at (34, 0) on a drum; job: this drum is turned",
-  "sha256": "f6be049889c77b702c146d805524cfc0cd8ea63aa71063986fe364fb726bfd4e",
+  "made": "the changed notch, 8 x 16, cream, a wedge on the drum's right rim at (72, 40), engraved shade (T-20261016-96)",
+  "sha256": "f995da918c15845af55a20f85f6d65c5ace6c972efd0a15060d0e259308a75a1",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "status_note": "repainted at the amended size (10-17, T-20261016-96)"
  },
  "create-drum-turn-up": {
   "size": [
@@ -18126,5 +18126,18 @@
   "status": "signed",
   "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-105, in dock/proof (the light alone on the open bay, the arrival in place, both ends at 3x)",
   "status_note": "new (10-17, T-20261016-97); clipped to the floor (10-17, T-20261016-105)"
+ },
+ "create-drum-shade-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "create-bench/make-create.py",
+  "made": "the drum's curvature shade, over the two face bands (8, 8, 64, 8) and (8, 80, 64, 8) after the build draws the neighbouring faces' rows there: darker toward each band's outer edge (the lower band darker, away from the key), a dark seam where each band meets the window's face, the window's top lip lit; so the adjacent faces read as turning away",
+  "sha256": "a43de0c1cafb73186a2e8f136fe8a699db332d2faee7936e05af0f911fc4efe6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
+  "status_note": "new (10-17, T-20261016-96)"
  }
 }
