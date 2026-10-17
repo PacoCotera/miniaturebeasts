@@ -318,14 +318,14 @@ for (const [i, name] of [[1, "pods-belatz-face"], [3, "pods-belatz-legs-tail"]])
 await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(300);
 s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");
 await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, coatSix.id); await page.waitForTimeout(400);
-// the hatch: the first ✓ arms with a plate, any other key disarms, the second ✓ returns
+// the hatch: ✓ opens the Return panel (the ring on Keep), ← and Keep spend nothing, ◀ ✓ on Return returns
 l = await line(); expect(l.ok === "Return to the wild" && l.price === "❀ +1", "the hatch offers the return: " + JSON.stringify(l));
-await press("confirm", 300); l = await line(); expect(l.ok === "Again: return it", "armed: " + JSON.stringify(l)); await frameShot("pods-hatch-armed");
-await press("up", 300); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); expect((await page.evaluate(() => window.__st.UI.pods.wildArm)) === 0, "the disarm cleared the armed state"); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300);
-const sBefore = (await st()).s; await press("confirm", 200); await press("confirm", 400); s = await st();
+await press("confirm", 300); l = await line(); expect(l.ok === "Keep it" && !!(await props()).overlay, "the Return panel opens with the ring on Keep: " + JSON.stringify(l)); await frameShot("pods-panel-return");
+await press("back", 300); l = await line(); expect(l.ok === "Return to the wild" && !(await props()).overlay, "← closes the panel, nothing spent: " + JSON.stringify(l)); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300);
+const sBefore = (await st()).s; await press("confirm", 200); await press("confirm", 300); expect((await st()).s === sBefore && (await st()).tray.some((p) => p.id === coatSix.id), "Keep spends nothing"); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300); await press("confirm", 200); await press("left", 200); await press("confirm", 400); s = await st();
 expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence: " + JSON.stringify({ s: s.s, sBefore, still: s.tray.some((p) => p.id === coatSix.id), line: await line(), view: await viewNow(), f: await focusNow() }));
 // the same for the Untuva, which leaves the rack as it was; the waiting pod takes the well
-await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, untuva.id); await page.waitForTimeout(400); await press("confirm", 200); await press("confirm", 400);
+await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, untuva.id); await page.waitForTimeout(400); await press("confirm", 200); await press("left", 200); await press("confirm", 400);
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id), "the Untuva returned");
 const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika.id && p.id !== loika2.id);
 expect(!!extra, "the pod that waited for a well entered the rack when one freed"); {   // not skipped when absent: the read-holds-input assertion must run
@@ -570,8 +570,8 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
     await hp("down", 300); const tileKey = "tile." + adultM.id; let c = (await props()).focus?.cur; for (const dir of ["right", "left"]) for (let i = 0; i < 14 && c !== tileKey; i++) { await hp(dir, 300); const n = (await props()).focus?.cur; if (n === c) break; c = n; }   // along the strip one way to its end, then the other
     expect(c === tileKey, "vivarium-card: ▼ then ◀ ▶ along the strip lands on the adult's tile: " + c);
     await hp("up", 300); const w = await toward("wild", toWild); expect(w === "wild", "vivarium-card: the pad walks back to the Wild gate with the adult shown: " + w);
-    r = await hp("confirm", 500); expect(r.p.focus.armed === "wild", "vivarium-card: the first ✓ arms the gate: " + JSON.stringify([r.p.focus.armed, r.p.focus.cur, r.p.frame.line])); r = await hp("confirm", 800); const now = await st();
-    expect(now.s === was.s + 2 && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the second ✓ returns the adult for +2 Essence: " + JSON.stringify([now.s, was.s]));
+    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.keep", "vivarium-card: ✓ on the Wild gate opens the Return panel, the ring on Keep: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
+    expect(now.s === was.s + 2 && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the Return card returns the adult for +2 Essence: " + JSON.stringify([now.s, was.s]));
     cur.push({ gate: "adult", released: true, essence: now.s - was.s }); }
   await press("home", 300); }
 // the bench trickle's watch: a resident on the Vivarium for the dev timer's 5 s earns +1 Data once (after the dev panel's New bench day)

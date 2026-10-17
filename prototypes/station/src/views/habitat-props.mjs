@@ -2,7 +2,7 @@
 // counts, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words place everything from habitat.json). The output is plain JSON:
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }.
 // Runs in Node, tested there (tests/habitat-props.test.mjs); the shape is habitat.props.json.
-//   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), habId (the mibi up close), meetId (the new mibi whose meet is on), armed (the Wild gate), offline }
+//   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), habId (the mibi up close), meetId (the new mibi whose meet is on), offline }
 import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameFor } from "../state.mjs";
@@ -83,9 +83,9 @@ export function habitatBuild(m, spec, frame, home) {
   const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : "adult";
   regions.cross = { plate: plate(272, 96), state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
 
-  // the Wild module: shut at rest, ajar once armed
-  const wildBlock = S.returnMibiBlock(st, sv, shown), armed = !!m.armed && !wildBlock;
-  regions.wild = { plate: plate(136, 96), state: armed ? "armed" : "shut", gate: req({ kind: "slot", id: `gate-wild-${armed ? "open" : "shut"}-48x48:48x48`, master: `gate-wild-${armed ? "open" : "shut"}-48x48`, size: [48, 48], until: "the gate master (AD W1)" }) };
+  // the Wild module: the gate stays shut; ✓ opens the Return panel (decision panel spec §1.6), which replaced the "✓ again" arm
+  const wildBlock = S.returnMibiBlock(st, sv, shown);
+  regions.wild = { plate: plate(136, 96), state: "shut", gate: req({ kind: "slot", id: "gate-wild-shut-48x48:48x48", master: "gate-wild-shut-48x48", size: [48, 48], until: "the gate master (AD W1)" }) };
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);
@@ -110,7 +110,7 @@ export function habitatBuild(m, spec, frame, home) {
   targets.push({ id: "wild", group: "low", enabled: !wildBlock });
   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile", enabled: true });
   const has = (id) => targets.some((t) => t.id === id), cur = m.focus && has(m.focus) ? m.focus : out ? "name" : "resident";
-  const focus = { cur, targets, resolve: { "tile.shown": "tile." + sid }, armed: armed ? "wild" : null };
+  const focus = { cur, targets, resolve: { "tile.shown": "tile." + sid } };
 
   // the bottom line (habitat.json bottomLine): the action and the context of the focused target; ← Vivarium
   const a = S.aAn(stageWord).split(" ")[0], words = { a, stage: stageWord, species }, contextOf = shown.bonded ? fill(Sg.residentContextBonded, words) : fill(Sg.residentContext, words);
@@ -145,7 +145,7 @@ export function habitatBuild(m, spec, frame, home) {
   } else if (id === "wild") {
     const price = S.gainText(S.PRICE.wildMibi), key = { "a bonded mibi stays": "bonded", "not until it is adult": "young", "already with you": "withYou", "goes at the next dock": "waiting" }[wildBlock];
     line = wildBlock ? { ok: null, subject: Sg.wildBlocks[key] ?? wildBlock }
-      : armed ? { ok: fill(Sg.wildAgain, named), price, subject: Sg.wildAgainContext } : { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
+      : { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
     line = { ...line, back: Sg.back, need: null };
   }
   return { props: { state, regions, focus }, line, requests, shown };

@@ -28,7 +28,7 @@ function scene(species, { read = null, ci = 0, gs = 3 } = {}) {
   const st = S.freshSt("w1", 3, 1000); S.normalize(st); st.e = st.d = st.s = 99;
   S.seedPodFromGenome(st, podGenome(frameOf(species), gs), settings, 1000); const p = st.tray[0]; S.skipIdentify(st, p);
   const fr = frameOf(species); fr.chapters.slice(0, read ?? fr.chapters.length).forEach((c) => S.read(st, p, c.id, settings));
-  return { st, p, fr, m: { st, settings, docked: true, crates: 0, present: {}, focus: `rail.${ci}`, ui: { view: "chapter", cur: p.id, ci, cmp: null, wildArm: 0 } } };
+  return { st, p, fr, m: { st, settings, docked: true, crates: 0, present: {}, focus: `rail.${ci}`, ui: { view: "chapter", cur: p.id, ci, cmp: null } } };
 }
 // stand-in pictures: a flat block at the size the request names; a slot is a picture only when the master is placed at exactly its size (the host's rule), else an empty slot that draws nothing
 const standIn = (w, h) => { const d = new Uint8ClampedArray(w * h * 4); for (let i = 0; i < d.length; i += 4) { d[i] = 90; d[i + 1] = 100; d[i + 2] = 110; d[i + 3] = 255; } return { w, h, data: d }; };

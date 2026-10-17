@@ -3,7 +3,9 @@
  "device": "station",
  "kind": "overlay",
  "over": [
-  "create"
+  "create",
+  "habitat",
+  "pods"
  ],
  "spec": "specs/station-decision-panel-spec.md",
  "frame": "frame.json",
@@ -37,6 +39,14 @@
   "grow": {
    "opens": "create",
    "by": "✓ Grow it"
+  },
+  "wildMibi": {
+   "opens": "habitat",
+   "by": "✓ on Wild (the Return gate)"
+  },
+  "wildPod": {
+   "opens": "pods",
+   "by": "✓ on the leaf plate"
   }
  },
  "bottomLine": {
@@ -81,6 +91,30 @@
   "arrival": {
    "text": "Incubator: your {Species} bud is growing",
    "ms": 2000
+  },
+  "wildMibi": {
+   "title": "Return {name}?",
+   "cards": {
+    "return": {
+     "name": "Return it",
+     "line": "gone for good"
+    },
+    "keep": {
+     "name": "Keep {name}"
+    }
+   }
+  },
+  "wildPod": {
+   "title": "Return this pod?",
+   "cards": {
+    "return": {
+     "name": "Return it",
+     "line": "gone for good"
+    },
+    "keep": {
+     "name": "Keep it"
+    }
+   }
   }
  }
 }

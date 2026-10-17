@@ -82,8 +82,18 @@
       },
       "light": {
        "type": "string"
+      },
+      "scene": {
+       "type": "string"
       }
      }
+    },
+    "outcome": {
+     "type": "string",
+     "enum": [
+      "wild"
+     ],
+     "description": "the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre"
     }
    }
   },

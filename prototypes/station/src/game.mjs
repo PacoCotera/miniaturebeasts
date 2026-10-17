@@ -10,8 +10,8 @@ import { createFocus } from "../../ui/focus.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
-export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, viv: { f: null }, bench: { f: null, arm: 0, install: false },
+export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
+  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null }, bench: { f: null, arm: 0, install: false },
   cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null, drawn: null, slide: 0 }, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
@@ -90,7 +90,7 @@ export const screenOf = (name) => SCREENS[name];
 export function goScreen(name) {
   const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
   UI.screen = name;
-  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
+  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
   if (fresh && name === "vivarium") UI.viv.f = null;   // the way in puts the ring on the mibi last seen up close (vivarium.json focus.entry)
   if (fresh) { UI.panel = null; UI.arrival = null; }   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on

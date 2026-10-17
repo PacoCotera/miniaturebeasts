@@ -80,12 +80,14 @@ static void build_card(int i, int n, int focused) {
     if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge")); v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge); } }
   /* the glow and the stage: under the picture (the stage at the slot's foot) */
   v_region("cardStage", LAYER_PAINTED);
+  const char *scene = v_pstr(v_fmt("%s.scene", base)); int shift = *scene ? fi("art.scene.shift", 0) : 0;   /* the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre, facing the light */
   v_sprite(v_fmt("card.%d.glow", i), v_pstr(v_fmt("%s.glow", base)), slotX, r[1] + fk("art.glow.at", 1), pw, 160);
+  if (*scene) v_sprite(v_fmt("card.%d.scene", i), scene, slotX, r[1] + fk("art.scene.at", 1), pw, 152);
   v_sprite(v_fmt("card.%d.stage", i), v_pstr(v_fmt("%s.stage", base)), slotX, r[1] + fk("art.stage.at", 1), pw, 48);
   /* the picture, 1:1, centred, its feet line (its lowest row of alpha >= 128) on y + 168; its contact shadow across the feet's span plus 16 under it */
   { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pwid = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0), hd = *pic ? wire_asset_slot(pic) : -1;
     int feet[3] = { ph - 1, 0, pwid - 1 }; if (hd >= 0 && prim_asset_feet(hd, fi("art.feet.alpha", 128), fi("art.feet.rows", 4), feet) < 0) { feet[0] = ph - 1; feet[1] = 0; feet[2] = pwid - 1; }
-    int px0 = slotX + v_half(pw - pwid), py0 = r[1] + fi("art.feet.line", 168) - feet[0];
+    int px0 = slotX + v_half(pw - pwid) + shift, py0 = r[1] + fi("art.feet.line", 168) - feet[0];
     { const char *sh = v_pstr("overlay.regions.art.shadow"); int span = feet[2] - feet[1] + 1 + fi("art.shadow.stretch", 16), ends = fi("art.shadow.ends", 32), sh_h = fi("art.shadow.h", 16); if (span < 2 * ends) span = 2 * ends;
       const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + fi("art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
     v_name("cardPictures"); if (hd >= 0 && pwid > 0 && ph > 0) v_sprite(v_fmt("card.%d.picture", i), pic, px0, py0, pwid, ph); else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, r[0], r[1]); }

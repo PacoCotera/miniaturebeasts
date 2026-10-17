@@ -2704,6 +2704,27 @@
    "sha256": "7f0e2b1b421485efe26d90abe920e8681d2292994466d1f6b2050183b9f24fc9",
    "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
   },
+  "panel-scene-wild-216x152": {
+   "file": "pods/panel-scene-wild-216x152.png",
+   "w": 216,
+   "h": 152,
+   "sha256": "2f898a28f180df520072f139b91f311ddfd58e5a9a5f8a7d31494f5c9fc13d8d",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-348x152": {
+   "file": "pods/panel-scene-wild-348x152.png",
+   "w": 348,
+   "h": 152,
+   "sha256": "269ce55e1b6d09d171f9487a19fa8625658ec459a3003e317d8824e6b8761649",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-744x152": {
+   "file": "pods/panel-scene-wild-744x152.png",
+   "w": 744,
+   "h": 152,
+   "sha256": "e0c7f9d895b84cd39bd0ecddc9e8ad74c992a4316b1027500a525eaabff1d49f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
   "panel-stage-216x48": {
    "file": "pods/panel-stage-216x48.png",
    "w": 216,

@@ -113,3 +113,31 @@ test("reduced motion: the card's Grow jumps on the frame of ✓; the panel and t
   assert.deepEqual([h.went.at(-1), h.played.length, h.timers.length, !!st.bud], ["incubator", 0, 0, true]);
   assert.equal(S.DEFAULT_SETTINGS.jump, "arrival");
 });
+
+// ---- the Return panels (T-20261016-51; spec §1.6): Return it ❀ +2 (a mibi) or ❀ +1 (a pod) from the rules, "gone for good" on the loss card, the ring on Keep, ← and Keep spend nothing ----
+function wildHost(kind) {
+  const st = world(), h = host(st); h.specs.habitat = J("habitat.json");
+  if (kind === "mibi") { S.seedAdults(st, "S01", 5, 2, settings); h.ui.screen = "habitat"; h.ui.hab = { id: st.mibis[0].id, f: "wild", namer: null, prev: null }; h.ui.panel = { screen: "habitat", id: "wildMibi", focus: "" }; }
+  else { S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0); S.skipIdentify(st, st.tray[0]); h.ui.screen = "pods"; h.ui.pods.cur = st.tray[0].id; h.ui.panel = { screen: "pods", id: "wildPod", focus: "" }; }
+  return h;
+}
+const wview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: "arrival" }, panelSpec, frameSpec, podsSpec);
+for (const [kind, gain, title] of [["mibi", S.PRICE.wildMibi, null], ["pod", S.PRICE.wild, "Return this pod?"]]) {
+  test(`the Return panel (${kind}): the gain from the rules, the loss card says it is gone for good, the ring opens on Keep, the scene stands in the glow's place`, () => {
+    const h = wildHost(kind), v = wview(h), [ret, keep] = v.cards, names = h.st.mibis.map((m) => m.name);
+    assert.deepEqual(validate(v.overlay, schema, schema), [], "the overlay validates against panel.props.json");
+    assert.equal(v.overlay.regions.title, title ?? `Return ${names[0]}?`);
+    assert.deepEqual([ret.id, keep.id], ["return", "keep"]);
+    assert.equal(ret.cost, S.gainText(gain)); assert.equal(ret.gain, true); assert.equal(ret.loss, true); assert.equal(ret.line, "gone for good"); assert.equal(ret.mark, frameSpec.regions.marks.room[kind === "mibi" ? "vivarium" : "research"]);
+    assert.equal(keep.cost, ""); assert.equal(keep.mark, ""); assert.equal(keep.line, ""); assert.equal(keep.name, kind === "mibi" ? `Keep ${names[0]}` : "Keep it");
+    assert.equal(v.overlay.focus.cur, "card.keep", "the ring opens on Keep, the way out");
+    assert.equal(v.line.ok, "Keep " + (kind === "mibi" ? names[0] : "it").replace(/^Keep /, ""));
+    const rc = v.overlay.regions.cards; assert.match(rc[0].art.scene, /^panel-scene-wild-\d+x152$/); assert.equal(rc[0].art.glow, ""); assert.equal(rc[1].art.scene, undefined, "Keep keeps the glow"); assert.ok(rc[1].art.glow);
+    for (const c of [ret, keep]) assert.ok(measure(c.name, 20) <= P.limits[2].text, c.name);
+    assert.ok(!JSON.stringify(panelSpec.strings[kind === "mibi" ? "wildMibi" : "wildPod"]).match(/[❀\d]/), "no figure in the strings: the gain is the rules'");
+  });
+  test(`the Return panel (${kind}): the focused Return card puts the gain on the bottom line`, () => {
+    const h = wildHost(kind); h.ui.panel.focus = "card.return"; const v = wview(h);
+    assert.equal(v.line.ok, "Return it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "gone for good");
+  });
+}

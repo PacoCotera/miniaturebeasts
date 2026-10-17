@@ -1,5 +1,6 @@
 {
  "screen": "pods",
+ "overlays": { "panel": { "spec": "panel.json", "id": "wildPod", "from": "✓ on the leaf plate (the hatch)", "closes": "Keep it, ← or a room key: the screen as before, nothing spent; Return it: the pod goes back to the wild" } },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#pods-collection-pod-overview-chapter-page",
  "frame": "frame.json",
@@ -22,7 +23,6 @@
   "compare heading place": "derived, UI designer to confirm: Compare's heading shows the pod's find as a 16×16 place picture 40 px right of the heading's pod and 12 px lower (compareA.place), as the build had it",
   "kin ring band": "derived, UI designer to confirm: the kin ring's stand-in is a 2 px `hairline` band (kin.band) until ring-kin-56x56 is the studio's",
   "stand-in word": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): no stand-in card and no word; a stand-in is the cell's flat `ground` tone. Was: design lead, 2026-10-09, the build set \"stand-in\" in 16 px `mist` on the card",
-  "hatch confirmation": "art director and design lead, 2026-10-09: the message plate for the armed hatch says only \"✓ again\" (strings.hatchAgain); the bottom line already says \"Back to the <place>\", so strings.hatchArm is no longer shown; the plate is centred on x 512 and clear of the hatch key",
   "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture Superseded by GB1: no marks.",
   "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
   "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered — superseded by fix 5 (station-fix5-pods-spec.md §5): the signed picture sizes; the plain case bench",
@@ -1459,7 +1459,6 @@
    "chapterFallback": "Back",
    "compare": "{name}"
   },
-  "hatchAgain": "✓ again",
   "price": "icon before figure, as on every Station screen (station-layouts.md, The frame): Identify ◆ 1, Read ◆ 3, Return to the wild ❀ +1; nothing for free, and a half price is the lower number",
   "unknownPodNote": "only for a pod whose species is not in knownIds (GB1; decisions 2026-10-05)"
  },

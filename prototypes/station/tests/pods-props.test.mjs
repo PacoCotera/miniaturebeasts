@@ -152,9 +152,6 @@ test("a sealed tab's subject is '<chapter> is sealed'; the hatch's is 'Back to t
   assert.equal(lineOf(open(st, { focus: "rail." + ci, ui: { view: "chapter", ci } })).subject, fr.chapters[ci].name + " is sealed");
   assert.equal(lineOf(open(st, { focus: "hatch" })).subject, "Back to the " + S.PLACE_WORD[p.g]);
 });
-test("the hatch's arming plate says only '✓ again'", () => {
-  assert.equal(spec.strings.hatchAgain, "✓ again"); assert.ok(spec.strings.hatchAgain.split(" ").length <= 6);
-});
 test("Compare's need line follows the spec's strings: here, in another chapter, or none", () => {
   const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);
   const A = st.tray[0], B = st.tray[1], diff = S.compareDiff(st, A, B), chs = frameOf("S01").chapters;
