@@ -7,7 +7,7 @@ Creative director, 2026-10-17 (America/Mexico_City).
 **The rule** (WORKER.md, and the style guide on `style/lab`):
 - Paper, slips, tags and notes appear only in the Library.
 - Every other screen shows information on the machine: its displays, lamps, readouts and moving parts.
-- Not a workbench, not a desk.
+- Never a desk. Research screens are advanced research and crafting benches where you edit life (owner, 04:16).
 - Anything that changes with the player's input or with time is on the device's own display.
 
 **What was read:** every spec on work-queue, the open tickets, the style guide and goldens at station-gate da2260d4, and the masters at masters-pods head.
@@ -21,7 +21,7 @@ Creative director, 2026-10-17 (America/Mexico_City).
 
 | # | Where | Element | Kind | Becomes | Owner of the fix |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Create (`specs/create-concept.md` mood note) | "A workbench in warm daylight, not a laboratory" | Framing | **A genome-editing instrument in the lab.** The gene bench is the lab's editing station, the device's own housing with the drums as its controls (amended here) | CD (done, §2) |
+| 1 | Create (`specs/create-concept.md` mood note) | "A workbench in warm daylight, not a laboratory" | Framing | **An advanced research and crafting bench in the lab, where you edit life** (owner, 04:16). The gene bench is the lab's editing station, the device's own housing with the drums as its controls. Never a desk (amended here) | CD (done, §2) |
 | 2 | Create (concept, bench spec §4, style guide Create entry) | The paper slip clipped to the bench; "Your changes / Still a surprise" in words; the stamp "printed onto the slip" at Grow | Paper, live text | **The machine's display** (`specs/slip-visual-intent.md`): picture chips with the drums' marks, at most 3 words. At Grow, the stamp appears on that display | UI/UX T-126, then art and build |
 | 3 | Incubator (concept §3, tabs ruling §5, style guide Incubator entry) | The slip with the found-note, "Your changes", "Cleared while growing" | Paper, live text | **The same display**, set into the cradle's base or the stage's housing; cleared chapters as chips that clear | UI/UX T-126, then art and build |
 | 4 | Pods overview and chapter page (`room-bench-stage-overview`, `room-bench-stage-chapter`; `specs/station-pods-purpose.md`) | A paper luggage tag on a string, painted beside the pod on the stage | Paper, painted | **Cut.** The pod's name is already on its device name plate. | Art T-128 |
@@ -32,7 +32,7 @@ Creative director, 2026-10-17 (America/Mexico_City).
 | 9 | Style guide Research rows ("the work tray … among field tools"; Create's and the Probe's "Vibe: Research: the work tray") | Workbench framing | Framing | **The lab's instruments:** the genome editor (Create), the splicer (Cross and Wish), the Probe's service dock | CD (style/lab) |
 | 10 | Home, Habitat, mibi up close (style guide) | "the name is on the tag under the resident"; "its name on a tag under its feet" | Wording only (drawn as dark plates) | "name plate" | CD (style/lab) |
 
-| 11 | Create and the Incubator (T-126 widened) | The genome field (`art/references/genome-field/`) | The machine's screen | **The lab machine's main screen:** a dark matte display in the sage housing, drawing the founder's genome as a live field of linked loci, in the device's own marks. The references' neon-on-navy look is dropped (`specs/slip-visual-intent.md`, "Widened") | Game designer and UI/UX (T-126), CD on the world |
+| 11 | Create and the Incubator (T-126 widened) | The genome field (`art/references/genome-field/`) | Inspiration only (owner 04:16: "do not replicate it") | **The bench's main screen:** a dark matte display in the sage housing showing the founder's genome live as you edit, in the device's own marks. The field's ideas may inform it; its images are not copied (`specs/slip-visual-intent.md`, "Widened") | Game designer and UI/UX (T-126), CD on the world |
 
 **The Library is exempt.** Its book, pages, paper labels, ink and the ring on paper stay as they are.
 

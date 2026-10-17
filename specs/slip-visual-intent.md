@@ -51,16 +51,20 @@ Written 2026-10-17 (America/Mexico_City), as the CD's input to UI/UX's T-2026101
 
 **Why a screen, and not paper:** what the player changes must update live, so the object that shows it must be one that updates: the machine's display (the gate's check 10, `specs/gate-recalibration.md` §5).
 
-## Widened (T-126, owner 04:10): the genome field is the machine's screen
+## Widened (T-126, owner 04:10 and 04:16): the machine's screen, inspired by the genome field
 
-**What it is in the world, in one sentence:** the genome field is the main screen of the lab's genome-editing machine. It is a large dark, matte display let into the sage housing, on which the machine draws the founder's genome live, as a woven field of linked loci. The drums are the machine's controls, and the founder on the dish is what they make.
+**The owner, 04:16:** "no, that was inspiration, do not replicate it. but this screen must feel like a research/crafting bench. advanced, you're editing life."
+
+**What it is in the world, in one sentence:** Create is an advanced research and crafting bench in the lab where you edit life. Its main screen is a large dark, matte display let into the sage housing, on which the machine shows the founder's genome live as you edit it. The drums are the bench's controls, and the founder on the dish is what they make.
+
+**The genome field is inspiration, not a template.** Its ideas below may inform the screen, but its images are not copied or replicated.
 
 **On the Incubator,** the same machine screen shows the same field beside the pod, its unknown nodes clearing as the chapters clear.
 
 **The readout above becomes the field's compact form.** Its marks (unlit ring, lit disc, frost, red cross, joined rings) are the field's node states, not a separate box.
 
-**Kept in the Station style** (`art/references/genome-field/` 01, 05, 06 are references for structure, not for look):
-- **Keep the structure:**
+**Kept in the Station style** (`art/references/genome-field/` 01, 05, 06 are inspiration only):
+- **Ideas it may take, not copy:**
   - regions as clustered neighbourhoods;
   - each locus a node with its two copies;
   - state by shape (known, carried, unknown, changed), never by a sentence;
