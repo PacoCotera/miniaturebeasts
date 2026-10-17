@@ -32,7 +32,7 @@ Creative director, 2026-10-17 (America/Mexico_City).
 | 9 | Style guide Research rows ("the work tray … among field tools"; Create's and the Probe's "Vibe: Research: the work tray") | Workbench framing | Framing | **The lab's instruments:** the genome editor (Create), the splicer (Cross and Wish), the Probe's service dock | CD (style/lab) |
 | 10 | Home, Habitat, mibi up close (style guide) | "the name is on the tag under the resident"; "its name on a tag under its feet" | Wording only (drawn as dark plates) | "name plate" | CD (style/lab) |
 
-| 11 | Create and the Incubator (T-126 widened) | The genome field (`art/references/genome-field/`) | Inspiration only (owner 04:16: "do not replicate it") | **The bench's main screen:** a dark matte display in the sage housing showing the founder's genome live as you edit, in the device's own marks. The field's ideas may inform it; its images are not copied (`specs/slip-visual-intent.md`, "Widened") | Game designer and UI/UX (T-126), CD on the world |
+| 11 | Create and the Incubator (T-126 widened) | The genome field (`art/references/genome-field/`) | Inspiration only (owner 04:16: "do not replicate it") | **The bench's main screen:** a dark matte display in the sage housing showing the founder's genome live as you edit, rich and complex, in our own form. Its form is UI/UX's and the game designer's own; nothing is copied from the references (`specs/slip-visual-intent.md`, "Widened") | Game designer and UI/UX (T-126), CD on the world |
 
 **The Library is exempt.** Its book, pages, paper labels, ink and the ring on paper stay as they are.
 

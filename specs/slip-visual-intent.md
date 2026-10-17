@@ -51,31 +51,21 @@ Written 2026-10-17 (America/Mexico_City), as the CD's input to UI/UX's T-2026101
 
 **Why a screen, and not paper:** what the player changes must update live, so the object that shows it must be one that updates: the machine's display (the gate's check 10, `specs/gate-recalibration.md` §5).
 
-## Widened (T-126, owner 04:10 and 04:16): the machine's screen, inspired by the genome field
+## Widened (T-126, owner 04:10 and 04:16): the bench's screen
 
 **The owner, 04:16:** "no, that was inspiration, do not replicate it. but this screen must feel like a research/crafting bench. advanced, you're editing life."
 
-**What it is in the world, in one sentence:** Create is an advanced research and crafting bench in the lab where you edit life. Its main screen is a large dark, matte display let into the sage housing, on which the machine shows the founder's genome live as you edit it. The drums are the bench's controls, and the founder on the dish is what they make.
+**What it is in the world, in one sentence:** Create is an advanced research and crafting bench in the lab where you edit life. Its main screen is a large dark, matte display let into the sage housing, on which the machine shows the founder's genome live as you edit it, rich and complex, in our own form. The drums are the bench's controls, and the founder on the dish is what they make.
 
-**The genome field is inspiration, not a template.** Its ideas below may inform the screen, but its images are not copied or replicated.
+**Not a replica.** The earlier genome-field images (`art/references/genome-field/`) were inspiration only. Nothing is copied from them: no layout, structure or motif. The genome's form on this screen is UI/UX's and the game designer's to invent (T-126).
 
-**On the Incubator,** the same machine screen shows the same field beside the pod, its unknown nodes clearing as the chapters clear.
+**On the Incubator,** the same machine screen sits beside the pod and shows what clears as the chapters clear.
 
-**The readout above becomes the field's compact form.** Its marks (unlit ring, lit disc, frost, red cross, joined rings) are the field's node states, not a separate box.
+**The marks above** (unlit ring, lit disc, frost, red cross, joined rings) are UI/UX's starting vocabulary for states. They are open to change in the new form.
 
-**Kept in the Station style** (`art/references/genome-field/` 01, 05, 06 are inspiration only):
-- **Ideas it may take, not copy:**
-  - regions as clustered neighbourhoods;
-  - each locus a node with its two copies;
-  - state by shape (known, carried, unknown, changed), never by a sentence;
-  - focus by corner brackets;
-  - a change expanding in place, before against after, with the field still visible (05);
-  - detail on request, returning to the same spot (06).
-- **Drop the references' look:** the navy ground with glowing neon lines, the pixel-terminal type, the baked words, the resources and the knob. The guide's Never list ("glowing HUDs, holograms, neon … sterile labs") rules them out.
-- **In its place:**
-  - the display is dark matte slate, flush in the sage housing with a rubber gasket and screws, no gloss or reflection;
-  - lines and nodes are drawn in the device's own marks: mint (`lampOn`) for lit, the frost for unknown, red only for a clash;
-  - lit marks are small, with at most a 1–2 px soft edge and no bloom;
-  - type is Inter, crisp, and only in the opened detail (gate check 8).
-- **Letters and codes** live only in the opened detail, never on the field (the locus is abstracted from the player).
-- **On the Incubator** the field must stay at least 0.08 under the pod's p95 (the brightness rule): the pod stays the brightest thing.
+**Station-style guards** (`design/style-guide/README.md`):
+- the display is dark matte slate, flush in the sage housing with a rubber gasket and screws, with no gloss or reflection;
+- lit states are in the device's own mint (`lampOn`), not amber; small, with no bloom or halo; red only for a clash;
+- no glowing HUD, hologram or neon (the guide's Never list);
+- type is Inter and crisp, within the words load (gate check 8); letters and codes never on the main view (the locus is abstracted from the player);
+- on the Incubator, the screen stays at least 0.08 under the pod's p95: the pod stays the brightest thing.
