@@ -1,0 +1,20 @@
+[
+ {
+  "name": "s03-sheetD",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "The signed young S03, Tuikis (project-owned): THE individual in every panel, exactly: round bear-like ears, a thin antenna-like crest with a small bead tip rising from the top of the head, big wide-set teal eyes with pale rims, a lagoon-teal head and back with cream patches, a pale milk-mint blue-white body with teal patches, pale rounded paws, a thin tail ending in a small yellow bulb."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S03-304x312.png",
+    "The same individual, cut out (front-left three-quarter): the body, coat, pattern and crest to follow in every panel."
+   ]
+  ],
+  "prompt": "Paint SIX equal SQUARE panels in a 3 by 2 grid with a small gap of plain magenta between them. Each panel shows the WHOLE creature doing one thing, filling about two thirds of its panel, on a small flat patch of plain soft sandy ground on the magenta. TOP ROW: D1 mid-turn on a moderate curve. D2 pushing a small load, a seed head, along the ground, with effort but no strain. D3 partway along a walk, a little tired, head slightly lowered, not spent. BOTTOM ROW: D4 eating a small ordinary meal of a few berries from the ground. D5 half-turned toward a sound off to one side, ears up, interested but not approaching. D6 a soft shadow passing over the ground, the creature paused and looking up at it, neither fleeing nor ignoring it. The creature is the SAME individual as in the references in every panel (its own body, coat, pattern, round ears, thin antenna crest with its bead tip, and tail with its yellow bulb); no other individual, no new features. Soft painterly brush and light from the top left as the references. Plain flat solid magenta (#FF00FF) background everywhere, no borders, no dividing lines, no text, no numbers, no labels, no glow, no hands, no people."
+ }
+]

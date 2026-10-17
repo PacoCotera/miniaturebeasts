@@ -1,17 +1,19 @@
-# S03's painted set, T-20261016-169: raw key sheets (Oct 17)
+# S03's painted set, T-20261016-169: the four key sheets, raw (Oct 17)
 
-Raw outputs for the art director to cut and gate; nothing is cut, signed or placed. Source: the signed young S03 (`source/raw/mibi-juvenile-S03-a.jpg`), a plain magenta ground, six panels in a 3x2 grid, as the existing look sheets. Jobs in `source/work/s03-set-{1,2}.json`, calls in `log/calls.jsonl`.
+Raw outputs for the art director to cut and gate, to `results/T-20261016-169/masters-spec.md` (work-queue e94a2df0); nothing is cut, signed or placed. Source: the signed juvenile `source/raw/mibi-juvenile-S03-a.jpg` and its cut `juvenile/mibi-juvenile-S03-304x312.png`, both fed into every sheet. Plain flat magenta ground (for keying, as every earlier sheet), six square cells in a 3x2 grid. Jobs `source/work/s03-sheet{A,B,C,D}.json`; calls in `log/calls.jsonl`.
 
-| Sheet | Panels (top row, bottom row) |
+| Sheet | Cells (top row, then bottom row) |
 | --- | --- |
-| `s03-set-1-looks-1264x848.jpg` | Colour, Trim, Eyes (big, wide: the current look); Snout, Build, Haunch |
-| `s03-set-2-faces-walks-1264x848.jpg` | Topline, Legs, Eyes small and close; Eyes between, behaviour still "footprints at its pace", behaviour still "the long walk" |
+| `s03-sheetA-1264x848.jpg` | A1 Colour (lagoon), A2 Trim (milk-mint), A3 Eyes (big, wide); A4 Snout, A5 Build, A6 Haunch (between) |
+| `s03-sheetB-1264x848.jpg` | B1 Topline (level), B2 Legs (between), B3 Eyes (between); B4 Eyes (small, close), B5 and B6 empty ground |
+| `s03-sheetC-1264x848.jpg` | C1 Movement row head (footprints), C2 Stamina row head (the long walk), C3 Character row head (a new object); C4 Pace, C5 Stride, C6 Weave (between) |
+| `s03-sheetD-1264x848.jpg` | D1 Turning, D2 Strength, D3 Reserve; D4 Thrift, D5 Curiosity, D6 Nerve (between) |
 
-**Done: 14 of the 22 pictures** (the 8 looks, the 2 Eyes neighbour faces, 2 of the 3 behaviour stills), in 2 requests, no retries.
+**Four requests to the spec, no retries.** Two earlier sheets, made before the cell spec reached the studio, are kept in `superseded/` (they left the antenna crest out of the face close-ups); they count in the request total.
 
-**Not yet asked:**
-- The third behaviour still (the new object or the passing shadow).
-- The 9 doing-gene stills (Movement 4, Stamina 3, Character 2): each shows a gene's *current look*, and the founder's current looks for those genes are not in the frame file or the spec. The art director to name them.
-- The single-key fix and the scan-light pass and Glow's four steps.
-
-**Flaws, honestly:** sheet 1's panels have no gap between them (a hairline at best) and its Trim and Colour crops are close; sheet 2 shows black dividing lines between panels (asked for none), its Legs panel carries a grey ground-shadow ellipse (not asked for in that panel), its Topline panel is cropped at the head, and the two walking panels are small in their cells with a tan ground strip (asked: a thin flat strip). The tail ends in a small yellow bulb in the walking panels, as in the stand.
+**Flaws, honestly:**
+- **A5 (Build)** is cut off at the left edge (the head half out of the cell); A1 and A2 are tight crops with the head partly in.
+- **B3 (Eyes, between)** reads almost as large as A3 (big, wide): the "medium" step is small; B4 is clearly small and close. **B1 (Topline)** has the head partly in the cell at the left.
+- **B2 (Legs)** carries a grey ground-shadow ellipse and A5 a grey shadow at the feet, as in the source, which has one.
+- **C and D** show a soft tan ground patch under each creature, with soft pink fringe where it meets the magenta, so the key needs a despill. **C1** is seen from behind; **C2**'s path runs diagonally off the cell; **D6**'s shadow is a dark violet diagonal across the top right of its cell (it reads on magenta, but the key must not take it for the ground); **D2**'s load is a large seed head, nearly the creature's own size.
+- The doing stills read as "between" only loosely: the middle measure is a judgement the art director gates.

@@ -1,0 +1,20 @@
+[
+ {
+  "name": "s03-sheetB",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "The signed young S03, Tuikis (project-owned): THE individual in every panel, exactly: round bear-like ears, a thin antenna-like crest with a small bead tip rising from the top of the head, big wide-set teal eyes with pale rims, a lagoon-teal head and back with cream patches, a pale milk-mint blue-white body with teal patches, pale rounded paws, a thin tail ending in a small yellow bulb."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S03-304x312.png",
+    "The same individual, cut out (front-left three-quarter): the body, coat, pattern and crest to follow in every panel."
+   ]
+  ],
+  "prompt": "Paint SIX equal SQUARE panels in a 3 by 2 grid with a small gap of plain magenta between them. TOP ROW: B1 'topline, level': the back seen from the side, its line level from shoulder to rump. B2 'legs, between': the four legs standing, of middle length and thickness. B3 'eyes, between': the face from the front, crest and both round ears in view, the SAME face and head as the reference but with eyes of MEDIUM size and medium spacing. BOTTOM ROW: B4 'eyes, small and close': the face from the front, crest and both round ears in view, the SAME face but with SMALL eyes set CLOSE together. B5 and B6: EMPTY, plain flat magenta only, nothing painted in them at all. Close-ups are centred and fill their panels, lit from the top left. The creature is the SAME individual as in the references in every panel (its own body, coat, pattern, round ears, thin antenna crest with its bead tip, and tail with its yellow bulb); no other individual, no new features. Soft painterly brush and light from the top left as the references. Plain flat solid magenta (#FF00FF) background everywhere, no borders, no dividing lines, no text, no numbers, no labels, no glow, no hands, no people."
+ }
+]

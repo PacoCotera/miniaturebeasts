@@ -1,0 +1,20 @@
+[
+ {
+  "name": "s03-sheetC",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "The signed young S03, Tuikis (project-owned): THE individual in every panel, exactly: round bear-like ears, a thin antenna-like crest with a small bead tip rising from the top of the head, big wide-set teal eyes with pale rims, a lagoon-teal head and back with cream patches, a pale milk-mint blue-white body with teal patches, pale rounded paws, a thin tail ending in a small yellow bulb."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S03-304x312.png",
+    "The same individual, cut out (front-left three-quarter): the body, coat, pattern and crest to follow in every panel."
+   ]
+  ],
+  "prompt": "Paint SIX equal SQUARE panels in a 3 by 2 grid with a small gap of plain magenta between them. Each panel shows the WHOLE creature doing one thing, filling about two thirds of its panel, standing or moving on a small flat patch of plain soft sandy ground (so feet and footprints show) on the magenta. TOP ROW: C1 the creature walking away across soft ground, seen from behind and the side, with its footprints behind it spaced at its own relaxed pace. C2 the creature on a long walk along a faint path, far along it, still going, with the path stretching back behind it. C3 the creature meeting a new small object, a pebble or seed it has not seen, neck stretched out, sniffing it. BOTTOM ROW: C4 a steady trot, neither ambling nor dashing. C5 mid-stride, steps of middle length. C6 moving with a slight side-to-side sway of the body, between a straight scurry and a weaving glide. The creature is the SAME individual as in the references in every panel (its own body, coat, pattern, round ears, thin antenna crest with its bead tip, and tail with its yellow bulb); no other individual, no new features. Soft painterly brush and light from the top left as the references. Plain flat solid magenta (#FF00FF) background everywhere, no borders, no dividing lines, no text, no numbers, no labels, no glow, no hands, no people."
+ }
+]
