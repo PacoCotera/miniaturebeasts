@@ -45,7 +45,7 @@ Four real version-4 pods, `podGenome(S01 v4, gs)`:
   - Colour is a pigment slot: one ramp per pure pigment.
   - A mixed colour is one painted two-tone look (e.g. one pigment on the back, the other on the flanks), not a blend.
   - Stripes and patches stack.
-- **The modal unread default** (T-190): Colour charcoal and plum, or charcoal and russet (about 25% each, the mixed looks lead); Markings stripes and patches; crest; eyes between.
+- **The modal unread default** (T-190): Colour charcoal and cobalt, or charcoal and russet (about 25% each, the mixed looks lead); Markings stripes and patches; crest; eyes between.
 
 ## Tests
 
