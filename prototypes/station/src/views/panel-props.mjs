@@ -58,7 +58,7 @@ export function fitCards(m, spec, frame, requests) {
   const part = (id) => req({ kind: "slot", id, master: id, size: PART, until: "the Probe's upgrade part (bench.json regions.slot.part)" });
   return [
     { id: "fit", act: "fit", room: null, picture: part("bench-part-t2-fitted-128"), pictureSize: PART, mark: "", name: Sg.cards.fit.name, cost: S.priceText(e, d, 0), gain: false, short, line: Sg.cards.fit.line, loss: false, dim: !S.tier2Ready(st, settings) },
-    { id: "later", act: "later", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
+    { id: "later", act: "notNow", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
   ];
 }
 // The cards of the Grow it now? panel (§1.6): Grow it now (the bud at its ready step, ❀ n from the rules, "ready at once"; dimmed when short) and Wait (the bud at its step now, nothing spent, "ready in about {n} min": the one minute count, owner ruling 3).
@@ -72,7 +72,7 @@ export function growNowCards(m, spec, frame, requests) {
     { id: "wait", act: "wait", room: null, picture: bud(p < 0.5 ? "bud-early-128x160" : "bud-late-128x160"), pictureSize: BUD, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: fill(Sg.cards.wait.line, { n: S.budMinutesLeft(st, settings, now) }), loss: false, dim: false },
   ];
 }
-// The cards of the dock arrival's choice strip (T-20261016-48 §2, form "strip"): Open the bay (the crates open, small; free; "{n in words} crates to the rack") and Later (the crates sealed, small; free; "they wait while docked").
+// The cards of the dock arrival's choice strip (the dock arrival spec, the strip form): Open the bay (the crates open, small; free; "{n in words} crates to the rack") and Later (the crates sealed, small; free; "they wait while docked").
 export const STRIP_PICTURE = [96, 96];
 export function dockCards(m, spec, frame, requests) {
   const Sg = spec.strings.dock, n = m.ui.cargo?.arrival?.crates ?? 0, ph = (id) => { requests.push({ kind: "ph", id, size: STRIP_PICTURE, hollow: false, until: "its master (the dock arrival's strip, T-20261016-48)" }); return id; };

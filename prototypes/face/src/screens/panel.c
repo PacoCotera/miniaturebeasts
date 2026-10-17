@@ -24,7 +24,7 @@ static void frect(const char *p, int r[4]) { if (!v_spec_rect(F, v_fmt(RP ".%s",
 /* a colour: a frame role (colours.<name>) when there is one, else the palette name as written */
 static const char *col(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(F, v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
 static const char *rcol(const char *path) { char s[24]; if (spec_str(F, v_fmt(RP ".%s", path), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); return col(s); }
-/* the strip form (frame.json regions.panel.strip; T-20261016-48 §2): the dock arrival's choice, two cards in a plate under what they are about, no title, picture or veil */
+/* the strip form (frame.json regions.panel.strip; specs/station-dock-arrival-spec.md, the strip form): the dock arrival's choice, two cards in a plate under what they are about, no title, picture or veil */
 static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
 static int si(const char *p, int d) { return spec_int(F, v_fmt(RP ".strip.%s", p), d); }
 static int sk(const char *p, int k) { return spec_int(F, v_fmt(RP ".strip.%s.%d", p, k), 0); }

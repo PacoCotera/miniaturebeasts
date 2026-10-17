@@ -50,6 +50,8 @@ The control in the bar reads **Dock** with the outline mark while the Companion 
 
 Docked from the page while another device has the keys, the Station lands where it can be seen (`frame.json` `navigation.dock`); a lift never moves the screen.
 
+**The dock moments (T-20261016-58; `specs/station-dock-arrival-spec.md`, `specs/dock-moments.md`).** One seat or lift is one event seen from three places in step: the Station (the `mb-dock` message, the arrival or the send-off below), the Companion frame (the shared save's dock flag: its "home" and "Off we go" frames and its crate marks clearing as the Station confirms each crate) and the Caddy's screen (the Station's `mb-caddy` post). **Seated:** the Station plays the arrival over the screen the player is on, over Home from Idle, or after their next screen change when they are mid-decision (the plate says "The Companion is home" for 2 s): Cargo's bay with the ribbon, the link light, the crates sliding in, who came home standing big on the apron, the Probe's plates mending and who leaves, then one choice (Open the bay, Later); any key skips the show to the choice. **Lifted:** the screen never changes; on Home and Idle the sleepers on the bed wake, hop and dither out, and the plate says what went unfinished. The Dock control's keys are unchanged.
+
 ## postMessage contract
 
 Both ends use `targetOrigin = location.origin` and check `e.origin` and `e.source`.

@@ -130,11 +130,21 @@ await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
 const events0 = await page.evaluate(() => window.__st.face.stats.events);
 stepOf("home-dock-arrival"); await hpress("dock", 300);
 s = await st(); expect(s.dock.docked, "docked");
-{ const p = await props(), l = p.frame.line, events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
-  expect(events >= 1 && !(await page.evaluate(() => window.__st.holding())), `home-dock-arrival: the crates' slide is an event for the face (${events}) and holds nothing`);
+{ const p = await props(), u = await ui(), holding = await page.evaluate(() => window.__st.holding()), events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
+  expect(events >= 1 && holding && u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "show" && p.frame.line.ok === "Skip", `home-dock-arrival: the dock plays the arrival over Home: Cargo's bay in its show (${events} events), input held, ✓ Skip: ` + JSON.stringify([u.screen, p.state, p.frame.line.ok, holding]));
+  expect(p.regions.arrival.glints.length === 2 && p.regions.arrival.plates.max > 0 && p.regions.crates.places.length === 2, "home-dock-arrival: two crates, the Probe's plates: " + JSON.stringify(p.regions.arrival)); }
+await page.waitForTimeout(1800); await frameShot("cargo-arrival-show", true);
+await hpress("confirm", 400);   // any key skips the show to its choice
+{ const p = await props(), u = await ui();
+  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && p.overlay?.form === "strip" && p.overlay.focus.cur === "card.open" && p.frame.line.ok === "Open the bay" && p.frame.line.subject === "two crates to the rack" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: the strip, the ring on Open the bay: " + JSON.stringify([p.overlay?.focus, p.frame.line])); }
+await frameShot("cargo-arrival-choice", true);
+await hpress("right", 200); { const p = await props(); expect(p.overlay.focus.cur === "card.later" && p.frame.line.ok === "Later" && p.frame.line.subject === "they wait while docked", "home-dock-arrival: ▶ is Later: " + JSON.stringify(p.frame.line)); }
+await hpress("back", 600);   // ← is Later: the dither back to Home, as it was
+{ const p = await props(), l = p.frame.line, u = await ui();
+  expect(u.screen === "home" && u.home === "room", "home-dock-arrival: Later is Home with the ring on the room: " + JSON.stringify(u));
   expect(p.regions.cargo.state === "crates" && p.regions.cargo.crates === 2 && p.regions.cargo.lamp === "needsYou" && p.regions.bed.state === "docked" && p.regions.bed.sleepers.length === 1 && p.regions.probe.state === "docked", "home-dock-arrival: docked, two crates in the Cargo module, the Companion's mibi asleep on the bed: " + JSON.stringify([p.regions.cargo, p.regions.bed.state, p.regions.probe.state]));
   expect(l.need === "two crates wait in the bay" && l.ok === "Open the bay" && !(await page.evaluate(() => window.__st.msg)), "home-dock-arrival: the notice names the crates, the room's ✓ opens the bay and no plate is shown: " + JSON.stringify(l)); }
-{ const p = await props(); cur.push({ arrival: (await page.evaluate(() => window.__st.face.stats.events)) - events0 >= 1, crates: p.regions.cargo.crates, cargoLamp: p.regions.cargo.lamp, bed: p.regions.bed.state, notice: p.frame.line.need, plate: await page.evaluate(() => window.__st.msg) }); }
+{ const p = await props(); cur.push({ arrival: true, crates: p.regions.cargo.crates, cargoLamp: p.regions.cargo.lamp, bed: p.regions.bed.state, notice: p.frame.line.need, plate: await page.evaluate(() => window.__st.msg) }); }
 await page.waitForTimeout(900); await frameShot("home-docked", true);
 // Cargo (L2.2 H2: home-bay): the room's ✓ opens Cargo with two sealed crates in the bay; ← is Home with the ring on the Cargo module; ✓ Open the bay opens both, one at a time, with input held crates × 3000 + 200 ms (✓ and ← do nothing),
 // the report shows what came home, and its ✓ lands on Pods' collection with the ring on the pod that most needs the player; ← there reads Home. The holds are on the host's clock: the step waits them out.
@@ -210,7 +220,8 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
   u = await hpress("dock", 500); expect(!u.idle && u.screen === "pods" && !(await st()).dock.docked, "idle-vivarium: the Dock key on Idle (docked) wakes and lifts, the screen under Idle shows: " + JSON.stringify([u, (await st()).dock]));
   await page.evaluate(() => { window.__st.UI.lastInput = performance.now() - 61000; }); await page.waitForTimeout(700);
   { const u0 = await ui(); expect(u0.idle === true, "idle-vivarium: the timer brings Idle again: " + JSON.stringify(u0)); }
-  u = await hpress("dock", 500); expect(!u.idle && u.screen === "home" && u.home === "room" && (await st()).dock.docked, "idle-vivarium: the Dock key on Idle (lifted) wakes, docks and lands on Home with the ring on the room: " + JSON.stringify([u, (await st()).dock])); }
+  u = await hpress("dock", 500); expect(!u.idle && u.screen === "cargo" && (await props()).state === "arrival" && (await st()).dock.docked, "idle-vivarium: the Dock key on Idle (lifted) wakes, docks and the arrival plays over Home: " + JSON.stringify([u, (await st()).dock]));
+  u = await hpress("confirm", 400); u = await hpress("back", 600); expect(u.screen === "home" && u.home === "room", "idle-vivarium: ✓ skips the show, ← is Later: Home with the ring on the room: " + JSON.stringify(u)); }
 { const file = path.resolve(here, "../../face/golden/journey-home.json"), json = JSON.stringify({ _note: "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps: trace }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(trace)])) if (JSON.stringify(want[id]) !== JSON.stringify(trace[id])) fail(`journey-home.json: step ${id} differs from the golden: ${JSON.stringify(trace[id]).slice(0, 300)}`); }
@@ -624,7 +635,8 @@ const vpress = async (k, ms = 200) => { await said(); await press(k, ms); const 
     { const was = await page.evaluate(() => window.__st.settings.light ?? null); await page.evaluate(() => { window.__st.settings.light = "night"; window.__st.UI.viv.f = window.__st.UI.viv.f; }); await page.waitForTimeout(700);   // the darkest light, still away: the Companion's mark on the bed and the out glyph on the carried tiles
       const pn = await props(); expect(String(pn.regions.window.picture).includes("night") && pn.regions.bed.state === "away" && pn.regions.tiles.items.some((t) => t.state === "out"), "vivarium-whole: away at night, the mark and the out glyph in the darkest light: " + JSON.stringify([pn.regions.window.picture, pn.regions.bed.state]));
       await frameShot("page-vivarium-away-night", true); await page.evaluate((l) => { window.__st.settings.light = l; }, was); await page.waitForTimeout(400); } }
-  r = await vpress("dock", 500); expect((await st()).dock.docked, "vivarium-whole: the Dock key docks again"); }
+  r = await vpress("dock", 500); expect((await st()).dock.docked && r.u.screen === "cargo" && (await props()).state === "arrival", "vivarium-whole: the Dock key docks again and the arrival plays over the Vivarium: " + r.u.screen);
+  r = await vpress("confirm", 600); expect(r.u.screen === "vivarium" && (await st()).dock.docked, "vivarium-whole: an empty trip has no choice: ✓ skips the show and it closes, the Vivarium as it was: " + r.u.screen); }
 { const file = path.resolve(here, "../../face/golden/journey-vivarium.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("vivarium-"))), json = JSON.stringify({ _note: "The Vivarium's whole, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-vivarium.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
@@ -653,7 +665,7 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   r = await bpress("confirm", 200); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.fit" && r.l.ok === "Fit it" && r.l.price === "⚡ 12 ◆ 4" && r.s.e === 13 && r.s.d === 6, "probe-bench: ✓ on the slot opens the Fit the upgrade? panel, the ring on Fit it, nothing spent: " + JSON.stringify([r.p.overlay?.focus, r.l.ok, r.l.price]));
   await frameShot("page-bench-panel-upgrade", true);
   r = await bpress("back", 200); expect(!r.p.overlay && r.ring === "slot" && r.s.e === 13 && r.s.d === 6 && r.p.regions.slot.state === "ready", "probe-bench: ← closes the panel, nothing spent: " + JSON.stringify([r.ring, r.s.e, r.s.d, r.p.regions.slot.state]));
-  r = await bpress("confirm", 200); r = await bpress("right", 100); r = await bpress("confirm", 200); expect(!r.p.overlay && r.s.e === 13 && r.p.regions.plates.tier === 1, "probe-bench: Not now closes it, nothing spent: " + JSON.stringify([r.s.e, r.p.regions.plates]));
+  r = await bpress("confirm", 200); r = await bpress("right", 100); r = await bpress("confirm", 200); expect(!r.p.overlay && r.s.e === 13 && r.p.regions.plates?.tier === 1, "probe-bench: Not now closes it, nothing spent: " + JSON.stringify([r.s.e, r.p.regions.plates, r.u, !!r.p.overlay]));
   r = await bpress("confirm", 200);
   r = await bpress("confirm", 150); expect(await page.evaluate(() => window.__st.holding()) && r.s.e === 1 && r.s.d === 2 && r.p.regions.plates.tier === 2 && r.p.regions.plates.whole === 4 && r.p.regions.slot.state === "fitted", "probe-bench: the Fit it card fits the upgrade (⚡ −12 ◆ −4): tier 2, four plates, held: " + JSON.stringify([r.s.e, r.s.d, r.p.regions.plates, r.p.regions.slot.state]));
   r = await bpress("up", 50); expect(r.ring === "slot", "probe-bench: a key during the install's hold is dropped: " + r.ring);
@@ -735,8 +747,9 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
 { const loop = async (k, what, until) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(120); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); if (until) await page.waitForFunction(until, null, { timeout: 12000 }).catch(() => fail("fresh-loop: " + what + " (never happened): ")); await page.waitForTimeout(150); };
   await press("home", 300);
   await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
-  await loop("dock", "the Dock key docks and the crate waits in the bay", () => window.__st.ST.dock.docked && window.__st.props?.regions?.cargo?.state === "crates");
-  await loop("confirm", "Home's ✓ opens the bay in one press and the report shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "report");
+  await loop("dock", "the Dock key docks and the arrival plays over Home", () => window.__st.ST.dock.docked && window.__st.props?.state === "arrival");
+  await loop("confirm", "any key skips the show to the choice", () => window.__st.props?.overlay?.form === "strip");
+  await loop("confirm", "✓ Open the bay on the strip opens the crate and the report shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "report");
   await loop("confirm", "✓ on the report lands on Pods", () => window.__st.UI.screen === "pods");
   await loop("confirm", "✓ on the new pod opens its overview", () => window.__st.props?.state === "overview");
   await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Create from this pod");

@@ -1038,8 +1038,24 @@
    {
     "key": "dock",
     "said": [],
+    "screen": "cargo",
+    "focus": "vivarium",
+    "ok": null,
+    "subject": "the bay is empty",
+    "back": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
     "screen": "vivarium",
-    "focus": "tile.1",
+    "focus": "resident.1",
     "ok": "Look at Dot",
     "subject": "an adult Loika, asleep",
     "back": "Home"
