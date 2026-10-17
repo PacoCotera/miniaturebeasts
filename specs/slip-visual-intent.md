@@ -53,9 +53,9 @@ Written 2026-10-17 (America/Mexico_City), as the CD's input to UI/UX's T-2026101
 
 ## Widened (T-126, owner 04:10 and 04:16): the bench's screen
 
-**The owner, 04:16:** "no, that was inspiration, do not replicate it. but this screen must feel like a research/crafting bench. advanced, you're editing life."
+**The owner, 04:16:** "no, that was inspiration, do not replicate it. but this screen must feel like a research/crafting bench. advanced, you're editing life." **And 04:18:** "this is the place where you get to get a glimpse of the underling genome mechanics and framework."
 
-**What it is in the world, in one sentence:** Create is an advanced research and crafting bench in the lab where you edit life. Its main screen is a large dark, matte display let into the sage housing, on which the machine shows the founder's genome live as you edit it, rich and complex, in our own form. The drums are the bench's controls, and the founder on the dish is what they make.
+**What it is in the world, in one sentence:** Create is an advanced research and crafting bench in the lab where you edit life. Its main screen is a large dark, matte display let into the sage housing, on which the machine shows the founder's genome live as you edit it, rich and complex, in our own form: the one place in the game where the player glimpses the real genome mechanics and framework underneath. The drums are the bench's controls, and the founder on the dish is what they make.
 
 **Not a replica.** The earlier genome-field images (`art/references/genome-field/`) were inspiration only. Nothing is copied from them: no layout, structure or motif. The genome's form on this screen is UI/UX's and the game designer's to invent (T-126).
 
@@ -67,5 +67,6 @@ Written 2026-10-17 (America/Mexico_City), as the CD's input to UI/UX's T-2026101
 - the display is dark matte slate, flush in the sage housing with a rubber gasket and screws, with no gloss or reflection;
 - lit states are in the device's own mint (`lampOn`), not amber; small, with no bloom or halo; red only for a clash;
 - no glowing HUD, hologram or neon (the guide's Never list);
-- type is Inter and crisp, within the words load (gate check 8); letters and codes never on the main view (the locus is abstracted from the player);
+- type is Inter and crisp, within the words load (gate check 8);
+- **open, not fixed:** whether letters, codes or loci show on the main view is for the game designer and UI/UX to settle against the owner's 04:18 "glimpse of the underlying genome mechanics" (the older rule abstracting the locus from the player is theirs to weigh);
 - on the Incubator, the screen stays at least 0.08 under the pod's p95: the pod stays the brightest thing.
