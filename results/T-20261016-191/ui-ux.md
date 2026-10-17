@@ -50,7 +50,7 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
   - S01 (4 chapters) is 128 wide.
   - S03 (8 chapters, the most) is 264 wide.
 - **States:** read, unread (a dotted edge, never its content) and sealed (slats).
-- **The glint** (mint, one per chapter) marks a chapter that is unread (a bred child's surprise), or one that **changed since the player last looked**. Only the self-changing traits can change: Glow (S03), Basking (S15) and Phase (S16), as a partner. A Loika's chapters never glint for a change.
+- **The glint** (the four-point glint in gold, `#d89b14`, 12 × 12 at (16, −4) of the emblem, as on Create; one per chapter; mint would read as "changed by you") marks a chapter that is unread (a bred child's surprise), or one that **changed since the player last looked**. Only the self-changing traits can change: Glow (S03), Basking (S15) and Phase (S16), as a partner. A Loika's chapters never glint for a change.
   - The glint makes one pass when the glance appears, then rests lit. The timing is per guide §9.
   - The glint must stay distinct from a first's mark.
   - It clears when that chapter is read, or when the change has been seen up close (`05`).
