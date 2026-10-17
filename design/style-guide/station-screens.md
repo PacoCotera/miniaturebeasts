@@ -41,7 +41,7 @@ The player always knows which level a screen is about. The Library, the Book and
 | Feels | rugged, handled, calm; working for the life | warm, soft, alive |
 | Light | the same warm daylight from the top left, caught softly; nothing glows for show | the warm key light from the top left, by the time of day |
 | Colour | sage and sand housing, dark rubber, dark matte slate panels, cream type, orange for the action, small lamps | greens, warm earth, water, the creatures' own colours |
-| Materials | powder-coat, rubber, moulded polymer, canvas, braided hose, paper | plants, soil, stone, water, fur and leaf |
+| Materials | powder-coat, rubber, moulded polymer, canvas, braided hose; paper only in the Library | plants, soil, stone, water, fur and leaf |
 | Moves | the life-support works quietly (a mister, a lamp, a feed line); controls move when something happens | all the time |
 | Words | a few per section | none |
 
@@ -59,7 +59,7 @@ One device. Every section is a part of it, in the same materials and light. Home
 | --- | --- |
 | **Vivarium** (Home, idle, one mibi up close) | The living world the device keeps; up close, a mibi at home, never a specimen on display |
 | **Pods** | The sample case: pods in fitted, worn cut-outs, handled and labelled |
-| **Research** (Create, Cross and Wish, Probe bench) | The work tray: what is under study in the device's light among field tools and small gauges; the Probe mended on the tray |
+| **Research** (Create, Cross and Wish, Probe bench) | The lab's instruments: the genome editor (Create), the splicer (Cross and Wish), the Probe's service dock; what is under study in the device's light, its state on the machine's own displays and lamps |
 | **Incubator** | The bridge between research and the vivarium: the player's own pod on a moss nest, candled from below, the founder showing through its shell |
 | **Library** | The field journal the device keeps: a worn botanical expedition volume |
 | **Arrivals** | The Companion's cargo coming through from the Caddy into the bay |
@@ -83,8 +83,8 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 - **Lively / quiet.** Lively: residents, plants, water, the bud's glow. Quiet: the modules; one lamp pulses slowly when its module needs you.
 - **Light.** Inside the vivarium, the same light as Idle: the warm key light from the top left, by the time of day; even cool light on the chrome.
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
-- **Type.** Inter: the title 20 px medium; the module words and the name tag 16 px.
-- **Chrome.** `✓ Look at Bean` | "an adult Untuva" (the name is on the tag under the resident) | "a new pod waits"; no ← on Home.
+- **Type.** Inter: the title 20 px medium; the module words and the name plate 16 px.
+- **Chrome.** `✓ Look at Bean` | "an adult Untuva" (the name is on the plate under the resident) | "a new pod waits"; no ← on Home.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -178,29 +178,29 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 ## Create (the review)
 
-**Vibe.** Research: the gene bench.
+**Vibe.** Research: the gene bench, the lab's genome-editing instrument.
 
 **Purpose.** Shape a founder by turning its genes, see its cost, and grow it. **Reads first:** the founder on its dish.
 
 - **Living window.** The founder stands at the centre on a growth dish, a moss pad in a shallow cut-out in the bench, with a contact shadow under its feet, at 300×310 or larger, rich treatment. Wherever a chapter is unread, that part stays misty: a cool frost over the body, never a guess.
 - **Instrument.** One bench fills the stage inside the device's frame, and everything sits on it or in it; nothing floats.
-  - The player's own pod, opened, in the fitted well it had on Pods, with its name tag and where it was found.
+  - The player's own pod, opened, in the fitted well it had on Pods, with its name plate and its place badge.
   - A short braided gene line from the pod's well into the gene bank: a tray along the front of the bench holding one drum per trait, grouped under engraved chapter words, every trait of the species at once.
   - A drum's faces are this pod's own looks (as the pod is, only the first copy, only the second copy), so it never offers a look the pod lacks. A changed drum wears a small cream notch.
   - A doings trait is a pinned drum: two joined rings, no turn marks, "breed to change".
   - An unread chapter's drums are capped under the frost.
-  - Clashing drums are marked, named on the slip, and Grow is withheld.
-  - A paper slip clipped to the bench at the right: "Your changes", then "Still a surprise".
+  - Clashing drums are marked, and so are their chips on the display; Grow is withheld.
+  - The machine's display, let into the bench's housing at the right: one picture chip per trait with the drums' own marks (the changed notch, a frost for still a surprise, a red link for a clash), at most three words. No paper.
   - There is no chapter rail and no tabs, no dome or chamber, and no stamp case on this screen.
-- **Composition.** The bench is the whole stage; the founder centred on its dish; the pod at the left, the slip at the right, the bank along the front. The measured layout is UI/UX's.
-- **Lively / quiet.** Lively: the founder (breathing, a blink) and the redraw of its part when a drum turns. Quiet: the bench, the bank, the slip.
+- **Composition.** The bench is the whole stage; the founder centred on its dish; the pod at the left, the display at the right, the bank along the front. The measured layout is UI/UX's.
+- **Lively / quiet.** Lively: the founder (breathing, a blink) and the redraw of its part when a drum turns. Quiet: the bench, the bank, the display.
 - **Light.** Warm key light on the founder from the top left; the rest in the device's light. Everything casts a soft shadow onto the bench.
 - **Palette.** The founder's own colours; the frost veil; the drums in the housing's sage; the price icons in their hues.
-- **Type.** Inter 16 px: the slip's lines ("Crown: only leafy", an asleep line "{Trait}: {shows}, {sleeping} asleep"); the total in the bottom line.
+- **Type.** Inter 16 px: at most three words on the display; the total in the bottom line.
 - **Chrome.** `✓ Grow it   ⚡ 2 ❀ 4 ◆ 1`, the icon before the figure | what stays a surprise | the notice | `← Loika` (Create's parent is the pod's overview).
-- **Motion.** ◀ ▶ walks the drums; ▲ ▼ turns the focused drum one face: its window rolls to the next look in 200 ms, the part that trait covers redraws on the founder and nothing else on the body moves, the slip gains or loses its line and the price changes. On Grow the drums lock, the stamp prints onto the slip and the code appears, the pod's shell closes, and the pod is carried out toward the Incubator.
+- **Motion.** ◀ ▶ walks the drums; ▲ ▼ turns the focused drum one face: its window rolls to the next look in 200 ms, the part that trait covers redraws on the founder and nothing else on the body moves, the display's chip changes and the price changes. On Grow the drums lock, the stamp appears on the display and the code appears, the pod's shell closes, and the pod is carried out toward the Incubator.
 
-**Concept.** The gene bench. A drum's picture is the flank close-up of the part it changes, not a whole founder. The chapters still to read are named in the bottom line's context ("Coat stays a surprise", "two surprises to come") and on the slip.
+**Concept.** The gene bench. A drum's picture is the flank close-up of the part it changes, not a whole founder. The chapters still to read are named in the bottom line's context ("Coat stays a surprise", "two surprises to come") and shown as frosted chips on the display.
 
 **The founder's look** ([art pipeline](../proposals/art-pipeline.md) §1.1). The rig's render is the **placeholder**, not the game's art. A unique painted render is the **portrait**, a prize a mibi may earn, paid with **a sitting** earned by research; Create never shows one. The founder on Create is drawn in the placeholder (the stylised rig pass: flat slots, outline, no face, no material; [the placeholder brief](../proposals/plain-renderer.md)), since nothing is painted before Grow; the drums' pictures are placeholder close-ups. Grow starts the standard painting. The pass line "same trait boundaries as the Companion's HiBit drawing" holds for the placeholder as it does for the painting.
 
@@ -209,7 +209,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 - [ ] Every object sits on the bench with contact and shadow; nothing floats.
 - [ ] In three seconds a stranger says "you change the creature by turning those".
 - [ ] The founder's misty parts match the unread chapters exactly.
-- [ ] A turn changes only what that trait covers (the founder's part, the drum, the slip and the price), and never offers a look the pod lacks.
+- [ ] A turn changes only what that trait covers (the founder's part, the drum, the display's chip and the price), and never offers a look the pod lacks.
 - [ ] The code appears only at Grow.
 - [ ] Same trait boundaries as the Companion's HiBit drawing.
 
@@ -231,11 +231,11 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 - **Instrument.** Every object has a job; there is no machinery without one.
   - The candling light under the nest: the one device, whose light is the point of the screen.
   - One ring of time around the pod, at the stage's scale, filling continuously, cut where each chapter will clear, closed at ready.
-  - The slip from Create at the left: the pod's name, its found-note, "Your changes", then "Cleared while growing".
+  - The same display as on Create, set into the machine at the left: the pod's name and place badge, its changed chips, and its frosted chips clearing as their chapters clear. At most three words; no paper.
   - At the right: the just-cleared card (the newest reveal, as a picture and words), and the stamp on its label with its code under it as live text.
-  - On a founder's bud the unread chapters clear one by one, except a sealed chapter that is still shut. Each clearing reaches the shadow, the card, the slip and the stamp.
+  - On a founder's bud the unread chapters clear one by one, except a sealed chapter that is still shut. Each clearing reaches the shadow, the card, the display's chip and the stamp.
   - No chapter tabs and no leaves.
-- **Composition.** The pod centred and large inside its ring; the slip at the left; the card and the stamp at the right. The measured layout is UI/UX's.
+- **Composition.** The pod centred and large inside its ring; the display at the left; the card and the stamp at the right. The measured layout is UI/UX's.
 - **Lively / quiet.** Lively: the light through the shell and the ring's fill; a clearing pulses its cut once. Quiet: everything else.
 - **Light.** Warm light from below, through the shell and a little onto the moss and the cradle; the key light from the top left for form. The pod is the brightest thing.
 - **Palette.** The pod's own shell colours; the moss's greens; the housing's sage and sand; the device's dark matte slate behind.
@@ -354,13 +354,13 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 **Purpose.** One mibi up close: name it, greet it, take it with you, cross, have it sit for its portrait, or return it to the wild. **Reads first:** the mibi, then its name.
 
-- **Living window.** The mibi at 304×312 in the vivarium's light, its standard painting or its placeholder with the waiting lamp, doing its species moment on Greet. Its name on a tag under its feet, 20 px.
+- **Living window.** The mibi at 304×312 in the vivarium's light, its standard painting or its placeholder with the waiting lamp, doing its species moment on Greet. Its name on a plate under its feet, 20 px.
 - **Instrument.** A card at the right: "your Loika, adult" (the species word, with `mark-guide-16`, is the door to the guide), where it came from and what it remembers, its code, the stamp on its 120 label (the stamp is the genome code), and one plate a chapter. Under it four modules, one engraved word each: Companion, Portrait, Cross, Wild. The strip of bays along the foot, thumbnails only.
 - **Composition.** The window at the left (16 to 576), the card and modules in a 416 px column at the right, the strip 64 px along the foot.
 - **Lively / quiet.** Lively: the mibi. Quiet: card, modules, strip.
 - **Light.** Warm key light from the top left in the window; cool on the card.
 - **Palette.** The vivarium's greens and earth; card chrome; the heart a small enamel heart in the house light. Nothing on the vivarium up close is amber.
-- **Type.** Inter: the name 20 px medium on its tag; the card's lines 16 px.
+- **Type.** Inter: the name 20 px medium on its plate; the card's lines 16 px.
 - **Chrome.** The four zones, the price icon first, no dots: `✓ Greet Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock", or `✓ Bring Fig home` | "home at the next dock"; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Vivarium`.
 - **Motion.** Walking the strip dithers the mibi shown in 200 ms; the species moment plays about 2 s.
 
@@ -387,7 +387,7 @@ The sitting is its own screen under the vivarium, up close, opened from the Port
 
 ## Cross and Wish
 
-**Vibe.** Research: the work tray.
+**Vibe.** Research: the lab's splicer.
 
 **Purpose.** Pick two adults of one species, see what their child could be, cross them; see how close a pairing gets to a wish. **Reads first:** the two parents, then the forecast.
 
@@ -419,7 +419,7 @@ Wireframes: [09a-cross-overview.png](station-layouts/09a-cross-overview.png) and
 
 ## Probe bench
 
-**Vibe.** Research: the Probe on the work tray, being mended.
+**Vibe.** Research: the Probe in its service dock, being mended.
 
 **Purpose.** Keep the Probe ready: mend its Shield plates, set whether the dock mends every plate, fit the upgrade. **Reads first:** the Probe, then its plates.
 
