@@ -2,8 +2,6 @@
 
 **The one binding guide to how the Station and the Companion look.** A builder or artist with a visual ticket finds the look here and invents nothing. If something they need is not here, they stop and park the ticket to the art director with the exact gap ([§10](#10-how-to-use-it)).
 
-The owner, 2026-10-17 06:50 UTC: "the game designer and the art director MUST write a detail spec for the visuals, styles, etc for the station and the companion. every builder/artist that gets tickets is going offrails inventing their own thing."
-
 **Who wrote it.**
 - The art director wrote the visuals: palette, materials, light, components, type, icons and layout.
 - The game designer writes what each screen and element must communicate (the "Communicates" lines in §8, from `specs/purpose-briefs-b20261017-1.md` and the game design gate).
@@ -36,12 +34,12 @@ Every rule below has a plate in [`plates/`](plates/): the do on the left and the
 2. **The machine shows what changes.** Anything that changes with input or time is on the machine's own display, lamps or moving parts. Paper exists only in the Library.
 3. **Pictures before words.** An outcome, a state or a meaning is a picture or a sculpted mark. Words name things; they never explain them.
 
-**Why the three owner rejections of 06:38 failed** (plate 01, right). The Incubator, the Cargo report and the Return panel broke all three sentences:
+**Why the rejected Incubator, Cargo report and Return panel failed** (plate 01, right). They broke all three sentences:
 - brown on brown and cream panels instead of the display's slate;
 - an egg on a moss cushion instead of an instrument working on the player's pod;
 - tiny glyphs, colour bars and jargon instead of pictures.
 
-Owner: "By no means this resembles the style of miniature lives."
+None of them read as Miniature Lives.
 
 ## 2. Palette
 
@@ -99,13 +97,13 @@ Body type needs 4.5 : 1 or more, so:
 <img src="plates/02b-colour-panel.png" width="760" alt="Plate 02b: slate panes, not brown"> <img src="plates/02c-colour-progress.png" width="660" alt="Plate 02c: progress in device light">
 
 **Forbidden, everywhere on the Station except the Library:**
-- **Brown on brown.** No `bark`, `soil`, `clay`, wood or leather as a panel, card, stage wall or field. The display field is `ground`, and the painted stage behind an instrument is the display's slate, never a brown wall (owner, 06:38: "brown on brown on brown").
-- **Cream panels.** No `paper`, `cream` or `sand` fill on a panel, card, plate, slip or bar. Cream never draws progress (owner: "the cream color is terrible, that doesn't communicate tech or science").
+- **Brown on brown.** No `bark`, `soil`, `clay`, wood or leather as a panel, card, stage wall or field. The display field is `ground`, and the painted stage behind an instrument is the display's slate, never a brown wall.
+- **Cream panels.** No `paper`, `cream` or `sand` fill on a panel, card, plate, slip or bar. Cream never draws progress.
 - **Orange for anything but the action.** No orange decoration, bars or frames.
 - **Unexplained colour.** No colour bars, pips or chips whose meaning needs a legend.
 - **Off-palette art-layer colours.** No pure black (#000000), no neon, no gradient fills on panes, no evening-room greens or warm lamp pools on the art layer.
 
-**Open for the owner.** The approved Station concept (`art/concept-homepage/station-research-hands.png`) shows a deep blue display. The tickets keep the guide's dark matte slate unless the owner rules otherwise, so this guide keeps slate. A ruling for blue would change only the five Display values above, and nothing else in this guide.
+**Open.** The approved Station concept (`art/concept-homepage/station-research-hands.png`) shows a deep blue display. This guide keeps the dark matte slate until that is ruled. A ruling for blue would change only the five Display values above, and nothing else in this guide.
 
 ## 3. Materials and light
 
@@ -115,9 +113,9 @@ Body type needs 4.5 : 1 or more, so:
 
 | Material | What it is | How it is rendered | Plate |
 | --- | --- | --- | --- |
-| **Housing** | matte powder-coated sage polymer with sand engravings, dark rubber bumpers and bezel, recessed screws | painted, with soft broad highlights, a slight worn edge and no reflections. The housing frame stays on every screen (owner, 10:57) | 03a |
+| **Housing** | matte powder-coated sage polymer with sand engravings, dark rubber bumpers and bezel, recessed screws | painted, with soft broad highlights, a slight worn edge and no reflections. The housing frame stays on every screen | 03a |
 | **Display** | the matte slate screen of the machine: the stage field, panes, cards and the bars | flat on the art layer: one fill, a 1 px `hairline` edge and a 1 px `bevel` of light top and left. No texture, no dither, no gradient | 02b |
-| **Plates** | parts of the housing cut out for a module (`plate-device-*`, `plate-well-*`) | painted, the housing's material, placed 1:1. A plate is never a separate shiny object: no green plastic, no metal plaque (owner, 06:38) | 03a |
+| **Plates** | parts of the housing cut out for a module (`plate-device-*`, `plate-well-*`) | painted, the housing's material, placed 1:1. A plate is never a separate shiny object: no green plastic, no metal plaque | 03a |
 | **Glass** | only where something lives or grows behind it: the vivarium window, the candling chamber | clear and matte-edged in a rubber bezel. You look into it, not at it. No gloss streaks and no reflections | 03d |
 | **Light sources** | lamps, the candling light, the device's lit marks | cast light: a pool on what they light, no wider than it, at most 55 % over the field. No glow, bloom or halo on type, panes or edges | 03c |
 
@@ -138,7 +136,7 @@ Every component is a part of the machine, named as a thing. A generic box fails.
 | **Key caps** | the device keys drawn as their legend | 16 × 16 discs: ✓ `orange`, ← `stone`; dimmed ✓ is its own slice | rest, dimmed | 04b |
 | **Pane** | a section of the display | flat `panel`, radius 8, 1 px `hairline`, 1 px `bevel` top and left; 16 px inner margin; 8 px between related things, 16 between groups | rest; focused (the ring) | 02b |
 | **Decision panel** | the machine asking you to choose between futures | panel 840 × 440 at (92, 80), radius 12, `panel`, over the stage veiled toward `ground`; title 28 px, at most 4 words; option cards 776, 380 or 248 wide × 288, 16 apart | the card focused (the ring), dimmed (cannot pay), loss | 04a |
-| **Option card** | one future | a well in `ground`, radius 8. The outcome scene painted in the window (w − 32 × 160 today; P1's larger windows once the owner chooses); under it the verb at 20 px, the costs as icons with figures, one line at 16 px, a loss in `coral` with the cross | as the panel | 04a |
+| **Option card** | one future | a well in `ground`, radius 8. The outcome scene painted in the window (w − 32 × 160 today; P1's larger windows once P1 is chosen); under it the verb at 20 px, the costs as icons with figures, one line at 16 px, a loss in `coral` with the cross | as the panel | 04a |
 | **Tile** | one thing you can pick (a mibi, a pod, a place) | well 64 × 64, radius 8, `ground` with the bevel; the thing painted inside at 48 | rest; focused (ring, lift 2 px); dimmed (veiled 60 %, still focusable); new (the glint at its top right) | 04c |
 | **Badge** | a place, a species or a find | painted, 32 × 32 at least (48, 64 and 96 where the screen gives room), with its one word under it at 16 px | known; unknown (frost) | 04d |
 | **Progress** | the machine's own measure of time or growth | a ring or track in `mint` on a `tealD` track, 8 to 10 px thick; the chapters as lit studs; the wait in `mint` words ("ready in about 8 min") | growing (k of n); ready (full, its lamp lit) | 02c |
@@ -189,7 +187,7 @@ Every component is a part of the machine, named as a thing. A generic box fails.
 | Any object (a card, a pane, a badge) | 6 words or fewer, and never a list of 3 or more lines of words |
 | Genome | one word per chapter, its name; nothing else |
 | Labels | one word |
-| Exempt | the Library's Book, and a budget the owner has approved |
+| Exempt | the Library's Book, and an approved budget |
 
 A picture or a mark the screen already uses beats a word. Stand-in text at the longest case is the design.
 
@@ -255,7 +253,7 @@ A picture or a mark the screen already uses beats a word. Stand-in text at the l
 | **Home, Vivarium, Idle, a mibi up close** | The collection alive, kept by the device | the residents, then what needs you | Kept as accepted: the warm painted vivarium leads. The modules are slate panes holding painted objects | 01 (do) |
 | **Pods** (the sample case) | The pods you brought home, and what you know of each | the pod, lit in its fitted cut-out | Pods sit in cut-outs set into the slate instrument face, lit and grounded. The name and state are on a display pane. The paper tag goes (paper is the Library's) | 03b, 10a |
 | **Create** (the gene bench) | Shape your mibi's genes before it grows, and see what you changed | the founder, big and lit, then the changed marks | The founder is the subject, sculpted and lit in a recess of the bench. The genome is on the machine's display at its tier, with changed parts lit `mint` on the body and on the marks. Nothing floats; there is no brown or lilac field | 04e, 07a |
-| **Incubator** (candling) | "The life you designed on Create is being grown here, and each time you look it is further along and you know more about it" | the candled pod, the founder forming inside | An instrument of the machine candles the player's own pod: the device's light comes through the shell, and the founder's form reads in it. The ring of time is `mint`; the reveal shows the founder's own part, large. The stamp is on the display with its text id. No egg, no moss cradle, no plaque, no brown or cream (owner, 00:43: "the candling idea is ok, the execution was terrible"). The instrument's form is the CD's (T-168) | 02c, 03b, 04e |
+| **Incubator** (candling) | "The life you designed on Create is being grown here, and each time you look it is further along and you know more about it" | the candled pod, the founder forming inside | An instrument of the machine candles the player's own pod: the device's light comes through the shell, and the founder's form reads in it. The ring of time is `mint`; the reveal shows the founder's own part, large. The stamp is on the display with its text id. No egg, no moss cradle, no plaque, no brown or cream. The instrument's form is the CD's (T-168) | 02c, 03b, 04e |
 | **Cargo** (the receiving bay) | "What your trip brought home arrives here: you open each crate and see what came back and where each thing goes" | the open crates and their contents | Crates open on the bay floor, each with its place badge, the contents in front as things. Materials flow to store tanks on the wall, and pods to the Pods hatch. No colour bars, no rack, no goal line | 06a |
 | **Decision panels** | "At a real decision, the panel shows what each choice will do, as pictures that differ at a glance, and its cost" | two different outcome scenes | The slate panel over the veil. Each option window is its outcome painted as a different scene (distance, size, direction, setting, light), with the verb, its cost and one line. No brown, no cream, no plinth repeated | 04a |
 | **Probe bench** (the service dock) | Mend and upgrade the Probe the Companion carries | the Probe, upright in its dock | The Probe upright, as held, in a vertical cradle. Mend and Upgrade are slate panes. No loose tools and no gauges that read nothing | 03a |
@@ -313,7 +311,7 @@ The per-screen detail is in [Station screens](station-screens.md) and [Companion
 1. **Every visual ticket cites the sections it follows** (for example "§4 Tile, §6, §8 Pods"), and its proof is judged against them and their plates.
 2. **Not covered means stop.** If a colour, material, component, size, icon or motion is not here, park the ticket to the art director with the exact gap. Never choose one yourself.
 3. **Changes are made here first.** A new component or rule is added to this guide, with its plate, before any art or build uses it. The guide and its plates change together.
-4. **The gates judge against this guide** and the owner's verbatims, in the device sheet, at 1×.
+4. **The gates judge against this guide** and each screen's acceptance lines, in the device sheet, at 1×.
 
 ## 11. Plates
 
@@ -373,7 +371,7 @@ The per-screen detail is in [Station screens](station-screens.md) and [Companion
 - **Device plates for modules, cards, the strip and the namer (fix 2):** Home's modules, Habitat's card and modules, the strip and its tile wells, the namer, the Probe's two modules and Compare's two pages are plates cut from the housing (`plate-device-*`, `plate-well-*`), placed 1:1 on the painted layer, never a fill. No plate picture, no plate.
 - **Flat panels on the art layer:** the device's panels (bars, panels, panes, tabs and rings) are flat fills with one bevel of light and 1 px hairlines, never dithered and never painted. The layers are in [Station screens, Palette and layers](station-screens.md#palette-and-layers).
 - **Field gear that keeps life going.** The Station is the Companion's sibling, made by the same maker; both dock into the Caddy. The screen is the Station's own face, never a picture of a room with a device in it.
-- **A lab, a genome-editing machine.** The Station is a lab, never a desk. Its research screens are advanced research and crafting benches where you edit life: instruments of the lab, not a craftsman's workbench. Paper, slips, tags and notes appear only in the Library (owner: "paper has a place in the library, the rest is a STATION, it's a LAB, it's a genome editing machine"). Every other screen shows its information on the machine: its displays, lamps, readouts and moving parts. Anything that changes with the player's input or with time is on the device's own display, never paper, print or a tag. Paper is only for what never changes, and only in the Library.
+- **A lab, a genome-editing machine.** The Station is a lab, never a desk. Its research screens are advanced research and crafting benches where you edit life: instruments of the lab, not a craftsman's workbench. Paper, slips, tags and notes appear only in the Library. Every other screen shows its information on the machine: its displays, lamps, readouts and moving parts. Anything that changes with the player's input or with time is on the device's own display, never paper, print or a tag. Paper is only for what never changes, and only in the Library.
 - **Rugged, matte, handled.** Sage and sand housing, dark rubber, screws, engraved marks; powder-coat, rubber, moulded polymer, canvas, braided hose. Inside the frame, dark matte slate panels and `bone` type; orange for the action only (§2).
 - **Cozy, tethered to its tech.** The equipment that keeps the life going is visible and works for it: feed lines, vents, misters, small gauges, grow lamps. Cozy, never clinical, never hidden.
 - **The vivarium is the most alive thing on the screen,** Miniature Lives in warm daylight, and the eye goes there first.
