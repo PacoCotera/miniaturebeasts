@@ -92,4 +92,10 @@ No "new" mark is added. A pod is fresh until identified (`fresh` clears at Ident
 ## 6. Open
 
 - Words: "back to the {place}" (copywriter).
-- Whether five place pictures read at 32 px (art director). If they cannot, the fallback is the place's word in 16 px `mist` (the face's smallest size) under the ring. That is the UI designer's call, and is to be ruled only if the AD reports a failure.
+- **The wood badge (ruled, T-20261016-111): option (c), the single canopy crown, no word.**
+  - **What it is:** `place-wood-32x32` becomes the crop T-105 recorded as "canopy: one crown" (from the wood's canopy painting: one lit round crown among darker ones, seen from above). The art director cuts and signs it at 32 from that painting, never scaled. No whole tree reads at 32 after three tries; this crop does read as an object.
+  - **Why not the word:** "wood" under one well alone (a) would make one badge of five a word, breaking the all-picture rule the owner asked for ("little text", 13:26). A word under every well (b) adds the most text.
+  - **Why it is enough:** the badge's job is to tell two pods of one species apart, and the crown does that at 1×. It is the only badge that is a lit round form. Beside meadow it differs in form and contrast, not in brightness: mean relative luminance 0.111 against 0.101, luminance spread 0.069 against 0.026, and a bluer green. Where the pod was found is said in words on the overview (the 64 px place picture and the found sentence), one ✓ away.
+  - **Checked:** at 1× and 2× in the wood well's slot on `results/T-20261016-98/badges-on-pods-collection-1x.png`, beside rock and meadow.
+  - **The build:** no change; the badge's slot, size and rule stand. One test is added to the Pods face test: the five place badges are pairwise different pictures, and wood's luminance spread is at least twice meadow's (form, not field).
+  - **If it does not read in play:** if the owner or the CD reads it as a bush in play, the fallback is (a), with the word "wood" in 16 px `mist` at (192, 150, 64, 20) in the place's coordinates, in the badge's slot (not under the ring, where the name plate is). That would be a separate ruling.
