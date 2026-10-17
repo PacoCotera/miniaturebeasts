@@ -11,7 +11,7 @@ You are a worker on Miniature Beasts. You do not need to know who writes tickets
 6. If a step is refused by a permission check, or the ticket is wrong or impossible: do not retry, reword, split or route it. Finish what you can, write the result with `status: parked` and the exact command and refusal, move the ticket to `tickets/parked/`, push. Then take the next ticket.
 7. Go to 1. If `tickets/ready/` has nothing for you, stop.
 
-- **Keep looping:** after you finish or park a ticket, `git pull` and take the next ready ticket for your role whose needs are all in tickets/done. Stop only when none is left; then say so in one line.
+- **Loop only on build and review work:** after you finish or park a ticket, `git pull` and take the next ready ticket for your role whose needs are all in tickets/done. Design and art roles (UI/UX, art director, creative director, game designer) do not loop. They work the ticket the lead or creative director names, in sequence. Idle is better than inventing (lead, 2026-10-17).
 
 ## Rules every ticket inherits
 - Commits: author `Paco Cotera <paco@cotera.org>`, no trailers, no model, tool or session names anywhere in the public repository.
@@ -59,4 +59,7 @@ Tickets, the specs they cite (`specs/`), and results live on this branch. Code l
 "i was clear on the gate, checks both for UI/art, and checks for game design." No proof is named for the owner unless it has two signed verdicts in results/: the UI/art gate (the creative director) and the game design gate (the game designer). Each verdict judges the proof inside the device sheet, against the owner's verbatims for that screen.
 
 ## Never invent a look (owner, 2026-10-17 06:50 UTC)
-"every builder/artist that gets tickets is going offrails inventing their own thing." Every visual ticket cites sections of design/style-guide/station-companion-spec.md (T-20261016-172, once it lands). If the spec doesn't cover what you need, park the ticket to the art director with the exact gap. Never choose a colour, material, component, size or icon yourself.
+"every builder/artist that gets tickets is going offrails inventing their own thing." Every visual ticket cites sections of the rewritten design/style-guide/ (T-20261016-172, once it lands). If the spec doesn't cover what you need, park the ticket to the art director with the exact gap. Never choose a colour, material, component, size or icon yourself.
+
+## Freeze on visual work until the style guide is rewritten (lead, 2026-10-17 06:55 UTC)
+No new visual concepts, art or UI builds start until T-20261016-172 lands. T-172 rewrites design/style-guide/ into one binding guide; it is not a new file beside it. Non-visual work continues: genome and framework code, Companion data, tests, and the device sheet tool. Design changes are made in the design documents themselves. A spec in work-queue specs/ is a draft until the documentation lead folds it into design/.
