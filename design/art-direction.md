@@ -28,7 +28,7 @@ A small, well-made field kit for keeping living things. You hold it, and it is w
 
 When a screen goes wrong, it is almost always one layer doing another's job: the instrument taking colour or decoration from the life, or the signal lighting up for show. Checking a screen layer by layer finds those faults before they compound.
 
-<table><tr><td valign="top"><img src="style-guide/plates/01-look-do.png" width="512" alt="Home, the three layers"><br><em>Home as the target, the three layers in one screen: the living vivarium, the quiet slate instrument, a few small signals. Diagram: the accepted living window, with the module column redrawn as slate panes, lamps amber or off, each module holding its own object and no plate pictures (style guide plate 01).</em></td></td>
+<table><tr><td valign="top"><img src="style-guide/plates/01-look-do.png" width="512" alt="Home, the three layers"><br><em>Home as the target, the three layers in one screen: the living vivarium, the quiet slate instrument, a few small signals. Diagram: the accepted living window, with the module column redrawn as slate panes, lamps amber or off, each module holding its own object and no plate pictures (style guide plate 01).</em></td>
 <td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth the life layer carries. Approved concept, generated.</em></td></tr></table>
 
 ### One machine: the instrument layer's rule
