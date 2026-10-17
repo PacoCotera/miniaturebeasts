@@ -1,6 +1,16 @@
 # Companion screens
 
-450×600 portrait, judged at 1×. The shared rules are in the [style guide](README.md). Every screen here uses the same frame.
+450×600 portrait, judged at 1×. The binding look is the [style guide](README.md): drawing rules §13, palette §2, type §5, marks §6, the frame §7, families §8, motion §9. Every screen here uses the same frame.
+
+**The look, before the rules.** The Companion is the field device you carry: HiBit pixel art on its 8-bit indexed palette, one light from the top left, 1 px outlines in each part's own darkest step, no alpha, no anti-aliasing, no gradients, Mibi type at 2× or 3×, shown only at 1:1 or a whole multiple ([plates 07b, 11a, 11b](README.md#11-plates)).
+
+| Family | Intent | Do | Don't |
+| --- | --- | --- | --- |
+| Map, Reach, Place, Start map | Plan and walk the trip | the pawn and every mibi readable in sun, storm, fog and veil; weather as the guide's §13 draws it | darkening tokens under storm or veil; lavender fog |
+| Menu, Message box, Cargo, End expedition, Link states | Say what happened and what to choose | marks with figures beside their icons; one line per choice | paragraphs; figures without their icon; colour-only meaning (06b) |
+| Companion mode, Care, the carried set | Be with your mibi | the resident in HiBit at 280 × 300, catch-lit eyes (11a) | flat blobs, smoothed or black-outlined pixels (11a) |
+
+Where a screen's rules below disagree with this block or the style guide, the guide wins and the screen is fixed.
 
 ## The frame
 
