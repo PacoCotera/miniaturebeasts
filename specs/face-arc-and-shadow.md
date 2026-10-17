@@ -92,29 +92,55 @@ The 12 segment boxes, as (x, y, w, h): (324, 348, 57, 74), (312, 281, 34, 75), (
 
 ### What it is
 
-The founder is seen through the shell, showing **only what is known** (ruling §4):
+The founder is seen through the shell, showing **only what is known** (ruling §4). As chapters clear, the player sees more of their own mibi: the body at first, then each known look's part, with the edge sharpening from a soft body to a crisp shadow at ready. The opacity steps with the light: cool 0.25, warm 0.45, glowing 0.65, and the whole known founder at 0.8 at ready.
 
-- First, the founder's body as Create draws it.
-- Then one layer more for each chapter that clears.
-- The opacity steps with the light: cool 0.25, warm 0.45, glowing 0.65, and the whole known founder at 0.8 at ready.
+**The look is the art director's, approved** (T-20261016-99; review-art-2026-10-16d §1, PASS): a shadow through a shell lit from below, never an embryo. It is one flat warm dark, clipped to the body. The derive and its parameters are masters-pods 8c141b5c `art/station-masters/pods/incubator-b/shadow.py` `derive(alpha, q, step)`, which is the oracle. The build ports it with one added rule, the edge (below).
 
-Create already draws exactly this picture for a given set of read chapters. `founderArt(frame, genome, read, w, h, painted)` renders the founder and applies the calm unknown (`unknown.mjs`: ghost when nothing is read, a veil on each unread look, clear for each read one). So the shadow is **Create's picture at the shadow's size, for the chapters known now, with its alpha stepped.** It needs no new renderer and no new treatment. Each cleared chapter is "one layer per cleared chapter's looks" because the veil lifts from that chapter's looks.
+### Input: the founder's alpha, fitted
 
-### Input
-
-- `st.bud`: the species, the genome (`env.budGenome()`, as the stamp request already uses), and `read`.
-- **Known** = `bud.read` plus every chapter for which `state.budChapterKnown(st, chapter)` is now true. This is the same set the stamp and the slip use.
+- **The bud:** `st.bud` gives the species, the genome (`env.budGenome()`, as the stamp request uses) and `read`.
+- **Known** = `bud.read` plus every chapter for which `state.budChapterKnown(st, chapter)` is now true. It is the same set the stamp and the slip use. **q** = known chapters ÷ the species' chapters (`frame.chapters`).
 - **Step** = `cool | warm | glowing | ready`, from f, as the light (ruling §4).
-- The painted adult `mibi-adult-{species}-160x192`, where it is placed (Create founder A, interim). Otherwise the rig pass, exactly as `founderArt` chooses.
+- **The layers, as Create draws the founder,** all at 304 × 312:
+  - its base `founder-{species}-base-304x312` (the body, the head bare);
+  - then one layer `founder-{species}-{part}-{look}-304x312` for each of the founder's own looks that has a layer (today only S01's `founder-S01-crown-leaf-crest-304x312`).
+  - **An unread look contributes nothing.** Its layer is left out, so its part keeps the species' plain body (S01's bare head until Face clears). No veil is used, so no unread part's shape shows.
+- **Where Create draws one flat picture** (the painted adult `mibi-adult-{species}-304x312`, Create founder A; else the rig pass, `founderArt` at 304 × 312), that picture's alpha is the whole input. It has no look to leave out, and the rig pass's unread Glow and Charge are not shape.
+- **The fit**, as the oracle's `proof.py` `founder_alpha` does:
+  - the box is the bounding box of alpha > 0.5 over the **union of the base and all the founder's look layers, read or not**, so a clearing never moves the body;
+  - the scale is k = min(FIT_W ÷ box width, 192 ÷ box height);
+  - the crop of the known layers' alpha (the per-pixel maximum) is resampled to floor(w · k) × floor(h · k) by Lanczos-3, in Pillow's `Image.LANCZOS` convention (the kernel widened by 1/k when reducing);
+  - it is placed centred, at x = (160 − w') div 2, with its feet LIFT px above the box's foot (bottom row at 192 − LIFT).
+- **A crossed bud** (ruling §4: "the species' outline only") uses the base layer alone, or the species' flat picture, with q = 0. It never uses the bud's own looks.
+
+### The treatment: shadow.py's `derive`, plus the edge rule
+
+`PARAMS = { FIT_W 124, LIFT 10, MASK_LO 0.47, MASK_HI 0.62, SIG0 4.6, SIG_Q 4.0, READY_K 1.0, TOP_K 1.45, BOT_K 0.7, CORE 1.3, SHADOW_RGB (36, 22, 14) }` and `P = { cool 25, warm 45, glowing 65, ready 80 }`. These are the oracle's, unchanged. Per pixel, on the fitted alpha (0 to 1):
+
+1. **The mask:** a smoothstep from MASK_LO to MASK_HI, so a painting's own soft ground shadow (alpha about 0.43) drops out and only the body casts.
+2. **The penumbra:** σ = (SIG0 − SIG_Q · q), times READY_K at ready. The light is below, so the far (top) edge is softer:
+   - two Gaussian blurs of the mask, σ_top = σ · TOP_K and σ_bot = σ · BOT_K;
+   - mixed by row, top · (1 − t) + bot · t, with t = row ÷ 191.
+3. **The core:** a = min(1, mixed · CORE).
+4. **The colour:** every pixel is SHADOW_RGB. The alpha is a′ = floor((rint(a · 255) · P + 50) ÷ 100), where rint rounds half to even.
+
+**The edge rule (added here; review-art-2026-10-16d §1):** at every step, ready included, **each blur's σ is at least 0.7 px**: σ_top = max(0.7, σ · TOP_K) and σ_bot = max(0.7, σ · BOT_K).
+
+- At ready with every chapter known, the oracle's σ is 0.6, so its lower edge would blur at 0.42 and show stair-steps at 1× on S03's legs and S01's crown. With the floor, the lower edge blurs at 0.7 and the top at 0.87, so the edge reads as a shadow, not a pasted cut-out.
+- Wherever σ · BOT_K ≥ 0.7 (σ ≥ 1, that is q ≤ 0.9) nothing changes: 2 chapters of 4 blur at 2.6 · 0.7 = 1.82. When every chapter is known before ready, the glowing step has σ 0.6 too and is floored the same way.
+- The anti-aliasing lives in the derived picture's alpha. **The face does nothing new:** it draws the 160 × 192 picture 1:1 on the painted layer, with straight alpha, as §2 already says, so the face's cost does not change.
+
+**Determinism.** The derive runs in JavaScript in the logic's process (Node on the Pi, the page in the sandbox), so its bytes must not depend on the engine:
+
+- Each Gaussian is separable. Its taps run to ceil(4σ) on each side (scipy's `truncate = 4.0`), with the edge mirrored (scipy's `mode = "reflect"`: d c b a | a b c d).
+- The weights are computed once per σ with `Math.exp`, normalised, and rounded to integers in 1/65536 that sum to 65536 (the centre tap takes the remainder). The blur then sums integer weights in float64.
+- Lanczos-3 weights are rounded the same way.
+
+**Against the oracle:** for S01 and S03 at nothing cleared, 2 chapters, 4 chapters and ready, every alpha byte is within ±1 of `shadow.py`'s at the same input. The oracle is run with the same σ floor, which changes only ready: by up to 68 alpha levels at the edge, and nowhere else.
 
 ### Output
 
-A 160 × 192 picture with straight alpha, on the **painted layer**. It is drawn in `shadow` (432, 192, 160, 192), after `pod` and before `cradleFront` (T-40's draw order).
-
-- Pixels = `founderArt(frame, genome, known, 160, 192, painted)`. The camera is fitted to the same scene, so it is Create's picture at this size.
-- Alpha: a′ = floor((a · P + 50) / 100), with P = 25, 45, 65 or 80 for cool, warm, glowing or ready. The opacity is baked into the alpha, because the face has no opacity (prim.h). These are integer steps, never a fade.
-- **A crossed bud** (ruling §4: "the species' outline only") uses known = [], so it is the ghost treatment, the body alone. The body is the species' painted adult where placed, else the rig pass of the species' type genome (`frame.typeSpecimen.genome`, the one `speciesArt` draws). It never uses the bud's own genome, so the shadow tells nothing a cross has not yet shown.
-- **Status `derived`,** like the portrait: never in the placeholder register.
+A 160 × 192 picture: every pixel SHADOW_RGB, the alpha as above. It is drawn on the **painted layer** in `shadow` (432, 192, 160, 192), after `pod`'s shell and light and before the shell's cap, band and straps, so they stay over it, clipped to the body (the composite order of T-20261016-68, unchanged here). Its status is `derived`, like the portrait, never in the placeholder register.
 
 ### The request
 
@@ -125,7 +151,7 @@ req({ kind: "shadow", id: `shadow:${bud.sha.slice(0, 16)}:${[...known].sort().jo
       species: bud.species, read: [...known], step, cross: bud.kind === "cross", size: [160, 192] })
 ```
 
-`pictures.mjs` gains `case "shadow"`, which calls `shadowArt(env.frameOf(r.species), r.cross ? null : env.budGenome(), r.read, r.step)`. That is a new function in `art.mjs`, about 15 lines, built on `founderArt` and the alpha step, and cached by its key like `founderArt`. An unknown step, a wrong size or a missing bud throws, as every other kind does.
+`pictures.mjs` gains `case "shadow"`, which calls `shadowArt(env.frameOf(r.species), r.cross ? null : env.budGenome(), r.read, r.step)`. That is a new function in `art.mjs`: the input above, then `deriveShadow(alpha, q, step)`, a port of `shadow.py` in about 40 lines with the edge rule. It is cached by its key. An unknown step, a wrong size or a missing bud throws, as every other kind does. The fitted alpha of one known set is cached as well, so a light step re-runs only the treatment.
 
 ### When it is recomputed
 
@@ -139,19 +165,33 @@ That is at most (u + 1) × 4 distinct pictures over a bud, for u clearings, and 
 
 ### Cost
 
-- **Compute:** one `founderArt` pass at 160 × 192 plus one pass over 30,720 alpha bytes, at most about 9 times over a 20-minute bud. Create already runs this pass at its own size on every change of choices. It runs in the logic's process, off the face's frame. The build prints the time on the development machine; budget ≤ 50 ms per derive there.
+- **Compute, per derive:**
+  - the fit: one Lanczos-3 resample of the cropped alpha, cached per known set;
+  - the treatment: two separable Gaussian blurs of 160 × 192. The widest is σ = 4.6 · 1.45 ≈ 6.7 (2 · 27 + 1 = 55 taps), so about 2 × 2 × 30,720 × 55 ≈ 6.8 million multiply-adds, a few milliseconds to a few tens in JavaScript.
+  It runs at most about 9 times over a 20-minute bud, in the logic's process, off the face's frame. The build prints the time on the development machine; the budget stays ≤ 50 ms per derive there. The edge rule adds no work: it only floors two σ values.
 - **Memory:** one 160 × 192 picture, 123 KB.
 - **Redraw:** a new shadow redraws its box, 30,720 px. At a clearing, the shadow, card, slip, stamp and cut together stay inside T-40's clearing print, which is held to 153,600.
 
 ### Its tests
 
-1. **Pure function** (`station/tests/shadow.test.mjs`): for a fixture founder, the alpha of each step is floor((a · P + 50) / 100) of `founderArt`'s, pixel by pixel. Two calls give the same bytes. Adding a chapter to known changes only pixels inside that chapter's look boxes, and the step's alpha. A cross ignores its genome: two crosses of one species give the same picture.
-2. **Ids:** a minute passing inside one step asks for no new id; a clearing asks for exactly one; f crossing 1/3 asks for exactly one.
-3. **Face:** in growing and ready, the `shadow` region shows a 160 × 192 painted picture and nothing outside its rect.
-4. **The brightness condition** (ruling §6) is T-40's, on the captures. It stays UNVERIFIED until the shell and card art exist.
+1. **Against the oracle** (`station/tests/shadow.test.mjs`, vectors `station/tests/fixtures/shadow-vectors.json` made by `shadow.py` with the σ floor): S01 and S03 at nothing cleared, 2, 4 and every chapter (ready), each alpha byte within ±1. Two calls give the same bytes. Every RGB is (36, 22, 14). An unread look adds nothing: S01 before Face has the bare head's alpha. The fit is the same box for every known set of one founder. A cross ignores its looks.
+2. **The edge at ready** (the edge rule): on the 1× ready picture, no fully hard pixel run is longer than 2 px on a diagonal. The face draws the picture 1:1, so this is what the ready frame shows in the shadow's region.
+   - A **hard pixel** is one at the step's full alpha (a′ = 204 at ready) with a 4-neighbour at or below a quarter of it (51): a near-full to near-clear jump inside one pixel.
+   - A **diagonal run** is a chain of hard pixels, each one step left or right and one step up or down from the last.
+   - The test prints the longest run and the steepest one-pixel step.
+   - Measured on the T-99 founders with the oracle's fit (`shadow.py` and the masters at 8c141b5c):
+     - without the floor, the longest runs are 6 (S01) and 9 (S03), with 248 and 418 hard pixels, and the steepest step is 190;
+     - with the floor, both are 0 hard pixels, and the steepest step is 147.
+   - The steps before ready are byte-identical with and without the floor.
+   - "Hard" cannot mean full beside zero: a blur never leaves a zero next to a full pixel, so on that reading even the unfloored derive passes.
+3. **Ids:** a minute passing inside one step asks for no new id; a clearing asks for exactly one; f crossing 1/3 asks for exactly one.
+4. **Face:** in growing and ready, the `shadow` region shows a 160 × 192 painted picture and nothing outside its rect.
+5. **The brightness condition** (ruling §6) is T-40's, on the captures. It stays UNVERIFIED until the shell and card art exist.
+
+**Which build carries them.** Tests 1 and 3 belong with the `shadow` kind, T-20261016-64. Tests 2, 4 and 5 belong with the build that places the shadow on the Incubator and takes its captures, T-20261016-40.
 
 ## 3. Not in this spec
 
-- The look of the shadow beyond the existing calm unknown and the ruling's opacities. If the AD wants the shadow darker or tinted, that is a ruling for the AD, not a build choice. I recommend the AD signs it on a proof sheet of each species' worst cases, as was done for the portrait reducer.
+- The shadow's look beyond T-20261016-99's derive and the edge rule above. A change to PARAMS is the art director's, made in `shadow.py` first and carried here.
 - The pod's shell (T-28), the art itself (T-27), Home and Idle.
 - An LVGL arc primitive. It is not needed; it is reconsidered only if a later screen needs an anti-aliased arc on the painted layer.
