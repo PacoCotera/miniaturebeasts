@@ -4,6 +4,8 @@
 
 So **the primary module is the genome structure as art: the looks discovered, to be looked at, not read.** The family tree below is the second module, or is combined with it. My objection to the look tree (a trait grid; cycling species) is withdrawn: the owner chose art you look at, knowingly, over data you read.
 
+**My gate on the art-led directions is truth only** (the lead's scope): what is discovered is shown as discovered, what is inherited is shown as inherited, and nothing is faked or hinted that the player hasn't found. Which reading the owner picks is the owner's. The points below are what each reading must keep true, not a preference among them.
+
 ## The genome structure (the primary module): what is true to show
 
 - **What it shows:** a species' genome as a living structure, its chapters as limbs and each trait's looks as blooms. A look the player has **discovered** (in their field guide) blooms painted. A look not yet discovered is a quiet, closed bud: present, but never showing what it is.
