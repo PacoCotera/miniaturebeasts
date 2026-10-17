@@ -180,3 +180,26 @@ Pods' renderer (`pods.json podLayers.compose`) draws the shell in one pass. The 
 - **Brightness margin:** higher, because the pod's brightest pixels (the lit cap) are no longer darkened.
 
 **The owner's proof:** `proof/incubator-b-S01-glowing-1x.png`.
+
+## T-20261016-99: the founder's shape, sharpened
+The owner: "sharpen the founder shape". The shadow in the T-62/T-68 proofs was the juvenile's silhouette, fitted to the full 160 px box and blurred σ 3. In the shell it read as a soft blob, and the straps and cap cut its head away.
+
+**The look, for the build's `shadow` derive** (`specs/face-arc-and-shadow.md` §2 leaves the look to the AD). It is in `shadow.py`, `derive(alpha, q, step)` with `PARAMS`, and the proofs use it as written.
+- **The input:** the founder's alpha as Create draws it (S01: `founder-S01-base`, plus its crown layer once Face is known; S03: its painted adult). An unread look adds nothing, so its part keeps the species' plain body (ruling §4). q = known chapters ÷ chapters.
+- **The fit (`FIT_W` 124, `LIFT` 10):** fitted to 124 px wide on the union of its layers, centred, feet 10 px above the box's foot. The whole outline (head, crown, legs, tail) then lies in the translucent body under the cap, and a clearing never moves it.
+- **The mask (`MASK_LO` 0.47, `MASK_HI` 0.62):** a smoothstep of the alpha, so a painting's own soft ground shadow drops out and only the body casts.
+- **The penumbra:** σ = 4.6 − 4.0 q (`SIG0`, `SIG_Q`), so the shape crispens with each cleared chapter: 4.6 at nothing known, 0.6 at everything (×1.0 at ready, `READY_K`).
+- **Lit from below:** the far (top) edge blurs at σ × 1.45 and the near (lower) edge at σ × 0.7, mixed by row.
+- **The core and colour:** the core is solid (`CORE` 1.3). The colour is `SHADOW_RGB` (36, 22, 14) at the ruling's steps: a′ = floor((a · 255 · P + 50) / 100), P = 25, 45, 65, 80.
+- **The order:** still clipped by `incubator-shell-body-clip` and drawn under the band, cap and accent (T-68's order).
+
+**The five measures, re-taken** (`proof/measures.json`; the proof's bud: cool nothing known, warm 2 of 7 with Face, glowing 4 of 7, ready all): all met.
+
+| | Under-light (bottom ≥ top: warm, glowing, ready; R−B from cool) | Steps ≥ 12 | Lamp ≥ 1.5 | Shadow ≥ 15 | Brightness ≥ 0.08 |
+| --- | --- | --- | --- | --- | --- |
+| S01 | 0.179 ≥ 0.160; 0.238 ≥ 0.172; 0.235 ≥ 0.184; R−B 3.8 → 44.0, 44.9, 43.5 | 17.0; 16.2 | 1.88 | 54.8 | 0.269, 0.205, 0.310, 0.312 |
+| S03 | 0.270 ≥ 0.176; 0.344 ≥ 0.183; 0.351 ≥ 0.195; R−B −47.2 → 16.3, 30.5, 30.3 | 17.5; 14.3 | 1.71 | 57.0 | 0.268, 0.207, 0.289, 0.304 |
+
+**Proofs** (`proof/`, labelled inside):
+- `incubator-b-S01-glowing-1x.png`, the growing frame;
+- `shadow-steps-S01-1x.png` and `shadow-steps-S03-1x.png`: nothing cleared, 2 chapters, 4 chapters, ready, at one light (glowing; ready at ready), so only the knowing changes.

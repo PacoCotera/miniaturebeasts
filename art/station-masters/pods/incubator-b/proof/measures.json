@@ -1,71 +1,71 @@
 {
  "S01": {
   "cool: top / bottom mean": [
-   0.2,
-   0.132
+   0.203,
+   0.133
   ],
-  "cool: bottom R-B": 4.1,
+  "cool: bottom R-B": 3.8,
   "cool: moss band mean": 0.117,
-  "cool: pod p95 - highest other": 0.26,
+  "cool: pod p95 - highest other": 0.269,
   "warm: top / bottom mean": [
-   0.162,
-   0.171
+   0.16,
+   0.179
   ],
-  "warm: bottom R-B": 43.5,
+  "warm: bottom R-B": 44.0,
   "warm: moss band mean": 0.161,
-  "warm: pod p95 - highest other": 0.204,
+  "warm: pod p95 - highest other": 0.205,
   "glowing: top / bottom mean": [
-   0.171,
-   0.218
+   0.172,
+   0.238
   ],
-  "glowing: bottom R-B": 43.8,
+  "glowing: bottom R-B": 44.9,
   "glowing: moss band mean": 0.22,
-  "glowing: pod p95 - highest other": 0.288,
+  "glowing: pod p95 - highest other": 0.31,
   "ready: top / bottom mean": [
-   0.181,
-   0.206
+   0.184,
+   0.235
   ],
-  "ready: bottom R-B": 42.0,
+  "ready: bottom R-B": 43.5,
   "ready: moss band mean": 0.22,
-  "ready: pod p95 - highest other": 0.303,
+  "ready: pod p95 - highest other": 0.312,
   "steps: cool->warm mean abs /255": 17.0,
   "steps: warm->glowing mean abs /255": 16.2,
   "lamp: moss glowing / cool": 1.88,
-  "shadow: warm, with vs without, inside the silhouette, mean abs /255": 41.2
+  "shadow: warm, with vs without, inside the silhouette, mean abs /255": 54.8
  },
  "S03": {
   "cool: top / bottom mean": [
-   0.225,
-   0.231
+   0.219,
+   0.247
   ],
-  "cool: bottom R-B": -44.6,
+  "cool: bottom R-B": -47.2,
   "cool: moss band mean": 0.132,
-  "cool: pod p95 - highest other": 0.222,
+  "cool: pod p95 - highest other": 0.268,
   "warm: top / bottom mean": [
-   0.182,
-   0.238
+   0.176,
+   0.27
   ],
-  "warm: bottom R-B": 15.8,
+  "warm: bottom R-B": 16.3,
   "warm: moss band mean": 0.169,
-  "warm: pod p95 - highest other": 0.159,
+  "warm: pod p95 - highest other": 0.207,
   "glowing: top / bottom mean": [
-   0.191,
-   0.281
+   0.183,
+   0.344
   ],
-  "glowing: bottom R-B": 28.0,
+  "glowing: bottom R-B": 30.5,
   "glowing: moss band mean": 0.226,
-  "glowing: pod p95 - highest other": 0.251,
+  "glowing: pod p95 - highest other": 0.289,
   "ready: top / bottom mean": [
-   0.201,
-   0.269
+   0.195,
+   0.351
   ],
-  "ready: bottom R-B": 26.7,
+  "ready: bottom R-B": 30.3,
   "ready: moss band mean": 0.226,
-  "ready: pod p95 - highest other": 0.261,
+  "ready: pod p95 - highest other": 0.304,
   "steps: cool->warm mean abs /255": 17.5,
   "steps: warm->glowing mean abs /255": 14.3,
   "lamp: moss glowing / cool": 1.71,
-  "shadow: warm, with vs without, inside the silhouette, mean abs /255": 54.2
+  "shadow: warm, with vs without, inside the silhouette, mean abs /255": 57.0
  },
  "slip lines over 176 px": [
   "Found at the pond edge,",

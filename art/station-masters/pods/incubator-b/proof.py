@@ -43,15 +43,24 @@ def shell(sp):
     alpha = np.maximum(body, acc) * (g("shade")[..., 3] / 255 > 0)
     im = Image.fromarray(np.dstack([np.clip(col, 0, 255), alpha * 255]).astype(np.uint8), "RGBA")
     return im if im.size == (224, 272) else im.resize((224, 272), Image.LANCZOS)
-def founder_shadow(sp, opacity):
-    j = L(f"{sl}/mibi-juvenile-{sp}-304x312.png"); a = np.asarray(j)[..., 3].astype(float) / 255
-    ys, xs = np.nonzero(a > 0.5); crop = a[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
-    k = min(160 / crop.shape[1], 192 / crop.shape[0]); im = Image.fromarray((crop * 255).astype(np.uint8)).resize((max(1, int(crop.shape[1] * k)), max(1, int(crop.shape[0] * k))), Image.LANCZOS)
-    P = 16; m = np.zeros((192 + 2 * P, 160 + 2 * P)); h, w = im.size[1], im.size[0]
-    m[P + 192 - h:P + 192, P + (160 - w) // 2:P + (160 - w) // 2 + w] = np.asarray(im) / 255
-    sil = m > 0.5
-    m = nd.gaussian_filter(m, 3) * opacity
-    return Image.fromarray(np.dstack([np.full(m.shape + (3,), [36, 22, 14]), m * 255]).astype(np.uint8), "RGBA"), sil
+import importlib.util as _ilu
+_sp = _ilu.spec_from_file_location("shadow", os.path.join(os.path.dirname(os.path.abspath(__file__)), "shadow.py")); SH = _ilu.module_from_spec(_sp); _sp.loader.exec_module(SH)
+# T-20261016-99: the founder as Create draws it (S01: founder-S01-base and, once Face is known, its crown layer; S03: its painted adult),
+# fitted once to the 160 x 192 box on the union of its layers, so a clearing never moves it; then SH.derive (shadow.py)
+FOUNDER = {"S01": ("founder-S01-base-304x312", "founder-S01-crown-leaf-crest-304x312"), "S03": ("mibi-adult-S03-304x312", None)}
+KNOWN = {"cool": (0.0, False), "warm": (2 / 7, True), "glowing": (4 / 7, True), "ready": (1.0, True)}   # the proof's bud: Face clears first
+def founder_alpha(sp, crown):
+    base, cr = FOUNDER[sp]; a = np.asarray(L(f"{sl}/{base}.png"))[..., 3].astype(float) / 255
+    c = np.asarray(L(f"{sl}/{cr}.png"))[..., 3].astype(float) / 255 if cr else np.zeros_like(a)
+    u = np.maximum(a, c); ys, xs = np.nonzero(u > 0.5); box = (ys.min(), ys.max() + 1, xs.min(), xs.max() + 1)
+    m = np.maximum(a, c) if crown else a; crop = m[box[0]:box[1], box[2]:box[3]]
+    k = min(SH.PARAMS["FIT_W"] / (box[3] - box[2]), 192 / (box[1] - box[0])); w, h = max(1, int(crop.shape[1] * k)), max(1, int(crop.shape[0] * k))
+    im = np.asarray(Image.fromarray((crop * 255).astype(np.uint8)).resize((w, h), Image.LANCZOS)).astype(float) / 255
+    out = np.zeros((192, 160)); y1 = 192 - SH.PARAMS["LIFT"]; out[y1 - h:y1, (160 - w) // 2:(160 - w) // 2 + w] = im; return out
+def founder_shadow(sp, step, q=None, crown=None):
+    q0, c0 = KNOWN[step]; q = q0 if q is None else q; crown = c0 if crown is None else crown
+    a = founder_alpha(sp, crown); P = 16; img = np.zeros((192 + 2 * P, 160 + 2 * P, 4), np.uint8); img[P:-P, P:-P] = SH.derive(a, q, step)
+    return Image.fromarray(img, "RGBA"), np.pad(a > 0.5, P)
 def ring(f, closed=False):
     r = np.asarray(L(f"{md}/incubator-ring-{'closed' if closed else 'fill'}.png")).copy()
     if not closed:
@@ -95,7 +104,7 @@ def frame(sp, state, shadow=True):
         put("cradle", L(f"{md}/incubator-cradle-{light}.png"), (392, 392))
         pod = shell(sp); pod.alpha_composite(L(f"{md}/incubator-shell-{light}.png"))       # the shell, then its light
         if shadow:
-            sh, sil = founder_shadow(sp, op); lay = Image.new("RGBA", (224, 272)); lay.alpha_composite(sh, (32 - 16, 48 - 16))
+            sh, sil = founder_shadow(sp, state); lay = Image.new("RGBA", (224, 272)); lay.alpha_composite(sh, (32 - 16, 48 - 16))
             la = np.asarray(lay).copy(); la[..., 3] = np.round(la[..., 3] * CLIP).astype(np.uint8)   # then the founder's shadow, clipped to the body
             pod.alpha_composite(Image.fromarray(la, "RGBA"))                                       # (T-68), so the cap, band and straps stay over it
             sil_abs = np.zeros((600, 1024), bool); sil_abs[144 + 48:144 + 48 + 192, 400 + 32:400 + 32 + 160] = sil[16:-16, 16:-16]
@@ -137,3 +146,21 @@ for sp in SPECIES:
     report[sp] = m
 report["slip lines over 176 px"] = sorted(overs)
 print(json.dumps(report, indent=1)); json.dump(report, open(f"{out}/measures.json", "w"), indent=1)
+
+# T-20261016-99: the step row, the founder sharpening as chapters clear, at one light (glowing; ready at ready) so only the knowing changes
+from PIL import ImageDraw as _D
+for sp in SPECIES:
+    cells = []
+    for lab, q, crown, step in (("nothing cleared", 0.0, False, "glowing"), ("2 chapters (Face: the crown)", 2 / 7, True, "glowing"),
+                                ("4 chapters", 4 / 7, True, "glowing"), ("ready: all known", 1.0, True, "ready")):
+        if sp == "S03": lab = lab.replace(" (Face: the crown)", "")
+        pod = shell(sp); pod.alpha_composite(L(f"{md}/incubator-shell-glowing.png"))
+        sh, _ = founder_shadow(sp, step, q, crown); lay = Image.new("RGBA", (224, 272)); lay.alpha_composite(sh, (16, 32))
+        la = np.asarray(lay).copy(); la[..., 3] = np.round(la[..., 3] * CLIP).astype(np.uint8); pod.alpha_composite(Image.fromarray(la, "RGBA"))
+        if step == "ready": pod.alpha_composite(L(f"{md}/incubator-shell-seams.png"))
+        pod = Image.fromarray(np.dstack([np.asarray(pod)[..., :3], np.asarray(shell(sp))[..., 3]]), "RGBA")
+        c = Image.new("RGBA", (240, 312), (29, 35, 43, 255)); c.alpha_composite(pod, (8, 8)); d = _D.Draw(c); d.text((8, 286), lab, font=F("Regular", 16), fill=(0xf1, 0xeb, 0xdf)); cells.append(c)
+    row = Image.new("RGB", (240 * 4, 312 + 32), (29, 35, 43)); [row.paste(c.convert("RGB"), (i * 240, 32)) for i, c in enumerate(cells)]
+    d = _D.Draw(row); d.text((8, 6), f"PROOF T-20261016-99: {sp}'s founder through the shell, sharpening with each cleared chapter, 1x", font=F("Medium", 16), fill=(255, 255, 255))
+    row.save(f"{out}/shadow-steps-{sp}-1x.png")
+print("step rows written")
