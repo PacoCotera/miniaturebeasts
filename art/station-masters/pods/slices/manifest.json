@@ -18067,11 +18067,11 @@
    48
   ],
   "src": "dock/make-link-light.py",
-  "made": "the link light as light on the bay floor (T-20261016-97): a warm pool along the crates' feet line (y 296), a soft core and a falloff shorter above and longer below, strongest at the bay's left where the link comes in; it lights only the open bay's floor and takes its grain; ends at the home band's top (312); the crates are drawn over it. Over the open bay only, never the shutter. Step 4 of the reveal (the full light)",
-  "sha256": "258d7c847159c7bddacd290174105658ec928d276e4d19d9a64179ae52dae70b",
+  "made": "the link light as light on the bay floor (T-20261016-97): a warm pool along the crates' feet line (y 296), a soft core and a falloff shorter above and longer below, strongest at the bay's left where the link comes in; clipped to the open bay's floor trapezoid between the side walls (T-20261016-105) and taking its grain; ends at the home band's top (312); the crates are drawn over it. Over the open bay only, never the shutter. Step 4 of the reveal (the full light)",
+  "sha256": "58bc595fb41f4085c27fe51f5591d5cef176883757ced129ae89ae277b1ae327",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
-  "status_note": "new (10-17, T-20261016-97): replaces cargo-link-light-976x8; the rect is UI/UX's to adopt"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-105, in dock/proof (the light alone on the open bay, the arrival in place, both ends at 3x)",
+  "status_note": "new (10-17, T-20261016-97): replaces cargo-link-light-976x8; the rect is UI/UX's to adopt; clipped to the floor (10-17, T-20261016-105)"
  },
  "cargo-link-light-976x48-step1": {
   "size": [
@@ -18086,10 +18086,10 @@
   ],
   "src": "dock/make-link-light.py",
   "made": "the link light's reveal, cut 1 of 4: its first 244 px with a soft 24 px leading edge (the light running in)",
-  "sha256": "a24db5ae1ce6b970525f9fdd73e2be82a0ffb42286da9d65482f66aaf271bedd",
+  "sha256": "e57de07340541a7facef1b0d897044f8a726a76d78a37131e1a5d8c0e15f6c97",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
-  "status_note": "new (10-17, T-20261016-97)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-105, in dock/proof (the light alone on the open bay, the arrival in place, both ends at 3x)",
+  "status_note": "new (10-17, T-20261016-97); clipped to the floor (10-17, T-20261016-105)"
  },
  "cargo-link-light-976x48-step2": {
   "size": [
@@ -18104,10 +18104,10 @@
   ],
   "src": "dock/make-link-light.py",
   "made": "the link light's reveal, cut 2 of 4: its first 488 px with a soft 24 px leading edge (the light running in)",
-  "sha256": "86acd35e0d92ea1aa97b6d48f5c3e5a3da7f3cccc30a387dee908b7ed3ee0286",
+  "sha256": "1b01d833c795d27a5b32232b2836a4ac529b875363f5e1557eb53d9ad70785fc",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
-  "status_note": "new (10-17, T-20261016-97)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-105, in dock/proof (the light alone on the open bay, the arrival in place, both ends at 3x)",
+  "status_note": "new (10-17, T-20261016-97); clipped to the floor (10-17, T-20261016-105)"
  },
  "cargo-link-light-976x48-step3": {
   "size": [
@@ -18122,9 +18122,9 @@
   ],
   "src": "dock/make-link-light.py",
   "made": "the link light's reveal, cut 3 of 4: its first 732 px with a soft 24 px leading edge (the light running in)",
-  "sha256": "03c978e8a5f28fa045f2b8de1e031a81b0ef5770850e8a841dfce2689bf7aba9",
+  "sha256": "fa6430de234730cfdc3f9bd1aea7bdcd0798648d4874b2676c4cc747a05609ba",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
-  "status_note": "new (10-17, T-20261016-97)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-105, in dock/proof (the light alone on the open bay, the arrival in place, both ends at 3x)",
+  "status_note": "new (10-17, T-20261016-97); clipped to the floor (10-17, T-20261016-105)"
  }
 }

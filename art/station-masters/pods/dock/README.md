@@ -34,3 +34,12 @@ Made by `make-link-light.py`. `make-dock.py`'s 976 × 8 section is kept as the r
 - `link-light-on-open-bay-1x.png`: the light alone.
 - `arrival-floor-2x.png`: the floor strip at 2×.
 - **Stand-ins:** the ribbon (Cargo's style, typed), the band's words, which mibis came and went, and the golden's bottom line.
+
+## T-20261016-105: the link light clipped to the floor
+The review (`results/review-art-2026-10-16d.md` §2) found the light's rectangle spilling onto the dark side walls at both ends.
+- **The clip:** `cargo-link-light-976x48` and its three step cuts are now clipped to the open bay's floor trapezoid. Its corners were read off `cargo-bay-992x320`: far (96, 238) and (927, 238), near (33, 323) and (990, 323). The clip is inset 6 px from each side's bevel, with a 4 px soft edge. No light lands on the walls.
+- **The proofs** (`proof/`):
+  - `link-light-on-open-bay-1x.png`;
+  - `arrival-in-place-1x.png`, **the owner's proof**;
+  - `link-light-on-open-bay-ends-3x.png` and `arrival-in-place-ends-3x.png`, both ends at 3× (x 16–184 and 856–1008, y 220–330).
+- **The haze:** the pale haze higher on the walls is in the bay painting itself, not the light.

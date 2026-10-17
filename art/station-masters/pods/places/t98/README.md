@@ -11,3 +11,18 @@
 **Proofs** (`proof/`):
 - `badges-on-pods-collection-1x.png`: the five badges on the batch's `pods-collection` (cf6bc257), labelled. The cave badge is set in the last well for the proof.
 - `badges-old-wood-then-five-4x.png`: the old wood badge, then the five.
+
+## T-20261016-105: a whole tree? None reads at 32
+The review (§3) asked for one whole tree, trunk and crown, against lighter ground, read by its silhouette.
+
+**Where I looked:** every wood painting in the repository.
+- **The sitting backdrop r1:** its trees stand in mist, but their crowns merge into one dark canopy. At 32 a window holding a whole tree reads as muddy trunk columns.
+- **r2:** it crops above the trunks, so no crown is in it.
+- **The two canopy paintings:** they show crowns from above, with no trunk.
+- **`placeref-wood`:** a pixel-art reference, not the place's painting.
+
+**The tries:** `proof/t105-whole-tree-candidates-4x-and-1x.png` shows six windows at 4× and 1×.
+
+**The outcome:** no whole tree reads at 32, so I make no further cut, and `place-wood-32x32` stays T-98's. The spec's §6 word fallback is UI/UX's to rule.
+
+**For the record:** the closest is a single crown from above (the canopy painting, "crown, top left"). At 1× it reads as a round leafy top, but it has no trunk and wasn't the ruled idea.

@@ -1,8 +1,8 @@
 """T-20261016-97: the link light repainted as light on the bay floor (results/review-art-2026-10-16c.md §4: the 976 x 8 read as a cream rule).
 - cargo-link-light-976x48 at (24, 264): a warm pool lying on the floor along the crates' feet line (y 296, row 32). It is brightest at a soft
   core on that line and falls off over the floor: shorter above (the floor recedes) and longer below, toward the eye. It is strongest at the
-  bay's left edge, where the link comes in. It lights only the floor: its alpha follows the open bay's own floor
-  (cargo-bay-992x320: floor where green leads red, softened), and it takes the floor's grain, so it is shown by what it lights. It ends at
+  bay's left edge, where the link comes in. It lights only the floor: its alpha is clipped to the open bay's floor trapezoid between the side walls
+  (T-20261016-105; read off cargo-bay-992x320), and it takes the floor's grain, so it is shown by what it lights. It ends at
   y 312, the home band's top. The crates are drawn over it.
 - cargo-link-light-976x48-step1, -step2, -step3: the first 244, 488 and 732 px, each with a soft leading edge (24 px), for the spec's 4 cuts
   (step 4 is the full master). The build may instead clip the full master; then each cut's front is a hard edge.
@@ -17,7 +17,11 @@ def srgb(l): l = np.clip(l, 0, 1); return np.where(l <= .0031308, l * 12.92, 1.0
 W, H, X0, Y0, FEET = 976, 48, 24, 264, 32
 bay = np.asarray(Image.open(os.path.join(sl, "cargo-bay-992x320.png")).convert("RGB")).astype(float)
 under = bay[Y0 - 48:Y0 - 48 + H, X0 - 16:X0 - 16 + W]                       # the bay under the rect (the bay is at (16, 48))
-floor = nd.gaussian_filter(((under[..., 1] - under[..., 0]) > 2).astype(float), 1.5)
+# the floor's trapezoid between the side walls (T-20261016-105), read off cargo-bay-992x320 in screen pixels: its far corners (96, 238)
+# and (927, 238), its near corners (33, 323) and (990, 323); inset 6 px from each side's bevel, with a 4 px soft edge
+sy = np.arange(H)[:, None] + Y0 + .5; sx = np.arange(W)[None, :] + X0 + .5; slope = 63 / 85
+dl = sx - (96 - (sy - 238) * slope) - 6; dr = (927 + (sy - 238) * slope) - sx - 6
+floor = np.clip(np.minimum(dl, dr) / 4, 0, 1); floor = floor * floor * (3 - 2 * floor)
 lum = lin(under) @ np.array([.2126, .7152, .0722]); grain = lum / np.maximum(nd.gaussian_filter(lum, 6), 1e-4)
 yy, xx = np.mgrid[0:H, 0:W] + .5
 d = yy - FEET; sig = np.where(d < 0, 6.0, 13.0)
