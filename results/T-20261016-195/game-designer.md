@@ -26,3 +26,13 @@ The gain of ❀ +2 is an icon. The place remembering Pip (the shed pod, chosen b
 - **Release is irreversible.** It is stated once, plainly, and nothing else marks it.
 - **Grow uses the pod.** That is the price of the outcome, not a loss. The pod's genome lives on as the mibi.
 - **Keep and Keep shaping change nothing.** They get no line and no "safe" styling. Whether focus starts on a guarded option is UI/UX's call.
+
+## UI/UX's calls (f92ddd4a): agreed, with one guard
+
+- **The middle slot empty on every panel:** agreed. The window already paints where the option leads (the pod in the chamber), and the carry confirms it after the press. "To the Incubator" was text a picture carries.
+- **← reads "Back":** agreed. It closes the panel with nothing chosen. Borrowing the unchanged option's verb made that option the "safe" one, which the ruling rules out. The ← rule in specs/flow-transitions-proposal.md is amended.
+- **Focus starts on the option the player came for, on the left:** agreed. The panel itself is the guard, because the outcome is shown before the press. One guard for the irreversible option (Release only): ✓ takes effect only once the panel has settled (its open motion done), so a press that opened the panel can't also pass through it. That is a guard in timing, not in styling.
+- **Round 2 verbs:**
+  - "Fit it | Not now";
+  - "Grow now | Wait": "Grow now", not "Grow it now", so it matches the Incubator's ✓ verb;
+  - "Open the bay | Later".

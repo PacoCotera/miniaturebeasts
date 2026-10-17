@@ -58,7 +58,7 @@ Every other spend (Identify, Read, Mend) is one press, with its price on the bot
 The same edit brings the dock moment in line with the Cargo redesign: no report card, no rack wells, and the gold glint (not the star, which is now the wish) on a crate holding a pod new to the player.
 
 **3. What ← names.** ← goes one step back along the path that led here, and the bottom line names that screen:
-- on a panel, ← is the safe option's verb, and nothing is spent;
+- on a panel, ← reads "Back": it closes the panel with nothing chosen and nothing spent. It does not borrow either option's verb, so no option is styled as the safe one (amended under the owner's ruling, T-20261016-195);
 - from a room entered from Home, or from a Home or Idle notice, ← names Home;
 - after a jump (Grow → the Incubator, Open the bay → Pods, the hatch → the Vivarium), ← returns to where the jump came from, until the player moves on;
 - if the action used up that screen's subject (the pod grown, the crates opened, the bud hatched), ← skips that screen. It names the step before it, or Home, so ← never lands on an empty bench, an empty bay or an empty chamber;
