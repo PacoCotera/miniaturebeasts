@@ -180,7 +180,16 @@ UI/UX read the device sheet as one flow (`specs/flow-transitions-proposal.md`) a
 - **1 and 4** go into the concepts now, at layout cost only:
   - P1's "Grow it now?" shows the player's own pod;
   - the genome, Incubator and Cargo layouts mark where the pod enters and leaves.
-- **2, 3 and 5** need the game designer's sign-off. They then become one flow ticket from the lead, built with T-177. Neither is started piecemeal.
+- **2, 3 and 5** become one flow ticket from the lead, built with T-177. None of them is started piecemeal.
+
+**The game designer's sign-off** (`specs/flow-transitions-proposal.md`, a35ac18a):
+- **(2) When a notice clears:**
+  - an event notice clears when its own thing is on screen after the screen settles (passing through doesn't count);
+  - a steady wait clears only when acted on;
+  - each notice clears only its own thing.
+- **(4) The dock choice as P1:** after the show, never in place of it. Two windows (Open the bay, Later), ← as Later, no price, and no panel on an empty trip.
+- **(5) Panels:** exactly the existing list. Identify, Read and Mend are one press with the price on the bottom line first. No second confirmation, no toast, no "✓ again".
+- **Knock-on from (1), accepted:** on the four hand-offs, the pod's carry replaces the 2 s arrival ribbon. One picture says the arrival, not two. The ribbon stays only for jumps with no carry. The art director's §9 row says so.
 
 ## 5. Calls made here, for the record
 
