@@ -42,3 +42,20 @@ Cargo is where the crates the Companion carried home are opened. The player sees
 - **The creative director**: what the bay is in the world (a dock, a hold, a receiving bay of the lab), and C1 against C2.
 - **The art director** (T-20261016-171): paint C1 and C2 at 1024 × 600, labelled, to the research-hands bar.
 - **The lead:** builds on Cargo stay parked until the owner chooses.
+
+## The layout, to the creative director's direction (2026-10-17)
+
+The creative director chose **C2, crate by crate**, as the Station's receiving bay (`specs/station-experience-review.md` §3.4). The materials fly into the top bar's counters, and **there are no store tanks**: the CD overrules them and the game designer's §6.2 line, because the top bar is the stock. Layout at 1× on slate: `specs/redesign-cargo/layout/cargo-c2-crate.png`.
+
+| Region | Rect | What |
+| --- | --- | --- |
+| Bay door | 16, 48, 992 × 128 (the opening 384, 64, 256 × 112) | The door of the machine, open; each crate slides in through it |
+| Bay floor | 16, 184, 992 × 368 | The slate face and the floor; no shelf, no louvred wall |
+| This dock's crates | 32 + 40k, 216, 32 × 24 each | One small crate a trip, in order: opened ones painted, the current one ringed. Its count is in the pictures, no words |
+| The crate | 352, 200, 320 × 176 (lid 344, 190, 336 × 24) | The current crate, opened, painted large; its trip's place badge 56 × 56 at (8, 24) inside it |
+| Its contents | in front of the crate, y 392 to 520 | The things themselves: pods as their species' shells (80 × 104), Energy cells, Data cartridges and Essence vials (48 × 64) with "+n" beside each, and finds as their objects |
+| The flight | — | Each material flies from the floor to its top bar counter, which ticks (240 ms flash); each pod flies to the Pods hatch |
+| Pods hatch | 840, 200, 152 × 336 (pane) | The hatch, and its wells as six sockets: free ones lit `mint`, full ones show their pod. A pod with no free well stays sealed on the floor, and the hatch shows it is full (no lit socket) |
+| Bottom line | — | ✓ Take it all in; the context "any key: the next crate" while crates remain; ← Home |
+
+**Pace:** the crates open in turn by themselves; any key skips to the next; ✓ takes everything in at once. **Gone:** the colour bars, the materials row, the pod rack, the goal line, reach, the world rows and the cream ribbon plate. **Gate test:** "this crate is from that trip; these came out of it; the energy went to my stock; the pods went to the rack".

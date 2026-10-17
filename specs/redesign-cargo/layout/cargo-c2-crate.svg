@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Cargo</text>
+<rect x="420" y="12" width="12" height="16" fill="#ffd441" stroke="none" stroke-width="0" rx="3"/>
+<text x="438" y="27" font-size="16" fill="#adf6e0" text-anchor="start" >19 +6</text>
+<rect x="492" y="12" width="12" height="16" fill="#5bb9f3" stroke="none" stroke-width="0" rx="3"/>
+<text x="510" y="27" font-size="16" fill="#f1ebdf" text-anchor="start" >21</text>
+<rect x="564" y="12" width="12" height="16" fill="#5cbb4c" stroke="none" stroke-width="0" rx="3"/>
+<text x="582" y="27" font-size="16" fill="#f1ebdf" text-anchor="start" >30</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >C2 crate by crate (CD §3.4): crate 2 of 3 opening; its Energy is flying to the top bar</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >LAYOUT on slate, 1×. T-20261016-164</text>
+<rect x="16" y="48" width="992" height="128" fill="#262b33" stroke="#3d434b" stroke-width="1" rx="10"/>
+<rect x="384" y="64" width="256" height="112" fill="#161b21" stroke="#3d434b" stroke-width="1" rx="6"/>
+<text x="512" y="124" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the bay door, open (the crates slide in here)</text>
+<rect x="16" y="184" width="992" height="368" fill="#20262d" stroke="#3d434b" stroke-width="1" rx="10"/>
+<text x="32" y="204" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the bay floor (slate face)</text>
+<rect x="32" y="216" width="32" height="24" fill="#d89b14" stroke="#7d5435" stroke-width="1.5" rx="4"/>
+<rect x="72" y="216" width="32" height="24" fill="#d89b14" stroke="#7d5435" stroke-width="1.5" rx="4"/>
+<rect x="68" y="212" width="40" height="32" fill="none" stroke="#ffe6ad" stroke-width="2" rx="6"/>
+<rect x="112" y="216" width="32" height="24" fill="#5d5974" stroke="#7d5435" stroke-width="1.5" rx="4"/>
+<text x="32" y="262" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the crates of this dock, in order (the opened ones gold)</text>
+<rect x="352" y="200" width="320" height="176" fill="#d89b14" stroke="#7d5435" stroke-width="2" rx="12"/>
+<rect x="344" y="190" width="336" height="24" fill="#bf9157" stroke="#7d5435" stroke-width="2" rx="6"/>
+<text x="512" y="300" font-size="10" fill="#4b3023" text-anchor="middle" >crate 2, opened, painted large</text>
+<rect x="360" y="224" width="56" height="56" fill="#5cbb4c" stroke="#23292f" stroke-width="1.5" rx="8"/>
+<text x="388" y="294" font-size="8" fill="#23292f" text-anchor="middle" >its trip's place</text>
+<ellipse cx="432" cy="456" rx="40" ry="52" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<ellipse cx="520" cy="456" rx="40" ry="52" fill="#c79a6b" stroke="#4b3023" stroke-width="2" fill-opacity="1"/>
+<ellipse cx="608" cy="456" rx="40" ry="52" fill="#c79a6b" stroke="#4b3023" stroke-width="2" fill-opacity="1"/>
+<text x="520" y="528" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">its pods: their species' shells</text>
+<rect x="680" y="400" width="48" height="64" fill="#5bb9f3" stroke="#23292f" stroke-width="1.5" rx="4"/>
+<text x="704" y="436" font-size="8" fill="#1d232b" text-anchor="middle" >cartridge</text>
+<rect x="736" y="400" width="48" height="64" fill="#5cbb4c" stroke="#23292f" stroke-width="1.5" rx="8"/>
+<text x="760" y="436" font-size="8" fill="#1d232b" text-anchor="middle" >vial</text>
+<text x="704" y="484" font-size="16" fill="#f1ebdf" text-anchor="start" >+4</text>
+<text x="760" y="484" font-size="16" fill="#f1ebdf" text-anchor="start" >+9</text>
+<rect x="232" y="392" width="48" height="64" fill="#ffd441" stroke="#23292f" stroke-width="1.5" rx="8"/>
+<path d="M256 392 C 300 200, 380 60, 440 30" stroke="#adf6e0" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+<text x="232" y="476" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">Energy +6 in flight</text>
+<rect x="840" y="200" width="152" height="336" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="916" y="228" font-size="16" fill="#f1ebdf" text-anchor="middle"  font-weight="500">Pods</text>
+<rect x="864" y="248" width="104" height="120" fill="#161b21" stroke="#565c63" stroke-width="1.5" rx="8"/>
+<text x="916" y="312" font-size="9" fill="#8d8aa6" text-anchor="middle" >the hatch</text>
+<rect x="860" y="392" width="32" height="40" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="6"/>
+<ellipse cx="876" cy="412" rx="10" ry="14" fill="#c79a6b" stroke="#4b3023" stroke-width="1" fill-opacity="1"/>
+<rect x="900" y="392" width="32" height="40" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="6"/>
+<ellipse cx="916" cy="412" rx="10" ry="14" fill="#c79a6b" stroke="#4b3023" stroke-width="1" fill-opacity="1"/>
+<rect x="940" y="392" width="32" height="40" fill="#1d232b" stroke="#adf6e0" stroke-width="2" rx="6"/>
+<rect x="860" y="440" width="32" height="40" fill="#1d232b" stroke="#adf6e0" stroke-width="2" rx="6"/>
+<rect x="900" y="440" width="32" height="40" fill="#1d232b" stroke="#adf6e0" stroke-width="2" rx="6"/>
+<rect x="940" y="440" width="32" height="40" fill="#1d232b" stroke="#adf6e0" stroke-width="2" rx="6"/>
+<text x="916" y="512" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">its wells: 4 free (lit)</text>
+<path d="M640 440 C 720 380, 800 330, 860 300" stroke="#c79a6b" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Take it all in</text>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >any key: the next crate</text>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Home</text>
+<text x="16" y="556" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">no colour bars, no materials row, no pod rack, no goal line, no reach, no world rows; the things themselves, then where they go</text>
+</svg>
