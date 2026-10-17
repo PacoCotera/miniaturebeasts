@@ -11,10 +11,18 @@ The owner's ruling on T-170: Return read as a loss, and the panel leaned on text
 ## Return: two homes, not a farewell
 
 - **What T-170 got wrong.** Its Return window said "loss" before any word did: dusk, a cold grade, Pip small and walking away, footprints leading out of frame. Beside it, Keep was big, warm and asleep. The picture made the choice for the player.
-- **Return now.** Pip is at its pond, mid-bound on a mossy bank, in open daylight with the water behind. It is the wild, and Pip is thriving there.
+- **Return now.** Pip is at its pond, bounding along a mossy bank toward two of its own kind, who are already there, in open daylight with the water behind. It is the wild, and Pip is going home to it. The story is "back to its kind", not "away from you".
 - **Keep now.** Pip is in its vivarium by the burrow, awake.
-- **What is the same in both:** Pip's scale (the same frame at 0.5), the light (the same warm daylight from the top left), Pip awake and facing us, and the same moss underfoot. The bank is the vivarium's own moss and stones, so the wild reads as the life's home ground, not somewhere bleak.
-- **What differs is only the place:** open sky and water against the burrow and the glass's world. With the words covered, the two windows read as two homes.
+- **The same in both:**
+  - Pip's scale (the same frame at 0.5);
+  - the light (the same warm daylight from the top left);
+  - Pip awake;
+  - the moss underfoot. The bank is the vivarium's own moss and stones, so the wild reads as the life's home ground, not somewhere bleak.
+- **Different at a glance:**
+  - the place: open sky and water, against the burrow and the glass's world;
+  - the company: Pip with its kind, against Pip with you.
+
+  Plate 04a records the owner rejecting an earlier Return because "side by side the two options look the same" (the same Pip on the same plinth, only the backdrop changed). A change of place alone risks that again. The wild Loikas give Return its own content without making it the sad one.
 - **The coral line and the ✕ are gone.** Nothing on the panel is coral, red or crossed. Returning harms neither the player nor the mibi.
 
 ## The icons carry the sentences

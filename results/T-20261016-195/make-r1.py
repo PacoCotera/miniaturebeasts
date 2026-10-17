@@ -26,7 +26,7 @@ def daylight(img, strength=0.22):
 
 
 def scene_return_home(w, h):
-    """Return: Pip home at its pond, mid-leap on a mossy bank under open sky: the wild, in daylight, thriving."""
+    """Return: Pip home at its pond, bounding along a mossy bank toward two of its own kind, under open sky, in daylight."""
     sky = src('sitting-backdrop-pond-544x408.png')
     k = (h + 40) / 408
     sky = sky.resize((round(544 * k), h + 40), Image.LANCZOS).crop((0, 40, w, h + 40))  # the water band in view
@@ -44,9 +44,16 @@ def scene_return_home(w, h):
     bank.putalpha(m.filter(ImageFilter.GaussianBlur(3)))
     sky.alpha_composite(bank, (0, h - bank.height))
     sky = daylight(sky)
-    pip = src('pip-air-304x312.png')  # body and its shadow on the ground, in one frame (feet row 305)
+    # its own kind, already there: two wild Loikas further along the bank, smaller with distance, facing Pip
+    for name, sc, fx, flip in (('rich-marked-300x310.png', 0.25, 0.70, True), ('rich-plain-300x310.png', 0.21, 0.86, True)):
+        f = figure(name, sc, flip=flip)
+        x, y = int(w * fx) - f.width // 2, h - 62 - f.height
+        sh = contact(round(f.width * 0.8), 8, 0.45)
+        sky.alpha_composite(sh, (x + f.width // 2 - sh.width // 2, y + f.height - sh.height // 2 - 1))
+        sky.alpha_composite(f, (x, y))
+    pip = src('pip-air-304x312.png').transpose(Image.FLIP_LEFT_RIGHT)  # bounding toward them (body and shadow, feet row 305)
     pip = pip.resize((round(304 * 0.5), round(312 * 0.5)), Image.LANCZOS)
-    px, py = int(w * 0.36), h - 30 - round(305 * 0.5)
+    px, py = int(w * 0.06), h - 22 - round(305 * 0.5)
     sky.alpha_composite(pip, (px, py))
     return sky
 
