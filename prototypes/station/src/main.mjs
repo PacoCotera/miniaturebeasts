@@ -144,14 +144,16 @@ const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), do
 let caddyKey = "";
 const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 // The Caddy's state as the control and the play page's shell take it (frame.json navigation.dock; the shell never reads the save): canDock is the exact condition state.mjs refuses a dock on
-const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock) });
+// opened: what the last opening brought, until the next dock or lift; partner: the Companion's partner (its lead if carried and grown, else the first grown mibi with it), for the Caddy's lines (play/src/caddy.mjs)
+const partnerName = () => { const p = S.partnerOf(G.st, G.sv, G.settings); return p ? p.name : null; };
+const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName() });
 let lastPosted = "";
 function postCaddy(force = false) {
   const m = caddyState(), k = JSON.stringify(m); if (!force && k === lastPosted) return; lastPosted = k;
   if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
 }
 function updateCaddy() {
-  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock; if (key === caddyKey) return; caddyKey = key;
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner; if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";

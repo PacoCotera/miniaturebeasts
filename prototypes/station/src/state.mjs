@@ -226,6 +226,11 @@ export function carriedIds(st, sv) {
   const raw = sv && Array.isArray(sv.carried) ? sv.carried : sv && sv.with != null ? [sv.with] : [];
   return raw.filter((id) => { const m = mibiById(st, id); return m && !m.released; });
 }
+// The Companion's partner, as the Companion picks it: its lead if carried and grown, else the first grown mibi with it, else none (exploration partnerMibi). The Caddy's lifted line names it.
+export function partnerOf(st, sv, settings = DEFAULT_SETTINGS) {
+  const c = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean), grown = (m) => !!m && isAdult(st, m, settings), l = c.find((m) => m.id === (sv && sv.lead));
+  return grown(l) ? l : c.find(grown) || null;
+}
 // The requests the Companion has not applied yet, in seq order. The face shows them as pending, never as carried.
 export const pendingCarry = (st, sv) => (st.carryReqs || []).filter((r) => r.seq > ((sv && sv.carrySeen) || 0)).sort((a, b) => a.seq - b.seq);
 // The set as it will be once every request applies (the Companion's own rules: an add is refused when full, already carried or released; a home is a no-op when not carried).

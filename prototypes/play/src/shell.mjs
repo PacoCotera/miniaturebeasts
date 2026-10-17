@@ -252,7 +252,7 @@ cradle.addEventListener("click", () => dockPress());
 const giveKeysBack = () => { if (document.activeElement === dockCtl) dockCtl.blur(); };
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin || e.source !== frames.station.contentWindow) return; const m = e.data || {}; if (m.t !== "mb-caddy") return;
-  const was = caddy; caddy = { canDock: !!m.canDock, docked: !!m.docked, crates: m.crates | 0, pending: !!m.pending };
+  const was = caddy; caddy = { canDock: !!m.canDock, docked: !!m.docked, crates: m.crates | 0, pending: !!m.pending, opened: m.opened ?? null, partner: m.partner ?? null };   // opened, partner: the Caddy's lines (src/caddy.mjs)
   if (!gotCaddy) { gotCaddy = true; seatOff = caddy.docked && tier !== "short" ? 8 : 0; layout(); return; }
   if (awaiting === "dock") {
     clearTimeout(askTimer);

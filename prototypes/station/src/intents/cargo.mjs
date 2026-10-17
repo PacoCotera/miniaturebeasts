@@ -69,7 +69,8 @@ export function openBay(h) {
       for (const at of points) h.at(t0 + at, () => { c.crate = k; c.at = at; }, sk);
     }
   });
-  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; }, sk);   // a cut to the report: the door shut, the plate on it (R8)
+  const opened = { crates: r.plays.length, newPods: c.run.report.newPods ?? 0 };   // what the Caddy says after the opening (play/src/caddy.mjs), kept until the next dock or lift
+  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; h.ui.caddyOpened = opened; }, sk);   // a cut to the report: the door shut, the plate on it (R8)
   h.save(); return r;
 }
 

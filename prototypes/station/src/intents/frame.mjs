@@ -24,6 +24,7 @@ const landsHome = (h) => { const d = h.specs.frame.navigation.dock; return !d.st
 export function dock(h, fromIdle = false, keysElsewhere = false) {
   const r = T.dock(h.st, h.sv, h.settings, h.now());
   if (!r.ok) { h.say(r.msg); return r; }
+  h.ui.caddyOpened = null;   // a dock or a lift: the Caddy's "after the opening" lines are over
   if (r.docked && (fromIdle || (keysElsewhere && landsHome(h)))) { h.ui.home.f = "room"; if (h.ui.screen !== "home") h.goto("home"); }   // the Dock from Idle docks and lands on Home with the ring on the room (frame.json idle.keys.dock)
   if (r.docked) {
     h.ui.cargo.mend = r.mend;   // Cargo keeps the dock's mend until the report names it (cargo.json regions.report.probe)
