@@ -250,4 +250,4 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 - **The first session:** how a new player meets the loop, and how soon their first mibi arrives.
 - **Printing in play:** whether the Caddy's print and scan are part of play or keepsakes only.
 - **The economy's pacing** in the finished game.
-- **The pod a returned mibi's place sheds:** what genome it carries. The framework has no operation that makes a pod from one mibi. The candidates are its exact genome recorded by its origin, a new genome drawn from its own two copies, or a wild pod of its species seeded with its looks.
+- **The pod a returned mibi's place sheds:** chosen, not built yet. It is a new genome drawn from the mibi's own two copies, by an explicit selfing path at a fixed, mild kinship, and redrawn if it would copy the parent. Its origin records the mibi as both parents. It carries no self-changing mark and is identified and read like any pod. When the place sheds it is not designed yet.
