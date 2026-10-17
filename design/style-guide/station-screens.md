@@ -41,7 +41,7 @@ The player always knows which level a screen is about. The Library, the Book and
 | Feels | rugged, handled, calm; working for the life | warm, soft, alive |
 | Light | the same warm daylight from the top left, caught softly; nothing glows for show | the warm key light from the top left, by the time of day |
 | Colour | sage and sand housing, dark rubber, dark matte slate panels, `bone` type, orange for the action only, small lamps in device light (`mint`, `amber`). Never brown panels or cream fills ([§2](README.md#2-palette)) | greens, warm earth, water, the creatures' own colours |
-| Materials | powder-coat, rubber, moulded polymer, canvas, braided hose; paper only in the Library | plants, soil, stone, water, fur and leaf |
+| Materials | powder-coat, rubber, moulded polymer, canvas, braided hose; paper only as a static object (a pod's tag, the Library's book), never for what changes | plants, soil, stone, water, fur and leaf |
 | Moves | the life-support works quietly (a mister, a lamp, a feed line); controls move when something happens | all the time |
 | Words | a few per section | none |
 
@@ -58,7 +58,7 @@ One device. Every section is a part of it, in the same materials and light. Home
 | Section | What it is on the device |
 | --- | --- |
 | **Vivarium** (Home, idle, one mibi up close) | The living world the device keeps; up close, a mibi at home, never a specimen on display |
-| **Pods** | The sample case: pods in fitted, worn cut-outs, their names on the machine's display (paper is the Library's) |
+| **Pods** | The sample case: pods in fitted, worn cut-outs, a static paper tag on each pod; what changes is on the machine's display |
 | **Research** (Create, Cross and Wish, Probe bench) | The lab's advanced research and crafting benches, where you edit life: the gene bench (Create), the splicer (Cross and Wish), the Probe's service dock; what is under study in the device's light, its state on the machine's own displays and lamps |
 | **Incubator** | The bridge between research and the vivarium: the player's own pod candled by an instrument of the machine, the founder showing through its shell in the device's light. No moss nest, no egg |
 | **Library** | The field journal the device keeps: a worn botanical expedition volume |
@@ -118,7 +118,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 
 **Purpose.** What the trip brought home arrives: each crate is one trip, and opening it shows what came out and where each thing goes (materials to the top bar's counters, pods to the rack). Docking shows the arrival and accepts nothing; opening the bay is the player's choice. **Reads first:** the crates, then their contents flowing to the store and the rack.
 
-- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks and its contents lie out in front of it as things (pods, battery cells, cartridges, vials, finds); the materials fly into the top bar's counters, which tick (there are no store tanks); the pods go out through the Pods hatch, which shows its free wells, and a pod with no free well waits on the bay floor, still sealed, until one frees; the Probe dock shows the free mend; a ribbon names the crate ("First crate home"); the world turn jumps. The Cargo redesign (T-20261016-164) sets the bay's layout.
+- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks and its contents lie out in front of it as things (pods, battery cells, cartridges, vials, finds); the materials fly into the top bar's counters, which tick (there are no store tanks); the pods go out through the Pods hatch, which shows only the wells the pods land in, and only while they fly; a pod with no free well waits on the bay floor, still sealed, until one frees; the Probe dock shows the free mend; a ribbon names the crate ("First crate home"); the world turn jumps. The Cargo redesign (T-20261016-164) sets the bay's layout.
 - **Living window.** The vivarium stays; residents turn toward the bay as crates open.
 - **Composition.** Home's layout; the Bay module lifts 2 px, the chrome lift, and nothing is scaled; the ribbon sits inside the glass's top. There is no report card: reach goes to the Companion's map, news about the player's mibis to the Station's return signals, and news about the world to the Companion's map.
 - **Lively / quiet.** Lively: the crate, the pods' travel, the residents' reaction. Quiet: the other modules.
@@ -151,7 +151,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 >
 > **Look.** The sample case: pods in fitted cut-outs set into the slate instrument face, lit from the top left with contact shadows; the rail and rings in device light; the name and state on a display pane.
 >
-> **Do:** the pod lit and grounded in its cut-out (03b); the name on the display (10a); progress in `mint` (02c). **Don't:** a paper tag on the pod (10a); a brown painted wall behind the case (02b); glyphs under 24 px carrying meaning (04d).
+> **Do:** the pod lit and grounded in its cut-out (03b); a static paper tag on the pod, its changing state on the display (10a); progress in `mint` (02c). **Don't:** paper that changes with play (10a); a brown painted wall behind the case (02b); glyphs under 24 px carrying meaning (04d).
 
 **Vibe.** Pods: the sample case.
 
@@ -298,9 +298,9 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 > **Intent.** The species you have met, as a book.
 >
-> **Look.** The one place for paper: a worn botanical volume, warm paper and cloth, lit from the top left.
+> **Look.** A worn botanical volume, warm paper and cloth, lit from the top left.
 >
-> **Do:** paper that never changes while it is on screen. **Don't:** paper that changes with input; the book's warm paper used anywhere else on the Station (10a).
+> **Do:** paper that never changes while it is on screen. **Don't:** paper that changes with input (10a).
 
 **Vibe.** Library: a botanical tome. Two screens: the **Spread** and the **Book**. The Library is one object, an old botanical-expedition volume, and both screens are its pages.
 

@@ -30,7 +30,7 @@ Both devices are rugged, matte field gear: sage powder-coat, dark rubber and scr
 
 **The three sentences every screen obeys.**
 1. **The life leads.** The creature, pod or place is the subject: big, lit and grounded. The device frames it and never competes with it.
-2. **The machine shows what changes.** Anything that changes with input or time is on the machine's own display, lamps or moving parts. Paper exists only in the Library.
+2. **The machine shows what changes.** Anything that changes with input or time, or that the player acts on, is on the machine's own display, lamps or moving parts. Paper is fine as a static object (a tag on a pod, the Library's book), never as an interactive part of the device.
 3. **Pictures before words.** An outcome, a state or a meaning is a picture or a sculpted mark. Words name things; they never explain them.
 
 **Why the rejected Incubator, Cargo report and Return panel failed** (plate 01, right). They broke all three sentences:
@@ -236,15 +236,14 @@ A picture or a mark the screen already uses beats a word. Stand-in text at the l
 
 **How to read the table.**
 - **The purpose sentence and Communicates** are the game designer's (from `specs/purpose-briefs-b20261017-1.md` and the screens' purpose lines).
-- **The direction** is the visual one.
-- **The direction** is the creative director's Station experience review (work-queue `specs/station-experience-review.md`); the order of redesign is there too.
+- **The direction** is the visual one, from the creative director's Station experience review (work-queue `specs/station-experience-review.md`); the order of redesign is there too.
 
 **The Station.**
 
 | Family | Purpose (one sentence) | Reads first | Direction | Plates |
 | --- | --- | --- | --- | --- |
 | **Home, Vivarium, Idle, a mibi up close** | The collection alive, kept by the device | the residents, then what needs you | Kept as accepted: the warm painted vivarium leads. The only change is their panes, which take the one slate pane (§4 Pane), so they lose only their brown | 01 |
-| **Pods** (the sample case) | The pods you brought home, and what you know of each | the pod, lit in its fitted cut-out | The instrument family pass: the brown stage becomes the slate face, the inner riveted bezel goes, each pod sits in a recess with its contact shadow, the side panes are the slate pane. No paper tag, no floating labels, no line under 16 px | 03b, 10a |
+| **Pods** (the sample case) | The pods you brought home, and what you know of each | the pod, lit in its fitted cut-out | The instrument family pass: the brown stage becomes the slate face, the inner riveted bezel goes, each pod sits in a recess with its contact shadow, the side panes are the slate pane. A static paper tag on the pod may stay; what changes is on the display. No floating labels, no line under 16 px | 03b, 10a |
 | **Create** (the gene bench) | Shape your mibi's genes before it grows, and see what you changed | the founder, big and lit, then the changed marks | The genome is G2's rack with the body answering in light. The founder stands big and lit in a scanning recess of the slate face; beside it one column of rows is the machine's readout: each row headed by a crop of this founder's own part (or a doing's behaviour picture) and its one word, each gene a picture of the look it makes in a lit socket. Focusing a row or gene lights that part on the founder in `mint` scan light; a turn changes the founder in the same beat. The genes are the controls; the drum tray goes. No leader lines, no lilac field | 04e, 07a |
 | **Incubator** (candling) | "The life you designed on Create is being grown here, and each time you look it is further along and you know more about it" | the candled pod, the founder forming inside | The candling chamber: the player's own pod (its species shell) held upright in a clamp, in a recess of the slate face, behind clear matte-edged glass. The machine's lamp shines up through the shell in device light, not cream; the known parts show in colour through the shell and the unknown stay frost; the light stays within the chamber. The `mint` ring with chapter studs, and "ready in about n min" in the bottom line. A cleared chapter lights its stud and shows the founder's own part large in the side pane (or a behaviour moment for a doing), with plain words. G2's genome compact in the side column; the stamp on the display. No moss, cushion, plinth, egg, glow or plaque | 02c, 03b, 03c, 03d |
 | **Cargo** (the receiving bay) | "What your trip brought home arrives here: you open each crate and see what came back and where each thing goes" | the open crate and its contents | C2, crate by crate: the bay is the machine's slate face, floor and door. Each crate with its place badge (32 px or more) opens in turn by itself, skippable; ✓ takes everything at once. Its contents lie in front as things (pods as their shells, cells, cartridges, vials, finds). The materials fly into the top bar's counters, which tick; there are no store tanks. The pods go out through the Pods hatch; with no free well they wait sealed on the bay floor. No colour bars, rack, materials row, goal line, reach, world rows or cream ribbon plate | 06a |
@@ -252,7 +251,7 @@ A picture or a mark the screen already uses beats a word. Stand-in text at the l
 | **Probe bench** (the service dock) | Mend and upgrade the Probe the Companion carries | the Probe, upright in its dock | The instrument family pass (as Pods): slate face, no inner bezel, the Probe upright in its vertical cradle in a recess; Mend and Upgrade are slate panes. No loose tools, no gauges that read nothing | 03a |
 | **Dock arrival** | The Companion is home, and its crates come through | the arrival | The bay's own light comes on (lamp to `mint`), and the crates slide in. Device light only, no fanfare graphics | 09a |
 | **Cross and Wish** (the splicer) | Two parents and the child their genes forecast | the two parents and the bud | Create's rules: the subjects sculpted and lit, the genome on the display | 04e |
-| **Library** (the field journal) | The species you have met, as a book | the open page | The one place for paper: a worn botanical volume, warm paper and cloth. Its paper never changes while it is on screen | 10a |
+| **Library** (the field journal) | The species you have met, as a book | the open page | A worn botanical volume, warm paper and cloth. Its paper never changes while it is on screen | 10a |
 
 **The Companion.**
 
@@ -339,7 +338,7 @@ The most words each element may carry. Fewer is always allowed; a word that a pi
 | Genome screen | the chapter names only (one word each) | Letters and rules only in the R detail |
 | Tiles, badges, marks, the bay, crates, progress | **0** | The picture is the meaning |
 | Name tags | the name | |
-| The Library | its own book pages, outside this budget | Paper lives only in the Library |
+| The Library | its own book pages, outside this budget | Its pages are static paper |
 
 #### Companion
 
@@ -419,11 +418,11 @@ Numbers appear only as prices, supplies and counts beside their icon, and as the
 | [07a-layout](plates/07a-layout.png) | the frame and the grid |
 | [07b-companion-frame](plates/07b-companion-frame.png) | the Companion's frame, at 1:1 |
 | [09a-motion](plates/09a-motion.png) | motion timings |
-| [10a-paper](plates/10a-paper.png) | the machine, not paper |
+| [10a-paper](plates/10a-paper.png) | paper is static; what changes is the machine |
 | [11a-companion-hibit](plates/11a-companion-hibit.png) | HiBit creatures |
 | [11b-companion-type](plates/11b-companion-type.png) | Mibi type at 2× |
 
-<img src="plates/10a-paper.png" width="560" alt="Plate 10a: machine not paper"> <img src="plates/11a-companion-hibit.png" width="560" alt="Plate 11a: HiBit"> <img src="plates/11b-companion-type.png" width="700" alt="Plate 11b: Companion type">
+<img src="plates/10a-paper.png" width="560" alt="Plate 10a: paper is static, the machine changes"> <img src="plates/11a-companion-hibit.png" width="560" alt="Plate 11a: HiBit"> <img src="plates/11b-companion-type.png" width="700" alt="Plate 11b: Companion type">
 
 ## 13. Companion drawing rules
 
@@ -453,7 +452,7 @@ Numbers appear only as prices, supplies and counts beside their icon, and as the
 - **One pane, no plate pictures:** Home's modules, the mibi's card and modules, the strip and its tile wells, the namer, the Probe bench's Mend and Upgrade, Compare's pages and every decision panel are the one flat slate pane (§4 Pane), with `ground` wells (§4 Tile). The painted plates (`plate-device-*`, `plate-well-*`, the cargo report plate, `label-plate-cream`, the stamp case plaque) are retired as pictures. The stamp is drawn on the display (§4 Stamp).
 - **Flat panels on the art layer:** the device's panels (bars, panels, panes, tabs and rings) are flat fills with one bevel of light and 1 px hairlines, never dithered and never painted. The layers are in [Station screens, Palette and layers](station-screens.md#palette-and-layers).
 - **Field gear that keeps life going.** The Station is the Companion's sibling, made by the same maker; both dock into the Caddy. The screen is the Station's own face, never a picture of a room with a device in it.
-- **A lab, a genome-editing machine.** The Station is a lab, never a desk. Its research screens are advanced research and crafting benches where you edit life: instruments of the lab, not a craftsman's workbench. Paper, slips, tags and notes appear only in the Library. Every other screen shows its information on the machine: its displays, lamps, readouts and moving parts. Anything that changes with the player's input or with time is on the device's own display, never paper, print or a tag. Paper is only for what never changes, and only in the Library.
+- **A lab, a genome-editing machine.** The Station is a lab, never a desk. Its research screens are advanced research and crafting benches where you edit life: instruments of the lab, not a craftsman's workbench. Information shows on the machine: its displays, lamps, readouts and moving parts. Anything that changes with the player's input or with time, or that the player acts on, is on the device's own display, never paper, print or a tag. Paper may appear anywhere as a static object that never changes while it is on screen, such as a paper tag on a pod; a clipboard never becomes a status screen (plate 10a).
 - **Rugged, matte, handled.** Sage and sand housing, dark rubber, screws, engraved marks; powder-coat, rubber, moulded polymer, canvas, braided hose. Inside the frame, dark matte slate panels and `bone` type; orange for the action only (§2).
 - **Cozy, tethered to its tech.** The equipment that keeps the life going is visible and works for it: feed lines, vents, misters, small gauges, grow lamps. Cozy, never clinical, never hidden.
 - **The vivarium is the most alive thing on the screen,** Miniature Lives in warm daylight, and the eye goes there first.

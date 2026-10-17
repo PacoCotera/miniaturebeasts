@@ -4,8 +4,8 @@
 Run from the repository root:
   python3 design/style-guide/plates/make-plates.py SRC FONTS
 
-SRC holds the inputs: committed goldens of the device sheet (tools/device-sheet.json
-on work-queue), signed slices from masters-pods, station-gate masters and the owner's
+SRC holds the inputs: committed goldens of the device sheet (tools/device-sheet.json on
+work-queue, plus pods-kin.png, batch B-4's pods/pods-overview-kin-focused.png), signed slices from masters-pods, station-gate masters and the owner's
 screenshot. FONTS holds Inter-{Regular,Medium,SemiBold}.ttf (OFL). Every crop is at 1x;
 a drawn example is a diagram in exact palette colours, labelled as such.
 """
@@ -562,15 +562,33 @@ single('09a-motion', 'Motion: the device moves only when something happens', im,
        'Timings on the Station. The first frame is always the still state; nothing means something only by blinking; presses during a motion are consumed. Diagram.')
 
 # ---------------------------------------------------------------- 10 paper
-do = canvas(300, 140)
-d = ImageDraw.Draw(do)
-pane(d, 24, 24, 252, 92)
-text(d, (48, 40), 'Loika', F20)
-text(d, (48, 76), 'this pod', F16, 'mist')
-dont = crop('pods-overview-identified.png', (200, 410, 120, 110))
-plate('10a-paper', 'What changes is on the machine; paper is only in the Library', do, dont,
-      'A name and a state on the display, in a pane. Diagram.',
-      'A paper tag on Pods. Owner: "paper has a place in the library, the rest is a STATION".')
+def slate_stage(img, lum_max=120):
+    """Re-tone a capture's brown painted stage to the slate face, keeping its texture (diagram)."""
+    im = img.copy()
+    px = im.load()
+    M, P = (64, 54, 46), C['ground']
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            if r >= b + 5 and r - b <= 40 and (r + g + b) / 3 < lum_max and not (g > r):
+                px[x, y] = (max(0, min(255, P[0] + r - M[0])), max(0, min(255, P[1] + g - M[1])), max(0, min(255, P[2] + b - M[2] + 6)), a)
+    return im
+do = slate_stage(crop('pods-kin.png', (160, 222, 200, 234)))
+dont = canvas(320, 240)
+d = ImageDraw.Draw(dont)
+d.rounded_rectangle((70, 20, 250, 228), 10, fill=C['bark'])
+d.rectangle((86, 40, 234, 216), fill=C['paper'])
+d.rounded_rectangle((128, 12, 192, 34), 6, fill=C['metal'])
+text(d, (98, 52), 'BUD STATUS', F13, 'soil')
+text(d, (98, 74), 'Growing', F16M, 'soil')
+d.rectangle((98, 104, 222, 116), outline=C['clay'])
+d.rectangle((99, 105, 99 + int(122 * 0.55), 115), fill=C['clay'])
+text(d, (98, 128), 'ready in 8 min', F13, 'bark')
+text(d, (98, 152), 'Coat: cleared', F13, 'bark')
+text(d, (98, 172), 'Face: pending', F13, 'bark')
+plate('10a-paper', 'Paper is fine as a static object; what changes is the machine', do, dont,
+      'A paper tag on the pod (Pods capture, its brown stage re-toned to the slate face: diagram). The tag never changes; the pod\'s changing state is on the display.',
+      'A clipboard used as a status screen: paper that changes with time and play. Anything that changes, or that the player acts on, is the machine\'s display. Diagram.')
 
 # ---------------------------------------------------------------- 11 companion
 hb = Image.open('art/miniature-lives/assets/hibit-plain-280x300.png').convert('RGBA')
