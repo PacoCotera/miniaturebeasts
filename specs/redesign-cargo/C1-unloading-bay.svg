@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#3d5a46" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="16" y="27" font-size="18" fill="#f1ebdf" text-anchor="start"  font-weight="500">Cargo</text>
+<text x="1008" y="17" font-size="9" fill="#c6c4d8" text-anchor="end" >C1 "the unloading bay": the crates open on the bay floor; pods go to the Pods hatch, materials pour into the stores</text>
+<text x="1008" y="31" font-size="9" fill="#8d8aa6" text-anchor="end" >CONCEPT SKETCH, 1024×600 at 1×: composition only, for the art director to paint. Not a spec. T-20261016-164</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="16" y="588" font-size="14" fill="#f2671b" text-anchor="start" >✓ Take it all in</text>
+<text x="512" y="588" font-size="14" fill="#c6c4d8" text-anchor="middle" >3 crates home</text>
+<text x="1008" y="588" font-size="14" fill="#f1ebdf" text-anchor="end" >← Home</text>
+<rect x="16" y="48" width="992" height="340" fill="#2f4a3a" stroke="#5d7a5f" stroke-width="2" rx="10"/>
+<rect x="16" y="300" width="992" height="88" fill="#4a5d4e" stroke="none" stroke-width="1" rx="0"/>
+<rect x="60" y="200" width="120" height="80" fill="#d89b14" stroke="#7d5435" stroke-width="2" rx="8"/>
+<rect x="56" y="186" width="128" height="18" fill="#bf9157" stroke="#7d5435" stroke-width="2" rx="4"/>
+<text x="120" y="244" font-size="9" fill="#4b3023" text-anchor="middle" >open crate</text>
+<ellipse cx="70.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="92.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="114.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="80" cy="380" rx="22" ry="10" fill="#ffd441" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="80" cy="372" rx="15" ry="8" fill="#ffd441" stroke="#23292f" stroke-width="1"/>
+<text x="80" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+5</text>
+<ellipse cx="120" cy="380" rx="22" ry="10" fill="#5bb9f3" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="120" cy="372" rx="15" ry="8" fill="#5bb9f3" stroke="#23292f" stroke-width="1"/>
+<text x="120" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+6</text>
+<ellipse cx="160" cy="380" rx="22" ry="10" fill="#5cbb4c" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="160" cy="372" rx="15" ry="8" fill="#5cbb4c" stroke="#23292f" stroke-width="1"/>
+<text x="160" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+8</text>
+<rect x="260" y="200" width="120" height="80" fill="#d89b14" stroke="#7d5435" stroke-width="2" rx="8"/>
+<rect x="256" y="186" width="128" height="18" fill="#bf9157" stroke="#7d5435" stroke-width="2" rx="4"/>
+<text x="320" y="244" font-size="9" fill="#4b3023" text-anchor="middle" >open crate</text>
+<ellipse cx="270.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="292.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="314.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="280" cy="380" rx="22" ry="10" fill="#ffd441" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="280" cy="372" rx="15" ry="8" fill="#ffd441" stroke="#23292f" stroke-width="1"/>
+<text x="280" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+4</text>
+<ellipse cx="320" cy="380" rx="22" ry="10" fill="#5bb9f3" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="320" cy="372" rx="15" ry="8" fill="#5bb9f3" stroke="#23292f" stroke-width="1"/>
+<text x="320" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+7</text>
+<ellipse cx="360" cy="380" rx="22" ry="10" fill="#5cbb4c" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="360" cy="372" rx="15" ry="8" fill="#5cbb4c" stroke="#23292f" stroke-width="1"/>
+<text x="360" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+9</text>
+<rect x="460" y="200" width="120" height="80" fill="#d89b14" stroke="#7d5435" stroke-width="2" rx="8"/>
+<rect x="456" y="186" width="128" height="18" fill="#bf9157" stroke="#7d5435" stroke-width="2" rx="4"/>
+<text x="520" y="244" font-size="9" fill="#4b3023" text-anchor="middle" >open crate</text>
+<ellipse cx="470.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="492.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="514.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="536.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="558.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<ellipse cx="580.0" cy="320" rx="9.0" ry="12.0" fill="#c79a6b" stroke="#4b3023" stroke-width="1.5"/>
+<text x="610" y="324" font-size="12" fill="#f1ebdf" text-anchor="start" >+2</text>
+<ellipse cx="480" cy="380" rx="22" ry="10" fill="#ffd441" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="480" cy="372" rx="15" ry="8" fill="#ffd441" stroke="#23292f" stroke-width="1"/>
+<text x="480" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+6</text>
+<ellipse cx="520" cy="380" rx="22" ry="10" fill="#5bb9f3" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="520" cy="372" rx="15" ry="8" fill="#5bb9f3" stroke="#23292f" stroke-width="1"/>
+<text x="520" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+5</text>
+<ellipse cx="560" cy="380" rx="22" ry="10" fill="#5cbb4c" stroke="#23292f" stroke-width="1"/>
+<ellipse cx="560" cy="372" rx="15" ry="8" fill="#5cbb4c" stroke="#23292f" stroke-width="1"/>
+<text x="560" y="406" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">+7</text>
+<rect x="680" y="64" width="300" height="190" fill="#2b3038" stroke="#565c63" stroke-width="2" rx="10"/>
+<text x="690" y="80" font-size="10" fill="#f1ebdf" text-anchor="start" >the Station's stores</text>
+<rect x="690" y="90" width="72" height="140" fill="#163a52" stroke="#4b7a8f" stroke-width="2" rx="10"/>
+<rect x="694" y="166" width="64" height="60" fill="#ffd441" stroke="none" stroke-width="0" rx="8"/>
+<text x="726" y="250" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">19</text>
+<rect x="786" y="90" width="72" height="140" fill="#163a52" stroke="#4b7a8f" stroke-width="2" rx="10"/>
+<rect x="790" y="159" width="64" height="67" fill="#5bb9f3" stroke="none" stroke-width="0" rx="8"/>
+<text x="822" y="250" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">21</text>
+<rect x="882" y="90" width="72" height="140" fill="#163a52" stroke="#4b7a8f" stroke-width="2" rx="10"/>
+<rect x="886" y="128" width="64" height="98" fill="#5cbb4c" stroke="none" stroke-width="0" rx="8"/>
+<text x="918" y="250" font-size="14" fill="#f1ebdf" text-anchor="middle"  font-weight="600">30</text>
+<path d="M150 400 C 300 470, 600 460, 720 250" fill="none" stroke="#adf6e0" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M350 400 C 450 470, 680 440, 800 250" fill="none" stroke="#adf6e0" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="16" y="540" font-size="7.5" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">materials flow into the tanks: the top bar counters are these stores</text>
+<rect x="630" y="420" width="180" height="120" fill="#163a52" stroke="#adf6e0" stroke-width="2" rx="12"/>
+<text x="720" y="448" font-size="12" fill="#f1ebdf" text-anchor="middle"  font-weight="600">→ Pods</text>
+<text x="720" y="472" font-size="10" fill="#c6c4d8" text-anchor="middle" >the pods go to their wells</text>
+<rect x="660" y="486" width="120" height="40" fill="#2b3038" stroke="none" stroke-width="0" rx="6"/>
+<text x="720" y="511" font-size="10" fill="#c6c4d8" text-anchor="middle" >4 wells free</text>
+<path d="M120 330 C 300 420, 500 520, 630 480" fill="none" stroke="#c79a6b" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="16" y="556" font-size="7.5" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">no colour bars, no goal line, no pod rack: each crate shows its own pods and piles; where things go is drawn as flow (pods → the Pods hatch, materials → the store tanks)</text>
+</svg>
