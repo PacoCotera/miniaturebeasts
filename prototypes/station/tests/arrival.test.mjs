@@ -63,7 +63,7 @@ test("the choice strip: Open the bay (free, the crates to the rack) and Later (t
   const w = world({ crates: 3, reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), phase: "choice", from: "home", choice: true };
   const u = { ...ui(a), panel: { screen: "cargo", id: "dock", focus: "" }, pods: { cur: null } }, v = panelBuild({ st: w.st, sv: w.sv, settings, ui: u, jump: "arrival" }, panel, frame, pods);
   assert.equal(v.overlay.form, "strip"); assert.equal(v.overlay.regions.title, ""); assert.deepEqual(v.cards.map((c) => c.id), ["open", "later"]); assert.deepEqual(v.cards.map((c) => c.cost), ["", ""], "both free");
-  assert.deepEqual(v.cards.map((c) => c.line), ["three crates to the rack", "they wait while docked"]); assert.equal(v.overlay.focus.cur, "card.open"); assert.deepEqual(v.cards.map((c) => c.picture), ["crate-open-96x96", "crate-sealed-96x96"]);
+  assert.deepEqual(v.cards.map((c) => c.line), ["three crates to the rack", "they wait while docked"]); assert.equal(v.overlay.focus.cur, "card.open"); assert.deepEqual(v.cards.map((c) => c.picture), ["crate-open-crop-96x96", "crate-sealed-crop-96x96"]);
   assert.equal(v.line.ok, "Open the bay"); assert.equal(v.line.subject, "three crates to the rack"); assert.equal(v.overlay.regions.art.housing, "");
   const one = world({ crates: 1, reqs: [] }), o = panelBuild({ st: one.st, sv: one.sv, settings, ui: { ...u, cargo: { ...u.cargo, arrival: { ...a, crates: 1 } } }, jump: "arrival" }, panel, frame, pods); assert.equal(o.cards[0].line, "a crate to the rack");
 });

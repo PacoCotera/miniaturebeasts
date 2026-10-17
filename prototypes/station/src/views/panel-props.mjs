@@ -75,12 +75,14 @@ export function growNowCards(m, spec, frame, requests) {
 // The cards of the dock arrival's choice strip (the dock arrival spec, the strip form): Open the bay (the crates open, small; free; "{n in words} crates to the rack") and Later (the crates sealed, small; free; "they wait while docked").
 export const STRIP_PICTURE = [96, 96];
 export function dockCards(m, spec, frame, requests) {
-  const Sg = spec.strings.dock, n = m.ui.cargo?.arrival?.crates ?? 0, ph = (id) => { requests.push({ kind: "ph", id, size: STRIP_PICTURE, hollow: false, until: "its master (the dock arrival's strip, T-20261016-48)" }); return id; };
+  const Sg = spec.strings.dock, n = m.ui.cargo?.arrival?.crates ?? 0, C = frame.regions.panel.strip.picture;
+  // the card's crate: a 96 × 96 window of the placed crate master, 1:1 (frame.json regions.panel.strip.picture.crops)
+  const crop = (k) => { const c = C.crops[k], id = `crate-${k}-crop-${C.size[0]}x${C.size[1]}`; requests.push({ kind: "crop", id, master: c.master, of: c.of, at: c.at, size: C.size, until: "the crate master it is cut from (T-20261016-161)" }); return id; };
   const open = n === 1 ? Sg.oneCrate : fill(Sg.cards.open.line, { "n in words": SPELL[n] ?? "many" });
   const art = { well: "", focused: "", stage: "", glow: "", light: "" };
   return [
-    { id: "open", act: "open", room: null, picture: ph("crate-open-96x96"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.open.name, cost: "", gain: false, short: "", line: open, loss: false, dim: false, art },
-    { id: "later", act: "later", room: null, picture: ph("crate-sealed-96x96"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: Sg.cards.later.line, loss: false, dim: false, art },
+    { id: "open", act: "open", room: null, picture: crop("open"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.open.name, cost: "", gain: false, short: "", line: open, loss: false, dim: false, art },
+    { id: "later", act: "later", room: null, picture: crop("sealed"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: Sg.cards.later.line, loss: false, dim: false, art },
   ];
 }
 // The masters the panel is drawn from (frame.json regions.panel.art, T-20261016-47 and -70): the housing, the veil, the contact shadow and the chip, and for each card its well (focused or not), stage, glow and light at the card's width.
