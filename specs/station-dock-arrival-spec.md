@@ -133,3 +133,49 @@ The game designer's `specs/dock-moments/station-arrival.png` stands for the show
 - **The Companion's "home" and "Off we go" frames** need a Companion screen spec first. That is T-20261016-91 (UI/UX). Until it lands, the Companion frame on the play page shows only its crate marks clearing in step (T-58).
 - **The Caddy's two lines and icons** need a Caddy view to draw into; none exists (`prototypes/caddy` is the painting server). That is T-20261016-92 (the architect's: a 792 × 272 four-gray view on the play page that reads §5's lines). Until it lands, T-58 writes the Caddy's line text under the play page's Dock control.
 
+## Amendment (T-20261016-112): who came home stands big; the rack hides during the show
+
+The owner, 2026-10-17 (agreeing to the lead's proposal), on the arrival proof: who came home is far too small (24 px faces), and the empty rack takes half the screen during the show. **This amendment replaces §1's home-band faces for the mibis coming home, and the rack during the show.**
+
+**The stage during the show (0.2 to 3.5 s):**
+- **The bay:** as today (16, 48, 992 × 320).
+- **The rack is not drawn.** In its place, the **bay's apron**: the bay's floor continued toward the viewer, **16, 368, 992 × 180** (to y 548), a new painted master `cargo-bay-apron-992x180`. It is the floor the mibis stand on.
+- **When the show ends,** the apron gives way to the rack.
+
+**The mibis coming home stand on the apron, at the one-mibi-up-close painting's size (304 × 312, the Vivarium's `resident` size, 1:1, never scaled), feet on y 528:**
+
+| Coming home | Boxes (x, y, w, h) |
+| --- | --- |
+| 1 | 360, 216, 304, 312 (centred on 512) |
+| 2 | 192, 216, 304, 312 · 528, 216, 304, 312 (gap 32) |
+| 3 | 32, 216, 304, 312 · 360, 216, 304, 312 · 688, 216, 304, 312 (gap 24) |
+
+- **Layering:** the mibis are in front of the crates. The crates' tops (y 120–216) and their glints stay visible; their lower 80 px are behind the mibis. That depth is meant: the mibis came out of the crates' bay toward the player.
+- **Their order:** carried order, left to right.
+- **A mibi without its painting** shows its labelled placeholder at the same size (the style guide's rule).
+- **More than three:** cannot happen (the carried set is at most three).
+
+**The beats** replace §1 from 1.5:
+- **Each arrival in turn,** so only one big picture changes per frame:
+  - mibi *i* (i = 0, 1, 2) dithers in at 1.6 + 0.5·i s over 300 ms (16 levels, in place);
+  - then it makes one hop by the hatch's `lift` table (175 ms).
+- **The cost:** a dither frame is ≤ 94,848 px, plus a crate's slide step while the third crate is still moving (≤ 48,576), so ≤ 143,424 ≤ 153,600.
+- **The mend** (2.5) is as before, in its new place below.
+- **The show's end** (3.5 s, or 0.3 s after the last hop if later; at most 3.6 for three): **one cut**.
+  - The mibis are gone (they are home, in the Vivarium).
+  - The apron gives way to the rack.
+  - The choice strip (§2) appears over the rack.
+  - It is a whole-stage change, counted as a screen change, not an animation frame.
+
+**The home band moves into the bay's top corners**, since the faces of those coming home are gone:
+- **the Probe group:** `icon-shield-16` × plates at (40, 68), pitch 20, then "{n} mended, free" (16) after it;
+- **the leaving group:** `mark-out-16` and the leaving faces (24) right-aligned to x 984 at y 64.
+
+Both sit beside the ribbon (208–816), not under it. With no one leaving, the right corner is empty.
+
+**Skip:** any key during the show cuts straight to the show's end (the rack and the strip). Reduced motion: each mibi appears as a cut at its time, with no hop.
+
+**Unchanged:** the ribbon, the link light, the crates' slide-in and glints, the strip, the cases, the interrupt rule, the send-off.
+
+**Art (the in-place proof redone):** `cargo-bay-apron-992x180`, the bay's floor carried forward in the bay's materials and light, matching its front edge at y 368. Then the proof `arrival-in-place` at t 2.2 s with two arrivals (1×), and the show's end frame.
+
