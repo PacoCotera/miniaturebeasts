@@ -47,10 +47,16 @@ This part is built on the game designer's verbs and single fact (`results/T-2026
 | Panel | Left, focused | Right | Fact |
 | --- | --- | --- | --- |
 | Fit the upgrade | Fit it, cost icons | Not now | none (the windows show tier 2 against tier 1) |
-| Grow it now | Grow it now ❀ 3 | Wait | none (the wait is the window: the pod at its current step) |
+| Grow now | Grow now ❀ 3 | Wait | none (the wait is the window: the pod at its current step) |
 | The dock arrival | Open the bay | Later | none (the crates against Home's Cargo lamp) |
 
-The game designer confirms these verbs from the rewritten scene list.
+The verbs are confirmed by the game designer (`results/T-20261016-195/game-designer.md`). "Grow now" matches the Incubator's ✓.
+
+**Agreed with the game designer:**
+- the empty middle slot;
+- ← "Back";
+- focus on the option the player came for, on the left;
+- the settle guard on Release, which is timing, not styling.
 
 ## 5. Asks
 

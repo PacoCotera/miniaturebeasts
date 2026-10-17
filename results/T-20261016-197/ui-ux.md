@@ -34,7 +34,7 @@ There are no paths, no dots, no trails and no "in flight". Each thing's journey 
 - After the last pod the hatch closes.
 - **No free well:** the pod waits on the bay floor, sealed, in view, and lands when a well frees (the game designer). The hatch doesn't open for it, and there is no coral and no "full" plate. In that state alone the middle slot may carry the game designer's "a pod waits for a well", because a picture can't say when it will land.
 - **Finds and portraits:**
-  - A find lands on the bay floor and stays until its home is ruled (the game designer's open point).
+  - **A find goes to the Pods room**, beside the sealed pages it opens (ruled by the creative director on the game designer's proposal). It takes the same hand-off as a pod: the Pods hatch opens first, the find travels whole and keeps its size, and the hatch takes it in. It goes after the pods, one at a time. The hatch shows the find's place beside the sealed pages lighting, not a well.
   - A portrait crate's painting goes to its mibi. That destination is off-screen, so it lifts toward the Vivarium's side and the screen does not follow it.
 
 **Why this reads without a caption:** the destination moves before the object, and the same object or number arrives there. Nothing on screen needs a note to be understood (§7, "nothing only a caption explains").
@@ -67,3 +67,4 @@ There are no paths, no dots, no trails and no "in flight". Each thing's journey 
   - the queue's place on the floor;
   - how the destination's "answer" is painted: a mark brightening, a door opening.
 - **The game designer:** what a crate holds and where each goes; the full-Pods wording, if any; "Open them all", "Skip" and "Look at the pods".
+- **The art director:** how the find's place beside the sealed pages shows inside the hatch.
