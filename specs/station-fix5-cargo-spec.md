@@ -451,3 +451,23 @@ R5 "Containers" and "Containers' shadows" are superseded by `specs/station-cargo
 **Colour:** no amber (as R6: "nothing on Cargo's stage is amber"). `mint` only for the reach pips; `bone` for figures, the goal and the arrow.
 
 **Art:** T-20261016-149. **Build:** T-20261016-150.
+
+## Amendment (T-20261016-155, UI/UX): the world rows come back as pictures
+
+The crate now carries its world events as records (`specs/world-events.md`, T-20261016-151, with the game designer's calls in its §5). The report draws them as **one row of up to three event tiles**, between the gathered row and the goal. Wireframe: `specs/station-cargo-report/cargo-report-picture-led.png` (the longest case, h 264).
+
+**The world row** (offsets from the card's origin; the row's top is `yw` = 136, the gathered row's foot + 16):
+
+| Piece | At | Content |
+| --- | --- | --- |
+| Sun mark | (16, yw + 12), 16 × 16 | The world turn's mark: the block's heading, a picture, no words |
+| Event tile k (k = 0..2) | (40 + 168k, yw), 152 × 40 | One tile for each of `world.ev`, in the crate's order. Tiles end at 528 ≤ 544 |
+| Place badge | tile + (4, 4), 32 × 32 | `place-{g}-32x32` (the Pods badges, T-31 and T-35), for `meadow`, `pond`, `rock`, `wood` and `cave`. `shallows` and `cliff` get the plain land mark at the same size (the game designer's call 3). With `place` null, the slot is empty |
+| Change mark | tile + (40, 8), 24 × 24 | One for each kind: sprout (grown), cane (elder), lamp low or out, hoof-trail (herd), bolt (storm), fruit, glint (stirring), small pair (young), still mark (quiet). For fruit and stirring the mark repeats n times, at most 3, at a pitch of 20 |
+| Who | tile + (68, 4), 32 × 32 | The mibi's face (`who` a mibi id), the species' face (an index), or the unfamiliar silhouette (−1). On `grown` with n 1 or 2 (leads, can lead now), the face wears the partner ring (2 px `teal`, the top bar's carried ring). On `storm`, the **partner's** face appears only when the trip had a partner, the trip's `storm` flag is true, and the partner carries a storm-moved self-changing trait (Phase); otherwise the slot is empty |
+| Herd arrow | tile + (108, 12), 20 × 16 | Turned to `n` (1 to 8: N, NE … NW, 45° steps); none when n is 0 (spread out) |
+
+- **Words: none** in the world row. The card's budget stays at 6 words, all in the goal line.
+- **An old crate** with `lines` only, or a crate with no events, draws no world row, and the card is 56 shorter.
+- **Height:** the T-144 rule plus 56 (16 gap + 40) when the row is drawn: 136, 176 or 208 without it, **192, 232 or 264 with it**; at most 264 ≤ 288, so nothing ever drops. y = 64 + 8 × floor((288 − h) / 16): at 264, y 72, and the card ends at 336, 32 above the door's foot.
+- **Art:** the change marks at 24 × 24, the sun mark at 16 × 16 and the plain land mark at 32 × 32 (T-20261016-156). **Build:** T-20261016-157.

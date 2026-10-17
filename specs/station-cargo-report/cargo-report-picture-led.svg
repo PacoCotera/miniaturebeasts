@@ -2,93 +2,115 @@
 <rect width="1024" height="600" fill="#fff"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Cargo</text>
-<text x="1012" y="16" font-size="8" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, monospace">the report, longest case: three crates (one with 11 pods), gathered, the Probe mended for ⚡2, the goal, and a read while you wait</text>
+<text x="1012" y="16" font-size="8" fill="#555" text-anchor="end" font-family="DejaVu Sans Mono, monospace">the report, longest case (h 264): three crates, gathered, the Probe, three world events, the goal, a read while you wait</text>
 <text x="1012" y="30" font-size="8" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, monospace">1024×600 at 1×, measured. Grey = layout only; the card drawn in its intended marks (art paints them). T-20261016-144</text>
 <rect x="16.5" y="48.5" width="991" height="319" fill="#c9d4c2" stroke="#5d7a5f" stroke-width="1" rx="10"/>
 <text x="24" y="360" font-size="8" fill="#5d7a5f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the bay door (unchanged)</text>
 <rect x="16.5" y="384.5" width="991" height="167" fill="#d5dccf" stroke="#5d7a5f" stroke-width="1"/>
 <text x="24" y="546" font-size="8" fill="#5d7a5f" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the rack (unchanged)</text>
-<rect x="232.5" y="104.5" width="559" height="207" fill="#2b3038" stroke="#84ae78" stroke-width="5" rx="6"/>
-<rect x="238.5" y="110.5" width="547" height="195" fill="#1f2427" stroke="#0c0a12" stroke-width="1"/>
-<text x="232" y="98" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the door's display 232,104 560×208 (plate kit unchanged; no cream label, no heading)</text>
-<rect x="248.5" y="120.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
-<rect x="248.5" y="120.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
-<text x="280" y="156" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
-<text x="280" y="166" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
-<ellipse cx="328" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="348" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="368" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<rect x="320.5" y="168.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
-<path d="M324 168V180M329 168V180" stroke="#5d5974"/>
-<rect x="340" y="170" width="12" height="8" fill="#adf6e0"/>
-<rect x="354" y="170" width="12" height="8" fill="#3d434b"/>
-<rect x="368" y="170" width="12" height="8" fill="#3d434b"/>
-<rect x="382" y="170" width="12" height="8" fill="#3d434b"/>
-<rect x="432.5" y="120.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
-<rect x="432.5" y="120.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
-<text x="464" y="156" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
-<text x="464" y="166" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
-<ellipse cx="512" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="532" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="552" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<rect x="504.5" y="168.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
-<path d="M508 168V180M513 168V180" stroke="#5d5974"/>
-<rect x="524" y="170" width="12" height="8" fill="#adf6e0"/>
-<rect x="538" y="170" width="12" height="8" fill="#adf6e0"/>
-<rect x="552" y="170" width="12" height="8" fill="#3d434b"/>
-<rect x="566" y="170" width="12" height="8" fill="#3d434b"/>
-<rect x="616.5" y="120.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
-<rect x="616.5" y="120.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
-<text x="648" y="156" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
-<text x="648" y="166" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
-<ellipse cx="696" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="716" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="736" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="756" cy="136" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="696" cy="156" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="716" cy="156" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<ellipse cx="736" cy="156" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<text x="756" y="160" font-size="12" fill="#f1ebdf" text-anchor="middle">+4</text>
-<rect x="688.5" y="168.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
-<path d="M692 168V180M697 168V180" stroke="#5d5974"/>
-<rect x="708" y="170" width="12" height="8" fill="#adf6e0"/>
-<rect x="722" y="170" width="12" height="8" fill="#adf6e0"/>
-<rect x="736" y="170" width="12" height="8" fill="#adf6e0"/>
-<rect x="750" y="170" width="12" height="8" fill="#3d434b"/>
-<path d="M257 205L251 213H256L254 219L261 210H256Z" fill="#ffd441"/>
-<text x="268" y="217" font-size="16" fill="#f1ebdf" text-anchor="start">+15</text>
-<path d="M328 205L334 212L328 219L322 212Z" fill="#5bb9f3"/>
-<text x="340" y="217" font-size="16" fill="#f1ebdf" text-anchor="start">+18</text>
-<path d="M400 205C406 212 405 219 400 219C395 219 394 212 400 205Z" fill="#5cbb4c"/>
-<text x="412" y="217" font-size="16" fill="#f1ebdf" text-anchor="start">+24</text>
-<rect x="552.5" y="202.5" width="15" height="19" fill="none" stroke="#8d8aa6" stroke-width="1" rx="2"/>
-<text x="560" y="216" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">P</text>
-<path d="M578 206H590V218H578Z" fill="#8a947b" stroke="#565c63"/>
-<path d="M580 212H588" stroke="#adf6e0" stroke-dasharray="2 1"/>
-<path d="M598 206H610V218H598Z" fill="#8a947b" stroke="#565c63"/>
-<path d="M600 212H608" stroke="#adf6e0" stroke-dasharray="2 1"/>
-<path d="M633 205L627 213H632L630 219L637 210H632Z" fill="#ffd441"/>
-<text x="642" y="217" font-size="16" fill="#f1ebdf" text-anchor="start">2</text>
-<path d="M248 252H262M257 247L262 252L257 257" stroke="#f1ebdf" stroke-width="2" fill="none"/>
-<text x="272" y="257" font-size="16" fill="#f1ebdf" text-anchor="start">fit the Probe upgrade</text>
-<path d="M252 276V292" stroke="#8d8aa6" stroke-width="2"/>
-<ellipse cx="280" cy="284" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
-<rect x="296.5" y="272.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/>
-<text x="308" y="288" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Fa</text>
-<path d="M332 277L338 284L332 291L326 284Z" fill="#5bb9f3"/>
-<text x="344" y="289" font-size="16" fill="#f1ebdf" text-anchor="start">2</text>
-<text x="800" y="120" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">crate tile 160×64:</text>
-<text x="800" y="130" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">crate, its pods (≤8;</text>
-<text x="800" y="140" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">7 + "+n" past 8),</text>
-<text x="800" y="150" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">reach: map + 4 pips</text>
-<text x="800" y="200" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">gathered: icon + figure</text>
-<text x="800" y="210" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">Probe: plates, ⚡ price</text>
-<text x="800" y="220" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">(free: plates only)</text>
-<text x="800" y="250" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">next: the arrow + Home's</text>
-<text x="800" y="260" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">goal words (≤ 6 words)</text>
-<text x="800" y="280" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">while you wait: the pod,</text>
-<text x="800" y="290" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the chapter's emblem, ◆ n</text>
-<text x="232" y="336" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">words on the card: the goal line only, ≤ 6 (here 4). Figures sit beside icons. "Meanwhile, the world turned" waits on structured lines (place + kind) from the Companion</text>
+<rect x="232.5" y="72.5" width="559" height="263" fill="#2b3038" stroke="#84ae78" stroke-width="5" rx="6"/>
+<rect x="238.5" y="78.5" width="547" height="251" fill="#1f2427" stroke="#0c0a12" stroke-width="1"/>
+<text x="232" y="66" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the door's display 232,72 560×264 (plate kit unchanged; no cream label, no heading)</text>
+<rect x="248.5" y="88.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<rect x="248.5" y="88.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
+<text x="280" y="124" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
+<text x="280" y="134" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
+<ellipse cx="328" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="348" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="368" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<rect x="320.5" y="136.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
+<path d="M324 136V148M329 136V148" stroke="#5d5974"/>
+<rect x="340" y="138" width="12" height="8" fill="#adf6e0"/>
+<rect x="354" y="138" width="12" height="8" fill="#3d434b"/>
+<rect x="368" y="138" width="12" height="8" fill="#3d434b"/>
+<rect x="382" y="138" width="12" height="8" fill="#3d434b"/>
+<rect x="432.5" y="88.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<rect x="432.5" y="88.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
+<text x="464" y="124" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
+<text x="464" y="134" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
+<ellipse cx="512" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="532" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="552" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<rect x="504.5" y="136.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
+<path d="M508 136V148M513 136V148" stroke="#5d5974"/>
+<rect x="524" y="138" width="12" height="8" fill="#adf6e0"/>
+<rect x="538" y="138" width="12" height="8" fill="#adf6e0"/>
+<rect x="552" y="138" width="12" height="8" fill="#3d434b"/>
+<rect x="566" y="138" width="12" height="8" fill="#3d434b"/>
+<rect x="616.5" y="88.5" width="159" height="63" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<rect x="616.5" y="88.5" width="63" height="63" fill="#7d5435" stroke="#4b3023" stroke-width="1" rx="4"/>
+<text x="648" y="124" font-size="8" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crate</text>
+<text x="648" y="134" font-size="7" fill="#e6c98c" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">64×64</text>
+<ellipse cx="696" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="716" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="736" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="756" cy="104" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="696" cy="124" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="716" cy="124" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<ellipse cx="736" cy="124" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<text x="756" y="128" font-size="12" fill="#f1ebdf" text-anchor="middle">+4</text>
+<rect x="688.5" y="136.5" width="13" height="11" fill="#a99f8a" stroke="#5d5974" stroke-width="1" rx="2"/>
+<path d="M692 136V148M697 136V148" stroke="#5d5974"/>
+<rect x="708" y="138" width="12" height="8" fill="#adf6e0"/>
+<rect x="722" y="138" width="12" height="8" fill="#adf6e0"/>
+<rect x="736" y="138" width="12" height="8" fill="#adf6e0"/>
+<rect x="750" y="138" width="12" height="8" fill="#3d434b"/>
+<path d="M257 173L251 181H256L254 187L261 178H256Z" fill="#ffd441"/>
+<text x="268" y="185" font-size="16" fill="#f1ebdf" text-anchor="start">+15</text>
+<path d="M328 173L334 180L328 187L322 180Z" fill="#5bb9f3"/>
+<text x="340" y="185" font-size="16" fill="#f1ebdf" text-anchor="start">+18</text>
+<path d="M400 173C406 180 405 187 400 187C395 187 394 180 400 173Z" fill="#5cbb4c"/>
+<text x="412" y="185" font-size="16" fill="#f1ebdf" text-anchor="start">+24</text>
+<rect x="552.5" y="170.5" width="15" height="19" fill="none" stroke="#8d8aa6" stroke-width="1" rx="2"/>
+<text x="560" y="184" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">P</text>
+<path d="M578 174H590V186H578Z" fill="#8a947b" stroke="#565c63"/>
+<path d="M580 180H588" stroke="#adf6e0" stroke-dasharray="2 1"/>
+<path d="M598 174H610V186H598Z" fill="#8a947b" stroke="#565c63"/>
+<path d="M600 180H608" stroke="#adf6e0" stroke-dasharray="2 1"/>
+<path d="M633 173L627 181H632L630 187L637 178H632Z" fill="#ffd441"/>
+<text x="642" y="185" font-size="16" fill="#f1ebdf" text-anchor="start">2</text>
+<circle cx="256" cy="228" r="6" fill="#ffd441" stroke="none" stroke-width="1"/>
+<text x="256" y="256" font-size="6" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">sun mark</text>
+<rect x="272.5" y="208.5" width="151" height="39" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<rect x="276.5" y="212.5" width="31" height="31" fill="#847fa8" stroke="#0c0a12" stroke-width="1" rx="4"/>
+<text x="292" y="244" font-size="6" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">rock</text>
+<path d="M326 218L318 229H324L321 238L331 226H325Z" fill="#ffd441"/>
+<circle cx="356" cy="228" r="14" fill="#c6c4d8" stroke="#5d5974" stroke-width="1"/>
+<text x="356" y="232" font-size="8" fill="#3d3954" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">face</text>
+<rect x="440.5" y="208.5" width="151" height="39" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<path d="M492 238V226" stroke="#5cbb4c" stroke-width="2"/>
+<ellipse cx="488" cy="225" rx="4" ry="2.5" fill="#98d85c"/>
+<ellipse cx="496" cy="223" rx="4" ry="2.5" fill="#98d85c"/>
+<circle cx="524" cy="228" r="14" fill="#c6c4d8" stroke="#5d5974" stroke-width="1"/>
+<text x="524" y="232" font-size="8" fill="#3d3954" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">face</text>
+<circle cx="524" cy="228" r="16" fill="none" stroke="#1f9d8f" stroke-width="2"/>
+<rect x="608.5" y="208.5" width="151" height="39" fill="#252b2e" stroke="#3d434b" stroke-width="1" rx="4"/>
+<rect x="612.5" y="212.5" width="31" height="31" fill="#23623c" stroke="#0c0a12" stroke-width="1" rx="4"/>
+<text x="628" y="244" font-size="6" fill="#f1ebdf" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">wood</text>
+<circle cx="660" cy="229" r="6" fill="#ff5f57" stroke="none" stroke-width="1"/>
+<path d="M660 223V219" stroke="#329245" stroke-width="2"/>
+<circle cx="680" cy="229" r="6" fill="#ff5f57" stroke="none" stroke-width="1"/>
+<path d="M680 223V219" stroke="#329245" stroke-width="2"/>
+<circle cx="700" cy="229" r="6" fill="#ff5f57" stroke="none" stroke-width="1"/>
+<path d="M700 223V219" stroke="#329245" stroke-width="2"/>
+<path d="M248 276H262M257 271L262 276L257 281" stroke="#f1ebdf" stroke-width="2" fill="none"/>
+<text x="272" y="281" font-size="16" fill="#f1ebdf" text-anchor="start">fit the Probe upgrade</text>
+<path d="M252 300V316" stroke="#8d8aa6" stroke-width="2"/>
+<ellipse cx="280" cy="308" rx="6" ry="7.5" fill="#c79a6b" stroke="#4b3023"/>
+<rect x="296.5" y="296.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/>
+<text x="308" y="312" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Fa</text>
+<path d="M332 301L338 308L332 315L326 308Z" fill="#5bb9f3"/>
+<text x="344" y="313" font-size="16" fill="#f1ebdf" text-anchor="start">2</text>
+<text x="800" y="92" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">crate tiles 160×64</text>
+<text x="800" y="172" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">gathered · Probe</text>
+<text x="800" y="212" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">world: sun mark, then up to 3</text>
+<text x="800" y="222" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">event tiles 152×40: place</text>
+<text x="800" y="232" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">badge 32, change mark 24,</text>
+<text x="800" y="242" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">who 32 (partner ring when it</text>
+<text x="800" y="252" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">can lead now), or the herd arrow;</text>
+<text x="800" y="262" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">fruit/stirring: mark × n ≤ 3</text>
+<text x="800" y="280" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">next · while you wait</text>
+<text x="232" y="350" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">storm row: the partner's face only when the storm moved its gene (Phase); grown: the face, ringed when it can lead; fruit: 3 bushes. Words: the goal line only, ≤ 6</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">See the new pods</text>
 <text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">what came home</text>
