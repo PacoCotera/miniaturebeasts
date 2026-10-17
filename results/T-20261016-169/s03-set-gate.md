@@ -75,3 +75,16 @@ These supersede sheets 1 and 2 (now in `superseded/`). The founder is consistent
 - A5, B3, D1 and D6 (sheet E).
 
 Sheets 1 and 2 are superseded. **Next (mine):** cut and despill the 22, sign them, and composite them into G2 and the candling screen with the scan-light pass and Glow's steps.
+
+## The cut (`cut-set.py`, outputs in `slices/`)
+
+All 22 are in the house format:
+- **The key:** each sheet's own magenta is keyed by colour distance, and the ground is un-mixed from every edge pixel, so no pink fringe stays on the soft ground strips. The sheet dividers are stripped.
+- **The fit:** the content is reduced (never enlarged) into the centred 75 percent of the cell, on the pods cell tone `#162a37`.
+- **The sizes:**
+  - the 10 looks (`look-S03-{colour-lagoon, trim-milk-mint, eyes-big-wide, eyes-between, eyes-small-close, snout-between, build-between, haunch-between, topline-level, legs-between}`) at 144 × 176 and 64 × 64, like the trait and look slices;
+  - the 3 row heads (`head-S03-{movement, stamina, character}`) and the 9 doing stills (`doing-S03-{pace, stride, weave, turning, strength, reserve, thrift, curiosity, nerve}-between`) at 96 × 96 and 48 × 48, the 48 from the 96, like the pose slices.
+
+**Status:** signed by the art director (this gate). They are placed by whoever moves them into the masters-pods slices, since this ticket names work-queue only.
+
+**Held:** the composite into G2 and the candling screen, with the scan-light pass and Glow's steps. Both screens follow Home's converged language and its ambient bar (the creative director, 15:58), so the composite is redrawn in that language rather than in the rejected one.
