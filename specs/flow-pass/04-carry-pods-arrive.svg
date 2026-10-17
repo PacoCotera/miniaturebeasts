@@ -16,11 +16,13 @@
 <ellipse cx="128" cy="376" rx="64" ry="64" fill="#262b33" stroke="#3d434b" stroke-width="1" fill-opacity="1"/>
 <ellipse cx="288" cy="376" rx="64" ry="64" fill="#262b33" stroke="#3d434b" stroke-width="1" fill-opacity="1"/>
 <ellipse cx="448" cy="376" rx="64" ry="64" fill="#262b33" stroke="#3d434b" stroke-width="1" fill-opacity="1"/>
-<ellipse cx="448" cy="176" rx="25.2" ry="32.4" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
-<rect x="380" y="108" width="136" height="136" fill="none" stroke="#ffe6ad" stroke-width="2" rx="12"/>
-<path d="M1010 120 L480 170" stroke="#adf6e0" stroke-width="2.5" stroke-dasharray="8 5"/>
-<circle cx="480" cy="170" r="4" fill="#adf6e0"/>
-<text x="24" y="460" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the same shell, in from the right edge (where the hatch was), into the free well; focus lands on it</text>
+<rect x="16" y="96" width="16" height="160" fill="#0f1317" stroke="#565c63" stroke-width="1.5" rx="6"/>
+<text x="40" y="90" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the Pods hatch: the case's left wall</text>
+<ellipse cx="128" cy="176" rx="25.2" ry="32.4" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<rect x="60" y="108" width="136" height="136" fill="none" stroke="#ffe6ad" stroke-width="2" rx="12"/>
+<path d="M20 176 L96 176" stroke="#adf6e0" stroke-width="2.5" stroke-dasharray="8 5"/>
+<circle cx="96" cy="176" r="4" fill="#adf6e0"/>
+<text x="24" y="460" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the same shell, in through the hatch on the case's left wall, into its free well; focus lands on it</text>
 <text x="24" y="476" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">← Home: after a jump, ← returns where the jump came from (Cargo)</text>
 <text x="24" y="492" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">until the player moves on; the crates are used up, so it skips Cargo to Home</text>
 </svg>

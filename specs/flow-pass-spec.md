@@ -62,12 +62,13 @@ The same shell (the species' one pod, §2 rule 4) moves across the screen change
 
 | Hand-off | Leaves | Arrives | Focus after | ← after | Wireframes |
 | --- | --- | --- | --- | --- | --- |
-| 1. Cargo → Pods | each pod flies to the Pods hatch (bay, right) | Pods opens; the pod comes in at the right edge and settles into its free well | that pod's well | Home (the crates are used up) | `03`, `04` |
+| 1. Cargo → Pods | each pod flies to the Pods hatch (the bay's right wall) | Pods opens; the pod comes in through the hatch on the case's **left** wall and settles into its free well (the bay's right wall opens into the case's left, so the journey reads one way) | that pod's well | Home (the crates are used up) | `03`, `04` |
 | 2. Pods → Create (✓ Create from this pod) | the pod lifts out of its well toward the right | it lands in Create's socket (the founder's recess, bottom left) as the genome column lights | the first gene | **{pod}** | `05`, `06` |
 | 3. Create → the Incubator (after the Grow panel's ✓) | the stamp prints in the column; the pod seals and slides out at the right | it comes in from the left and is clamped upright in the chamber | the pod | **Home** (the bench is used up) | `07`, `08` |
 | 4. The hatch → the Vivarium (✓ Say hello) | the young mibi steps out of the chamber and walks right | it walks in from the left to its spot | that mibi | **Home** (the chamber is used up) | `10`, `11` |
 
-- **Timing:** per §9, the art director's carry row (not yet in the guide on `style-guide-t172`). The build waits for it; no figure is chosen here.
+- **Direction:** every hand-off moves left to right: out at the right, in at the left.
+- **Timing:** per §9, the art director's carry row (on its branch, not yet merged). The build waits for it; no figure is chosen here.
 - **With reduced motion:** the carry is a cut, with the pod already in place, as every motion in §9.
 - **Keys during a carry** are consumed, as every motion in §9, and ← waits until the screen settles.
 
