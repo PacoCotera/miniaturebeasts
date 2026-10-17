@@ -10,7 +10,7 @@ import { gradedOf } from "./light-grade.mjs";
 import { portraitSource } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt, speciesStudyArt, spreadStageArt, spreadGiltArt, spreadSealArt } from "./art.mjs";
+import { emblemArt, ICON, beamArt, mibiArt, founderArt, shadowArt, speciesArt, speciesStudyArt, spreadStageArt, spreadGiltArt, spreadSealArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -86,6 +86,12 @@ export function registerPictures(reqs, env) {
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); const pic = stampPicture(fr, g, r.read).build(); return r.k ? dimPicture(pic, r.k) : pic; }); break;   // with a k the stamp is dimmed in linear light when it is rasterised (stamplook.mjs)
       case "founder": { const painted = placedPic(`mibi-adult-${r.species}-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1]);   // Create founder A (interim): the species' painted adult, one flat picture, in place of the rig render
         put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted); }, painted ? { status: "master" } : {}); break; }   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
+      case "shadow": {   // the founder's shadow (specs/face-arc-and-shadow.md §2): Create's picture at 160 × 192 for the chapters known, its alpha stepped; derived on the Station, never in the placeholder register
+        if (!r.size || r.size[0] !== 160 || r.size[1] !== 192) throw new Error(`shadow ${r.id}: size ${r.size} is not 160x192`);
+        if (!r.cross && !env.budGenome?.()) throw new Error(`shadow ${r.id}: no bud`);
+        const painted = placedPic(`mibi-adult-${r.species}-160x192`, 160, 192);
+        put(r.id, 160, 192, "the founder's shadow (derived on the Station from Create's picture, the alpha stepped)", () => shadowArt(env.frameOf(r.species), r.cross ? null : env.budGenome(), r.read, r.step, painted), { status: "derived" }); break;
+      }
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill
       case "portrait": {   // the sitting's portrait at 40×30, derived on the Station (derive.mjs): an empty slot until its source arrives, then filled (assets.mjs: a stand-in fills an empty slot); the status is "derived", never in the placeholder register
         const src = portraitSource(r.digest);

@@ -26,6 +26,8 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
 void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots, int filling);   /* the leaves word, grid form: the screen spec and the region's path in it; `filling`: rows 0 to 19 of the filling leaf, -1 for a screen whose leaves never fill */
 /* station/ (the Incubator) */
 void word_leavesArc(const char *spec, const char *region, const char *emptyPic, const char *fullPic, int total, int full, int rows);   /* the leaves word, arc form (leafArc): the filling leaf and growNow */
+/* station/ (the Incubator's ring): the arc fill, 12 masked segments (vocab/station/arcfill.c; specs/face-arc-and-shadow.md §1): deg of the arc's sweep filled (0..264; growNow cuts to full), `closed` the ready ring (all full and the closed art over its difference box) */
+void word_arcFill(const char *spec, const char *region, const char *fillPic, const char *closedPic, int deg, int closed);
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);

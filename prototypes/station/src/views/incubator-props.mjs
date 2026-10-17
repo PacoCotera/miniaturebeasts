@@ -18,6 +18,12 @@ export function knownChapters(st, B, settings, now) {
   const fr = frameOf(B.species);
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
+// The founder's shadow's request (specs/face-arc-and-shadow.md §2; the Incubator build, T-40, calls it): the chapters known now (the bud's read and every chapter the wait has cleared), the step of the light (cool to a third of the wait, warm to two
+// thirds, glowing after, ready when it is), and an id that changes only when one of them does, so a minute passing asks for nothing new. A cross's picture is the type specimen's ghost whatever it has cleared, but its id still follows the known chapters.
+export function shadowReq(req, st, settings, now) {
+  const B = st.bud, known = knownChapters(st, B, settings, now), p = S.budProgress(st, settings, now), step = p >= 1 ? "ready" : p < 1 / 3 ? "cool" : p < 2 / 3 ? "warm" : "glowing";
+  return req({ kind: "shadow", id: `shadow:${B.sha.slice(0, 16)}:${[...known].sort().join(",")}:${step}:160x192`, species: B.species, read: [...known], step, cross: B.kind === "cross", size: [160, 192] });
+}
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const ph = (id, size, hollow, until) => req({ kind: "ph", id, size, hollow, until });

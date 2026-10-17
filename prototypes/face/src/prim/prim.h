@@ -49,7 +49,7 @@ int prim_palette_count(void);
 int prim_palette_has(uint32_t rgb);
 int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by name: 0, or -1 when the palette has no such name */
 /* The composed picture's ops, JSON: [["h", x, y, len, "colour"], ["v", x, y, len, "colour"], ["dash", x, y, len, "h"|"v", on, off, "colour"], ["dot", x, y, "colour"],
-   ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"], ["bayerPick", from, to, level, ox, oy], or with the windows ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy] (from -1: clear)] (bayerPick: the picture of asset `to` where the Bayer cell at the screen position (ox + x, oy + y) is below `level`, else that of asset `from`; both are the picture's size) with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
+   ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"], ["bayerPick", from, to, level, ox, oy], or with the windows ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy] (from -1: clear), ["anglePick", from, to, cx, cy, a0, a1, fsx, fsy, tsx, tsy] (the pixel of `to` where the pixel centre lies in the span [a0, a1) of whole degrees clockwise from 12 o'clock about (cx, cy), else that of `from`, or clear for -1; the span under 180; the integer test of specs/face-arc-and-shadow.md §1)] (bayerPick: the picture of asset `to` where the Bayer cell at the screen position (ox + x, oy + y) is below `level`, else that of asset `from`; both are the picture's size) with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */
 int prim_compose(uint8_t *px, int w, int h, const char *ops);
 

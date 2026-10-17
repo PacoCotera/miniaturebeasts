@@ -1,4 +1,5 @@
 #include "prim.h"
+#include "angle_table.h"
 #include "ring.h"
 #include "lvgl.h"
 #include "src/lvgl_private.h"
@@ -167,6 +168,17 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       if (g_bad || fh < 0 || th < 0 || fh >= MAX_ASSET || th >= MAX_ASSET || level < 0 || level > 16) return -1;
       const uint8_t *from = g_a[fh].px, *to = g_a[th].px; if (!from || !to || g_a[fh].w != w || g_a[fh].h != h || g_a[th].w != w || g_a[th].h != h) return -1;
       for (int yy = 0; yy < h; yy++) for (int xx = 0; xx < w; xx++) memcpy(px + (yy * w + xx) * 4, (BAYER[((oy + yy) & 3) * 4 + ((ox + xx) & 3)] < level ? to : from) + (yy * w + xx) * 4, 4);
+    } else if (nl == 9 && strncmp(name, "anglePick", 9) == 0 && tok[i].size == 11) {   /* ["anglePick", from, to, cx, cy, a0, a1, fsx, fsy, tsx, tsy] (specs/face-arc-and-shadow.md §1): the pixel of asset `to` (read at tsx + x, tsy + y) where the pixel's centre lies in the angular span [a0, a1), whole degrees clockwise from 12 o'clock about (cx, cy), else that of `from` (at fsx + x, fsy + y), or clear when `from` is -1; the span is a1 - a0 mod 360, under 180 (refused otherwise), an equal pair is all `from`. Integer-only: P = (2 (x - cx) + 1, 2 (y - cy) + 1), the pixel is in when cross(D(a0), P) >= 0 and cross(D(a1), P) < 0, D from the checked-in table. Whole pixels, no blend. */
+      int fh = A(0), th = A(1), cx = A(2), cy = A(3), a0 = A(4), a1 = A(5), fsx = A(6), fsy = A(7), tsx = A(8), tsy = A(9);
+      if (g_bad || fh < -1 || th < 0 || fh >= MAX_ASSET || th >= MAX_ASSET || fsx < 0 || fsy < 0 || tsx < 0 || tsy < 0) return -1;
+      int A0 = ((a0 % 360) + 360) % 360, A1 = ((a1 % 360) + 360) % 360, span = (((a1 - a0) % 360) + 360) % 360; if (span >= 180) return -1;
+      const uint8_t *to = g_a[th].px, *from = fh >= 0 ? g_a[fh].px : NULL; static const uint8_t CLEAR[4] = { 0, 0, 0, 0 };
+      if (!to || tsx + w > g_a[th].w || tsy + h > g_a[th].h) return -1;
+      if (fh >= 0 && (!from || fsx + w > g_a[fh].w || fsy + h > g_a[fh].h)) return -1;
+      int tw = g_a[th].w, fw = fh >= 0 ? g_a[fh].w : 0; const long d0x = ANGLE_S[A0], d0y = ANGLE_C[A0], d1x = ANGLE_S[A1], d1y = ANGLE_C[A1];
+      for (int yy = 0; yy < h; yy++) for (int xx = 0; xx < w; xx++) {
+        long pxx = 2L * (xx - cx) + 1, pyy = 2L * (yy - cy) + 1; int in = span > 0 && d0x * pyy - d0y * pxx >= 0 && d1x * pyy - d1y * pxx < 0;
+        memcpy(px + (yy * w + xx) * 4, in ? to + ((tsy + yy) * tw + tsx + xx) * 4 : from ? from + ((fsy + yy) * fw + fsx + xx) * 4 : CLEAR, 4); }
     } else return -1;
 #undef A
 #undef COL

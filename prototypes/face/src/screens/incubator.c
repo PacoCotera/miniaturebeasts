@@ -178,6 +178,7 @@ void incubator_words(void) {
   build_bench();
   if (spec_len("props", "regions.rail") >= 0) word_rail(NULL);
   if (spec_len("props", "regions.leaves") >= 0) { v_name("leaves"); word_leavesArc(I, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), v_pint("regions.leaves.full", 0), v_pint("regions.leaves.rows", 0)); }
+  if (spec_len("props", "regions.ring") >= 0) { v_region("ring", LAYER_ART); word_arcFill(I, "regions.ring", v_pstr("regions.ring.fill"), v_pstr("regions.ring.closedArt"), v_pint("regions.ring.deg", 0), v_pbool("regions.ring.closed", 0)); }   /* the ring of time (specs/face-arc-and-shadow.md §1): the word is built and tested here; the screen's props and place are T-40's */
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
   picture("nest", "nest", "regions.nest.rect", v_pstr("regions.nest.picture"));
   build_bud(t);

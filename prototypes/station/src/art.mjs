@@ -334,6 +334,16 @@ export function founderArt(frame, genome, read, w, h, painted = null) {   // pai
     return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
   });
 }
+// The founder's shadow (specs/face-arc-and-shadow.md §2): Create's picture at 160 × 192 for the chapters known now, its alpha stepped with the light: a' = floor((a P + 50) / 100), P = 25, 45, 65 and 80 for cool, warm, glowing and ready (the face has no
+// opacity: it is baked into the alpha, in integer steps, never a fade). A cross (genome null) is the species' type specimen with nothing read: the ghost, the body alone, never the bud's own genome. Pure, and cached by its key like founderArt.
+export const SHADOW_P = { cool: 25, warm: 45, glowing: 65, ready: 80 };
+export function shadowArt(frame, genome, read, step, painted = null) {
+  const P = SHADOW_P[step]; if (P == null) throw new Error(`shadow: unknown step ${step}`);
+  const g = genome ?? frame.typeSpecimen?.genome, rd = genome ? read : []; if (!g) throw new Error("shadow: no genome to draw");
+  const b = builtOf(frame, g, rd), t = treatmentOf(frame, rd, !b.error && b.validation.status === "valid" ? b.scene : null);   // the treatment is part of the key, as founderArt's: a chapter that clears changes the picture
+  const key = "sh" + (genome ? drawnDigest(frame, genome, read) : "x:" + (frame.species?.id ?? "")) + ":" + t.mode + ":" + t.groups.join("+") + ":" + step + (painted ? ":p" : "");
+  return art(key, () => { const src = founderArt(frame, g, rd, 160, 192, painted).rgba(), out = new Uint8ClampedArray(src); for (let i = 3; i < out.length; i += 4) out[i] = Math.floor((src[i] * P + 50) / 100); return { w: 160, h: 192, rgba: () => out }; });
+}
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 

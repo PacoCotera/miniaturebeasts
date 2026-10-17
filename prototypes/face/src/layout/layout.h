@@ -33,6 +33,11 @@ int layout_stamp_cell(int n, int inner, int least);
 /* The Incubator's leaves on their arcs (the leaves region at `region`, rule leafArc): n leaves fill the inner arc first, left to right, then the outer; the k leaves of a run take the slots perArc - k + 2j (j = 0 .. k - 1) of the arc's table of
    2 perArc - 1 places, so every run is centred on the top. out: the boxes x, y, w, h in fill order. Returns n, or -1 when n is below 0 or over 2 perArc. */
 int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]);
+#define LAYOUT_ARC_SEGS 12
+/* The Incubator ring's segments (the region at `region`, its `arc` block { center, radii, start, sweep, segments }; specs/face-arc-and-shadow.md §1): segment k covers [start + k sweep / segments, start + (k + 1) sweep / segments) degrees clockwise from 12 o'clock,
+   and its box is the tight box of the arc's pixels in that span: a pixel is in the arc when its centre, doubled, lies between the doubled radii, and in the span by the integer test of anglePick. out: x, y, w, h each. Returns the segments (at most LAYOUT_ARC_SEGS),
+   or -1 when the block is not there or malformed. Computed once and cached. */
+int layout_arc_segments(const char *spec, const char *region, int out[LAYOUT_ARC_SEGS][4]);
 /* A list's pitch (rule listPitch): the box of item i of n, from the list at `path`: with a `forms` object the form with the smallest upTo at least n (its first, pitch, grid), else the list itself. Returns the form's upTo (0 with no forms) and the box in out,
    or -1 with out zeroed when n is below 0 or no form holds it, i is not 0 .. n - 1, or a form is malformed (no upTo, two with one upTo, a grid shorter than its upTo). */
 int layout_list_pitch(const char *spec, const char *path, int n, int i, int out[4]);

@@ -185,3 +185,27 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
 
 int layout_ease_io(int p) { return (int)((int64_t)p * p * (3000 - 2 * p) / 1000000); }
 int layout_lerp(int a, int b, int e) { return a + (int)((int64_t)(b - a) * e / 1000); }
+
+/* The ring's segment boxes (layout.h): the tight box of the arc's pixels in each span, with anglePick's own integer test, cached on the numbers it was computed from. */
+#include "../prim/angle_table.h"
+static const char *arcp(const char *base, const char *tail) { static char b[4][112]; static int k; char *o = b[k++ & 3]; snprintf(o, 112, "%s.%s", base, tail); return o; }
+int layout_arc_segments(const char *spec, const char *region, int out[LAYOUT_ARC_SEGS][4]) {
+  static int key[8], boxes[LAYOUT_ARC_SEGS][4], have;
+  char p[96]; snprintf(p, sizeof p, "%s.arc", region); if (spec_len(spec, p) < 0) return -1;
+  int v[8] = { spec_int(spec, arcp(p, "center.0"), 0), spec_int(spec, arcp(p, "center.1"), 0), spec_int(spec, arcp(p, "radii.0"), 0), spec_int(spec, arcp(p, "radii.1"), 0), spec_int(spec, arcp(p, "start"), 0), spec_int(spec, arcp(p, "sweep"), 0), spec_int(spec, arcp(p, "segments"), 0), 0 };
+  int cx = v[0], cy = v[1], r0 = v[2], r1 = v[3], start = v[4], sweep = v[5], n = v[6];
+  if (n < 1 || n > LAYOUT_ARC_SEGS || r0 <= 0 || r1 <= r0 || sweep <= 0 || sweep % n || sweep / n >= 180) return -1;
+  if (have && memcmp(key, v, sizeof key) == 0) { memcpy(out, boxes, sizeof boxes); return n; }
+  const long lo = 4L * r0 * r0, hi = 4L * r1 * r1;
+  for (int k = 0; k < n; k++) {
+    int a0 = ((start + k * (sweep / n)) % 360 + 360) % 360, a1 = (a0 + sweep / n) % 360, x0 = 1 << 30, y0 = 1 << 30, x1 = -1, y1 = -1;
+    const long d0x = ANGLE_S[a0], d0y = ANGLE_C[a0], d1x = ANGLE_S[a1], d1y = ANGLE_C[a1];
+    for (int y = cy - r1; y <= cy + r1; y++) for (int x = cx - r1; x <= cx + r1; x++) {
+      long px = 2L * (x - cx) + 1, py = 2L * (y - cy) + 1, d = px * px + py * py;
+      if (d < lo || d > hi || d0x * py - d0y * px < 0 || d1x * py - d1y * px >= 0) continue;
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+    boxes[k][0] = x0; boxes[k][1] = y0; boxes[k][2] = x1 - x0 + 1; boxes[k][3] = y1 - y0 + 1;
+  }
+  memcpy(key, v, sizeof key); have = 1; memcpy(out, boxes, sizeof boxes); return n;
+}
