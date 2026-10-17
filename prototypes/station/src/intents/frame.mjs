@@ -38,7 +38,7 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
   }
   else cratesIn(h, 0);   // a Lift voids a slide still staging its count: its steps write nothing after it
   if (h.ui.screen !== "home" && h.ui.screen !== "cargo") h.say(r.msg);   // on Home and Cargo the Dock key leaves no plate (home.json keys.dock, cargo.json keys.dock): the top bar, the bed, the bay and the line say it; a refusal (above) shows its plate
-  if (h.ui.screen === "bench") { const b = h.ui.bench; b.arm = 0; if (!r.docked && b.f === "plates") b.f = "switch"; }   // a cut to the new state: lifted, the plates are gone from the bench and the ring moves to the switch; docked, the ring stays
+  if (h.ui.screen === "bench") { const b = h.ui.bench; if (!r.docked && b.f === "plates") b.f = "switch"; }   // a cut to the new state: lifted, the plates are gone from the bench and the ring moves to the switch; docked, the ring stays
   h.save(); return r;
 }
 // The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's report card; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card.

@@ -771,18 +771,35 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Again: return Tuft",
+    "ok": "Keep Tuft",
+    "price": null,
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "panel",
+      "target": "card.return"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return it",
     "price": "❀ +2",
-    "subject": "never taken back",
-    "back": "Vivarium"
+    "subject": "gone for good",
+    "back": "Back"
    },
    {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
-      "screen": "habitat",
-      "target": "wild",
+      "screen": "panel",
+      "target": "card.return",
       "verb": "confirm"
      }
     ],

@@ -50,6 +50,17 @@ export function wildCards(m, spec, frame, requests) {
     { id: "keep", act: "keep", room: null, picture, pictureSize: size, mark: "", name: keepName, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
   ];
 }
+// The cards of the Fit the upgrade? panel (§1.6): Fit it (the part fitted, ⚡ and ◆ from the rules, dimmed with what is short) and Not now (the part dimmed). Nothing is a mark: the part stays on the bench.
+export const PART = [128, 128];
+export function fitCards(m, spec, frame, requests) {
+  const { st, settings } = m, Sg = spec.strings.fitUpgrade, req = (r) => { requests.push(r); return r.id; };
+  const e = S.price(S.PRICE.tier2E, settings), d = S.price(S.PRICE.tier2D, settings), short = S.canPay(st, e, d, 0) ? "" : S.shortIcons(st, e, d, 0);
+  const part = (id) => req({ kind: "slot", id, master: id, size: PART, until: "the Probe's upgrade part (bench.json regions.slot.part)" });
+  return [
+    { id: "fit", act: "fit", room: null, picture: part("bench-part-t2-fitted-128"), pictureSize: PART, mark: "", name: Sg.cards.fit.name, cost: S.priceText(e, d, 0), gain: false, short, line: Sg.cards.fit.line, loss: false, dim: !S.tier2Ready(st, settings) },
+    { id: "later", act: "later", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
+  ];
+}
 // The masters the panel is drawn from (frame.json regions.panel.art, T-20261016-47 and -70): the housing, the veil, the contact shadow and the chip, and for each card its well (focused or not), stage, glow and light at the card's width.
 export function artOf(frame, n, requests, wild = false) {
   const A = frame.regions.panel.art, P = frame.regions.panel, w = (P.cards.width - P.cards.gap * (n - 1)) / n, pw = w - 32, at = (t) => t.replace("{w}", w).replace("{pw}", pw);
@@ -58,7 +69,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });

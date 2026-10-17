@@ -315,7 +315,7 @@ test("the Vivarium's whole: ✓ on a resident or a tile looks at that mibi up cl
   INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "vivarium"]);
 });
 
-// ---- the Probe bench (bench.json): ✓ on the plates mends one, the switch toggles the dock's mend, the slot arms and fits ----
+// ---- the Probe bench (bench.json): ✓ on the plates mends one, the switch toggles the dock's mend, ✓ on the slot opens the Fit the upgrade? panel ----
 function benchHost({ docked = true, shield = 2, tier = 1, e = 99, d = 99, mendFull = true, moving = true } = {}) {
   const st = world(); st.e = e; st.d = d; st.mendFull = mendFull; st.dock = { docked, at: T0 }; st.probe = { shield, smax: S.TIER[tier].shield, tier, seq: 1 };
   const h = host(st); h.ui.screen = "bench"; h.moving = moving; return h;
@@ -339,26 +339,28 @@ test("the bench: ✓ on the switch toggles whether the dock mends every plate, p
   h = benchHost({ docked: false, mendFull: false }); INTENTS.bench.intent(h, "switch", "confirm"); assert.equal(h.st.mendFull, true, "away: the standing choice is still set");
   assert.ok(h.st.log.some((l) => /mends every plate/.test(l)), "a log line");
 });
-test("the bench: the slot's two-press gate: short says so and spends nothing; the first ✓ arms; the second fits (⚡ −12 ◆ −4, tier 2, four plates), plays the install holding 900 ms and sets then clears the install flag; reduced motion sets none", () => {
-  let h = benchHost({ e: 5, d: 1 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.said, h.ui.bench.arm, h.played, h.st.e], [[BS.short.replace("{icons}", "⚡ ◆")], 0, [], 5], "short: the plate, no arm");
-  h = benchHost({ shield: 2 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.ui.bench.arm, h.played, h.st.e], [1, [], 99], "the first ✓ arms and spends nothing");
-  INTENTS.bench.intent(h, "slot", "confirm");
-  assert.deepEqual([h.st.e, h.st.d, S.tierNow(h.st, h.sv), h.st.probe.shield, h.ui.bench.arm, h.ui.bench.install], [87, 95, 2, 4, 0, true]);
+test("the bench: ✓ on the slot opens the Fit the upgrade? panel (nothing spent); its Fit it card fits (⚡ −12 ◆ −4, tier 2, four plates), plays the install holding 900 ms and sets then clears the install flag; reduced motion sets none; short, Fit it is dimmed and says so; Not now and ← spend nothing", () => {
+  let h = benchHost({ e: 5, d: 1 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.ui.panel.screen, h.ui.panel.id, h.ui.panel.focus, h.played, h.st.e], ["bench", "fitUpgrade", "card.later", [], 5], "short: the panel opens, the ring on Not now");
+  INTENTS.panel.intent(h, "card.fit", "confirm"); assert.deepEqual([h.said, h.played, h.st.e, !!h.ui.panel], [[h.specs.pods.strings.needMore.replace("{icons}", "⚡ ◆")], [], 5, true], "the dimmed card says what is short and spends nothing");
+  h = benchHost({ shield: 2 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.ui.panel.focus, h.played, h.st.e], ["card.fit", [], 99], "✓ opens it with the ring on Fit it and spends nothing");
+  INTENTS.panel.intent(h, "card.fit", "confirm");
+  assert.deepEqual([h.st.e, h.st.d, S.tierNow(h.st, h.sv), h.st.probe.shield, h.ui.panel, h.ui.bench.install], [87, 95, 2, 4, null, true]);
   assert.deepEqual(h.played, [{ kind: "install", target: "slot", ms: BE.install.ms, hold: BE.install.hold, from: 2, to: 4 }]); assert.equal(h.saved, 1);
   assert.deepEqual(h.timers.map((t) => t.ms), [BE.install.ms]); h.timers[0].fn(); assert.equal(h.ui.bench.install, false, "the flag clears when the install ends");
-  h = benchHost({ moving: false }); INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.ui.bench.install, h.played[0].hold, h.timers.length, S.tierNow(h.st, h.sv)], [false, 0, 0, 2]);
-  h = benchHost({ tier: 2, shield: 4 }); INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.played, h.said, h.ui.bench.arm], [[], [], 0], "fitted: nothing");
-  h = benchHost({ docked: false }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.played, h.said, h.ui.bench.arm], [[], [], 0], "away: nothing");
+  h = benchHost({ moving: false }); INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.panel.intent(h, "card.fit", "confirm"); assert.deepEqual([h.ui.bench.install, h.played[0].hold, h.timers.length, S.tierNow(h.st, h.sv)], [false, 0, 0, 2]);
+  h = benchHost({}); INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.panel.intent(h, "card.later", "confirm"); assert.deepEqual([h.ui.panel, h.played, h.st.e, S.tierNow(h.st, h.sv)], [null, [], 99, 1], "Not now: nothing spent");
+  INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.panel.intent(h, "card.fit", "back"); assert.deepEqual([h.ui.panel, h.played, h.st.e], [null, [], 99], "←: nothing spent");
+  h = benchHost({ tier: 2, shield: 4 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.played, h.said, h.ui.panel ?? null], [[], [], null], "fitted: no panel");
+  h = benchHost({ docked: false }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.played, h.said, h.ui.panel ?? null], [[], [], null], "away: no panel");
 });
-test("the bench: any verb but ✓ clears the arm; ← goes Home with the ring on the Probe module; the ring the face says is kept", () => {
-  const h = benchHost(); INTENTS.bench.intent(h, "slot", "confirm"); assert.equal(h.ui.bench.arm, 1);
-  INTENTS.bench.intent(h, "slot", "room:home"); assert.equal(h.ui.bench.arm, 0, "a key but ✓ clears it"); INTENTS.bench.intent(h, "slot", "confirm"); assert.equal(h.ui.bench.arm, 1);
-  INTENTS.bench.intent(h, "slot", "back"); assert.deepEqual([h.ui.bench.arm, h.ui.home.f, h.went.at(-1)], [0, "probe", "home"]);
+test("the bench: ← goes Home with the ring on the Probe module; the ring the face says is kept", () => {
+  const h = benchHost();
+  INTENTS.bench.intent(h, "slot", "back"); assert.deepEqual([h.ui.home.f, h.went.at(-1)], ["probe", "home"]);
   INTENTS.bench.focus(h, "switch"); assert.equal(h.ui.bench.f, "switch");
 });
-test("the Dock key on the bench: lifted, the ring on the plates moves to the switch and the arm clears; docked, the ring stays", () => {
+test("the Dock key on the bench: lifted, the ring on the plates moves to the switch; docked, the ring stays", () => {
   const st = world(); st.dock = { docked: true, at: T0 }; st.probe = { shield: 2, smax: 3, tier: 1, seq: 1 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, h = host(st, sv);
-  h.ui.screen = "bench"; h.ui.bench.f = "plates"; h.ui.bench.arm = 1; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, false); assert.deepEqual([h.ui.bench.f, h.ui.bench.arm], ["switch", 0]);
+  h.ui.screen = "bench"; h.ui.bench.f = "plates"; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, false); assert.equal(h.ui.bench.f, "switch");
   h.ui.bench.f = "slot"; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, true); assert.equal(h.ui.bench.f, "slot", "away to docked: the ring stays");
 });
 

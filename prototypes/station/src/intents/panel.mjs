@@ -6,6 +6,7 @@ import { panelBuild, cardsOf, initialFocus } from "../views/panel-props.mjs";
 import { growFounder } from "./create.mjs";
 import { returnNow } from "./habitat.mjs";
 import { returnPodNow } from "./pods.mjs";
+import { fitNow } from "./bench.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const model = (h) => ({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: h.settings.jump });
@@ -25,6 +26,7 @@ export function intent(h, target, verb) {
   S.logEv(h.st, "Decision panel · " + h.specs.panel.strings[ui.id].title + " · " + card.name);   // the card pressed, for the owner's own play to be read back
   closePanel(h);
   if (ui.screen === "create" && ui.id === "grow" && card.act !== "shape") growFounder(h, card.act);   // Keep shaping is the way out: the panel closes, Create is as before
+  else if (card.act === "fit") fitNow(h);
   else if (card.act === "return") (ui.screen === "habitat" ? returnNow : returnPodNow)(h);   // Keep is the way out: the panel closes, the screen is as before
 }
 export { panelBuild };

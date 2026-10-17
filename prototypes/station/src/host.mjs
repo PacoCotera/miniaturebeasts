@@ -138,9 +138,14 @@ export function habitatBody(light = lightNow()) {
 }
 
 // ---- the Probe bench ----
-// The Probe in its cradle with its plates, the mend switch and the upgrade slot; the Probe and the dock are the rules', the ring, the slot's arm and the install's hold the UI's (UI.bench).
+// The Probe in its cradle with its plates, the mend switch and the upgrade slot; the Probe and the dock are the rules', the ring and the install's hold the UI's (UI.bench).
 export function benchBody() {
-  return benchBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI.bench }, SPECS.bench, SPECS.frame);
+  const body = benchBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI.bench }, SPECS.bench, SPECS.frame), pn = UI.panel;
+  if (pn && pn.screen === "bench" && docked() && S.tierNow(G.st, G.sv) < 2) {   // the Fit the upgrade? panel is open: its props ride on the bench's (an overlay) and its bottom line is built from the focused card
+    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  } else if (pn && pn.screen === "bench") UI.panel = null;
+  return body;
 }
 
 // ---- The Library's spread ----
@@ -252,8 +257,6 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
       if (!holding() && h.pendingRoom && cuttingHatch(h)) { h.pendingRoom = null; landHatch(h); }   // a room key kept through the hatch's hold is a cutting key: it lands the meet and is used up (UI/UX "Hatch cutting key")
       if (!holding() && h.pendingRoom) { const k = h.pendingRoom; h.pendingRoom = null; dispatch(h, { screen: UI.screen, target: "room", verb: "room:" + k }); }
     },
-    // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
-    disarm: () => { UI.bench.arm = 0; },
     goto: (name, hold = 0, o = {}) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) { if (!o.cut) play({ kind: "dither", target: "stage", ms: 180, hold }); if (name === "habitat") enterHabitat(h, o); } },   // hold: whole ms of held input (the Vivarium's look holds 180); o.cut: drawn as a cut, no dither (the hatch's cutting key), o.meetHold: the meet's moment holds input that long
   };
   return h;

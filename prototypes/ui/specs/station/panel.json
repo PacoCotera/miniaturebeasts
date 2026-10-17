@@ -5,7 +5,8 @@
  "over": [
   "create",
   "habitat",
-  "pods"
+  "pods",
+  "bench"
  ],
  "spec": "specs/station-decision-panel-spec.md",
  "frame": "frame.json",
@@ -47,6 +48,10 @@
   "wildPod": {
    "opens": "pods",
    "by": "✓ on the leaf plate"
+  },
+  "fitUpgrade": {
+   "opens": "bench",
+   "by": "✓ on the slot"
   }
  },
  "bottomLine": {
@@ -113,6 +118,18 @@
     },
     "keep": {
      "name": "Keep it"
+    }
+   }
+  },
+  "fitUpgrade": {
+   "title": "Fit the upgrade?",
+   "cards": {
+    "fit": {
+     "name": "Fit it",
+     "line": "reaches further"
+    },
+    "later": {
+     "name": "Not now"
     }
    }
   }

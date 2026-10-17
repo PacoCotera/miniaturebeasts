@@ -1,5 +1,5 @@
 // One mibi up close, the Vivarium's closest level (the habitat identifier stays; habitat.json): ✓ on the resident, the name, the species word, a chapter plate, the Companion, Portrait, Cross, Wild or a tile. The events are the spec's
-// (events.moment, read, release, back): no constant of time lives here. The first ✓ on Wild arms and the second does it; any other key disarms. The meet's first ✓ opens the namer (intents/namer.mjs).
+// (events.moment, read, release, back): no constant of time lives here. ✓ on Wild opens the Return panel (`returnNow` is its Return card). The meet's first ✓ opens the namer (intents/namer.mjs).
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";

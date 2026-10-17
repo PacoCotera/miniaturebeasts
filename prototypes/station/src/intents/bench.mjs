@@ -1,6 +1,7 @@
 // The Probe bench's intents (bench.json): ✓ on the plates mends one, ✓ on the switch sets whether the dock mends every plate, ✓ on the slot fits the upgrade (the first ✓ arms, the second fits; short, it says so and spends nothing),
-// ← goes Home with the ring on the Probe module. The events are the spec's (events.mend, switch, install): no constant of time lives here; reduced motion sends hold 0. Any key but ✓ clears the arm.
+// ← goes Home with the ring on the Probe module. The events are the spec's (events.mend, switch, install): no constant of time lives here; reduced motion sends hold 0.
 import * as S from "../state.mjs";
+import { openPanel } from "./panel.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const play = (h, name, over = {}) => { const e = h.specs.bench.events[name]; h.play({ kind: e.kind, target: e.target, ms: e.ms, hold: h.motion() ? e.hold : 0, ...over }); };
@@ -11,7 +12,6 @@ export function focus(h, target) { h.ui.bench.f = target; }
 // `target`: plates | switch | slot.
 export function intent(h, target, verb) {
   const b = h.ui.bench, Sg = h.specs.bench.strings;
-  if (verb !== "confirm") b.arm = 0;
   if (verb === "back") { h.ui.home.f = "probe"; h.goto("home"); return; }
   if (verb !== "confirm") return;
   b.f = target;
@@ -27,13 +27,14 @@ export function intent(h, target, verb) {
     play(h, "switch", { from: was ? 1 : 0, to: was ? 0 : 1 }); h.save();
   } else if (target === "slot") {
     if (!docked || S.tierNow(h.st, h.sv) >= 2) return;   // away: the Probe is out; fitted: nothing more to fit
-    const e = S.price(S.PRICE.tier2E, h.settings), d = S.price(S.PRICE.tier2D, h.settings);
-    if (!S.tier2Ready(h.st, h.settings)) { h.say(fill(Sg.short, { icons: S.shortIcons(h.st, e, d, 0) })); return; }
-    if (!b.arm) { b.arm = 1; return; }   // the first ✓ arms: the part lifts, "Again: fit the upgrade"
-    b.arm = 0; const before = S.probeNow(h.st, h.sv).shield, r = S.installTier2(h.st, h.settings);
-    if (!r.ok) return;
-    play(h, "install", { from: before, to: S.TIER[2].shield });
-    if (h.motion()) { b.install = true; h.at(h.specs.bench.events.install.ms, () => { b.install = false; }); }   // the tier-1 cradle picture stays on the face until the install cuts at 300 (views/bench-props.mjs)
-    h.save();
+    openPanel(h, "bench", "fitUpgrade");   // the Fit it card runs fitNow
   }
+}
+// The Fit it card's act: the rule fits the part (⚡ and ◆ spent), the install event plays, the tier-1 cradle picture stays on the face until the install cuts at 300 (views/bench-props.mjs).
+export function fitNow(h) {
+  const b = h.ui.bench, before = S.probeNow(h.st, h.sv).shield, r = S.installTier2(h.st, h.settings);
+  if (!r.ok) return;
+  play(h, "install", { from: before, to: S.TIER[2].shield });
+  if (h.motion()) { b.install = true; h.at(h.specs.bench.events.install.ms, () => { b.install = false; }); }
+  h.save();
 }

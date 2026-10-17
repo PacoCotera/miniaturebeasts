@@ -41,7 +41,7 @@ function world({ docked = true, shield = 3, tier = 1, e = 99, d = 99, mendFull =
   return st;
 }
 const sv = () => ({ v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 });
-const build = (st, ui = { f: null, arm: 0, install: false }) => benchBuild({ st, sv: sv(), settings, docked: S.docked(st), ui }, spec, frameSpec);
+const build = (st, ui = { f: null, install: false }) => benchBuild({ st, sv: sv(), settings, docked: S.docked(st), ui }, spec, frameSpec);
 const SCENES = {
   "a fresh world: no Probe, away": () => world({ docked: false, noProbe: true }),
   "docked, tier 1, two plates of three": () => world({ shield: 2 }),
@@ -79,19 +79,18 @@ test("the switch: its count is the tier's plates, its whole the dock's floor or 
   b = build(world({ docked: false, mendFull: true })); assert.equal(b.props.regions.switch.state, "on", "set at any time: away too");
 });
 
-test("the slot, in order: fitted at tier 2; dim away; ready (armed after the first ✓) when affordable; else dim; the lamp off only when dim", () => {
+test("the slot, in order: fitted at tier 2; dim away; ready when affordable (the first ✓ opens the panel: no armed state); else dim; the lamp off only when dim", () => {
   const sl = (st, ui) => { const { plate, ...r } = build(st, ui).props.regions.slot; assert.match(plate, /^plate-device-\d+x248$/); return r; };   // fix 2: the plate follows the module's rect
   assert.deepEqual(sl(world({ tier: 2, shield: 4 })), { state: "fitted", lamp: "well" }); assert.deepEqual(sl(world({ docked: false, tier: 2, shield: 4 })), { state: "fitted", lamp: "well" });
   assert.deepEqual(sl(world({ docked: false })), { state: "dim", lamp: "off" });
-  assert.deepEqual(sl(world({})), { state: "ready", lamp: "well" }); assert.deepEqual(sl(world({}), { f: null, arm: 1, install: false }), { state: "armed", lamp: "well" });
+  assert.deepEqual(sl(world({})), { state: "ready", lamp: "well" });
   assert.deepEqual(sl(world({ e: 11 })), { state: "dim", lamp: "off" }, "short of ⚡"); assert.deepEqual(sl(world({ d: 3 })), { state: "dim", lamp: "off" }, "short of ◆");
-  assert.equal(build(world({}), { f: null, arm: 1, install: false }).props.focus.armed, "slot"); assert.equal(build(world({})).props.focus.armed, null);
-  assert.equal(build(world({ e: 11 }), { f: null, arm: 1, install: false }).props.focus.armed, null, "an arm with nothing affordable is not armed");
+  assert.equal("armed" in build(world({})).props.focus, false, "no arm in the focus");
 });
 
 test("the focus: the plates when docked and a plate is gone, else the switch; the ring the player left is kept; the plates are not offered away; the targets and what is enabled", () => {
   assert.equal(build(world({ shield: 2 })).props.focus.cur, "plates"); assert.equal(build(world({ shield: 3 })).props.focus.cur, "switch"); assert.equal(build(world({ docked: false, shield: 1 })).props.focus.cur, "switch");
-  assert.equal(build(world({ shield: 2 }), { f: "slot", arm: 0, install: false }).props.focus.cur, "slot", "kept"); assert.equal(build(world({ docked: false }), { f: "plates", arm: 0, install: false }).props.focus.cur, "switch", "no plates away");
+  assert.equal(build(world({ shield: 2 }), { f: "slot", install: false }).props.focus.cur, "slot", "kept"); assert.equal(build(world({ docked: false }), { f: "plates", install: false }).props.focus.cur, "switch", "no plates away");
   let t = build(world({ shield: 2 })).props.focus.targets; assert.deepEqual(t, [{ id: "plates", group: "plates", enabled: true }, { id: "switch", group: "module", enabled: true }, { id: "slot", group: "module", enabled: true }]);
   t = build(world({ shield: 3, e: 0, d: 0 })).props.focus.targets; assert.deepEqual(t.map((x) => [x.id, x.enabled]), [["plates", false], ["switch", true], ["slot", true]], "every plate whole: the plates disabled; the slot short is still enabled");
   t = build(world({ docked: false })).props.focus.targets; assert.deepEqual(t.map((x) => [x.id, x.enabled]), [["switch", true], ["slot", false]], "away: no plates target, the slot nothing to send");
@@ -99,16 +98,15 @@ test("the focus: the plates when docked and a plate is gone, else the switch; th
 });
 
 test("the bottom line, by the focused target, from the spec's strings", () => {
-  const line = (st, f, arm = 0) => build(st, { f, arm, install: false }).line;
+  const line = (st, f) => build(st, { f, install: false }).line;
   let l = line(world({ shield: 2 }), "plates"); assert.deepEqual([l.ok, l.price, l.subject, l.dim ?? null], [Sg.mend, "⚡ 1", "Shield takes three strikes", null]);
   l = line(world({ shield: 1 }), "plates"); assert.equal(l.subject, "Shield takes two strikes", "the plates whole after this press"); assert.equal(line(world({ shield: 0 }), "plates").subject, "Shield takes one strike");
   l = line(world({ shield: 2, e: 0 }), "plates"); assert.deepEqual([l.dim, l.short, l.price], [true, "⚡", "⚡ 1"], "short: the dimmed cap, the short figure");
   l = line(world({ shield: 3 }), "plates"); assert.deepEqual([l.ok, l.subject], [null, Sg.whole]);
   l = line(world({ mendFull: false }), "switch"); assert.deepEqual([l.ok, l.subject, l.price ?? null], [Sg.switchOn, Sg.offContext, null]);
   l = line(world({ mendFull: true }), "switch"); assert.deepEqual([l.ok, l.subject], [Sg.switchOff, Sg.onContext]);
-  l = benchBuild({ st: world({ mendFull: true }), sv: sv(), settings: { ...settings, economy: "free" }, docked: true, ui: { f: "switch", arm: 0, install: false } }, spec, frameSpec).line; assert.equal(l.subject, Sg.onContextFree, "free economy: the dock mends all, free");
+  l = benchBuild({ st: world({ mendFull: true }), sv: sv(), settings: { ...settings, economy: "free" }, docked: true, ui: { f: "switch", install: false } }, spec, frameSpec).line; assert.equal(l.subject, Sg.onContextFree, "free economy: the dock mends all, free");
   l = line(world({}), "slot"); assert.deepEqual([l.ok, l.price, l.subject, l.dim ?? null], [Sg.fit, "⚡ 12 ◆ 4", Sg.adds, null]);
-  l = line(world({}), "slot", 1); assert.deepEqual([l.ok, l.price], [Sg.fitAgain, "⚡ 12 ◆ 4"]);
   l = line(world({ e: 3, d: 0 }), "slot"); assert.deepEqual([l.ok, l.dim, l.short], [Sg.fit, true, "⚡ ◆"], "short of both: the dimmed cap");
   l = line(world({ docked: false }), "slot"); assert.deepEqual([l.ok, l.subject], [null, Sg.dockFirst]);
   l = line(world({ tier: 2, shield: 4 }), "slot"); assert.deepEqual([l.ok, l.subject], [null, Sg.fitted]);
@@ -117,7 +115,7 @@ test("the bottom line, by the focused target, from the spec's strings", () => {
 
 test("while the install plays the tier-1 cradle picture is requested too (it cuts at 300)", () => {
   const ids = (ui) => build(world({ tier: 2, shield: 4 }), ui).requests.map((r) => r.id);
-  assert.ok(!ids({ f: null, arm: 0, install: false }).includes(spec.regions.cradle.pictures.tier1)); assert.ok(ids({ f: null, arm: 0, install: true }).includes(spec.regions.cradle.pictures.tier1));
+  assert.ok(!ids({ f: null, install: false }).includes(spec.regions.cradle.pictures.tier1)); assert.ok(ids({ f: null, install: true }).includes(spec.regions.cradle.pictures.tier1));
 });
 
 test("the plate strip is named in both states, by the tier; during the install the face picks t1 before 300 (fix 5 P3)", () => {

@@ -141,3 +141,24 @@ for (const [kind, gain, title] of [["mibi", S.PRICE.wildMibi, null], ["pod", S.P
     assert.equal(v.line.ok, "Return it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "gone for good");
   });
 }
+
+// ---- the Fit the upgrade? panel (T-20261016-53; spec §1.6): ⚡ 12 ◆ 4 from the rules, dimmed with what is short, Not now spends nothing ----
+function fitHost(o = {}) {
+  const st = world(); st.dock = { docked: true, at: T0 }; st.probe = { shield: 2, smax: 3, tier: 1, seq: 1 }; if (o.e != null) st.e = o.e; if (o.d != null) st.d = o.d;
+  const h = host(st); h.ui.screen = "bench"; h.ui.bench = { f: "slot", install: false }; h.ui.panel = { screen: "bench", id: "fitUpgrade", focus: "" }; return h;
+}
+test("the Fit the upgrade? panel: the cost from the rules, the part fitted and the part dimmed, no mark, the ring on Fit it, nothing in the strings carries a figure", () => {
+  const h = fitHost(), v = wview(h), [fit, later] = v.cards, e = S.price(S.PRICE.tier2E, settings), d = S.price(S.PRICE.tier2D, settings);
+  assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, "Fit the upgrade?");
+  assert.deepEqual([fit.id, later.id], ["fit", "later"]); assert.equal(fit.cost, S.priceText(e, d, 0)); assert.equal(fit.cost, "⚡ 12 ◆ 4"); assert.equal(fit.gain, false); assert.equal(fit.dim, false); assert.equal(fit.short, "");
+  assert.equal(fit.picture, "bench-part-t2-fitted-128"); assert.equal(later.picture, "bench-part-t2-dim-128"); assert.deepEqual([fit.mark, later.mark, fit.line, later.cost], ["", "", "reaches further", ""]);
+  assert.equal(v.overlay.focus.cur, "card.fit"); assert.equal(v.line.ok, "Fit it"); assert.equal(v.line.price, "⚡ 12 ◆ 4"); assert.equal(v.line.subject, "reaches further");
+  for (const c of [fit, later]) assert.ok(measure(c.name, 20) <= P.limits[2].text && words(c.name) <= 3, c.name);
+  assert.ok(measure(fit.line, 16) <= 208 && words(fit.line) <= 6); assert.ok(!JSON.stringify(panelSpec.strings.fitUpgrade).match(/[⚡◆❀\d]/), "no figure in the strings");
+});
+test("the Fit the upgrade? panel when short: Fit it is dimmed with the short icons, the ring opens on Not now, the bottom line says what is short", () => {
+  for (const [o, icons] of [[{ e: 11 }, "⚡"], [{ d: 3 }, "◆"], [{ e: 0, d: 0 }, "⚡ ◆"]]) {
+    const v = wview(fitHost(o)), fit = v.cards[0]; assert.deepEqual([fit.dim, fit.short], [true, icons]); assert.equal(v.overlay.focus.cur, "card.later"); assert.equal(v.overlay.regions.cards[0].dim, true);
+  }
+  const h = fitHost({ e: 11 }); h.ui.panel.focus = "card.fit"; const v = wview(h); assert.equal(v.line.dim, true); assert.equal(v.line.short, "⚡"); assert.match(v.line.need, /⚡/);
+});

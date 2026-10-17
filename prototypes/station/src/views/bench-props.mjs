@@ -2,7 +2,7 @@
 // whole count, the switch's and the slot's states and lamps, picture ids and the focus targets by id; no rectangle, no colour, no layout rule (the words place everything from bench.json: the plates by the tier's places, the part by the slot's
 // state). The output is plain JSON: { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }. Runs in Node, tested there (tests/bench-props.test.mjs);
 // the shape is bench.props.json.
-//   m: { st, sv, settings, docked, ui (UI.bench: { f, arm, install }) }
+//   m: { st, sv, settings, docked, ui (UI.bench: { f, install }) }
 import * as S from "../state.mjs";
 import { slot } from "./pods-props.mjs";
 import { warnWords } from "./goal-words.mjs";
@@ -34,9 +34,9 @@ export function benchBuild(m, spec, frame) {
   // the switch: set at any time, docked or away
   const plate = (r) => req({ kind: "slot", id: `plate-device-${r.rect[2]}x${r.rect[3]}`, master: `plate-device-${r.rect[2]}x${r.rect[3]}`, size: r.rect.slice(2), until: "the device plate (fix 2: placed 1:1 at the module's rect)" });
   const on = !!st.mendFull, sw = { plate: plate(R.switch), state: on ? "on" : "off", lamp: on ? "well" : "off", count, whole: on ? count : Math.min(S.DOCK_MEND_FLOOR, count) };
-  // the slot, in order: tier 2 fitted; away dim; affordable ready (armed after the first ✓); else dim, short
-  const ready = tier < 2 && docked && S.tier2Ready(st, settings), armed = ready && !!ui?.arm;
-  const slotState = tier === 2 ? "fitted" : !docked ? "dim" : ready ? (armed ? "armed" : "ready") : "dim", sl = { plate: plate(R.slot), state: slotState, lamp: slotState === "dim" ? "off" : "well" };
+  // the slot, in order: tier 2 fitted; away dim; affordable ready; else dim, short
+  const ready = tier < 2 && docked && S.tier2Ready(st, settings);
+  const slotState = tier === 2 ? "fitted" : !docked ? "dim" : ready ? "ready" : "dim", sl = { plate: plate(R.slot), state: slotState, lamp: slotState === "dim" ? "off" : "well" };
 
   const regions = { bench: { room }, cradle: { picture: cradle }, strip: { picture: R.strip.slices[tier], tier }, ...(docked ? { plates: { tier, whole } } : {}), switch: sw, slot: sl };
   const targets = [...(docked ? [{ id: "plates", group: "plates", enabled: gone }] : []), { id: "switch", group: "module", enabled: true }, { id: "slot", group: "module", enabled: docked && tier === 1 }];
@@ -59,8 +59,8 @@ export function benchBuild(m, spec, frame) {
   else if (!docked) line.subject = Sg.dockFirst;
   else {
     const e = S.price(S.PRICE.tier2E, settings), d = S.price(S.PRICE.tier2D, settings);
-    Object.assign(line, { ok: armed ? Sg.fitAgain : Sg.fit, price: S.priceText(e, d, 0), subject: Sg.adds });
+    Object.assign(line, { ok: Sg.fit, price: S.priceText(e, d, 0), subject: Sg.adds });
     if (!ready) { line.dim = true; line.short = S.shortIcons(st, e, d, 0); }
   }
-  return { props: { state: docked ? "docked" : "away", regions, focus: { cur, targets, armed: armed ? "slot" : null } }, line, requests };
+  return { props: { state: docked ? "docked" : "away", regions, focus: { cur, targets } }, line, requests };
 }

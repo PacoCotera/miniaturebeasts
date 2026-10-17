@@ -95,7 +95,6 @@ export function act(k) {
   syncProps();
   if (k === "dock") { dockKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
-  if (k !== "confirm") H.disarm();
   if (k !== "back") UI.arrival = null;   // the Incubator's ← returns to Pods only until another key (the arrival mode of the jump flag)
   FACE.key(k); pump();
 }

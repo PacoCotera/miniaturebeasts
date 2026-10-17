@@ -331,7 +331,7 @@ const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika
 expect(!!extra, "the pod that waited for a well entered the rack when one freed"); {   // not skipped when absent: the read-holds-input assertion must run
   await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, extra.id); await page.waitForTimeout(300); await press("confirm", 2200); await page.evaluate((id) => { window.__st.podsGo(id, "rail.0"); }, extra.id); await page.waitForTimeout(400); await press("confirm", 300);
   expect(await page.evaluate(() => window.__st.holding()), "a read holds input"); await page.waitForTimeout(2200);
-  await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, extra.id); await page.waitForTimeout(400); await press("confirm", 200); await press("confirm", 400); }
+  await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, extra.id); await page.waitForTimeout(400); await press("confirm", 200); await press("left", 200); await press("confirm", 400); }
 s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
 // P2. Compare with one, two, four and six traits; then the empty rack. Each pair is a fresh crate of two pods, read whole by the developer, compared, and given back through the hatch.
 const compareShot = async (species, seed, ci, name, grid) => {
@@ -347,7 +347,7 @@ const compareShot = async (species, seed, ci, name, grid) => {
   const differs = await page.evaluate(([a, b]) => window.__st.compareDiff(a, b).length, [pair[0].id, pair[1].id]);
   await frameShot(name);
   await page.evaluate(() => { window.__st.UI.pods.cmp = null; });
-  for (const p of pair) { await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, p.id); await page.waitForTimeout(400); await press("confirm", 200); await press("confirm", 400); }
+  for (const p of pair) { await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, p.id); await page.waitForTimeout(400); await press("confirm", 200); await press("left", 200); await press("confirm", 400); }
   expect(!(await st()).tray.some((p) => pair.some((q) => q.id === p.id)), `${name}: the pair went back through the hatch`);
   return differs;
 };
@@ -367,7 +367,7 @@ s = await st();
 const tuikis = s.tray.find((p) => p.species === "S03");
 await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, tuikis.id); await page.waitForTimeout(400);
 const s0 = s.s;
-await press("confirm", 200); await press("confirm", 400);
+await press("confirm", 200); await press("left", 200); await press("confirm", 400);
 s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "returned for +1 Essence");
 // R1. Create (slot R, journey-create.json): ✓ on the read Loika opens Create on the face; ◀ ▶ walk the read traits, ▲ ▼ roll a look (+1 Data), the line reads the price and the leaves; a room key drops the unpaid choices; ✓ Grows: the stamp prints, the
 // code appears, the pod travels, input held 1080 ms, then the Incubator (a jump: ← there reads Home)
@@ -650,11 +650,12 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   r = await bpress("up", 200); expect(r.ring === "switch" && r.l.ok === "Switch on", "probe-bench: ▲ is the switch: ✓ Switch on: " + JSON.stringify([r.ring, r.l.ok]));
   r = await bpress("confirm", 300); expect(!(await page.evaluate(() => window.__st.holding())) && r.ring === "switch" && r.p.regions.switch.state === "on" && (await st()).mendFull === true && r.l.ok === "Switch off", "probe-bench: ✓ toggles the dock's mend, no hold, the ring stays: " + JSON.stringify([r.p.regions.switch, r.l.ok]));
   r = await bpress("down", 200); expect(r.ring === "slot", "probe-bench: ▼ is the slot: " + r.ring);
-  r = await bpress("confirm", 200); expect(r.p.focus.armed === "slot" && r.p.regions.slot.state === "armed" && r.l.ok === "Again: fit the upgrade" && r.s.e === 13 && r.s.d === 6, "probe-bench: the first ✓ arms: the part lifts, ✓ Again: fit the upgrade, nothing spent: " + JSON.stringify([r.p.focus.armed, r.p.regions.slot.state, r.l.ok]));
-  await frameShot("page-bench-armed", true);
-  r = await bpress("left", 200); expect(r.ring === "plates" && r.p.focus.armed === null && r.p.regions.slot.state === "ready", "probe-bench: ◀ clears the arm and lands on the plates: " + JSON.stringify([r.ring, r.p.focus.armed, r.p.regions.slot.state]));
-  r = await bpress("right", 200); r = await bpress("confirm", 200); expect(r.p.focus.armed === "slot", "probe-bench: ▶ the slot, ✓ arms again: " + r.p.focus.armed);
-  r = await bpress("confirm", 150); expect(await page.evaluate(() => window.__st.holding()) && r.s.e === 1 && r.s.d === 2 && r.p.regions.plates.tier === 2 && r.p.regions.plates.whole === 4 && r.p.regions.slot.state === "fitted", "probe-bench: the second ✓ fits the upgrade (⚡ −12 ◆ −4): tier 2, four plates, held: " + JSON.stringify([r.s.e, r.s.d, r.p.regions.plates, r.p.regions.slot.state]));
+  r = await bpress("confirm", 200); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.fit" && r.l.ok === "Fit it" && r.l.price === "⚡ 12 ◆ 4" && r.s.e === 13 && r.s.d === 6, "probe-bench: ✓ on the slot opens the Fit the upgrade? panel, the ring on Fit it, nothing spent: " + JSON.stringify([r.p.overlay?.focus, r.l.ok, r.l.price]));
+  await frameShot("page-bench-panel-upgrade", true);
+  r = await bpress("back", 200); expect(!r.p.overlay && r.ring === "slot" && r.s.e === 13 && r.s.d === 6 && r.p.regions.slot.state === "ready", "probe-bench: ← closes the panel, nothing spent: " + JSON.stringify([r.ring, r.s.e, r.s.d, r.p.regions.slot.state]));
+  r = await bpress("confirm", 200); r = await bpress("right", 100); r = await bpress("confirm", 200); expect(!r.p.overlay && r.s.e === 13 && r.p.regions.plates.tier === 1, "probe-bench: Not now closes it, nothing spent: " + JSON.stringify([r.s.e, r.p.regions.plates]));
+  r = await bpress("confirm", 200);
+  r = await bpress("confirm", 150); expect(await page.evaluate(() => window.__st.holding()) && r.s.e === 1 && r.s.d === 2 && r.p.regions.plates.tier === 2 && r.p.regions.plates.whole === 4 && r.p.regions.slot.state === "fitted", "probe-bench: the Fit it card fits the upgrade (⚡ −12 ◆ −4): tier 2, four plates, held: " + JSON.stringify([r.s.e, r.s.d, r.p.regions.plates, r.p.regions.slot.state]));
   r = await bpress("up", 50); expect(r.ring === "slot", "probe-bench: a key during the install's hold is dropped: " + r.ring);
   await benchIdle(); await page.waitForTimeout(400); r = await bpress("confirm", 150); expect(r.ring === "slot" && r.l.ok === null && r.l.subject === "the upgrade is fitted" && r.s.e === 1, "probe-bench: fitted: the ring stays on the slot, no ✓ cap, \"the upgrade is fitted\": " + JSON.stringify([r.ring, r.l]));
   await frameShot("page-bench-tier2", true);
