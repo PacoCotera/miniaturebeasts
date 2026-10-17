@@ -147,7 +147,7 @@ print('S01-four-stands.png')
 # 2) Home's living window: today's golden beside the four as themselves
 glass = src('home-glass-day-640x488.png')
 win = glass.copy()
-spots = [(150, 300, 150), (330, 250, 118), (500, 330, 140), (250, 430, 128)]
+spots = [(140, 326, 150), (500, 270, 118), (420, 384, 140), (250, 436, 128)]  # feet on the window's own ground (the golden's stand rows)
 order = sorted(range(4), key=lambda i: spots[i][1])
 for i in order:
     n, img, *_ = stands[i]
@@ -155,7 +155,8 @@ for i in order:
     s = sc(img, h)
     if i in (1, 2):                      # residents face their own ways (routines, not genetics)
         s = s.transpose(Image.FLIP_LEFT_RIGHT)
-    win.alpha_composite(contact(int(s.width * 0.8), 14, 0.55), (x - int(s.width * 0.8), y - 10))
+    cw = int(s.width * 0.42)              # a contact shadow under the feet, on the moss
+    win.alpha_composite(contact(cw, 12, 0.62), (x - cw, y - 14))
     win.alpha_composite(s, (x - s.width // 2, y - s.height))
 today = src('home-docked.png').crop((16, 48, 672, 552))
 out = Image.new('RGBA', (656 + 16 + 640 + 32, 520 + 44), (12, 10, 18, 255)); d = ImageDraw.Draw(out)
