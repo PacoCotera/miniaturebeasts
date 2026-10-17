@@ -18,6 +18,8 @@ A small, well-made field kit for keeping living things. You hold it, and it is w
 
 **Why.** The game is care and curiosity about animals you made and raised. The player's attention and affection belong to the mibis, so everything else has to be trustworthy and out of the way: a naturalist's instrument made by someone who loves animals. It is not a gadget showing off, and it is not a toy.
 
+**Two motivations, often in one person.** Some come for the feel: a small life to care for and watch. Some come for the mechanics: how inheritance works and how to steer it. Most move between the two. The look serves both through its layers. The life layer carries the feel and is never thinned to make room for the mechanics. The instrument and its signals carry the mechanics, precise and honest, and stay quiet until asked.
+
 **Three layers, one job each.** Every screen on both devices is built from three layers. Texture, light, colour and motion are decided by the layer, not screen by screen.
 
 | Layer | What it is | Its job | How it looks |
@@ -95,7 +97,7 @@ Bright life on a calm ground.
 - **One subject per screen.** Every screen is about one thing the player cares about: a mibi, a pod, a crate, a choice. That thing is the largest, best-lit and most detailed thing there. Everything else is smaller, quieter and in its service.
 - **Show what the player acts on or watches change, and nothing else.** An object earns its place by doing something the player can see, or by changing over time. Equipment that serves nothing, decoration that explains nothing, and a second picture of something already shown all go.
 - **Rich where it matters, calm everywhere else.** The life is dense: fur, markings, moss, light. The machine around it is sparse: a few panes, a few lit marks. Detail is spent on what the player came to see, never spread evenly.
-- **Depth is present but folded.** The genome, the rules between copies and the numbers behind a forecast are really there, one press away, for the curious. The first view gives a child the whole meaning without them; the folded view gives a parent the mechanism.
+- **Depth is present but folded.** The genome, the rules between copies and the numbers behind a forecast are really there, one press away. The first view serves the feel: the life, what changed and what is waiting, whole without the mechanism. The folded view serves the mechanics: the copies, the rules and the odds, for whoever wants to know why. These are two motivations, not two kinds of player. The same person moves between them, often in one sitting, so neither view talks down to the other, and the way between them is always one press.
 - **A glance before a read.** Each screen is understood in a few seconds by looking, before any word is read: what it is for, what changed, what is waiting. If understanding needs reading, the screen is too dense or draws the wrong thing.
 - **Every mark means one thing, everywhere.** A mark the player learns on one screen means the same on every screen and on both devices. Meaning never depends on a legend, a tiny glyph or colour alone.
 - **The Companion says less than the Station.** It is a smaller screen carried outdoors, held in a moment of play. It shows the place, the pawn and the next step; the Station holds the reflection, the comparison and the depth.
