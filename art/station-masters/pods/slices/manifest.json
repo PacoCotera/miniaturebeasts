@@ -19040,5 +19040,2501 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
   "status_note": "new (10-17, T-140 in T-145)"
+ },
+ "genome-first-13x11": {
+  "size": [
+   13,
+   11
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 13 x 11 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "195da8b475ad85e1ace05c4b8420480f950fd7cb617a22c3ecbb59f748b06dbc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-first-17x13": {
+  "size": [
+   17,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 17 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "0b71455b1b7ed41e57d4efb505f3190a0fef75e8853955dc6c023f753ea8d028",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-first-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 20 x 16 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f0d5b332bdcd4748607c849c3fca6627fdadefa592f6353f2f5d4f316d66c123",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-focus-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "e9a3cd8c9395916c1ebafd353d29aea567216da66ffb0af9feeec115115d8ce7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-focus-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "4f49fdb6c1491e51f85f0c7d197b09808fcd547717c802e82a6f2f1ff59e6cb3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-focus-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 56 x 56 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "4aee680f95041c5bb1959a698c73be133daac2c644514c7c1dcab2b655483521",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-frost-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "e46737071832b913a69cd4ea3962b2143afffc93017b4a0e7ebd50cd193d150f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-frost-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "3ea783b0e5b19e1e5a77ddfb1365931d587e8beee14bca720809d3f200691270",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-frost-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "e2746170d9801533562dd97ebd2e0ad3427898ca6798bcab813089835d0db6dc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-closed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "0dce4cdc70ab28ad1c6ff69272bb5339e9e5e03e277f695d9238629ff5a3679f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-closed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "3c9f33f873802f62eeb93f267a9f386df6711b10e3111af10eef6d806605e08b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-closed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "b349d5868199d93acfed403f2e02f7ca25982caf9720416ca4da38dd954c7f35",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-only-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "88b654133fd58afef09eb5de49a7c3b68d569576bd22ce09300e7dc33311f94c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-only-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6552aee66cee7255329f925ea45bcf333063efc952de8d468e77992b65b930f5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-only-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "5a2ae18db6b7a56f5f9c8b31e8da97750716cb12080a49128d5ee5c2d9db7907",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "71e27f18a23a9af91a12030d9921b4093d8878b54a8c4577da9485d0b0f6ce31",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "61705dd407c751985931c491223aec1c2212bdfb87b31b521f06a693dd6a62c9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "030d124efe8f6303169686671ee2d8fdefcb563bc0dd9d9586028e865c43f0c2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-clash-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f12182f3cdeb548465278702e8fca8881145c4c034f716cc00e8f255bb175257",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-clash-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "7e44b0fbc74389632a1ff6b22db4ee9aceeaf58ad84f8f581725fa49a3b876ea",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-clash-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "e7ee9f7223ce26474e65f70440c02fa1f4452c1c0d8c7ebc9ba92b5f627b8450",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-lit-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d4a75af20306113b5155ac008bedee326a137b7e44c8e0eab61f4af52bcff80a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-lit-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "dac6de9ea41388e27a16c44a48654abfb2fa3d4551eace3ddc019d5e2ae1ebd4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-lit-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "3c9099e50e9577d7d5bae27bd6ecc4ff2b5f3560a9a2c11e8b1593daa3bb9de0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-lit-clash-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6cabeeecd843518c1132d88de1b849598797b6cd1e0d2cbc90f6152894edfb3b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-lit-clash-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "b9eeb58444383583f3b1f322f34da81f267a5bfacc81a354be3dcedba286bedd",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-open-lit-clash-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "9acc6c850cf79c52e64859ef1ce3f2d9f15e99ca5c78a59c46968ff1a7b8d835",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-self-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "5684df727cc5fa4750b0578432867e0615a75506fbf732fcf54c033907199956",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-self-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d05910bb574738360e8282d5deb16344c9be094dcfd3d6efd61e4a16b3073cd9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-gene-self-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f2af76a725aae0db5a71f33d36e80ba37c42b969d722bc755a9d4781afbd6b07",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-glint-gold-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 16 x 16 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "367649a3a28f16f09ccd4397cfa5708dc9b48a3b6a8faeb34658b379316f6c5e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-glint-gold-20x20": {
+  "size": [
+   20,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 20 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6088a8ed70ff6ce9a4e66329a810049e2a4daef155a0c98872a0f448d54a0120",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-glint-gold-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 24 x 24 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "4da128b0baa48e7f48f8c8ea9d21c99c3577b8a9aafbb55dd5ea48989e9c9782",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-glint-wish-13x13": {
+  "size": [
+   13,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 13 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "fa5dcf98896f33d152fde206ee90d5d76dc14fabfdd53a965edcd955e7cd6ac9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-glint-wish-17x17": {
+  "size": [
+   17,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 17 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "054e92f74e3077316531750ba0653bc757766f957563689b2db5f52ec61455c0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-glint-wish-20x20": {
+  "size": [
+   20,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 20 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d5f95f35d5d9c6d00481c373a4304dc26f0ea085d0e2230759b3ce5cc61f4c2f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S01-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f4c96d2998b08fe4c6b64acff9f01f7a9e0293acb20ca884cb2d71cbfe2df646",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S01-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d649ae8c4f75f8ffb4823d35f863dcb7de125aa45e9a35d2f5721b32cfcc9ce3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S01-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "c03e4fa715bec8edb784bff42338edbb0b5522530d4dcfbe77abe6b8dca443e6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S02-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "b6ffbbbe6db8edcb041a683150edf6e3ed0b423397c4a5d30e6b8328c425a87f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S02-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "8d603d7b21f7855202d182e1f4f710dcf017c8dc8c0089174fa33f45be6eed24",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S02-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "37952fa02c8006ac54a3115cd8d117328a4ea598bed24f311232eda704275956",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S03-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6500a4b5d3930fca4f5f8204847727e15b5a72cb8ed28f07a2a40507118bb829",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S03-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "786a48b405db2eb43f5a6c1df00f52028fe478c5d2e59f0bc79a5410b71d6fd6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S03-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "73a61c4c7aac87978101a59ee699ac63d14dfa535f50727d5635e75601198ffa",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S04-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f58b9fcc836bb7a30a8c38d45c99224474e5b00075c5974ad301453c27fb8578",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S04-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "a6791c5b099479bb289919a177218c1423f599e14926ef8e12d5c8aa4c945d6d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S04-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "25bbd12849766166f42c67f126e55e4257f414aba22b55e97fc9db2fc0a8eff8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S05-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "583f686c290c2bd03e4b6878129d7a26846d13e4d9d8135a80708fcba9080db2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S05-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "eb499b837638f31b069eca10dab4a84150a9de24cb3466d576ccac918db4aa1b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S05-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "9850804afaa7688f35658df9848e87b50dffcf78a28dbccd2857ad81b9dcf845",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S06-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "99cf04aab82eb7dc03e768cada221f08ae74a762d64351369644063602128b3d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S06-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "17293d397ff9b3cb8e80347d2956942a62e8f4ff865a36ef05d2eae2bec29c1e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S06-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "3f6407ac7aa25a9e30883949ab6815cfa86c5e825842ac34bd2e5c6aeb350841",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S07-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "bb8c076388f014137411785403d8d7987a182b46efeafdba625b9cc1b88138b8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S07-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "ab9712bf990e599a1181d5157ed1aac3e404813cc3bab43a74fced2a5f4bee43",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S07-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "8992b76ce6c27d44fd0580a87c19dd57b7a96961e750a337261227db1c53da81",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S08-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "85c110d29b1382e744dc0f8a831413f7a2ad22b97ba06e389103f94fec97a191",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S08-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "c2aed40d0f68611e8d115ed4966e14c9790c24cc948c7b7ad784b4e3fed8083d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S08-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "aaf6d4bc8c05e723fc86ea3eed0ded56609ccbcb283e09c9ac3cdb0b009283b0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S09-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "95bb418e7afbec1d450335f903ff499f74c29e6065f7440e2edff0032622a774",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S09-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "8081f31b4e087c551f9285be413caf54b5a91cf3375222d353dc6cb927cdaf90",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S09-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f6f378bda9807addcaed6fd9513434c7e25e549cd3b5c59ec41543966c939a70",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S10-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6d2b38fa92b32702216cbc849a548d646c89e6ad3c3af1d3a5d6a2a0c5c779bc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S10-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "57051bb6d32006605636d252d060569a81c14403a56a124f530f10c783586ada",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S10-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f3a8f2c4771d00219f8d2baf792ace242e30f38a94daf4f77584793355b2a0b8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S11-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d308ce5be7e2c6f48fa36b4155fa18dbe67ac1936359fddd064fe93b9f67eacb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S11-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "e4477349599ee4a2e9fa96dd6c7c9c3cea6d5cfd85e11323c62c596326d3819d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S11-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "75e7c7d034e7cdea03f3abe9da9159ccc325c7be333c4472e66876adce15bb78",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S12-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "5b8d340b743544ab4f67c36cb07b5f3f66ed4d27d900f089b3713a5af73d3f78",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S12-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "b3fc6590c36e2f5a70548545174ef56e5f121be2dd84fb498c535c6295996749",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S12-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "9b2b740ff228d2d822e6346fc363ba6fbd9e39eeda9b8d4f9c3e708653e5abd7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S13-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "0128eaa85d46da7a554ef897aa8e3603b6b0b097ec89239c2e4a85aeb960e47c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S13-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "3f0f42de20d8200a756a355041310d53af79cf8aff30fac26a127f7325d5efde",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S13-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "9271af34bae939ef2bf51b1efe1845e133adee5b7c9b2e5a0516baecc68aa397",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S14-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "fb517b96e48863834cbe03cf108da75910df6315595edee5cc72c4e6d10171f2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S14-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "7b2fabfad07411bc0cc7a1d74889dbc0a50be05f90a6dcaf16e0e78b92536cbc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S14-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "25001ec0475aae2af5a2aa1657c30aae84a1f955fb5fc84020b5072ea354f19a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S15-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "94a8677e92f1317f97f3c603a47e7cf326dff20bf596eb10ff44bef51ab4002f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S15-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "294eaec12a03281afdbce509f190833dd40c703c306a2b6ea3107c1290c597a6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S15-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "db405cc980fc6dd898eed9b001ec655e3ebad8f5aef9f42675625ac886a77382",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S16-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 32 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "e0f7739d09bd310499ffb1dee4c4a7fe465231cb215dfd6cb88ff8cd6086d537",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S16-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 40 x 40 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "bad59fb95c21a26d3ac4a210c40d1236c16507e100e2d94cd514cafb90d5e8fc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-hub-S16-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 48 x 48 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "fc255d664bcbd5f6ebaa612e2ce9677193c24788f1b128d7baf1d91d3a8bb868",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-blend-dim-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d608fc1c23c99f1a3ac0d9fd91385bbac809d3d3cdb439ed9656a7143e1e2b41",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-blend-dim-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "cab39a2af844dd8e430215e68e758c76bc30ed9c8b90dde36ae97453ee7254c2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-blend-dim-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "fcd29c12751567a63c0ba2117554013eceaf67eb5c5ad702d0f96e604ba3eb4c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-blend-lit-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "a2c070f52822a822c94dc9b80f5278533602a588beaa5464c138c4942992ed5b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-blend-lit-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "7d54178f114074be356e9d6c00a82817143617337779bd95741fd219205dabb9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-blend-lit-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6bad67a6f1b0bfc36aea1aa6f76242d8421c8fcbdd0fc6488e3e2b77a4c5a542",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-first-dim-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "11a97e630a08d02c285ad6acf9fb2754db40a6c181b79b9a8ec1224f150d9329",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-first-dim-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d848cf9a834ab58a126b7d3aa2371ac40c57299d0a29c8e51e9795d4175e4f56",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-first-dim-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "939b2d0aaa4529c287e5c8cc5d37ff12ff6ff39395069ee2dfaf6962e6e780bb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-first-lit-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "60c043ddb57d5b6ad47a0e52e764073eb6b79cd6655e0bf35e05375f817e8f9a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-first-lit-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f2ec15b786eadec60ea4b8327fc0134f918469b65a37b8f553226d3da76e0d67",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-first-lit-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "8116d6a9f461d550bd13a5233fd7a85b4727a0af4c97a0c27ceacb6a7f66ba3a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-front-dim-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "76b616f91391f7911537748afb4d076b9a1b7157b7db46b043fc1fc7edc5b156",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-front-dim-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "7066d080f5e7a0f457c97afe93f01a0208c0b7307d3b9f69b7307219e230a0c0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-front-dim-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "9c85b6933df39c1176b6c1be6820787fc7bf8bc75d2247b150fc516d6a721cf6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-front-lit-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "d92b0b6990d44b0fccde3d60b36369214a0d6bb87168adede3e17e4853e5b97a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-front-lit-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "3577602a44e9cd48f685b0572fca6cdbc76df641660a0195129d36483921cf84",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-front-lit-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "7c4cbd2e134dbe2571aad38a630af7cc4fb1dbcaf3afa5ca67d7e0a757e97097",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-only-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "c3f5d8eee36e442ffa5906fe475c54873ce46f030c307c6f869dad927ae1b9c7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-only-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "6a8f69eef5756807c1dc4206c287780a2ae48b9fc1c445bb8fa5226ae49cd458",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-only-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "f5d861645fe6a1503a87c3c18ebc5314be719d0bbe03b4455d37b4bdf569861b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-second-dim-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "211a6d70c8fae2d21ab5b068022a7321b9d04de4f3db1e2a3ccc9026fb88c813",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-second-dim-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "ee075575ba48405a78e3705ced48fdbde6e2d2a177f1f89e667427782713a8c9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-second-dim-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "287eb13a771212ffd8b9af18198062d21ffdb94335b8eeee6348065e2a60d2a0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-second-lit-21x13": {
+  "size": [
+   21,
+   13
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 21 x 13 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "070f39f8ce8f10640473d8e078f5c67a2e4fbc5455ea2d60a0499acd54494962",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-second-lit-27x17": {
+  "size": [
+   27,
+   17
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 27 x 17 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "94bdfe32950010fae5a4e11ba7150274533996ff48db75744c16e902a5335528",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "genome-pair-second-lit-32x20": {
+  "size": [
+   32,
+   20
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py",
+  "made": "the 32 x 20 member of the genome mark family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap",
+  "sha256": "068714ef392912ffe33fa3805a37a1365313f8db567f2f4087d7adde6a31cee4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "baa32fa27fe854d309cdac668c585c659070fa92f2fdc38a794fb0d73c4c513d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "c7734c0a4af10d6d6e05af7f83bf87cd6c2c36c4e30eca468600df121982dddb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "7dd4eb10b1062b3897fa1bd0415a917a5190be1c5262abede06a34d964ac989a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "fedeab57a09618db77f23ada280f674987255175686522680f5c1081ff570f3f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "e2f507480294b18a2d3592cf5bc3fc763ca58f6c25568d06617d25f31fe618d2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "2100c4648003729392d0447799a7138f2f41d13668b93b297ec1b29f9a688bb3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "62010885034943849bfef601196316cd235898539ea411926153f661fb32a8bd",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "0ce41eb4672f180498a37ebe6007d9266b196b6cec13623b219e1feeaa38b2b3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-character-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/character.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "aad6995ba1e17f4b835ea440cc353d9e14649f0d60dd0bef7005c4646f0b4ac1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "4b013875ddda945fa2aeceeeea37fe473ef0af182e8026ef6fb19bfdb7e0f9c1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "3955f03c6e8922439c68cb41f270be1fe4e7588803d6ac60889093e8bc7c779b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "1bcd39cfe1c70088ec0b80ddcb507f8c766f736583f455be5b532b9591cf4c0c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "0b62548b19f63ef22f3a0531c6fd9f08432201076e59fbeeac86e8c656701eda",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "a80910d9272c752304f4afaf1c4dd117d0ff7170dac9549ba323c2fa559dd503",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "c9ef598876b45261e038f2ee01b54021657d5c758eb70ed6509e108c9bd3a9b5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "354d3b1b927e035601f7db3b0ec9224eee54c5f46216d1ca8e34ba2f80410856",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "9b0f2d939eaacecfe3dba69b92504352b732615476c54e9ee7add21ba50f51fe",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-charge-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/charge.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "878e4031e87d208b3494604f49c37087db4a43f00cc55d0e71d8e7496dca90ec",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "77f08b5bd5928026800880f8e222efc0ebc9d9563f2d24384e60b4edbd4b6a5d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "cf5e64743493524e4fe3dcd35c855ad1e761dd471952024b2a2b952ba1c622a7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "4973e7e16521e4b5e29ebe969e1a3284b38bb3b6329e4131c0c458dadc7d9f8f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "12e7198a7d066d9fba2540b4621e8a33218a954f23c59ed4de0fb472730fbcde",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "dd02169caca530fc9c3c352f8642553502a360b0a50aaaaa4392b4fcd551aff1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "a88642f28fd0af4d905c0e441c7b511deedcb9f4275706e0ad772809155b4083",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "75c7a345048ab147cf8307b814c5df65ef4ccfc0b56f0863a7b4bbeb81dfe950",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "02bedc250b2c33173f43cc593424dd2e20195259525f176e83225aaa1222b6c6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-coat-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/coat.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "f8b17722803b42436d2744f81fc677be373e2ddd55ae434c0dde204c81c6afb2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "9a6a87bb6129312a0a9b2cf7afdd9460bb64a4bd82fb0fb4f1d6fe9f43af844d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "cd90fbce02052052159113461491466991afb2719443109a76289a943073b545",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "4fe4eef3ed9a0651103ad3534706df1e350f7a8b4bf50521d2074c135f1d30f1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "73308d6160725ed943bc85ec297b25313f25d6e4bd3b558530254d7e3184f9ff",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "b5dce0443ff3286f986c59729e16c33930ebd405c2da454467612bf1b52d78c0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "85abc917a2ed0ce507e2589bab457bdbedfbaed94c077166638e87775909d36b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "a627fb0bdcb99ad9ade2baf86116b509e7159f9264777433a69ddaad88e61473",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "a18cb3382ee2f9604599b858b3ad1fb4b918ce331ab5da828bab0e284334ac20",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-face-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/face.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "b7842b37cbe3f459903638a9c663a39f4480d23054bd6a2f5d6d285b3c472b94",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "c9e275ac5985502fff9d286decef9c3ce180976508e15ea8d63e7246bac9f9c0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "474fd81745e5b211eb49c92c8cee62aeb951e85554c3b9bcf86c5a21e959b922",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "7b56bf4dec33db52d7dcfe31d68ef2b46fb2904ae11f380b100c8da85036d6e4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "e028e7a689785be1879c366a403e0b3c038868abaabdb3ac4dd9701f02e906db",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "79a8a981427de187e34a40a450b70471360be519ca42a65a58a81839dc336e09",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "97c599661df858c9f200c8fd9f45f16d50534be4004475ccc6a2edfeef4ec99f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "cb1c0c0bc57900ee66d0323b886b2650cd5460eb5f45776f2f92cc9db0fb640e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "82f443389284f51c83a9b19b3217e32affd45cd5d90cd4058a16225f80026c81",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-glow-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/glow.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "d341b07bc74d3562f425703c41a8601df436162d403420faa7b5d142fbade556",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "fd2e3b10b085def2e162d8910f61ca366c08631946fd8b8ff8f7859919e3ab91",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "cbb393c66750e7744b5c6ca7848a736137d74a4812af0904c84c4a80f2779021",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "94164fb90268917909a3bac2884127a171886c13d7387c0b9d4c0ff865be62ca",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "d580aa332b7cadcfd33d4ff970ee17e6e3213f17337c97ad9ae230ef71485ca3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "e00c09643dff300512ad6f46165e93b8173a18d865aa1b0bce30af0d79fc3693",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "7b65d601283196ff2e72c13727248043c09b60a7df616e55eb8fa8bfe6428eb4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "03b48b9bd7c484e38d14a4d89a0e7bc2f19b7df2df678ea2cfcb8c1a429a14e8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "dc1af7b1cd6211711f18e4cf70340981a270129ebc32903a8df3647e2a064190",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-legs-tail-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/legs-tail.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "989163e09812bf67504ad46790ba243e589a3f005bfb7bbf56c7c9bb1692517d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "d937d95b7446f1594c96ae2b322a4a6407bdbee7c4838a67849c63ef49cd6fe6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "8c1b2fe97b9f338b2d3a8c6719b6c497772f1ea4788e020daac77e8b72cbb4db",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "cabf16d42982dec28c7a77c4a9a93ed56d748ef19dfbfc1f9e1b3e7e6f20a9c3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "d940b455640bd180006ad91b2cb6950e53ef78fe1d7f190a8413717fe10d95a6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "04e66ad4c41c53ea017205fef62c9dfe83c55231aa4258e59219fbcc660148f0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "054d44191c17ea16806f6047cb89bd80cbbbddb5c0813db93e83eb7df45b7b39",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "d521ec73aa5abe7bdb933095201849662609c532e3648aa7ff14711157ac76d4",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "f68f889af7d59d9f31841ea9a7345dd9345d13d4ca5f49934050e1f79c1e1172",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-movement-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/movement.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "b3b7228877a0e02fe082547c5db3c9360c928fa61d73094c56adda2e49ac7975",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "648bd56577eed33cecb3a3c98984fc1cac56888df560d4463f6305e62a984439",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "5721e5ae2b5c5b592e5fd658dd6a5f6bfe6685f4cb77cd5a12d05c2be493085c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "80ec2807e9bf4f1b391e8a6e076065b897a48a15ec955a4bf2d65042638f31d6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "f46a95dd71fc240aaf659ca8d829d501cbccbb224e22fe09519e85675f7b6955",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "f79803b3d9956bc801b34e954c7aaecf62cd40e34a0cd0231bdce21bb38c75a3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "23f4bfd1605ad2d2320fa02ca35ca1d53eda211570ecf1216827aad4549fbb15",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "c5e594822328c9b071e6ccd5e3d2a96c75ed1dec9f577bb0adaaa1f6f7a75b20",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "7f54c36c9cea19f3f7d04712a13576e4b67138b040b8395e27c53107f229f45b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-shape-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/shape.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "bf6d4b343e43aeff21c64c35eaa181849124f3486f38d4e9e6a8371dc41253dc",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-read-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "a56fbbcd79c8659f8bb78081f754aa1aa68847b6e74a58af7d8a3959d1af2eb3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-read-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "e61fb401a59f918ff2e252ca8a20bc26326fa441a5619253b6bdcaa86173b668",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-read-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "7c557020336d4bd536bdd4970fdeb0b253ef2ffafbbf0c2ec319188f4b73c537",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-sealed-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "6069db2d7a9d5574560f882a1fe5aa401b980093af334d96d0f7e377684e22f9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-sealed-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "0aa1b7566e3622b531ad218cbc6a661e85ae71edd5ee72ac7a25e49c01ac1a3d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-sealed-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "34dade0267388edf5bda4aa22391def9696666b86a95d0c5adc86f5cc78f5517",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-unread-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 32 x 32 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "d275bc33c6548bc22b5c1c1f4f2d26c8b11f665b041c0a6d28ef052b86374ebf",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-unread-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 40 x 40 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "5fc7501a429ec685e29ffbff2a36106b6961d3ec343d9ab565b8d4abc549d07a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
+ },
+ "rail-emblem-stamina-unread-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome-tiers.py (from emblems/source/stamina.txt)",
+  "made": "the 48 x 48 member of the chapter emblem family for the tree's size tiers (T-158): drawn at its size from the 24 px drawing's shapes, never scaled from a bitmap; the emblem's own manner (one cut, the top and left edges one step lighter, no anti-aliasing)",
+  "sha256": "ca10f149a74ed2a60847b48cb148d1ca036f18c41dad768c5ab517b42f89b4d8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "status_note": "new (10-17, T-20261016-160)"
  }
 }

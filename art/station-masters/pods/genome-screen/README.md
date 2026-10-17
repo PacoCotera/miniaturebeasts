@@ -138,3 +138,17 @@ The review (`results/review-genome-screen-art.md` §1) passed the marks but foun
 - **The R mark, new:** `genome-key-research-12x12`, the shell's own Research key icon reduced 2:1 with its strokes held. It sits on the bay at (156, 4) in the Create proofs.
 
 **Compact Glow on the Incubator (UI/UX):** the same 24 × 24 self-changing mark, with no place badges. The badges appear only on Create and in the detail view. The proofs already show this.
+
+## T-20261016-160: S01's Eyes as a blend; the family at the tree's size tiers (T-158)
+- **S01's Eyes,** one continuous locus, is only ever a blend or one look. In the Create proof it is now the blend: the lens pair, with the bay framing both copies in mint and the lens as the bay's pair mark. The bottom line's stand-in reads "R look closer", since every S01 chapter is read.
+- **The tiers** (`make-genome-tiers.py`): the mark family is drawn again at 32, 40 and 48 px (tiers M, L and XL), 192 slices.
+  - **How they are drawn:** at its size from the same shapes as the 24 px family (every coordinate times m / 24, rendered at 8× and reduced), never scaled from a bitmap.
+  - **Gene marks:** open, only, open-lit, open-clash, open-lit-clash, closed, self.
+  - **Pairs:** at 16k × 10k: 21 × 13, 27 × 17, 32 × 20, placed at (4k, 7k) in the gene. The lit ones are on palette, as at 24.
+  - **Small marks:** the frost, the gold glint (16, 20, 24), the wish glint (13, 17, 20), and the first mark (13 × 11, 17 × 13, 20 × 16).
+  - **Hubs** for all sixteen species.
+  - **The focus ring:** the house ring at m + 8 (40, 48, 56), 2 px.
+  - **The emblems** at m, by their own manner (`emblems/build.py`): the 24 px drawing's shape traced smoothly to m, its top- and left-facing edges lit one palette step lighter, no anti-aliasing. Unread is mist with a fog edge, read is bone with a white edge, sealed is mist.
+  - **Unchanged sizes** (spec): the place badges, the cross mark, the lock, the bar and the dots.
+- **The proof:** `proof/genome-create-S01-1x.png` at tier XL (m 48, rows 72 apart, the two Face genes 96 apart), per wireframe 08.
+- **The marks sheet:** it has had the shard find since T-145.

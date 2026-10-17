@@ -6038,5 +6038,965 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-145 (with T-140's additions), in genome-screen/proof (lit marks on palette; the R mark on the bay)",
   "note": "T-145 / T-140, the R mark"
+ },
+ "genome-first-13x11": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-first-17x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-first-20x16": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-focus-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-focus-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-focus-56x56": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-frost-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-frost-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-frost-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-closed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-closed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-closed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-only-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-only-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-only-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-clash-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-clash-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-clash-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-lit-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-lit-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-lit-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-lit-clash-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-lit-clash-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-open-lit-clash-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-self-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-self-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-gene-self-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-glint-gold-16x16": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-glint-gold-20x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-glint-gold-24x24": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-glint-wish-13x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-glint-wish-17x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-glint-wish-20x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S01-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S01-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S01-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S02-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S02-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S02-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S03-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S03-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S03-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S04-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S04-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S04-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S05-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S05-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S05-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S06-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S06-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S06-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S07-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S07-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S07-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S08-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S08-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S08-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S09-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S09-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S09-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S10-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S10-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S10-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S11-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S11-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S11-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S12-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S12-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S12-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S13-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S13-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S13-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S14-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S14-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S14-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S15-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S15-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S15-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S16-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S16-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-hub-S16-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-blend-dim-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-blend-dim-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-blend-dim-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-blend-lit-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-blend-lit-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-blend-lit-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-first-dim-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-first-dim-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-first-dim-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-first-lit-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-first-lit-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-first-lit-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-front-dim-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-front-dim-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-front-dim-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-front-lit-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-front-lit-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-front-lit-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-only-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-only-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-only-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-second-dim-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-second-dim-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-second-dim-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-second-lit-21x13": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-second-lit-27x17": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "genome-pair-second-lit-32x20": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-character-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-charge-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-coat-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-face-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-glow-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-legs-tail-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-movement-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-shape-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-read-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-read-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-read-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-sealed-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-sealed-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-sealed-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-unread-32x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-unread-40x40": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
+ },
+ "rail-emblem-stamina-unread-48x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
+  "note": "T-20261016-160, the size tiers"
  }
 }

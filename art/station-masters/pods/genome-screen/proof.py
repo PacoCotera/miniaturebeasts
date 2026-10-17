@@ -181,7 +181,7 @@ def pod_s01(w, h):
     col = (A * (body * (1 - pt))[..., None] + B * np.minimum(1, acc + pt)[..., None]) * (2 * shade[..., :3] / 255)
     alpha = np.maximum(body, acc) * (shade[..., 3] / 255 > 0)
     return Image.fromarray(np.dstack([np.clip(col, 0, 255), alpha * 255]).astype(np.uint8), "RGBA").resize((w, h), Image.LANCZOS)
-def create_s01():
+def create_s01():   # T-20261016-143, re-made for T-20261016-160 at tier XL
     f = Lo(os.path.join(gold, "create", "create-shape.png")); f.alpha_composite(S("create-bench"), (0, 40))
     f.alpha_composite(S("create-port-128x122"), (96, 404)); f.alpha_composite(pod_s01(112, 136), (100, 394))
     f.alpha_composite(S("create-dish-320x28"), (88, 364))
@@ -191,26 +191,29 @@ def create_s01():
     sh = ndi.gaussian_filter((e < 1).astype(float), 2.5) * 0.55; fr = np.asarray(f).astype(float); fr[..., :3] *= (1 - sh)[..., None]; f = Image.fromarray(fr.astype(np.uint8), "RGBA")
     f.alpha_composite(S("founder-S01-base-304x312"), (96, 76)); f.alpha_composite(S("founder-S01-crown-leaf-crest-304x312"), (96, 76))
     f.alpha_composite(S("create-genome-screen-512x312"), (424, 80))
-    rows = [("coat", True, False, [G("open", "front-dim")]),                                  # Markings: a switch with no sleeping loci (no bar)
-            ("face", True, False, [G("open-lit", "second-lit"), G("open", "front-dim")]),     # Crown changed (leaf crest kept), Eyes
-            ("movement", True, False, [G("closed")]), ("stamina", True, False, [G("closed")])]
-    tops = [96 + 5 + 34 * i for i in range(len(rows))]; trunk = 470
-    rect(f, trunk, tops[0] + 16, 2, tops[-1] - tops[0] + 2, LINE)
-    hy = 96 + 5 + 34 * 2 - 13; f.alpha_composite(S("genome-hub-S01-24x24"), (440, hy)); f.alpha_composite(S("genome-lock-8x10"), (448, hy - 12))
-    for i, (ch, read, glint, genes) in enumerate(rows):
-        t = tops[i]; xend = 508 + 36 * (len(genes) - 1) + 24
-        rect(f, trunk + 2, t + 15, xend - trunk - 2, 2, LINE); f.alpha_composite(S(f"rail-emblem-{ch}-read-24x24"), (476, t + 4))
-        for j, g in enumerate(genes): gene(f, 508 + 36 * j, t + 4, g["kind"], g["pair"])
-        if genes[-1]["kind"] == "closed":
+    # the tree at tier XL (spec §2.1a, T-158): m 48, rows 72 apart from 104, the frame line at 494, emblems at 500, genes from 556, 96 apart
+    m = 48; k = m / 24; tops = [104 + 72 * i for i in range(4)]; fl = 494; g0 = 556; pitch = 96; pw, ph = 32, 20
+    rows = [("coat", [("open", "front-dim")]), ("face", [("open-lit", "second-lit"), ("open", "blend-dim")]),   # Markings; Crown changed; Eyes a blend
+            ("movement", [("closed", None)]), ("stamina", [("closed", None)])]
+    rect(f, fl, tops[0] + m // 2 - 1, 2, tops[-1] - tops[0] + 2, LINE)
+    hy = (tops[1] + tops[2]) // 2 + m // 2 - m // 2; f.alpha_composite(S("genome-hub-S01-48x48"), (440, hy)); f.alpha_composite(S("genome-lock-8x10"), (440 + m // 2 - 4, hy - 12))
+    for i, (ch, genes) in enumerate(rows):
+        t = tops[i]; xend = g0 + pitch * (len(genes) - 1) + m
+        rect(f, fl + 2, t + m // 2 - 1, xend - fl - 2, 2, LINE); f.alpha_composite(S(f"rail-emblem-{ch}-read-48x48"), (500, t))
+        for j, (kind, pair) in enumerate(genes):
+            x = g0 + pitch * j; f.alpha_composite(S(f"genome-gene-{kind}-48x48"), (x, t))
+            if pair: f.alpha_composite(S(f"genome-pair-{pair}-{pw}x{ph}"), (x + round(4 * k), t + round(7 * k)))
+        if genes[-1][0] == "closed":
             xs = xend + 2
-            while xs < 718: rect(f, xs, t + 16, 1, 1, DOT); xs += 3
-            f.alpha_composite(S("genome-cross-12x12"), (720, t + 10))
-    f.alpha_composite(S("genome-focus-32x32"), (544 - 4, tops[1] + 4 - 4))                 # the focus: Eyes
-    f.alpha_composite(S("trait-S01-eyes-thin-rings-160x128"), (752, 100))                   # copy 1, shown: the mint frame
-    d = ImageDraw.Draw(f); d.rectangle([752, 100, 752 + 159, 100 + 127], outline=C("mint"), width=2)
-    f.alpha_composite(S("trait-S01-eyes-wide-pale-rings-160x128"), (752, 244)); f.alpha_composite(S("genome-veil-160x128"), (752, 244))   # copy 2, carried
-    f.alpha_composite(S("genome-pair-front-dim-16x10"), (744 + 80, 96 + 135))
-    f.alpha_composite(S("genome-key-research-12x12"), (744 + 156, 96 + 4))              # T-140: the R mark on the bay
+            while xs < 722: rect(f, xs, t + m // 2, 1, 1, DOT); xs += 3
+            f.alpha_composite(S("genome-cross-12x12"), (724, t + m // 2 - 6))
+    f.alpha_composite(S("genome-focus-56x56"), (g0 + pitch - 4, tops[1] - 4))                # the focus: Eyes
+    # the bay: Eyes is a blend, so the bay frames both copies (spec §2.3); the pair mark is the lens
+    f.alpha_composite(S("trait-S01-eyes-thin-rings-160x128"), (752, 100)); f.alpha_composite(S("trait-S01-eyes-wide-pale-rings-160x128"), (752, 244))
+    d = ImageDraw.Draw(f)
+    for yb in (100, 244): d.rectangle([752, yb, 752 + 159, yb + 127], outline=C("mint"), width=2)
+    f.alpha_composite(S("genome-pair-blend-dim-16x10"), (744 + 80, 96 + 135))
+    f.alpha_composite(S("genome-key-research-12x12"), (744 + 156, 96 + 4))              # the R mark on the bay
     # the bank: S01's five drums at the spec's spacing (g 28, the chapter gap 84), each with its close-up and its neighbours' faces
     drums = [(240, "rest", "markings", ["plain", "pale-patches"], 0), (404, "rest", "crown", ["bare-head", "leaf-crest"], 1),
              (512, "rest", "eyes", ["thin-rings", "between", "wide-pale-rings"], 0), (676, "pinned", "drive", None, 0), (840, "pinned", "efficiency", None, 0)]
@@ -225,7 +228,9 @@ def create_s01():
         if tr == "eyes": f.alpha_composite(S("create-drum-turn-up"), (x + 32, 424)); f.alpha_composite(S("create-drum-turn-down"), (x + 32, 512))
     d = ImageDraw.Draw(f)
     for wd, x in (("Coat", 240), ("Face", 404), ("Movement", 676), ("Stamina", 840)): d.text((x, 400), wd, font=F("Regular", 16), fill=C("mist"))
-    label(f, "PROOF T-20261016-143: Create, S01, shape: Crown changed, Eyes focused (its two copies in the bay), 1x. Pod, words: stand-ins", 538)
+    bar = f.getpixel((300, 590)); d = ImageDraw.Draw(f); d.rectangle([400, 566, 624, 594], fill=bar)     # every S01 chapter is read: the subject zone
+    d.text((512, 579), "R look closer", font=F("Regular", 16), fill=(0x8d, 0x8a, 0xa6), anchor="mm")          # reads "R look closer" on a read gene
+    label(f, "PROOF T-20261016-160: Create, S01, tier XL: Crown changed, Eyes (a blend) focused, 1x. Pod, words: stand-ins", 538)
     return f.convert("RGB")
 create_s01().save(os.path.join(out, "genome-create-S01-1x.png"))
 # the S03 proofs stay as the deep-species check: relabel them "not for the owner"
