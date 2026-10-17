@@ -98,3 +98,13 @@ On the "Fit the upgrade?" panel, `bench-part-t2-fitted-128` showed a dark socket
 **Proofs** (`t146/proof/`, labelled):
 - `bench-panel-upgrade-1x.png`: the panel by the T-70 composite rule, Fit it beside Not now's dim part;
 - `bench-panel-upgrade-before-after-1x.png`.
+
+## T-20261016-162: Fit the upgrade?, the Probe at tier 2 against tier 1, with their reach
+These are for spec §1.6's "Fit the upgrade?" row (T-159), made by `t162/make-fit-cards.py`.
+- **`bench-probe-t2-card-128x160` and `-t1-card-128x160`:** the whole Probe upright in its cradle, reduced from the upright painting's aligned cut with one transform, so the two differ only where the part is (the fourth plate, the sand module and the side lens).
+- **`bench-reach-t2-160` and `-t1-160`:** a small field map, an 11 × 11 grid of land cells on the slate display with the start marked, and the Probe's reach ring.
+  - **Tier 2:** reaches 4 cells (9 × 9, `design/play-manual.md`), radius 63 px, lit mint.
+  - **Tier 1:** reaches 2 cells (5 × 5), radius 35 px, unlit (mist).
+  - No glow.
+
+**Proof** (`t162/proof/`): `bench-panel-upgrade-1x.png`, and the cards at 2×.

@@ -291,5 +291,45 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16 12:15 CST: T-20261016-33, mocked into station-gate 69ea1d23 golden bench (plates-48/proof); to re-check in the builder's captures (T-20261016-34)",
   "note": "four recesses, placed 1:1 at (356, 272); baked contact shadow rows 61-63"
+ },
+ "bench-probe-t2-card-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "sha256": "2e24a249db18805961fa6a3e09f33ecf13a5234b240c333d1cda173af9193828",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-162, bench/t162/proof (Fit the upgrade?, tier 2 against tier 1 with their reach)",
+  "made": "the whole Probe upright in its cradle at tier 2 (the fourth plate, the sand module, the side lens), from the upright painting's aligned cut, reduced into 128 x 160, foot on the floor",
+  "src": "bench/t162/make-fit-cards.py"
+ },
+ "bench-probe-t1-card-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "sha256": "3f39159a2971b30fd27ee952f2c2fc8e6877f2dfe1c505ab4056f464a0dcb110",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-162, bench/t162/proof (Fit the upgrade?, tier 2 against tier 1 with their reach)",
+  "made": "the same Probe at tier 1 (no part), the same transform, so the two differ only where the part is",
+  "src": "bench/t162/make-fit-cards.py"
+ },
+ "bench-reach-t2-160": {
+  "size": [
+   160,
+   160
+  ],
+  "sha256": "cdc43f3a3fc31ee8ab5193e8f2378ea2349c62cbc27b2955e8b32011c1ec8134",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-162, bench/t162/proof (Fit the upgrade?, tier 2 against tier 1 with their reach)",
+  "made": "a small field map (an 11 x 11 grid of land cells on the dark slate display, the start marked) with the Probe's tier 2 reach ring lit mint: 4 cells (9 x 9), radius 63 px",
+  "src": "bench/t162/make-fit-cards.py"
+ },
+ "bench-reach-t1-160": {
+  "size": [
+   160,
+   160
+  ],
+  "sha256": "e0ea592d82977b632e05a38afc3886312ffc2398a6c9a34a7b608ef7185507f9",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-162, bench/t162/proof (Fit the upgrade?, tier 2 against tier 1 with their reach)",
+  "made": "the same map with the tier 1 reach ring unlit (mist): 2 cells (5 x 5), radius 35 px",
+  "src": "bench/t162/make-fit-cards.py"
  }
 }
