@@ -67,7 +67,7 @@
 <circle cx="629" cy="96" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="635" cy="96" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <text x="690" y="90" font-size="15" fill="#f1ebdf" text-anchor="start">breed to change</text>
-<text x="690" y="110" font-size="11" fill="#a9b5c8" text-anchor="start">closed rings: every doing, and S03 Claws; ▲▼ lights ⨯</text>
+<text x="690" y="110" font-size="11" fill="#a9b5c8" text-anchor="start">every doing but Glow, Basking, Phase; and S03 Claws</text>
 <g transform="translate(530 142) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="15" cy="12" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/><circle cx="10" cy="12" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/><rect x="26" y="2" width="2" height="20" fill="#8a947b"/><rect x="30" y="3" width="3" height="3" fill="#4a544e"/><rect x="30" y="7" width="3" height="3" fill="#4a544e"/><rect x="30" y="11" width="3" height="3" fill="#4a544e"/><rect x="30" y="15" width="3" height="3" fill="#4a544e"/><rect x="30" y="19" width="3" height="3" fill="#4a544e"/></g>
 <circle cx="632" cy="178" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="632.0" y1="168.0" x2="632.0" y2="165.5" stroke="#5d7a5f" stroke-width="1.5"/>
@@ -105,7 +105,7 @@
 <rect x="641" y="421" width="3" height="6" fill="#fff4a6"/>
 <text x="690" y="418" font-size="15" fill="#f1ebdf" text-anchor="start">clashes (a set, 1 to n)</text>
 <text x="690" y="438" font-size="11" fill="#a9b5c8" text-anchor="start">a red rim on each; no link; lowest art priority</text>
-<g transform="translate(530 470) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><circle cx="15" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><rect x="2.0147186257614287" y="2.0147186257614322" width="3" height="3" fill="#4a544e"/><rect x="18.985281374238568" y="2.0147186257614287" width="3" height="3" fill="#4a544e"/><rect x="18.98528137423857" y="18.985281374238568" width="3" height="3" fill="#4a544e"/><rect x="2.0147186257614305" y="18.98528137423857" width="3" height="3" fill="#4a544e"/></g>
+<g transform="translate(530 470) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><circle cx="15" cy="12" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/><rect x="2.0147186257614287" y="2.0147186257614322" width="3" height="3" fill="#4a544e"/><rect x="18.985281374238568" y="2.0147186257614287" width="3" height="3" fill="#4a544e"/><rect x="18.98528137423857" y="18.985281374238568" width="3" height="3" fill="#4a544e"/><rect x="2.0147186257614305" y="18.98528137423857" width="3" height="3" fill="#4a544e"/><rect x="25.5" y="-1.5" width="9" height="9" fill="#5d5974" stroke="#0c0a12" stroke-width="1" rx="2"/><rect x="25.5" y="9.5" width="9" height="9" fill="#23623c" stroke="#0c0a12" stroke-width="1" rx="2"/></g>
 <circle cx="632" cy="506" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/>
 <circle cx="629" cy="506" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="635" cy="506" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
@@ -113,8 +113,10 @@
 <rect x="638.9852813742385" y="496.0147186257614" width="3" height="3" fill="#4a544e"/>
 <rect x="638.9852813742385" y="512.9852813742385" width="3" height="3" fill="#4a544e"/>
 <rect x="622.0147186257615" y="512.9852813742385" width="3" height="3" fill="#4a544e"/>
+<rect x="645.5" y="492.5" width="9" height="9" fill="#5d5974" stroke="#0c0a12" stroke-width="1" rx="2"/>
+<rect x="645.5" y="503.5" width="9" height="9" fill="#23623c" stroke="#0c0a12" stroke-width="1" rx="2"/>
 <text x="690" y="500" font-size="15" fill="#f1ebdf" text-anchor="start">changes where it goes</text>
-<text x="690" y="520" font-size="11" fill="#a9b5c8" text-anchor="start">only where the frame flags it (T-137); steps unlit here</text>
+<text x="690" y="520" font-size="11" fill="#a9b5c8" text-anchor="start">S03 Glow, S15 Basking, S16 Phase; a badge per place</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle"></text>
 <text x="1008" y="588" font-size="16" fill="#222" text-anchor="end"></text>

@@ -135,6 +135,10 @@
 <circle cx="126" cy="363" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/>
 <circle cx="123" cy="363" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="129" cy="363" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
+<rect x="116.01471862576143" y="353.0147186257614" width="3" height="3" fill="#4a544e"/>
+<rect x="132.98528137423858" y="353.0147186257614" width="3" height="3" fill="#4a544e"/>
+<rect x="132.98528137423858" y="369.9852813742386" width="3" height="3" fill="#4a544e"/>
+<rect x="116.01471862576143" y="369.9852813742386" width="3" height="3" fill="#4a544e"/>
 <circle cx="154" cy="363" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/>
 <circle cx="151" cy="363" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="157" cy="363" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
@@ -145,7 +149,7 @@
 <text x="744" y="124" font-size="16" fill="#e6c98c" text-anchor="start">Just cleared</text>
 <rect x="752.5" y="140.5" width="159" height="127" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="744" y="300" font-size="16" fill="#f1ebdf" text-anchor="start" font-weight="500">Stamina</text>
-<text x="744" y="324" font-size="16" fill="#8d8aa6" text-anchor="start">tires slowly</text>
+<text x="744" y="324" font-size="16" fill="#8d8aa6" text-anchor="start">goes long</text>
 <rect x="772.5" y="352.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1"/>
 <text x="832" y="416" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">stamp</text>
 <text x="832" y="497" font-size="16" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>

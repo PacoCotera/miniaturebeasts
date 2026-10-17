@@ -181,6 +181,12 @@
 <circle cx="520" cy="355" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/>
 <circle cx="517" cy="355" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="523" cy="355" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
+<rect x="510.0147186257614" y="345.0147186257614" width="3" height="3" fill="#4a544e"/>
+<rect x="526.9852813742385" y="345.0147186257614" width="3" height="3" fill="#4a544e"/>
+<rect x="526.9852813742385" y="361.9852813742386" width="3" height="3" fill="#4a544e"/>
+<rect x="510.0147186257614" y="361.9852813742386" width="3" height="3" fill="#4a544e"/>
+<rect x="533.5" y="341.5" width="9" height="9" fill="#5d5974" stroke="#0c0a12" stroke-width="1" rx="2"/>
+<rect x="533.5" y="352.5" width="9" height="9" fill="#23623c" stroke="#0c0a12" stroke-width="1" rx="2"/>
 <circle cx="556" cy="355" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/>
 <circle cx="553" cy="355" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="559" cy="355" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
