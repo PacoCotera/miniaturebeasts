@@ -242,6 +242,8 @@ plate('01-look', 'One device: the living window leads, the instrument serves',
       'Home, accepted by the owner, as a diagram: its module panes re-toned from their painted brown to panel #2b3038. Warm daylight in the vivarium, the device around it calm, matte and slate. The eye goes to the life first.',
       'The rejected Incubator (06:38): brown on brown, a cream ring, an egg on a moss cradle, a green plastic plaque, a pixel glyph and jargon in a floating box.')
 
+home_slate().convert('RGB').save(os.path.join(OUT, '01-look-do.png'), optimize=True)  # plate 01's do alone, for the art direction
+
 # ---------------------------------------------------------------- 2 palette
 roles = [
     ('Housing (painted)', [('sage', 'housing'), ('sageD', 'housing shade'), ('sand', 'housing accent'), ('deepTeal', 'rubber'), ('metal', 'screws, fittings')]),

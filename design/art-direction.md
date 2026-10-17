@@ -31,6 +31,17 @@ When a screen goes wrong, it is almost always one layer doing another's job: the
 <table><tr><td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: the three layers in one picture: a lit subject, a quiet device, a few small signals. Approved concept, generated. Its blue display and orange corners are not the rule.</em></td>
 <td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth the life layer carries. Approved concept, generated.</em></td></tr></table>
 
+### One machine
+
+**Every screen is the same machine,** seen from a different side. That means:
+- one slate ground, one housing frame and one pane, everywhere;
+- the player's pod and the genome stamp drawn the same way on every screen they appear on;
+- when something moves from one screen to the next (a pod from the bay to the rack, to the bench, into the incubator; a young mibi into the vivarium), it is carried across, not redrawn.
+
+**Why.** The player builds trust in the device the way they would with a real instrument: by learning it once. Every screen that invents its own ground, frame or version of the pod makes them learn it again, and it breaks the sense that this is one object in their hands. Small local fixes that each look right alone add up to a patchwork, so the test is never a screen on its own. A screen that is right by itself but looks foreign beside its neighbours is wrong. Screens are judged side by side, in the order a player meets them.
+
+The three layers are how this holds: the instrument layer is shared and never redesigned per screen, the life layer changes with what the screen is about, and the signal layer means the same thing everywhere.
+
 ### Textures and materials
 
 **The life is soft and tactile:**
@@ -77,7 +88,7 @@ Bright life on a calm ground.
 
 *Written by the game designer. The numbers that put these principles into practice (words per element, mark sizes, counts) are in the [style guide](style-guide/README.md); this section is the reason behind them.*
 
-<img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: one lit subject on a clean display, with depth folded away. Approved concept, generated.</em>
+<img src="style-guide/plates/01-look-do.png" width="640" alt="Home, the device as it should be"><br><em>Home as the target: one living subject, a column of quiet slate panes, one line of words. Diagram: the accepted Home with its module panes re-toned to the slate pane (style guide plate 01).</em>
 
 - **One subject per screen.** Every screen is about one thing the player cares about: a mibi, a pod, a crate, a choice. That thing is the largest, best-lit and most detailed thing there. Everything else is smaller, quieter and in its service.
 - **Show what the player acts on or watches change, and nothing else.** An object earns its place by doing something the player can see, or by changing over time. Equipment that serves nothing, decoration that explains nothing, and a second picture of something already shown all go.
@@ -150,7 +161,7 @@ rendering, no nursery colours, no storybook ornament.
   creature, with the same trait boundaries.
 - **The Station itself:** rugged, matte field gear, the Companion's sibling,
   whose job is keeping small lives going. Its look is in the
-  [style guide](style-guide/README.md#the-station).
+  [style guide](style-guide/README.md#14-station-drawing-rules).
 
 The reference is the Pip device proof in
 [`art/miniature-lives/`](../art/miniature-lives/README.md). It shows the plain
@@ -169,7 +180,7 @@ saved Pip and a pale-marked comparison, at Companion and Station size.
   remains and the failure is shown.
 - **Draw only what is known.** During partial research, show reference views that
   reveal no unknown anatomy. Full portraits require full knowledge.
-- **Same individual everywhere.** Silhouette, markings and identity survive color,
+- **Same individual everywhere.** Silhouette, markings and identity survive colour,
   four-gray, monochrome and paper.
 - **Keep originals.** Original images, exact prompts and source files keep their
   bytes and hashes. Generated images are labelled as generated.
@@ -188,7 +199,7 @@ describes the mechanism.
 
 Creatures range from bear-like to cat-, cow- or firefly-like and beyond, with
 broad body plans, fur, scales, feathers or skin and real facial features, and
-always read as pets. Color is saturated and playful, with clear highlights,
+always read as pets. Colour is saturated and playful, with clear highlights,
 never dull browns and greys. Every expression a genome allows is a cute pet: the
 rig's ranges (head and eye size floors, limb bulk caps, roundness) and each
 species' colour pools stay inside a cute envelope, and the worst case in each
