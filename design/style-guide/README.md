@@ -1,6 +1,6 @@
 # Style guide
 
-> **Provisional.** This is the current implementation reference for the screens as built. It follows the prototypes as they iterate, and the owner's direction overrides it. The general look and feel it serves is the [art direction](../art-direction.md).
+> **Provisional.** This is the current implementation reference for the screens as built. It follows the prototypes as they iterate, and any newer direction for the screens overrides it. The general look and feel it serves is the [art direction](../art-direction.md).
 
 **The reference builders and artists follow for how the Station and the Companion look.** A builder or artist with a visual ticket finds the look here and invents nothing. If something they need is not here, they stop and park the ticket to the art director with the exact gap ([§11](#11-how-to-use-it)).
 
