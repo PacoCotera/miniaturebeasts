@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="40" width="1024" height="522" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="40" width="1024" height="522" fill="#0c0a12" fill-opacity="0.45" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Incubator</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >P1 on "Grow it now?": the player's own pod (its species shell, candled) in both windows</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >LAYOUT, 1024×600 at 1×, on slate (guide §2): rects for the art director to paint into. T-20261016-165 (P1)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Grow it now</text>
+<text x="147" y="588" font-size="16" fill="#ffe6ad" text-anchor="start" >❀ 3</text>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Wait</text>
+<rect x="92" y="80" width="840" height="440" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="12"/>
+<path d="M104 80.5H920M92.5 92V508" stroke="#565c63"/>
+<text x="512" y="124" font-size="28" fill="#f1ebdf" text-anchor="middle"  font-weight="600">Grow it now?</text>
+<rect x="124" y="152" width="380" height="352" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="132" y="160" width="364" height="240" fill="#3a4a44" stroke="#565c63" stroke-width="1" rx="6"/>
+<text x="314" y="272" font-size="10" fill="#c6c4d8" text-anchor="middle" >the player's Tuikis pod, candled, at its ready step</text>
+<text x="314" y="288" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">outcome window 364 × 240</text>
+<text x="140" y="432" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Grow it now</text>
+<text x="488" y="432" font-size="16" fill="#ffe6ad" text-anchor="end" >❀ 3</text>
+<text x="140" y="464" font-size="16" fill="#c6c4d8" text-anchor="start" >Ready at once.</text>
+<rect x="120" y="148" width="388" height="360" fill="none" stroke="#ffe6ad" stroke-width="2" rx="12"/>
+<rect x="520" y="152" width="380" height="352" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="528" y="160" width="364" height="240" fill="#3a4a44" stroke="#565c63" stroke-width="1" rx="6"/>
+<text x="710" y="272" font-size="10" fill="#c6c4d8" text-anchor="middle" >the same pod at its current step</text>
+<text x="710" y="288" font-size="8" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">outcome window 364 × 240</text>
+<text x="536" y="432" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Wait</text>
+<text x="536" y="464" font-size="16" fill="#c6c4d8" text-anchor="start" >Ready in about 12 min.</text>
+<text x="100" y="540" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">one pod (guide §2 rule 4): the species shell at its candling step; never a generic egg</text>
+</svg>

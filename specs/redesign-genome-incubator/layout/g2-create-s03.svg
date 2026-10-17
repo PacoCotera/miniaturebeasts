@@ -140,5 +140,9 @@
 <text x="112" y="588" font-size="16" fill="#ffe6ad" text-anchor="start" >⚡2 ❀4 ◆3</text>
 <text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >Eyes: big, wide</text>
 <text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Tuikis</text>
+<path d="M24 470 H4" stroke="#ffe6ad" stroke-width="2" marker-end="url(#ah)"/>
+<text x="32" y="410" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">pod enters from Pods (lifts out of its well)</text>
+<path d="M144 520 C 300 560, 700 560, 1016 520" stroke="#ffe6ad" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+<text x="156" y="532" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">Grow: seals, leaves right →</text>
 <text x="16" y="556" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">row: this founder's part (or a behaviour) + one word; gene: its look as a picture in a lit socket; ▲▼ turn the focused gene</text>
 </svg>

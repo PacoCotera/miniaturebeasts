@@ -51,6 +51,8 @@
 <text x="916" y="454" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">when full: shut,</text>
 <text x="916" y="466" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">amber lamp; the pod</text>
 <text x="916" y="478" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">waits sealed on the floor</text>
+<text x="512" y="186" font-size="8" fill="#ffe6ad" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">crates enter through the door (back wall)</text>
+<text x="916" y="384" font-size="8" fill="#ffe6ad" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">pods leave through the hatch to Pods (right)</text>
 <rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
 <rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
 <text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Take it all in</text>
