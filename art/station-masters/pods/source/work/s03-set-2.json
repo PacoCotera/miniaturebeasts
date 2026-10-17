@@ -1,0 +1,16 @@
+[
+ {
+  "name": "s03-set-2",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "Our signed young S03, Tuikis (project-owned): the creature, exactly. Every panel shows THIS creature, its two-tone teal coat with cream patches, pale underside, and its body, unchanged; only the named look or the named moment changes."
+   ]
+  ],
+  "prompt": "Paint SIX panels in a 3 by 2 grid, equal size, small gaps. TOP ROW: three close-ups of the creature in the reference, centred and framed so the part reads at a glance. Left 'topline' (the line of the back seen in side view, from the neck over the back to the base of the tail, the whole spine contour). Middle 'legs' (the four legs standing in side view, the fore and hind legs, shoulder to feet). Right 'eyes small and close' (the face from the front, the SAME face and muzzle but with SMALL eyes set CLOSE together). BOTTOM ROW: left 'eyes between' (the face from the front, the SAME face but with medium eyes at a medium spacing, between small-and-close and big-and-wide). Middle 'footprints': the whole creature walking in side view at a relaxed even pace over a thin flat strip of plain sandy ground, leaving a trail of small paw-prints behind it, evenly spaced. Right 'the long walk': the whole creature walking steadily in side view along a thin flat strip of plain sandy ground, mid-stride, head up, a long way in a straight line, with a small distant marker stone far ahead at the edge of the panel. Plain flat solid magenta (#FF00FF) background everywhere around the creature and the ground strips, no borders, no text, no numbers, no labels. Same brush and soft painterly light from the top left as the reference in every panel; only the named look or moment changes. No glow, no hands, no people."
+ }
+]

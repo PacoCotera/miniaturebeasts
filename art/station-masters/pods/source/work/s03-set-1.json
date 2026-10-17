@@ -1,0 +1,16 @@
+[
+ {
+  "name": "s03-set-1",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "Our signed young S03, Tuikis (project-owned): the creature, exactly. Every panel shows THIS creature's own current look, unchanged: its two-tone teal coat with cream patches, its pale underside, its big wide-set eyes, its muzzle, its body build and its hind haunch."
+   ]
+  ],
+  "prompt": "Paint SIX panels in a 3 by 2 grid, equal size, small gaps. Each panel is a close-up of one part of the creature in the reference, exactly as the reference shows it, centred and framed so the part reads at a glance. TOP ROW: left 'colour' (the teal coat of the flank and back, with its two-tone fur and cream patches), middle 'trim' (the pale underside colour where it meets the teal coat along the belly and the leg), right 'eyes' (the face from the front, both big wide-set eyes). BOTTOM ROW: left 'snout' (the muzzle in three-quarter view), middle 'build' (the whole body mass in side view from shoulder to hip, the chest and belly), right 'haunch' (the hind thigh and haunch with the upper hind leg). Plain flat solid magenta (#FF00FF) background everywhere, no borders, no text, no numbers, no labels. Same brush and soft painterly light from the top left as the reference in every panel; only the part shown changes. No props, no ground, no shadow, no glow, no hands, no people."
+ }
+]
