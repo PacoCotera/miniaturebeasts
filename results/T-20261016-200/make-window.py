@@ -58,3 +58,10 @@ for i, (gs, col, pat, crown, eye_look) in enumerate(PODS):
     d.text((656 + 32, 548 + i * 18), 'gs %d: %s, %s, %s, %s' % (gs, col, pat, crown, eye_look), font=F13, fill=(198, 196, 216))
 out.convert('RGB').save(os.path.join(OUT, 'home-window-four-v4-pods.png'), optimize=True)
 print('home-window-four-v4-pods.png')
+
+# its four-grey twin: the window quantised to four values (the guide's colour-alone test)
+wa = np.asarray(win.crop((0, 0, 640, 488)).convert('RGB'), dtype=float)
+lum = wa[..., 0] * 0.299 + wa[..., 1] * 0.587 + wa[..., 2] * 0.114
+q = np.choose(np.digitize(lum, [64, 128, 192]), [30, 100, 170, 240]).astype('uint8')
+Image.fromarray(q, 'L').convert('RGB').save(os.path.join(OUT, 'home-window-four-v4-pods-four-grey.png'), optimize=True)
+print('home-window-four-v4-pods-four-grey.png')

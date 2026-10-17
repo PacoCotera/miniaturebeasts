@@ -71,4 +71,5 @@ These are the genome engineer's seeds, each drawn from its read looks on T-190's
 - **The four read as four at a glance,** carried first by colour, then by the marks and the crest.
 - **The two hidden bare heads** (165 and 168) don't show: hidden copies never draw.
 - **The creative director's check:** gs 168's stripes and gs 10's stripes and patches read as two looks.
+- **Four-grey** (`home-window-four-v4-pods-four-grey.png`): the four still separate. Charcoal is dark, russet middle, periwinkle light, and the two-tone splits dark back from light legs.
 - **The proof's honest limit:** the bare head and the eye rings are T-190's proof edits, and the colours and marks are applied by code. The masters are painted layers, after the lead's approval.
