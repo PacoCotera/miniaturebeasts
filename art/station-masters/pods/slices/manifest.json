@@ -18157,5 +18157,23 @@
   "status": "signed",
   "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
   "status_note": "new (10-17, T-20261016-110): replaces slip-208x296 on Create"
+ },
+ "cargo-bay-apron-992x180": {
+  "size": [
+   992,
+   180
+  ],
+  "rect": [
+   16,
+   368,
+   992,
+   180
+  ],
+  "src": "dock/make-apron.py (from cargo-bay-992x320)",
+  "made": "the bay's apron (Amendment T-20261016-112): the open bay's floor carried forward toward the viewer to y 548, in its own tone, grain and light (the key from the top left), the bay's side bezels carried down, a moulded front lip; it starts on the bay's last row, so the two meet with no seam. Calm: no marks, no wells. Drawn in place of the rack during the arrival show; the mibis coming home stand on it, feet y 528",
+  "sha256": "4a9b5cbc865a67bb9e095eaf346253c89ca74426159eebe624835711294406f9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-120, in dock/proof (the arrival at t 2.2 s with two coming home; the show's end; beside the old proof); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-120)"
  }
 }

@@ -5703,5 +5703,10 @@
   "status": "signed",
   "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
   "note": "T-20261016-110, Create's slip"
+ },
+ "cargo-bay-apron-992x180": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-120, in dock/proof (the arrival at t 2.2 s with two coming home; the show's end; beside the old proof); to re-check in the builder's captures",
+  "note": "T-20261016-120, the bay's apron"
  }
 }

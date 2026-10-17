@@ -43,3 +43,26 @@ The review (`results/review-art-2026-10-16d.md` §2) found the light's rectangle
   - `arrival-in-place-1x.png`, **the owner's proof**;
   - `link-light-on-open-bay-ends-3x.png` and `arrival-in-place-ends-3x.png`, both ends at 3× (x 16–184 and 856–1008, y 220–330).
 - **The haze:** the pale haze higher on the walls is in the bay painting itself, not the light.
+
+## T-20261016-120: the bay's apron; the arrival redone with who came home standing big
+The spec's "Amendment (T-20261016-112)". The owner found the 24 px faces far too small and the empty rack too large during the show.
+
+**`cargo-bay-apron-992x180`, at (16, 368)** (`make-apron.py`): the open bay's floor carried forward toward the viewer to y 548, drawn in place of the rack during the show.
+- **Its material:** made from `cargo-bay-992x320`'s own floor. The tone is its near part; the grain is its own, mirrored so it never repeats with a seam. The key comes from the top left, with the right side darker.
+- **The edges:** the bay's side bezels carry down, and a moulded front lip sits at 540–548.
+- **The join:** it starts on the bay's last row and blends over 8 rows, so the two meet with no seam.
+- **Calm:** no marks, no wells.
+
+**Placement:** masters-pods has no `place-masters.mjs`, so the build places it: `node prototypes/ui/tools/place-masters.mjs --from <masters-pods>/art/station-masters/pods --only --ids cargo-bay-apron-992x180 --group pods`.
+
+**Proofs** (`proof/`, labelled inside):
+- **`arrival-in-place-1x.png`, the owner's proof**, at t = 2.2 s:
+  - two crates (one with its glint) and the link light;
+  - S01 standing big at (192, 216, 304 × 312), feet 528, in front of the crates;
+  - S03 a third of the way through its dither at (528, 216);
+  - the Probe group top left and the leaving group (S02) top right, and the ribbon.
+- **`arrival-end-1x.png`:** the show's end. The mibis are gone and the rack is back, with the choice strip over it (Open the bay focused, then Later).
+- **`arrival-before-after-1x.png`:** the old proof (T-105), then the two new frames.
+- **Stand-ins:** the words, which mibis came and went, the cards' pictures, the ring, and the golden's bottom line.
+
+The old 1.5 s proof (`proof-arrival.py`) is superseded by `proof-arrival-112.py`.
