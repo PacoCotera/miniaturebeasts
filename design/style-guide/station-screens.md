@@ -59,7 +59,7 @@ One device. Every section is a part of it, in the same materials and light. Home
 | --- | --- |
 | **Vivarium** (Home, idle, one mibi up close) | The living world the device keeps; up close, a mibi at home, never a specimen on display |
 | **Pods** | The sample case: pods in fitted, worn cut-outs, handled and labelled |
-| **Research** (Create, Cross and Wish, Probe bench) | The lab's instruments: the genome editor (Create), the splicer (Cross and Wish), the Probe's service dock; what is under study in the device's light, its state on the machine's own displays and lamps |
+| **Research** (Create, Cross and Wish, Probe bench) | The lab's advanced research and crafting benches, where you edit life: the gene bench (Create), the splicer (Cross and Wish), the Probe's service dock; what is under study in the device's light, its state on the machine's own displays and lamps |
 | **Incubator** | The bridge between research and the vivarium: the player's own pod on a moss nest, candled from below, the founder showing through its shell |
 | **Library** | The field journal the device keeps: a worn botanical expedition volume |
 | **Arrivals** | The Companion's cargo coming through from the Caddy into the bay |
@@ -178,7 +178,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 ## Create (the review)
 
-**Vibe.** Research: the gene bench, the lab's genome-editing instrument.
+**Vibe.** Research: the gene bench, an advanced research and crafting bench where you edit life.
 
 **Purpose.** Shape a founder by turning its genes, see its cost, and grow it. **Reads first:** the founder on its dish.
 
