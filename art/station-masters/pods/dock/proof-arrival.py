@@ -37,6 +37,6 @@ def label(f, s):
     dr = ImageDraw.Draw(f); lb = F("Medium", 16); dr.rectangle([8, 372, 16 + dr.textlength(s, font=lb), 396], fill=(0, 0, 0)); dr.text((12, 375), s, font=lb, fill=(255, 255, 255)); return f
 os.makedirs(out, exist_ok=True)
 a = frame(); a2 = a.crop((16, 232, 1008, 360)); a2.resize((a2.width * 2, a2.height * 2), Image.NEAREST).convert("RGB").save(os.path.join(out, "arrival-floor-2x.png"))
-label(a, "PROOF T-20261016-97: the arrival in place at t 1.5 s (light full, crates in, home band), 1x. Ribbon, words: stand-ins").convert("RGB").save(os.path.join(out, "arrival-in-place-1x.png"))
-label(frame(crates=False, band=False, ribbon=False), "PROOF T-20261016-97: the link light alone on the open bay, 1x").convert("RGB").save(os.path.join(out, "link-light-on-open-bay-1x.png"))
+label(a, "PROOF T-20261016-105: the arrival in place at t 1.5 s (light full, on the floor only; crates in; home band), 1x. Ribbon, words: stand-ins").convert("RGB").save(os.path.join(out, "arrival-in-place-1x.png"))
+label(frame(crates=False, band=False, ribbon=False), "PROOF T-20261016-105: the link light alone on the open bay, clipped to the floor, 1x").convert("RGB").save(os.path.join(out, "link-light-on-open-bay-1x.png"))
 print("written; ribbon fill", FILL, "edge", EDGE)
