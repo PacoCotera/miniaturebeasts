@@ -16,32 +16,49 @@ This is the general guideline. Every screen on both devices, new or changed, is 
 
 A small, well-made field kit for keeping living things. You hold it, and it is warm, calm and a little worn from use. The life inside it is the point: soft, bright and full of character. The device around that life is quiet and practical.
 
-It should feel like a naturalist's instrument made by someone who loves animals. It is not a gadget showing off, and it is not a toy.
+**Why.** The game is care and curiosity about animals you made and raised. The player's attention and affection belong to the mibis, so everything else has to be trustworthy and out of the way: a naturalist's instrument made by someone who loves animals. It is not a gadget showing off, and it is not a toy.
 
-<table><tr><td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: the finish and the light to aim for. Approved concept, generated. Its blue display and orange corners are not the rule.</em></td>
-<td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth of a life at home. Approved concept, generated.</em></td></tr></table>
+**Three layers, one job each.** Every screen on both devices is built from three layers. Texture, light, colour and motion are decided by the layer, not screen by screen.
+
+| Layer | What it is | Its job | How it looks |
+| --- | --- | --- | --- |
+| **The life** | the mibis, pods, plants, water, places | to be cared about and read | warm, rich, detailed, the most alive thing on the screen |
+| **The instrument** | the housing, the displays, the panes | to hold the life and get out of its way | quiet, matte, dark, simple; one material system on both devices |
+| **The signal** | the device's lit marks, its one action, what needs you | to say what changed or what to do | small and exact; it appears only when it means something |
+
+When a screen goes wrong, it is almost always one layer doing another's job: the instrument taking colour or decoration from the life, or the signal lighting up for show. Checking a screen layer by layer finds those faults before they compound.
+
+<table><tr><td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: the three layers in one picture: a lit subject, a quiet device, a few small signals. Approved concept, generated. Its blue display and orange corners are not the rule.</em></td>
+<td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth the life layer carries. Approved concept, generated.</em></td></tr></table>
 
 ### Textures and materials
 
-**The life** is soft and tactile:
+**The life is soft and tactile:**
 - fur you could stroke, and leaves with a waxy sheen;
 - damp moss, smooth stones and clear water;
 - creatures modelled like small sculptures, with weight and a soft surface.
 
-**The device** is handled gear:
+Tactility is what makes a picture feel like something alive you could hold, and that is what makes caring for it feel real.
+
+**The instrument is handled gear:**
 - matte powder-coated polymer in sage and sand, dark rubber and recessed screws;
 - engraved marks, and canvas or braided hose where something is carried or fed;
 - a little wear at the edges.
 
-Displays are dark matte screens that the life and the light stand out against. Paper and labels appear only as things that never change, such as a collector's tag on a pod or the pages of the field journal.
+Matte and hard against soft and alive is the contrast that makes the life stand out. The wear says the kit is used and trusted, not new and on display.
 
-Nothing is glossy, chrome, holographic or plastic-shiny.
+**Displays** are dark matte screens that the life and the light stand out against. **Paper, tags and labels** are the field kit's own honest materials, but they never change on screen: anything that changes or that you act on is the machine's display.
+
+There is no gloss, chrome, holographic sheen or shiny plastic. Each would make the instrument compete with the life for the eye.
 
 ### Light
 
-**One warm daylight** from the top left falls on everything, with soft shadows that ground every object where it sits. The light gives form; it never decorates.
+**One warm daylight** falls on everything from the top left, with soft shadows that ground every object where it sits.
 
-**The device's own light** is small and purposeful. A lamp lights what it is for, and a lit mark shows what changed or what is ready. It casts onto what it lights and never glows for show.
+- **For form:** the creatures are sculpted, and a single directional light is what lets a player read their anatomy. That includes the inherited differences the whole game is about.
+- **For place:** a contact shadow makes an object real and in the world. Without one it is a sticker.
+
+**The device's own light** is the signal layer. A lamp lights what it is for, a lit mark shows what changed or what is ready, and the light casts onto what it lights. Because the device never glows for show, every light the player sees means something.
 
 <table><tr><td valign="top"><img src="../prototypes/ui/assets/masters/vivarium/idle-vivarium-day-1024x568.png" width="512" alt="The vivarium by day"><br><em>The vivarium by day: warm key light, soft shadows, moss and water. Master.</em></td>
 <td valign="top"><img src="../art/miniature-lives/assets/rich-plain-300x310.png" width="300" alt="Pip, richer treatment"><br><em>Pip lit from the top left: form shading, catch-lit eyes, a soft shadow under the feet. Accepted.</em></td></tr></table>
@@ -49,11 +66,12 @@ Nothing is glossy, chrome, holographic or plastic-shiny.
 ### Colour mood
 
 Bright life on a calm ground.
-- **The life** carries the colour: saturated and playful, with clear highlights, and never dull browns and greys.
-- **The device** recedes: sage, sand, rubber and slate.
-- **The device speaks in colour only when it means something:** its light for progress and change, a warm amber when something needs you, and orange for the one action.
 
-If a screen looks colourful because of its panels, frames or bars rather than its life, the mood is wrong.
+- **The life spends the colour budget:** saturated and playful, with clear highlights, and never dull browns and greys.
+- **The instrument stays out of it:** sage, sand, rubber and slate.
+- **The signal uses colour only as meaning:** its light for progress and change, a warm amber when something needs you, and orange for the one action.
+
+**Why a budget.** The player must see at a glance that this mibi's markings are paler than its parent's, or that its coat changed. Inherited colour can only read if nothing around it is competing in colour. If a screen looks colourful because of its panels, frames or bars rather than its life, the budget has been spent in the wrong place.
 
 ### Information density
 
@@ -84,11 +102,11 @@ If a screen looks colourful because of its panels, frames or bars rather than it
 
 ### Motion character
 
-**The life moves all the time.** It breathes, looks around, potters, sleeps, and water and leaves move.
+**The life moves all the time.** It breathes, looks around, potters and sleeps; water and leaves move. Constant small motion is what "alive" looks like.
 
-**The device moves only when something happens.** A door opens, a lamp turns on, a crate slides in or a frost clears. These are short, eased and physical, the way a well-made mechanism moves.
+**The instrument moves only when something happens.** A door opens, a lamp turns on, a crate slides in, a frost clears. These moves are short, eased and physical, the way a well-made mechanism moves. Because the device is otherwise still, every move it makes reads as an event.
 
-Reveals take their time, because they are the reward. Nothing blinks to get attention, and nothing means something only by moving.
+**Reveals take their time,** because they are the reward the player came back for. Nothing blinks to get attention, and nothing means something only by moving.
 
 On the Companion the same character is drawn in stepped frames.
 
@@ -96,13 +114,25 @@ On the Companion the same character is drawn in stepped frames.
 
 ### What it is not
 
-- Not childish: no sticker faces, nursery colours, cartoon simplification or storybook ornament.
-- Not a sci-fi HUD: no neon, holograms, glowing outlines, chrome or glass gloss.
-- Not a sterile lab, a display cabinet or a desk with papers.
-- Not a cosy cottage with no equipment.
-- Not brown on brown, and not cream panels.
-- Not a list, a table or a wall of text where a picture would do.
-- Not equipment for show: every lamp, line and gauge works for the life.
+Each of these breaks a layer:
+
+- **Childish:** sticker faces, nursery colours, cartoon simplification or storybook ornament. It undermines the real anatomy and inheritance the game is about.
+- **A sci-fi HUD:** neon, holograms, glowing outlines, chrome or glass gloss. The signal and the instrument take over from the life, and it reads cold.
+- **A sterile lab, a display cabinet, a desk of papers:** the life becomes a specimen and the warmth goes.
+- **A cosy cottage with no equipment:** the instrument disappears, and the care has nothing to happen through.
+- **Colour in the chrome:** brown-on-brown panels, cream cards, coloured frames and bars. The instrument spends the life's colour budget.
+- **Words where a picture would do:** lists, tables and walls of text. The signal turns into reading.
+- **Equipment for show:** lamps, lines and gauges that serve nothing. The instrument pretends to work.
+
+### How the signals so far fit
+
+The rejections and rulings so far are each one layer out of place:
+- brown on brown, cream panels and a plastic plaque are the instrument taking colour and attention;
+- an egg on a moss cushion, a pixel glyph and jargon are the life and the signal drawn without craft or meaning;
+- paper used as a status screen is the instrument's material doing the signal's job;
+- "you're editing life" asks the instrument to look like what it does.
+
+New screens, and every iteration of the prototypes, are judged the same way, layer by layer.
 
 ## Miniature Lives
 
