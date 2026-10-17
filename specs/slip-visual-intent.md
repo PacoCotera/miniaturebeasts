@@ -1,12 +1,12 @@
 # The slip: visual intent (creative director, for T-20261016-126)
 
-Written 2026-10-17 (America/Mexico_City), at the lead's request, as the CD's input to UI/UX's T-20261016-126. UI/UX wireframes both options for the owner to choose.
+Written 2026-10-17 (America/Mexico_City), at the lead's request, as the CD's input to UI/UX's T-20261016-126.
 
-**The owner** (04:02, on the Create proof's slip, `results/owner/2026-10-17-create-slip.png`): "doesn't read like part of the machine, or anything else" and "a wall of text that nobody will read". **The owner's steer** (04:04): "i mean, can be a cool screen of the machine."
+**The owner** (04:02, on the Create proof's slip, `results/owner/2026-10-17-create-slip.png`): "doesn't read like part of the machine, or anything else" and "a wall of text that nobody will read". **The owner's steer** (04:04): "i mean, can be a cool screen of the machine." **The owner on the tag** (04:06): "a paper tag is not interactive, it makes no sense having a paper tag that changes with user interaction." So the slip is the machine's display. The tag option is withdrawn.
 
 **The binding style:** `design/art-direction.md`, `design/style-guide/README.md`. Used as it is; nothing added.
 
-**Shared by both options:**
+**What it shows:**
 - **Content:** what was changed, what clashes, what is still a surprise, and on the Incubator what cleared while growing.
 - **The rows are pictures:** one chip per trait, the drum's own close-up, carrying the drum's own marks:
   - the **changed notch**;
@@ -15,7 +15,7 @@ Written 2026-10-17 (America/Mexico_City), at the lead's request, as the CD's inp
 - **On the Incubator,** "cleared while growing" is a state of the same chips: a frosted chip clears to its picture when its chapter clears, and pulses once with the ring's cut.
 - **Words budget:** at most **3 words** in the longest case. No sentences, and no counts in words ("two more"); overflow shows as "+n" on one chip. The bottom line keeps its own words, as on every screen.
 
-## Option A: a screen of the machine (the owner's direction)
+## The intent: a screen of the machine
 
 **What it is, in one sentence:** a small instrument display built into the field-gear bench, the same kind of screen the kit already carries: the Caddy's matte e-paper panel and the Companion's HiBit screen. It is the bench's own readout of the founder being made.
 
@@ -32,23 +32,11 @@ Written 2026-10-17 (America/Mexico_City), at the lead's request, as the CD's inp
 - **On the Incubator:** the same display, let into the cradle's base or the stage's housing (UI/UX places it).
 - **Risk to manage:** on Create the bank already shows each look, the notch and the caps. The screen earns its place as the **summary**: every trait at a glance, including drums paged off the bank on deep species (S03 has 25). It must not repeat the bank in words.
 
-## Option B: the pod's own tag (alternative)
-
-**What it is, in one sentence:** the paper tag that already hangs on the player's pod on Pods, travelling with the pod into Create and the Incubator, gathering the chips.
-
-**Why:** it already exists in the world (Pods' tag, and paper is in the guide's materials), and it belongs to the pod that travels (the concept's thread).
-
-**How it looks:**
-- the Pods tag: die-cut toned paper, a reinforced eyelet, on its string to the pod, sized to its chips, so small;
-- the chips stamped on it; the name, and the place badge instead of the found sentence;
-- a soft shadow on what it hangs over.
-
-**Weaker point:** it is paper, not the machine, which is the opposite of the owner's steer.
-
-## What both replace
+## What it replaces
 
 - `slip-208x288`, `slip-208x408`, and the "Your changes / Cleared while growing / Still a surprise" text lists on both screens.
 - The just-cleared card stays as it is: it is the reveal, with a picture.
-- UI/UX gives the rects, the chip size and the display's or tag's size per screen. The space the old slip freed is UI/UX's to use, or to give back to the subject.
+- UI/UX gives the rects, the chip size and the display's size per screen. The space the old slip freed is UI/UX's to use, or to give back to the subject.
 
-**The CD's recommendation:** A, the owner's direction, built on the Caddy's e-paper language so it is the house's own screen, not a new HUD. The owner chooses.
+
+**Why a screen, and not paper:** what the player changes must update live, so the object that shows it must be one that updates: the machine's display. A material that can't change can't carry a state that does (the gate's check 10, `specs/gate-recalibration.md` §5).

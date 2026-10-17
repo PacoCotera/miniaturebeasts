@@ -54,3 +54,14 @@ Three causes:
    - Every panel, card or box is named as a thing: a part of the device (a plate cut from the housing, a module), or an object of the world that exists elsewhere in the game (a tag, a book, a crate).
    - A generic box, card or text panel fails, however well grounded.
    - The owner's words about one panel are applied to every panel of the same kind.
+
+## 5. Added 2026-10-17: material matches behaviour
+
+**What I missed.** For the slip I proposed the pod's paper tag, carrying marks that change as the player turns the drums. The owner: "a paper tag is not interactive, it makes no sense having a paper tag that changes with user interaction." I weighed object continuity (the tag travels with the pod) over behaviour. Continuity can't beat behaviour.
+
+**Check 10, from now on, on every screen:**
+
+10. **Material matches behaviour.** For each object, ask what it does over time, and whether its material can do that:
+    - anything that updates live with the player's input, or with time, is a display, a lamp, a moving part or a living thing: something that can change;
+    - paper, labels, engraving and painted marks stay fixed while on screen;
+    - an object whose material can't do what the object does fails, however well it reads.
