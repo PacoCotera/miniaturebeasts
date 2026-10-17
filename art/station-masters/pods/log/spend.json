@@ -4888,5 +4888,22 @@
    "thoughtsTokenCount": 330,
    "totalTokenCount": 3006
   }
+ },
+ {
+  "tag": "home-concept-instrument-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.255312,
+  "mxn": 5.1062,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:35:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1956,
+   "candidatesTokenCount": 1679,
+   "thoughtsTokenCount": 416,
+   "totalTokenCount": 4051
+  }
  }
 ]
