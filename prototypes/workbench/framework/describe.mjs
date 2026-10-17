@@ -38,7 +38,7 @@ export function lookOf(frame, trait, genome, opts = {}) {
 }
 // A form in the player's words where a trait's own looks do not name it (the game designer's words, T-20261016-193): S03's
 // Claws pool holds all six foot forms while its trait names three; "hooves", "webbed feet" and "roots" are for the others.
-const FORM_WORDS = { "anatomy.contact-terminal-form": { rounded: "round feet", pad: "pads", wedge: "digging wedges", hoof: "hooves", webbed: "webbed feet", root: "roots" } };
+const FORM_WORDS = { "anatomy.contact-terminal-form": { rounded: "round feet", pad: "padded feet", wedge: "digging wedges", hoof: "hooves", webbed: "webbed feet", root: "roots" } };
 
 // A trait's looks as the frame's own bins (the player's words a read gives), for the traits whose looks are not one per pair of the pool: a blend's bins in order of value
 // ("between" is the middle bin, one look), a two-colour coat's four pure colours and "two side by side", the markings' bare, bands, spots, bands and spots.

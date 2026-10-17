@@ -87,7 +87,7 @@ export const VOCAB = [
   ["shape", "leaves", "Leaves", ["growth.leaf-count", "growth.leaf-length-ratio"], ["few short", "between", "many long"]],
   ["shape", "shell", "Shell", ["growth.shell-dome-ratio"], ["low", "between", "high dome"]],
   ["legs-tail", "legs", "Legs", ["growth.support-drop-ratio", "growth.support-radius-ratio", "growth.support-splay-ratio"], ["short, fine", "between", "long, stout"]],
-  ["legs-tail", "feet", "Feet", ["anatomy.contact-terminal-form", "growth.terminal-length-ratio", "growth.terminal-depth-ratio"], ["round feet", "pads", "digging wedges"]],
+  ["legs-tail", "feet", "Feet", ["anatomy.contact-terminal-form", "growth.terminal-length-ratio", "growth.terminal-depth-ratio"], ["round feet", "padded feet", "digging wedges"]],
   ["legs-tail", "feelers", "Feelers", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.free-radius-ratio"], ["short, fine", "between", "long, thick"]],
   ["legs-tail", "rays", "Rays", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.support-radius-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "tail", "Tail", ["growth.axial-tail-length-ratio", "growth.axial-tail-width-ratio"], ["short, thin", "between", "long, thick"]],
