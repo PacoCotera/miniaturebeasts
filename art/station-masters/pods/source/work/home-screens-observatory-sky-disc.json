@@ -1,0 +1,20 @@
+[
+ {
+  "name": "home-screens-observatory-sky-disc",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/02a-palette.png",
+    "REFERENCE for the palette only: the screen's colours (the slate ground). Do not copy its layout or any text."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/vivarium-pane-day-384x497.png",
+    "REFERENCE for warmth and the daylight only: the warm daylight and matte finish of the vivarium pane. Do not copy its content."
+   ]
+  ],
+  "prompt": "A single painted element, square, the disc filling the picture edge to edge, on a plain flat #1d232b ground outside the circle (no texture, no vignette). A star-atlas instrument seen face-on, flat to camera. An outer limb ring (about 9% of the radius wide) in matte powder-coated sage metal (the #84ae78 and #8a947b family: not brass, not gloss), with finely engraved graduation ticks, four small recessed screws and a little edge wear; one warm daylight from the top left with a soft shadow. Inside the ring, the sky field: deep blue-slate night (#1d232b to #23292f with a hint of #0f4c50), a very soft dust band crossing it diagonally, faint engraved coordinate circles and meridians in pale hairline. A second, thin inner bezel ring in the same matte metal at 58% of the radius, and inside that bezel the hub is EMPTY, plain flat #1d232b (a viewport goes there). No stars that look meaningful (only a fine faint dust of tiny points), no constellation lines, no text, no glow, no chrome, no neon, no gold. Calm, crafted, grown-up, Miniature Lives finish."
+ }
+]

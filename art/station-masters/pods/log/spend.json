@@ -4922,5 +4922,39 @@
    "thoughtsTokenCount": 306,
    "totalTokenCount": 2549
   }
+ },
+ {
+  "tag": "home-screens-observatory-sky-disc try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.21747,
+  "mxn": 4.3494,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:55:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 855,
+   "candidatesTokenCount": 1421,
+   "thoughtsTokenCount": 377,
+   "totalTokenCount": 2653
+  }
+ },
+ {
+  "tag": "home-screens-observatory-loika-atlas try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183892,
+  "mxn": 3.6778,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:56:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 446,
+   "candidatesTokenCount": 1329,
+   "thoughtsTokenCount": 196,
+   "totalTokenCount": 1971
+  }
  }
 ]
