@@ -8,7 +8,7 @@
      {
       "t": "intent",
       "screen": "incubator",
-      "target": "room",
+      "target": "pod",
       "verb": "confirm"
      }
     ],
@@ -16,7 +16,7 @@
     "state": "growing",
     "ok": "Grow now",
     "price": "❀ 11",
-    "subject": "a Loika bud"
+    "subject": "ready in about 21 min"
    },
    {
     "held": [
@@ -38,7 +38,7 @@
      {
       "t": "intent",
       "screen": "incubator",
-      "target": "room",
+      "target": "pod",
       "verb": "confirm"
      }
     ],
@@ -68,7 +68,7 @@
    {
     "state": "empty",
     "ok": "Choose a pod",
-    "subject": "ready for a new bud"
+    "subject": "the nest is empty"
    },
    {
     "key": "confirm",

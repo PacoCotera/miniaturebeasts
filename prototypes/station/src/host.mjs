@@ -19,7 +19,7 @@ import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
 import { incubatorBuild } from "./views/incubator-props.mjs";
-import { incubatorTick } from "./intents/incubator.mjs";
+import { incubatorTick, markSeen } from "./intents/incubator.mjs";
 import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
@@ -156,7 +156,10 @@ export function createBody() {
 // ---- Incubator ----
 // The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). No lamp: Grow paints nothing (decisions 10-11 14:17).
 export function incubatorBody() {
-  return incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods);
+  const body = incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods);
+  UI.inc.f = body.props.focus.cur === "card" ? "card" : "pod";   // the host keeps the ring: a card that is no longer drawn takes it back to the pod
+  if (UI.screen === "incubator" && body.props.regions.card?.cleared) markSeen(G.st, body.props.regions.card.id);   // shown with its card: the cleared chapter is seen (the flag Home reads)
+  return body;
 }
 
 // ---- the props of the screen on the page ----
@@ -175,7 +178,7 @@ export function screenProps(plate) {
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen) || (screen === "library" && UI.lib.f !== "spread")) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen === "library" ? "book" : screen), plate: pl } }, ids: [], light };   // the Book (and its guide) is a state of the library screen: not built yet, ← reads Library
   const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
-  registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
+  registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome ?? UI.inc?.hatch?.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
@@ -258,6 +261,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "library") { if (UI.screen === "library" && UI.lib.f === "spread") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "create") { if (UI.screen === "create") INTENTS.create.focus(h, m.target); return; }
+    if (m.screen === "incubator") { if (UI.screen === "incubator") INTENTS.incubator.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;

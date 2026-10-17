@@ -1,10 +1,9 @@
-/* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json): the words that draw each of its states (empty, growing, ready, hatch) in draw order, from the `incubator` spec and the props' regions, the frame's
-   words after (screens.c). bench, rail, the leaves on their two arcs, the chamber's back, the nest, the bud (and the ready bud's shape), the nest's front, the window's front, the base (its master carries the plaque plate and the foot
-   light) with its plaque word, the base's waiting lamp, the juvenile, the stamp label, the code and the ribbon. No ring in any state: ✓ acts on the room. The ready bud's front is drawn over the shape; the cracks are drawn over the ready bud.
-   The events: `growNow` (the leaves still to fill turn whole one by one over its length, in the leaves word), `wipe` (a tab turns read, its pips filling, in the rail word) and `hatch` (a still beat: the chamber stays as it stands, its
-   window open with no pane, and nothing moves; the bud keeps its ready picture and shape until the crack at 600, opens at 800 and goes at 1000, the juvenile stands at 1000 over the chamber, the ribbon shows at 1200, the juvenile steps
-   out at 1400 and 1800; the hand-off at 2600 is the host's).
-   Every part has its node in every state from growing on (a part not shown has none of the size), so a minute passing, growNow and the hatch change nodes and never add or remove one (§2.2). A picture the host has not sent is a slot not yet filled. */
+/* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json; specs/station-incubator-tabs-ruling.md): the words that draw each of its states (empty, growing, ready, hatch) in draw order, from the `incubator` spec and the props' regions, the
+   frame's words after (screens.c). Option B, candling: the stage (the ring's track recessed in it), the ring of time (the word arcFill, then a cut for each chapter that will clear: its emblem at its angle on the track), the cradle, the bud's own pod
+   (its shell, the light of its step over it), the founder's shadow in it, the pod's seams and cracks, the cradle's near lip, the juvenile, the slip (left), the just-cleared card (right), the stamp label, the code and the ribbon, then the ring on the pod
+   or the card. The events: `growNow` (the ring is a cut to full, the screen shows the bud as it was until the event ends: the ready state lands then) and `hatch` (a still beat with the pod as it stood at ready; the shell cracks at 600 and opens at
+   800, goes at 1000, the juvenile stands at 1000 on the nest, the ribbon shows at 1200, the juvenile steps out at 1400 and 1800; the hand-off at 2600 is the host's). Every part has its node in every state from growing on (a part not shown has none of
+   the size), so a minute passing, growNow and the hatch change nodes and never add or remove one (§2.2). A picture the host has not sent is a slot not yet filled. */
 #include "../layout/layout.h"
 #include "screens.h"
 #include "../vocab/vocab.h"
@@ -15,6 +14,7 @@
 #include "../anim/anim.h"
 #include "../focus/focus.h"
 #include "moving.h"
+#include "../prim/angle_table.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,48 +47,55 @@ static int step_lift(int table, int ms) {
   return v;
 }
 
-static void build_bench(void) {
-  int r[4]; crect("regions.bench.rect", r); char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
-  v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], g);
-  v_region("bench", LAYER_PAINTED);
-  for (int i = 0; i < v_plen("regions.bench.room"); i++) if (v_sprite("bench.room", v_pstr(v_fmt("regions.bench.room.%d", i)), r[0], r[1], r[2], r[3])) break;
-}
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
+static void pic_or(const char *id, int on, const char *asset, int x, int y, int w, int h) { if (on) v_sprite(id, asset, x, y, w, h); else v_sprite_hidden(id, asset, x, y); }
 static int hatch_moving(void);
 #define HATCH_FADE0 1000
 static int hatch_fade_level(int t) { return 16 * (t - HATCH_FADE0) / 180; }   /* the crossfade's level n at t ms, 1000–1180 (motion-spec §2.7a): floor(16 · (t − 1000) / 180) */
-/* the bud: its five pictures, the ready shape and the ready front are always nodes, in this draw order (early, late, ready, shape, front, crack1, crack2); the state and the hatch's time show some of them: early, late, ready with its shape
-   and its front (and in the hatch until 600), at 600 crack1 over ready (the shape and the front go), at 800 crack2 alone over ready, nothing at 1000 */
-static void build_bud(int t) {
-  if (spec_len("props", "regions.bud") < 0) return;
-  int r[4], s[4]; crect("regions.bud.rect", r); crect("regions.bud.shape.rect", s); const char *stage = v_pstr("regions.bud.stage");
-  int a1 = ci("events.hatch.steps.2.at", 600), a2 = ci("events.hatch.steps.3.at", 800), a3 = hatch_moving() ? 1180 : ci("events.hatch.steps.4.at", 1000);   /* with a moving set the open bud is held under the curl's dither-in, gone at 1180 */
-  int gone = t >= a3, c2 = !gone && t >= a2, c1 = !gone && !c2 && t >= a1;
-  int early = !gone && !c1 && !c2 && strcmp(stage, "early") == 0, late = !gone && !c1 && !c2 && strcmp(stage, "late") == 0;
-  int ready = !gone && (c1 || c2 || (strcmp(stage, "early") != 0 && strcmp(stage, "late") != 0));
-  int front = ready && !c1 && !c2 && (strcmp(stage, "ready") == 0 || strcmp(stage, "hatch") == 0);   /* the shape and the front: ready, and in the hatch until the crack at 600 */
-  const char *fb = v_pstr("regions.bud.ready");
-  int fading = hatch_moving() && t >= HATCH_FADE0 && t < a3, n = fading ? hatch_fade_level(t) : 0;   /* with a moving set (motion-spec §2.7a): the crack-2 bud goes out at 16 − n while the curl comes in at n, 1000–1180, on the same Bayer: the bud keeps the pixels the curl has not taken */
-  static const char *K[3] = { "early", "late", "ready" }; const int on3[3] = { early, late, ready };
-  for (int i = 0; i < 3; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", K[i])); const char *id = v_fmt("bud.%s", K[i]);
-    if (has(pic) && on3[i] && fading) { v_sprite_hidden(id, pic, r[0], r[1]); v_dither_window(v_fmt("bud.%s.fade", K[i]), pic, 0, 0, NULL, 0, 0, n, r[0], r[1], r[2], r[3]); }
-    else if (has(pic) && on3[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
-  { const char *pic = v_pstr("regions.bud.shape"); v_name("bud"); if (has(pic) && front) v_sprite("bud.shape", pic, s[0], s[1], s[2], s[3]); else v_sprite_hidden("bud.shape", has(pic) ? pic : fb, s[0], s[1]); }
-  { const char *pic = v_pstr("regions.bud.front"); v_name("bud"); if (has(pic) && front) v_sprite("bud.front", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("bud.front", has(pic) ? pic : fb, r[0], r[1]); }
-  static const char *C[2] = { "crack1", "crack2" }; const int onc[2] = { c1, c2 };
-  for (int i = 0; i < 2; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", C[i])); const char *id = v_fmt("bud.%s", C[i]);
-    if (has(pic) && onc[i] && fading) { v_sprite_hidden(id, pic, r[0], r[1]); v_dither_window(v_fmt("bud.%s.fade", C[i]), pic, 0, 0, NULL, 0, 0, n, r[0], r[1], r[2], r[3]); }
-    else if (has(pic) && onc[i]) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : fb, r[0], r[1]); }
+
+/* the stage: the frame's ground and the slate master over it (the ring's track is recessed in it) */
+static void build_stage(void) {
+  int r[4]; crect("regions.stage.rect", r); char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
+  v_region("stage", LAYER_CHROME); v_rect("stage", r[0], r[1], r[2], r[3], g);
+  v_region("stage", LAYER_PAINTED);
+  for (int i = 0; i < v_plen("regions.stage.room"); i++) if (v_sprite("stage.room", v_pstr(v_fmt("regions.stage.room.%d", i)), r[0], r[1], r[2], r[3])) break;
 }
-static void build_base(void) {
-  picture("base", "base", "regions.base.rect", v_pstr("regions.base.picture"));
-  { int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); const char *st = v_pstr("state");
-    { const char *after = v_pstr("regions.plaqueAfter"); int t = hatch_time(); if (has(after) && t >= ci("events.hatch.steps.4.at", 1000)) w = after; }   /* the hatch: the word cuts at the step that sets the juvenile on the base (fix 5 I3), one text node whose text changes */
-    int tw = v_measure(w, px); v_region("plaque", LAYER_TYPE);
-    v_text("plaque", w, cx - v_half(tw), ci("regions.plaque.lineTop", 502) + v_fdiv(20 - v_cap(px), 2), *w ? tw : 0, px, colr(v_fmt("colours.plaque.%s", strcmp(st, "hatch") == 0 ? "ready" : st))); }
-  { const char *pic = v_pstr("regions.lamp.picture"); if (spec_len("props", "regions.lamp") >= 0) { int r[4]; crect("regions.base.lamp.rect", r); v_name("lamp"); if (v_pbool("regions.lamp.on", 0)) v_sprite("lamp", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("lamp", pic, r[0], r[1]); } }
+
+/* ---- the ring of time: the arc fill (specs/face-arc-and-shadow.md §1; the word steps whole degrees, deg = floor(264 · f)), then a cut for each chapter that will clear: the chapter's emblem, 24 × 24, centred on the track's centre line at its angle ---- */
+static void build_ring(void) {
+  if (spec_len("props", "regions.ring") < 0 && !has(v_pstr("regions.ring.fill"))) return;
+  int deg = v_pint("regions.ring.f", 0) * ci("regions.ring.arc.sweep", 264) / 10000;
+  v_region("ring", LAYER_ART); word_arcFill(I, "regions.ring", v_pstr("regions.ring.fill"), v_pstr("regions.ring.closedArt"), deg, v_pbool("regions.ring.closed", 0));
+  int n = v_plen("regions.ring.cuts"), mx = ci("regions.ring.cuts.max", 8), cw = ck("regions.ring.cuts.size", 0), chh = ck("regions.ring.cuts.size", 1), rad = ci("regions.ring.cuts.radius", 188), cx = ci("regions.ring.arc.center.0", 512), cy = ci("regions.ring.arc.center.1", 288);
+  const char *any = n > 0 ? v_pstr("regions.ring.cuts.0.emblem") : "";
+  for (int k = 0; k < mx; k++) {
+    v_name("ring"); const char *em = k < n ? v_pstr(v_fmt("regions.ring.cuts.%d.emblem", k)) : any;
+    if (k < n && has(em)) { int a = ((v_pint(v_fmt("regions.ring.cuts.%d.at", k), 0) % 360) + 360) % 360, x = cx + v_fdiv(rad * ANGLE_S[a] + 16383, 32767), y = cy + v_fdiv(rad * ANGLE_C[a] + 16383, 32767); v_sprite(v_fmt("ring.cut.%d", k), em, x - cw / 2, y - chh / 2, cw, chh); }
+    else if (has(em)) v_sprite_hidden(v_fmt("ring.cut.%d", k), em, 0, 0);
+  }
 }
+
+/* ---- the pod: its shell, the light of its step over it (cool, warm or glowing; ready is glowing and, after the shadow, the seams), the founder's shadow in it, then the seams and the cracks (the hatch: crack 1 from 600, crack 2 from 800); the pod
+   and its shadow go at 1000 (1180 with a moving set, a cut as the curl comes in), the cradle stays. Every node is there from growing on. ---- */
+static int pod_gone(int t) { return t >= (hatch_moving() ? 1180 : ci("events.hatch.steps.4.at", 1000)); }
+static void build_pod_front(int t) {
+  if (spec_len("props", "regions.pod") < 0 && !has(v_pstr("regions.pod.shell"))) return;
+  int r[4]; crect("regions.pod.rect", r); v_set_focal(r); int gone = t >= 0 && pod_gone(t); const char *stage = v_pstr("regions.pod.stage"), *step = v_pstr("regions.pod.step"), *shell = v_pstr("regions.pod.shell");
+  int ready = !strcmp(stage, "ready") || !strcmp(stage, "hatch"), show = has(shell) && !gone;
+  v_region("pod", LAYER_PAINTED); v_name("pod"); pic_or("pod.shell", show, shell, r[0], r[1], r[2], r[3]);
+  static const char *LS[3] = { "cool", "warm", "glowing" };
+  for (int i = 0; i < 3; i++) { const char *p = v_pstr(v_fmt("regions.pod.%s", LS[i])); v_name("pod"); pic_or(v_fmt("pod.light.%s", LS[i]), show && has(p) && (!strcmp(step, LS[i]) || (!strcmp(step, "ready") && i == 2)), p, r[0], r[1], r[2], r[3]); }
+  { int s[4]; crect("regions.shadow.rect", s); const char *sh = v_pstr("regions.shadow.asset"); v_region("shadow", LAYER_PAINTED); v_name("shadow"); pic_or("shadow", show && has(sh), sh, s[0], s[1], s[2], s[3]); }
+  { const char *se = v_pstr("regions.pod.seams"), *c1 = v_pstr("regions.pod.crack1"), *c2 = v_pstr("regions.pod.crack2"); int a1 = ci("regions.pod.cracks.crack1", 600), a2 = ci("regions.pod.cracks.crack2", 800);
+    v_region("pod", LAYER_PAINTED); v_name("pod"); pic_or("pod.seams", show && ready && has(se), se, r[0], r[1], r[2], r[3]);
+    v_name("pod"); pic_or("pod.crack1", show && t >= a1 && has(c1), c1, r[0], r[1], r[2], r[3]); v_name("pod"); pic_or("pod.crack2", show && t >= a2 && has(c2), c2, r[0], r[1], r[2], r[3]); }
+}
+static void build_cradle(void) {
+  const char *p = v_pstr("regions.cradle.picture"); if (has(p)) picture("cradle", "cradle", "regions.cradle.rect", p);
+}
+static void build_cradle_front(void) { const char *p = v_pstr("regions.cradle.front"); if (has(p)) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", p); }
+
 /* ---- the hatch's first motion (Station M1 §2.5; incubator.json events.hatch.moving) for a juvenile with a moving set: the curl dithers in from clear over the held open bud (1000–1180), curl, curl·b1 (1500), curl to crouch
    (2140–2320, the crouch 2 px lower), crouch held, the stand at 2720 and its first breath, the first hop at 5120 (crouch 160, air 400 on the up-close table at 0.7×, crouch 160), stand at 5840 breathing from b0. ---- */
 static const mv_stage_t *hatch_set(void) {
@@ -146,12 +153,53 @@ static void build_moving_juvenile(const mv_stage_t *S0, int t) {
 }
 /* the juvenile stands in its box on the base from 1000 and steps out at 1400 and 1800; the picture is the new mibi's, its placeholder until the painting lands */
 static void build_juvenile(int t) {
-  if (spec_len("props", "regions.bud") < 0) return;
+  if (!in_state("hatch")) { const char *sh = v_pstr("regions.pod.shell"); if (has(sh)) { int r[4]; crect("regions.juvenile.rect", r); v_name("juvenile"); v_sprite_hidden("juvenile", sh, r[0], r[1]); } return; }   /* its node is there from growing on, with no size until the hatch */
   { const mv_stage_t *S0 = hatch_set(); if (S0 && in_state("hatch")) { build_moving_juvenile(S0, t); return; } }
   int r[4]; crect("regions.juvenile.rect", r); const char *pic = v_pstr("regions.juvenile.picture"); int a = ci("events.hatch.steps.4.at", 1000), up = 0, sat[4], sms[4], table, ns = lift_steps(sat, sms, &table, 4);
   int on = has(pic) && t >= a; for (int i = 0; on && i < ns; i++) if (t >= sat[i] && t < sat[i] + sms[i]) up = step_lift(table, t - sat[i]);
-  v_name("juvenile"); if (on) v_sprite("juvenile", pic, r[0], r[1] - up, r[2], r[3]); else v_sprite_hidden("juvenile", has(pic) ? pic : v_pstr("regions.bud.ready"), r[0], r[1]);
+  v_name("juvenile"); if (on) v_sprite("juvenile", pic, r[0], r[1] - up, r[2], r[3]); else v_sprite_hidden("juvenile", has(pic) ? pic : v_pstr("regions.pod.shell"), r[0], r[1]);
 }
+
+/* ---- the slip (left): the species name at 20 px, how it was found (two lines at most, `mist`), "Your changes" with a line a change (three at most), "Cleared while growing" with a line a chapter, newest first (five at most), then "still to come"
+   (a crossed bud: "read it when it's out"). The text stacks from the top of the paper by its pitches; a block with nothing to say takes no room and its nodes keep no size. A line is cut at a word with … at 176 px. ---- */
+static void slip_line(const char *id, const char *text, int *y, int x, int px, int pitch, int maxw, const char *colour) {
+  char cut[V_STR]; if (*text) v_clip(text, maxw, px, cut, sizeof cut); else cut[0] = 0;
+  int w = v_measure(cut, px); v_text(id, cut, x, v_fdiv(pitch - v_cap(px), 2) + *y, *cut ? w : 0, px, colour); if (*cut) *y += pitch;
+}
+static void build_slip(void) {
+  if (spec_len("props", "regions.slip") < 0 && !has(v_pstr("regions.slip.paper"))) return;
+  int r[4]; crect("regions.slip.rect", r); int x = ci("regions.slip.textX", 104), px = ci("regions.slip.px", 16), pitch = ci("regions.slip.pitch", 24), gap = ci("regions.slip.gap", 8), maxw = ci("regions.slip.maxLine", 176), y = r[1] + ci("regions.slip.pad", 16);
+  v_region("slip", LAYER_PAINTED); picture("slip", "slip", "regions.slip.rect", v_pstr("regions.slip.paper"));
+  v_region("slip", LAYER_TYPE);
+  slip_line("slip.name", v_pstr("regions.slip.name"), &y, x, ci("regions.slip.namePx", 20), ci("regions.slip.namePitch", 32), maxw, colr("colours.slip.name"));
+  { int nf = v_plen("regions.slip.found"), maxf = ci("regions.slip.foundLines", 2), line = 0; char buf[V_STR * 3];
+    for (int i = 0; i < nf && line < maxf; i++) { char s[V_STR]; snprintf(s, sizeof s, "%s", v_pstr(v_fmt("regions.slip.found.%d", i))); int nl = v_wrap(s, maxw, px, buf, sizeof buf, 8); const char *l = buf; for (int j = 0; j < nl && line < maxf; j++, line++) { slip_line(v_fmt("slip.found.%d", line), l, &y, x, px, pitch, maxw, colr("colours.slip.found")); l += strlen(l) + 1; } }
+    for (; line < maxf; line++) { int y0 = y; slip_line(v_fmt("slip.found.%d", line), "", &y0, x, px, pitch, maxw, colr("colours.slip.found")); } }
+  { int nc = v_plen("regions.slip.changes"), maxc = ci("regions.slip.maxChanges", 3); char head[48]; spec_str(I, "strings.slip.changes", head, sizeof head); if (nc > 0) y += gap;
+    slip_line("slip.changes", nc > 0 ? head : "", &y, x, px, pitch, maxw, colr("colours.slip.heading"));
+    for (int k = 0; k < maxc; k++) slip_line(v_fmt("slip.change.%d", k), k < nc ? v_pstr(v_fmt("regions.slip.changes.%d", k)) : "", &y, x, px, pitch, maxw, colr("colours.slip.line")); }
+  { int nl = v_plen("regions.slip.cleared"), maxl = ci("regions.slip.maxCleared", 5), cross = v_pbool("regions.slip.cross", 0), more = *v_pstr("regions.slip.toCome") != 0; char head[48], cross_w[64]; spec_str(I, "strings.slip.cleared", head, sizeof head); spec_str(I, "strings.slip.cross", cross_w, sizeof cross_w);
+    int any = nl > 0 || more || cross; if (any) y += gap;
+    slip_line("slip.cleared", any ? head : "", &y, x, px, pitch, maxw, colr("colours.slip.heading"));
+    for (int k = 0; k < maxl; k++) slip_line(v_fmt("slip.clear.%d", k), k < nl ? v_pstr(v_fmt("regions.slip.cleared.%d", k)) : "", &y, x, px, pitch, maxw, colr("colours.slip.line"));
+    slip_line("slip.toCome", cross ? cross_w : v_pstr("regions.slip.toCome"), &y, x, px, pitch, maxw, colr("colours.slip.quiet")); }
+}
+
+/* ---- the card (right): "Just cleared" (before the first clearing "Next to clear"), the cleared chapter's first trait picture at 160 × 128 (its emblem centred while no crop is placed), the chapter and the look in words. A focus target while drawn. ---- */
+static void build_card(void) {
+  int r[4]; crect("regions.card.rect", r); int on = spec_len("props", "regions.card") >= 0 || has(v_pstr("regions.card.ground"));
+  const char *ground = v_pstr("regions.card.ground"), *crop = v_pstr("regions.card.picture"), *em = v_pstr("regions.card.emblem");
+  v_region("card", LAYER_PAINTED); v_name("card"); pic_or("card.ground", on && has(ground), ground, r[0], r[1], r[2], r[3]);
+  int px = 16, hx = r[0] + ck("regions.card.heading.at", 0), hy = r[1] + ck("regions.card.heading.at", 1), pw = ck("regions.card.picture.size", 0), ph = ck("regions.card.picture.size", 1), ex = r[0] + ck("regions.card.picture.at", 0), ey = r[1] + ck("regions.card.picture.at", 1);
+  int crop_ok = on && has(crop) && wire_has_asset(crop);
+  v_name("card"); pic_or("card.crop", crop_ok, has(crop) ? crop : em, ex, ey, pw, ph);
+  v_name("card"); pic_or("card.emblem", on && has(em) && !crop_ok, em, ex + (pw - 24) / 2, ey + (ph - 24) / 2, 24, 24);
+  v_region("card", LAYER_TYPE);
+  { const char *w = on ? v_pstr("regions.card.heading") : ""; int tw = v_measure(w, px); v_text("card.heading", w, hx, v_fdiv(ck("regions.card.heading.size", 1) - v_cap(px), 2) + hy, *w ? tw : 0, px, colr("colours.card.heading")); }
+  { const char *w = on ? v_pstr("regions.card.chapter") : ""; char cut[V_STR]; v_clip(w, ck("regions.card.trait.size", 0), px, cut, sizeof cut); int tw = v_measure(cut, px); v_text("card.trait", cut, r[0] + ck("regions.card.trait.at", 0), v_fdiv(ck("regions.card.trait.size", 1) - v_cap(px), 2) + r[1] + ck("regions.card.trait.at", 1), *cut ? tw : 0, px, colr("colours.card.trait")); }
+  { const char *w = on ? v_pstr("regions.card.look") : ""; char cut[V_STR]; v_clip(w, ck("regions.card.look.size", 0), px, cut, sizeof cut); int tw = v_measure(cut, px); v_text("card.look", cut, r[0] + ck("regions.card.look.at", 0), v_fdiv(ck("regions.card.look.size", 1) - v_cap(px), 2) + r[1] + ck("regions.card.look.at", 1), *cut ? tw : 0, px, colr("colours.card.look")); }
+}
+
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge), the dimmed stamp centred on it; no plate with no stamp */
 static void build_stamp(void) {
   if (spec_len("props", "regions.stamp") < 0) return;
@@ -168,31 +216,51 @@ static void build_code(void) {
   v_region("code", LAYER_TYPE); v_text("code", code, cx - v_half(w), ci("regions.code.lineTop", 426) + v_fdiv(20 - v_cap(px), 2), *code ? w : 0, px, colr("colours.code"));
 }
 static void build_ribbon(int t) {
-  if (spec_len("props", "regions.bud") < 0) return;
+  if (!in_state("hatch")) return;
   int r[4]; crect("regions.ribbon.rect", r); int at = ci("events.hatch.steps.5.at", 1200); const char *words = v_pstr("regions.ribbon");
   v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 0), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text"));
 }
 
+
+/* ---- the targets as the words drew them (the pod, the card while it is drawn), and the ring ---- */
+int incubator_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
+  snprintf(graph_key, (size_t)gcap, "graph"); int n = v_plen("focus.targets"); if (n > cap) n = cap; int k = 0;
+  for (int i = 0; i < n; i++) {
+    focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i))); t->enabled = 1;
+    int r[4] = { 0, 0, 0, 0 }; crect(strcmp(t->id, "card") == 0 ? "regions.card.rect" : "regions.pod.rect", r); t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; k++;
+  }
+  return k;
+}
+static void build_ring_focus(void) {
+  const char *cur = v_focus_cur(); int card = strcmp(cur, "card") == 0, pod = strcmp(cur, "pod") == 0; if ((!card && !pod) || anim_holding()) return;   /* the ring goes while a hold plays (Home's rule) */
+  int r[4]; crect(card ? "regions.card.rect" : "regions.pod.rect", r); v_region("focus", LAYER_CHROME); word_focusRing("focus", I, card ? "focus.targets.card" : "focus.targets.pod", r);
+}
+
 void incubator_words(void) {
   int t = hatch_time();
-  build_bench();
-  if (spec_len("props", "regions.rail") >= 0) word_rail(NULL);
-  if (spec_len("props", "regions.leaves") >= 0) { v_name("leaves"); word_leavesArc(I, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), v_pint("regions.leaves.full", 0), v_pint("regions.leaves.rows", 0)); }
-  if (spec_len("props", "regions.ring") >= 0) { v_region("ring", LAYER_ART); word_arcFill(I, "regions.ring", v_pstr("regions.ring.fill"), v_pstr("regions.ring.closedArt"), v_pint("regions.ring.deg", 0), v_pbool("regions.ring.closed", 0)); }   /* the ring of time (specs/face-arc-and-shadow.md §1): the word is built and tested here; the screen's props and place are T-40's */
-  picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
-  picture("nest", "nest", "regions.nest.rect", v_pstr("regions.nest.picture"));
-  build_bud(t);
-  picture("nestFront", "nestFront", "regions.nestFront.rect", v_pstr("regions.nestFront.picture"));
-  picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));
-  build_base();
+  build_stage();
+  build_ring();
+  build_cradle();
+  build_pod_front(t);
+  build_cradle_front();
   build_juvenile(t);
+  build_slip();
+  build_card();
   build_stamp();
   build_code();
   build_ribbon(t);
+  build_ring_focus();
 }
 
-/* a key on the Incubator: ✓, ← and the room keys say an intent on the room; the pad does nothing (one subject, no ring) */
+/* a key on the Incubator: ✓, ← and the room keys say an intent on the focus (the pod, the card, or the room when nothing is focusable); ◀ ▶ move the ring between the pod and the card (a focus message); ▲ ▼ do nothing */
 void incubator_key(int code) {
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "room");
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) screens_say("intent", "room", verb);
+  if (verb) { screens_say("intent", cur, verb); return; }
+  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
+  focus_target_t t[4]; char gkey[24]; int n = incubator_focus(t, 4, gkey, sizeof gkey); if (n <= 0) return;
+  int glen; const char *graph = spec_raw(I, "focus.graph", &glen); char err[200]; focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
+  char to[48]; focus_move(g, t, n, cur, dir, NULL, 0, NULL, to, sizeof to); focus_graph_free(g);
+  if (strcmp(to, cur) == 0) return;
+  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
 }

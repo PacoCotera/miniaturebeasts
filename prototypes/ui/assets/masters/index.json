@@ -1394,6 +1394,132 @@
    "sha256": "fd1cafcf07d3845eb9555fb42d6f5ec7ed445236c0b11266e8bc0c8171d35ee5",
    "signed": "art director, Idle seam fix (masters-pods b758a617)"
   },
+  "incubator-card-ground": {
+   "file": "pods/incubator-card-ground.png",
+   "w": 208,
+   "h": 240,
+   "sha256": "379f8fea7fc8961bff29c54acf44e3edd77572215f893ff3547d1ac061e46282",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-cool": {
+   "file": "pods/incubator-cradle-cool.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "a49eb84be268170ac604b013ba5546cee87e5ed62cddc00e228e9b5deeff0944",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-empty": {
+   "file": "pods/incubator-cradle-empty.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "a3102f7d30c7e1b98a0ba07555e73e41ca52d9e013c393eaaf5e31d4d223594c",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-front-cool": {
+   "file": "pods/incubator-cradle-front-cool.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "e153d842f6dde98a09d0fc1237a761c7de69ed7ea03e328319b5ef55e8daaae2",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-front-glowing": {
+   "file": "pods/incubator-cradle-front-glowing.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "12ed98ce24226bcb8021f534f0825ef05aee67ccefb852f228ff5dd1009c8d27",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-front-warm": {
+   "file": "pods/incubator-cradle-front-warm.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "f19387d18b6949b7ecc8b0efce5d7a1c4d9aa34a8465b70390dce8630d149cee",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-glowing": {
+   "file": "pods/incubator-cradle-glowing.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "d08ee0ef5fef2f56d2de499935aeb4cc2047a4a96bd6b8ec47690de3d4a4b546",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-cradle-warm": {
+   "file": "pods/incubator-cradle-warm.png",
+   "w": 240,
+   "h": 96,
+   "sha256": "faec57f3d882ca8e81282d49849da776e0a23606f1c6e7dae842d8dc2093b6b9",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-ring-closed": {
+   "file": "pods/incubator-ring-closed.png",
+   "w": 400,
+   "h": 400,
+   "sha256": "96798224f9383342f4c4009c7c5195c142f4971ab926145f659ee7e52f40e5a7",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-ring-fill": {
+   "file": "pods/incubator-ring-fill.png",
+   "w": 400,
+   "h": 400,
+   "sha256": "344c10ec3a1a9c6da5ef895392b879947c6986673cd099cbbd0cada3b3f7c583",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-body-clip": {
+   "file": "pods/incubator-shell-body-clip.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "a47c342b496f0ddc3e8a3c5eac8fa0ecf38446d0a39a20068857551817fbbfc3",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-cool": {
+   "file": "pods/incubator-shell-cool.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "c937229b6f09a7ecbfa1c34ade73cca82485e09bb8702feaffd0509fb451a22f",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-crack-1": {
+   "file": "pods/incubator-shell-crack-1.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "950782308e6fda63942d1c6e99f7f2a6933543cad5650f215c6e279703949251",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-crack-2": {
+   "file": "pods/incubator-shell-crack-2.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "fe072de93b3e8a2363b1b211f353c645c5c6599308859ced7c45aba2853f1e5f",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-glowing": {
+   "file": "pods/incubator-shell-glowing.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "45efe274add5a6d3cf2112887a12f74b7f86dac4eb44e905b64fbc61719f853b",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-seams": {
+   "file": "pods/incubator-shell-seams.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "9ab64d86d7affec285632ffd602266aaa195fb350031368e4ea5d8410bb198f0",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-shell-warm": {
+   "file": "pods/incubator-shell-warm.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "0add25e49f6d9d4ae36c05b4737449f0d141d6b727919502c135c1e4ac9b5656",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "incubator-stage": {
+   "file": "pods/incubator-stage.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "a8757c31161bb9f02b54d4160aca96b7fa5752ad7187298b81ebcf397b5dc854",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "label-plate-cream-216x32": {
    "file": "pods/label-plate-cream-216x32.png",
    "w": 216,
@@ -3201,6 +3327,104 @@
    "sha256": "aec5f8ca355e1f7ac4699f7f2c54afd5483fe52acee19c867a2b1f5271a42468",
    "signed": "Paco Cotera"
   },
+  "pod-incubator-band": {
+   "file": "pods/pod-incubator-band.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "43249e0d84b5661b25a3a2608f4118cce6e3d67c89064e423755b327676baf7a",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-crack": {
+   "file": "pods/pod-incubator-crack.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "5c0c64fd76d0c996e637451a5af40ec7a3b91df45577ae92697e105ad0f081ea",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-mask-accent": {
+   "file": "pods/pod-incubator-mask-accent.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "89d389748934c41587c296e0a66d6f58f5ca46cf9baf2c39e62b49db1b7c08d3",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-mask-body": {
+   "file": "pods/pod-incubator-mask-body.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "b55908e9d946b273c42534704e27f4891394044a9da89906986d4043466dd488",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-bands": {
+   "file": "pods/pod-incubator-pattern-bands.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "aa0e781d96447286ee8fabcbdd6f6298bda91a89541247c0a0962bf916d3c394",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-dots": {
+   "file": "pods/pod-incubator-pattern-dots.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "5648994951f24b1493d5b47c520be61a0a4dfe3f97dd3bf3e162b02b66414abb",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-plates": {
+   "file": "pods/pod-incubator-pattern-plates.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "87d4051e1ded0a7bf49b85580a13b4efdf912f000de64c53f4b786632f0ada48",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-plates-relief": {
+   "file": "pods/pod-incubator-pattern-plates-relief.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "0cfc46fddd2a6447e87f95277d140835f12905d1f5b2c57ff8ab7d0e4c77bb0c",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-ribs": {
+   "file": "pods/pod-incubator-pattern-ribs.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "b1c68bec40c43d5f9edba03688f43dec2d09885e56a715d973436888b65535fa",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-segments": {
+   "file": "pods/pod-incubator-pattern-segments.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "0928d7769bc658f50edaaf9b6843cae40f8c6b91975a7a8124254e3c8a433fe4",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-segments-relief": {
+   "file": "pods/pod-incubator-pattern-segments-relief.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "c5d493cb53a9470c1d9da32ec9dc6e8e6affefa17659ec0ffba2471fcb16bec0",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-pattern-stripes": {
+   "file": "pods/pod-incubator-pattern-stripes.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "e366c67f7a63158e1e0aa99da293ac5a997ee91c15013b4769f7f8af59935f29",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-shade": {
+   "file": "pods/pod-incubator-shade.png",
+   "w": 224,
+   "h": 272,
+   "sha256": "2fca85b4d7ae34ffc2efdde8ab1fd19af585c2338eca34f8ec74675c07d77cf9",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "pod-incubator-shadow": {
+   "file": "pods/pod-incubator-shadow.png",
+   "w": 240,
+   "h": 14,
+   "sha256": "99f2835a0a38578878bc8d799f4d245ba65cac5f1b971945ca02c3e16c549dbb",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "pod-large-band": {
    "file": "pods/pod-large-band.png",
    "w": 144,
@@ -4944,6 +5168,13 @@
    "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
    "signed": "named with --ids"
   },
+  "slip-208x408": {
+   "file": "pods/slip-208x408.png",
+   "w": 208,
+   "h": 408,
+   "sha256": "609a11185490a80ad5112aaadb60580402cb7859030637308c13d35d390f2a64",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "spread-gilt-corner-16x16": {
    "file": "pods/spread-gilt-corner-16x16.png",
    "w": 16,
@@ -5049,6 +5280,13 @@
    "sha256": "8ab79786ca51b3c81b8dd8b42b2f56d92742118163354c219127a1f19aec0b66",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
+  "trait-S01-crown-bare-head-160x128": {
+   "file": "pods/trait-S01-crown-bare-head-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "50c6c3b2619b75648422ab16ebfed8b17e12cadcd068209e83087e6130f85d29",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S01-crown-leaf-crest-104x160": {
    "file": "pods/trait-S01-crown-leaf-crest-104x160.png",
    "w": 104,
@@ -5083,6 +5321,13 @@
    "h": 176,
    "sha256": "fbc71768bcbfee5b53209c80ffb38e475dcdb6a8e7c32c34bc545d666777b546",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-leaf-crest-160x128": {
+   "file": "pods/trait-S01-crown-leaf-crest-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "8b2d85d0b5f1b3a5dc46da35715a245aad234c71e4e6182a9fd1339e2aa12082",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S01-crown-leaf-crest-40x40": {
    "file": "pods/trait-S01-crown-leaf-crest-40x40.png",
@@ -5146,6 +5391,13 @@
    "h": 176,
    "sha256": "e487985ddf33387b976d0a12359dd86352682fc56dd11400bf38c07450a9d9e8",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-160x128": {
+   "file": "pods/trait-S01-eyes-between-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "3af875d77e1951db99991da0633e1361604f8202e812abfec111df75cf299329",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S01-eyes-between-small-and-large-104x160": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x160.png",
@@ -5231,6 +5483,13 @@
    "sha256": "f3520d466cc687ed5a02f1d0361f28276e55fc696666fbe945880b7e5e6072eb",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
+  "trait-S01-eyes-thin-rings-160x128": {
+   "file": "pods/trait-S01-eyes-thin-rings-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "2d8bb19695991db30ef30e99ef36819e2c0240841f6424247ba54fa18f2aae98",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S01-eyes-wide-pale-rings-104x160": {
    "file": "pods/trait-S01-eyes-wide-pale-rings-104x160.png",
    "w": 104,
@@ -5266,6 +5525,13 @@
    "sha256": "36a55a42f5b886f73c3d0fff0fae63479573305ab784b1e84fff4a4b26e5c40a",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
+  "trait-S01-eyes-wide-pale-rings-160x128": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "c755b4d8713615e77ea39bf3bb885ac6736a2c5ba5ff8f813f0dc1e3ee5ddb6a",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S01-markings-pale-patches-104x160": {
    "file": "pods/trait-S01-markings-pale-patches-104x160.png",
    "w": 104,
@@ -5286,6 +5552,13 @@
    "h": 160,
    "sha256": "bbee805379cf21d613fb86d3c9eb59fecf21ca37efa79acdc12d0ac7ed4c470e",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S01-markings-pale-patches-160x128": {
+   "file": "pods/trait-S01-markings-pale-patches-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "929bd85986b633f78f6b770c5ff4a38d3a4960d04d38397084bb5271671b9619",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S01-markings-plain-104x160": {
    "file": "pods/trait-S01-markings-plain-104x160.png",
@@ -5322,6 +5595,13 @@
    "sha256": "d1e2608e003341196d0bdeeaa7c3a96036373c9471269ab465da03c4de92b48d",
    "signed": "new (masters-pods 580a7cd7), not final"
   },
+  "trait-S01-markings-plain-160x128": {
+   "file": "pods/trait-S01-markings-plain-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "e60ea0590184f6c2e0d34586765c7d9e5ac5d8b09a22e792e767c647aede64c0",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S02-flecks-bare-104x160": {
    "file": "pods/trait-S02-flecks-bare-104x160.png",
    "w": 104,
@@ -5342,6 +5622,13 @@
    "h": 160,
    "sha256": "109d98717793ec33410860ed910613b7893718f90ef813c6934de624f749799d",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-flecks-bare-160x128": {
+   "file": "pods/trait-S02-flecks-bare-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "06aad88884b7e8af4e737ebfb1166b2d88ad08158f5778a192a7e6e53c2423e0",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S02-flecks-spots-104x160": {
    "file": "pods/trait-S02-flecks-spots-104x160.png",
@@ -5364,6 +5651,13 @@
    "sha256": "c995ce3ea306f9fdb1e6d745081923ad7bf62920447a2f131103e5a316dee715",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S02-flecks-spots-160x128": {
+   "file": "pods/trait-S02-flecks-spots-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "61b875f332cd0431a06bb556981933a6a3bb3dc11a8c89de60a89affd5b978e4",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S02-fluff-long-swept-104x160": {
    "file": "pods/trait-S02-fluff-long-swept-104x160.png",
    "w": 104,
@@ -5384,6 +5678,13 @@
    "h": 160,
    "sha256": "4b152befaf6d1e2110a4800fda5014a2056431e0ad82e987070a83dc3b3ccbf4",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-long-swept-160x128": {
+   "file": "pods/trait-S02-fluff-long-swept-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "064adf8e5bf91f6cca320dc38c3d450c86fc644d9e57b48fcfe4ccd3d08e1ece",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S02-fluff-short-straight-104x160": {
    "file": "pods/trait-S02-fluff-short-straight-104x160.png",
@@ -5406,6 +5707,13 @@
    "sha256": "dcc6a46ed8ab0e144688f6467fa5a459a99169d8e3e45ed8ff168fd01e2c5076",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S02-fluff-short-straight-160x128": {
+   "file": "pods/trait-S02-fluff-short-straight-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "74d250a1bccc1de3f30b5e675a497fad4d78c4e73b3210df333db1e24df3117a",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S02-span-between-104x160": {
    "file": "pods/trait-S02-span-between-104x160.png",
    "w": 104,
@@ -5426,6 +5734,13 @@
    "h": 160,
    "sha256": "dca807c04c0662fc4b20ba92a82455d570d66c927d843bbdab6c47155ed16368",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-between-160x128": {
+   "file": "pods/trait-S02-span-between-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "929bb3e54f44381efffb199e0d9f80feae3d00fa3d9adbaca1537a4f190cd043",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S02-span-small-cap-104x160": {
    "file": "pods/trait-S02-span-small-cap-104x160.png",
@@ -5448,6 +5763,13 @@
    "sha256": "0ccb696c472f13b9bdeee73ee378e6eb70bea8488fc99870de58123d6ca5fbf1",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S02-span-small-cap-160x128": {
+   "file": "pods/trait-S02-span-small-cap-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "c984b10dbf5fd02fee874334bffc7e3f645cbbfc04879df9640339d8e6f4351a",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S02-span-wide-cap-104x160": {
    "file": "pods/trait-S02-span-wide-cap-104x160.png",
    "w": 104,
@@ -5468,6 +5790,13 @@
    "h": 160,
    "sha256": "6463c5553d90daa61d6f70df700a193af574628a3b40a94cde867a5fe2577014",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-wide-cap-160x128": {
+   "file": "pods/trait-S02-span-wide-cap-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "d40c06ef4f410d6c8db872ff23e8009b2d1415d0ee4fd38f68397fafbca65ecd",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S02-spots-bands-104x160": {
    "file": "pods/trait-S02-spots-bands-104x160.png",
@@ -5490,6 +5819,13 @@
    "sha256": "d2cecc7c8a0d6a9212880badf4d6b473c48a940b1e3f0c920d8d8906a606eec8",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S02-spots-bands-160x128": {
+   "file": "pods/trait-S02-spots-bands-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "9a24184e0eae7e6a766369e21c4edc8e71fe0d8e302751566b3cae6fd349b73d",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S02-spots-bands-and-spots-104x160": {
    "file": "pods/trait-S02-spots-bands-and-spots-104x160.png",
    "w": 104,
@@ -5510,6 +5846,13 @@
    "h": 160,
    "sha256": "efbee845c6e205815ad6a8b4ad5e4466c995b22c78ab6038d1c180e9183e10a7",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-and-spots-160x128": {
+   "file": "pods/trait-S02-spots-bands-and-spots-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "12b328211d8913b943ebfaa97a9a76b4d381428da7c58b230c93e9d002382587",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S02-spots-bare-104x160": {
    "file": "pods/trait-S02-spots-bare-104x160.png",
@@ -5532,6 +5875,13 @@
    "sha256": "ff3f9c020837758c8f5e8fc0d297cb24922bad301b31494beeb50ecdc7e3e855",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S02-spots-bare-160x128": {
+   "file": "pods/trait-S02-spots-bare-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "15e20d7361f430de2c4dbe4f45771819cfb8ab384ed9695dd03f312c76f6a7d6",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S02-spots-spots-104x160": {
    "file": "pods/trait-S02-spots-spots-104x160.png",
    "w": 104,
@@ -5552,6 +5902,13 @@
    "h": 160,
    "sha256": "1885871e33cac541c6686cc5c073037f409f429e2448fc8e2bdb03c3081f8aa5",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-spots-160x128": {
+   "file": "pods/trait-S02-spots-spots-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "8fc5a7966055b3d75accf5a4e61fb44a80d56695c1b1c89abe48245800cd72eb",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-carriage-curls-up-104x160": {
    "file": "pods/trait-S03-carriage-curls-up-104x160.png",
@@ -5574,6 +5931,13 @@
    "sha256": "cafabbc8b48907a5c06a95c849badb54182e64f15c0a90aa606bfaccb43a92cc",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S03-carriage-curls-up-160x128": {
+   "file": "pods/trait-S03-carriage-curls-up-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "8bfd3fe3c1c667b5a8daa850541775e86219e9ea978d41f58cc917b89e0fc022",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-carriage-hangs-104x160": {
    "file": "pods/trait-S03-carriage-hangs-104x160.png",
    "w": 104,
@@ -5595,6 +5959,13 @@
    "sha256": "c71b9d3decb4080ba20ebe959ae98191d5eaa7510b408db48a0ad13f98a3eabb",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S03-carriage-hangs-160x128": {
+   "file": "pods/trait-S03-carriage-hangs-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "8d59b19eac5ed03d683d8a302d5437f05593c3d7aec24fe48e75a1f7fc462101",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-carriage-straight-104x160": {
    "file": "pods/trait-S03-carriage-straight-104x160.png",
    "w": 104,
@@ -5615,6 +5986,13 @@
    "h": 160,
    "sha256": "273b1607c4b7400afea0bb332441657ecfae2920bb55e62f6765825059b257b7",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-straight-160x128": {
+   "file": "pods/trait-S03-carriage-straight-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "2493e42bcaa069a4f4e1c237d605531340b994a156845ef1e8c97271138a6e6d",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-claws-digging-wedges-104x160": {
    "file": "pods/trait-S03-claws-digging-wedges-104x160.png",
@@ -5651,6 +6029,13 @@
    "sha256": "e4e77141e9ed3645c8dfd0b7404962dbb5eb23fcab5d47a5fc739b3d8c0eede5",
    "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
   },
+  "trait-S03-claws-digging-wedges-160x128": {
+   "file": "pods/trait-S03-claws-digging-wedges-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "76dc922ebd3b210c8cc870837a6ba015621940b4ce9df0d06c95a8e9270f8ccc",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-claws-pads-104x160": {
    "file": "pods/trait-S03-claws-pads-104x160.png",
    "w": 104,
@@ -5685,6 +6070,13 @@
    "h": 176,
    "sha256": "ec0b2b917c76bd8928fb766656ed95d085c82a30b8be4aa70a4cb4595c3a6279",
    "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-claws-pads-160x128": {
+   "file": "pods/trait-S03-claws-pads-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "c8717a65a6942221b01fd3e65eaa08da56ecc2e4627d41ef65828ff716517759",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-claws-round-feet-104x160": {
    "file": "pods/trait-S03-claws-round-feet-104x160.png",
@@ -5721,6 +6113,13 @@
    "sha256": "2bef63959be5ed4907e28f24d28aac1fb9ed0cd20bb02ad11242620489225d9a",
    "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
   },
+  "trait-S03-claws-round-feet-160x128": {
+   "file": "pods/trait-S03-claws-round-feet-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "715052f1dc4c8ab8fdb62ce033e998c975261fd622fbb188220a570add132f05",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-crest-between-104x160": {
    "file": "pods/trait-S03-crest-between-104x160.png",
    "w": 104,
@@ -5741,6 +6140,13 @@
    "h": 160,
    "sha256": "ea59ad2de5dce960af5299dc105e817fe1e9538e263074b09d149529d098c666",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-between-160x128": {
+   "file": "pods/trait-S03-crest-between-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "7220c53a43d004359171cf6e5719380fe645464ba14ed0df27fc13974e9dbd92",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-crest-low-crest-104x160": {
    "file": "pods/trait-S03-crest-low-crest-104x160.png",
@@ -5763,6 +6169,13 @@
    "sha256": "c4130b3d5e061e64969e7b5e3c9d70e1df36f4c09375042d62289b24c56a28b4",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S03-crest-low-crest-160x128": {
+   "file": "pods/trait-S03-crest-low-crest-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "ebe099e6eb5b73c5477f474bd28d888ae723af040735430e474cfd6de07737bf",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-crest-tall-crest-104x160": {
    "file": "pods/trait-S03-crest-tall-crest-104x160.png",
    "w": 104,
@@ -5783,6 +6196,13 @@
    "h": 160,
    "sha256": "dc0575d6adc9bfe453da6090481e3feaa1d920dd8bd79be3858171f6b8d088c3",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-tall-crest-160x128": {
+   "file": "pods/trait-S03-crest-tall-crest-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "b94d36a8fa93478e1212f5cf358aada07ca3770a7b70a9772f05a059312ab4d6",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-markings-plain-104x160": {
    "file": "pods/trait-S03-markings-plain-104x160.png",
@@ -5805,6 +6225,13 @@
    "sha256": "f470f0a8060ee8632df53866d620de65740c2954c104f54b43324a048ed07b6e",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S03-markings-plain-160x128": {
+   "file": "pods/trait-S03-markings-plain-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "379dcb1a669f7f09c7be18910f89e24b5c3eef8f3b5002423477f11e147fb9ab",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-markings-spots-104x160": {
    "file": "pods/trait-S03-markings-spots-104x160.png",
    "w": 104,
@@ -5825,6 +6252,13 @@
    "h": 160,
    "sha256": "3e53ece1f3dcb98f426fc8429dfb1747ec8dbc1ff831729b1bf1f77a10a91797",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-spots-160x128": {
+   "file": "pods/trait-S03-markings-spots-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "b39510b391e02fa666b03c2a1f9df8f00d04095bfadd7815fc7a728c19d9f0b0",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-markings-stripes-104x160": {
    "file": "pods/trait-S03-markings-stripes-104x160.png",
@@ -5847,6 +6281,13 @@
    "sha256": "f244595ea2e28971116b2d50da3d1a9c617d177961bd2791ae13dfd26aff8d55",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S03-markings-stripes-160x128": {
+   "file": "pods/trait-S03-markings-stripes-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "936465749363c27e1a7b4fb117e6ea80c071f0d0d64ef227c89b25e9587eabb8",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-markings-stripes-and-spots-104x160": {
    "file": "pods/trait-S03-markings-stripes-and-spots-104x160.png",
    "w": 104,
@@ -5867,6 +6308,13 @@
    "h": 160,
    "sha256": "dd2a426c07813bf18a2d7b4d4eb767855a89b93a4f257856816745587e74d017",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-and-spots-160x128": {
+   "file": "pods/trait-S03-markings-stripes-and-spots-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "4add92775b6bed0f9fcbd33c9d192c67b0f7af5062a61918c59ddf1d3af9e988",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-scales-between-104x160": {
    "file": "pods/trait-S03-scales-between-104x160.png",
@@ -5903,6 +6351,13 @@
    "sha256": "3e8c4513a0e1a28234f43fee10622798c5be19f92b4e24427cc72058d21bb44b",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
+  "trait-S03-scales-between-160x128": {
+   "file": "pods/trait-S03-scales-between-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "f96764f0042031dea28efd3ef0bea54df67c39f69c94fade879b0723240864d7",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-scales-few-fine-104x160": {
    "file": "pods/trait-S03-scales-few-fine-104x160.png",
    "w": 104,
@@ -5937,6 +6392,13 @@
    "h": 176,
    "sha256": "e1b4b8ab0a3e4c620ea3a6924acf5d5ad5a4a62b6c8915a231adf959d683d415",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-few-fine-160x128": {
+   "file": "pods/trait-S03-scales-few-fine-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "9af53c52750b1479eba5b3f7bb0171f77afb19f9b1b9d9949e356548f87cfaa0",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-scales-many-coarse-104x160": {
    "file": "pods/trait-S03-scales-many-coarse-104x160.png",
@@ -5973,6 +6435,13 @@
    "sha256": "8ac32c8eda70bf71de991bd28a130561ddc26d4d0ec7338705dcd0b83ead5431",
    "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
+  "trait-S03-scales-many-coarse-160x128": {
+   "file": "pods/trait-S03-scales-many-coarse-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "715fae6d415b2dd94a0ab403c5e17a693f569bf69e9c6f347e54066c3154d7b4",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-tail-between-104x160": {
    "file": "pods/trait-S03-tail-between-104x160.png",
    "w": 104,
@@ -5993,6 +6462,13 @@
    "h": 160,
    "sha256": "6b8e8ffba2a5e5d0e56fb59c82eba9dd26fa2f5d931370676f99f87ec65dc362",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-between-160x128": {
+   "file": "pods/trait-S03-tail-between-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "e93064bf5439587522c0e3a455dc8a92d994b1f136545f0afae3944fd5bfee5c",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S03-tail-long-thick-104x160": {
    "file": "pods/trait-S03-tail-long-thick-104x160.png",
@@ -6015,6 +6491,13 @@
    "sha256": "c1bad8ef1d3c178588c82eb8a28a42a6c24b24f3dfbc6637edb3c6b117e491b5",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
+  "trait-S03-tail-long-thick-160x128": {
+   "file": "pods/trait-S03-tail-long-thick-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "ad9f7d133c67e5063087fbabaa8cd0d1659f83a22c7188826e497b3ef5e64e34",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
   "trait-S03-tail-short-thin-104x160": {
    "file": "pods/trait-S03-tail-short-thin-104x160.png",
    "w": 104,
@@ -6035,6 +6518,34 @@
    "h": 160,
    "sha256": "9e54a9a8e05a5762c88ccf4be2de16b62e25fe789361d940249901313a4248bf",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-short-thin-160x128": {
+   "file": "pods/trait-S03-tail-short-thin-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "dfbbe878b56a3fd46b969d962d5eba162f3022dd63e5520ac99a08ce27b802c8",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "trait-S04-stripes-between-160x128": {
+   "file": "pods/trait-S04-stripes-between-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "ee64951feb280bf9bdc1bf4aafdf663b1eb8fafbf8ad4013c96d41108c8cbe8a",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "trait-S04-stripes-bold-160x128": {
+   "file": "pods/trait-S04-stripes-bold-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "aae75476f9a61b9a9400b01787fed2510f1477540e3167184f8b4632307e0470",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
+  },
+  "trait-S04-stripes-faint-160x128": {
+   "file": "pods/trait-S04-stripes-faint-160x128.png",
+   "w": 160,
+   "h": 128,
+   "sha256": "43ff12bff6d0e301192df2a9ed7f80c32c7e8a4a1a1392c0d3986d2318dda27c",
+   "signed": "art director (T-20261016-27, -62, -63, -68)"
   },
   "trait-S09-beak-between-104x160": {
    "file": "pods/trait-S09-beak-between-104x160.png",

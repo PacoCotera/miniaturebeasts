@@ -12,7 +12,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(h
 const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["create", "incubator", "vivarium", "habitat", "namer", "library", "bench"];
 const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
 const TARGETS = {
-  incubator: (state, spec) => [{ id: "room", rect: spec.focus.roomAt, group: "room" }],   // one subject: the room, no ring drawn
+  incubator: (state, spec) => Object.entries(spec.focus.targets).map(([id, t]) => ({ id, rect: t.rect, group: t.group })),   // the pod and the card (the card only while it is drawn; the vectors list both)
   // the wireframe 18's targets (focus.layout), in the order the view lists them: the residents, then the tiles; a mibi `away` (out with the Companion) is a tile and no resident
   vivarium: (state, spec, v) => (state === "empty" ? [] : Object.entries(spec.focus.layout).filter(([id]) => !(id.startsWith("resident.") && (v.away ?? []).includes(id.slice(9)))).filter(([id]) => id !== "note").map(([id, rect]) => ({ id, rect, group: id.slice(0, id.indexOf(".")), ...(id.startsWith("tile.") ? { index: Object.keys(spec.focus.layout).filter((k) => k.startsWith("tile.")).indexOf(id) } : {}) }))),
   // one mibi up close: the view's targets in its order (the resident but out, the name but in the meet, the species word, one plate a chapter, the four modules, six tiles t0 to t5 in the full form), the boxes the spec gives

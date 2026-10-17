@@ -127,14 +127,15 @@ test("Cargo's opening with reduced motion (the host stages each step as props at
   assert.deepEqual(seen.filter((x) => x[3] === "opening"), [...steps(0, 3), [3000, 1, 0, "opening"], ...steps(1, 2)].filter((x, i, a) => a.findIndex((y) => y[0] === x[0]) === i), "the host's stage by time");
   assert.deepEqual(seen.at(-1), [6000, 0, 0, "report"], "the report at crates × 3000");
 });
-test("the incubator: Choose a pod (empty), Grow now (growing, growNow with the leaves before and after), Open (ready: the hatch held 2780 ms, the hand-off at 2600 on the resident); ← Home on Home's Incubator module", () => {
+test("the incubator: Choose a pod (empty), Grow now (growing, growNow with the ring before and after), ✓ on the card does nothing, the focus moves between the pod and the card, Open (ready: the hatch held 2780 ms, the hand-off at 2600 on the resident); ← Home on Home's Incubator module", () => {
   const st = world(), h = host(st); h.t = T0; h.specs.incubator = incubatorSpec;
   INTENTS.incubator.intent(h, "room", "confirm"); assert.deepEqual([h.went.length, h.played.length], [0, 0], "no pod in the rack: ✓ does nothing");
   const a = pod(st, "S01", [], 5, false), b = pod(st, "S01", chapters("S01"), 6); INTENTS.incubator.intent(h, "room", "confirm");
   assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.pods.cur], ["pods", "collection", "place.1", b.id], "the first identified pod in rack order");
   S.skipIdentify(st, a); st.tray = [a, b]; h.ui.pods.focus.set("x"); INTENTS.incubator.intent(h, "room", "confirm"); assert.equal(h.ui.pods.focus.cur, "place.0");
   const q = pod(st, "S01", chapters("S01")); st.tray = [q]; assert.ok(S.grow(st, q, {}, settings, T0).ok); h.played.length = 0; h.timers.length = 0;
-  INTENTS.incubator.intent(h, "bud", "confirm"); const gn = h.played.at(-1); assert.deepEqual([gn.kind, gn.target, gn.ms, gn.hold, gn.to, gn.from <= gn.to], ["growNow", "room", 400, 400, st.bud.minutes, true]); assert.ok(S.budReady(st, settings, T0));
+  INTENTS.incubator.intent(h, "bud", "confirm"); const gn = h.played.at(-1); assert.deepEqual([gn.kind, gn.target, gn.ms, gn.hold, gn.from, gn.to], ["growNow", "room", 400, 400, 0, 264]); assert.ok(S.budReady(st, settings, T0)); assert.ok(h.ui.inc.grow && h.ui.inc.grow.n >= 1 && h.ui.inc.grow.step, "the snapshot of the bud as it was");
+  { const n0 = h.played.length; INTENTS.incubator.intent(h, "card", "confirm"); assert.equal(h.played.length, n0, "✓ on the card: nothing"); INTENTS.incubator.focus(h, "card"); assert.equal(h.ui.inc.f, "card"); INTENTS.incubator.focus(h, "pod"); assert.equal(h.ui.inc.f, "pod"); INTENTS.incubator.focus(h, "x"); assert.equal(h.ui.inc.f, "pod"); }
   h.played.length = 0; INTENTS.incubator.intent(h, "bud", "confirm"); const hatch = h.played.find((e) => e.kind === "hatch"); assert.deepEqual([hatch.ms, hatch.hold], [2600, 2780]); const meet = h.timers.at(-1); assert.equal(meet.ms, 2600, "the hand-off by the timer, never on done");
   assert.ok(h.ui.inc.hatch && h.ui.inc.hatch.mibi === st.mibis.at(-1).id); INTENTS.incubator.intent(h, "bud", "back"); assert.notEqual(h.went.at(-1), "home", "← does nothing in the hatch");
   meet.fn(); assert.deepEqual([h.went.at(-1), h.ui.hab.f, h.ui.inc.hatch], ["habitat", "resident", null]); assert.equal(h.ui.meet, st.mibis.at(-1).id); assert.equal(st.bud, null);

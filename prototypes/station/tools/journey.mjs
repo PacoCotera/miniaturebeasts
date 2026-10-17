@@ -409,7 +409,7 @@ expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "th
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
 await page.waitForTimeout(900);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on the Incubator");
-{ const p = await props(); expect(p.state === "growing" && p.frame.line.back === "Home" && p.frame.line.ok === "Grow now" && p.regions.leaves.total === 21, "after Grow (a jump) the Incubator is built, growing 21 leaves, ← reads Home: " + JSON.stringify([p.state, p.frame.line, p.regions.leaves.total])); await frameShot("page-incubator", true); }
+{ const p = await props(); expect(p.state === "growing" && p.frame.line.back === "Home" && p.frame.line.ok === "Grow now" && p.regions.ring.f < 1000, "after Grow (a jump) the Incubator is built, growing with the ring just begun, ← reads Home: " + JSON.stringify([p.state, p.frame.line, p.regions.ring.f])); await frameShot("page-incubator", true); }
 // Create's journey on the face, held to prototypes/face/golden/journey-create.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-create.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("create-"))), json = JSON.stringify({ _note: "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
@@ -419,13 +419,13 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on t
 s = await st(); expect(s.outbox.length === 0, "Grow leaves the outbox empty: " + JSON.stringify(s.outbox));
 expect(caddy.state.jobs.length === 0 && caddyGrowCalls === 0, "no job and no /grow call reached the Caddy service");
 await page.waitForTimeout(1600);
-// R2. The Incubator (slot R, journey-incubator.json): the bud grows (21 leaves, ✓ Grow now); Grow now plays growNow (input held 400 ms) and the bud is ready (✓ Open); Open hatches it (input held 2780 ms: the pad, ✓ and ← do nothing)
+// R2. The Incubator (slot R, journey-incubator.json): the bud grows (the ring filling, ✓ Grow now); Grow now plays growNow (input held 400 ms) and the bud is ready (✓ Open); Open hatches it (input held 2780 ms: the pad, ✓ and ← do nothing)
 // and hands off to the new mibi up close, in the meet, the ring on the resident (← there reads Vivarium)
 const hpressI = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("incubator-states");
 await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
-{ const s0 = await st(); await hpressI("confirm", 120);   // ✓ Grow now: the leaves still to fill turn whole over 400 ms, input held 400 ms
-  expect((await props()).state === "growing" && (await page.evaluate(() => window.__st.holding())), "✓ Grow now holds input while the leaves fill");
+{ const s0 = await st(); await hpressI("confirm", 120);   // ✓ Grow now: the ring is cut to full, input held 400 ms
+  expect((await props()).state === "growing" && (await page.evaluate(() => window.__st.holding())), "✓ Grow now holds input while the ring fills");
   await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);
   { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
   await page.waitForTimeout(600); const p = await props(), s1 = await st(); cur.push({ ready: p.state, ok: p.frame.line.ok });
@@ -475,7 +475,7 @@ await press("home", 400);
 stepOf("incubator-empty");
 await page.evaluate(() => { window.__st.seedPod("S01", 4); window.__st.goto("incubator"); }); await page.waitForTimeout(600);
 { const p = await props(), st2 = await st(); cur.push({ state: p.state, ok: p.frame.line.ok ?? null, subject: p.frame.line.subject ?? null });
-  expect(p.state === "empty" && p.frame.line.ok === "Choose a pod" && p.frame.line.subject === "ready for a new bud" && p.frame.line.back === "Home" && st2.tray.length >= 1, "the empty Incubator offers ✓ Choose a pod: " + JSON.stringify([p.state, p.frame.line])); await frameShot("page-incubator-empty", true); }
+  expect(p.state === "empty" && p.frame.line.ok === "Choose a pod" && p.frame.line.subject === "the nest is empty" && p.frame.line.back === "Home" && st2.tray.length >= 1, "the empty Incubator offers ✓ Choose a pod: " + JSON.stringify([p.state, p.frame.line])); await frameShot("page-incubator-empty", true); }
 await hpressI("confirm", 600);
 { const at = await page.evaluate(() => { const u = window.__st.UI, g = window.__st.ST, i = g.tray.findIndex((q) => q.idd), q = g.tray[i >= 0 ? i : 0]; return { screen: u.screen, view: u.pods.view, cur: u.pods.cur, want: q.id }; }); cur.push(at);
   expect(at.screen === "pods" && at.view === "collection" && at.cur === at.want, "✓ Choose a pod jumps to Pods' collection on the first identified pod, else the first: " + JSON.stringify(at)); }

@@ -64,6 +64,7 @@ int create_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 
 /* The Incubator (screens/incubator.c): its words by the state the props name, and its keys (one subject: the room, no ring, no pad) */
 void incubator_words(void);
+int incubator_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void incubator_key(int code);
 int incubator_tick(uint32_t now); int incubator_test_cell(void);   /* the hatch with a moving set (Station M1 §2.5) */
 /* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */

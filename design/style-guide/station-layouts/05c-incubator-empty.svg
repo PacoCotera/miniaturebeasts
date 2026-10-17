@@ -1,92 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator, empty: an invitation to grow a bud. The standby light on the lit, plump nest, the clean window, the base's foot light, ✓ Choose a pod, 1024×600 at 1×, measured. Layout only, no art.</title>
-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, ui-sans-serif, sans-serif">
+<title>Incubator, empty: the nest lit, the cradle empty, the ring a bare track; no slip, card, stamp or code. 1024×600 at 1×, measured. Layout only, no art. Incubator option B, candling (T-20261016-23).</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
-<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
-<path d="M 360.5 471.5 L 360.5 354 A 151.5 151.5 0 0 1 663.5 354 L 663.5 471.5" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1.5"/>
-<path d="M 392 300 A 120 120 0 0 1 452 230" fill="none" stroke="#ffffff" stroke-width="3"/>
-<rect x="360.5" y="200.5" width="303" height="271" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
-<text x="368" y="452" font-size="9" fill="#777">chamber window 360,200 304×272 · ink inside the arch, top 202, r152 on 512,354 · placeholder</text>
-<ellipse cx="512" cy="414" rx="96" ry="30" fill="#f6e3c0" stroke="#e6c98c" stroke-width="1"/>
-<rect x="408.5" y="400.5" width="207" height="47" fill="#f2dfb8" stroke="#bf9157" stroke-width="1.5"/>
-<text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
-<ellipse cx="512" cy="416" rx="60" ry="9" fill="#e6c98c" stroke="#bf9157" stroke-width="1"/>
-<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
-<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
-<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
-<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
-<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
-<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
-<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
-<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
-<text x="512" y="501" font-size="13" fill="#c6c4d8" text-anchor="middle">empty</text>
-<text x="512" y="386" font-size="9" fill="#7d5435" text-anchor="middle">standby light: a soft warm pool, half the growing glow</text>
-<text x="24" y="96" font-size="10" fill="#2b6cb0">Empty (an invitation:</text>
-<text x="24" y="109" font-size="10" fill="#2b6cb0">it invites incubating).</text>
-<text x="24" y="122" font-size="10" fill="#2b6cb0">The standby light on the nest,</text>
-<text x="24" y="135" font-size="10" fill="#2b6cb0">the nest lit and plump with its</text>
-<text x="24" y="148" font-size="10" fill="#2b6cb0">hollow, the clean window, the</text>
-<text x="24" y="161" font-size="10" fill="#2b6cb0">foot light; the plaque in fog.</text>
-<text x="24" y="174" font-size="10" fill="#2b6cb0">No rail, leaves, stamp or code.</text>
-<text x="24" y="187" font-size="10" fill="#2b6cb0"></text>
-<text x="24" y="200" font-size="10" fill="#2b6cb0">✓ Choose a pod: Pods with the</text>
-<text x="24" y="213" font-size="10" fill="#2b6cb0">ring on the first identified pod,</text>
-<text x="24" y="226" font-size="10" fill="#2b6cb0">when the rack holds a pod and a</text>
-<text x="24" y="239" font-size="10" fill="#2b6cb0">bay is free; else no ✓ cap.</text>
-<text x="24" y="252" font-size="10" fill="#2b6cb0">Notice: none, but no bay free.</text>
-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
+<rect x="71.5" y="59.5" width="881" height="488" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<text x="949" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">interior 71,59 882×489 (bezel inner edges, measured on incubator-empty)</text>
+<rect x="88.5" y="80.5" width="847" height="449" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="92" y="77" font-size="7" fill="#999" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margins: 17 left/right, 21 top (80), 18 bottom (530)</text>
+<line x1="512.5" y1="80" x2="512.5" y2="530" stroke="#eef" stroke-dasharray="2 6"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Incubator</text>
-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
-<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
-<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
-<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
-<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#222" text-anchor="start" font-weight="500">Incubator</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
-<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
-<circle cx="24" cy="582" r="8" fill="#f2671b"/>
-<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
-<text x="36" y="587" font-size="14" fill="#c4500f">Choose a pod</text>
-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">ready for a new bud</text>
-<circle cx="951" cy="582" r="8" fill="#5d5974"/>
-<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
-<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
-<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
-<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
-<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
-<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
-<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
-<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
-<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
-<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
-<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
-<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
-<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
-<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
-<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
-<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
-<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+<text x="36" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Choose a pod</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">the nest is empty</text>
+<text x="1004" y="588" font-size="16" fill="#222" text-anchor="end">← Home</text>
+<path d="M372.3 413.8 A188.0 188.0 0 1 1 651.7 413.8" fill="none" stroke="#d7dadd" stroke-width="24" opacity="1"/>
+<text x="512" y="82" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring: arc centre 512,288, r 176–200, open 96° at the bottom; fills clockwise from 228° to 132°</text>
+<rect x="392.5" y="392.5" width="239" height="95" fill="#e8ece4" stroke="#5a6672" stroke-width="1"/>
+<text x="512" y="470" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle, moss nest, candling light 392,392 240×96</text>
+<text x="192" y="300" font-size="9" fill="#999" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">(no slip: left column bare)</text>
+<text x="832" y="300" font-size="9" fill="#999" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">(no card, stamp or code)</text>
 </svg>

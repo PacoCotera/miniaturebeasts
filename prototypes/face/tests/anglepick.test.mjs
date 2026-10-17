@@ -88,19 +88,19 @@ async function start() {
 }
 const frameProps = { top: { screen: "incubator", title: "Incubator", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "" }, plate: { text: "", timed: true } };
 const show = (f, deg, closed = false, settle = true) => { if (deg < 0) { f.props({ screen: "incubator", ...f.b.props, motion: false, frame: { ...frameProps, line: { ...frameProps.line, ...f.b.line } } }); frames(f); return; }
-   const b = f.b; const props = { ...b.props, regions: { ...b.props.regions, ring: { fill: "incubator-ring-fill", closedArt: "incubator-ring-closed", deg, closed } } };
+   const b = f.b; const props = { ...b.props, regions: { ...b.props.regions, ring: { ...b.props.regions.ring, fill: "incubator-ring-fill", closedArt: "incubator-ring-closed", f: Math.ceil((deg * 10000) / 264), closed } } };
   assert.equal(f.props({ screen: "incubator", ...props, motion: false, frame: { ...frameProps, line: { ...frameProps.line, ...b.line } } }), 0, f.errors().join("; ")); frames(f, settle ? 2 : 1); };
 const snap = (f) => { const o = new Uint8Array(BW * BH * 3); for (let j = 0; j < BH; j++) for (let i = 0; i < BW; i++) o.set(f.pixel(BX + i, BY + j), (j * BW + i) * 3); return o; };
 
 test("the ring's 12 segments cover exactly the reference at deg 0, 1, 21, 22, 23, 131, 132, 263 and 264: the fill where the art is opaque and the pixel is within deg of the start, the stage beneath everywhere else", { skip }, async () => {
-  const f = await start(); show(f, -1); const r0 = f.refused(); show(f, 0); const base = snap(f), yellow = rgbOf("yellow");
+  const f = await start(); show(f, -1); show(f, 0); const r0 = f.refused(), base = snap(f), yellow = rgbOf("yellow");
   for (const deg of [0, 1, 21, 22, 23, 131, 132, 263, 264]) {
     show(f, deg); assert.equal(f.refused(), r0, "the ring refused a node: " + f.errors().join(" | ")); assert.deepEqual(f.errors(), []); const got = snap(f); let bad = 0, filled = 0;
     for (let j = 0; j < BH; j++) for (let i = 0; i < BW; i++) {
       let want = base.subarray((j * BW + i) * 3, (j * BW + i) * 3 + 3), on = false;
       if (FILL.px[(j * BW + i) * 4 + 3]) for (let k = 0; k < 12; k++) { const fill = Math.max(0, Math.min(22, deg - 22 * k)); if (fill > 0 && inSpan(i, j, ARC.start + 22 * k, ARC.start + 22 * k + fill)) on = true; }
       if (on) { want = yellow; filled++; }
-      if (got[(j * BW + i) * 3] !== want[0] || got[(j * BW + i) * 3 + 1] !== want[1] || got[(j * BW + i) * 3 + 2] !== want[2]) bad++;
+      if (got[(j * BW + i) * 3] !== want[0] || got[(j * BW + i) * 3 + 1] !== want[1] || got[(j * BW + i) * 3 + 2] !== want[2]) { bad++; }
     }
     assert.equal(bad, 0, `deg ${deg}: ${bad} pixels differ from the reference (${filled} filled)`); if (deg === 0) assert.equal(filled, 0);
   }
