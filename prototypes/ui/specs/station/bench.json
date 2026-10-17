@@ -151,6 +151,7 @@
   "modules": { "switch": "Mend", "slot": "Upgrade" },
   "mend": "Mend a plate",
   "toMend": "{n in words} {plate|plates} to mend",
+  "mendOutcome": "Shield takes {n in words} {strike|strikes}",
   "whole": "every plate whole",
   "switchOn": "Switch on",
   "switchOff": "Switch off",

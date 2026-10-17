@@ -100,8 +100,8 @@ test("the focus: the plates when docked and a plate is gone, else the switch; th
 
 test("the bottom line, by the focused target, from the spec's strings", () => {
   const line = (st, f, arm = 0) => build(st, { f, arm, install: false }).line;
-  let l = line(world({ shield: 2 }), "plates"); assert.deepEqual([l.ok, l.price, l.subject, l.dim ?? null], [Sg.mend, "⚡ 1", "one plate to mend", null]);
-  l = line(world({ shield: 1 }), "plates"); assert.equal(l.subject, "two plates to mend");
+  let l = line(world({ shield: 2 }), "plates"); assert.deepEqual([l.ok, l.price, l.subject, l.dim ?? null], [Sg.mend, "⚡ 1", "Shield takes three strikes", null]);
+  l = line(world({ shield: 1 }), "plates"); assert.equal(l.subject, "Shield takes two strikes", "the plates whole after this press"); assert.equal(line(world({ shield: 0 }), "plates").subject, "Shield takes one strike");
   l = line(world({ shield: 2, e: 0 }), "plates"); assert.deepEqual([l.dim, l.short, l.price], [true, "⚡", "⚡ 1"], "short: the dimmed cap, the short figure");
   l = line(world({ shield: 3 }), "plates"); assert.deepEqual([l.ok, l.subject], [null, Sg.whole]);
   l = line(world({ mendFull: false }), "switch"); assert.deepEqual([l.ok, l.subject, l.price ?? null], [Sg.switchOn, Sg.offContext, null]);

@@ -49,7 +49,7 @@ export function benchBuild(m, spec, frame) {
   if (cur === "plates") {
     const cost = S.price(S.PRICE.mend, settings);
     if (docked && gone) {
-      const n = pr.smax - pr.shield; Object.assign(line, { ok: Sg.mend, price: cost ? S.priceText(cost, 0, 0) : "", subject: fill(Sg.toMend, { "n in words": SPELL[n] ?? String(n), n }) });
+      const n = pr.smax - pr.shield; Object.assign(line, { ok: Sg.mend, price: cost ? S.priceText(cost, 0, 0) : "", subject: fill(Sg.mendOutcome, { "n in words": SPELL[pr.shield + 1] ?? String(pr.shield + 1), n: pr.shield + 1 }) });   // the plates whole after this press (T-50 amendment): the line says what the press buys
       if (st.e < cost) { line.dim = true; line.short = S.shortIcons(st, cost, 0, 0); } else if (cost) line.need = warnWords(st, m.sv, settings, frame, { e: cost }, { key: "mend" }) ?? line.need;
     } else line.subject = Sg.whole;
   } else if (cur === "switch") {
