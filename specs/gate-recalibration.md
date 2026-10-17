@@ -65,3 +65,30 @@ Three causes:
     - anything that updates live with the player's input, or with time, is a display, a lamp, a moving part or a living thing: something that can change;
     - paper, labels, engraving and painted marks stay fixed while on screen;
     - an object whose material can't do what the object does fails, however well it reads.
+
+## 6. Added 2026-10-17 (T-20261016-168): the owner's bar comes first
+
+**What I missed.** The owner rejected the Return panel, the Cargo report and the Incubator (06:38), all passed by this gate. Each of them met its spec and its fix list, and I judged each one alone. The owner's diagnosis (06:41): "nobody looking at the integrated experience. and small adjustments keep being approved, compounding to a mess of UI." Spec compliance was the first test, and it should have been the last.
+
+**The gate, from now on, in this order. A screen fails at the first no:**
+
+1. **In the device sheet, never alone.**
+   - The proof is placed in the device sheet (`tools/device-sheet.py`), among its neighbours in flow order, at 1×.
+   - It must share the device's one ground, one frame, one pane, one pod and one stamp (`specs/station-experience-review.md` §2).
+   - A screen that is right alone and foreign in the sheet fails.
+2. **The two-second first look.**
+   - Shown the 1× capture for two seconds, someone who has not read the specs can say what the screen is for and what to look at first.
+   - The game designer's three-second purpose test (`specs/purpose-briefs-b20261017-1.md` §5) follows it.
+3. **Every owner verbatim on file for the screen.**
+   - Each line is listed, with how the proof answers it.
+   - One unanswered line fails the screen.
+   - The owner's words about one panel or object apply to every panel or object of the same kind (check 9).
+4. **The Miniature Lives look.**
+   - The proof sits beside `design/art-direction.md` and the guide's plate 01: the life leads, painted and lit from the top left; the machine is quiet slate.
+   - If the screen does not read as Miniature Lives, it fails, whatever else holds.
+5. **Spec and guide compliance**, which is checks 1–10 above and the guide's sections cited by the ticket. These come last: they confirm a proof that already passed 1–4. They never rescue one that failed.
+
+**How approvals work:**
+- **No piecemeal approvals.** Small fixes are batched per screen family and judged together, in the sheet.
+- **A patch on a patch fails.** A screen that comes back a second time for the same point goes back to concept. It does not get another patch.
+- **Nothing reaches the owner** without this gate's verdict and the game design gate's, both in `results/`.
