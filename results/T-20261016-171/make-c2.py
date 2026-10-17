@@ -88,17 +88,28 @@ for k, n, plus in (('energy', '19', '+6'), ('data', '21', ''), ('essence', '30',
 bay = slate_bay(992, 504)
 im.alpha_composite(bay, (16, 48))
 d.rounded_rectangle((16, 48, 1007, 551), 14, outline=C['hairline'])
-d.rounded_rectangle((372, 70, 652, 168), 8, fill=(14, 17, 22), outline=C['hairline'])          # the door
-d.line((380, 168, 644, 168), fill=C['bevel'])
+# the door: the opening the crates came through, its shutter rolled most of the way up (no outline)
+d.rectangle((372, 70, 652, 168), fill=(10, 12, 16))
+for i in range(6):                                            # the shutter's slats, lit from above
+    y = 70 + i * 9
+    d.rectangle((372, y, 652, y + 7), fill=(58, 64, 72))
+    d.line((372, y, 652, y), fill=(84, 90, 98))
+    d.line((372, y + 7, 652, y + 7), fill=(22, 26, 32))
+d.rectangle((372, 124, 652, 168), fill=(8, 10, 14))           # the dark beyond, where the crates come from
+d.rectangle((366, 166, 658, 171), fill=(70, 77, 85))          # the sill
+d.line((366, 166, 658, 166), fill=C['bevel'])
 light = Image.new('L', (1024, 600), 0); ImageDraw.Draw(light).ellipse((250, 120, 780, 470), fill=58)
 warm = Image.new('RGBA', (1024, 600), (255, 236, 210, 0)); warm.putalpha(light.filter(ImageFilter.GaussianBlur(60))); im.alpha_composite(warm)
 # the crates of this dock: done, this one, still sealed
 for i, (st, ring) in enumerate((('done', False), ('now', True), ('sealed', False))):
     c = src('crate-sitting-48x40.png')
+    if st == 'done':                                          # opened and emptied: the open crate, small
+        c = src('crate-open-432x272.png').resize((52, 33), Image.LANCZOS)
+        cc = Image.new('RGBA', (52, 40), (0, 0, 0, 0)); cc.alpha_composite(c, (0, 7)); c = cc
     if st == 'sealed':
         a = np.asarray(c, dtype=float); a[..., :3] *= 0.45; c = Image.fromarray(a.astype('uint8'), 'RGBA')
     cx = 40 + i * 60
-    im.alpha_composite(c, (cx, 196))
+    im.alpha_composite(c, (cx - (2 if st == 'done' else 0), 196))
     if ring:
         d.rounded_rectangle((cx - 5, 191, cx + 52, 241), 9, outline=C['focus'], width=2)
 # the crate, opened, painted large, with its trip's place
@@ -130,6 +141,7 @@ for t in np.linspace(0, 1, 40):
 for i in range(4, 40, 2):
     d.ellipse((pts[i][0] - 1.5, pts[i][1] - 1.5, pts[i][0] + 1.5, pts[i][1] + 1.5), fill=C['mint'] + (int(255 * i / 40),))
 im.alpha_composite(cell, (int(pts[16][0]) - 24, int(pts[16][1]) - 32))
+d.text((int(pts[16][0]) - 50, int(pts[16][1]) + 36), 'in flight', font=F13, fill=C['mint'])
 # the Pods hatch, open only while the pods fly: the wells they land in
 pane(d, 848, 256, 144, 128, 10, 'panel')
 d.rounded_rectangle((856, 264, 983, 375), 8, fill=(18, 22, 28))
@@ -140,9 +152,10 @@ for i in range(0, 30, 2):
     t = i / 30
     x_, y_ = 612 + (856 - 612) * t, 470 - (470 - 330) * t - 30 * math.sin(math.pi * t)
     d.ellipse((x_ - 1.5, y_ - 1.5, x_ + 1.5, y_ + 1.5), fill=C['focus'])
+d.text((740, 392), 'in flight', font=F13, fill=C['focus'])
 # the frame's bottom line
 d.rectangle((0, 562, 1023, 599), fill=C['bar']); d.line((0, 562, 1023, 562), fill=C['void'])
-im.alpha_composite(src('frame-cap-confirm-16.png'), (16, 574)); d.text((36, 572), 'Take it all in', font=F16, fill=C['orange'])
+im.alpha_composite(src('frame-cap-confirm-16.png'), (16, 574)); d.text((36, 572), 'Open them all', font=F16, fill=C['orange'])
 d.text((512, 582), 'from the pond', font=F16, fill=C['mist'], anchor='mm')
 im.alpha_composite(src('frame-cap-back-16.png'), (int(1008 - 4 - F16.getlength('Home') - 16), 574))
 d.text((1008, 582), 'Home', font=F16, fill=C['fog'], anchor='rm')
