@@ -83,3 +83,31 @@ The genome engineer checked the screen against the real frames (T-135), and T-13
 - **`genome-marks-1x.png` and `-4x.png`:** the mark family with the delta.
 
 **Brightness (Incubator), re-taken:** margins of 0.388, 0.337, 0.466 and 0.473 (cool, warm, glowing, ready), against a minimum of 0.08.
+
+## T-20261016-143: a Create proof the owner can read (S01); S03's owed looks
+The review (`results/review-genome-screen-art.md` §1) passed the marks but found the S03 proof unreadable for the owner. S03's looks are mostly unpainted, so its bay showed two near-empty frames and four of its seven drums were blank.
+
+**`proof/genome-create-S01-1x.png`, the owner's proof:** Create on S01, shape.
+- **The changes:** Crown changed to the leaf crest (lit, with its notch on the drum), and the founder wears it.
+- **The focus:** on Eyes. The bay shows its two copies as pictures: thin rings shown, in the mint frame; wide pale rings carried behind the veil.
+- **The drums:** all five, at the spec's spacing (g 28). Each carries its close-up and its neighbouring faces; the two doings are pinned.
+- **Nothing new is painted.**
+
+**The S03 proofs stay as the deep-species check.** `genome-create-S03-1x.png` and `-clash-1x.png` are now labelled "NOT FOR THE OWNER: S03's looks owed".
+
+**S03's owed looks (no painting yet), a separate art ask for the lead.** Read from S03's frame (its shapeable looks), against `slices/`.
+- **Drum close-ups, `look-S03-{trait}-{look}-64x64`, 31 owed** (16 exist):
+  - **Coat:**
+    - Colour: lagoon, jade, marigold, periwinkle, two side by side;
+    - Trim: milk-mint, cream, ice, slate, two side by side.
+  - **Face:**
+    - Eyes: small and close, between, big and wide;
+    - Snout: short and narrow, between, long and broad.
+  - **Shape:**
+    - Build: slim, between, stout;
+    - Haunch: small, between, full;
+    - Topline: dipping, level, arched.
+  - **Legs and tail:**
+    - Legs: short and fine, between, long and stout;
+    - Claws: round feet, pads, digging wedges. Claws is breed-only, so these are needed only if its pinned drum shows a face.
+- **Copy faces for the bay, `trait-S03-{trait}-{look}-160x128`, 28 owed:** the same looks, less Claws, whose three crops exist.

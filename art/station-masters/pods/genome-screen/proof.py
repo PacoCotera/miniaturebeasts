@@ -145,3 +145,62 @@ for i, e_ in enumerate(EMB):
     for j, st_ in enumerate(("read", "unread")): em.alpha_composite(S(f"rail-emblem-{e_}-{st_}-24x24"), (8 + i * 32, 8 + j * 32))
 em.convert("RGB").save(os.path.join(out, "emblems-on-slate-1x.png")); em.resize((em.width * 3, em.height * 3), Image.NEAREST).convert("RGB").save(os.path.join(out, "emblems-on-slate-3x.png"))
 print("sheets written")
+# T-20261016-143: Create on S01 for the owner (every drum and the bay with their pictures): shape, Crown changed (leaf crest, lit, the
+# notch), focus on Eyes, so the bay shows its two copies (thin rings shown in the mint frame, wide pale rings carried behind the veil)
+def pod_s01(w, h):
+    g = lambda n: np.asarray(Lo(f"{sl}/pod-large-{n}.png")).astype(float)
+    A, B = np.array([0x46, 0x54, 0x59], float), np.array([0xdf, 0xd2, 0xae], float)
+    shade = g("shade"); body, acc, pt = g("mask-body")[..., 3] / 255, g("mask-accent")[..., 3] / 255, g("pattern-dots")[..., 3] / 255
+    col = (A * (body * (1 - pt))[..., None] + B * np.minimum(1, acc + pt)[..., None]) * (2 * shade[..., :3] / 255)
+    alpha = np.maximum(body, acc) * (shade[..., 3] / 255 > 0)
+    return Image.fromarray(np.dstack([np.clip(col, 0, 255), alpha * 255]).astype(np.uint8), "RGBA").resize((w, h), Image.LANCZOS)
+def create_s01():
+    f = Lo(os.path.join(gold, "create", "create-shape.png")); f.alpha_composite(S("create-bench"), (0, 40))
+    f.alpha_composite(S("create-port-128x122"), (96, 404)); f.alpha_composite(pod_s01(112, 136), (100, 394))
+    f.alpha_composite(S("create-dish-320x28"), (88, 364))
+    fa = np.asarray(S("founder-S01-base-304x312"))[..., 3]; fb = np.nonzero((fa > 128).any(1))[0].max(); cols = np.nonzero((fa[fb - 24:fb + 1] > 128).any(0))[0]
+    yy, xx = np.mgrid[0:600, 0:1024] + .5; e = ((xx - (96 + (cols.min() + cols.max()) / 2)) / ((cols.max() - cols.min()) / 2 + 8)) ** 2 + ((yy - (76 + fb - 6)) / 8) ** 2
+    from scipy import ndimage as ndi
+    sh = ndi.gaussian_filter((e < 1).astype(float), 2.5) * 0.55; fr = np.asarray(f).astype(float); fr[..., :3] *= (1 - sh)[..., None]; f = Image.fromarray(fr.astype(np.uint8), "RGBA")
+    f.alpha_composite(S("founder-S01-base-304x312"), (96, 76)); f.alpha_composite(S("founder-S01-crown-leaf-crest-304x312"), (96, 76))
+    f.alpha_composite(S("create-genome-screen-512x312"), (424, 80))
+    rows = [("coat", True, False, [G("open", "front-dim")]),                                  # Markings: a switch with no sleeping loci (no bar)
+            ("face", True, False, [G("open-lit", "second-lit"), G("open", "front-dim")]),     # Crown changed (leaf crest kept), Eyes
+            ("movement", True, False, [G("closed")]), ("stamina", True, False, [G("closed")])]
+    tops = [96 + 5 + 34 * i for i in range(len(rows))]; trunk = 470
+    rect(f, trunk, tops[0] + 16, 2, tops[-1] - tops[0] + 2, LINE)
+    hy = 96 + 5 + 34 * 2 - 13; f.alpha_composite(S("genome-hub-S01-24x24"), (440, hy)); f.alpha_composite(S("genome-lock-8x10"), (448, hy - 12))
+    for i, (ch, read, glint, genes) in enumerate(rows):
+        t = tops[i]; xend = 508 + 36 * (len(genes) - 1) + 24
+        rect(f, trunk + 2, t + 15, xend - trunk - 2, 2, LINE); f.alpha_composite(S(f"rail-emblem-{ch}-read-24x24"), (476, t + 4))
+        for j, g in enumerate(genes): gene(f, 508 + 36 * j, t + 4, g["kind"], g["pair"])
+        if genes[-1]["kind"] == "closed":
+            xs = xend + 2
+            while xs < 718: rect(f, xs, t + 16, 1, 1, DOT); xs += 3
+            f.alpha_composite(S("genome-cross-12x12"), (720, t + 10))
+    f.alpha_composite(S("genome-focus-32x32"), (544 - 4, tops[1] + 4 - 4))                 # the focus: Eyes
+    f.alpha_composite(S("trait-S01-eyes-thin-rings-160x128"), (752, 100))                   # copy 1, shown: the mint frame
+    d = ImageDraw.Draw(f); d.rectangle([752, 100, 752 + 159, 100 + 127], outline=C("mint"), width=2)
+    f.alpha_composite(S("trait-S01-eyes-wide-pale-rings-160x128"), (752, 244)); f.alpha_composite(S("genome-veil-160x128"), (752, 244))   # copy 2, carried
+    f.alpha_composite(S("genome-pair-front-dim-16x10"), (744 + 80, 96 + 135))
+    # the bank: S01's five drums at the spec's spacing (g 28, the chapter gap 84), each with its close-up and its neighbours' faces
+    drums = [(240, "rest", "markings", ["plain", "pale-patches"], 0), (404, "rest", "crown", ["bare-head", "leaf-crest"], 1),
+             (512, "rest", "eyes", ["thin-rings", "between", "wide-pale-rings"], 0), (676, "pinned", "drive", None, 0), (840, "pinned", "efficiency", None, 0)]
+    for x, st, tr, faces, i in drums:
+        look = f"look-S01-{tr}-{faces[i]}-64x64" if faces else f"look-S01-{tr}-64x64"
+        f.alpha_composite(S(look), (x + 8, 440)); f.alpha_composite(S(f"create-drum-{st}"), (x, 424))
+        if faces and len(faces) > 1:
+            pv = S(f"look-S01-{tr}-{faces[(i - 1) % len(faces)]}-64x64"); nx = S(f"look-S01-{tr}-{faces[(i + 1) % len(faces)]}-64x64")
+            f.alpha_composite(pv.crop((0, 56, 64, 64)), (x + 8, 432)); f.alpha_composite(nx.crop((0, 0, 64, 8)), (x + 8, 504))
+        f.alpha_composite(S("create-drum-shade-80x96"), (x, 424))
+        if tr == "crown": f.alpha_composite(S("create-drum-notch"), (x + 72, 464))
+        if tr == "eyes": f.alpha_composite(S("create-drum-turn-up"), (x + 32, 424)); f.alpha_composite(S("create-drum-turn-down"), (x + 32, 512))
+    d = ImageDraw.Draw(f)
+    for wd, x in (("Coat", 240), ("Face", 404), ("Movement", 676), ("Stamina", 840)): d.text((x, 400), wd, font=F("Regular", 16), fill=C("mist"))
+    label(f, "PROOF T-20261016-143: Create, S01, shape: Crown changed, Eyes focused (its two copies in the bay), 1x. Pod, words: stand-ins", 538)
+    return f.convert("RGB")
+create_s01().save(os.path.join(out, "genome-create-S01-1x.png"))
+# the S03 proofs stay as the deep-species check: relabel them "not for the owner"
+for n in ("genome-create-S03-1x.png", "genome-create-S03-clash-1x.png"):
+    im = Image.open(os.path.join(out, n)).convert("RGBA"); label(im, "NOT FOR THE OWNER: S03's looks owed (the deep-species check, T-20261016-143)", 46); im.convert("RGB").save(os.path.join(out, n))
+print("S01 proof written")
