@@ -16,7 +16,7 @@ The need zone shows **the first need, in the existing order, whose target is not
 
 | Focus | ✓ does | Need zone |
 | --- | --- | --- |
-| the room, crates waiting | Open the bay (the crates need) | the next need with another target (for example "three new pods in the rack" from `newPods`), else the goal ("more walks grow the pair"), else empty |
+| the room, crates waiting | Open the bay (the crates need) | the next need with another target (for example "three new pods in the case" from `newPods`), else the goal ("more walks grow the pair"), else empty |
 | the Incubator module, bud ready | Go to the Incubator | as above: the bud need is skipped |
 | a resident (T-191) | Look at {name} | the first need, unchanged: its target is another place |
 | another module, bud ready | that module's own verb | "the bud is ready": it names something else, so it stays |
