@@ -1,0 +1,20 @@
+[
+ {
+  "name": "s03-sheetE-retry",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "The signed young S03, Tuikis (project-owned): THE individual in every panel, exactly: a solid teal head with round bear-like ears, a thin antenna-like crest with a small bead tip on the crown, big wide-set teal eyes with pale rims, a pale mint-white body with teal spots, pale rounded paws, and a thin tail ending in a small yellow bulb."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S03-304x312.png",
+    "The same individual, cut out (front-left three-quarter): the body, coat, pattern, antenna crest and tail bulb to follow in every panel."
+   ]
+  ],
+  "prompt": "Paint a 3 by 2 grid of SIX equal SQUARE panels on a plain flat solid magenta (#FF00FF) background, a small gap of plain magenta between panels, NO divider lines or borders. Only FOUR panels are painted; the other two are EMPTY plain magenta with nothing in them. TOP ROW: panel 1 (left) 'build, between': the WHOLE creature standing side-on, from the tip of its nose to the end of its tail with the yellow bulb, entirely inside the panel with a margin, nothing cropped, a body of middle bulk. Panel 2 (middle) 'eyes, between': the face from the front, the SAME face as the reference with its solid teal head, both round ears and the thin antenna crest in view, but the eyes clearly of MEDIUM size: a full step smaller than the reference's big wide eyes and larger than small close-set eyes, at a medium spacing. Panel 3 (right) 'turning, between': the whole creature on a thin flat strip of plain sandy ground, visibly mid-turn on a moderate curve, its body bent into the turn, head and shoulders swung round, with its paw-prints on the ground strip curving behind it. BOTTOM ROW: panel 4 (left) 'nerve, between': the whole creature on a thin flat strip of plain sandy ground, paused and looking up, with a passing shadow falling ON THE GROUND STRIP as a darker tone of the ground colour (the shadow only on the sandy strip, never on the magenta backdrop), neither fleeing nor ignoring it. Panels 5 and 6: EMPTY plain magenta, nothing at all. In every painted panel the creature is the SAME individual as the references: solid teal head with round ears, the thin antenna crest with its bead tip on the crown, big wide-set teal eyes with pale rims (except panel 2's medium eyes), the pale mint-white body with teal spots, pale paws, and the thin tail ending in a small yellow bulb; no cream face mask, no other individual. The whole creature fills about two thirds of its panel. Soft painterly brush and light from the top left as the references. No text, no numbers, no labels, no glow, no hands, no people."
+ }
+]

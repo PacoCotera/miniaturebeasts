@@ -17,3 +17,9 @@ Raw outputs for the art director to cut and gate, to `results/T-20261016-169/mas
 - **B2 (Legs)** carries a grey ground-shadow ellipse and A5 a grey shadow at the feet, as in the source, which has one.
 - **C and D** show a soft tan ground patch under each creature, with soft pink fringe where it meets the magenta, so the key needs a despill. **C1** is seen from behind; **C2**'s path runs diagonally off the cell; **D6**'s shadow is a dark violet diagonal across the top right of its cell (it reads on magenta, but the key must not take it for the ground); **D2**'s load is a large seed head, nearly the creature's own size.
 - The doing stills read as "between" only loosely: the middle measure is a judgement the art director gates.
+
+## The last retry, sheet E (the art director's gate, work-queue 9efe45f9)
+
+`s03-sheetE-retry-1264x848.jpg`, the same two references and magenta ground, four cells and two empty: top row **A5 Build** (the whole creature, nose to tail inside the cell), **B3 Eyes, between** (the face, eyes of medium size), **D1 Turning** (mid-turn on a curved strip, prints curving behind); bottom row **D6 Nerve** (paused, looking up, the shadow on the ground strip as a darker tone), then two empty cells. This is the 7th request of the job; there are no more.
+
+**Read it honestly:** the Build panel is a three-quarter view, not strictly side-on, and carries a grey shadow ellipse; the Eyes panel is the head alone (no neck), its eyes medium as asked; the Turning strip is a wide curved band running off the cell's edges; the Nerve strip is a flat band with its left end running off the cell, the shadow a dark brown tone on it.
