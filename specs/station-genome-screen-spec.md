@@ -57,7 +57,7 @@ Ticket T-20261016-126, 2026-10-16 (America/Mexico_City). It replaces the paper s
 | Configurable, as the pod is (`hides`) | An open ring with three tumbler ticks; inside, the **copy pair**: the shown copy solid in front, the carried copy as an outline behind | "I can change this; this copy shows, that one hides" |
 | One look (`only`; `rollOptions` has one option) | The open ring **without ticks**, the pair as two equal discs in `fog`, unlit, no notch. ▲▼ is refused, as the other refusals. The commonest configurable state: 24 to 47% of configurable looks on real pods (T-135) | "Both copies are the same: nothing to choose" |
 | A blend (`blend`) | The pair as one lens, half each copy | "The two copies meet" |
-| Changed by you | The ring and pair lit in `mint` (the one lit hue on both screens; no bloom, at most a 1–2 px soft edge) and the notch 3 × 6 at (21, 9) | "I changed this" |
+| Changed by you | The ring and pair lit in `mint` (the one lit hue on both screens; no bloom; the soft edge is one ring of `aqua`, the mint ramp's darker step, painted in the slice: palette, not alpha, T-140) and the notch 3 × 6 at (21, 9) | "I changed this" |
 | Copy chosen | The pair as two of the same copy, in that copy's own colour (copy 1 `bone`, copy 2 `sand`), also when lit: the rejected copy has dropped out, and the colour says which survived (T-134) | "I chose which copy it keeps" |
 | New to your field guide | The first mark, a small point-up triangle in `cream`, 10 × 8 at (16, 0); not a star. Data: `p.first`, the traits whose look was new to the field guide when read | "This look is new to my field guide" |
 | Your wish, shown | The four-point glint in the wish yellow, 10 × 10 at (16, 0), on a gene whose founder shows the look pinned for that trait (`st.wish[species][trait]`). The rule is the game designer's (T-135 fix 8); this is the genome engineer's recommendation, ruled by the game designer (`specs/genome-screen-calls.md` §3): if and only if a wish is pinned for this species, this trait is pinned, and the founder as edited now shows that look; turning to it lights the glint, turning away puts it out; never on an unread trait. The drum's face that gives the pinned look carries the small yellow glint (the drum's art) | "This is the look I wished for" |
@@ -90,7 +90,7 @@ Ticket T-20261016-126, 2026-10-16 (America/Mexico_City). It replaces the paper s
 
 ## 3. A turn, in step
 
-On ▲ or ▼, in one frame: the drum cuts, the gene's mark cuts to its new state, the bay's picture and copies cut; the founder's part redraws under the existing 200 ms dither with the change light and the reaction (`specs/slip-reward.md`). **Dirty area per turn:** the drum (80 × 96), the gene with its focus ring (32 × 32), the bay's copies (≤ 41,120), the founder's part box and the price: print it, ≤ 153,600.
+On ▲ or ▼: in the turn's frame the drum cuts, the gene's mark cuts to its new state, and the founder's part starts its existing 200 ms dither with the change light and the reaction (`specs/slip-reward.md`); the bay's copies cut **on the next frame** (16 ms later, unseen), always, so the turn frame stays under the ceiling (T-140, the architect's T-133 change 4). **Dirty area:** the turn frame is the drum (7,680), the gene with its focus ring (1,024), the founder's part box (≤ 94,848) and the price and context labels (about 14,000): at most about 117,600. The next frame is the bay's two frames (≤ 41,120) plus the founder's dither box (≤ 94,848): at most about 136,000. Both ≤ 153,600; the face test prints both frames.
 
 ## 4. Create's states
 
@@ -105,14 +105,20 @@ On ▲ or ▼, in one frame: the drum cuts, the gene's mark cuts to its new stat
 
 - **Housing** 88, 96, 208 × 312 (the slip's slot, top-aligned with the card at 96); screen 96, 104, 192 × 296; content 104, 104 (wireframe 06).
 - **The compact tree:** the frame line at x 106; no hub and no emblems; rows top 109 + 34i; genes at x 114 + 28j (6 end at 278); the same 24 × 24 marks; the cross mark at (264, top + 10). Asleep, compact: the gate bar only, 2 × 20 at (25, 2) of the switch gene, in the 4 px gap; no loci dots (no room); on waking the bar cuts away. The chapter glint (no emblem) sits at (22, −3) of the row's first gene. No bay: the card is the reveal.
-- **States:** a founder's genes as left on Create; unread chapters frosted. When a chapter clears, its frost cuts to its genes with a 400 ms `mint` 2 px pulse (one lit hue on both screens), on the frame the ring's cut lands; the first mark where the look is new to the field guide. **A founder:** unread chapters clear at (k + 1)/(n + 1) of the growth; a shut sealed chapter never clears, through ready; ready means every other gene known. **A crossed bud:** its forecast-certain chapters (`childKnownChapters`) are known from the start; the rest stay frosted at ready and after (T-135 fix 12).
+- **States:** a founder's genes as left on Create; unread chapters frosted. When a chapter clears, its frost cuts to its genes with a `mint` 2 px pulse (one lit hue on both screens), on the frame the ring's cut lands. The pulse is a cut, not a fade (chrome has no opacity): four rects round each cleared gene shown at the clear's frame and removed at 400 ms; the first mark where the look is new to the field guide. **A founder:** unread chapters clear at (k + 1)/(n + 1) of the growth; a shut sealed chapter never clears, through ready; ready means every other gene known. **A crossed bud:** its forecast-certain chapters (`childKnownChapters`) are known from the start; the rest stay frosted at ready and after (T-135 fix 12).
 - **Gone:** the slip (208 × 408) and its blocks (name, found-note, "Your changes", "Cleared while growing", "{n} still to come", "read it when it's out").
 - Not a focus target. The card, the stamp and the code are unchanged.
 - **Brightness:** the pod's p95 relative luminance exceeds the screen's by at least 0.08 in every growing step and in ready. The slate ground and small lit marks make this likely; **unverified** until the art lands.
 
 ## 6. Drawing it (for the architect's check)
 
-Every line on the screen is a run of palette rectangles: the frame line, the chapter lines, the dotted cross line, the gate bar and loci dots, the bay's frames and the pulse; the focus ring is a slice. Every mark, emblem, picture and housing is a placed slice at 1:1. Nothing is drawn as an anti-aliased line or a circle by the face. The largest tree (S09, 27 genes in 7 rows) is 27 slices, 7 emblems and about 40 rectangles.
+Checked by the architect (`results/T-20261016-133.md`: PASS with four changes, applied here in T-140):
+- **Every solid line is a run of palette rectangles:** the frame line, the chapter lines, the gate bar and loci dots, the bay's frames, the Grow code's rule, the sealed bar and the pulse.
+- **The dotted line to the Cross is one composed picture** of 1 px palette dashes, using the face's `dash` op (`["dash", x, y, len, "h", 1, 1, colour]`), one node per row, never a run of rects (as rects, S01's line alone would be 94 nodes). The clash has no link (T-136), so no dashed red line is drawn.
+- **No alpha on the art layer:** the lit marks' soft edge is a palette ring painted in the slice (§2.2); the pulse is a cut (§5).
+- **The turn's frame** is split as §3 says, to stay under 153,600.
+- Every mark, emblem, picture, the focus ring and the housing are placed slices at 1:1; nothing is drawn as an anti-aliased line or a circle by the face.
+- **Counts** (the architect's measure on the built face plus the tree): Create stays under about 190 of 400 objects and about 110 of 200 pictures (S09, 27 genes in 7 rows: about 27 mark sprites, 7 emblems, hub and lock, about 40 rects, the bay's nodes).
 
 ## 7. Tests
 
