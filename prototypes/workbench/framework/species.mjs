@@ -244,10 +244,23 @@ export function buildFrame(spec, options = {}) {
       if (b.validation.status === "valid") constructed++; else failures.push(b.validation.problems[0]);
     } catch (e) { failures.push(e.message); }
   }
-  frame.viability = { sampled: samples, constructed, failures: [...new Set(failures)].slice(0, 5), rule: "random copies from the species pools at every open locus; built by the rig and validated against the compositional contract" };
+  // Crossed children too (T-20261016-185): a child's blends land on steps between the named alleles,
+  // which pool samples never try; every cross of two members must build, as every member must.
+  const members = [];
+  for (let i = 0; members.length < 24 && i < 96; i++) { const g = sampleIndividual(frame, sampleRng); try { if (buildIndividual(frame, g).validation.status === "valid") members.push(g); } catch { /* not a member */ } }
+  let crossed = 0, crossedBuilt = 0;
+  for (let i = 0; i < samples && members.length > 1; i++) {
+    const a = members[Math.floor(sampleRng() * members.length)], b = members[Math.floor(sampleRng() * members.length)];
+    if (a === b) continue;
+    const g = cross(frame, { id: 1, genome: a }, { id: 2, genome: b }, { rng: sampleRng, kinship: 0 });
+    crossed++;
+    try { const c = buildIndividual(frame, g); if (c.validation.status === "valid") crossedBuilt++; else failures.push(`a crossed child: ${c.validation.problems[0]}`); }
+    catch (e) { failures.push(`a crossed child: ${e.message}`); }
+  }
+  frame.viability = { sampled: samples, constructed, crossed, crossedBuilt, failures: [...new Set(failures)].slice(0, 5), rule: "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract" };
   frame.typeSpecimen = { genome: specimen, rule: "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele", brief: brief(built.scene, frame), bounds: built.scene.bounds, counts: built.validation.counts };
-  if (constructed !== samples) {
-    const err = new Error(`${spec.id}: ${samples - constructed} of ${samples} individuals do not build: ${frame.viability.failures.join("; ")}`);
+  if (constructed !== samples || crossedBuilt !== crossed) {
+    const err = new Error(`${spec.id}: ${samples - constructed} of ${samples} individuals and ${crossed - crossedBuilt} of ${crossed} crossed children do not build: ${frame.viability.failures.join("; ")}`);
     err.frame = frame;
     throw err;
   }

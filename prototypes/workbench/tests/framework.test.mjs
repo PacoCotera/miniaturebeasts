@@ -388,3 +388,18 @@ test("C2: `sure` is the shown look certain (one look at weight 1, one bin for a 
   assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a sibling cross of equal eyes lands on one value"); assert.equal(sib.firm, false);
   for (const t of forecast(frameOf("S02"), sampleIndividual(frameOf("S02"), rng("s")), sampleIndividual(frameOf("S02"), rng("t"))).traits) if (t.kind === "sealed") assert.equal(t.sure, false);
 });
+
+test("every cross of two valid members builds: the frames' viability counts crossed children, and the waist band that once disconnected the body joins by a connector", () => {
+  for (const f of frames) {
+    assert.ok(f.viability.crossed >= 150, `${f.species.id}: crossed children are checked`);
+    assert.equal(f.viability.crossedBuilt, f.viability.crossed, `${f.species.id}: every crossed child builds`);
+  }
+  // the band measured in T-20261016-185: a narrow join at a waist of about 0.59 to 0.66 (between thin 0.3 and broad 0.75)
+  for (const id of ["S08", "S09", "S13", "S16"]) {
+    const f = frameOf(id), base = typeSpecimen(f);
+    for (let v = 0.3; v <= 0.75 + 1e-9; v += 0.0075) {
+      const x = Math.round(v * 1e4) / 1e4, g = { ...base, loci: { ...base.loci, "growth.join-throat-ratio": [x, x] } };
+      assert.equal(buildIndividual(f, g).validation.status, "valid", `${id}: waist ${x} builds`);
+    }
+  }
+});
