@@ -41,7 +41,7 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 - **Kin is not focus.** While a resident holds the ring, its parents and children in the window get a 2 px dashed footprint in fog, with no glance, no glow and no word.
   - A kin mark is drawn only where the relative's feet show; it is never drawn across another mibi (in `01`, Dot is behind Bean, so only Bean's mark is drawn).
   - The genome engineer rules on which relations count (parents and children are my proposal; siblings are theirs to rule on).
-  - In `01` the mark barely reads on moss. The art director decides how it is painted, but it must stay quieter than the ring.
+  - **Paint** (the art director, `art-director.md`): the ring and the kin mark are drawn under the resident's sprite, so the feet stay in front, each with a 1 px `ground` keyline outside it. Kin dashes are about 4 px. The keyline is what makes both read on lit moss. This answers my wireframe's "barely reads".
 
 ## 3. The glance
 
@@ -61,7 +61,13 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
   4. It may cross another resident, but never the focused one.
 - **Life:** the glance is drawn only while a resident holds the ring and is gone the moment the ring leaves. Nothing stays on the window.
 - **No glint anywhere:** the marks still show, quiet. The depth is visible even when nothing is new.
-- **How it sits on the painting** (its ground, edge and shadow) is the art director's to paint. The recess in the wireframes is only its rect.
+- **How it sits on the painting** (the art director, `art-director.md`, proofs `glance-painted-moss.png` and `glance-painted-bed.png`):
+  - an opaque `panel` pane with a `hairline` edge and a `bevel` lip, and no light outline;
+  - each mark in its own `ground` well, never on a cream tile;
+  - a tight contact shadow;
+  - the gold glint as its only colour, with a `ground` keyline.
+
+  My wireframes `01`–`05` follow it.
 
 ## 4. The bottom line while a resident is focused
 
