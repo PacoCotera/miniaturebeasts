@@ -46,6 +46,7 @@
 <line x1="201.3397459621556" y1="130.0" x2="199.17468245269453" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <circle cx="213" cy="125" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
 <circle cx="208" cy="125" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<path d="M219 111.5L220.65 115.35L224.5 117L220.65 118.65L219 122.5L217.35 118.65L213.5 117L217.35 115.35Z" fill="#ffd441"/>
 <rect x="106" y="158" width="76" height="2" fill="#56605a"/>
 <circle cx="126" cy="159" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="126.0" y1="149.0" x2="126.0" y2="146.5" stroke="#5d7a5f" stroke-width="1.5"/>
@@ -60,7 +61,7 @@
 <circle cx="157" cy="159" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
 <circle cx="152" cy="159" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
 <rect x="163" y="156" width="3" height="6" fill="#fff4a6"/>
-<text x="163" y="154" font-size="10" fill="#d89b14" text-anchor="middle">★</text>
+<path d="M163 147L168 155L158 155Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/>
 <circle cx="182" cy="159" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="182.0" y1="149.0" x2="182.0" y2="146.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="190.6602540378444" y1="164.0" x2="192.82531754730547" y2="165.25" stroke="#5d7a5f" stroke-width="1.5"/>
