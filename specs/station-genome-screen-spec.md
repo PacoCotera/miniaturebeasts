@@ -104,7 +104,7 @@ On ▲ or ▼, in one frame: the drum cuts, the gene's mark cuts to its new stat
 ## 5. The Incubator: the same instrument, compact
 
 - **Housing** 88, 96, 208 × 312 (the slip's slot, top-aligned with the card at 96); screen 96, 104, 192 × 296; content 104, 104 (wireframe 06).
-- **The compact tree:** the trunk at x 106; no hub and no emblems; rows top 109 + 34i; genes at x 114 + 28j (6 end at 278); the same 24 × 24 marks; the cross mark at (264, top + 10). No bay: the card is the reveal.
+- **The compact tree:** the trunk at x 106; no hub and no emblems; rows top 109 + 34i; genes at x 114 + 28j (6 end at 278); the same 24 × 24 marks; the cross mark at (264, top + 10). Asleep, compact: the gate bar only, 2 × 20 at (25, 2) of the switch gene, in the 4 px gap; no loci dots (no room); on waking the bar cuts away. No bay: the card is the reveal.
 - **States:** a founder's genes as left on Create; unread chapters frosted. When a chapter clears, its frost cuts to its genes with a 400 ms `mint` 2 px pulse (one lit hue on both screens), on the frame the ring's cut lands; the first mark where the look is new to the player. Ready: every gene known. A crossed bud: all frost until it is out.
 - **Gone:** the slip (208 × 408) and its blocks (name, found-note, "Your changes", "Cleared while growing", "{n} still to come", "read it when it's out").
 - Not a focus target. The card, the stamp and the code are unchanged.
