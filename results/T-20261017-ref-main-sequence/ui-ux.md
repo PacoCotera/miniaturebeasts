@@ -31,8 +31,18 @@ The owner asked for this at 14:23. The art director covers the look in `results/
 5. **The outcome before the commit.** It is the same idea as our decision windows. A ghosted founder change on Create is possible in LVGL as reduced opacity over a static ground. Not over the living window: fill rate, and our no-translucency rule.
 6. **Hand-offs the player watches** (the art director's lesson). This agrees with our four-beat hand-off grammar (`results/T-20261016-197/ui-ux.md`): the destination answers first, the object travels whole, and the arrival answers.
 
+7. **Trees for complex structured data** (the owner, 14:49: "the trees are valuables for certain screens, a genome for example… the intellectual player appreciates the structure that trees give to complex data").
+   - **Where:** the genome (chapters and their loci), lineage, and the research progression.
+   - **How:**
+     - The nodes are pictures (emblems, look tiles, faces) more than named boxes.
+     - Locks and gaps are drawn as shapes: a padlock, an empty frame, a frosted node.
+     - Edges show the real dependency.
+     - It sits in the slate kit.
+     - On our keys: ◀ ▶ walk the siblings, ▲ ▼ go up and down a level, and ✓ opens a node. The focused node's name goes in the bottom line rather than on every box. This keeps the tree readable at 1024 × 600 and close to the genome screen's earlier tree layout (`specs/station-genome-screen-spec.md`).
+   - **Not on** Home or the decision panels, where a single picture serves better.
+
 ## What not to take
 
 - **Text density:** key legends, cost lists and stats strips everywhere, against "pictures over words".
 - **Management as lists of cards with gears:** the menu the owner rejected for Home.
-- **The research tree as lanes of text boxes:** the art director marks it avoid, and I agree. Our gaps should be pictures, as the field guide's empty frames are.
+
