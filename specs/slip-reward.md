@@ -4,7 +4,7 @@ Written 2026-10-17 as the game designer's part of T-20261016-126, which UI/UX ow
 
 ## The position in one line
 
-**The reward of a change is felt on the creature, not read on a slip.** A list of changes, however well drawn, tells the player afterwards what they did. The engagement is the moment of the change: the animal in front of them becomes a different animal because of their hand. So the work is mostly on the founder and the drums; the tag (the creative director's `specs/slip-visual-intent.md`) is only the quiet record that travels with the pod, and the design below lets it stay small.
+**The reward of a change is felt on the creature, not read on a slip.** A list of changes, however well drawn, tells the player afterwards what they did. The engagement is the moment of the change: the animal in front of them becomes a different animal because of their hand. So the work is mostly on the founder and the drums. The record is the machine's own display set into the bench (the owner, 04:06: "a paper tag is not interactive"; the creative director's `specs/slip-visual-intent.md`). Because it is a live screen, it takes part in the moment too, in step with the drum and the founder (section 5).
 
 ## What should feel rewarding, and how the machine makes it felt
 
@@ -39,19 +39,19 @@ Two honest kinds of special, both from today's rules and data:
 - **The choice it opens,** shown with options, cost and outcome (specs/station-decision-points.md): on a capped drum, ✓ offers **Read it now** (◆ n, then you can shape it) or leaves it to **clear while it grows** (free, a surprise in the Incubator). Today, reading means going back to the pod. Letting the player read from the bench is a proposal for the lead, since it adds an action to Create.
 - **On the Incubator,** the frosted part clears on the founder's shadow inside the pod and, where the look is new to the player, it clears with the same star and light as a first on Create.
 
-### 5. The record: what the tag needs to carry, and what it does not
+### 5. The bench's display: the record, live
 
-Because 1–4 put the reward on the founder and the drums, the tag only has to hold the record at a glance, and it can follow the creative director's tag exactly:
+Because 1–4 put the reward on the founder and the drums, the display's job is the whole genome at a glance, including drums paged off the bank on a deep species. Because it is live, it also answers each turn. On a turn, the matching chip flips in step with the drum and the founder: three places on the machine move at once, like the dock moments. It carries, as the creative director's intent says:
 
-- one chip per changed trait, with the drum's notch, and the star when it was a first;
-- one frosted chip per chapter still a surprise, with the glint star when it glints;
+- one chip per trait, with the drum's notch when changed and the star when it was a first;
+- a frosted chip for each trait of a chapter still a surprise, with the glint star when it glints;
 - the clash as the red link between two chips, mirrored on the two drums;
-- on the Incubator, a frosted chip clears to its picture when its chapter clears.
+- on the Incubator, the same display; a frosted chip clears to its picture when its chapter clears, with the star when the look is new to the player.
 
-It never carries a sentence, a count in words, or the price (the bottom line has it). **Words budget agreed with the creative director: at most 3 on the tag.**
+Being live, the display can also take the focus. When the ring walks the bank, the matching chip is outlined on the display, so the player can see where a paged-off drum sits in the whole genome. It never carries a sentence, a count in words, or the price (the bottom line has it). **Words budget, as the creative director's: at most 3 on the display.**
 
 ## For UI/UX and art
 
-- **UI/UX:** the drum's neighbour faces in the window (how much peeks), the before-and-after fade on a turn, the change light's area (the trait's region on the founder), the star and wish marks on drum faces and chips, and the "read it now" choice on a capped drum if the lead takes it.
+- **UI/UX:** the drum's neighbour faces in the window (how much peeks), the before-and-after fade on a turn, the change light's area (the trait's region on the founder), the star and wish marks on drum faces and chips, the display's chip flip in step with the drum (200 ms) and its focus outline, and the "read it now" choice on a capped drum if the lead takes it.
 - **Art:** one short reaction per trait kind for the founder (head shake for crowns and ears, a look along the flank for coat and markings, a blink for eyes, a tail flick for tails), placed over the founder picture. Also the change light as a soft painted wash per trait region, and the star mark.
 - **Build:** "a first in your vivarium" is a check of the new look against the residents' looks for that trait. A wish piece is the existing wish match. A glint on a capped drum is the existing `podGlints` per chapter.
