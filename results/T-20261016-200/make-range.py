@@ -156,8 +156,9 @@ def stand_v2(colour, pattern):
 
 
 # the genome engineer's likely frame: three co-dominant pigments, six looks; every Loika marked
-RAMPS2 = {'charcoal': ((22, 21, 25), (52, 50, 56), (104, 100, 108)), 'russet': RAMPS['russet'], 'slate': RAMPS['slate']}
-COLOURS2 = ['charcoal', 'russet', 'slate', 'charcoal and russet', 'charcoal and slate', 'russet and slate']
+RAMPS2 = {'charcoal': ((22, 21, 25), (52, 50, 56), (104, 100, 108)), 'russet': RAMPS['russet'],
+          'sky': ((32, 68, 118), (78, 144, 206), (168, 210, 242))}   # the third pigment: a value step above russet, cool against it
+COLOURS2 = ['charcoal', 'russet', 'sky', 'charcoal and russet', 'charcoal and sky', 'russet and sky']
 PATTERNS = ['stripes', 'patches', 'stripes and patches']
 CW2, CH2 = 160, 172
 sh2 = Image.new('RGBA', (190 + len(PATTERNS) * CW2 + 16, 56 + len(COLOURS2) * CH2 + 16), (29, 35, 43, 255))
@@ -176,6 +177,23 @@ for i, col in enumerate(COLOURS2):
         sh2.alpha_composite(s_, (x, base - s_.height))
 sh2.convert('RGB').save(os.path.join(OUT, 'loika-range-likely-frame.png'), optimize=True)
 print('loika-range-likely-frame.png')
+
+# the four-grey check: each look quantised to four values (the guide's colour-alone test)
+def four_grey(img):
+    a = np.asarray(img.convert('RGBA'), dtype=float)
+    lum = a[..., 0] * 0.299 + a[..., 1] * 0.587 + a[..., 2] * 0.114
+    q = np.choose(np.digitize(lum, [64, 128, 192]), [30, 100, 170, 240]).astype('uint8')
+    out = np.dstack([q, q, q, a[..., 3].astype('uint8')])
+    return Image.fromarray(out, 'RGBA')
+
+fg = Image.new('RGBA', (len(COLOURS2) * 150 + 16, 230), (29, 35, 43, 255)); dg = ImageDraw.Draw(fg)
+dg.text((16, 10), 'Four-grey: each coat quantised to four values (stripes and patches)', font=F13, fill=(241, 235, 223))
+for i, col in enumerate(COLOURS2):
+    s_ = four_grey(fit(stand_v2(col, 'stripes and patches'), 144, 152))
+    fg.alpha_composite(s_, (16 + i * 150, 36))
+    dg.text((16 + i * 150 + 72, 206), col, font=F13, fill=(198, 196, 216), anchor='mm')
+fg.convert('RGB').save(os.path.join(OUT, 'loika-four-grey.png'), optimize=True)
+print('loika-four-grey.png')
 
 COLOURS = list(RAMPS)
 MARKS = ['none', 'pale patches', 'spots', 'saddle']
