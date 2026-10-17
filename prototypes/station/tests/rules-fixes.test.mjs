@@ -30,7 +30,7 @@ test("B1 a founder clears its unread chapters at (k + 1) / (n + 1) of the wait; 
   const f = fresh(); const q = podOf(f, "S01", ["coat"]); assert.equal(f.firstMibi, true); S.grow(f, q, {}, settings, T0); assert.equal(f.bud.minutes, 5);
   for (const [ch, ms] of [[face, 75000], [movement, 150000], [stamina, 225000]]) { assert.equal(S.budChapterKnown(f, ch, settings, T0 + ms - 1), false); assert.equal(S.budChapterKnown(f, ch, settings, T0 + ms), true); }
 });
-function crossed(seedAdultsSeed = 3, rngSeed = 7) {
+function crossed(seedAdultsSeed = 226, rngSeed = 7) {   // the Loika at frame version 4 (T-20261016-200): seed 226 is a pair whose Coat is certain (both hold the same pure colour and pattern)
   const st = fresh(), r = S.seedAdults(st, "S01", seedAdultsSeed, 2, settings), [a, b] = r.mibis, c = S.doCross(st, { with: null }, a, b, settings, T0, lcg(rngSeed));
   assert.equal(c.ok, true, c.msg); return st;
 }

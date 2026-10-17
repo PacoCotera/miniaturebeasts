@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
-import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK } from "../framework/species.mjs";
+import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf } from "../framework/species.mjs";
 import { cross, forecast, kinship, identity, relatedness, children, SPREAD } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
@@ -15,7 +15,7 @@ const framesDir = path.resolve(here, "../frames");
 const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
-test("catalogue 9 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
+test("catalogue 10 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
   const v1 = CATALOGUE.loci.filter((l) => l.provenance.catalogue.startsWith("genomic-compositional-source-experiment"));
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
@@ -28,8 +28,10 @@ test("catalogue 9 carries catalogue6 plus the taxonomy's switches and loci, the 
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 15, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, and the six of the Loika's calibration to Pip");
-  assert.equal(CATALOGUE.version, 9, "pin 9: the Loika calibrated to Pip");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
+  assert.equal(CATALOGUE.version, 10, "pin 10: ash for the fine-tuned Loika (T-20261016-200)");
+  assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
+  assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 9).length === 6);
   assert.ok(CATALOGUE.loci.some((l) => l.id === "growth.belly-field-extent") && CATALOGUE.loci.some((l) => l.id === "growth.exterior-eye-height-ratio"), "the two C01 loci of the calibration");
@@ -71,7 +73,10 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   assert.ok(loika.absent.some((a) => a.id === "growth.wing-span-ratio"), "a Loika has no wing locus at all");
   assert.ok(loika.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
   assert.ok(loika.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
-  assert.equal(loika.counts.open, 5, "exactly the five traits of the Pip proof");
+  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 10");
+  assert.equal(loika.counts.traits, 6, "six traits: the starter tier counts traits");
+  assert.equal(loika.counts.open, 7, "Colour, the marking switch and layout, Crown, Eyes, Drive, Efficiency");
+  assert.deepEqual(loika.loci.find((l) => l.id === "appearance.marking-switch").legacy, ["off"], "plain stays legal for a version-3 line");
   const s03 = frameOf("S03");
   assert.ok(s03.chapters.some((c) => c.id === "glow" && c.traits.every((t) => !t.shapeable)), "the glow is a doing");
   assert.ok(frameOf("S16").chapters.some((c) => c.id === "charge" && c.sealed), "the lightning kind's Charge chapter is sealed");

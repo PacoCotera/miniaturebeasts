@@ -5,7 +5,7 @@
   "name": "Loika",
   "plural": "Loika",
   "order": 1,
-  "summary": "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof."
+  "summary": "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line."
  },
  "taxonomy": {
   "code": "S01",
@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 9,
+  "version": 10,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -115,8 +115,8 @@
     "hex": "#465459"
    },
    {
-    "pigment": "cream",
-    "hex": "#dfd2ae"
+    "pigment": "russet",
+    "hex": "#ae674d"
    }
   ]
  },
@@ -127,14 +127,35 @@
    "sealed": false,
    "traits": [
     {
+     "id": "colour",
+     "name": "Colour",
+     "loci": [
+      "appearance.body-palette"
+     ],
+     "looks": [
+      "charcoal",
+      "charcoal and russet",
+      "charcoal and ash",
+      "russet",
+      "russet and ash",
+      "ash"
+     ],
+     "nature": "look",
+     "shapeable": true,
+     "verdict": null
+    },
+    {
      "id": "markings",
      "name": "Markings",
      "loci": [
-      "appearance.marking-switch"
+      "appearance.marking-switch",
+      "appearance.marking-layout"
      ],
      "looks": [
       "plain",
-      "pale patches"
+      "stripes",
+      "patches",
+      "stripes and patches"
      ],
      "nature": "look",
      "shapeable": true,
@@ -252,21 +273,26 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "sketch: the body pigment slot",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "coat",
+   "trait": "colour",
+   "shapeable": true,
+   "alleles": [
     "charcoal",
-    "charcoal"
+    "russet",
+    "ash"
    ],
    "looks": [
-    "charcoal"
+    "charcoal",
+    "charcoal and russet",
+    "charcoal and ash",
+    "russet",
+    "russet and ash",
+    "ash"
    ],
    "guard": "sketch: the body pigment slot",
-   "nature": "look",
-   "changedBy": "species"
+   "changedBy": "player"
   },
   {
    "id": "appearance.underside-palette",
@@ -302,16 +328,16 @@
    "trait": "markings",
    "shapeable": true,
    "alleles": [
-    "off",
     "on"
    ],
    "looks": [
-    "off",
-    "off/on",
     "on"
    ],
    "guard": "sketch: the marking field",
-   "changedBy": "player"
+   "changedBy": "player",
+   "legacy": [
+    "off"
+   ]
   },
   {
    "id": "appearance.marking-layout",
@@ -319,21 +345,22 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "sketch: the marking field",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "patches",
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "coat",
+   "trait": "markings",
+   "shapeable": true,
+   "alleles": [
+    "bands",
     "patches"
    ],
    "looks": [
+    "bands",
+    "bands-and-patches",
     "patches"
    ],
-   "guard": "sketch: the marking field",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-extent",
@@ -1705,22 +1732,22 @@
   "trunk": 46,
   "branch": 4,
   "absent": 90,
-  "locked": 45,
+  "locked": 43,
   "lockedBy": {
    "switch": 3,
-   "fixed": 42
+   "fixed": 40
   },
-  "heritableLook": 3,
+  "heritableLook": 4,
   "heritableDoing": 2,
   "selfChanging": 0,
-  "sleeping": 0,
+  "sleeping": 1,
   "sealed": 0,
-  "open": 5,
-  "traits": 5,
+  "open": 7,
+  "traits": 6,
   "byChapter": {
    "Coat": {
-    "loci": 1,
-    "traits": 1
+    "loci": 3,
+    "traits": 2
    },
    "Face": {
     "loci": 2,
@@ -1735,8 +1762,8 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 15,
-  "stampBitsPerCopy": 6
+  "fieldGuideLooks": 22,
+  "stampBitsPerCopy": 11
  },
  "notYet": {
   "domains": [
@@ -1767,7 +1794,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S01",
-   "frameVersion": 3,
+   "frameVersion": 4,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -1786,8 +1813,8 @@
      "on"
     ],
     "appearance.marking-layout": [
-     "patches",
-     "patches"
+     "bands",
+     "bands"
     ],
     "appearance.marking-extent": [
      "high",
@@ -1975,7 +2002,7 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head.",
+  "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, bands; plantigrade, fused head.",
   "bounds": {
    "min": [
     -1.113871769379756,
@@ -2001,9 +2028,17 @@
   "rule": "random copies from the species pools at every open locus; built by the rig and validated against the compositional contract"
  },
  "pools": {
+  "appearance.body-palette": [
+   "charcoal",
+   "russet",
+   "ash"
+  ],
   "appearance.marking-switch": [
-   "off",
    "on"
+  ],
+  "appearance.marking-layout": [
+   "bands",
+   "patches"
   ],
   "anatomy.crown-presence": [
    "off",
@@ -2027,17 +2062,9 @@
    "high",
    "high"
   ],
-  "appearance.body-palette": [
-   "charcoal",
-   "charcoal"
-  ],
   "appearance.underside-palette": [
    "cream",
    "cream"
-  ],
-  "appearance.marking-layout": [
-   "patches",
-   "patches"
   ],
   "appearance.marking-extent": [
    "high",

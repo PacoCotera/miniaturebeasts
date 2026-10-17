@@ -128,6 +128,8 @@ const ADDED_ALLELES = {
   "growth.muzzle-width-ratio": { alleles: [{ id: "full", label: "full", value: 0.85 }], since: 9, why: "Pip's snout is the whole lower face" },
   "growth.core-width-ratio": { alleles: [{ id: "wide", label: "wide", value: 0.65 }], since: 9, why: "Pip's body is as round from the front as from the side" },
   "growth.core-depth-ratio": { alleles: [{ id: "deep", label: "deep", value: 0.7 }], since: 9, why: "Pip's body is 0.92 as tall as it is long; high (0.61) gave 0.82" },
+  // Catalogue 10: a light, muted body pigment for the fine-tuned Loika (the owner's decision 2026-10-17 13:15; T-20261016-200), appended so every older copy keeps its index and its 4 bits.
+  "appearance.body-palette": { alleles: [{ id: "ash", label: "ash", value: "#8e98a4" }], since: 10, why: "a dove grey-blue a value step above russet, natural on the moss: the Loika's third colour" },
   "anatomy.crown-form": { alleles: [{ id: "leaf", label: "leaf", value: "leaf" }], pairMap: (map) => ({ ...map, "leaf|leaf": "leaf", "leaf|pointed": "leaf", "leaf|rounded": "leaf" }), since: 9, why: "Pip's crest is three leaf sheets, not spikes" },
 };
 
@@ -177,7 +179,7 @@ function newLocus(l) {
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
   // they were built against, and a saved mibi keeps its own).
-  id: "mb-genome-framework", version: 9, schema: "mb-catalogue/9",
+  id: "mb-genome-framework", version: 10, schema: "mb-catalogue/10",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],

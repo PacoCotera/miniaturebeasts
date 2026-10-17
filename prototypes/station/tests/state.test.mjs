@@ -137,7 +137,7 @@ test("reads: 1 Data a trait, the first read ever free, half rounded up once the 
   st.d = 1; assert.equal(S.read(st, t, "face", settings).ok, false);
   assert.match(S.readBlock(st, t, "face", settings), /needs ◆ 2 more/);
   assert.equal(S.readBlock(st, { ...t, idd: 0 }, "face", settings), "identify it first");
-  assert.equal(S.progress(a, settings), 3 / 5);
+  assert.equal(S.progress(a, settings), 4 / 6);   // the Loika at frame version 4 (T-20261016-200): Coat holds Colour and Markings, so Coat and Face read are 4 of its 6 traits
   assert.equal(S.readCost(st, a, "face", { ...settings, economy: "free" }), 0);
 });
 
@@ -319,7 +319,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.deepEqual(S.crossPartners(st, null, a, settings).map((m) => m.id), [b.id]);
   assert.equal(S.kinshipOf(st, a, b), 0, "two founders are unrelated");
   const fc = S.forecastOf(st, a, b, settings);
-  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 5);
+  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 6);   // the Loika at frame version 4 (T-20261016-200): six traits
   for (const t of fc.traits) { if (t.kind === "switch") { assert.equal(t.seeds.length, 4); assert.ok(Math.abs(t.seeds.reduce((s2, x) => s2 + x.weight, 0) - 1) < 1e-6); } else { assert.equal(t.kind, "blend"); assert.ok(t.range[0] <= t.range[1]); assert.equal(t.firm, false); } }
   const e0 = st.e, s0 = st.s;
   let seed = 7; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
@@ -386,14 +386,16 @@ test("a starting mibi reads every open chapter, never a shut sealed one: its sta
   assert.ok(!back.read.includes(sealed.id));
 });
 
-test("a mibi keeps the frame version it was born with: a v2-born genome stamps S1v2 after the registry moved to v3", () => {
-  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born3 = podGenome(fr, 4242), born2 = { ...born3, frameVersion: 2 };
-  assert.equal(born3.frameVersion, 3, "a genome sampled now is born at the current frame version");
-  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3);
-  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3);
+test("a mibi keeps the frame version it was born with: v2- and v3-born genomes stamp S1v2 and S1v3 after the Loika moved to v4", () => {
+  // the Loika at frame version 4 (T-20261016-200): a genome sampled now is born at v4; an older one keeps its own version on its stamp
+  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born4 = podGenome(fr, 4242), born3 = { ...born4, frameVersion: 3 }, born2 = { ...born4, frameVersion: 2 };
+  assert.equal(born4.frameVersion, 4, "a genome sampled now is born at the Loika's current frame version");
+  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3); assert.equal(stampFrameOf(fr, born4).version, 4);
+  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3); assert.equal(stampGenome(fr, born4, []).version, 4);
   assert.match(S.stampCodeOf({ species: fr.species.id, genome: born2, read: [] }) ?? "", /^S1v2-/);
   assert.match(S.stampCodeOf({ species: fr.species.id, genome: born3, read: [] }) ?? "", /^S1v3-/);
-  assert.equal(stampFrameOf(fr).version, 3, "with no genome the current version stands");
+  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born4, read: [] }) ?? "", /^S1v4-/);
+  assert.equal(stampFrameOf(fr).version, 4, "with no genome the frame's own version stands");
 });
 
 test("p.first: written once per trait at read time, only when the look is new; an older save loads with none and shows no mark", () => {
