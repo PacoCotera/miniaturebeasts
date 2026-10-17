@@ -268,7 +268,13 @@ def essence_plus2():
 
 
 def grow_price():
-    return key_out(src('create-shape.png').crop((112, 568, 192, 592)), C['bar'], 8)
+    """Grow's price, icon before figure (style guide §4): ⚡2 ❀4 ◆1, one Data per shaped trait (here the markings)."""
+    h = src('home-docked.png')
+    ic = {k: key_out(h.crop((x, 10, x + 16, 26)), C['bar'], 12) for k, x in (('energy', 437), ('data', 497), ('essence', 552))}
+    im = Image.new('RGBA', (160, 24), (0, 0, 0, 0)); d = ImageDraw.Draw(im); x = 0
+    for k, n in (('energy', '2'), ('essence', '4'), ('data', '1')):
+        im.alpha_composite(ic[k], (x, 4)); d.text((x + 20, 2), n, font=F16, fill=C['focus']); x += 20 + int(F16.getlength(n)) + 14
+    return im.crop((0, 0, x - 10, 24))
 
 
 def panel_p1(scenes, title, cards, topbar, out, lab, bottom_args, stage=True):
