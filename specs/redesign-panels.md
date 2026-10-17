@@ -38,7 +38,7 @@ Shown on Grow in `P1-shared-look-grow.png`:
 
 ## Asks
 
-- **The game designer:** the outcome scene for each option of every panel (what Pip is doing in each), and the consequence line.
+- **The game designer: answered** in `specs/purpose-briefs-b20261017-1.md` §6.1, which gives every option of every panel as a scene and one consequence line. For example, Return is Pip walking out across its pond edge, looking back once, with "Gone for good. Its place will remember it." and ❀ +2 in the loss colour; Keep is Pip asleep in its bay, with "Stays with you." The paintings follow that table.
 - **The creative director**: the shared panel look, and P1 against P2. The outcome scenes for each option follow the game designer's §3 in `specs/purpose-briefs-b20261017-1.md`.
 - **The art director** (T-20261016-170): paint P1 and P2 for Return to the wild (Pip, a pond-edge place), and P1 on Grow, to the research-hands bar.
 - **The lead:** builds on panels stay parked until the owner chooses.

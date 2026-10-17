@@ -30,11 +30,11 @@ Cargo is where the crates the Companion carried home are opened. The player sees
 
 | Concept | Sketch | What it is | Strength | Risk |
 | --- | --- | --- | --- | --- |
-| **C1, the unloading bay** (UI/UX's pick) | `C1-unloading-bay.png` | The crates open side by side on the bay floor. In front of each lie its pods and material piles. Per the game designer (`specs/purpose-briefs-b20261017-1.md`), the materials fly from each crate into the top bar's totals (no wall tanks and no separate materials row), and the pods fly into the Pods rack only during the flight (no standing pod rail). The sketch's tanks are superseded by the top bar | Shows what came in and where it goes in one picture; the opening animation plays naturally (lid, contents, flow) | Three crates of contents need room; past three crates, a "+n crates" pile |
+| **C1, the unloading bay** (UI/UX's pick) | `C1-unloading-bay.png` | The crates open side by side on the bay floor. In front of each lie its pods and material piles. The materials pour into the store tanks on the wall, then the top bar ticks (the game designer, `specs/purpose-briefs-b20261017-1.md` §6.2). The pods go out through the Pods hatch, which shows its free wells; with no free well, they wait sealed on the bay floor and land oldest first, and the hatch shows that it is full. No standing pod rail |
 | **C2, crate by crate** | `C2-crate-by-crate.png` | One crate opens big; its contents lie out front; then the next; the stores fill as each empties | The largest pictures; the most ceremony | Slow with three crates; the whole haul is never seen at once |
 | **C3, the manifest** | `C3-manifest.png` | The door's display lists each crate as a row of painted contents, with the tanks beside it | Closest to today | Still a list; the weakest at "where things go" |
 
-**The world events** ("Meanwhile, the world turned", T-155, superseded) leave this screen with the redesign. Where they belong is the game designer's call: the Companion's map is a candidate.
+**Reach and the world events leave Cargo** (the game designer, §6.2): reach goes to the Companion's map. `grown` and `elder` go to the Station's return signals (Home's line and the name-tag mark). The world's events go to the Companion's map as place markers, the first time it opens after the dock (`specs/world-events.md`: the record stays, only the reader changes).
 
 ## Asks
 
