@@ -164,6 +164,24 @@ The Probe stays upright in its vertical cradle (the owner's ruling). Create's li
 - No screen's concept is signed while its neighbours still carry the old look in a way that hides whether it fits.
 - Small fixes are batched per family. A screen that needs a second patch on the same point goes back to concept.
 
+## 6. The flow between screens (added 2026-10-17, from UI/UX's proposal)
+
+UI/UX read the device sheet as one flow (`specs/flow-transitions-proposal.md`) and found what this review missed. **The player's pod is the thread of the game, and no screen hands it on.** The crate, the Pods well, Create, the chamber, the hatch and the Vivarium each draw it differently, and each arrives by a cut. This is the integrated experience the owner asked for, in time rather than side by side.
+
+| # | Proposal | Call |
+| --- | --- | --- |
+| 1 | The pod travels on each hand-off: the same shell carried across Cargo → Pods, Pods → Create, Create → Incubator, and the hatch → Vivarium | **Accepted.** It is §2 rule 4 (one pod) in motion. The art director adds the carry to the guide's §9 motion table. On the Station a room change from Home stays the title cross-fade and the stage cut (§9); "dither" is the Companion's word, not the Station's |
+| 2 | A notice lands on what it named: the target opens focused, ✓ ready, and the notice clears only once seen | Accepted for the look. What counts as "seen" is the game designer's (return signals) |
+| 3 | ← always names where it goes, one step back along the path | **Accepted.** The sheet shows Back, Home, Probe, a species name and Cargo with no rule. UI/UX writes the rule into the key table |
+| 4 | Every panel shows the subject the player brought: their pod in "Grow it now?", and the dock choice as a P1 panel | **Accepted** (the pod) and P1 for the dock choice, subject to the game designer's dock moment (`specs/dock-moments.md`) |
+| 5 | A consequence is shown once, where it lands, with no second confirmation | Accepted for the look. Which spends still go through a panel is the game designer's (§10: a large or irreversible spend goes through a panel) |
+
+**Where it goes:**
+- **1 and 4** go into the concepts now, at layout cost only:
+  - P1's "Grow it now?" shows the player's own pod;
+  - the genome, Incubator and Cargo layouts mark where the pod enters and leaves.
+- **2, 3 and 5** need the game designer's sign-off. They then become one flow ticket from the lead, built with T-177. Neither is started piecemeal.
+
 ## 5. Calls made here, for the record
 
 | Question (asker) | Call |
