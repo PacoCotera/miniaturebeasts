@@ -28,7 +28,7 @@ A small, well-made field kit for keeping living things. You hold it, and it is w
 
 When a screen goes wrong, it is almost always one layer doing another's job: the instrument taking colour or decoration from the life, or the signal lighting up for show. Checking a screen layer by layer finds those faults before they compound.
 
-<table><tr><td valign="top"><img src="style-guide/plates/01-look-do.png" width="512" alt="Home, the three layers"><br><em>Home as the target, the three layers in one screen: the living vivarium, the quiet slate instrument, a few small signals. Diagram: the accepted Home with its module panes re-toned to the slate pane (style guide plate 01).</em></td></td>
+<table><tr><td valign="top"><img src="style-guide/plates/01-look-do.png" width="512" alt="Home, the three layers"><br><em>Home as the target, the three layers in one screen: the living vivarium, the quiet slate instrument, a few small signals. Diagram: the accepted living window, with the module column redrawn as slate panes, lamps amber or off, each module holding its own object and no plate pictures (style guide plate 01).</em></td></td>
 <td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth the life layer carries. Approved concept, generated.</em></td></tr></table>
 
 ### One machine: the instrument layer's rule
@@ -90,7 +90,7 @@ Bright life on a calm ground.
 
 *Written by the game designer. The numbers that put these principles into practice (words per element, mark sizes, counts) are in the [style guide](style-guide/README.md); this section is the reason behind them.*
 
-<img src="style-guide/plates/01-look-do.png" width="640" alt="Home, the device as it should be"><br><em>Home as the target: one living subject, a column of quiet slate panes, one line of words. Diagram: the accepted Home with its module panes re-toned to the slate pane (style guide plate 01).</em>
+<img src="style-guide/plates/01-look-do.png" width="640" alt="Home, the device as it should be"><br><em>Home as the target: one living subject, a column of quiet slate panes, one line of words. Diagram: the accepted living window, with the module column redrawn as slate panes, lamps amber or off, each module holding its own object and no plate pictures (style guide plate 01).</em>
 
 - **One subject per screen.** Every screen is about one thing the player cares about: a mibi, a pod, a crate, a choice. That thing is the largest, best-lit and most detailed thing there. Everything else is smaller, quieter and in its service.
 - **Show what the player acts on or watches change, and nothing else.** An object earns its place by doing something the player can see, or by changing over time. Equipment that serves nothing, decoration that explains nothing, and a second picture of something already shown all go.
