@@ -25,11 +25,11 @@ t = 0 is the moment the Caddy senses the Companion seated. "Crosses" is what pas
 | 0.5–1.5 | Each crate mark on its HUD pulses once in turn | E-paper settles: "Companion home · 2 crates" with the crate icons | The ribbon "The Companion is home". The link light runs in from the bay's left edge ("from the Caddy") and the sealed crates slide into the bay, one per crate, in step with the Companion's pulses. A crate holding a new species glints (where, never what) | — |
 | 1.5–2.5 | A mibi coming home walks off the Companion's screen edge | — | The mibi walks in on the right and into the vivarium panel; one staying with the Companion curls up on the with-you bed, as today | The carry set: who is home, who stays out (already requested Take and Bring) |
 | 2.5–3.5 | The Shield plates refill | — | The Probe's plates refill: "two plates mended, free" (the dock's free mend, as today). The world turn's sun mark ticks if the world turned | The mend; the turn |
-| 3.5 | Stays on its home frame, charging | — | **The choice**, in the decision panel's row form (T-45), picture-led: **✓ Open the bay** with its outcome drawn (the crates → the pods in the rack's wells) or **Later** (the crates stay → Home's Cargo module with its amber lamp) | — |
+| 3.5 | Stays on its home frame, charging | — | **The choice**, as the decision panel (P1), picture-led: **✓ Open the bay** with its outcome drawn (the player's own crates → their pods out through the Pods hatch) or **Later** (the crates stay → Home's Cargo module with its amber lamp) | — |
 
 **After the choice.**
 
-- **Open the bay** plays today's Cargo opening: per crate, the seal breaks, the pods travel to the rack, the counters tick, about 3 s each, and ✓ skips to the end. **In step:** as each seal breaks on the Station, the matching crate mark on the Companion's HUD clears. This is the confirmation the architecture already requires (the Companion clears a crate only after the Station confirms it), now made visible. When the last crate is open, the Caddy's e-paper updates once: "2 crates home · 1 new pod". Then the report card, whose ✓ goes to the new pods, as today.
+- **Open the bay** plays today's Cargo opening: per crate, the seal breaks, the materials fly to the top bar's counters, the pods go out through the Pods hatch, about 3 s each, and ✓ skips to the end. **In step:** as each seal breaks on the Station, the matching crate mark on the Companion's HUD clears. This is the confirmation the architecture already requires (the Companion clears a crate only after the Station confirms it), now made visible. When the last crate is open, the Caddy's e-paper updates once: "2 crates home · 1 new pod". The last pod's carry lands in Pods (specs/flow-transitions-proposal.md, change 1); there is no report card (Cargo redesign).
 - **Later** closes the arrival and returns the player to where they were. Home's Cargo module lamp is steady amber, and the line reads "two crates wait in the bay" (specs/station-return-signals.md).
 
 ### The cases
@@ -37,7 +37,7 @@ t = 0 is the moment the Caddy senses the Companion seated. "Crosses" is what pas
 | Case | What changes from the script above |
 | --- | --- |
 | **A haul, no new pod** | No glint. The choice is the same |
-| **A new pod** | The crate holding it glints from its slide-in. After the opening, the report's ✓ reads "Look at the new pod" (today's "See the new pod") |
+| **A new pod** | The crate holding it glints from its slide-in. After the opening, Pods opens focused on it |
 | **An empty trip** (no crates: the Companion came home without ending an expedition, or carried nothing) | No crates and no choice. The ribbon "The Companion is home", who came home, and the mend, then the arrival closes by itself at 2.5 s and the player is back where they were. The Caddy shows "Companion home · charging" |
 | **A broken Probe** (nothing came home; the pods dropped where it broke) | The same ribbon. The bay stays empty and the Probe's broken plates refill, so the pictures say what happened with no extra words. Closes by itself |
 | **A mibi coming home** (a Bring was asked) | Beat 1.5: it walks off the Companion and into the vivarium. The Companion's carried slot empties |
@@ -70,12 +70,12 @@ A send-off, never a takeover. t = 0 is the Caddy sensing the lift.
 
 *dock-moments/station-arrival.png: wireframe, 1×, layout only, with its label printed inside the image (source: station-arrival.svg). The blue dashed notes are annotations, not on screen.*
 
-**Picture-led** (owner, 13:26: the panels lead with pictures and carry little text). The screen holds three pieces of text: the ribbon "The Companion is home", the two verbs "Open the bay" and "Later", and the bottom line. Everything else is a picture: the crates themselves, a star on the one holding a pod new to the player, the mibi coming home, the Probe with its plates refilling, and each choice's outcome drawn as crates → pods in the rack, or crates staying → Home's Cargo lamp.
+**Picture-led** (owner, 13:26: the panels lead with pictures and carry little text). The screen holds three pieces of text: the ribbon "The Companion is home", the two verbs "Open the bay" and "Later", and the bottom line. Everything else is a picture: the crates themselves, the gold glint on the one holding a pod new to the player, the mibi coming home, the Probe with its plates refilling, and each choice's outcome drawn as crates → pods through the Pods hatch, or crates staying → Home's Cargo lamp.
 
 - **It is the bay.** It is drawn on Cargo's stage, with the bay as today. The owner's "pop-up" is the bay rising over the screen at the dock, so the arrival is not a new room; it is Cargo coming to the player.
 - **It shows what came back and who came home:** the sealed crates (count, and a glint for a new species), the mibis coming home or leaving, and the Probe's mend. It never shows what is inside a crate. Opening is the payoff, and the player chooses it.
-- **The hand-over.** The choice uses the decision panel's row form (T-45): two named rows, each with its cost and outcome. ✓ Open the bay leads into today's opening, then its report, then Pods. Later goes back to where the player was.
-- **Skip.** Any key during the show jumps to the choice. During the opening, ✓ skips to the report (ceremony cut 4 in specs/station-decision-points.md).
+- **The hand-over.** The choice uses the decision panel (P1): two windows, each its outcome. ✓ Open the bay leads into the opening, then Pods. Later goes back to where the player was.
+- **Skip.** Any key during the show jumps to the choice. During the opening, ✓ skips to the end (ceremony cut 4 in specs/station-decision-points.md).
 - **Words.** Only the ribbon (20 px), the two verbs (20 px) and the bottom line (16 px; "two crates home"). There are no headings and no captions. Counts are shown as the crates themselves, and in the bottom line spelled out.
 
 ## 4. What each device can do: today, and what needs new hardware or firmware

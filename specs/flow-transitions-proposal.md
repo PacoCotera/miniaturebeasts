@@ -26,3 +26,35 @@
 - A `from` and `focus` argument on each room entry (the build).
 - The ← rule in the frame's key table (the build).
 - No new screens.
+
+## The game designer's sign-off (changes 2, 4 and 5)
+
+All three are signed, on the meanings below. Change 1's carry also replaces the arrival line (specs/station-decision-points.md, recommendation 3) on the four hand-offs it covers, since the moving pod already says where the player is and why. The ribbon stays only for a jump with no carry.
+
+**2. What counts as "seen".**
+- An event notice (a chapter cleared, grown up, an elder, a portrait come) clears when its own thing is on screen once the screen has settled, after its carry. Passing through a screen does not count, and opening the room without the thing in view does not count.
+- A steady wait (a ready bud, crates in the bay) is not an event. Seeing it clears nothing; it clears only when acted on (the bud opened, the crates opened).
+- Each notice clears only its own thing; the others keep their lamps.
+- This is written into specs/station-return-signals.md's seen flag.
+
+**5. Which spends still go through a panel.** Exactly the existing list:
+- Grow it;
+- Cross them;
+- Return to the wild;
+- Fit the upgrade;
+- a large Grow now;
+- Spend a sitting;
+- Read it now, when ▲ ▼ lands on an unread gene on Create.
+
+Every other spend (Identify, Read, Mend) is one press, with its price on the bottom line before the press. Neither kind gets a second confirmation or a toast. The result lands where it happens, and the counters tick as the record. "✓ again" arming is gone everywhere. For Return to the wild, the panel's window is the record, and the Vivarium shows the gap once, on the next visit.
+
+**4. The dock choice as P1.** It fits the dock moment, and specs/dock-moments.md now says P1. It needs these conditions:
+- the panel comes after the show (any key skips to it), never in place of it;
+- it has two windows: ✓ Open the bay, drawn as the player's own crates going to their pods through the Pods hatch, and Later, drawn as the crates staying with Home's Cargo lamp. ← is Later;
+- it has no price, because opening costs nothing, and it accepts nothing by itself;
+- there is no panel on an empty trip, and it is deferred while the player is mid-decision, as the dock moment's cases already say;
+- Home's ✓ on "two crates wait" opens the bay directly, with no panel, because that choice is already made.
+
+The same edit brings the dock moment in line with the Cargo redesign: no report card, no rack wells, and the gold glint (not the star, which is now the wish) on a crate holding a pod new to the player.
+
+Signed: game designer.

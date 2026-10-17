@@ -83,7 +83,7 @@ Each new key's ✓ goes where its thing is: the Incubator, the bay, the mibi up 
 
 **Build.**
 
-- A "seen" flag per event (a chapter cleared, grown up, an elder, a portrait come), set when the player opens the screen it belongs to. The pulse and the line's key drop on it.
+- A "seen" flag per event (a chapter cleared, grown up, an elder, a portrait come), set when the player opens the screen it belongs to. The pulse and the line's key drop on it. "Opens" means the thing itself is on screen once the screen has settled (after its carry); passing through does not count. A steady wait (a ready bud, crates in the bay) is not an event: it clears only when acted on (specs/flow-transitions-proposal.md, sign-off).
 - `needKey`'s new keys and order (§3).
 - The ring's fill from stored starts and rules, never a stored countdown (the sitting already works this way): the bud's start and minutes; the sitting crate's start and `sittingWaitMs`; a juvenile's `born` and `JUVENILE_TURNS` against `st.turn`.
 - Home's Incubator and Cargo module props carry their ring's fill; Idle's props carry the tags.
