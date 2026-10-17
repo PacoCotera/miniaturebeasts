@@ -157,18 +157,18 @@ def stand_v2(colour, pattern):
 
 # the genome engineer's likely frame: three co-dominant pigments, six looks; every Loika marked
 RAMPS2 = {'charcoal': ((22, 21, 25), (52, 50, 56), (104, 100, 108)), 'russet': RAMPS['russet'],
-          'sky': ((32, 68, 118), (78, 144, 206), (168, 210, 242))}   # the third pigment: a value step above russet, cool against it
-COLOURS2 = ['charcoal', 'russet', 'sky', 'charcoal and russet', 'charcoal and sky', 'russet and sky']
+          'periwinkle': ((52, 40, 104), (128, 108, 210), (204, 190, 248))}   # the third pigment (a catalogue pigment): a value step above russet, cool against it
+COLOURS2 = ['charcoal', 'russet', 'periwinkle', 'charcoal and russet', 'charcoal and periwinkle', 'russet and periwinkle']
 PATTERNS = ['stripes', 'patches', 'stripes and patches']
 CW2, CH2 = 160, 172
 sh2 = Image.new('RGBA', (190 + len(PATTERNS) * CW2 + 16, 56 + len(COLOURS2) * CH2 + 16), (29, 35, 43, 255))
 d2 = ImageDraw.Draw(sh2)
-d2.text((16, 14), "The Loika's likely frame at Home's size (144 x 152), 1x: Colour (co-dominant, three pigments) x Pattern", font=F13, fill=(241, 235, 223))
+d2.text((16, 14), "The Loika's version 4 frame at Home's size (144 x 152), 1x: Colour (co-dominant, three pigments) x Pattern", font=F13, fill=(241, 235, 223))
 for j, pt in enumerate(PATTERNS):
     d2.text((190 + j * CW2 + CW2 // 2, 44), pt, font=F13, fill=(198, 196, 216), anchor='mm')
 for i, col in enumerate(COLOURS2):
     y = 56 + i * CH2
-    d2.text((16, y + CH2 // 2), col, font=F13, fill=(198, 196, 216), anchor='lm')
+    d2.text((16, y + CH2 // 2), col.replace(' and periwinkle', ' and\nperiwinkle'), font=F13, fill=(198, 196, 216), anchor='lm')
     for j, pt in enumerate(PATTERNS):
         s_ = fit(stand_v2(col, pt), 144, 152)
         x = 190 + j * CW2 + (CW2 - s_.width) // 2
@@ -186,12 +186,12 @@ def four_grey(img):
     out = np.dstack([q, q, q, a[..., 3].astype('uint8')])
     return Image.fromarray(out, 'RGBA')
 
-fg = Image.new('RGBA', (len(COLOURS2) * 150 + 16, 230), (29, 35, 43, 255)); dg = ImageDraw.Draw(fg)
+fg = Image.new('RGBA', (len(COLOURS2) * 150 + 16, 244), (29, 35, 43, 255)); dg = ImageDraw.Draw(fg)
 dg.text((16, 10), 'Four-grey: each coat quantised to four values (stripes and patches)', font=F13, fill=(241, 235, 223))
 for i, col in enumerate(COLOURS2):
     s_ = four_grey(fit(stand_v2(col, 'stripes and patches'), 144, 152))
     fg.alpha_composite(s_, (16 + i * 150, 36))
-    dg.text((16 + i * 150 + 72, 206), col, font=F13, fill=(198, 196, 216), anchor='mm')
+    dg.multiline_text((16 + i * 150 + 72, 214), col.replace(' and ', ' and\n'), font=F13, fill=(198, 196, 216), anchor='mm', align='center')
 fg.convert('RGB').save(os.path.join(OUT, 'loika-four-grey.png'), optimize=True)
 print('loika-four-grey.png')
 

@@ -42,13 +42,11 @@ The genome engineer gave the frame's likely shape, so the range follows it. `loi
 
 **Colour: co-dominant, three pigments, six looks.**
 - **The pigments:** charcoal, russet and a third. The list is settled on the genome engineer's N2.
-- **The third is sky,** a clear cerulean.
-  - **Why not slate:** slate failed the four-grey test. Its value sits on russet's, so a russet-and-slate two-tone would merge.
-  - **Why sky:** it is a value step above russet and cool against it, so the three pigments are dark, middle and light (`loika-four-grey.png`), and every two-tone splits into two values.
-  - It reads on Home's moss, it isn't green, and the cream stripes and patches still hold on it.
-  - It is saturated, not pastel, so it doesn't read as a nursery colour.
-- **The three pure looks** are painted ramps, as above.
-- **The three mixed looks** (charcoal and russet, charcoal and sky, russet and sky) are one painted two-tone, not a blend: the first pigment over the back and head, the second over the flanks and legs. The split follows the body (a share of each column of fur from its top), with a short painted edge. A mixed Loika shows both its pigments, and a player can read which two.
+- **The third is periwinkle,** a catalogue pigment, as the frame requires. Sky, my first pick, isn't in the catalogue.
+  - **Why not slate or plum:** both fail four-grey. Their middle value sits on russet's, so a two-tone with russet would merge.
+  - **Why periwinkle:** it is the one catalogue pigment that is a value step above russet, cool against it, and not green. The three pigments read dark, middle and light (`loika-four-grey.png`), and every two-tone splits into two values.
+  - It reads on Home's moss, and the cream stripes and patches still hold on it.
+**The three mixed looks** (charcoal and russet, charcoal and periwinkle, russet and periwinkle) are one painted two-tone, not a blend: the first pigment over the back and head, the second over the flanks and legs. The split follows the body (a share of each column of fur from its top), with a short painted edge. A mixed Loika shows both its pigments, and a player can read which two.
 
 **Pattern: every Loika is marked, three looks that stack.**
 - **Stripes:** broad pale bands behind the shoulder, bowing back down the flank and tapering to a point, shaded by the fur under them. They are a full value step from the coat, so they read on charcoal at 144 × 152 (the creative director's point). They never cross the head.
@@ -59,4 +57,18 @@ The genome engineer gave the frame's likely shape, so the range follows it. `loi
 
 **The crest and eyes** are unchanged by N2 and are drawn as T-190's base.
 
-**Still to come:** the four real pods, for the redrawn window.
+## The window from four real pods (`home-window-four-v4-pods.png`, `make-window.py`)
+
+These are the genome engineer's seeds, each drawn from its read looks on T-190's ground rows with contact shadows:
+
+| gs | Read looks |
+| --- | --- |
+| 165 | charcoal, patches, leaf crest, eyes between |
+| 168 | russet, stripes, leaf crest, wide pale rings |
+| 10 | charcoal and periwinkle, stripes and patches, bare head, thin rings |
+| 116 | periwinkle, patches, leaf crest, thin rings |
+
+- **The four read as four at a glance,** carried first by colour, then by the marks and the crest.
+- **The two hidden bare heads** (165 and 168) don't show: hidden copies never draw.
+- **The creative director's check:** gs 168's stripes and gs 10's stripes and patches read as two looks.
+- **The proof's honest limit:** the bare head and the eye rings are T-190's proof edits, and the colours and marks are applied by code. The masters are painted layers, after the lead's approval.
