@@ -36,7 +36,7 @@ A screen passes only if the answer to every line is yes, judged on the whole 1×
 
 **What I missed.** The owner rejected the slip on Create (and so on the Incubator): "doesn't read like part of the machine, or anything else" and "a wall of text that nobody will read". My art reviews passed it three times:
 - `results/review-art-2026-10-16b.md` counted the filled slip as answering "wasted space";
-- `-17a.md` and `-17b.md` flagged only its colour and one overlong line.
+- `results/review-art-2026-10-17a.md` and `results/review-art-2026-10-17b.md` flagged only its colour and one overlong line.
 
 Three causes:
 1. **I judged the text as "stand-in content, the build's".** I never asked whether the design should hold that much text at all. The stand-ins were at the spec's longest case, so they are the design.
