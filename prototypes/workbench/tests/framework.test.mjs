@@ -434,3 +434,12 @@ test("the shed pod: a returned mibi's self cross never equals its parent, always
   assert.throws(() => cross(frames[0], { id: "x", genome: typeSpecimen(frames[0]) }, { id: "x", genome: typeSpecimen(frames[0]) }), /one mibi is not a pair/, "cross(m, m) stays refused");
   assert.equal(PENALTY, "AB");
 });
+
+test("a shed pod's pedigree is known only when its parent resolves, as a cross child's", () => {
+  const f = frameOf("S01"), m = typeSpecimen(f), pod = shedPod(f, m, { rng: rng("shed-known") });
+  const byDigest = (d) => (d === genomeDigest(m) ? m : null);
+  const known = relatedness(f, pod, m, byDigest);
+  assert.equal(known.pedigreeKnown, true);
+  assert.ok(known.kinship >= 0.5, `kinship to its parent ${known.kinship}`);
+  assert.equal(relatedness(f, pod, m, () => null).pedigreeKnown, false, "an unresolvable parent: identity is the fallback");
+});

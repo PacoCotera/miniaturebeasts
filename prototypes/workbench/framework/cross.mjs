@@ -118,7 +118,7 @@ export function identity(frame, x, y) {
 }
 // Both measures, and whether the pedigree is known on both sides (else identity is the caution).
 export function relatedness(frame, a, b, lookup = () => null) {
-  const known = (x) => { const g = genomeOf(x); if (g.origin?.kind !== "cross") return true; if (idOf(x) != null && x.parents) return x.parents.length === 2 && x.parents.every((p) => (p != null && typeof p === "object" ? p.id != null : lookup(p))); return (g.origin.parents ?? []).every((p) => lookup(p)); };
+  const known = (x) => { const g = genomeOf(x); if (g.origin?.kind !== "cross" && g.origin?.kind !== "shed") return true;   // a shed pod's parents must resolve, as a cross child's if (idOf(x) != null && x.parents) return x.parents.length === 2 && x.parents.every((p) => (p != null && typeof p === "object" ? p.id != null : lookup(p))); return (g.origin.parents ?? []).every((p) => lookup(p)); };
   return { kinship: kinship(a, b, lookup), identity: identity(frame, a, b), pedigreeKnown: known(a) && known(b) };
 }
 
