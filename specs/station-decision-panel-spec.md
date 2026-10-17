@@ -35,7 +35,7 @@ The owner, 13:26: "good with the big panels, visually we must make them very int
 | --- | --- | --- |
 | Veil | the stage, 0, 40, 1024, 522 | The screen under the panel, dithered 8 of 16 levels toward `stageGround` (one cut), unless T-47 gives another treatment. The top bar and the bottom line are not veiled |
 | Panel | 92, 80, 840, 440 | T-47's panel master (a nine-slice at any of these sizes), radius 12 |
-| Title | 124, 96, 776, 36 | 28, one line, **≤ 4 words**: the decision ("Grow this founder?"). No subtitle, no question line |
+| Title | 124, 96, 776, 36 | 20 px medium (the guide's title size), one line, **≤ 4 words**: the decision as a question ("Grow this founder?"). No subtitle, no second question line |
 | Cards | y 152–440 (288 high), x from 124, gap 16 | 1, 2 or 3 cards across 776: one is 776 wide, two are 380, three are 248 |
 | Keys | none drawn in the panel | The bottom line says ✓ and ← (§1.4) |
 
@@ -49,7 +49,7 @@ Offsets are from the card's origin. Its ground is T-47's card well.
 | Destination mark | (w − 40, 16), 24 × 24 | The title bar's mark of the room it lands in (`frame.json regions.title.marks`: Home, Research, Vivarium, Library), over the picture's top right. Staying here: no mark | — |
 | Name | (16, 184), w − 32 × 28 | 20. The option's verb | **≤ 3 words** |
 | Costs | (16, 216), w − 32 × 20 | The kit's 16 px icons with their figures (icon before figure, pitch as the bottom line), in `price`. A gain is the icon with "+n" in `turn`. Free: nothing drawn | ≤ 4 groups |
-| Line | (16, 244), w − 32 × 20 | 16, `subject`: the one thing the picture cannot say ("Stamina stays a surprise"). A loss shows its line in `need` instead ("gone for good"). Optional | **≤ 6 words, one line**, never a figure |
+| Line | (16, 244), w − 32 × 20 | 16, `subject`: the one thing the picture cannot say ("Stamina stays a surprise"). A loss shows its line in `need` instead ("gone for good"). Optional | **≤ 8 words, one line**, never a figure |
 | (free) | (16, 268) to the card's foot (288) | — | — |
 
 **Width limits** (measured with the real measurer):
@@ -103,7 +103,7 @@ Per card: picture · destination mark · name · costs · line. The words are th
 | **Return this pod?** | Pods, ✓ on the leaf plate | **Return it**: the pod over its place (`place-{g}-64x64` with the pod at 88 × 112), mark Research, ❀ +1, "gone for good" (loss). **Keep it**: the pod in its well, no mark |
 | **Fit the upgrade?** | Probe bench, ✓ on the slot | Each card shows **the Probe itself at its tier, beside how far it reaches** (T-20261016-159). In the card's picture area, (16, 16) to w − 32 × 160, centred: the Probe at 128 × 160 at the left, then a gap of 16, then the field map with the reach ring at 160 × 160. **Fit it**: the Probe as it will be (`bench-probe-t2-card-128x160`, the part in place), the map with the wider tier-2 ring lit (`bench-reach-t2-160`), and the `deep` dial's icon; no mark, ⚡ 12 ◆ 4, "reaches further". **Not now**: the Probe as it is (`bench-probe-t1-card-128x160`, no part) and the map with its smaller tier-1 ring (`bench-reach-t1-160`), unlit; no cost, no line. The two read apart in one look by the silhouette (the part there or not) and by the ring's size; neither is dimmed. The old part pictures (`bench-part-t2-fitted-128`, `bench-part-t2-dim-128`) leave this panel |
 | **Grow it now?** | Incubator, ✓ Grow now above ❀ 4 (the game designer confirms) | **Grow it now**: the pod at its ready step, ❀ n, "ready at once". **Wait**: the pod at its current step, no cost, "ready in about {n} min" (the one minute count, owner ruling 3) |
-| **Cross them?** | Cross, ✓ Cross them | **Cross them**: the two parents' faces over the bud, mark Research, crossCost, "{forecast in ≤ 6 words}". **Pick another**: the partners' faces. **Waits for the Cross screen** |
+| **Cross them?** | Cross, ✓ Cross them | **Cross them**: the two parents' faces over the bud, mark Research, crossCost, "{forecast in ≤ 8 words}". **Pick another**: the partners' faces. **Waits for the Cross screen** |
 | **Sit for a portrait?** | Vivarium up close, ✓ on Portrait | **Sit for it**: the mibi at 104 × 112 beside the held sitting frame (`sitting-frame-held-48x40`, 1:1), the sitting icon, "a portrait in a few hours", or the loss line when a held sitting is lost. **Not now**. **Waits for the sitting screen** |
 
 # Part 2. The ceremony cuts and the "on the page" rows
@@ -187,13 +187,15 @@ It is the architect's: T-20261016-90 (the face, the wire, the host's hold end, t
 
 The creative director chose P1 (`specs/station-experience-review.md`, the brief for B-20261017-1), on the guide's components (`design/style-guide/README.md` §4 on branch `style-guide-t172`: Pane, Decision panel, Option card). This fixes the guide's open note "P1's larger windows once P1 is chosen". Layouts at 1× on slate: `specs/redesign-panels/p1-layout/` (Return, Grow, Hatch with three options, Fit, and the shared pane sheet).
 
-- **The panel:** unchanged, the pane at radius 12, 840 × 440 at (92, 80), over the stage veiled toward `ground`. The title is 28 px, centred on 512, with its baseline at y 124 and at most 4 words.
+- **The panel:** unchanged, the pane at radius 12, 840 × 440 at (92, 80), over the stage veiled toward `ground`. The title is 20 px medium (the guide's title size), centred on 512, with its baseline at y 124 and at most 4 words.
 - **The cards:** y 152 to 504 (352 tall), 16 apart, starting at x 124. One option is 776 wide, two are 380, three are 248. A card is a well in `ground`, radius 8, 1 px `hairline`.
 - **The outcome window:** at (8, 8) in the card, w − 16 × 240: 760, 364 or 232 wide. The outcome scene is painted full bleed, radius 6, and each option is a different scene (the game designer's table, `specs/purpose-briefs-b20261017-1.md` §6.1). It replaces the 160-tall window and the plinth.
 - **Under the window:**
   - the verb, 20 px medium, `bone`, at (16, 264) baseline, at most 3 words;
   - the costs, as icons with figures in `focus`, right-aligned to (w − 16) on the verb's baseline;
-  - the line, 16 px at (16, 296) baseline, one line, at most 6 words, in `fog`, or in `coral` for a loss with its cross.
+  - the line, 16 px at (16, 296) baseline, one line, at most 8 words, in `fog`, or in `coral` for a loss with its cross.
 - **Focus:** the ring in `focus`, 2 px, 4 px out (radius 12); the card lifts 2 px.
 - **The words budget:** the line holds at most 8 words (the creative director and the game designer, T-173; the guide's 6 for panels is amended to 8). "Gone for good. Its place will remember it." stands as written.
 - **Retired** (the creative director, review §2 rules 3 and 5): `plate-device-*`, `plate-well-*` as pictures, the cargo report plate, `label-plate-cream` and the stamp plaque. Every pane is the one flat slate pane, every well a `ground` well, and the stamp is drawn on the display.
+
+**Aligned with the style guide (T-173, game designer):** the panel's title is 20 px medium, at most 4 words; a window's verb is at most 3 words; its line at most 8 words, one line (design/style-guide/README.md, the words budget). Where anything above said 28 px or 6 words for these, the guide's numbers hold. The bottom line's subject zone keeps its own 6 words.
