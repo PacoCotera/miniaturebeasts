@@ -204,24 +204,34 @@ let lightNow = () => { throw new Error("the host has no light: createHost({ ligh
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)
 export function createHost({ send, nowMs, light, time = null, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
   lightNow = light; if (time) timeNow = time;
-  let holdUntil = 0, arrivalUntil = 0; const timers = [];
-  const holding = () => nowMs() < holdUntil;
+  let holdUntil = 0, skipUntil = 0, arrivalUntil = 0; const timers = [];   // skipUntil: a skippable event's hold, kept apart from the rest so ✓ can end it alone (lvgl-switch.md §2.1)
+  const holding = () => nowMs() < holdUntil || nowMs() < skipUntil;
   const arriving = () => nowMs() < arrivalUntil;   // an arrival plays (Home's crates sliding in holds nothing, and the idle timer waits for its end)
   const play = (e) => {
     if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && (e.target === "turn" || e.target === "nameTag")))) return;
     const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
-    if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
+    if (e.skip !== undefined && typeof e.skip !== "boolean") throw new Error(`play ${e.kind}: skip is true or false, not ${e.skip}`);
+    if (hold && e.skip) { skipUntil = Math.max(skipUntil, nowMs() + hold); UI.skip = { kind: e.kind, target: e.target }; } else if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
     if (e.kind === "arrival") arrivalUntil = Math.max(arrivalUntil, nowMs() + (e.ms || 0));
     send({ t: "event", ...e, hold });
   };
-  const at = (ms, fn) => { timers.push({ t: nowMs() + ms, fn }); };
+  const at = (ms, fn, skip = false) => { timers.push({ t: nowMs() + ms, fn, skip }); };   // skip: the step belongs to the skippable event just played, and ✓ Skip runs it at once
+  // ✓ Skip (the face's `skip` intent, a skippable hold running): the hold ends now and the event's own steps run in their order on this frame, as with hold 0; any other hold, and a kept room or Dock key, stand.
+  const skip = () => {
+    if (!(nowMs() < skipUntil)) return false;
+    skipUntil = 0; UI.skip = null;
+    const mine = timers.filter((x) => x.skip).sort((a, b) => a.t - b.t); for (const x of mine) timers.splice(timers.indexOf(x), 1);
+    for (const x of mine) x.fn();
+    return true;
+  };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, save: () => { save(); afterSave(); }, holding, arriving,
+    now: () => Date.now(), motion, say: msg, play, at, skip, save: () => { save(); afterSave(); }, holding, arriving,
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
       while (timers.length && timers[0].t <= t) timers.shift().fn();
+      if (UI.skip && !(t < skipUntil)) UI.skip = null;   // the skippable hold ran out: the line's ✓ Skip goes
       incubatorTick(h);
       if (!holding() && h.pendingDock) { h.pendingDock = false; onDock(h); }   // a Dock key pressed in a hold is kept (two presses cancel) and acts when the hold ends, before a kept room key: the Dock is a world event (cargo.json keys.dock, frame.json idle.keys.dock)
       if (!holding() && h.pendingRoom && cuttingHatch(h)) { h.pendingRoom = null; landHatch(h); }   // a room key kept through the hatch's hold is a cutting key: it lands the meet and is used up (UI/UX "Hatch cutting key")
@@ -248,6 +258,7 @@ function habitatFocus(h, target) {
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") { if (m.kind === "hatch" && cuttingHatch(h) && !h.holding()) landHatch(h); return; }   // informative only, but for the hatch with a moving set: a key the face acted on after the hold ended it (its cut), and that key lands the meet
+  if (m.t === "intent" && m.verb === "skip") { h.skip(); return; }   // ✓ in a skippable hold (lvgl-switch.md §2.1): before every other rule, so it is never a cutting key; a late one, after the hold, does nothing
   if (m.screen === "incubator" && UI.screen !== "incubator") return;   // a key the cut already spent (the meet has landed): the Incubator's intent after the screen left is dropped
   if (m.screen === "incubator" && cuttingHatch(h) && !h.holding() && m.t === "intent") { landHatch(h); return; }   // the cutting key lands the meet and does nothing else
   if (m.t === "focus") {

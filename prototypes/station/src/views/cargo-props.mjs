@@ -60,7 +60,7 @@ export function cargoBuild(m, spec, home, frame) {
   let line, need = null;
   const afterCrates = S.needKey(st, sv, settings, m.ui, true), wordsAfter = afterCrates && { ...afterCrates, module: home.strings.needs[afterCrates.key].module };
   const notice = wordsOf(wordsAfter, home).notice;
-  if (state === "opening") line = { ok: null, back: null, subject: Sg.subjects.opening, need: "" };
+  if (state === "opening") line = { ok: m.ui.skip ? Sg.skip : null, back: null, subject: Sg.subjects.opening, need: "" };   // ✓ Skip only while the skippable hold runs (the host's ui.skip)
   else if (state === "report") line = { ok: run.report.newPods ? (run.report.newPods === 1 ? Sg.newPods.one : Sg.newPods.few) : Sg.done, back: "Cargo", subject: Sg.subjects.report, need: "" };
   else if (crates.length) { const all = walkCrates(st, sv, docked).length, n = c.drawn == null ? all : Math.min(c.drawn, all); line = { ok: Sg.open, back: "Home", subject: n === 1 ? Sg.subjects.cratesOne : fill(Sg.subjects.crates, { count: spelled(n) }), need: notice }; }
   else if (st.waiting.length) { const w = st.waiting.length; line = { ok: null, back: "Home", subject: w === 1 ? Sg.subjects.waitingOne : fill(Sg.subjects.waiting, { count: spelled(w) }), need: notice }; }   // before the away line: the open bay shows the waiting pods (cargo.json line.bay.order)

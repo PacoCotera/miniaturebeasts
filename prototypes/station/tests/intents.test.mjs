@@ -95,7 +95,7 @@ test("Cargo's opening: ✓ Open the bay opens every crate at once as the rule an
   const st = world(); S.seedCrate(st, "S01", 2, 4101, T0); S.seedCrate(st, "S01", 1, 4102, T0); st.dock = { docked: true, at: T0 };
   const h = host(st); h.ui.screen = "cargo"; h.motion = () => true; const e0 = st.e;
   INTENTS.cargo.intent(h, "room", "confirm");
-  const ar = h.played.find((e) => e.kind === "arrival"); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: 6180, hold: 6200 }, "two crates: 2 × 3000 + 180, hold 2 × 3000 + 200");
+  const ar = h.played.find((e) => e.kind === "arrival"); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: 6180, hold: 6200, skip: true }, "two crates: 2 × 3000 + 180, hold 2 × 3000 + 200");
   assert.equal(h.ui.cargo.state, "opening"); assert.deepEqual(h.ui.cargo.shown, { e: e0, d: st.d - 6, s: st.s - 8, turn: st.turn }, "the top bar shows the counters before the crates");
   assert.equal(st.tray.length, 3, "the rule opened both at once"); assert.ok(h.saved >= 1);
   const at = (ms) => h.timers.filter((t) => t.ms === ms);
@@ -121,7 +121,7 @@ test("Cargo's bay and report: ✓ opens the crates, ← goes Home with the ring 
 test("Cargo's opening with reduced motion (the host stages each step as props at its time): per crate k from k × 3000: open at 200, the ribbon 500, the counters 800, pod i at 1200 + 150 · i, the turn 1650; the arrival and its hold are the same as with motion", () => {
   const st = world(); S.seedCrate(st, "S01", 3, 4101, T0); S.seedCrate(st, "S01", 2, 4102, T0); st.dock = { docked: true, at: T0 };
   const h = host(st); h.ui.screen = "cargo"; h.motion = () => false; INTENTS.cargo.intent(h, "room", "confirm");
-  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: 6180, hold: 6200 }, "ms and hold unchanged");
+  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: 6180, hold: 6200, skip: true }, "ms and hold unchanged");
   const seen = []; for (const t of h.timers.slice().sort((a, b) => a.ms - b.ms)) { const before = [h.ui.cargo.crate, h.ui.cargo.at, h.ui.cargo.state]; t.fn(); const c = h.ui.cargo; if (c.crate !== before[0] || c.at !== before[1] || c.state !== before[2]) seen.push([t.ms, c.crate, c.at, c.state]); }
   const steps = (k, pods) => [200, 500, 800, ...Array.from({ length: pods }, (_, i) => 1200 + 150 * i), 1650].map((at) => [k * 3000 + at, k, at, "opening"]);
   assert.deepEqual(seen.filter((x) => x[3] === "opening"), [...steps(0, 3), [3000, 1, 0, "opening"], ...steps(1, 2)].filter((x, i, a) => a.findIndex((y) => y[0] === x[0]) === i), "the host's stage by time");

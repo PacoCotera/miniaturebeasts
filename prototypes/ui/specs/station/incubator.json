@@ -93,7 +93,7 @@
   "wipe": { "kind": "wipe", "target": "the chapter's id (regions.rail.tabs[i].id)", "ms": 1000, "hold": 0, "do": "a founder's bud: the tab turns from unread to read (its word and emblem at once), its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter on the wipe's first frame. One wipe per chapter that turns read while the screen is shown; none on the first look, none for growNow's tabs (its cut), none under reduced motion (a cut on the next refresh); chapters turning read on the same frame wipe at once, each in its own tab's boxes (≤ 47,680 px)" },
   "growNow": { "kind": "growNow", "target": "room", "ms": 400, "hold": 400, "do": "the n = total − full leaves still to fill, the filling leaf first (k = 0, from its props rows), each turn whole at floor(k·400/n) ms, k = 0 to n − 1, in fill order (inner left to right, then outer), each redrawing its own 16×20 box; then, at 400, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; a cross bud keeps its unread chapters; the state is ready; the props show the bud as it was (leaves, tabs, stamp, line) until 400, and the ready state lands on one refresh at 400 (an animation frame: ≤ 153,600 px, printed and asserted)" },
   "hatch": {
-   "kind": "hatch", "target": "room", "ms": 2600, "hold": 2780,
+   "kind": "hatch", "target": "room", "ms": 2600, "hold": 2780, "skip": true,
    "steps": [
     { "at": 0, "do": "the leaves go (a cut); the plaque keeps its word (fix 5 I3)" },
     { "at": 0, "ms": 600, "do": "a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps bud-ready-128x160, its shape and bud-ready-front-128x160 until 600 (art director, 2026-10-10 10:48: the lift is retired, the chamber stays; UI designer, 10:54)" },
@@ -106,7 +106,7 @@
     { "at": 2600, "ms": 180, "do": "the screen transition (16-level Bayer dither) to one mibi up close, in the meet (handoff)" }
    ],
    "moving": {
-    "ms": 6400, "hold": 2720, "firstHold": 5840, "cut": true, "cutMeetHold": 300,
+    "ms": 6400, "hold": 2720, "firstHold": 5840, "skip": true, "cut": true, "cutMeetHold": 300,
     "when": "the juvenile has a moving set (its `moving` prop: the close atlas and its shadow); with none, the steps above; motion off: the cut to the meet on the frame of ✓, as now (Station M1 §2.5, the game designer's R2 and R5)",
     "hold.rule": "input is held to 2720 (the stand: crack, curled, one sleeping breath and the wake seen whole); on a save's first hatch (bud.firstEver, kept on the hatch) to 5840, the stand after the first hop",
     "steps": [
@@ -155,7 +155,7 @@
   "empty": { "action": "✓ Choose a pod when the rack holds a pod and a bay is free; else no ✓ cap", "context": "strings.empty", "notice": "none, but strings.noBay when no bay is free", "back": "Home" },
   "growing": { "action": "✓ Grow now, then the price, icon before figure: ❀ 1 for every 2 minutes left, rounded up (at most 19; the first bud 3) (state.instantGrowCost)", "context": "strings.bud (strings.crossBud for a cross)", "notice": "the frame's notice", "back": "Home" },
   "ready": { "action": "✓ Open, no price", "context": "strings.bud (strings.crossBud for a cross)", "notice": "no bay free (strings.noBay, the amber lamp), a guard only; else the frame's notice", "back": "Home" },
-  "hatch": { "action": "none (input held)", "context": "strings.painting while the painting is on its way, strings.offline while offline, else none", "back": "Home" }
+  "hatch": { "action": "strings.skip while the hold runs (✓ Skip: a skippable hold, lvgl-switch.md §2.1, goes on to the hatch's end, the meet); none after it", "context": "strings.painting while the painting is on its way, strings.offline while offline, else none", "back": "Home" }
  },
  "colours": {
   "dome": { "back": "ground", "housing": "metal", "windowEdge": "hairline", "standby": "sand", "ready": "cream", "note": "the art director's rulings (2026-10-10 01:44): the chamber in the sage housing (metal), its window a hairline edge with no highlight; the standby pool sand, about half the ready light; ready cream, warm, never a ring" },
@@ -171,6 +171,7 @@
  },
  "strings": {
   "title": "Incubator",
+  "skip": "Skip",
   "grow": "Grow now",
   "open": "Open the bud",
   "choose": "Choose a pod",

@@ -28,7 +28,8 @@ export function intent(h, target, verb) {
     h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind, moving, hold, cuttable: moving && !!ev.cut, over: false }; h.save();
     const over = (cut = false) => { const hh = h.ui.inc.hatch; if (!hh || hh.over) return; hh.over = true; h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "resident"; h.goto("habitat", 0, cut ? { cut: true, meetHold: spec.events.hatch.moving.cutMeetHold ?? 300 } : {}); };   // the hatch is over: meet the mibi, the ring on the resident (habitat.json focus.targets.resident); a cut landing draws no dither and the meet holds input 300 ms
     h.ui.inc.hatch.land = () => over(true);
-    if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold, ...(moving && ev.cut ? { cut: true } : {}) }); h.at(ev.ms, () => over(false)); } else over();   // reduced motion: a cut, the meet on the frame of ✓
+    const sk = ev.skip === true;   // a skippable hold (lvgl-switch.md §2.1): ✓ Skip ends the hold and the hatch goes on to its end, the meet
+    if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold, ...(moving && ev.cut ? { cut: true } : {}), ...(sk ? { skip: true } : {}) }); h.at(ev.ms, () => over(false), sk); } else over();   // reduced motion: a cut, the meet on the frame of ✓
     return r;
   }
   const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "", left: S.budMinutesLeft(h.st, h.settings, h.now()) };

@@ -88,7 +88,7 @@ export function incubatorBuild(m, spec, pods) {
       const noBay = S.bayFull(st, settings);
       line = { ok: Sg.open, back: Sg.back, subject: bud, need: noBay ? Sg.noBay : null }; if (noBay) line.dim = true;   // a dimmed cap when no bay is free: a guard only
     }
-  } else line = { ok: null, back: Sg.back, subject: regions.lamp.why === "offline" ? Sg.offline : regions.lamp.why === "waiting" ? Sg.painting : "", need: null };
+  } else line = { ok: state === "hatch" && m.ui.skip ? Sg.skip : null, back: Sg.back, subject: regions.lamp.why === "offline" ? Sg.offline : regions.lamp.why === "waiting" ? Sg.painting : "", need: null };   // ✓ Skip only while the hatch's skippable hold runs (the host's ui.skip)
   const props = { state, regions, focus: { cur: "room", targets: [] } };
   return { props, line, requests };
 }

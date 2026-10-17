@@ -44,6 +44,30 @@ test("a held event holds input: no key is acted on until it ends", { skip }, asy
   at(f, 2000); f.send({ t: "key", k: "right" }); assert.equal(msgs(f).filter((m) => m.t === "focus").length, 1, "free again");
   send(f, { kind: "plate", target: "msg", ms: 4000 }); at(f, 100); f.send({ t: "key", k: "left" }); assert.equal(msgs(f).filter((m) => m.t === "focus").length, 1, "a plate does not hold");
 });
+test("a skippable hold (lvgl-switch.md §2.1): ✓ alone cuts the event to its end, says done, then says `skip` on its target, and frees input; other keys act as in any hold", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c);
+  send(f, { kind: "arrival", target: "crate", ms: 3180, hold: 3200, skip: true }); at(f, 100);
+  f.send({ t: "key", k: "right" }); assert.deepEqual(msgs(f).filter((m) => m.t === "focus" || m.t === "intent"), [], "the pad is held");
+  f.send({ t: "key", k: "home" }); const rk = msgs(f).filter((m) => m.t === "intent"); assert.deepEqual(rk.map((m) => m.verb), ["room:home"], "a room key is said, as in any hold");
+  f.send({ t: "key", k: "confirm" }); const out = msgs(f).filter((m) => m.t === "done" || m.t === "intent");
+  assert.deepEqual(out.map((m) => [m.t, m.kind ?? m.verb, m.target]), [["done", "arrival", "crate"], ["intent", "skip", "crate"]], "done on the frame of ✓, then the skip intent on the event's target");
+  at(f, 120); f.send({ t: "key", k: "right" }); assert.equal(msgs(f).filter((m) => m.t === "focus").length, 1, "input is free after the skip");
+});
+test("a skip ends only the skippable hold: another event's hold stands, and ✓ in a hold without skip is dropped as before", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c), pod = c.props.regions.specimen.pod.id;
+  send(f, { kind: "seal", target: pod, ms: 2000, hold: 2000 }); at(f, 50); f.send({ t: "key", k: "confirm" }); assert.deepEqual(msgs(f).filter((m) => m.t === "intent" || m.t === "done"), [], "✓ in a plain hold does nothing");
+  send(f, { kind: "hatch", target: "room", ms: 2600, hold: 2780, skip: true }); at(f, 100);
+  f.send({ t: "key", k: "confirm" }); assert.deepEqual(msgs(f).filter((m) => m.t === "intent").map((m) => [m.verb, m.target]), [["skip", "room"]]);
+  f.send({ t: "key", k: "right" }); assert.deepEqual(msgs(f).filter((m) => m.t === "focus"), [], "the seal's hold still holds");
+  f.send({ t: "key", k: "confirm" }); assert.deepEqual(msgs(f).filter((m) => m.t === "intent"), [], "no second skip: the skippable hold is over and the seal's has no skip");
+  at(f, 2000); f.send({ t: "key", k: "right" }); assert.equal(msgs(f).filter((m) => m.t === "focus").length, 1, "free at the seal's hold end");
+});
+test("after a skippable hold runs out, ✓ acts as usual; `skip` must be a boolean", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c);
+  send(f, { kind: "arrival", target: "crate", ms: 300, hold: 320, skip: true }); at(f, 320); msgs(f);
+  f.send({ t: "key", k: "confirm" }); const it = msgs(f).filter((m) => m.t === "intent"); assert.ok(it.length === 1 && it[0].verb !== "skip", "the hold is over: ✓ is the screen's own");
+  assert.equal(f.send({ t: "event", kind: "hatch", target: "room", ms: 100, skip: "yes" }), -1); assert.match(f.errors().join(), /skip is true or false/);
+});
 test("motion off: every event jumps to its end (done at once, nothing drawn in between)", { skip }, async () => {
   const c = find("overview", /the seal half cleared/), f = await start(c, { motion: false }), before = f.hash();
   send(f, { kind: "seal", target: c.props.regions.specimen.pod.id, ms: 2000, hold: 2000 }); assert.equal(msgs(f, "done").length, 1); at(f, 500); assert.equal(f.hash(), before);

@@ -56,19 +56,20 @@ export function openBay(h) {
   const crates = plays.map((p, k) => ({ ribbon: ribbonOf(spec, p.c, walk[k]), dev: !!p.c.dev, gained: { e: p.gained.e, d: p.gained.d, s: p.gained.s }, pods: p.ids.map((id) => ({ id, well: st.tray.findIndex((q) => q.id === id) })) }));
   c.run = { crates, report: reportOf(spec, r.plays, h.settings, c.mend, st, h.sv, h.specs.frame) }; c.mend = null;
   c.state = "opening"; c.crate = 0; c.at = 0; c.shown = { ...before };
-  h.play({ kind: "arrival", target: "crate", ms: openingMs(spec, n), hold: openingHold(spec, n) });
+  const sk = spec.events.opening.skip === true;   // a skippable hold (lvgl-switch.md §2.1): ✓ Skip runs every step below at once, to the report
+  h.play({ kind: "arrival", target: "crate", ms: openingMs(spec, n), hold: openingHold(spec, n), ...(sk ? { skip: true } : {}) });
   plays.forEach((p, k) => {
     const t0 = k * T.perCrate;
-    if (k) h.at(t0, () => { c.crate = k; c.at = 0; });   // a cut to the next closer, sealed (cargo.json events.opening.crate: R8)
+    if (k) h.at(t0, () => { c.crate = k; c.at = 0; }, sk);   // a cut to the next closer, sealed (cargo.json events.opening.crate: R8)
     const gain = (key) => p.gained[key] - (key === "e" ? p.spent : 0);
-    h.at(t0 + T.counters, () => { for (const key of ["e", "d", "s"]) c.shown[key] += gain(key); });
-    h.at(t0 + T.turn, () => { c.shown.turn = p.turnTo; });
+    h.at(t0 + T.counters, () => { for (const key of ["e", "d", "s"]) c.shown[key] += gain(key); }, sk);
+    h.at(t0 + T.turn, () => { c.shown.turn = p.turnTo; }, sk);
     if (!motion) {   // each step as a cut at its time: open at 200, the ribbon, the counters, each pod to its well, the turn
       const points = [T.lid, T.ribbon, T.counters, ...crates[k].pods.map((_, j) => T.travel + j * T.stagger), T.turn];
-      for (const at of points) h.at(t0 + at, () => { c.crate = k; c.at = at; });
+      for (const at of points) h.at(t0 + at, () => { c.crate = k; c.at = at; }, sk);
     }
   });
-  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; });   // a cut to the report: the door shut, the plate on it (R8)
+  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; }, sk);   // a cut to the report: the door shut, the plate on it (R8)
   h.save(); return r;
 }
 

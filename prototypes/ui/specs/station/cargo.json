@@ -58,7 +58,7 @@
  "events": {
   "crateIn": { "kind": "arrival", "target": "crates", "ms": "(crates − 1) × 250 + 500", "hold": 0, "when": "the Companion docks with crates while Cargo shows: the door opens as a cut on the Dock frame (R2) and each crate's shadow appears on its landing frame", "each": { "from": [0, -64], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay's inside (24, 56, 976, 304)" } },
   "opening": {
-   "kind": "arrival", "target": "crate", "ms": "crates × 3000 + 180", "hold": "crates × 3000 + 200", "byCrates": { "1": { "ms": 3180, "hold": 3200 }, "2": { "ms": 6180, "hold": 6200 }, "3": { "ms": 9180, "hold": 9200 }, "rule": "the host sends whole ms: crates × 3000 + 180 and the hold 20 ms longer, for 1 to 9 crates (hold ≤ 30000, lvgl-switch §2.7); in play at most 3. With 10 or more (developer only) the event plays the first nine; the rest are taken in by openBay, the counters and turn reach their final values at the end" }, "perCrate": 3000, "focus": "the room; no ring; no key moves it",
+   "kind": "arrival", "target": "crate", "skip": true, "ms": "crates × 3000 + 180", "hold": "crates × 3000 + 200", "byCrates": { "1": { "ms": 3180, "hold": 3200 }, "2": { "ms": 6180, "hold": 6200 }, "3": { "ms": 9180, "hold": 9200 }, "rule": "the host sends whole ms: crates × 3000 + 180 and the hold 20 ms longer, for 1 to 9 crates (hold ≤ 30000, lvgl-switch §2.7); in play at most 3. With 10 or more (developer only) the event plays the first nine; the rest are taken in by openBay, the counters and turn reach their final values at the end" }, "perCrate": 3000, "focus": "the room; no ring; no key moves it",
    "crate": [
     { "at": 0, "ms": 0, "do": "a cut to this crate's closer, sealed, on the open bay (R8): no dither, no veil" },
     { "at": 200, "ms": 300, "do": "the seal tag tears and the lid lifts: sealed → opening → open, its pods in their places" },
@@ -87,7 +87,7 @@
  },
  "line": {
   "bay": { "crates": { "when": "a crate is ready to open: walk crates while docked, a ready sitting crate docked or away", "action": "strings.open", "subject": "strings.subjects.crates (while crates slide in, the count of crates drawn: a crate counts from the frame its slide starts, i × 250 ms after the Dock; with reduced motion every crate is in on the Dock frame)", "need": "the most pressing notice after the crates (home.json strings.needs)", "back": "Home" }, "empty": { "action": null, "subject": "strings.subjects.empty", "need": "the notice", "back": "Home" }, "away": { "action": null, "subject": "strings.subjects.away", "need": "the notice", "back": "Home" }, "waiting": { "action": null, "subject": "strings.subjects.waiting", "need": "the notice", "back": "Home" }, "order": ["crates", "waiting", "away", "empty"], "orderNote": "pods waiting while away: the waiting line comes before the away line, because the bay is open and shows them; \"the bay is empty\" reads over the shut door (copywriter 02:16)" },
-  "opening": { "action": null, "subject": "strings.subjects.opening", "need": null, "back": null },
+  "opening": { "action": "strings.skip while the hold runs (✓ Skip: a skippable hold, lvgl-switch.md §2.1, cuts to the report)", "subject": "strings.subjects.opening", "need": null, "back": null },
   "report": { "action": "strings.newPods (one or few), or strings.done", "subject": "strings.subjects.report", "need": null, "back": "Cargo" }
  },
  "handoff": {
@@ -101,6 +101,7 @@
  },
  "strings": {
   "title": "Cargo",
+  "skip": "Skip",
   "open": "Open the bay",
   "newPods": { "one": "See the new pod", "few": "See the new pods" },
   "done": "Done",

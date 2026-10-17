@@ -44,7 +44,7 @@
     ],
     "screen": "incubator",
     "state": "hatch",
-    "ok": null,
+    "ok": "Skip",
     "price": null,
     "subject": ""
    },
@@ -52,7 +52,6 @@
     "held": [
      "up",
      "left",
-     "confirm",
      "back"
     ],
     "said": [],

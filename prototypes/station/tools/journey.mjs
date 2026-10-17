@@ -148,8 +148,8 @@ await page.waitForTimeout(900); await frameShot("home-docked", true);
   u = await hpress("confirm", 500); expect(u.screen === "cargo", "home-bay: ✓ on the Cargo module opens Cargo again: " + JSON.stringify(u));
   await hpress("confirm", 300);
   expect(await page.evaluate(() => window.__st.holding()), "home-bay: the opening holds input");
-  p = await props(); expect(p.state === "opening" && p.frame.line.subject === "the bay is opening" && p.frame.line.ok == null && p.frame.line.back == null, "home-bay: the line says the bay is opening and offers nothing: " + JSON.stringify([p.state, p.frame.line]));
-  u = await hpress("confirm", 200); u = await hpress("back", 200); expect(u.screen === "cargo" && (await props()).state === "opening", "home-bay: ✓ and ← wait while the crates open: " + JSON.stringify(u));
+  p = await props(); expect(p.state === "opening" && p.frame.line.subject === "the bay is opening" && p.frame.line.ok === "Skip" && p.frame.line.back == null, "home-bay: the line says the bay is opening and offers only ✓ Skip (a skippable hold, lvgl-switch.md §2.1): " + JSON.stringify([p.state, p.frame.line]));
+  u = await hpress("back", 200); expect(u.screen === "cargo" && (await props()).state === "opening", "home-bay: ← waits while the crates open (✓ would skip to the report): " + JSON.stringify(u));
   await page.waitForTimeout(6600);
   p = await props(); l = p.frame.line; s = await st();
   expect(p.state === "report" && p.regions.report.crates.length === 2 && p.regions.report.crates[0].lead === "First crate" && !(await page.evaluate(() => window.__st.holding())), "home-bay: after both crates the report shows, input free: " + JSON.stringify([p.state, p.regions.report?.crates, p.regions.report?.gathered]));
@@ -433,8 +433,8 @@ await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
   expect(p.state === "ready" && p.frame.line.ok === "Open the bud" && s1.s < s0.s, "Grow now paid Essence and the bud is ready: " + JSON.stringify([p.state, p.frame.line.ok])); }
 await hpressI("confirm", 1000);   // ✓ Open: the hatch, input held 2780 ms
 { const p = await props(); expect(p.state === "hatch" && (await page.evaluate(() => window.__st.holding())), "✓ Open: the hatch holds input: " + p.state); await frameShot("page-hatch", true); }
-await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);
-{ const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad, ✓ and ← do nothing during the hatch: " + JSON.stringify([u.screen, m])); }
+await said(); for (const k of ["up", "left", "back"]) await press(k, 0);   // ✓ is left out: in the hatch's hold it skips (a skippable hold, lvgl-switch.md §2.1; tests/host-hold.test.mjs)
+{ const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad and ← do nothing during the hatch: " + JSON.stringify([u.screen, m])); }
 await page.waitForTimeout(2200);
 s = await st(); const fig = s.mibis.at(-1);
 expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 && fig.read.length === 4, "Moss opened into bay 2, fully read");

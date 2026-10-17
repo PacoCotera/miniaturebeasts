@@ -152,11 +152,11 @@ test("more than three crates (developer only): the bay draws the first three, th
   const b = build(st, sv); assert.equal(b.props.regions.crates.places.length, 3, "three in the bay"); assert.equal(b.line.subject, "six sealed crates", "the context counts all");
   const h = opened(st, sv), o = build(st, sv, h.ui).props.regions.opening;
   assert.deepEqual(o.crates.map((c) => c.ribbon), ["First crate home", "Second crate home", "Another crate home", "Third crate home", "Another crate home", "Another crate home"]);
-  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: 6 * 3000 + 180, hold: 6 * 3000 + 200 });
+  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: 6 * 3000 + 180, hold: 6 * 3000 + 200, skip: true });
 });
 test("the event plays at most nine crates (hold ≤ 30000): the rest are taken in by the rule, the counters and the turn reach their final values at the end, the report has three rows and adds up every crate", () => {
   const st = world(), sv = sv0(Array.from({ length: 11 }, (_, i) => crate(i + 1, 1, i === 10 ? { lines: ["The last walk's line"] } : {}))), e0 = st.e;
-  const h = opened(st, sv), ar = h.played.find((e) => e.kind === "arrival"); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: 9 * 3000 + 180, hold: 9 * 3000 + 200 }); assert.ok(ar.hold <= 30000);
+  const h = opened(st, sv), ar = h.played.find((e) => e.kind === "arrival"); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: 9 * 3000 + 180, hold: 9 * 3000 + 200, skip: true }); assert.ok(ar.hold <= 30000);
   assert.equal(build(st, sv, h.ui).props.regions.opening.crates.length, 9, "nine crates are staged");
   const ordered = h.timers.slice().sort((a, b) => a.ms - b.ms); assert.equal(ordered.at(-1).ms, 9 * 3000, "the report at the ninth crate's end");
   for (const t of ordered.slice(0, -1)) t.fn(); assert.equal(h.ui.cargo.shown.e, e0 + 9 * 3, "nine crates' energy is shown, not eleven");

@@ -35,6 +35,8 @@ const TIMED = {
   ...Object.fromEntries([1090, 2500, 5440, 5840, 2720].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
   "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "ready" },
+  // ✓ Skip (lvgl-switch.md §2.1): 1100 ms into the hatch a second ✓ skips it; the frame after the skip is the hand-off to the meet (one mibi up close). Taken last: it hatches a mibi
+  "hatch-skip": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, skip: true, want: "habitat" },
 };
 // The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
 export const hatched = { name: null };
@@ -63,8 +65,9 @@ async function timedStates(visit) {
     for (const [name, tp] of Object.entries(TIMED)) {
       await apply(page, SCENES[tp.scene]); await step(1200);   // the screen change's dither is over
       await page.evaluate(tp.go); await step(tp.at);
+      if (tp.skip) { await page.evaluate(() => window.__st.press("confirm")); await step(16); }   // the skip, and the frame after it
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
-      if (u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
+      if (tp.skip ? u.screen !== tp.want : u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
       await visit("incubator-" + name, page, fail);
       if (/^hatch-\d+$/.test(name)) {
         const h = await page.evaluate(() => { const S = window.__st, m = S.ST.mibis[S.ST.mibis.length - 1], r = S.props?.regions; return { name: m.name, code: m.code, ribbon: r?.ribbon ?? "", shown: r?.code ?? "" }; });

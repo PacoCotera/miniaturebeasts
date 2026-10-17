@@ -78,6 +78,13 @@ async function timedStates(visit) {
       await apply(page, { set: tp.set }, name); await step(1200); await page.evaluate(tp.go); await step(tp.at);
       await visit("cargo-" + name, page, fail); await step(1500);
     }
+    {   // ✓ Skip (lvgl-switch.md §2.1): ✓ Open the bay, 1000 ms into the opening a second ✓ skips it, and the frame after the skip is the report
+      await apply(page, { set: (w) => { w.adults(2); w.pods(1); w.crates(1, 3, { lines: ["The meadow's mist burned off by noon"] }); } }, "opening-skip");
+      await step(1200); await page.evaluate(() => window.__st.press("confirm")); await step(1000); await page.evaluate(() => window.__st.press("confirm")); await step(16);
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, state: window.__st.UI.cargo.state }));
+      if (u.screen !== "cargo" || u.state !== "report") fail(`cargo-opening-skip: on ${u.screen}, state ${u.state}`);
+      await visit("cargo-opening-skip", page, fail); await step(1500);
+    }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };
