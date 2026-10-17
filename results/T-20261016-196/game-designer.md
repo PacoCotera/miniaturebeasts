@@ -34,6 +34,7 @@ The Companion's strings are not in this sweep. They follow in a second pass.
 | habitat.json `wildBlocks.*` | "a bonded mibi stays", "not until it is adult" | Rules, stated as what is true |
 | habitat.json `carryRefused`, `incubator.noBay` | "{name} stayed home, no room", "no bay free" | A plain limit |
 | namer.json `refuse.short` | "A name needs two letters" | A rule |
+| cross.json, the forecast's kinship words | "close kin · a quarter" | A close cross is a trade-off the player may want, not harm. It is a plain fact (added at the creative director's review) |
 | cargo, home, incubator, library `empty` and "away" subjects | "the bay is empty", "the Probe is away", "an empty frame" | A plain state |
 
 ## Detrimental: they stay negative, and why
@@ -41,7 +42,7 @@ The Companion's strings are not in this sweep. They follow in a second pass.
 | Place | Current | Why it is truly detrimental |
 | --- | --- | --- |
 | state.mjs:338, the dock message after a Probe break | "…" (the broke branch) | When the Probe breaks, the pods drop where it broke and nothing comes home (design/game.md, Return). The player loses what they gathered. It is said plainly, once |
-| sitting.js `WARNING`, sitting.mjs:30–35 | "use your sitting first"; a sitting earned while one is held "is not given" | An earned sitting is lost. **This is a rule problem, not a wording one:** "use it or lose it" is the FOMO pressure design/game.md refuses (Pillar 4, the hooks we refuse). The fix is to keep the earned sitting (a queue, or a cap the player can see), not to soften the words. This goes to the lead as a rule ticket |
+| sitting.mjs `WARNING`, sitting.mjs:30–35 | "use your sitting first"; a sitting earned while one is held "is not given" | An earned sitting is lost. **This is a rule problem, not a wording one:** "use it or lose it" is the FOMO pressure design/game.md refuses (Pillar 4, the hooks we refuse). The fix is to keep the earned sitting (a queue, or a cap the player can see), not to soften the words. This goes to the lead as a rule ticket |
 
 ## For the creative director (the yes/no column)
 

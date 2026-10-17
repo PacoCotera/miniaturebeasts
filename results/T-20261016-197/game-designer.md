@@ -25,7 +25,7 @@ An expedition that ended with nothing in the hold sends no crate (dock-moments.m
 | **Pods** | the Pods case, a free well each | The well it lands in lights as it arrives. This is the pod carry (flow change 1), the same shell all the way |
 | **A pod with no free well** | it **waits in the bay**, still sealed, and lands when a well frees, oldest first (design/architecture.md) | It stays in view on the bay floor. It is "waiting for a well", plainly, and not lost |
 | **Energy, Essence, Data** | the top bar's counters; there are no store tanks (station experience review) | each counter ticks up as its material arrives (+n), in the material's own icon |
-| **Finds** | the Station keeps each one until it is used to open a sealed chapter, for the whole species | **Not designed: where a kept find is drawn.** My proposal is the Pods room, beside the sealed pages it opens, because the find is used there. Until the owner or the creative director rules, it can only land in the bay and stay |
+| **Finds** | the Pods room, beside the sealed pages it opens (the creative director's call, on my proposal). The Station keeps it there until it is used to open a sealed chapter for the whole species | the sealed page it opens answers. Its shut page shows the find in place |
 | **A portrait** | its mibi: the Portrait plate up close | the plate fills (return signals key 4, "Fig's portrait has come") |
 
 **For the motion without lines:** each object travels toward its destination at the screen's edge where that destination lives (the top bar, Pods' side). The destination answers on arrival: the well lights, or the counter ticks. The object carries the eye, so no path is drawn.
