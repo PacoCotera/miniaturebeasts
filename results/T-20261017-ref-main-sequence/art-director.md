@@ -1,6 +1,6 @@
 # Main Sequence (Tumbling Dumpling Studio): what the art team learns
 
-The owner asked for this at 14:23. I cover the look; UI/UX covers structure and interaction. The sheet is `main-sequence-reference-sheet.png`, built by `make-sheet.py`.
+The owner asked for this at 14:23. I cover the look; UI/UX covers structure and interaction. The annotated sheet of 9 frames (built by `make-sheet.py`) was shared with the lead and kept out of this repository, since its frames are the game's own images; the frame numbers below refer to it.
 
 ## What I saw, and what I didn't
 
