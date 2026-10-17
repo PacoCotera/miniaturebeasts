@@ -68,7 +68,9 @@ The exact values are in `prototypes/ui/palettes/station.json` (62 colours: the C
 | | loss words ("Gone for good.") | `coral` | #ff5f57 |
 | | a clash or loss mark, always with its cross | `red` | #c93440 |
 | **State** | unknown: frost, the veil | `frost`, `frostD`, `frostS` | #eaeff6, #cbd5e2, #a9b5c8 |
-| | glint: a first, something new | `yellow`, `gold` | #ffd441, #d89b14 |
+| | new here: the four-point glint | `gold` (lit centre `yellow`) | #d89b14, #ffd441 |
+| | a piece of your wish: the five-point star | `yellow` (edge `gold`) | #ffd441, #d89b14 |
+| | a first (new to your field guide): the triangle | `bone` | #f1ebdf |
 | **Type** | readouts and names | `bone` | #f1ebdf |
 | | the way back; the quiet line on a pane | `fog` | #c6c4d8 |
 | | context; the quiet line on the field | `mist` | #8d8aa6 |
@@ -102,7 +104,7 @@ Body type needs 4.5 : 1 or more, so:
 - **Unexplained colour.** No colour bars, pips or chips whose meaning needs a legend.
 - **Off-palette art-layer colours.** No pure black (#000000), no neon, no gradient fills on panes, no evening-room greens or warm lamp pools on the art layer.
 
-**Open.** The approved Station concept (`art/concept-homepage/station-research-hands.png`) shows a deep blue display. This guide keeps the dark matte slate until that is ruled. A ruling for blue would change only the five Display values above, and nothing else in this guide.
+**Ruled: the display ground is dark matte slate.** The approved Station concept (`art/concept-homepage/station-research-hands.png`) shows a deep blue display; the Station keeps slate, and the panels' paintings carry the colour.
 
 ## 3. Materials and light
 
@@ -134,18 +136,18 @@ Every component is a part of the machine, named as a thing. A generic box fails.
 | **Bottom line** | the keys' legend | 1024 × 38, `bar`; ✓ cap + verb + price, the context, the notice, then ← cap + where it goes, right-aligned to x 1008 | the ✓ cap orange, dimmed (`mist`, the price figure `amber`), or absent when ✓ does nothing | 04b |
 | **Key caps** | the device keys drawn as their legend | 16 × 16 discs: ✓ `orange`, ← `stone`; dimmed ✓ is its own slice | rest, dimmed | 04b |
 | **Pane** | a section of the display | flat `panel`, radius 8, 1 px `hairline`, 1 px `bevel` top and left; 16 px inner margin; 8 px between related things, 16 between groups | rest; focused (the ring) | 02b |
-| **Decision panel** | the machine asking you to choose between futures | panel 840 × 440 at (92, 80), radius 12, `panel`, over the stage veiled toward `ground`; title 28 px, at most 4 words; option cards 776, 380 or 248 wide × 288, 16 apart | the card focused (the ring), dimmed (cannot pay), loss | 04a |
-| **Option card** | one future | a well in `ground`, radius 8. The outcome scene painted in the window (w − 32 × 160 today; P1's larger windows once P1 is chosen); under it the verb at 20 px, the costs as icons with figures, one line at 16 px, a loss in `coral` with the cross | as the panel | 04a |
-| **Tile** | one thing you can pick (a mibi, a pod, a place) | well 64 × 64, radius 8, `ground` with the bevel; the thing painted inside at 48 | rest; focused (ring, lift 2 px); dimmed (veiled 60 %, still focusable); new (the glint at its top right) | 04c |
+| **Decision panel** | the machine asking you to choose between futures | panel 840 × 440 at (92, 80), radius 12, `panel`, over the stage veiled toward `ground`; title 20 px medium, the question, at most 4 words; option cards 776, 380 or 248 wide × 288, 16 apart | the card focused (the ring), dimmed (cannot pay), loss | 04a |
+| **Option card** | one future | a well in `ground`, radius 8. The outcome scene painted in the window (w − 32 × 160 today; P1's larger windows once P1 is chosen); under it the verb at 20 px (at most 3 words), the costs or gains as icons with figures, one line at 16 px (at most 8 words), a loss in `coral` with the cross | as the panel | 04a |
+| **Tile** | one thing you can pick (a mibi, a pod, a place) | well 64 × 64, radius 8, `ground` with the bevel; the thing painted inside at 48 | rest; focused (ring, lift 2 px); dimmed (veiled 60 %, still focusable); the corner marks at its top right: new here, your wish, a first (§6) | 04c |
 | **Badge** | a place, a species or a find | painted, 32 × 32 at least (48, 64 and 96 where the screen gives room), with its one word under it at 16 px | known; unknown (frost) | 04d |
-| **Progress** | the machine's own measure of time or growth | a ring or track in `mint` on a `tealD` track, 8 to 10 px thick; the chapters as lit studs; the wait in `mint` words ("ready in about 8 min") | growing (k of n); ready (full, its lamp lit) | 02c |
-| **Genome marks** | the genes, sculpted | the genome screen spec tiers (work-queue `specs/station-genome-screen-spec.md`): 48, 40, 32 or 24 px marks; each state a distinct shape as well as a colour: open, changed (lit `mint`), one look, breeding only (the joined rings), clash (red and the cross), self-changing, unknown (frost) | as listed | 04e |
+| **Progress** | the machine's own measure of time or growth | a ring or track in `mint` on a `tealD` track, 8 to 10 px thick; the chapters as lit studs. No digits and no percentage: the ring alone says how far. The one minute count is the Incubator's, in its bottom line's context ("ready in about 8 min"), nowhere else | growing (k of n); ready (full, its lamp lit) | 02c |
+| **Genome marks** | the genes | sizes only: the genome screen's tiers, 48, 40, 32 or 24 px. What each mark means is the register in [§10, Marks](#marks-one-meaning-each-on-both-devices), the one list; each state is its own silhouette that reads in four-gray. Provisional until the genome concept is chosen (T-20261016-166) | every register state | 04e |
 | **Stamp** | the genome code | the label 120 × 120 drawn on the display, with its text id beside it at 16 px tabular in `bone`. Never a plaque or a white card, and never the brightest thing | — | 03a (don't) |
 | **Lamps** | small status lights | 8 × 8 (the link: `mint` docked, `stone` away) and 12 × 12 (`amber`: needs you) | lit, unlit | — |
 | **Focus ring** | where you are | `focus`, 2 px, 4 px out from the thing, radius = its radius + 4; the thing lifts 2 px | — | 04c |
 | **Message plate** | the machine's short reply | a pane, at most 640 wide, centred on x 512, bottom at y 550; 16 px, at most 6 words; shown 4 s | — | — |
 | **Materials** | Energy, Data, Essence | a yellow bolt, a blue diamond, a green drop: 16 px icons in the top bar and in prices, each with its figure. As physical things in Cargo: battery cells, cartridges and vials (48 × 64, 72 × 96) | — | 06a |
-| **Glint** | a first; something new | the 12 × 12 star in `yellow` and `gold`, on the thing's top right | — | 04c |
+| **Corner marks** | new here; a piece of your wish; a first | exactly three, 12 to 16 px, at the top right of a host of 24 px or more, each its own shape: the four-point glint in `gold` (new here, 14 px), the five-point star in `yellow` (your wish, 16 px), the triangle in `bone` (a first, 12 px). They never carry meaning without their host | — | 04c, 06b |
 
 <img src="plates/04a-decision-panel.png" width="1024" alt="Plate 04a: a decision shows two futures">
 
@@ -173,7 +175,7 @@ Every component is a part of the machine, named as a thing. A generic box fails.
 | Exception | Pods: the pod's name under the dish, 20 px medium | — |
 
 - **Placement.** Type sits on a pane, a bar or the field, inside a 16 px margin, never floating over a painting. Text that does sit on art gets a 1 px dark shadow. Live text is never baked into art.
-- **Case.** Sentence case for sentences; chapter names word by word ("Legs & Tail"). No capitals for emphasis.
+- **Case.** Sentence case for sentences; chapter names exactly as the frames write them ("Coat", "Legs & tail"); the build never recases them. No capitals for emphasis.
 - **Never:** 13 px or smaller, cream on cream, centred paragraphs, more than one weight in a line.
 
 **The words budget** is the game designer's table in [§10, The words budget](#the-words-budget); type serves it. Where the appendix's older limits differ, §10 wins.
@@ -185,7 +187,7 @@ A picture or a mark the screen already uses beats a word. Stand-in text at the l
 ## 6. Icons and marks
 
 - **Drawing style:** painted or sculpted like the life, lit from the top left, never a pixel glyph on the Station. A mark is a thing you recognise: the place itself, the mibi's face, the battery cell, the part of the body.
-- **Minimum legible size:** a mark that carries meaning on its own is **24 px or more** on the Station (32 px for a badge). Under 24 px a mark only accompanies a word or a figure (the 16 px material icons beside their figures; the 12 px glint on a tile).
+- **Minimum legible size:** a mark that carries meaning on its own is **24 px or more** on the Station (32 px for a badge). Under 24 px a mark only accompanies a word or a figure (the 16 px material icons beside their figures; the three corner marks, 12 to 16 px, on their host).
 - **One meaning per mark** is the game designer's register in [§10, Marks](#marks-one-meaning-each-on-both-devices); this section sets how each is drawn.
 - **No meaning rides on a tiny glyph or an unexplained colour.** Every state has a shape as well as a colour, and reads in four-gray (plate 06b). A mark that needs a legend fails.
 
@@ -259,7 +261,7 @@ A picture or a mark the screen already uses beats a word. Stand-in text at the l
 | **Menu, Message box, Cargo, End expedition, Link states** | Say what happened and what to choose | the Companion frame; Mibi type at 2×; figures only as prices and counts beside their icon |
 | **Companion mode, Care, the carried set** | Be with your mibi | the resident in HiBit at 280 × 300, catch-lit eyes, no flat blobs (plate 11a) |
 
-The per-screen detail is in [Station screens](station-screens.md) and [Companion screens](companion-screens.md). Each screen's entry starts with its intent, look and do and don't, then its rules.
+What each Companion screen reads first is in its entry in [Companion screens](companion-screens.md). The per-screen detail is in [Station screens](station-screens.md) and [Companion screens](companion-screens.md). Each screen's entry starts with its intent, look and do and don't, then its rules.
 
 ## 9. Motion and feedback
 
@@ -271,10 +273,10 @@ The per-screen detail is in [Station screens](station-screens.md) and [Companion
 | Event | What moves |
 | --- | --- |
 | **Press** | the focused thing lifts 2 px in 100 ms and settles |
-| **Refusal** | the focused thing shakes 3 px twice in 240 ms and shows its own reason mark once (§10, Feedback); nothing is spent. The message plate (4 s) is only for a ✓ that cannot be paid, as the frame says |
+| **Refusal** | two kinds. A turn or move that cannot act: the thing shakes 3 px twice in 240 ms and shows its own reason mark once, with no plate. A ✓ that cannot go ahead: the message plate, at most 6 words, for 4 s. Nothing is spent |
 | **Notice** | its lamp lights `amber`, and the notice slides in from the right in 200 ms and stays until resolved |
 | **Controls** | doors, rails and lamps move in 200 to 400 ms, eased |
-| **Reveals** | a frost wipe or a shell clearing takes about 2 s; a first takes longer and gets the glint |
+| **Reveals** | a frost wipe or a shell clearing takes about 2 s; a first takes longer and gets the triangle |
 | **Spending and gaining** | the counter ticks with a 240 ms flash |
 | **Dock** | the link lamp turns `stone` to `mint`, the glyph fills and lifts 2 px for 200 ms, and the crates slide into the bay. Undocking reverses it |
 | **Screen change** | the title and its mark cross-fade in 200 ms; the stage cuts |
@@ -362,9 +364,9 @@ Numbers appear only as prices, supplies and counts beside their icon, and as the
 | --- | --- | --- |
 | Changed by you | Lit, with the notch | Genome, drums or tiles |
 | Still a surprise (unread, unknown) | Frost | Genome, founder, pods, chapters |
-| Something new here (where, never what) | The four-point glint | Pods, chapters (per chapter), the map |
-| A piece of your wish | The four-point glint, lit in the wish's yellow | Genome (when the founder shows it), drum faces, forecasts |
-| New to your field guide | The cream triangle | Genome, reveals |
+| Something new here (where, never what) | The four-point glint, in `gold` | Pods, chapters (per chapter), the map |
+| A piece of your wish | The five-point star, in the wish's yellow (its own silhouette, so it never relies on colour) | Genome (when the founder shows it), drum faces, forecasts |
+| New to your field guide | The triangle, in `bone` | Genome, reveals |
 | Clash (won't build) | Red rim, on each trait in the set | Genome, drums |
 | Only breeding changes it | Joined rings, with the line toward the Cross | Genome, chapter pages |
 | It changes where it goes | Step marks with the place badge | Genome, vivarium up close |
@@ -379,7 +381,7 @@ Numbers appear only as prices, supplies and counts beside their icon, and as the
 *Plate: [09a](plates/09a-motion.png) the timings.*
 
 - **A press that acts** shows its result where the eye is, in the same beat. A turned gene changes the founder; a read clears its frost; a spend ticks its counter.
-- **A refusal is never silent.** The thing that can't act answers with its own reason mark (the line to the Cross, the steps and badge, the lock), once. There is no plate and no sound unless the motion vocabulary give one.
+- **A refusal is never silent.** The thing that can't act answers with its own reason mark (the line to the Cross, the steps and badge, the lock), once. A ✓ that cannot go ahead gets the message plate, at most 6 words; any other refusal gets its reason mark and the shake, with no plate (§9).
 - **A spend is never silent.** No key spends without the price having been on screen first. A large or irreversible spend goes through a panel.
 - **A jump is announced:** the panel's choice names the destination, or the arrival line names it after.
 - **Reveals are events.** A read, a clearing, a hatch and an arrival each play as a short moment, skippable with any key, never eating presses afterwards.

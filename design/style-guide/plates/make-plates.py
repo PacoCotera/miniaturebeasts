@@ -136,10 +136,110 @@ def glow_pool(w, h, cx, cy, rx, ry, col, a):
     return im
 
 
+def home_slate():
+    """Home with its module panes re-toned from their painted brown (#352d27 and its noise) to panel."""
+    im = src('home-docked.png')
+    px = im.load()
+    M, P = (53, 45, 39), C['panel']
+    for y in range(40, 562):
+        for x in range(676, 1024):
+            r, g, b, a = px[x, y]
+            if abs(r - M[0]) <= 14 and abs(g - M[1]) <= 14 and abs(b - M[2]) <= 14 and r >= b + 6:
+                px[x, y] = (P[0] + r - M[0], P[1] + g - M[1], P[2] + b - M[2], a)
+    return im
+
+
+def four_gray(img):
+    """The four-gray test: luminance quantised to four levels."""
+    g = img.convert('LA')
+    l = g.getchannel('L').point(lambda v: (min(v, 255) // 64) * 85)
+    return Image.merge('RGBA', (l, l, l, g.getchannel('A')))
+
+
+def star(d, cx, cy, ro, ri, n, col, k=1):
+    pts = []
+    for i in range(2 * n):
+        r = ro if i % 2 == 0 else ri
+        a = math.radians(-90 + 180 * i / n)
+        pts.append(((cx + r * math.cos(a)) * k, (cy + r * math.sin(a)) * k))
+    d.polygon(pts, fill=C[col])
+
+
+def corner_mark(kind):
+    """The three registered corner marks, 12-16 px, for a host of 24 px or more."""
+    def fn(d, k):
+        if kind == 'new':
+            star(d, 7, 7, 7, 2, 4, 'gold', k)
+            star(d, 7, 7, 4.5, 1.4, 4, 'yellow', k)
+        elif kind == 'wish':
+            star(d, 8, 8.5, 7.5, 3.2, 5, 'gold', k)
+            star(d, 8, 8.5, 5.5, 2.3, 5, 'yellow', k)
+        else:
+            d.polygon([(6 * k, 0.5 * k), (11.5 * k, 10.5 * k), (0.5 * k, 10.5 * k)], fill=C['bone'])
+    w = {'new': 14, 'wish': 16, 'first': 12}[kind]
+    return ss_draw(w, w if kind != 'first' else 11, fn)
+
+
+def gene(kind):
+    """A genome-mark diagram at 40 px: each state its own silhouette (provisional until T-166)."""
+    def fn(d, k):
+        def ring(cx, cy, r, w, col):
+            d.ellipse(((cx - r) * k, (cy - r) * k, (cx + r) * k, (cy + r) * k), outline=C[col], width=int(w * k))
+        def disc(cx, cy, r, col):
+            d.ellipse(((cx - r) * k, (cy - r) * k, (cx + r) * k, (cy + r) * k), fill=C[col])
+        if kind == 'open':
+            ring(20, 20, 15, 4, 'aqua')
+        elif kind == 'one look':
+            disc(20, 20, 15, 'teal')
+        elif kind == 'changed':
+            disc(20, 20, 15, 'mint')
+            d.polygon([(20 * k, 20 * k), (13 * k, 2 * k), (27 * k, 2 * k)], fill=(0, 0, 0, 0))
+        elif kind == 'breeding only':
+            ring(14, 20, 10, 3.5, 'aqua')
+            ring(26, 20, 10, 3.5, 'aqua')
+        elif kind == 'clash':
+            ring(20, 20, 15, 4, 'red')
+            d.line((8 * k, 8 * k, 32 * k, 32 * k), fill=C['red'], width=int(4 * k))
+            d.line((32 * k, 8 * k, 8 * k, 32 * k), fill=C['red'], width=int(4 * k))
+        elif kind == 'changes where it goes':
+            ring(16, 20, 11, 3.5, 'aqua')
+            for i, (x, y) in enumerate(((31, 30), (35, 21), (31, 12))):
+                d.ellipse(((x - 3) * k, (y - 2) * k, (x + 3) * k, (y + 2) * k), fill=C['aqua'])
+        elif kind == 'asleep':
+            disc(20, 20, 13, 'stone')
+            d.rectangle((2 * k, 17 * k, 38 * k, 23 * k), fill=C['fog'])
+        elif kind == 'sealed':
+            d.polygon([(20 * k, 3 * k), (33 * k, 15 * k), (20 * k, 37 * k), (7 * k, 15 * k)], fill=C['lilac'])
+            d.line((7 * k, 15 * k, 33 * k, 15 * k), fill=C['lavender'], width=int(2 * k))
+            d.line((20 * k, 3 * k, 20 * k, 37 * k), fill=C['plum'], width=int(2 * k))
+        elif kind == 'surprise':
+            d.rounded_rectangle((5 * k, 5 * k, 35 * k, 35 * k), 9 * k, fill=C['frostD'])
+            for x, y in ((12, 13), (25, 11), (18, 22), (29, 26), (11, 29)):
+                d.ellipse(((x - 2) * k, (y - 2) * k, (x + 2) * k, (y + 2) * k), fill=C['white'])
+        elif kind in ('wish', 'first'):
+            ring(18, 22, 13, 4, 'aqua')
+    im = ss_draw(40, 40, fn)
+    im = im.filter(ImageFilter.GaussianBlur(0.8)) if kind == 'surprise' else im
+    if kind == 'wish':
+        im.alpha_composite(corner_mark('wish'), (24, 0))
+    if kind == 'first':
+        im.alpha_composite(corner_mark('first'), (27, 1))
+    return im
+
+
+def wood_badge():
+    """A wood badge that reads at 32 px: place-wood-96's canopies, re-toned to the wood's greens (plate diagram; master owed)."""
+    from PIL import ImageOps, ImageEnhance
+    t = src('place-wood-96x96.png').convert('RGB').crop((0, 0, 64, 64))
+    g = ImageOps.autocontrast(t.convert('L'), cutoff=2)
+    c = ImageOps.colorize(g, (10, 40, 22), (170, 230, 120)).resize((32, 32), Image.LANCZOS)
+    return ImageEnhance.Sharpness(c).enhance(1.6).convert('RGBA')
+
+
 # ---------------------------------------------------------------- 1 the look
 plate('01-look', 'One device: the living window leads, the instrument serves',
-      src('home-docked.png'), src('incubator-ready.png'),
-      'Home, accepted by the owner: warm daylight in the vivarium, the device around it calm, matte and dark. The eye goes to the life first.',
+      home_slate(), src('incubator-ready.png'),
+      'Home, accepted by the owner, as a diagram: its module panes re-toned from their painted brown to panel #2b3038. Warm daylight in the vivarium, the device around it calm, matte and slate. The eye goes to the life first.',
       'The rejected Incubator (06:38): brown on brown, a cream ring, an egg on a moss cradle, a green plastic plaque, a pixel glyph and jargon in a floating box.')
 
 # ---------------------------------------------------------------- 2 palette
@@ -148,8 +248,8 @@ roles = [
     ('Display (art layer)', [('ground', 'display field'), ('bar', 'top bar, bottom line'), ('panel', 'pane, card, well'), ('hairline', 'edge, rule'), ('bevel', 'bevel light')]),
     ('Device light', [('mint', 'lit: progress, changed, live'), ('aqua', 'lit, mid'), ('teal', 'ring, lamp'), ('tealD', 'unlit track')]),
     ('Signals', [('orange', 'the action only'), ('focus', 'focus ring, price'), ('amber', 'needs you'), ('coral', 'loss words'), ('red', 'clash, loss mark')]),
-    ('State', [('frost', 'unknown, veil'), ('frostD', 'frost shade'), ('yellow', 'glint: a first, new'), ('gold', 'glint shade')]),
-    ('Type', [('bone', 'readouts, names'), ('fog', 'way back'), ('mist', 'context, quiet')]),
+    ('State', [('frost', 'unknown, veil'), ('frostD', 'frost shade'), ('gold', 'new here: four-point glint'), ('yellow', 'your wish: five-point star')]),
+    ('Type', [('bone', 'readouts, names; a first: triangle'), ('fog', 'way back'), ('mist', 'context, quiet')]),
 ]
 im = canvas(1024, 470, 'void')
 d = ImageDraw.Draw(im)
@@ -171,11 +271,10 @@ text(d, (48, 44), 'Moss', F28)
 text(d, (48, 88), 'your Loika, young', F16, 'fog')
 ri = ring(96, 0.62)
 do.alpha_composite(ri, (336, 64))
-text(d, (384, 112), '62%', F16, 'mint', 'mm')
 text(d, (48, 176), 'ready in about 8 min', F16, 'mint')
 dont = crop('panel-wild.png', (96, 82, 480, 240))
 plate('02b-colour-panel', 'Panes are slate; brown and cream panels are forbidden', do, dont,
-      'A pane of the display: panel #2b3038 on the display field ground #1d232b, one bevel, bone type, live readouts in mint. Diagram.',
+      'A pane of the display: panel #2b3038 on the display field ground #1d232b, one bevel, bone type, live readouts in mint; the ring alone says how far, never a percentage. Diagram.',
       'The rejected Return panel: brown on brown, a brown card on a brown panel on a brown stage. No bark, soil, clay, paper or cream fill on any panel.')
 
 do = canvas(420, 340)
@@ -194,19 +293,18 @@ plate('02c-colour-progress', 'Progress is device light: mint on an unlit teal tr
 
 # ---------------------------------------------------------------- 3 materials and light
 hands = Image.open('art/concept-homepage/station-research-hands.png').convert('RGBA')
-do = hands.crop((300, 80, 780, 330))
+do = hands.crop((282, 612, 460, 762))
 dont = crop('incubator-ready.png', (752, 340, 160, 170))
 plate('03a-housing', 'Housing: matte sage powder-coat, dark rubber, screws', do, dont,
-      'station-research-hands (approved concept, generated): matte sage, rubber corners, recessed screws, a dark bezel around the display. Soft, broad highlights; no reflections.',
+      'Cut from station-research-hands (approved concept, generated): matte sage powder-coat, a recessed screw, the dark rubber bezel and a rubber key. Soft, broad highlights; no reflections. The concept\'s blue display and orange corners are not part of the rule.',
       'The rejected stamp plaque: a green plaque that reads as plastic or metal, with a hard specular edge. Owner: "that metallic/plastic green plaque is also terrible".')
 
-do = crop('pods-overview-identified.png', (150, 220, 230, 230))
+do = crop('vivarium-docked.png', (250, 250, 240, 190))
 dont = crop('incubator-growing.png', (380, 120, 300, 340))
 plate('03b-light', 'One key light from the top left; every object sits on something', do, dont,
-      'The pod in its fitted cut-out (Pods): lit from the top left, form shading, a contact shadow where it sits. It is in the device, not on it.',
+      'A Loika in the vivarium (accepted capture): lit from the top left, form shading, a contact shadow where its feet meet the ground.',
       'The rejected candling: a flat egg laid over a moss cushion, its shadow painted on, no contact. Owner: "the craddle with moss, and a weird egg overimposed".')
 
-base = crop('pods-overview-identified.png', (150, 220, 230, 230))
 do = canvas(360, 240)
 d = ImageDraw.Draw(do)
 do.alpha_composite(glow_pool(360, 240, 180, 186, 96, 22, 'mint', 0.45))
@@ -253,16 +351,20 @@ near.alpha_composite(big, (100, 8))
 do = canvas(808, 300)
 d = ImageDraw.Draw(do)
 pane(d, 0, 0, 808, 300, 12)
+ess = src('home-docked.png').crop((552, 10, 568, 26))
 for i, (pic, name, line, col) in enumerate(((wild, 'Return Fig', 'Gone for good.', 'coral'), (near, 'Keep Fig', 'Stays with you.', 'mist'))):
     x = 16 + i * 396
     pane(d, x, 16, 380, 268, 8, 'ground')
     do.alpha_composite(pic, (x + 16, 32))
     text(d, (x + 16, 200), name, F20)
+    if i == 0:
+        do.alpha_composite(ess, (x + 140, 204))
+        text(d, (x + 160, 202), '+2', F16, 'mint')
     text(d, (x + 16, 236), line, F16, col)
 d.rounded_rectangle((16 + 396 - 4, 12, 16 + 396 + 383, 287), 10, outline=C['focus'], width=2)
 dont = crop('panel-wild.png', (96, 82, 832, 400))
 plate('04a-decision-panel', 'A decision shows two futures that look different', do, dont,
-      'Each option is its outcome: small and far in the wild, walking away; big and close at home. Slate panel, wells on the field colour, the verb, one line, loss in coral. Diagram from accepted art (Pip, the vivarium), not a master.',
+      'Each option is its outcome: small and far in the wild, walking away; big and close at home. Slate panel, wells on the field colour, the verb, its cost or gain (Essence +2), one line, loss in coral. Diagram from accepted art (Pip, the vivarium), not a master.',
       'The rejected Return panel: the same Pip on the same plinth twice, only the backdrop differs. Owner: "side by side the two options look the same".')
 
 line = crop('home-docked.png', (0, 562, 1024, 38))
@@ -278,22 +380,26 @@ plate('04b-keys', 'Actions are the device keys, said on the bottom line', do, do
       'The bottom line: the orange ✓ cap and the verb, the price icon before figure; at the right, the ← cap and where it goes. Cut from Home at 1×.',
       'On-screen buttons. The Station has physical keys: nothing on screen is a button, and orange marks only the ✓ action. Diagram.')
 
+TILE_PIP = Image.open('art/miniature-lives/assets/rich-plain-300x310.png').convert('RGBA').resize((48, 50), Image.LANCZOS).crop((0, 0, 48, 48))
+
+
 def tile(state):
     t = canvas(96, 96)
     d = ImageDraw.Draw(t)
     pane(d, 16, 16 - (2 if state == 'focus' else 0), 64, 64, 8, 'ground')
-    t.alpha_composite(src('place-wood-48x48.png'), (24, 24 - (2 if state == 'focus' else 0)))
+    t.alpha_composite(TILE_PIP, (24, 24 - (2 if state == 'focus' else 0)))
     if state == 'focus':
         d.rounded_rectangle((12, 10, 83, 81), 10, outline=C['focus'], width=2)
     if state == 'dim':
         veil = Image.new('RGBA', (64, 64), C['ground'] + (150,))
         t.alpha_composite(veil, (16, 16))
-    if state == 'new':
-        t.alpha_composite(src('glint-star-12x12.png'), (66, 12))
+    if state in ('new', 'wish', 'first'):
+        m = corner_mark(state)
+        t.alpha_composite(m, (78 - m.width + 4, 12))
     return t
-do = canvas(4 * 96 + 32, 136)
+do = canvas(6 * 104 + 8, 136)
 d = ImageDraw.Draw(do)
-for i, (s, w) in enumerate((('rest', 'rest'), ('focus', 'focused'), ('dim', 'dimmed'), ('new', 'new'))):
+for i, (s, w) in enumerate((('rest', 'rest'), ('focus', 'focused'), ('dim', 'dimmed'), ('new', 'new here'), ('wish', 'your wish'), ('first', 'a first'))):
     do.alpha_composite(tile(s), (8 + i * 104, 0))
     text(d, (56 + i * 104, 112), w, F13, 'mist', 'mm')
 dont = canvas(416, 136)
@@ -303,30 +409,36 @@ text(d, (36, 34), '> Loika  (adult)  lv.3', F16, 'white')
 d.rectangle((24, 72, 392, 112), outline=C['hairline'])
 text(d, (36, 82), '  Belatz (young)  lv.1', F16, 'fog')
 plate('04c-focus-tiles', 'Focus is a ring that walks between things; the focused thing lifts', do, dont,
-      'A tile well 64 px, radius 8, in its four states: rest; focused (the focus ring 2 px, 4 px out, the tile lifted 2 px); dimmed (veiled, still focusable); new (the glint). Diagram.',
+      'A tile well 64 px, radius 8: rest; focused (the focus ring 2 px, 4 px out, the tile lifted 2 px); dimmed (veiled, still focusable); and the three corner marks, each its own shape: new here (four-point glint, gold), your wish (five-point star, yellow), a first (triangle, bone). Diagram.',
       'A list cursor: a filled highlight bar over rows of words. Never a list, a cursor bar or a row selection. Diagram.')
 
 do = canvas(320, 120)
 d = ImageDraw.Draw(do)
-for i, (n, w) in enumerate((('place-wood-32x32.png', 'wood'), ('place-pond-32x32.png', 'pond'), ('place-meadow-32x32.png', 'meadow'))):
-    do.alpha_composite(src(n), (40 + i * 100, 28))
+for i, (n, w) in enumerate(((None, 'wood'), ('place-pond-32x32.png', 'pond'), ('place-meadow-32x32.png', 'meadow'))):
+    do.alpha_composite(wood_badge() if n is None else src(n), (40 + i * 100, 28))
     text(d, (56 + i * 100, 84), w, F16, 'bone', 'mm')
 dont = canvas(320, 120)
 d = ImageDraw.Draw(dont)
 dont.alpha_composite(src('genome-place-wood-10x10.png'), (60, 50))
 text(d, (78, 49), 'S03 · C2 · 7/9', F13, 'mist')
 plate('04d-badge', 'A badge is a painted thing at 32 px or more, with its word', do, dont,
-      'Place badges at 32×32, each a painted piece of the place, with one word under it at 16 px. Signed slices.',
+      'Place badges at 32×32, each a painted piece of the place seen from above, with one word under it at 16 px. Pond and meadow are signed slices; wood is re-toned for this plate from place-wood-96 so it reads at 32 (its master is owed).',
       'A 10 px glyph with codes beside it: a meaning no first-time player can read. A mark under 24 px never carries meaning alone.')
 
-do = canvas(380, 120)
+kinds = ('open', 'one look', 'changed', 'breeding only', 'clash', 'changes where it goes', 'asleep', 'sealed', 'surprise', 'wish', 'first')
+labels = ('open', 'one look', 'changed', 'breeding', 'clash', 'moves', 'asleep', 'sealed', 'surprise', 'wish', 'a first')
+do = canvas(len(kinds) * 64 + 24, 196)
 d = ImageDraw.Draw(do)
-for i, (n, w) in enumerate((('genome-gene-open-40x40.png', 'open'), ('genome-gene-open-lit-40x40.png', 'changed'), ('genome-gene-only-40x40.png', 'one look'), ('genome-gene-closed-40x40.png', 'breeding'), ('genome-gene-open-clash-40x40.png', 'clash'), ('genome-gene-self-40x40.png', 'self'))):
-    do.alpha_composite(src(n), (16 + i * 60, 28))
-    text(d, (36 + i * 60, 88), w, F13, 'mist', 'mm')
+text(d, (12, 6), 'colour', F13, 'mist')
+text(d, (12, 102), 'four-gray', F13, 'mist')
+for i, k in enumerate(kinds):
+    g = gene(k)
+    do.alpha_composite(g, (24 + i * 64, 26))
+    do.alpha_composite(four_gray(g), (24 + i * 64, 122))
+    text(d, (44 + i * 64, 80), labels[i], F13, 'mist', 'mm')
 dont = crop('incubator-ready.png', (730, 98, 206, 236))
-plate('04e-genome-marks', 'Genome marks: sculpted, lit, 40 px on Create', do, dont,
-      'The gene marks at 40 px (tier L), lit from the top left, each state a distinct shape as well as a colour. Signed slices (masters-pods).',
+plate('04e-genome-marks', 'Genome marks: one silhouette per state (provisional until the genome concept, T-166)', do, dont,
+      'Every state in the marks register (§10) at 40 px, each a distinct silhouette that still reads in four-gray at 1×; wish and a first are corner marks on the gene. Diagram: provisional until the genome concept is chosen (T-166), where genes drawn as pictures of their looks are under review.',
       'The rejected reveal: a pixel stroke as the trait, "Just cleared", "Stamina Efficiency". Owner: "the icon for the trait is also pixelated and impossible to understand".')
 
 # ---------------------------------------------------------------- 5 type
@@ -383,6 +495,13 @@ d.ellipse((200, 30, 223, 53), fill=C['red'])
 d.line((205, 35, 218, 48), fill=C['white'], width=2)
 d.line((218, 35, 205, 48), fill=C['white'], width=2)
 text(d, (232, 34), 'gone for good', F16, 'coral')
+row = canvas(360, 40)
+for j, kind in enumerate(('new', 'wish', 'first')):
+    row.alpha_composite(corner_mark(kind), (32 + j * 40, 12))
+    row.alpha_composite(four_gray(corner_mark(kind)), (200 + j * 40, 12))
+do.alpha_composite(row, (0, 76))
+text(d, (32, 68), 'colour', F13, 'mist')
+text(d, (200, 68), 'four-gray', F13, 'mist')
 dont = canvas(360, 120)
 d = ImageDraw.Draw(dont)
 d.rounded_rectangle((32, 24, 71, 63), 8, fill=C['red'])
@@ -390,7 +509,7 @@ d.rounded_rectangle((88, 24, 127, 63), 8, fill=C['leaf'])
 d.rounded_rectangle((144, 24, 183, 63), 8, fill=C['gold'])
 text(d, (32, 80), 'which one is bad?', F13, 'mist')
 plate('06b-colour-alone', 'Colour never carries meaning alone', do, dont,
-      'A clash is red and a crossed shape; a loss is coral words with the cross. It reads in four-gray too.',
+      'A clash is red and a crossed shape; a loss is coral words with the cross. The three corner marks (new here, your wish, a first) differ in shape, so they read in four-gray too.',
       'Three chips that differ only by hue: unreadable to many players and on paper. Diagram.')
 
 # ---------------------------------------------------------------- 7 layout
@@ -402,10 +521,10 @@ def overlay(img):
     for x in (16, 1008):
         d.line((x, 40, x, 562), fill=C['aqua'])
     return o
-do = overlay(src('home-docked.png'))
+do = overlay(home_slate())
 dont = overlay(src('create-shape.png'))
 plate('07a-layout', 'The frame and the grid: top bar 40, stage 522, bottom line 38; 16 px margins', do, dont,
-      'Home on the grid: every region inside the 16 px margins and y 48–552, aligned in columns, 8 px between related things, 16 between groups.',
+      'Home on the grid (diagram: its module panes re-toned to panel): every region inside the 16 px margins and y 48–552, aligned in columns, 8 px between related things, 16 between groups.',
       'Create (batch B-3): things float on an empty field at uneven gaps, no surface, no grid. Owner: "all elements in create screen are floating".')
 
 comp = Image.open('art/concept-homepage/companion-resident-home-450x600.png').convert('RGBA')

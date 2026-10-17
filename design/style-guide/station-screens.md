@@ -118,13 +118,13 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 
 **Purpose.** What the trip brought home arrives: each crate is one trip, and opening it shows what came out and where each thing goes (materials to the store, pods to the rack). Docking shows the arrival and accepts nothing; opening the bay is the player's choice. **Reads first:** the crates, then their contents flowing to the store and the rack.
 
-- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks, pods travel in a straight line into the rack's wells, the counters tick, the Probe dock shows the free mend, a ribbon names the crate ("First crate home"), the world turn jumps.
+- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks and its contents lie out in front of it as things (pods, battery cells, cartridges, vials, finds); the materials flow into the store tanks and the top bar's counters tick; the pods go out through the Pods hatch, which shows its free wells, and a pod with no free well waits on the bay floor, still sealed, until one frees; the Probe dock shows the free mend; a ribbon names the crate ("First crate home"); the world turn jumps. The Cargo redesign (T-20261016-164) sets the bay's layout.
 - **Living window.** The vivarium stays; residents turn toward the bay as crates open.
-- **Composition.** Home's layout; the Bay module lifts 2 px, the chrome lift, and nothing is scaled; the ribbon sits inside the glass's top. A report card waits on the vivarium until the next press.
+- **Composition.** Home's layout; the Bay module lifts 2 px, the chrome lift, and nothing is scaled; the ribbon sits inside the glass's top. There is no report card: reach goes to the Companion's map, news about the player's mibis to the Station's return signals, and news about the world to the Companion's map.
 - **Lively / quiet.** Lively: the crate, the pods' travel, the residents' reaction. Quiet: the other modules.
 - **Light.** A warm beam inside the bay as the seal breaks; the vivarium unchanged.
-- **Palette.** Crates in slate and teal with orange seal tags; counters flash yellow.
-- **Type.** Inter: the ribbon and the card's heading 20 px medium; the report lines 16 px.
+- **Palette.** The crates as painted (the container references); counters flash on change. Orange stays for the action only.
+- **Type.** Inter: the ribbon 20 px medium; nothing else is written in the bay but `+n` beside a pile.
 - **Chrome.** Presses during the arrival are consumed; focus stays on the room; then `✓ Look at the new pods`.
 - **Motion.** About 3 s per crate: seal 300 ms, each pod's travel 600 ms.
 
@@ -141,7 +141,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 
 *Dock and arrival wireframe. Layout only.*
 
-The measured layout, states and timeline are [Station layouts, Cargo](station-layouts.md#cargo). The ribbon has no digits and says the crate only: "First crate home"; how far the land is explored is on the report card.
+The measured layout, states and timeline are [Station layouts, Cargo](station-layouts.md#cargo). The ribbon has no digits and says the crate only: "First crate home". How far the land is explored is the Companion's map's, not the Station's. Where the appendix's Cargo tables still draw a report card, a pod rack or reach pips, they are superseded by the Cargo redesign (T-20261016-164).
 
 ---
 
