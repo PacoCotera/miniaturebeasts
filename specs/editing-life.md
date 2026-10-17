@@ -21,6 +21,21 @@ The genome the machine holds has a fixed structure, and every action works at on
 
 The whole genome is always present on the instrument at once, dense and complete, even for a deep species. That richness is the "complex and visual" the owner liked, and it is what makes the bench feel advanced rather than simple. Letters, codes and the rule between copies appear only when the player asks for them (the detail view). The locus stays abstracted on the bench itself (09-28); the deep genetics are there, optional (10-01).
 
+## 2a. The framework shows through; letters stay one press away
+
+The owner, 04:18: "this is the place where you get to get a glimpse of the underling genome mechanics and framework." So Create is where the real mechanics show, on the main view and not hidden behind a press. The game designer's position on the "letters off the main view" guard:
+
+- **On the main view, the framework is shown as relations, not notation.** These are visible at a glance without reading:
+  - the structure (species, chapters, traits, copies);
+  - the kind of every gene (section 4);
+  - **which copy shows and which hides**: the shown copy stands in front of the hidden one;
+  - **a blend**: the two copies meet into one look between them;
+  - **a gene asleep behind a switch**.
+
+  This is the 10-01 depth made visible for the curious parent and the STEM player, and a child reads it as shapes.
+- **Letters (Pp), the rule in words and the reference look stay in the detail view,** one free press from any gene, returning to the same spot. Letters on the main view would turn it into a lesson for most players, and 09-28 keeps the locus abstracted. One press is close enough for anyone who wants them.
+- **The test:** a player who never opens the detail view can still say, pointing at the screen, "this one I can change, this one only breeding changes, this one is hiding a pale copy, this one was asleep and I woke it." That is the framework, shown.
+
 ## 3. The procedures
 
 Each procedure is a verb the player does at the bench, what the machine does in response, and what the player sees on the founder. Keys follow today's model (the pad moves and turns, ✓ does the bottom line, ← goes back), and UI/UX places them.
