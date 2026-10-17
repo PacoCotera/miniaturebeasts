@@ -51,7 +51,8 @@ Only two rows are "yes": the Probe break (a real loss of gathered pods) and the 
 ## Agreed with the art director's mark sweep (fact-dependent rows)
 
 - **A held sitting lost:** "yes" while today's rule stands. It becomes moot once T-20261016-198 is built (specs/sittings-never-lost.md).
-- **The Companion's New world:** "yes". It replaces the world in play (map, places, state), and that truly discards, even though it is chosen. Said plainly, once.
+- **The Companion's New world:** "yes", confirmed in the code. `newWorld` (prototypes/exploration/index.html) starts from empty fields: the mibis, the known and found species, the pods, the Probe's tier and the bay all start over. The Station's part is not carried, because it belongs to the old world's id. It is a full restart of the game, so it stays negative, said plainly once ("Start a new world? Everything in this one is left behind").
+  - **A design note for the lead:** a full restart sits as the last entry of the play menu between expeditions. A reset that discards everything belongs in settings, behind its own confirmation, not beside "Next expedition". That is a placement fix for the Companion's menu pass.
 - **The Companion's harm warnings** (the red lead word, and only these):
   - "lightning is coming": a strike can cost plates, and a break follows;
   - the Probe break: the pods drop, nothing comes home.
