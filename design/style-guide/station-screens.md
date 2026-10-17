@@ -116,7 +116,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 
 **Vibe.** Arrivals: the Companion home on the Caddy, its crates coming through into the bay.
 
-**Purpose.** What the trip brought home arrives: each crate is one trip, and opening it shows what came out and where each thing goes (materials to the store, pods to the rack). Docking shows the arrival and accepts nothing; opening the bay is the player's choice. **Reads first:** the crates, then their contents flowing to the store and the rack.
+**Purpose.** What the trip brought home arrives: each crate is one trip, and opening it shows what came out and where each thing goes (materials to the top bar's counters, pods to the rack). Docking shows the arrival and accepts nothing; opening the bay is the player's choice. **Reads first:** the crates, then their contents flowing to the store and the rack.
 
 - **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks and its contents lie out in front of it as things (pods, battery cells, cartridges, vials, finds); the materials fly into the top bar's counters, which tick (there are no store tanks); the pods go out through the Pods hatch, which shows its free wells, and a pod with no free well waits on the bay floor, still sealed, until one frees; the Probe dock shows the free mend; a ribbon names the crate ("First crate home"); the world turn jumps. The Cargo redesign (T-20261016-164) sets the bay's layout.
 - **Living window.** The vivarium stays; residents turn toward the bay as crates open.
