@@ -75,3 +75,9 @@ With the words covered, Grow still reads as "into the chamber, at this price" ag
 - **No place badges.** Release shows ❀ +2 alone, and Keep's icon slot is blank.
 
 **Open:** Keep's second resident and the wild pair are cut from the same two accepted stands, so one face appears in both windows. Once T-190's layered stands are built, each window draws its own individuals.
+
+**Recomposed by framing** (the creative director, 89452124). With the household, both windows had the same composition, so covered they looked the same again. They now differ the way Grow's do, by framing, with the same stands and both in daylight:
+- **Release is wide and open, a landscape.** Most of the window is sky and water over a thin far bank. Pip is small, mid-bound, heading off along the bank toward its kind, who are smaller still with distance.
+- **Keep is close and nested, an interior.** The camera is in at the burrow's mouth. Pip is near and large, with its household crowding the frame's edges: one dozing at the left, one at the right.
+
+**Still owed:** Release's wide sky is the pond backdrop's soft haze. It is the part of the proof that most needs the painted master.

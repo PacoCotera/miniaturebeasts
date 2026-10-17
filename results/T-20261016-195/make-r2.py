@@ -26,54 +26,53 @@ def daylight(img, strength=0.22):
 
 
 def scene_return_home(w, h):
-    """Return: Pip home at its pond, bounding along a mossy bank toward two of its own kind, under open sky, in daylight."""
+    """Release, framed wide and open: a landscape. Pip small in a broad wild place, bounding off toward its kind,
+    who wait further along the bank, smaller still with distance. Daylight."""
     sky = src('sitting-backdrop-pond-544x408.png')
-    k = (h + 40) / 408
-    sky = sky.resize((round(544 * k), h + 40), Image.LANCZOS).crop((0, 40, w, h + 40))  # the water band in view
-    a = np.asarray(sky.convert('RGB'), dtype=float)  # its own light: clear water, a bright sky, not a grey dusk
+    k0 = (h + 20) / 408
+    sky = sky.resize((round(544 * k0), h + 20), Image.LANCZOS)
+    sky = sky.crop(((sky.width - w) // 2, 10, (sky.width - w) // 2 + w, 10 + h))
+    a = np.asarray(sky.convert('RGB'), dtype=float)
     lum = a.mean(axis=2, keepdims=True)
-    a = lum + (a - lum) * 1.35
-    a = a * 1.08 + 6
+    a = (lum + (a - lum) * 1.35) * 1.08 + 6
     sky = Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGB').convert('RGBA')
-    bank = src('vivarium-near-day-544x408.png').crop((0, 262, 544, 408))  # the same moss and stones as home
-    bank = bank.resize((w, round(146 * w / 544)), Image.LANCZOS)
+    bank = src('vivarium-near-day-544x408.png').crop((0, 300, 544, 408))   # a thin band of bank: the land is far
+    bank = bank.resize((w, round(108 * w / 544 * 0.75)), Image.LANCZOS)
     m = Image.new('L', bank.size, 0)
-    md = ImageDraw.Draw(m)
-    pts = [(0, 30)] + [(x, 22 + 10 * np.sin(x / 23.0) + 6 * np.sin(x / 9.0)) for x in range(0, w + 1, 6)] + [(w, bank.height), (0, bank.height)]
-    md.polygon(pts, fill=255)
-    bank.putalpha(m.filter(ImageFilter.GaussianBlur(3)))
+    pts = [(0, 16)] + [(x, 10 + 5 * np.sin(x / 31.0) + 3 * np.sin(x / 11.0)) for x in range(0, w + 1, 6)] + [(w, bank.height), (0, bank.height)]
+    ImageDraw.Draw(m).polygon(pts, fill=255)
+    bank.putalpha(m.filter(ImageFilter.GaussianBlur(2)))
     sky.alpha_composite(bank, (0, h - bank.height))
     sky = daylight(sky)
-    # its own kind, already there: two wild Loikas further along the bank, smaller with distance, facing Pip
-    for name, sc, fx, flip in (('rich-marked-300x310.png', 0.25, 0.70, True), ('rich-plain-300x310.png', 0.21, 0.86, True)):
-        f = figure(name, sc, flip=flip)
-        x, y = int(w * fx) - f.width // 2, h - 62 - f.height
-        sh = contact(round(f.width * 0.8), 8, 0.45)
-        sky.alpha_composite(sh, (x + f.width // 2 - sh.width // 2, y + f.height - sh.height // 2 - 1))
+    gy = h - bank.height + 22                                                  # the bank's walking line
+    for name, sc, fx, dy in (('rich-marked-300x310.png', 0.12, 0.80, -4), ('rich-plain-300x310.png', 0.10, 0.90, -6)):
+        f = figure(name, sc, flip=True)
+        x, y = int(w * fx) - f.width // 2, gy + dy - f.height
+        sh = contact(round(f.width * 0.8), 4, 0.45)
+        sky.alpha_composite(sh, (x + f.width // 2 - sh.width // 2, y + f.height - sh.height // 2))
         sky.alpha_composite(f, (x, y))
-    pip = src('pip-air-304x312.png').transpose(Image.FLIP_LEFT_RIGHT)  # bounding toward them (body and shadow, feet row 305)
-    pip = pip.resize((round(304 * 0.5), round(312 * 0.5)), Image.LANCZOS)
-    px, py = int(w * 0.06), h - 22 - round(305 * 0.5)
-    sky.alpha_composite(pip, (px, py))
+    pip = src('pip-air-304x312.png').transpose(Image.FLIP_LEFT_RIGHT)          # bounding off to the right, away along the bank
+    k = 0.22
+    pip = pip.resize((round(304 * k), round(312 * k)), Image.LANCZOS)
+    sky.alpha_composite(pip, (int(w * 0.46), gy + 8 - round(305 * k)))
     return sky
 
 
 def scene_keep_home(w, h):
-    """Keep: Pip in its vivarium with its household, the same scale, the same daylight, awake: home with you."""
+    """Keep, framed close and nested: an interior. Pip near, at the burrow's mouth, among its household, who crowd the
+    frame's edges. Daylight."""
     bg = src('vivarium-near-day-544x408.png')
-    bg = bg.resize((round(544 * 1.1), round(408 * 1.1)), Image.LANCZOS).crop((10, 449 - h, 10 + w, 449))
+    bg = bg.resize((round(544 * 1.7), round(408 * 1.7)), Image.LANCZOS).crop((10, 150, 10 + w, 150 + h))   # in at the burrow
     bg = daylight(bg)
-    # its household: a resident dozing by the burrow, another pottering behind (the player's own, not kin from the wild)
-    for name, sc, fx, fy, flip in (('pip-curl-304x312.png', 0.30, 0.22, 0.66, False), ('rich-marked-300x310.png', 0.25, 0.84, 0.70, True)):
+    for name, sc, x, base, flip in (('pip-curl-304x312.png', 0.62, -40, h + 6, False), ('rich-marked-300x310.png', 0.70, w - 110, h + 30, True)):
         f = figure(name, sc, flip=flip)
-        x, y = int(w * fx) - f.width // 2, int(h * fy) - f.height
-        sh = contact(round(f.width * 0.8), 8, 0.5)
-        bg.alpha_composite(sh, (x + f.width // 2 - sh.width // 2, y + f.height - sh.height // 2 - 1))
-        bg.alpha_composite(f, (x, y))
-    pip = src('pip-anchor-304x312.png').resize((round(304 * 0.5), round(312 * 0.5)), Image.LANCZOS)  # the same scale
-    px, py = (w - pip.width) // 2 + 20, h - 30 - round(305 * 0.5)
-    sh = contact(round(pip.width * 0.7), 14, 0.55)
-    bg.alpha_composite(sh, (px + pip.width // 2 - sh.width // 2, py + round(305 * 0.5) - sh.height // 2 - 2))
+        sh = contact(round(f.width * 0.8), 14, 0.55)
+        bg.alpha_composite(sh, (x + f.width // 2 - sh.width // 2, base - sh.height // 2 - 4))
+        bg.alpha_composite(f, (x, base - f.height))
+    pip = src('pip-anchor-304x312.png').resize((round(304 * 0.82), round(312 * 0.82)), Image.LANCZOS)    # near
+    px, py = (w - pip.width) // 2 - 6, h + 18 - round(305 * 0.82)
+    sh = contact(round(pip.width * 0.7), 18, 0.6)
+    bg.alpha_composite(sh, (px + pip.width // 2 - sh.width // 2, py + round(305 * 0.82) - sh.height // 2 - 2))
     bg.alpha_composite(pip, (px, py))
     return bg
 
