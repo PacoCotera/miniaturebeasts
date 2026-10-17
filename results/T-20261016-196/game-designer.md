@@ -47,3 +47,19 @@ The Companion's strings are not in this sweep. They follow in a second pass.
 ## For the creative director (the yes/no column)
 
 Only two rows are "yes": the Probe break (a real loss of gathered pods) and the lost sitting (a real loss, and itself against the pillars). Every other loss word above is a choice, a price or a limit, and is reworded or stands as a plain fact.
+
+## Agreed with the art director's mark sweep (fact-dependent rows)
+
+- **A held sitting lost:** "yes" while today's rule stands. It becomes moot once T-20261016-198 is built (specs/sittings-never-lost.md).
+- **The Companion's New world:** "yes". It replaces the world in play (map, places, state), and that truly discards, even though it is chosen. Said plainly, once.
+- **The Companion's harm warnings** (the red lead word, and only these):
+  - "lightning is coming": a strike can cost plates, and a break follows;
+  - the Probe break: the pods drop, nothing comes home.
+
+  **Not harm:**
+  - "full · the Probe carries 20" and "stays home: the Companion is full", which are limits;
+  - an outpost that "burns low" or "has gone out", a world fact relit with Energy;
+  - growth and elder news.
+- **Create's clash:** "no". It takes the needs-you amber, and its line is "{Trait}: turn one to grow", with no ✕.
+
+The full sweep of the Companion's words is a second pass.
