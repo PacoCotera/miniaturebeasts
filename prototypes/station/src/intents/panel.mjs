@@ -7,9 +7,10 @@ import { growFounder } from "./create.mjs";
 import { returnNow } from "./habitat.mjs";
 import { returnPodNow } from "./pods.mjs";
 import { fitNow } from "./bench.mjs";
+import { growNow } from "./incubator.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-const model = (h) => ({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: h.settings.jump });
+const model = (h) => ({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: h.settings.jump, now: h.now() });
 // Opens the panel on the screen: nothing is spent; the ring on the first card that is neither dimmed nor a loss (else the way out).
 export function openPanel(h, screen, id) {
   h.ui.panel = { screen, id, focus: "" };
@@ -27,6 +28,7 @@ export function intent(h, target, verb) {
   closePanel(h);
   if (ui.screen === "create" && ui.id === "grow" && card.act !== "shape") growFounder(h, card.act);   // Keep shaping is the way out: the panel closes, Create is as before
   else if (card.act === "fit") fitNow(h);
+  else if (card.act === "growNow") growNow(h);
   else if (card.act === "return") (ui.screen === "habitat" ? returnNow : returnPodNow)(h);   // Keep is the way out: the panel closes, the screen is as before
 }
 export { panelBuild };

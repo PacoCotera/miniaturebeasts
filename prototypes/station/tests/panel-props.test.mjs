@@ -162,3 +162,24 @@ test("the Fit the upgrade? panel when short: Fit it is dimmed with the short ico
   }
   const h = fitHost({ e: 11 }); h.ui.panel.focus = "card.fit"; const v = wview(h); assert.equal(v.line.dim, true); assert.equal(v.line.short, "⚡"); assert.match(v.line.need, /⚡/);
 });
+
+// ---- the Grow it now? panel (T-20261016-54; spec §1.6): above ❀ 4 only; the minute count only in the Wait card and its line ----
+function growNowHost(o = {}) {
+  const st = world(); S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); frameOf("S01").chapters.forEach((c) => S.read(st, p, c.id, settings));
+  assert.ok(S.grow(st, p, {}, settings, T0).ok); if (o.s != null) st.s = o.s;
+  const h = host(st); h.ui.screen = "incubator"; h.ui.inc = {}; h.ui.panel = { screen: "incubator", id: "growNow", focus: "" }; return h;
+}
+const gview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: "arrival", now: T0 }, panelSpec, frameSpec, podsSpec);
+test("the Grow it now? panel: the price from the rules, the ready bud and the bud as it is, the minute count only in the Wait card and its line, the threshold is a spec value", () => {
+  const h = growNowHost(), v = gview(h), [grow, wait] = v.cards, c = S.instantGrowCost(h.st, settings, T0), n = S.budMinutesLeft(h.st, settings, T0);
+  assert.equal(panelSpec.growNowAbove, 4); assert.ok(c.s > panelSpec.growNowAbove, "this bud is above the threshold");
+  assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, "Grow it now?");
+  assert.deepEqual([grow.id, wait.id], ["grow", "wait"]); assert.equal(grow.cost, S.priceText(c.e, c.d, c.s)); assert.match(grow.cost, /^❀ \d+$/); assert.equal(grow.line, "ready at once"); assert.equal(wait.cost, ""); assert.equal(wait.line, `ready in about ${n} min`);
+  assert.equal(grow.picture, "bud-ready-128x160"); assert.match(wait.picture, /^bud-(early|late)-128x160$/);
+  for (const t of [grow.name, grow.line, grow.cost, wait.name, v.overlay.regions.title]) assert.ok(!/\bmin\b|⧗/.test(t), "no minute count outside the Wait line: " + t);
+  assert.equal(v.overlay.focus.cur, "card.grow"); h.ui.panel.focus = "card.wait"; assert.equal(gview(h).line.subject, `ready in about ${n} min`, "the context carries the count");
+  for (const x of [grow, wait]) assert.ok(measure(x.name, 20) <= P.limits[2].text && measure(x.line, 16) <= 208, x.name + " / " + x.line);
+});
+test("the Grow it now? panel when short of Essence: Grow it now is dimmed with the short icon, the ring opens on Wait", () => {
+  const h = growNowHost({ s: 1 }), v = gview(h); assert.deepEqual([v.cards[0].dim, v.cards[0].short], [true, "❀"]); assert.equal(v.overlay.focus.cur, "card.wait");
+});

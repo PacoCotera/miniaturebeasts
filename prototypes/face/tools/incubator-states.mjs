@@ -1,5 +1,5 @@
 // The Incubator in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `incubator-empty` (a pod in the rack: ✓ Choose a pod), `incubator-growing` (the wait's first half),
-// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
+// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, `incubator-panel-grownow` (✓ Grow now above ❀ 4: the Grow it now? panel), and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
 // `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the ready state).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
@@ -16,11 +16,12 @@ const SCENES = {
   "growing":      { want: "growing", set: (w) => { w.adults(2); w.budAt(2); } },
   "growing-late": { want: "growing", set: (w) => { w.adults(2); w.budAt(13.2); } },
   "ready":        { want: "ready",   set: (w) => { w.adults(2); w.bud(true); } },
+  "panel-grownow": { want: "growing", panel: true, set: (w) => { w.adults(2); w.budAt(2); } },   // ✓ Grow now at ❀ 9 (above ❀ 4) opens the Grow it now? panel, the ring on Grow it now
   "ready-moving": { want: "ready", timedOnly: true, set: (w) => { w.adults(2); w.bud(true); const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "12:00"; } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${INC.toString()})`]);
 async function apply(page, sc) {
-  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; w.open(); }, [sc.set.toString()]);
+  await page.evaluate(([setSrc, panel]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; S.UI.panel = null; w.open(); if (panel) S.press("confirm"); }, [sc.set.toString(), !!sc.panel]);
 }
 // the timed points: the scene, the key that starts the event, the instants after it
 const TIMED = {

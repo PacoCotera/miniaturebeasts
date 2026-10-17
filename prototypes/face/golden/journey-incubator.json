@@ -14,6 +14,54 @@
     ],
     "screen": "incubator",
     "state": "growing",
+    "ok": "Grow it now",
+    "price": "❀ 11",
+    "subject": "ready at once"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "back"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Grow now",
+    "price": "❀ 11",
+    "subject": "ready in about 21 min"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Grow it now",
+    "price": "❀ 11",
+    "subject": "ready at once"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
     "ok": "Grow now",
     "price": "❀ 11",
     "subject": "ready in about 21 min"

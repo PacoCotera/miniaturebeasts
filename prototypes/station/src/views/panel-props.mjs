@@ -61,6 +61,17 @@ export function fitCards(m, spec, frame, requests) {
     { id: "later", act: "later", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
   ];
 }
+// The cards of the Grow it now? panel (§1.6): Grow it now (the bud at its ready step, ❀ n from the rules, "ready at once"; dimmed when short) and Wait (the bud at its step now, nothing spent, "ready in about {n} min": the one minute count, owner ruling 3).
+export const BUD = [128, 160];
+export function growNowCards(m, spec, frame, requests) {
+  const { st, settings } = m, Sg = spec.strings.growNow, now = m.now ?? Date.now(), req = (r) => { requests.push(r); return r.id; };
+  const c = S.instantGrowCost(st, settings, now), short = S.canPay(st, c.e, c.d, c.s) ? "" : S.shortIcons(st, c.e, c.d, c.s), p = S.budProgress(st, settings, now);
+  const bud = (id) => req({ kind: "slot", id, master: id, size: BUD, until: "the Incubator's bud master (incubator.json regions.bud)" });
+  return [
+    { id: "grow", act: "growNow", room: null, picture: bud("bud-ready-128x160"), pictureSize: BUD, mark: "", name: Sg.cards.grow.name, cost: S.priceText(c.e, c.d, c.s), gain: false, short, line: Sg.cards.grow.line, loss: false, dim: !!short },
+    { id: "wait", act: "wait", room: null, picture: bud(p < 0.5 ? "bud-early-128x160" : "bud-late-128x160"), pictureSize: BUD, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: fill(Sg.cards.wait.line, { n: S.budMinutesLeft(st, settings, now) }), loss: false, dim: false },
+  ];
+}
 // The masters the panel is drawn from (frame.json regions.panel.art, T-20261016-47 and -70): the housing, the veil, the contact shadow and the chip, and for each card its well (focused or not), stage, glow and light at the card's width.
 export function artOf(frame, n, requests, wild = false) {
   const A = frame.regions.panel.art, P = frame.regions.panel, w = (P.cards.width - P.cards.gap * (n - 1)) / n, pw = w - 32, at = (t) => t.replace("{w}", w).replace("{pw}", pw);
@@ -69,7 +80,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });

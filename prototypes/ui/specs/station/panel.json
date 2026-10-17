@@ -6,7 +6,8 @@
   "create",
   "habitat",
   "pods",
-  "bench"
+  "bench",
+  "incubator"
  ],
  "spec": "specs/station-decision-panel-spec.md",
  "frame": "frame.json",
@@ -52,8 +53,13 @@
   "fitUpgrade": {
    "opens": "bench",
    "by": "✓ on the slot"
+  },
+  "growNow": {
+   "opens": "incubator",
+   "by": "✓ Grow now when the price is above `growNowAbove` (at or below it ✓ acts as before)"
   }
  },
+ "growNowAbove": 4,
  "bottomLine": {
   "action": "✓ + the focused card's name + its cost",
   "subject": "the focused card's line, else \"to {the room}\" when it has a destination mark",
@@ -130,6 +136,19 @@
     },
     "later": {
      "name": "Not now"
+    }
+   }
+  },
+  "growNow": {
+   "title": "Grow it now?",
+   "cards": {
+    "grow": {
+     "name": "Grow it now",
+     "line": "ready at once"
+    },
+    "wait": {
+     "name": "Wait",
+     "line": "ready in about {n} min"
     }
    }
   }

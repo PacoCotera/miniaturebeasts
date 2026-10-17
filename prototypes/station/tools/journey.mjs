@@ -426,7 +426,7 @@ await page.waitForTimeout(1600);
 const hpressI = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("incubator-states");
 await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
-{ const s0 = await st(); await hpressI("confirm", 120);   // ✓ Grow now: the leaves still to fill turn whole over 400 ms, input held 400 ms
+{ const s0 = await st(); await hpressI("confirm", 120); expect((await props()).overlay?.id === "panel" && (await props()).frame.line.ok === "Grow it now", "✓ Grow now above ❀ 4 opens the Grow it now? panel: " + JSON.stringify((await props()).frame.line)); await hpressI("back", 120); expect(!(await props()).overlay, "← closes it, nothing spent"); await hpressI("confirm", 120); await hpressI("confirm", 120);   // ✓ Grow now (the panel, then its Grow it now card): the leaves still to fill turn whole over 400 ms, input held 400 ms
   expect((await props()).state === "growing" && (await page.evaluate(() => window.__st.holding())), "✓ Grow now holds input while the leaves fill");
   await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);
   { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
@@ -743,7 +743,7 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   await loop("confirm", "✓ Create from this pod opens Create", () => window.__st.UI.screen === "create");
   await loop("confirm", "✓ Grow it opens the panel", () => window.__st.props?.overlay?.id === "panel");
   await loop("confirm", "✓ Grow it on the panel (the jump to the Incubator)", () => window.__st.UI.screen === "incubator");
-  await loop("confirm", "✓ Grow now (the bud is ready)", () => window.__st.props?.state === "ready");
+  await loop("confirm", "✓ Grow now (the bud is ready; the first bud is ❀ 4 or less, so ✓ acts at once)", () => window.__st.props?.state === "ready");
   await loop("confirm", "✓ Open (the hatch, then the meet)", () => window.__st.UI.screen === "habitat");
   { const p = await props(); expect(p.screen === "habitat" && p.state === "meet" && p.focus.cur === "resident" && /^Name /.test(p.frame.line.ok) && !p.overlay, "fresh-loop: the hatch lands in the meet with the ring on the resident, ✓ Name it: " + JSON.stringify([p.state, p.focus.cur, p.frame.line.ok])); }
   await loop("confirm", "the meet's first ✓ opens the namer", () => window.__st.props?.overlay?.id === "namer");

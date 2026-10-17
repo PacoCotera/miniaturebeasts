@@ -174,7 +174,12 @@ export function createBody() {
 // ---- Incubator ----
 // The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). No lamp: Grow paints nothing (decisions 10-11 14:17).
 export function incubatorBody() {
-  return incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods);
+  const body = incubatorBuild({ st: G.st, sv: G.sv, settings: G.settings, frame: SPECS.frame, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods), pn = UI.panel;
+  if (pn && pn.screen === "incubator" && body.props.state === "growing" && !UI.inc.grow) {   // the Grow it now? panel is open: its props ride on the Incubator's (an overlay) and its bottom line is built from the focused card
+    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump, now: Date.now() }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  } else if (pn && pn.screen === "incubator") UI.panel = null;
+  return body;
 }
 
 // ---- the props of the screen on the page ----

@@ -4,6 +4,7 @@ import * as S from "../state.mjs";
 import { toPods } from "./create.mjs";
 import { knownChapters } from "../views/incubator-props.mjs";
 import { plays } from "../moving.mjs";
+import { openPanel } from "./panel.mjs";
 
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
 export function choosePod(h) {
@@ -33,6 +34,13 @@ export function intent(h, target, verb) {
     if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold, ...(moving && ev.cut ? { cut: true } : {}), ...(sk ? { skip: true } : {}) }); h.at(ev.ms, () => over(false), sk); } else over();   // reduced motion: a cut, the meet on the frame of ✓
     return r;
   }
+  const above = h.settings.growNowAbove ?? h.specs.panel?.growNowAbove ?? 4;   // a large Grow now asks first (decision panel spec §1.6); at or below the threshold ✓ acts as before
+  if (S.instantGrowCost(h.st, h.settings, h.now()).s > above) { openPanel(h, "incubator", "growNow"); return; }
+  return growNow(h);
+}
+// The Grow it now card's act (and ✓ at or below the threshold): the rule fills the bud, the leaves still to fill turn whole (events.growNow).
+export function growNow(h) {
+  const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
   const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "", left: S.budMinutesLeft(h.st, h.settings, h.now()) };
   const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
   if (motion) {   // the leaves still to fill (the filling one first) turn whole one by one over 400 ms; the screen shows the bud as it was until the event ends, then ready on one refresh
