@@ -28,14 +28,14 @@ The player should always be able to see what they are leaving.
 
 Two honest kinds of special, both from today's rules and data:
 
-- **A first in your vivarium.** When a face gives a look that no mibi the player keeps has, the drum's face carries a small star, and turning to it plays the change with a little more: a brighter light and a longer reaction. The star says "you don't have one like this yet". The game knows this from the residents; it needs no new rule.
-- **A piece of your wish.** If the player pinned a wish for this species and a face gives a pinned look, the face carries the wish mark and the founder's part lights in the wish's colour on the turn. Choosing it is visibly a step toward the dream mibi (the rules already make wish pieces glint).
+- **A look new to your field guide.** A trait whose look was new to the player's field guide when its chapter was read (the code's `p.first`) carries the "first" mark, the cream triangle (T-136). Turning to it plays the change with a little more: a brighter light and a longer reaction. It says "this pod taught you something". The meaning was corrected by the genome engineer's check (results/T-20261016-135.md) from "no resident has this look", which the code does not hold.
+- **A piece of your wish.** If the player pinned a wish for this species and a face gives the pinned look, that face carries the yellow wish glint. When the founder shows the pinned look, the gene on the screen wears it too, and the founder's part lights in the wish's colour on the turn. Choosing it is visibly a step toward the dream mibi. The exact rule is in specs/genome-screen-calls.md.
 - **Never a number or a percentage** of rarity: the rules have none, and the game shows chances only as pictures.
 
 ### 4. What is still hidden, and tempting
 
 - **On the founder,** unread parts stay frosted, as now.
-- **On the bank,** an unread chapter's drums are capped with frost. When this pod **glints** on that chapter (the species has shown that chapter before, and this pod carries a look the species hasn't shown yet), the cap shows the glint star: "something new is under here". That is the temptation, and it is the real one from the rules.
+- **On the bank,** an unread chapter's drums are capped with frost. When this pod **glints** on that chapter (the species has shown that chapter before, and this pod carries a look the species hasn't shown yet), the chapter's frosted row shows the glint once, never on one gene, because the code's glint is per chapter ("new here, never what"). That is the temptation, and it is the real one from the rules.
 - **The choice it opens,** shown with options, cost and outcome (specs/station-decision-points.md): on a capped drum, ▲ or ▼ opens the decision panel: **read it now** (◆ n, and what reading reveals; then you can shape it), or not yet, and it **clears while it grows** (free, a surprise in the Incubator). It never spends silently, and ✓ stays Grow (ruled by the lead, T-20261016-134).
 - **On the Incubator,** the frosted part clears on the founder's shadow inside the pod and, where the look is new to the player, it clears with the same star and light as a first on Create.
 
@@ -44,7 +44,7 @@ Two honest kinds of special, both from today's rules and data:
 Because 1–4 put the reward on the founder and the drums, the display's job is the whole genome at a glance, including drums paged off the bank on a deep species. Because it is live, it also answers each turn. On a turn, the matching chip flips in step with the drum and the founder: three places on the machine move at once, like the dock moments. It carries, as the creative director's intent says:
 
 - one chip per trait, with the drum's notch when changed and the star when it was a first;
-- a frosted chip for each trait of a chapter still a surprise, with the glint star when it glints;
+- a frosted chip for each trait of a chapter still a surprise, with the glint once on the row when the chapter glints;
 - the clash as the red link between two chips, mirrored on the two drums;
 - on the Incubator, the same display; a frosted chip clears to its picture when its chapter clears, with the star when the look is new to the player.
 
@@ -54,4 +54,4 @@ Being live, the display can also take the focus. When the ring walks the bank, t
 
 - **UI/UX:** the drum's neighbour faces in the window (how much peeks), the before-and-after fade on a turn, the change light's area (the trait's region on the founder), the star and wish marks on drum faces and chips, the display's chip flip in step with the drum (200 ms) and its focus outline, and the "read it now" choice on a capped drum if the lead takes it.
 - **Art:** one short reaction per trait kind for the founder (head shake for crowns and ears, a look along the flank for coat and markings, a blink for eyes, a tail flick for tails), placed over the founder picture. Also the change light as a soft painted wash per trait region, and the star mark.
-- **Build:** "a first in your vivarium" is a check of the new look against the residents' looks for that trait. A wish piece is the existing wish match. A glint on a capped drum is the existing `podGlints` per chapter.
+- **Build:** the first mark is the code's `p.first` per trait. A wish piece is the existing wish match. A glint on a capped drum is the existing `podGlints` per chapter.

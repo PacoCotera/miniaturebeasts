@@ -60,17 +60,17 @@ Every kind reads by its own mark and behaviour, never by a word, so a child can 
 | **Locked by the species** | "This is what makes it a Loika" | Fixed and part of the frame, with the lock mark. It never turns |
 | **Configurable** | "I can change this" | The only genes that turn. When changed, they wear the drum's notch and are lit |
 | **Inherited-only** | "Only breeding changes this" | Closed, with the joined rings and a pointer toward the Cross |
-| **Self-changing** (Glow, Basking, Phase) | "It changes where it goes" | Four step marks and the badge of the place that moves it. A founder starts with none lit: a promise the player keeps by choosing where the partner walks |
+| **Self-changing** (Glow, Basking, Phase) | "It changes where it goes" | Four step marks and the badge of the place that moves it. A founder starts with none lit: a promise the player keeps by choosing where the partner walks. Only the loci named in specs/genome-screen-calls.md, once the frames carry them (T-20261016-137); until then S03 Glow draws as inherited-only |
 | **Sleeping** (behind a switch that is off) | "It carries this, but doesn't wear it" | Present but dark behind its switch; it comes on line when the switch turns on |
 | **Sealed chapter** | "A find opens this" | Shut behind the find's picture |
-| **Unread** | "Still a surprise" | Under frost, with the glint star when something new is there |
+| **Unread** | "Still a surprise" | Under frost; the chapter's row carries the glint once when something new is there (per chapter, never on a gene) |
 
 ## 5. What makes it feel advanced, and what makes it rewarding
 
 - **Cause and effect in one beat.** The copy chosen, the part rebuilt and the animal's reaction all happen together. The player always sees *which inherited copy* made *which part* of the animal. That precision is what separates a lab from a dress-up toy.
 - **The whole genome, present.** Everything the species has is on the instrument at once: what the player can change, what they can't, what is asleep and what is hidden. Depth is visible even when unused.
 - **Restraint by the machine.** Locked, inherited-only and self-changing genes refuse, each with its own reason. The bench has rules, and a rule shown is a goal suggested: breed for this, walk the partner there, find the crystal.
-- **Discovery inside the edit.** Waking a sleeping look, a glint under frost, a star on a look no resident has, the wish mark on a pinned look (specs/slip-reward.md).
+- **Discovery inside the edit.** Waking a sleeping look, a glint under frost, the first mark on a look new to your field guide, the wish glint when the founder shows a pinned look (specs/slip-reward.md, specs/genome-screen-calls.md).
 - **The commit is a procedure.** Before and after as two animals; the genome written into the pod; the stamp printed. The player leaves knowing they made this mibi.
 
 ## 6. On the Incubator
@@ -89,4 +89,4 @@ It is the same instrument, showing the same genome. While the bud grows, the fou
 - **UI/UX:** the instrument's form and layout at 1024×600, how each procedure is reached with the pad and keys, the refusal marks, the clash link, and how a deep species' eight chapters stay present at once.
 - **Art (AD):** the marks for each kind of gene, the copies as samples, the frost, glint, star and wish marks, and the founder's reactions (specs/slip-reward.md), in the Station's lab style as the creative director sets it.
 - **Architect** (per the ticket): drawing the whole genome with live changes in LVGL on the Pi at 1024×600. Only the focused gene animates.
-- **Build:** each gene's kind comes from the frame (locked, configurable, inherited-only, self-changing, sleeping behind which switch, sealed), its state from the pod (read, glint, wish, star against the residents), and the clash pair from the existing build check.
+- **Build:** each gene's kind comes from the frame (locked, configurable, inherited-only, self-changing, sleeping behind which switch, sealed), its state from the pod (read; the glint per chapter; the wish per specs/genome-screen-calls.md; the first mark from `p.first`), and the clash set (one to n traits) from `clashTraits`.
