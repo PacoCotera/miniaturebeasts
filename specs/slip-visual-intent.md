@@ -1,44 +1,54 @@
 # The slip: visual intent (creative director, for T-20261016-126)
 
-Written 2026-10-17 (America/Mexico_City), at the lead's request, as the CD's input to UI/UX's T-20261016-126.
+Written 2026-10-17 (America/Mexico_City), at the lead's request, as the CD's input to UI/UX's T-20261016-126. UI/UX wireframes both options for the owner to choose.
 
-**The owner** (04:02, on the Create proof's slip, `results/owner/2026-10-17-create-slip.png`): "doesn't read like part of the machine, or anything else" and "a wall of text that nobody will read".
+**The owner** (04:02, on the Create proof's slip, `results/owner/2026-10-17-create-slip.png`): "doesn't read like part of the machine, or anything else" and "a wall of text that nobody will read". **The owner's steer** (04:04): "i mean, can be a cool screen of the machine."
 
-**The binding style:** `design/art-direction.md`, `design/style-guide/README.md`. The style is used as it is; nothing is added.
+**The binding style:** `design/art-direction.md`, `design/style-guide/README.md`. Used as it is; nothing added.
 
-## 1. What it is in the world, in one sentence
+**Shared by both options:**
+- **Content:** what was changed, what clashes, what is still a surprise, and on the Incubator what cleared while growing.
+- **The rows are pictures:** one chip per trait, the drum's own close-up, carrying the drum's own marks:
+  - the **changed notch**;
+  - a **frost** for still a surprise;
+  - a **red link** joining two clashing chips, with the same two drums marked on the bank.
+- **On the Incubator,** "cleared while growing" is a state of the same chips: a frosted chip clears to its picture when its chapter clears, and pulses once with the ring's cut.
+- **Words budget:** at most **3 words** in the longest case. No sentences, and no counts in words ("two more"); overflow shows as "+n" on one chip. The bottom line keeps its own words, as on every screen.
 
-**It is the pod's own tag:** the paper tag that already hangs on the player's pod on Pods. It travels with the pod into Create and into the Incubator, and gathers a mark for each thing the player did to it and each thing that came to light.
+## Option A: a screen of the machine (the owner's direction)
 
-**Why a tag, and not a bench readout:**
-- **It already exists in the world.** Pods draws the pod with a paper tag on a string (accepted screen; `create-concept.md` places the tag under the opened pod). Paper is in the guide's materials list.
-- **It belongs to the pod.** The concept's thread is that "the pod the player collected is the object that travels" (Pods → Create → Incubator). A tag tied to that pod carries the record with it. A slip clipped to the bench belongs to neither.
-- **A readout plate would duplicate the drums.** On Create, the bank already is the machine's readout: each drum shows its look, a changed drum wears its notch, and an unread chapter's drums are capped. A second machine panel listing the same things in words is exactly the "wall of text".
+**What it is, in one sentence:** a small instrument display built into the field-gear bench, the same kind of screen the kit already carries: the Caddy's matte e-paper panel and the Companion's HiBit screen. It is the bench's own readout of the founder being made.
 
-## 2. What it shows, and how (pictures first; the words budget is hard)
+**Why it is in the house style:**
+- **The house already draws a machine screen.** `art/concept-homepage/caddy-summary-epaper.png` (approved concept) shows the Caddy's panel: matte, greyscale with a fine dither, unlit, picture-led (the mibi, the pod, the material icons), and a few words.
+- **The kit test** (`hero-kit.png`) shows it as part of the same maker's gear. That is "part of the machine" in the owner's words, and it avoids the guide's "Never" list (glowing HUDs, holograms, neon, polished glass, gloss).
 
-- **The name.** The pod's name, as on Pods. 1 word.
-- **Where it was found:** the place badge (Pods' `place-{…}-32x32`), not the found sentence. A picture, 0 words.
-- **What I changed:** one small picture chip per changed trait, the same close-up the drum shows. Each chip carries the drum's own **changed notch**, so the same mark means the same thing in both places.
-- **Still a surprise:** one **frosted chip** per unread chapter. The frost is the house's frost (the "cool frost, never a guess" of the founder and the capped drum), not a grey word.
-- **A clash:** the two clashing chips are tied by a red link and a mark, and the same two drums are marked on the bank. No sentence.
-- **On the Incubator,** "cleared while growing" is a state of the same chips: a frosted chip **clears** to its picture when its chapter clears, and pulses once with the ring's cut. Same tag, same rows, no new list.
-- **Words budget:**
-  - on the tag, at most **3 words** in the longest case: the name, plus at most one short word if UI/UX finds a chip can't say it;
-  - no sentences;
-  - no line counts in words ("two more", "two still to come"): the chips show it;
-  - the bottom line keeps its own words, as on every screen.
-- **When there are more chips than fit,** it overflows as "+n" on one chip, not as more rows.
+**How it looks:**
+- **Housing:** a display window let into the bench's sage housing, flush, with a dark rubber gasket, four screws and one engraved word on the housing (the guide's "screws, engraved marks"). It is matte, with no reflection, no glow halo and no scanlines.
+- **The display:** the Caddy panel's language:
+  - a pale matte ground in 4 greys, or the house palette, dithered as the Caddy panel is (UI/UX and AD decide which with the art);
+  - the chips are drawn in it as small pictures, with the notch, frost and red link as display marks;
+  - one key light from the top left falls on the housing, not on the display's content.
+- **On the Incubator:** the same display, let into the cradle's base or the stage's housing (UI/UX places it).
+- **Risk to manage:** on Create the bank already shows each look, the notch and the caps. The screen earns its place as the **summary**: every trait at a glance, including drums paged off the bank on deep species (S03 has 25). It must not repeat the bank in words.
 
-## 3. How it looks (for the art ticket UI/UX writes)
+## Option B: the pod's own tag (alternative)
 
-- **Shape:** the Pods tag: die-cut paper with a reinforced eyelet, tied on its string to the pod (Create: to the pod in its well; Incubator: to the pod in its cradle). It is in the world, not clipped to the bench, and it casts a soft shadow on what it hangs over.
-- **Paper:** the house's toned paper, the same as the Pods tag. It is **not** a large cream panel. The tag is sized to its chips, so it is small, the way a tag is.
-- **Chips:** small recessed picture wells printed or stamped on the tag. The notch, the frost and the red link are the drums' own marks.
-- **Light:** one key light from the top left, as everything.
+**What it is, in one sentence:** the paper tag that already hangs on the player's pod on Pods, travelling with the pod into Create and the Incubator, gathering the chips.
 
-## 4. What this replaces
+**Why:** it already exists in the world (Pods' tag, and paper is in the guide's materials), and it belongs to the pod that travels (the concept's thread).
+
+**How it looks:**
+- the Pods tag: die-cut toned paper, a reinforced eyelet, on its string to the pod, sized to its chips, so small;
+- the chips stamped on it; the name, and the place badge instead of the found sentence;
+- a soft shadow on what it hangs over.
+
+**Weaker point:** it is paper, not the machine, which is the opposite of the owner's steer.
+
+## What both replace
 
 - `slip-208x288`, `slip-208x408`, and the "Your changes / Cleared while growing / Still a surprise" text lists on both screens.
-- The Incubator's slip column and the found sentence. The just-cleared card stays as it is: it is the reveal, with a picture.
-- UI/UX gives the rects, the chip size and the tag's size per screen (T-126). The space the old slip freed is UI/UX's to use, or to give back to the subject.
+- The just-cleared card stays as it is: it is the reveal, with a picture.
+- UI/UX gives the rects, the chip size and the display's or tag's size per screen. The space the old slip freed is UI/UX's to use, or to give back to the subject.
+
+**The CD's recommendation:** A, the owner's direction, built on the Caddy's e-paper language so it is the house's own screen, not a new HUD. The owner chooses.
