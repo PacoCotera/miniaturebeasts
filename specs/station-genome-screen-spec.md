@@ -56,11 +56,11 @@ Ticket T-20261016-126, 2026-10-16 (America/Mexico_City). It replaces the paper s
 | --- | --- | --- |
 | Configurable, as the pod is | An open ring with three tumbler ticks; inside, the **copy pair**: the shown copy solid in front, the hidden copy as an outline behind | "I can change this; this copy shows, that one hides" |
 | A blend | The pair as one lens, half each copy | "The two copies meet" |
-| Changed by you | The ring lit (`aqua` rim, `mint` pair) and the notch 3 × 6 at (21, 9) | "I changed this" |
+| Changed by you | The ring and pair lit in `mint` (the one lit hue on both screens; no bloom, at most a 1–2 px soft edge) and the notch 3 × 6 at (21, 9) | "I changed this" |
 | Copy chosen | The pair as two of the same copy (copy 1 in `bone`, copy 2 in `sand`): the rejected copy has dropped out | "I chose which copy it keeps" |
 | A first | The star 10 × 10 at (16, 0) | "No resident has this look" |
 | Inherited-only | A closed disc with the joined rings | "Only breeding changes this" |
-| Self-changing | A small ring with four step marks round it (3 × 3, `aqua` lit, none lit on a founder) and the place badge 12 × 12 at (25, −4) | "It changes where it goes" |
+| Self-changing | A small ring with four step marks round it (3 × 3, `mint` lit, none lit on a founder) and the place badge 12 × 12 at (25, −4) | "It changes where it goes" |
 | Asleep | Dark, behind a gate bar 3 × 20 at (−9, 2) of the first sleeping gene; when the switch turns on, the bar goes and the genes light one by one, 80 ms apart | "It carries this but doesn't wear it" / "I woke it" |
 | Sealed chapter | The find's picture 24 × 24 at the first gene's place and a closed bar 4 px along the row | "A find opens this" |
 | Still a surprise | Frost 20 × 20; the star when the pod glints there | "Still a surprise; something new under here" |
