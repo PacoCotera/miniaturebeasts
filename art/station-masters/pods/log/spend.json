@@ -4905,5 +4905,22 @@
    "thoughtsTokenCount": 416,
    "totalTokenCount": 4051
   }
+ },
+ {
+  "tag": "home-screens-cabinet-genome try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.203928,
+  "mxn": 4.0786,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:51:15Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 864,
+   "candidatesTokenCount": 1379,
+   "thoughtsTokenCount": 306,
+   "totalTokenCount": 2549
+  }
  }
 ]

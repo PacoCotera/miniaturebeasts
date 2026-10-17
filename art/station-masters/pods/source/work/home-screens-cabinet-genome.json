@@ -1,0 +1,20 @@
+[
+ {
+  "name": "home-screens-cabinet-genome",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:4",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/slices/home-glass-day-640x488.png",
+    "REFERENCE for warmth and finish only: the warm matte, soft-lit painted finish. Do not copy its content."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/02a-palette.png",
+    "REFERENCE for the palette only: the screen's colours (the slate ground). Do not copy its layout or any text."
+   ]
+  ],
+  "prompt": "A single painted element on a FLAT, uniform dark slate ground #1d232b: no vignette, no texture, no frame, no border, nothing else in the picture. The subject: a genome drawn as a tree of life, made like a museum-grade natural-history engraving built from fine gilt brass filament. One root knot at the bottom centre; a slender trunk splitting into 4 main limbs; each limb splitting into 4 branches (16 branch ends in all); each branch ends in a small cluster of 4 to 6 tiny frosted-glass seed beads (about 80 beads in all). All beads are UNLIT and in the same neutral frosted state: no glow, no colour, pale frost (#eaeff6 and #cbd5e2). Feel: calm, airy, lots of negative space, delicate lines of varying weight, organic but balanced (a roughly symmetrical crown), with slight depth, a soft top-left key light and a faint cool shadow on the ground. Grown-up, crafted, a sense of wonder; the warmth only through the brass: sand #e6c98c highlights, a warm mid tone, dark bronze shade. NO leaves, NO flowers, NO creatures, NO faces, NO medallions, NO jars, NO stickers, NO labels, NO text, NO frame, NO glow or bloom, NO neon, NO chrome, NO cartoon."
+ }
+]
