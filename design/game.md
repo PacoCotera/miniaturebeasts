@@ -106,11 +106,11 @@ The loop runs on these systems. Each has one purpose; its rules are in the linke
 | **The Probe** | The player's reach and risk | Mending and upgrades in; reach, pod capacity and survival out | [World and exploration](world-and-exploration.md) |
 | **Cargo** | The trip coming home as an event | The sealed hold in; crates opened once at the Station | [Architecture](architecture.md) |
 | **Research** | Knowing what a pod carries | Data in; chapters read, glints, the field guide out | [Research and breeding](research-and-breeding.md) |
-| **Creation** | Making one fixed founder from one pod | A read pod, Energy, Essence and Data in; a committed genome out | [Research and breeding](research-and-breeding.md) |
+| **Creation** | Making one fixed founder from one pod | An identified pod, Energy, Essence and Data in; a committed genome out | [Research and breeding](research-and-breeding.md) |
 | **Incubation** | The wait between choice and meeting | A bud in; time, reveals and a hatch out; Grow now spends Essence for time | [Research and breeding](research-and-breeding.md) |
 | **Life** | Mibis as individuals over time | Growth stages, care, bonding, the carried set, partners, self-changing traits | This page's table below; [Genomics](creatures-and-genomics.md) |
 | **Breeding** | Families toward a wish | Two adults, Energy and Essence in; one child with real parents out | [Research and breeding](research-and-breeding.md), [Genomics](creatures-and-genomics.md) |
-| **Genomics** | The truth underneath everything | Species frames, loci, copies, inheritance; never shown as notation | [Genomics](creatures-and-genomics.md) |
+| **Genomics** | The truth underneath everything | Species frames, loci, copies, inheritance; never required as notation; letters only in the detail view, one press away | [Genomics](creatures-and-genomics.md) |
 | **Collection** | The record of what the player knows | The Library and field guides, wishes, portraits earned by research | [Research and breeding](research-and-breeding.md) |
 
 **How the systems connect.** Exploration feeds research (pods, Data). Research feeds creation (read genes can be shaped). Creation feeds life (a mibi). Life feeds exploration (partners open places) and breeding (adults cross). Breeding feeds research (children to read) and collection (looks never seen). Every system both receives and gives, so no part of the game is a dead end.
@@ -228,7 +228,7 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 | **The vivarium** | The player keeps as many mibis as the vivarium holds: six bays at the start; upgrades add two at a time, up to twelve, the most one vivarium holds. Returning a grown, unbonded mibi to the wild frees its bay and gives 2 Essence; its place remembers it and later sheds one pod of its line. More room comes from more vivariums |
 | **Crafting** | Discovery with clues. Recipes are personal once learned; a failure wastes the ingredients or returns a fraction. It runs deep over the long term and stays simple at first |
 | **Wild capture** | Not in the game |
-| **Upgrades** | Tiered upgrades for the Station, the Probe and the Companion. The tier 2 Probe reaches further and carries 3 pods. The Station takes virtual research chips, which are found, crafted, traded or dropped by rare mibis |
+| **Upgrades** | Tiered upgrades for the Station, the Probe and the Companion. The tier 2 Probe reaches further and carries 3 pods. The Station takes virtual research chips, which are found, crafted or traded; whether some mibis drop them, and which, is not designed yet |
 | **Sharing and paper** | One household kit serves several players, each with their own progress. Sampling someone else's mibi needs its owner's consent. There is no global ranking of who found something first. A mibi's stamp and its code can be shared; a scanned stamp shows what its keeper has read, and never creates or moves a mibi ([research and breeding](research-and-breeding.md#stamps-and-scans)). Only portrayed mibis can be traded |
 | **Online play** | The kit plays standalone, with no account or internet. The cloud is an optional, paid layer on top, never needed to play |
 
@@ -250,3 +250,4 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 - **The first session:** how a new player meets the loop, and how soon their first mibi arrives.
 - **Printing in play:** whether the Caddy's print and scan are part of play or keepsakes only.
 - **The economy's pacing** in the finished game.
+- **The pod a returned mibi's place sheds:** what genome it carries. The framework has no operation that makes a pod from one mibi. The candidates are its exact genome recorded by its origin, a new genome drawn from its own two copies, or a wild pod of its species seeded with its looks.
