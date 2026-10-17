@@ -1,4 +1,6 @@
-# Station layouts
+# Appendix: Station layouts
+
+**This appendix serves the [style guide](README.md).** It holds the pixel tables: rects, sizes and slots. The look (colours, materials, light, components, type, words and marks) is the guide's. Where a table here names a look the guide forbids (a moss nest, a cream plate or notch, leaf timers, a brown stage, a paper tag outside the Library, a just-cleared card), the guide wins, and the table is fixed when its screen is redesigned.
 
 The measured layout of every built Station screen at 1024×600, 1×, so the builder places each thing from a number rather than a guess. Rules and looks are in the [style guide](README.md) and [Station screens](station-screens.md); this file adds the measurements. Each layout starts from its concept plate and keeps these rules:
 

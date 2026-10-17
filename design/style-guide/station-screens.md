@@ -1,13 +1,13 @@
 # Station screens
 
-1024×600 landscape, judged at 1×. The shared rules are in the [style guide](README.md). The Station is field gear that keeps small lives going: one device, one look, the vivarium at its heart. It is never a scaled-up Companion.
+1024×600 landscape, judged at 1×. The binding look is the [style guide](README.md): palette §2, materials and light §3, components §4, type and words §5, marks §6, layout §7, families §8, motion §9. Each screen below starts with its intent, its look and its do and don't; the rules under them follow, and where they disagree the block at the top wins. The Station is field gear that keeps small lives going: one device, one look, the vivarium at its heart. It is never a scaled-up Companion.
 
 ## The frame
 
 - **Top bar, 40 px.** Where you are, what you hold, who is out, when: the room's mark and the screen's title at the left; Energy, Data and Essence centred, ticking when they change; the Companion's glyph and lamp with the face of the mibi out with it, then the world turn as a sun mark, at the right. Marks, not words, but for the title. The zones, rules and states are in [Station layouts, The frame](station-layouts.md#the-frame).
 - **Stage, 522 px.** The instrument and its one living window.
 - **Bottom line, 38 px.** The one action (the ✓ cap and the verb in orange, then the price) | the context (mist, the only part that shrinks) | the notice (amber, with its lamp) | the way back (the ← cap and where it leads, at the right edge). Read-only focus draws no ✓ cap. Every word is a slot filled to its zone's rule.
-- **Focus.** A warm cream ring that walks between drawn things; the focused thing lifts slightly. Never a list cursor.
+- **Focus.** The focus ring (`focus`, 2 px, 4 px out) walks between drawn things; the focused thing lifts 2 px. Never a list cursor ([style guide §4](README.md#4-components)).
 
 ## Keys and navigation
 
@@ -40,7 +40,7 @@ The player always knows which level a screen is about. The Library, the Book and
 | --- | --- | --- |
 | Feels | rugged, handled, calm; working for the life | warm, soft, alive |
 | Light | the same warm daylight from the top left, caught softly; nothing glows for show | the warm key light from the top left, by the time of day |
-| Colour | sage and sand housing, dark rubber, dark matte slate panels, cream type, orange for the action, small lamps | greens, warm earth, water, the creatures' own colours |
+| Colour | sage and sand housing, dark rubber, dark matte slate panels, `bone` type, orange for the action only, small lamps in device light (`mint`, `amber`). Never brown panels or cream fills ([§2](README.md#2-palette)) | greens, warm earth, water, the creatures' own colours |
 | Materials | powder-coat, rubber, moulded polymer, canvas, braided hose; paper only in the Library | plants, soil, stone, water, fur and leaf |
 | Moves | the life-support works quietly (a mister, a lamp, a feed line); controls move when something happens | all the time |
 | Words | a few per section | none |
@@ -58,9 +58,9 @@ One device. Every section is a part of it, in the same materials and light. Home
 | Section | What it is on the device |
 | --- | --- |
 | **Vivarium** (Home, idle, one mibi up close) | The living world the device keeps; up close, a mibi at home, never a specimen on display |
-| **Pods** | The sample case: pods in fitted, worn cut-outs, handled and labelled |
+| **Pods** | The sample case: pods in fitted, worn cut-outs, their names on the machine's display (paper is the Library's) |
 | **Research** (Create, Cross and Wish, Probe bench) | The lab's advanced research and crafting benches, where you edit life: the gene bench (Create), the splicer (Cross and Wish), the Probe's service dock; what is under study in the device's light, its state on the machine's own displays and lamps |
-| **Incubator** | The bridge between research and the vivarium: the player's own pod on a moss nest, candled from below, the founder showing through its shell |
+| **Incubator** | The bridge between research and the vivarium: the player's own pod candled by an instrument of the machine, the founder showing through its shell in the device's light. No moss nest, no egg |
 | **Library** | The field journal the device keeps: a worn botanical expedition volume |
 | **Arrivals** | The Companion's cargo coming through from the Caddy into the bay |
 
@@ -72,6 +72,12 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 ---
 
 ## Home
+
+> **Intent.** The always-on view of the collection alive, kept by the device.
+>
+> **Look.** Accepted as built: the warm painted vivarium takes the left two thirds; the modules are slate panes holding their painted objects, in one column.
+>
+> **Do:** the vivarium the warmest, most detailed thing; module objects painted and lit, at their tile size or larger (01, 04c). **Don't:** a module that holds words instead of its object; a bright or warm module competing with the vivarium; any brown or cream module ground (02b).
 
 **Vibe.** The device at rest: the vivarium in the central panel, the sections at the right.
 
@@ -101,6 +107,12 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 ---
 
 ## Dock and arrival
+
+> **Intent.** The Companion is home and its crates come through: the devices talk to each other.
+>
+> **Look.** The bay's own light comes on: the link lamp to `mint`, the glyph fills, the crates slide into the bay in 200–400 ms eased steps.
+>
+> **Do:** device light and moving parts only; the first frame is the still state (09a). **Don't:** fanfare graphics, glows or blinking-only meaning (03c, 09a).
 
 **Vibe.** Arrivals: the Companion home on the Caddy, its crates coming through into the bay.
 
@@ -134,6 +146,12 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 ---
 
 ## Pods
+
+> **Intent.** The pods you brought home, and what you know of each.
+>
+> **Look.** The sample case: pods in fitted cut-outs set into the slate instrument face, lit from the top left with contact shadows; the rail and rings in device light; the name and state on a display pane.
+>
+> **Do:** the pod lit and grounded in its cut-out (03b); the name on the display (10a); progress in `mint` (02c). **Don't:** a paper tag on the pod (10a); a brown painted wall behind the case (02b); glyphs under 24 px carrying meaning (04d).
 
 **Vibe.** Pods: the sample case.
 
@@ -178,15 +196,21 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 ## Create (the review)
 
+> **Intent.** Shape your mibi's genes before it grows, and see what you changed.
+>
+> **Look.** The gene bench: the founder big, sculpted and lit in a recess of the bench; the genome on the machine's display at its tier; changed parts lit `mint` on the body and on the marks.
+>
+> **Do:** every object sitting in or on the bench (03b, 07a); genome marks sculpted at their tier, each state a shape (04e); a few words (05b). **Don't:** floating parts on an empty field (07a); a cream notch or cream slip (02b, 05b); a brown or lilac field; paper of any kind (10a).
+
 **Vibe.** Research: the gene bench, an advanced research and crafting bench where you edit life.
 
 **Purpose.** Shape a founder by turning its genes, see its cost, and grow it. **Reads first:** the founder on its dish.
 
-- **Living window.** The founder stands at the centre on a growth dish, a moss pad in a shallow cut-out in the bench, with a contact shadow under its feet, at 300×310 or larger, rich treatment. Wherever a chapter is unread, that part stays misty: a cool frost over the body, never a guess.
+- **Living window.** The founder stands at the centre on a growth dish, a dish in a shallow cut-out in the bench, with a contact shadow under its feet, at 300×310 or larger, rich treatment. Wherever a chapter is unread, that part stays misty: a cool frost over the body, never a guess.
 - **Instrument.** One bench fills the stage inside the device's frame, and everything sits on it or in it; nothing floats.
   - The player's own pod, opened, in the fitted well it had on Pods, with its name plate and its place badge.
   - A short braided gene line from the pod's well into the gene bank: a tray along the front of the bench holding one drum per trait, grouped under engraved chapter words, every trait of the species at once.
-  - A drum's faces are this pod's own looks (as the pod is, only the first copy, only the second copy), so it never offers a look the pod lacks. A changed drum wears a small cream notch.
+  - A drum's faces are this pod's own looks (as the pod is, only the first copy, only the second copy), so it never offers a look the pod lacks. A changed drum wears a small notch lit `mint`.
   - A doings trait is a pinned drum: two joined rings, no turn marks, "breed to change".
   - An unread chapter's drums are capped under the frost.
   - Clashing drums are marked, and so are their chips on the display; Grow is withheld.
@@ -220,28 +244,34 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 ## Incubator
 
+> **Intent.** "The life you designed on Create is being grown here, and each time you look it is further along and you know more about it" (game designer).
+>
+> **Look.** Candling done well: an instrument of the machine candles the player's own pod, its light through the shell showing the founder forming; the ring of time in `mint` on `tealD`; the reveal shows the founder's own part large; the stamp on the display with its text id. The instrument's form is the creative director's (T-20261016-168).
+>
+> **Do:** device light doing the work, cast onto what it lights (03c); the pod grounded in the instrument (03b); progress in `mint` (02c); the reveal as a picture with a short plain line (05a). **Don't:** an egg on a moss cradle, a flat painted shadow (03b); a cream ring (02c); a green plastic plaque (03a); a pixel glyph and jargon in a floating box (04e, 05a); a brown room (02b).
+
 **Vibe.** The bridge between research and the vivarium: candling. The player's own pod, lit from below, with the founder they made showing through it.
 
 **Purpose.** Meet the mibi you made, and see more of it each time you look. **Reads first:** the pod and the shape inside it, then the ring of time.
 
-- **Living window.** The pod is the one the player collected and grew: its species' shell from the one pod renderer, with the dust or moss of the place it was found, the same picture as on Pods and Cargo. It stands in a cradle on a moss nest, lit warm from below as an egg is candled.
+- **Living window.** The pod is the one the player collected and grew: its species' shell from the one pod renderer, with the dust or moss of the place it was found, the same picture as on Pods and Cargo. It stands in the candling instrument, lit from below by the device's light as an egg is candled (the instrument's form: T-20261016-168). No moss nest.
   - As it grows, the shell lets more light through and the founder's shape shows inside it as a soft shadow, showing only what is known: the body from Create, and each chapter's look as it clears. This replaces the generic glowing bean.
   - Ready: light breaks through the shell's seams, the shadow is the whole founder, and nothing steps out until the player opens it.
   - A crossed bud has no collected pod: it is a pod of its species' shell laid at home, with the vivarium's own moss on it, and its shadow shows only the species' outline.
 - **Instrument.** Every object has a job; there is no machinery without one.
-  - The candling light under the nest: the one device, whose light is the point of the screen.
+  - The candling light under the pod: the one device, whose light is the point of the screen.
   - One ring of time around the pod, at the stage's scale, filling continuously, cut where each chapter will clear, closed at ready.
   - The same display as on Create, set into the machine at the left: the pod's name and place badge, its changed chips, and its frosted chips clearing as their chapters clear. At most three words; no paper.
-  - At the right: the just-cleared card (the newest reveal, as a picture and words), and the stamp on its label with its code under it as live text.
+  - At the right: the reveal (the newest cleared part, shown as the founder's own part, large, with a short plain line; never "Just cleared" or a trait adjective), and the stamp on its label with its code under it as live text.
   - On a founder's bud the unread chapters clear one by one, except a sealed chapter that is still shut. Each clearing reaches the shadow, the card, the display's chip and the stamp.
   - No chapter tabs and no leaves.
 - **Composition.** The pod centred and large inside its ring; the display at the left; the card and the stamp at the right. The measured layout is UI/UX's.
 - **Lively / quiet.** Lively: the light through the shell and the ring's fill; a clearing pulses its cut once. Quiet: everything else.
-- **Light.** Warm light from below, through the shell and a little onto the moss and the cradle; the key light from the top left for form. The pod is the brightest thing.
-- **Palette.** The pod's own shell colours; the moss's greens; the housing's sage and sand; the device's dark matte slate behind.
+- **Light.** The device's light from below, through the shell and a little onto the instrument; the key light from the top left for form. The pod is the brightest thing.
+- **Palette.** The pod's own shell colours; the housing's sage and sand; the device's dark matte slate behind; the ring `mint` on `tealD`. No brown, no cream.
 - **Type.** Inter 16 px. The one time count on the Station is here: the bottom line's context "ready in about n min", one rounded count, here only. No other digits for time, on this screen or any other.
 - **Chrome.** Growing: `✓ Grow now   ❀ 7` | "ready in about n min"; ready: `✓ Open`; empty: `✓ Choose a pod`; `← Home`.
-- **Motion.** The ring fills with time. Open: the shell opens along its seams, the juvenile steps out onto the moss, and the ribbon reads "Fig, a young Loika".
+- **Motion.** The ring fills with time. Open: the shell opens along its seams, the juvenile steps out, and the ribbon reads "Fig, a young Loika".
 
 **Concept.** Candling. The pod the player collected travels from Pods through Create into the cradle; what the player made is what they see forming. The stamp stands alone on the Station; the code string may also show, as a shareable "look at my mibi" string.
 
@@ -265,6 +295,12 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 ---
 
 ## Library
+
+> **Intent.** The species you have met, as a book.
+>
+> **Look.** The one place for paper: a worn botanical volume, warm paper and cloth, lit from the top left.
+>
+> **Do:** paper that never changes while it is on screen. **Don't:** paper that changes with input; the book's warm paper used anywhere else on the Station (10a).
 
 **Vibe.** Library: a botanical tome. Two screens: the **Spread** and the **Book**. The Library is one object, an old botanical-expedition volume, and both screens are its pages.
 
@@ -350,6 +386,12 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 ## The vivarium, up close
 
+> **Intent.** One mibi at home, never a specimen on display.
+>
+> **Look.** The warm painted vivarium leads; the card is slate panes beside it, with painted faces and badges.
+>
+> **Do:** the mibi the brightest thing; the card's marks 24 px or more, each with a word (06a). **Don't:** a specimen plinth; words where a picture says it; brown panes (02b).
+
 **Vibe.** Vivarium: cozy, warm, the pet happy at home.
 
 **Purpose.** One mibi up close: name it, greet it, take it with you, cross, have it sit for its portrait, or return it to the wild. **Reads first:** the mibi, then its name.
@@ -377,6 +419,12 @@ The measured layout, the focus graph and the states (rest, the meet, out) are [S
 
 ## Sitting
 
+> **Intent.** Spend a sitting for a portrait.
+>
+> **Look.** The mibi posed in its place, painted; the machine's panes in slate.
+>
+> **Do:** the outcome shown as a picture (04a). **Don't:** a cream card or paragraph (05a, 05b).
+
 A sitting is spent in a ceremony on the Station: the player chooses the one mibi, a pose from its habits and a place it has been. It takes real time, longer than a bud, and the portrait arrives as a crate at the dock. The words are sitting, portrait, portrait card and `✓ Portray`. One sitting a mibi, ever; a sitting earned while one is held is not given, and the Station warns ahead. Its rules are in `prototypes/station/src/sitting.mjs`.
 
 In the vivarium, up close, the Portrait module offers `✓ Portray Fig` while a sitting is held and the mibi can sit ([Station layouts, the vivarium up close](station-layouts.md#the-vivarium-the-whole-and-one-mibi-up-close)).
@@ -386,6 +434,12 @@ The sitting is its own screen under the vivarium, up close, opened from the Port
 ---
 
 ## Cross and Wish
+
+> **Intent.** Two parents and the child their genes forecast.
+>
+> **Look.** The splicer bench, with Create's rules: the subjects sculpted and lit and the genome on the display.
+>
+> **Do:** the parents grounded and lit (03b); sculpted genome marks (04e). **Don't:** floating parts (07a); colour-only marks (06b).
 
 **Vibe.** Research: the lab's splicer.
 
@@ -419,6 +473,12 @@ Wireframes: [09a-cross-overview.png](station-layouts/09a-cross-overview.png) and
 
 ## Probe bench
 
+> **Intent.** Mend and upgrade the Probe the Companion carries.
+>
+> **Look.** The Probe upright, as held, in a vertical service cradle; Mend and Upgrade as slate panes.
+>
+> **Do:** the Probe grounded and lit (03b); the tier shown by its parts and reach, as pictures (04a). **Don't:** loose tools, or gauges that read nothing; a brown wall (02b).
+
 **Vibe.** Research: the Probe in its service dock, being mended.
 
 **Purpose.** Keep the Probe ready: mend its Shield plates, set whether the dock mends every plate, fit the upgrade. **Reads first:** the Probe, then its plates.
@@ -444,6 +504,12 @@ The measured layout is [Station layouts, Probe bench](station-layouts.md#probe-b
 
 ## Decision panels
 
+> **Intent.** At a real decision, the panel shows what each choice will do, as pictures that differ at a glance, and its cost.
+>
+> **Look.** The slate panel over the veiled screen ([style guide §4](README.md#4-components)); each option window is its outcome painted as a different scene (distance, size, direction, setting, light), with the verb, its cost and one line.
+>
+> **Do:** two futures that look different with the words covered (04a). **Don't:** the same picture twice with a different backdrop; brown or cream panels (04a, 02b).
+
 **Purpose.** At a real decision, see each choice's future and its cost, and choose. **Reads first:** the outcome pictures, side by side.
 
 - **Only at a real decision:** a spend, a commitment, an irreversible act or a fork in the path. Grow it, Cross them, Return to the wild, Fit the upgrade, a large Grow now, Spend a sitting, the Hatch and its name, Read it now on Create. Nowhere else.
@@ -455,6 +521,12 @@ The measured layout is [Station layouts, Probe bench](station-layouts.md#probe-b
 ---
 
 ## Idle
+
+> **Intent.** The vivarium alone, the device asleep.
+>
+> **Look.** Accepted: the painted vivarium fills the screen, by the time of day.
+>
+> **Do:** the life moving; the device still (09a). **Don't:** any overlay that glows or blinks (03c).
 
 **Vibe.** Vivarium: the pets at ease, nothing asking for you.
 
