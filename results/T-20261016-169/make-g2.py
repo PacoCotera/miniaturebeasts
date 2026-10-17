@@ -77,14 +77,16 @@ def fit(img, size=44):
 
 
 def scan_light(fig, box, strength=0.5):
-    """The bench's scan light falling on one part of the founder (a soft mint wash within the figure)."""
+    """The bench's scan light falling on one part of the founder: it lightens the part (screen blend toward mint),
+    so it reads on any coat colour; soft falloff, within the figure only."""
     m = Image.new('L', fig.size, 0)
     ImageDraw.Draw(m).ellipse(box, fill=255)
     m = m.filter(ImageFilter.GaussianBlur(10))
-    a = np.asarray(fig, dtype=float)
-    k = np.asarray(m, dtype=float)[..., None] / 255 * strength * (a[..., 3:4] / 255)
-    a[..., :3] = a[..., :3] + (np.array(C['mint']) - a[..., :3]) * k
-    return Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
+    a = np.asarray(fig, dtype=float) / 255
+    k = np.asarray(m, dtype=float)[..., None] / 255 * strength * a[..., 3:4]
+    mint = np.array(C['mint']) / 255
+    a[..., :3] = 1 - (1 - a[..., :3]) * (1 - mint * k)
+    return Image.fromarray((np.clip(a, 0, 1) * 255).astype('uint8'), 'RGBA')
 
 
 def contact(w, h, alpha=0.6):
@@ -153,17 +155,16 @@ def frame(title_from, verb, pr, context, back):
 
 # --- the gene pictures: each tile is this founder's current look of that trait -------------------------------
 L = lambda n: fit(src('look-S03-%s-64x64.png' % n))
-GENES = {
-    'Coat': [('Colour', crop340(40, 30, 120, 80), 'changed'), ('Trim', crop340(165, 235, 235, 290), 'open'),
+GENES = {   # a picture only where a painted close-up of the look exists; the rest are empty wells until painted
+    'Coat': [('Colour', None, 'changed'), ('Trim', None, 'open'),
              ('Markings', L('markings-spots'), 'one'), ('Scales', L('scales-few-fine'), 'open')],
-    'Face': [('Crest', L('crest-tall-crest'), 'open'), ('Eyes', crop340(0, 80, 140, 145), 'changed-focus'),
-             ('Snout', crop340(25, 125, 85, 175), 'one')],
-    'Shape': [('Build', crop340(60, 140, 310, 290), 'open'), ('Haunch', crop340(220, 160, 310, 285), 'one'),
-              ('Topline', crop340(150, 135, 300, 185), 'open')],
-    'Legs & tail': [('Legs', crop340(60, 230, 310, 335), 'open'), ('Claws', fit(src('trait-S03-claws-round-feet-104x96.png')), 'breeding'),
+    'Face': [('Crest', L('crest-tall-crest'), 'open'), ('Eyes', None, 'changed-focus'), ('Snout', None, 'one')],
+    'Shape': [('Build', None, 'open'), ('Haunch', None, 'one'), ('Topline', None, 'open')],
+    'Legs & tail': [('Legs', None, 'open'), ('Claws', fit(src('trait-S03-claws-round-feet-104x96.png')), 'breeding'),
                     ('Tail', L('tail-long-thick'), 'one'), ('Carriage', L('carriage-curls-up'), 'open')],
 }
 DOINGS = [('Movement', 4), ('Stamina', 3), ('Character', 2), ('Glow', 2)]
+SELF = {('Glow', 0)}          # emission-brightness: changed by self (cave, wood); emission-length: breeding only
 
 
 def pose_glow():
@@ -194,6 +195,11 @@ def gene_tile(im, d, x, y, pic, state, size=48):
     if state in ('breeding', 'doing'):        # only breeding changes it: the joined rings
         for dx in (-6, 6):
             d.ellipse((x + size // 2 + dx - 7, y + size - 16, x + size // 2 + dx + 7, y + size - 2), outline=C['fog'], width=2)
+    if state == 'self':                       # it changes where it goes: unlit steps with the trigger's place badges
+        for i, (sx, sy) in enumerate(((10, 30), (18, 24), (26, 18))):
+            d.ellipse((x + sx * size // 48 - 3, y + sy * size // 48 - 2, x + sx * size // 48 + 3, y + sy * size // 48 + 2), fill=C['mist'])
+        im.alpha_composite(src('genome-place-cave-12x12.png'), (x + size - 15, y + 3))
+        im.alpha_composite(src('genome-place-wood-12x12.png'), (x + size - 15, y + size - 15))
     if state.endswith('focus'):
         d.rounded_rectangle((x - 5, y - 5, x + size + 4, y + size + 4), 10, outline=C['focus'], width=2)
         d.polygon([(x + size // 2 - 5, y - 9), (x + size // 2 + 5, y - 9), (x + size // 2, y - 14)], fill=C['focus'])
@@ -221,10 +227,10 @@ def rack(im, d, x0, y0, w, pitch, size, words=True, heads=True, focus_row=None, 
         if genes is None:
             n = dict(DOINGS)[name]
             for i in range(n):
-                gene_tile(im, d, gx + i * (size + 8), y + (pitch - 8 - size) // 2, None, 'doing', size)
+                gene_tile(im, d, gx + i * (size + 8), y + (pitch - 8 - size) // 2, None, 'self' if (name, i) in SELF else 'doing', size)
         else:
             for i, (t, pic, st) in enumerate(genes):
-                p = fit(pic, size - 6)
+                p = fit(pic, size - 6) if pic is not None else None
                 gene_tile(im, d, gx + i * (size + 8), y + (pitch - 8 - size) // 2, p, st if not compact else st.replace('-focus', ''), size)
 
 
@@ -276,18 +282,29 @@ a = np.asarray(pod, dtype=float)
 yy = np.linspace(0, 1, a.shape[0])[:, None, None] ** 1.3
 a[..., :3] = a[..., :3] + (np.array([226, 252, 242]) - a[..., :3]) * (0.72 * yy)
 pod = Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
-sil = FULL.resize((round(FULL.width * 92 / FULL.height), 92), Image.LANCZOS)
-# known parts in colour (Coat, Face: the founder's own colour), unknown parts frost
-silc = Image.new('RGBA', sil.size, (0, 0, 0, 0))
-known = np.asarray(sil, dtype=float)
-mask_known = np.zeros(known.shape[:2]); mask_known[: int(sil.height * 0.55), :] = 1          # head and shoulders read
-fr = np.array(C['frostD'], dtype=float)
-known[..., :3] = known[..., :3] * mask_known[..., None] + fr * (1 - mask_known[..., None])
-known[..., 3] *= 1.0
-inner = Image.fromarray(np.clip(known, 0, 255).astype('uint8'), 'RGBA').filter(ImageFilter.GaussianBlur(1.4))
-lay = Image.new('RGBA', pod.size, (0, 0, 0, 0)); lay.alpha_composite(inner, ((pod.width - inner.width) // 2, 48))
-lay.putalpha(ImageChops.multiply(lay.getchannel('A'), pod.getchannel('A')))
+sil = FULL.resize((round(FULL.width * 96 / FULL.height), 96), Image.LANCZOS)
+sa = np.asarray(sil, dtype=float)
+known = np.zeros(sa.shape[:2]); known[: int(sil.height * 0.55), :] = 1
+known = np.asarray(Image.fromarray((known * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(6)), dtype=float)[..., None] / 255
+warm = np.array([255, 214, 168], dtype=float)
+lit = sa[..., :3] * 0.7 + warm * 0.3                       # the known parts, tinted by the light passing through
+frost = np.array([206, 220, 226], dtype=float)                # the unknown, as frost within the glow
+sa[..., :3] = lit * known + frost * (1 - known)
+sa[..., 3] = sa[..., 3] * 0.92
+form = Image.fromarray(np.clip(sa, 0, 255).astype('uint8'), 'RGBA').filter(ImageFilter.GaussianBlur(1.3))
+lay = Image.new('RGBA', pod.size, (0, 0, 0, 0)); lay.alpha_composite(form, ((pod.width - form.width) // 2, 46))
+pmask = pod.getchannel('A')
+lay.putalpha(ImageChops.multiply(lay.getchannel('A'), pmask))
+glow = Image.new('L', pod.size, 0); ImageDraw.Draw(glow).ellipse((20, 70, pod.width - 20, pod.height - 4), fill=105)
+glow = ImageChops.multiply(glow.filter(ImageFilter.GaussianBlur(18)), pmask)
+gl_ = Image.new('RGBA', pod.size, (255, 232, 200, 0)); gl_.putalpha(glow)
+pod.alpha_composite(gl_)
 pod.alpha_composite(lay)
+pat = (np.asarray(src('pod-collection-pattern-plates.png').resize(pod.size, Image.LANCZOS), dtype=float)[..., 3] / 255) * 0.5
+B = np.array([int(c['hex'][i:i + 2], 16) for c in [json.load(open(os.path.join(SRC, 'species-S03.json')))['pod']['colourPair'][1]] for i in (1, 3, 5)], dtype=float)
+pa = np.asarray(pod, dtype=float)
+pa[..., :3] = pa[..., :3] * (1 - pat[..., None]) + (pa[..., :3] * 0.5 + B * 0.5) * pat[..., None]   # the shell's pattern over the form
+pod = Image.fromarray(np.clip(pa, 0, 255).astype('uint8'), 'RGBA')
 px, py = cx - 66, y0 + ch - 168 - 34
 pool = Image.new('L', (1024, 600), 0); ImageDraw.Draw(pool).ellipse((cx - 80, y0 + ch - 52, cx + 80, y0 + ch - 8), fill=150)
 lamp = Image.new('RGBA', (1024, 600), (200, 250, 236, 0)); lamp.putalpha(pool.filter(ImageFilter.GaussianBlur(10)))
