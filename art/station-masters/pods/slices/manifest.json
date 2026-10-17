@@ -17825,9 +17825,9 @@
   "src": "dock/make-dock.py",
   "made": "the link light: the Caddy's link reaching the bay, a matte warm-white pool along the bay's floor line; the build reveals it in 4 steps of 244 px",
   "sha256": "3c73091e5a9e9d66303e717bb54ea4549ba7d094e4a6cb58c8c7129ed468d331",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
-  "status_note": "new (10-16, T-20261016-57)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-97): it read at 1x as a hard line across the bay; replaced by cargo-link-light-976x48 and its steps"
  },
  "mark-home-16": {
   "size": [
@@ -18054,5 +18054,77 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
   "status_note": "new (10-16, T-20261016-70)"
+ },
+ "cargo-link-light-976x48": {
+  "size": [
+   976,
+   48
+  ],
+  "rect": [
+   24,
+   264,
+   976,
+   48
+  ],
+  "src": "dock/make-link-light.py",
+  "made": "the link light as light on the bay floor (T-20261016-97): a warm pool along the crates' feet line (y 296), a soft core and a falloff shorter above and longer below, strongest at the bay's left where the link comes in; it lights only the open bay's floor and takes its grain; ends at the home band's top (312); the crates are drawn over it. Over the open bay only, never the shutter. Step 4 of the reveal (the full light)",
+  "sha256": "258d7c847159c7bddacd290174105658ec928d276e4d19d9a64179ae52dae70b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "status_note": "new (10-17, T-20261016-97): replaces cargo-link-light-976x8; the rect is UI/UX's to adopt"
+ },
+ "cargo-link-light-976x48-step1": {
+  "size": [
+   976,
+   48
+  ],
+  "rect": [
+   24,
+   264,
+   976,
+   48
+  ],
+  "src": "dock/make-link-light.py",
+  "made": "the link light's reveal, cut 1 of 4: its first 244 px with a soft 24 px leading edge (the light running in)",
+  "sha256": "a24db5ae1ce6b970525f9fdd73e2be82a0ffb42286da9d65482f66aaf271bedd",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "status_note": "new (10-17, T-20261016-97)"
+ },
+ "cargo-link-light-976x48-step2": {
+  "size": [
+   976,
+   48
+  ],
+  "rect": [
+   24,
+   264,
+   976,
+   48
+  ],
+  "src": "dock/make-link-light.py",
+  "made": "the link light's reveal, cut 2 of 4: its first 488 px with a soft 24 px leading edge (the light running in)",
+  "sha256": "86acd35e0d92ea1aa97b6d48f5c3e5a3da7f3cccc30a387dee908b7ed3ee0286",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "status_note": "new (10-17, T-20261016-97)"
+ },
+ "cargo-link-light-976x48-step3": {
+  "size": [
+   976,
+   48
+  ],
+  "rect": [
+   24,
+   264,
+   976,
+   48
+  ],
+  "src": "dock/make-link-light.py",
+  "made": "the link light's reveal, cut 3 of 4: its first 732 px with a soft 24 px leading edge (the light running in)",
+  "sha256": "03c978e8a5f28fa045f2b8de1e031a81b0ef5770850e8a841dfce2689bf7aba9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "status_note": "new (10-17, T-20261016-97)"
  }
 }

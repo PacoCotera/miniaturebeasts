@@ -16,3 +16,21 @@ When the Companion docks, the three devices react to one moment. The pictures ca
 - the Caddy's icons: there is no Caddy four-gray view in the repository to size them for or read them.
 
 **Proofs** (`proof/`): `home-band-marks-faces-4x.png` and `link-light-on-floor-4x-tall.png`.
+
+## T-20261016-97: the link light as light on the floor, and the arrival in place
+The review (`results/review-art-2026-10-16c.md` §4) found that `cargo-link-light-976x8` read at 1× as a hard cream rule across the bay. It is withdrawn.
+
+**`cargo-link-light-976x48`, at (24, 264, 976 × 48).** 8 px can't hold a pool, so the rect is taller. It is UI/UX's to adopt in the spec's §1 (was 24, 296, 976, 8).
+- **The pool:** warm light lying on the floor along the crates' feet line (y 296, its row 32). A soft core sits on that line. The falloff is shorter above (the floor recedes) and longer below (toward the eye), and the pool is strongest at the bay's left, where the link comes in.
+- **What it lights:** only the open bay's floor. Its alpha follows `cargo-bay-992x320`'s floor and takes the floor's grain, so the light is shown by what it lights.
+- **Its bounds:** it ends at y 312, the home band's top. The crates are drawn over it.
+- **The reveal:** `-step1`, `-step2` and `-step3` are the first 244, 488 and 732 px, each with a soft 24 px leading edge. The full master is step 4. A build that clips the full master instead gets a hard front on each cut.
+- **Bay states:** over the open bay only, which is the arrival's bay state. It is never drawn over the shutter, so it can't cross the slats.
+
+Made by `make-link-light.py`. `make-dock.py`'s 976 × 8 section is kept as the record.
+
+**Proofs** (`proof/`, labelled inside):
+- `arrival-in-place-1x.png`, **the owner's proof**: t = 1.5 s, the first moment the light (full from 0.9, it holds) and the home band are on screen together. Both crates are in their places, with the ribbon, and the band's shields, marks and faces at their rects.
+- `link-light-on-open-bay-1x.png`: the light alone.
+- `arrival-floor-2x.png`: the floor strip at 2×.
+- **Stand-ins:** the ribbon (Cargo's style, typed), the band's words, which mibis came and went, and the golden's bottom line.

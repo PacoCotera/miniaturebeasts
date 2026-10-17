@@ -5585,9 +5585,9 @@
   "note": "T-20261016-70, the decision panel's moment"
  },
  "cargo-link-light-976x8": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures",
-  "note": "T-20261016-57 dock"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-97: replaced by cargo-link-light-976x48"
  },
  "mark-home-16": {
   "status": "signed",
@@ -5673,5 +5673,25 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)",
   "note": "T-20261016-70, the decision panel's moment"
+ },
+ "cargo-link-light-976x48": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "note": "T-20261016-97, the link light on the floor"
+ },
+ "cargo-link-light-976x48-step1": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "note": "T-20261016-97, the link light on the floor"
+ },
+ "cargo-link-light-976x48-step2": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "note": "T-20261016-97, the link light on the floor"
+ },
+ "cargo-link-light-976x48-step3": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-97, in dock/proof (the arrival in place at t 1.5 s; the light alone on the open bay; the floor at 2x)",
+  "note": "T-20261016-97, the link light on the floor"
  }
 }
