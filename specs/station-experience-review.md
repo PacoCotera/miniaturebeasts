@@ -17,9 +17,9 @@ Read the sheet top to bottom and the Station is five devices, not one. Every scr
 
 | | What the sheet shows | Where |
 | --- | --- | --- |
-| **Grounds** | Five different fields: the slate field (Home, Vivarium), a brown painted stage (Pods, Probe bench, Incubator), a flat lilac field (Create), a sage louvred bay (Cargo) and paper (Library). Only the Library's paper is meant | every row |
+| **Grounds** | Five different fields: the slate field (Home, Vivarium), a brown painted stage (Pods, Probe bench, Incubator), a flat lilac field (Create), a sage louvred bay (Cargo) and paper (Library). Only the Library's paper is meant as a ground | every row |
 | **The brown** | Brown is the device's default panel: Home's modules (#383029), the mibi's card and modules, the namer, all five decision panels and the Incubator's card. With the brown stages, it is brown on brown on brown, as the owner said | Home, up close, namer, panels, Pods, Probe, Incubator |
-| **The cream** | The Incubator's ring and pod cap, the pods' caps, the paper tags in Pods, the Cargo ribbon plate ("The Companion is home") | Pods, Incubator, Cargo |
+| **The cream** | The Incubator's ring and pod cap, the pods' caps, the Cargo ribbon plate ("The Companion is home") | Pods, Incubator, Cargo |
 | **Frames** | Three frame metaphors. Home and Vivarium are full-bleed display. Pods, the Probe bench and the Incubator put a second riveted sage bezel inside the screen, a box seen through a window, so the device draws itself twice. Create has no frame at all | Pods, Probe, Incubator vs Home vs Create |
 | **Panels** | Every pane is drawn differently: brown with an olive hairline (panels), a brown fill with a yellow-green border (Incubator card), double bevels (namer keys), plain boxes (Create). No two families share a pane | everywhere |
 | **Plaques** | The genome stamp is a green plastic plaque on the Incubator and Pods, a flat label on the mibi's card, and a framed box on Create. One object, three looks | Pods, Incubator, Create, up close |
@@ -51,6 +51,12 @@ These rules are the guide's, stated here as the order for this redesign:
    - Nothing else on the machine carries colour.
 7. **Words:** the guide's §10 budget. No line under 16 px on the Station, and no label floating on a painting.
 8. **Slate, as the owner ruled** (08:42: "slate is. ok"). The display ground is dark matte slate, and the life and the lit parts carry the colour. UI/UX's deep-blue sketches are repainted on slate.
+9. **Paper is static, never status** (owner, 10:12: "paper is fine as long as it is not an interactive part of the device. you can add a paper tag to the pod, you cannot make a clipboard become a status screen").
+   - Paper, tags and labels may appear anywhere, provided they never change while on screen.
+   - Anything that changes with the player's input or with time is on the machine's display, lamps or moving parts, never paper.
+   - **The pod's tag comes back**, as the field collector's label tied to the pod. It carries only what is fixed from the moment the pod was picked up: **where it was found**, as the place's mark or name, written once.
+   - The species name, whether it is identified and what is known of it all change, so they live on the display pane, not the tag.
+   - A tag never carries a state, a count or a mark that moves.
 
 ## 3. The direction for each screen family
 
@@ -130,7 +136,7 @@ These were not rejected, but the device sheet shows they carry the same brown st
 - the inner riveted bezel removed;
 - recesses for the subject;
 - the slate pane;
-- no paper tag in Pods (plate 10a);
+- the pod's tag, if shown, follows §2 rule 9;
 - no floating labels;
 - no line under 16 px.
 
@@ -140,7 +146,7 @@ The Probe stays upright in its vertical cradle (the owner's ruling). Create's li
 
 - **Home, Vivarium, a mibi up close and Idle:** the living window leads, and it stays.
 - **The only change** is their panes, which take the shared slate pane (§2 rule 3), so the accepted screens lose only their brown.
-- **The Library** keeps its paper; it is the one place for it.
+- **The Library** keeps its paper as its ground: the book is a page you read, and it never changes while on screen.
 
 ## 4. The order of redesign
 
@@ -169,3 +175,4 @@ The Probe stays upright in its vertical cradle (the owner's ruling). Create's li
 | Store tanks (UI/UX, game designer §6.2) | No. Materials fly into the top bar's counters |
 | The Incubator's instrument (style guide §8, pending) | The candling chamber of 3.3 |
 | Display ground | Slate: ruled by the owner, 08:42 |
+| The Pods tag (lead, after the owner's 10:12 paper ruling) | It returns as a static collector's label: where the pod was found, written once. Species, identification and knowledge stay on the display |
