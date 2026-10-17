@@ -19,7 +19,7 @@ export const SCHEMA = "mb-species-frame/2";
 // The frame version a genome is built against: 2 since catalogue 8 (the tiny head alleles); 3 since the
 // sixteen species glyphs were redrawn as abstract marks (2026-10-08, the owner's decision; the stamp
 // carries a glyph, so a changed glyph is a new frame). A saved mibi keeps the version it was born with.
-export const FRAME_VERSION = 3;
+export const FRAME_VERSION = 4;   // 4: catalogue 10 (ash), the Loika fine-tuned (T-20261016-200)
 // A frame's own version: the registry's FRAME_VERSION, or a later one where a species' frame changed (S01 at 4, T-20261016-200). A genome is born on its frame's version and keeps it.
 export const frameVersionOf = (frame) => frame?.frameVersion ?? FRAME_VERSION;
 export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"];

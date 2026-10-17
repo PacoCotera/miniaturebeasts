@@ -41,7 +41,9 @@ test("the registry carries the sixteen species of the workbench at frame version
   assert.equal(byName("S01", 3).version, 3, "and the Loika's version 3 is carried, so every version-3 print still decodes");
   const l3 = frameFor(1, 3).heritable.map((l) => l.id), l4 = frameFor(1, 4).heritable.map((l) => l.id);
   assert.ok(l3.every((id) => l4.includes(id)), "version 4 keeps every version-3 heritable locus and adds Colour and the marking layout");
-  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 4).map((f) => f.id), ["S01"], "only the Loika moved");
+  const v4 = FRAMES_LIST.filter((f) => f.version === 4);
+  assert.deepEqual(v4.map((f) => f.species), Array.from({ length: 16 }, (_, i) => i + 1), "catalogue 10 (ash): every species at version 4, every version 3 carried");
+  for (const f of v4) if (f.id !== "S01") { const old = frameFor(f.species, 3); assert.deepEqual(old.heritable.map((l) => [l.id, l.bits]), f.heritable.map((l) => [l.id, l.bits]), `${f.id}: same loci and bits at v4`); }
   assert.equal(byName("S01", 2).version, 2);
   assert.deepEqual(legacy.map((f) => f.id), ["hopper", "puffcap", "glowtail"]);
   for (const f of FRAMES_LIST) assert.ok(sizeFor(f), `${f.id} fits a size`);
@@ -92,7 +94,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   const rows = [];
   for (const id of ROSTER) {
     const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, id === "S01" ? 4 : 3);
+    assert.equal(f.version, 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);

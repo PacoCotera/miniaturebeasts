@@ -1,5 +1,4 @@
 {
- "frameVersion": 4,
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S01",
@@ -42,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 9,
+  "version": 10,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -136,10 +135,10 @@
      "looks": [
       "charcoal",
       "charcoal and russet",
-      "charcoal and cobalt",
+      "charcoal and ash",
       "russet",
-      "russet and cobalt",
-      "cobalt"
+      "russet and ash",
+      "ash"
      ],
      "nature": "look",
      "shapeable": true,
@@ -282,15 +281,15 @@
    "alleles": [
     "charcoal",
     "russet",
-    "cobalt"
+    "ash"
    ],
    "looks": [
     "charcoal",
     "charcoal and russet",
-    "charcoal and cobalt",
+    "charcoal and ash",
     "russet",
-    "russet and cobalt",
-    "cobalt"
+    "russet and ash",
+    "ash"
    ],
    "guard": "sketch: the body pigment slot",
    "changedBy": "player"
@@ -2032,7 +2031,7 @@
   "appearance.body-palette": [
    "charcoal",
    "russet",
-   "cobalt"
+   "ash"
   ],
   "appearance.marking-switch": [
    "on"
