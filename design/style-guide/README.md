@@ -80,6 +80,93 @@ Materials keep one shape on both devices: Energy a yellow bolt, Data a blue diam
 - **Station, smooth and eased:** the living window moves all the time (breathing, routines, plants, water). The device's controls move only when something happens: doors, rails and lamps in 200–400 ms. Reveals (a frost wipe, a shell clearing) take about two seconds.
 - **Both:** the first frame is the still state; nothing means something only by blinking; presses during a motion are consumed.
 
+## What every screen communicates
+
+The rules a picture must follow, on the Station and the Companion: what each component is for, how many words it may carry, what each mark means, and what feedback must tell the player. The looks that serve them are in the sections above and in [Station screens](station-screens.md) and [Companion screens](companion-screens.md). A screen passes only if every element earns its place against its screen's purpose.
+
+### Components: what each must say
+
+| Component | It exists to say | It must always show | It must never |
+| --- | --- | --- | --- |
+| **Decision panel** | "You are choosing between these futures" | One window per option, each **its outcome as a picture**; the option's name; its cost beside it; one consequence line (a loss in the loss colour) | Appear where there is no real decision (spend, commit, irreversible, a path). Show two options that look alike |
+| **Card** (a reveal, a report) | "This is what just happened, or just arrived" | The thing itself as a picture (the mibi's part, the crate's contents); at most one plain line | Carry a list of sentences. Use jargon without a picture ("unflappable" alone) |
+| **Display screen** (the genome screen, the bench's readouts) | "This is the machine's live reading of this mibi" | Live state that changes with the player's input or with time | Show anything that never changes (that belongs in the Library) |
+| **Plate / pane** | "These things belong together" | Its contents inside its margins | Hold floating text, or exist with nothing to hold |
+| **Tile** (a gene, a pod, a mibi) | "This one thing, and its state" | The thing as a picture; its state as a mark from section 6 | Carry words, beyond a name tag where the screen allows one |
+| **Badge** (a place, a find, a species) | "Where / which" | A recognisable picture of the place or thing | Stand for an action |
+| **Progress** (the ring) | "How far along, and how long" | The fill at the screen's scale; cuts where something will be revealed; the Incubator's minute count beside it | Use digits, except the Incubator's "ready in about n min" |
+| **Genome marks** | "What this gene is doing, and what kind it is" (section 6) | One meaning per mark, the same everywhere | Draw data the frames don't have (the genome engineer verifies) |
+| **Buttons and key hints** | "What this key does here" | ✓ with the verb, ← with where it leads, R with "look closer" where a detail exists | Show a ✓ cap when ✓ does nothing |
+
+### The words budget
+
+The most words each element may carry. Fewer is always allowed; a word that a picture already says is a word too many.
+
+#### Station
+
+| Element | Words, at most | Notes |
+| --- | --- | --- |
+| Top bar | the screen's title (1–2 words) | Supplies are numbers beside their icons |
+| Bottom line, action | the verb (up to 4 words) + price icons | "Grow it", "Open the bay", "Look at the new pods" |
+| Bottom line, context | 6 words | The one fact the screen can't draw ("Coat stays a surprise") |
+| Bottom line, notice | 5 words | What needs you, from the return signals |
+| Decision panel window | option name (3 words) + one consequence line (8 words) | No other words in a window |
+| Reveal card | "Revealed" + "{Trait}: {plain words}" (8 words in all) | The trait's plain words: what the animal looks like or does, never the look's bare name for a doing |
+| Ribbon (an event) | 5 words | "The Companion is home" |
+| Genome screen | the chapter names only (one word each) | Letters and rules only in the R detail |
+| Tiles, badges, marks, the bay, crates, progress | **0** | The picture is the meaning |
+| Name tags | the name | |
+| The Library | its own book pages, outside this budget | Paper lives only in the Library |
+
+#### Companion
+
+| Element | Words, at most | Notes |
+| --- | --- | --- |
+| HUD | 0, except numbers beside icons | |
+| Bottom line, action | 3 words + cost | Smaller screen: shorter verbs ("Dig", "Call", "End trip") |
+| Bottom line, context | 5 words | |
+| Message box | 2 short lines | One note, which stays until the next action |
+| Cards (expedition kind, partner) | a name (2 words) + one line (6 words) | |
+
+Numbers appear only as prices, supplies and counts beside their icon, and as the Incubator's minute count. Never as progress, chances, rarity or percentages.
+
+### Marks: one meaning each, on both devices
+
+1. **No meaning rides on a tiny glyph or an unexplained colour.** A mark that carries meaning is drawn at the legible size the art director sets, and has a distinct shape. If a player needs a legend to read it, it fails.
+2. **One mark, one meaning, everywhere.** The register below is binding on the Station and the Companion. A new mark, or a new meaning for an old one, comes back to the game designer first.
+3. **Draw only what is known.** Unknown is frost, never a guess. A mark never shows data the game doesn't hold, or promises an effect that isn't designed.
+
+| Meaning | The mark | Where |
+| --- | --- | --- |
+| Changed by you | Lit, with the notch | Genome, drums or tiles |
+| Still a surprise (unread, unknown) | Frost | Genome, founder, pods, chapters |
+| Something new here (where, never what) | The four-point glint | Pods, chapters (per chapter), the map |
+| A piece of your wish | The four-point glint, lit in the wish's yellow | Genome (when the founder shows it), drum faces, forecasts |
+| New to your field guide | The cream triangle | Genome, reveals |
+| Clash (won't build) | Red rim, on each trait in the set | Genome, drums |
+| Only breeding changes it | Joined rings, with the line toward the Cross | Genome, chapter pages |
+| It changes where it goes | Step marks with the place badge | Genome, vivarium up close |
+| Asleep behind a switch | Dark behind the gate bar | Genome |
+| Sealed, opens with a find | The find's picture (crystal, pearl, shard) | Genome, chapter pages |
+| Needs you | Amber lamp: pulsing = something new to see; steady = ready to act | Home's modules, Idle tags |
+| Fills with time | The ring | Incubator, Home, Idle, the portrait crate |
+| Energy / Data / Essence | Bolt / diamond / drop (cell, cartridge, vial as objects) | Everywhere |
+
+### Feedback
+
+- **A press that acts** shows its result where the eye is, in the same beat. A turned gene changes the founder; a read clears its frost; a spend ticks its counter.
+- **A refusal is never silent.** The thing that can't act answers with its own reason mark (the line to the Cross, the steps and badge, the lock), once. There is no plate and no sound unless the motion vocabulary give one.
+- **A spend is never silent.** No key spends without the price having been on screen first. A large or irreversible spend goes through a panel.
+- **A jump is announced:** the panel's choice names the destination, or the arrival line names it after.
+- **Reveals are events.** A read, a clearing, a hatch and an arrival each play as a short moment, skippable with any key, never eating presses afterwards.
+- **The dock and the undock** play across the three devices in step: a short show, then one real choice ([Dock and arrival](station-screens.md#dock-and-arrival)).
+
+### Using this guide
+
+- Every visual or screen ticket cites the sections it follows.
+- A reviewer judges against those sections and the ticket's acceptance tests, among the neighbouring screens.
+- Anything not covered is parked: looks to the art director, what something must communicate to the game designer. Nobody fills a gap with their own invention.
+
 ## What every screen and piece meets
 
 The rules every screen, master and painting meets before it is shown. The looks they hold to are the sections above, [Station screens](station-screens.md), [Station layouts](station-layouts.md) and [Companion screens](companion-screens.md); this section adds what those do not say.

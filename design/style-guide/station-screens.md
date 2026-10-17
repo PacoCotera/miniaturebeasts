@@ -104,7 +104,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 
 **Vibe.** Arrivals: the Companion home on the Caddy, its crates coming through into the bay.
 
-**Purpose.** Cargo arrives when the Companion docks into the Caddy; the Station receives it, and the player opens the bay. **Reads first:** how many crates are in the bay, then the ribbon.
+**Purpose.** What the trip brought home arrives: each crate is one trip, and opening it shows what came out and where each thing goes (materials to the store, pods to the rack). Docking shows the arrival and accepts nothing; opening the bay is the player's choice. **Reads first:** the crates, then their contents flowing to the store and the rack.
 
 - **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks, pods travel in a straight line into the rack's wells, the counters tick, the Probe dock shows the free mend, a ribbon names the crate ("First crate home"), the world turn jumps.
 - **Living window.** The vivarium stays; residents turn toward the bay as crates open.
@@ -439,6 +439,18 @@ The measured layout is [Station layouts, Probe bench](station-layouts.md#probe-b
 - [ ] The armed state is visible before the second press.
 - [ ] The Probe is the same device the Companion draws.
 - [ ] Away, the cradle shows the Probe is out, not missing.
+
+---
+
+## Decision panels
+
+**Purpose.** At a real decision, see each choice's future and its cost, and choose. **Reads first:** the outcome pictures, side by side.
+
+- **Only at a real decision:** a spend, a commitment, an irreversible act or a fork in the path. Grow it, Cross them, Return to the wild, Fit the upgrade, a large Grow now, Spend a sitting, the Hatch and its name, Read it now on Create. Nowhere else.
+- **Each option is its outcome, drawn.** Covering the words, a first-time player can still tell the options apart, because the pictures show different futures: for Return to the wild, the mibi walking out into its home place against the mibi asleep in its bay.
+- **Under each picture:** the option's name, its cost in the materials' shapes, and one consequence line, a loss in the loss colour ([words budget](README.md#the-words-budget)).
+- **The choice names where it leads.** No jump lands the player somewhere unannounced.
+- **It replaces arming:** an irreversible act is chosen in a panel, never with "✓ again".
 
 ---
 
