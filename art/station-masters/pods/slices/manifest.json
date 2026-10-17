@@ -14468,9 +14468,9 @@
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
   "made": "the Cargo report plate at 136 rows: 152 rows removed from the well floor (rows 92-243 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
   "sha256": "35778a3b75904d00e23786b93ffa196dffff3eb97a63578e01276adc410e0247",
-  "status": "new",
-  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
-  "signed_in": null
+  "status": "signed",
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures; re-signed for the picture-led report: carries no label and no engraved word (10-17, T-20261016-149)",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
  },
  "cargo-report-plate-560x144": {
   "size": [
@@ -14533,9 +14533,9 @@
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
   "made": "the Cargo report plate at 176 rows: 112 rows removed from the well floor (rows 112-223 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
   "sha256": "48740e1e961c6220fcd44bec1d54ececf8d5ddb4a81cb7a62a030d1a3a37de26",
-  "status": "new",
-  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
-  "signed_in": null
+  "status": "signed",
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures; re-signed for the picture-led report: carries no label and no engraved word (10-17, T-20261016-149)",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
  },
  "cargo-report-plate-560x184": {
   "size": [
@@ -14585,9 +14585,9 @@
   "src": "derived from cargo-report-plate-560x288 by a middle band cut",
   "made": "the Cargo report plate at 208 rows: 80 rows removed from the well floor (rows 128-207 of the 288), the cut's first 8 rows and the 8 rows below it blended linearly across the seam (the band's first 8 rows fade into the 8 rows below it, as baycut.py does); rows 0-24 and the last 24 rows whole; alpha kept (gate batch 1, AR5r: the kit construction)",
   "sha256": "79f42234480106b8a5d8856a12bfe00ec44b0e7782df20be6f3a6d6b2277e90a",
-  "status": "new",
-  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures",
-  "signed_in": null
+  "status": "signed",
+  "status_note": "new (10-15, gate batch 1 AR5r): derived from the recut master; signed in the Cargo report captures; re-signed for the picture-led report: carries no label and no engraved word (10-17, T-20261016-149)",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
  },
  "cargo-report-plate-560x216": {
   "size": [
@@ -19001,5 +19001,31 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
   "status_note": "new (10-17, T-20261016-145)"
+ },
+ "cargo-crate-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "cargo-report/t149/make-report-marks.py (from source/raw/rw-crate-sealed.jpg)",
+  "made": "the walk crate for the report's crate tile, painted at 64 from the bay's crate painting (the one the sealed and opening crates are cut from), its ground keyed, feet on the foot, a soft contact shade on the plate floor; reads as the same crate the opening shows",
+  "sha256": "9f78ebe827d5fd2b4c1237b4a44bac20fc54b6725348cf1b70e370c423478b29",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "status_note": "new (10-17, T-20261016-149)"
+ },
+ "icon-map-14x12": {
+  "size": [
+   14,
+   12
+  ],
+  "rect": null,
+  "src": "cargo-report/t149/make-report-marks.py",
+  "made": "the spec's icon:map:14x12: a folded field map as a mark, bone and mist, three zig-zag panels and a dotted route; the reach pips beside it are palette geometry",
+  "sha256": "f807b32461b9ec0b218d81a120d044309cdd7e74415cfe69584dd1ca5c7c6897",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "status_note": "new (10-17, T-20261016-149)"
  }
 }

@@ -4808,9 +4808,9 @@
   "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
  },
  "cargo-report-plate-560x136": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "note": "T-20261016-149, the door's display plate"
  },
  "cargo-report-plate-560x144": {
   "status": "new",
@@ -4833,9 +4833,9 @@
   "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
  },
  "cargo-report-plate-560x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "note": "T-20261016-149, the door's display plate"
  },
  "cargo-report-plate-560x184": {
   "status": "new",
@@ -4853,9 +4853,9 @@
   "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
  },
  "cargo-report-plate-560x208": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 140: the Cargo report plate at a shorter height (the art director's AR5 heights note), a middle band cut from cargo-report-plate-560x288 and feathered over 8 rows; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "note": "T-20261016-149, the door's display plate"
  },
  "cargo-report-plate-560x216": {
   "status": "new",
@@ -6023,5 +6023,15 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-145, in genome-screen/proof (the clash set, the Incubator's clears on (k+1)/(n+1), the marks sheet with the shard and the storm)",
   "note": "T-20261016-145"
+ },
+ "cargo-crate-64x64": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "note": "T-20261016-149, the picture-led report"
+ },
+ "icon-map-14x12": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)",
+  "note": "T-20261016-149, the picture-led report"
  }
 }
