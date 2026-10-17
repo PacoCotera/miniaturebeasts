@@ -57,3 +57,21 @@ With the words covered, Grow still reads as "into the chamber, at this price" ag
   - The ← word is shown as "Back", a placeholder. The spec's "the safe option's word" is the framing the owner ruled out.
   - The title question is shown as it was; whether it stays is UI/UX's.
 - **The place mark at 20 px** reads as the pond at 1×, but only just. If it doesn't hold in the gate, it moves to 24.
+
+## Round 2: the parts in one proof (the creative director's not-yet, d2c370f3)
+
+`R2-release.png`, `R2-grow.png`, their `-covered` twins and `device-sheet-decision-r2.png`, from `make-r2.py`.
+
+- **UI/UX's layout and words:**
+  - no title, so the windows take its row;
+  - cards 380 × 376 at y 112;
+  - windows 280 tall on Release's panel, since it carries a fact, and 312 on Grow's;
+  - "Release Pip" and "Keep Pip";
+  - focus on the left option (the one the player came for);
+  - ✓ "Release Pip ❀ +2" and ✓ "Grow it ⚡ 2 ❀ 4 ◆ 1";
+  - "Back" on ←, with the bottom line's middle empty.
+- **The game designer's one fact:** "Pip lives in the wild from now on", 16 px in `bone`, the only line on either panel. No mark.
+- **Keep with its household,** so neither future is the lonely one: a resident dozing by the burrow and another behind Pip.
+- **No place badges.** Release shows ❀ +2 alone, and Keep's icon slot is blank.
+
+**Open:** Keep's second resident and the wild pair are cut from the same two accepted stands, so one face appears in both windows. Once T-190's layered stands are built, each window draws its own individuals.
