@@ -59,3 +59,19 @@ These supersede sheets 1 and 2 (now in `superseded/`). The founder is consistent
 - **Kept: 18 of 22.**
 - **The last retry** is one sheet with A5, B3, D1 and D6, and two cells left empty.
 - **Cutting needs a despill** on the C and D ground strips (pink fringe) and a hand clean of B2's ellipse.
+
+## The last retry, sheet E (masters-pods 61f3a092)
+
+| Cell | Verdict |
+| --- | --- |
+| A5 Build, between | **pass.** The whole founder, nose to tail inside the cell. It is three-quarter rather than strictly side-on, which still reads its bulk. The ground ellipse is cut by hand |
+| B3 Eyes, between | **pass.** Beside A3 (big, wide) and B4 (small, close) the eyes now read as three clear steps |
+| D1 Turning, between | **pass.** Mid-turn on a curved strip, the prints curving behind |
+| D6 Nerve, between | **pass.** Paused and looking up, the shadow a darker tone on the ground strip, so the key keeps it |
+
+**The set is complete: 22 of 22,** in 7 requests (the job is closed). The cells to cut:
+- A1–A4 and A6, and B1, B2 and B4 (sheets A and B);
+- C1–C6 and D2–D5 (sheets C and D);
+- A5, B3, D1 and D6 (sheet E).
+
+Sheets 1 and 2 are superseded. **Next (mine):** cut and despill the 22, sign them, and composite them into G2 and the candling screen with the scan-light pass and Glow's steps.
