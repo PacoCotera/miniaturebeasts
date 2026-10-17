@@ -95,7 +95,7 @@ Three causes:
 - **The guide is provisional; the owner's iterations lead** (owner, 10:14: the guide is "fine for the time being"; the screens are prototypes the owner iterates on, "even maybe breaking the guidelines").
   - When a screen the owner shaped breaks a rule of `design/style-guide/`, the gate does not fail the screen on that rule. The rule is amended to the owner's iteration, by the art director, and the gate checks the amendment.
   - The guide's rules bind builders and artists; they never overrule the owner.
-- **Experts propose; the owner steers** (owner, 10:29: "experts must propose, not just receive my feedback as narrow commands. what I do is more steering than prescribing").
+- **Experts propose; the owner steers** (owner, 10:29: "experts must propose, nut just receive my feedback as narrow commands. what I do is more steering than prescribing").
   - Check 3 asks that every owner verbatim is answered. It is not met by fixing only the words the owner named: an owner example is a signal of the problem underneath.
   - A proof passes only if it brings its own structure and craft, and fixes what nobody named but the same signal points to.
   - A proof that answers each line literally and nothing more fails as a patch, however well it ticks the list.
