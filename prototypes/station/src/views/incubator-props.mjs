@@ -18,10 +18,21 @@ export function knownChapters(st, B, settings, now) {
   const fr = frameOf(B.species);
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
+// The step of the candling light (ruling §4): cool to a third of the wait, warm to two thirds, glowing after, ready when it is. One rule for the shadow and the pod's overlays.
+export function lightStep(st, settings, now) { const p = S.budProgress(st, settings, now); return p >= 1 ? "ready" : p < 1 / 3 ? "cool" : p < 2 / 3 ? "warm" : "glowing"; }
+// The pod's own shell and its candling light (ruling §4, T-20261016-28; the Incubator build, T-40, places them): the shell is the bud's species' identified pod at 224 × 272, the id Pods and Cargo draw for the same species and size (a cross bud has
+// its species' shell too); the overlays are the signed masters cut over the shell (incubator-shell-cool, -warm, -glowing, -seams, -crack-1, -crack-2, 224 × 272 at the shell's own origin). The view names the stage; which overlay shows when is the word's:
+// cool, warm or glowing by the step, glowing and the seams at ready, and in the hatch the crack-1 at 600 and the crack-2 at 800.
+export const POD = [224, 272];
+export function podReq(req, st, settings, now) {
+  const B = st.bud, species = B.species, step = lightStep(st, settings, now), ov = (name) => req({ kind: "slot", id: `incubator-shell-${name}`, master: `incubator-shell-${name}`, size: POD, until: "the candling light's overlay master (art director, T-20261016-27)" });
+  return { species, step, shell: req({ kind: "pod", id: `pod:${species}:i:${POD.join("x")}`, species, state: "identified", size: POD }),
+    cool: ov("cool"), warm: ov("warm"), glowing: ov("glowing"), seams: ov("seams"), crack1: ov("crack-1"), crack2: ov("crack-2") };
+}
 // The founder's shadow's request (specs/face-arc-and-shadow.md §2; the Incubator build, T-40, calls it): the chapters known now (the bud's read and every chapter the wait has cleared), the step of the light (cool to a third of the wait, warm to two
 // thirds, glowing after, ready when it is), and an id that changes only when one of them does, so a minute passing asks for nothing new. A cross's picture is the type specimen's ghost whatever it has cleared, but its id still follows the known chapters.
 export function shadowReq(req, st, settings, now) {
-  const B = st.bud, known = knownChapters(st, B, settings, now), p = S.budProgress(st, settings, now), step = p >= 1 ? "ready" : p < 1 / 3 ? "cool" : p < 2 / 3 ? "warm" : "glowing";
+  const B = st.bud, known = knownChapters(st, B, settings, now), step = lightStep(st, settings, now);
   return req({ kind: "shadow", id: `shadow:${B.sha.slice(0, 16)}:${[...known].sort().join(",")}:${step}:160x192`, species: B.species, read: [...known], step, cross: B.kind === "cross", size: [160, 192] });
 }
 export function incubatorBuild(m, spec, pods) {
