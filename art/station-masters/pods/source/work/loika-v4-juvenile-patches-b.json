@@ -1,0 +1,20 @@
+[
+ {
+  "name": "loika-v4-juvenile-patches-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/guides/compose-m-juvenile.png",
+    "THE SHEET TO EDIT: five poses of one young creature (the Loika, juvenile) on flat magenta, in a 3 by 2 grid (the sixth cell is empty magenta and stays empty). Each has a DARK green-charcoal cap (the head's top and the back) and a CREAM body and belly with tan feet and a tan muzzle. Keep it exactly; only add what is asked."
+   ],
+   [
+    "art/miniature-lives/assets/rich-pair-source.png",
+    "The accepted Pip marked/plain pair (project-owned): on the left the plain creature, on the right the same creature marked. Take ONLY the SHAPE and MANNER of the pale cream patches on the right one: a broad curving patch behind the shoulder bowing down the flank, and smaller oval patches over the haunch, in the soft cream of its belly, shaded by the fur. Ignore its leaf crown, its glow and its dark background entirely."
+   ]
+  ],
+  "prompt": "Edit the first reference. The cream body, belly, legs and tail-tuft, the tan feet and muzzle and the dark cap must stay EXACTLY as they are: do NOT darken or recolour any cream area, and do not change where the dark cap ends. Only paint pale cream PATCHES on the DARK cap and back of each of the five young creatures: the same patch shapes as on the marked creature in the second reference, scaled to the young body (fewer and smaller: a broad curving patch behind the shoulder and a smaller oval patch or two over the haunch), pale cream like its belly, with the fur's soft shading and the light from the top left. Patches go only on the dark cap fur: none on the head, face, eye rings, cream body or feet. The sixth cell stays empty magenta. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, eyes and light and the same flat magenta (#FF00FF) ground; no new object, no text, no labels, no borders, no glow, no leaves, no crest, no hands, no people."
+ }
+]

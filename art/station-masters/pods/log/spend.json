@@ -4531,5 +4531,107 @@
    "thoughtsTokenCount": 297,
    "totalTokenCount": 2704
   }
+ },
+ {
+  "tag": "loika-v4-adult-patches try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19029,
+  "mxn": 3.8058,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T21:29:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 885,
+   "candidatesTokenCount": 1292,
+   "thoughtsTokenCount": 279,
+   "totalTokenCount": 2456
+  }
+ },
+ {
+  "tag": "loika-v4-adult-stripes try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183282,
+  "mxn": 3.6656,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T21:29:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 501,
+   "candidatesTokenCount": 1296,
+   "thoughtsTokenCount": 223,
+   "totalTokenCount": 2020
+  }
+ },
+ {
+  "tag": "loika-v4-juvenile-patches try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.184392,
+  "mxn": 3.6878,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T21:30:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 876,
+   "candidatesTokenCount": 1321,
+   "thoughtsTokenCount": 201,
+   "totalTokenCount": 2398
+  }
+ },
+ {
+  "tag": "loika-v4-juvenile-stripes try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.17911,
+  "mxn": 3.5822,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T21:30:35Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 515,
+   "candidatesTokenCount": 1294,
+   "thoughtsTokenCount": 190,
+   "totalTokenCount": 1999
+  }
+ },
+ {
+  "tag": "loika-v4-juvenile-patches-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189438,
+  "mxn": 3.7888,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T21:31:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 939,
+   "candidatesTokenCount": 1284,
+   "thoughtsTokenCount": 279,
+   "totalTokenCount": 2502
+  }
+ },
+ {
+  "tag": "loika-v4-pigments try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.170872,
+  "mxn": 3.4174,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T21:31:24Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 536,
+   "candidatesTokenCount": 1288,
+   "thoughtsTokenCount": 127,
+   "totalTokenCount": 1951
+  }
  }
 ]

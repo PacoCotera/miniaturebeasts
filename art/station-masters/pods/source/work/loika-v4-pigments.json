@@ -1,0 +1,16 @@
+[
+ {
+  "name": "loika-v4-pigments",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/guides/compose-m-pigments.png",
+    "THE SHEET TO EDIT: a 2 by 2 grid. In each row, left the adult Loika and right the young Loika, both in their base charcoal coat, standing (the anchor pose), on flat magenta. Keep it exactly; only change the coat's colour."
+   ]
+  ],
+  "prompt": "Edit the first reference. TOP ROW: repaint the fur of both creatures (the adult on the left, the young on the right) in a warm RUSSET brown, a mid reddish brown. BOTTOM ROW: repaint the fur of both creatures in a cool ASH grey, a pale blue-grey (#8e98a4). Only the coat's colour changes: keep the fur's shading and its light from the top left (a dark shadow ramp, a mid, a lighter highlight), keep the belly cream, the toes, the eye rings and eyes, the outline, pose, scale and position of each creature exactly. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, silhouette, eyes, belly cream, toes, shadow and light (soft light from the top left) and the same flat magenta (#FF00FF) ground; no new object, no text, no labels, no borders, no glow, no leaves, no crest, no hands, no people."
+ }
+]

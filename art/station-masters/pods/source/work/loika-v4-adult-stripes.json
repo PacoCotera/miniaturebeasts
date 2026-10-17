@@ -1,0 +1,16 @@
+[
+ {
+  "name": "loika-v4-adult-stripes",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/guides/compose-m-adult.png",
+    "THE SHEET TO EDIT: six poses of one dark charcoal creature (the Loika, adult) on flat magenta, in a 3 by 2 grid. Keep it exactly; only add what is asked."
+   ]
+  ],
+  "prompt": "Edit the first reference. Paint pale cream STRIPES on the dark coat of every one of the six creatures: broad pale bands behind the shoulder, bowing back down the flank and tapering to a point, two or three on the visible flank, pale cream like its belly, with the fur's soft shading and the light from the top left over them, following each pose's body. Stripes go only on the dark fur of the body: NEVER on the head, face, eye rings, belly cream, toes or the lower legs. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, silhouette, eyes, belly cream, toes, shadow and light (soft light from the top left) and the same flat magenta (#FF00FF) ground; no new object, no text, no labels, no borders, no glow, no leaves, no crest, no hands, no people."
+ }
+]

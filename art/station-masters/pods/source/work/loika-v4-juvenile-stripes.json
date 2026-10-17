@@ -1,0 +1,16 @@
+[
+ {
+  "name": "loika-v4-juvenile-stripes",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/guides/compose-m-juvenile.png",
+    "THE SHEET TO EDIT: five poses of one dark charcoal young creature (the Loika, juvenile) on flat magenta, in a 3 by 2 grid (the sixth cell is empty magenta and stays empty). Keep it exactly; only add what is asked."
+   ]
+  ],
+  "prompt": "Edit the first reference. Paint pale cream STRIPES on the dark cap and back of each of the five young creatures: broad pale bands on the cap behind the head, bowing back down the flank and tapering to a point, one or two on the visible side, pale cream like its belly, with the fur's soft shading and the light from the top left. Stripes go only on the dark fur of the body, behind the head: NEVER on the head, face, eye rings, belly cream or toes. The sixth cell stays empty magenta. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, silhouette, eyes, belly cream, toes, shadow and light (soft light from the top left) and the same flat magenta (#FF00FF) ground; no new object, no text, no labels, no borders, no glow, no leaves, no crest, no hands, no people."
+ }
+]
