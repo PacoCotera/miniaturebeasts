@@ -1,0 +1,101 @@
+{
+ "mibi-adult-S01-air-patches": {
+  "mark_px": 2302,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-air-stripes": {
+  "mark_px": 1523,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-air-fur": 25818,
+ "mibi-adult-S01-anchor-patches": {
+  "mark_px": 3380,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-anchor-stripes": {
+  "mark_px": 1582,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-anchor-fur": 28238,
+ "mibi-adult-S01-blink-patches": {
+  "mark_px": 3459,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-blink-stripes": {
+  "mark_px": 1610,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-blink-fur": 28900,
+ "mibi-adult-S01-crouch-patches": {
+  "mark_px": 4929,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-crouch-stripes": {
+  "mark_px": 3771,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-crouch-fur": 27120,
+ "mibi-adult-S01-curl-patches": {
+  "mark_px": 2693,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-curl-stripes": {
+  "mark_px": 2223,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-curl-fur": 26667,
+ "mibi-adult-S01-stand-patches": {
+  "mark_px": 3191,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-stand-stripes": {
+  "mark_px": 1795,
+  "outside_coat_px": 0
+ },
+ "mibi-adult-S01-stand-fur": 26576,
+ "mibi-juvenile-S01-air-patches": {
+  "mark_px": 990,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-air-stripes": {
+  "mark_px": 588,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-air-fur": 6106,
+ "mibi-juvenile-S01-anchor-patches": {
+  "mark_px": 998,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-anchor-stripes": {
+  "mark_px": 651,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-anchor-fur": 6255,
+ "mibi-juvenile-S01-crouch-patches": {
+  "mark_px": 1583,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-crouch-stripes": {
+  "mark_px": 922,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-crouch-fur": 7284,
+ "mibi-juvenile-S01-curl-patches": {
+  "mark_px": 2750,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-curl-stripes": {
+  "mark_px": 2027,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-curl-fur": 10649,
+ "mibi-juvenile-S01-stand-patches": {
+  "mark_px": 1013,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-stand-stripes": {
+  "mark_px": 655,
+  "outside_coat_px": 0
+ },
+ "mibi-juvenile-S01-stand-fur": 5967
+}
