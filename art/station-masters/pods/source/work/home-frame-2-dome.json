@@ -1,0 +1,28 @@
+[
+ {
+  "name": "home-frame-2-dome",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "The signed day vivarium (project-owned): THE living vivarium to paint in the centre pane: its moss, stones, roots, burrow, pool and warm daylight from the top left, in its painted matte style."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/home-window-four-v4-masters.png",
+    "The version 4 Loikas (project-owned): the dark charcoal creature with a leaf crest, orange eyes with cream rings and a cream belly, in its russet, ash and charcoal coats, with pale patches or stripes: the residents of the vivarium."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S03-304x312.png",
+    "The S03 founder (project-owned): the young teal creature with round ears, a thin antenna crest, big eyes, pale mint body with teal spots, a tail with a small yellow bulb."
+   ],
+   [
+    "art/station-masters/pods/slices/pod-collection-identified.png",
+    "A pod (project-owned): the dark speckled egg-like pod with a pale lid, a small quiet painted object for the left column."
+   ]
+  ],
+  "prompt": "Paint ONE finished 'inspiration frame' of a calm always-on home screen, widescreen, in the soft sculpted, painterly Miniature Lives style (matte, tactile, warm). The whole picture is one calm, matte, dark slate face with soft rounded panes set in it: NO bezels, NO lamps, NO glowing edges, no frame. One warm daylight from the top left on everything; the living things carry the colour, the device itself stays quiet. LAYOUT: in the CENTRE, the largest pane, the living vivarium: the same moss floor, stones, roots, burrow mound and pool as the first reference, with three or four of the Loikas from the second reference standing on the moss (russet, ash and charcoal ones, some with pale patches or stripes). On the RIGHT, about one third of the picture's width, the Library pane, described below. On the LEFT, a narrow quiet column of four small painted objects, top to bottom in this order: a pod (like the fourth reference), a small egg-incubator chamber, a small cargo bay crate, and a small handheld companion device; each sits in its own small soft rounded slate recess, with a tiny plain label under it reading exactly: Pods, Incubator, Bay, Companion. These four are small and quiet. NEVER: any other text, holograms, neon, chrome, glowing outlines, cream panels, anything red, hands, people. THE LIBRARY PANE: a glass bell jar (a glass dome) standing on the slate, holding a small dusk garden: the ONLY dusk on the whole screen, a calm deep blue-teal inside the jar, its light soft, and the jar must NOT outshine the daylit vivarium. The Loika's genome is a constellation of soft warm lights hanging in the jar's air that together draw the Loika's shape. Each trait already found is a warm point of light holding a tiny painted image of the look inside it, like a firefly carrying a picture; the traits not yet found are faint unlit dust. At the base of the jar, fine threads of light join small softly glowing portraits of the player's own creatures, like a family tree. The glow stays inside the jar and stays soft; no glowing outlines."
+ }
+]

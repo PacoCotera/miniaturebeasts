@@ -4684,5 +4684,56 @@
    "thoughtsTokenCount": 167,
    "totalTokenCount": 2075
   }
+ },
+ {
+  "tag": "home-frame-1-cabinet try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.217892,
+  "mxn": 4.3578,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:20:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1666,
+   "candidatesTokenCount": 1537,
+   "thoughtsTokenCount": 251,
+   "totalTokenCount": 3454
+  }
+ },
+ {
+  "tag": "home-frame-2-dome try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.236876,
+  "mxn": 4.7375,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:21:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1678,
+   "candidatesTokenCount": 1619,
+   "thoughtsTokenCount": 327,
+   "totalTokenCount": 3624
+  }
+ },
+ {
+  "tag": "home-frame-3-jar try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.236604,
+  "mxn": 4.7321,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:21:23Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1662,
+   "candidatesTokenCount": 1529,
+   "thoughtsTokenCount": 415,
+   "totalTokenCount": 3606
+  }
  }
 ]
