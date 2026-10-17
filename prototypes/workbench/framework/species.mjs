@@ -20,6 +20,8 @@ export const SCHEMA = "mb-species-frame/2";
 // sixteen species glyphs were redrawn as abstract marks (2026-10-08, the owner's decision; the stamp
 // carries a glyph, so a changed glyph is a new frame). A saved mibi keeps the version it was born with.
 export const FRAME_VERSION = 3;
+// A frame's own version: the registry's FRAME_VERSION, or a later one where a species' frame changed (S01 at 4, T-20261016-200). A genome is born on its frame's version and keeps it.
+export const frameVersionOf = (frame) => frame?.frameVersion ?? FRAME_VERSION;
 export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"];
 export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs-tail": "Legs & tail", movement: "Movement", stamina: "Stamina", character: "Character", glow: "Glow", charge: "Charge" };
 export const WHEEL = ["marigold", "coral", "raspberry", "plum", "periwinkle", "cobalt", "lagoon", "jade", "russet", "charcoal"];
@@ -220,6 +222,7 @@ export function buildFrame(spec, options = {}) {
     if (p.every((x) => pools[id].includes(x))) typical[id] = p;
   }
   const frame = {
+    ...(spec.frameVersion ? { frameVersion: spec.frameVersion } : {}),
     schema: SCHEMA,
     species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "" },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
@@ -294,6 +297,7 @@ function finishFrame(frame, spec) {
       row.kind = kind; row.nature = nature; row.chapter = t.chapter; row.trait = t.id; row.shapeable = shapeable; row.alleles = pools[id]; row.looks = looksFor(locus, pools[id]);
       row.guard = kind === "sleeping" ? `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on` : locus.consumer;
       row.changedBy = changedByOf(row, { id: t.id, shapeable });
+      if (spec.legacy?.[id]) row.legacy = [...spec.legacy[id]];   // alleles a living line may still carry from an earlier frame version: legal, never drawn for a new pod
       if (typical[id]) row.typical = typical[id];
     } else {
       row.kind = "locked"; row.lockReason = isPartSwitch(id) ? "switch" : "fixed"; row.chapter = null; row.trait = null; row.shapeable = false;
@@ -351,12 +355,12 @@ export function typeSpecimen(frame) {
     const op = LOCI.get(l.id).operator;
     loci[l.id] = op === "copy-mean" && l.alleles.length > 1 ? [l.alleles[0], l.alleles.at(-1)] : [l.alleles[0], l.alleles[0]];
   }
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "type-specimen" } };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "type-specimen" } };
 }
 export function sampleIndividual(frame, r, origin = { kind: "random" }) {
   const loci = {};
   for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : [pick(r, l.alleles), pick(r, l.alleles)];
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin };
 }
 // The cross (the-cross.md, decided 2026-10-08) lives in cross.mjs: blends for continuous loci,
 // Mendelian switches with sleeping parts riding along, independent per locus, pedigree kinship and
@@ -383,7 +387,7 @@ export function checkGenome(frame, genome) {
     if (l.kind === "locked" && !samePair(c, l.copies)) problems.push(`${l.id}: locked copies differ from the frame (not this species)`);
     if (l.kind !== "locked") {
       const locus = LOCI.get(l.id);
-      const inPool = (a) => typeof a === "number" ? isContinuous(locus) && (([lo, hi]) => a >= lo - 1e-9 && a <= hi + 1e-9)(valueRange(locus, l.alleles)) : l.alleles.includes(a);
+      const inPool = (a) => typeof a === "number" ? isContinuous(locus) && (([lo, hi]) => a >= lo - 1e-9 && a <= hi + 1e-9)(valueRange(locus, l.alleles)) : l.alleles.includes(a) || !!l.legacy?.includes(a);
       if (!c.every(inPool)) problems.push(`${l.id}: a copy outside the species pool`);
     }
   }

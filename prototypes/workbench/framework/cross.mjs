@@ -32,7 +32,7 @@
 // a range for blends (the parents' shown values widened by the spread, clamped, as bins), never a
 // promise; a trait where both parents hold the same copies is known for sure before any read.
 import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, samePair } from "./catalogue.mjs";
-import { genomeDigest, FRAME_VERSION, buildIndividual } from "./species.mjs";
+import { genomeDigest, frameVersionOf, buildIndividual } from "./species.mjs";
 import { isDoing } from "./guards.mjs";
 
 export const SPREAD = 0.10;                     // the nudge: up to this share of the locus range either way (decided)
@@ -161,7 +161,7 @@ export function cross(frame, x, y, opts = {}) {
     const hidden = hiddenCopy(locus, pair);
     loci[l.id] = hidden !== null && surface > 0 && rng() < surface ? [hidden, hidden] : pair;
   }
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "cross", parents: [genomeDigest(a), genomeDigest(b)], ...(idOf(x) != null && idOf(y) != null ? { parentIds: [idOf(x), idOf(y)] } : {}), kinship: round6(k), spread, penalty, strength } };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "cross", parents: [genomeDigest(a), genomeDigest(b)], ...(idOf(x) != null && idOf(y) != null ? { parentIds: [idOf(x), idOf(y)] } : {}), kinship: round6(k), spread, penalty, strength } };
 }
 
 // N children, each built and validated whole against its frame; a child that cannot be built never
