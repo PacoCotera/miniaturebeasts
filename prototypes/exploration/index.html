@@ -2207,12 +2207,12 @@ function endExpedition(reason) {
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
-  const worldLines = worldTurn(pending); rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
+  const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice() };   // the crate carries the world's lines only
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -2261,28 +2261,37 @@ function dirWord(dx, dy, n) {
   if (ns && ew) { if (Math.abs(ax) > 2 * Math.abs(ay)) return ew; if (Math.abs(ay) > 2 * Math.abs(ax)) return ns; return ns + '-' + ew; }
   return ns || ew;
 }
+// A herd's drift as the crate's direction code (specs/world-events.md): 1 to 8 for N, NE, E, SE, S, SW, W, NW; 0 when it only spread out.
+const DIR_CODE = { 'north': 1, 'north-east': 2, 'east': 3, 'south-east': 4, 'south': 5, 'south-west': 6, 'west': 7, 'north-west': 8 };
 function regionWord(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
   const x = sx / cells.length, y = sy / cells.length;
   const ns = y < MH / 3 ? 'north' : y > MH * 2 / 3 ? 'south' : '', ew = x < MW / 3 ? 'west' : x > MW * 2 / 3 ? 'east' : '';
   return ns && ew ? 'the ' + ns + '-' + ew : ns || ew ? 'the ' + (ns || ew) : 'the middle of the map';
 }
-function placePhrase(cells) {
+// The land kinds a world event names (specs/world-events.md): LAND_NAME's order as ids; `shallows` and `cliff` only in outpost lines and near-the-cliff or by-the-river places.
+const PLACE_KIND = ['meadow', 'pond', 'rock', 'wood', 'shallows', 'cliff'];
+const PLACE_PHRASE = { cliff: 'near the cliff', shallows: 'by the river', meadow: 'in the meadows', pond: 'by the ponds', rock: 'in the rock fields', wood: 'in the woods' };
+// The land kind the words choose for some cells: near a cliff or stair, by the river, else the land most of them lie on.
+function placeKind(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
   const m = { x: Math.round(sx / cells.length), y: Math.round(sy / cells.length) };
   let cliff = false, river = false;
   const steep = c => Object.keys(DIRS).some(dir => { const k = stepCell(c, dir) >= 0 ? edgeKind(c, dir) : EDGE.OPEN; return k === EDGE.CLIFF || k === EDGE.RAMP; });   // a cliff or stair side
   for (let c = 0; c < MW * MH; c++) { const d = cheb(cxy(c), m); if ((G.land[c] === L.CLIFF || steep(c)) && d <= 2) cliff = true; if (G.land[c] === L.WATER && !G.ford[c] && d <= 1) river = true; }
-  if (cliff) return 'near the cliff';
-  if (river) return 'by the river';
+  if (cliff) return 'cliff';
+  if (river) return 'shallows';
   const counts = [0, 0, 0, 0]; for (const c of cells) if (G.land[c] < 4) counts[G.land[c]]++;
-  return ['in the meadows', 'by the ponds', 'in the rock fields', 'in the woods'][counts.indexOf(Math.max(...counts))];
+  return PLACE_KIND[counts.indexOf(Math.max(...counts))];
 }
+const placePhrase = cells => PLACE_PHRASE[placeKind(cells)];
+// The land most of some cells lie on, as a kind (a new pod's place, a bloom's centre): any of the six lands.
+function mainLand(cells) { const n = PLACE_KIND.map(() => 0); for (const c of cells) if (G.land[c] >= 0 && G.land[c] < n.length) n[G.land[c]]++; return PLACE_KIND[n.indexOf(Math.max(...n))]; }
 function worldTurn(pending) {
   const R = makeRng(hash(S.seed, 'turn', S.turn)), trail = pending.trail;
   const farFromPlayer = c => trail.every(t => cdist(t, c) > 4);
   const mv = [0, 1, 2].map(() => ({ dx: 0, dy: 0, n: 0 }));
-  let charged = [], bushes = 0; const newPods = [], young = [];
+  let charged = [], bushes = 0, bloom = -1; const newPods = [], young = [];
   // Creatures roam within their habitat.
   for (const w of S.cr) {
     if (w.cv) { if (R.chance(.12)) w.cv = 0; continue; }
@@ -2308,7 +2317,7 @@ function worldTurn(pending) {
   }
   // A bloom passes through somewhere the player wasn't; bare bushes bear fruit again.
   const far = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && farFromPlayer(c)) far.push(c);
-  if (far.length) { const ctr = R.pick(far);
+  if (far.length) { const ctr = R.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
       for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } } }
   // New arrivals, away from where the player just was.
@@ -2326,28 +2335,28 @@ function worldTurn(pending) {
   indexCreatures();
   const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
   for (const c of newPods) if (S.revealed[c]) recordSigns(c);
-  // Two or three plain lines a player would care about.
-  const lines = [];
-  for (const m of grown) lines.push((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name));
-  for (const m of aged) lines.push(m.name + ' is an elder now · slower, with keener senses.');
+  // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
+  const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
+  for (const m of grown) say((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name), ['grown', null, m.id, !isCarried(m) ? 0 : partnerMibi() === m ? 1 : 2]);
+  for (const m of aged) say(m.name + ' is an elder now · slower, with keener senses.', ['elder', null, m.id, 0]);
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
-    if (left === 1) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.'); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.'); }
+    if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
   if (moves.length) { const o = moves[0], who = o.known ? 'The ' + spOf(o.sp).plural : 'Unfamiliar creatures';
-    lines.push(o.dw ? who + ' moved ' + o.dw + '.' : who + ' spread out.'); }
+    say(o.dw ? who + ' moved ' + o.dw + '.' : who + ' spread out.', ['herd', null, o.known ? o.sp : -1, o.dw ? DIR_CODE[o.dw] : 0]); }
   // A storm every turn would repeat itself: say it once, name the new place if it moved, stay quiet if it is the same place.
-  const stormWhere = charged.length ? placePhrase(charged) : null;
-  if (stormWhere && !S.lastStorm) lines.push('A storm charged stones ' + stormWhere + '.');
-  else if (stormWhere && stormWhere !== S.lastStorm) lines.push('The storm reached stones ' + stormWhere + '.');
+  const stormKind = charged.length ? placeKind(charged) : null, stormWhere = stormKind && PLACE_PHRASE[stormKind];
+  if (stormWhere && !S.lastStorm) say('A storm charged stones ' + stormWhere + '.', ['storm', stormKind, null, 0]);
+  else if (stormWhere && stormWhere !== S.lastStorm) say('The storm reached stones ' + stormWhere + '.', ['storm', stormKind, null, 1]);
   if (stormWhere || !pending.storm.length) S.lastStorm = stormWhere;   // a stormy turn that charged nothing keeps the memory
-  if (bushes) lines.push('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'));
-  if (lines.length < 3 && newPods.length) lines.push('Something new is stirring in ' + regionWord(newPods) + '.');
-  if (lines.length < 3 && young.length) { const y0 = young[0]; lines.push('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.'); }
-  if (!lines.length) lines.push('A quiet turn. Little changed.');
+  if (bushes) say('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'), ['fruit', mainLand([bloom]), null, bushes]);
+  if (lines.length < 3 && newPods.length) say('Something new is stirring in ' + regionWord(newPods) + '.', ['stirring', mainLand(newPods), null, newPods.length]);
+  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
+  if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
-  return lines.slice(0, 3);
+  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3) };   // the same three, in the same order
 }
 
 // ===================== 10. Pixel graphics core =====================
