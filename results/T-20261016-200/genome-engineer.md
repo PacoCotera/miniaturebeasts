@@ -1,18 +1,18 @@
 # The Loika at frame version 4 (the genome engineer's part of T-20261016-200)
 
-Built on `genome-s01-v4` at fdd575fa, from station-gate. The design was settled with the game designer: N2. Their dominance design was withdrawn, because operators belong to shared catalogue loci and changing them would change every species.
+Built on `genome-s01-v4` at dc555591, from station-gate. The design was settled with the game designer: N2. Their dominance design was withdrawn, because operators belong to shared catalogue loci and changing them would change every species.
 
 ## The one list
 
 | Trait (Coat) | Locus | Pool | Looks (words) | Share on 300 pods |
 | --- | --- | --- | --- | --- |
-| **Colour** (new) | `appearance.body-palette` (co-dominant: both pigments show) | charcoal, russet, plum | charcoal · russet · plum · charcoal and russet · charcoal and plum · russet and plum | each pure 9–12%; each mixed 19–26% |
+| **Colour** (new) | `appearance.body-palette` (co-dominant: both pigments show) | charcoal, russet, cobalt | charcoal · russet · cobalt · charcoal and russet · charcoal and cobalt · russet and cobalt | each pure 9–12%; each mixed 19–26% |
 | **Markings** | `appearance.marking-switch` (pool on; "off" legal only as a legacy allele) + `appearance.marking-layout` (now heritable) | layout: bands, patches | stripes · patches · stripes and patches (co-dominant: **they stack**) · plain (only from a version-3 line) | stripes 23%, patches 26%, stripes and patches 52% |
 | Crown, Eyes, Drive, Efficiency | unchanged | | | crest 72% / bare 28%; eyes 26 / 45 / 29% |
 
 **Four random Loikas all differ 89% of the time,** up from 36% (300 pods, 4,000 households). There are 89 distinct looks among 300 pods.
 
-- **The third pigment is plum,** a catalogue pigment and one on the art director's list. It is provisional: the art director picks the third, provided it reads apart from charcoal and russet by value as well as hue, at 144 px and in four-gray. Swapping it is a one-word change.
+- **The third pigment is cobalt.** The art director picked a clear cerulean they call "sky" (ramp #204476 / #4e90ce / #a8d2f2). The catalogue has no "sky" pigment, and adding one would be a catalogue change, so the frame names it **cobalt**, the nearest catalogue pigment. Cobalt is shared with S09 Belatz, so this ramp also paints the Belatz's cobalt; that is the art director's call.
 - **Cocoa, slate, spots and saddle aren't in the catalogue.** Adding them would mean new alleles, which means a catalogue version. That is out of scope.
 - **The hidden-copy lesson** is on the Crest: a crested Loika can hide a bare head.
 
@@ -38,8 +38,8 @@ Four real version-4 pods, `podGenome(S01 v4, gs)`:
 | --- | --- | --- | --- |
 | 165 | charcoal, patches, leaf crest, eyes between | S01-6d8bc8fb | charcoal/charcoal, patches/patches, on/off (**hides bare**), large/huge |
 | 168 | russet, stripes, leaf crest, wide pale rings | S01-bfb3fa4f | russet/russet, bands/bands, off/on (**hides bare**), huge/huge |
-| 10 | charcoal and plum, stripes and patches, bare head, thin rings | S01-b8ea52c4 | charcoal/plum, bands/patches, off/off, large/large |
-| 116 | plum, patches, leaf crest, thin rings | S01-cf8d9def | plum/plum, patches/patches, off/on, large/large |
+| 10 | charcoal and cobalt, stripes and patches, bare head, thin rings | S01-fd737671 | charcoal/cobalt, bands/patches, off/off, large/large |
+| 116 | cobalt, patches, leaf crest, thin rings | S01-64226a1d | cobalt/cobalt, patches/patches, off/on, large/large |
 
 - **Painting:**
   - Colour is a pigment slot: one ramp per pure pigment.
@@ -58,16 +58,12 @@ Four real version-4 pods, `podGenome(S01 v4, gs)`:
 - **Face 34, UI 81:** pass.
 - `build-frames --check`: ok. Guard: ok.
 
-**Station: 7 tests encode the old Loika.** They are expectations, not regressions:
-- seed-specific pods are now different;
-- Coat has two traits;
-- the cross's firm chapters changed;
-- read costs per trait changed;
-- S01's newest version is 4.
+**Station: 446/446 after the lead's exception.** Seven expectations followed the new Loika. No production Station code changed.
 
-They are in `prototypes/station/tests/`, which is not mine to touch, so they need a builder or the lead's exception:
-- create-props 40;
-- rules-fixes B2, B3, B4;
-- reads 397;
-- the cross 408;
-- frame version 411.
+| Test | Old expectation | New expectation | Why (genome) |
+| --- | --- | --- | --- |
+| create-props, "fix 5: the trait line names the same look" | pods gs 3 and 4 hide a bare head under the crest, as choice 1 and choice 2 | gs **13** and 4 | v4 samples Colour and the layout first, so the same seed draws a different pod. gs 3 now holds a bare head only; gs 13 is the first pod whose crest hides its bare head as choice 1 |
+| rules-fixes B2, B3, B4 (`crossed()`) | `seedAdults(S01, 3)`: the pair's certain chapters are ["coat"] | `seedAdults(S01, **226**)`: still ["coat"] | Coat now holds Colour and Markings. A chapter is known only when every trait is certain, so the seed-3 pair is no longer certain in Coat. Seed 226 is the first whose two parents hold the same pure colour and pattern |
+| state, "reads: 1 Data a trait" | `progress(a)` = 3/5 | **4/6** | the Loika has 6 traits; Coat (2) and Face (2) are read |
+| state, "the cross: refusals before cost" | forecast traits = 5 | **6** | the Loika has 6 traits |
+| state, "a mibi keeps the frame version it was born with" | sampled now = v3; v2 stamps S1v2 | sampled now = **v4**; v2 stamps S1v2, **v3 stamps S1v3**, v4 stamps S1v4; no genome = v4 | the Loika's frame is at version 4. The rule under test (a genome keeps its birth version on its stamp) is unchanged and now checked at three versions |
