@@ -29,6 +29,8 @@ int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
 int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite */
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);
+/* A picture nine-sliced over a w x h box: the asset's own insets and tile when the host sent them (a `slice`), else the insets l, t, r, b given; 0 when the host has not sent it. */
+int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]);
 /* A cross-dither between two pictures of one size (a `dither` event's frame, lvgl-switch.md §2.7): the pixels of `toAsset` where the Bayer cell at the screen position is below `level` (0..16), else those of `fromAsset`, one composed picture at (x, y), on the layer of `toAsset`. 1 when drawn, 0 when the host has not sent one of them. */
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* The same between two w x h windows (atlas cells, M1 §2.1): `fromAsset`'s at (fsx, fsy) and `toAsset`'s at (tsx, tsy); `fromAsset` NULL or "" is clear (a dither-in), `toAsset` NULL or "" is clear (a dither-out, keeping the pixels a dither-in at the same level leaves); never both. */

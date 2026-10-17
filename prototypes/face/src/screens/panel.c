@@ -1,7 +1,9 @@
 /* The decision panel, an overlay over the screen that opens it (panel.json; frame.json regions.panel; specs/station-decision-panel-spec.md Part 1; lvgl-switch.md §2.2): drawn after the screen's words, before the frame's, so the ring and the
    message plate stand over it. Its words are `panel` (the plate and the card wells), `text`, `price` (a card's cost as the bottom line's kit icons and figures), `sprite` (the outcome's picture, 1:1 and never scaled, bottom-centred on the slot's
    floor, and the destination mark) and the focus ring: the veil (a Bayer lattice of 8 of 16 levels toward stageGround), the panel, the title, then each card. Every number is frame.json regions.panel; the title, the cards' names, costs and
-   lines, their pictures' ids and sizes and the focus are props (`overlay.regions`, `overlay.focus`), never the spec. While it is open its focus is its own (the cards, in the props' order): the screen beneath draws no ring and takes no key.
+   lines, their pictures' ids and sizes, the masters' ids and the focus are props (`overlay.regions`, `overlay.focus`), never the spec. The panel is drawn from the passed masters (T-20261016-47, -70) in T-70's composite rule per card:
+   the glow, the stage, the contact shadow (nine-sliced across the feet's span plus 16), the picture 1:1 with its feet line (its lowest row of alpha >= 128) on y + 168, the light; the cost groups on rubber chips; the veil a flat layer. While a master is not placed the
+   code-drawn plate (stageGround, plateEdge, chrome wells) stands in. While it is open its focus is its own (the cards, in the props' order): the screen beneath draws no ring and takes no key.
    The card at i of n (1 to 3): [x + (w + gap) i, y, w, h] with w = (776 - gap (n - 1)) / n: 776, 380 or 248. */
 #include "screens.h"
 #include "../vocab/vocab.h"
@@ -34,43 +36,71 @@ static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(p
 static void build_veil(void) {
   static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
   int r[4]; frect("veil.rect", r); int level = fi("veil.levels", 8); if (r[2] <= 0) return;
-  char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
+  v_region("veil", LAYER_CHROME);
+  if (v_sprite("panel.veil", v_pstr("overlay.regions.art.veil"), r[0], r[1], r[2], r[3])) return;   /* the veil master: a flat layer, never dithered */
+  char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);   /* until it is placed: a Bayer lattice of 8 of 16 levels toward stageGround */
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"%s\"]]", col("stageGround"));
   snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  v_region("veil", LAYER_CHROME); prim_node(v_id("panel.veil"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
+  prim_node(v_id("panel.veil"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
 static void build_plate(void) {
   int r[4]; frect("rect", r);
+  v_region("panel", LAYER_CHROME);
+  if (v_sprite("panel.plate", v_pstr("overlay.regions.art.housing"), r[0], r[1], r[2], r[3])) return;   /* the housing master, 1:1 */
   char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
-  v_region("panel", LAYER_CHROME); word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
+  word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
 }
 static void build_title(void) {
   int r[4]; frect("title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = fi("title.px", 28), w = v_measure(t, px);
-  v_region("panelTitle", LAYER_TYPE); v_text("panel.title", t, r[0], cap_top(px, fi("title.lineTop", r[1]), 36), w, px, rcol("title.colour"));
+  v_region("panelTitle", LAYER_TYPE); v_text("panel.title", t, r[0] + v_half(r[2] - w), cap_top(px, fi("title.lineTop", r[1]), 36), w, px, rcol("title.colour"));
 }
 static const char *GLYPH[4] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };   /* ⚡ ❀ ◆ ⧗, the price's closed table (vocab.c PRICE) */
+/* the cost groups on rubber chips: each "glyph figure" of the price string on a chip nine-sliced round it (6 px in, 8 between groups); a short figure in `need`, a gain in `turn` */
+static void build_costs(int i, int x, int y, const char *cost, const char *shorts, int gain) {
+  const char *chip = v_pstr("overlay.regions.art.chip"); int pad = fi("art.chip.pad", 6), between = fi("art.chip.between", 8), ch = fi("art.chip.h", 20), px = fi("card.costs.px", 16), k = 0;
+  static const int CAPS[4] = { 10, 0, 10, 0 };
+  for (const char *p = cost; *p;) {
+    int g = -1; for (int j = 0; j < 4; j++) if (strncmp(p, GLYPH[j], strlen(GLYPH[j])) == 0) g = j;
+    if (g < 0) { p++; continue; }
+    const char *q = p + strlen(GLYPH[g]); while (*q == ' ') q++; int n = 0; while (q[n] && q[n] != ' ') n++;
+    char grp[48]; snprintf(grp, sizeof grp, "%s %.*s", GLYPH[g], n, q);
+    int rw = v_run_width(grp, px), cw = rw + 2 * pad; const char *colour = col(gain ? "turn" : (g < 3 && *shorts && strstr(shorts, GLYPH[g])) ? "need" : "price");
+    v_region("cardChips", LAYER_PAINTED); if (*chip) v_nine(v_fmt("card.%d.chip.%d", i, k), chip, x, y, cw, ch, CAPS);
+    v_region("cardText", LAYER_TYPE); v_run(v_fmt("card.%d.cost.%d", i, k), grp, x + pad, y, px, colour, V_ALIGN_LEFT);
+    x += cw + between; k++; p = q + n;
+  }
+}
 static void build_card(int i, int n, int focused) {
-  int r[4]; card_rect(i, n, r); (void)focused;
-  int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), loss = v_pbool(v_fmt("overlay.regions.cards.%d.loss", i), 0), w = r[2], tw = w - 32;
-  char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge"));
-  v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge);
-  /* the picture: 1:1, bottom-centred on the slot's floor (its box is the slot, picture.h tall); a picture the host has not sent draws nothing */
-  { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
-    v_name("cardPictures"); if (*pic && pw > 0 && ph > 0) v_sprite(v_fmt("card.%d.picture", i), pic, r[0] + fk("card.picture.at", 0) + v_half(tw - pw), r[1] + fi("card.picture.floor", 168) - ph, pw, ph); else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, r[0], r[1]); }
+  int r[4]; card_rect(i, n, r);
+  int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), loss = v_pbool(v_fmt("overlay.regions.cards.%d.loss", i), 0), w = r[2], tw = w - 32, pw = w - 32, slotX = r[0] + fk("card.picture.at", 0);
+  const char *base = v_fmt("overlay.regions.cards.%d.art", i);
+  /* the well: the master (the focused one a step up; the ring is over it), else the code-drawn well */
+  { const char *id = v_pstr(v_fmt("%s.%s", base, focused ? "focused" : "well")); v_region("cards", LAYER_PAINTED);
+    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge")); v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge); } }
+  /* the glow and the stage: under the picture (the stage at the slot's foot) */
+  v_region("cardStage", LAYER_PAINTED);
+  v_sprite(v_fmt("card.%d.glow", i), v_pstr(v_fmt("%s.glow", base)), slotX, r[1] + fk("art.glow.at", 1), pw, 160);
+  v_sprite(v_fmt("card.%d.stage", i), v_pstr(v_fmt("%s.stage", base)), slotX, r[1] + fk("art.stage.at", 1), pw, 48);
+  /* the picture, 1:1, centred, its feet line (its lowest row of alpha >= 128) on y + 168; its contact shadow across the feet's span plus 16 under it */
+  { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pwid = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0), hd = *pic ? wire_asset_slot(pic) : -1;
+    int feet[3] = { ph - 1, 0, pwid - 1 }; if (hd >= 0 && prim_asset_feet(hd, fi("art.feet.alpha", 128), fi("art.feet.rows", 4), feet) < 0) { feet[0] = ph - 1; feet[1] = 0; feet[2] = pwid - 1; }
+    int px0 = slotX + v_half(pw - pwid), py0 = r[1] + fi("art.feet.line", 168) - feet[0];
+    { const char *sh = v_pstr("overlay.regions.art.shadow"); int span = feet[2] - feet[1] + 1 + fi("art.shadow.stretch", 16), ends = fi("art.shadow.ends", 32), sh_h = fi("art.shadow.h", 16); if (span < 2 * ends) span = 2 * ends;
+      const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + fi("art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
+    v_name("cardPictures"); if (hd >= 0 && pwid > 0 && ph > 0) v_sprite(v_fmt("card.%d.picture", i), pic, px0, py0, pwid, ph); else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, r[0], r[1]); }
+  /* the light: over the picture, the pool lighting the subject from below */
+  v_region("cardStage", LAYER_PAINTED); v_sprite(v_fmt("card.%d.light", i), v_pstr(v_fmt("%s.light", base)), slotX, r[1] + fk("art.light.at", 1), pw, 160);
   /* the destination mark: the title bar's mark of the room it lands in, over the picture's top right; staying here: none */
   { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = fk("card.mark.size", 0); if (ms <= 0) ms = 24;
     v_name("cardMarks"); if (*mk) v_sprite(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + fk("card.mark.at", 1), ms, ms); else v_sprite_hidden(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + 16); }
   /* the name: 20, the option's verb */
   { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = fi("card.name.px", 20), sw = v_measure(s, px);
     v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), s, r[0] + fk("card.name.at", 0), cap_top(px, r[1] + fk("card.name.at", 1), 28), sw, px, rcol(dim ? "card.name.colourDim" : "card.name.colour")); }
-  /* the costs: the kit's icons with their figures (the bottom line's price), a gain in `turn`, a short figure in `need`; free: nothing drawn */
-  { const char *cost = v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), *shorts = v_pstr(v_fmt("overlay.regions.cards.%d.short", i)); int gain = v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0), px = fi("card.costs.px", 16);
-    char cb[4][24]; const char *cols[4]; for (int g = 0; g < 4; g++) { snprintf(cb[g], 24, "%s", col(gain ? "turn" : (g < 3 && *shorts && strstr(shorts, GLYPH[g])) ? "need" : "price")); cols[g] = cb[g]; }
-    char other[24]; snprintf(other, sizeof other, "%s", col(gain ? "turn" : "price"));
-    v_region("cardText", LAYER_TYPE); v_price(v_fmt("card.%d.cost", i), cost, r[0] + fk("card.costs.at", 0), r[1] + fk("card.costs.at", 1), px, cols, other); }
+  /* the costs, on their chips; free: nothing drawn */
+  build_costs(i, r[0] + fk("card.costs.at", 0), r[1] + fk("card.costs.at", 1), v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), v_pstr(v_fmt("overlay.regions.cards.%d.short", i)), v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0));
   /* the line: the one thing the picture cannot say, 16; a loss shows it in `need` */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = fi("card.line.px", 16), sw = v_measure(s, px);
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = fi("card.line.px", 16), sw = v_measure(s, px); (void)tw;
     v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), s, r[0] + fk("card.line.at", 0), cap_top(px, r[1] + fk("card.line.at", 1), 20), *s ? sw : 0, px, rcol(dim ? "card.line.colourDim" : loss ? "card.line.colourLoss" : "card.line.colour")); }
 }
 /* the ring: the focused card's rect, the frame ring { rect: 10 } 4 px out (the ring reaches 5 from the rect it is given, so the rect is drawn 1 px in); no lift */
@@ -85,7 +115,8 @@ static void build_ring(int n) {
 void panel_words(void) {
   int n = ncards(); if (n <= 0) { v_error("word decisionPanel: a panel has at least one card"); return; }
   build_veil(); build_plate(); build_title();
-  for (int i = 0; i < n; i++) build_card(i, n, 0);
+  const char *cur = v_focus_cur_at("overlay.focus.cur");
+  for (int i = 0; i < n; i++) build_card(i, n, strcmp(cur, v_fmt("card.%s", card_id(i))) == 0);
   build_ring(n);
 }
 

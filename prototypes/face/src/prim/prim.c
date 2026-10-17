@@ -209,6 +209,14 @@ static int box_of(int fh, int th, int out[4], int diff) {
 }
 int prim_asset_alpha_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 0); }
 int prim_asset_diff_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 1); }
+int prim_asset_feet(int handle, int alpha, int rows, int out[3]) {
+  out[0] = out[1] = out[2] = 0; if (handle < 0 || handle >= MAX_ASSET || !g_a[handle].px) return -1;
+  const uint8_t *a = g_a[handle].px; int w = g_a[handle].w, h = g_a[handle].h, row = -1;
+  for (int y = h - 1; y >= 0 && row < 0; y--) for (int x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] >= alpha) { row = y; break; }
+  if (row < 0) return -1;
+  int x0 = w, x1 = -1; for (int y = row; y > row - rows && y >= 0; y--) for (int x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] >= alpha) { if (x < x0) x0 = x; if (x > x1) x1 = x; }
+  out[0] = row; out[1] = x0; out[2] = x1; return 0;
+}
 /* the layer a picture shows on, its asset's own (the host's policy: art or painted); a composed source has none and takes its node's */
 int prim_asset_layer_of(int handle) { return handle >= 0 && handle < MAX_ASSET && g_a[handle].layer ? g_a[handle].layer : LAYER_ART; }
 void prim_asset_layer(int handle, int layer) { if (handle >= 0 && handle < MAX_ASSET) g_a[handle].layer = layer; }

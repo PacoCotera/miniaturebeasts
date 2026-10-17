@@ -51,7 +51,7 @@ test("the geometry and the width limits: a card is 776, 380 or 248 wide for one,
     for (const c of cards) {
       assert.ok(words(c.name) <= 3 && measure(c.name, 20) <= limit, `${c.name} (${measure(c.name, 20)} px of ${limit})`);
       if (c.line) assert.ok(words(c.line) <= 6 && measure(c.line, 16) <= Math.min(limit, 208) && !/\d/.test(c.line), `${c.line} (${measure(c.line, 16)} px): ≤ 6 words, never a figure, and inside the bottom line's subject zone (208)`);
-      assert.ok((c.cost.match(/[⚡❀◆⧗]/g) ?? []).length <= P.card.costs.groups, c.cost);
+      assert.ok((c.cost.match(/[⚡❀◆⧗]/g) ?? []).length <= P.card.costs.groups && !/⧗/.test(c.cost), c.cost + ": at most four groups, no minute count (owner ruling 3)");
       assert.ok(c.pictureSize[0] <= P.limits[n].picture[0] && c.pictureSize[1] <= P.limits[n].picture[1], "the picture fits its slot, never scaled");
     }
   }
@@ -70,7 +70,7 @@ test("the props validate against panel.props.json in both modes, name no rectang
 });
 test("focus opens on the first card that is neither dimmed nor a loss, else the way out; a dimmed card can be focused and read; the bottom line is the focused card's", () => {
   const { h } = open({ jump: "fork" }); h.ui.panel = { screen: "create", id: "grow", focus: "" }; let v = view(h);
-  assert.equal(v.overlay.focus.cur, "card.watch"); assert.deepEqual([v.line.ok, v.line.subject, v.line.back, v.line.price], ["Grow and watch", "watch it in the Incubator", "Back", "⚡ 2 ❀ 4 ⧗ 20"]);
+  assert.equal(v.overlay.focus.cur, "card.watch"); assert.deepEqual([v.line.ok, v.line.subject, v.line.back, v.line.price], ["Grow and watch", "watch it in the Incubator", "Back", "⚡ 2 ❀ 4"]);
   h.ui.panel.focus = "card.shape"; v = view(h); assert.deepEqual([v.line.ok, v.line.subject, v.line.back, "price" in v.line], ["Keep shaping", "", "Back", false], "the way out: no cost, no line, no destination");
   const s = open({ short: true }); s.h.ui.panel = { screen: "create", id: "grow", focus: "" }; v = view(s.h);
   assert.equal(v.overlay.regions.cards[0].dim, true); assert.equal(v.overlay.focus.cur, "card.shape", "every card but the way out is dimmed: the way out");

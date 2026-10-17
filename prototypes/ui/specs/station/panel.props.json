@@ -3,44 +3,190 @@
  "$defs": {
   "card": {
    "type": "object",
-   "required": ["id", "picture", "pictureSize", "mark", "name", "cost", "gain", "short", "line", "loss", "dim"],
+   "required": [
+    "id",
+    "picture",
+    "pictureSize",
+    "mark",
+    "name",
+    "cost",
+    "gain",
+    "short",
+    "line",
+    "loss",
+    "dim",
+    "art"
+   ],
    "additionalProperties": false,
    "properties": {
-    "id": { "type": "string" },
-    "picture": { "type": "string" },
-    "pictureSize": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
-    "mark": { "type": "string" },
-    "name": { "type": "string" },
-    "cost": { "type": "string" },
-    "gain": { "type": "boolean" },
-    "short": { "type": "string" },
-    "line": { "type": "string" },
-    "loss": { "type": "boolean" },
-    "dim": { "type": "boolean" }
+    "id": {
+     "type": "string"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "pictureSize": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "mark": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "cost": {
+     "type": "string"
+    },
+    "gain": {
+     "type": "boolean"
+    },
+    "short": {
+     "type": "string"
+    },
+    "line": {
+     "type": "string"
+    },
+    "loss": {
+     "type": "boolean"
+    },
+    "dim": {
+     "type": "boolean"
+    },
+    "art": {
+     "type": "object",
+     "required": [
+      "well",
+      "focused",
+      "stage",
+      "glow",
+      "light"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "well": {
+       "type": "string"
+      },
+      "focused": {
+       "type": "string"
+      },
+      "stage": {
+       "type": "string"
+      },
+      "glow": {
+       "type": "string"
+      },
+      "light": {
+       "type": "string"
+      }
+     }
+    }
    }
   },
-  "target": { "type": "object", "required": ["id", "enabled"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "enabled": { "type": "boolean" } } }
- },
- "type": "object",
- "required": ["id", "state", "regions", "focus"],
- "additionalProperties": false,
- "properties": {
-  "id": { "enum": ["panel"] },
-  "state": { "enum": ["open"] },
-  "regions": {
+  "target": {
    "type": "object",
-   "required": ["title", "cards"],
+   "required": [
+    "id",
+    "enabled"
+   ],
    "additionalProperties": false,
    "properties": {
-    "title": { "type": "string" },
-    "cards": { "type": "array", "minItems": 1, "maxItems": 3, "items": { "$ref": "card" } }
+    "id": {
+     "type": "string"
+    },
+    "enabled": {
+     "type": "boolean"
+    }
+   }
+  }
+ },
+ "type": "object",
+ "required": [
+  "id",
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "id": {
+   "enum": [
+    "panel"
+   ]
+  },
+  "state": {
+   "enum": [
+    "open"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "title",
+    "cards",
+    "art"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "title": {
+     "type": "string"
+    },
+    "cards": {
+     "type": "array",
+     "minItems": 1,
+     "maxItems": 3,
+     "items": {
+      "$ref": "card"
+     }
+    },
+    "art": {
+     "type": "object",
+     "required": [
+      "housing",
+      "veil",
+      "shadow",
+      "chip"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "housing": {
+       "type": "string"
+      },
+      "veil": {
+       "type": "string"
+      },
+      "shadow": {
+       "type": "string"
+      },
+      "chip": {
+       "type": "string"
+      }
+     }
+    }
    }
   },
   "focus": {
    "type": "object",
-   "required": ["cur", "targets"],
+   "required": [
+    "cur",
+    "targets"
+   ],
    "additionalProperties": false,
-   "properties": { "cur": { "type": "string" }, "targets": { "type": "array", "items": { "$ref": "target" } } }
+   "properties": {
+    "cur": {
+     "type": "string"
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "$ref": "target"
+     }
+    }
+   }
   }
  }
 }
