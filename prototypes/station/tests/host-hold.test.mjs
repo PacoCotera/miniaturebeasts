@@ -15,7 +15,7 @@ import { enterIdle, idleTick } from "../src/intents/frame.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
-for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer"]) SPECS[k] = JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
+for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel"]) SPECS[k] = JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 const rig = ({ motion = true, onDock } = {}) => {
   G.st = S.freshSt("w1", 1, 1000); S.normalize(G.st); G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st: G.st }; UI.screen = "home"; UI.idle = false; UI.resting = false; UI.home.f = "room";
   const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, light: () => "day", motion: () => motion, ...(onDock ? { onDock } : {}) }); h.save = () => {};
@@ -121,13 +121,13 @@ test("Create's Grow on the host: the grow event holds 1080 ms and sends no hold 
     const r = rig({ motion }); G.st.e = 99; G.st.d = 99; G.st.s = 99; G.st.firstMibi = false; S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), settings, 1000); const p = G.st.tray[0]; S.skipIdentify(G.st, p);
     UI.screen = "create"; UI.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; return r;
   };
-  { const { h, sent, at } = mk(true); at(0); INTENTS.create.intent(h, "roll", "confirm");
+  { const { h, sent, at } = mk(true); at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.ok(UI.panel, "✓ Grow it opens the panel first"); INTENTS.panel.intent(h, "card.grow", "confirm");   // the card does the Grow
     assert.deepEqual(sent.filter((m) => m.t === "event").map((m) => [m.kind, m.target, m.ms, m.hold]), [["grow", "pod", 900, 1080]]); assert.equal(h.holding(), true);
     onFaceMessage(h, { t: "intent", seq: 1, screen: "create", target: "roll", verb: "room:research" }); assert.equal(h.pendingRoom, "research", "the room key waits");
     at(500); assert.deepEqual([UI.screen, h.holding()], ["create", true]); at(899); assert.equal(UI.screen, "create");
     at(900); assert.deepEqual([UI.screen, UI.create, h.holding()], ["incubator", null, true], "the jump at 900 ms, input still held");
     at(1079); assert.equal(UI.screen, "incubator"); at(1080); assert.deepEqual([UI.screen, h.pendingRoom], ["pods", null], "the kept room key acts when the hold ends"); }
-  { const { h, sent, at } = mk(false); at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.deepEqual([UI.screen, h.holding(), sent.filter((m) => m.kind === "grow").length], ["incubator", false, 0], "a cut: the jump is on the frame of ✓, nothing is sent or held"); }
+  { const { h, sent, at } = mk(false); at(0); INTENTS.create.intent(h, "roll", "confirm"); INTENTS.panel.intent(h, "card.grow", "confirm"); assert.deepEqual([UI.screen, h.holding(), sent.filter((m) => m.kind === "grow").length], ["incubator", false, 0], "a cut: the jump is on the frame of ✓, nothing is sent or held"); }
 });
 
 // ---- the meet and the namer on the host (habitat.json events.meet, namer.json): the meet persists until the first press, the first ✓ in it opens the namer with the ring on Done, the namer is the only graph while it is open,

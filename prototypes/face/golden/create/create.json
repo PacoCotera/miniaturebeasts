@@ -41,6 +41,14 @@
    "hash": "2f9c8675",
    "png": "create-shape-sealed.png"
   },
+  "create-panel-grow-arrival": {
+   "hash": "eac05454",
+   "png": "create-panel-grow-arrival.png"
+  },
+  "create-panel-grow-fork": {
+   "hash": "69dfb00b",
+   "png": "create-panel-grow-fork.png"
+  },
   "create-shape-first": {
    "hash": "89303eff",
    "png": "create-shape-first.png"

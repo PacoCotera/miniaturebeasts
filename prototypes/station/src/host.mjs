@@ -13,6 +13,7 @@ import { dropLight } from "./light-grade.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";
 import { namerBuild } from "./views/namer-props.mjs";
+import { panelBuild } from "./views/panel-props.mjs";
 import { benchBuild } from "./views/bench-props.mjs";
 import { libraryBuild } from "./views/library-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
@@ -148,7 +149,12 @@ export function cargoBody() {
 // ---- Create ----
 // The founder's shaping: Create's state is the UI's (UI.create), the pod and the rules are the rules'. The ring is on the roll when a trait is read, else on nothing.
 export function createBody() {
-  return createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods);
+  const body = createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods), pn = UI.panel;
+  if (pn && pn.screen === "create" && !UI.create?.grown) {   // the decision panel is open: its props ride on Create's (an overlay) and its bottom line is built from the focused card
+    const pb = panelBuild({ st: G.st, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  } else if (pn) UI.panel = null;
+  return body;
 }
 
 // ---- Incubator ----
@@ -262,6 +268,7 @@ export function onFaceMessage(h, m) {
   if (m.screen === "incubator" && UI.screen !== "incubator") return;   // a key the cut already spent (the meet has landed): the Incubator's intent after the screen left is dropped
   if (m.screen === "incubator" && cuttingHatch(h) && !h.holding() && m.t === "intent") { landHatch(h); return; }   // the cutting key lands the meet and does nothing else
   if (m.t === "focus") {
+    if (m.screen === "panel") { if (UI.panel) UI.panel.focus = m.target; return; }   // a panel message after it closed is dropped
     if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
@@ -269,10 +276,12 @@ export function onFaceMessage(h, m) {
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;
+  if (m.screen === "panel" && !UI.panel) return;   // a panel intent after it closed is dropped
+  if (UI.panel && m.screen !== "panel" && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while a panel is open
   if (m.screen === "namer" && !(UI.screen === "habitat" && UI.hab.namer)) return;   // a namer intent after it closed is dropped
   if (m.screen === "habitat" && UI.hab.namer && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while the namer is open
   if (m.screen === "habitat" && m.verb?.startsWith("room:") && !h.holding()) endMeet(h);   // the first press ends the meet, a room key too
-  if (m.verb === "back" && m.screen !== "namer" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (m.verb === "back" && m.screen !== "namer" && m.screen !== "panel" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
   if (m.verb === "wake") { dispatch(h, m); const w = SPECS.frame.idle.wake, cut = !(h.motion ? h.motion() : true); h.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: cut ? 0 : w.hold }); return; }
   dispatch(h, m);

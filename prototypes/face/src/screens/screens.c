@@ -76,7 +76,7 @@ static int vet_ring(const char *screen, const char *name, char *err, int cap) {
   if (*why) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, R, why); return -1; }
   return 0;
 }
-int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0; }
+int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0 || strcmp(id, "panel") == 0; }
 int screens_vet_spec(const char *screen, char *err, int cap) {
   if (strcmp(screen, "moving") == 0) return moving_load(err, cap);   /* the moving sets (M1 §2.2): checked whole, refused with the reason */
   { char kind[16]; if (spec_str(screen, "kind", kind, sizeof kind) > 0 && strcmp(kind, "overlay") == 0 && spec_len(screen, "over") <= 0) { snprintf(err, (size_t)cap, "spec %s: an overlay lists the screens it opens over (over)", screen); return -1; } }
@@ -123,7 +123,7 @@ static void draw(void) {
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") >= 0) build_idleLine(); }   /* Idle: the living window above, its line last */
   else if (is_not_built()) not_built();
-  if (spec_len("props", "overlay") >= 0) { char id[24]; spec_str("props", "overlay.id", id, sizeof id); if (strcmp(id, "namer") == 0 && spec_has("namer")) namer_words(); }   /* an overlay: after the screen's words, before the frame's (the plate stands over it): order, not a layer */
+  if (spec_len("props", "overlay") >= 0) { char id[24]; spec_str("props", "overlay.id", id, sizeof id); if (strcmp(id, "namer") == 0 && spec_has("namer")) namer_words(); else if (strcmp(id, "panel") == 0 && spec_has("panel")) panel_words(); }   /* an overlay: after the screen's words, before the frame's (the plate stands over it): order, not a layer */
   frame_words();
   stage_dither();
   prim_end();
@@ -155,7 +155,7 @@ void screens_key(int code) {
   anim_cut();   /* a press ends the events that carry `cut` (they say done on this frame), and then acts itself */
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
-  if (spec_len("props", "overlay") >= 0 && spec_has("namer")) { namer_key(code); return; }   /* an overlay open: its graph is the only one and the screen beneath takes no key */
+  if (spec_len("props", "overlay") >= 0) { char oid[24]; spec_str("props", "overlay.id", oid, sizeof oid); if (strcmp(oid, "panel") == 0 && spec_has("panel")) { panel_key(code); return; } if (spec_has("namer")) { namer_key(code); return; } }   /* an overlay open: its graph is the only one and the screen beneath takes no key */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
     const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[64];
     if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";

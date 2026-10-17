@@ -9,7 +9,7 @@ const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat:
 // A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
 export function roomKey(h, key) {
   if (!roomTop(key)) return false;
-  const ui = h.ui; ui.create = null; ui.cross = null; ui.hab.namer = null;   // a room key closes the namer, writing nothing
+  const ui = h.ui; ui.create = null; ui.cross = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
   closeReport(h);   // a room key on Cargo's report closes the card and opens its section
   if (key === "home") ui.home.f = "room";
   else if (key === "research") { const p = ui.pods; p.cmp = null; p.wildArm = 0; const q = S.neediestPod(h.st); if (q) p.cur = q.id; p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? "place." + Math.max(0, h.st.tray.findIndex((x) => x.id === q.id)) : null); }
@@ -48,7 +48,7 @@ export function idleTick(h, t, idleMs) {
 }
 // The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
 export function enterIdle(h) {
-  h.ui.hab.namer = null;   // the namer closes, writing nothing, before Idle starts
+  h.ui.hab.namer = null; h.ui.panel = null;   // the namer and a panel close, writing nothing, before Idle starts
   const ev = h.specs.frame.idle.enter.transition;
   const motion = h.motion ? h.motion() : true, hold = motion ? h.specs.frame.idle.enter.hold : 0;
   h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold });

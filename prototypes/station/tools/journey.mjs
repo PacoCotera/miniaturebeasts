@@ -398,7 +398,8 @@ await hpressC("down", 300);
   await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
-await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Grow it, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
+await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(40); { const pp = await props(); expect(pp.overlay?.id === "panel" && pp.overlay.regions.title === "Grow this founder?" && pp.overlay.focus.cur === "card.grow" && !(await page.evaluate(() => window.__st.ST.bud)), "create-grow: ✓ Grow it opens the Grow this founder? panel, the ring on Grow it, nothing spent: " + JSON.stringify([pp.overlay?.id, pp.overlay?.focus, await page.evaluate(() => [window.__st.UI.screen, window.__st.UI.panel, window.__st.msg, !!window.__st.ST.bud, window.__st.UI.create?.f])])); }
+await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // the panel's ✓ Grow it   // ✓ Grow it, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
 { const m = await said(), u = await ui(), l = await line(); cur.push({ key: "confirm", said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
 { const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code) && p.frame.line.ok == null && p.frame.line.price == null && p.frame.line.back == null && p.frame.line.subject === "it goes to the Incubator", "✓ Grow it: the screen grows and holds input, the code is the screen's, the line is Growing (no ✓, price or way back): " + JSON.stringify([p.state, p.regions.code, p.frame.line])); }
 await frameShot("page-create-grow", true);
@@ -501,7 +502,7 @@ caddyUp = false;
 await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
 await press("research", 300);
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
-await press("confirm", 400); await press("confirm", 1300);
+await press("confirm", 400); await press("confirm", 400); await press("confirm", 1300);   // Create, the Grow it panel, its ✓ Grow it
 s = await st(); expect(s.bud && s.outbox.length === 0, "Grow paints nothing: the outbox stays empty");
 await page.evaluate(() => window.__st.skipBud("ready")); await intent({ screen: "incubator", target: "", verb: "confirm" }, 300); await page.waitForTimeout(3200);
 await press("home", 300);
@@ -739,7 +740,8 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   await loop("confirm", "✓ on the new pod opens its overview", () => window.__st.props?.state === "overview");
   await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Create from this pod");
   await loop("confirm", "✓ Create from this pod opens Create", () => window.__st.UI.screen === "create");
-  await loop("confirm", "✓ Grow it", () => window.__st.UI.screen === "incubator");
+  await loop("confirm", "✓ Grow it opens the panel", () => window.__st.props?.overlay?.id === "panel");
+  await loop("confirm", "✓ Grow it on the panel (the jump to the Incubator)", () => window.__st.UI.screen === "incubator");
   await loop("confirm", "✓ Grow now (the bud is ready)", () => window.__st.props?.state === "ready");
   await loop("confirm", "✓ Open (the hatch, then the meet)", () => window.__st.UI.screen === "habitat");
   { const p = await props(); expect(p.screen === "habitat" && p.state === "meet" && p.focus.cur === "resident" && /^Name /.test(p.frame.line.ok) && !p.overlay, "fresh-loop: the hatch lands in the meet with the ring on the resident, ✓ Name it: " + JSON.stringify([p.state, p.focus.cur, p.frame.line.ok])); }

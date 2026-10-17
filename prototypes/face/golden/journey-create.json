@@ -192,6 +192,12 @@
       "screen": "create",
       "target": "roll",
       "verb": "confirm"
+     },
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "confirm"
      }
     ],
     "screen": "create",

@@ -29,7 +29,7 @@ let owner = "station", lastDevice = "station", ox = 0, seatOff = 0, benchRaised 
 let caddy = { canDock: false, docked: false, crates: 0, pending: false }, gotCaddy = false;
 let awaiting = null, pressed = false, askTimer = 0, seatBusy = false;
 const frames = { station: $("fStation"), companion: $("fCompanion"), bench: $("fBench") };
-const stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : ""), companionUrl = "../exploration/?embed" + (SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (DEV ? "&dev=1" : "");
+const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : ""), companionUrl = "../exploration/?embed" + (SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (DEV ? "&dev=1" : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 const SVG = {

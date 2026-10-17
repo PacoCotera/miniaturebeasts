@@ -1,6 +1,7 @@
 // The Incubator's intents (incubator.json keys, events, handoff): ✓ on an empty one chooses a pod (a jump to Pods' collection), on a growing bud grows it now (events.growNow), on a ready one opens it (the hatch, then a jump to one mibi up close, in
 // the meet); ← goes Home. The screen's own state is `h.ui.inc.hatch` while the hatch holds: { mibi, species, code, read } of the bud that was opened (the rule has already made the mibi and emptied the chamber).
 import * as S from "../state.mjs";
+import { toPods } from "./create.mjs";
 import { knownChapters } from "../views/incubator-props.mjs";
 import { plays } from "../moving.mjs";
 
@@ -14,7 +15,7 @@ export function choosePod(h) {
 export const cuttingHatch = (h) => { const hh = h.ui.inc?.hatch; return !!(hh && hh.cuttable && !hh.over); };
 export function landHatch(h) { const hh = h.ui.inc?.hatch; if (hh && hh.land) hh.land(); }
 export function intent(h, target, verb) {
-  if (verb === "back") { if (h.ui.inc.hatch) return; h.ui.home.f = "incubator"; h.goto("home"); return; }   // ← Home with the ring on Home's Incubator module
+  if (verb === "back") { if (h.ui.inc.hatch) return; const ar = h.ui.arrival; if (ar) { h.ui.arrival = null; toPods(h, ar.place); return; } h.ui.home.f = "incubator"; h.goto("home"); return; }   // ← reads Home; after a Grow it jump (the arrival mode) it returns to Pods, this pod's place, until another key   // ← Home with the ring on Home's Incubator module
   if (verb !== "confirm") return;
   if (!h.st.bud) {   // empty: Choose a pod
     const i = choosePod(h); if (i === null) return;
