@@ -118,3 +118,4 @@ The owner rejected or caveated two proofs that both gates had passed (the T-170 
   - motion and lit marks appear only when something happens.
   
   If a person wouldn't leave it on the shelf for its own sake, it fails. Small labels are allowed when they name, never when they explain.
+- **Each module is itself** (owner, 16:06: "the library doesnt look like a library, the rings are identical to the incubator above. / thst module has to go, thats not a library"). Each module has its own visual vocabulary, taken from what it is: a library looks like books, shelves or a field guide; an incubator looks like a chamber. No motif is shared between modules: a progress ring, a gauge or a frame style used in one is not reused in another. Cover the labels: each module still reads as what it is. A unifying "picture language" across modules fails this check, however tidy it looks.
