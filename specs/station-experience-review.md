@@ -50,7 +50,7 @@ These rules are the guide's, stated here as the order for this redesign:
    - `orange` for the action only.
    - Nothing else on the machine carries colour.
 7. **Words:** the guide's §10 budget. No line under 16 px on the Station, and no label floating on a painting.
-8. **Slate until the owner rules.** UI/UX's sketches use a deep blue display. Every concept for this batch is painted on slate; blue is the owner's call (§2 Open).
+8. **Slate, as the owner ruled** (08:42: "slate is. ok"). The display ground is dark matte slate, and the life and the lit parts carry the colour. UI/UX's deep-blue sketches are repainted on slate.
 
 ## 3. The direction for each screen family
 
@@ -168,4 +168,4 @@ The Probe stays upright in its vertical cradle (the owner's ruling). Create's li
 | Cargo: what it is, and C1 or C2 (UI/UX) | The Station's receiving bay; C2, crate by crate, auto-paced and skippable |
 | Store tanks (UI/UX, game designer §6.2) | No. Materials fly into the top bar's counters |
 | The Incubator's instrument (style guide §8, pending) | The candling chamber of 3.3 |
-| Display ground (open) | Slate until the owner rules; my view is to keep it |
+| Display ground | Slate: ruled by the owner, 08:42 |
