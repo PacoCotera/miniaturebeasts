@@ -21536,5 +21536,239 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-160, in genome-screen/proof (S01 at tier XL; the tiers' family sheet)",
   "status_note": "new (10-17, T-20261016-160)"
+ },
+ "world-herd-1-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 1 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "81d4f86fbf7b5888d3fb9b887a7e66e76483f7a2e5464dc5eb68f70b47cce8a2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-2-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 2 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "be755b692fadd20ad902d3153cb0d6f9426bc4b7496663e8f4a11b5a3cda602d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-3-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 3 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "9a4fa34227fbd0051bd37b05b72195d2c63b9b58dc74c1bf8148175d8c8548e1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-4-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 4 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "cbb34501b3285e76f1a75f8ec428b169715c5635dbeef693a0fd10593fa1098f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-5-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 5 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "3a05fe44e21f9f2bba32bd61c4bd9e126a4708503024286380327c5e7df33453",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-6-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 6 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "10dd67dbfca2a54a8aa8a1a58b59457b38a9c1e6d3fa0eb4d1bb61f566040b4c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-7-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 7 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "5767a0c35af4d5feb3a99c80047c63de3c257301902f8ea64dc62711c1cd48b8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-herd-8-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the herd's hoof-trail arrow turned to n = 8 (1 N, 2 NE ... 8 NW): two staggered hoof prints and an arrowhead",
+  "sha256": "1c4e7a9d92b33d82c39d836afe0d2f33fb536f66ca9db616a9b39a3d0ef808a5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-land-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the plain land mark for shallows and cliff (no badge yet, world-events \u00a75 (3)): a round badge of plain sage ground and a level horizon, in the place badges' round cut",
+  "sha256": "1179994773b9f252ef45f654a87ace32241fd00109a6e707a9f0c980d28615f8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-bolt-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, storm: a bolt",
+  "sha256": "dc56feeda0ddc478804ff5a615961558bdf613c6450f054e8fa0b96eaa0fcaf7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-cane-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, elder: a walking cane",
+  "sha256": "8bb929dbc2cb0331de8061ad7b0d020f65280ada838a5863a8966c67f532258d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-fruit-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, fruit: a round fruit with a leaf (repeated up to 3 at pitch 20)",
+  "sha256": "44ec3658819fdccdb476620b0abda3960946cd47cd9e6f1e651bad0cec62221b",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-glint-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, stirring: the four-point glint in cream (repeated up to 3)",
+  "sha256": "8fcf4cc6860dda65fefaf5a37651101134aec3774927af8e0d7c815da92df862",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-lamp-low-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, an outpost's lamp low: a lantern with a small cream flame",
+  "sha256": "ef503a5659d5cb92c1693d151880e0c18013c16b1aeaf8e82739a80b392bbc63",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-lamp-out-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, an outpost's lamp out: the lantern dark",
+  "sha256": "ff1a116b721ae8f2ae939043a7af58ebccb9bf9d02e6401b2caea4d63d8ce52a",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-pair-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, young: a small pair",
+  "sha256": "9ab67ea00f912fa62b2dc597556100a2687923d86b4fae281e3bca6f4b33973d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-sprout-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, grown: a sprout",
+  "sha256": "43859fcd1f78488927e092407b60f49b9780a91358dfabb0e0696b3d3c4155a7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
+ },
+ "world-mark-still-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "cargo-report/t156/make-world-marks.py",
+  "made": "the world row's change mark, quiet: the still mark, a level line and a dot",
+  "sha256": "5496b73d1c3ad9ce151bee55408495dd17c8ff827649cd72f9a693eba52bc8ec",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
+  "status_note": "new (10-17, T-20261016-156)"
  }
 }

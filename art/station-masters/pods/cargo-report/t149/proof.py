@@ -16,8 +16,9 @@ def icon(x):
 EN, DA, ES = icon(428), icon(491), icon(555)
 pod = Lo(os.path.join(icd, "icon-pod-16.png")); plate = Lo(os.path.join(icd, "icon-shield-16.png"))
 f = g.copy(); f.alpha_composite(S("cargo-bay-shut-report-976x304"), (24, 56))
-X, Y, H = 232, 104, 208
-f.alpha_composite(S("cargo-report-plate-560x208"), (X, Y)); d = ImageDraw.Draw(f)
+X, Y, H = 232, int(os.environ.get("CARD_Y", 104)), int(os.environ.get("CARD_H", 208))
+f.alpha_composite(S(f"cargo-report-plate-560x{H}"), (X, Y)); d = ImageDraw.Draw(f)
+WY = 56 if H in (192, 232, 264) else 0   # T-156: the world row pushes the goal and the wait down 56
 for k, (npods, reach) in enumerate(((3, 1), (3, 2), (11, 3))):
     tx, ty = X + 16 + 184 * k, Y + 16
     f.alpha_composite(S("cargo-crate-64x64"), (tx, ty))
@@ -31,10 +32,12 @@ for m, (ic, fig) in enumerate(((EN, "+15"), (DA, "+18"), (ES, "+24"))):
     f.alpha_composite(ic, (X + 16 + 72 * m, Y + 100)); d = ImageDraw.Draw(f); d.text((X + 16 + 72 * m + 22, Y + 108), fig, font=F("Regular", 16), fill=BONE, anchor="lm")
 for i in range(2): f.alpha_composite(plate, (X + 320 + 20 * i, Y + 100))
 f.alpha_composite(EN, (X + 320 + 44, Y + 100)); d = ImageDraw.Draw(f); d.text((X + 320 + 64, Y + 108), "2", font=F("Regular", 16), fill=BONE, anchor="lm")
-d.text((X + 16, Y + 148), "→", font=F("Regular", 16), fill=BONE, anchor="lm"); d.text((X + 40, Y + 148), "fit the Probe upgrade", font=F("Regular", 16), fill=BONE, anchor="lm")
-f.alpha_composite(pod, (X + 40, Y + 176)); f.alpha_composite(S("rail-emblem-face-unread-24x24"), (X + 64, Y + 172)); f.alpha_composite(DA, (X + 96, Y + 176))
-d = ImageDraw.Draw(f); d.text((X + 116, Y + 184), "2", font=F("Regular", 16), fill=BONE, anchor="lm")
-lb = F("Medium", 16); s = "PROOF T-20261016-149: the Cargo report, picture-led, longest case (h 208), 1x. Figures, goal words, icons: stand-ins"
+d.text((X + 16, Y + 148 + WY), "→", font=F("Regular", 16), fill=BONE, anchor="lm"); d.text((X + 40, Y + 148 + WY), "fit the Probe upgrade", font=F("Regular", 16), fill=BONE, anchor="lm")
+f.alpha_composite(pod, (X + 40, Y + 176 + WY)); f.alpha_composite(S("rail-emblem-face-unread-24x24"), (X + 64, Y + 172 + WY)); f.alpha_composite(DA, (X + 96, Y + 176 + WY))
+d = ImageDraw.Draw(f); d.text((X + 116, Y + 184 + WY), "2", font=F("Regular", 16), fill=BONE, anchor="lm")
+HOOK = os.environ.get("WORLD_HOOK")
+if HOOK: exec(open(HOOK).read())
+d = ImageDraw.Draw(f); lb = F("Medium", 16); s = os.environ.get("PROOF_LABEL") or "PROOF T-20261016-149: the Cargo report, picture-led, longest case (h 208), 1x. Figures, goal words, icons: stand-ins"
 d.rectangle([8, 540, 16 + d.textlength(s, font=lb), 564], fill=(0, 0, 0)); d.text((12, 543), s, font=lb, fill=(255, 255, 255))
 f.convert("RGB").save(os.path.join(out, "cargo-report-picture-led-1x.png"))
 c = f.crop((X, Y, X + 560, Y + 96)); c.resize((c.width * 2, c.height * 2), Image.NEAREST).convert("RGB").save(os.path.join(out, "cargo-report-crates-2x.png"))
