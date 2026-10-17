@@ -47,6 +47,10 @@ export function binLooks(frame, trait) {
     const order = [...pool].sort((a, b) => copyValue(locus, a) - copyValue(locus, b));
     return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; const v = resolveCopies(locus, c); let best = null, d = Infinity; for (const a of order) { const e = Math.abs(copyValue(locus, a) - v); if (e < d) { d = e; best = a; } } return looks[order.indexOf(best)]; } };
   }
+  if (locus.operator === "copy-mean" && looks.length !== pool.length) {   // a blend whose pool has more (or fewer) sizes than the trait has words (S11's Head: four sizes, three words): the pool's value range in equal bins, one a word
+    const vs = pool.map((a) => copyValue(locus, a)), lo = Math.min(...vs), hi = Math.max(...vs);
+    return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; const v = resolveCopies(locus, c); if (hi <= lo) return looks[0]; return looks[Math.min(looks.length - 1, Math.max(0, Math.floor(((v - lo) / (hi - lo)) * looks.length)))]; } };
+  }
   if (locus.operator === "partition-map" && looks.length === pool.length + 1) {
     return { looks, of: (g) => { const c = bins(g, id); if (c.length !== 2) return null; return c[0] === c[1] ? looks[pool.indexOf(c[0])] ?? null : looks[pool.length]; } };
   }
