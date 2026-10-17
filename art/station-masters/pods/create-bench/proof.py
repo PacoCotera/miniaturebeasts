@@ -37,7 +37,7 @@ e = ((xx - (x0 + x1) / 2) / ((x1 - x0) / 2 + 6)) ** 2 + ((yy - (76 + fb - 7)) / 
 sh = ndi.gaussian_filter((e < 1).astype(float), 2.5) * 0.6                                       # the contact shadow, multiplied
 fr = np.asarray(f).astype(float); fr[..., :3] *= (1 - sh)[..., None]; f = Image.fromarray(fr.astype(np.uint8), "RGBA")
 f.alpha_composite(N("founder-S01-base-304x312"), (360, 76)); f.alpha_composite(N("founder-S01-crown-leaf-crest-304x312"), (360, 76))
-f.alpha_composite(N("slip-208x296"), (728, 96))
+f.alpha_composite(N("slip-208x288"), (728, 96))
 # the bank at the amended rects (T-20261016-95/-96): drums 80 x 96 at y 424; the close-up in the window (8, 16); the neighbouring faces'
 # edge rows in the bands (8, 8) and (8, 80) (previous face's last 8 rows, next face's first 8), then create-drum-shade-80x96; a one-face drum
 # (the doings) shows its plain round there; the notch at (72, 40); the turn marks at (32, 0) and (32, 88)

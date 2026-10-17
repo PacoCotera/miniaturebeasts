@@ -4,16 +4,16 @@ polymer in the housing's sage, rounded and handled, worn where a thumb turns the
 every object casting a soft shadow onto the bench. The house rules hold: one key light from the top left, no gloss, no chrome, no glow.
 - create-bench 1024x522 at (0, 40): the calm Pods ground (incubator-b/make-stage.py --ground: Pods' clean stage, the sage bezel pixel for
   pixel, the floor in its own tone and grain) with three moulded recesses: the well's seat (a soft round seat under the well, centre (192, 152)
-  in the slice, r 98), the dish's cut-out (a capsule 400 x 28 at (312, 332)), the tray (848 x 122 at (88, 368), corners 12), each 2-3 px deep,
+  in the slice, r 98), the dish's cut-out (a capsule 400 x 28 at (312, 324)), the tray (848 x 130 at (88, 360), corners 12; both T-95's, T-20261016-110), each 2-3 px deep,
   its near wall in shade and its far wall catching the light, its floor the bench x0.62 (the tray x0.55).
 - create-well 192x192: Pods' fitted well (ring-collection-idle's piece of the Pods room sheet, source/raw/pods-room-sheet.jpg, (200, 500) r 168)
   cut at 192 the way tools/podsroom2.py cuts it (reduced with Lanczos, never enlarged; a round alpha feathered 1 px).
-- create-gene-line 24x216: a braided hose from the well's side, bending down into the tray's wall through a boot (T-20261016-69; see its section).
+- create-gene-line 24x208 (T-20261016-110): a braided hose from the well's side, bending down into the tray's wall through a boot (T-20261016-69; see its section).
 - create-dish 400x28: a moss pad (the vivarium's own painted moss) in a low moulded sage rim.
 - create-drum-rest/-pinned/-capped/-clash 80x80: the drum on its axle in a slot (T-20261016-69; see its section), its 64x64 window at (8, 8)
   clear in its middle (the round's fall-off and a 2 px inner shade at partial alpha); pinned: two linked rings engraved in the bottom rim; capped: the frost veil over the window (`frost`, the house's
   frost); clash: a 2 px `red` line round the rim.
-- create-drum-notch 12x8 (`cream`), create-drum-turn-up/-down 16x8 (`bone` triangles, engraved shade), create-bank-more-left/-right 16x80 (a soft
+- create-drum-notch 8x16 (`cream`), create-drum-turn-up/-down 16x8 (`bone` triangles, engraved shade), create-bank-more-left/-right 16x96 (a soft
   fall into shade at the tray's edge and a `mist` chevron).
 usage: python3 -I create-bench/make-create.py SLICES_DIR GROUND.png VIVARIUM_DAY.png OUT_DIR"""
 import sys, os, json, numpy as np
@@ -41,8 +41,8 @@ def rrect_d(xx, yy, x0, y0, x1, y1, r):
 g = np.asarray(Image.open(ground_png).convert("RGBA")).astype(float); H, W = g.shape[:2]; S = 4
 Y4, X4 = (np.mgrid[0:H * S, 0:W * S] + .5) / S
 seat_d = 98 - np.hypot(X4 - 192, Y4 - 152)
-dish_d = rrect_d(X4, Y4, 312, 332, 712, 360, 14)
-tray_d = rrect_d(X4, Y4, 88, 368, 936, 490, 12)
+dish_d = rrect_d(X4, Y4, 312, 324, 712, 352, 14)                 # T-20261016-110: T-95's dish (312, 364 on screen)
+tray_d = rrect_d(X4, Y4, 88, 360, 936, 490, 12)                  # T-20261016-110: T-95's tray (88, 400, 848 x 130)
 def recess(d, depth, wall):
     return -depth * np.clip(d / wall, 0, 1) * (d > 0)
 h = recess(seat_d, 1.5, 3.0) + recess(dish_d, 2.0, 1.5) + recess(tray_d, 3.0, 2.0)
@@ -61,12 +61,12 @@ im = sheet.crop((200 - 168, 500 - 168, 200 + 168, 500 + 168)).resize((192, 192),
 m = Image.new("L", (768, 768), 0); ImageDraw.Draw(m).ellipse([0, 0, 767, 767], fill=255); m = m.resize((192, 192), Image.LANCZOS)
 w = im.convert("RGBA"); w.putalpha(m); w.save(os.path.join(out, "create-well.png"))
 # ---------- create-gene-line 24 x 216 (T-20261016-69): the braided hose leaves the well's side through a sand ferrule at (288, 200), bends
-# down (radius 10), runs to the tray with a slight slack, and goes into the tray's top wall through a dark rubber boot (rows 198-216). Its soft
+# down (radius 10), runs to the tray with a slight slack, and goes into the tray's top wall through a dark rubber boot (rows 190-208; T-20261016-110: 208 tall, T-95's). Its soft
 # shadow falls right and down on the bench. The rect's top-left corner touches the well's rim, so the ferrule sits on it.
-S2 = 8; Hh, Wh = 216, 24
+S2 = 8; Hh, Wh = 208, 24
 yy, xx = (np.mgrid[0:Hh * S2, 0:Wh * S2] + .5) / S2
 R = 6.5; Y0, BR, XV = 9.0, 10.0, 12.0                                       # hose radius; the line leaves at y 9 (screen 201), bends, runs down x 12
-sway = 1.6 * np.sin(np.clip((yy - 24) / 172, 0, 1) * np.pi)                 # a little slack: a hose, not a post
+sway = 1.6 * np.sin(np.clip((yy - 24) / 164, 0, 1) * np.pi)                 # a little slack: a hose, not a post
 cxv = XV + sway
 # distance to the centre line and the position along it (t) for the braid: horizontal stub, quarter arc, vertical run
 d_h = np.where(xx <= XV - BR, np.abs(yy - Y0), np.inf)
@@ -91,12 +91,12 @@ fer = (xx < 6.5) & (np.abs(yy - Y0) <= R + 1.4)
 fv = np.clip((yy - Y0) / (R + 1.4), -1, 1); lamf = np.clip(np.dstack([np.zeros_like(fv), fv, np.sqrt(np.clip(1 - fv ** 2, 0, 1))]) @ L, 0, 1) / L[2]
 col[fer] = (SAND * 0.78 * (0.45 + 0.7 * lamf)[..., None])[fer]
 gro = fer & (np.abs(xx - 3.5) < .55); col[gro] *= 0.55
-# the boot into the tray: dark rubber, wider than the hose, flaring to the tray's wall, rows 198-216, with two ribs
-by = np.clip((yy - 198) / 18, 0, 1); bw = R + 1.2 + 2.6 * by ** 1.5
-boot = (yy >= 198) & (np.abs(xx - cxv) <= bw)
+# the boot into the tray: dark rubber, wider than the hose, flaring to the tray's wall, rows 190-208, with two ribs
+by = np.clip((yy - 190) / 18, 0, 1); bw = R + 1.2 + 2.6 * by ** 1.5
+boot = (yy >= 190) & (np.abs(xx - cxv) <= bw)
 bs = np.clip((xx - cxv) / bw, -1, 1); lamb = np.clip(np.dstack([bs, np.zeros_like(bs), np.sqrt(np.clip(1 - bs ** 2, 0, 1))]) @ L, 0, 1) / L[2]
 bcol = lin([34, 34, 36]) * (0.5 + 0.7 * lamb)[..., None]
-rib = boot & ((np.abs(yy - 203) < .7) | (np.abs(yy - 208.5) < .7)); bcol[rib] *= 1.6
+rib = boot & ((np.abs(yy - 195) < .7) | (np.abs(yy - 200.5) < .7)); bcol[rib] *= 1.6
 col[boot] = bcol[boot]
 a_obj = (body | fer | boot).astype(np.float32)
 # its shadow on the bench: the shape shifted 2 right and 2 down, blurred, under it
@@ -212,11 +212,11 @@ mark("create-drum-notch", 8, 16, [(7.5, 0), (7.5, 16), (1.5, 12), (1.5, 4)], P("
 mark("create-drum-turn-up", 16, 8, [(8, 0.5), (15, 7), (1, 7)], P("bone"))
 mark("create-drum-turn-down", 16, 8, [(1, 0.5), (15, 0.5), (8, 7)], P("bone"))
 for side in ("left", "right"):
-    w, h = 16, 80; xx1 = np.arange(w)[None, :] + .5
+    w, h = 16, 96; xx1 = np.arange(w)[None, :] + .5
     fall = (1 - xx1 / w) if side == "left" else (xx1 / w)
     A = np.broadcast_to(fall ** 1.6 * 0.55, (h, w)).copy(); C = np.broadcast_to(lin([10, 12, 14]), (h, w, 3)).copy()
     chev = Image.new("L", (w * 8, h * 8), 0); dr = ImageDraw.Draw(chev)
-    pts = [(10, 32), (5, 40), (10, 48)] if side == "left" else [(6, 32), (11, 40), (6, 48)]
+    pts = [(10, 40), (5, 48), (10, 56)] if side == "left" else [(6, 40), (11, 48), (6, 56)]   # T-20261016-110: 16 x 96
     dr.line([(x * 8, y * 8) for x, y in pts], fill=255, width=14, joint="curve")
     cm = np.asarray(chev.resize((w, h), Image.LANCZOS)).astype(float) / 255
     C = C * (1 - cm[..., None]) + lin(P("mist"))[None, None] * cm[..., None]; A = np.maximum(A, cm)

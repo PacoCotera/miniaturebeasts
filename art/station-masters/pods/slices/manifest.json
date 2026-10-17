@@ -16084,9 +16084,9 @@
   "src": "incubator-b/make-slip.py",
   "made": "Create's slip (T-20261016-41): the same paper and clip at Create's height",
   "sha256": "65a4b18268e38cc0e7a376ac9b4d657a4ef58f5261b3b755bdc901090c3b150a",
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "withdrawn (10-17, T-20261016-110): Create's slip is slip-208x288 at T-95's layout"
  },
  "incubator-shell-cool": {
   "size": [
@@ -16208,11 +16208,11 @@
    522
   ],
   "src": "create-bench/make-create.py (ground: incubator-b/make-stage.py --ground)",
-  "made": "the gene bench: one matte work surface inside the bezel (the Pods ground), the well's seat, the dish's cut-out and the tray recessed; job: everything sits on it",
-  "sha256": "06cef27dc00e8139c39180154419793844a3526e69ca397c03a32b54f6c6c473",
+  "made": "the gene bench: one matte work surface inside the bezel (the Pods ground), the well's seat, the dish's cut-out and the tray recessed; job: everything sits on it (T-20261016-110: re-cut to T-95's layout, the tray at (88, 360, 848 x 130) and the dish's cut-out at (312, 324) in the slice)",
+  "sha256": "4c9bd598aaaef61c4a0e73953083f6fd1e2d9fd55fbfee3567a9f87f08883f8b",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "status_note": "re-cut (10-17, T-20261016-110)"
  },
  "create-well": {
   "size": [
@@ -16235,7 +16235,7 @@
  "create-gene-line": {
   "size": [
    24,
-   216
+   208
   ],
   "rect": [
    288,
@@ -16244,11 +16244,11 @@
    216
   ],
   "src": "create-bench/make-create.py",
-  "made": "the gene line (T-20261016-69 repaint): a braided hose that leaves the well's side through a sand ferrule at (288, 200), bends down, runs to the tray with a little slack and goes into the tray's top wall through a dark rubber boot; its soft shadow on the bench. The drums are fed by this pod",
-  "sha256": "8f564bffbe918adde18bc5e80f5fa01ae84e75ada8db6a727f7ea749bc4ec397",
+  "made": "the gene line at 24 x 208 (T-20261016-110, T-95's): a braided hose that leaves the well's side through a sand ferrule at (288, 200), bends down, runs to the tray with a little slack and goes into the tray's top wall (y 400) through a dark rubber boot; its soft shadow on the bench. The drums are fed by this pod",
+  "sha256": "fc6bbcab6fe42f78da43bf4e37d58592cdce3851e9dc28eeb6d86c966f89594e",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "status_note": "repainted (10-16, T-20261016-69)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "status_note": "re-cut to 208 (10-17, T-20261016-110)"
  },
  "create-dish": {
   "size": [
@@ -16362,7 +16362,7 @@
  "create-bank-more-left": {
   "size": [
    16,
-   80
+   96
   ],
   "rect": [
    104,
@@ -16371,16 +16371,16 @@
    80
   ],
   "src": "create-bench/make-create.py",
-  "made": "the edge mark: more drums past the left edge",
-  "sha256": "7b617674d7efed4233b4ca8e0ba301f3c1d19f414e80b620090ac81dd2abd9ff",
+  "made": "the more mark at 16 x 96 (T-20261016-110, T-95's): a soft fall into shade at the tray's left edge and a `mist` chevron at mid-height; more drums past the edge",
+  "sha256": "9ee6b25860347e5392620cb394047c8e9862bef15319e0611b6b11a3ec626958",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "status_note": "re-cut to 96 (10-17, T-20261016-110)"
  },
  "create-bank-more-right": {
   "size": [
    16,
-   80
+   96
   ],
   "rect": [
    904,
@@ -16389,11 +16389,11 @@
    80
   ],
   "src": "create-bench/make-create.py",
-  "made": "the edge mark: more drums past the right edge",
-  "sha256": "029332cd1db4cae850eec479eddb26570a861399c70a23d11f77ae2513ffdc3a",
+  "made": "the more mark at 16 x 96 (T-20261016-110, T-95's): a soft fall into shade at the tray's right edge and a `mist` chevron at mid-height; more drums past the edge",
+  "sha256": "d2e8e4c7001243c47e9d373f171f36e1941810e1489eaca3b73b904d57dac4d4",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "status_note": "new (10-16, T-20261016-41)"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "status_note": "re-cut to 96 (10-17, T-20261016-110)"
  },
  "look-S01-markings-plain-64x64": {
   "size": [
@@ -18139,5 +18139,23 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
   "status_note": "new (10-17, T-20261016-96)"
+ },
+ "slip-208x288": {
+  "size": [
+   208,
+   288
+  ],
+  "rect": [
+   728,
+   96,
+   208,
+   288
+  ],
+  "src": "incubator-b/make-slip.py",
+  "made": "Create's slip at T-95's 208 x 288: the same paper and clip as slip-208x408 (Incubator) and slip-208x296, cut by the same code at this height",
+  "sha256": "37c2dba6a873b0d1cc1960e4eec596e5e6b83612c57be475dfdcfc0e97656fe5",
+  "status": "signed",
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "status_note": "new (10-17, T-20261016-110): replaces slip-208x296 on Create"
  }
 }

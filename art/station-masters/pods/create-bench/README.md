@@ -176,3 +176,22 @@ The re-proof draws the amended rects with T-69's bench, gene line and slip, so t
 - `create-shape-S01-1x.png`, **the owner's proof**, at the amended rects with T-69's stand-ins;
 - `drums-80x96-before-after-2x.png`;
 - `comparison-create-S01.png`.
+
+## T-20261016-110: the bench re-cut to T-95's layout (the drums stay)
+Re-cut only, with the same materials, grain and light as T-41 and T-69.
+
+**Re-cut:**
+- **`create-bench`:** the tray recess is at (88, 360, 848 × 130) in the slice (screen 400–530), and the dish's cut-out at (312, 324) (screen 364).
+- **`create-gene-line`, 24 × 208:** the boot moves up 8 px, so it ends at the tray's top edge, y 400.
+- **`create-bank-more-left` and `-right`, 16 × 96:** the chevron is centred at mid-height.
+
+**New:** `slip-208x288`, from `incubator-b/make-slip.py` (the same paper and clip, cut at 288). `slip-208x296` is withdrawn for Create; `slip-208x408` (Incubator) is unchanged.
+
+**Unchanged:** T-96's drums, the notch, the shade and the turn marks, which rebuild byte for byte. Also unchanged: the well, the dish and the close-ups.
+
+**Checked in the re-proof** (`proof/create-shape-S01-1x.png`, **the owner's proof**; `proof/bench-recut-before-after-1x.png`; `proof/comparison-create-S01.png`), at 1× and 3×:
+- the chapter words (lineTop 400) sit inside the tray, on its back rim;
+- the dish sits in its cut-out, with the founder's contact shadow on it;
+- the gene line's boot ends at the tray's top edge.
+
+**Not done (optional step 3):** re-cutting the 64 × 64 close-ups with content nearer their edges. The close-ups are the signed look-plate recipe at 64, and changing their framing changes every drum's picture. That would be a restyle, beyond a re-cut, so I left it for a ticket that asks for it.

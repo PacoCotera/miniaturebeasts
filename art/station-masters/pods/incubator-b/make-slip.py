@@ -58,7 +58,7 @@ def slip(Wd, Ht):
     C = C * (1 - a_clip[..., None]) + c_clip * a_clip[..., None]; A = np.maximum(A, a_clip)
     img = np.dstack([srgb(C), np.clip(A, 0, 1) * 255]); img[A <= 0] = 0
     return np.clip(np.rint(img), 0, 255).astype(np.uint8)
-for name, (w, h) in (("slip-208x408", (208, 408)), ("slip-208x296", (208, 296))):
+for name, (w, h) in (("slip-208x408", (208, 408)), ("slip-208x296", (208, 296)), ("slip-208x288", (208, 288))):   # 288: T-20261016-110, Create at T-95
     im = slip(w, h); Image.fromarray(im, "RGBA").save(os.path.join(out, name + ".png"))
     Y = lin(im[..., :3]) @ [.2126, .7152, .0722]; op = im[..., 3] == 255
     print(name, "paper p50", np.median(im[op][:, :3], 0).round().tolist(), "rel. lum p95 %.3f mean %.3f" % (np.percentile(Y[op], 95), Y[op].mean()))

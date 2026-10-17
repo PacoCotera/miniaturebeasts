@@ -4992,9 +4992,9 @@
   "note": "T-20261016-27, Incubator option B"
  },
  "slip-208x296": {
-  "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "note": "T-20261016-27, Incubator option B"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "T-20261016-110: replaced by slip-208x288"
  },
  "incubator-shell-cool": {
   "status": "signed",
@@ -5028,8 +5028,8 @@
  },
  "create-bench": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "note": "T-20261016-41, Create gene bench"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "note": "T-20261016-110, re-cut to T-95's layout"
  },
  "create-well": {
   "status": "signed",
@@ -5038,8 +5038,8 @@
  },
  "create-gene-line": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-69, in create-bench/proof (create-shape-S01-1x with stand-ins; the comparison sheet); to re-check in the builder's captures",
-  "note": "T-20261016-69, repainted"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "note": "T-20261016-110, re-cut to T-95's layout"
  },
  "create-dish": {
   "status": "signed",
@@ -5083,13 +5083,13 @@
  },
  "create-bank-more-left": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "note": "T-20261016-41, Create gene bench"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "note": "T-20261016-110, re-cut to T-95's layout"
  },
  "create-bank-more-right": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-41, in create-bench/proof (S01 create-shape beside Pods, the collection, the vivarium and the kit); to re-check in the builder's captures (T-20261016-42)",
-  "note": "T-20261016-41, Create gene bench"
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "note": "T-20261016-110, re-cut to T-95's layout"
  },
  "look-S01-markings-plain-64x64": {
   "status": "signed",
@@ -5698,5 +5698,10 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-96, in create-bench/proof (create-shape-S01-1x at the amended rects; the 2x before/after; the comparison sheet)",
   "note": "T-20261016-96, the drum's shade"
+ },
+ "slip-208x288": {
+  "status": "signed",
+  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
+  "note": "T-20261016-110, Create's slip"
  }
 }
