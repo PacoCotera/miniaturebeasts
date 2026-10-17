@@ -26,12 +26,16 @@ There are no paths, no dots, no trails and no "in flight". Each thing's journey 
 3. **The arrival answers.**
    - The counter ticks with the house flash. The flash shows the same "+n" the token wore on the floor, so the number at each end is the link.
    - The pod's well lights `mint` as it settles.
-4. **The source empties.** What has left is gone from the floor. When the crate is empty it slides back into the queue, dimmed (`05`). The queue then reads as the haul, taken in order.
+4. **The source empties.** What has left is gone from the floor. When the crate is empty it closes its lid and slides back into the queue, dimmed (`05`). It is never left as a bare box (the game designer). The queue then reads as the haul, taken in order.
 
 **Order within a crate:**
 - The materials go first, together, a beat apart, all to the top bar. They are small and fast.
 - Then the pods go one at a time, each its own moment. They are the thread.
-- After the last pod the hatch closes. If Pods is full, the hatch stays shut with its amber lamp and the pod waits sealed on the floor. That is a fact, not a loss; the game designer words it, if it needs words.
+- After the last pod the hatch closes.
+- **No free well:** the pod waits on the bay floor, sealed, in view, and lands when a well frees (the game designer). The hatch doesn't open for it, and there is no coral and no "full" plate. In that state alone the middle slot may carry the game designer's "a pod waits for a well", because a picture can't say when it will land.
+- **Finds and portraits:**
+  - A find lands on the bay floor and stays until its home is ruled (the game designer's open point).
+  - A portrait crate's painting goes to its mibi. That destination is off-screen, so it lifts toward the Vivarium's side and the screen does not follow it.
 
 **Why this reads without a caption:** the destination moves before the object, and the same object or number arrives there. Nothing on screen needs a note to be understood (§7, "nothing only a caption explains").
 
@@ -48,6 +52,7 @@ There are no paths, no dots, no trails and no "in flight". Each thing's journey 
 | While a crate plays | **Skip**: cuts this crate's hand-off to its end (everything arrived); the next crate starts (the panel spec's cut 4, the skip rule) | empty | Home |
 | After the last crate, with pods arrived | **Look at the pods**: Pods, with the ring on the newest pod | empty | Home |
 | After the last crate, with no pods | none (no ✓ cap) | empty | Home |
+| A pod waiting for a well | as above | "a pod waits for a well" (the game designer) | Home |
 
 - **Gone:**
   - the context "any key: the next crate" (the crates play by themselves; ✓ skips);
