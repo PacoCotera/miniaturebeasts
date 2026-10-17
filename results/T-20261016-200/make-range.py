@@ -103,6 +103,80 @@ def fit(img, w, h):
     return img.resize((round(img.width * k), round(img.height * k)), Image.LANCZOS)
 
 
+def two_tone(img, ra, rb, m):
+    """A mixed coat, both pigments shown: pigment A over the back and head, pigment B over the flanks and legs, split
+    along the body's own form (a share of each column of fur from its top), with a short painted edge, never a blend."""
+    a_img, b_img = recolour(img, ra, m), recolour(img, rb, m)
+    A, B = np.asarray(a_img, dtype=float), np.asarray(b_img, dtype=float)
+    k = np.zeros(m.shape)
+    for x in range(m.shape[1]):
+        col = np.nonzero(m[:, x])[0]
+        if len(col):
+            y0, y1 = col.min(), col.max()
+            edge = y0 + (y1 - y0) * 0.48
+            k[:, x] = np.clip((np.arange(m.shape[0]) - edge) / 3.0 + 0.5, 0, 1)
+    k = np.asarray(Image.fromarray((k * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(1.5)), dtype=float)[..., None] / 255
+    out = A * (1 - k) + B * k
+    return Image.fromarray(np.clip(out, 0, 255).astype('uint8'), 'RGBA')
+
+
+def stripes(img, m, facing_left=True):
+    """Stripes: pale bands across the back and haunch, curving with the body, shaded by the fur under them; a full
+    value step from the coat so they read on charcoal at 144 x 152."""
+    a = np.asarray(img, dtype=float).copy()
+    ys, xs = np.nonzero(m)
+    x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
+    w, h = x1 - x0, y1 - y0
+    yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+    u = (xx - x0) / w if facing_left else (x1 - xx) / w          # 0 at the head side, 1 at the rump
+    v = (yy - y0) / h
+    phase = ((u - 0.5) * 7.0 + 0.9 * (v - 0.1) ** 2 * 3) % 1.0   # bands that bow back down the flank
+    width = 0.30 * np.clip(1 - v / 0.62, 0, 1)                    # broad over the back, tapering to a point
+    band = np.clip((width - np.abs(phase - 0.5)) / 0.05, 0, 1)
+    band = band * np.clip((u - 0.52) / 0.06, 0, 1)                # behind the shoulder only: never over the head
+    lum = a[..., :3].mean(axis=2)
+    shade = np.clip(lum / max(1, np.percentile(lum[m], 95)), 0.4, 1.0)[..., None]
+    k = (band * m)[..., None]
+    a[..., :3] = a[..., :3] * (1 - k) + CREAM * (0.5 + 0.6 * shade) * k
+    return Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
+
+
+def stand_v2(colour, pattern):
+    """The likely frame: a Colour look (pure or mixed) and a Pattern look (stripes, patches, or both stacked)."""
+    base = loika('pale patches' if 'patches' in pattern else 'plain', 'leaf crest', 'between')
+    m = fur_mask(np.asarray(base, dtype=float))
+    if ' and ' in colour:
+        pa, pb = colour.split(' and ')
+        img = two_tone(base, RAMPS2[pa], RAMPS2[pb], m)
+    else:
+        img = recolour(base, RAMPS2[colour], m)
+    if 'stripes' in pattern:
+        img = stripes(img, m)
+    return img
+
+
+# the genome engineer's likely frame: three co-dominant pigments, six looks; every Loika marked
+RAMPS2 = {'charcoal': ((22, 21, 25), (52, 50, 56), (104, 100, 108)), 'russet': RAMPS['russet'], 'slate': RAMPS['slate']}
+COLOURS2 = ['charcoal', 'russet', 'slate', 'charcoal and russet', 'charcoal and slate', 'russet and slate']
+PATTERNS = ['stripes', 'patches', 'stripes and patches']
+CW2, CH2 = 160, 172
+sh2 = Image.new('RGBA', (190 + len(PATTERNS) * CW2 + 16, 56 + len(COLOURS2) * CH2 + 16), (29, 35, 43, 255))
+d2 = ImageDraw.Draw(sh2)
+d2.text((16, 14), "The Loika's likely frame at Home's size (144 x 152), 1x: Colour (co-dominant, three pigments) x Pattern", font=F13, fill=(241, 235, 223))
+for j, pt in enumerate(PATTERNS):
+    d2.text((190 + j * CW2 + CW2 // 2, 44), pt, font=F13, fill=(198, 196, 216), anchor='mm')
+for i, col in enumerate(COLOURS2):
+    y = 56 + i * CH2
+    d2.text((16, y + CH2 // 2), col, font=F13, fill=(198, 196, 216), anchor='lm')
+    for j, pt in enumerate(PATTERNS):
+        s_ = fit(stand_v2(col, pt), 144, 152)
+        x = 190 + j * CW2 + (CW2 - s_.width) // 2
+        base = y + 160
+        sh2.alpha_composite(contact(int(s_.width * 0.42), 10, 0.55), (x + s_.width // 2 - int(s_.width * 0.42), base - 12))
+        sh2.alpha_composite(s_, (x, base - s_.height))
+sh2.convert('RGB').save(os.path.join(OUT, 'loika-range-likely-frame.png'), optimize=True)
+print('loika-range-likely-frame.png')
+
 COLOURS = list(RAMPS)
 MARKS = ['none', 'pale patches', 'spots', 'saddle']
 CW, CH = 160, 172

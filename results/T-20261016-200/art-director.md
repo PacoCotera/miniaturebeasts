@@ -35,3 +35,21 @@ The owner: "yes, finetune loikas. / also coat marks can be different between ind
 
 - **This is a proof.** The ramps are applied by code over the accepted painting, and the marks are drawn masks. Masters are painted layers, one per look per pose, and need the lead's approval before any request.
 - **The four-Loika window** from real pods of the new frame waits for the genome engineer's pods.
+
+## Redrawn to the likely frame (`loika-range-likely-frame.png`)
+
+The genome engineer gave the frame's likely shape, so the range follows it. `loika-range-home-size.png` stays as the record of the method; its cocoa, plum, spots and saddle are not in the framework.
+
+**Colour: co-dominant, three pigments, six looks.**
+- **The pigments:** charcoal, russet and a third. I propose **slate** for the third: it is cool beside russet's warmth, it reads on Home's moss, and it isn't green.
+- **The three pure looks** are painted ramps, as above.
+- **The three mixed looks** (charcoal and russet, charcoal and slate, russet and slate) are one painted two-tone, not a blend: the first pigment over the back and head, the second over the flanks and legs. The split follows the body (a share of each column of fur from its top), with a short painted edge. A mixed Loika shows both its pigments, and a player can read which two.
+
+**Pattern: every Loika is marked, three looks that stack.**
+- **Stripes:** broad pale bands behind the shoulder, bowing back down the flank and tapering to a point, shaded by the fur under them. They are a full value step from the coat, so they read on charcoal at 144 × 152 (the creative director's point). They never cross the head.
+- **Patches:** the accepted marked layer (T-190).
+- **Stripes and patches:** both layers, stacked.
+
+**Amount** (how much of the coat, three bins), if the frame adds it, scales the stripes' count and the patches' coverage within the same layers.
+
+**Still to come:** the frame's final names and hex values, and four real pods for the window.
