@@ -637,7 +637,7 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
 test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate opening, the report, the rack the pods land in; Cargo is under Home with Home's mark", () => {
   const cg = rd("../specs/station/cargo.json"), R = cg.regions, B = boxesOf("17-cargo-bay.svg"), O = boxesOf("17a-cargo-opening.svg"), P = boxesOf("17b-cargo-report.svg"), Z = boxesOf("17c-cargo-shut.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  lintRegions(cg); assert.deepEqual(cg.states, ["bay", "opening", "report"]);
+  lintRegions(cg); assert.deepEqual(cg.states, ["bay", "opening", "report", "arrival"]);
   const stage = frame.regions.stage.rect; for (const r of Object.values(R)) assert.ok(inside(r.rect, stage), "inside the stage");
   is(R.bay.rect, "bay"); is(R.bay.rect, "bay", O); is(R.bay.rect, "bay", P); is(R.bay.rect, "bay", Z); is(R.rack.rect, "rack"); is(R.rack.rect, "rack", O); is(R.rack.rect, "rack", P); is(R.rack.rect, "rack", Z);
   assert.deepEqual(R.bay.slices, { open: "cargo-bay-992x320", shut: "cargo-bay-shut-976x304", report: "cargo-bay-shut-report-976x304" }); assert.deepEqual(R.bay.rect, [16, 48, 992, 320]); assert.deepEqual(R.bay.door, [24, 56, 976, 304]); is(R.bay.door, "the door", P); is(R.bay.door, "the door", Z); assert.ok(inside(R.bay.door, R.bay.rect));

@@ -8,6 +8,7 @@ import { returnNow } from "./habitat.mjs";
 import { returnPodNow } from "./pods.mjs";
 import { fitNow } from "./bench.mjs";
 import { growNow } from "./incubator.mjs";
+import { later, openFromArrival } from "./arrival.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const model = (h) => ({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: h.settings.jump, now: h.now() });
@@ -20,7 +21,7 @@ export function closePanel(h) { h.ui.panel = null; }
 // `target`: card.<id>; `verb`: confirm | back (the room keys go to the frame's intent).
 export function intent(h, target, verb) {
   const ui = h.ui.panel; if (!ui) return;
-  if (verb === "back") { closePanel(h); return; }
+  if (verb === "back") { closePanel(h); if (ui.id === "dock") later(h); return; }   // ← on the dock arrival's strip is Later
   if (verb !== "confirm") return;
   const cards = cardsOf(model(h), h.specs.panel, h.specs.frame, []), card = cards.find((c) => "card." + c.id === target); if (!card) return;
   if (card.dim) { h.say(fill(h.specs.pods.strings.needMore, { icons: card.short })); return; }   // short of materials: the warn words, nothing spent
@@ -29,6 +30,8 @@ export function intent(h, target, verb) {
   if (ui.screen === "create" && ui.id === "grow" && card.act !== "shape") growFounder(h, card.act);   // Keep shaping is the way out: the panel closes, Create is as before
   else if (card.act === "fit") fitNow(h);
   else if (card.act === "growNow") growNow(h);
+  else if (card.act === "open") openFromArrival(h);
+  else if (card.act === "later") later(h);
   else if (card.act === "return") (ui.screen === "habitat" ? returnNow : returnPodNow)(h);   // Keep is the way out: the panel closes, the screen is as before
 }
 export { panelBuild };

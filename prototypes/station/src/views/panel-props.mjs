@@ -72,6 +72,17 @@ export function growNowCards(m, spec, frame, requests) {
     { id: "wait", act: "wait", room: null, picture: bud(p < 0.5 ? "bud-early-128x160" : "bud-late-128x160"), pictureSize: BUD, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: fill(Sg.cards.wait.line, { n: S.budMinutesLeft(st, settings, now) }), loss: false, dim: false },
   ];
 }
+// The cards of the dock arrival's choice strip (T-20261016-48 §2, form "strip"): Open the bay (the crates open, small; free; "{n in words} crates to the rack") and Later (the crates sealed, small; free; "they wait while docked").
+export const STRIP_PICTURE = [96, 96];
+export function dockCards(m, spec, frame, requests) {
+  const Sg = spec.strings.dock, n = m.ui.cargo?.arrival?.crates ?? 0, ph = (id) => { requests.push({ kind: "ph", id, size: STRIP_PICTURE, hollow: false, until: "its master (the dock arrival's strip, T-20261016-48)" }); return id; };
+  const open = n === 1 ? Sg.oneCrate : fill(Sg.cards.open.line, { "n in words": SPELL[n] ?? "many" });
+  const art = { well: "", focused: "", stage: "", glow: "", light: "" };
+  return [
+    { id: "open", act: "open", room: null, picture: ph("crate-open-96x96"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.open.name, cost: "", gain: false, short: "", line: open, loss: false, dim: false, art },
+    { id: "later", act: "later", room: null, picture: ph("crate-sealed-96x96"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: Sg.cards.later.line, loss: false, dim: false, art },
+  ];
+}
 // The masters the panel is drawn from (frame.json regions.panel.art, T-20261016-47 and -70): the housing, the veil, the contact shadow and the chip, and for each card its well (focused or not), stage, glow and light at the card's width.
 export function artOf(frame, n, requests, wild = false) {
   const A = frame.regions.panel.art, P = frame.regions.panel, w = (P.cards.width - P.cards.gap * (n - 1)) / n, pw = w - 32, at = (t) => t.replace("{w}", w).replace("{pw}", pw);
@@ -80,7 +91,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec, frame, requests) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });
@@ -93,9 +104,10 @@ export const initialFocus = (cards) => "card." + (cards.find((c) => !c.dim && !c
 export function panelBuild(m, spec, frame, pods) {
   const requests = [], cards = cardsOf(m, spec, frame, requests), Sg = spec.strings, ui = m.ui.panel;
   const cur = cards.some((c) => "card." + c.id === ui.focus) ? ui.focus : initialFocus(cards), card = cards.find((c) => "card." + c.id === cur);
-  const art = artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, ...c }) => ({ ...c, art: c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : art.card })) };
+  const strip = ui.id === "dock";   // the strip form: no veil, housing or masters of its own (the code-drawn plate and wells), the cards carry no art
+  const art = strip ? { housing: "", veil: "", shadow: "", chip: "" } : artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, art: own, ...c }) => ({ ...c, art: strip ? own : c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : art.card })) };
   const subject = card.line || (card.room ? fill(Sg.toRoom, { room: Sg.rooms[card.room] }) : "");
   const line = { ok: card.name, ...(card.cost ? { price: card.cost } : {}), subject, back: Sg.back, need: card.short ? fill(pods.strings.needMore, { icons: card.short }) : null };
   if (card.dim) { line.dim = true; line.short = card.short; }
-  return { overlay: { id: "panel", state: "open", regions, focus: { cur, targets: cards.map((c) => ({ id: "card." + c.id, enabled: true })) } }, line, requests, cards };
+  return { overlay: { id: "panel", state: "open", ...(strip ? { form: "strip" } : {}), regions, focus: { cur, targets: cards.map((c) => ({ id: "card." + c.id, enabled: true })) } }, line, requests, cards };
 }

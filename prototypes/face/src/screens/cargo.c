@@ -234,9 +234,99 @@ static void build_reportCard(void) {
   }
 }
 
+/* ---- the dock arrival (cargo.json regions.arrival, events.show; specs/station-dock-arrival-spec.md, amended T-67 and T-112) ----
+   The show is the face's own clock (the event arrival/show) or, with reduced motion, the host's stage (regions.arrival.at); a show that has ended (no event, motion on) is its final frame: every beat done.
+   bay, apron (the rack's place during the show), ribbon from 500, the link light in four cuts, the crates sliding in from the left with their shadows and glints, the mibis who came home (dither in, one hop), the band in the bay's
+   top corners (the Probe's plates, who leaves). At the choice (phase choice) the rack stands and the strip (panel.json, form strip) is the overlay. */
+#define ARR "regions.arrival"
+static int ai(const char *p, int d) { return spec_int(C, v_fmt(ARR ".%s", p), d); }
+static int ak(const char *p, int k) { return spec_int(C, v_fmt(ARR ".%s.%d", p, k), 0); }
+static int arrival_time(void) {
+  anim_state_t t;
+  if (v_pbool("motion", 1)) { if (anim_get(ANIM_ARRIVAL, "show", &t)) return t.elapsed; return 1 << 20; }   /* an ended show is its last frame */
+  return v_pint(ARR ".at", 0);
+}
+static const char *fcol(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str("frame", v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
+/* the crates slide in from x −256: crate i from 500 + 333 i over 400 ms, whole pixels, clipped to the bay's inside; its shadow from the frame it has landed; its glint (a crate holding a new species) from its landing */
+static void build_crates_arrival(int t) {
+  int n = v_plen("regions.crates.places"), max = ci("regions.crates.max", 3), in[4]; if (n > max) n = max; crect("regions.bay.inside", in);
+  const char *shadow = v_pstr("regions.crates.shadow"), *glint = v_pstr(ARR ".glint"); int sx = ck("regions.crates.shadow.at", 0), sy = ck("regions.crates.shadow.at", 1), sw = ck("regions.crates.shadow.size", 0), sh = ck("regions.crates.shadow.size", 1);
+  int at = ai("crates.at", 500), stagger = ai("crates.stagger", 333), ms = ai("crates.ms", 400), from = ai("crates.fromX", -256), gx = ak("crates.glint.at", 0), gy = ak("crates.glint.at", 1), gw = ak("crates.glint.size", 0), gh = ak("crates.glint.size", 1);
+  int xs[8], shown[8], landed[8], sent = 0;
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); int e = t - (at + i * stagger); shown[i] = e >= 0; landed[i] = e >= ms; xs[i] = r[0];
+    if (!shown[i]) xs[i] = r[0] + from; else if (!landed[i]) { int p = e * 1000 / ms; xs[i] = r[0] + from * (1000 - ease_out(p)) / 1000; }
+    if (has(shadow)) sent++; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) sent++;
+  }
+  if (!sent) return;
+  v_name("crates");
+  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, sent, 0);
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r);
+    v_name("crates"); slot(v_fmt("crates.%d.shadow", i), shadow, r[0] + sx, r[1] + sy, sw, sh, landed[i]);
+    slot(v_fmt("crates.%d", i), v_pstr(v_fmt("regions.crates.places.%d", i)), xs[i], r[1], r[2], r[3], shown[i]);
+  }
+  for (int i = 0; i < n; i++) if (v_pbool(v_fmt(ARR ".glints.%d", i), 0) && *glint) { int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); v_region("arrivalGlint", LAYER_ART); v_name("glint"); slot(v_fmt("glint.%d", i), glint, r[0] + gx, r[1] + gy, gw, gh, t >= at + i * stagger + ms); }
+}
+/* the link light: step k (0 to 3) shows the first (k + 1) × 244 px of the picture from 500 + 100 k, each a cut */
+static void build_light(int t) {
+  int r[4]; crect(ARR ".light.rect", r); int at = ai("light.at", 500), each = ai("light.each", 100), steps = ai("light.steps", 4), px = ai("light.stepPx", 244);
+  int k = t < at ? -1 : (t - at) / each; if (k >= steps) k = steps - 1; int w = k < 0 ? 1 : (k + 1) * px; if (w > r[2]) w = r[2];
+  const char *pic = v_pstr(ARR ".light"); if (!has(pic)) return;
+  v_region("arrivalLight", LAYER_ART); v_name("light"); prim_node(v_id("light.clip"), FN_CLIP, r[0], r[1], w, r[3], 0, 1, 0);
+  slot("light", pic, r[0], r[1], r[2], r[3], k >= 0);
+}
+/* the mibis who came home: carried order, left to right, in front of the crates; mibi i dithers in at 1600 + 500 i over 300 ms, then one hop by the hatch's table (a cut each, whole pixels) */
+static void build_mibis(int t) {
+  int n = v_plen(ARR ".mibis"); if (n > 3) n = 3; if (n <= 0) return;
+  int at = ai("mibis.at", 1600), each = ai("mibis.each", 500), dms = ai("mibis.dither.ms", 300), levels = ai("mibis.dither.levels", 16), hop = ai("mibis.hop.ms", 175), nl = spec_len(C, ARR ".mibis.hop.lift");
+  v_region("arrivalMibis", LAYER_ART);
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt(ARR ".mibis.byCount.%d.%d", n, i), r); const char *pic = v_pstr(v_fmt(ARR ".mibis.%d", i)); int e = t - (at + each * i);
+    int motion = v_pbool("motion", 1), lift = 0; if (motion && e >= dms && e < dms + hop) for (int q = 0; q < nl; q++) if (e - dms >= spec_int(C, v_fmt(ARR ".mibis.hop.lift.%d.0", q), 1 << 30)) lift = spec_int(C, v_fmt(ARR ".mibis.hop.lift.%d.1", q), 0);
+    int level = e < 0 ? 0 : e * levels / dms, done = motion ? e >= dms : e >= 0, dithering = motion && e >= 0 && e < dms && level > 0;   /* with reduced motion a mibi appears as a cut at its time, no dither and no hop; a dither at level 0 draws nothing, so it is not drawn */
+    v_name("mibis"); v_sprite_hidden(v_fmt("mibi.%d.d", i), pic, r[0], r[1]);
+    if (dithering) { v_dither_window(v_fmt("mibi.%d.d", i), "", 0, 0, pic, 0, 0, level, r[0], r[1], r[2], r[3]); }
+    slot(v_fmt("mibi.%d", i), pic, r[0], r[1] - lift, r[2], r[3], done);
+  }
+}
+/* the band in the bay's top corners: the Probe's plates (whole ones from 1500, the mended turn whole one by one from 2500 with the words after) and who leaves (the mark and the faces, right-aligned) */
+static void build_band(int t) {
+  int px0 = ak("band.probe.at", 0), py0 = ak("band.probe.at", 1), pitch = ai("band.probe.pitch", 20), isz = ak("band.probe.size", 0), from = ai("band.probe.from", 1500), mend = ai("band.probe.mend.at", 2500), meach = ai("band.probe.mend.each", 120), wpx = ai("band.probe.words.px", 16), gap = ai("band.probe.words.gap", 8);
+  int whole = v_pint(ARR ".plates.whole", 0), mended = v_pint(ARR ".plates.mended", 0); const char *icon = v_pstr(ARR ".plates.icon");
+  if (t >= from) {
+    int shownN = whole; for (int j = 0; j < mended; j++) if (t >= mend + meach * j) shownN = whole + j + 1;
+    v_region("arrivalBand", LAYER_ART);
+    for (int q = 0; q < whole + mended; q++) { v_name("band.probe"); slot(v_fmt("band.plate.%d", q), icon, px0 + q * pitch, py0, isz, isz, q < shownN); }
+    const char *words = v_pstr(ARR ".plates.words");
+    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, py0 + v_fdiv(isz - v_cap(wpx), 2), wpx, fcol("subject"), V_ALIGN_LEFT); }
+  }
+  int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
+  if (nf > 0 && t >= ai("band.leaving.from", 1500)) {
+    int fw = ak("band.leaving.faceSize", 0), mw = ak("band.leaving.markSize", 0), lp = ai("band.leaving.pitch", 32), rx = ai("band.leaving.rightX", 984), ly = ai("band.leaving.y", 64), lg = ai("band.leaving.gap", 8);
+    int x0 = rx - (mw + lg + lp * nf - (lp - fw));
+    v_region("arrivalBand", LAYER_ART); v_name("band.leaving"); slot("band.mark", v_pstr(ARR ".leaving.mark"), x0, ly + v_half(fw - mw), mw, mw, 1);
+    for (int i = 0; i < nf; i++) { v_name("band.leaving"); slot(v_fmt("band.face.%d", i), v_pstr(v_fmt(ARR ".leaving.faces.%d", i)), x0 + mw + lg + lp * i, ly, fw, fw, 1); }
+  }
+}
+static void build_arrival(int choice) {
+  int t = choice ? 1 << 20 : arrival_time();
+  build_bay();
+  if (!choice) { int r[4]; crect(ARR ".apron.rect", r); v_region("apron", LAYER_ART); v_name("apron"); v_sprite("apron", v_pstr(ARR ".apron"), r[0], r[1], r[2], r[3]); }
+  { int r[4]; crect("regions.ribbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpx = ci("regions.ribbon.px", 20), rpad = ci("regions.ribbon.pad", 16), rib = ai("crates.at", 500);
+    int w = ((v_measure(words, rpx) + 2 * rpad) + 7) / 8 * 8; if (w < 160) w = 160; if (w > r[2]) w = r[2]; r[0] = 512 - w / 2; r[2] = w;
+    v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpx, rpad, colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text")); }
+  build_light(t);
+  build_crates_arrival(t);
+  if (!choice) build_mibis(t);
+  build_band(t);
+  if (choice) build_rack(0, 0, 0);
+}
+
 void cargo_words(void) {
   char state[16]; snprintf(state, sizeof state, "%s", v_pstr("state"));
   ground();
+  if (strcmp(state, "arrival") == 0) { build_arrival(strcmp(v_pstr(ARR ".phase"), "choice") == 0); return; }
   if (strcmp(state, "opening") == 0) {
     int k, lt; opening_clock(&k, &lt);
     build_bay();
@@ -254,6 +344,6 @@ void cargo_words(void) {
 void cargo_key(int code) {
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
   int pad = code == 17 || code == 18 || code == 19 || code == 20;
-  if (!verb && pad && strcmp(v_pstr("state"), "report") == 0) verb = "pad";
+  if (!verb && pad && (strcmp(v_pstr("state"), "report") == 0 || strcmp(v_pstr("state"), "arrival") == 0)) verb = "pad";
   if (verb) screens_say("intent", "room", verb);
 }

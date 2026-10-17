@@ -7,9 +7,10 @@
  },
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
-  "state": { "enum": ["bay", "opening", "report"] },
+  "state": { "enum": ["bay", "opening", "report", "arrival"] },
   "regions": { "type": "object", "required": ["rack"], "additionalProperties": false, "properties": {
    "rack": { "type": "object", "required": ["insert", "wells"], "additionalProperties": false, "properties": { "insert": { "type": "string" }, "wells": { "type": "array", "items": { "$ref": "well" } } } },
+   "arrival": { "type": "object", "required": ["phase", "at", "ribbon", "apron", "light", "glint", "glints", "mibis", "plates", "leaving"], "additionalProperties": false, "properties": { "phase": { "enum": ["show", "choice"] }, "at": { "type": "integer" }, "ribbon": { "type": "string" }, "apron": { "type": "string" }, "light": { "type": "string" }, "glint": { "type": "string" }, "glints": { "type": "array", "items": { "type": "boolean" } }, "mibis": { "type": "array", "maxItems": 3, "items": { "type": "string" } }, "plates": { "type": "object", "required": ["icon", "max", "whole", "mended", "words"], "additionalProperties": false, "properties": { "icon": { "type": "string" }, "max": { "type": "integer" }, "whole": { "type": "integer" }, "mended": { "type": "integer" }, "words": { "type": "string" } } }, "leaving": { "type": "object", "required": ["mark", "faces"], "additionalProperties": false, "properties": { "mark": { "type": "string" }, "faces": { "type": "array", "maxItems": 3, "items": { "type": "string" } } } } } },
    "bay": { "type": "object", "required": ["state", "open", "door"], "additionalProperties": false, "properties": { "state": { "enum": ["open", "shut"] }, "open": { "type": "string" }, "door": { "type": "string" } } },
    "crates": { "type": "object", "required": ["places", "shadow"], "additionalProperties": false, "properties": { "places": { "type": "array", "items": { "type": "string" } }, "shadow": { "type": "string" } } },
    "waitingPods": { "type": "object", "required": ["pods", "shadow"], "additionalProperties": false, "properties": { "pods": { "type": "array", "items": { "type": "string" } }, "shadow": { "type": "string" } } },

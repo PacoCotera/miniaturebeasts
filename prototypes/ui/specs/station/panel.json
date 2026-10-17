@@ -7,7 +7,8 @@
   "habitat",
   "pods",
   "bench",
-  "incubator"
+  "incubator",
+  "cargo"
  ],
  "spec": "specs/station-decision-panel-spec.md",
  "frame": "frame.json",
@@ -53,6 +54,11 @@
   "fitUpgrade": {
    "opens": "bench",
    "by": "✓ on the slot"
+  },
+  "dock": {
+   "opens": "cargo",
+   "by": "the Companion's dock: at the show's end (form strip)",
+   "form": "strip"
   },
   "growNow": {
    "opens": "incubator",
@@ -138,6 +144,20 @@
      "name": "Not now"
     }
    }
+  },
+  "dock": {
+   "title": "",
+   "cards": {
+    "open": {
+     "name": "Open the bay",
+     "line": "{n in words} crates to the rack"
+    },
+    "later": {
+     "name": "Later",
+     "line": "they wait while docked"
+    }
+   },
+   "oneCrate": "a crate to the rack"
   },
   "growNow": {
    "title": "Grow it now?",

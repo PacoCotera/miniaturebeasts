@@ -6,6 +6,7 @@ import * as S from "../state.mjs";
 import { ribbonOf, leadOf, reachWord } from "../views/cargo-props.mjs";
 import { toPods } from "./home.mjs";
 import { goalWords, meanwhileWords } from "../views/goal-words.mjs";
+import { skipShow } from "./arrival.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
@@ -92,6 +93,7 @@ export function closeReport(h) { const c = h.ui.cargo; if (c.state === "report")
 // `target`: "room" (Cargo has no other); `verb`: confirm | back | pad (any of the four directions, in the report only) | room:<key> (the frame's).
 export function intent(h, target, verb) {
   const c = h.ui.cargo;
+  if (c.state === "arrival") { skipShow(h); return; }   // a key in the show (reduced motion, or after the face's hold): the show cuts to its choice
   if (c.state === "opening") return;   // the hold: nothing acts (the face says only a room key, kept by the host)
   if (c.state === "report") {   // any key closes the card and also does what it does: ✓ follows the bottom line, ← and the pad only close it
     const newPods = c.run?.report.newPods ?? 0;

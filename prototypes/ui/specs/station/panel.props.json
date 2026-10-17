@@ -197,6 +197,12 @@
      }
     }
    }
+  },
+  "form": {
+   "enum": [
+    "strip"
+   ],
+   "description": "the strip form (the dock arrival's choice): no title, no veil, drawn under what it is about"
   }
  }
 }

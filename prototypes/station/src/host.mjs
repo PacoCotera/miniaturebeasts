@@ -4,7 +4,7 @@
 //   events   the presenter's ticks and flashes, the plate, the screen change's dither
 //   faces    the intents and the focus the face sends, turned into the rules (intents/*) and the screens' state (UI)
 // The rules are state.mjs's, the screens' state is game.mjs's UI, and the key's rule call is intents/*: nothing here decides a rule or a layout.
-import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, podById, mibiById } from "./game.mjs";
+import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, podById, mibiById, onScreenChange } from "./game.mjs";
 import * as S from "./state.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
@@ -23,6 +23,7 @@ import { incubatorBuild } from "./views/incubator-props.mjs";
 import { incubatorTick } from "./intents/incubator.mjs";
 import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
+import { arrivePending } from "./intents/arrival.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf, isBuilt } from "./nav.mjs";
@@ -102,7 +103,7 @@ export function podsBody() {
 
 // The living window's inputs the views take from the host (Station M1 §2.6): the Station time (seconds of the day; the developer's "Station time" or the clock), the rest rules (vivarium.json rules.rest) and whether
 // the moving sets play on stand-ins (the developer switch "Motion sets (stand-ins)", off by default; a set whose cells are all placed masters plays without it). A view never reads a clock.
-const living = () => ({ time: timeNow(), restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets });
+const living = () => ({ time: timeNow(), restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets, sendoff: !!UI.sendoff });   // sendoff: the lift's send-off plays on the bed (intents/frame.mjs; home.json events.sendoff)
 
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
@@ -157,7 +158,12 @@ export function libraryBody() {
 // ---- Cargo ----
 // The bay, the crate opening and the report: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
-  return cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI }, SPECS.cargo, SPECS.home, SPECS.frame);
+  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow() }, SPECS.cargo, SPECS.home, SPECS.frame), pn = UI.panel, a = UI.cargo.arrival;
+  if (pn && pn.screen === "cargo" && UI.cargo.state === "arrival" && a && a.phase === "choice") {   // the dock arrival's choice: the strip's props ride on Cargo's (an overlay) and its bottom line is built from the focused card
+    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  } else if (pn && pn.screen === "cargo") UI.panel = null;
+  return body;
 }
 
 // ---- Create ----
@@ -223,7 +229,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "moment", "read", "mend", "switch", "install"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "moment", "read", "mend", "switch", "install", "sendoff"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)
@@ -264,6 +270,7 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
     },
     goto: (name, hold = 0, o = {}) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) { if (!o.cut) play({ kind: "dither", target: "stage", ms: 180, hold }); if (name === "habitat") enterHabitat(h, o); } },   // hold: whole ms of held input (the Vivarium's look holds 180); o.cut: drawn as a cut, no dither (the hatch's cutting key), o.meetHold: the meet's moment holds input that long
   };
+  onScreenChange(() => { if (UI.pendingArrival) h.at(0, () => arrivePending(h)); });   // a dock mid-decision plays after the player's next screen change (intents/arrival.mjs)
   return h;
 }
 
@@ -299,6 +306,7 @@ export function onFaceMessage(h, m) {
   if (m.screen === "habitat" && UI.hab.namer && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while the namer is open
   if (m.screen === "habitat" && m.verb?.startsWith("room:") && !h.holding()) endMeet(h);   // the first press ends the meet, a room key too
   if (m.verb === "back" && m.screen !== "namer" && m.screen !== "panel" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (m.verb?.startsWith("room:") && UI.cargo.state === "arrival") h.skip();   // a room key on the arrival is Later, and then it acts: the show's hold ends now (the key itself closes the arrival: intents/frame.mjs roomKey)
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
   if (m.verb === "wake") { dispatch(h, m); const w = SPECS.frame.idle.wake, cut = !(h.motion ? h.motion() : true); h.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: cut ? 0 : w.hold }); return; }
   dispatch(h, m);

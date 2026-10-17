@@ -5,7 +5,7 @@
 //   m: { st, sv, settings, docked, ui: { cargo: { state, crate, at, run, drawn }, meet }, spec cargo.json, home home.json, frame frame.json }
 //   ui.cargo.run is what ✓ Open the bay made when it opened the crates (intents/cargo.mjs `openRun`): the crates in the order they opened, each with its ribbon key, its pods and the well each went to, and the report.
 import * as S from "../state.mjs";
-import { wordsOf } from "./home-props.mjs";
+import { wordsOf, mibiReq } from "./home-props.mjs";
 import { shellSpecies } from "./pods-props.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
@@ -39,12 +39,12 @@ export function cargoBuild(m, spec, home, frame) {
   const regions = { rack: { insert: slot(R.rack.slice, R.rack.rect.slice(2)), wells } };
 
   // the bay (R1, R2): the signed painting in every state; its door goes over it when the bay holds nothing, and always in the report. The bay holds a walk crate while docked, or a pod waiting for a well, docked or away
-  const crates = state === "bay" ? walkCrates(st, sv, docked).slice(0, R.crates.max) : [];
-  const holds = state === "opening" || (state === "bay" && (crates.length > 0 || st.waiting.length > 0)), shut = !holds;
+  const crates = state === "bay" || state === "arrival" ? walkCrates(st, sv, docked).slice(0, R.crates.max) : [];
+  const holds = state === "opening" || state === "arrival" || (state === "bay" && (crates.length > 0 || st.waiting.length > 0)), shut = !holds;
   regions.bay = { state: shut ? "shut" : "open", open: slot(R.bay.slices.open, R.bay.rect.slice(2), "the signed bay (cargo.json bay)"), door: shut ? slot(state === "report" ? R.bay.slices.report : R.bay.slices.shut, R.bay.door.slice(2), state === "report" ? "the report door: the shut door with its plain sage panel (GB-R6)" : "the signed bay door (cargo.json bay)") : "" };
-  if (state === "bay") {
+  if (state === "bay" || state === "arrival") {
     regions.crates = { places: crates.map(() => ph(`crate-sealed-${R.crates.crate.join("x")}`, R.crates.crate)), shadow: slot(R.crates.shadow.slice, R.crates.shadow.size) };
-    if (st.waiting.length) regions.waitingPods = { pods: st.waiting.slice(0, R.waitingPods.max).map(podPic), shadow: slot(R.waitingPods.shadow.slice, R.waitingPods.shadow.size) };   // the pods themselves on the floor, oldest first; the context counts all
+    if (state === "bay" && st.waiting.length) regions.waitingPods = { pods: st.waiting.slice(0, R.waitingPods.max).map(podPic), shadow: slot(R.waitingPods.shadow.slice, R.waitingPods.shadow.size) };   // the pods themselves on the floor, oldest first; the context counts all
   }
   if (state === "opening") {
     const slice = (name) => ph(`crate-${name}-${R.crate.rect[2]}x${R.crate.rect[3]}`, R.crate.rect.slice(2));
@@ -54,13 +54,15 @@ export function cargoBuild(m, spec, home, frame) {
     };
   }
   if (state === "report") regions.report = reportOf(run.report, spec, ph, slot);
+  if (state === "arrival") regions.arrival = arrivalRegion(m, spec, ph, slot, req);
 
   // the line: the action, the subject, the notice and the way back of the state (cargo.json line)
   const Sg = spec.strings, spelled = (n) => SPELL[n] ?? "many";
   let line, need = null;
   const afterCrates = S.needKey(st, sv, settings, m.ui, true), wordsAfter = afterCrates && { ...afterCrates, module: home.strings.needs[afterCrates.key].module };
   const notice = wordsOf(wordsAfter, home).notice;
-  if (state === "opening") line = { ok: m.ui.skip ? Sg.skip : null, back: null, subject: Sg.subjects.opening, need: "" };   // ✓ Skip only while the skippable hold runs (the host's ui.skip)
+  if (state === "arrival") { const a = c.arrival, n = a.crates; line = a.phase === "show" ? { ok: m.ui.skip ? Sg.arrival.skip : null, back: null, subject: n ? (n === 1 ? Sg.subjects.cratesOne : fill(Sg.subjects.crates, { count: spelled(n) })) : Sg.subjects.empty, need: "" } : { ok: null, back: null, subject: "", need: "" }; }   // the choice's line is the panel's (host.mjs cargoBody)
+  else if (state === "opening") line = { ok: m.ui.skip ? Sg.skip : null, back: null, subject: Sg.subjects.opening, need: "" };   // ✓ Skip only while the skippable hold runs (the host's ui.skip)
   else if (state === "report") line = { ok: run.report.newPods ? (run.report.newPods === 1 ? Sg.newPods.one : Sg.newPods.few) : Sg.done, back: "Cargo", subject: Sg.subjects.report, need: "" };
   else if (crates.length) { const all = walkCrates(st, sv, docked).length, n = c.drawn == null ? all : Math.min(c.drawn, all); line = { ok: Sg.open, back: "Home", subject: n === 1 ? Sg.subjects.cratesOne : fill(Sg.subjects.crates, { count: spelled(n) }), need: notice }; }
   else if (st.waiting.length) { const w = st.waiting.length; line = { ok: null, back: "Home", subject: w === 1 ? Sg.subjects.waitingOne : fill(Sg.subjects.waiting, { count: spelled(w) }), need: notice }; }   // before the away line: the open bay shows the waiting pods (cargo.json line.bay.order)
@@ -92,5 +94,20 @@ function reportOf(rp, spec, ph, slot) {
     crates: rp.crates.map((r) => ({ lead: r.lead, pods: r.pods, text: r.text, reach: r.reach })),
     gathered: rp.gathered, probe: rp.probe, world,
     goal: rp.goal ? { lead: spec.strings.report.goal.lead, ...rp.goal } : null, meanwhile: rp.goal && rp.meanwhile ? { lead: spec.strings.report.goal.meanwhileLead, ...rp.meanwhile } : null,
+  };
+}
+
+// The dock arrival's region (cargo.json regions.arrival): the pictures and the words of the show, with the beats' times the face's (its own clock) or `at`, the host's stage with reduced motion. The numbers are the spec's; this names *what*.
+function arrivalRegion(m, spec, ph, slot, req) {
+  const { st, settings } = m, c = m.ui.cargo, a = c.arrival, A = spec.regions.arrival, Sg = spec.strings.arrival, SPELL1 = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+  const mibis = a.back.slice(0, 3).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => mibiReq(req, st, mb, A.mibis.size, settings, m.light));
+  const faces = a.leaving.map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => ph(`face-${S.speciesOf(mb)}-${A.band.leaving.faceSize[0]}`, A.band.leaving.faceSize));
+  const plates = a.plates, words = plates.mended ? Sg.mended.replace("{n in words}", SPELL1[plates.mended] ?? String(plates.mended)) : "";
+  return {
+    phase: a.phase, at: c.at ?? 0, ribbon: a.broke ? Sg.broken : Sg.ribbon,
+    apron: slot(A.apron.slice, A.apron.rect.slice(2)), light: slot(A.light.slice, A.light.rect.slice(2)),
+    glint: a.newCrates.some(Boolean) ? slot(A.crates.glint.slice, A.crates.glint.size) : "", glints: a.newCrates,
+    mibis, plates: { icon: ph(A.band.probe.icon, A.band.probe.size), max: plates.max, whole: plates.whole, mended: plates.mended, words },
+    leaving: { mark: faces.length ? slot(A.band.leaving.mark, A.band.leaving.markSize) : "", faces },
   };
 }

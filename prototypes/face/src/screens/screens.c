@@ -146,7 +146,8 @@ void screens_say(const char *kind, const char *target, const char *verb) {
   wire_emit(b);
 }
 void screens_key(int code) {
-  if (code == 10) { char st[48]; if (anim_skippable(st, sizeof st)) { anim_skip(); screens_say("intent", st, "skip"); screens_redraw(); return; } }   /* ✓ in a skippable hold (§2.1): the event cuts to its end, says done, and ✓ is said as `skip` on its target; nothing else takes ✓ in a hold */
+  { char st[48]; int room = code == 2 || code == 114 || code == 108 || code == 98;   /* the dock arrival's show (target "show") is cut by any key but a room key (which is Later, then acts: the host's) */
+    if ((code == 10 || (!room && anim_skippable(st, sizeof st) && strcmp(st, "show") == 0)) && anim_skippable(st, sizeof st)) { anim_skip(); screens_say("intent", st, "skip"); screens_redraw(); return; } }   /* ✓ in a skippable hold (§2.1): the event cuts to its end, says done, and ✓ is said as `skip` on its target; nothing else takes ✓ in a hold */
   if (anim_holding()) {   /* an event holds input: no key is acted on but a room key, which is said on the current focus target (or the screen); the host keeps the last one and dispatches it when the hold ends (§2.1) */
     char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
     if (rv) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : strcmp(sc, "home") == 0 || strcmp(sc, "cargo") == 0 ? "room" : "screen", rv); }

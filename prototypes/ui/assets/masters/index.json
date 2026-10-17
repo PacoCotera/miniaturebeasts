@@ -225,6 +225,13 @@
    "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
    "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
+  "cargo-bay-apron-992x180": {
+   "file": "pods/cargo-bay-apron-992x180.png",
+   "w": 992,
+   "h": 180,
+   "sha256": "4a9b5cbc865a67bb9e095eaf346253c89ca74426159eebe624835711294406f9",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-120, in dock/proof (the arrival at t 2.2 s with two coming home; the show's end; beside the old proof); to re-check in the builder's captures"
+  },
   "cargo-bay-shut-976x304": {
    "file": "pods/cargo-bay-shut-976x304.png",
    "w": 976,
@@ -280,6 +287,13 @@
    "h": 96,
    "sha256": "25a3dc1a2f958f0e795e7d180d8a3ed9cad6ea3bd2f4d61f94b6e2c5d3103a97",
    "signed": "Paco Cotera"
+  },
+  "cargo-link-light-976x8": {
+   "file": "pods/cargo-link-light-976x8.png",
+   "w": 976,
+   "h": 8,
+   "sha256": "3c73091e5a9e9d66303e717bb54ea4549ba7d094e4a6cb58c8c7129ed468d331",
+   "signed": "named with --ids"
   },
   "cargo-rack-992x168": {
    "file": "pods/cargo-rack-992x168.png",
@@ -847,6 +861,27 @@
    "h": 24,
    "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "face-S01-24": {
+   "file": "pods/face-S01-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "1cc1a26cce48268c2ec864ab9350175e1fc68301011a88e9a6434f2ac4d2ec1f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S02-24": {
+   "file": "pods/face-S02-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "c72d5096ff25e4732f06a3111881523ffcaf194bf08783339e2d4e8ae6dfbc69",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S03-24": {
+   "file": "pods/face-S03-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f627c9af7e2ba50ca8992694d3b38940956c4a7c5f29addd470dba44b70075b7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
   },
   "find-crystal-112x112": {
    "file": "pods/find-crystal-112x112.png",
@@ -1562,6 +1597,13 @@
    "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
    "signed": "named with --ids"
   },
+  "mark-home-16": {
+   "file": "pods/mark-home-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "fded6152272f79225ca2472e3ea0745e8ebd853e04815d5a48845987bdcf824f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
   "mark-line-only-16x16": {
    "file": "pods/mark-line-only-16x16.png",
    "w": 16,
@@ -1596,6 +1638,13 @@
    "h": 8,
    "sha256": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mark-out-16": {
+   "file": "pods/mark-out-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "eda797ec7a81ce7565f6b75496851a5e9d4c37571a49db1040c1bbf962b57447",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
   },
   "mark-out-with-companion-64x96": {
    "file": "pods/mark-out-with-companion-64x96.png",

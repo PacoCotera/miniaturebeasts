@@ -20,6 +20,14 @@ export function departures(log, spec, frame, state = "bay") {
   for (const r of got("waiting")) must(within(r.rect, R.waitingPods.rect), `a waiting pod or its shadow ${r.rect} leaves ${R.waitingPods.rect}`);
   for (const r of got("rack", "chrome")) out.push(`the rack's panel ${r.rect}: the rack is the painted insert`);
   for (const r of art("rack")) must(within(r.rect, R.rack.rect), `the rack's insert and pods ${r.rect} leave the rack ${R.rack.rect}`);
+  // the dock arrival (cargo.json regions.arrival): the apron at its rect and only in the show, the link light inside its strip, a mibi's picture inside the apron's span and its feet on y 528, the band in the bay's top corners
+  if (state === "arrival") { const AR = R.arrival;
+    for (const r of got("apron")) must(eq(r.rect, AR.apron.rect), `the apron ${r.rect} is not ${AR.apron.rect}`);
+    for (const r of got("light")) must(within(r.rect, AR.light.rect), `the link light ${r.rect} leaves its strip ${AR.light.rect}`);
+    for (const r of got("mibis")) must(within(r.rect, [32, 216 - 4, 960, 312 + 4]) && r.rect[1] + r.rect[3] <= AR.mibis.feet + 1, `a mibi's picture ${r.rect} is not on the apron with its feet on ${AR.mibis.feet}`);
+    for (const r of [...got("arrivalBand"), ...got("band.probe"), ...got("band.leaving")]) must(r.rect[1] >= 56 && r.rect[1] + r.rect[3] <= 100 && r.rect[0] >= 32 && r.rect[0] + r.rect[2] <= 992, `the band ${r.id} ${r.rect} leaves the bay's top corners`);
+    for (const r of got("glint")) must(r.rect[1] >= 120 && r.rect[1] + r.rect[3] <= 140, `a glint ${r.rect} is not at the crate's top (y 128)`); }
+  else { must(got("apron").length === 0 && got("mibis").length === 0 && got("light").length === 0, "the apron, the mibis and the link light show only in the arrival"); }
   // the ribbon (R9): fits its words, centred on 512, never wider than its bound
   for (const r of got("ribbon", "chrome")) must(r.rect[2] % 8 === 0 && r.rect[2] >= 160 && r.rect[2] <= R.ribbon.rect[2] && r.rect[0] + r.rect[2] / 2 === 512 && r.rect[1] === R.ribbon.rect[1] && r.rect[3] === R.ribbon.rect[3], `the ribbon ${r.rect} does not fit its words (w a multiple of 8, 160 to ${R.ribbon.rect[2]}, centred on 512, at y ${R.ribbon.rect[1]})`);
   for (const r of got("ribbon", "type")) must(within(r.rect, R.ribbon.rect), `the ribbon's words ${r.rect} leave its bound`);
@@ -41,12 +49,12 @@ export function departures(log, spec, frame, state = "bay") {
     must(!!lab && lab[0] - pl.rect[0] >= 6 && lab[1] - pl.rect[1] >= 6 && lab[1] + lab[3] + 12 <= pl.rect[1] + R.report.rows.first, "the label lies 6 px inside the plate and ends 12 px above the first row (fix 2 F3)");
   }
   must(state === "report" || got("report").length === 0, "the report plate shows only in the report");
-  must(state === "opening" || (got("ribbon").length === 0 && got("crate").length === 0 && got("travel").length === 0), "the ribbon, the crate and the travelling pods show only in the opening");
+  must(state === "opening" || (got("crate").length === 0 && got("travel").length === 0 && (state === "arrival" || got("ribbon").length === 0)), "the ribbon (also in the arrival), the crate and the travelling pods show only in the opening");
   must(state === "opening" || !regions.some((r) => /^stores(\.|$)/.test(r.id)), "the containers show only in the opening");
-  must(state === "bay" || (got("crates").length === 0 && got("waiting").length === 0), "the bay's crates and waiting pods show only in the bay");
+  must(state === "bay" || (got("waiting").length === 0 && (state === "arrival" || got("crates").length === 0)), "the bay's crates (also in the arrival) and waiting pods show only in the bay");
   must(art("bay").length >= 1, "the bay is drawn in every state");
   // what each state must draw (a node with no size is not in the log, so a region that vanished is found here)
-  must(art("rack").some((r) => eq(r.rect, R.rack.rect)), "the rack insert is drawn");
+  must(state === "arrival" || art("rack").some((r) => eq(r.rect, R.rack.rect)), "the rack insert is drawn");   // the arrival draws the apron in its place during the show and the rack at the choice (tested there)
   if (state === "opening") must(got("crate").length >= 1, "the crate closer is drawn");
   if (state === "report") must(art("report").filter((x) => x.rect[2] === R.report.rect[2]).length === 1 && got("report.heading", "type").length === 1, "the report plate is drawn");
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);

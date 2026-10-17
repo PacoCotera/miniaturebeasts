@@ -24,8 +24,13 @@ static void frect(const char *p, int r[4]) { if (!v_spec_rect(F, v_fmt(RP ".%s",
 /* a colour: a frame role (colours.<name>) when there is one, else the palette name as written */
 static const char *col(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(F, v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
 static const char *rcol(const char *path) { char s[24]; if (spec_str(F, v_fmt(RP ".%s", path), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); return col(s); }
+/* the strip form (frame.json regions.panel.strip; T-20261016-48 §2): the dock arrival's choice, two cards in a plate under what they are about, no title, picture or veil */
+static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
+static int si(const char *p, int d) { return spec_int(F, v_fmt(RP ".strip.%s", p), d); }
+static int sk(const char *p, int k) { return spec_int(F, v_fmt(RP ".strip.%s.%d", p, k), 0); }
 static int ncards(void) { int n = v_plen("overlay.regions.cards"); return n < 0 ? 0 : n > MAXCARDS ? MAXCARDS : n; }
 static void card_rect(int i, int n, int r[4]) {
+  if (strip()) { int gap = si("cards.gap", 16), w = si("cards.w", 396); r[0] = si("cards.x", 108) + i * (w + gap); r[1] = si("cards.y", 392); r[2] = w; r[3] = si("cards.h", 128); (void)n; return; }
   int gap = fi("cards.gap", 16), total = fi("cards.width", 776), w = (total - gap * (n - 1)) / n;
   r[0] = fi("cards.x", 124) + i * (w + gap); r[1] = fi("cards.y", 152); r[2] = w; r[3] = fi("cards.h", 288);
 }
@@ -114,8 +119,27 @@ static void build_ring(int n) {
     v_region("focus", LAYER_CHROME); word_focusRing("focus", "panel", "focus.targets.card", box); return;
   }
 }
+/* the strip: the plate (the code-drawn ground and edge while no master is placed), then each card: its well, its 96 × 96 picture, the name, the costs and the one line */
+static void build_strip(int n) {
+  int r[4]; frect("strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
+  v_region("panel", LAYER_CHROME); word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
+  const char *cur = v_focus_cur_at("overlay.focus.cur");
+  for (int i = 0; i < n; i++) {
+    int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + sk("name.at", 0), maxw = si("line.max", 252);
+    char well[24], wedge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(wedge, sizeof wedge, "%s", rcol("cards.edge"));
+    v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge);
+    { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
+      v_name("cardPictures"); if (pw > 0 && ph > 0 && v_sprite(v_fmt("card.%d.picture", i), pic, c[0] + sk("picture.at", 0), c[1] + sk("picture.at", 1), pw, ph)) {} else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, c[0], c[1]); }
+    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = si("name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
+      v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), fit, tx, cap_top(px, c[1] + sk("name.at", 1), si("name.h", 28)), v_measure(fit, px), px, rcol(dim ? "strip.name.colourDim" : "strip.name.colour")); }
+    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = si("line.px", 16); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
+      v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), fit, tx, cap_top(px, c[1] + sk("line.at", 1), si("line.h", 20)), *fit ? v_measure(fit, px) : 0, px, rcol(dim ? "strip.line.colourDim" : "strip.line.colour")); }
+    (void)cur;
+  }
+}
 void panel_words(void) {
   int n = ncards(); if (n <= 0) { v_error("word decisionPanel: a panel has at least one card"); return; }
+  if (strip()) { build_strip(n); build_ring(n); return; }
   build_veil(); build_plate(); build_title();
   const char *cur = v_focus_cur_at("overlay.focus.cur");
   for (int i = 0; i < n; i++) build_card(i, n, strcmp(cur, v_fmt("card.%s", card_id(i))) == 0);
