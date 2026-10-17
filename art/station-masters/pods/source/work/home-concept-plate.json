@@ -1,0 +1,24 @@
+[
+ {
+  "name": "home-concept-plate",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/home-window-four-v4-masters.png",
+    "REFERENCE 1, the v4 Loika (creatures, exact likeness): the Loikas to place on the moss, exactly as painted here."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/02a-palette.png",
+    "REFERENCE 2, the display ground and palette: the screen's colours."
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "REFERENCE 3, the vivarium light and moss: the warm daylight from the top left and the moss, stones and seedlings of the lower band."
+   ]
+  ],
+  "prompt": "A single living natural-history plate, in the spirit of Ernst Haeckel's Kunstformen der Natur and museum scientific engraving, but printed in reverse. The whole screen is one plate on a deep matte blue-black slate ground (#1d232b) with faint, even paper grain and no vignette, gloss or glow. Every line is fine engraved hatching and stipple in warm bone-white ink (#f1ebdf) at low contrast, so the plate is calm and scholarly. A thin double ruled plate border sits 18 px in from the edge, with a quiet engraved corner ornament of fern croziers, not flourishes.\n\nCentre, slightly above the middle, about 440 px across, is the genome: one large symmetric organic form like a radiolarian skeleton crossed with a diatom and a fern rosette. It has sixfold radial symmetry, concentric lattice shells, radiating spines and frond-like arms, and it is intricate and mathematically beautiful. About a third of it is DISCOVERED: those sectors are fully engraved with confident hatching and delicately hand-coloured in transparent watercolour washes (moss green, slate blue, cream and a warm rust, the Loikas' own colours, saturated but soft). The rest is UNKNOWN: drawn only as very faint grey pencil construction lines, compass circles, ruled radii, light guide arcs and a few erased marks, like an engraver's unfinished layout. The unknown parts show the structure's geometry only, never a detail, colour or shape of what will be found. The boundary between inked and pencil is soft and irregular, like work in progress on a plate.\n\nThe lower third is the living vivarium as the plate's lower register: a low band of rich, softly lit damp moss, small smooth stones and a few seedlings, painted in full colour with real depth and weight. Its edges dissolve upward and sideways into engraved line, so the life grows out of the engraving. Four Loikas live on it (match the reference exactly: rounded frog-like bodies, cream bellies, big amber eyes with catch-lights, leaf sprouts on the head, pale saddle markings, one rust-brown, three slate-blue or charcoal). They are sculpted, tactile and lit by one warm light from the top left, with soft contact shadows. They are the warmest, most detailed things on the screen. One is asleep, one looks up at the genome, and two potter about.\n\nA family tree: from the moss band, a single slender engraved fern frond rises and branches like a lineage, its hand-coloured leaflets leading up into the genome's discovered sectors. It joins each Loika to the part of the genome it carries, and it is quiet and secondary.\n\nMarginalia, bottom-right inside the border, small: four tiny engraved figures in a row read left to right as a sequence and joined by a fine hairline, in bone ink with no colour. They are a seed pod in section, a small cloche incubator in profile, a canvas field crate in profile and a slim handheld field device. Under each is a short blank ruled label line with no text. The pod figure has one small warm amber lamp dot beside it, the only signal light on the screen. Top-left inside the border is a small blank plate-number cartouche, an empty ruled rectangle.\n\nMood: restrained, grown-up, crafted, quietly sophisticated and warm. It is a scholar's plate you would frame. NOT childish: no cartoon outlines, toy jars, cute crates, round medallions, badges, stickers, icons, UI chrome, neon, holograms, glowing outlines or glass. No text, letters or numbers anywhere. The colour lives only in the creatures, the moss and the discovered parts of the genome."
+ }
+]

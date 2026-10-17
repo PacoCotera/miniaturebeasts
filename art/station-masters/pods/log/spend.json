@@ -4786,5 +4786,39 @@
    "thoughtsTokenCount": 338,
    "totalTokenCount": 3600
   }
+ },
+ {
+  "tag": "home-concept-plate try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.274112,
+  "mxn": 5.4822,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:29:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1636,
+   "candidatesTokenCount": 1872,
+   "thoughtsTokenCount": 385,
+   "totalTokenCount": 3893
+  }
+ },
+ {
+  "tag": "home-concept-plate-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.270268,
+  "mxn": 5.4054,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-17T22:30:31Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1754,
+   "candidatesTokenCount": 1922,
+   "thoughtsTokenCount": 301,
+   "totalTokenCount": 3977
+  }
  }
 ]
