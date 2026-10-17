@@ -129,32 +129,32 @@ Plus every owner verbatim on that screen, line by line, as the ticket says.
 
 ## 6. Answers to UI/UX's redesign briefs (2026-10-17)
 
-### 6.1 Panels (specs/redesign-panels.md): each option's scene and its one consequence line
+### 6.1 Panels (specs/redesign-panels.md): each option's scene, its verb, and the one fact no picture can carry
 
-The scene is what the mibi (Pip, in the concepts) is doing in that outcome. The consequence line is the single fact the player would otherwise miss, at most one line; the cost icons sit beside it.
+**Rewritten after the owner's ruling (T-20261016-195): "you most avoid positioning something as negative, unless it indeed is. / also the panel relies too much on text".** The panels show options with different outcomes, not a safe choice and a loss. Each window holds its scene, its verb (at most 3 words) and its cost or gain icons. A line of words appears only for a fact no picture can carry: a lasting change, a time, or a reveal deferred to later. It is worded as what happens, never as a threat. Nothing is in the loss colour, because none of these outcomes harms the player or a mibi.
 
-| Panel | Option | The scene | The consequence line |
+| Panel | Option (verb) | The scene | The one fact (only if a picture can't carry it) |
 | --- | --- | --- | --- |
-| Return to the wild | **Return** | Pip, seen from behind, walking out across its home place (the pond edge it came from) at dusk light, looking back once | "Gone for good. Its place will remember it." with ❀ +2 |
-| | **Keep** | Pip curled asleep in its bay in the vivarium, warm light | "Stays with you." |
-| Grow it | **Grow it** | The founder you made, sealed into its pod, the pod in the Incubator's chamber at its first candling light | "The pod is used." with the price (no minutes: the minute count is the Incubator's alone) |
-| | **Keep shaping** | The founder you made, as it is now, on the bench with its genes still open to turn; your changed parts catch the scan light | "Nothing is spent." |
-| Hatch, the name | **Keep "Moss"** | The young one stepping out onto the vivarium's moss, its name tag hanging | "Moss joins your vivarium." |
-| | **Choose another** | The same young one looking up, the tag blank | "Pick a name first." |
-| Grow now | **Grow now** | The candled pod at full light, the shell starting to open | "Opens now." with the vials |
-| | **Wait** | The candled pod at its current light, the ring where it is | "Ready in about n min." |
-| Cross them | **Cross them** | The two parents nose to nose, a bud glowing between them | "One child, its own mibi." with the price |
-| | **Pick another** | The first parent alone, looking toward the others | "Nothing is spent." |
-| Fit the upgrade | **Fit it** | The Probe at tier 2 (T-162's picture), its reach wider on the map, three pod slots | "Reaches further, carries three pods." with the price |
-| | **Not now** | The Probe at tier 1, two pod slots | "Nothing is spent." |
-| Spend a sitting | **Sit** | Pip posing in its place while the cloud painter works (the painting's frame half-filled) | "Its portrait comes in a few hours." |
-| | **Not now** | Pip at play in the vivarium | "Your sitting is kept." |
-| Read it now (Create) | **Read it** | The frosted chapter clearing on the founder, its parts coming into view | "Shape it before it grows." with the Data |
-| | **Not yet** | The chapter still frosted, the candled pod beside it | "A surprise in the Incubator." |
+| Return to the wild | **Release Pip** | Pip at home in its wild place (the pond edge it came from), thriving in that place's own light. It differs from Keep by place, not by warmth | "Pip lives in the wild from now on", the lasting change stated plainly, with ❀ +2 |
+| | **Keep Pip** | Pip curled asleep in its bay in the vivarium, warm light | — |
+| Grow it | **Grow it** | The founder you made, sealed into its pod, the pod in the Incubator's chamber at its first candling light | — (the price icons; the picture shows the pod becoming this mibi) |
+| | **Keep shaping** | The founder you made, as it is now, on the bench with its genes still open to turn; your changed parts catch the scan light | — |
+| Hatch, the name | **Keep "Moss"** | The young one stepping out onto the vivarium's moss, its name tag hanging | — |
+| | **Choose another** | The same young one looking up, the tag blank | — |
+| Grow now | **Grow now** | The candled pod at full light, the shell starting to open | — (the vials) |
+| | **Wait** | The candled pod at its current light, the ring where it is | — (the ring; the minutes stay in the Incubator's bottom line) |
+| Cross them | **Cross them** | The two parents nose to nose, a bud glowing between them | — (the price) |
+| | **Pick another** | The first parent alone, looking toward the others | — |
+| Fit the upgrade | **Fit it** | The Probe at tier 2 (T-162's picture), its reach wider on the map, three pod slots | — (the price) |
+| | **Not now** | The Probe at tier 1, two pod slots | — |
+| Spend a sitting | **Sit** | Pip posing in its place while the cloud painter works (the painting's frame half-filled) | "Its portrait arrives in a few hours" (a time) |
+| | **Not now** | Pip at play in the vivarium | — |
+| Read it now (Create) | **Read it** | The frosted chapter clearing on the founder, its parts coming into view | — (the Data) |
+| | **Not yet** | The chapter still frosted, the candled pod beside it | "It clears in the Incubator" (a reveal deferred) |
 
-**Corrected (T-170 gate):** Keep shaping keeps the player's edits, so its scene is the founder they made, not the plain one; drawing the plain founder said the edits would be lost. The two windows now differ by where the founder is: on the bench and still open, or sealed and in the chamber.
+**The rule for the words:** the verb names the action. The icons carry the price or the gain. A line appears only for a lasting change, a time or a deferred reveal, worded as what happens. The loss colour and ✕ are kept for outcomes that truly harm the player or a mibi, and none of these do.
 
-**The rule for the lines:** say the consequence, not the action (the option's name is the action). A loss is written in the loss colour. There are no other words in a window.
+**Corrected (T-170 gate):** Keep shaping keeps the player's edits, so its scene is the founder they made, not the plain one; drawing the plain founder said the edits would be lost. The two windows differ by where the founder is: on the bench and still open, or sealed and in the chamber.
 
 ### 6.2 Cargo (specs/redesign-cargo.md)
 
