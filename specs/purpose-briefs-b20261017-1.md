@@ -137,8 +137,8 @@ The scene is what the mibi (Pip, in the concepts) is doing in that outcome. The 
 | --- | --- | --- | --- |
 | Return to the wild | **Return** | Pip, seen from behind, walking out across its home place (the pond edge it came from) at dusk light, looking back once | "Gone for good. Its place will remember it." with ❀ +2 |
 | | **Keep** | Pip curled asleep in its bay in the vivarium, warm light | "Stays with you." |
-| Grow it | **Grow it** | The founder you made, lit, standing; your changed parts catch the light | "The pod is used." with the price and the time |
-| | **Keep shaping** | The pod's own founder, plain, on the dish, with the drums still open | "Nothing is spent." |
+| Grow it | **Grow it** | The founder you made, sealed into its pod, the pod in the Incubator's chamber at its first candling light | "The pod is used." with the price (no minutes: the minute count is the Incubator's alone) |
+| | **Keep shaping** | The founder you made, as it is now, on the bench with its genes still open to turn; your changed parts catch the scan light | "Nothing is spent." |
 | Hatch, the name | **Keep "Moss"** | The young one stepping out onto the vivarium's moss, its name tag hanging | "Moss joins your vivarium." |
 | | **Choose another** | The same young one looking up, the tag blank | "Pick a name first." |
 | Grow now | **Grow now** | The candled pod at full light, the shell starting to open | "Opens now." with the vials |
@@ -151,6 +151,8 @@ The scene is what the mibi (Pip, in the concepts) is doing in that outcome. The 
 | | **Not now** | Pip at play in the vivarium | "Your sitting is kept." |
 | Read it now (Create) | **Read it** | The frosted chapter clearing on the founder, its parts coming into view | "Shape it before it grows." with the Data |
 | | **Not yet** | The chapter still frosted, the candled pod beside it | "A surprise in the Incubator." |
+
+**Corrected (T-170 gate):** Keep shaping keeps the player's edits, so its scene is the founder they made, not the plain one; drawing the plain founder said the edits would be lost. The two windows now differ by where the founder is: on the bench and still open, or sealed and in the chamber.
 
 **The rule for the lines:** say the consequence, not the action (the option's name is the action). A loss is written in the loss colour. There are no other words in a window.
 
