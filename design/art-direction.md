@@ -59,8 +59,7 @@ If a screen looks colourful because of its panels, frames or bars rather than it
 
 *Written by the game designer. The numbers that put these principles into practice (words per element, mark sizes, counts) are in the [style guide](style-guide/README.md); this section is the reason behind them.*
 
-<table><tr><td valign="top"><img src="../prototypes/face/golden/home/home-docked.png" width="480" alt="Home, docked"><br><em>Home: one living subject, a column of quiet modules, one line of words. Capture.</em></td>
-<td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="420" alt="Station research concept"><br><em>station-research-hands: one lit subject on a clean display. Approved concept, generated.</em></td></tr></table>
+<img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: one lit subject on a clean display, with depth folded away. Approved concept, generated.</em>
 
 - **One subject per screen.** Every screen is about one thing the player cares about: a mibi, a pod, a crate, a choice. That thing is the largest, best-lit and most detailed thing there. Everything else is smaller, quieter and in its service.
 - **Show what the player acts on or watches change, and nothing else.** An object earns its place by doing something the player can see, or by changing over time. Equipment that serves nothing, decoration that explains nothing, and a second picture of something already shown all go.
