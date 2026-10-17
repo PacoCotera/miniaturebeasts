@@ -6,7 +6,7 @@ at (312, 88). By hand in code, no paid call. The ring of time: how close the mee
 - The form the build steps: the full arc is one picture; the build shows the part from 228 degrees clockwise to 228 + 264 f (whole degrees),
   clipping the picture to that wedge. The leading end is the wedge's straight edge, the trailing end the picture's rounded cap.
 - incubator-ring-closed (ready): the full fill with both end caps warmed where they meet the candling light under the nest (the cradle's lens
-  colour, falling off over 40 degrees from each end).
+  colour, falling to zero 12 degrees from each end; T-20261016-124: equal to the fill everywhere else).
 usage: python3 -I make-ring.py OUT_DIR"""
 import sys, os, numpy as np
 from PIL import Image
@@ -39,5 +39,9 @@ def save(name, c):
     Y = lin(img[..., :3]) @ [.2126, .7152, .0722]; op = img[..., 3] > 128
     print(name, "px", int(op.sum()), "rel. lum p95 %.3f" % np.percentile(Y[op], 95))
 save("incubator-ring-fill", col)
-warm = np.exp(-np.minimum((132 - ang) % 360, (ang - 228) % 360) / 40.0)       # by the degrees from the nearer end
+# T-20261016-124: the warmth is held to the ends, exactly zero past 12 degrees from the nearer end (it was an exponential that never
+# reached zero, so the closed picture differed from the fill all round the ring). Everywhere else the closed ring is the fill, pixel for pixel,
+# so the face's ready redraw is only the gap where the ends meet the light.
+de = np.minimum((132 - ang) % 360, (ang - 228) % 360)                         # the degrees from the nearer end (0 in the gap and the caps)
+wk = np.clip(1 - de / 12.0, 0, 1); warm = wk * wk * (3 - 2 * wk)
 save("incubator-ring-closed", col + lin([214, 150, 62])[None, None] * 0.35 * warm[..., None])

@@ -16028,11 +16028,11 @@
    400
   ],
   "src": "incubator-b/make-ring.py",
-  "made": "the ring full, its ends warmed where they meet the candling light. Job: ready",
-  "sha256": "96798224f9383342f4c4009c7c5195c142f4971ab926145f659ee7e52f40e5a7",
+  "made": "the ring full, its ends warmed where they meet the candling light. Job: ready (T-20261016-124: the warmth held to 12 degrees from each end, so the picture equals incubator-ring-fill pixel for pixel everywhere else; the difference box is (30, 291, 340 x 41) in the picture, 1,451 px)",
+  "sha256": "897a890b5387d960295dcf3a65b25b7e8dc55e558c5786dc27f735e47789502a",
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-27 (Incubator option B), in the proofs incubator-b/proof (S01 and S03, empty, growing, ready, hatch-1100, beside Pods, Vivarium, the kit and station-research-hands); to re-check in the builder's captures (T-20261016-40)",
-  "status_note": "new (10-16, T-20261016-27)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-124, in incubator-b/proof/ring-closed-recut-1x.png (equal to the fill except at the ends; 1,451 px differ, box 342, 379, 340 x 41 on screen)",
+  "status_note": "new (10-16, T-20261016-27); re-cut (10-17, T-20261016-124)"
  },
  "incubator-card-ground": {
   "size": [

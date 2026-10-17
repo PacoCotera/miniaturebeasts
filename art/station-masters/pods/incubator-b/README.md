@@ -203,3 +203,14 @@ The owner: "sharpen the founder shape". The shadow in the T-62/T-68 proofs was t
 **Proofs** (`proof/`, labelled inside):
 - `incubator-b-S01-glowing-1x.png`, the growing frame;
 - `shadow-steps-S01-1x.png` and `shadow-steps-S03-1x.png`: nothing cleared, 2 chapters, 4 chapters, ready, at one light (glowing; ready at ready), so only the knowing changes.
+
+## T-20261016-124: the closed ring re-cut to differ only at the ends
+The face redraws only where `incubator-ring-closed` differs from `incubator-ring-fill` (`specs/face-arc-and-shadow.md` §1). The old closed ring's warmth fell off exponentially and never reached zero, so the two differed all round the ring: 16,471 px in a 394 × 332 box.
+
+**The change** (`make-ring.py`): the warmth now falls smoothly to exactly zero 12° from each end. Everywhere else the closed ring is the fill, pixel for pixel. The fill rebuilds byte for byte.
+
+**The difference:**
+- **Pixels:** 1,451, none by 64 or more.
+- **The box:** (30, 291, 340 × 41) in the picture, which is **(342, 379, 340 × 41) on screen**. That is 13,940 px to redraw at ready (ceiling 153,600). The two ends sit 280 px apart, so a box holding both warmed caps is 340 wide.
+
+**Proof:** `proof/ring-closed-recut-1x.png`. The ring's bottom at 1× (fill, the old closed, the re-cut), each closed one with its differing pixels in red.
