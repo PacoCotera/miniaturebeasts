@@ -17,7 +17,7 @@ Where a screen's rules below disagree with this block or the style guide, the gu
 - **HUD, rows 0–31, ink.** Left to right: reach grid; Shield plates; pod slots, with the crate count beside them; the partner's face on its teal ring. Then Energy, Data and Essence as 16 px icons with 2× numbers; Call's slot in teal when Call means something here; the world turn ("T7" with a small sun). At the far right, battery and radio.
 - **View, rows 32–563 (532 px).** One picture to act on. Margins 6–8 px.
 - **Bottom line, rows 564–599 (36 px), ink.** Three parts split by 1 px muted rules: `✓ verb · ← where` | the place and its survey (mist, the only part that shrinks) | conditions (1–3 bolts with ◀ or ▶, a fog patch with its drift). ✓ is an orange cap with the verb in orange, ← a grey cap. A read-only screen draws no ✓ cap.
-- **Panels.** *Ink*: dark fill, a darker line, a lighter top bevel. *Paper*: warm cream, a brown line, a white top bevel, a darker foot. Radius 4 px; drop shadow from the dark table at (+2, +3).
+- **Panels.** One panel style, *Ink*: dark fill, a darker line, a lighter top bevel, cream type. The old cream *Paper* panel is retired: the Companion and the Station share one dark panel, as the companion-map-hands concept draws its bars. Cream stays as type on ink and as the accent flash. Radius 4 px; drop shadow from the dark table at (+2, +3).
 - **Focus.** Orange corner brackets; the focused row or card lifts 2 px.
 
 <table><tr><td valign="top"><img src="../../art/concept-homepage/companion-map-hands.png" width="440" alt="Map concept in hands"><br><em>companion-map-hands. Approved concept, generated. Take the HUD's weight and the bottom line's calm; its strings are not specs.</em></td></tr></table>
@@ -111,12 +111,12 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 **Purpose.** Choose this expedition's kind. **Reads first:** the focused card and what it promises.
 
-- **Composition.** "Expedition 4" at 3×, top left. Under it a quiet 2× strip: world turn, Probe tier, Shield. Two full-width paper cards (about 434×120), each with a 96 px round painted vignette at the left, the name at 3× and one 2× hint. A gated card dims through the fade table and shows what opens it (a digger's paw), never a bare lock. Below: the partner card, the mibi with you as a 64 px HiBit face on its teal ring, name and stage. At the foot: the whole-world inset and "Explored N of 320".
+- **Composition.** "Expedition 4" at 3×, top left. Under it a quiet 2× strip: world turn, Probe tier, Shield. Two full-width Ink cards (about 434×120), each with a 96 px round painted vignette at the left, the name at 3× and one 2× hint. A gated card dims through the fade table and shows what opens it (a digger's paw), never a bare lock. Below: the partner card, the mibi with you as a 64 px HiBit face on its teal ring, name and stage. At the foot: the whole-world inset and "Explored N of 320".
 - **Lively / quiet.** Lively: the focused card's vignette (a bolt flickers, a burrow glints) and the partner's idle. Quiet: the strip, the inset, the other card.
 - **Light and weather.** No weather on the screen. Each vignette carries its own, lit from the top left.
-- **Palette.** Paper cards on ink. Vignettes use full ramps: blue and violet storm cloud, yellow bolt; warm soil and a dark mouth for the burrow.
+- **Palette.** Ink cards on the view, cream type. Vignettes use full ramps: blue and violet storm cloud, yellow bolt; warm soil and a dark mouth for the burrow.
 - **Type.** 3× title and card names; 2× hints and strip.
-- **Chrome.** Paper cards, orange brackets, ✓ `Choose Weather`, `← menu`. Call's slot is empty.
+- **Chrome.** Ink cards, orange brackets, ✓ `Choose Weather`, `← menu`. Call's slot is empty.
 - **Motion.** Focus slides in 110 ms; vignettes 2 frames at 2–4 Hz.
 - **Flat world hint.** On a world without height levels (a save without `gen`, or `gen` 1), between expeditions, the last line: `Flat world · New world has stairs`, 2× `sand` (#e6c98c), left-aligned at (136, 462), at most 306 px (rect 136, 462, 306, 20), one line. A standing line, no motion; plain text, not focusable; New world keeps its two-tap confirm. Never on a world with height levels, never during an expedition.
 
@@ -228,7 +228,7 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 - **Light and weather.** Daylight from the top left; trees cast shade down-right. **Storm:** every colour through the dark table toward blue, slanted rain with the storm's heading, a charged stone in blue-white crackle, a warned strike as a yellow tile outline only. **Fog bank:** colours washed toward pale bone, white puffs only over the fogged part, a soft round edge of sight. **Veil:** ground one step darker with night dots, a 16 px dithered edge. Cave: dark with a lantern circle. The pawn and mibis are never darkened.
 - **Palette.** Grass, warm earth and cool stone ramps; storms go blue, never brown-grey; red only for danger and fruit.
 - **Type.** Only the name tag and bubbles in the view; everything else in the message box and the bottom line.
-- **Chrome.** Message box (paper), name tag (ink with a pointer).
+- **Chrome.** Message box (ink), name tag (ink with a pointer).
 - **Name tag placement.** The specimen is the spotlight: a name tag never covers a creature. The **clear zone** is the token's whole 48 px cell plus any pixel drawn outside it (a sprout or ear above the head, the teal ring at the feet: at 48 px the ring's foot rows 48–49 fall below the cell), plus a 4 px margin that stays empty. The tag is a 20 px ink panel with an aqua border, and a 2×5 aqua pointer (5×2 sideways) on the side facing the token, centred on the cell's axis or middle row; the pointer sits just outside the margin and the panel starts after it. It goes, in this order, to the first position that stays inside the view (x 6–444, y 38–558) and covers no other creature's, token's or find's clear zone (a find is a pod, a stone, the crack, a lime pod or fruit on the ground, drawn in that frame: its cell, any of its pixels outside it, and 4 px; a seen crack's ring reaches 7 px below the cell at 48 and 6 px outside it on every side at 32; glints and landmarks are not finds), the pawn, the HUD, the bottom line, the message box or an edge tab, and never sits over the warned cell or a sign (the warned ring is the one signal the player must read):
   1. **Below:** centred on the cell, its pointer just under the clear zone's foot, pointer up.
   2. **Right:** its pointer just right of the clear zone, the panel centred on the cell's middle row, pointer left.
@@ -248,7 +248,7 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 - [ ] One clear light direction across tiles, sprites and shadows.
 
 <table><tr><td valign="top"><img src="../../art/concept-homepage/companion-storm.png" width="300" alt="Storm concept"><br><em>companion-storm: the north star for a place. Approved concept, generated. Take the green, the rain, the crackle and the warned tile; not the tree as shelter.</em></td>
-<td valign="top"><img src="../proposals/ui-kit/companion-place-storm.png" width="300" alt="Place mock-up"><br><em>Place in a storm, 450×600 at 1×. Accepted as passable, to be refined.</em></td></tr></table>
+<td valign="top"><img src="../proposals/ui-kit/companion-place-storm.png" width="300" alt="Place mock-up"><br><em>Place in a storm, 450×600 at 1×. Accepted as passable, to be refined; panel style superseded: Ink.</em></td></tr></table>
 
 ---
 
@@ -256,12 +256,12 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 **Purpose.** The field menu behind the ← key. **Reads first:** the focused entry.
 
-- **Composition.** A paper card at the lower right, above the bottom line, about 260 px wide. Rows 40 px: a 16 px icon and a 2× label. A dimmed entry gives its reason in the bottom line: over the map the distance ("Start · about 2 cells"), over a place the direction ("Start · south"). A rule before New world. The view stays visible behind, darkened through the dark table.
+- **Composition.** An Ink card at the lower right, above the bottom line, about 260 px wide. Rows 40 px: a 16 px icon and a 2× label. A dimmed entry gives its reason in the bottom line: over the map the distance ("Start · about 2 cells"), over a place the direction ("Start · south"). A rule before New world. The view stays visible behind, darkened through the dark table.
 - **Lively / quiet.** Lively: the focused row only. Quiet: everything else; the world behind holds still.
 - **Light and weather.** The view behind keeps its weather, one step darker. The card is lit from the top left like any object.
-- **Palette.** Paper on a darkened view; orange for focus; dimmed rows through the fade table.
+- **Palette.** Ink on a darkened view, cream type; orange for focus; dimmed rows through the fade table.
 - **Type.** 2× labels; no title.
-- **Chrome.** Paper card, focused row lifted in orange brackets. Bottom line: `✓ Wait one action · ← close`.
+- **Chrome.** Ink card, focused row lifted in orange brackets. Bottom line: `✓ Wait one action · ← close`.
 - **Motion.** The card rises in 110 ms; focus moves in one step. After Wait the menu stays open.
 
 **Pass when**
@@ -273,7 +273,7 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 <img src="../proposals/ui-kit/companion-place-storm.png" width="225" alt="Place mock-up">
 
-*The view the menu darkens, never hides. Accepted as passable, to be refined. No approved art for the menu yet.*
+*The view the menu darkens, never hides. Accepted as passable, to be refined; panel style superseded: Ink. No approved art for the menu yet.*
 
 ---
 
@@ -281,12 +281,12 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 **Purpose.** One note that stays until the next action. **Reads first:** its first words.
 
-- **Composition.** Paper, the view's width less 8 px margins, up to three 2× lines (about 80 px). At the foot of the view, or at the top when the pawn is low; never over the pawn's row.
+- **Composition.** An Ink panel, the view's width less 8 px margins, up to three 2× lines (about 80 px). At the foot of the view, or at the top when the pawn is low; never over the pawn's row.
 - **Lively / quiet.** Quiet. It appears at once and waits.
-- **Light and weather.** None; it is paper over the world.
-- **Palette.** Brown body text on cream; the lead word in its role colour: red for a warning, orange for an action, teal for Call.
+- **Light and weather.** None; it is the device's panel over the world.
+- **Palette.** Cream body text on ink; the lead word in its role colour: red for a warning, orange for an action, teal for Call.
 - **Type.** 2×, 22 px pitch. Key glyphs (✓ ← )))) drawn as the key caps in their colours.
-- **Chrome.** Paper panel, drop shadow.
+- **Chrome.** Ink panel, drop shadow.
 - **Motion.** None beyond appearing. Under reduced motion, the same.
 
 **Pass when**
@@ -298,7 +298,7 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 
 <img src="../proposals/ui-kit/companion-place-storm.png" width="300" alt="Place mock-up with message box">
 
-*Message box at the foot of a place. Accepted as passable, to be refined.*
+*Message box at the foot of a place. Accepted as passable, to be refined; panel style superseded: Ink.*
 
 ---
 
@@ -451,14 +451,14 @@ The Station's release is read at the dock, between expeditions (mid-expedition i
 
 **Placement.** The partner first, because it is what the next expedition depends on; then the three places, always three, so "the Companion is full" is visible before it is said; then, docked, the mibis to take. Undocked the screen stops after the places.
 
-**Alignment with the art direction.** Paper cards on ink, as on the expedition choice. The partner stands on the teal ring, the same ring it wears in the field and in the HUD. The heart is a small HiBit enamel heart, the same object as the Vivarium's heart drawn for the Companion's palette. The free place is a dashed outline, as on the Vivarium's Companion module.
+**Alignment with the art direction.** Ink cards, as on the expedition choice. The partner stands on the teal ring, the same ring it wears in the field and in the HUD. The heart is a small HiBit enamel heart, the same object as the Vivarium's heart drawn for the Companion's palette. The free place is a dashed outline, as on the Vivarium's Companion module.
 
 **Composition.** <img src="wireframes/companion-care/01-roster-docked-take.png" width="225" alt="Mibis docked, Take Fig"> <img src="wireframes/companion-care/03-roster-docked-full.png" width="225" alt="Mibis docked, three with you, Take refused">
 
 | Region | x, y, w, h | Contents |
 | --- | --- | --- |
 | HUD | 0, 0, 450, 32 | "Mibis" at the left, as built |
-| Lead card | 16, 44, 418, 92 | Paper card. Caption `Partner` 2× `mist` at (104, 50). The partner's 64 px face at (28, 56) on the teal ring (28×11 at 46, 114). Name 3× at (104, 72), clipped at 314 px. Heart 16×16 at 8 px after the name, y 78, when bonded. One 2× line at (104, 108), clipped at 314 px: the partner's ability |
+| Lead card | 16, 44, 418, 92 | Ink card. Caption `Partner` 2× `mist` at (104, 50). The partner's 64 px face at (28, 56) on the teal ring (28×11 at 46, 114). Name 3× at (104, 72), clipped at 314 px. Heart 16×16 at 8 px after the name, y 78, when bonded. One 2× line at (104, 108), clipped at 314 px: the partner's ability |
 | Lead card, no partner | same | The face place is a dashed circle, 64×64 at (28, 56), 1 px `stone`, dash 2 and 2. Name line `No partner` 3×. The 2× line gives why: `young · grows with care` (the first juvenile with you is bonded) or `young · grows in time` (it is not). When none is carried, the name line is `No one with you` and the 2× line `dock to take one along` |
 | Caption | 20, 148 | `With you` 2× `mist` |
 | Place *i* (0–2) | 16, 172 + 72*i*, 418, 64 | A carried mibi's row, in carried order, or a free place: a dashed outline, 1 px `stone`, dash 2 and 2, no words, never focused |
@@ -572,7 +572,7 @@ Lines the world turn writes stay on the Expedition ended screen, as built, worde
 
 | Region | x, y, w, h | Contents |
 | --- | --- | --- |
-| Card | 20, 252, 410, 92 | Paper card, the third focus target (as built) |
+| Card | 20, 252, 410, 92 | Ink card, the third focus target (built as Paper; restyled to Ink) |
 | Face | 28, 264, 64, 64 | The partner's 64 px face on the teal ring (28×11 at 46, 322). Only juveniles carried: the rider (see [The juvenile with you on an expedition](#the-juvenile-with-you-on-an-expedition)). None carried: a dashed circle 64×64 |
 | Name | 112, 260 | 3×, clipped at 220 px; heart 16×16 at 8 px after it, y 266, when bonded. Only juveniles carried: the rider's name. None carried: `No one with you` (with the 2× line `dock to take one along`). The card has no `No partner` headline |
 | Stage chip | 112, 292, h 22 | The partner's stage, as the roster's chips (label at y 295); the rider's `juvenile`. None carried: none |
@@ -630,7 +630,7 @@ No `No partner` headline, no ability line, no count of turns.
 
 Measured on main at 1× in Chromium. The care build rebuilds the roster and edits Cargo, so it fixes these two:
 
-- **Roster chips.** The built tag is 20 high with its label at top + 3, so a descender (`j` in `juvenile`, `y` in `with you`) ends on top + 20, one row under the chip (measured: chip rows 80–99, the `j`'s foot on row 100, on the card's paper). Every chip is 22 high with the label at top + 3 and 8 px side padding, as in the roster's table above, on the roster, the active mibi screen and the partner card. Measured on a patched copy: chip rows 80–101, the `j`'s foot on row 100, one row of fill under it.
+- **Roster chips.** The built tag is 20 high with its label at top + 3, so a descender (`j` in `juvenile`, `y` in `with you`) ends on top + 20, one row under the chip (measured: chip rows 80–99, the `j`'s foot on row 100, on the card). Every chip is 22 high with the label at top + 3 and 8 px side padding, as in the roster's table above, on the roster, the active mibi screen and the partner card. Measured on a patched copy: chip rows 80–101, the `j`'s foot on row 100, one row of fill under it.
 - **Cargo, in the field, no creature met.** `No creatures met yet` at (24, 186) is 196 px (x 24–219) and the moments line `0 creature moments (Data)` at (180, 196) is 240 px: they overlap on x 180–219, rows 196–203. With no creature met, the moments line moves under it, to (24, 208), rows 208–225, 12 rows over the reach line at y 238. With one or more met it stays at (180, 196), beside the tiles (three tiles end at x 158).
 
 Left to the field screens' next pass; the care build does not touch these screens:
