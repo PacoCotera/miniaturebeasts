@@ -1,0 +1,326 @@
+{
+ "note": "The Loika version 4 layers, per key (304x312, the base key frame on masters-pods floor/S01/keys). Status: signed = gated by the art director and passed UI/art (creative director, 2ae9d3e9); stand-in = drawn from the base until its own layer lands.",
+ "layers": {
+  "mibi-adult-S01-air-fur-mask-304x312": {
+   "sha256": "c813206690a5f1fd54c91067aea647ff9b7ff84819d59e4331793bb3a63e3255",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-air-zone-mask-304x312": {
+   "sha256": "216b4d734b8479c964c9c52019b96f0e87610cd167aa59320bbe143c5e49d8e8",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-air-patches-304x312": {
+   "sha256": "664ba91a57541b2d2bc29bcd24069f8a34312fed7524f6ab977218a1988aa64f",
+   "from": "M1",
+   "status": "signed"
+  },
+  "mibi-adult-S01-air-stripes-304x312": {
+   "sha256": "0e788863c128749c794a8cdb47ff0fbec1d9ba4edb3faa41b6d0c611ed8ab244",
+   "from": "M2",
+   "status": "signed"
+  },
+  "mibi-adult-S01-air-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-air-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-anchor-fur-mask-304x312": {
+   "sha256": "740941cf19454449326f9f489717ac8f8c0bd0a627c173fbab318f75d73902bf",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-anchor-zone-mask-304x312": {
+   "sha256": "1e6b8f11ef9e6dba7e4c074e7dee890d0f30a0f2c7954d0cc4bcd917388acf6b",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-anchor-patches-304x312": {
+   "sha256": "dc92a3f9d1789ee24792932247b5db13b841799e145ecfa5f7f4b36dc7bcbb01",
+   "from": "M1",
+   "status": "signed"
+  },
+  "mibi-adult-S01-anchor-stripes-304x312": {
+   "sha256": "72d90b0d59134859ef8d4fb51bba9aa3940a6d5e17068cf9d79eb363e4d41d44",
+   "from": "M2",
+   "status": "signed"
+  },
+  "mibi-adult-S01-anchor-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-anchor-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-blink-fur-mask-304x312": {
+   "sha256": "61e287446bb15ff4d5301576c9a150bd23f3848bfdae87ad5f8b2a833d398539",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-blink-zone-mask-304x312": {
+   "sha256": "bcb468825d0042b675267a7c8cd1cb2024b4a0dc385c3f6e286b421e09d7bb49",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-blink-patches-304x312": {
+   "sha256": "4be69ffe88f30887a92c0d7ed9d66a70c4ff32e209bafd3687141ca3db709dff",
+   "from": "M1",
+   "status": "signed"
+  },
+  "mibi-adult-S01-blink-stripes-304x312": {
+   "sha256": "8fee5f381d39b0036cd1ad8c87ae00a08dc9e92b36b89d0719de916fe649de0f",
+   "from": "M2",
+   "status": "signed"
+  },
+  "mibi-adult-S01-crouch-fur-mask-304x312": {
+   "sha256": "a5ca41cc92b034223572179c7fa04631c7b226735974b0020c86e1f50fdd7364",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-crouch-zone-mask-304x312": {
+   "sha256": "c770784ab74cfd07c4d44673c3cef065145c2e38dbcee3a210ebce734d755144",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-crouch-patches-304x312": {
+   "sha256": "6f87c093bbea66b9193e6ca5f5ce60bc3624d9a9d616e46e9632a2fbfcddd020",
+   "from": "M1",
+   "status": "signed"
+  },
+  "mibi-adult-S01-crouch-stripes-304x312": {
+   "sha256": "5d32222abedf018dd0e9c87764f31ffb795a4b44926c06ad0291802993cbff33",
+   "from": "M2",
+   "status": "signed"
+  },
+  "mibi-adult-S01-crouch-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-crouch-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-curl-fur-mask-304x312": {
+   "sha256": "3da466e5d7f218e05c5f80560d327b70478ba1ea4a691c548595812bb5682313",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-curl-zone-mask-304x312": {
+   "sha256": "30a19408f3cd86f63d6a8e65096063bf70ecb954c2055757be98ee52a011f03b",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-curl-patches-304x312": {
+   "sha256": "c64e53e4c1743eba6789f178b8a2899fdcc527295b1e104400f897a33dcdeeec",
+   "from": "M1",
+   "status": "signed"
+  },
+  "mibi-adult-S01-curl-stripes-304x312": {
+   "sha256": "94f449aca9863c6e7c53cfeafd833fb762ead3864718e0924b48017cd13b42d7",
+   "from": "M2",
+   "status": "signed"
+  },
+  "mibi-adult-S01-stand-fur-mask-304x312": {
+   "sha256": "dee8a850e8c59a0501d5ef36f4980a4e78ee772059a2d36ae98210a67611aa71",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-stand-zone-mask-304x312": {
+   "sha256": "5954b80bd2c11162e0a5fd110ef58fb9881bfa0039d8de668c67ebbfd6194dcd",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-adult-S01-stand-patches-304x312": {
+   "sha256": "271293d771704a85dc28798f8eda70d990216347a58aa0097f79e33c4a81a173",
+   "from": "M1",
+   "status": "signed"
+  },
+  "mibi-adult-S01-stand-stripes-304x312": {
+   "sha256": "55915ac5dca899fd7bd757d665e0fdabe398d34aeac796d93cc4fd5219601912",
+   "from": "M2",
+   "status": "signed"
+  },
+  "mibi-adult-S01-stand-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-stand-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-air-fur-mask-304x312": {
+   "sha256": "4d5dfbbe2cd4af9aa924e46d945f07baafc474039ed13b670fab8511b2f459d1",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-air-zone-mask-304x312": {
+   "sha256": "e776d022a6f52cf1c08e23e05e1fc9be043f0dad989fdfa26e4317fb80938902",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-air-patches-304x312": {
+   "sha256": "b0ee6fa4634a9e328bba53a0f4da91c6c2b3ac69c24a6ff2ca93e69d7c1b165c",
+   "from": "M3",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-air-stripes-304x312": {
+   "sha256": "c4d87ddcd82738a6b89a41bab5f28ca1fcc4ad86dd8158021cc009b419d033e7",
+   "from": "M4",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-air-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-air-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-anchor-fur-mask-304x312": {
+   "sha256": "3aa58d019374d981cb27df11831a8a149b1f294b3305c9d2f8e1daa14a831e2d",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-anchor-zone-mask-304x312": {
+   "sha256": "343ec9ebf05a556a3c7004e1e7ffb1da3d7661f818163649d2c512e8b38ea02d",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-anchor-patches-304x312": {
+   "sha256": "d4e3a99d6d9dd82839968a1096719d278ed9b5f67c0c621019de64825112cdef",
+   "from": "M3",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-anchor-stripes-304x312": {
+   "sha256": "67a967317a3e3130c5396550acee2c19d090d5ae21c74d07d80fe58645ec69de",
+   "from": "M4",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-anchor-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-anchor-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-crouch-fur-mask-304x312": {
+   "sha256": "4110e3dfbe80c5858b0dea5a1be14efc40255e654731d2ddfc4caecb062ad6ab",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-crouch-zone-mask-304x312": {
+   "sha256": "f6d41099acad4702bd9db8954d8545123d89fb8bc90e0a670a79bd53a160c773",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-crouch-patches-304x312": {
+   "sha256": "59457abf2f1805fd2fe5d46607a3d32030e4282c02b77b1097cb71ed8e5732bf",
+   "from": "M3",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-crouch-stripes-304x312": {
+   "sha256": "26f99d326d44ad55296bd8fb728bb38f699273a86b4aeb90c61e53eceae7e900",
+   "from": "M4",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-crouch-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-crouch-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-curl-fur-mask-304x312": {
+   "sha256": "9522f7bedaa668281a0b83d995fd14738dab8f33a6317198a0c1c394ca43bb3b",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-curl-zone-mask-304x312": {
+   "sha256": "8fe252f61991d06d98acd4f9204c29fbb1931ef8ff7b51d2983d018c3e258419",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-curl-patches-304x312": {
+   "sha256": "fbcdbecd33ebe922149c8d1710846dabdeadbc3bc50b0de2ba251d7c264bc8e1",
+   "from": "M3",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-curl-stripes-304x312": {
+   "sha256": "a1df0b97e23ae74c70eab5869c06c181519dad4adb99dd60a7563ac5fc7432b9",
+   "from": "M4",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-stand-fur-mask-304x312": {
+   "sha256": "aa71afe0926f472c211ab6058c73c42fb306402bf05c66981d1b97e6305c3a57",
+   "from": "base key (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-stand-zone-mask-304x312": {
+   "sha256": "285328b034d56c513cff4f00be05f76dab559cf1f752d09d4d1a2bb5b9911f35",
+   "from": "fur mask (cut-layers.py)",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-stand-patches-304x312": {
+   "sha256": "7b1a0a3ebf103aff45353c24a495a4020294b003d34c254c149ab5dc316b0773",
+   "from": "M3",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-stand-stripes-304x312": {
+   "sha256": "c0cf8cab5f4fcb218b4d28844ec7cde95806241f2f90b1abb501cae586f0af2f",
+   "from": "M4",
+   "status": "signed"
+  },
+  "mibi-juvenile-S01-stand-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-stand-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "ramps.json": {
+   "sha256": "1c2555a3818c0326e9afad3dcce73601c11b1f71692b23d3b4b15efec27006f3",
+   "from": "charcoal: the base keys; russet and ash: M5",
+   "status": "signed"
+  }
+ }
+}
