@@ -211,3 +211,15 @@ At 80 × 80 the drum kept only 8 px of its round above and below its picture, so
 - **The chapter words** stay left-aligned at their group's first drum, at any g.
 - **Tests:** for each species frame, the run fills the window within one g, or the bank slides; at the slide's end, the last drum's right edge is the window's end.
 
+
+## Amendment (T-20261016-126): the genome screen; the slip, the well and the gene line go
+
+The owner (2026-10-17) rejected the slip ("a wall of text", "it's a LAB, it's a genome editing machine") and asked for "a research/crafting bench. advanced, you're editing life", where the player glimpses "the underling genome mechanics and framework". The full spec is `specs/station-genome-screen-spec.md`; wireframes `specs/station-genome-screen/01` to `05` and `07`. It overrides this file where they differ:
+
+- **§2:** `founder` 96, 76, 304 × 312 (feet 388); `dish` 88, 364, 320 × 28; **`genome` 424, 80, 512 × 312** (the machine's screen) in place of `slip`; `port` 96, 404, 128 × 122 in the tray's left end, with the `pod` 100, 394, 112 × 136 in it, in place of `well` and `geneLine`; `name` and `found` go; `travel` runs from the port along the tray to 952, 394.
+- **§3:** the bank's window is x 240 to 920; the T-123 spacing uses 680 in place of 816.
+- **§4:** the slip and its lists go. The Grow print moves to the screen's bay: the stamp at 772, 112 and the code at 752, 248 (`mint`, rule at 272). "to the Incubator" goes. The bottom line is unchanged.
+- **§5:** the states read as the genome spec's §4.
+- **§6:** the slip's fit test becomes the genome spec's §7; a turn's redraw list adds the gene and the bay.
+- **The T-123 amendment:** items 1, 2 and 4 are void (no slip); item 3 stands with the new window.
+- **Art:** `slip-208x288`, `create-well` and `create-gene-line` are withdrawn; `create-bench` and `create-dish` are recut; the screen and its marks come from T-20261016-130.

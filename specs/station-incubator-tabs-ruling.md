@@ -176,3 +176,13 @@ The founder's shadow is derived by the build from Create's picture, not painted.
 ## 9. Build: T-20261016-40
 
 The edit list (incubator.json regions, states, focus, strings, events; props; face; tests; goldens; wireframes) is in the ticket. T-20261016-28 (already queued) draws the pod's shell in `pod`; T-40 builds everything else here.
+
+## Amendment (T-20261016-126): the slip becomes the genome screen, compact
+
+The slip (88, 96, 208 × 408) is replaced by the same machine screen as Create's, in its compact form: `specs/station-genome-screen-spec.md` §5, wireframe `specs/station-genome-screen/06-incubator-genome.png`.
+
+- **§2:** `slip` becomes **`genome` (88, 96, 208 × 312)**, growing, ready and hatch; 16 left of the ring's box. The slip's foot clearance (504) goes; the code's rule stays.
+- **§5, the slip:** every block goes (name, found-note, changes, cleared list, "still to come", "read it when it's out"). The compact tree shows every gene: the changes made on Create, frost on what is still a surprise; a chapter clearing cuts its frost to genes with a 400 ms `teal` pulse on the ring cut's frame, with the star where the look is new to the player. A crossed bud is all frost until it is out. Not a focus target.
+- **§5, the card, the stamp and the code:** unchanged.
+- **§6 brightness:** the screen replaces the slip among the regions the pod out-shines by 0.08.
+- **§8 art:** the slip paper is withdrawn; the screen comes from T-20261016-130.
