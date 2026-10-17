@@ -112,3 +112,9 @@ The owner rejected or caveated two proofs that both gates had passed (the T-170 
 - **Prominence matches loop weight** (owner, 13:00: "library is boring and relegated to the bottom, while the game designer mentioned that this will be the engine of the loop, and the probe has prominent space, yet the probe is a minor game mechanic"). Each element's size and position follow the game designer's ranking of its weight in the loop. Each thing Home shows has stated criteria ("you're showing only three pods, why? what is the criteria"). Empty space is spent only where emptiness says something.
 - **Question the concept, not only the proof** (13:00: "we are iterating over a stale concept"). When a screen comes back for the second time, the gate asks whether its structure is still right before judging its finish.
 - **Home shows the highest level only** (owner, 14:52: "home must show the state of the game at its highest aggregation level"). Home carries aggregate state: how far the pursuit is, what needs you, how the family is. One level down, such as a trait grid, per-look tiles or chapter detail, belongs to the screen Home opens. Nothing on Home needs a legend. If a first-time viewer can't say what a mark means, it is a level too deep or one too many.
+- **Peaceful as an always-on screen** (owner, 15:58: the Station is always on at home, so Home must be peaceful and nice to look at; a proof that "looks better, but it's not nice to look at" fails). Judge Home as an object in a room, seen for hours, not a dashboard used for seconds:
+  - the life and the light lead;
+  - the machine is quiet: calm values, no busy edges, no competing brights;
+  - motion and lit marks appear only when something happens.
+  
+  If a person wouldn't leave it on the shelf for its own sake, it fails. Small labels are allowed when they name, never when they explain.
