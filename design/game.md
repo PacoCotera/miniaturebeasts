@@ -8,33 +8,44 @@ breed families within its species. Each part gives the others a reason: a trip
 feeds the research bench, research leads to a new pet, and that pet and its family
 give the next trip a purpose.
 
-It is also a genetics toy. Appearance and abilities follow inherited traits, and
-the player learns how through pictures, comparison and consequences rather than
-lessons or notation.
+Underneath, it runs on a real genetics system. Appearance and abilities follow
+inherited traits, and the player can learn how through pictures, comparison and
+consequences, or go all the way down to the loci and the rules.
 
 **How this page is built.** It is written for the designers, artists and developers who make the game, in the order they need it. It opens with the **pillars**, the few things the game must always be, which settle arguments, and the **rules** every mechanic keeps. Then it covers the **loop**, the moment-to-moment play and its verbs, and the **systems** that loop runs on. After that come the **economy** that paces them, the **progression** that makes them add up, **engagement** (why players come back, and what we refuse to do to make them), and the **devices**, where all of it is played. It ends with the **mechanics reference** and the **open questions**. Each section says what the game does and why, and links to the document that holds the rules and numbers. When something here and a rules document disagree, the rules document is fixed. The game is a prototype and changes as it is played; the direction of the game's owner overrides anything on this page.
 
-## Who it is for
+## Who it is for: two motivations, often in one person
 
-The game works for two audiences at once. Children explore, uncover and pursue
-possibilities visually, without any genetics vocabulary. Curious parents and STEM
-enthusiasts can dig into the real genetics, one press away and never required. It
-is never a text-heavy school lesson, and never childish, in tone or in reward. It
-is a sandbox: a pretty mibi, a rare one and a capable one are all valid goals.
+The game serves two motivations, not two kinds of player:
+- **The cozy motivation is about the feel.** It is the warmth of a home full of life, the walk, the reveal, a name, a creature that is yours.
+- **The intellectual motivation is about the mechanics underneath.** It is how traits are carried and inherited, what a cross will give, how the world and the machines work.
+
+One person moves between them, often within a single sitting. They come home for the feel, notice something odd about a coat, want to know why, and end up planning a cross three generations deep. Then they enjoy the result as a pet. The game is designed for that movement, not for a segment.
+
+That is why the effort goes to both sides. The art and the loop carry the feel. The genome framework, the breeding mechanics and the hardware carry the depth, and the hardware carries the feel as well, in the dock's ritual and the keys in the hand.
+
+**What serving both means:**
+- **Each motivation gets a whole game.** A player who never opens a detail view has a complete, rewarding game. So does a player who reads every locus. Neither is the "real" game, with the other a reduced version of it.
+- **One truth, two depths.** Both see the same facts. The feel layer shows them as pictures, the mechanics layer as rules and values. The surface never says anything the depth contradicts, and the depth never holds a secret that changes the surface.
+- **Every surface has a way down, and every depth pays off on the surface.** A look the player loves invites the question "how do I get more of it?" A cross worked out on paper arrives as a living mibi with a name.
+- **Neither motivation is taxed by the other.** The cozy side never has to learn notation or optimise. The mechanics side is never blocked by ceremony or told "it's magic".
+
+It is never a text-heavy school lesson, and never childish, in tone or in reward. It is a sandbox: a pretty mibi, a rare one and a capable one are all valid goals.
 
 ## Pillars
 
 Every design decision is checked against these four. A feature that serves none of them is cut; a feature that breaks one needs a very good reason.
 
-1. **Discover something alive.** The world is full of creatures and secrets, and the player finds them by going out and looking. Exploration rewards curiosity, never reflexes. *Rules out:* combat, timed challenges, grinding for drops.
-2. **Author life you understand.** The player reads real genetics as pictures and shapes a creature from what a pod really carries. Every result is explained by what was inherited, never by luck at the moment of creation. *Rules out:* random rolls on creation, hidden stats, notation the player must learn.
-3. **Live with what you made.** Each mibi is an individual with a name, an origin and a family. It grows, walks with you, opens places and has children. Attachment comes from its story. *Rules out:* disposable units, rarity tiers as the point, mibis as currency.
-4. **Respect the player's time.** The game rewards attention and never demands attendance. Nothing is lost by being away, and every choice is shown before it is made. *Rules out:* decay, streaks, FOMO, paid speed or randomness, hidden costs.
+1. **Discover something alive.** The world is full of creatures and secrets, and the player finds them by going out and looking. Exploration rewards curiosity, never reflexes. *Rules out:* combat, timed challenges, grinding for drops. *The feel:* living places, the walk, the find. *The mechanics:* a world with rules the player can read (the weather, the turn, what each place holds).
+2. **Author life you understand.** The player reads real genetics as pictures and shapes a creature from what a pod really carries. Every result is explained by what was inherited, never by luck at the moment of creation. *Rules out:* random rolls on creation, hidden stats, notation the player must learn. *The feel:* turning a gene and watching the body answer. *The mechanics:* every locus, its copies and its inheritance, inspectable and true.
+3. **Live with what you made.** Each mibi is an individual with a name, an origin and a family. It grows, walks with you, opens places and has children. Attachment comes from its story. *Rules out:* disposable units, rarity tiers as the point, mibis as currency. *The feel:* a name, a home and a bond. *The mechanics:* a pedigree, and a line that carries what you bred into it.
+4. **Respect the player's time.** The game rewards attention and never demands attendance. Nothing is lost by being away, and every choice is shown before it is made. *Rules out:* decay, streaks, FOMO, paid speed or randomness, hidden costs. *The feel:* coming back is a pleasure, never a chore. *The mechanics:* a long plan is never broken by being away.
 
 ## The rules every mechanic keeps
 
 These hold across every system, below the pillars.
 
+- **One truth, two depths.** Every system has a surface that is good to feel and a depth that is good to understand. The surface is complete without the depth, the depth is one press from the surface, and both describe the same facts.
 - **Curiosity must be actionable.** Show enough of a place, creature or clue to
   support a choice. Variety must change what you can do or what happens, not just
   the scenery or the wait.
@@ -94,6 +105,13 @@ flowchart TD
 | Partner | brings a grown mibi on the next trip; it opens places and finds | Companion | 1, 3 |
 | Cross | pairs two adults toward a wish; reads the forecast | Station | 2, 3 |
 
+**Both motivations in one loop.** The loop is the same for everyone, but each step has a quick way through and a deep one:
+- **Identify and read:** grow a pod unedited in one press, or read every chapter and follow every glint.
+- **Shape and grow:** turn genes until the founder looks right, or plan a founder for the cross it will make later.
+- **Live:** name it and keep it company, or watch whether the cross came out as forecast.
+
+Neither way through is the right one, and a player takes whichever suits them today.
+
 **The arcs around the loop.** The loop repeats inside longer arcs, each with its own question: the **trip** (what's out there?), the **pod** (what does it carry?), the **mibi** (who is this one?), the **species** (what looks can it have?), the **family** (can I breed what I imagine?) and the **world** (what changed while I was away?). Every arc is optional except the trip. A player who only explores and hatches is playing the game.
 
 ## Systems
@@ -112,6 +130,18 @@ The loop runs on these systems. Each has one purpose; its rules are in the linke
 | **Breeding** | Families toward a wish | Two adults, Energy and Essence in; one child with real parents out | [Research and breeding](research-and-breeding.md), [Genomics](creatures-and-genomics.md) |
 | **Genomics** | The truth underneath everything | Species frames, loci, copies, inheritance; never required as notation; letters only in the detail view, one press away | [Genomics](creatures-and-genomics.md) |
 | **Collection** | The record of what the player knows | The Library and field guides, wishes, portraits earned by research | [Research and breeding](research-and-breeding.md) |
+
+**What each system offers each motivation:**
+
+| System | The feel | The mechanics |
+| --- | --- | --- |
+| World and exploration | a living place to walk, finds, creature moments | the turn, the weather and what each place kind holds |
+| Research | the glint, a chapter clearing, a picture of a look | the chapters, copies and loci; the field guide as a dataset |
+| Creation | the founder changing under the player's hand | which copies a pod carries, and which to fix |
+| Incubation | the candled pod, the reveal, the hatch | the same individual, never a reroll; what clears as it grows |
+| Life | a name, a home, care, a partner on walks | growth stages, self-changing traits and their triggers |
+| Breeding | a child, a family, a wish coming true | the forecast, kinship, hidden copies surfacing |
+| Collection | the Library filling, portraits arriving | complete field guides, every look found |
 
 **How the systems connect.** Exploration feeds research (pods, Data). Research feeds creation (read genes can be shaped). Creation feeds life (a mibi). Life feeds exploration (partners open places) and breeding (adults cross). Breeding feeds research (children to read) and collection (looks never seen). Every system both receives and gives, so no part of the game is a dead end.
 
@@ -133,7 +163,7 @@ Three supplies pace the game. Each has one job, so the player learns what each i
 
 ## Progression
 
-Progression is the world and the collection getting richer, never levels, experience or scores. The only numbers on screen are prices and supplies.
+Progression is the world and the collection getting richer, never levels, experience or scores. The only numbers on screen are prices and supplies. The same play moves both motivations forward. A player who spent a month on the feel and turns to the mechanics finds their field guides already half full, and a breeder who turns to the feel finds a vivarium of mibis with names and histories. Switching never means starting over.
 
 | What grows | How the player sees it |
 | --- | --- |
@@ -148,11 +178,11 @@ Progression is the world and the collection getting richer, never levels, experi
 
 ### Why players come back
 
-| Span | The pull |
-| --- | --- |
-| **Minutes** | a bud's next reveal; a chapter clearing; crates waiting in the bay |
-| **A day** | a trip to take; the bench's small daily Data; a young mibi growing up |
-| **Weeks and longer** | a field guide nearly complete; a wish one generation away; a place a grown partner can open; a portrait on its way |
+| Span | The pull of the feel | The pull of the mechanics |
+| --- | --- | --- |
+| **Minutes** | a bud's next reveal; crates waiting in the bay | a chapter clearing; what a glint was pointing at |
+| **A day** | a trip to take; a young mibi growing up | the bench's small daily Data; a partner's self-changing trait moving after a trip |
+| **Weeks and longer** | a place a grown partner can open; a portrait on its way | a field guide nearly complete; a wish one generation away |
 
 The Station shows what is new or ready at a glance, from Home and Idle, so the reason to come back is visible without opening anything. The return is always to something new, never to repair a loss.
 
@@ -166,6 +196,7 @@ The Station shows what is new or ready at a glance, from Home and Idle, so the r
 - **A gentle appointment.** A bud grows in real time and rewards each visit with a reveal.
 - **Goals the player sets.** The wish turns the player's dream mibi into a long goal the game helps with.
 - **Physical ritual.** Docking makes three devices react together; the trip comes home as an event.
+- **The bridge between the two.** A look the player loves is the most common way into the mechanics, and a mibi bred to a plan is the most common way back to the feel. Both crossings are invited, never forced: a glint, a wish, a forecast picture, a resident with its own story.
 
 References for these patterns, not to copy: the check-in pleasure of *Neko Atsume*, the genetic pets of *Creatures*, and the partner bond of the *Pokémon* games, without their battling.
 
@@ -209,6 +240,7 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 - Not a race or a ladder: no leaderboards and no punishing timers.
 - Not a battler: mibis are companions and partners, never fighters ranked by power.
 - Not childish: never babyish in tone, art or reward.
+- Not a veneer: nothing on a mibi is decoration its genome doesn't explain, and the depth is complete for a player who wants it.
 
 ## Mechanics
 
@@ -237,7 +269,8 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 - What bonding involves and gives the player beyond growth, what care looks like, what missing it means, and how
   long a mibi lives.
 - Which ability each species brings as a partner, and how traits shape it. This carries the mibi arc's "what can it do with me?": until it is designed, a mibi has no payoff on the Companion beyond company.
-- Fertility, and how a cross that fails is shown.
+- Fertility. A cross of two valid parents always builds: failure is made unreachable in the framework and tested for every species, so no failed-cross screen is designed.
+- **The mechanics player's tools beyond the detail view:** how far the forecast shows odds, and whether pedigrees and kinship are drawn. They must stay one press from the surface, never on it.
 - What crafting makes: its recipes, feed and habitat items.
 - Probe tiers beyond 2, mods, chip slots and Station upgrades.
 - The cloud layer's contents: sync, an exchange, mini-games, lineage and
