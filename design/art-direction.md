@@ -28,19 +28,19 @@ A small, well-made field kit for keeping living things. You hold it, and it is w
 
 When a screen goes wrong, it is almost always one layer doing another's job: the instrument taking colour or decoration from the life, or the signal lighting up for show. Checking a screen layer by layer finds those faults before they compound.
 
-<table><tr><td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: the three layers in one picture: a lit subject, a quiet device, a few small signals. Approved concept, generated. Its blue display and orange corners are not the rule.</em></td>
+<table><tr><td valign="top"><img src="style-guide/plates/01-look-do.png" width="512" alt="Home, the three layers"><br><em>Home as the target, the three layers in one screen: the living vivarium, the quiet slate instrument, a few small signals. Diagram: the accepted Home with its module panes re-toned to the slate pane (style guide plate 01).</em></td></td>
 <td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth the life layer carries. Approved concept, generated.</em></td></tr></table>
 
-### One machine
+### One machine: the instrument layer's rule
 
-**Every screen is the same machine,** seen from a different side. That means:
+**The instrument is the same machine on every screen,** seen from a different side. That means:
 - one slate ground, one housing frame and one pane, everywhere;
 - the player's pod and the genome stamp drawn the same way on every screen they appear on;
 - when something moves from one screen to the next (a pod from the bay to the rack, to the bench, into the incubator; a young mibi into the vivarium), it is carried across, not redrawn.
 
-**Why.** The player builds trust in the device the way they would with a real instrument: by learning it once. Every screen that invents its own ground, frame or version of the pod makes them learn it again, and it breaks the sense that this is one object in their hands. Small local fixes that each look right alone add up to a patchwork, so the test is never a screen on its own. A screen that is right by itself but looks foreign beside its neighbours is wrong. Screens are judged side by side, in the order a player meets them.
+**Why.** A device you trust is one you recognise everywhere. The player learns a real instrument once. Every screen that invents its own ground, frame or version of the pod makes them learn it again, and it breaks the sense that this is one object in their hands. Small local fixes that each look right alone add up to a patchwork, so the test is never a screen on its own. A screen that is right by itself but looks foreign beside its neighbours is wrong. Screens are judged side by side, in the order a player meets them.
 
-The three layers are how this holds: the instrument layer is shared and never redesigned per screen, the life layer changes with what the screen is about, and the signal layer means the same thing everywhere.
+This is why the instrument layer is shared and never redesigned per screen, while the life layer changes with what the screen is about and the signal layer means the same thing everywhere.
 
 ### Textures and materials
 
@@ -57,6 +57,8 @@ Tactility is what makes a picture feel like something alive you could hold, and 
 - a little wear at the edges.
 
 Matte and hard against soft and alive is the contrast that makes the life stand out. The wear says the kit is used and trusted, not new and on display.
+
+<img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: the finish to aim for: matte sage, rubber, recessed screws, soft broad highlights, a clean lit subject. Approved concept, generated. Its blue display and orange corners are not the rule.</em>
 
 **Displays** are dark matte screens that the life and the light stand out against. **Paper, tags and labels** are the field kit's own honest materials, but they never change on screen: anything that changes or that you act on is the machine's display.
 

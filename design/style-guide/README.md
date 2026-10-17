@@ -282,7 +282,7 @@ What each Companion screen reads first is in its entry in [Companion screens](co
 | **Spending and gaining** | the counter ticks with a 240 ms flash |
 | **Dock** | the link lamp turns `stone` to `mint`, the glyph fills and lifts 2 px for 200 ms, and the crates slide into the bay. Undocking reverses it |
 | **Screen change** | the title and its mark cross-fade in 200 ms; the stage cuts. This is every room change from Home and every ← |
-| **Pod carry** (a hand-off: Cargo → Pods → Create → the Incubator) | the player's own pod is carried across instead of cut: it lifts 2 px out of its place (120 ms), travels on a short shallow arc to where it sits on the next screen while the title cross-fades and the next stage fades in under it (480 ms, ease in-out), then lands with its contact shadow and a 2 px settle (120 ms). About 720 ms in all. Nothing else moves; any key lands it at once |
+| **Pod carry** (a hand-off: Cargo → Pods → Create → the Incubator) | the player's own pod is carried across instead of cut: it lifts 2 px out of its place (120 ms), travels on a short shallow arc to where it sits on the next screen while the title cross-fades and the next stage fades in under it (480 ms, ease in-out), then lands with its contact shadow and a 2 px settle (120 ms). About 720 ms in all. Nothing else moves; any key lands it at once. On these hand-offs the carry replaces the arrival ribbon; the ribbon stays only for jumps with no carry |
 | **Hatch to the vivarium** | the young mibi steps out of the opened shell and walks into the vivarium on its own walk cycle (about 1.2 s), while the stage fades from the chamber to the vivarium under it; any key lands it at once |
 
 **The Companion: stepped frames.**
