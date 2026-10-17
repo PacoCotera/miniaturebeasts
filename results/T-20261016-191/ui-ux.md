@@ -38,9 +38,9 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 
 - **The same everywhere:** the colour, the 2 px stroke, the ring appearing at once on a move with no slide between targets, and ✓ doing what the bottom line says.
 - **The modules:** their rings move from radius 6 to the guide's ring. T-192 fixes the column's geometry, so the change lands there.
-- **Kin is not focus.** While a resident holds the ring, its parents and children in the window get a 2 px dashed footprint in fog, with no glance, no glow and no word.
+- **Kin is not focus.** While a resident holds the ring, its kin in the window (below) get a 2 px dashed footprint in fog, with no glance, no glow and no word.
   - A kin mark is drawn only where the relative's feet show; it is never drawn across another mibi (in `01`, Dot is behind Bean, so only Bean's mark is drawn).
-  - The genome engineer rules on which relations count (parents and children are my proposal; siblings are theirs to rule on).
+  - **Relations** (the genome engineer, `results/T-20261016-191/genome-engineer.md` §3; the creative director's call 4): parents, children and full siblings present in the window, all in the same unlabelled dashed mark. Which relation it is, and the sibling warning, belong to the Cross screen.
   - **Paint** (the art director, `results/T-20261016-191/art-director.md`): the ring and the kin mark are drawn under the resident's sprite, so the feet stay in front, each with a 1 px `ground` keyline outside it. Kin dashes are about 4 px. The keyline is what makes both read on lit moss. This answers my wireframe's "barely reads".
 
 ## 3. The glance
@@ -49,18 +49,22 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 - **Size:** 24 px marks (the guide's 24 tier, since meaning rides on the mark) with a gap of 8. The recess is 32 tall, padded 8 at the sides and 4 above and below, radius 8.
   - S01 (4 chapters) is 128 wide.
   - S03 (8 chapters, the most) is 264 wide.
-- **States:** read, unread (a dotted edge, never its content) and sealed (slats).
-- **The glint** (the four-point glint in gold, `#d89b14`, 12 × 12 at (16, −4) of the emblem, as on Create; one per chapter; mint would read as "changed by you") marks a chapter that is unread (a bred child's surprise), or one that **changed since the player last looked**. Only the self-changing traits can change: Glow (S03), Basking (S15) and Phase (S16), as a partner. A Loika's chapters never glint for a change.
+- **States:** read (bright `bone`), unread (receded to `fog` by value, so it reads as "not yet" at 1× without the dotted edge doing the work; never its content; the art director paints the value) and sealed (slats).
+- **The glint: one glint, gold, one meaning, "something new here"** (the four-point glint, `#d89b14`, 12 × 12 at (16, −4) of the emblem, as on Create; at most one per chapter). It fires only when:
+  - a **read** chapter's `seen` key differs from its current key: newly read elsewhere, or a self-changing mark moved (Glow S03, Basking S15, Phase S16, as a partner; a Loika's chapters never change); or
+  - the code's own `glint` rule says this mibi carries a look the species' guide hasn't seen.
+
+  **It never fires for unread alone**: an unread chapter is not evidence that anything is new (the genome engineer, §2). There is no second, mint glint.
   - The glint makes one pass when the glance appears, then rests lit. The timing is per guide §9.
   - The glint must stay distinct from a first's mark.
-  - It clears when that chapter is read, or when the change has been seen up close (`05`).
+  - It clears when the chapter's current key has been on screen up close (Habitat, the genome tree or the Library entry), which sets `seen` (`05`).
 - **Placement, applied in order:**
   1. Centred on the footprint, 8 below the ring.
   2. If its bottom would pass y 536 (the glass less 8), it sits above the resident's box instead, 8 over its head (`03`, a founder with nothing new, so no glint).
   3. It is clamped inside the glass, 8 from each side (x 32 to 656).
   4. It may cross another resident, but never the focused one.
 - **Life:** the glance is drawn only while a resident holds the ring and is gone the moment the ring leaves. Nothing stays on the window.
-- **No glint anywhere:** the marks still show, quiet. The depth is visible even when nothing is new.
+- **No glint anywhere** (the common case, e.g. `01`: Moss's Coat unread, nothing new): the marks still show, quiet. An unread mark, receded, is the invitation.
 - **How it sits on the painting** (the art director, `results/T-20261016-191/art-director.md`, proofs `glance-painted-moss.png` and `glance-painted-bed.png`):
   - an opaque `panel` pane with a `hairline` edge and a `bevel` lip, and no light outline;
   - each mark in its own `ground` well, never on a cream tile;
@@ -83,7 +87,10 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 
 ## 5. ✓ goes down
 
-- **Where it lands:** ✓ **Look at {name}** opens the Habitat up close on that mibi, as today. Focus lands on **the chapter plate that glinted** (the first in ring order if several glinted), not on the resident. With no glint, focus lands on the resident, as today.
+- **Where it lands:** ✓ **Look at {name}** opens the Habitat up close on that mibi, as today. Focus lands, in this order:
+  1. on the **first glinting chapter plate** in ring order;
+  2. else on the **first unread chapter plate**, whose card verb ("Read Coat ◆ 1") is the invitation (`04`);
+  3. else on the resident, as today.
   - **Change:** `habitat.json focus.entry.homeResident`.
 - **One press:** the player lands on the mechanic itself, and the card's own verb is waiting (`04`: ✓ Read Coat ◆ 1).
 - **The screen change:** the title cross-fades and the stage cuts, as any room change from Home (guide §9). No carry is added; the matching marks do the continuity.
@@ -98,8 +105,8 @@ The ring is one ring everywhere. Its shape follows the object's own outline (`06
 ## 7. The gate, as I read it
 
 1. **At rest:** the room focus draws nothing on the window. A glance appears only on a resident's focus.
-2. **Within two seconds:** the eye is already on the resident when the glance appears, and the glint passes once on arrival.
-3. **One press:** ✓ from the focused resident lands on the glinting chapter.
+2. **Within two seconds:** the eye is already on the resident when the glance appears. A glint passes once on arrival; with no glint, the unread mark's receded value carries "not yet read" (the art director's value step).
+3. **One press:** ✓ from the focused resident lands on the glinting chapter, else the first unread one. A bred child with nothing new still lands on a mechanic.
 
 Judge it in the device sheet with `01`, `04` and `05` side by side.
 
@@ -107,11 +114,9 @@ Judge it in the device sheet with `01`, `04` and `05` side by side.
 
 - **The game designer:** answered. The origin line, without the name (§4).
 - **The genome engineer:**
-  - That "changed since last looked" can be known per mibi and per chapter (it needs a seen mark).
-  - The kin relations to show.
-  - That every mark shows only what is read.
-- **The art director:**
-  - The glance's ground on the painting.
-  - The kin mark's paint.
-  - Whether the footprint ring reads on every ground: moss, bed and soil.
+  - Answered (`results/T-20261016-191/genome-engineer.md`): the `seen` record, the kin set and the truth table. The glint is gold (the creative director's call 1).
+- **The art director:** the ground, the kin mark and the ring on every ground are answered. Open, per the creative director's round:
+  - the read and unread value step at 1×;
+  - the moss proof repainted with no glint on Coat;
+  - one frame where a glint is true (a read S03 Glow mark that moved).
 - **Order:** this is built after T-190's look, since the glance sits on individuals.
