@@ -45,7 +45,7 @@ The line already chooses the first thing that holds (`needKey`). Four keys are a
 4. **a portrait has come**: "Fig's portrait has come" (new; until now it rode on "crates")
 5. **a chapter cleared**: "Face cleared on your Loika" (new; held until the Incubator has been looked at)
 6. **grown up**: "Moss has grown up" (new; held until visited), and "Bean is an elder now" (new, once)
-7. new pods, glints, waiting pods, a pod could grow, unread pods (today's, unchanged)
+7. new pods, glints, waiting pods, a pod could grow, unread pods (today's, unchanged). **One wording change (T-186, the rooms' own nouns):** the new-pods notice names the Pods room's case, not the rack: "a new pod in the case" and "three new pods in the case" (the count in words, as today). It is the `newPods` string in `state.mjs`, and it lands in the T-192 build with UI/UX's slot rule
 8. **a bud is growing**: "a Loika bud is growing" (today's "a bud is growing", with the species)
 9. **the bench**: "watch a resident today" (new; only while today's Data is not earned and a resident is home)
 10. set out with the Companion (today's)
