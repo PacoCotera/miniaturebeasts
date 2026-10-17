@@ -148,7 +148,7 @@ test("regions.pod.dome is the pod at the collection class, pod:<species>:i:88x11
 // ---- fix 5, Create (the gate): the same look, the sealed contexts, the right slot, the case ----
 test("fix 5: the trait line names the same look only when all four hold (S01 Crown: the pod's leaf crest hides bare head, the crest chosen); a hidden look chosen, a blend and any trait the pod does not hide never take it", () => {
   const fr = frameOf("S01"), crown = fr.chapters.flatMap((c) => c.traits).find((t) => t.name === "Crown");
-  for (const gs of [3, 4]) {   // gs 3: the hidden copy is choice 1; gs 4: choice 2
+  for (const gs of [13, 4]) {   // the Loika at frame version 4 (T-20261016-200): gs 13: the hidden copy is choice 1; gs 4: choice 2
     const m = make("S01", gs, fr.chapters.length), list = reviewTraits(m.p, fr), f = list.findIndex(({ t }) => t === crown), own = traitState(fr, crown, m.p.genome); assert.equal(own.kind, "hides"); m.cr.f = f;
     const keep = own.hiddenChoice === 1 ? 2 : 1; m.cr.choices = { [crown.id]: keep }; let L = m.build().props.regions.traitLine; assert.equal(L.text, "Crown: leaf crest, hides nothing"); assert.equal(L.changed, true);
     m.cr.choices = { [crown.id]: own.hiddenChoice }; L = m.build().props.regions.traitLine; assert.equal(L.text, "Crown: bare head", "the hidden look chosen: the plain form"); assert.equal(L.changed, true);

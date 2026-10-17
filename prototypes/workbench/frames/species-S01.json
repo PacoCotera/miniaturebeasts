@@ -136,10 +136,10 @@
      "looks": [
       "charcoal",
       "charcoal and russet",
-      "charcoal and plum",
+      "charcoal and cobalt",
       "russet",
-      "russet and plum",
-      "plum"
+      "russet and cobalt",
+      "cobalt"
      ],
      "nature": "look",
      "shapeable": true,
@@ -282,15 +282,15 @@
    "alleles": [
     "charcoal",
     "russet",
-    "plum"
+    "cobalt"
    ],
    "looks": [
     "charcoal",
     "charcoal and russet",
-    "charcoal and plum",
+    "charcoal and cobalt",
     "russet",
-    "russet and plum",
-    "plum"
+    "russet and cobalt",
+    "cobalt"
    ],
    "guard": "sketch: the body pigment slot",
    "changedBy": "player"
@@ -2032,7 +2032,7 @@
   "appearance.body-palette": [
    "charcoal",
    "russet",
-   "plum"
+   "cobalt"
   ],
   "appearance.marking-switch": [
    "on"

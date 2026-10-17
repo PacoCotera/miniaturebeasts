@@ -111,7 +111,7 @@ export const SPECIES = [
     fixed: S01_FIXED, typical: { "growth.exterior-eye-size-ratio": "huge" }, openSwitches: ["appearance.marking-switch", "anatomy.crown-presence"],
     legacy: { "appearance.marking-switch": ["off"] },   // a version-3 Loika may carry "off" (plain): legal for inheritance, never drawn for a new pod
     open: [
-      { chapter: "coat", id: "colour", name: "Colour", loci: ["appearance.body-palette"], pool: { "appearance.body-palette": ["charcoal", "russet", "plum"] } },
+      { chapter: "coat", id: "colour", name: "Colour", loci: ["appearance.body-palette"], pool: { "appearance.body-palette": ["charcoal", "russet", "cobalt"] } },
       { chapter: "coat", id: "markings", name: "Markings", loci: ["appearance.marking-switch", "appearance.marking-layout"], looks: ["plain", "stripes", "patches", "stripes and patches"], pool: { "appearance.marking-switch": ["on"], "appearance.marking-layout": ["bands", "patches"] } },
       { chapter: "face", id: "crown", name: "Crown", loci: ["anatomy.crown-presence"], looks: ["bare head", "leaf crest"] },
       { chapter: "face", id: "eye-rings", name: "Eyes", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"], pool: { "growth.exterior-eye-size-ratio": ["large", "huge"] } },
