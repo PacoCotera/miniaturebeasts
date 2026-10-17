@@ -36,7 +36,7 @@ Two honest kinds of special, both from today's rules and data:
 
 - **On the founder,** unread parts stay frosted, as now.
 - **On the bank,** an unread chapter's drums are capped with frost. When this pod **glints** on that chapter (the species has shown that chapter before, and this pod carries a look the species hasn't shown yet), the cap shows the glint star: "something new is under here". That is the temptation, and it is the real one from the rules.
-- **The choice it opens,** shown with options, cost and outcome (specs/station-decision-points.md): on a capped drum, ✓ offers **Read it now** (◆ n, then you can shape it) or leaves it to **clear while it grows** (free, a surprise in the Incubator). Today, reading means going back to the pod. Letting the player read from the bench is a proposal for the lead, since it adds an action to Create.
+- **The choice it opens,** shown with options, cost and outcome (specs/station-decision-points.md): on a capped drum, ▲ or ▼ (which do nothing there today) **reads it now** (◆ n, then you can shape it), and the context line says "▲ read it now ◆ n". Otherwise it **clears while it grows** (free, a surprise in the Incubator). ✓ stays Grow on every drum, so a player never pays for a read when they meant to grow (UI/UX's key). Today, reading means going back to the pod. Letting the player read from the bench adds an action and a rule to Create, so it is open for the lead to rule.
 - **On the Incubator,** the frosted part clears on the founder's shadow inside the pod and, where the look is new to the player, it clears with the same star and light as a first on Create.
 
 ### 5. The bench's display: the record, live
