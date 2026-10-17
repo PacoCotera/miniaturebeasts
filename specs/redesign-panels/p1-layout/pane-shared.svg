@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<text x="24" y="32" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">The shared pane (guide §4 Pane), and where it replaces today's plates</text>
+<text x="1000" y="32" font-size="8" fill="#8d8aa6" text-anchor="end" >LAYOUT sheet, 1× · T-20261016-165</text>
+<rect x="40" y="64" width="400" height="240" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<path d="M48 64.5H432M40.5 72V296" stroke="#565c63"/>
+<text x="56" y="96" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Pane title</text>
+<text x="56" y="124" font-size="16" fill="#c6c4d8" text-anchor="start" >A readout line</text>
+<rect x="56" y="140" width="64" height="64" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="128" y="140" width="64" height="64" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="56" y="230" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">flat panel, radius 8, 1 px hairline, 1 px bevel top + left</text>
+<text x="56" y="244" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">16 px inner margin; 8 between related, 16 between groups</text>
+<text x="56" y="258" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">no coloured border, no pane on a pane, no plate picture</text>
+<rect x="472" y="80" width="520" height="44" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="488" y="99" font-size="14" fill="#f1ebdf" text-anchor="start"  font-weight="500">Home: each module</text>
+<text x="488" y="116" font-size="11" fill="#c6c4d8" text-anchor="start" >one pane per module; module title 20 px; lamps as guide §4</text>
+<rect x="472" y="132" width="520" height="44" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="488" y="151" font-size="14" fill="#f1ebdf" text-anchor="start"  font-weight="500">Vivarium up close: the mibi's card and modules</text>
+<text x="488" y="168" font-size="11" fill="#c6c4d8" text-anchor="start" >the card = a pane; its tiles = wells in ground</text>
+<rect x="472" y="184" width="520" height="44" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="488" y="203" font-size="14" fill="#f1ebdf" text-anchor="start"  font-weight="500">The namer</text>
+<text x="488" y="220" font-size="11" fill="#c6c4d8" text-anchor="start" >a pane under the subject; the letters on the pane, 16 px inner margin</text>
+<rect x="472" y="236" width="520" height="44" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="488" y="255" font-size="14" fill="#f1ebdf" text-anchor="start"  font-weight="500">Probe bench: Mend and Upgrade</text>
+<text x="488" y="272" font-size="11" fill="#c6c4d8" text-anchor="start" >two panes beside the Probe; replaces the plates</text>
+<rect x="472" y="288" width="520" height="44" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="488" y="307" font-size="14" fill="#f1ebdf" text-anchor="start"  font-weight="500">Instrument side panes (Pods, Create, Incubator, Cargo)</text>
+<text x="488" y="324" font-size="11" fill="#c6c4d8" text-anchor="start" >one column of panes beside the subject (§7 density)</text>
+<rect x="472" y="340" width="520" height="44" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="488" y="359" font-size="14" fill="#f1ebdf" text-anchor="start"  font-weight="500">Decision panel</text>
+<text x="488" y="376" font-size="11" fill="#c6c4d8" text-anchor="start" >the same pane at radius 12, 840 × 440, over the veiled stage</text>
+<text x="40" y="560" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">proposed to retire (the art director and CD decide): plate-device-*, plate-well-* as pictures, cargo-report-plate, label-plate-cream, the stamp case plaque; every pane is the one flat component</text>
+</svg>

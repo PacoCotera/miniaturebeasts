@@ -182,3 +182,17 @@ It is the architect's: T-20261016-90 (the face, the wire, the host's hold end, t
 | **Incubator, growing** | **T-50 builds it:** while a bud grows, the context zone says "ready in about {n} min" (n = the minutes left rounded, at least 1) instead of the bud's name. Ready keeps `strings.bud`. This is owner ruling 3; the Incubator option B build (T-40) keeps the same line |
 | Vivarium, Take or Bring; Library, Pin it | Go with those actions when they are built. Nothing at this base |
 | **Probe bench, the plates** | **T-50 builds it, reworded to 6 words:** "Shield takes {n in words} {strike|strikes}", with n = the whole plates *after* this press (the mend's result), so the line says what the press buys. (T-20261016-102: "the Shield takes three strikes" measured 212 px in the 208 px zone; without "the", the widest count, three, is 185 px. Measured at 16 px: one 167, two 175, three 185, four 178) |
+
+## Amendment (T-20261016-165, UI/UX): P1, the outcome windows (the creative director's call, 2026-10-17)
+
+The creative director chose P1 (`specs/station-experience-review.md`, the brief for B-20261017-1), on the guide's components (`design/style-guide/README.md` §4 on branch `style-guide-t172`: Pane, Decision panel, Option card). This fixes the guide's open note "P1's larger windows once P1 is chosen". Layouts at 1× on slate: `specs/redesign-panels/p1-layout/` (Return, Grow, Hatch with three options, Fit, and the shared pane sheet).
+
+- **The panel:** unchanged, the pane at radius 12, 840 × 440 at (92, 80), over the stage veiled toward `ground`. The title is 28 px, centred on 512, with its baseline at y 124 and at most 4 words.
+- **The cards:** y 152 to 504 (352 tall), 16 apart, starting at x 124. One option is 776 wide, two are 380, three are 248. A card is a well in `ground`, radius 8, 1 px `hairline`.
+- **The outcome window:** at (8, 8) in the card, w − 16 × 240: 760, 364 or 232 wide. The outcome scene is painted full bleed, radius 6, and each option is a different scene (the game designer's table, `specs/purpose-briefs-b20261017-1.md` §6.1). It replaces the 160-tall window and the plinth.
+- **Under the window:**
+  - the verb, 20 px medium, `bone`, at (16, 264) baseline, at most 3 words;
+  - the costs, as icons with figures in `focus`, right-aligned to (w − 16) on the verb's baseline;
+  - the line, 16 px at (16, 296) baseline, one line, at most 6 words, in `fog`, or in `coral` for a loss with its cross.
+- **Focus:** the ring in `focus`, 2 px, 4 px out (radius 12); the card lifts 2 px.
+- **The words budget, flagged:** the game designer's Return line "Gone for good. Its place will remember it." is 8 words, against the guide's 6 for an option's line. It needs a 6-word line from the copywriter, or the owner's approval of the budget.
