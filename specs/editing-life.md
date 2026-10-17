@@ -48,7 +48,7 @@ Each procedure is a verb the player does at the bench, what the machine does in 
 | **Try a gene that can't be edited** | Refuses, with the reason shown as a mark, not a sentence | Nothing changes on the animal | Locked (the species' mark), inherited-only (the "breed to change" rings, pointing to the Cross), self-changing (its place badge: "its life changes this") |
 | **Read a sealed chapter** | Shows the chapter's genes under frost; a glint where this pod carries something new to the species | Those parts stay frosted on the animal | Unread chapters. Ruled by the lead (T-20261016-134): ▲ or ▼ on an unread gene opens the decision panel with the chapter's cost (◆ n) and what reading it reveals; it never spends silently. Otherwise the chapter clears while it grows. ✓ stays Grow |
 | **Inspect** | Opens the detail view: the copies with their letters, the rule in plain words, the reference look. Returns to the same gene | — | Any read gene, free |
-| **Resolve a clash** | Flags two genes that together won't build a body, linked in red, on both genes | The animal can't be grown until one changes; Grow is withheld and nothing is spent | Configurable pairs that clash |
+| **Resolve a clash** | Flags the set of changed genes (one to n, the code's `clashTraits`) that together won't build a body, each with a red rim, mirrored on their drums, and no link | The animal can't be grown until one changes; Grow is withheld and nothing is spent | Changed configurable genes. Unreachable with today's frames; kept as the code's guard (specs/genome-screen-calls.md) |
 | **Commit** (Grow) | The decision panel shows the animal as the pod would grow it beside the one the player made, with every edited part lit, and the price. On ✓ the machine writes the edited genome into the pod: the stamp prints and the pod seals | The founder the player made, fixed | — |
 
 ## 4. How the bench tells the kinds of gene apart
@@ -86,7 +86,7 @@ It is the same instrument, showing the same genome. While the bud grows, the fou
 
 ## 8. Needs
 
-- **UI/UX:** the instrument's form and layout at 1024×600, how each procedure is reached with the pad and keys, the refusal marks, the clash link, and how a deep species' eight chapters stay present at once.
+- **UI/UX:** the instrument's form and layout at 1024×600, how each procedure is reached with the pad and keys, the refusal marks, the clash rims, and how a deep species' eight chapters stay present at once.
 - **Art (AD):** the marks for each kind of gene, the copies as samples, the frost, glint, star and wish marks, and the founder's reactions (specs/slip-reward.md), in the Station's lab style as the creative director sets it.
 - **Architect** (per the ticket): drawing the whole genome with live changes in LVGL on the Pi at 1024×600. Only the focused gene animates.
 - **Build:** each gene's kind comes from the frame (locked, configurable, inherited-only, self-changing, sleeping behind which switch, sealed), its state from the pod (read; the glint per chapter; the wish per specs/genome-screen-calls.md; the first mark from `p.first`), and the clash set (one to n traits) from `clashTraits`.

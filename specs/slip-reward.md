@@ -45,7 +45,7 @@ Because 1–4 put the reward on the founder and the drums, the display's job is 
 
 - one chip per trait, with the drum's notch when changed and the star when it was a first;
 - a frosted chip for each trait of a chapter still a surprise, with the glint once on the row when the chapter glints;
-- the clash as the red link between two chips, mirrored on the two drums;
+- the clash as a red rim on every clashing chip (one to n), mirrored on their drums, with no link;
 - on the Incubator, the same display; a frosted chip clears to its picture when its chapter clears, with the star when the look is new to the player.
 
 Being live, the display can also take the focus. When the ring walks the bank, the matching chip is outlined on the display, so the player can see where a paged-off drum sits in the whole genome. It never carries a sentence, a count in words, or the price (the bottom line has it). **Words budget, as the creative director's: at most 3 on the display.**
