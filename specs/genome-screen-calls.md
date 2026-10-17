@@ -64,8 +64,11 @@ A trigger is met on an expedition when the mibi is the **partner** on it (not on
 
 - **The mark** is an integer, 0 to 4, kept in the mibi's record beside its genome, never in the copies. The genome, its digest, its name code, its stamp and its family record never change.
 - **Step up:** when the partner docks after an expedition on which its trigger was met, its mark goes up one, at most to 4. One step per dock, however often the trigger was met.
-- **Fade:** after **three expeditions in a row as partner without its trigger**, the mark goes down one, and the count starts again. A mibi that is not the partner (at home, or carried but not leading) keeps its mark and its count unchanged.
-- **Effect:** the trait shows the mean of its two copies plus the mark × one sixteenth of the species' range for that trait, clamped to the species' pool.
+- **Fade:** after **three expeditions in a row as partner without its trigger**, the mark goes down one, never below 0. The count resets to 0 after each fade and on each step up. A mibi that is not the partner (at home, or carried but not leading) keeps its mark and its count unchanged: such a trip neither counts nor resets.
+- **Direction:** a mark moves only toward its end; it goes back only by fading.
+- **Step size:** one sixteenth of the species' **pool** range for that trait.
+- **Storm:** a storm passed over the place the partner was in, while it was there, at any point in the trip. A storm elsewhere on the map does not count.
+- **Effect:** the trait shows the mean of its two copies plus the mark × the step, clamped to the species' pool.
 - **Never inherited:** a child starts at 0, and a cross reads the copies only. A founder starts at 0.
 - **Sealed:** a self-changing trait in a sealed chapter moves from birth like any other, but shows no hint of the change until the chapter is opened and read. (The doc says it gives no hint of a change until the chapter is read.)
 - **Field guide, wish and forecast:** a mark never adds a look to the guide, never counts toward a wish and never changes a forecast.
@@ -78,3 +81,5 @@ The Companion records, per expedition and per partner, whether each trigger was 
 
 - **Create and the Incubator:** the step marks, always unlit (a founder or a bud is at 0), with the trigger's place badge: a cave and a wood for Glow; a meadow, pond edge and rock field for Basking; a storm for Phase.
 - **The vivarium, up close:** the steps lit to the mark, and the words the rules already give ("brighter after walks in caves and woods").
+
+**Agreed with the genome engineer (2026-10-17):** the frames carry `changedBy` (species / player / breeding / self) on every locus and `selfChanging: { toward, places, storm }` on the three traits above. The rules are held as framework constants.
