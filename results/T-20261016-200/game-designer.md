@@ -52,3 +52,37 @@ It passes when:
 - old-version pods and mibis are unchanged;
 - four random Loikas look distinct well above today's 35% (the genome engineer's figure);
 - the field guide counts the 13 looks, with hidden copies never counting.
+
+## Correction (game designer, 2026-10-17): N2, the framework's native design, replaces the table above
+
+The genome engineer showed that my design fights the framework. An operator belongs to the catalogue locus and is shared by every species:
+- flipping `marking-switch` to dominant would flip every species' markings and every saved mibi's look;
+- `body-palette` is co-dominant for all 16 species;
+- `marking-layout` has two alleles (bands, patches), with no "spots" and no dominance.
+
+I should have checked the catalogue before proposing dominance orders. A per-frame override is a large framework change, so it is not for this ticket.
+
+**The call: N2.** It gives 90% of four-Loika households all distinct (measured: 400 pods, 4,000 households, all viable):
+- **Colour:** three pigments, co-dominant: charcoal, russet and a third. A Loika shows its pigment, or both of two, as one painted two-tone look (the art director's back and belly zones), not two overlaid paintings.
+- **Markings:** every Loika is marked. Pattern is co-dominant: stripes, patches, or stripes and patches.
+- **Crest and Eyes:** unchanged.
+
+**Why N2 and not N3:** 90% already meets the owner's "different between individuals" at Home's size. N3's Amount adds three subtle bins, more paint, and 5 points. It's not worth it now; it can come later if households read alike.
+
+**Rarity, as it now works:** the pure looks are the rare ones. Each pure colour is about 11%, each pure pattern 25%, and the mixed looks are common. Breeding for a pure colour, from two mixed parents, gives it a quarter of the time. That is still a fair, readable goal.
+
+**The hidden-copy lesson** moves to the Crest (a crested Loika can hide a bare head) and the Eyes blend. Plain disappears, and that is acceptable: the lesson is kept, on a trait the player sees on every Loika.
+
+**The third pigment:** the art director's choice, with one condition. It must read apart from charcoal and russet at 144 px and in four-gray (value as well as hue), so that the mixed two-tones stay readable.
+
+**The words:**
+- **Colour:** "charcoal", "russet", "{third}". A mixed look is "{a} and {b}", e.g. "charcoal and russet", the Belatz convention.
+- **Pattern:** "stripes", "patches", "stripes and patches".
+
+**The field guide:**
+- Colour has 6 looks (3 pure, 3 mixed).
+- Pattern has 3 looks.
+- Crest has 2 and Eyes 3.
+- That makes 14 looks. The pure colours are the last to fill.
+
+**My gate:** the measured shares within a few points of these figures, 90% distinct, all pods viable, and old-version pods and mibis unchanged.
