@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Home</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >FLOW 01: a notice lands on what it named (Home)</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >WIREFRAME, 1× on slate, in flow order. T-20261016-181. Carry timing: per guide §9 (the art director's row)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Open the bay</text>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >two crates wait in the bay</text>
+<rect x="16" y="48" width="640" height="504" fill="#2f4a3a" stroke="#3d434b" stroke-width="1" rx="10"/>
+<text x="336" y="300" font-size="12" fill="#c6c4d8" text-anchor="middle" >the living window</text>
+<rect x="672" y="48" width="336" height="96" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="688" y="76" font-size="16" fill="#f1ebdf" text-anchor="start"  font-weight="500">Cargo</text>
+<rect x="984" y="60" width="12" height="12" fill="#ffa83f" stroke="none" stroke-width="0" rx="6"/>
+<rect x="672" y="152" width="336" height="96" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="688" y="180" font-size="16" fill="#f1ebdf" text-anchor="start"  font-weight="500">Pods</text>
+<rect x="672" y="256" width="336" height="96" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="688" y="284" font-size="16" fill="#f1ebdf" text-anchor="start"  font-weight="500">Incubator</text>
+<rect x="672" y="360" width="336" height="96" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="688" y="388" font-size="16" fill="#f1ebdf" text-anchor="start"  font-weight="500">Probe</text>
+<rect x="672" y="464" width="336" height="96" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<text x="688" y="492" font-size="16" fill="#f1ebdf" text-anchor="start"  font-weight="500">Library</text>
+<rect x="668" y="44" width="344" height="104" fill="none" stroke="#ffe6ad" stroke-width="2" rx="12"/>
+<text x="24" y="540" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">focus on the module whose notice leads; ✓ does what the line says</text>
+</svg>

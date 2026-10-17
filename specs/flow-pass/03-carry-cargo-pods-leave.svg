@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Cargo</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >FLOW 03: hand-off 1, leaving: the pods fly out through the Pods hatch</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >WIREFRAME, 1× on slate, in flow order. T-20261016-181. Carry timing: per guide §9 (the art director's row)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Take it all in</text>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >any key: the next crate</text>
+<rect x="946" y="575" width="16" height="16" fill="#5d5974" stroke="none" stroke-width="0" rx="8"/>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Home</text>
+<rect x="16" y="48" width="992" height="504" fill="#161b21" stroke="#3d434b" stroke-width="1" rx="14"/>
+<rect x="352" y="200" width="320" height="176" fill="#d89b14" stroke="#7d5435" stroke-width="2" rx="12"/>
+<ellipse cx="560" cy="460" rx="28.0" ry="36.0" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<rect x="856" y="232" width="120" height="144" fill="#0f1317" stroke="#565c63" stroke-width="1.5" rx="10"/>
+<text x="916" y="252" font-size="9" fill="#8d8aa6" text-anchor="middle" >Pods hatch</text>
+<ellipse cx="916" cy="310" rx="19.599999999999998" ry="25.2" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<path d="M600 440 L880 320" stroke="#adf6e0" stroke-width="2.5" stroke-dasharray="8 5"/>
+<circle cx="880" cy="320" r="4" fill="#adf6e0"/>
+<text x="24" y="80" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the carry replaces the 2 s arrival ribbon on this hand-off</text>
+</svg>

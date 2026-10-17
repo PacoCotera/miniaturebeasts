@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Pods</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >FLOW 05: hand-off 2, leaving: the pod lifts out of its well toward the bench</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >WIREFRAME, 1× on slate, in flow order. T-20261016-181. Carry timing: per guide §9 (the art director's row)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Create from this pod</text>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >the overview</text>
+<rect x="946" y="575" width="16" height="16" fill="#5d5974" stroke="none" stroke-width="0" rx="8"/>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Pods</text>
+<ellipse cx="240" cy="300" rx="120" ry="120" fill="#262b33" stroke="#3d434b" stroke-width="1" fill-opacity="1"/>
+<ellipse cx="240" cy="260" rx="36.4" ry="46.800000000000004" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<path d="M280 240 L1000 200" stroke="#adf6e0" stroke-width="2.5" stroke-dasharray="8 5"/>
+<circle cx="1000" cy="200" r="4" fill="#adf6e0"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Vivarium</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >FLOW 11: hand-off 4, arriving: it walks into the Vivarium from the left to its spot</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >WIREFRAME, 1× on slate, in flow order. T-20261016-181. Carry timing: per guide §9 (the art director's row)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Look at Fig</text>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >a young Loika, new</text>
+<rect x="946" y="575" width="16" height="16" fill="#5d5974" stroke="none" stroke-width="0" rx="8"/>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Home</text>
+<rect x="16" y="48" width="992" height="440" fill="#2f4a3a" stroke="#3d434b" stroke-width="1" rx="10"/>
+<ellipse cx="300" cy="400" rx="50" ry="42" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<rect x="240" y="346" width="120" height="104" fill="none" stroke="#ffe6ad" stroke-width="2" rx="12"/>
+<path d="M0 400 L240 400" stroke="#adf6e0" stroke-width="2.5" stroke-dasharray="8 5"/>
+<circle cx="240" cy="400" r="4" fill="#adf6e0"/>
+<text x="24" y="520" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">← Home: the chamber is empty after the hatch, so ← skips the Incubator</text>
+</svg>

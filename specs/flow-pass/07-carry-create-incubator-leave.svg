@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Create</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >FLOW 07: hand-off 3, leaving: after the Grow panel's ✓, the pod seals and slides out at the right</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >WIREFRAME, 1× on slate, in flow order. T-20261016-181. Carry timing: per guide §9 (the art director's row)</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >Growing</text>
+<rect x="16" y="48" width="392" height="504" fill="#161b21" stroke="#3d434b" stroke-width="1" rx="12"/>
+<rect x="424" y="48" width="584" height="504" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<ellipse cx="500" cy="480" rx="28.0" ry="36.0" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<path d="M520 480 L1020 480" stroke="#adf6e0" stroke-width="2.5" stroke-dasharray="8 5"/>
+<circle cx="1020" cy="480" r="4" fill="#adf6e0"/>
+<text x="424" y="80" font-size="9" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the stamp prints in the column (T-166); no toast, no second confirmation</text>
+</svg>
