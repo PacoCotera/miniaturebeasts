@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#1d232b" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="48" y="27" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="500">Create</text>
+<text x="1008" y="16" font-size="8" fill="#c6c4d8" text-anchor="end" >the smallest frame: 4 rows, 2 genes at most; the rows grow to 120 and the genes to 96</text>
+<text x="1008" y="30" font-size="8" fill="#8d8aa6" text-anchor="end" >LAYOUT on slate, 1×: S01, rows 4 × 120, genes 96 px. T-20261016-166</text>
+<rect x="16" y="48" width="392" height="504" fill="#161b21" stroke="#3d434b" stroke-width="1" rx="12"/>
+<path d="M24 56H400" stroke="#0c0a12" stroke-width="2"/>
+<text x="32" y="72" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">scanning recess, cut into the slate face, lit from the top left</text>
+<ellipse cx="212" cy="270" rx="90" ry="55" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<ellipse cx="282" cy="200" rx="46" ry="40" fill="#7bb3a6" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<ellipse cx="297" cy="195" rx="7" ry="7" fill="#1a1725" stroke="none" stroke-width="1" fill-opacity="1"/>
+<rect x="152" y="310" width="14" height="44" fill="#6aa094" stroke="#2b5c55" stroke-width="2" rx="4"/>
+<rect x="252" y="310" width="14" height="44" fill="#6aa094" stroke="#2b5c55" stroke-width="2" rx="4"/>
+<path d="M124 260 q -40 -30 -30 -70" stroke="#2b5c55" stroke-width="6" fill="none"/>
+<ellipse cx="282" cy="200" rx="52" ry="46" fill="#adf6e0" stroke="#adf6e0" stroke-width="2" fill-opacity="0.35"/>
+<ellipse cx="212" cy="358" rx="150" ry="14" fill="#0f4c50" stroke="#1f9d8f" stroke-width="1" fill-opacity="1"/>
+<text x="212" y="390" font-size="9" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the founder 304 × 312, on the scan pad</text>
+<rect x="32" y="416" width="112" height="128" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="10"/>
+<ellipse cx="88" cy="480" rx="44" ry="54" fill="#4fa7a0" stroke="#2b5c55" stroke-width="2" fill-opacity="1"/>
+<text x="88" y="486" font-size="9" fill="#1d232b" text-anchor="middle" >the pod</text>
+<text x="156" y="500" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the pod, in its socket</text>
+<text x="156" y="514" font-size="9" fill="#8d8aa6" text-anchor="start" font-family="DejaVu Sans Mono, monospace">(travels at Grow)</text>
+<rect x="424" y="48" width="584" height="504" fill="#2b3038" stroke="#3d434b" stroke-width="1" rx="8"/>
+<path d="M432 48.5H1000M424.5 56V544" stroke="#565c63"/>
+<rect x="432" y="48" width="568" height="120" fill="#262b33" stroke="none" stroke-width="0" rx="6"/>
+<rect x="440" y="76" width="64" height="64" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<text x="472" y="111" font-size="7" fill="#3d3954" text-anchor="middle" >part crop</text>
+<text x="516" y="114" font-size="16" fill="#f1ebdf" text-anchor="start" >Coat</text>
+<rect x="600" y="60" width="96" height="96" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="604" y="64" width="88" height="88" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<rect x="432" y="176" width="568" height="120" fill="#2f3540" stroke="none" stroke-width="0" rx="6"/>
+<rect x="440" y="204" width="64" height="64" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<text x="472" y="239" font-size="7" fill="#3d3954" text-anchor="middle" >part crop</text>
+<text x="516" y="242" font-size="16" fill="#f1ebdf" text-anchor="start" >Face</text>
+<rect x="600" y="188" width="96" height="96" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="604" y="192" width="88" height="88" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<rect x="600" y="188" width="96" height="96" fill="none" stroke="#adf6e0" stroke-width="2" rx="8"/>
+<rect x="692" y="230" width="4" height="12" fill="#fff4a6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="596" y="184" width="104" height="104" fill="none" stroke="#ffe6ad" stroke-width="2" rx="12"/>
+<text x="648" y="182" font-size="9" fill="#ffe6ad" text-anchor="middle" >▲</text>
+<text x="648" y="298" font-size="9" fill="#ffe6ad" text-anchor="middle" >▼</text>
+<rect x="704" y="188" width="96" height="96" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="708" y="192" width="88" height="88" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<rect x="742" y="274" width="20" height="4" fill="#8d8aa6" stroke="none" stroke-width="0" rx="2"/>
+<rect x="432" y="304" width="568" height="120" fill="#262b33" stroke="none" stroke-width="0" rx="6"/>
+<rect x="440" y="332" width="64" height="64" fill="#9fb3c8" stroke="#565c63" stroke-width="1" rx="6"/>
+<text x="472" y="367" font-size="7" fill="#3d3954" text-anchor="middle" >behaviour</text>
+<text x="516" y="370" font-size="16" fill="#f1ebdf" text-anchor="start" >Movement</text>
+<rect x="600" y="316" width="96" height="96" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="604" y="320" width="88" height="88" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<ellipse cx="642" cy="402" rx="6" ry="6" fill="#3a3f44" stroke="#f1ebdf" stroke-width="1.5" fill-opacity="1"/>
+<ellipse cx="654" cy="402" rx="6" ry="6" fill="#3a3f44" stroke="#f1ebdf" stroke-width="1.5" fill-opacity="1"/>
+<rect x="432" y="432" width="568" height="120" fill="#262b33" stroke="none" stroke-width="0" rx="6"/>
+<rect x="440" y="460" width="64" height="64" fill="#9fb3c8" stroke="#565c63" stroke-width="1" rx="6"/>
+<text x="472" y="495" font-size="7" fill="#3d3954" text-anchor="middle" >behaviour</text>
+<text x="516" y="498" font-size="16" fill="#f1ebdf" text-anchor="start" >Stamina</text>
+<rect x="600" y="444" width="96" height="96" fill="#1d232b" stroke="#3d434b" stroke-width="1" rx="8"/>
+<rect x="604" y="448" width="88" height="88" fill="#c9b99a" stroke="#565c63" stroke-width="1" rx="6"/>
+<ellipse cx="642" cy="530" rx="6" ry="6" fill="#3a3f44" stroke="#f1ebdf" stroke-width="1.5" fill-opacity="1"/>
+<ellipse cx="654" cy="530" rx="6" ry="6" fill="#3a3f44" stroke="#f1ebdf" stroke-width="1.5" fill-opacity="1"/>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="16" y="575" width="16" height="16" fill="#f2671b" stroke="none" stroke-width="0" rx="8"/>
+<text x="40" y="588" font-size="16" fill="#f2671b" text-anchor="start" >Grow it</text>
+<text x="112" y="588" font-size="16" fill="#ffe6ad" text-anchor="start" >⚡2 ❀4 ◆3</text>
+<text x="512" y="588" font-size="16" fill="#c6c4d8" text-anchor="middle" >Eyes: big, wide</text>
+<text x="1008" y="588" font-size="16" fill="#f1ebdf" text-anchor="end" >Loika</text>
+<text x="16" y="556" font-size="8" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the rule: rowh = (504 − 8(R − 1)) / R, to 8; gene m = min(rowh − 8, (392 − 8(G − 1)) / G, 96), to 8; header crop = clamp(m, 40, 64)</text>
+</svg>

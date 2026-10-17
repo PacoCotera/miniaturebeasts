@@ -68,3 +68,42 @@ All three share the right column. **Revealed:** the founder's own part as a pain
 - **The art director** (T-20261016-169): paint G1, G2, I1 and I2 at 1024 × 600, labelled, with G3 and I3 optional, to the research-hands quality bar, using S03 Tuikis (the frames' real chapters and looks).
 - **The genome engineer:** re-verify the chosen concept against the frames, as in T-135, before any build.
 - **The lead:** builds on these screens stay parked until the owner chooses.
+
+## The layouts, to the creative director's direction (2026-10-17)
+
+The creative director's calls are in `specs/station-experience-review.md` §2, §3.2 and §3.3. **Create:** G2's rack, with the body link done as scan light; the tiles are the controls and there is no drum tray. **The Incubator:** candling, done as an instrument. The layouts follow on slate, on the guide's components (branch `style-guide-t172`, §4 and §7), for the art director to paint. They are in `specs/redesign-genome-incubator/layout/`.
+
+### Create (`g2-create-s03.png`, `g2-create-s09.png`, `g2-create-s01.png`)
+
+| Region | Rect | What |
+| --- | --- | --- |
+| Scanning recess | 16, 48, 392 × 504 | Cut into the slate face, lit from the top left (no inner bezel). The founder, 304 × 312, stands on the scan pad. Focusing a row lights that part of the founder with the scan light (`mint`); focusing a gene lights the part it makes; a turn changes the founder in the same beat |
+| Pod socket | 32, 416, 112 × 128 | The player's pod (its species shell), the source; it seals here and travels at Grow |
+| Genome column | 424, 48, 584 × 504 | One pane (`panel`), one row per chapter in ring order |
+
+**The rows (integer rules, tested on every frame):**
+- Row height: rowh = (504 − 8 (R − 1)) / R, rounded down to 8. That gives 56 for 8 rows and 120 for 4.
+- **Header:** a crop of this founder's own part (a look chapter) or its behaviour picture (a doing, the game designer's §1), clamp(m, 40, 64) square, at (16, centred). Then the chapter's one word, 16 px, `bone`.
+- **Genes** from x 176 in the pane, 8 apart. Size m = min(rowh − 8, (392 − 8 (G − 1)) / G, 96), rounded down to 8: S03 48, S09 56, S01 96. Each gene is its look as a picture in a socket (a well in `ground`, radius 8), with the guide's marks:
+  - changed: `mint` rim and the notch;
+  - breeding only: the joined rings;
+  - one look: the flat bar;
+  - self-changing: the step marks;
+  - unknown: frost;
+  - clash: red with its cross.
+- **Focus:** the ring on the gene, with ▲ ▼ above and below it while it can turn. ◀ ▶ walk the genes in ring order; ▲ ▼ turn the focused gene (the refusal plays on genes that can't); R opens the detail over the column; the price ticks on every change (the game designer's four conditions).
+- **A sealed chapter:** the find's painted badge and "a find opens this" (one line), no genes.
+- **Words:** one per chapter; nothing else in the column.
+
+### The Incubator (`incubator-candling-s03.png`)
+
+| Region | Rect | What |
+| --- | --- | --- |
+| Compact rack | 16, 48, 280 × 504 | The same rows, compact: the header picture (no word) and genes at 40. The chapter just revealed is lit (`mint` edge) |
+| Candling chamber | 312, 48, 400 × 504 | A recess in the slate face behind matte-edged glass (plate 03d). The player's pod is clamped upright, lit from below by the machine's lamp in device light; known parts show in colour through the shell, unknown parts stay frost. The light pool stays inside the chamber |
+| The ring | centre (512, 296), radii 178 to 190, open 96° at the bottom | `mint` on `tealD`, with one stud per chapter where its reveal happens; lit studs for chapters revealed |
+| Reveal pane | 728, 48, 280 × 320 | The revealed part painted large (248 × 200 at (16, 16)): the founder's own part, or a short behaviour moment. Then the chapter, 20 px, and its plain words, 16 px, at most 6 (for example "walks a long way before tiring") |
+| Stamp pane | 728, 384, 280 × 168 | The stamp drawn on the display, 120 × 120 at (16, 24), with its text id beside it, 16 px tabular `bone` |
+| Bottom line | — | ✓ Grow now ❀ n; the context "ready in about n min" (the one minute count) |
+
+**Open:** the game designer's Return line (8 words) and any reveal line over 6 words need copy within the guide's budget, or the owner's approval.
