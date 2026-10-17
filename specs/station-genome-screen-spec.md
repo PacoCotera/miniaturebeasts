@@ -43,31 +43,31 @@ Ticket T-20261016-126, 2026-10-16 (America/Mexico_City). It replaces the paper s
 | Piece | Where | Drawn |
 | --- | --- | --- |
 | Rows | row i: top 101 + 34i, 32 tall | One per chapter the species has, in ring order; at most 8 (S03, S16), measured on all 16 frames. Looks first, then doings |
-| Species hub | 440, 101 + 34L − 13, 24 × 24 (L = the number of look rows), with the lock mark 8 × 10 above it | The species' glyph: the frame every member shares. Locked genes are this and the trunk, never nodes. All looks or all doings: the hub centres on the trunk |
-| Trunk | 2 px at x 470, from the first row's centre to the last's | The frame |
-| Branch | 2 px at y top + 15, from the trunk to the row's last gene | The chapter |
-| Emblem | 476, top + 4, 24 × 24 | The chapter's emblem, read or unread (existing `rail-emblem-*`, checked on slate) |
-| Genes | 508 + 36j, top + 4, 24 × 24 | One per trait, in the bank's order; at most 6 (S09's Coat) ends at 712 |
+| Species hub | 440, 101 + 34L − 13, 24 × 24 (L = the number of look rows), with the lock mark 8 × 10 above it | The species' glyph: the frame every member shares. Locked loci are this and the frame line, never genes. All looks or all doings: the hub centres on the frame line |
+| Frame line | 2 px at x 470, from the first row's centre to the last's | The species' frame (not the catalogue's "trunk" loci: T-135 fix 9) |
+| Chapter line | 2 px at y top + 15, from the frame line to the row's last gene | The chapter |
+| Emblem | 476, top + 4, 24 × 24 | The chapter's emblem, read or unread (existing `rail-emblem-*`, checked on slate). **The glint sits here**, once per chapter: the gold four-point glint 12 × 12 at (16, −4) of the emblem, on an unread chapter where the pod glints (`glint(st, p, chapterId)`: "new here, never what"). Never on a gene |
+| Genes | 508 + 36j, top + 4, 24 × 24 | One per trait, in the frame's order; at most 6 (S09's Coat) ends at 712. Each gene's kind comes from the frame row (`nature`, `shapeable`, `override`, the switch, `chapter.sealed`), never from the chapter's name |
 | To the Cross | a 1 px dotted line from the row's last gene to the cross mark 12 × 12 at (720, top + 10) | On a doings row whose genes are all inherited-only: "only breeding changes these" |
 
 ### 2.2 A gene's mark (24 × 24, one family)
 
 | Kind or state | Mark | What the player reads |
 | --- | --- | --- |
-| Configurable, as the pod is | An open ring with three tumbler ticks; inside, the **copy pair**: the shown copy solid in front, the hidden copy as an outline behind | "I can change this; this copy shows, that one hides" |
-| A blend | The pair as one lens, half each copy | "The two copies meet" |
+| Configurable, as the pod is (`hides`) | An open ring with three tumbler ticks; inside, the **copy pair**: the shown copy solid in front, the carried copy as an outline behind | "I can change this; this copy shows, that one hides" |
+| One look (`only`; `rollOptions` has one option) | The open ring **without ticks**, the pair as two equal discs in `fog`, unlit, no notch. ▲▼ is refused, as the other refusals. The commonest configurable state: 24 to 47% of configurable looks on real pods (T-135) | "Both copies are the same: nothing to choose" |
+| A blend (`blend`) | The pair as one lens, half each copy | "The two copies meet" |
 | Changed by you | The ring and pair lit in `mint` (the one lit hue on both screens; no bloom, at most a 1–2 px soft edge) and the notch 3 × 6 at (21, 9) | "I changed this" |
 | Copy chosen | The pair as two of the same copy, in that copy's own colour (copy 1 `bone`, copy 2 `sand`), also when lit: the rejected copy has dropped out, and the colour says which survived (T-134) | "I chose which copy it keeps" |
-| A first | The first mark, a small point-up triangle in `cream`, 10 × 8 at (16, 0); not a star | "No resident has this look" |
-| A piece of your wish | The four-point glint in the wish yellow, 10 × 10 at (16, 0), only while a wish is pinned for this species | "This is part of my wish" |
-| Inherited-only | A closed disc with the joined rings | "Only breeding changes this" |
-| Self-changing | A small ring with four step marks round it (3 × 3, `mint` lit, none lit on a founder) and the place badge 12 × 12 at (25, −4) | "It changes where it goes" |
-| Asleep | Sleeping loci sit behind their switch gene, not as genes of their own: a gate bar 2 × 20 at (26, 2) of the switch gene and one dim 3 × 3 dot per sleeping locus at (30, 3 + 4k), in the gap before the next gene (S03: the markings switch in Coat, five loci). When the switch turns on, the bar goes and the dots light `mint` one by one, 80 ms apart, as the markings appear on the founder | "It carries this but doesn't wear it" / "I woke it" |
-| Sealed chapter | The find's picture 24 × 24 at the first gene's place and a closed bar 4 px along the row | "A find opens this" |
-| Still a surprise | Frost 20 × 20; the house four-point glint (gold) at (16, 0) when the pod glints there | "Still a surprise; something new under here" |
-| Clash | The ring's rim `red`, and the broken red link | "These two won't build together" |
+| New to your field guide | The first mark, a small point-up triangle in `cream`, 10 × 8 at (16, 0); not a star. Data: `p.first`, the traits whose look was new to the field guide when read | "This look is new to my field guide" |
+| Your wish, shown | The four-point glint in the wish yellow, 10 × 10 at (16, 0), on a gene whose founder shows the look pinned for that trait (`st.wish[species][trait]`). The rule is the game designer's (T-135 fix 8); this is the genome engineer's recommendation, ruled by the game designer (`specs/genome-screen-calls.md` §3): if and only if a wish is pinned for this species, this trait is pinned, and the founder as edited now shows that look; turning to it lights the glint, turning away puts it out; never on an unread trait. The drum's face that gives the pinned look carries the small yellow glint (the drum's art) | "This is the look I wished for" |
+| Inherited-only | A closed disc with the joined rings. Every doing, and the one look with an `override` in all 16 frames: S03's Claws | "Only breeding changes this" |
+| Self-changing | The inherited-only mark with four step marks round it (3 × 3); the place badge 12 × 12 at (25, −4). **Only on the loci the frame flags** (T-20261016-137 adds the flag; until it lands, nothing draws it, and S03's Glow is an inherited-only row). After it: S03 Glow's first trait (Glow) only, S15 Basking and S16 Phase, the last two in sealed chapters (`specs/genome-screen-calls.md`). On Create and the Incubator the steps are always unlit: only a partner moves them | "It changes where it goes" |
+| Asleep | Sleeping loci sit behind their switch gene, not as genes of their own: a gate bar 2 × 20 at (26, 2) of the switch gene and one dim 3 × 3 dot per sleeping locus at (30, 3 + 4k), in the gap before the next gene (only S02's Spots and S03's Markings have sleeping loci; S01's Markings is a switch with none, so it never shows a bar). Three states: off, the bar and dim dots; the pod's switch already on, no bar and the dots in plain `bone`; woken by the player, the bar cuts away and the dots light `mint` one by one, 80 ms apart, as the markings appear on the founder. **An unread chapter shows neither bar nor dots**: asleep is this pod's state, unknown until read | "It carries this but doesn't wear it" / "I woke it" |
+| Sealed chapter (`chapter.sealed`) | The find's picture 24 × 24 (`findKind`: crystal, pearl or shard) at the first gene's place and a closed bar 4 px along the row; no genes, and no drums on the tray. Opened (`settings.sealedOpen`, or the find is in): the row becomes frosted genes and then reads as any doings row. Five species: S02 Character, S09 Movement (a tide pearl), S11 and S15 Stamina, S16 Charge | "A find opens this" |
+| Still a surprise | Frost 20 × 20 on each gene of an unread chapter; the chapter's glint is on its emblem (§2.1) | "Still a surprise; something new in this chapter" |
+| Clash | The ring's rim `red` on **every** trait `clashTraits` returns (1 to n), mirrored on their drums; **no link** (a link implies a pair; the code returns a set: the game designer's call, `specs/genome-screen-calls.md`). The bottom line names the real traits. Unreachable with today's frames (0 of 37,946 single and paired edits, T-135): kept as the code's guard, no art priority | "These won't build together" |
 
-- **The clash link:** 2 px `red`, dashed 4 on 2 off, orthogonal: from gene A's left edge at its centre to x = min(A, B) − 7, then to B's row centre, then to B's left edge. It runs only in the gaps. The two drums are marked as now.
 - **Focus:** the house's own ring at gene scale: `genome-focus-32x32`, a 2 px `focus` ring of radius 15 centred on the focused drum's gene, placed 1:1 (T-134; no corner brackets, nothing from the genome-field references). The ring on the drum is unchanged.
 - **Colour is never alone:** every state is also a shape.
 
@@ -84,9 +84,9 @@ Ticket T-20261016-126, 2026-10-16 (America/Mexico_City). It replaces the paper s
 - The bay follows the focus. A turn redraws the two frames, the veil and the pair (at most 2 × 160 × 128 + 16 × 10).
 - **Before and after** is on the founder (`specs/slip-reward.md` §2: the old look fades as the new one settles), not on the screen.
 
-**Refused turns** (the game designer's T-20261016-132, finding 3): ▲ or ▼ on a drum that cannot turn answers once on its gene, about 400 ms, then cuts back. Inherited-only: the row's line from the gene to the cross mark lights, 3 px `mint`. Self-changing: its step marks and place badge frame light. Nothing else moves; the context line says why ("breed to change"), as now. No plate, no sound.
+**Refused turns** (the game designer's T-20261016-132, finding 3): ▲ or ▼ on a drum that cannot turn (inherited-only, one look, self-changing) answers once on its gene, about 400 ms, then cuts back. Inherited-only: the row's line from the gene to the cross mark lights, 3 px `mint`. One look: its ring flashes `mint` once. Self-changing (when flagged): its step marks and place badge frame light. Nothing else moves; the context line says why ("breed to change"), as now. No plate, no sound.
 
-**The marks' family** (T-132, findings 1 and 2): the glint (gold, four points) says "something new under the frost"; the wish glint (yellow, four points) sits only on a read gene; the first mark is a triangle, never a star. Each sits at the same corner, so a gene wears at most one: wish over first.
+**The marks' family** (T-132, T-135): the glint (gold, four points) says "something new in this chapter" and sits only on an unread chapter's emblem; the wish glint (yellow, four points) sits only on a read gene; the first mark is a triangle, never a star. Each sits at the same corner, so a gene wears at most one: wish over first.
 
 ## 3. A turn, in step
 
@@ -96,32 +96,33 @@ On ▲ or ▼, in one frame: the drum cuts, the gene's mark cuts to its new stat
 
 | State | The screen |
 | --- | --- |
-| `nothingRead` | The frame (hub, trunk, branches, emblems unread) and every gene under frost; the gold glint where the pod glints; the bay frosted |
+| `nothingRead` | The frame (hub, frame line, chapter lines, emblems unread) and every gene under frost; the gold glint on the emblem of each chapter where the pod glints; no switch bar or dots; a sealed chapter shut; the bay frosted |
 | `shape` | As §2. Changed genes lit with the notch |
-| clash | The two red rims and the link; no ✓ cap (as now) |
+| clash | A red rim on each trait of the set; no ✓ cap (as now) |
 | `grow` | ✓ Grow it opens the decision panel first (`specs/station-decision-panel-spec.md`, T-45: the founder as the pod would grow it beside yours). This row plays after the panel's ✓. The drums lock; the tree holds (no focus ring). The bay cuts to the stamp printing at **772, 112, 120 × 120** (0 to 300) and, at 300, the code at **752, 248, 160 × 25** (baseline 264, 16 px, `mint`; a 1 px `mint` rule at y 272 from 752 to 912). At 300 the pod seals in its port and travels |
 
 ## 5. The Incubator: the same instrument, compact
 
 - **Housing** 88, 96, 208 × 312 (the slip's slot, top-aligned with the card at 96); screen 96, 104, 192 × 296; content 104, 104 (wireframe 06).
-- **The compact tree:** the trunk at x 106; no hub and no emblems; rows top 109 + 34i; genes at x 114 + 28j (6 end at 278); the same 24 × 24 marks; the cross mark at (264, top + 10). Asleep, compact: the gate bar only, 2 × 20 at (25, 2) of the switch gene, in the 4 px gap; no loci dots (no room); on waking the bar cuts away. No bay: the card is the reveal.
-- **States:** a founder's genes as left on Create; unread chapters frosted. When a chapter clears, its frost cuts to its genes with a 400 ms `mint` 2 px pulse (one lit hue on both screens), on the frame the ring's cut lands; the first mark where the look is new to the player. Ready: every gene known. A crossed bud: all frost until it is out.
+- **The compact tree:** the frame line at x 106; no hub and no emblems; rows top 109 + 34i; genes at x 114 + 28j (6 end at 278); the same 24 × 24 marks; the cross mark at (264, top + 10). Asleep, compact: the gate bar only, 2 × 20 at (25, 2) of the switch gene, in the 4 px gap; no loci dots (no room); on waking the bar cuts away. The chapter glint (no emblem) sits at (22, −3) of the row's first gene. No bay: the card is the reveal.
+- **States:** a founder's genes as left on Create; unread chapters frosted. When a chapter clears, its frost cuts to its genes with a 400 ms `mint` 2 px pulse (one lit hue on both screens), on the frame the ring's cut lands; the first mark where the look is new to the field guide. **A founder:** unread chapters clear at (k + 1)/(n + 1) of the growth; a shut sealed chapter never clears, through ready; ready means every other gene known. **A crossed bud:** its forecast-certain chapters (`childKnownChapters`) are known from the start; the rest stay frosted at ready and after (T-135 fix 12).
 - **Gone:** the slip (208 × 408) and its blocks (name, found-note, "Your changes", "Cleared while growing", "{n} still to come", "read it when it's out").
 - Not a focus target. The card, the stamp and the code are unchanged.
 - **Brightness:** the pod's p95 relative luminance exceeds the screen's by at least 0.08 in every growing step and in ready. The slate ground and small lit marks make this likely; **unverified** until the art lands.
 
 ## 6. Drawing it (for the architect's check)
 
-Every line on the screen is a run of palette rectangles: the trunk, the branches, the dotted cross line, the dashed red link, the gate bar and loci dots, the bay's frames and the pulse; the focus ring is a slice. Every mark, emblem, picture and housing is a placed slice at 1:1. Nothing is drawn as an anti-aliased line or a circle by the face. The largest tree (S09, 27 genes in 7 rows) is 27 slices, 7 emblems and about 40 rectangles.
+Every line on the screen is a run of palette rectangles: the frame line, the chapter lines, the dotted cross line, the gate bar and loci dots, the bay's frames and the pulse; the focus ring is a slice. Every mark, emblem, picture and housing is a placed slice at 1:1. Nothing is drawn as an anti-aliased line or a circle by the face. The largest tree (S09, 27 genes in 7 rows) is 27 slices, 7 emblems and about 40 rectangles.
 
 ## 7. Tests
 
 - **Specs test:** the rects of §1 and §5; the clearances; every frame's chapters ≤ 8 and genes per chapter ≤ 6, each landing inside the content; no `slip`, `well`, `geneLine`, `name` or `found` region on Create; no text on either screen but the Grow code.
-- **Face test:** per state, the marks of §2.2; a turn's redraw list and dirty area (§3); a clash draws two red rims and one link; a slide moves the focus ring to a slid-off drum's gene; the Incubator clears exactly one row's frost per chapter cleared.
+- **Face test:** per state, the marks of §2.2, each gene's kind from the frame row; a turn's redraw list and dirty area (§3); a clash set of n draws n red rims and no link; an unread chapter draws no switch bar; a shut sealed chapter draws no genes and no drums; a slide moves the focus ring to a slid-off drum's gene; the Incubator clears exactly one row's frost per chapter cleared.
 - **Goldens:** all `create-*` and `incubator-*` move; no other screen's golden.
 
 ## 8. Open, for the lead
 
 - **The detail view** (letters, the rule in words, the reference look) one press away: ✓ is Grow from any drum, so it needs a key of its own; the lead and the game designer choose it. It opens over the sample bay and returns to the same gene.
 - **"Read it now" (the lead's ruling, in T-134):** ▲ or ▼ on an unread gene opens the decision panel (`specs/station-decision-panel-spec.md`) for reading that chapter, with its cost and what it reveals. It never spends silently; ✓ on the panel reads, and the row's frost cuts to its genes as on the Incubator. The panel's card is the decision panel's work, not this screen's.
-- **Sleeping genes and sealed chapters** are drawn from the frame data (`specs/genome-field-play.md` §8, Build); S03's sleeping loci are drawn where they are (the markings switch in Coat, T-134); Glow sealed on 03 is an example, not S03's data.
+- **Drawn from the frames (T-136):** the wireframes use the real frames: S03 (01, 02, 03, 05, 06), S09 (04), S01 (08), S12 (09). Every gene's kind is the frame's: S03 Claws inherited-only, Shape configurable, Glow inherited-only; S09 Movement sealed (a tide pearl, no drums); S01 Markings a switch without sleeping loci; S12 no Legs & tail row (its legs are all frame).
+- **Build (T-135 fix 11):** build the tree from the frame version the genome carries (as `stampFrameOf`), not the current frame. Drums exist only for read chapters today (`reviewTraits`); "read it now" needs drums on unread chapters, a build change.
