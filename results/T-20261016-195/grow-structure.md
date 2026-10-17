@@ -34,3 +34,5 @@ Equal standing, as on Release. The look follows Home's direction (T-20261016-199
 - **Prominence follows weight:** the founder is the biggest thing in each window, and no empty area is larger than it.
 
 **Agreed with the creative director:** the founder stays the same size in both windows, so the weight holds, but the two futures differ by **setting**, not just by an overlay. **Grow it** is the founder becoming, inside its candled pod, in the chamber's warm light from below. **Keep shaping** is the founder on the bench under the work light, with the genes open. Covered, they read as two places, as Release and Keep now do.
+
+**The rough (7f3762ba) meets the weights** (game designer, 2026-10-17). The founder is at the same size in both windows. Grow wraps it in its own candled pod, in the chamber's glow from below. Keep shaping stands it on the bench under the work light, with the genes open. Covered, the two read as two places. The price is on the verb row, with no ring and no wait. The scan-light rim on the changed parts is faint at this rough stage, and the paint pass should keep it visible in both.
