@@ -1,5 +1,30 @@
 # Home's Library module: which tree, what fills, what the loop animates (the game designer)
 
+**The owner settled it at 16:15:** "i meant a genome structure, more in an artistic representation. beautiful to look at. so you see what things you have discovered, slow motion, calm. / the family trees also work, im not against two modules, or one combined."
+
+So **the primary module is the genome structure as art: the looks discovered, to be looked at, not read.** The family tree below is the second module, or is combined with it. My objection to the look tree (a trait grid; cycling species) is withdrawn: the owner chose art you look at, knowingly, over data you read.
+
+## The genome structure (the primary module): what is true to show
+
+- **What it shows:** a species' genome as a living structure, its chapters as limbs and each trait's looks as blooms. A look the player has **discovered** (in their field guide) blooms painted. A look not yet discovered is a quiet, closed bud: present, but never showing what it is.
+- **Which species:** a slow cycle through the species the player has met, one at a time, each held for a long while. The pursuit's species comes first, and for longest. A species with nothing discovered isn't shown.
+- **The motion:** slow and calm. A held species breathes, and a newly discovered look opens once, the first time it is shown after the discovery. Nothing blinks, and nothing is a number.
+- **Truth:**
+  - only discovered looks are painted;
+  - closed buds give no hint of their look;
+  - sealed chapters show as a closed limb;
+  - hidden copies never show;
+  - the counts follow what completion counts (Loika: 14, plain only once seen).
+- **The route:** ✓ goes one level down to the species' Library page.
+
+## Combined, if the art director paints one module
+
+The family tree's crown *is* the genome structure. The tree of the household rises from its roots, and the crown is the species' blooms, discovered ones open. That is my earlier brief below, with the canopy drawn as the genome's limbs and blooms.
+
+---
+
+## The family tree (the second or combined module), as briefed earlier
+
 Game designer, 2026-10-17. This answers the owner's 16:09 direction: the Library on the right shows genome trees in a calm, looped animation of progress. It stays within 14:49 ("trees for the mechanics player") and 14:52 (one aggregate at the top level, not a trait grid).
 
 ## Which tree: the family tree of the pursuit's species
