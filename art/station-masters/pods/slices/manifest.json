@@ -16207,12 +16207,12 @@
    1024,
    522
   ],
-  "src": "create-bench/make-create.py (ground: incubator-b/make-stage.py --ground)",
-  "made": "the gene bench: one matte work surface inside the bezel (the Pods ground), the well's seat, the dish's cut-out and the tray recessed; job: everything sits on it (T-20261016-110: re-cut to T-95's layout, the tray at (88, 360, 848 x 130) and the dish's cut-out at (312, 324) in the slice)",
-  "sha256": "4c9bd598aaaef61c4a0e73953083f6fd1e2d9fd55fbfee3567a9f87f08883f8b",
+  "src": "create-bench/make-create.py",
+  "made": "re-cut for the genome screen's layout (T-20261016-130, specs/station-genome-screen-spec.md \u00a71): no well seat; the dish's cut-out at (88, 324) in the slice, 320 wide; the tray as T-95's",
+  "sha256": "18119087cc051f7a7201b681d93534910cd266a6b6396087a324f488a3b77cfb",
   "status": "signed",
-  "signed_in": "art director at 1x and 3x, 2026-10-17: T-20261016-110, in create-bench/proof (create-shape-S01-1x at T-95's rects; the before/after)",
-  "status_note": "re-cut (10-17, T-20261016-110)"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "re-cut (10-17, T-20261016-130)"
  },
  "create-well": {
   "size": [
@@ -18175,5 +18175,675 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-120, in dock/proof (the arrival at t 2.2 s with two coming home; the show's end; beside the old proof); to re-check in the builder's captures",
   "status_note": "new (10-17, T-20261016-120)"
+ },
+ "genome-cross-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "toward the Cross: a small x at the end of an inherited-only row's dotted line",
+  "sha256": "e96085926f6514cde8db979ae24088607ab02dfe36e134fbfccad16adf38a0f0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-first-10x8": {
+  "size": [
+   10,
+   8
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the first mark: a point-up triangle, cream with a gold edge, never a star: no resident has this look",
+  "sha256": "7cf6796e07a7ca4a7e06dead05e0a6edb42b752b2b59c0a167fd68405e54321c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-focus-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the house focus ring at gene scale: 2 px focus, radius 15",
+  "sha256": "d2c7535fa3221e3d9fbe6f7674eb446915dc60f135d0c38badba42e6536822d8",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-frost-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "still a surprise in the sample bay",
+  "sha256": "90cb3336d6f66109ff61707c960496248d3c1d2b95f3536558d3cdf369262e7e",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-frost-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "still a surprise: the house frost chip 20 x 20 at (2, 2), on slate",
+  "sha256": "aacfd046637d6363c52cc2910a95b24645ebbdec37536293d5c9a247c5127adb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-gene-closed-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "an inherited-only gene: a shut disc with the joined rings (only breeding changes it)",
+  "sha256": "ec54a13515fedc051d0725c3a1f0fcb54399eb4f6cf55f2a8dc5570f9257fe14",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-gene-open-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a gene that can change, as the pod is: a ring with three tumbler ticks, unlit, its inside slate; the pair at (4, 7)",
+  "sha256": "95cac3aca2342ea4e52e875c6aeb38aeaa1df7a1d2fea5403452a492b4a95496",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-gene-open-clash-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a gene in a clash: the ring's rim red",
+  "sha256": "90812e624e269af8fb6ea349c0a84201ba01bb3770e837b1177fb16c2e24a6a3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-gene-open-lit-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a gene changed by you: the ring lit mint and the notch 3 x 6 at (21, 9); no bloom",
+  "sha256": "b9c6589becc57c62a377ea52efeff4ebbd46145dcc8c215e8aae455cc490dad5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-gene-self-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a self-changing gene: a small ring with four step marks round it (unlit on a founder); the pair at (4, 7), the place badge at (25, -4)",
+  "sha256": "6c092c283e93665cdbde562a5f3ed12fd0a5e0ddd0b226a923adaa69941dd722",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-glint-gold-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the house four-point glint, gold: something new under the frost",
+  "sha256": "0965983f853486422ccb63e64d07ad6163e6b66697797c8eb6b918edd8e76961",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-glint-wish-10x10": {
+  "size": [
+   10,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the four-point glint in the wish yellow: a piece of your wish",
+  "sha256": "29034725116b2dc23a2fc2691733d11c9c442744b4e4da32ca51e77d90b2c28f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S01-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S01: its own frame glyph (5 x 5) in a ring",
+  "sha256": "c52282f6ef8e459d1a88eb1b0e185210898138b85dfc6ed59cbe85e5edc8cf30",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S02-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S02: its own frame glyph (5 x 5) in a ring",
+  "sha256": "0a26e1c1df3d8a73a2b530032e39e1511685cdabe46dda98edc154eab7975514",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S03-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S03: its own frame glyph (5 x 5) in a ring",
+  "sha256": "c9b5ff6900bc142b5c1424faf7137e3e318684b8e60e20566143d77cd0e6fd85",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S04-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S04: its own frame glyph (5 x 5) in a ring",
+  "sha256": "3ceab45f25a49271be540474865b02b04650def893ed9c6de48ce9fc7dd99a0f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S05-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S05: its own frame glyph (5 x 5) in a ring",
+  "sha256": "913a6ddee804b125caa0486f334dc377e99e8a8821d9a2a22fdb044334ad489f",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S06-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S06: its own frame glyph (5 x 5) in a ring",
+  "sha256": "367a3b85f840c90b5ccbbbc0205288c44810491712cd49ced87ede706d678709",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S07-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S07: its own frame glyph (5 x 5) in a ring",
+  "sha256": "43463a84f6946581cc18219fc129bb0d177a17aeffe38315f857617fcf8b0eb0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S08-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S08: its own frame glyph (5 x 5) in a ring",
+  "sha256": "1120d0dd24375ca8400649660225474b84dd806601bf90d5214edeed61bc37d1",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S09-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S09: its own frame glyph (5 x 5) in a ring",
+  "sha256": "dd288ba65450edfa8a938edc674216a894671e756e742d672f77831373176fa0",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S10-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S10: its own frame glyph (5 x 5) in a ring",
+  "sha256": "0ab7be8930f1749ee9974919da18e292d53e0c91bc743ab5fa25b8835321a3be",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S11-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S11: its own frame glyph (5 x 5) in a ring",
+  "sha256": "d607f39097289b68daa505886bac8e74ed8b6c13b68daf935bcf904ecce8503d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S12-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S12: its own frame glyph (5 x 5) in a ring",
+  "sha256": "d5c05c735f29bbf5e4d6a5ec682b9e13eb9e0e460de5e98aa985e80c71dd6ee2",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S13-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S13: its own frame glyph (5 x 5) in a ring",
+  "sha256": "42fc3ced8d590508baeaebebde14b693d394f065f6f2cbce09dcf7ea3a68c13d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S14-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S14: its own frame glyph (5 x 5) in a ring",
+  "sha256": "d48358fdef76fc0a0db96f6602da88741b31aa8ebb7d1a7ca604df292033cd92",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S15-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S15: its own frame glyph (5 x 5) in a ring",
+  "sha256": "0d00b1b70fb9d70e699cd4d660debfc3b4ebe2f5b013398bbfe9cd5034549755",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-hub-S16-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the species' hub for S16: its own frame glyph (5 x 5) in a ring",
+  "sha256": "f913aa7e4e1d8a375165bce0759341e57f85577adeeadb139548d3e7f43ef6e9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-lock-8x10": {
+  "size": [
+   8,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the lock over the species' hub: the frame every member shares",
+  "sha256": "041e62b80fc5e0e5fd956e3058f83afd35afa295d40ba7cd908cb4e51be6bf7c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-blend-dim-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, dim: one lens, half each copy; copy 1 bone, copy 2 sand",
+  "sha256": "9822bb3a40121c5ad2e0a80e07c334f41e69de98adbcbddb03b9ad9b2ca77eb7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-blend-lit-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, lit: one lens, half each copy; copy 1 bone, copy 2 sand",
+  "sha256": "8af22547891001a8a0bda11550966175e95c3fe7003c8788dc57f463233d9288",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-first-dim-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, dim: copy 1 twice (copy 1 kept); copy 1 bone, copy 2 sand",
+  "sha256": "e18dd28219ca3bee9df69d9be0d417464b99f0b1a37f3f8fb57fc69ac16c10d9",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-first-lit-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, lit: copy 1 twice (copy 1 kept); copy 1 bone, copy 2 sand",
+  "sha256": "4e1c0f43c54eac84fece070134ef73b3536ee98682128f2ea92002fe0fed7787",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-front-dim-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, dim: copy 1 solid in front, copy 2 an outline behind; copy 1 bone, copy 2 sand",
+  "sha256": "ba6b678dafb240235b81463ff77b7acbb6975ee2cf5d9a8d1fd123f70820a10c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-front-lit-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, lit: copy 1 solid in front, copy 2 an outline behind; copy 1 bone, copy 2 sand",
+  "sha256": "4d517a9757449181a35e03d59e7e7c353c1aa4d9bee16c369b4eeabe564527b6",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-second-dim-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, dim: copy 2 twice (copy 2 kept); copy 1 bone, copy 2 sand",
+  "sha256": "2574211e09555e07cfb194e5dfe302d423786d792fae4d8d1b218e123aed0909",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-pair-second-lit-16x10": {
+  "size": [
+   16,
+   10
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the copy pair, lit: copy 2 twice (copy 2 kept); copy 1 bone, copy 2 sand",
+  "sha256": "12a053a98253525f1427df9c74a288c04967c10152edc55ad7da1438007f1cca",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-place-cave-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the place badge (cave) that moves a self-changing gene: cut from place-cave-32x32",
+  "sha256": "1bd0c749f8d7ceaa4da77a5bb41a35976e72b26a47a6930ef951a8aa1f616655",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-place-meadow-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the place badge (meadow) that moves a self-changing gene: cut from place-meadow-32x32",
+  "sha256": "cdbec0033c464ad823943b81d3098840700ace1e82e3d9a4210f7a6daa7d2c1d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-place-pond-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the place badge (pond) that moves a self-changing gene: cut from place-pond-32x32",
+  "sha256": "d12bfa880ecade85bff9fcfeda163e246b49a4047e1fa6e4a9db8914e52b69d5",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-place-rock-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the place badge (rock) that moves a self-changing gene: cut from place-rock-32x32",
+  "sha256": "43b8efef2f6e141a8f584597a1d285f8200da9816fe6e590e395c9f7f4f464bd",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-place-wood-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the place badge (wood) that moves a self-changing gene: cut from place-wood-32x32",
+  "sha256": "1e9b6074e49a7f64ff6d229b35d67a994c7f0d84547cf14e293667d59bcaefda",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-sealed-crystal-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a sealed chapter's find (crystal): cut from find-crystal-112x112, its cell ground keyed out",
+  "sha256": "dc7e6c1d4c3af8fe143de3b5b70df6ace08aa668ff33c96483815b752bb2a1bb",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-sealed-pearl-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a sealed chapter's find (pearl): cut from find-pearl-112x112, its cell ground keyed out",
+  "sha256": "3d2e37ce1a57aaf29fd29bc2ba446b0c8a4af11112d31a019c0e96f5d961ceca",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-sealed-shard-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "a sealed chapter's find (shard): cut from find-shard-112x112, its cell ground keyed out",
+  "sha256": "b9a5eba220cdca542f41e0acd4095aad570c9035726c29bad613f4339e5346a7",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "genome-veil-160x128": {
+  "size": [
+   160,
+   128
+  ],
+  "rect": null,
+  "src": "genome-screen/make-genome.py",
+  "made": "the dim veil over a hidden or dropped copy in the bay (slate at 62 percent)",
+  "sha256": "d121bcc8e7cff15af8e75aaed275169e15faaa08c78ff2cd9372450b220ac15d",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "create-genome-screen-512x312": {
+  "size": [
+   512,
+   312
+  ],
+  "rect": [
+   424,
+   80,
+   512,
+   312
+  ],
+  "src": "genome-screen/make-genome.py",
+  "made": "Create's genome screen housing at (424, 80): the house device plate's sage bezel, its well floored in dark matte slate (the screen 496 x 296 at (8, 8), recessed, matte grain, no gloss or scanlines), a 2 px rubber gasket at (6, 6), four screws; no picture",
+  "sha256": "59a1a9bc36040455757f08526381ea8046f54c894ec5b5a825d48e8f90c4ceff",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "incubator-genome-screen-208x312": {
+  "size": [
+   208,
+   312
+  ],
+  "rect": [
+   88,
+   96,
+   208,
+   312
+  ],
+  "src": "genome-screen/make-genome.py",
+  "made": "the Incubator's genome screen housing at (88, 96): the same, compact (screen 192 x 296)",
+  "sha256": "976357800d2514bbb2356015c0e4caf43031672fb07a6d3c0f7067985f2f4c99",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "create-dish-320x28": {
+  "size": [
+   320,
+   28
+  ],
+  "rect": [
+   88,
+   364,
+   320,
+   28
+  ],
+  "src": "create-bench/make-create.py",
+  "made": "the moss pad under the founder at (88, 364), 320 wide: cut from the signed create-dish (its two ends, joined through the moss)",
+  "sha256": "1108801298aa5bf34250df114f6712b2821fa2e655829da292f299973c3f807c",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
+ },
+ "create-port-128x122": {
+  "size": [
+   128,
+   122
+  ],
+  "rect": [
+   96,
+   404,
+   128,
+   122
+  ],
+  "src": "create-bench/make-create.py",
+  "made": "the pod's port at the tray's left end (96, 404): Pods' fitted well reduced to 122, the socket the pod sits in; the drums are fed by this pod",
+  "sha256": "16f032ddee3300bc3aab4c2adb1a569252db198e72d6585b91a01b136ba72d62",
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
+  "status_note": "new (10-17, T-20261016-130)"
  }
 }

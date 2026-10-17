@@ -6,6 +6,8 @@ every object casting a soft shadow onto the bench. The house rules hold: one key
   pixel, the floor in its own tone and grain) with three moulded recesses: the well's seat (a soft round seat under the well, centre (192, 152)
   in the slice, r 98), the dish's cut-out (a capsule 400 x 28 at (312, 324)), the tray (848 x 130 at (88, 360), corners 12; both T-95's, T-20261016-110), each 2-3 px deep,
   its near wall in shade and its far wall catching the light, its floor the bench x0.62 (the tray x0.55).
+- create-bench (T-20261016-130, specs/station-genome-screen-spec.md §1): no well seat; the dish's cut-out at (88, 324) in the slice, 320
+  wide; the tray as T-95's. create-port-128x122: the pod's socket at the tray's left end (96, 404): Pods' fitted well reduced to 122.
 - create-well 192x192: Pods' fitted well (ring-collection-idle's piece of the Pods room sheet, source/raw/pods-room-sheet.jpg, (200, 500) r 168)
   cut at 192 the way tools/podsroom2.py cuts it (reduced with Lanczos, never enlarged; a round alpha feathered 1 px).
 - create-gene-line 24x208 (T-20261016-110): a braided hose from the well's side, bending down into the tray's wall through a boot (T-20261016-69; see its section).
@@ -40,8 +42,8 @@ def rrect_d(xx, yy, x0, y0, x1, y1, r):
 # ---------- create-bench
 g = np.asarray(Image.open(ground_png).convert("RGBA")).astype(float); H, W = g.shape[:2]; S = 4
 Y4, X4 = (np.mgrid[0:H * S, 0:W * S] + .5) / S
-seat_d = 98 - np.hypot(X4 - 192, Y4 - 152)
-dish_d = rrect_d(X4, Y4, 312, 324, 712, 352, 14)                 # T-20261016-110: T-95's dish (312, 364 on screen)
+seat_d = np.full_like(X4, -10.0)                                     # T-20261016-130: no well seat (the pod sits in its port)
+dish_d = rrect_d(X4, Y4, 88, 324, 408, 352, 14)                  # T-20261016-130: the dish 320 wide under the founder (88, 364 on screen)
 tray_d = rrect_d(X4, Y4, 88, 360, 936, 490, 12)                  # T-20261016-110: T-95's tray (88, 400, 848 x 130)
 def recess(d, depth, wall):
     return -depth * np.clip(d / wall, 0, 1) * (d > 0)
@@ -60,6 +62,10 @@ sheet = Image.open(os.path.join(sl, "../source/raw/pods-room-sheet.jpg")).conver
 im = sheet.crop((200 - 168, 500 - 168, 200 + 168, 500 + 168)).resize((192, 192), Image.LANCZOS)
 m = Image.new("L", (768, 768), 0); ImageDraw.Draw(m).ellipse([0, 0, 767, 767], fill=255); m = m.resize((192, 192), Image.LANCZOS)
 w = im.convert("RGBA"); w.putalpha(m); w.save(os.path.join(out, "create-well.png"))
+# create-port-128x122 (T-20261016-130): the pod's socket in the tray, the same fitted well reduced to 122 (never enlarged), centred
+im2 = sheet.crop((200 - 168, 500 - 168, 200 + 168, 500 + 168)).resize((122, 122), Image.LANCZOS)
+m2 = Image.new("L", (488, 488), 0); ImageDraw.Draw(m2).ellipse([0, 0, 487, 487], fill=255); m2 = m2.resize((122, 122), Image.LANCZOS)
+port = Image.new("RGBA", (128, 122)); w2 = im2.convert("RGBA"); w2.putalpha(m2); port.alpha_composite(w2, (3, 0)); port.save(os.path.join(out, "create-port-128x122.png"))
 # ---------- create-gene-line 24 x 216 (T-20261016-69): the braided hose leaves the well's side through a sand ferrule at (288, 200), bends
 # down (radius 10), runs to the tray with a slight slack, and goes into the tray's top wall through a dark rubber boot (rows 190-208; T-20261016-110: 208 tall, T-95's). Its soft
 # shadow falls right and down on the bench. The rect's top-left corner touches the well's rim, so the ferrule sits on it.
@@ -103,25 +109,34 @@ a_obj = (body | fer | boot).astype(np.float32)
 sh = nd.gaussian_filter(nd.shift(a_obj, (2.2 * S2, 2.2 * S2), order=0), 1.6 * S2) * 0.55
 A = np.maximum(a_obj, sh * (1 - a_obj)); C = (col * a_obj[..., None] + lin([10, 10, 12]) * (sh * (1 - a_obj))[..., None])
 save("create-gene-line", dn(C, S2) / np.maximum(dn(A, S2), 1e-6)[..., None], dn(A, S2))
-# ---------- create-dish 400 x 28: moss in a low sage rim
-S3 = 4; Hd, Wd = 28, 400
-yy, xx = (np.mgrid[0:Hd * S3, 0:Wd * S3] + .5) / S3
-d_out = rrect_d(xx, yy, 0, 0, Wd, Hd, 14); d_in = rrect_d(xx, yy, 4, 3, Wd - 4, Hd - 4, 11)
-rim = (d_out > 0) & (d_in <= 0)
-hd = np.where(rim, 2.2 * np.sin(np.clip(d_out / 4, 0, 1) * np.pi), 0)
-lamd, _ = shade_of(hd, S3)
-sheen = np.clip(lamd - 1, 0, 0.6)
-coll = SAGE_SH * (0.55 + 0.6 * lamd)[..., None] + RIM * sheen[..., None] * 0.6
-V = np.asarray(Image.open(viv).convert("RGB")).astype(float)
-moss = np.vstack([V[466:500, 760:984]] * 1)                                  # the vivarium's moss bed, 224 x 34
-mx = 223.99 - np.abs((xx % 447.98) - 223.99)                     # the moss mirrored, never repeated with a seam
-my = np.clip((yy - 3) / 21 * 33.99, 0, 33.99)
-ms = np.stack([nd.map_coordinates(moss[..., c], [my, mx], order=1, mode="nearest") for c in range(3)], -1)
-pad = d_in > 0
-mound = np.clip(d_in / 6, 0, 1)
-coll[pad] = (lin(ms) * (0.6 + 0.4 * mound)[..., None])[pad]
-a = (d_out > 0).astype(np.float32)
-save("create-dish", dn(coll * a[..., None], S3) / np.maximum(dn(a, S3), 1e-6)[..., None], dn(a, S3))
+# ---------- create-dish 400 x 28 (T-41) and create-dish-320x28 (T-20261016-130): moss in a low sage rim
+def dish(Wd, name):
+    S3 = 4; Hd = 28
+    yy, xx = (np.mgrid[0:Hd * S3, 0:Wd * S3] + .5) / S3
+    d_out = rrect_d(xx, yy, 0, 0, Wd, Hd, 14); d_in = rrect_d(xx, yy, 4, 3, Wd - 4, Hd - 4, 11)
+    rim = (d_out > 0) & (d_in <= 0)
+    hd = np.where(rim, 2.2 * np.sin(np.clip(d_out / 4, 0, 1) * np.pi), 0)
+    lamd, _ = shade_of(hd, S3)
+    sheen = np.clip(lamd - 1, 0, 0.6)
+    coll = SAGE_SH * (0.55 + 0.6 * lamd)[..., None] + RIM * sheen[..., None] * 0.6
+    V = np.asarray(Image.open(viv).convert("RGB")).astype(float)
+    moss = np.vstack([V[466:500, 760:984]] * 1)                                  # the vivarium's moss bed, 224 x 34
+    mx = 223.99 - np.abs((xx % 447.98) - 223.99)                     # the moss mirrored, never repeated with a seam
+    my = np.clip((yy - 3) / 21 * 33.99, 0, 33.99)
+    ms = np.stack([nd.map_coordinates(moss[..., c], [my, mx], order=1, mode="nearest") for c in range(3)], -1)
+    pad = d_in > 0
+    mound = np.clip(d_in / 6, 0, 1)
+    coll[pad] = (lin(ms) * (0.6 + 0.4 * mound)[..., None])[pad]
+    a = (d_out > 0).astype(np.float32)
+    save(name, dn(coll * a[..., None], S3) / np.maximum(dn(a, S3), 1e-6)[..., None], dn(a, S3))
+dish(400, "create-dish")
+# create-dish-320x28 (T-20261016-130): cut from the signed create-dish itself (its moss source can't be rebuilt byte for byte), so it is the
+# same moss and rim: its left 168 px and right 168 px, joined with a 16 px crossfade through the moss (both ends' rims kept whole)
+sd = np.asarray(Image.open(os.path.join(sl, "create-dish.png")).convert("RGBA")).astype(float)
+Lp, Rp = sd[:, :168], sd[:, 400 - 168:]; t = np.clip((np.arange(16) + .5) / 16, 0, 1)[None, :, None]
+mid = Lp[:, 152:168] * (1 - t) + Rp[:, 0:16] * t
+d320 = np.concatenate([Lp[:, :152], mid, Rp[:, 16:]], 1)
+Image.fromarray(np.clip(np.rint(d320), 0, 255).astype(np.uint8), "RGBA").save(os.path.join(out, "create-dish-320x28.png"))
 # ---------- the drums 80 x 96 (T-20261016-96, specs/station-create-bench-spec.md as amended by T-20261016-95): a moulded sage drum on a
 # horizontal axle, sitting in a slot of the tray, seen side-on. Rows (offsets from the drum's origin):
 # - 0-8 and 88-96: the round turning away above and below, lit above and falling into shade below, with grip ribs (parallel to the axle)
