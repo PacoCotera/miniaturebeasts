@@ -8,6 +8,83 @@ Mibis have to be appealing enough to care about and clear enough to read. A play
 should be able to see an inherited difference, recognize an individual and
 understand what changed without reading a label. The art carries the game.
 
+## The look and feel
+
+This is the general guideline. Every screen on both devices, new or changed, is judged by it. The screens are prototypes and keep changing, and newer direction for the game overrides any rule on this page. The detailed [style guide](style-guide/README.md) sits below it as the current implementation reference: it holds the values and sizes, and this page holds none.
+
+### The feel
+
+A small, well-made field kit for keeping living things. You hold it, and it is warm, calm and a little worn from use. The life inside it is the point: soft, bright and full of character. The device around that life is quiet and practical.
+
+It should feel like a naturalist's instrument made by someone who loves animals. It is not a gadget showing off, and it is not a toy.
+
+<table><tr><td valign="top"><img src="../art/concept-homepage/station-research-hands.png" width="460" alt="Station research concept"><br><em>station-research-hands: the finish and the light to aim for. Approved concept, generated. Its blue display and orange corners are not the rule.</em></td>
+<td valign="top"><img src="../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth of a life at home. Approved concept, generated.</em></td></tr></table>
+
+### Textures and materials
+
+**The life** is soft and tactile:
+- fur you could stroke, and leaves with a waxy sheen;
+- damp moss, smooth stones and clear water;
+- creatures modelled like small sculptures, with weight and a soft surface.
+
+**The device** is handled gear:
+- matte powder-coated polymer in sage and sand, dark rubber and recessed screws;
+- engraved marks, and canvas or braided hose where something is carried or fed;
+- a little wear at the edges.
+
+Displays are dark matte screens that the life and the light stand out against. Paper and labels appear only as things that never change, such as a collector's tag on a pod or the pages of the field journal.
+
+Nothing is glossy, chrome, holographic or plastic-shiny.
+
+### Light
+
+**One warm daylight** from the top left falls on everything, with soft shadows that ground every object where it sits. The light gives form; it never decorates.
+
+**The device's own light** is small and purposeful. A lamp lights what it is for, and a lit mark shows what changed or what is ready. It casts onto what it lights and never glows for show.
+
+<table><tr><td valign="top"><img src="../prototypes/ui/assets/masters/vivarium/idle-vivarium-day-1024x568.png" width="512" alt="The vivarium by day"><br><em>The vivarium by day: warm key light, soft shadows, moss and water. Master.</em></td>
+<td valign="top"><img src="../art/miniature-lives/assets/rich-plain-300x310.png" width="300" alt="Pip, richer treatment"><br><em>Pip lit from the top left: form shading, catch-lit eyes, a soft shadow under the feet. Accepted.</em></td></tr></table>
+
+### Colour mood
+
+Bright life on a calm ground.
+- **The life** carries the colour: saturated and playful, with clear highlights, and never dull browns and greys.
+- **The device** recedes: sage, sand, rubber and slate.
+- **The device speaks in colour only when it means something:** its light for progress and change, a warm amber when something needs you, and orange for the one action.
+
+If a screen looks colourful because of its panels, frames or bars rather than its life, the mood is wrong.
+
+### Information density
+
+*The game designer writes this section.*
+
+### Tone of voice
+
+*The game designer writes this section.*
+
+### Motion character
+
+**The life moves all the time.** It breathes, looks around, potters, sleeps, and water and leaves move.
+
+**The device moves only when something happens.** A door opens, a lamp turns on, a crate slides in or a frost clears. These are short, eased and physical, the way a well-made mechanism moves.
+
+Reveals take their time, because they are the reward. Nothing blinks to get attention, and nothing means something only by moving.
+
+On the Companion the same character is drawn in stepped frames.
+
+<img src="../art/concept-homepage/companion-storm.png" width="280" alt="Companion storm concept"><br><em>companion-storm: weather and life moving in a place, the pawn always readable. Approved concept, generated.</em>
+
+### What it is not
+
+- Not childish: no sticker faces, nursery colours, cartoon simplification or storybook ornament.
+- Not a sci-fi HUD: no neon, holograms, glowing outlines, chrome or glass gloss.
+- Not a sterile lab, a display cabinet or a desk with papers.
+- Not a cosy cottage with no equipment.
+- Not brown on brown, and not cream panels.
+- Not a list, a table or a wall of text where a picture would do.
+- Not equipment for show: every lamp, line and gauge works for the life.
+
 ## Miniature Lives
 
 The look is Miniature Lives. It is cute by charm and craft, as Pip is: tactile,
