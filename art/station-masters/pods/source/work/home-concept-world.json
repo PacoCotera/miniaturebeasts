@@ -1,0 +1,20 @@
+[
+ {
+  "name": "home-concept-world",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/home-window-four-v4-masters.png",
+    "REFERENCE: the v4 Loikas (creatures and soil band), exactly as painted."
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "REFERENCE: the vivarium light and moss."
+   ]
+  ],
+  "prompt": "Macro nature-documentary still, 1024\u00d7600 landscape, one continuous living world, no panels, no UI chrome, no text. Upper 60%: forest floor at mibi eye level, shallow depth of field, warm morning light from top left in soft shafts, damp moss, waxy leaves, smooth stones, a thread of clear water. Three Loikas exactly as in the v4 reference (slate-blue/charcoal/rust coats with pale bands, cream bellies, leaf sprouts on heads, amber eyes): one asleep curled in moss, one sniffing a leaf, one young one a little apart. Soft contact shadows. Lower 40%: the ground cut away in clean cross-section like a soil profile behind glass: dark loam, roots, pebbles. Through it runs a fine mycelium network, faint warm gold threads, branching like a family tree: a thread descends from each Loika and joins its parents' threads deeper down. Along the threads, small nodes: a few glow softly like embers (discovered looks), most are dark, unlit beads (still a surprise). Warm foxfire, not neon; no cyan, no outlines, no hologram. Edges, tiny, in loop order left to right along the soil line: a cluster of seed pods tucked in a root nook (Pods); a warm hollow chamber holding one pod (Incubator); a burrow mouth with a half-buried canvas field satchel (the Bay); a faint trail of tiny tracks leaving the frame at right (Companion away). Grown-up, crafted, quiet, intimate; painterly realism, rich life colour on a dark calm ground."
+ }
+]
