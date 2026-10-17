@@ -529,6 +529,8 @@ export function installTier2(st, settings = DEFAULT_SETTINGS) {
 }
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
+// The minutes a growing bud has left, rounded up and at least 1 (the Incubator's "ready in about {n} min", owner ruling 3).
+export const budMinutesLeft = (st, settings, now) => { const B = st.bud; return B ? Math.max(1, Math.ceil(B.minutes * (1 - budProgress(st, settings, now)) - 1e-9)) : 0; };
 export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
 // The leaves of the wait, one rule for the Incubator, its intents and Home's chamber: total the bud's minutes (at most max), full the whole minutes passed, rows 0 to rowsOf - 1 of the current leaf (rowsOf whole rows a minute: a row every 3 s at the real pace); rows is 0 once full reaches total.
 export function budLeaves(st, settings, now, max, rowsOf = 20) {

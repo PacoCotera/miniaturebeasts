@@ -31,7 +31,7 @@ export function intent(h, target, verb) {
     if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold, ...(moving && ev.cut ? { cut: true } : {}) }); h.at(ev.ms, () => over(false)); } else over();   // reduced motion: a cut, the meet on the frame of ✓
     return r;
   }
-  const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "" };
+  const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "", left: S.budMinutesLeft(h.st, h.settings, h.now()) };
   const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
   if (motion) {   // the leaves still to fill (the filling one first) turn whole one by one over 400 ms; the screen shows the bud as it was until the event ends, then ready on one refresh
     const ev = spec.events.growNow; h.ui.inc.grow = { ...before, until: h.now() + ev.ms };

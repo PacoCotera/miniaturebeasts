@@ -177,6 +177,7 @@
   "back": "Home",
   "plaque": { "empty": "empty", "growing": "growing", "ready": "ready", "hatch": "hatched", "hatchNote": "copywriter, final (fix 5 I3, 2026-10-15 04:37): one word for the plate under a hatched mibi, lowercase, no punctuation, at most 112 px at Inter 16 (measured by the real measurer, tests/vectors/metrics.json)" },
   "bud": "{a/an} {Species} bud",
+  "readyIn": "ready in about {n} min",
   "crossBud": "{A} and {B}'s bud",
   "crossBudFallback": "a {Species} bud, past 208 px",
   "empty": "ready for a new bud",
