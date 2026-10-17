@@ -41,7 +41,7 @@ The player always knows which level a screen is about. The Library, the Book and
 | Feels | rugged, handled, calm; working for the life | warm, soft, alive |
 | Light | the same warm daylight from the top left, caught softly; nothing glows for show | the warm key light from the top left, by the time of day |
 | Colour | sage and sand housing, dark rubber, dark matte slate panels, `bone` type, orange for the action only, small lamps in device light (`mint`, `amber`). Never brown panels or cream fills ([§2](README.md#2-palette)) | greens, warm earth, water, the creatures' own colours |
-| Materials | powder-coat, rubber, moulded polymer, canvas, braided hose; paper only as a static object (a pod's tag, the Library's book), never for what changes | plants, soil, stone, water, fur and leaf |
+| Materials | powder-coat, rubber, moulded polymer, canvas, braided hose; paper, tags and labels only where they never change on screen (a pod's tag, the Library's book) | plants, soil, stone, water, fur and leaf |
 | Moves | the life-support works quietly (a mister, a lamp, a feed line); controls move when something happens | all the time |
 | Words | a few per section | none |
 
@@ -58,7 +58,7 @@ One device. Every section is a part of it, in the same materials and light. Home
 | Section | What it is on the device |
 | --- | --- |
 | **Vivarium** (Home, idle, one mibi up close) | The living world the device keeps; up close, a mibi at home, never a specimen on display |
-| **Pods** | The sample case: pods in fitted, worn cut-outs, a static paper tag on each pod; what changes is on the machine's display |
+| **Pods** | The sample case: pods in fitted, worn cut-outs, each pod with its collector's tag (only where it was found); its species and what is known on the machine's display |
 | **Research** (Create, Cross and Wish, Probe bench) | The lab's advanced research and crafting benches, where you edit life: the gene bench (Create), the splicer (Cross and Wish), the Probe's service dock; what is under study in the device's light, its state on the machine's own displays and lamps |
 | **Incubator** | The bridge between research and the vivarium: the player's own pod candled by an instrument of the machine, the founder showing through its shell in the device's light. No moss nest, no egg |
 | **Library** | The field journal the device keeps: a worn botanical expedition volume |
@@ -151,7 +151,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 >
 > **Look.** The sample case: pods in fitted cut-outs set into the slate instrument face, lit from the top left with contact shadows; the rail and rings in device light; the name and state on a display pane.
 >
-> **Do:** the pod lit and grounded in its cut-out (03b); a static paper tag on the pod, its changing state on the display (10a); progress in `mint` (02c). **Don't:** paper that changes with play (10a); a brown painted wall behind the case (02b); glyphs under 24 px carrying meaning (04d).
+> **Do:** the pod lit and grounded in its cut-out (03b); the collector's tag on the pod carrying only where it was found, its species and knowledge on the display pane (10a); progress in `mint` (02c). **Don't:** a tag that carries a state, a count or a moving mark (10a); a brown painted wall behind the case (02b); glyphs under 24 px carrying meaning (04d).
 
 **Vibe.** Pods: the sample case.
 

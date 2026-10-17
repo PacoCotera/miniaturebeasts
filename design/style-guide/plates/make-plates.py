@@ -573,22 +573,22 @@ def slate_stage(img, lum_max=120):
             if r >= b + 5 and r - b <= 40 and (r + g + b) / 3 < lum_max and not (g > r):
                 px[x, y] = (max(0, min(255, P[0] + r - M[0])), max(0, min(255, P[1] + g - M[1])), max(0, min(255, P[2] + b - M[2] + 6)), a)
     return im
-do = slate_stage(crop('pods-kin.png', (160, 222, 200, 234)))
-dont = canvas(320, 240)
-d = ImageDraw.Draw(dont)
-d.rounded_rectangle((70, 20, 250, 228), 10, fill=C['bark'])
-d.rectangle((86, 40, 234, 216), fill=C['paper'])
-d.rounded_rectangle((128, 12, 192, 34), 6, fill=C['metal'])
-text(d, (98, 52), 'BUD STATUS', F13, 'soil')
-text(d, (98, 74), 'Growing', F16M, 'soil')
-d.rectangle((98, 104, 222, 116), outline=C['clay'])
-d.rectangle((99, 105, 99 + int(122 * 0.55), 115), fill=C['clay'])
-text(d, (98, 128), 'ready in 8 min', F13, 'bark')
-text(d, (98, 152), 'Coat: cleared', F13, 'bark')
-text(d, (98, 172), 'Face: pending', F13, 'bark')
-plate('10a-paper', 'Paper is fine as a static object; what changes is the machine', do, dont,
-      'A paper tag on the pod (Pods capture, its brown stage re-toned to the slate face: diagram). The tag never changes; the pod\'s changing state is on the display.',
-      'A clipboard used as a status screen: paper that changes with time and play. Anything that changes, or that the player acts on, is the machine\'s display. Diagram.')
+pod = slate_stage(crop('pods-kin.png', (160, 222, 200, 234)))
+do = canvas(470, 272)
+do.alpha_composite(pod, (8, 8))
+d = ImageDraw.Draw(do)
+pane(d, 224, 40, 230, 150)
+text(d, (244, 56), 'Loika', F20)
+text(d, (244, 90), 'this pod', F16, 'fog')
+for k in range(4):
+    x = 252 + k * 28
+    d.ellipse((x - 7, 126, x + 7, 140), fill=C['mint' if k < 2 else 'tealD'])
+text(d, (244, 158), 'live, on the display', F13, 'fog')
+text(d, (8, 250), 'the tag: where it was found, written once', F13, 'mist')
+dont = src('2026-10-17-create-slip.png')
+plate('10a-paper', 'Paper is static, never status', do, dont,
+      'The collector\'s tag on the pod carries only what never changes: where it was found. The species, whether it is identified and what is known live on the display pane beside it. Pods capture with its stage re-toned to slate, and a diagram pane.',
+      'Paper used as a status screen: the rejected Create slip (owner screenshot), a clipboard of live state. Anything that changes with input or time is the machine\'s display.')
 
 # ---------------------------------------------------------------- 11 companion
 hb = Image.open('art/miniature-lives/assets/hibit-plain-280x300.png').convert('RGBA')
