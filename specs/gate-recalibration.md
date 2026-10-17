@@ -99,3 +99,13 @@ Three causes:
   - Check 3 asks that every owner verbatim is answered. It is not met by fixing only the words the owner named: an owner example is a signal of the problem underneath.
   - A proof passes only if it brings its own structure and craft, and fixes what nobody named but the same signal points to.
   - A proof that answers each line literally and nothing more fails as a patch, however well it ticks the list.
+
+## 7. Composition checks, added after the owner's rulings of 2026-10-17 12:52 and 12:55
+
+The owner rejected or caveated two proofs that both gates had passed (the T-170 panels and the T-171 Cargo picture). These checks are part of the two-second look (check 2). A proof that fails one fails the look.
+
+- **Negative only where it is** (owner, 12:52: "you most avoid positioning something as negative, unless it indeed is"). Coral, ✕, loss words and bleak or cold painting appear only where the outcome harms the player or a mibi. A choice between outcomes is two futures of equal standing.
+- **Pictures carry the meaning** (12:52: "the panel relies too much on text"). Cover the words: the screen still reads. Show them: no word repeats what a picture or icon already says.
+- **The whole screen is used** (12:55: "the layout wastes roughly 50% of the space while cramming the concent in the middle center"). Measure the empty area at 1×. Space is quiet on purpose or it is filled; a crammed centre in an empty field fails.
+- **Every surface has a purpose** (12:55: "the top gray slate and the lower light slate is jarring, it doesn't follow any purpose"). Each change of tone or material names what it is: the device's face, a well, a window. A split that answers nothing fails.
+- **Nothing only a caption explains** (12:55: "I don't understand the dotted lines"). A mark, path or effect that needs a concept note to be understood fails, however clear it is to its author. Proof captions don't count as screen words.
