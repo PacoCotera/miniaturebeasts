@@ -118,7 +118,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4) stand for layout 
 
 **Purpose.** What the trip brought home arrives: each crate is one trip, and opening it shows what came out and where each thing goes (materials to the store, pods to the rack). Docking shows the arrival and accepts nothing; opening the bay is the player's choice. **Reads first:** the crates, then their contents flowing to the store and the rack.
 
-- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks and its contents lie out in front of it as things (pods, battery cells, cartridges, vials, finds); the materials flow into the store tanks and the top bar's counters tick; the pods go out through the Pods hatch, which shows its free wells, and a pod with no free well waits on the bay floor, still sealed, until one frees; the Probe dock shows the free mend; a ribbon names the crate ("First crate home"); the world turn jumps. The Cargo redesign (T-20261016-164) sets the bay's layout.
+- **Instrument.** The sample bay leads: once cargo has come through, its door shows one sealed crate per consignment. `✓ Open the bay · 2 crates`. Then, per crate: the seal breaks and its contents lie out in front of it as things (pods, battery cells, cartridges, vials, finds); the materials fly into the top bar's counters, which tick (there are no store tanks); the pods go out through the Pods hatch, which shows its free wells, and a pod with no free well waits on the bay floor, still sealed, until one frees; the Probe dock shows the free mend; a ribbon names the crate ("First crate home"); the world turn jumps. The Cargo redesign (T-20261016-164) sets the bay's layout.
 - **Living window.** The vivarium stays; residents turn toward the bay as crates open.
 - **Composition.** Home's layout; the Bay module lifts 2 px, the chrome lift, and nothing is scaled; the ribbon sits inside the glass's top. There is no report card: reach goes to the Companion's map, news about the player's mibis to the Station's return signals, and news about the world to the Companion's map.
 - **Lively / quiet.** Lively: the crate, the pods' travel, the residents' reaction. Quiet: the other modules.
@@ -198,7 +198,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 > **Intent.** Shape your mibi's genes before it grows, and see what you changed.
 >
-> **Look.** The gene bench: the founder big, sculpted and lit in a recess of the bench; the genome on the machine's display at its tier; changed parts lit `mint` on the body and on the marks.
+> **Look.** The gene bench, G2 with the body answering in light: the founder big, sculpted and lit in a scanning recess of the slate face; one column of rows beside it, each headed by the founder's own part and its word, each gene a picture of its look; focusing a row or gene lights that part on the founder in `mint`. The genes are the controls, so the drum tray below is superseded ([style guide §8](README.md#8-screen-families)).
 >
 > **Do:** every object sitting in or on the bench (03b, 07a); genome marks sculpted at their tier, each state a shape (04e); a few words (05b). **Don't:** floating parts on an empty field (07a); a cream notch or cream slip (02b, 05b); a brown or lilac field; paper of any kind (10a).
 
@@ -246,7 +246,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 
 > **Intent.** "The life you designed on Create is being grown here, and each time you look it is further along and you know more about it" (game designer).
 >
-> **Look.** Candling done well: an instrument of the machine candles the player's own pod, its light through the shell showing the founder forming; the ring of time in `mint` on `tealD`; the reveal shows the founder's own part large; the stamp on the display with its text id. The instrument's form is the creative director's (T-20261016-168).
+> **Look.** Candling done well: an instrument of the machine candles the player's own pod, its light through the shell showing the founder forming; the ring of time in `mint` on `tealD`; the reveal shows the founder's own part large; the stamp on the display with its text id. The chamber: the pod clamped upright in a recess of the slate face behind matte glass, the lamp shining up through the shell, known parts in colour and unknown in frost, no moss or plinth ([style guide §8](README.md#8-screen-families)).
 >
 > **Do:** device light doing the work, cast onto what it lights (03c); the pod grounded in the instrument (03b); progress in `mint` (02c); the reveal as a picture with a short plain line (05a). **Don't:** an egg on a moss cradle, a flat painted shadow (03b); a cream ring (02c); a green plastic plaque (03a); a pixel glyph and jargon in a floating box (04e, 05a); a brown room (02b).
 
