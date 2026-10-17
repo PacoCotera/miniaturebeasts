@@ -120,7 +120,9 @@ export const SELF_CHANGING = {
   phase: { toward: "solid", places: [], storm: true },
 };
 // The mark's rules: a step is 1/16 of the species' pool range, at most one a dock when the trigger was met, up to four
-// steps; three partner expeditions without the trigger take one step back. Only the partner changes; a child starts at none.
+// steps, only toward the trait's end; three partner expeditions in a row without the trigger take one step back (never below
+// none), and that count restarts at a step up and after each fall. A trip the mibi rode on but did not lead counts for
+// nothing. Only the partner changes; a child starts at none.
 export const SELF_MARK = { stepOf: 16, maxSteps: 4, fadeAfter: 3 };
 // Who changes a locus (the owner's kinds): the species (locked), the player (a configurable look), breeding only, or the mibi itself.
 export const changedByOf = (row, trait) => (row.kind === "locked" ? "species" : SELF_CHANGING[trait?.id] ? "self" : trait?.shapeable ?? row.shapeable ? "player" : "breeding");
