@@ -102,6 +102,8 @@ Each chapter that clears is a reveal, and the reason to come back. Every object 
 
 ## 5. The slip and the card
 
+> **Superseded** (2026-10-17, `specs/station-lab-sweep.md`): the Station is a lab, and there is no paper slip outside the Library. This section's slip is replaced by the machine's display (`specs/slip-visual-intent.md`); its rects and contents come from UI/UX T-20261016-126. Do not build or paint the slip below.
+
 **The slip** (88, 96, 208 × 408). It is the Create slip's paper and width (208); Create's slip is 296 tall, so its bank can span the bench (`specs/station-create-bench-spec.md` §4). Paper ground, padding 16; text left at x 104:
 
 | Block | Lines | Type |

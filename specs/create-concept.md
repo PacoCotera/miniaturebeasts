@@ -1,5 +1,7 @@
 # Create: the gene bench (concept)
 
+> **The Station is a lab** (owner, 2026-10-17 04:07; `specs/station-lab-sweep.md`). Paper, slips, tags and notes are only in the Library. The slip below is replaced by the machine's display (`specs/slip-visual-intent.md`, UI/UX T-20261016-126). Wherever this file says "slip", read "the display": picture chips with the drums' marks, at most 3 words.
+
 Ticket T-20261015-02. Game designer, 2026-10-16. A concept, not a layout spec: the rects in the wireframe are rough, and UI/UX sets the real ones.
 
 The owner's sentence: "all elements in create screen are floating. this page doesn't communicate a creation environment where you tweak genes". This concept answers both halves. The screen becomes **one bench** that everything sits on or in, and the genes become **drums on that bench that the player turns**, each turn changing the creature standing in front of them.
@@ -57,7 +59,7 @@ The chapter rail and its tabs, the floating chamber box, the arch at the right (
 
 ## Mood note for the art director
 
-A workbench in warm daylight, not a laboratory. Take the bench, bezel and worn fitted wells from the accepted Pods screen, and the light and life of the accepted vivarium for the founder and its moss. The drums are moulded field-gear polymer in the housing's sage, rounded and handled, with a slight wear on the edges a thumb would turn; their picture windows are recessed and lit from the top left. The slip is real paper with a metal clip. The founder is the warmest, most alive thing; the bench is calm. Everything casts a soft shadow onto the bench. No pipes, vents, gauges, wall fixtures, arches or domes: nothing is on the bench that the player does not use.
+A genome-editing instrument in the lab: the gene bench is the lab's editing station, the device's own housing with the drums as its controls, not a workbench or a desk. Take the bench, bezel and worn fitted wells from the accepted Pods screen, and the light and life of the accepted vivarium for the founder and its moss. The drums are moulded field-gear polymer in the housing's sage, rounded and handled, with a slight wear on the edges a thumb would turn; their picture windows are recessed and lit from the top left. The changes and surprises show on the machine's display let into the housing (`specs/slip-visual-intent.md`), never on paper. The founder is the warmest, most alive thing; the bench is calm. Everything casts a soft shadow onto the bench. No pipes, vents, gauges, wall fixtures, arches or domes: nothing is on the bench that the player does not use.
 
 ## Needs
 
@@ -73,7 +75,7 @@ A workbench in warm daylight, not a laboratory. Take the bench, bezel and worn f
 | `create-drum` | 84×84 | Drum states: rest, focused (lifted), changed, pinned, capped (frosted), clash; the window 68×68 left empty for the picture |
 | per-look close-ups | 68×68 | One per look per shapeable trait, per species: the flank close-up the drum shows |
 | per-look layers (the open B item) | the founder's 300×310 | For every shapeable trait, one layer per look, so a turn changes only that part of the founder; this is what makes "tweak" visible. Until they exist, a turn changes only the drum and the slip, and the screen does not pass |
-| `create-slip` | 192×300 | Paper slip with clip, text left to the face |
+| ~~`create-slip`~~ | — | Withdrawn: the machine's display replaces it (T-20261016-126) |
 
 **From UI/UX.** The layout spec on the bench (even margins, the bank's grid, chapter groups for up to 10 drums and how a deeper species pages its bank), the focus graph (◀ ▶ along drums, ▲ ▼ turns), the slip's strings and slots at their longest, and the Grow motion's timing.
 

@@ -1,5 +1,7 @@
 # Incubator: watching your own pod become your mibi (concept)
 
+> **The Station is a lab** (owner, 2026-10-17 04:07; `specs/station-lab-sweep.md`). Paper, slips, tags and notes are only in the Library. The slip below is replaced by the machine's display (`specs/slip-visual-intent.md`, UI/UX T-20261016-126). Wherever this file says "slip", read "the display": picture chips with the drums' marks, at most 3 words.
+
 Ticket T-20261016-25. Game designer, 2026-10-16. A concept for the owner to choose from, not a layout spec: the wireframes' rects are rough, and UI/UX sets the real ones. It follows the Create concept ([create-concept.md](create-concept.md)): the two screens are one flow, and the pod the player collected is the object that travels from one to the other.
 
 The owner's verdict was "you're basically decorating a screen and placing an egg in it". The current screen has no purpose of its own: the player has nothing to look at that changes, nothing to come back for, and every object around the egg is decoration. This concept starts from what the player wants here and keeps only what serves it.
@@ -33,7 +35,7 @@ The Station has no knob (station-gate design/interaction.md, "There is no knob")
 **How the Station shows it from elsewhere.**
 
 - **Home.** The Incubator module draws the pod's own shell small, in its nest, with a small ring around it filling at the same rate. Its lamp is green while it grows, pulses amber when a chapter has cleared that the player has not looked at, and is steady amber when ready. Home's notice slot says "Face cleared on your Loika" or "your Loika is ready". The Home key's ✓ (what needs you) leads to the Incubator in both cases.
-- **Idle.** The vivarium plays alone. A small moulded tag on the bezel's bottom rail (a chrome sprite, like the rest knob) carries the pod's ring; it turns amber when something cleared or the bud is ready, readable from across the room. The first press only wakes the screen, as now.
+- **Idle.** The vivarium plays alone. A small moulded lamp plate on the bezel's bottom rail (a chrome sprite, like the rest knob) carries the pod's ring; it turns amber when something cleared or the bud is ready, readable from across the room. The first press only wakes the screen, as now.
 
 ## 2. Three options for the owner
 
@@ -98,7 +100,7 @@ Everything else on the current screen goes: the chapter tabs, the conduit, vents
 Not retro-industrial, and not a machine with an egg in it. Take the look from the owner's accepted screens:
 
 - **The vivarium (Home, Vivarium, Idle)** for the nest: living moss, soft fibre, warm daylight, depth and soft shadow. The nest is a small piece of that world brought onto the device.
-- **Pods** for the pod and its slip: the species' own shell, lit on its ground, a worn fitted cradle, a paper tag.
+- **Pods** for the pod: the species' own shell, lit on its ground, a worn fitted cradle. No paper tag: the Station is a lab.
 - **The kit** (`hero-kit.png`) for the one device: the cradle and the candling light are moulded sage polymer with dark rubber, rounded, matte, from the same maker as the Station and the Companion.
 
 The light is the subject's: warm, from below, through the shell, spilling a little onto the moss and the cradle, so the screen visibly has one lit thing. The key light from the top left stays for form. No pipes, vents, boxes, gauges, wall fixtures, porthole doors or pendant bulbs; the wall behind is the device's dark matte slate, as on Pods. The creative director's direction (specs/station-style-direction-incubator.md) holds for materials and palette; this concept overrules it in one place on purpose: the lamp is not overhead but under the nest, because candling is its job.
@@ -117,7 +119,7 @@ The light is the subject's: warm, from below, through the shell, spilling a litt
 | `incubator-ring` | about 428×428 | The ring's track and fill as art-layer pieces, with the cut marks |
 | `incubator-card` | about 200×236 | The just-cleared card, its picture slot 160×140 left empty for the trait picture |
 | slip | as on Create | The Create slip, reused at one size for both screens |
-| Home module, Idle tag | the module's object box; the rest-knob scale | The pod in its nest small with its ring; the bezel tag with the ring and its lamp |
+| Home module, Idle lamp plate | the module's object box; the rest-knob scale | The pod in its nest small with its ring; the bezel's lamp plate with the ring and its lamp |
 
 **UI/UX.** The layout on the grid (the ring, pod and side columns, even margins), the focus graph (pod, card), the slip and card strings at their longest, the time phrase in the context zone, and the Home module and Idle tag placements.
 
@@ -125,7 +127,7 @@ The light is the subject's: warm, from below, through the shell, spilling a litt
 
 - The bud's own pod: `st.bud.species` and `st.bud.from.podId` with the shell picture Pods and Cargo draw (as the CD's table says); for a cross, the species' shell with the home moss.
 - The ring's fill from the bud's start and end times; its cuts at the times the rules clear each chapter.
-- The cleared events driving the card, the slip, the stamp, the shadow's layers, Home's amber pulse and the Idle tag, and a "seen" flag so the pulse stops once the player has looked.
+- The cleared events driving the card, the slip, the stamp, the shadow's layers, Home's amber pulse and the Idle lamp plate, and a "seen" flag so the pulse stops once the player has looked.
 - The founder's shadow, derived once at Grow from the founder's picture.
 - The time phrase, rounded to the minute, if the owner rules for it.
 

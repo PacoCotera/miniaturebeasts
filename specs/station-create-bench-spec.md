@@ -77,6 +77,8 @@ The player came from a pod with `✓ Shape a founder`. They decide what their ne
 
 ## 4. The slip and the price
 
+> **Superseded** (2026-10-17, `specs/station-lab-sweep.md`): the Station is a lab, and there is no paper slip outside the Library. This section's slip is replaced by the machine's display (`specs/slip-visual-intent.md`); its rects and contents come from UI/UX T-20261016-126. Do not build or paint the slip below.
+
 **The slip** (728, 96, 208 × 288). It uses the Incubator slip's paper and width at a shorter height, so the bank can span the bench. Padding 16; text at x 744:
 
 | Block | Lines | Type |

@@ -35,8 +35,8 @@ No "new" mark is added. A pod is fresh until identified (`fresh` clears at Ident
 | Object | Where | Job | Call |
 | --- | --- | --- | --- |
 | Wells with the shell, the ring and the name | collection | Which pods you have, and how far you've read each | **Keep**, plus the place badge (§1) |
-| The selected pod on its dish, with its tag | overview | This pod | **Keep** |
-| Found-note: the place picture and the sentence | overview | Where it came from | **Keep** |
+| The selected pod on its dish (its painted paper tag cut: the Station is a lab, `specs/station-lab-sweep.md`; T-20261016-128) | overview | This pod | **Keep** the pod; **cut** the tag |
+| Found-note: the place picture and the sentence | overview | Where it came from | **Change:** the place badge and its place word on the machine's readout. The sentence goes (a note, and over the words load). UI/UX sets it |
 | Chapter rail | overview, chapter, compare | Choose the chapter to read | **Keep** |
 | Kin row | overview | The Compare targets | **Keep** |
 | Stamp label in its case | overview | The pod's stamp | **Keep** |

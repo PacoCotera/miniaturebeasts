@@ -94,7 +94,7 @@ The device frame on Pods, Probe and the Incubator stays (owner 10:57).
 - **Intent:**
   - **Grow:** the subject (the chamber and the pod) becomes the dominant object, and progress and wait time read at the stage's scale (owner, same package: the leaves "are tiny").
   - **Shrink to nothing:** equipment with no job.
-  - **Fill with what the player came to check:** how far along it is, what it is (the pod's found-note, as on Pods), and what comes next. What exactly fills it is T-25's; UI/UX gives the rects in T-20261016-23.
+  - **Fill with what the player came to check:** how far along it is, what it is (the pod's place, as on Pods: badge and word), and what comes next. What exactly fills it is T-25's; UI/UX gives the rects in T-20261016-23.
 
 ## 6. The owner's points, one line each
 
