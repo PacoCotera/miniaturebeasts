@@ -92,3 +92,6 @@ Three causes:
 - **No piecemeal approvals.** Small fixes are batched per screen family and judged together, in the sheet.
 - **A patch on a patch fails.** A screen that comes back a second time for the same point goes back to concept. It does not get another patch.
 - **Nothing reaches the owner** without this gate's verdict and the game design gate's, both in `results/`.
+- **The guide is provisional; the owner's iterations lead** (owner, 10:14: the guide is "fine for the time being"; the screens are prototypes the owner iterates on, "even maybe breaking the guidelines").
+  - When a screen the owner shaped breaks a rule of `design/style-guide/`, the gate does not fail the screen on that rule. The rule is amended to the owner's iteration, by the art director, and the gate checks the amendment.
+  - The guide's rules bind builders and artists; they never overrule the owner.
