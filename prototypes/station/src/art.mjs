@@ -11,6 +11,7 @@ import { buildBody } from "../../workbench/framework/rig.mjs";
 import { validateBody } from "../../workbench/framework/validate.mjs";
 import { LOCI } from "../../workbench/framework/catalogue.mjs";
 import { treat } from "./unknown.mjs";
+import { SHADOW_P, fitAlpha, deriveShadow } from "./shadow.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
@@ -334,15 +335,22 @@ export function founderArt(frame, genome, read, w, h, painted = null) {   // pai
     return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
   });
 }
-// The founder's shadow (specs/face-arc-and-shadow.md §2): Create's picture at 160 × 192 for the chapters known now, its alpha stepped with the light: a' = floor((a P + 50) / 100), P = 25, 45, 65 and 80 for cool, warm, glowing and ready (the face has no
-// opacity: it is baked into the alpha, in integer steps, never a fade). A cross (genome null) is the species' type specimen with nothing read: the ghost, the body alone, never the bud's own genome. Pure, and cached by its key like founderArt.
-export const SHADOW_P = { cool: 25, warm: 45, glowing: 65, ready: 80 };
+// The founder's shadow (specs/face-arc-and-shadow.md §2; T-20261016-125): the derive of shadow.mjs (masters-pods incubator-b/shadow.py with the edge rule) on Create's founder, fitted to the 160 × 192 box: the whole body from nothing cleared (the cool step),
+// its edge sharpening as chapters are known (q = known ÷ the species' chapters) and with the light's step. The input is Create's picture's alpha at 304 × 312 (the species' painted adult where it is placed, else the rig pass with every chapter known, so no
+// unread look hides in it: an unread look adds nothing here because the picture is one flat body); a cross (genome null) is the species' type specimen with q = 0, never the bud's own looks. Pure, cached by its key.
+export { SHADOW_P };
+const fitted = new Map();
+const alphaOf = (rgba) => { const a = new Uint8Array(rgba.length / 4); for (let i = 0; i < a.length; i++) a[i] = rgba[i * 4 + 3]; return a; };
 export function shadowArt(frame, genome, read, step, painted = null) {
   const P = SHADOW_P[step]; if (P == null) throw new Error(`shadow: unknown step ${step}`);
-  const g = genome ?? frame.typeSpecimen?.genome, rd = genome ? read : []; if (!g) throw new Error("shadow: no genome to draw");
-  const b = builtOf(frame, g, rd), t = treatmentOf(frame, rd, !b.error && b.validation.status === "valid" ? b.scene : null);   // the treatment is part of the key, as founderArt's: a chapter that clears changes the picture
-  const key = "sh" + (genome ? drawnDigest(frame, genome, read) : "x:" + (frame.species?.id ?? "")) + ":" + t.mode + ":" + t.groups.join("+") + ":" + step + (painted ? ":p" : "");
-  return art(key, () => { const src = founderArt(frame, g, rd, 160, 192, painted).rgba(), out = new Uint8ClampedArray(src); for (let i = 3; i < out.length; i += 4) out[i] = Math.floor((src[i] * P + 50) / 100); return { w: 160, h: 192, rgba: () => out }; });
+  const g = genome ?? frame.typeSpecimen?.genome; if (!g) throw new Error("shadow: no genome to draw");
+  const known = genome ? [...new Set(read)].sort() : [], chapters = frame.chapters.length, q = chapters ? Math.min(1, known.length / chapters) : 0, species = frame.species?.id ?? "";
+  const src = (genome ? drawnDigest(frame, genome, frame.chapters.map((c) => c.id)) : "x:" + species) + (painted ? ":p" : "");
+  return art("sh" + src + ":" + known.join(",") + ":" + step, () => {
+    let fit = fitted.get(src);
+    if (!fit) { const a = alphaOf(founderArt(frame, g, frame.chapters.map((c) => c.id), 304, 312, painted).rgba()); fit = fitAlpha(a, a, 304, 312); fitted.set(src, fit); }   // the fit is the same box for every known set of one founder
+    const out = deriveShadow(fit, q, step); return { w: 160, h: 192, rgba: () => out };
+  });
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });

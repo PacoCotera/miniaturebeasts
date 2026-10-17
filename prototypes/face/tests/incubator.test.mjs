@@ -20,7 +20,7 @@ import { dirty, dirtyRects } from "./dirty.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), distNode = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")) && existsSync(path.join(distNode, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
-const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), incSpec = J("incubator");
+const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), shippedSpec = J("incubator"), incSpec = { ...shippedSpec, regions: { ...shippedSpec.regions, slip: { ...shippedSpec.regions.slip, drawn: true } } };
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours, masters = path.resolve(here, "../../ui/assets/masters/pods");
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -132,7 +132,7 @@ test("the slip: the species at 20 px, how it was found, 'Your changes', 'Cleared
   const b = scene({ minutes: 15, shape: true }), f = await start(b), lg = logOf(f), S1 = b.props.regions.slip, L = lg.type.filter((t) => t.region === "slip" && t.text).map((t) => t.text), box = region(lg, "slip", "type");
   const want = [S1.name, ...S1.found, "Your changes", ...S1.changes, "Cleared while growing", ...S1.cleared, ...(S1.toCome ? [S1.toCome] : [])];
   assert.ok(L[0] === S1.name && L.includes("Your changes") && L.includes("Cleared while growing"), JSON.stringify(L)); assert.ok(L.indexOf("Your changes") < L.indexOf("Cleared while growing"));
-  for (const w of want) assert.ok(L.some((x) => x === w || (x.endsWith("…") && w.startsWith(x.slice(0, -1)))) || S1.found.some((fl) => w === fl), `"${w}" is on the slip`);
+  for (const w of want) assert.ok(L.some((x) => x === w || (x.endsWith("…") && w.startsWith(x.slice(0, -1)) && (w[x.length - 1] === " " || w[x.length - 1] === undefined))) || S1.found.some((fl) => w === fl), `"${w}" is on the slip, a cut line cut at a word`);   // T-20261016-125: a line is cut at the last whole word that fits (… after it), never inside a word
   assert.equal(box.rect[0], 104); assert.ok(box.rect[2] <= 176 && box.rect[1] >= 112 && box.rect[1] + box.rect[3] <= 504 - 16, `the text ${box.rect}`); assert.ok(lg.type.filter((t) => t.region === "slip").every((t) => t.px === 16 || t.px === 20));
   assert.equal(lg.type.find((t) => t.region === "slip" && t.text === S1.name).px, 20, "the name at 20 px");
   const cx = scene({ minutes: 5, cross: true }), g = await start(cx), lc = logOf(g); assert.ok(lc.type.some((t) => t.region === "slip" && t.text === "read it when it's out")); assert.ok(!lc.type.some((t) => t.region === "slip" && t.text === "Your changes"));
@@ -307,4 +307,18 @@ test("brightness (ruling §6): in each light step and at ready the p95 of relati
     assert.ok(podP - hi >= 0.08, `${path.basename(file)}: the pod's p95 ${podP.toFixed(3)} is ${(podP - hi).toFixed(3)} over the highest other ${hi.toFixed(3)}, under 0.08`); seen++;
   }
   assert.equal(seen, files.length);
+});
+
+test("the lab sweep (T-20261016-125): with the shipped spec the slip region is empty: no paper, no line, no region named slip is drawn in growing or ready, and the departure check holds", { skip }, async () => {
+  for (const minutes of [2, 15]) {
+    const st = scene({ minutes }).st, now = scene({ minutes }).now, b = incubatorBuild({ st, settings, now, ui: { inc: {} }, lamp: "" }, shippedSpec, podsSpec), f = await start(b); const lg = logOf(f);
+    assert.ok(!lg.regions.some((r) => r.id === "slip") && !lg.type.some((t) => t.region === "slip"), `${minutes} min: nothing of the slip is drawn`); assert.deepEqual(departures(lg, shippedSpec, frameSpec, "growing"), []); assert.deepEqual(f.errors(), []);
+  }
+});
+
+test("a slip line is cut at a word (T-20261016-125): 'Face: leaf crest, thin ri…' is cut inside a word and must not be; the cut is at the last whole word that fits 176 px, with …", { skip }, async () => {
+  const b = scene({ minutes: 15, shape: true }); b.props.regions.slip.cleared = ["Face: leaf crest, thin rings and a very long look after them", "Coat: plain"];
+  const f = await start(b), L = logOf(f).type.filter((t) => t.region === "slip" && t.text).map((t) => t.text), cut = L.find((t) => t.startsWith("Face:"));
+  assert.ok(cut.endsWith("…") && !/ri…$/.test(cut), cut); const src = b.props.regions.slip.cleared[0], head = cut.slice(0, -1); assert.ok(src.startsWith(head) && src[head.length] === " ", `"${cut}" ends at a word of "${src}"`);
+  assert.ok(L.includes("Coat: plain"), "a line that fits is whole");
 });

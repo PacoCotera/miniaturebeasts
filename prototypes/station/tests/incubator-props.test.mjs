@@ -15,7 +15,7 @@ import { habitatBuild } from "../src/views/habitat-props.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const schema = JSON.parse(readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), "incubator.props.json"), "utf8"));
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("incubator.json"), pods = J("pods.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), shipped = J("incubator.json"), spec = { ...shipped, regions: { ...shipped.regions, slip: { ...shipped.regions.slip, drawn: true } } }, pods = J("pods.json");   // `spec` draws the slip so its words stay tested; `shipped` is the build (the slip not drawn: the lab sweep)
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
   if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
@@ -168,4 +168,11 @@ test("the hatch's juvenile names its close atlas and shadow when its set may pla
   const b = incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: true }, spec, pods);
   assert.deepEqual(validate(b.props, schema), []); assert.deepEqual(b.props.regions.juvenile.moving, { set: "S01", close: "moving:juvenile:S01:close:304x312:species", shadow: "moving:juvenile:S01:shadow:304x24" });
   assert.equal(incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: false }, spec, pods).props.regions.juvenile.moving, undefined, "the play gate shut: none");
+});
+
+test("the lab sweep (T-20261016-125): the shipped spec does not draw the slip (regions.slip.drawn false), so growing, ready and the hatch send no slip and the region stays empty; the slip's words are still built when a ticket turns it on", () => {
+  assert.equal(shipped.regions.slip.drawn, false);
+  const st = grown("S01", 1, true), b = incubatorBuild({ st, settings, now: T0 + 60_000, ui: { inc: {} }, lamp: "" }, shipped, pods);
+  assert.equal(b.props.regions.slip, undefined, "no slip in the props"); assert.ok(!b.requests.some((r) => /slip/.test(r.id)), "no slip picture asked for");
+  assert.ok(build(st, { inc: {} }, T0 + 60_000).props.regions.slip, "with `drawn` on the slip is still built");
 });

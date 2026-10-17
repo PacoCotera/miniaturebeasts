@@ -33,7 +33,7 @@ export function departures(log, spec, frame, state = "growing") {
   // what each state draws
   if (state === "empty") for (const id of ["pod", "shadow", "slip", "card", "stamp.plate", "stamp", "code", "juvenile", "focus"]) must(got(id).filter((x) => x.rect[2] > 0).length === 0 && !type.some((t) => t.region === id && t.text), `the empty Incubator draws no ${id}`);
   else {
-    must(got("pod").length > 0 || state === "hatch", "the pod is drawn"); must(got("slip").length > 0, "the slip is drawn"); must(got("stamp.plate", "painted").length === 1, "the stamp label (its dimmed plate) is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn");
+    must(got("pod").length > 0 || state === "hatch", "the pod is drawn"); must(R.slip.drawn === false ? got("slip").length === 0 && !type.some((t) => t.region === "slip" && t.text) : got("slip").length > 0, R.slip.drawn === false ? "the slip is not drawn (regions.slip.drawn false: the lab sweep)" : "the slip is drawn"); must(got("stamp.plate", "painted").length === 1, "the stamp label (its dimmed plate) is drawn once"); must(type.some((t) => t.region === "code"), "the code is drawn");
   }
   must(state !== "hatch" || got("focus").length === 0, "the hatch holds no ring"); must(state === "hatch" || got("juvenile").every((r) => r.rect[2] === 0), "the juvenile is drawn only in the hatch");
   must(state === "hatch" || got("ribbon", "chrome").length === 0 || got("ribbon", "chrome").every((r) => r.rect[2] === 0), "the ribbon shows only in the hatch");

@@ -143,6 +143,14 @@ int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max) {
   if (cl && nl < max && o + (int)strlen(cur) + 1 < cap) { strcpy(buf + o, cur); nl++; }
   return nl;
 }
+/* A line cut at a word: the last whole word that fits with … after it (the text is cut at a space, never inside a word); one word wider than the line is cut by character as v_clip does. */
+void v_clip_word(const char *s, int maxw, int px, char *out, int cap) {
+  snprintf(out, (size_t)cap, "%s", s);
+  if (v_run_width(out, px) <= maxw) return;
+  int last = -1; size_t n = strlen(s);
+  for (size_t i = 1; i < n; i++) if (s[i] == ' ') { char t[V_STR + 4]; snprintf(t, sizeof t, "%.*s\xe2\x80\xa6", (int)i, s); if (v_run_width(t, px) <= maxw) last = (int)i; else break; }
+  if (last > 0) snprintf(out, (size_t)cap, "%.*s\xe2\x80\xa6", last, s); else v_clip(s, maxw, px, out, cap);
+}
 void v_clip(const char *s, int maxw, int px, char *out, int cap) {
   snprintf(out, (size_t)cap, "%s", s);
   if (v_run_width(out, px) <= maxw) return;

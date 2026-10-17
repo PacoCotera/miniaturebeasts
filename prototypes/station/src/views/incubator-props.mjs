@@ -80,7 +80,7 @@ export function incubatorBuild(m, spec, pods) {
   }
 
   // the slip: the species, how it was found (or laid at home), what the player changed, what the wait has cleared (newest first) and how many are still to come
-  if (B) {
+  if (B && R.slip.drawn !== false) {   // the slip is not drawn (incubator.json regions.slip.drawn): the region stays empty until the machine's display replaces it
     const p = { g: B.from?.g, how: B.from?.how, idd: 1, species: B.species, sp: B.sp };
     const found = cross ? [fill(SG.slip.crossFound, { A: S.cap(B.parents?.[0]?.name ?? ""), B: S.cap(B.parents?.[1]?.name ?? "") })] : S.podOriginLines(p);
     const changes = cross ? [] : (Array.isArray(B.shaped) ? B.shaped : []).slice(0, R.slip.maxChanges).map((id) => { const t = fr.chapters.flatMap((c) => c.traits).find((x) => x.id === id); return t ? fill(SG.slip.trait, { Trait: t.name, look: traitState(fr, t, B.genome).shows }) : null; }).filter(Boolean);

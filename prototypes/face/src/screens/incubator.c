@@ -163,7 +163,7 @@ static void build_juvenile(int t) {
 /* ---- the slip (left): the species name at 20 px, how it was found (two lines at most, `mist`), "Your changes" with a line a change (three at most), "Cleared while growing" with a line a chapter, newest first (five at most), then "still to come"
    (a crossed bud: "read it when it's out"). The text stacks from the top of the paper by its pitches; a block with nothing to say takes no room and its nodes keep no size. A line is cut at a word with … at 176 px. ---- */
 static void slip_line(const char *id, const char *text, int *y, int x, int px, int pitch, int maxw, const char *colour) {
-  char cut[V_STR]; if (*text) v_clip(text, maxw, px, cut, sizeof cut); else cut[0] = 0;
+  char cut[V_STR]; if (*text) v_clip_word(text, maxw, px, cut, sizeof cut); else cut[0] = 0;
   int w = v_measure(cut, px); v_text(id, cut, x, v_fdiv(pitch - v_cap(px), 2) + *y, *cut ? w : 0, px, colour); if (*cut) *y += pitch;
 }
 static void build_slip(void) {

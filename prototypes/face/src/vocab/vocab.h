@@ -44,6 +44,7 @@ int v_price(const char *id, const char *s, int x, int y, int px, const char *col
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max);
 /* A string cut to a width with an ellipsis. */
 void v_clip(const char *s, int maxw, int px, char *out, int cap);
+void v_clip_word(const char *s, int maxw, int px, char *out, int cap);   /* the same cut at the last whole word that fits, with … */
 /* A fixed rectangle of the spec, [x, y, w, h], at a path of the frame spec; 0 when it is not a 4-array. */
 int v_spec_rect(const char *screen, const char *path, int r[4]);
 void v_error(const char *what);

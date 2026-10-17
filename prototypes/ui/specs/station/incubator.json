@@ -311,7 +311,8 @@
    "maxChanges": 3,
    "maxCleared": 5,
    "slice": "slip-208x408",
-   "note": "what this is and what they made: the Create slip's paper at 408 tall (spec §5)"
+   "note": "what this is and what they made: the Create slip's paper at 408 tall (spec §5) NOT DRAWN until the machine's display replaces it (specs/station-lab-sweep.md: the Station is a lab, paper only in the Library; specs/slip-visual-intent.md; UI/UX T-20261016-126): the region stays empty and `drawn` turns true only when a ticket restores it",
+   "drawn": false
   },
   "card": {
    "rect": [
