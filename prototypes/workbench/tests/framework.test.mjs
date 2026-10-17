@@ -393,3 +393,15 @@ test("C2: `sure` is the shown look certain (one look at weight 1, one bin for a 
   assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a sibling cross of equal eyes lands on one value"); assert.equal(sib.firm, false);
   for (const t of forecast(frameOf("S02"), sampleIndividual(frameOf("S02"), rng("s")), sampleIndividual(frameOf("S02"), rng("t"))).traits) if (t.kind === "sealed") assert.equal(t.sure, false);
 });
+
+test("a shown look is always one of its trait's words: the frame's looks, or a form's player word (S03's Claws: hooves, webbed feet, roots)", async () => {
+  const { lookOf } = await import("../framework/describe.mjs");
+  const legacy = ["hooves", "webbed feet", "roots"];
+  for (const f of frames) for (const ch of f.chapters) for (const t of ch.traits) {
+    const r = rng(`words:${f.species.id}:${t.id}`);
+    for (let i = 0; i < 60; i++) {
+      const g = sampleIndividual(f, r), w = lookOf(f, t, g);
+      assert.ok(w == null || t.looks.includes(w) || (f.species.id === "S03" && t.id === "feet" && legacy.includes(w)), `${f.species.id} ${t.id}: "${w}" is not one of ${JSON.stringify(t.looks)}`);
+    }
+  }
+});
