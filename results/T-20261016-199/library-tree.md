@@ -16,10 +16,10 @@ There is one tree, and it is real data: the recorded lineage (each mibi's parent
 - **The tree grows upward** with each generation the player breeds. Height is the visible measure of the mechanics player's work.
 - **The crown is the goal.**
   - **With a wish pinned:** the crown is the wished mibi's silhouette, with its pieces. A piece lights when a node in the tree shows that look, read only.
-  - **With no wish:** the crown is the species' field guide as a ring of leaves, one for each look counted toward completion (Loika: 14). Each found leaf is painted, and the rest are empty frames.
+  - **With no wish:** the crown is the species' field guide as a canopy of leaves (not a ring: rings belong to the Incubator), one for each look counted toward completion (Loika: 14). Each found leaf is painted, and the rest are empty frames.
 - **Nothing is a number.** Progress is height, lit pieces and painted leaves.
 
-## What the loop animates (calm, about 6 seconds, then rest)
+## What the loop animates (calm and rare: one eased pass every 20–30 seconds, the creative director's timing)
 
 - A soft light rises from the roots through the branches to the newest node, then into the crown, where it lights the held pieces or leaves in turn and fades.
 - It is the inheritance flowing, the copies passed down: the one idea the tree teaches.
