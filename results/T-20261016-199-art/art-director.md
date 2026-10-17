@@ -24,3 +24,16 @@ The source's floor is only about 210 px tall, so no 497-tall crop of it can be 8
   - **Kept out:** the device wall, the hose and the mister (the pane has no bezel, and the instrument lives in Home's other panes); no creatures (the build places the residents); no text.
 - **The ground:** the floor's walking line is level enough that stands at 96–150 px tall read as standing on it. Soil shows only as a thin edge at the bottom.
 - **The variants:** day first. Dawn, dusk and night follow from the same framing once day passes, as the existing four do.
+
+## Route 2 delivered and gated (masters-pods f2116095, `concepts/vivarium-day-tall/`)
+
+The studio made two requests, the first and its one retry.
+- **Sheet a: not used.** Too much canopy; the floor starts at about 52% of the height.
+- **Sheet b: passes.** Deep open moss, the burrow mound left with its hole, the small pool right, and no wall, hose, creatures or text, in the day master's warm light.
+
+**The cut** (`cut-tall-master.py`): rows 200–1200 of b at the pane's aspect, from the burrow side, reduced (never enlarged) to **`vivarium-pane-day-384x497.png`**. In it:
+- a calm canopy and light band takes about the top fifth;
+- the burrow and the pool sit in the middle;
+- the floor fills the lower two thirds and more, deep enough for the residents at two depths.
+
+`pane-r4-route1-vs-tall.png` shows it against the route 1 crop, with the same residents. **It replaces the route 1 interim.** Dawn, dusk and night follow from this same framing under a separate approval.
