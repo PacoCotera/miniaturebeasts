@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="1024" height="600" fill="#5d7a5f" stroke="none" stroke-width="1" rx="0"/>
+<rect x="0" y="0" width="1024" height="40" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="16" y="27" font-size="18" fill="#f1ebdf" text-anchor="start"  font-weight="500">Vivarium</text>
+<text x="1008" y="17" font-size="9" fill="#c6c4d8" text-anchor="end" >P3 "the stage": one big painting of the focused outcome; the options are two plates under it</text>
+<text x="1008" y="31" font-size="9" fill="#8d8aa6" text-anchor="end" >CONCEPT SKETCH, 1024×600 at 1×: composition only, for the art director to paint. Not a spec. T-20261016-165</text>
+<rect x="0" y="562" width="1024" height="38" fill="#23292f" stroke="none" stroke-width="1" rx="0"/>
+<text x="16" y="588" font-size="14" fill="#f2671b" text-anchor="start" >✓ Choose</text>
+<text x="1008" y="588" font-size="14" fill="#f1ebdf" text-anchor="end" >← Keep Pip</text>
+<rect x="44" y="52" width="936" height="500" fill="#0f2c40" stroke="#4b7a8f" stroke-width="2" rx="18"/>
+<text x="512" y="92" font-size="26" fill="#f1ebdf" text-anchor="middle"  font-weight="600">Return Pip to the wild?</text>
+<rect x="72" y="112" width="880" height="320" fill="#5c8a4e" stroke="none" stroke-width="0" rx="12"/>
+<rect x="72" y="112" width="880" height="144.0" fill="#ffd8a8" stroke="none" stroke-width="0" rx="12"/>
+<ellipse cx="688.0" cy="214.4" rx="60" ry="22" fill="#ffe6ad" stroke="none" stroke-width="1"/>
+<path d="M72 288.0 q 264.0 -40 528.0 0 t 352.0 -10 V432 H72 Z" fill="#3f7a3a"/>
+<path d="M204.0 432 q 220.0 -80 440.0 -120" stroke="#d9c58c" stroke-width="10" fill="none"/>
+<text x="942" y="422" font-size="9" fill="#23292f" text-anchor="end" >its place, painted wide (pond, meadow…)</text>
+<ellipse cx="560" cy="330" rx="20.4" ry="16.8" fill="#2a2a2d" stroke="#0c0a12" stroke-width="1.5"/>
+<ellipse cx="560" cy="334.8" rx="12.0" ry="8.4" fill="#2a2a2d" stroke="none" stroke-width="1"/>
+<path d="M554.0 314.4 q 10 -18 20 0 M557.6 313.2 q -14 -14 -20 2 M562.4 313.2 q 14 -14 20 2" fill="#5cbb4c" stroke="#23623c"/>
+<text x="100" y="140" font-size="7.5" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">focused: Return. ◀ ▶ swaps the painting to the other outcome (a cut)</text>
+<rect x="72" y="444" width="430" height="64" fill="#123247" stroke="#ffe6ad" stroke-width="3" rx="12"/>
+<text x="92" y="482" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="600">Return to the wild</text>
+<text x="330" y="482" font-size="14" fill="#ffa67c" text-anchor="start" >❀ +2 · gone for good</text>
+<rect x="522" y="444" width="430" height="64" fill="#123247" stroke="#4b7a8f" stroke-width="1.5" rx="12"/>
+<text x="542" y="482" font-size="20" fill="#f1ebdf" text-anchor="start"  font-weight="600">Keep Pip</text>
+<text x="60" y="540" font-size="7.5" fill="#ffe6ad" text-anchor="start" font-family="DejaVu Sans Mono, monospace">biggest picture, but the two outcomes are never side by side; weaker for "compare at a glance"</text>
+</svg>
