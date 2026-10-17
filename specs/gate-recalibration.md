@@ -31,3 +31,26 @@ A screen passes only if the answer to every line is yes, judged on the whole 1×
 | Incubator | Machinery re-rendered at the board's depth; margins and grid relaid | AD (art), UI/UX (margins, grid) |
 | Probe | The Probe shown upright in a vertical cradle, as held; the bench relaid around it | AD (art, the cradle), UI/UX (layout) |
 | Create | First the concept: what a gene-tweaking bench looks like, and what the player does there. Then layout and art, with everything grounded on a bench | Game designer (concept), then UI/UX and AD |
+
+## 4. Added 2026-10-17: why the gate passed the slip, and two new checks
+
+**What I missed.** The owner rejected the slip on Create (and so on the Incubator): "doesn't read like part of the machine, or anything else" and "a wall of text that nobody will read". My art reviews passed it three times:
+- `results/review-art-2026-10-16b.md` counted the filled slip as answering "wasted space";
+- `-17a.md` and `-17b.md` flagged only its colour and one overlong line.
+
+Three causes:
+1. **I judged the text as "stand-in content, the build's".** I never asked whether the design should hold that much text at all. The stand-ins were at the spec's longest case, so they are the design.
+2. **The owner's 13:26 words ("not sold on that cream color and lots of text") were applied only to the decision panels.** The slip is a cream panel of text, and I didn't carry the owner's words to every panel.
+3. **No check asked what the object is in the world.** The slip passed "grounded" (it is clipped to the bench) without being any thing at all.
+
+**The gate's checks 8 and 9, from now on, on every screen:**
+
+8. **Words load.**
+   - **Count the words** visible at 1× in the state's longest case, outside the top bar and the bottom line.
+   - **What fails:** any object holding more than **6 words**, or any list of **3 or more lines of words**. Exceptions are a page whose purpose is reading (the Library's Book) and a budget the owner has approved.
+   - **Prefer a picture or mark:** where a picture or a mark the screen already uses (a notch, a frost, a chip) could say it, a word that says it fails.
+   - **Stand-in text counts:** text at the spec's longest case is the design, not "the build's".
+9. **What it is in the world.**
+   - Every panel, card or box is named as a thing: a part of the device (a plate cut from the housing, a module), or an object of the world that exists elsewhere in the game (a tag, a book, a crate).
+   - A generic box, card or text panel fails, however well grounded.
+   - The owner's words about one panel are applied to every panel of the same kind.
