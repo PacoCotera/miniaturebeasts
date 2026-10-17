@@ -29,11 +29,16 @@ All three are principles we already hold ("one machine", "the machine shows what
 - **The device's own display** (frame 5). Readouts sit on the cockpit's dash, not on a HUD. Ours belong on the Station's face.
 - **Red only for real danger** (frame 6), as our T-196 rule now says.
 
+- **Trees for complex structured data** (frame 8), amended by the owner at 14:49: "the trees are valuables for certain screens, a genome for example. so dont discard them comoletely. the intellectual player appreciates the structure that trees give to complex data."
+  - **Where they belong:** the genome (loci and chapters), lineage, and anywhere else the mechanics player reads structure.
+  - **Our version:** the nodes are pictures, such as chapter emblems, look tiles and faces, more than named boxes. Lanes stay as quiet grouping, and locks and gaps are drawn as shapes. The tree is still in our slate kit.
+  - **Avoid them only where a picture serves better,** as on Home and the decision panels.
+
 ## Don't adopt
 
 - **The look itself.** White plastic under studio light, with no life in it, is the "sterile lab" our art direction rules out. Main Sequence is all instrument; we are life first. Their station is the subject. Ours holds the subject.
 - **Holograms, blueprint grids and glowing previews** (frames 7 and 9): the sci-fi HUD our guide forbids.
-- **Text trees and key-prompt labels** (frame 8). Their research tree is lanes of named boxes. The owner has said our panels already rely too much on text.
+- **Key-prompt labels and text legends.** The owner has said our panels already rely too much on text.
 - **Density.** Dozens of identical machines work on a monitor. Our 1024 × 600 device needs a few large things, each one meaning something.
 - **Orange as brand and accent at once.** For us, orange stays the one action.
 
@@ -51,7 +56,7 @@ UI/UX saw all 13 screenshots, the Gameplay trailer at a frame every 4 s and the 
 - **Every route shown on its key:** small key chips on the controls. UI/UX proposes key-colour chips on Home, so the routes sit on the hardware.
 - **Ghost before commit:** the outcome is shown before you press, as in our decision windows. It should be a reduced-opacity image on a static ground, never translucency over the living window.
 - **Don't take:**
-  - the text density (hotkey legends, cost lists, stat strips);
+  - the text density (hotkey legends, cost lists, stat strips). Trees are the exception: per the owner's 14:49 amendment they suit complex data such as the genome, though not Home or the panels;
   - the management overlays, which are lists of cards with gears, the menu the owner rejected for Home;
   - the branded white-and-orange look.
 
