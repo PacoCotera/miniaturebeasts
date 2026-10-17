@@ -405,3 +405,23 @@ test("a shown look is always one of its trait's words: the frame's looks, or a f
     }
   }
 });
+
+test("the Tuikis's claws: new pods draw only the three digging forms; a legacy hoof, webbed or root copy stays legal, breeds, and reads plainly", async () => {
+  const { lookOf } = await import("../framework/describe.mjs");
+  const f = frameOf("S03"), id = "anatomy.contact-terminal-form", row = f.loci.find((l) => l.id === id), claws = f.chapters.flatMap((c) => c.traits).find((t) => t.id === "feet");
+  assert.equal(frameVersionOf(f), 5, "the Tuikis at frame version 5 (T-20261016-194)");
+  assert.deepEqual(row.alleles, ["rounded", "pad", "wedge"]); assert.deepEqual(row.legacy, ["hoof", "webbed", "root"]);
+  assert.deepEqual(claws.looks, ["round feet", "padded feet", "digging wedges"], "the guide counts the three");
+  const r = rng("claws");
+  for (let i = 0; i < 200; i++) assert.ok(sampleIndividual(f, r).loci[id].every((c) => row.alleles.includes(c)), "a new pod never draws a legacy form");
+  const words = new Set();
+  for (const [x, y] of [["hoof", "hoof"], ["root", "webbed"], ["hoof", "pad"], ["webbed", "rounded"]]) {
+    const old = { ...typeSpecimen(f), loci: { ...typeSpecimen(f).loci, [id]: [x, y] } };
+    assert.deepEqual(checkGenome(f, old), [], `a living ${x}/${y} line stays valid`);
+    const kid = cross(f, { id: "old", genome: old }, { id: "new", genome: sampleIndividual(f, r) }, { rng: rng(`claws-${x}${y}`), kinship: 0 });
+    assert.deepEqual(checkGenome(f, kid), [], "and breeds a valid child");
+    const w = lookOf(f, claws, old); words.add(w);
+    assert.ok([...claws.looks, "hooves", "webbed feet", "roots"].includes(w), `"${w}" is a plain word, never an id`);
+  }
+  assert.ok(words.has("hooves") || words.has("roots"), "an old form shows as itself");
+});

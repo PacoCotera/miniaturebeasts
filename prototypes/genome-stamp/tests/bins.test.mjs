@@ -42,7 +42,12 @@ test("the registry carries the sixteen species of the workbench at frame version
   const l3 = frameFor(1, 3).heritable.map((l) => l.id), l4 = frameFor(1, 4).heritable.map((l) => l.id);
   assert.ok(l3.every((id) => l4.includes(id)), "version 4 keeps every version-3 heritable locus and adds Colour and the marking layout");
   const v4 = FRAMES_LIST.filter((f) => f.version === 4);
-  assert.deepEqual(v4.map((f) => f.species), Array.from({ length: 16 }, (_, i) => i + 1), "catalogue 10 (ash): every species at version 4, every version 3 carried");
+  assert.deepEqual(v4.map((f) => f.species).sort((a, b) => a - b), Array.from({ length: 16 }, (_, i) => i + 1), "catalogue 10 (ash): every species at version 4, every version 3 carried");
+  const s03v5 = frameFor(3, 5), claws = s03v5.heritable.find((l) => l.id === "anatomy.contact-terminal-form");
+  assert.deepEqual(claws.pool, ["rounded", "pad", "wedge"], "the Tuikis at version 5: its claws drawn from the three digging forms (T-20261016-194)");
+  assert.equal(claws.alleles.length, 6, "the copy still indexes the catalogue's six forms, so a legacy hoof, webbed or root copy stamps and reads");
+  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 5).map((f) => f.id), ["S03"]);
+  assert.equal(byName("S03").version, 5); assert.equal(byName("S03", 4).version, 4);
   for (const f of v4) if (f.id !== "S01") { const old = frameFor(f.species, 3); assert.deepEqual(old.heritable.map((l) => [l.id, l.bits]), f.heritable.map((l) => [l.id, l.bits]), `${f.id}: same loci and bits at v4`); }
   assert.equal(byName("S01", 2).version, 2);
   assert.deepEqual(legacy.map((f) => f.id), ["hopper", "puffcap", "glowtail"]);
@@ -94,7 +99,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   const rows = [];
   for (const id of ROSTER) {
     const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, 4);
+    assert.equal(f.version, id === "S03" ? 5 : 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);
