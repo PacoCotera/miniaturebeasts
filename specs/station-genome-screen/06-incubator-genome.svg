@@ -25,21 +25,27 @@
 <line x1="126.0" y1="115.0" x2="126.0" y2="112.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="134.6602540378444" y1="130.0" x2="136.82531754730547" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="117.33974596215562" y1="130.0" x2="115.17468245269453" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="123" cy="125" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
-<circle cx="130" cy="125" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="123" cy="125" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="130" cy="125" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="135" y="122" width="3" height="6" fill="#fff4a6"/>
 <circle cx="154" cy="125" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="154.0" y1="115.0" x2="154.0" y2="112.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="162.6602540378444" y1="130.0" x2="164.82531754730547" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="145.3397459621556" y1="130.0" x2="143.17468245269453" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="157" cy="125" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="152" cy="125" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<ellipse cx="154" cy="125" rx="6" ry="4.2" fill="#f1ebdf"/>
+<path d="M154 120.8A6 4.2 0 0 1 154 129.2Z" fill="#e6c98c"/>
+<rect x="196" y="115" width="2" height="20" fill="#8a947b"/>
+<rect x="200" y="116" width="3" height="3" fill="#4a544e"/>
+<rect x="200" y="120" width="3" height="3" fill="#4a544e"/>
+<rect x="200" y="124" width="3" height="3" fill="#4a544e"/>
+<rect x="200" y="128" width="3" height="3" fill="#4a544e"/>
+<rect x="200" y="132" width="3" height="3" fill="#4a544e"/>
 <circle cx="182" cy="125" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="182.0" y1="115.0" x2="182.0" y2="112.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="190.6602540378444" y1="130.0" x2="192.82531754730547" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="173.3397459621556" y1="130.0" x2="171.17468245269453" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<ellipse cx="182" cy="125" rx="6" ry="4.2" fill="#f1ebdf"/>
-<path d="M182 120.8A6 4.2 0 0 1 182 129.2Z" fill="#e6c98c"/>
+<circle cx="185" cy="125" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="180" cy="125" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <circle cx="210" cy="125" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="210.0" y1="115.0" x2="210.0" y2="112.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="218.6602540378444" y1="130.0" x2="220.82531754730547" y2="131.25" stroke="#5d7a5f" stroke-width="1.5"/>
@@ -58,8 +64,8 @@
 <line x1="154.0" y1="149.0" x2="154.0" y2="146.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="162.6602540378444" y1="164.0" x2="164.82531754730547" y2="165.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="145.3397459621556" y1="164.0" x2="143.17468245269453" y2="165.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="157" cy="159" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="152" cy="159" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="151" cy="159" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
+<circle cx="158" cy="159" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
 <rect x="163" y="156" width="3" height="6" fill="#fff4a6"/>
 <path d="M163 147L168 155L158 155Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/>
 <circle cx="182" cy="159" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
@@ -97,11 +103,18 @@
 <line x1="145.3397459621556" y1="232.0" x2="143.17468245269453" y2="233.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <ellipse cx="154" cy="227" rx="6" ry="4.2" fill="#f1ebdf"/>
 <path d="M154 222.8A6 4.2 0 0 1 154 231.2Z" fill="#e6c98c"/>
-<rect x="161" y="217" width="3" height="20" fill="#8a947b"/>
-<circle cx="182" cy="227" r="10" fill="#22272a" stroke="#4a544e" stroke-width="1.5"/>
-<circle cx="180" cy="227" r="4" fill="#4a544e" stroke="none" stroke-width="1"/>
-<circle cx="210" cy="227" r="10" fill="#22272a" stroke="#4a544e" stroke-width="1.5"/>
-<circle cx="208" cy="227" r="4" fill="#4a544e" stroke="none" stroke-width="1"/>
+<circle cx="182" cy="227" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
+<line x1="182.0" y1="217.0" x2="182.0" y2="214.5" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="190.6602540378444" y1="232.0" x2="192.82531754730547" y2="233.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="173.3397459621556" y1="232.0" x2="171.17468245269453" y2="233.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<circle cx="185" cy="227" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="180" cy="227" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="210" cy="227" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
+<line x1="210.0" y1="217.0" x2="210.0" y2="214.5" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="218.6602540378444" y1="232.0" x2="220.82531754730547" y2="233.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="201.3397459621556" y1="232.0" x2="199.17468245269453" y2="233.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<circle cx="213" cy="227" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="208" cy="227" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="106" y="260" width="104" height="2" fill="#56605a"/>
 <line x1="222" y1="261" x2="264" y2="261" stroke="#56605a" stroke-dasharray="2 2"/>
 <text x="270" y="265" font-size="10" fill="#8d8aa6" text-anchor="middle">⨯</text>
@@ -149,9 +162,9 @@
 <rect x="160.27817459305203" y="353.72182540694797" width="3" height="3" fill="#4a544e"/>
 <rect x="160.27817459305203" y="369.27817459305203" width="3" height="3" fill="#4a544e"/>
 <rect x="144.72182540694797" y="369.27817459305203" width="3" height="3" fill="#4a544e"/>
-<rect x="113.5" y="282.5" width="25" height="25" fill="none" stroke="#1f9d8f" stroke-width="2"/>
-<rect x="141.5" y="282.5" width="25" height="25" fill="none" stroke="#1f9d8f" stroke-width="2"/>
-<rect x="169.5" y="282.5" width="25" height="25" fill="none" stroke="#1f9d8f" stroke-width="2"/>
+<rect x="113.5" y="282.5" width="25" height="25" fill="none" stroke="#adf6e0" stroke-width="2"/>
+<rect x="141.5" y="282.5" width="25" height="25" fill="none" stroke="#adf6e0" stroke-width="2"/>
+<rect x="169.5" y="282.5" width="25" height="25" fill="none" stroke="#adf6e0" stroke-width="2"/>
 <rect x="728.5" y="96.5" width="207" height="239" fill="#2b3038" stroke="#444" stroke-width="1" rx="8"/>
 <text x="744" y="124" font-size="16" fill="#e6c98c" text-anchor="start">Just cleared</text>
 <rect x="752.5" y="140.5" width="159" height="127" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
@@ -163,7 +176,7 @@
 <line x1="728" y1="504.5" x2="936" y2="504.5" stroke="#444"/>
 <text x="88" y="90" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">compact screen 88,96 208×312 · genes pitch 28 · no emblems, no bay</text>
 <text x="88" y="424" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">cleared: the frost cuts to the gene with a</text>
-<text x="88" y="434" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">400 ms teal pulse, on the ring cut's frame</text>
+<text x="88" y="434" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">400 ms mint pulse, on the ring cut's frame</text>
 <text x="88" y="454" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the card stays the reveal with picture and words</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Grow now</text>

@@ -25,23 +25,23 @@
 <path d="M162 173.8A6 4.2 0 0 1 162 182.2Z" fill="#e6c98c"/>
 <text x="192" y="172" font-size="15" fill="#f1ebdf" text-anchor="start">configurable, a blend</text>
 <text x="192" y="192" font-size="11" fill="#a9b5c8" text-anchor="start">the two copies meet into one look</text>
-<g transform="translate(60 224) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#45d8be" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/></g>
+<g transform="translate(60 224) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#45d8be" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/></g>
 <circle cx="162" cy="260" r="10.5" fill="#1d4a42" stroke="#45d8be" stroke-width="2"/>
 <line x1="162.0" y1="250.0" x2="162.0" y2="247.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="170.6602540378444" y1="265.0" x2="172.82531754730547" y2="266.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="153.3397459621556" y1="265.0" x2="151.17468245269453" y2="266.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="159" cy="260" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
-<circle cx="166" cy="260" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="159" cy="260" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
+<circle cx="166" cy="260" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
 <rect x="171" y="257" width="3" height="6" fill="#fff4a6"/>
 <text x="192" y="254" font-size="15" fill="#f1ebdf" text-anchor="start">changed by you</text>
-<text x="192" y="274" font-size="11" fill="#a9b5c8" text-anchor="start">lit mint, with the notch; here: copy 1 twice</text>
-<g transform="translate(60 306) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#45d8be" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="15" cy="12" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/><circle cx="10" cy="12" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/><path d="M21 0L26 8L16 8Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/></g>
+<text x="192" y="274" font-size="11" fill="#a9b5c8" text-anchor="start">lit mint, the notch; the chosen copy twice, in its own colour</text>
+<g transform="translate(60 306) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#45d8be" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/><path d="M21 0L26 8L16 8Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/></g>
 <circle cx="162" cy="342" r="10.5" fill="#1d4a42" stroke="#45d8be" stroke-width="2"/>
 <line x1="162.0" y1="332.0" x2="162.0" y2="329.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="170.6602540378444" y1="347.0" x2="172.82531754730547" y2="348.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="153.3397459621556" y1="347.0" x2="151.17468245269453" y2="348.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="165" cy="342" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="160" cy="342" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="159" cy="342" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="166" cy="342" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="171" y="339" width="3" height="6" fill="#fff4a6"/>
 <path d="M171 330L176 338L166 338Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/>
 <text x="192" y="336" font-size="15" fill="#f1ebdf" text-anchor="start">a first (▲ mark)</text>
@@ -56,13 +56,13 @@
 <path d="M171 410.5L172.65 414.35L176.5 416L172.65 417.65L171 421.5L169.35 417.65L165.5 416L169.35 414.35Z" fill="#ffd441"/>
 <text x="192" y="418" font-size="15" fill="#f1ebdf" text-anchor="start">a piece of your wish</text>
 <text x="192" y="438" font-size="11" fill="#a9b5c8" text-anchor="start">the four-point glint in the wish yellow</text>
-<g transform="translate(60 470) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#c93440" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="15" cy="12" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/><circle cx="10" cy="12" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/></g>
+<g transform="translate(60 470) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#1d4a42" stroke="#c93440" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="9" cy="12" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/><circle cx="16" cy="12" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/><rect x="21" y="9" width="3" height="6" fill="#fff4a6"/></g>
 <circle cx="162" cy="506" r="10.5" fill="#1d4a42" stroke="#c93440" stroke-width="2"/>
 <line x1="162.0" y1="496.0" x2="162.0" y2="493.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="170.6602540378444" y1="511.0" x2="172.82531754730547" y2="512.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="153.3397459621556" y1="511.0" x2="151.17468245269453" y2="512.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="165" cy="506" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="160" cy="506" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="159" cy="506" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="166" cy="506" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="171" y="503" width="3" height="6" fill="#fff4a6"/>
 <text x="192" y="500" font-size="15" fill="#f1ebdf" text-anchor="start">clashes</text>
 <text x="192" y="520" font-size="11" fill="#a9b5c8" text-anchor="start">red rim + the broken red line</text>
@@ -83,11 +83,21 @@
 <rect x="645.5" y="162.5" width="9" height="9" fill="#3d5a3a" stroke="#5d7a5f" stroke-width="1" rx="2"/>
 <text x="662" y="172" font-size="15" fill="#f1ebdf" text-anchor="start">changes where it goes</text>
 <text x="662" y="192" font-size="11" fill="#a9b5c8" text-anchor="start">four step marks + the place badge; ▲▼ lights them</text>
-<g transform="translate(530 224) scale(3)"><circle cx="12" cy="12" r="10" fill="#22272a" stroke="#4a544e" stroke-width="1.5"/><circle cx="10" cy="12" r="4" fill="#4a544e" stroke="none" stroke-width="1"/></g>
-<circle cx="632" cy="260" r="10" fill="#22272a" stroke="#4a544e" stroke-width="1.5"/>
-<circle cx="630" cy="260" r="4" fill="#4a544e" stroke="none" stroke-width="1"/>
+<g transform="translate(530 224) scale(3)"><circle cx="12" cy="12" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/><line x1="12.0" y1="2.0" x2="12.0" y2="-0.5" stroke="#5d7a5f" stroke-width="1.5"/><line x1="20.66025403784439" y1="17.0" x2="22.825317547305485" y2="18.249999999999996" stroke="#5d7a5f" stroke-width="1.5"/><line x1="3.3397459621556163" y1="17.000000000000004" x2="1.1746824526945208" y2="18.250000000000007" stroke="#5d7a5f" stroke-width="1.5"/><circle cx="15" cy="12" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/><circle cx="10" cy="12" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/><rect x="26" y="2" width="2" height="20" fill="#8a947b"/><rect x="30" y="3" width="3" height="3" fill="#4a544e"/><rect x="30" y="7" width="3" height="3" fill="#4a544e"/><rect x="30" y="11" width="3" height="3" fill="#4a544e"/><rect x="30" y="15" width="3" height="3" fill="#4a544e"/><rect x="30" y="19" width="3" height="3" fill="#4a544e"/></g>
+<circle cx="632" cy="260" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
+<line x1="632.0" y1="250.0" x2="632.0" y2="247.5" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="640.6602540378444" y1="265.0" x2="642.8253175473055" y2="266.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="623.3397459621556" y1="265.0" x2="621.1746824526945" y2="266.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<circle cx="635" cy="260" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="630" cy="260" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<rect x="646" y="250" width="2" height="20" fill="#8a947b"/>
+<rect x="650" y="251" width="3" height="3" fill="#4a544e"/>
+<rect x="650" y="255" width="3" height="3" fill="#4a544e"/>
+<rect x="650" y="259" width="3" height="3" fill="#4a544e"/>
+<rect x="650" y="263" width="3" height="3" fill="#4a544e"/>
+<rect x="650" y="267" width="3" height="3" fill="#4a544e"/>
 <text x="662" y="254" font-size="15" fill="#f1ebdf" text-anchor="start">asleep behind a switch</text>
-<text x="662" y="274" font-size="11" fill="#a9b5c8" text-anchor="start">dark, behind the switch's gate bar</text>
+<text x="662" y="274" font-size="11" fill="#a9b5c8" text-anchor="start">gate bar after the switch gene; its sleeping loci dim dots</text>
 <g transform="translate(530 306) scale(3)"><rect x="2.5" y="2.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/><path d="M21 -1.5L22.65 2.35L26.5 4L22.65 5.65L21 9.5L19.35 5.65L15.5 4L19.35 2.35Z" fill="#d89b14"/></g>
 <rect x="622.5" y="332.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
 <path d="M641 328.5L642.65 332.35L646.5 334L642.65 335.65L641 339.5L639.35 335.65L635.5 334L639.35 332.35Z" fill="#d89b14"/>

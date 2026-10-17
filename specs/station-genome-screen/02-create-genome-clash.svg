@@ -57,27 +57,34 @@
 <line x1="520.0" y1="107.0" x2="520.0" y2="104.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="528.6602540378444" y1="122.0" x2="530.8253175473055" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="511.33974596215563" y1="122.0" x2="509.1746824526945" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="517" cy="117" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
-<circle cx="524" cy="117" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="517" cy="117" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="524" cy="117" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="529" y="114" width="3" height="6" fill="#fff4a6"/>
 <circle cx="556" cy="117" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="556.0" y1="107.0" x2="556.0" y2="104.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="564.6602540378444" y1="122.0" x2="566.8253175473055" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="547.3397459621556" y1="122.0" x2="545.1746824526945" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="559" cy="117" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="554" cy="117" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<ellipse cx="556" cy="117" rx="6" ry="4.2" fill="#f1ebdf"/>
+<path d="M556 112.8A6 4.2 0 0 1 556 121.2Z" fill="#e6c98c"/>
+<rect x="606" y="107" width="2" height="20" fill="#8a947b"/>
+<rect x="610" y="108" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="112" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="116" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="120" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="124" width="3" height="3" fill="#4a544e"/>
 <circle cx="592" cy="117" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="592.0" y1="107.0" x2="592.0" y2="104.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="600.6602540378444" y1="122.0" x2="602.8253175473055" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="583.3397459621556" y1="122.0" x2="581.1746824526945" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<ellipse cx="592" cy="117" rx="6" ry="4.2" fill="#f1ebdf"/>
-<path d="M592 112.8A6 4.2 0 0 1 592 121.2Z" fill="#e6c98c"/>
+<circle cx="595" cy="117" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="590" cy="117" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <circle cx="628" cy="117" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="628.0" y1="107.0" x2="628.0" y2="104.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="636.6602540378444" y1="122.0" x2="638.8253175473055" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="619.3397459621556" y1="122.0" x2="617.1746824526945" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <circle cx="631" cy="117" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
 <circle cx="626" cy="117" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<path d="M637 103.5L638.65 107.35L642.5 109L638.65 110.65L637 114.5L635.35 110.65L631.5 109L635.35 107.35Z" fill="#ffd441"/>
 <rect x="476.5" y="139.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/>
 <text x="488" y="155" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Fa</text>
 <rect x="470" y="150" width="122" height="2" fill="#56605a"/>
@@ -91,14 +98,11 @@
 <line x1="556.0" y1="141.0" x2="556.0" y2="138.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="564.6602540378444" y1="156.0" x2="566.8253175473055" y2="157.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="547.3397459621556" y1="156.0" x2="545.1746824526945" y2="157.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="559" cy="151" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="554" cy="151" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="553" cy="151" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
+<circle cx="560" cy="151" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
 <rect x="565" y="148" width="3" height="6" fill="#fff4a6"/>
 <path d="M565 139L570 147L560 147Z" fill="#fff4a6" stroke="#8a6a1e" stroke-width="0.8"/>
-<path d="M540 141V135H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M572 141V135H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M540 161V167H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M572 161V167H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
+<circle cx="556" cy="151" r="15" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <circle cx="592" cy="151" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
 <line x1="592.0" y1="141.0" x2="592.0" y2="138.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="600.6602540378444" y1="156.0" x2="602.8253175473055" y2="157.25" stroke="#5d7a5f" stroke-width="1.5"/>
@@ -138,11 +142,18 @@
 <line x1="547.3397459621556" y1="224.0" x2="545.1746824526945" y2="225.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <ellipse cx="556" cy="219" rx="6" ry="4.2" fill="#f1ebdf"/>
 <path d="M556 214.8A6 4.2 0 0 1 556 223.2Z" fill="#e6c98c"/>
-<rect x="571" y="209" width="3" height="20" fill="#8a947b"/>
-<circle cx="592" cy="219" r="10" fill="#22272a" stroke="#4a544e" stroke-width="1.5"/>
-<circle cx="590" cy="219" r="4" fill="#4a544e" stroke="none" stroke-width="1"/>
-<circle cx="628" cy="219" r="10" fill="#22272a" stroke="#4a544e" stroke-width="1.5"/>
-<circle cx="626" cy="219" r="4" fill="#4a544e" stroke="none" stroke-width="1"/>
+<circle cx="592" cy="219" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
+<line x1="592.0" y1="209.0" x2="592.0" y2="206.5" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="600.6602540378444" y1="224.0" x2="602.8253175473055" y2="225.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="583.3397459621556" y1="224.0" x2="581.1746824526945" y2="225.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<circle cx="595" cy="219" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="590" cy="219" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="628" cy="219" r="10.5" fill="#26302c" stroke="#5d7a5f" stroke-width="2"/>
+<line x1="628.0" y1="209.0" x2="628.0" y2="206.5" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="636.6602540378444" y1="224.0" x2="638.8253175473055" y2="225.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<line x1="619.3397459621556" y1="224.0" x2="617.1746824526945" y2="225.25" stroke="#5d7a5f" stroke-width="1.5"/>
+<circle cx="631" cy="219" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
+<circle cx="626" cy="219" r="4.2" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="476.5" y="241.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/>
 <text x="488" y="257" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Mo</text>
 <rect x="470" y="252" width="158" height="2" fill="#56605a"/>
@@ -197,18 +208,14 @@
 <rect x="569.5" y="339.5" width="9" height="9" fill="#3d5a3a" stroke="#5d7a5f" stroke-width="1" rx="2"/>
 <path d="M508 117H501V151H544" fill="none" stroke="#c93440" stroke-width="2" stroke-dasharray="4 2"/>
 <rect x="744.5" y="96.5" width="175" height="279" fill="#252b2e" stroke="#56605a" stroke-width="1" rx="4"/>
-<rect x="752.5" y="104.5" width="159" height="127" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="832" y="166" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the look now</text>
-<text x="832" y="178" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">160×128</text>
-<rect x="752.5" y="248.5" width="63" height="63" fill="#d9d0bc" stroke="#adf6e0" stroke-width="2"/>
-<rect x="848.5" y="248.5" width="63" height="63" fill="#bfb8a8" stroke="#56605a" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="784" y="284" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 1</text>
-<text x="880" y="284" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 2</text>
-<circle cx="835" cy="280" r="4" fill="none" stroke="#e6c98c" stroke-width="1.2"/>
-<circle cx="830" cy="280" r="4.2" fill="#adf6e0" stroke="none" stroke-width="1"/>
-<rect x="752" y="318" width="64" height="2" fill="#adf6e0"/>
-<text x="832" y="342" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">(shown copy lit; hidden dim)</text>
-<rect x="764" y="352" width="136" height="2" fill="#56605a"/>
+<rect x="752.5" y="100.5" width="159" height="127" fill="#9d978a" stroke="#56605a" stroke-width="1"/>
+<text x="832" y="160" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 1: the look it gives, 160×128</text>
+<text x="832" y="172" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">dropped out: under the dim veil</text>
+<rect x="752.5" y="244.5" width="159" height="127" fill="#d9d0bc" stroke="#adf6e0" stroke-width="2"/>
+<text x="832" y="304" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 2: kept (chosen twice)</text>
+<text x="832" y="316" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">mint frame</text>
+<circle cx="829" cy="236" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
+<circle cx="836" cy="236" r="3.6" fill="#e6c98c" stroke="none" stroke-width="1"/>
 <text x="424" y="74" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">the clash: red rims + the broken red line, mirrored on the drums</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">Crown and Eyes clash</text>

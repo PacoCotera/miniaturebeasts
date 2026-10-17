@@ -52,11 +52,14 @@
 <text x="488" y="121" font-size="9" fill="#6b6f78" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Co</text>
 <rect x="470" y="116" width="158" height="2" fill="#56605a"/>
 <rect x="510.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
-<path d="M504 107V101H510" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M536 107V101H530" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M504 127V133H510" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M536 127V133H530" fill="none" stroke="#ffe6ad" stroke-width="2"/>
+<circle cx="520" cy="117" r="15" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <rect x="546.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
+<rect x="606" y="107" width="2" height="20" fill="#8a947b"/>
+<rect x="610" y="108" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="112" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="116" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="120" width="3" height="3" fill="#4a544e"/>
+<rect x="610" y="124" width="3" height="3" fill="#4a544e"/>
 <rect x="582.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
 <rect x="618.5" y="107.5" width="19" height="19" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1" rx="3"/>
 <rect x="476.5" y="139.5" width="23" height="23" fill="#2a3330" stroke="#4a544e" stroke-width="1" rx="5"/>
@@ -110,10 +113,9 @@
 <text x="520" y="359" font-size="10" fill="#a87bf3" text-anchor="middle">◆</text>
 <rect x="536" y="353" width="190" height="4" fill="#3a3f44"/>
 <rect x="744.5" y="96.5" width="175" height="279" fill="#252b2e" stroke="#56605a" stroke-width="1" rx="4"/>
-<rect x="752.5" y="104.5" width="159" height="127" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>
-<path d="M894 113L896.7 119.3L903 122L896.7 124.7L894 131L891.3 124.7L885 122L891.3 119.3Z" fill="#d89b14"/>
-<rect x="752.5" y="248.5" width="63" height="63" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>
-<rect x="848.5" y="248.5" width="63" height="63" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>
+<rect x="752.5" y="100.5" width="159" height="127" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>
+<path d="M894 109L896.7 115.3L903 118L896.7 120.7L894 127L891.3 120.7L885 118L891.3 115.3Z" fill="#d89b14"/>
+<rect x="752.5" y="244.5" width="159" height="127" fill="url(#fr)" stroke="#cbd5e2" stroke-width="1"/>
 <text x="424" y="74" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">nothing read: the structure shows, every gene under frost; Glow sealed behind its find (example)</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Grow it</text>

@@ -91,8 +91,8 @@
 <line x1="700.0" y1="107.0" x2="700.0" y2="104.5" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="708.6602540378444" y1="122.0" x2="710.8253175473055" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
 <line x1="691.3397459621556" y1="122.0" x2="689.1746824526945" y2="123.25" stroke="#5d7a5f" stroke-width="1.5"/>
-<circle cx="697" cy="117" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
-<circle cx="704" cy="117" r="3.6" fill="#adf6e0" stroke="none" stroke-width="1"/>
+<circle cx="697" cy="117" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
+<circle cx="704" cy="117" r="3.6" fill="#f1ebdf" stroke="none" stroke-width="1"/>
 <rect x="709" y="114" width="3" height="6" fill="#fff4a6"/>
 <rect x="476.5" y="139.5" width="23" height="23" fill="#2a3330" stroke="#84ae78" stroke-width="1" rx="5"/>
 <text x="488" y="155" font-size="9" fill="#cbd5e2" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">Fa</text>
@@ -208,18 +208,17 @@
 <circle cx="556" cy="321" r="10.5" fill="#3a3f44" stroke="#6b6f78" stroke-width="1.5"/>
 <circle cx="553" cy="321" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
 <circle cx="559" cy="321" r="3.6" fill="none" stroke="#8d8aa6" stroke-width="1.4"/>
-<path d="M540 311V305H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M572 311V305H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M540 331V337H546" fill="none" stroke="#ffe6ad" stroke-width="2"/>
-<path d="M572 331V337H566" fill="none" stroke="#ffe6ad" stroke-width="2"/>
+<circle cx="556" cy="321" r="15" fill="none" stroke="#ffe6ad" stroke-width="2"/>
 <rect x="568" y="320" width="152" height="3" fill="#adf6e0"/>
 <rect x="744.5" y="96.5" width="175" height="279" fill="#252b2e" stroke="#56605a" stroke-width="1" rx="4"/>
-<rect x="752.5" y="104.5" width="159" height="127" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="832" y="172" font-size="9" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">the doing now</text>
-<circle cx="820" cy="280" r="10" fill="none" stroke="#8d8aa6" stroke-width="3"/>
-<circle cx="844" cy="280" r="10" fill="none" stroke="#8d8aa6" stroke-width="3"/>
-<text x="894" y="286" font-size="16" fill="#8d8aa6" text-anchor="middle">⨯</text>
-<rect x="860" y="279" width="22" height="2" fill="#8d8aa6"/>
+<rect x="752.5" y="100.5" width="159" height="127" fill="#d9d0bc" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="832" y="160" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 1</text>
+<rect x="752.5" y="244.5" width="159" height="127" fill="#9d978a" stroke="#56605a" stroke-width="1"/>
+<text x="832" y="304" font-size="7" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, monospace">copy 2</text>
+<circle cx="808" cy="236" r="7" fill="#252b2e" stroke="#8d8aa6" stroke-width="2.5"/>
+<circle cx="824" cy="236" r="7" fill="#252b2e" stroke="#8d8aa6" stroke-width="2.5"/>
+<rect x="836" y="235" width="40" height="2" fill="#8d8aa6"/>
+<text x="886" y="241" font-size="14" fill="#8d8aa6" text-anchor="middle">⨯</text>
 <text x="424" y="74" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, monospace">▲ on a pinned drum: the line from its gene to ⨯ lights 400 ms (refused: breed to change)</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <text x="16" y="588" font-size="16" fill="#c4500f" text-anchor="start">✓ Grow it</text>
