@@ -136,6 +136,8 @@ export const SPECIES = [
   { ...row("S03", "C03", "small", "mid", "a lizard with a lantern tail (frame glowtail)", "scurries, digs", "wood, rock field", "opens narrow holes and Night", "dew", "digs narrow burrows; lights fog and Night", "a brave little torchbearer"),
     summary: "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow.",
     fixed: S03_FIXED, openSwitches: ["appearance.marking-switch"],
+    frameVersion: 5,   // the claws narrowed to the three digging forms (the game designer's call (A), T-20261016-194)
+    legacy: { "anatomy.contact-terminal-form": ["hoof", "webbed", "root"] },   // a version-3 or -4 Tuikis may carry these: legal for inheritance, never drawn for a new pod, described plainly ("hooves", "webbed feet", "roots")
     open: [
       { trait: "colour", pool: { "appearance.body-palette": ["lagoon", "jade", "marigold", "periwinkle"] }, looks: ["lagoon", "jade", "marigold", "periwinkle", "two side by side"] },
       { trait: "second-colour", name: "Trim", pool: { "appearance.underside-palette": ["milk-mint", "cream", "ice", "slate"] }, looks: ["milk-mint", "cream", "ice", "slate", "two side by side"] },
@@ -143,7 +145,7 @@ export const SPECIES = [
       { chapter: "face", id: "crest", name: "Crest", loci: ["growth.crown-height-ratio"], looks: ["low crest", "between", "tall crest"] },
       { trait: "eyes" }, { trait: "snout" }, { trait: "build" }, { trait: "hind-body" }, { trait: "back-line" },
       { chapter: "legs-tail", id: "legs", name: "Legs", loci: ["growth.support-drop-ratio", "growth.support-radius-ratio"], looks: ["short, fine", "between", "long, stout"] },
-      { trait: "feet", name: "Claws", shapeable: false, override: "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing" },
+      { trait: "feet", name: "Claws", shapeable: false, override: "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing", pool: { "anatomy.contact-terminal-form": ["rounded", "pad", "wedge"] } },
       { trait: "tail" }, { trait: "tail-curl" }, { trait: "pace" }, { trait: "stride" },
       { chapter: "movement", id: "weave", name: "Weave", loci: ["movement.axial-amplitude", "movement.axial-phase"], looks: ["straight scurry", "between", "weaving glide"] },
       { trait: "turning" }, { trait: "strength" }, { trait: "reserve" }, { trait: "thrift" }, { trait: "curiosity" }, { trait: "nerve" },

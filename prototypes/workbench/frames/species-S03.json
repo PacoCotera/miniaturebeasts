@@ -1,4 +1,5 @@
 {
+ "frameVersion": 5,
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S03",
@@ -1792,21 +1793,20 @@
    "alleles": [
     "rounded",
     "pad",
-    "wedge",
-    "hoof",
-    "webbed",
-    "root"
+    "wedge"
    ],
    "looks": [
     "rounded",
     "pad",
-    "wedge",
+    "wedge"
+   ],
+   "guard": "rig: terminal.form",
+   "changedBy": "breeding",
+   "legacy": [
     "hoof",
     "webbed",
     "root"
-   ],
-   "guard": "rig: terminal.form",
-   "changedBy": "breeding"
+   ]
   },
   {
    "id": "anatomy.axial-tail-presence",
@@ -2422,7 +2422,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 161,
+  "fieldGuideLooks": 158,
   "stampBitsPerCopy": 56
  },
  "notYet": {
@@ -2448,7 +2448,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S03",
-   "frameVersion": 4,
+   "frameVersion": 5,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -2819,10 +2819,7 @@
   "anatomy.contact-terminal-form": [
    "rounded",
    "pad",
-   "wedge",
-   "hoof",
-   "webbed",
-   "root"
+   "wedge"
   ],
   "growth.terminal-length-ratio": [
    "small",
