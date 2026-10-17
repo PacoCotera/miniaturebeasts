@@ -11,6 +11,8 @@ You are a worker on Miniature Beasts. You do not need to know who writes tickets
 6. If a step is refused by a permission check, or the ticket is wrong or impossible: do not retry, reword, split or route it. Finish what you can, write the result with `status: parked` and the exact command and refusal, move the ticket to `tickets/parked/`, push. Then take the next ticket.
 7. Go to 1. If `tickets/ready/` has nothing for you, stop.
 
+- **Keep looping:** after you finish or park a ticket, `git pull` and take the next ready ticket for your role whose needs are all in tickets/done. Stop only when none is left; then say so in one line.
+
 ## Rules every ticket inherits
 - Commits: author `Paco Cotera <paco@cotera.org>`, no trailers, no model, tool or session names anywhere in the public repository.
 - Push only the branch the ticket names. Never force-push, never delete branches or tags, never push to `main`.
