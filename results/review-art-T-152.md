@@ -1,6 +1,6 @@
 ---
 ticket: T-20261016-152
-status: in progress (framework check pending)
+status: done
 branch: this repository:work-queue
 head: (see the result commit)
 ci: not run (review only)
@@ -10,8 +10,9 @@ ci: not run (review only)
 | Proof | Purpose and style (CD) | Framework (genome engineer) | Owner |
 | --- | --- | --- | --- |
 | T-143 `genome-create-S01-1x.png` | **FAIL for the owner:** the bench and bay read, but the screen is two thirds empty | pending | none yet (after T-154) |
-| T-145 `genome-incubator-S03-glowing-1x.png` | **PASS** | pending | **`genome-incubator-S03-glowing-1x.png`**, once the framework check passes |
-| T-145 the other proofs (cool, warm, ready, clash, marks) | PASS on style | pending | not shown |
+| T-145 `genome-incubator-S03-glowing-1x.png` | **PASS** | **PASS** (Character cleared past 2/3; the card shows a real look) | **`genome-incubator-S03-glowing-1x.png`** |
+| T-145 the other proofs: cool, warm, ready, S03 Create, clash | PASS on style | **PASS** | not shown |
+| T-145 `genome-marks-1x.png` / `-4x.png` | PASS on style | **FAIL:** the shard find is still not on the sheet | not shown (fix in T-160) |
 | T-146 `bench-panel-upgrade-1x.png` | **PASS for the art** (the clean cut-out on the plinth); **FAIL as an owner proof** (the two outcomes look alike) | n/a | none yet (after T-155) |
 | T-149 `cargo-report-picture-led-1x.png` | **PASS** | n/a | **`cargo-report-picture-led-1x.png`** |
 
@@ -39,7 +40,7 @@ ci: not run (review only)
 - Character has just cleared, and the card shows Character's emblem with its trait.
 - The founder's shadow reads through the shell, and the compact screen sits beside the pod as the same instrument.
 - The pod stays the brightest thing (`brightness.json`).
-- **The owner's proof, once the genome engineer confirms the marks and the clear timing.**
+- **The owner's proof:** confirmed by the framework check (§5).
 
 ## 3. Fit the upgrade? (T-146)
 - **The art passes its ticket:** the fitted part is a clean cut-out, with no socket box, standing on the plinth with its contact shadow by the T-70 rule.
@@ -54,8 +55,31 @@ ci: not run (review only)
 - No amber, gold or cream.
 - **Show the owner:** `cargo-report-picture-led-1x.png`.
 
-## 5. The genome engineer's framework check
-Asked for T-143 (S01's frame) and T-145 (the fixes to their T-141 findings). **Pending.** It will be folded in here.
+## 5. The genome engineer's framework check (frames on station-gate, slices on masters-pods)
+
+**T-143, S01 Create: FAIL on one mark.**
+- **Pass:**
+  - the rows are Coat 1, Face 2, Movement 1, Stamina 1, and the hub is S01's;
+  - Coat's Markings is "hides", which is possible, and has no gate bar (S01 has no sleeping loci);
+  - Face 1 (Crown) is changed, lit and doubled;
+  - Movement and Stamina are breed-only, with their lines to the cross mark.
+- **Wrong:** Face 2 (Eyes), the focused gene, is drawn as "hides", and the bay frames copy 1 alone.
+  - S01's Eyes is one continuous locus. On real pods it is a blend (52% of 400) or one look (48%), never "hides".
+  - With two different copies shown, the gene is the blend: the lens mark, with the bay framing both copies.
+- **Stand-in words:** "two chapters unread" is wrong, because every S01 chapter is read.
+
+**T-145:**
+- **S03 Create: PASS** ("← Tuikis").
+- **Clash: PASS.** Eyes and Build are lit with their notches under red rims; the red drums are Eyes and Build; there is no ✓ cap.
+- **Incubator cool, warm, glowing and ready: PASS.** The chapters clear on (k+1)/(n+1), and the cards are real looks (Reserve "goes long", Nerve "unflappable").
+- **Marks sheet: FAIL on one item.** The storm badge, pond and rock names and the lit clash mark pass. The shard find is still not on the sheet: by template match, crystal and pearl are there, and the shard is not.
+
+**Fixes:** **T-20261016-160** (art): S01 Eyes as the blend, its bay, and the stand-in line; the shard on the sheet.
+
+## 6. What the owner sees now
+- `results/T-20261016-145/genome-incubator-S03-glowing-1x.png` (the Incubator's genome screen).
+- `results/T-20261016-149/cargo-report-picture-led-1x.png` (the Cargo report).
+- **Later:** Create (after T-158 and T-160) and the Fit panel (after T-159).
 
 ## Proof (commands run and their result lines)
 - `results/T-20261016-143`, `-145`, `-146` and `-149` PNGs, read at 1×.
