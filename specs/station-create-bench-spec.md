@@ -83,8 +83,8 @@ The player came from a pod with `✓ Shape a founder`. They decide what their ne
 | --- | --- | --- |
 | Your changes | heading, then one line per changed trait, "{Trait}: {look}", newest first, up to 4; then "and {n in words} more" | 16 px, weight 500 heading; 16 px lines |
 | | none changed: "none yet" (nothing read: "none: read a chapter first") | 16 px, `mist` |
-| | a clash adds "✕ {A} and {B} clash", in `red`, under the changes | 16 px |
-| Still a surprise | heading, then the unread chapters' words, comma-joined, up to 2 lines | 16 px, weight 500 heading; 16 px, `mist` |
+| | a clash adds "✕ {A} and {B} clash", in `red`, under the changes; two lines when it does not fit (see the T-123 amendment) | 16 px |
+| Still a surprise | heading, then the unread chapters' words, comma-joined, up to 2 lines | 16 px, weight 500 heading; 16 px, `plateText` (not `mist`: see the T-123 amendment) |
 | | none unread: the block is not drawn | |
 
 - **Fit:** the face has three type sizes, 16, 20 and 28 (lead, 13:08). The longest case at pitch 24 is 24 + 5 × 24 (4 changes and "and n more") + 24 (the clash) + 8 + 24 + 2 × 24 = 248 ≤ 256 (the slip minus padding). Every line must be ≤ 176 px, measured; otherwise cut at a word with "…" and report.
@@ -188,4 +188,24 @@ At 80 × 80 the drum kept only 8 px of its round above and below its picture, so
 
 - **The Grow print:** the stamp at (772, 128) and the code at (744, 264) stay inside the 288 slip.
 - **The wireframes:** `specs/station-create-bench-wireframes.patch` still draws the bank at the old rects. This table supersedes them, and the build edits the bank's SVG lines to match.
+
+## Amendment (T-20261016-123): three notes from the art review (results/review-art-2026-10-17b.md)
+
+**1. The slip's light words read on its paper.** `mist` is a light grey made for the dark chrome. On the slip's cream paper it is near-illegible at 1×. **Every line on the slip is `plateText`**: the changes, "none yet", "none: read a chapter first", the "Still a surprise" chapters, "and {n} more" and "to the Incubator". The headings tell the blocks apart. The clash line stays `red`. No `mist` is drawn on paper anywhere on this screen.
+
+**2. The clash line fits the slip's 176 px row for every trait pair.**
+- "✕ Crown and Eyes clash" is 180 px. The widest pair over all 57 trait names (16 species) is about 246 px ("✕ Translucency and Strength clash"), so no single-line wording fits every pair.
+- **The rule:** one line, "✕ {A} and {B} clash", when it measures ≤ 176. Otherwise two lines: "✕ {A}" then "and {B} clash".
+- **The worst cases at 16 px** (the metrics vectors' per-glyph widths, with the inline ✕ icon and its gap at 15 px): line 1 is 115 ("✕ Translucency") and line 2 is 175 ("and Translucency clash"). Both are ≤ 176.
+- **The block keeps its height:** when the clash takes two lines, "Your changes" shows 3 changes then "and {n} more" (4 lines), plus the 2 clash lines. The longest case is still 248 ≤ 256.
+
+**3. The tray is full for any count.**
+- **The rule:** let n be the drums, w the gaps inside chapters, and b the gaps between chapters. The gap inside a chapter is g, and the gap between chapters is 3g (24 at g = 8, as today's 8 + 16). Then g = floor((816 − 80n) / (w + 3b)):
+  - if g < 8, the bank slides as §3 says, with g = 8;
+  - if 8 ≤ g ≤ 64, the drums are spread at g and the run fills the window (816), centred on what is left over (under one gap);
+  - if g > 64, g is 64 and the run is centred in the window.
+- **Per species** (frames at batch/B-20261016-3): S01 g 41 (run 810), S04 g 34 (808), S12 g 21 (812). Every other species slides, so its tray is full.
+- **Sliding:** the slide never leaves the right side empty either. The run's end is never left of the window's end (904 when a left more mark shows, else 920). At the last drum the tray stops there, rather than aligning a chapter word at 104.
+- **The chapter words** stay left-aligned at their group's first drum, at any g.
+- **Tests:** for each species frame, the run fills the window within one g, or the bank slides; at the slide's end, the last drum's right edge is the window's end.
 
