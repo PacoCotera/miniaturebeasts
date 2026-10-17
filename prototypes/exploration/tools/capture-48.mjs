@@ -115,6 +115,15 @@ for (const sc of SCENES) {
       if (s.light === 'fog' || s.light === 'fog6') ex.fog = { x: col + .5, y: Math.floor(s.cell / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 };
       if (s.level != null) { G.level[lay.cell] = s.level; lay.l48 = null; }
       FX.msg = null; FX.hints = {}; for (const k of Object.keys(S.found || {})) {} RT.key = null; ${ts32 ? "placeTs = () => 32;" : ""} return key; })()`); }, { s, ts32 });
+  if (sc.dock) {   // the Companion's dock frames (specs/companion-dock-frames-spec.md): the Station's dock flag flips, the frame is drawn at a chosen moment of it (home at 0.8 s, "Off we go" 0.7 s in with the hop under way), in one task so the page's own loop cannot move it
+    const shot = await page.evaluate(({ sc }) => { const run = window.__run;
+      run(`(() => { newWorld(1); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1]; S.lead = 1; S.phase = 'setup';
+        S.bay = Array.from({ length: ${sc.crates} }, (_, i) => ({ id: 'c' + i, pods: [] })); S.st = { wid: S.wid, dock: { docked: false, at: 0 }, mibis: [], accepted: [] }; FX.msg = ''; FX.notes = []; RT.dockPrev = null; trackDock();
+        S.st.dock.docked = true; trackDock(); ${sc.dock === "off" ? "S.st.dock.docked = false; trackDock(); FX.lifted.at = NOW - 700; FX.callMibi.at = NOW - 500;" : "FX.seated.at = NOW - 800;"} render(NOW / 1000); })()`);
+      return { png: window.__mb.capture(), err: window.__mb.RT.err, off: window.__mb.offPalette() }; }, { sc });
+    writeFileSync(path.join(OUT, sc.name + ".png"), Buffer.from(shot.png.split(",")[1], "base64"));
+    const row = { name: sc.name, errors: shot.err, offPalette: shot.off.bad.length, colours: shot.off.colours }; report.push(row); console.log(JSON.stringify(row)); await ctx.close(); continue;
+  }
   await setup(sc, false); await page.waitForTimeout(1500);
   const shot = await page.evaluate(() => ({ png: window.__mb.capture(), ts: window.__mb.RT.ts, err: window.__mb.RT.err, off: window.__mb.offPalette(), refused: window.__mb.ART48.refused.length, pieces: window.__mb.ART48.pieces.size }));
   writeFileSync(path.join(OUT, sc.name + ".png"), Buffer.from(shot.png.split(",")[1], "base64"));

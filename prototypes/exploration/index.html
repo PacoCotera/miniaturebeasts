@@ -901,6 +901,7 @@ function syncStation() {
   const st = stPart(); if (!st) return;
   const acc = st.accepted || [], gone = S.bay.filter(c => acc.includes(c.id));
   if (gone.length) { S.bay = S.bay.filter(c => !acc.includes(c.id)); const n = gone.reduce((a, c) => a + (c.pods || []).length, 0);
+    if (isDocked() && RT.dockPrev != null && !S.exp) FX.crateDown = { at: NOW, total: gone.length };   // the count steps down as the Station confirms each crate
     fxMsg('The Station has them · ' + (n ? n + ' pod' + (n === 1 ? '' : 's') : 'the supplies'), 3); logEv('Transferred ' + gone.length + ' crate' + (gone.length === 1 ? '' : 's') + ' at the dock'); }
   // what the dock carries applies once per dock (st.dockN), even if this page only reads the save after the Companion was lifted
   if (!isDocked() && !((st.dockN || 0) > (S.dockSeen || 0))) return;
@@ -4470,7 +4471,10 @@ function drawHomeTop(title) {
 }
 // The bay in the top bar: a crate with the count of sealed consignments.
 const crateArt = () => art('i-crate', () => { const pb = new PB(16, 14); pb.rect(0, 2, 16, 12, C.clay); pb.rect(0, 2, 16, 3, C.bark); pb.rect(7, 2, 2, 12, C.paper); pb.outline(); return pb; });
-function drawCrateCount(x) { if (!S.bay.length) return x; blit(crateArt(), x, 9); text(String(S.bay.length), x + 19, 9, C.sand); return x + 19 + textW(String(S.bay.length), 2) + 6; }
+function drawCrateCount(x) {
+  const n = bayShown(); if (!n) return x;
+  const sd = FX.seated; if (sd && crateFlashOn(sd.crates, NOW - sd.at)) R(x - 2, 7, 20, 18, C.cream);   // seated: one cream flash a sealed crate, behind the icon
+  blit(crateArt(), x, 9); text(String(n), x + 19, 9, C.sand); return x + 19 + textW(String(n), 2) + 6; }
 function emptyPod(cx, cy) { for (let a = 0; a < 6.28; a += .1) R(cx + Math.round(Math.cos(a) * 34), cy + Math.round(Math.sin(a) * 44), 2, 2, C.stone); }
 function drawNoMibi() {
   emptyPod(225, 196);
@@ -4479,7 +4483,7 @@ function drawNoMibi() {
   if (S.bay.length) text(bayLine(), SCR_W / 2, 378, C.amber, 2, 'center');
 }
 // A juvenile answering Call is still learning: it looks the wrong way first, on two calls in three.
-function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a < 1500 ? Object.assign({ a }, h) : null; }
+function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a >= 0 && a < 1500 ? Object.assign({ a }, h) : null; }   // a < 0: a hop set to start later (Lift's)
 // ---- The care screens' composed pieces: dashed outlines, rings, chips, and the placeholders of missing assets ----
 const stageFill = st => st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone';
 // A free place: a 1 px dashed outline, dash 2 and 2.
@@ -4610,6 +4614,55 @@ function lookOut(seed, a) {
   return { on: k >= 0 && a - at < LOOK_HOLD, flip: k % 2 === 1 };
 }
 const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
+// ---- The dock frames (specs/companion-dock-frames-spec.md, T-20261016-93): "home" when the Companion is seated and "Off we go" when it is lifted. A show: no press is asked for.
+// Read from the shared save's dock flag (isDocked), once per change, so it plays from whatever moves the Dock (the play page's control, the Station's own key).
+const SEAT = { start: 500, on: 120, beat: 333 };            // the crate flashes: from 0.5 s, 120 ms on, one a Station beat (333 ms)
+const CRATE_STEP = { perCrate: 3000, confirm: 800 };         // the Station's opening (cargo.json events.opening): a crate every 3000 ms, confirmed at +800: the count steps down then
+const OFF = { at: 200, ms: 1500 };                            // "Off we go": from 0.2 s, for 1500 ms; the hop starts with it
+function trackDock() {
+  const d = isDocked(); if (RT.dockPrev == null) { RT.dockPrev = d; return; }
+  if (d === RT.dockPrev) return; RT.dockPrev = d; if (d) dockSeated(); else dockLifted();
+}
+function dockSeated() {
+  if (S.exp) return;   // mid-expedition: the existing "Docked mid-expedition" rules, nothing new
+  FX.seated = { at: NOW, crates: S.bay.length }; FX.lifted = null;
+  const lead = partnerMibi() || carriedMibis()[0];
+  if (lead && S.phase !== 'newworld') { S.phase = 'active'; S.ui.aId = lead.id; }   // a mibi with you: its page, as a cut
+}
+function dockLifted() {
+  FX.seated = null; FX.crateDown = null;
+  if (S.phase !== 'active') return;   // on any other screen only the Shield flash plays, as built
+  const m = shownMibi(); FX.lifted = { at: NOW };
+  if (m && isCarried(m)) FX.callMibi = { id: m.id, at: NOW + OFF.at, wrong: false, quiet: true };   // the existing hop, no chirp
+}
+// The crates the count shows: those in the bay, plus (as the Station opens them) those it has not yet confirmed.
+function bayShown() {
+  const cd = FX.crateDown; if (!cd) return S.bay.length;
+  const a = NOW - cd.at, done = a < CRATE_STEP.confirm ? 0 : Math.min(cd.total, Math.floor((a - CRATE_STEP.confirm) / CRATE_STEP.perCrate) + 1);
+  if (done >= cd.total) { FX.crateDown = null; return S.bay.length; }
+  return S.bay.length + cd.total - done;
+}
+// A crate flash is on at ms `a` after seating: crate k flashes at 0.5 s + k × 333 ms for 120 ms; with reduced motion the flashes are steady for their span.
+function crateFlashOn(n, a) {
+  if (!n || a < SEAT.start) return false;
+  if (!motion()) return a < SEAT.start + (n - 1) * SEAT.beat + SEAT.on;
+  const k = Math.floor((a - SEAT.start) / SEAT.beat); return k < n && (a - SEAT.start) - k * SEAT.beat < SEAT.on;
+}
+// The view one palette step darker: every pixel of the rectangle through the page's DARK table.
+let DARK_RGB = null;
+function darkenRect(x, y, w, h) {
+  if (!DARK_RGB) { DARK_RGB = new Map(); RGB.forEach((c, i) => DARK_RGB.set((c[0] << 16) | (c[1] << 8) | c[2], RGB[DARK[i]])); }
+  const id = g.getImageData(x, y, w, h), d = id.data;
+  for (let i = 0; i < d.length; i += 4) { const to = DARK_RGB.get((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]); if (to) { d[i] = to[0]; d[i + 1] = to[1]; d[i + 2] = to[2]; } }
+  g.putImageData(id, x, y);
+}
+// The message slot of the dock frames: "Docked · lift to explore" while seated, "Off we go" (a bone line) for 1500 ms after the lift; a message in the box takes the foot.
+function drawDockSlot() {
+  if (FX.msg) return;
+  if (isDocked() && !S.exp) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 517, C.mint, 2, 'center'); return; }
+  const lf = FX.lifted, a = lf ? NOW - lf.at : -1;
+  if (lf && a >= OFF.at && a < OFF.at + OFF.ms) { panel(70, 512, 310, 26, C.ink, C.bone); text('Off we go', SCR_W / 2, 517, C.bone, 2, 'center'); }
+}
 function drawActive(t) {
   viewBg(); drawHomeTop();
   const m = shownMibi(); if (!m) { if (liveMibis().length) drawNoOneWith(); else drawNoMibi(); return; }
@@ -4621,7 +4674,8 @@ function drawActive(t) {
   let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
   if (bond != null && bond >= 0 && bond < 900) sp = { at: bc.at };   // the bond: the species moment again, short
   const sa = sp ? (mo ? NOW - sp.at : 900) : 0;
-  let x = 97, y = 52, pose = 'idle', fr = mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
+  const home = isDocked() && !S.exp;   // seated between expeditions: the stage one step darker, the mibi resting on idle frame 1 (the dock frames, "home")
+  let x = 97, y = 52, pose = 'idle', fr = home ? 1 : mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
     if (a < d) flip = true;   // looking the wrong way first
     else { const k = a - d; pose = 'alert'; fr = 0; if (k < 600) y -= Math.round(Math.abs(Math.sin(k / 600 * Math.PI)) * 30); else y += 6; } }
@@ -4633,10 +4687,11 @@ function drawActive(t) {
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
   mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
-  if (h && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
+  if (h && !h.quiet && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, stagePawY(st === 'juvenile'));
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
+  if (home) darkenRect(24, 40, 402, 280);
   // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
   const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
   if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260, 1, q.sp, mo ? Math.floor(t * 1.25) % 2 : 0, !isAdult(q)); });   // the 48 px field token is a missing asset
@@ -4652,6 +4707,7 @@ function drawActive(t) {
   // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
   const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
   if (n > 1) list.forEach((q, i) => { const px = x0 + i * 16 + (i >= nc ? gap : 0); if (isCarried(q)) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
+  drawDockSlot();
 }
 // Call between expeditions: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
 // the view comes to it. Free.
@@ -4866,7 +4922,7 @@ function lineBase() {
 function render(t) {
   g.setTransform(1, 0, 0, 1, 0, 0);
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
-  RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
+  trackDock(); RT.plScr = null; RT.litScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
