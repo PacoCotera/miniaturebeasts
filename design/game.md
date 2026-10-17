@@ -234,9 +234,9 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 
 ## Not designed yet
 
-- What bonding involves, what care looks like, what missing it means, and how
+- What bonding involves and gives the player beyond growth, what care looks like, what missing it means, and how
   long a mibi lives.
-- Which ability each species brings as a partner, and how traits shape it.
+- Which ability each species brings as a partner, and how traits shape it. This carries the mibi arc's "what can it do with me?": until it is designed, a mibi has no payoff on the Companion beyond company.
 - Fertility, and how a cross that fails is shown.
 - What crafting makes: its recipes, feed and habitat items.
 - Probe tiers beyond 2, mods, chip slots and Station upgrades.
@@ -246,8 +246,6 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 - Research and breeding's open questions, prices among them, are in
   [research and breeding](research-and-breeding.md#not-designed-yet).
 - Vivariums beyond the first as living ecosystems: food, light and environmental constraints that shape a mibi population.
-- **What partners do** carries the mibi arc's "what can it do with me?". Until it is designed, Live has no payoff on the Companion beyond company.
-- **What bonding gives the player,** beyond growth.
 - **The long term:** what a player does after completing a field guide or reaching a wish, beyond new species in drops.
 - **The first session:** how a new player meets the loop, and how soon their first mibi arrives.
 - **Printing in play:** whether the Caddy's print and scan are part of play or keepsakes only.
