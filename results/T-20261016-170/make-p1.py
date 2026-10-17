@@ -105,42 +105,84 @@ def scene_keep(w, h):
     return bg
 
 
-def scene_grow(w, h):
-    """Grow it: the founder you made, standing in the bench's scanning recess, lit; the parts you changed catch
-    the scan light (mint). The pod, sealed in its ring, goes to the Incubator."""
-    bg = Image.new('RGBA', (w, h), C['ground'] + (255,))
-    pool = Image.new('L', (w, h), 0)
-    ImageDraw.Draw(pool).ellipse((w // 2 - 150, -40, w // 2 + 70, h - 10), fill=46)
-    light = Image.new('RGBA', (w, h), (255, 236, 210, 0)); light.putalpha(pool.filter(ImageFilter.GaussianBlur(40)))
-    bg.alpha_composite(light)
-    made, plain = src('rich-marked-300x310.png'), src('rich-plain-300x310.png')
+def changed_light(made, plain, strength=0.42):
+    """The bench's scan light falling on the parts you changed: a soft mint wash over the changed areas,
+    computed from the made and plain founders (no outline, no glow beyond the part)."""
     diff = np.abs(np.asarray(made, dtype=int)[..., :3] - np.asarray(plain, dtype=int)[..., :3]).max(axis=2) > 40
-    m = Image.fromarray((diff * 255).astype('uint8')).filter(ImageFilter.MaxFilter(3))
-    edge = ImageChops.subtract(m, m.filter(ImageFilter.MinFilter(3)))
+    m = Image.fromarray((diff * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(2.2))
     a = np.asarray(made, dtype=float)
-    e = np.asarray(edge, dtype=float)[..., None] / 255 * 0.7
-    a[..., :3] = a[..., :3] * (1 - e) + np.array(C['mint']) * e
-    made = Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA').crop(made.getbbox())
-    made = made.resize((round(made.width * 0.72), round(made.height * 0.72)), Image.LANCZOS)
-    px, py = (w - made.width) // 2 - 40, h - made.height - 14
-    sh = contact(made.width, 18, 0.65)
-    bg.alpha_composite(sh, (px + made.width // 2 - sh.width // 2, py + made.height - sh.height // 2 - 4))
-    bg.alpha_composite(made, (px, py))
+    k = np.asarray(m, dtype=float)[..., None] / 255 * strength * (a[..., 3:4] / 255)
+    lum = a[..., :3].mean(axis=2, keepdims=True) / 255
+    a[..., :3] = a[..., :3] + (np.array(C['mint']) - a[..., :3]) * k * (0.5 + 0.5 * lum)
+    return Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
+
+
+def scene_grow(w, h):
+    """Grow it: the made founder sealed into its pod, the pod clamped upright in the Incubator's candling chamber,
+    a recess of the slate face behind matte glass, at first candling light: the lamp below shines up through the
+    shell and the founder's form shows inside. Cool, dark, enclosed, the pod small in the chamber."""
+    bg = Image.new('RGBA', (w, h), C['ground'] + (255,))
+    d = ImageDraw.Draw(bg)
+    cx, cy, cw, chh = w // 2, h // 2 + 4, 150, 200
+    x0, y0 = cx - cw // 2, cy - chh // 2
+    d.rounded_rectangle((x0 - 6, y0 - 6, x0 + cw + 5, y0 + chh + 5), 22, fill=(20, 24, 30))      # the recess
+    d.rounded_rectangle((x0, y0, x0 + cw - 1, y0 + chh - 1), 18, fill=(14, 18, 24))              # the chamber
+    pod = loika_pod(sealed=True).resize((88, 112), Image.LANCZOS)
+    px, py = cx - 44, y0 + chh - 112 - 26
+    # candling: the lamp's light passing up through the shell, brightest at its base
+    a = np.asarray(pod, dtype=float)
+    yy = np.linspace(0, 1, a.shape[0])[:, None, None] ** 1.4
+    a[..., :3] = a[..., :3] + (np.array([226, 252, 242]) - a[..., :3]) * (0.78 * yy)
+    pod = Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
+    made = src('rich-marked-300x310.png')
+    made = made.crop(made.getbbox()).resize((60, 62), Image.LANCZOS)
+    sil = Image.new('RGBA', made.size, (34, 46, 50, 0)); sil.putalpha(made.getchannel('A').point(lambda v: int(v * 0.72)))
+    inner = Image.new('RGBA', pod.size, (0, 0, 0, 0)); inner.alpha_composite(sil.filter(ImageFilter.GaussianBlur(1.2)), (14, 40))
+    inner.putalpha(ImageChops.multiply(inner.getchannel('A'), pod.getchannel('A')))
+    pod.alpha_composite(inner)
+    # the lamp and its pool, inside the chamber only
+    pool = Image.new('L', (w, h), 0)
+    ImageDraw.Draw(pool).ellipse((cx - 56, y0 + chh - 40, cx + 56, y0 + chh - 6), fill=150)
+    lamp = Image.new('RGBA', (w, h), (200, 250, 236, 0)); lamp.putalpha(pool.filter(ImageFilter.GaussianBlur(8)))
+    clip = Image.new('L', (w, h), 0); ImageDraw.Draw(clip).rounded_rectangle((x0, y0, x0 + cw - 1, y0 + chh - 1), 18, fill=255)
+    lamp.putalpha(ImageChops.multiply(lamp.getchannel('A'), clip))
+    bg.alpha_composite(lamp)
+    d.rounded_rectangle((cx - 22, y0 + chh - 14, cx + 22, y0 + chh - 9), 2, fill=C['mint'])        # the lamp
+    d.rectangle((cx - 30, py + 96, cx + 30, py + 102), fill=(70, 78, 86))                           # the clamp
+    bg.alpha_composite(pod, (px, py))
+    # the glass: a matte edge and one soft highlight top left
+    d.rounded_rectangle((x0, y0, x0 + cw - 1, y0 + chh - 1), 18, outline=(110, 126, 136))
+    hl = Image.new('L', (w, h), 0); ImageDraw.Draw(hl).rounded_rectangle((x0 + 10, y0 + 10, x0 + 22, y0 + 54), 6, fill=22)
+    glass = Image.new('RGBA', (w, h), (255, 255, 255, 0)); glass.putalpha(hl.filter(ImageFilter.GaussianBlur(5))); bg.alpha_composite(glass)
+    bg.alpha_composite(ring_inset(84, 0.06), (x0 + cw + 18, cy - 42))
     return bg
 
 
 def scene_shape(w, h):
-    """Keep shaping: the pod's own founder, plain, on the bench, under the bench's quiet light; nothing changes."""
+    """Keep shaping: the founder you made, as it is now, standing big in its recess on the bench under the warm key
+    light; the bench's scan light falls on the parts you changed; beside it the lit rack, its genes still open."""
     bg = Image.new('RGBA', (w, h), C['ground'] + (255,))
-    plain = src('rich-plain-300x310.png')
-    plain = plain.crop(plain.getbbox())
-    plain = plain.resize((round(plain.width * 0.62), round(plain.height * 0.62)), Image.LANCZOS)
-    a = np.asarray(plain, dtype=float); a[..., :3] *= 0.82
-    plain = Image.fromarray(np.clip(a, 0, 255).astype('uint8'), 'RGBA')
-    px, py = (w - plain.width) // 2, h - plain.height - 22
-    sh = contact(plain.width, 16, 0.5)
-    bg.alpha_composite(sh, (px + plain.width // 2 - sh.width // 2, py + plain.height - sh.height // 2 - 4))
-    bg.alpha_composite(plain, (px, py))
+    pool = Image.new('L', (w, h), 0)
+    ImageDraw.Draw(pool).ellipse((-30, -40, w - 120, h + 10), fill=52)
+    light = Image.new('RGBA', (w, h), (255, 228, 196, 0)); light.putalpha(pool.filter(ImageFilter.GaussianBlur(36)))
+    bg.alpha_composite(light)
+    made = changed_light(src('rich-marked-300x310.png'), src('rich-plain-300x310.png'))
+    made = made.crop(made.getbbox())
+    made = made.resize((round(made.width * 0.74), round(made.height * 0.74)), Image.LANCZOS)
+    px, py = 18, h - made.height - 12
+    sh = contact(made.width, 18, 0.65)
+    bg.alpha_composite(sh, (px + made.width // 2 - sh.width // 2, py + made.height - sh.height // 2 - 4))
+    bg.alpha_composite(made, (px, py))
+    d = ImageDraw.Draw(bg)
+    rx = w - 104
+    pane(d, rx, 22, 88, h - 44, 8, 'panel')
+    genes = ['genome-gene-open-lit-40x40.png', 'genome-gene-open-40x40.png', 'genome-gene-only-40x40.png',
+             'genome-gene-open-40x40.png', 'genome-gene-closed-40x40.png', 'genome-gene-open-40x40.png']
+    for n, g in enumerate(genes):
+        gx, gy = rx + 6 + (n % 2) * 40, 34 + (n // 2) * 58
+        well = Image.new('RGBA', (36, 36), C['ground'] + (255,))
+        bg.alpha_composite(well, (gx + 2, gy + 2))
+        bg.alpha_composite(src(g).resize((36, 36), Image.LANCZOS), (gx + 2, gy + 2))
     return bg
 
 
@@ -184,7 +226,7 @@ def screen(topbar_from, title, stage=True):
     return im, d
 
 
-def bottom(im, d, verb, price=None, context=''):
+def bottom(im, d, verb, price=None, context='', back='Back'):
     im.alpha_composite(src('frame-cap-confirm-16.png'), (16, 574))
     d.text((36, 572), verb, font=F16, fill=C['orange'])
     x = 36 + F16.getlength(verb) + 24
@@ -192,8 +234,8 @@ def bottom(im, d, verb, price=None, context=''):
         im.alpha_composite(price, (int(x), 570))
     if context:
         d.text((512, 582), context, font=F16, fill=C['mist'], anchor='mm')
-    im.alpha_composite(src('frame-cap-back-16.png'), (int(1008 - 4 - F16.getlength('Back') - 16), 574))
-    d.text((1008, 582), 'Back', font=F16, fill=C['fog'], anchor='rm')
+    im.alpha_composite(src('frame-cap-back-16.png'), (int(1008 - 4 - F16.getlength(back) - 16), 574))
+    d.text((1008, 582), back, font=F16, fill=C['fog'], anchor='rm')
 
 
 def label(d, s):
@@ -246,41 +288,12 @@ ret, keep = scene_return(W, H), scene_keep(W, H)
 panel_p1(None, 'Return Pip?', [(ret, 'Return it', essence_plus2(), 'Gone for good. Its place will remember it.', True, False),
                                (keep, 'Keep Pip', None, 'Stays with you.', False, True)],
          'habitat-rest.png', 'P1-return.png', 'P1 · two windows · Return to the wild · concept, composited from accepted art',
-         ('Keep Pip', None, 'Stays with you.'))
+         ('Keep Pip', None, '', 'Keep Pip'))
 
 grow, shape = scene_grow(W, H), scene_shape(W, H)
 gp = grow_price()
-gi = grow.copy()
-gi.alpha_composite(ring_inset(72, 0.0), (W - 88, H - 88))
-gi.alpha_composite(loika_pod().resize((34, 43), Image.LANCZOS), (W - 88 + 19, H - 88 + 15))
-panel_p1(None, 'Grow this founder?', [(gi, 'Grow it', gp, 'The pod is used.', False, True),
+panel_p1(None, 'Grow this founder?', [(grow, 'Grow it', gp, 'The pod is used.', False, True),
                                       (shape, 'Keep shaping', None, 'Nothing is spent.', False, False)],
          'create-shape.png', 'P1-grow.png', "P1's shared look · Grow it · concept, composited from accepted art",
-         ('Grow it', gp, 'The pod is used.'), stage=False)
+         ('Grow it', gp, 'to the Incubator', 'Keep shaping'), stage=False)
 
-# P2: one scene, two halves
-im, d = screen('habitat-rest.png', 'Return Pip?')
-label(d, 'P2 · one scene, two halves · Return to the wild · concept, composited from accepted art')
-pane(d, 92, 80, 840, 440, 12, 'panel')
-d.text((512, 112), 'Return Pip?', font=F20, fill=C['bone'], anchor='mm')
-pane(d, 124, 152, 776, 352, 8, 'ground')
-L, R = scene_return(380, 240), scene_keep(380, 240)
-both = Image.new('RGBA', (760, 240))
-both.alpha_composite(L, (0, 0)); both.alpha_composite(R, (380, 0))
-dim = Image.new('RGBA', (380, 240), C['ground'] + (130,))
-both.alpha_composite(dim, (0, 0))   # the unfocused half, dimmed (Keep is focused)
-im.alpha_composite(both, (132, 160))
-d.line((132 + 380, 160, 132 + 380, 399), fill=C['hairline'])
-d.text((140, 416), 'Return it', font=F20, fill=C['bone'])
-im.alpha_composite(essence_plus2(), (132 + 380 - 16 - 52, 418))
-d.text((140, 452), 'Gone for good. Its place will remember it.', font=F16, fill=C['coral'])
-cx = 140 + int(F16.getlength('Gone for good. Its place will remember it.')) + 10
-d.ellipse((cx, 453, cx + 15, 468), fill=C['red'])
-d.line((cx + 4, 457, cx + 11, 464), fill=(255, 255, 255), width=2)
-d.line((cx + 11, 457, cx + 4, 464), fill=(255, 255, 255), width=2)
-d.text((528, 416), 'Keep Pip', font=F20, fill=C['bone'])
-d.text((528, 452), 'Stays with you.', font=F16, fill=C['fog'])
-d.rounded_rectangle((132 + 380 - 2, 156, 132 + 760 + 3, 504), 10, outline=C['focus'], width=2)
-bottom(im, d, 'Keep Pip', None, 'Stays with you.')
-im.convert('RGB').save(os.path.join(OUT, 'P2-return.png'), optimize=True)
-print('P2-return.png')
