@@ -54,3 +54,6 @@ ci: <run id or "not run">
 
 ## Everything is here
 Tickets, the specs they cite (`specs/`), and results live on this branch. Code lives on the branches tickets name in this same repository. You never need another repository.
+
+## Two gates before the owner (owner, 2026-10-17 06:42 UTC)
+"i was clear on the gate, checks both for UI/art, and checks for game design." No proof is named for the owner unless it has two signed verdicts in results/: the UI/art gate (the creative director) and the game design gate (the game designer). Each verdict judges the proof inside the device sheet, against the owner's verbatims for that screen.
