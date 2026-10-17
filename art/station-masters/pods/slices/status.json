@@ -1544,13 +1544,13 @@
  },
  "room-bench-stage-overview": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
-  "note": "T-20261016-35: the hose (from the top-left wall to the ground) and the wall gauge and vent (top right) lifted; replaces 3581670aa531"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-128, in stage-recut/t128/proof (pods-overview and a chapter page with the tag cut; the Cargo report with the device plate)",
+  "note": "T-20261016-128, the paper tag cut"
  },
  "room-bench-stage-chapter": {
   "status": "signed",
-  "signed_in": "art director at 1x, 2026-10-16: T-20261016-35, mocked into station-gate 69ea1d23 goldens (pods-overview-unidentified, pods-chapter-page, pods-collection; stage-recut/t35/proof, places/t35/proof); to re-check in the builder's captures (T-20261016-36)",
-  "note": "T-20261016-35: the hose lifted; replaces 916835019f62"
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-128, in stage-recut/t128/proof (pods-overview and a chapter page with the tag cut; the Cargo report with the device plate)",
+  "note": "T-20261016-128, the paper tag cut"
  },
  "ring-collection-idle-176x176": {
   "status": "signed",
@@ -5958,5 +5958,10 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-130, in genome-screen/proof (Create S03 shape and clash; the Incubator S03, Stamina cleared, every step; the mark family at 1x and 4x; the emblems on slate); to re-check in the builder's captures",
   "note": "T-20261016-130, Create for the genome screen"
+ },
+ "label-plate-cream-216x32": {
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-17: T-20261016-128, in stage-recut/t128/proof (pods-overview and a chapter page with the tag cut; the Cargo report with the device plate)",
+  "note": "T-20261016-128, the device plate"
  }
 }

@@ -195,3 +195,5 @@ Re-cut only, with the same materials, grain and light as T-41 and T-69.
 - the gene line's boot ends at the tray's top edge.
 
 **Not done (optional step 3):** re-cutting the 64 × 64 close-ups with content nearer their edges. The close-ups are the signed look-plate recipe at 64, and changing their framing changes every drum's picture. That would be a restyle, beyond a re-cut, so I left it for a ticket that asks for it.
+
+**Lab sweep (T-20261016-128):** `slip-208x288`: withdraw when T-126's display art lands (T-20261016-130 has painted it). Not deleted.

@@ -214,3 +214,5 @@ The face redraws only where `incubator-ring-closed` differs from `incubator-ring
 - **The box:** (30, 291, 340 × 41) in the picture, which is **(342, 379, 340 × 41) on screen**. That is 13,940 px to redraw at ready (ceiling 153,600). The two ends sit 280 px apart, so a box holding both warmed caps is 340 wide.
 
 **Proof:** `proof/ring-closed-recut-1x.png`. The ring's bottom at 1× (fill, the old closed, the re-cut), each closed one with its differing pixels in red.
+
+**Lab sweep (T-20261016-128):** `slip-208x408` (this screen) and `slip-208x288` (Create): withdraw when T-126's display art lands (T-20261016-130 has painted it). Not deleted.
