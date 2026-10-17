@@ -84,7 +84,7 @@ The creative director's calls are in `specs/station-experience-review.md` §2, �
 **The rows (integer rules, tested on every frame):**
 - Row height: rowh = (504 − 8 (R − 1)) / R, rounded down to 8. That gives 56 for 8 rows and 120 for 4.
 - **Header:** a crop of this founder's own part (a look chapter) or its behaviour picture (a doing, the game designer's §1), clamp(m, 40, 64) square, at (16, centred). Then the chapter's one word, 16 px, `bone`.
-- **Genes** from x 176 in the pane, 8 apart. Size m = min(rowh − 8, (392 − 8 (G − 1)) / G, 96), rounded down to 8: S03 48, S09 56, S01 96. Each gene is its look as a picture in a socket (a well in `ground`, radius 8), with the guide's marks:
+- **Genes** from x 176 in the pane, 8 apart. Size m: the largest of the guide's genome tiers (48, 40, 32, 24; §4) not over min(rowh − 8, (392 − 8 (G − 1)) / G). The cap is 48 until the art director rules on a larger tier for sparse frames (the creative director: each size is a painted slice per gene, and free sizes would make Create's scale jump between species). S03, S09 and S01 are all 48; the rows and the founder take the extra space. Each gene is its look as a picture in a socket (a well in `ground`, radius 8), with the guide's marks:
   - changed: `mint` rim and the notch;
   - breeding only: the joined rings;
   - one look: the flat bar;
@@ -92,7 +92,7 @@ The creative director's calls are in `specs/station-experience-review.md` §2, �
   - unknown: frost;
   - clash: red with its cross.
 - **Focus:** the ring on the gene, with ▲ ▼ above and below it while it can turn. ◀ ▶ walk the genes in ring order; ▲ ▼ turn the focused gene (the refusal plays on genes that can't); R opens the detail over the column; the price ticks on every change (the game designer's four conditions).
-- **A sealed chapter:** the find's painted badge and "a find opens this" (one line), no genes.
+- **A sealed chapter:** the find's painted badge alone, with no genes and no words; the R detail says more (§10 allows chapter names only).
 - **Words:** one per chapter; nothing else in the column.
 
 ### The Incubator (`incubator-candling-s03.png`)
@@ -106,4 +106,4 @@ The creative director's calls are in `specs/station-experience-review.md` §2, �
 | Stamp pane | 728, 384, 280 × 168 | The stamp drawn on the display, 120 × 120 at (16, 24), with its text id beside it, 16 px tabular `bone` |
 | Bottom line | — | ✓ Grow now ❀ n; the context "ready in about n min" (the one minute count) |
 
-**Open:** the game designer's Return line (8 words) and any reveal line over 6 words need copy within the guide's budget, or the owner's approval.
+**Words:** the creative director and the game designer set the panel's consequence line at 8 words (T-173); the reveal pane's plain words stay at 6.

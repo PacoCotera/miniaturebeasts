@@ -195,4 +195,5 @@ The creative director chose P1 (`specs/station-experience-review.md`, the brief 
   - the costs, as icons with figures in `focus`, right-aligned to (w − 16) on the verb's baseline;
   - the line, 16 px at (16, 296) baseline, one line, at most 6 words, in `fog`, or in `coral` for a loss with its cross.
 - **Focus:** the ring in `focus`, 2 px, 4 px out (radius 12); the card lifts 2 px.
-- **The words budget, flagged:** the game designer's Return line "Gone for good. Its place will remember it." is 8 words, against the guide's 6 for an option's line. It needs a 6-word line from the copywriter, or the owner's approval of the budget.
+- **The words budget:** the line holds at most 8 words (the creative director and the game designer, T-173; the guide's 6 for panels is amended to 8). "Gone for good. Its place will remember it." stands as written.
+- **Retired** (the creative director, review §2 rules 3 and 5): `plate-device-*`, `plate-well-*` as pictures, the cargo report plate, `label-plate-cream` and the stamp plaque. Every pane is the one flat slate pane, every well a `ground` well, and the stamp is drawn on the display.
