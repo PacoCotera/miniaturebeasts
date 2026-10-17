@@ -136,10 +136,17 @@ function refuse(frame, x, y) {
 // | AB), strength (scales the penalty, 1 = as decided), kinship (a number, else computed from
 // `lookup`), lookup (digest → genome, for the pedigree).
 export function cross(frame, x, y, opts = {}) {
-  const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1, lookup = () => null } = opts;
+  const { spread = SPREAD, penalty = PENALTY, strength = 1, lookup = () => null } = opts;
   refuse(frame, x, y);
   const a = genomeOf(x), b = genomeOf(y);
   const k = clamp(opts.kinship ?? kinship(x, y, lookup), 0, 0.5);
+  const loci = drawLoci(frame, a, b, k, opts);
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "cross", parents: [genomeDigest(a), genomeDigest(b)], ...(idOf(x) != null && idOf(y) != null ? { parentIds: [idOf(x), idOf(y)] } : {}), kinship: round6(k), spread, penalty, strength } };
+}
+
+// The child's copies from two parents' genomes at kinship k (the cross's draw, and the shed pod's).
+function drawLoci(frame, a, b, k, opts) {
+  const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1 } = opts;
   const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
   const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;
   const weaken = penalty.includes("C") ? clamp(k * strength, 0, 1) : 0;
@@ -161,7 +168,43 @@ export function cross(frame, x, y, opts = {}) {
     const hidden = hiddenCopy(locus, pair);
     loci[l.id] = hidden !== null && surface > 0 && rng() < surface ? [hidden, hidden] : pair;
   }
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "cross", parents: [genomeDigest(a), genomeDigest(b)], ...(idOf(x) != null && idOf(y) != null ? { parentIds: [idOf(x), idOf(y)] } : {}), kinship: round6(k), spread, penalty, strength } };
+  return loci;
+}
+
+// --- the shed pod -----------------------------------------------------------------------------------
+// A returned mibi's place sheds one pod of its line (design/game.md, the vivarium; agreed by game design
+// and the genome engineer, 2026-10-17, option b′): a cross of the mibi with itself, drawn by the pod's
+// seeded stream. cross(m, m) stays refused; this is the one way a single parent makes a pod.
+// SELF_KINSHIP is a game rule, not a genetics claim: a mibi with itself has kinship 1/2, and at that
+// kinship the decided penalty copies every blend exactly and surfaces every hidden copy, so the pod is
+// often its parent again (measured: 2–100% of draws by species). The draw uses 1/8 (half siblings),
+// under which hidden looks still surface; the record keeps the true pedigree (parents [m, m]), so any
+// later cross with its relatives is penalised from the recorded line.
+// The child is redrawn from the same stream while it equals its parent (a clone never comes out) or its
+// body does not build (a pod always holds a mibi that can grow); after SHED_TRIES there is no pod (null).
+// No mutation: every copy is one of the parent's. A self-changing mark is never carried (it is not in
+// the genome). Built on the current frame: a parent on an older frame version is refused.
+export const SELF_KINSHIP = 1 / 8;
+export const SHED_TRIES = 24;
+export function shedPod(frame, x, opts = {}) {
+  const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1 } = opts;
+  const a = genomeOf(x);
+  if (a.species !== frame.species.id) throw new Error("a shed pod is of its parent's species");
+  if ((a.frameVersion ?? FRAME_VERSION) !== FRAME_VERSION) throw new Error(`a shed pod is built on frame version ${FRAME_VERSION}; the parent is on ${a.frameVersion}`);
+  for (const l of frame.loci) if (l.kind === "locked" && !samePair(a.loci[l.id], l.copies)) throw new Error(`${l.id}: the parent's locked copy differs from the frame (not this species)`);
+  const parentKey = valuesKey(frame, a), d = genomeDigest(a), id = idOf(x);
+  for (let i = 0; i < SHED_TRIES; i++) {
+    const loci = drawLoci(frame, a, a, SELF_KINSHIP, { rng, spread, penalty, strength });
+    const g = { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "shed", parents: [d, d], ...(id != null ? { parentIds: [id, id] } : {}), kinship: round6(SELF_KINSHIP), spread, penalty, strength } };
+    if (valuesKey(frame, g) === parentKey) continue;
+    try { if (buildIndividual(frame, g).validation.status === "valid") return g; } catch { /* a body that cannot be built: the next draw */ }
+  }
+  return null;
+}
+// A genome's copies as values, each pair sorted: two genomes with the same key are the same mibi
+// whether a copy is written as an allele name or as its number on the step.
+function valuesKey(frame, g) {
+  return JSON.stringify(frame.loci.map((l) => { const locus = LOCI.get(l.id); return g.loci[l.id].map((c) => (isContinuous(locus) ? round6(copyValue(locus, c)) : c)).map(String).sort(); }));
 }
 
 // N children, each built and validated whole against its frame; a child that cannot be built never

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
 import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK } from "../framework/species.mjs";
-import { cross, forecast, kinship, identity, relatedness, children, SPREAD } from "../framework/cross.mjs";
+import { cross, forecast, kinship, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
 
@@ -387,4 +387,50 @@ test("C2: `sure` is the shown look certain (one look at weight 1, one bin for a 
   const sib = forecast(l, p, q, { kinship: 0.25 }).traits.find((t) => t.trait === "eye-rings");
   assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a sibling cross of equal eyes lands on one value"); assert.equal(sib.firm, false);
   for (const t of forecast(frameOf("S02"), sampleIndividual(frameOf("S02"), rng("s")), sampleIndividual(frameOf("S02"), rng("t"))).traits) if (t.kind === "sealed") assert.equal(t.sure, false);
+});
+
+test("the shed pod: a returned mibi's self cross never equals its parent, always builds, is seeded, takes only the parent's copies and keeps the line", () => {
+  assert.equal(SELF_KINSHIP, 1 / 8);
+  const valueOf = (locus, c) => (typeof c === "number" ? c : locus.alleles.find((a) => a.id === c).value);
+  const key = (frame, g) => JSON.stringify(frame.loci.map((l) => { const locus = LOCI.get(l.id); return g.loci[l.id].map((c) => String(isContinuous(locus) ? Math.round(valueOf(locus, c) * 1e6) / 1e6 : c)).sort(); }));
+  let surfaced = 0, carriers = 0;
+  for (const frame of frames) {
+    const pod = (s) => { const r = rng(`shed-parent:${frame.species.id}:${s}`); for (let i = 0; i < 24; i++) { const g = sampleIndividual(frame, r); try { if (!checkGenome(frame, g).length && buildIndividual(frame, g).validation.status === "valid") return g; } catch { /* the next draw */ } } throw new Error("no pod"); };
+    const parents = [];
+    for (let s = 0; s < 4; s++) parents.push({ id: `${frame.species.id}-p${s}`, genome: pod(s), parents: [] });
+    for (let s = 0; s < 4; s++) {   // bred parents: only a child that builds exists (children's rule)
+      const r = rng(`shed-bred:${frame.species.id}:${s}`);
+      for (let i = 0; i < 24; i++) { const g = cross(frame, parents[s], parents[(s + 1) % 4], { rng: r, kinship: 0 }); let ok = false; try { ok = buildIndividual(frame, g).validation.status === "valid"; } catch { /* not a child */ } if (ok) { parents.push({ id: `${frame.species.id}-b${s}`, genome: g, parents: [parents[s], parents[(s + 1) % 4]] }); break; } }
+    }
+    const byId = new Map(parents.map((p) => [p.id, p]));
+    for (const m of parents) for (let j = 0; j < 3; j++) {
+      const seed = `shed:${m.id}:${j}`, g = shedPod(frame, m, { rng: rng(seed) });
+      assert.ok(g, `${m.id}: a pod comes out`);
+      assert.deepEqual(shedPod(frame, m, { rng: rng(seed) }), g, `${m.id}: the same seed sheds the same pod`);
+      assert.notEqual(key(frame, g), key(frame, m.genome), `${m.id}: never a clone`);
+      assert.deepEqual(checkGenome(frame, g), [], `${m.id}: a whole genome of its frame`);
+      assert.equal(buildIndividual(frame, g).validation.status, "valid", `${m.id}: it builds`);
+      assert.deepEqual(g.origin.parents, [genomeDigest(m.genome), genomeDigest(m.genome)]);
+      assert.deepEqual(g.origin.parentIds, [m.id, m.id]);
+      for (const l of frame.loci) {
+        const locus = LOCI.get(l.id), p = m.genome.loci[l.id], c = g.loci[l.id];
+        if (l.kind === "locked") { assert.deepEqual([...c].sort(), [...l.copies].sort()); continue; }
+        if (isContinuous(locus)) {
+          const shown = (valueOf(locus, p[0]) + valueOf(locus, p[1])) / 2, [lo, hi] = valueRange(locus), reach = SPREAD * (hi - lo) * (1 - 4 * SELF_KINSHIP) + Math.abs(valueOf(locus, p[0]) - valueOf(locus, p[1])) / 2 * (1 - 4 * SELF_KINSHIP) + 1e-6 + (hi - lo) / 32;
+          assert.ok(Math.abs(c[0] - shown) <= reach, `${m.id} ${l.id}: a blend stays by its parent's (${c[0]} vs ${shown})`);
+        } else for (const x of c) assert.ok(p.includes(x), `${m.id} ${l.id}: copy ${x} is one of the parent's (${p})`);
+      }
+      for (const ch of frame.chapters) for (const t of ch.traits) {
+        const lead = t.loci.find((id) => !isContinuous(LOCI.get(id)));
+        if (!lead) continue;
+        const pp = m.genome.loci[lead];
+        if (pp[0] !== pp[1]) { carriers++; if (g.loci[lead][0] === g.loci[lead][1]) surfaced++; }
+      }
+      const rec = { id: `${m.id}-shed${j}`, genome: g, parents: [m, m] };
+      assert.ok(kinship(rec, m, (id) => byId.get(id)) >= 0.5, `${m.id}: the line is real in the pedigree`);
+    }
+  }
+  assert.ok(surfaced / carriers > 0.4 && surfaced / carriers < 0.75, `carried copies come out doubled about half the time (${surfaced}/${carriers})`);
+  assert.throws(() => cross(frames[0], { id: "x", genome: typeSpecimen(frames[0]) }, { id: "x", genome: typeSpecimen(frames[0]) }), /one mibi is not a pair/, "cross(m, m) stays refused");
+  assert.equal(PENALTY, "AB");
 });
