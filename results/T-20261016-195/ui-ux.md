@@ -15,7 +15,7 @@ This part is built on the game designer's verbs and single fact (`results/T-2026
 | Bottom line, middle | "to the Incubator" | **empty on a panel.** The carry after ✓ shows where the pod goes |
 | Bottom line, ← | the safe option's verb ("Keep Pip") | "**Back**" (§3) |
 
-- **The Release panel goes from about 20 words to 13:** two verbs, one fact, and the bottom line's verb and "Back".
+- **The Release panel goes from 21 words to 14:** two verbs, one fact, and the bottom line's verb and "Back".
 - **Grow goes to 7.**
 - **No coral and no ✕ anywhere.** Coral stays reserved for a real failure: a press that can't be paid, or a refusal.
 
