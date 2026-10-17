@@ -124,3 +124,43 @@ The creative director and I judge each concept against these, before the lead. A
 | Genome screen | "This row is its coat (face, legs…); this gene I can change, this one only breeding changes; this is what I changed" |
 
 Plus every owner verbatim on that screen, line by line, as the ticket says.
+
+---
+
+## 6. Answers to UI/UX's redesign briefs (2026-10-17)
+
+### 6.1 Panels (specs/redesign-panels.md): each option's scene and its one consequence line
+
+The scene is what the mibi (Pip, in the concepts) is doing in that outcome. The consequence line is the single fact the player would otherwise miss, at most one line; the cost icons sit beside it.
+
+| Panel | Option | The scene | The consequence line |
+| --- | --- | --- | --- |
+| Return to the wild | **Return** | Pip, seen from behind, walking out across its home place (the pond edge it came from) at dusk light, looking back once | "Gone for good. Its place will remember it." with ❀ +2 |
+| | **Keep** | Pip curled asleep in its bay in the vivarium, warm light | "Stays with you." |
+| Grow it | **Grow it** | The founder you made, lit, standing; your changed parts catch the light | "The pod is used." with the price and the time |
+| | **Keep shaping** | The pod's own founder, plain, on the dish, with the drums still open | "Nothing is spent." |
+| Hatch, the name | **Keep "Moss"** | The young one stepping out onto the vivarium's moss, its name tag hanging | "Moss joins your vivarium." |
+| | **Choose another** | The same young one looking up, the tag blank | "Pick a name first." |
+| Grow now | **Grow now** | The candled pod at full light, the shell starting to open | "Opens now." with the vials |
+| | **Wait** | The candled pod at its current light, the ring where it is | "Ready in about n min." |
+| Cross them | **Cross them** | The two parents nose to nose, a bud glowing between them | "One child, its own mibi." with the price |
+| | **Pick another** | The first parent alone, looking toward the others | "Nothing is spent." |
+| Fit the upgrade | **Fit it** | The Probe at tier 2 (T-162's picture), its reach wider on the map, three pod slots | "Reaches further, carries three pods." with the price |
+| | **Not now** | The Probe at tier 1, two pod slots | "Nothing is spent." |
+| Spend a sitting | **Sit** | Pip posing in its place while the cloud painter works (the painting's frame half-filled) | "Its portrait comes in a few hours." |
+| | **Not now** | Pip at play in the vivarium | "Your sitting is kept." |
+| Read it now (Create) | **Read it** | The frosted chapter clearing on the founder, its parts coming into view | "Shape it before it grows." with the Data |
+| | **Not yet** | The chapter still frosted, the candled pod beside it | "A surprise in the Incubator." |
+
+**The rule for the lines:** say the consequence, not the action (the option's name is the action). A loss is written in the loss colour. There are no other words in a window.
+
+### 6.2 Cargo (specs/redesign-cargo.md)
+
+- **Reach (explored land): leaves Cargo. Confirmed.** It belongs to the Companion's map, which already shows explored land. On the Station it has no decision to support.
+- **The world events: they leave Cargo, split by whose news they are.**
+  - **News about the player's mibis** (`grown`, `elder`) go to the Station's return signals: Home's line "Moss has grown up" and the name tag's mark, until the mibi is visited (specs/station-return-signals.md). That is where the player meets their mibis.
+  - **News about the world** (`lampLow`, `lampOut`, `herd`, `storm`, `fruit`, `stirring`, `young`, `quiet`) go to **the Companion's map,** where the next trip is planned. Each is shown on its place as a marker the first time the map is opened after the dock: an outpost's lamp low or out; a herd's arrow; a storm's charged stones; fruit; a glint where something new stirs; young.
+  - The partner's face on a storm row (specs/world-events.md, the game designer's calls) moves with them, to the Vivarium's step mark.
+  - specs/world-events.md keeps the record (the crate's `world` block). Only its reader changes: the Companion's map, not the Cargo card. The game designer's calls there are amended to match.
+- **The pods' route: confirmed.** They go out through the Pods hatch, which shows its free wells, as many as land. A pod with no free well **waits on the bay floor, still sealed,** and lands when a well frees, oldest first. That is the rule (design/architecture.md, "A pod with no free well waits"). The hatch shows that it is full, so the player sees why the pods stayed.
+- **The materials' route:** into the store tanks, which then tick the top bar's totals. The flow from crate to tank is the answer to "combined, at the Station, or part of a portfolio".

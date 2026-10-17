@@ -99,3 +99,5 @@ The proposal is confirmed as written, with these calls:
 3. **`shallows` and `cliff`: the plain land mark for now.** They appear only in outpost lines (`lampLow`, `lampOut`). The world beyond the first terrain slice is not designed yet (design/art-direction.md), so new badges would be drawn ahead of their places. The outpost's lamp and the plain land mark carry the event; the Companion's map shows which outpost. Give them badges when those lands get their world art.
 
 Nothing else is open from the game designer.
+
+**Amended by the game designer (2026-10-17, the Cargo redesign):** the world block no longer draws on the Cargo card. `grown` and `elder` go to the Station's return signals; the world's events go to the Companion's map as markers on their places (specs/purpose-briefs-b20261017-1.md, 6.2). The record and the calls above stand; only the reader changes.
