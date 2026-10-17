@@ -85,3 +85,16 @@ The 32 px plates and the 144/192 strips are retired from the bench only (they st
 Proofs (`plates-48/proof/`): `before-after-middle-1x.png` (station-gate 69ea1d23 golden `bench`, middle column, before and after; the after has the stage swapped and t1 with three whole plates at the spec places; the words "Shield" and the line are the build's, T-20261016-34), `after-bench-1x.png`, `mock-t2-1x.png`, `strips-2x.png`, `plates-32-vs-48-4x.png` and `stage-before-after-1x.png`.
 
 Signed by the art director at 1× in these mocks, 2026-10-16; to re-check in the builder's captures.
+
+## T-20261016-146: the fitted part as a clean cut-out
+On the "Fit the upgrade?" panel, `bench-part-t2-fitted-128` showed a dark socket box and a flat beige slab (`results/T-20261016-53.md` note 2).
+
+**Re-cut** under the same id and size (`t146/recut-fitted.py`): an alpha cut-out of the part.
+- **Why it can be a cut-out:** inside the part's silhouette the fitted master was the ready master's painting (mean difference 1.1/255), so it holds no fitted-only detail.
+- **What it keeps:** its own pixels inside the ready master's alpha, and the ready master's pixels where the slab covered the foot.
+- **What it drops:** the box and the slab.
+- **The contact shadow** is the panel's.
+
+**Proofs** (`t146/proof/`, labelled):
+- `bench-panel-upgrade-1x.png`: the panel by the T-70 composite rule, Fit it beside Not now's dim part;
+- `bench-panel-upgrade-before-after-1x.png`.
