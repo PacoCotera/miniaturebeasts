@@ -2,7 +2,7 @@
 """The style guide's plates: one rule per plate, a do beside a don't, at 1x.
 
 Run from the repository root:
-  python3 design/style-guide/plates/make-plates.py SRC FONTS
+  python3 design/style-guide/plates/make-plates.py SRC FONTS   (needs Pillow and numpy)
 
 SRC holds the inputs: committed goldens of the device sheet (tools/device-sheet.json on
 work-queue, plus pods-kin.png, batch B-4's pods/pods-overview-kin-focused.png), signed slices from masters-pods, station-gate masters and the owner's
@@ -136,16 +136,66 @@ def glow_pool(w, h, cx, cy, rx, ry, col, a):
     return im
 
 
+def species_pod(code, cls='collection'):
+    """A species' pod from the pod renderer's signed layers (ui/podlayers.mjs composePod, ported):
+    colour = (A·body·(1−pattern) + B·min(1, accent+pattern)) × 2·shade × 2·relief, alpha the shade's."""
+    import numpy as np
+    pod = json.load(open('prototypes/workbench/frames/species-%s.json' % code))['pod']
+    pat = {'smooth dots': 'dots', 'soft ribs': 'ribs', 'segments': 'segments', 'plates': 'plates'}
+    name = next((v for k, v in pat.items() if k in (pod.get('shellPattern') or '')), None)
+    base = 'prototypes/ui/assets/masters/pods/pod-%s-' % cls
+    ld = lambda n: np.asarray(Image.open(base + n + '.png').convert('RGBA'), dtype=float) / 255
+    sh, bd, ac = ld('shade'), ld('mask-body')[..., 3], ld('mask-accent')[..., 3]
+    pt = ld('pattern-' + name)[..., 3] if name and os.path.exists(base + 'pattern-%s.png' % name) else 0 * bd
+    rl = ld('pattern-%s-relief' % name)[..., 0] * 2 if name and os.path.exists(base + 'pattern-%s-relief.png' % name) else 1
+    A, B = [np.array([int(c['hex'][i:i + 2], 16) / 255 for i in (1, 3, 5)]) for c in pod['colourPair']]
+    mix = np.minimum(1, ac + pt)
+    rgb = np.minimum(1, (A * (bd * (1 - pt))[..., None] + B * mix[..., None]) * (sh[..., :1] * 2) * (rl[..., None] if not isinstance(rl, int) else 1))
+    out = np.dstack([rgb, sh[..., 3:4]])
+    return Image.fromarray((out * 255).round().astype('uint8'), 'RGBA')
+
+
 def home_slate():
-    """Home with its module panes re-toned from their painted brown (#352d27 and its noise) to panel."""
+    """Home as the target, a diagram: the accepted living window and frame, with the module column
+    redrawn as one-pane modules (slate pane, hairline and bevel), lamps amber or off, each module
+    holding its own object and no plate picture; the Incubator holds the bud's own pod in its ring."""
     im = src('home-docked.png')
-    px = im.load()
-    M, P = (53, 45, 39), C['panel']
-    for y in range(40, 562):
-        for x in range(676, 1024):
-            r, g, b, a = px[x, y]
-            if abs(r - M[0]) <= 14 and abs(g - M[1]) <= 14 and abs(b - M[2]) <= 14 and r >= b + 6:
-                px[x, y] = (P[0] + r - M[0], P[1] + g - M[1], P[2] + b - M[2], a)
+    lib = im.crop((826, 472, 878, 542))  # the Library's book, painted, keyed off its module's brown
+    lp = lib.load()
+    for yy in range(lib.height):
+        for xx in range(lib.width):
+            r, g, b, a = lp[xx, yy]
+            if abs(r - 54) <= 12 and abs(g - 46) <= 12 and abs(b - 40) <= 12:
+                lp[xx, yy] = (r, g, b, 0)
+    d = ImageDraw.Draw(im)
+    d.rectangle((676, 40, 1023, 561), fill=C['ground'])
+    names = ('Cargo', 'Pods', 'Incubator', 'Probe', 'Library')
+    for k, name in enumerate(names):
+        x, y, w, h = 688, 48 + k * 102, 320, 94
+        pane(d, x, y, w, h)
+        text(d, (x + 16, y + 14), name, F16, 'bone')
+        lit = name == 'Cargo'
+        lx, ly = x + w - 28, y + 14
+        if lit:
+            im.alpha_composite(src('home-lamp-amber-12x12.png'), (lx, ly))
+        else:
+            d.ellipse((lx + 2, ly + 2, lx + 10, ly + 10), fill=C['night'], outline=C['hairline'])
+        ox = x + 120
+        if name == 'Cargo':
+            crate = src('cargo-crate-64x64.png').resize((56, 56), Image.LANCZOS)
+            im.alpha_composite(crate, (ox, y + 24))
+            im.alpha_composite(crate, (ox + 64, y + 24))
+        elif name == 'Pods':
+            for n, code in enumerate(('S01', 'S03', 'S05')):
+                im.alpha_composite(species_pod(code).resize((44, 56), Image.LANCZOS), (ox + n * 56, y + 26))
+        elif name == 'Incubator':
+            im.alpha_composite(ring(76, 0.55, thick=5), (ox - 6, y + 10))
+            im.alpha_composite(species_pod('S01').resize((40, 51), Image.LANCZOS), (ox + 12, y + 22))
+        elif name == 'Probe':
+            probe = src('bench-probe-upright-t1-288x432.png').resize((52, 78), Image.LANCZOS)
+            im.alpha_composite(probe, (ox + 8, y + 10))
+        else:
+            im.alpha_composite(lib, (ox + 6, y + 12))
     return im
 
 
@@ -239,8 +289,10 @@ def wood_badge():
 # ---------------------------------------------------------------- 1 the look
 plate('01-look', 'One device: the living window leads, the instrument serves',
       home_slate(), src('incubator-ready.png'),
-      'Home, accepted by the owner, as a diagram: its module panes re-toned from their painted brown to panel #2b3038. Warm daylight in the vivarium, the device around it calm, matte and slate. The eye goes to the life first.',
+      'Home as the target, a diagram: the accepted living window, with the module column redrawn as slate panes (hairline and bevel), lamps amber or off, each module holding its own object (crates, the species\' pods, the bud\'s own pod in its ring, the Probe, the book), no plate pictures. The eye goes to the life first.',
       'The rejected Incubator (06:38): brown on brown, a cream ring, an egg on a moss cradle, a green plastic plaque, a pixel glyph and jargon in a floating box.')
+
+home_slate().convert('RGB').save(os.path.join(OUT, '01-look-do.png'), optimize=True)  # plate 01's do alone, for the art direction
 
 # ---------------------------------------------------------------- 2 palette
 roles = [
@@ -524,7 +576,7 @@ def overlay(img):
 do = overlay(home_slate())
 dont = overlay(src('create-shape.png'))
 plate('07a-layout', 'The frame and the grid: top bar 40, stage 522, bottom line 38; 16 px margins', do, dont,
-      'Home on the grid (diagram: its module panes re-toned to panel): every region inside the 16 px margins and y 48–552, aligned in columns, 8 px between related things, 16 between groups.',
+      'Home on the grid (the target diagram of plate 01): every region inside the 16 px margins and y 48–552, aligned in columns, 8 px between related things, 16 between groups.',
       'Create (batch B-3): things float on an empty field at uneven gaps, no surface, no grid. Owner: "all elements in create screen are floating".')
 
 comp = Image.open('art/concept-homepage/companion-resident-home-450x600.png').convert('RGBA')
