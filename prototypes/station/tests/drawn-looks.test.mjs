@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, traitState, genomeDigest } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { drawnLooks, standLooksOf, keyToken } from "../src/looks.mjs";
-import { layeredStand, standSizeAt, setStandSizes, fitDown, layersFor, composeStand, standPictureId, standVariant, standLayersLoaded } from "../src/layered-stand.mjs";
+import { layeredStand, setStandSizes, fitDown, layersFor, composeStand, standPictureId, standVariant, standLayersLoaded } from "../src/layered-stand.mjs";
 import { loadStandLayersFs, loadStandLooksFs, unloadStands, STANDS_DIR } from "../tools/stand-layers-fs.mjs";
 import { standLooks, PODS } from "../tools/make-stand-looks.mjs";
 import { registerPictures } from "../src/pictures.mjs";
@@ -93,8 +93,8 @@ describe("drawnLooks(frame, mibi)", () => {
 describe("the layered stand", () => {
   test("a base and layers per look, derived at each standing size; the layer table is data (every layer is in the index with its hash)", () => {
     const index = loadStandLayersFs(); assert.ok(standLayersLoaded());
-    for (const [stage, places] of [["adult", [[304, 312], [144, 152], [48, 48]]], ["juvenile", [[304, 312], [104, 112], [48, 48]]]]) for (const place of places) { const s = layeredStand("S01", stage, place); assert.ok(s, stage + place.join("x")); assert.deepEqual(s.traits, ["markings", "crown", "eye-rings"]); assert.equal(s.layers.length, 3); assert.equal(s.stage, stage); assert.deepEqual(s.size, place, "the picture is the place's"); assert.deepEqual(s.figure, standSizeAt(place), "the figure box is the config's"); }
-    assert.deepEqual(layeredStand("S01", "adult", [144, 152]).figure, [57, 59]); assert.deepEqual(layeredStand("S01", "adult", [304, 312]).figure, [304, 312]);
+    for (const [stage, places] of [["adult", [[304, 312], [144, 152], [48, 48]]], ["juvenile", [[304, 312], [104, 112], [48, 48]]]]) for (const place of places) { const s = layeredStand("S01", stage, place); assert.ok(s, stage + place.join("x")); assert.deepEqual(s.traits, ["markings", "crown", "eye-rings"]); assert.equal(s.layers.length, 3); assert.equal(s.stage, stage); assert.deepEqual(s.size, place, "the picture is the place's"); assert.deepEqual(s.figure, place, "a view the table does not give draws the whole canvas fitted in its place: unchanged"); }
+    assert.deepEqual(layeredStand("S01", "adult", [144, 152], "home").figure, [57, 59]); assert.deepEqual(layeredStand("S01", "juvenile", [104, 112], "home").figure, [64, 66]); assert.deepEqual(layeredStand("S01", "adult", [304, 312], "habitat").figure, [158, 163]);
     assert.equal(layeredStand("S01", "elder", [144, 152]).stage, "adult", "an elder takes the adult's stand");
     assert.equal(layeredStand("S01", "adult", [96, 88]), null, "the sleeper's curl is not a stand pose: its signed picture");
     assert.equal(layeredStand("S03", "adult", [144, 152]), null, "a species with no layers is drawn as before");
@@ -123,19 +123,24 @@ describe("the layered stand", () => {
     assert.ok(top > 2000, "the crest is drawn"); assert.ok(last < 140, `only the crown's rows change: the last changed row is ${last}`);
   });
 
-  test("the figure's size is a parameter of the picture: composed in the logic at the config's box, standing on the picture's foot, about 54 px tall at the living window's size", () => {
-    const st = layeredStand("S01", "adult", [144, 152]), pic = composeStand(st, { crown: "leaf crest" });
-    assert.deepEqual([pic.w, pic.h], [144, 152]); const a = pic.rgba(); let top = 999, bottom = -1, left = 999, right = -1;
-    for (let y = 0; y < 152; y++) for (let x = 0; x < 144; x++) if (a[(y * 144 + x) * 4 + 3] > 128) { top = Math.min(top, y); bottom = Math.max(bottom, y); left = Math.min(left, x); right = Math.max(right, x); }
-    assert.ok(bottom - top + 1 >= 51 && bottom - top + 1 <= 57, `an adult figure about 54 px tall: ${bottom - top + 1}`);
-    assert.ok(bottom >= 148 && bottom <= 151, "its feet on the picture's foot: " + bottom); assert.ok(left > 40 && right < 104, "centred, transparent around it");
+  test("the figure's size is a parameter of the picture: composed in the logic at the view's height from the one config, standing on the picture's foot", () => {
+    const tall = (stage, place, view) => {
+      const st = layeredStand("S01", stage, place, view), pic = composeStand(st, { crown: "leaf crest" }), [w, h] = place, a = pic.rgba(); let top = 999, bottom = -1;
+      assert.deepEqual([pic.w, pic.h], place, "the picture is the slot's, 1:1");
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 128) { top = Math.min(top, y); bottom = Math.max(bottom, y); }
+      assert.ok(bottom >= h - 6 && bottom < h, `its feet on the picture's foot: ${bottom}`); return bottom - top + 1;
+    };
+    const near = (got, want) => assert.ok(Math.abs(got - want) <= 2, `${got} is about ${want}`);
+    near(tall("adult", [144, 152], "home"), 54); near(tall("juvenile", [104, 112], "home"), 40);
+    near(tall("adult", [144, 152], "vivarium"), 92); near(tall("juvenile", [104, 112], "vivarium"), 68);
+    near(tall("adult", [304, 312], "habitat"), 150); near(tall("juvenile", [304, 312], "habitat"), 110);
+    const a = layeredStand("S01", "adult", [144, 152], "home"), b = layeredStand("S01", "adult", [144, 152], "vivarium");
+    assert.notEqual(standPictureId(a, {}), standPictureId(b, {}), "another figure size is another picture id: the figure box is in the variant");
     try {
-      setStandSizes({ places: { "144x152": [100, 104], "48x48": [304, 400] } });
-      const big = layeredStand("S01", "adult", [144, 152]); assert.deepEqual(big.figure, [100, 104]); assert.deepEqual(big.size, [144, 152]);
-      assert.notEqual(standPictureId(big, {}), standPictureId(st, {}), "another figure size is another picture id");
-      assert.deepEqual([composeStand(big, {}).w, composeStand(big, {}).h], [144, 152]);
-      assert.equal(layeredStand("S01", "adult", [48, 48]), null, "never scaled up past the art");
-      setStandSizes({ places: {} }); assert.equal(layeredStand("S01", "adult", [144, 152]), null, "a place the config does not list is not layered");
+      setStandSizes({ views: { home: { adult: 100 } }, places: ["144x152", "48x48"] });
+      assert.deepEqual(layeredStand("S01", "adult", [144, 152], "home").figure, [106, 108], "the table fills the size: one config");
+      assert.equal(layeredStand("S01", "adult", [48, 48], "home"), null, "a figure larger than its picture is refused");
+      assert.equal(layeredStand("S01", "adult", [304, 312]), null, "a place the config does not list is not layered");
     } finally { loadStandLayersFs(); }
     const id = fitDown(new Uint8ClampedArray([10, 20, 30, 255, 10, 20, 30, 255, 10, 20, 30, 255, 10, 20, 30, 255]), 2, 2, 1, 1);
     assert.deepEqual([...id], [10, 20, 30, 255], "a flat opaque picture stays flat when it is fitted down");
@@ -145,7 +150,7 @@ describe("the layered stand", () => {
     const st = layeredStand("S01", "adult", [144, 152]), id = (l, light) => standPictureId(st, l, light);
     assert.match(id({}), /^mibi:S01~[0-9a-f]{8}:adult:144x152$/); assert.match(id({}, "night"), /:night$/);
     assert.equal(id({ colour: "ash", markings: "plain", "eye-rings": "thin rings", crown: "bare head" }), id({}), "colour, plain and the rings have no layer yet: the base");
-    assert.notEqual(id({ crown: "leaf crest" }), id({})); assert.notEqual(id({ markings: "stripes" }), id({ markings: "patches" })); assert.equal(standVariant(st, { crown: "leaf crest", markings: "patches" }).key, "S01~crown=leaf crest,markings=patches@57x59", "the figure box is a parameter of the variant");
+    assert.notEqual(id({ crown: "leaf crest" }), id({})); assert.notEqual(id({ markings: "stripes" }), id({ markings: "patches" })); assert.equal(standVariant(st, { crown: "leaf crest", markings: "patches" }).key, "S01~crown=leaf crest,markings=patches@144x152", "the figure box is a parameter of the variant");
     assert.equal(keyToken("S01~"), keyToken("S01~")); assert.notEqual(keyToken("S01~"), keyToken("S01~crown=bare head"));
     assert.equal(policyOf(id({ crown: "leaf crest" }), "placeholder"), "painted"); assert.equal(policyOf("mibi:S01~0123abcd:juvenile:104x112:night", "placeholder"), "painted", "a layered juvenile too"); assert.equal(policyOf(id({}, "dusk"), "placeholder"), "painted");
     assert.equal(policyOf("mibi:S01-9b58efeb:adult:144x152", "placeholder"), "art", "a rig stand-in named by a genome digest is still art"); assert.equal(policyOf("mibi:S01-9b58efeb:adult:144x152", "master"), "painted");
@@ -188,10 +193,10 @@ describe("four Loikas, four stands", () => {
   test("the same looks are the same stand, the same individual everywhere: Home, the Vivarium's tiles and one mibi up close name its looks the same way", () => {
     const st = world(); for (const m of st.mibis) m.paint = { state: "landed" };
     const one = st.mibis[0], looks = drawnLooks(fr, one);
-    assert.deepEqual(mibiPictureOf(st, one, [144, 152], settings).looks, looks);
+    assert.deepEqual(mibiPictureOf(st, one, [144, 152], settings, "day", "home").looks, looks);
     const h = habitatBuild({ st, sv: sv0(), settings, docked: true, light: "day", focus: null, habId: one.id, meetId: null, armed: false }, hab, frameSpec, home);
     const near = h.requests.find((r) => r.id === h.props.regions.resident.picture); assert.deepEqual([near.size, near.looks], [[304, 312], looks]);
-    assert.equal(mibiPictureOf(st, one, [304, 312], settings).id, h.props.regions.resident.picture, "the host's swap dither names the same picture");
+    assert.equal(mibiPictureOf(st, one, [304, 312], settings, "day", "habitat").id, h.props.regions.resident.picture, "the host's swap dither names the same picture");
     const v = vivariumBuild({ st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home);
     const tile = v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(one.id)).picture); assert.deepEqual([tile.size, tile.looks], [[48, 48], looks]);
     registerPictures([...h.requests, ...v.requests], { ...env, mibiGenome: (id) => S.mibiById(st, id)?.genome });
@@ -217,7 +222,7 @@ describe("four Loikas, four stands", () => {
   });
 
   test("a light grades the composed stand as it grades a master: dawn, dusk and night are derived from the day's picture", () => {
-    const st = world(), m = st.mibis[0], day = mibiPictureOf(st, m, [144, 152], settings, "day"), night = mibiPictureOf(st, m, [144, 152], settings, "night");
+    const st = world(), m = st.mibis[0], day = mibiPictureOf(st, m, [144, 152], settings, "day", "home"), night = mibiPictureOf(st, m, [144, 152], settings, "night", "home");
     assert.equal(night.id, day.id + ":night");
     const b = homeBuild({ st, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "night" }, home, frameSpec);
     registerPictures(b.requests, { ...env, mibiGenome: (id) => S.mibiById(st, id)?.genome });

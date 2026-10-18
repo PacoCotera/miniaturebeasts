@@ -11,6 +11,12 @@
      "eye-rings"
     ],
     "pose": "anchor",
+    "figure": [
+     21,
+     17,
+     282,
+     304
+    ],
     "sizes": {
      "304x312": {
       "base": "S01-adult-304x312-base.png",
@@ -55,6 +61,12 @@
      "eye-rings"
     ],
     "pose": "anchor",
+    "figure": [
+     65,
+     116,
+     239,
+     304
+    ],
     "sizes": {
      "304x312": {
       "base": "S01-juvenile-304x312-base.png",

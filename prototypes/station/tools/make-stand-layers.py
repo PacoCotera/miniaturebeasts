@@ -47,7 +47,11 @@ for stage in ('adult', 'juvenile'):
             {'trait': 'markings', 'looks': ['stripes', 'stripes and patches'], 'order': 11, 'op': 'over', 'file': save(fit(src['stripes'], w, h), n('stripes'))},
             {'trait': 'crown', 'looks': ['leaf crest'], 'order': 30, 'op': 'over', 'file': save(fit(src['crest'], w, h), n('crest'))},
         ]}
-    stands[stage] = {'traits': ['markings', 'crown', 'eye-rings'], 'pose': POSE, 'sizes': sizes}
+    # the figure's extent on the canvas (base and crest, solid pixels): a view's figure height is measured on it, so every look of a stage is drawn at one scale
+    box = lambda im: im.getchannel('A').point(lambda v: 255 if v > 128 else 0).getbbox()
+    bb, cb = box(src['base']), box(src['crest'])
+    fig = [min(bb[0], cb[0]), min(bb[1], cb[1]), max(bb[2], cb[2]), max(bb[3], cb[3])]
+    stands[stage] = {'traits': ['markings', 'crown', 'eye-rings'], 'pose': POSE, 'figure': fig, 'sizes': sizes}
 reg = json.load(open(os.path.join(LAYERS, 'register.json')))['layers']
 index = {
     'schema': 'mb-stands/2',
