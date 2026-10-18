@@ -41,6 +41,23 @@ void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, 
   v_layer(LAYER_ART); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, width, c);
   snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", b); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
 }
+/* The centre of a counter's icon in the top bar (i: 0 Energy, 1 Data, 2 Essence), as word_topBar lays them out (the figures as shown now, a tick counting up included): the place a Cargo material travels to. 1 when the bar has the props, else 0. */
+int frame_material_centre(int i, int out[2]) {
+  if (i < 0 || i > 2 || !spec_has(P) || !spec_has(F)) return 0;
+  static const char K[3] = { 'e', 'd', 's' };
+  int M_icon = fi("regions.materials.icon"), M_gap = fi("regions.materials.gap"), M_px = fi("regions.materials.px"), M_between = fi("regions.materials.between"), M_centre = fi("regions.materials.centre"), mrect[4]; rect_of("regions.materials.rect", mrect);
+  int widths[3], total = 0;
+  for (int q = 0; q < 3; q++) {
+    char a[48], txt[16]; snprintf(a, sizeof a, "frame.top.materials.%c", K[q]); int shown = spec_int(P, a, 0);
+    anim_state_t t; char who[2] = { K[q], 0 };
+    if (anim_get(ANIM_TICK, who, &t) && t.to > t.from) { int n = t.to - t.from, steps = t.elapsed / 70 + 1; if (steps > n) steps = n; shown = t.from + steps; }
+    snprintf(txt, sizeof txt, "%d", shown); widths[q] = M_icon + M_gap + v_measure(txt, M_px); total += widths[q];
+  }
+  total += M_between * 2;
+  int mx = M_centre - (total + 1) / 2;
+  for (int q = 0; q < i; q++) mx += widths[q] + M_between;
+  out[0] = mx + M_icon / 2; out[1] = mrect[1] + 4 + M_icon / 2; return 1;
+}
 void word_topBar(void) {
   char c[24], a[96], b[96], s[V_STR]; int r[4], rr[4];
   rect_of("regions.top.rect", r);
@@ -71,6 +88,7 @@ void word_topBar(void) {
     { /* a counter counts up toward its value one unit every 70 ms, the first at once, with a 240 ms tick behind the figure that changed (a `tick` event: from, to) */
       anim_state_t t; char who[2] = { K[i], 0 };
       if (anim_get(ANIM_TICK, who, &t) && t.to > t.from) { int n = t.to - t.from, steps = t.elapsed / 70 + 1; if (steps > n) steps = n; shown = t.from + steps; if (t.elapsed - (steps - 1) * 70 < 240) fl[i] = 1; }
+      if (anim_get(ANIM_FLASH, who, &t) && t.elapsed < spec_int(F, "regions.materials.flashMs", 240)) fl[i] = 1;   /* the materials answer (Cargo's opening, build spec 4): a `flash` event on a counter lights its figure for the event's 240 ms without changing it */
     }
     snprintf(txt[i], sizeof txt[i], "%d", shown);
     widths[i] = M_icon + M_gap + v_measure(txt[i], M_px); total += widths[i];

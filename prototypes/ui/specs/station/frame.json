@@ -61,7 +61,7 @@
   "aim": { "firstPod": "find a first pod", "firstMibi": "grow a first mibi", "pair": "a partner for {name}", "growUp": "walks grow {name} up", "cross": "cross {name} next", "readChild": "read {name}'s chapters", "guide": "fill the {species} field guide",
   "probe": "save up for the Probe upgrade", "growUpNoName": "walks grow the pair up", "readChildNoName": "read the new mibi's chapters" } },
  "goalWarn": { "rule": "The pre-spend warning (goalSpendWarn): one line in the notice zone, amber as needMore, before ✓ pays a price that would leave the goal's next price short. {icons} are what would then be short.", "identify": "then the {species} pod needs {icons}", "grow": "then the {species} pod needs {icons}", "cross": "then the pair needs {icons}", "read": "then the next read needs {icons}", "fit": "then the upgrade needs {icons}" },
- "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "cargo": "Cargo", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
+ "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "cargo": "Bay", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
  "light": { "from": [[6, "dawn"], [7, "day"], [18, "dusk"], [20, "night"]], "rule": "the Station's local hour; a light runs until the next start, the last wraps midnight", "bed": { "dawn": "home-bed-dawn", "day": "home-bed-day", "dusk": "home-bed-dusk", "night": "home-bed-night" } },
  "idle": {
   "light": { "pictures": { "dawn": "idle-vivarium-dawn", "day": "idle-vivarium-day", "dusk": "idle-vivarium-dusk", "night": "idle-vivarium-night" } },
@@ -141,7 +141,7 @@
   },
   "screens": {
    "home": {"parent": null, "back": null},
-   "cargo": {"parent": "home", "back": "Home", "states": ["bay", "opening", "report", "arrival"], "spec": "cargo.json"},
+   "cargo": {"parent": "home", "back": "Home", "states": ["bay", "opening", "end", "arrival"], "spec": "cargo.json"},
    "pods.collection": {"parent": "home", "back": "Home"},
    "pods.overview": {"parent": "pods.collection", "back": "Pods"},
    "pods.chapter": {"parent": "pods.overview", "back": "{pod}"},
@@ -160,7 +160,7 @@
   "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
   "nameBack": "{name} is the shown mibi's name; a name wider than the way back's 68 px for its word reads \"Back\"",
   "jumps": [
-   {"from": "cargo", "state": "report", "action": "See the new pods", "to": "pods", "view": "collection", "focus": "the pod that most needs the player", "when": "a new pod landed in the rack"},
+   {"from": "cargo", "state": "end", "action": "Look at the pods", "to": "pods", "view": "collection", "focus": "the newest pod", "when": "a new pod landed in a well"},
    {"from": "create", "action": "Incubate", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},
    {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
