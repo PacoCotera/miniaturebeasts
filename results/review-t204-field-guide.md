@@ -5,7 +5,7 @@ branch: PacoCotera/miniaturebeasts:build/t-204-guide-current-looks
 head: fa537ed7
 ci: not run (the checks below were run locally)
 ---
-## Verdict: PASS
+## Verdict: PASS on the code as asked; superseded by an addendum below (now FAIL until the seed fix is in)
 The field guide now counts the current looks only, legacy looks show as found and never count, and the four new tests do what they say. No fixes. One question for the game designer on the meaning of the legacy list (below). This review was asked for in a message from the lead; I wrote and claimed T-20261016-208 for it.
 
 ## Run (a worktree of fa537ed7, off station-gate e765dc65)
@@ -28,3 +28,11 @@ As built, `legacy` is the seen looks that the current frame cannot show: **found
 ## Observations, no change asked
 - A seen legacy look in a shut sealed chapter is hidden (`legacy` is empty when shut), as `found` is; consistent.
 - `guideComplete` and `fieldGuide` now agree through the same source (`currentLooks`), so there is one place to change if the rule moves.
+
+## Addendum (game designer's ruling, received after the verdict): now FAIL until one fix is in
+The game designer answered my question: **(1)** the progress seeds must exclude legacy looks. The rule is "a legacy look shows once seen and never counts"; the seed is a count toward completion, so it must be found-current over current (found-current plus unseen), and reach full exactly when the species completes. They want this fixed in T-204's own build, not a new ticket. **(2)** No legacy mark for now (there is none in the marks register); whether a legacy plate should read apart from the current ones is parked with the creative director, and does not block T-204.
+
+So as built, the seed counts `found` including legacy, which is outside T-204's rule. Verdict now: **FAIL, one fix, in the same build (build/t-204-guide-current-looks):**
+1. In `library.mjs`, keep seen legacy looks in each trait's `legacy` list for the plates, and make the counts used for completion and progress exclude them: either `found` counts only current looks (with legacy listed apart) or add a field (for example `foundCurrent`). Then in `views/library-props.mjs`, compute the seed from found-current over (found-current + unseen), not from `g.found`. Wrong value today: `g.found` includes a seen legacy look (a seen plain adds one to numerator and denominator).
+2. Add one test: a Loika with a seen plain and some current looks seen shows the same progress seed as the same save without plain, and the seed reaches its top value exactly when `complete` is true.
+The rest of the verdict stands. On that fix, my PASS stands.
