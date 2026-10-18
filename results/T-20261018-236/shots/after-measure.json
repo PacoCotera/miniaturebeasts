@@ -1,0 +1,238 @@
+{
+ "1280x720": {
+  "station": [
+   20,
+   56,
+   1024,
+   600
+  ],
+  "stationShell": [
+   12,
+   48,
+   1040,
+   616
+  ],
+  "companion": [
+   1076,
+   56,
+   450,
+   600
+  ],
+  "companionShell": [
+   1068,
+   48,
+   466,
+   616
+  ],
+  "bench": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "benchVis": "visible/hidden",
+  "handle": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "handleVis": "visible/hidden",
+  "cradle": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "dev": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "inner": [
+   1280,
+   720
+  ],
+  "scrollW": 1280,
+  "benchSrc": null,
+  "f": "1"
+ },
+ "1440x900": {
+  "station": [
+   20,
+   60,
+   1024,
+   600
+  ],
+  "stationShell": [
+   12,
+   52,
+   1040,
+   672
+  ],
+  "companion": [
+   1076,
+   60,
+   450,
+   600
+  ],
+  "companionShell": [
+   1068,
+   52,
+   466,
+   672
+  ],
+  "bench": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "benchVis": "visible/hidden",
+  "handle": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "handleVis": "visible/hidden",
+  "cradle": [
+   1068,
+   728,
+   466,
+   28
+  ],
+  "dev": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "inner": [
+   1440,
+   900
+  ],
+  "scrollW": 1440,
+  "benchSrc": null,
+  "f": "1"
+ },
+ "1920x1080": {
+  "station": [
+   20,
+   60,
+   1024,
+   600
+  ],
+  "stationShell": [
+   12,
+   52,
+   1040,
+   672
+  ],
+  "companion": [
+   1076,
+   60,
+   450,
+   600
+  ],
+  "companionShell": [
+   1068,
+   52,
+   466,
+   672
+  ],
+  "bench": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "benchVis": "visible/hidden",
+  "handle": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "handleVis": "visible/hidden",
+  "cradle": [
+   1068,
+   728,
+   466,
+   28
+  ],
+  "dev": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "inner": [
+   1920,
+   1080
+  ],
+  "scrollW": 1920,
+  "benchSrc": null,
+  "f": "1"
+ },
+ "2560x1440": {
+  "station": [
+   20,
+   60,
+   1024,
+   600
+  ],
+  "stationShell": [
+   12,
+   52,
+   1040,
+   672
+  ],
+  "companion": [
+   1076,
+   60,
+   450,
+   600
+  ],
+  "companionShell": [
+   1068,
+   52,
+   466,
+   672
+  ],
+  "bench": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "benchVis": "visible/hidden",
+  "handle": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "handleVis": "visible/hidden",
+  "cradle": [
+   1068,
+   728,
+   466,
+   28
+  ],
+  "dev": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "inner": [
+   2560,
+   1440
+  ],
+  "scrollW": 2560,
+  "benchSrc": null,
+  "f": "1"
+ }
+}
