@@ -11,7 +11,7 @@ export function departures(log, spec, frame, state = "growing") {
   if (got("panelGround").length) {   // the Hatch now | Wait panel is open over the Incubator (the Incubator's confirm state): the panel's own composition, none of the Incubator's words (panel.json hatchnow)
     for (const id of ["panelGround", "panelBezel.0", "panelBezel.1", "panelWindow.0", "panelWindow.1", "panelHatched", "panelGrowing"]) must(got(id).length >= 1, `the Hatch now | Wait panel draws ${id}`);
     for (const id of ["room", "interior", "pod", "shell", "door", "bar", "stamp", "stamp.plate", "code", "seal", "glass", "juvenile", "ribbon", "bench"]) must(got(id).length === 0 && !type.some((t) => t.region === id), `${id} is not drawn under the Hatch now | Wait panel`);
-    for (const t of type.filter((x) => x.region === "panelCaption" && x.rect)) must(within(t.rect, [526, 76, 474, 468]), `the caption ${t.rect} leaves the right window`);
+    for (const t of type.filter((x) => x.region === "panelCaption" && x.rect)) must(within(t.rect, [518, 46, 490, 30]), `the readout ${t.rect} leaves Wait\'s header`);
     return out;
   }
   for (const r of got("bench")) must(eq(r.rect, R.bench.rect), `the stage ground ${r.rect} is not ${R.bench.rect}`);

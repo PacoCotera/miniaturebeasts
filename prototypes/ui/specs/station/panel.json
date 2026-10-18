@@ -304,9 +304,8 @@
   },
   "caption": {
    "px": 16,
-   "colour": "ink",
-   "gap": 16,
-   "note": "'ready in about {n} min', Inter 16, ink, centred in the window, its baseline 16 above the window's foot"
+   "colour": "fog",
+   "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (12 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
   }
  }
 }

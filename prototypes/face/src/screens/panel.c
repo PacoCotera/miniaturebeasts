@@ -214,7 +214,7 @@ static void build_hatched(const int w[4]) {
     if (*a && clip > 0) v_sprite_window("panel.hatched.door", a, 0, r0, ax, ay + r0, clip, rh); }
   hn_bar("panel.hatched.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, hi_("bar.max", 137));
 }
-/* the growing look: the room, the interior, the sealed pod, the closed glass, the shell, the bar lit to its progress; the caption under it */
+/* the growing look: the room, the interior, the sealed pod, the closed glass, the shell, the bar lit to its progress; the window carries no text */
 static void build_growing(const int w[4]) {
   const char *P = "overlay.regions.right."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), lh = v_pint(v_fmt("%slayerSize.1", P), 0), ax = hk_("right.layers", 0), ay = hk_("right.layers", 1);
   v_region("panelGrowing", LAYER_PAINTED);
@@ -225,9 +225,6 @@ static void build_growing(const int w[4]) {
   { const char *a = v_pstr(v_fmt("%sglass", P)); if (*a && lw > 0) v_sprite("panel.growing.glass", a, ax, ay, lw, lh); }
   { const char *a = v_pstr(v_fmt("%sshell", P)); if (*a && lw > 0) v_sprite("panel.growing.shell", a, ax, ay, lw, lh); }
   hn_bar("panel.growing.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, v_pint("overlay.regions.barPx", 1));
-  { const char *t = v_pstr("overlay.regions.caption"); int px = hi_("caption.px", 16); char s[24], c[24]; static char cc[24];
-    if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(c, sizeof c, "%s", col(s)); snprintf(cc, sizeof cc, "%s", c);
-      int tw = v_measure(t, px); v_region("panelCaption", LAYER_TYPE); v_text("panel.caption", t, w[0] + (w[2] - tw) / 2, w[1] + w[3] - hi_("caption.gap", 16) - v_cap(px), tw, px, cc); } }
 }
 static void build_hatchnow(void) {
   int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
@@ -235,6 +232,9 @@ static void build_hatchnow(void) {
   int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); prect("windows.left", wl); prect("windows.right", wr);
   build_bezel(0, l, v_pstr("overlay.regions.verbs.grow")); build_bezel(1, r, v_pstr("overlay.regions.verbs.wait"));
   build_price(l);
+  { const char *t = v_pstr("overlay.regions.caption"); int px = hi_("caption.px", 16); static char cc[24]; char s[24];   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own */
+    if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(cc, sizeof cc, "%s", col(s)); int tw = v_measure(t, px);
+      v_region("panelCaption", LAYER_TYPE); v_text("panel.caption", t, r[0] + r[2] - pi_("price.right", 12) - tw, r[1] + pi_("header.baseline", 20) - v_cap(px), tw, px, cc); } }
   build_hatched(wl); build_window_frame(0, wl);
   build_growing(wr); build_window_frame(1, wr);
   { anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) build_ring(2); }
