@@ -314,7 +314,7 @@ function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr);
 function onDpr() { layout(); armDpr(); }
 armDpr(); window.addEventListener("resize", layout);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
-  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
   $("stamp").textContent = short ? "build " + short + (t ? " · " + t : "") : "local build";
 }).catch(() => { $("stamp").textContent = "local build"; });
 layout();
