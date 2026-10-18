@@ -131,7 +131,7 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
   - `panel/`: `capsule-{shell-dusk,interior-dusk,seal-ring}-296x459` and `capsule-room-dusk-474x468`;
   - the table of every view: `masters/views.json`.
 - **Drawn in code:** the glass, along the window mask.
-- **The opened pod:** `pod-opened-bowl-shade-488x509` and `pod-opened-cap-shade-357x443`, in neutral. Its masks and pattern projection are still to come from the art director (`cut-opened-pod.py`).
+- **The opened pod** (`masters/opened/`): the closed pod's own layer set at the `large` class, so the renderer composes it unchanged, in each species' colours. The **bowl** is 144 × 150 (shade, mask-body, mask-accent and every pattern-*). The **cap** is 104 × 128 (shade, an empty body mask, and accent for the whole cap). At the hatch the bowl's foot sits on the moss line at the pod's x, with the cap tipped against its left side. Both are relit to the roof lamp like the pod (owed by the build).
 
 **Painted and confirmed** (a58d2827, `masters/` beside `capsule-masters.md`):
 - `capsule-interior-day`: the empty moss bed, a clean studio edit;
@@ -140,7 +140,7 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
 
 The hatch therefore shows the species' opened pod (bowl and cap) beside the juvenile from its step at 1000. Empty draws the bare moss bed. Every species' pod is drawn by the renderer.
 
-**Still to come from the art director:** the opened pod's masks and pattern projection. The builder takes them as they land.
+**The masters are complete** (the art director). The build owes only the relight, the contact shadows and the moss blades for the pod, the opened pod and the juvenile.
 
 **Other views of the capsule** (the same masters at their own reductions, set by the art director):
 - **Create's chamber:** the capsule at ×0.358, 145 × 224 at (793, 104) inside `create.json regions.dome`, with the shell, interior, glass and bar and no room. The dome's floor moves to the moss line, **y 268**, and the pod is 72 tall.
