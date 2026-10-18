@@ -355,3 +355,17 @@ test("a moving resident's ring and tag hold still on its atlas figure while its 
   assert.ok(rings > 0, "the ring is drawn"); assert.equal(seen.size, 1, "the ring and the tag stay put: " + [...seen].join(" ; "));
   const [W] = [FIGM[2]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12))), ring = [...seen][0].split("#")[0].split(",").map(Number); assert.deepEqual([ring[2], ring[3]], [W + 10, fh + 10], "the ring is (W + 10) × (fh + 10)");
 });
+
+test("an asleep resident with a curl draws the curl in place, its foot on the stand's feet line, and the ring and the tag come from the curl's figure; awake it draws its stand", { skip }, async () => {
+  const CF = [10, 2, 34, 28], CP = [57, 36], at = async (asleep) => {
+    const b = withFigure(scene({ adults: 1, focus: "tile:0" })), r = b.props.regions.residents[0], id = b.st.mibis[0].id; r.seed = 5 * 104729;
+    if (asleep) { r.rest = "asleep"; r.curl = "mibi:S01~c0c0c0c0:adult:57x36"; r.curlFigure = CF; b.requests.push({ kind: "mibi", id: r.curl, size: CP, stage: "adult", species: "S01" }); }
+    const f = await start(b, { motion: false, node: true }); withFocus(f, "resident." + id); const lg = logOf(f) ?? (frames(f), logOf(f)), nb = f.nodeBox("g." + id).box.slice(); nb[1] += R.window.rect[1];
+    return { nb, ring: lg.regions.find((x) => x.id === "focus").rect, tag: lg.regions.find((x) => x.id === "nameTag" && x.layer === "chrome").rect };
+  };
+  const awake = await at(false), asleep = await at(true), fa = feetOf([awake.nb[0], awake.nb[1] + 2, 144, 152]), fs = { fx: asleep.nb[0] + CF[0] + Math.floor(CF[2] / 2), feetY: asleep.nb[1] + CF[1] + CF[3] - 1 };
+  assert.deepEqual(asleep.nb.slice(2), CP, "the curl's own picture"); assert.deepEqual(awake.nb.slice(2), [144, 152], "awake: its stand");
+  assert.equal(fs.feetY, fa.feetY, "the curl's foot is on the stand's feet line"); assert.ok(Math.abs(fs.fx - fa.fx) <= 1, "on the same feet point");
+  const fh = Math.min(16, Math.max(6, 2 * Math.floor((CF[2] + 6) / 12))); assert.deepEqual(asleep.ring, [fs.fx - Math.floor(CF[2] / 2) - 5, fs.feetY - (fh + 10) / 2, CF[2] + 10, fh + 10], "the ring on the curl's feet, no lift");
+  assert.equal(asleep.tag[1], fs.feetY + 1 - CF[3] - 32, "the tag over the curl, 32 above its top");
+});

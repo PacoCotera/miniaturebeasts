@@ -328,7 +328,7 @@ static int mv_household(long j) {
 }
 
 /* ---- what the last draw put where (the focus reads these boxes) ---- */
-typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, sbox[4]; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes (the send-off) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
+typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, curled, sbox[4]; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes (the send-off) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
 static ent_t g_e[MAXR + MAXS]; static int g_ne;
 int g_home_steps;   /* test hook: the residents that stepped since face_frame began (face_test_steps) */
 
@@ -394,7 +394,11 @@ static int ent_load(const char *cur) {
       g_ne++; continue;
     }
     /* a still: the walk is the figure's: its box x is the figure's left, its feet the last ink row; the picture is placed so that its drawn bbox [dx, dy, W, H] lands there. No figure: the picture is the figure */
-    int fig[4] = { 0, 0, w, h }; e->hasfig = 0;
+    int fig[4] = { 0, 0, w, h }; e->hasfig = 0; e->curled = 0;
+    int cf[4], cp[2], asleepStill = 0;   /* asleep and with a curl (its picture sent): the curl is drawn in place, its foot on the stand's feet line */
+    if (!strcmp(v_pstr(v_fmt("%s.rest", P)), "asleep") && v_plen(v_fmt("%s.curlFigure", P)) == 4) { const char *cpic = v_pstr(v_fmt("%s.curl", P)); int sl = wire_asset_slot(cpic);
+      if (sl >= 0 && prim_asset_size(sl, cp) == 0) { for (int q = 0; q < 4; q++) cf[q] = v_pint(v_fmt("%s.curlFigure.%d", P, q), -1);
+        if (cf[0] >= 0 && cf[1] >= 0 && cf[2] > 0 && cf[3] > 0 && cf[0] + cf[2] <= cp[0] && cf[1] + cf[3] <= cp[1]) { asleepStill = 1; snprintf(e->pic, sizeof e->pic, "%s", cpic); } } }
     if (v_plen(v_fmt("%s.figure", P)) == 4) { int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1);
       if (f[0] >= 0 && f[1] >= 0 && f[2] > 0 && f[3] > 0 && f[0] + f[2] <= w && f[1] + f[3] <= h) { memcpy(fig, f, sizeof fig); e->hasfig = 1; } }
     wk_t *old = NULL; for (int j = 0; j < g_nw; j++) if (strcmp(g_w[j].id, e->id) == 0 && g_w[j].seed == e->seed && g_w[j].w == fig[2]) old = &g_w[j];
@@ -403,12 +407,15 @@ static int ent_load(const char *cur) {
     if (motion && rel >= 40u * (unsigned)(i & 1)) {
       long due = (long)((rel - 40u * (unsigned)(i & 1)) / 80u) + 1;
       if (due - k->done > 4000) k->done = due - 4000;   /* a long gap: catch up no further than the route repeats */
-      int frozen = ent_focused(e, cur), x0 = k->x, f0 = k->feet;
+      int frozen = ent_focused(e, cur) || asleepStill, x0 = k->x, f0 = k->feet;   /* a sleeping resident stays where it is */
       for (; k->done < due; k->done++) if (!frozen) wk_step(k);
       if (k->x != x0 || k->feet != f0) g_home_steps++;
     }
     e->box[0] = k->x; e->box[1] = k->feet + (e->hasfig ? 1 : 0) - fig[3];   /* no figure: the picture's bottom edge is the feet, as it was */ e->box[2] = fig[2]; e->box[3] = fig[3];   /* the figure box: the focus target */
-    e->draw[0] = k->x - fig[0]; e->draw[1] = e->box[1] - fig[1]; e->draw[2] = w; e->draw[3] = h; memcpy(e->sbox, e->draw, sizeof e->sbox); g_ne++;
+    e->draw[0] = k->x - fig[0]; e->draw[1] = e->box[1] - fig[1]; e->draw[2] = w; e->draw[3] = h; memcpy(e->sbox, e->draw, sizeof e->sbox);
+    if (asleepStill) { int fx = k->x + fig[2] / 2, x0 = fx - cf[2] / 2;   /* the curl on the same feet point: its own figure's box, ring and tag; no lift */
+      e->hasfig = 1; e->curled = 1; e->box[0] = x0; e->box[1] = k->feet + 1 - cf[3]; e->box[2] = cf[2]; e->box[3] = cf[3]; e->draw[0] = x0 - cf[0]; e->draw[1] = e->box[1] - cf[1]; e->draw[2] = cp[0]; e->draw[3] = cp[1]; }
+    g_ne++;
   }
   memcpy(g_w, kept, sizeof(wk_t) * (size_t)nk); g_nw = nk;
   memcpy(g_m, mk, sizeof(mv_t) * (size_t)nmk); g_nm = nmk;
@@ -506,7 +513,7 @@ static void sleeper_draw(const ent_t *e, int t) {
 /* the focused one's name tag: below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
 static void ent_tag(const ent_t *e, const char *glass) {
   int tag[4], below = hi("regions.nameTag.below", 16), over = hi("regions.nameTag.over", 32), lift = hi("regions.resident.lift", 4);
-  if (e->sleeper) { const int *b = e->hasfig ? e->box : e->draw; build_nameTagAt(sp(), glass, e->name, b[0] + b[2] / 2, 0, b[1] - over, 1, tag); }
+  if (e->sleeper || e->curled) { const int *b = e->hasfig ? e->box : e->draw; build_nameTagAt(sp(), glass, e->name, b[0] + b[2] / 2, 0, b[1] - over, 1, tag); }
   else if (e->asleep) build_nameTagAt(sp(), glass, e->name, e->ink[0] + e->ink[2] / 2, 0, e->ink[1] - over, 1, tag);
   else { int feetY = e->box[1] + e->box[3] - 1; build_nameTagAt(sp(), glass, e->name, e->box[0] + e->box[2] / 2, feetY + below, feetY - e->box[3] - over - lift, 0, tag); }
 }
@@ -546,7 +553,7 @@ static void glass_group(const char *cur) {
       const ent_t *e = &g_e[it[k].ent];
       if (e->mv >= 0) { mv_draw(e, it[k].kind == 2, lift); continue; }
       if (e->nap >= 0) { if (it[k].kind == 2) { const nap_t *z = &g_nap[e->nap]; int rb[4] = { e->draw[0], e->draw[1], z->w, z->h }; v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", z->nap, "curl", rb); } nap_draw(e); continue; }
-      int y = e->draw[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0), ly = e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0);
+      int up = it[k].kind == 2 && !e->sleeper && !e->curled ? lift : 0, y = e->draw[1] - up, ly = e->box[1] - up;
       if (it[k].kind == 2) { v_region("focus", LAYER_CHROME);
         if (e->hasfig) word_focusRingFigure("focus", sp(), "focus.targets.resident", e->pic, e->box[0] + e->box[2] / 2, e->box[1] + e->box[3] - 1, e->box[2]);   /* the ring on the figure's feet, never lifted */
         else { int rb[4]; memcpy(rb, e->draw, sizeof rb); word_focusRingFootprint("focus", sp(), "focus.targets.resident", e->pic, "", rb); } }

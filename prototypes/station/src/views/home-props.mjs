@@ -116,7 +116,9 @@ export function livingOf(m, R, req, ph, L) {
     return { id: String(mb.id), name: mb.name, stage: look.stage, picture: curl ? req(curl.request) : pic(mb, size), ...(figure ? { figure } : {}), waiting: false, ...extra };
   };
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
-  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)]; return p; });
+  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)];
+    if (p.rest === "asleep" && !mv && standOf(mb)) { const c = curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home"); if (c) { p.curl = req(c.request); p.curlFigure = c.figure; } }   // a sleeping resident with a curl draws it in place, its foot on its feet line; on waking it cuts back to its stand
+    return p; });
   const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",

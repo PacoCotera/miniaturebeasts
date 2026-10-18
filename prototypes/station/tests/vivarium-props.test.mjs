@@ -169,3 +169,16 @@ test("with the moving sets on, a resident with a layered stand is its stand (sam
     assert.equal(on.length, 3); on.forEach((r, i) => { assert.ok(!r.moving, "no moving set"); assert.equal(r.picture, off[i].picture, "the stand's own picture, with its looks"); assert.deepEqual(r.figure, off[i].figure); assert.match(r.picture, /^mibi:S01~[0-9a-f]{8}:adult:144x152$/); });
   } finally { unloadStands(); }
 });
+
+test("a sleeping S01 resident carries its curl and the curl's figure; awake it carries neither", () => {
+  const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
+  loadStandLooksFs(); loadStandLayersFs();
+  try {
+    for (const id of ["mibi-adult-S01-96x88", "mibi-juvenile-S01-96x88"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
+    const w = world(); dock(w.st); mibis(w, 3);
+    const night = build(w, sv0(), { time: 2 * 3600, restRules: spec.rules.rest }).props.regions.residents, noon = build(w, sv0(), { time: 12 * 3600, restRules: spec.rules.rest }).props.regions.residents;
+    assert.ok(night.every((r) => r.rest === "asleep") && noon.every((r) => r.rest === "awake"));
+    for (const r of night) { assert.ok(r.curl && r.curlFigure?.length === 4, "asleep: its curl"); assert.match(r.curl, /^mibi:S01~[0-9a-f]{8}:adult:\d+x\d+$/); assert.ok(r.figure, "and still its stand's figure for the walk"); }
+    for (const r of noon) assert.ok(!r.curl && !r.curlFigure, "awake: its stand");
+  } finally { for (const id of placed) dropAsset(id); unloadStands(); }
+});
