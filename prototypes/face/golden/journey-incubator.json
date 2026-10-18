@@ -14,8 +14,8 @@
     ],
     "screen": "incubator",
     "state": "growing",
-    "ok": "Grow now",
-    "price": "❀ 11",
+    "ok": "Hatch now",
+    "price": "❀ 10",
     "subject": "a Loika bud"
    },
    {
@@ -29,24 +29,8 @@
     "screen": "incubator"
    },
    {
-    "ready": "ready",
-    "ok": "Open"
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "incubator",
-      "target": "room",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "incubator",
-    "state": "hatch",
-    "ok": null,
-    "price": null,
-    "subject": ""
+    "hatch": "hatch",
+    "ok": null
    },
    {
     "held": [
