@@ -96,3 +96,23 @@ Both use the renderer's Loika pod, not yet relit.
 **The build still owes, per mibi:** the pod's relight to the roof lamp, its contact shadow, and the moss blades in front of its foot, as `composite-juvenile.py` does.
 
 **Known flaw:** a few stray light pixels at the right of the dusk base (authority about x 700–720, y 470–500). They are invisible at C and minor at A and D; a later clean-up pass.
+
+## The opened pod: renderer layers (art director)
+
+`masters/opened/`, at pod-large's scale (the bowl 144 × 150; the cap 104 × 128). The layers follow the closed pod's own set, so the renderer composes them unchanged (shade × 2, body and accent masks, pattern):
+- `pod-opened-bowl-shade`;
+- `-mask-body`, `-mask-accent`;
+- `-pattern-{bands,dots,plates,plates-relief,ribs,segments,segments-relief,stripes}`;
+- `pod-opened-cap-shade`, `-mask-body` (empty), `-mask-accent` (the whole cap).
+
+**How it was made** (`opened-layers.py`):
+- The bowl is the closed pod with its top broken away, seen in the same view. So its accent ribs and every pattern are carried from pod-large's layers, rows 45–176 mapped onto the bowl's height.
+- Nothing is carried onto the bowl's inside, seen through the rim: it stays body colour, shaded darker as painted.
+- The cap is all accent and carries no pattern.
+- The shade is matched to pod-large's mean (134).
+
+**The proof** is `proof-opened-loika-tuikis.png`: the Loika in charcoal and russet with dots, and the Tuikis in lagoon and marigold with plates. Each opens in its own colours and reads as the closed pod opened.
+
+**Known:** a few russet flecks of the carried band at the rim's top corners, and the left rib sits about 2 px off the painted ridge. Both are small at 1×, for a later touch-up by hand.
+
+**Placement at the hatch:** the bowl's foot is on the moss line at the pod's x. The cap lies tipped against the bowl's left side, as in the hatch-now still. Both are relit to the roof lamp, like the pod.
