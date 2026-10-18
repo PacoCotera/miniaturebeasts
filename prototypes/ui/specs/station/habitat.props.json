@@ -505,8 +505,7 @@
       },
       "state": {
        "enum": [
-        "shut",
-        "armed"
+        "shut"
        ]
       },
       "gate": {
@@ -553,8 +552,7 @@
    "required": [
     "cur",
     "targets",
-    "resolve",
-    "armed"
+    "resolve"
    ],
    "additionalProperties": false,
    "properties": {
@@ -572,12 +570,6 @@
      "additionalProperties": {
       "type": "string"
      }
-    },
-    "armed": {
-     "type": [
-      "string",
-      "null"
-     ]
     }
    }
   },

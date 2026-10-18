@@ -4,12 +4,12 @@
 #ifndef ANIM_H
 #define ANIM_H
 #include <stdint.h>
-enum { ANIM_SEAL, ANIM_WIPE, ANIM_RIBBON, ANIM_PLATE, ANIM_TICK, ANIM_FLASH, ANIM_DITHER, ANIM_ARRIVAL, ANIM_HATCH, ANIM_WAKE, ANIM_REST, ANIM_GROW, ANIM_GROW_NOW, ANIM_MOMENT, ANIM_READ, ANIM_MEND, ANIM_SWITCH, ANIM_INSTALL, ANIM_KINDS };
+enum { ANIM_SEAL, ANIM_WIPE, ANIM_RIBBON, ANIM_PLATE, ANIM_TICK, ANIM_FLASH, ANIM_DITHER, ANIM_ARRIVAL, ANIM_HATCH, ANIM_WAKE, ANIM_REST, ANIM_GROW, ANIM_GROW_NOW, ANIM_MOMENT, ANIM_READ, ANIM_MEND, ANIM_SWITCH, ANIM_INSTALL, ANIM_SENDOFF, ANIM_KINDS };
 int anim_kind(const char *name);                 /* the kind's number, or -1 */
 const char *anim_name(int kind);
 void anim_reset(void);
 /* An event begins now (the face's clock). Returns 0, or -1 when the table is full. With motion off it is over at once. */
-int anim_add(int kind, const char *target, int ms, int hold, int cut, int from, int to, const char *from_id, int motion);   /* from_id: a dither's previous picture id (a string), or NULL */
+int anim_add(int kind, const char *target, int ms, int hold, int cut, int skip, int from, int to, const char *from_id, int motion);   /* from_id: a dither's previous picture id (a string), or NULL; skip: ✓ may end it and its hold (anim_skip) */
 /* The clock moved to `now` (ms): finished events are removed and each says `done`. */
 void anim_tick(uint32_t now);
 uint32_t anim_now(void);
@@ -19,4 +19,7 @@ int anim_get(int kind, const char *target, anim_state_t *out);
 int anim_active(void);                           /* events playing: the screen is drawn again every frame */
 int anim_cut(void);                              /* ends every playing event that carries `cut`: it jumps to its end and says `done`; the key that cut it then acts. Returns how many ended. */
 int anim_holding(void);                          /* an event that holds input is playing: no key is acted on */
+/* A skippable hold (lvgl-switch.md §2.1): an event carrying `skip` holds input. Its hold is kept apart from every other event's, so ending it leaves theirs. */
+int anim_skippable(char *target, int cap);       /* 1 when a skippable hold runs (its event's target into target), else 0 */
+int anim_skip(void);                             /* ✓ in a skippable hold: every playing event that carries `skip` jumps to its end and says `done`, and the skippable hold ends; the other holds stand. Returns how many ended */
 #endif

@@ -9,8 +9,10 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { podsProps, compareBackFocus } from "../src/views/pods-props.mjs";
+import { createMeasure } from "../../ui/specs/measure.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));   // the real measurer (Inter 16/20/28)
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("pods.json"), frameSpec = J("frame.json"), schema = J("pods.props.json");
 const ctx = { spec: frameSpec, measure: (t) => t.length * 9, cap: () => 12, line: () => 20 }, settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
@@ -126,7 +128,7 @@ test("the bottom line's three slots: no dots, the centre fits 24 characters, one
   for (const id of SPECIES) {
     const st = stock([id], 7), p = st.tray[0], check = (what, l) => {
       for (const k of ["ok", "price", "back", "subject", "need"]) if (l[k]) assert.ok(!/·/.test(l[k]), `${id} ${what}: no "·" in ${k}: ${l[k]}`);
-      if (l.subject) assert.ok(l.subject.length <= 24 || /…$/.test(l.subject), `${id} ${what}: the subject fits 24 characters: ${l.subject}`);
+      if (l.subject) assert.ok(measure(l.subject, 16) <= 208 && words(l.subject) <= 6, `${id} ${what}: the subject fits 208 px at 16 px and six words: ${l.subject}`);   // measured with the real metrics (decision panel spec Part 2)
       if (l.need) assert.ok(words(l.need) <= 6, `${id} ${what}: the need is six words or fewer: ${l.need}`);
       assert.ok(!/free|half/.test(l.price || ""), `${id} ${what}: no free or half`);
     };
@@ -136,9 +138,12 @@ test("the bottom line's three slots: no dots, the centre fits 24 characters, one
     check("place", lineOf(open(st, { focus: "place.0", ui: { view: "collection" } }))); check("page", lineOf(open(st, { focus: "rail.0", ui: { view: "chapter", ci: 0 } })));
   }
   const st = stock(["S01"], 3), p = st.tray[0], line = (f) => lineOf(open(st, { focus: f }));
-  assert.equal(line("pod").subject, "sealed until identified");
-  S.skipIdentify(st, p); assert.equal(line("pod").subject, S.spName(p) + " is unread");
-  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, S.spName(p) + " is partly read");
+  assert.equal(line("pod").subject, "a new species");   // a first of its species: the outcome before the press (decision panel spec Part 2)
+  st.knownIds.push(p.species); assert.equal(line("pod").subject, "the species shows");
+  S.skipIdentify(st, p); assert.equal(line("pod").subject, "nothing spent until Grow");
+  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, "nothing spent until Grow");
+  { const st2 = stock(["S01"], 5), p2 = st2.tray[0]; S.skipIdentify(st2, p2); st2.d = 20;   // an unread chapter: ✓ Read says what it shows
+    const l = lineOf(open(st2, { focus: "rail.0", ui: { view: "chapter", ci: 0 } })); assert.match(l.ok, /^Read /); assert.equal(l.subject, "both copies of its traits"); }
   st.d = 0; st.readEver = true; const l1 = lineOf(open(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })); assert.equal(l1.need, "needs more ◆: watch your mibis"); assert.equal(l1.dim, true);
 });
 test("a sealed tab's subject is '<chapter> is sealed'; the hatch's is 'Back to the <place>'", () => {
@@ -146,9 +151,6 @@ test("a sealed tab's subject is '<chapter> is sealed'; the hatch's is 'Back to t
   const fr = frameOf("S02"), ci = fr.chapters.findIndex((c) => c.sealed);
   assert.equal(lineOf(open(st, { focus: "rail." + ci, ui: { view: "chapter", ci } })).subject, fr.chapters[ci].name + " is sealed");
   assert.equal(lineOf(open(st, { focus: "hatch" })).subject, "Back to the " + S.PLACE_WORD[p.g]);
-});
-test("the hatch's arming plate says only '✓ again'", () => {
-  assert.equal(spec.strings.hatchAgain, "✓ again"); assert.ok(spec.strings.hatchAgain.split(" ").length <= 6);
 });
 test("Compare's need line follows the spec's strings: here, in another chapter, or none", () => {
   const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);

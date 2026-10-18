@@ -21,7 +21,7 @@ static int pod_box(const char *base, int box[4]) {
 /* the focus is on a target the view lists (a ring on nothing is not drawn) */
 static int is_target(const char *cur) { for (int i = 0, n = v_plen("focus.targets"); i < n; i++) if (strcmp(v_pstr(v_fmt("focus.targets.%d.id", i)), cur) == 0) return 1; return 0; }
 static void focus_ring(const char *state, const char *base) {
-  char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || strcmp(state, "compare") == 0 || !is_target(cur)) return;
+  char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || spec_len("props", "overlay") >= 0 || strcmp(state, "compare") == 0 || !is_target(cur)) return;
   int box[4]; char group[24] = "";
   for (int i = 0, n = v_plen("focus.targets"); i < n; i++) if (strcmp(v_pstr(v_fmt("focus.targets.%d.id", i)), cur) == 0) { snprintf(group, sizeof group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i))); break; }
   v_region("focus", LAYER_CHROME);

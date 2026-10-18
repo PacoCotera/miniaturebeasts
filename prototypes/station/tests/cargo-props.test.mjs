@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, speciesIndex } from "../src/genome.mjs";
 import { traitLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
-import { cargoBuild, reachWord, ribbonOf } from "../src/views/cargo-props.mjs";
+import { cargoBuild, reachStep, ribbonOf } from "../src/views/cargo-props.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -122,88 +122,81 @@ function reported(st, sv, mend = null) {
   const ui = { screen: "cargo", home: { f: "room" }, ...cargoUI({ mend }) }, h = { st, sv, settings, ui, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
   INTENTS.cargo.intent(h, "room", "confirm"); h.timers.sort((a, b) => a.ms - b.ms).forEach((t) => t.fn()); return build(st, sv, ui);
 }
-test("the report: a row a crate with its pods and its reach in words, what was gathered, the Probe from the dock's mend, the world's lines (the last crate's, at most three)", () => {
-  const st = world(), sv = sv0([crate(1, 3, { explored: 4, of: 20 }), crate(2, 0, { explored: 20, of: 20 }), crate(3, 12, { of: 0, lines: ["The mist burned off", "A pond filled", "The wood stirred", "A fourth"] })]);
+test("the report: a tile a crate with its pods and its reach step, what was gathered, the Probe's plates and price from the dock's mend; figures and counts only", () => {
+  const st = world(), sv = sv0([crate(1, 3, { explored: 4, of: 20 }), crate(2, 0, { explored: 20, of: 20 }), crate(3, 12, { of: 0 })]);
   const b = reported(st, sv, { free: 1, paid: 2, broke: false, spent: 2 }), r = b.props.regions.report;
-  assert.equal(r.heading, "Home from the field");
-  assert.deepEqual(r.crates.map((c) => [c.lead, c.pods, c.text, c.reach]), [["First crate", 3, "", "some of the land explored"], ["Second crate", 0, "no pods", "all the land explored"], ["Third crate", 0, "many pods", ""]]);
-  assert.deepEqual([r.gathered.lead, r.gathered.e, r.gathered.d, r.gathered.s], ["Gathered", "+9", "+9", "+12"], "Gathered ends after Essence");
-  assert.deepEqual(r.probe, { lead: "Probe", plates: 3, text: "mended for ⚡ 2" }); assert.deepEqual(r.world, { lead: "Meanwhile, the world turned", lines: ["The mist burned off"] }, "the goal row took the second line (the plate never passes 288)"); assert.equal(r.plate, "cargo-report-plate-560x288", "104 + 24 × 4 + 56 + 32 = 288: the signed plate of that exact height");
+  assert.deepEqual(r.crates.map((c) => [c.pods, c.more, c.reach]), [[3, "", 1], [0, "", 4], [7, "+5", 0]], "pods, the +n past 8 (7 icons and the rest), the reach step (0: no map)");
+  assert.deepEqual([r.gathered.e, r.gathered.d, r.gathered.s], ["+9", "+9", "+12"]); assert.deepEqual(Object.keys(r.gathered), ["e", "d", "s"], "no lead");
+  assert.deepEqual(r.probe, { plates: 3, spent: "2" }); assert.equal(r.heading, undefined); assert.equal(r.label, undefined); assert.equal(r.world, undefined, "the world lines left the card");
+  assert.equal(r.crate, "cargo-crate-64x64"); assert.equal(r.map, "icon-map-14x12");
+  assert.match(r.plate, /^cargo-report-plate-560x(136|176|208)$/);
   assert.ok(["See the new pods", "See the new pod", "Done"].includes(b.line.ok)); assert.equal(b.line.back, "Cargo"); assert.equal(b.line.subject, "what came home");
-  assert.deepEqual(b.props.regions.crates, undefined, "the bay is emptied under the card"); assert.equal(b.props.regions.bay.state, "shut", "the report always hangs on the shut door"); assert.equal(b.props.regions.bay.door, "cargo-bay-shut-report-976x304", "GB-R6: the report door is the one with the plain sage panel"); assert.equal(b.props.regions.report.label, "label-plate-cream-216x32", "the heading's label plate"); assert.equal(b.props.regions.waitingPods, undefined);
-  assert.equal(reported(world(), sv0([crate(1, 1)]), { free: 0, paid: 0, broke: false, spent: 0 }).props.regions.report.probe, null, "no mend, no row");
-  assert.deepEqual(reported(world(), sv0([crate(1, 1)]), { free: 2, paid: 0, broke: true, spent: 0 }).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });
-  assert.equal(reported(world(), sv0([crate(1, 1)])).props.regions.report.probe, null, "after a reload the report has no Probe row");
+  assert.deepEqual(b.props.regions.crates, undefined, "the bay is emptied under the card"); assert.equal(b.props.regions.bay.state, "shut", "the report always hangs on the shut door"); assert.equal(b.props.regions.bay.door, "cargo-bay-shut-report-976x304", "GB-R6: the report door is the one with the plain sage panel"); assert.equal(b.props.regions.waitingPods, undefined);
+  assert.equal(reported(world(), sv0([crate(1, 1)]), { free: 0, paid: 0, broke: false, spent: 0 }).props.regions.report.probe, null, "no mend, nothing at x 320");
+  assert.deepEqual(reported(world(), sv0([crate(1, 1)]), { free: 2, paid: 0, broke: true, spent: 0 }).props.regions.report.probe, { plates: 2, spent: "" }, "mended free: the plates alone");
+  assert.equal(reported(world(), sv0([crate(1, 1)])).props.regions.report.probe, null, "after a reload the report has no Probe");
   const bad = crate(1, 2); bad.pods[1] = { id: "p9", sp: -1, g: "cave", how: "ground", gs: 7, k: "3" };
-  assert.deepEqual(reported(world(), sv0([bad])).props.regions.report.crates.map((c) => c.pods), [1], "the row counts the pods that landed, not the crate's raw contents");
+  assert.deepEqual(reported(world(), sv0([bad])).props.regions.report.crates.map((c) => c.pods), [1], "the tile counts the pods that landed, not the crate's raw contents");
+  assert.deepEqual(reported(world(), sv0([crate(1, 8)])).props.regions.report.crates.map((c) => [c.pods, c.more]), [[8, ""]], "8 pods: eight icons, no +n"); assert.deepEqual(reported(world(), sv0([crate(1, 9)])).props.regions.report.crates.map((c) => [c.pods, c.more]), [[7, "+2"]], "9 pods: 7 icons and +2");
   const one = reported(world(), sv0([crate(1, 1)])); assert.equal(one.line.ok, "See the new pod"); assert.equal(reported(world(), sv0([crate(1, 0)])).line.ok, "Done", "no new pod: Done closes the card");
   const loose = { ...settings, economy: "loose" }; const st3 = world(), h3 = { st: st3, sv: sv0([crate(1, 1)]), settings: loose, ui: { screen: "cargo", home: {}, ...cargoUI() }, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
-  INTENTS.cargo.intent(h3, "room", "confirm"); h3.timers.forEach((t) => t.fn()); assert.equal(cargoBuild({ st: st3, sv: h3.sv, settings: loose, docked: true, ui: h3.ui }, spec, home, frameSpec).props.regions.report.gathered.top, undefined, "no top-up words: Gathered ends after Essence");
+  INTENTS.cargo.intent(h3, "room", "confirm"); h3.timers.forEach((t) => t.fn()); assert.equal(cargoBuild({ st: st3, sv: h3.sv, settings: loose, docked: true, ui: h3.ui }, spec, home, frameSpec).props.regions.report.gathered.top, undefined, "no top-up figure: Gathered ends after Essence");
 });
 
-test("the reach in words: under a third, under two thirds, under all, all; no map says nothing; the ribbon is the developer's, else first, second, third", () => {
-  const W = spec.strings.report.reach, c = (explored, of) => ({ explored, of });
-  assert.equal(reachWord(spec, c(0, 20)), W.underThird); assert.equal(reachWord(spec, c(6, 20)), W.underThird); assert.equal(reachWord(spec, c(7, 20)), W.underTwoThirds); assert.equal(reachWord(spec, c(13, 20)), W.underTwoThirds); assert.equal(reachWord(spec, c(14, 20)), W.underAll); assert.equal(reachWord(spec, c(19, 20)), W.underAll); assert.equal(reachWord(spec, c(20, 20)), W.all); assert.equal(reachWord(spec, c(5, 0)), "");
+test("the reach step 0 to 4: under a third 1, under two thirds 2, under all 3, all 4; no map 0; the ribbon is the developer's, else first, second, third", () => {
+  const c = (explored, of) => ({ explored, of });
+  assert.deepEqual([c(0, 20), c(6, 20), c(7, 20), c(13, 20), c(14, 20), c(19, 20), c(20, 20), c(5, 0)].map(reachStep), [1, 1, 2, 2, 3, 3, 4, 0]);
   assert.deepEqual([0, 1, 2].map((k) => ribbonOf(spec, {}, k)), ["First crate home", "Second crate home", "Third crate home"]); assert.equal(ribbonOf(spec, { dev: true }, 1), "Another crate home"); assert.equal(spec.strings.ribbon.dev, undefined, "no developer ribbon words");
 });
-
-test("more than three crates (developer only): the bay draws the first three, the line counts all; the ribbon counts walk crates only (first, second, third, later) and every dev crate reads dev", () => {
-  const st = world(), sv = sv0([crate(1), crate(2), crate(3, 2, { dev: true }), crate(4), crate(5), crate(6)]);
-  const b = build(st, sv); assert.equal(b.props.regions.crates.places.length, 3, "three in the bay"); assert.equal(b.line.subject, "six sealed crates", "the context counts all");
-  const h = opened(st, sv), o = build(st, sv, h.ui).props.regions.opening;
-  assert.deepEqual(o.crates.map((c) => c.ribbon), ["First crate home", "Second crate home", "Another crate home", "Third crate home", "Another crate home", "Another crate home"]);
-  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: 6 * 3000 + 180, hold: 6 * 3000 + 200 });
-});
-test("the event plays at most nine crates (hold ≤ 30000): the rest are taken in by the rule, the counters and the turn reach their final values at the end, the report has three rows and adds up every crate", () => {
-  const st = world(), sv = sv0(Array.from({ length: 11 }, (_, i) => crate(i + 1, 1, i === 10 ? { lines: ["The last walk's line"] } : {}))), e0 = st.e;
-  const h = opened(st, sv), ar = h.played.find((e) => e.kind === "arrival"); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: 9 * 3000 + 180, hold: 9 * 3000 + 200 }); assert.ok(ar.hold <= 30000);
+test("the event plays at most nine crates (hold ≤ 30000): the rest are taken in by the rule, the counters and the turn reach their final values at the end, the report has three tiles and adds up every crate", () => {
+  const st = world(), sv = sv0(Array.from({ length: 11 }, (_, i) => crate(i + 1, 1, {}))), e0 = st.e;
+  const h = opened(st, sv), ar = h.played.find((e) => e.kind === "arrival"); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: 9 * 3000 + 180, hold: 9 * 3000 + 200, skip: true }); assert.ok(ar.hold <= 30000);
   assert.equal(build(st, sv, h.ui).props.regions.opening.crates.length, 9, "nine crates are staged");
   const ordered = h.timers.slice().sort((a, b) => a.ms - b.ms); assert.equal(ordered.at(-1).ms, 9 * 3000, "the report at the ninth crate's end");
   for (const t of ordered.slice(0, -1)) t.fn(); assert.equal(h.ui.cargo.shown.e, e0 + 9 * 3, "nine crates' energy is shown, not eleven");
   ordered.at(-1).fn(); assert.equal(h.ui.cargo.shown, null, "the top bar's props carry the final values from here: " + st.e);
-  const r = build(st, sv, h.ui).props.regions.report; assert.equal(r.crates.length, 3); assert.equal(r.gathered.e, "+" + 11 * 3, "Gathered adds up every crate"); assert.deepEqual(r.world.lines, ["The last walk's line"], "the lines of the last walk crate opened");
+  const r = build(st, sv, h.ui).props.regions.report; assert.equal(r.crates.length, 3); assert.equal(r.gathered.e, "+" + 11 * 3, "Gathered adds up every crate");
 });
-test("the report: the lead counts walk crates only; the world's lines are the last walk crate's, never a dev crate's (dev crates carry none)", () => {
-  const st = world(), sv = sv0([crate(1, 1, { lines: ["A walk line"] }), crate(2, 1, { dev: true }), crate(3, 1, { dev: true })]);
+test("the report: a developer crate counts for a tile like any crate (the first three opened) and adds to Gathered", () => {
+  const st = world(), sv = sv0([crate(1, 1), crate(2, 2, { dev: true }), crate(3, 3, { dev: true }), crate(4, 1)]);
   const h = opened(st, sv); h.timers.sort((a, b) => a.ms - b.ms).forEach((t) => t.fn());
-  const r = build(st, sv, h.ui).props.regions.report; assert.deepEqual(r.crates.map((c) => c.lead), ["First crate", "Another crate", "Another crate"]); assert.deepEqual(r.world.lines, ["A walk line"]);
-  const st2 = world(), sv2 = sv0([crate(1, 1, { dev: true }), crate(2, 1), crate(3, 1)]), h2 = opened(st2, sv2); h2.timers.sort((a, b) => a.ms - b.ms).forEach((t) => t.fn());
-  assert.deepEqual(build(st2, sv2, h2.ui).props.regions.report.crates.map((c) => c.lead), ["Another crate", "First crate", "Second crate"]);
+  const r = build(st, sv, h.ui).props.regions.report; assert.deepEqual(r.crates.map((c) => c.pods), [1, 2, 3], "three tiles, the fourth crate none"); assert.equal(r.gathered.e, "+12", "Gathered sums every crate");
 });
-test("the Probe row's price is the Energy the plates cost: free when the economy is free", () => {
+test("the Probe's price is the Energy the plates cost: free when the economy is free", () => {
   const st = world(), sv = sv0([crate(1, 1)]); st.probe = { shield: 0, smax: 3, tier: 1, seq: 1 };
   const free = { ...settings, economy: "free" }, ui = { screen: "cargo", home: { f: "room" }, ...cargoUI({ mend: { free: 0, paid: 2, broke: false, spent: 0 } }) };
   const h = { st, sv, settings: free, ui, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
   INTENTS.cargo.intent(h, "room", "confirm"); h.timers.forEach((t) => t.fn());
-  assert.deepEqual(cargoBuild({ st, sv, settings: free, docked: true, ui }, spec, home, frameSpec).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });
+  assert.deepEqual(cargoBuild({ st, sv, settings: free, docked: true, ui }, spec, home, frameSpec).props.regions.report.probe, { plates: 2, spent: "" });
 });
 
 // ---- the goal rows (cargo.json regions.report.goal; station-x10-economy.md) ----
-test("the report plate: one signed plate of an exact height, a multiple of 8 from 128 to 288, whatever the rows (one to three crates, with and without the Probe, the world and the goal)", () => {
+test("the report plate: one signed plate of 136, 176 or 208 by the goal and the read, whatever the tiles (one to three crates, with and without the Probe)", () => {
   const seen = new Set();
-  for (const crates of [[crate(1, 1)], [crate(1, 1), crate(2, 2)], [crate(1, 3), crate(2, 0), crate(3, 12, { of: 0, lines: ["a", "b", "c"] })]]) for (const mend of [null, { free: 1, paid: 0, broke: false, spent: 0 }]) {
+  for (const crates of [[crate(1, 1)], [crate(1, 1), crate(2, 2)], [crate(1, 3), crate(2, 0), crate(3, 12, { of: 0 })]]) for (const mend of [null, { free: 1, paid: 0, broke: false, spent: 0 }]) {
     const r = reported(world(), sv0(crates), mend ?? undefined).props.regions.report, m = /^cargo-report-plate-560x(\d+)$/.exec(r.plate); assert.ok(m, r.plate);
-    const h = +m[1]; assert.ok(h % 8 === 0 && h >= 128 && h <= 288, "height " + h); seen.add(h);
+    const h = +m[1]; assert.equal(h, 136 + (r.goal ? 40 : 0) + (r.goal && r.meanwhile ? 32 : 0)); seen.add(h);
     const y = 64 + 8 * Math.floor((288 - h) / 16); assert.ok(y % 8 === 0 && y + h <= 352, `at y ${y} the plate's bottom ${y + h} is inside the door (352)`);
   }
-  assert.ok(seen.size > 2, "several heights: " + [...seen]);
+  assert.ok(seen.size >= 1, "a height: " + [...seen]);
 });
-test("the report's goal row names the next step after the crates; the meanwhile row only for the wait steps and only when a read can be paid; the plate never passes 288", () => {
+test("the report's goal row names the next step after the crates; the read only for the wait steps and only when it can be paid: its chapter, whether it glints, its price; the plate is 176 or 208", () => {
   const st = world(), [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
   const lk = { id: "kept", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 9, k: null, n: 0, idd: 1, read: [], fresh: 0, genome: null }; st.tray.push(lk); st.bud = { kind: "founder", species: "S03", start: Date.now() + 1e9, minutes: 5 };
-  const sv = sv0([crate(1, 3, { explored: 4, of: 20 }), crate(2, 0, { explored: 20, of: 20 }), crate(3, 12, { of: 0, lines: ["The mist burned off", "A pond filled", "The wood stirred"] })]);
+  const sv = sv0([crate(1, 3, { explored: 4, of: 20 }), crate(2, 0, { explored: 20, of: 20 }), crate(3, 12, { of: 0 })]);
   const r = reported(st, sv, { free: 1, paid: 2, broke: false, spent: 2 }).props.regions.report;
-  assert.deepEqual(r.goal, { lead: "Next", text: "wait for the bud", icons: "", plain: "" }); assert.ok(r.meanwhile, "the bud is a wait: a read to suggest"); assert.equal(r.meanwhile.lead, "While you wait"); assert.match(r.meanwhile.text, / on the Loika pod$/);
-  assert.equal(r.world, null, "3 crates + the Probe + the goal and meanwhile rows (256) leave no room for a world line under 288"); assert.equal(r.plate, "cargo-report-plate-560x256");
+  assert.deepEqual(r.goal, { text: "wait for the bud", icons: "", plain: "" }); assert.ok(r.meanwhile, "the bud is a wait: a read to suggest"); assert.match(r.meanwhile.emblem, /^emblem:[a-z-]+:unread:24$/); assert.equal(typeof r.meanwhile.price, "string"); assert.ok(r.meanwhile.glint === "" || r.meanwhile.glint === "star:12");
+  assert.equal(r.plate, "cargo-report-plate-560x208", "136 + 40 + 32");
   // no read can be paid: no meanwhile row
   const st2 = world(), [d2] = S.seedAdults(st2, "S01", 5, 1, settings).mibis; d2.name = "Dot"; st2.tray.push({ ...lk, id: "k2" }); st2.bud = st.bud; st2.readEver = true; st2.d = 0;
-  const r2 = reported(st2, sv0([crate(1, 1, { d: 0 })])).props.regions.report; assert.ok(r2.goal); assert.equal(r2.meanwhile, null);
-  // a step that is not a wait (identify): a goal row and no meanwhile row
+  const r2 = reported(st2, sv0([crate(1, 1, { d: 0 })])).props.regions.report; assert.ok(r2.goal); assert.equal(r2.meanwhile, null); assert.equal(r2.plate, "cargo-report-plate-560x176");
+  // a step that is not a wait (identify): a goal row and no read
   const st3 = world(), [d3] = S.seedAdults(st3, "S01", 5, 1, settings).mibis; d3.name = "Dot"; const r3 = reported(st3, sv0([crate(1, 1)])).props.regions.report;
   assert.equal(r3.goal.text, "identify the Loika pod"); assert.equal(r3.meanwhile, null);
-  // no goal: no row (two adults, the guide complete, nothing named)
-  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); { const fr = frameOf("S01"); st4.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st4, "S01", t.id, traitLooks(fr, t)); } st4.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(S.goalKey(st4, sv0()), null); assert.equal(reported(st4, sv0([crate(1, 0)])).props.regions.report.goal, null);
+  // no goal: no row (two adults, the guide complete, nothing named): 136
+  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); { const fr = frameOf("S01"); st4.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st4, "S01", t.id, traitLooks(fr, t)); } st4.probe = { tier: 2, shield: 3, smax: 3 }; assert.equal(S.goalKey(st4, sv0()), null); const r4 = reported(st4, sv0([crate(1, 0)])).props.regions.report; assert.equal(r4.goal, null); assert.equal(r4.plate, "cargo-report-plate-560x136");
 });
+
 // the haul's containers (cargo.json regions.stores): a material's container only when the crate brought it (gained > 0, the report's Gathered figure), whatever the mend spent
 const openedWith = (st, sv, stg) => {
   const ui = { screen: "cargo", home: { f: "room" }, ...cargoUI() }, h = { st, sv, settings: stg, ui, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };

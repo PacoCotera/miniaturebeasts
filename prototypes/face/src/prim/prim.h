@@ -59,6 +59,8 @@ void prim_set_hide(const char *region);   /* the nodes of a region hidden (NULL 
 void prim_asset_layer(int handle, int layer);
 int prim_asset_alpha_box(int fh, int th, int out[4]);   /* the silhouette box of two held pictures: pixels clear in one and not the other (0, or -1 when refused) */
 int prim_asset_diff_box(int fh, int th, int out[4]);    /* the change box: pixels whose alpha differs or, neither clear, whose colour differs */
+/* The feet of a held picture (the decision panel's composite rule, T-20261016-70): out = the lowest row holding a pixel of alpha >= `alpha`, and the first and last column of such pixels in that row and the `rows` - 1 above it (inclusive). 0, or -1 for an empty slot or a picture with no such pixel. */
+int prim_asset_feet(int handle, int alpha, int rows, int out[3]);
 int prim_asset_layer_of(int handle);   /* the layer the host gave a picture (art or painted; art when it gave none) */
 /* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"table":n,"pictures":n} into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table); returns its length, or -1 if it does not fit. */
 int prim_log_json(char *buf, int cap);

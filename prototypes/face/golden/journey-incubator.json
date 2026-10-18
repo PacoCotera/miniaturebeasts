@@ -16,7 +16,55 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 10",
-    "subject": "a Loika bud"
+    "subject": "hatches now"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "back"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Hatch now",
+    "price": "❀ 10",
+    "subject": "ready in about 20 min"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Hatch now",
+    "price": "❀ 10",
+    "subject": "hatches now"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Hatch now",
+    "price": "❀ 10",
+    "subject": "ready in about 20 min"
    },
    {
     "held": [
@@ -30,13 +78,12 @@
    },
    {
     "hatch": "hatch",
-    "ok": null
+    "ok": "Skip"
    },
    {
     "held": [
      "up",
      "left",
-     "confirm",
      "back"
     ],
     "said": [],
@@ -66,7 +113,7 @@
     ],
     "screen": "pods",
     "state": "collection",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "price": null,
     "subject": "Loika is partly read"
    },

@@ -152,7 +152,6 @@
        "enum": [
         "dim",
         "ready",
-        "armed",
         "fitted"
        ]
       },
@@ -170,8 +169,7 @@
    "type": "object",
    "required": [
     "cur",
-    "targets",
-    "armed"
+    "targets"
    ],
    "additionalProperties": false,
    "properties": {
@@ -212,12 +210,6 @@
        }
       }
      }
-    },
-    "armed": {
-     "enum": [
-      "slot",
-      null
-     ]
     }
    }
   }

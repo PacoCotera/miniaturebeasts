@@ -1,0 +1,30 @@
+{
+ "note": "The retired Grow this founder? panel (B-20261016-4), kept as a test fixture for the panel frame and its code only; the product strings were removed by T-20261016-223 (the game designer: superseded by T-222 Incubate | Keep shaping)",
+ "panel": {
+  "opens": "create",
+  "by": "✓ Grow it"
+ },
+ "strings": {
+  "title": "Grow this founder?",
+  "cards": {
+   "grow": {
+    "name": "Grow it",
+    "line": {
+     "one": "{Chapter} stays a surprise",
+     "more": "chapters stay a surprise"
+    }
+   },
+   "watch": {
+    "name": "Grow and watch",
+    "line": "watch it in the Incubator"
+   },
+   "read": {
+    "name": "Grow, keep reading",
+    "line": "back to your pods"
+   },
+   "shape": {
+    "name": "Keep shaping"
+   }
+  }
+ }
+}

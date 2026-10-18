@@ -150,93 +150,168 @@ static void build_opening(int k, int lt) {
   }
 }
 
-/* ---- the report card ---- */
+/* ---- the report card (T-20261016-144): pictures, figures beside icons, and the goal line; no heading, no leads ---- */
 static void text_row(const char *id, const char *s, int x, int rowY, const char *colour, int px, int maxw) {
   char fit[V_STR]; v_clip(s, maxw, px, fit, sizeof fit);
   v_text(id, fit, x, rowY + v_fdiv(ci("regions.report.rows.h", 24) - v_cap(px), 2), v_measure(fit, px), px, colour);
 }
+/* an icon and its figure beside it: the icon at the row's iconAt, the figure after a gap; returns the x after the figure */
+static int icon_figure(const char *id, const char *icon, const char *fig, int x, int rowY, int px, const char *colour) {
+  int ic = ci("regions.report.gathered.icon", 16), gap = ci("regions.report.gathered.gap", 4);
+  v_name("report.gathered"); v_sprite(v_fmt("%s.icon", id), icon, x, rowY + ci("regions.report.rows.iconAt", 4), ic, ic);
+  int tw = v_measure(fig, px); v_region("report.gathered", LAYER_TYPE); text_row(v_fmt("%s.fig", id), fig, x + ic + gap, rowY, colour, px, tw + 1);
+  return x + ic + gap + tw;
+}
 static void build_reportCard(void) {
-  int r[4]; crect("regions.report.rect", r); int pad = ci("regions.report.pad", 16), rowH = ci("regions.report.rows.h", 24), px = ci("regions.report.rows.px", 16);
-  int nc = v_plen("regions.report.crates"), hasProbe = *v_pstr("regions.report.probe.lead") != 0, nl = v_plen("regions.report.world.lines"), hasWorld = nl > 0;
-  if (nl > ci("regions.report.world.max", 3)) nl = ci("regions.report.world.max", 3);
-  int gapG = ci("regions.report.gathered.gapAbove", 8), gapW = ci("regions.report.world.gapAbove", 16);
-  int base = ci("regions.report.rows.first", 56) + gapG + rowH + pad, worldExtra = gapW + rowH;   /* the card: its first row, the gap above Gathered, Gathered, the pad = 104; the world: its gap and its heading = 40 (cargo.json regions.report.height) */
-  /* the goal rows (cargo.json regions.report.goal): the last rows of the card, 8 px below the row above, and the meanwhile row directly under; the card grows by 8 + 24 x (1 + meanwhile), never past maxHeight, and
-     the world lines drop from the last until it fits (the view trims them too; the face never draws past the card) */
-  int hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.text") != 0, gapGoal = ci("regions.report.goal.gapAbove", 8), maxH = ci("regions.report.maxHeight", 288);
-  int goalExtra = hasGoal ? gapGoal + rowH * (1 + (hasMw ? 1 : 0)) : 0;
-  int h = base + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? worldExtra + rowH * nl : 0) + goalExtra;
-  while (h > maxH && nl > 0) { nl--; h -= rowH; if (nl == 0) { h -= worldExtra; hasWorld = 0; } }
-  if (h > maxH) h = maxH;
+  int r[4]; crect("regions.report.rect", r); int rowH = ci("regions.report.rows.h", 24), px = ci("regions.report.rows.px", 16), maxH = ci("regions.report.maxHeight", 288), pad = ci("regions.report.pad", 16);
+  int nc = v_plen("regions.report.crates"), hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.price") != 0;
+  int gy = ci("regions.report.gathered.y", 96), goalY = ci("regions.report.goal.y", 136), mwY = ci("regions.report.meanwhile.y", 168);
+  /* the card: the pad, the tiles' 64, a gap, the gathered row, the pad; the goal row and its gap; the read's 32: 136, 176 or 208 (cargo.json regions.report.height) */
+  int h = pad + ck("regions.report.crates.tile", 1) + 16 + rowH + pad + (hasGoal ? rowH + 16 : 0) + (hasMw ? 32 : 0); if (h > maxH) h = maxH;
   /* the plate: the signed picture of this exact height, set into the door, centred on the door's middle (y = 64 + 8 × floor((288 − h) / 16)); the rim and shade are painted, so the face draws no fill, edge, rule or shadow */
-  int x0 = r[0], y0 = r[1] + 8 * ((maxH - h) / 16), cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
+  int x0 = r[0], y0 = r[1] + 8 * ((maxH - h) / 16);
   v_region("report", LAYER_ART); v_name("report"); v_sprite("report.plate", v_pstr("regions.report.plate"), x0, y0, r[2], h);
-  v_sprite("report.label", v_pstr("regions.report.label"), x0 + ck("regions.report.label.at", 0), y0 + ck("regions.report.label.at", 1), ck("regions.report.label.size", 0), ck("regions.report.label.size", 1));   /* GB-R6: the heading's cream label plate, 1:1 inside the plate */
-  int hy = y0 + ck("regions.report.heading.at", 1), hpx = ci("regions.report.heading.px", 20), hh = ci("regions.report.heading.h", 32), leadW = ck("regions.report.rows.lead", 1);
-  const char *lead = colr("colours.report.lead"), *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *heading = colr("colours.report.heading");
-  v_region("report.heading", LAYER_TYPE); { const char *hd = v_pstr("regions.report.heading"); v_text("report.heading", hd, x0 + ck("regions.report.heading.at", 0), hy + v_fdiv(hh - v_cap(hpx), 2), v_measure(hd, hpx), hpx, heading); }
-  int y, podPitch = ci("regions.report.crates.podPitch", 20), podIcon = ci("regions.report.crates.podIcon", 16), iconAt = ci("regions.report.rows.iconAt", 4);
-  y = y0 + ci("regions.report.rows.first", 56);   /* the first row: 56 under the card's top (the pad, the heading's 32 and 8 more) */
-  for (int i = 0; i < nc; i++, y += rowH) {
+  const char *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *pipLit = colr("colours.report.pipLit"), *pipDim = colr("colours.report.pipDim");   /* colr rings through 8 buffers: read each colour once, before any loop */
+  /* the crates: a tile each, the crate's picture, its pods (4 a row, 8 at most; past 8, 7 and "+n"; none, a dashed empty outline), the map and the reach pips */
+  int pi = ci("regions.report.crates.pods.icon", 16), pp = ci("regions.report.crates.pods.pitch", 20), per = ci("regions.report.crates.pods.perRow", 4);
+  for (int i = 0; i < nc; i++) {
     char P[56]; snprintf(P, sizeof P, "regions.report.crates.%d", i);
-    v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.lead", i), v_pstr(v_fmt("%s.lead", P)), x0 + pad, y, lead, px, leadW);
-    int pods = v_pint(v_fmt("%s.pods", P), 0); const char *txt = v_pstr(v_fmt("%s.text", P)), *rc = v_pstr(v_fmt("%s.reach", P));
-    for (int q = 0; q < pods; q++) { v_name("report.pods"); v_sprite(v_fmt("report.c%d.pod.%d", i, q), v_pstr("regions.report.podIcon"), cx + q * podPitch, y + iconAt, podIcon, podIcon); }
-    if (*txt) { v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.text", i), txt, cx, y, line, px, reach - cx - 8); }
-    if (*rc) { v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.reach", i), rc, reach, y, line, px, x0 + r[2] - pad - reach); }
-  }
-  y += gapG;
-  { v_region("report.gathered", LAYER_TYPE); text_row("report.g.lead", v_pstr("regions.report.gathered.lead"), x0 + pad, y, lead, px, leadW);
-    static const char *K[3] = { "e", "d", "s" }, *N[3] = { "energy", "data", "essence" };
-    int x = cx, ic = ci("regions.report.gathered.icon", 16), gap = ci("regions.report.gathered.gap", 4), between = ci("regions.report.gathered.between", 24);
-    for (int m = 0; m < 3; m++) {
-      const char *figure = v_pstr(v_fmt("regions.report.gathered.%s", K[m])); char a[32]; snprintf(a, sizeof a, "icon:%s:16", N[m]);
-      v_name("report.gathered"); v_sprite(v_fmt("report.g.icon.%d", m), a, x, y + iconAt, ic, ic);
-      v_region("report.gathered", LAYER_TYPE); int tw = v_measure(figure, px); text_row(v_fmt("report.g.%d", m), figure, x + ic + gap, y, fig, px, tw + 1);
-      x += ic + gap + tw + between;
+    int tx = x0 + ck("regions.report.crates.at", 0) + i * ci("regions.report.crates.pitch", 184), ty = y0 + ck("regions.report.crates.at", 1);
+    v_name("report.crate"); v_sprite(v_fmt("report.c%d.crate", i), v_pstr("regions.report.crate"), tx + ck("regions.report.crates.crate.at", 0), ty + ck("regions.report.crates.crate.at", 1), ck("regions.report.crates.crate.size", 0), ck("regions.report.crates.crate.size", 1));
+    int pods = v_pint(v_fmt("%s.pods", P), 0), px0 = tx + ck("regions.report.crates.pods.at", 0), py0 = ty + ck("regions.report.crates.pods.at", 1); const char *more = v_pstr(v_fmt("%s.more", P));
+    if (pods == 0) { v_name("report.pods"); v_sprite(v_fmt("report.c%d.empty", i), v_pstr("regions.report.emptyPod"), px0, py0, pi, pi); }
+    for (int q = 0; q < pods; q++) { v_name("report.pods"); v_sprite(v_fmt("report.c%d.pod.%d", i, q), v_pstr("regions.report.podIcon"), px0 + (q % per) * pp, py0 + (q / per) * pp, pi, pi); }
+    if (*more) { v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.more", i), more, px0 + (pods % per) * pp, py0 + (pods / per) * pp - (rowH - pi) / 2, fig, px, 2 * pp); }
+    int reach = v_pint(v_fmt("%s.reach", P), 0);
+    if (reach > 0) {
+      v_name("report.reach"); v_sprite(v_fmt("report.c%d.map", i), v_pstr("regions.report.map"), tx + ck("regions.report.crates.reach.map.at", 0), ty + ck("regions.report.crates.reach.map.at", 1), ck("regions.report.crates.reach.map.size", 0), ck("regions.report.crates.reach.map.size", 1));
+      int n = ci("regions.report.crates.reach.pips.max", 4); v_region("report.reach", LAYER_CHROME);
+      for (int p = 0; p < n; p++) v_rect(v_fmt("report.c%d.pip.%d", i, p), tx + ck("regions.report.crates.reach.pips.at", 0) + p * ci("regions.report.crates.reach.pips.pitch", 14), ty + ck("regions.report.crates.reach.pips.at", 1), ck("regions.report.crates.reach.pips.size", 0), ck("regions.report.crates.reach.pips.size", 1), p < reach ? pipLit : pipDim);
     }
   }
-  y += rowH;
-  if (hasProbe) {
-    v_region("report.probe", LAYER_TYPE); text_row("report.p.lead", v_pstr("regions.report.probe.lead"), x0 + pad, y, lead, px, leadW);
-    int plates = v_pint("regions.report.probe.plates", 0), pi = ci("regions.report.probe.plateIcon", 16), pp = ci("regions.report.probe.platePitch", 20);
-    for (int q = 0; q < plates; q++) { v_name("report.probe"); v_sprite(v_fmt("report.p.plate.%d", q), v_pstr("regions.report.shieldIcon"), cx + q * pp, y + iconAt, pi, pi); }
-    const char *pt = v_pstr("regions.report.probe.text"); int tx = cx + plates * pp + ci("regions.report.gathered.gap", 4);
-    if (*pt) { v_region("report.probe", LAYER_TYPE); v_run("report.p.text", pt, tx, y + v_fdiv(rowH - v_cap(px), 2), px, line, V_ALIGN_LEFT); }
-    y += rowH;
-  }
-  if (hasWorld) {
-    y += gapW; v_region("report.world", LAYER_TYPE); text_row("report.w.lead", v_pstr("regions.report.world.lead"), x0 + pad, y, lead, px, r[2] - 2 * pad);
-    y += rowH;
-    for (int i = 0; i < nl; i++, y += rowH) {
-      v_region("report.world", LAYER_CHROME); v_rect(v_fmt("report.w.bullet.%d", i), x0 + ck("regions.report.world.bullet", 0), y + ck("regions.report.world.bullet", 1), ck("regions.report.world.bullet", 2), ck("regions.report.world.bullet", 3), colr("colours.report.bullet"));
-      v_region("report.world", LAYER_TYPE); text_row(v_fmt("report.w.%d", i), v_pstr(v_fmt("regions.report.world.lines.%d", i)), x0 + ci("regions.report.world.lineAt", 32), y, line, px, r[2] - ci("regions.report.world.lineAt", 32) - pad);
+  /* gathered: the three materials, an icon and "+n" each, on a 72 px pitch; and the Probe from x 320: its icon, a plate icon for each plate mended, "⚡ n" when it was paid */
+  { int ry = y0 + gy; static const char *K[3] = { "e", "d", "s" }, *N[3] = { "energy", "data", "essence" };
+    for (int m = 0; m < 3; m++) { char a[32]; snprintf(a, sizeof a, "icon:%s:16", N[m]); icon_figure(v_fmt("report.g.%d", m), a, v_pstr(v_fmt("regions.report.gathered.%s", K[m])), x0 + ci("regions.report.gathered.at", 16) + m * ci("regions.report.gathered.pitch", 72), ry, px, fig); }
+    if (v_pint("regions.report.probe.plates", -1) >= 0) {
+      int x = x0 + ci("regions.report.probe.at", 320), pi2 = ci("regions.report.probe.plateIcon", 16), pp2 = ci("regions.report.probe.platePitch", 20), plates = v_pint("regions.report.probe.plates", 0), iy = ry + ci("regions.report.rows.iconAt", 4);
+      v_name("report.probe"); v_sprite("report.p.icon", v_pstr("regions.report.probeIcon"), x, iy, ck("regions.report.probe.icon", 0), ck("regions.report.probe.icon", 1)); x += pp2;
+      for (int q = 0; q < plates; q++, x += pp2) { v_name("report.probe"); v_sprite(v_fmt("report.p.plate.%d", q), v_pstr("regions.report.shieldIcon"), x, iy, pi2, pi2); }
+      const char *sp = v_pstr("regions.report.probe.spent"); if (*sp) { x += ci("regions.report.gathered.gap", 4); icon_figure("report.p.spent", "icon:energy:16", sp, x, ry, px, fig); }
     }
   }
   if (hasGoal) {
-    y += gapGoal; int room = ci("regions.report.goal.content.1", 392);
+    int ry = y0 + goalY, room = ck("regions.report.goal.content", 1), ax = x0 + ci("regions.report.goal.arrowAt", 16), tx = x0 + ci("regions.report.goal.textAt", 40);
+    v_name("report.goal"); v_sprite("report.goal.arrow", v_pstr("regions.report.arrow"), ax, ry + ci("regions.report.rows.iconAt", 4), ck("regions.report.goal.arrow", 0), ck("regions.report.goal.arrow", 1));
     const char *words = v_pstr("regions.report.goal.text"), *icons = v_pstr("regions.report.goal.icons"), *plain = v_pstr("regions.report.goal.plain"); int ni = 0;
     for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;
     if (v_run_width(words, px) + 20 * ni > room && *plain) words = plain;   /* a name too wide: the nameless sibling (the face's own sum) */
-    v_region("report.goal", LAYER_TYPE); text_row("report.goal.lead", v_pstr("regions.report.goal.lead"), x0 + pad, y, lead, px, leadW);
-    text_row("report.goal.text", words, cx, y, line, px, room - 20 * ni);
-    { char fit[V_STR]; v_clip(words, room - 20 * ni, px, fit, sizeof fit); int ix = cx + v_measure(fit, px) + 4;
+    v_region("report.goal", LAYER_TYPE); text_row("report.goal.text", words, tx, ry, line, px, room - 20 * ni);
+    { char fit[V_STR]; v_clip(words, room - 20 * ni, px, fit, sizeof fit); int ix = tx + v_measure(fit, px) + 4;
       for (const char *q = icons; *q; ) { const char *nm = NULL; if (!strncmp(q, "\xe2\x9a\xa1", 3)) nm = "icon:energy:16"; else if (!strncmp(q, "\xe2\x97\x86", 3)) nm = "icon:data:16"; else if (!strncmp(q, "\xe2\x9d\x80", 3)) nm = "icon:essence:16";
-        if (nm) { v_name("report.goal"); v_sprite(v_fmt("report.goal.icon.%d", (int)(ix)), nm, ix, y + iconAt, 16, 16); ix += 20; q += 3; } else q++; } }
-    y += rowH;
-    if (hasMw) {
-      v_region("report.goal", LAYER_TYPE); text_row("report.mw.lead", v_pstr("regions.report.meanwhile.lead"), x0 + pad, y, lead, px, leadW);
-      const char *mt = v_pstr("regions.report.meanwhile.text"), *mp = v_pstr("regions.report.meanwhile.price"); char fit[V_STR]; v_clip(mt, room - 60, px, fit, sizeof fit);
-      text_row("report.mw.text", fit, cx, y, line, px, room - 60); int ix = cx + v_measure(fit, px) + 4;
-      v_name("report.goal"); v_sprite("report.mw.icon", "icon:data:16", ix, y + iconAt, 16, 16);
-      v_region("report.goal", LAYER_TYPE); text_row("report.mw.price", mp, ix + 20, y, fig, px, v_measure(mp, px) + 1);
+        if (nm) { v_name("report.goal"); v_sprite(v_fmt("report.goal.icon.%d", (int)(ix)), nm, ix, ry + ci("regions.report.rows.iconAt", 4), 16, 16); ix += 20; q += 3; } else q++; } }
+    if (hasMw) {   /* while you wait: the pod icon, the chapter's emblem (a star at its corner when the read glints) and ◆ with the read's price */
+      int my = y0 + mwY, ex = x0 + ci("regions.report.meanwhile.emblemAt", 64), ey = my + (rowH - ck("regions.report.meanwhile.emblem", 1)) / 2;
+      v_name("report.meanwhile"); v_sprite("report.mw.pod", v_pstr("regions.report.podIcon"), x0 + ci("regions.report.meanwhile.podAt", 40), my + ci("regions.report.rows.iconAt", 4), 16, 16);
+      v_sprite("report.mw.emblem", v_pstr("regions.report.meanwhile.emblem"), ex, ey, ck("regions.report.meanwhile.emblem", 0), ck("regions.report.meanwhile.emblem", 1));
+      if (*v_pstr("regions.report.meanwhile.glint")) v_sprite("report.mw.glint", v_pstr("regions.report.meanwhile.glint"), ex + ck("regions.report.meanwhile.glintAt", 0), ey + ck("regions.report.meanwhile.glintAt", 1), 12, 12);
+      icon_figure("report.mw.price", "icon:data:16", v_pstr("regions.report.meanwhile.price"), x0 + ci("regions.report.meanwhile.priceAt", 96), my, px, fig);
     }
   }
+}
+
+/* ---- the dock arrival (cargo.json regions.arrival, events.show; specs/station-dock-arrival-spec.md, amended T-67 and T-112) ----
+   The show is the face's own clock (the event arrival/show) or, with reduced motion, the host's stage (regions.arrival.at); a show that has ended (no event, motion on) is its final frame: every beat done.
+   bay, apron (the rack's place during the show), ribbon from 500, the link light in four cuts, the crates sliding in from the left with their shadows and glints, the mibis who came home (dither in, one hop), the band in the bay's
+   top corners (the Probe's plates, who leaves). At the choice (phase choice) the rack stands and the strip (panel.json, form strip) is the overlay. */
+#define ARR "regions.arrival"
+static int ai(const char *p, int d) { return spec_int(C, v_fmt(ARR ".%s", p), d); }
+static int ak(const char *p, int k) { return spec_int(C, v_fmt(ARR ".%s.%d", p, k), 0); }
+static int arrival_time(void) {
+  anim_state_t t;
+  if (v_pbool("motion", 1)) { if (anim_get(ANIM_ARRIVAL, "show", &t)) return t.elapsed; return 1 << 20; }   /* an ended show is its last frame */
+  return v_pint(ARR ".at", 0);
+}
+static const char *fcol(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str("frame", v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
+/* the crates slide in from x −256: crate i from 500 + 333 i over 400 ms, whole pixels, clipped to the bay's inside; its shadow from the frame it has landed; its glint (a crate holding a new species) from its landing */
+static void build_crates_arrival(int t) {
+  int n = v_plen("regions.crates.places"), max = ci("regions.crates.max", 3), in[4]; if (n > max) n = max; crect("regions.bay.inside", in);
+  const char *shadow = v_pstr("regions.crates.shadow"), *glint = v_pstr(ARR ".glint"); int sx = ck("regions.crates.shadow.at", 0), sy = ck("regions.crates.shadow.at", 1), sw = ck("regions.crates.shadow.size", 0), sh = ck("regions.crates.shadow.size", 1);
+  int at = ai("crates.at", 500), stagger = ai("crates.stagger", 333), ms = ai("crates.ms", 400), from = ai("crates.fromX", -256), gx = ak("crates.glint.at", 0), gy = ak("crates.glint.at", 1), gw = ak("crates.glint.size", 0), gh = ak("crates.glint.size", 1);
+  int xs[8], shown[8], landed[8], sent = 0;
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); int e = t - (at + i * stagger); shown[i] = e >= 0; landed[i] = e >= ms; xs[i] = r[0];
+    if (!shown[i]) xs[i] = r[0] + from; else if (!landed[i]) { int p = e * 1000 / ms; xs[i] = r[0] + from * (1000 - ease_out(p)) / 1000; }
+    if (has(shadow)) sent++; if (has(v_pstr(v_fmt("regions.crates.places.%d", i)))) sent++;
+  }
+  if (!sent) return;
+  v_name("crates");
+  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, sent, 0);
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r);
+    v_name("crates"); slot(v_fmt("crates.%d.shadow", i), shadow, r[0] + sx, r[1] + sy, sw, sh, landed[i]);
+    slot(v_fmt("crates.%d", i), v_pstr(v_fmt("regions.crates.places.%d", i)), xs[i], r[1], r[2], r[3], shown[i]);
+  }
+  for (int i = 0; i < n; i++) if (v_pbool(v_fmt(ARR ".glints.%d", i), 0) && *glint) { int r[4]; crect(v_fmt("regions.crates.byCount.%d.%d", n, i), r); v_region("arrivalGlint", LAYER_ART); v_name("glint"); slot(v_fmt("glint.%d", i), glint, r[0] + gx, r[1] + gy, gw, gh, t >= at + i * stagger + ms); }
+}
+/* the link light: step k (0 to 3) shows the first (k + 1) × 244 px of the picture from 500 + 100 k, each a cut */
+static void build_light(int t) {
+  int r[4]; crect(ARR ".light.rect", r); int at = ai("light.at", 500), each = ai("light.each", 100), steps = ai("light.steps", 4), px = ai("light.stepPx", 244);
+  int k = t < at ? -1 : (t - at) / each; if (k >= steps) k = steps - 1; int w = k < 0 ? 1 : (k + 1) * px; if (w > r[2]) w = r[2];
+  const char *pic = v_pstr(ARR ".light"); if (!has(pic)) return;
+  v_region("arrivalLight", LAYER_ART); v_name("light"); prim_node(v_id("light.clip"), FN_CLIP, r[0], r[1], w, r[3], 0, 1, 0);
+  slot("light", pic, r[0], r[1], r[2], r[3], k >= 0);
+}
+/* the mibis who came home: carried order, left to right, in front of the crates; mibi i dithers in at 1600 + 500 i over 300 ms, then one hop by the hatch's table (a cut each, whole pixels) */
+static void build_mibis(int t) {
+  int n = v_plen(ARR ".mibis"); if (n > 3) n = 3; if (n <= 0) return;
+  int at = ai("mibis.at", 1600), each = ai("mibis.each", 500), dms = ai("mibis.dither.ms", 300), levels = ai("mibis.dither.levels", 16), hop = ai("mibis.hop.ms", 175), nl = spec_len(C, ARR ".mibis.hop.lift");
+  v_region("arrivalMibis", LAYER_ART);
+  for (int i = 0; i < n; i++) {
+    int r[4]; crect(v_fmt(ARR ".mibis.byCount.%d.%d", n, i), r); const char *pic = v_pstr(v_fmt(ARR ".mibis.%d", i)); int e = t - (at + each * i);
+    int motion = v_pbool("motion", 1), lift = 0; if (motion && e >= dms && e < dms + hop) for (int q = 0; q < nl; q++) if (e - dms >= spec_int(C, v_fmt(ARR ".mibis.hop.lift.%d.0", q), 1 << 30)) lift = spec_int(C, v_fmt(ARR ".mibis.hop.lift.%d.1", q), 0);
+    int level = e < 0 ? 0 : e * levels / dms, done = motion ? e >= dms : e >= 0, dithering = motion && e >= 0 && e < dms && level > 0;   /* with reduced motion a mibi appears as a cut at its time, no dither and no hop; a dither at level 0 draws nothing, so it is not drawn */
+    v_name("mibis"); v_sprite_hidden(v_fmt("mibi.%d.d", i), pic, r[0], r[1]);
+    if (dithering) { v_dither_window(v_fmt("mibi.%d.d", i), "", 0, 0, pic, 0, 0, level, r[0], r[1], r[2], r[3]); }
+    slot(v_fmt("mibi.%d", i), pic, r[0], r[1] - lift, r[2], r[3], done);
+  }
+}
+/* the band in the bay's top corners: the Probe's plates (whole ones from 1500, the mended turn whole one by one from 2500 with the words after) and who leaves (the mark and the faces, right-aligned) */
+static void build_band(int t) {
+  int px0 = ak("band.probe.at", 0), py0 = ak("band.probe.at", 1), pitch = ai("band.probe.pitch", 20), isz = ak("band.probe.size", 0), from = ai("band.probe.from", 1500), mend = ai("band.probe.mend.at", 2500), meach = ai("band.probe.mend.each", 120), wpx = ai("band.probe.words.px", 16), gap = ai("band.probe.words.gap", 8);
+  int whole = v_pint(ARR ".plates.whole", 0), mended = v_pint(ARR ".plates.mended", 0); const char *icon = v_pstr(ARR ".plates.icon");
+  if (t >= from) {
+    int shownN = whole; for (int j = 0; j < mended; j++) if (t >= mend + meach * j) shownN = whole + j + 1;
+    v_region("arrivalBand", LAYER_ART);
+    for (int q = 0; q < whole + mended; q++) { v_name("band.probe"); slot(v_fmt("band.plate.%d", q), icon, px0 + q * pitch, py0, isz, isz, q < shownN); }
+    const char *words = v_pstr(ARR ".plates.words");
+    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, py0 + v_fdiv(isz - v_cap(wpx), 2), wpx, fcol("subject"), V_ALIGN_LEFT); }
+  }
+  int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
+  if (nf > 0 && t >= ai("band.leaving.from", 1500)) {
+    int fw = ak("band.leaving.faceSize", 0), mw = ak("band.leaving.markSize", 0), lp = ai("band.leaving.pitch", 32), rx = ai("band.leaving.rightX", 984), ly = ai("band.leaving.y", 64), lg = ai("band.leaving.gap", 8);
+    int x0 = rx - (mw + lg + lp * nf - (lp - fw));
+    v_region("arrivalBand", LAYER_ART); v_name("band.leaving"); slot("band.mark", v_pstr(ARR ".leaving.mark"), x0, ly + v_half(fw - mw), mw, mw, 1);
+    for (int i = 0; i < nf; i++) { v_name("band.leaving"); slot(v_fmt("band.face.%d", i), v_pstr(v_fmt(ARR ".leaving.faces.%d", i)), x0 + mw + lg + lp * i, ly, fw, fw, 1); }
+  }
+}
+static void build_arrival(int choice) {
+  int t = choice ? 1 << 20 : arrival_time();
+  build_bay();
+  if (!choice) { int r[4]; crect(ARR ".apron.rect", r); v_region("apron", LAYER_ART); v_name("apron"); v_sprite("apron", v_pstr(ARR ".apron"), r[0], r[1], r[2], r[3]); }
+  { int r[4]; crect("regions.ribbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpx = ci("regions.ribbon.px", 20), rpad = ci("regions.ribbon.pad", 16), rib = ai("crates.at", 500);
+    int w = ((v_measure(words, rpx) + 2 * rpad) + 7) / 8 * 8; if (w < 160) w = 160; if (w > r[2]) w = r[2]; r[0] = 512 - w / 2; r[2] = w;
+    v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpx, rpad, colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text")); }
+  build_light(t);
+  build_crates_arrival(t);
+  if (!choice) build_mibis(t);
+  build_band(t);
+  if (choice) build_rack(0, 0, 0);
 }
 
 void cargo_words(void) {
   char state[16]; snprintf(state, sizeof state, "%s", v_pstr("state"));
   ground();
+  if (strcmp(state, "arrival") == 0) { build_arrival(strcmp(v_pstr(ARR ".phase"), "choice") == 0); return; }
   if (strcmp(state, "opening") == 0) {
     int k, lt; opening_clock(&k, &lt);
     build_bay();
@@ -254,6 +329,6 @@ void cargo_words(void) {
 void cargo_key(int code) {
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
   int pad = code == 17 || code == 18 || code == 19 || code == 20;
-  if (!verb && pad && strcmp(v_pstr("state"), "report") == 0) verb = "pad";
+  if (!verb && pad && (strcmp(v_pstr("state"), "report") == 0 || strcmp(v_pstr("state"), "arrival") == 0)) verb = "pad";
   if (verb) screens_say("intent", "room", verb);
 }

@@ -10,9 +10,9 @@ import { createFocus } from "../../ui/focus.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
-export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, viv: { f: null }, bench: { f: null, arm: 0, install: false },
-  cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null, drawn: null, slide: 0 }, meet: null, lastInput: 0, idle: false };
+export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
+  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null }, bench: { f: null, install: false },
+  cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null, drawn: null, slide: 0, arrival: null }, pendingArrival: null, sendoff: false, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
 // What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.
@@ -22,7 +22,7 @@ export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 2000;
 const listeners = new Set();
 export const onChange = (fn) => listeners.add(fn);
 const changed = () => { for (const fn of listeners) fn(); };
-export function msg(t) { FX.msg = t; FX.msgAt = clock.now; TL.play({ kind: "plate", target: "msg", ms: 4000 }); }   // the screens on the layer read the plate's time from the timeline
+export function msg(t, ms = 4000) { FX.msg = t; FX.msgAt = clock.now; FX.msgMs = ms; TL.play({ kind: "plate", target: "msg", ms }); }   // the screens on the layer read the plate's time from the timeline
 export const now = () => clock.now;
 export const st = () => G.st;
 export const sv = () => G.sv;
@@ -90,9 +90,10 @@ export const screenOf = (name) => SCREENS[name];
 export function goScreen(name) {
   const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
   UI.screen = name;
-  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
+  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
   if (fresh && name === "vivarium") UI.viv.f = null;   // the way in puts the ring on the mibi last seen up close (vivarium.json focus.entry)
+  if (fresh) { UI.panel = null; UI.arrival = null; }   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on
   if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; }   // the namer closes with the level (writing nothing)
 }
 export const need = () => S.need(G.st, G.sv, G.settings, UI);

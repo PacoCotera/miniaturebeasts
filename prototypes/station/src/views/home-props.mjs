@@ -77,19 +77,19 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
 }
 
 export function livingOf(m, R, req, ph, L) {
-  const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
+  const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
   const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; const look = lookOf(st, mb, size, settings); return { id: String(mb.id), name: mb.name, stage: look.stage, picture: pic(mb, size), waiting: false, ...extra }; };   // `stage` is the stage drawn: a juvenile stand sizes the box, the ring, the lift and the lamp as a juvenile's
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
   const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, stageOf(mb), req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, stageOf(mb), req, m, ["nap"]); if (mv) p.moving = mv; return p; }) : [];
+  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, stageOf(mb), req, m, ["nap"]); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
     mark: docked ? "" : ph(R.bed.markPicture, R.bed.mark),   // away only: the Companion's mark (home-bed-mark-16x24), 1:1 over the bed
-    sleepers,
+    sleepers, ...(m.sendoff ? { sendoff: true } : {}),
   };
   return { residents, sleepers, bed };
 }
@@ -104,7 +104,7 @@ export function homeBuild(m, spec, frame) {
   const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod && !need.soft ? "needsYou" : null);
 
   // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
-  const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, frame.light);
+  const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets, sendoff: m.sendoff }, R, req, ph, frame.light);
   const { residents, sleepers, bed } = lw;
   // the modules
   const crates = docked ? S.bayCrates(st, sv).length : 0;

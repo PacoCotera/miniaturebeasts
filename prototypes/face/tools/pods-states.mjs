@@ -33,6 +33,7 @@ export async function podsStates(visit) {
     await go(pods[0], "pod", "overview"); await at("overview, identified, pod focused", { view: "overview", focus: "pod" });
     await go(pods[0], "kin.0", "overview"); await at("overview, kin focused", { view: "overview", focus: "kin.0", cmp: false });
     await go(pods[0], "hatch", "overview"); await at("overview, hatch focused", { view: "overview", focus: "hatch" });
+    await go(pods[0], "hatch", "overview"); await page.evaluate(() => window.__st.act("confirm")); await at("panel, return", { screen: "pods", view: "overview" }); await page.evaluate(() => { window.__st.UI.panel = null; });   // ✓ on the leaf plate opens the Return panel (the ring on Keep)
     await go(pods[0], "rail.0", "overview"); await at("overview, a rail tab focused", { view: "overview", focus: "rail.0" });
     await go(pods[0], "rail.0", "chapter", 0); await at("chapter page", { view: "chapter", focus: "rail.0" });
     await go(pods[0], "rail.2", "chapter", 2); await at("chapter page, a doing", { view: "chapter", focus: "rail.2" });   // Movement: Drive, read: the one doing plate and the value in words

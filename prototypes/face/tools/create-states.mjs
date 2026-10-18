@@ -30,13 +30,13 @@ const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign
 // the timed points: the scene, the key or intent that starts the event, and the instant after it
 const TIMED = {
   "roll-100":   { scene: "shape", go: () => window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }), at: 100 },
-  "grow-150":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 150, want: "grow" },
-  "grow":       { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 450, want: "grow" },   // 450 ms: the pod passes behind the tray's left edge (fix 5 Create)
-  "grow-end":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 890, want: "grow" },
-  "grow-nothing": { scene: "nothingRead", go: () => window.__st.press("confirm"), at: 20, want: "grow" },
+  "grow-150":   { scene: "shape-changed", go: () => { window.__st.press("confirm"); window.__st.press("confirm"); }, at: 150, want: "grow" },
+  "grow":       { scene: "shape-changed", go: () => { window.__st.press("confirm"); window.__st.press("confirm"); }, at: 450, want: "grow" },   // 450 ms: the pod passes behind the tray's left edge (fix 5 Create)
+  "grow-end":   { scene: "shape-changed", go: () => { window.__st.press("confirm"); window.__st.press("confirm"); }, at: 890, want: "grow" },
+  "grow-nothing": { scene: "nothingRead", go: () => { window.__st.press("confirm"); window.__st.press("confirm"); }, at: 20, want: "grow" },
 };
 async function apply(page, sc) {
-  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); w.adults(2); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; }, [sc.set.toString()]);
+  await page.evaluate(([setSrc]) => { const w = window.__world; window.__st.settings.jump = "arrival"; window.__st.UI.panel = null; window.__st.UI.arrival = null; w.reset(); w.fresh(); w.adults(2); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; }, [sc.set.toString()]);
 }
 export async function createStates(visit, { motion = false, timed = true } = {}) {
   const r = await still(visit); if (motion || !timed) return r;

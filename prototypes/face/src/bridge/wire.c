@@ -192,7 +192,10 @@ static int on_event(const msg_t *m) {
   int cut = 0;
   if (key(m, "cut") >= 0) { int c = key(m, "cut"), len = m->tok[c].end - m->tok[c].start; const char *p = m->js + m->tok[c].start;
     if (m->tok[c].type != JSMN_PRIMITIVE || !((len == 4 && strncmp(p, "true", 4) == 0) || (len == 5 && strncmp(p, "false", 5) == 0))) return fail("event: cut is true or false"); cut = len == 4; }
-  if (anim_add(kind, target, ms, hold, cut, from, to, from_id[0] ? from_id : NULL, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
+  int skip = 0;   /* a skippable hold (§2.1): ✓ ends it and its hold */
+  if (key(m, "skip") >= 0) { int c = key(m, "skip"), len = m->tok[c].end - m->tok[c].start; const char *p = m->js + m->tok[c].start;
+    if (m->tok[c].type != JSMN_PRIMITIVE || !((len == 4 && strncmp(p, "true", 4) == 0) || (len == 5 && strncmp(p, "false", 5) == 0))) return fail("event: skip is true or false"); skip = len == 4; }
+  if (anim_add(kind, target, ms, hold, cut, skip, from, to, from_id[0] ? from_id : NULL, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
   g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
 }
 static const struct { const char *name; int code; } KEYS[] = { { "up", 17 }, { "down", 18 }, { "right", 19 }, { "left", 20 }, { "confirm", 10 }, { "back", 27 }, { "home", 2 }, { "research", 114 }, { "library", 108 }, { "habitat", 98 }, { "dock", 100 } };

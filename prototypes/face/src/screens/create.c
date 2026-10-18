@@ -170,6 +170,7 @@ int create_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
   return k;
 }
 static void build_ring(void) {
+  if (spec_len("props", "overlay") >= 0) return;   /* the decision panel is open: its ring is the only one */
   char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (strcmp(cur, "roll") != 0 || !has_roll()) return;
   int r[4], c = v_pint("regions.roll.chosen", 0); if (c < 0 || c >= roll_n() || !roll_placed(c)) return; roll_rect(c, r);
   v_region("focus", LAYER_CHROME); word_focusRing("focus", C, "focus.shape.targets.roll", r);
