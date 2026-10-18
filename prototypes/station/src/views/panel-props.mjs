@@ -35,23 +35,23 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
   const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: "", back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
   return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };
 }
-// The cards of the Return panels (§1.6): Return it (the gain from the rules, the loss "gone for good", the subject on its place's scene) and Keep (the subject as it is). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
+// The cards of the Release panels (§1.6): Release it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
 export const WILD = [144, 152], WILD_POD = [88, 112];
 export function wildCards(m, spec, frame, requests) {
   const { st, settings } = m, id = m.ui.panel.id, mibi = id === "wildMibi", Sg = spec.strings[id], req = (r) => { requests.push(r); return r.id; };
-  let subject, keepName, picture, size;
+  let subject, keepName, picture, size, releaseName, fact;
   if (mibi) {
     subject = habitatShown(st, m.sv, m.ui.hab.id); if (!subject) return [];
-    keepName = fill(Sg.cards.keep.name, { name: subject.name }); size = WILD; picture = mibiReq(req, st, subject, size, settings);
+    keepName = fill(Sg.cards.keep.name, { name: subject.name }); size = WILD; releaseName = fill(Sg.cards.return.name, { name: subject.name }); fact = fill(Sg.cards.return.line, { name: subject.name }); picture = mibiReq(req, st, subject, size, settings);
   } else {
     subject = st.tray.find((q) => q.id === m.ui.pods.cur); if (!subject) return [];
-    keepName = Sg.cards.keep.name; size = WILD_POD;
+    keepName = Sg.cards.keep.name; size = WILD_POD; releaseName = Sg.cards.return.name; fact = fill(Sg.cards.return.line, { place: S.PLACE_WORD[subject.g] || "wild" });
     const sp = S.speciesOf(subject), state = subject.idd ? "identified" : "sealed";
     picture = req({ kind: "pod", id: `pod:${sp ?? "-"}:${subject.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state, size });
   }
   const mark = frame.regions.marks.room[mibi ? "vivarium" : "research"];
   return [
-    { id: "return", act: "return", room: null, picture, pictureSize: size, mark, name: Sg.cards.return.name, cost: S.gainText(mibi ? S.PRICE.wildMibi : S.PRICE.wild), gain: true, short: "", line: Sg.cards.return.line, loss: true, dim: false, outcome: "wild" },
+    { id: "return", act: "return", room: null, picture, pictureSize: size, mark, name: releaseName, cost: S.gainText(mibi ? S.PRICE.wildMibi : S.PRICE.wild), gain: true, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
     { id: "keep", act: "keep", room: null, picture, pictureSize: size, mark: "", name: keepName, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
   ];
 }
@@ -127,7 +127,7 @@ export const titleOf = (m, spec) => {
   return t;
 };
 
-// The first card that is neither dimmed nor a loss; if every card is one or the other, the way-out card (the last): the focus a panel opens on.
+// The first card that is not dimmed (a loss card, where a panel has one, is never first); if every card is one or the other, the way-out card (the last): the focus a panel opens on.
 export const initialFocus = (cards) => "card." + (cards.find((c) => !c.dim && !c.loss) ?? cards.at(-1)).id;
 
 export function panelBuild(m, spec, frame, pods) {

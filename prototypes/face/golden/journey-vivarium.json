@@ -771,26 +771,20 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Keep Tuft",
-    "price": null,
-    "subject": "",
+    "ok": "Release Tuft",
+    "price": "❀ +2",
+    "subject": "Tuft lives in the wild from now on",
     "back": "Back"
    },
    {
     "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "panel",
-      "target": "card.return"
-     }
-    ],
+    "said": [],
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Return it",
+    "ok": "Release Tuft",
     "price": "❀ +2",
-    "subject": "gone for good",
+    "subject": "Tuft lives in the wild from now on",
     "back": "Back"
    },
    {

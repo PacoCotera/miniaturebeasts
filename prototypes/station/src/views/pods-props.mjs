@@ -78,7 +78,7 @@ export function railOf(m, spec, cur, chapters, req, open, focused, withPips = fa
 function specimenOf(m, spec, cur, R, req, mode) {
   const { st, settings } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
   const sizeClass = shellFrame(st, cur)?.pod?.sizeClass ?? "medium", box = spec.classes.pod[sizeClass], N = R.name;
-  const nameText = cur.idd || st.knownIds.includes(S.speciesOf(cur)) ? S.cap(S.spName(cur)) : spec.strings.unknownPod;   // GB1 C4: a pod whose species is known is named by it, identified or not
+  const nameText = cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod;   // the species shows once the pod is identified, and not before
   const sp = shellFrame(st, cur) ? S.speciesOf(cur) : null;
   const out = {
     beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
@@ -119,7 +119,7 @@ function collectionView(view, m, spec, req) {
     const q = st.tray[i], idle = rs(RM.idle);
     if (!q) { places.push({ empty: true, ringLayers: [idle] }); continue; }
     const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, n = flags ? flags.length : 0, closed = n > 0 && flags.every(Boolean);
-    const name = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.cap(S.spName(q)) : spec.strings.unknownPod;
+    const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod;
     const sp = shellFrame(st, q) ? S.speciesOf(q) : null, size = R.pod.size;
     const layer = (tpl, k) => rs(tpl.replace("{N}", n).replace("{i}", k));
     places.push({

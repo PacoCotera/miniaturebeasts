@@ -1451,7 +1451,7 @@
   "glintPod": "something new waits",
   "openChapter": "Turn to {chapter}",
   "lookAtPod": "Look at this pod",
-  "outcomes": { "identify": "the species shows", "identifyNew": "a new species", "read": "both copies of its traits", "create": "nothing spent until Grow", "rule": "decision panel spec Part 2, the on-the-page rows: the bottom line's subject zone says the focused action's outcome, at most 6 words, 208 px at 16 px" },
+  "outcomes": { "identify": "the species shows", "identifyNew": "a new species", "read": "both copies of its traits", "create": "free until Incubate", "rule": "decision panel spec Part 2, the on-the-page rows: the bottom line's subject zone says the focused action's outcome, at most 6 words, 208 px at 16 px" },
   "wayBack": {
    "collection": "Home",
    "overview": "Pods",

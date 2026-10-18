@@ -140,8 +140,8 @@ test("the bottom line's three slots: no dots, the centre fits 24 characters, one
   const st = stock(["S01"], 3), p = st.tray[0], line = (f) => lineOf(open(st, { focus: f }));
   assert.equal(line("pod").subject, "a new species");   // a first of its species: the outcome before the press (decision panel spec Part 2)
   st.knownIds.push(p.species); assert.equal(line("pod").subject, "the species shows");
-  S.skipIdentify(st, p); assert.equal(line("pod").subject, "nothing spent until Grow");
-  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, "nothing spent until Grow");
+  S.skipIdentify(st, p); assert.equal(line("pod").subject, "free until Incubate");
+  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, "free until Incubate");
   { const st2 = stock(["S01"], 5), p2 = st2.tray[0]; S.skipIdentify(st2, p2); st2.d = 20;   // an unread chapter: ✓ Read says what it shows
     const l = lineOf(open(st2, { focus: "rail.0", ui: { view: "chapter", ci: 0 } })); assert.match(l.ok, /^Read /); assert.equal(l.subject, "both copies of its traits"); }
   st.d = 0; st.readEver = true; const l1 = lineOf(open(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })); assert.equal(l1.need, "needs more ◆: watch your mibis"); assert.equal(l1.dim, true);
@@ -192,11 +192,12 @@ test("GB1 C1, C2: an identified pod's figure is ONE painted-adult request (the f
   assert.deepEqual(spec.regions.overview.thisPod.rect, [144, 488, 224, 24]); assert.equal(b.props.regions.specimen.captions.figure, "every Loika", "C3: the figure's caption names the species");
 });
 
-test("GB1 C4: an unidentified pod whose species is known is named by it, on the overview and in the collection (the shell and the empty halo stay); an unknown species is Unknown", () => {
+test("the name label shows the species only once the pod is identified: an unidentified pod is Unknown even when its species is known, on the overview and in the collection", () => {
   const st = stock(["S01"]); st.knownIds = ["S01"];
-  const ov = podsProps(model(st, {}), spec, frameSpec).props.regions; assert.equal(ov.specimen.name, "Loika"); assert.match(ov.specimen.figure, /^mibi-halo-empty-128x160/);
-  const col = podsProps(model(st, { ui: { view: "collection", cur: st.tray[0].id } }), spec, frameSpec).props.regions; assert.equal(col.list.places[0].name, "Loika", "the collection names it too");
-  const none = stock(["S01"]); none.knownIds = []; assert.equal(podsProps(model(none, {}), spec, frameSpec).props.regions.specimen.name, "Unknown");
+  const ov = podsProps(model(st, {}), spec, frameSpec).props.regions; assert.equal(ov.specimen.name, "Unknown"); assert.match(ov.specimen.figure, /^mibi-halo-empty-128x160/);
+  const col = podsProps(model(st, { ui: { view: "collection", cur: st.tray[0].id } }), spec, frameSpec).props.regions; assert.equal(col.list.places[0].name, "Unknown", "the collection says Unknown too");
+  st.tray[0].idd = 1; assert.equal(podsProps(model(st, {}), spec, frameSpec).props.regions.specimen.name, "Loika", "identified: the species");
+  assert.equal(podsProps(model(st, { ui: { view: "collection", cur: st.tray[0].id } }), spec, frameSpec).props.regions.list.places[0].name, "Loika");
 });
 
 test("GB1 C6: every name-line glyph is at least 12 px in both dimensions (the `only` mark is mark-line-only-16x16)", () => {
@@ -210,7 +211,9 @@ test("a doing trait's cell is flagged, asks for its one plate with no look suffi
   for (const c of cells) { const t = fr.chapters[ci].traits.find((x) => x.name === c.name); assert.equal(!!c.doing, t.nature === "doing", c.name); if (c.doing) { assert.match(c.crop, /^trait-S01-[a-z]+-128x160:128x160$/, "no look suffix"); assert.equal(c.lines.length, 1); } }
   assert.ok(cells.some((c) => c.doing)); assert.ok(body.requests.some((r) => r.master === "trait-S01-drive-128x160"));
   const look = podsProps(model(st, { focus: "rail.0", ui: { view: "chapter", ci: 0 } }), spec, frameSpec).props.regions.page.cells.find((c) => c.crop);
-  assert.match(look.crop, /^trait-S01-[a-z]+-[a-z-]+-\d+x\d+:\d+x\d+$/, "a look's id keeps its look"); assert.ok(!look.doing);
+  assert.match(look.crop, /^mibi:S01~[0-9a-f]{8}:adult:128x160$/, "Coat's Colour and Markings tiles are the layered stand cropped, named by their look"); assert.ok(!look.doing);
+  const face = podsProps(model(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } }), spec, frameSpec).props.regions.page.cells.find((c) => c.crop);
+  assert.match(face.crop, /^trait-S01-[a-z]+-[a-z-]+-\d+x\d+:\d+x\d+$/, "a look keeps its look in its id"); assert.ok(!face.doing);
   const un = podsProps(model(rich(["S01", "S01"]), { focus: `rail.${ci}`, ui: { view: "chapter", ci } }), spec, frameSpec).props.regions.page.cells.find((c) => c.name === "Drive");
   assert.deepEqual([un.frost, un.lines, !!un.doing, un.crop], [true, [], false, undefined], "an unread doing: the outline, no value");
 });
