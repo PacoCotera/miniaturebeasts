@@ -156,7 +156,7 @@ export function libraryBody() {
 }
 
 // ---- Cargo ----
-// The bay, the crate opening and the report: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
+// The bay, the crate opening and the end: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
   const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame), pn = UI.panel, a = UI.cargo.arrival;
   if (pn && pn.screen === "cargo" && UI.cargo.state === "arrival" && a && a.phase === "choice") {   // the dock arrival's choice: the strip's props ride on Cargo's (an overlay) and its bottom line is built from the focused card

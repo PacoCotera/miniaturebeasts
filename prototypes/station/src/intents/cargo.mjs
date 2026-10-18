@@ -24,6 +24,8 @@ export function openBay(h) {
   return { ok: true, plays: run.items };
 }
 
+export const openRun = openBay;   // the build spec's name for the run (8.5): the portrait crate is its last crate and its end step marks the portrait delivered
+
 // The event for the items from `base` on, its times rebased to 0, and the host's steps for each (counters, flashes, the mat's line, the crate's end).
 function startEvent(h, run, base) {
   const c = h.ui.cargo, steps = h.specs.cargo.events.opening.steps, motion = h.motion ? h.motion() : true;

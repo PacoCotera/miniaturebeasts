@@ -49,9 +49,10 @@ const SCENES = {
 // one crate opening (two free wells, a third pod for the mat, a find), at the instants of its steps: motion on, the face's own clock ("at 0" is the first frame, 1 ms in: the crate lifting in its berth)
 const ONE = (w) => { w.adults(2); w.pods(4); w.crates(1, 3, { finds: ["pearl"] }); };
 const STEPS = { "opening-0": 1, "opening-dither": 290, "opening-500": 600, "opening-materials": 1000, "opening-hatch": 1600, "opening-pod": 2000, "opening-swap": 2390, "opening-mat": 3000, "opening-find": 3200, "opening-done": 3690 };
-// three crates, then the portrait crate: a pod in flight in the first crate; the second crate lifting with the first done; the portrait crate's painting rising and on its way
+// three crates (a pod in flight in the first; the second lifting with the first done), then with a portrait crate in: its painting rising and on its way
+const THREE_WALK = (w) => { w.adults(2); w.pods(1); w.crates(3, 2); };
 const THREE = (w) => { w.adults(2); w.pods(1); w.crates(3, 2); w.crateSitting(true); };
-const MANY = { "opening-three": 2000, "opening-three-second": 3080 + 2000, "opening-portrait": 3 * 3080 + 400, "opening-portrait-away": 3 * 3080 + 1000 };
+const MANY = { "opening-three": [THREE_WALK, 2000], "opening-three-second": [THREE_WALK, 3080 + 2000], "opening-portrait": [THREE, 3 * 3080 + 400], "opening-portrait-travel": [THREE, 3 * 3080 + 1000] };
 // the dock arrival (T-20261016-48, -58, -112), on Cargo itself (no transition), from the Dock: two crates (one holding a species new to the player, S02), two mibis asked home, one asked to go, the Probe a plate short (mended free);
 // `arrival-2200` is the show with two arrivals, `arrival-choice` the strip over the rack, `arrival-empty-trip` the empty trip's ribbon and band before it closes by itself.
 const TIMED = {
@@ -97,7 +98,7 @@ async function timedStates(visit) {
       await visit("cargo-" + name, page, fail); await step(14000);
     };
     for (const [name, at] of Object.entries(STEPS)) await open(name, ONE, at, name === "opening-done" ? "opening" : "opening");
-    for (const [name, at] of Object.entries(MANY)) await open(name, THREE, at);
+    for (const [name, [set, at]] of Object.entries(MANY)) await open(name, set, at);
     for (const [name, tp] of Object.entries(TIMED)) {
       await apply(page, { set: tp.set }); await step(1200); await page.evaluate(tp.go); await step(tp.at);
       await visit("cargo-" + name, page, fail); await step(1500);

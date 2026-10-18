@@ -1,6 +1,7 @@
 // Check 1 for Cargo (lvgl-switch.md §4): every region the face's log says it drew, against the rectangle cargo.json (and frame.json for the stage) gives it. `departures` returns the list of departures, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: cargo.json; frame: frame.json; state: "bay" | "opening" | "end" | "arrival".
-//   opts.portrait: the portrait crate's painting is travelling, the one travel allowed to leave the bay (build spec 4); the display and the screen bounds are then not held to their rectangles.
+//   The portrait crate's painting (region "portrait") is the one travel allowed to leave the bay (build spec 4). What else travels may reach past the bay: a material ends at a top-bar icon, a pod bound for the mat ends 4 px left of the bay,
+//   a find bound for the strip's first place hangs 12 px off the screen's left edge (centred on its place, feet on the strip).
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const grow = (r, n) => [r[0] - n, r[1] - n, r[2] + 2 * n, r[3] + 2 * n];
@@ -10,7 +11,7 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   const must = (ok, m) => { if (!ok) out.push(m); };
   const stage = frame.regions.stage.rect, art = (id) => [...got(id, "art"), ...got(id, "painted")];
   for (const r of got("stage")) must(eq(r.rect, stage), `stage ${r.rect} is not ${stage}`);
-  for (const r of regions) if (!(opts.portrait && (r.id === "display" || r.id === "travel")) && !(r.id === "travel")) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
+  for (const r of regions) if (r.id !== "travel" && r.id !== "portrait") must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   if (state === "arrival") {   // the dock arrival keeps its own bay, crates, rack and ribbon (cargo.json regions.dock*)
     for (const r of got("bay")) must(eq(r.rect, R.dockBay.rect), `the bay ${r.rect} is not the painting ${R.dockBay.rect}`);
     for (const r of art("crates")) must(within(r.rect, R.dockBay.inside), `the crates and their shadows ${r.rect} leave the bay's inside ${R.dockBay.inside}`);
@@ -43,10 +44,11 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   for (const id of ["waiting", "waiting.pod", "waitingMore"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.waiting.rect), `${id} ${r.rect} is not on the mat ${R.waiting.rect}`);
   must(art("waiting").some((r) => eq(r.rect, R.waiting.rect)), "the mat is drawn at its rect in every state");
   // the display row: the open crate's contents inside the display rectangle, only in the opening; the portrait's painting may leave
-  for (const id of ["display", "displayAmount"]) for (const r of regions.filter((x) => x.id === id)) if (!opts.portrait) must(within(r.rect, R.display.rect), `${id} ${r.rect} leaves the display ${R.display.rect}`);
+  for (const id of ["display", "displayAmount"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.display.rect), `${id} ${r.rect} leaves the display ${R.display.rect}`);
+  for (const r of got("portrait")) must(state === "opening", "the portrait crate's painting shows only in the opening");
   // what travels: inside the bay, but the materials end at the top bar's icons (the bar covers the screen above y 40) and the portrait leaves
-  for (const r of got("travel")) if (!opts.portrait) must(r.rect[0] >= R.travel.rect[0] && r.rect[0] + r.rect[2] <= R.travel.rect[0] + R.travel.rect[2] && r.rect[1] + r.rect[3] <= R.travel.rect[1] + R.travel.rect[3] && r.rect[1] >= -64, `what travels ${r.rect} leaves the bay ${R.travel.rect}`);
-  must(state === "opening" || (got("display").length === 0 && got("travel").length === 0 && got("displayAmount").length === 0), "the display and what travels show only in the opening");
+  for (const r of got("travel")) must(within(r.rect, grow(R.travel.rect, 16)) && r.rect[1] >= -64, `what travels ${r.rect} leaves the travel rectangle ${R.travel.rect} by more than the spec's targets do`);
+  must(state === "opening" || (got("display").length === 0 && got("travel").length === 0 && got("portrait").length === 0 && got("displayAmount").length === 0), "the display and what travels show only in the opening");
   must(state !== "bay" || art("hatch.well").length === 0, "the bay's hatch is shut: no wells");
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;

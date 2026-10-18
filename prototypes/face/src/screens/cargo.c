@@ -113,7 +113,7 @@ static int hatch_open(void) {
   return 0;
 }
 static void build_hatch(void) {
-  int r[4]; crect("regions.hatch.rect", r); hx = r[0]; hy = r[1]; int open = hatch_open(), lw = ck("regions.hatch.wells.lit.size", 0), lh = ck("regions.hatch.wells.lit.size", 1);
+  int r[4]; crect("regions.hatch.rect", r); hx = r[0]; hy = r[1]; int open = hatch_open();
   v_region("hatch", LAYER_ART); v_name("hatch");
   nat("hatch", v_pstr(open ? "regions.hatch.open" : "regions.hatch.shut"), r[0], r[1]);
   if (!open) { nat("hatch.ring", v_pstr("regions.hatch.ring"), ck("regions.hatch.ring.at", 0), ck("regions.hatch.ring.at", 1)); return; }
@@ -126,7 +126,6 @@ static void build_hatch(void) {
     if (fc >= 0) natslot(v_fmt("hatch.lit.%d", i), v_pstr("regions.hatch.lit"), c[0] + lx, c[1] + ly, ph3 >= 2);   /* the well lights mint as the pod lands */
     slot(v_fmt("hatch.pod.%d", i), pod, c[0] + ax, c[1] + ay, pw, ph, ph3 == 3);
   }
-  (void)lw; (void)lh;
   /* the find strip: a find is its 16 × 16 picture, 20 apart, once it has landed */
   int sx = ck("regions.hatch.strip.find.at", 0), sy = ck("regions.hatch.strip.find.at", 1), pitch = ci("regions.hatch.strip.find.pitch", 20), fw = ck("regions.hatch.strip.find.size", 0), fh = ck("regions.hatch.strip.find.size", 1);
   for (int k = 0; k < g_n; k++) for (int f = 0, nf = crate_nf(k); f < nf; f++) {
@@ -218,6 +217,7 @@ static void build_display(void) {
     int x = ck("regions.display.portrait.at", 0), y = ck("regions.display.portrait.at", 1), px = ck("regions.display.portrait.pictureAt", 0), py = ck("regions.display.portrait.pictureAt", 1), tx = ck("regions.display.portrait.leaves", 0), ty = ck("regions.display.portrait.leaves", 1);
     int ph3 = g_lt < S.portrait ? 0 : !g_motion ? 3 : g_lt < S.portrait + S.travel ? 1 : 3;
     if (ph3 == 1) { int e = travel_e(g_lt, S.portrait); x = layout_lerp(x, tx, e); y = layout_lerp(y, ty, e); }
+    v_name("portrait");   /* its own region: it is the one picture that leaves the bay */
     if (ph3 <= 1) { dpic_nat("d.portrait.frame", fr, x, y, 1); if (*pc) dpic_nat("d.portrait.picture", pc, x + px, y + py, 1); }
     return;
   }
