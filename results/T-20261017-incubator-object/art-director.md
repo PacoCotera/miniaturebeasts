@@ -56,3 +56,11 @@ The studio painted the first intent (brooder, bell jar, appliance); the revised 
   - It is a composite, so the creature's light is the master's own (top left) under the roof lamp. It holds at 1×. The master painting, if it's built, paints the juvenile under the roof lamp.
 
 **The two moments read apart in two seconds:** a dusk capsule sealed with a mint ring, against an open capsule with a broken shell and a new creature looking out. It is no longer "the same machine at two brightnesses".
+
+**Hatch now, relit (the creative director's fix):** the composite now lights the signed juvenile to the capsule's roof lamp.
+- warm from above, falling to shade at the belly and feet;
+- a warm rim on the crest leaves, head and back;
+- a contact shadow and occlusion on the moss;
+- the feet sunk in, with the scene's own lit grass blades brought back in front of the lowest rows, in the same shadow.
+
+The stand itself is unmirrored and unchanged in design. Note for every future composite: the photographic capsule and our painted mibis read as one world only when the mibi takes the scene's light.
