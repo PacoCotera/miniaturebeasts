@@ -60,8 +60,9 @@
    "star": [12, 12], "starAt": [34, 10], "starNote": "a glint star in the 16 px gap right of its well, 2 px clear of either well"
   },
   "incubator": {
-   "rect": [688, 256, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 256, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 1, 176, 86],
    "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
+   "capsule": [120, 1, 56, 86], "capsuleRect": [808, 257, 56, 86], "capsuleFoot": [27, 63], "capsulePodHeight": 27, "capsuleNote": "T-20261016-222 (build-spec section 5, Home's Incubator station): the painted capsule at x0.137, 56 x 86, shows the state only (glass with the pod: growing; door open: ready, with the pod; empty); its bar is lit or off, never a fraction. PLACEMENT is the builder's (the spec gives the size and the pod 27 tall but not the place in the module): centred on the chamber box, 1 px under the module's top, so the 86 px capsule stands inside the 88 px module. The moss line is 63 px under its top (551 - 488), the axis 27 px in",
    "states": { "empty": "the chamber's empty picture, lamp off", "growing": "the chamber's growing picture (the bud's glow), lamp well", "ready": "the chamber's ready picture (lit full), lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
   },
   "probe": {
@@ -88,6 +89,7 @@
  },
  "events": {
   "crateIn": { "kind": "arrival", "target": "cargo", "ms": "(crates − 1) × 250 + 500", "hold": 0, "when": "the Companion docks with crates while Home shows, or Home is landed on from Idle by Dock; docked on another screen, the crates are in the bay when Home next shows", "each": { "from": [0, -40], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay (800, 56, 176, 72)" } },
+  "sendoff": { "kind": "sendoff", "target": "bed", "ms": 1400, "hold": 0, "start": 200, "stagger": 200, "hop": { "ms": 175, "lift": [[0, 1], [25, 2], [50, 3], [75, 4], [100, 3], [125, 2], [150, 1], [175, 0]] }, "out": { "ms": 400, "levels": 16 }, "spec": "specs/station-dock-arrival-spec.md §4, amended T-20261016-67", "rule": "The lift's send-off, in the frame and the living window only; the screen the player is on never changes. On Home and Idle the sleepers on the bed, rightmost first, start 200 ms apart from 200 ms: wake (the nap pose cuts to the resident's own standing painting in its box on the bed, feet on footY), one hop by the hatch's table, then dither out over 400 ms (16 levels) in place; the bed's away mark appears at 1400, when the last is gone. No walk exists in the art. The Cargo module's door shuts at 200 (a cut) and the top bar's Companion goes to its outline with its lamp to stone at 0 (a cut), as today's lift. Reduced motion: every event is a cut to its end (the bed empties at the lift). Dirty: one resident's box (≤ 144 × 152 + 4) per frame" },
   "rest": { "kind": "rest", "target": "knob", "ms": 200, "hold": 380, "keys": "a room key during the hold is dropped, never kept: the rest ends on Idle, where the first press only wakes (frame.json idle.keys.rest)", "steps": [{ "at": 0, "ms": 200, "do": "the knob settles from its lift; the ring goes" }, { "at": 200, "ms": 180, "do": "the screen transition (16-level Bayer dither) to Idle" }] },
   "motion": "Reduced motion (props.motion false): every event is a cut to its end, so the host sends hold 0 and runs what follows an event's end on the frame of the key (rest lands on Idle at once; the crates stand in the bay)"
  },
@@ -202,13 +204,13 @@
   "stages": { "juvenile": "young", "adult": "adult", "elder": "elder" },
   "modules": { "cargo": "Cargo", "pods": "Pods", "incubator": "Incubator", "probe": "Probe", "library": "Library" },
   "actions": {
-   "vivarium": "Open the Vivarium",
+   "vivarium": "Go to the Vivarium",
    "resident": "Look at {name}",
-   "cargo": "Open Cargo",
+   "cargo": "Go to Cargo",
    "pods": "Look at the pods",
-   "incubator": "Open the Incubator",
-   "probe": "Open the Probe",
-   "library": "Open the Library",
+   "incubator": "Go to the Incubator",
+   "probe": "Go to the Probe",
+   "library": "Go to the Library",
    "knob": "Rest"
   },
   "subjects": {
@@ -226,13 +228,13 @@
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
    "order": ["crates", "budReady", "meet", "newPods", "glints", "waitingPods", "couldGrow", "toRead", "budGrowing"],
-   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)" },
-   "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the Incubator" },
+   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open the bay", "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)" },
+   "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the bud" },
    "meet": { "module": null, "notice": "meet {name}", "action": "Meet {name}" },
    "newPods": { "module": "pods", "notice": "{count} new pods in the rack", "noticeOne": "a new pod in the rack", "action": "Look at the pods" },
    "glints": { "module": "pods", "notice": "{count} pods glint", "noticeOne": "a pod glints", "action": "Look at the pods" },
    "waitingPods": { "module": "pods", "notice": "{count} pods wait for a well", "noticeOne": "a pod waits for a well", "action": "Look at the pods" },
-   "couldGrow": { "module": "pods", "notice": "{a} {species} pod could grow", "short": "{a} {species} pod needs more", "action": "Look at the pods", "rule": "short of what growing it costs, it stays a need: the short notice, then each material that is short as its 16 px icon after the words, Energy ⚡ before Essence ❀ (the top bar's order), one space apart, no figure; both short shows both. If the run passes 256 px (the slot less its lamp and gap), the species goes: \"a pod needs more ⚡ ❀\"" },
+   "couldGrow": { "module": "pods", "notice": "{a} {species} pod, ready to incubate", "short": "{a} {species} pod needs more", "action": "Look at the pods", "rule": "short of what growing it costs, it stays a need: the short notice, then each material that is short as its 16 px icon after the words, Energy ⚡ before Essence ❀ (the top bar's order), one space apart, no figure; both short shows both. If the run passes 256 px (the slot less its lamp and gap), the species goes: \"a pod needs more ⚡ ❀\"" },
    "toRead": { "module": "pods", "notice": "{a} {species} pod waits unread", "short": "{a} {species} pod needs more", "action": "Look at the pods", "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure" },
    "budGrowing": { "module": null, "notice": "a bud is growing", "action": "Look at the Incubator" }
   }

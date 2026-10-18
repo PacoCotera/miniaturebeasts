@@ -17,6 +17,9 @@ const CARGO = () => ({
   // the counters and the turn as a fresh scene has them: the goldens do not carry the last scene's gains
   fresh() { const st = window.__st.ST; st.e = 4; st.d = 3; st.s = 6; this.persist(); },
   mend(m) { window.__st.UI.cargo.mend = m; },
+  // the dock arrival's world: `crates` crates (the second holds a species new to the player), two mibis asked home, one asked to go, the Probe a plate short
+  arrivalScene(crates) { this.adults(4); this.away(); this.crates(crates, 2); const S = window.__st, st = S.ST; st.knownIds = ["S01"]; if (crates > 1) { S.SV.bay[1].pods[0].species = "S02"; S.SV.bay[1].pods[0].sp = 1; } st.probe = { shield: 1, smax: 3, tier: 1, seq: 1 }; st.carryReqs = []; st.carrySeq = 0; S.SV.carried = [];
+    if (crates) { st.carryReqs = [{ seq: 1, op: "home", id: st.mibis[0].id }, { seq: 2, op: "home", id: st.mibis[1].id }, { seq: 3, op: "add", id: st.mibis[2].id }]; st.carrySeq = 3; S.SV.carried = [st.mibis[0].id, st.mibis[1].id]; } this.persist(); },
   waitingPods(n) { const st = window.__st.ST; for (let i = 0; i < n; i++) st.waiting.push({ ...st.tray[i % st.tray.length], id: "wait" + i }); },
 });
 // the scenes: what the page's state holds; `to` is where each is taken
@@ -33,7 +36,13 @@ const SCENES = {
 };
 // the opening, one crate of three pods, at the instants of its steps (events.opening.crate) and at its end: motion on, the face's own clock ("at 0" is the first frame, 1 ms in: the closer, sealed, on the open bay; Cargo's own steps are cuts, so there is no dither to catch half cleared)
 const STEPS = { "opening-0": 1, "opening-200": 200, "opening-500": 500, "opening-800": 800, "opening-1200": 1200, "opening-1650": 1650, "opening-end": 3090 };
-const TIMED = { "crates-arriving": { set: (w) => { w.adults(2); w.away(); w.crates(3, 2); }, at: 375, go: () => window.__st.dockKey() } };
+// the dock arrival (T-20261016-48, -58, -112), on Cargo itself (no transition), from the Dock: two crates (one holding a species new to the player, S02), two mibis asked home, one asked to go, the Probe a plate short (mended free);
+// `arrival-2200` is the show with two arrivals, `arrival-choice` the strip over the rack, `arrival-empty-trip` the empty trip's ribbon and band before it closes by itself. `crates-arriving` (Cargo's own slide on the Dock) is retired: the arrival replaces it.
+const TIMED = {
+  "arrival-2200": { set: (w) => w.arrivalScene(2), at: 2200, go: () => window.__st.dockKey() },
+  "arrival-choice": { set: (w) => w.arrivalScene(2), at: 3700, go: () => window.__st.dockKey() },
+  "arrival-empty-trip": { set: (w) => w.arrivalScene(0), at: 2000, go: () => window.__st.dockKey() },
+};
 
 async function apply(page, sc, name, motion) {
   await page.evaluate(([setSrc, open]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.goto("cargo"); }, [sc.set.toString(), sc.open ?? 0]);
@@ -77,6 +86,13 @@ async function timedStates(visit) {
     for (const [name, tp] of Object.entries(TIMED)) {
       await apply(page, { set: tp.set }, name); await step(1200); await page.evaluate(tp.go); await step(tp.at);
       await visit("cargo-" + name, page, fail); await step(1500);
+    }
+    {   // ✓ Skip (lvgl-switch.md §2.1): ✓ Open the bay, 1000 ms into the opening a second ✓ skips it, and the frame after the skip is the report
+      await apply(page, { set: (w) => { w.adults(2); w.pods(1); w.crates(1, 3, { lines: ["The meadow's mist burned off by noon"] }); } }, "opening-skip");
+      await step(1200); await page.evaluate(() => window.__st.press("confirm")); await step(1000); await page.evaluate(() => window.__st.press("confirm")); await step(16);
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, state: window.__st.UI.cargo.state }));
+      if (u.screen !== "cargo" || u.state !== "report") fail(`cargo-opening-skip: on ${u.screen}, state ${u.state}`);
+      await visit("cargo-opening-skip", page, fail); await step(1500);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }

@@ -30,6 +30,10 @@ void habitat_hidden(void); int habitat_tick(uint32_t now); int habitat_test_cell
 void namer_words(void);
 int namer_focus(focus_target_t *out, int cap);
 void namer_key(int code);
+/* The decision panel (screens/panel.c), an overlay the same way: its words, its targets as they drew them, its keys */
+void panel_words(void);
+int panel_focus(focus_target_t *out, int cap);
+void panel_key(int code);
 int screens_overlay_known(const char *id);
 /* The Library spread (screens/library.c): its words, the frames as they drew them, its keys */
 void library_words(void);

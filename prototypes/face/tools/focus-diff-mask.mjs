@@ -25,7 +25,7 @@ const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.a
 const home14 = ["cargo-empty", "incubator-empty", "incubator-growing", "incubator-ready", "probe-docked", "probe-away", "probe-sitting", "library-empty", "library-pages", "vivarium-focused", "knob-focused", "resident-focused", "sleeper-focused", "moving-asleep"].map((n) => "home-" + n);
 const viv14 = ["docked", "away", "mibi-out", "tile", "sleeper", "twelve", "docked-dawn", "docked-day", "docked-dusk", "docked-night", "walk-8000ms", "moving-8000ms"].map((n) => "vivarium-" + n);
 const create14 = ["shape", "shape-changed", "shape-clash", "shape-doing", "shape-onelook", "shape-short", "shape-busy", "shape-first", "roll-100", "grow", "grow-150", "grow-end"].map((n) => "create-" + n);
-export const EXPECTED = { home: home14, vivarium: viv14, create: create14, library: ["library-spread", "library-spread-empty", "library-spread-complete"], bench: ["bench", "bench-armed", "bench-away", "bench-tier2"] };   // Habitat and Pods: all of theirs
+export const EXPECTED = { home: home14, vivarium: viv14, create: create14, library: ["library-spread", "library-spread-empty", "library-spread-complete"], bench: ["bench", "bench-panel-upgrade", "bench-away", "bench-tier2"] };   // Habitat and Pods: all of theirs
 
 // ---- the band the ring may change: the old ring (the forms of the head before) and the new one (focusRingOps), each grown by one pixel ----
 function oldRing(screen, cur, r) {

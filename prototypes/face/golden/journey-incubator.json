@@ -14,8 +14,56 @@
     ],
     "screen": "incubator",
     "state": "growing",
-    "ok": "Grow now",
-    "price": "❀ 11",
+    "ok": "Hatch now",
+    "price": null,
+    "subject": ""
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "back"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Hatch now",
+    "price": "❀ 10",
+    "subject": "a Loika bud"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Hatch now",
+    "price": null,
+    "subject": ""
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Hatch now",
+    "price": "❀ 10",
     "subject": "a Loika bud"
    },
    {
@@ -29,30 +77,13 @@
     "screen": "incubator"
    },
    {
-    "ready": "ready",
-    "ok": "Open"
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "incubator",
-      "target": "room",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "incubator",
-    "state": "hatch",
-    "ok": null,
-    "price": null,
-    "subject": ""
+    "hatch": "hatch",
+    "ok": "Skip"
    },
    {
     "held": [
      "up",
      "left",
-     "confirm",
      "back"
     ],
     "said": [],
@@ -82,7 +113,7 @@
     ],
     "screen": "pods",
     "state": "collection",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "price": null,
     "subject": "Loika is partly read"
    },

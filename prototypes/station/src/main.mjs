@@ -5,7 +5,7 @@
 import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
 import { stationSeconds } from "./game.mjs";
-import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
+import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { lightAt } from "./views/home-props.mjs";
@@ -17,7 +17,9 @@ import * as caddy from "./caddy.mjs";
 import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
-import { loadMasters } from "./masters.mjs";
+import { loadMasters, loadStandLayers } from "./masters.mjs";
+import { setStandSizes } from "./layered-stand.mjs";
+import { setStandLooks } from "./looks.mjs";
 import { injectPortraitSource } from "./portrait-source.mjs";
 import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
@@ -57,7 +59,7 @@ function pump() {
 }
 // The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
 function syncProps() {
-  if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: 4000 }); }
+  if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   if (key === lastProps) return;
@@ -95,7 +97,7 @@ export function act(k) {
   syncProps();
   if (k === "dock") { dockKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
-  if (k !== "confirm") H.disarm();
+  if (k !== "back") UI.arrival = null;   // the Incubator's ← returns to Pods only until another key (the arrival mode of the jump flag)
   FACE.key(k); pump();
 }
 const stationEl = $("station");
@@ -143,14 +145,16 @@ const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), do
 let caddyKey = "";
 const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 // The Caddy's state as the control and the play page's shell take it (frame.json navigation.dock; the shell never reads the save): canDock is the exact condition state.mjs refuses a dock on
-const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock) });
+// opened: what the last opening brought, until the next dock or lift; partner: the Companion's partner (its lead if carried and grown, else the first grown mibi with it), for the Caddy's lines (play/src/caddy.mjs)
+const partnerName = () => { const p = S.partnerOf(G.st, G.sv, G.settings); return p ? p.name : null; };
+const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName() });
 let lastPosted = "";
 function postCaddy(force = false) {
   const m = caddyState(), k = JSON.stringify(m); if (!force && k === lastPosted) return; lastPosted = k;
   if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
 }
 function updateCaddy() {
-  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock; if (key === caddyKey) return; caddyKey = key;
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner; if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
@@ -191,9 +195,10 @@ const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]
 // The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench and cross: the rack pod reads its pigment chips), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "cross"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross"]) SPECS[k] = await spec(k + ".json");
   { const ix = await spec("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = await spec(`moving/${id}.json`); SPECS.moving = sets; setMoving(sets); }   // the moving sets (Station M1 §2.2): one file a species, one spec on the face
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
+  setStandLooks(await spec("stand-looks.json")); setStandSizes(await spec("stand-sizes.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
 };
@@ -210,6 +215,7 @@ const faceBoot = async () => {
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
+  { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings
   UI.lastInput = performance.now(); G.ready = true;
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
@@ -249,7 +255,7 @@ window.__st = { ready, renderErrors, portraitSource: (digest, rgba) => { const r
 function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null, f = FACE;
   const pr = lastProps ? JSON.parse(lastProps) : null;
-  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "spread" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: !!pr.overlay } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, frame: pr?.regions?.page?.frame ?? null, cmpCells: pr?.regions?.pageA?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
+  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "spread" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: pr.overlay?.id === "namer" } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null), overlay: pr.overlay?.id ?? null }, cells: pr?.regions?.page?.cells?.length ?? null, frame: pr?.regions?.page?.frame ?? null, cmpCells: pr?.regions?.pageA?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
     pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null,
     placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }

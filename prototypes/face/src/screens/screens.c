@@ -76,7 +76,7 @@ static int vet_ring(const char *screen, const char *name, char *err, int cap) {
   if (*why) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, R, why); return -1; }
   return 0;
 }
-int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0; }
+int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0 || strcmp(id, "panel") == 0; }
 int screens_vet_spec(const char *screen, char *err, int cap) {
   if (strcmp(screen, "moving") == 0) return moving_load(err, cap);   /* the moving sets (M1 §2.2): checked whole, refused with the reason */
   { char kind[16]; if (spec_str(screen, "kind", kind, sizeof kind) > 0 && strcmp(kind, "overlay") == 0 && spec_len(screen, "over") <= 0) { snprintf(err, (size_t)cap, "spec %s: an overlay lists the screens it opens over (over)", screen); return -1; } }
@@ -106,7 +106,20 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
   }
   return 0;
 }
+/* the Incubate | Keep shaping panel is open over Create (panel.json `incubate`): Create's own words are not drawn; the face holds Create as one snapshot picture for the panel's right window */
+static int incubate_open(void) { char id[24], form[16]; if (spec_len("props", "overlay") < 0) return 0; spec_str("props", "overlay.id", id, sizeof id); spec_str("props", "overlay.form", form, sizeof form); return strcmp(id, "panel") == 0 && strcmp(form, "incubate") == 0; }
+/* Create as it stands when it is left: its words drawn once on their own (no ring: the host sends Create's focus as none under the panel, no frame), the stage rect copied into the snapshot picture (lv_snapshot) */
+/* the Hatch now | Wait panel is open over the Incubator: the Incubator's own words are not drawn; the panel composes both looks itself */
+static int hatchnow_open(void) { char id[24], form[16]; if (spec_len("props", "overlay") < 0) return 0; spec_str("props", "overlay.id", id, sizeof id); spec_str("props", "overlay.form", form, sizeof form); return strcmp(id, "panel") == 0 && strcmp(form, "hatchnow") == 0; }
+static void snapshot_create(void) {
+  int r[4]; if (!v_spec_rect("panel", "incubate.right.snapshot", r)) return;
+  prim_begin(); v_set_focal(NULL); create_words(); prim_end();
+  if (prim_snapshot(r[0], r[1], r[2], r[3]) < 0) v_error("panel: the snapshot of Create could not be taken");
+}
 static void draw(void) {
+  { char sc[32]; spec_str("props", "screen", sc, sizeof sc);
+    if (strcmp(sc, "create") == 0 && spec_has("create") && spec_has("pods") && spec_has("panel") && spec_len("props", "regions") >= 0 && incubate_open()) { if (prim_snapshot_handle() < 0) snapshot_create(); }
+    else prim_snapshot_free(); }
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
     if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
@@ -118,12 +131,12 @@ static void draw(void) {
     else if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_words(); }
     else if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { home_hidden(); bench_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
-    else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); create_words(); }
-    else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); incubator_words(); }
+    else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); if (!incubate_open()) create_words(); }
+    else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); if (!hatchnow_open()) incubator_words(); }
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") >= 0) build_idleLine(); }   /* Idle: the living window above, its line last */
   else if (is_not_built()) not_built();
-  if (spec_len("props", "overlay") >= 0) { char id[24]; spec_str("props", "overlay.id", id, sizeof id); if (strcmp(id, "namer") == 0 && spec_has("namer")) namer_words(); }   /* an overlay: after the screen's words, before the frame's (the plate stands over it): order, not a layer */
+  if (spec_len("props", "overlay") >= 0) { char id[24]; spec_str("props", "overlay.id", id, sizeof id); if (strcmp(id, "namer") == 0 && spec_has("namer")) namer_words(); else if (strcmp(id, "panel") == 0 && spec_has("panel")) panel_words(); }   /* an overlay: after the screen's words, before the frame's (the plate stands over it): order, not a layer */
   frame_words();
   stage_dither();
   prim_end();
@@ -146,6 +159,8 @@ void screens_say(const char *kind, const char *target, const char *verb) {
   wire_emit(b);
 }
 void screens_key(int code) {
+  { char st[48]; int room = code == 2 || code == 114 || code == 108 || code == 98;   /* the dock arrival's show (target "show") is cut by any key but a room key (which is Later, then acts: the host's) */
+    if ((code == 10 || (!room && anim_skippable(st, sizeof st) && strcmp(st, "show") == 0)) && anim_skippable(st, sizeof st)) { anim_skip(); screens_say("intent", st, "skip"); screens_redraw(); return; } }   /* ✓ in a skippable hold (§2.1): the event cuts to its end, says done, and ✓ is said as `skip` on its target; nothing else takes ✓ in a hold */
   if (anim_holding()) {   /* an event holds input: no key is acted on but a room key, which is said on the current focus target (or the screen); the host keeps the last one and dispatches it when the hold ends (§2.1) */
     char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
     if (rv) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : strcmp(sc, "home") == 0 || strcmp(sc, "cargo") == 0 ? "room" : "screen", rv); }
@@ -154,7 +169,7 @@ void screens_key(int code) {
   anim_cut();   /* a press ends the events that carry `cut` (they say done on this frame), and then acts itself */
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
-  if (spec_len("props", "overlay") >= 0 && spec_has("namer")) { namer_key(code); return; }   /* an overlay open: its graph is the only one and the screen beneath takes no key */
+  if (spec_len("props", "overlay") >= 0) { char oid[24]; spec_str("props", "overlay.id", oid, sizeof oid); if (strcmp(oid, "panel") == 0 && spec_has("panel")) { panel_key(code); return; } if (spec_has("namer")) { namer_key(code); return; } }   /* an overlay open: its graph is the only one and the screen beneath takes no key */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
     const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[64];
     if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";

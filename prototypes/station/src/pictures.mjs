@@ -6,7 +6,9 @@
 import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset, hasAsset, isFilled } from "../../ui/assets.mjs";
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
-import { gradedOf } from "./light-grade.mjs";
+import { gradedOf, grade } from "./light-grade.mjs";
+import { layeredStand, composeStand, standPictureId, fitDown } from "./layered-stand.mjs";
+import { drawnLooks } from "./looks.mjs";
 import { portraitSource } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
@@ -14,6 +16,7 @@ import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt, speciesStudy
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
+import { relit } from "./relight.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
@@ -57,6 +60,15 @@ const movingSource = (env) => ({
   stand: (species, stage, w, h, light) => placedPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h, light) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
   nap: (species, light) => placedPic(`mibi-juvenile-${species}-96x88`, 96, 88, light) ?? speciesArt(env.frameOf(species), 96, 88, "three-quarter"),
 });
+// A layered stand (layered-stand.mjs): the base with the layers the mibi's drawn looks call for, composed here in the logic process once and kept by id like the stamp; the face is given the pixels 1:1 and never a layer.
+// A light grades the composed picture (light-grade.mjs), as it grades a master. The layers are proof cut-outs until the masters land (art.mjs PLACEHOLDERS "stand-layers"), so the picture is a placeholder.
+const LAYER_UNTIL = "the eye-ring overlays and the colour ramps (T-20261016-200, T-20261016-203): the stand is the signed version 4 base and layers, with the base's rings and charcoal coat";
+function registerLayered(r) {
+  const stand = layeredStand(r.species, r.stage, r.size, r.view); if (!stand) throw new Error(`mibi ${r.id}: the species has no layered stand at ${(r.size).join("×")}`);
+  const [w, h] = stand.size, day = standPictureId(stand, r.looks);
+  if (!hasAsset(day)) registerAsset({ id: day, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => composeStand(stand, r.looks) });
+  if (r.id !== day && !hasAsset(r.id)) registerAsset({ id: r.id, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => grade(assetOf(day), r.light ?? "day") });
+}
 // Register what a view asked for. `env`: { podById, frameOf }. Returns nothing; the ids are in the requests.
 export function registerPictures(reqs, env) {
   for (const r of reqs) {
@@ -66,6 +78,22 @@ export function registerPictures(reqs, env) {
       case "rackpod": {   // the Home rack pod: the signed 24×32 layers recoloured by the species' pair (home.json regions.pods.pod.layers); an empty picture until the base layers are placed
         const P = SPECS.home.regions.pods.pod; if (!r.size || r.size[0] !== P.size[0] || r.size[1] !== P.size[1]) throw new Error(`rackpod ${r.id}: size ${r.size} is not the spec's ${P.size}`); const L = P.layers, patterns = SPECS.pods.podLayers.patterns, frame = r.species ? env.frameOf(r.species) : null, placed = rackLayersPlaced(L), pid = rackPatternId(frame, L, patterns);
         put(r.id, P.size[0], P.size[1], "the rack pod's layers (the home hand masters)", () => (placed ? rackPodFromLayers(frame, L, SPECS.cross.colours.pigmentChips, patterns, P.size) : new PB(P.size[0], P.size[1])), placed ? { status: leastFinal([...rackBase(L), ...(pid ? [pid] : [])]) } : {}); break;
+      }
+      case "podpart": {   // a piece of a pod from its signed layers at their own size (the opened pod's bowl and cap, pod-opened-*), recoloured by the species' pair, never scaled (T-20261016-222)
+        const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
+        put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
+      }
+      case "podicon": {   // the founder's pod in the Incubate panel's price (build spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
+        const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
+        put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
+      }
+      case "relit": {   // a figure lit to the capsule's roof lamp, with its shadow and the moss blades in front of its feet, one picture (relight.mjs), made in the logic process; parts: [{ id, over?: [id] }], bg: { id, at: [x, y] } or null
+        const ok = r.parts.every((p) => isFilled(p.id) || hasAsset(p.id));
+        registerAsset({ id: r.id, w: r.area[0], h: r.area[1], status: "derived", until: null, build: () => { let data = null; return { w: r.area[0], h: r.area[1], rgba: () => { if (data) return data;
+          if (!ok) return (data = new Uint8ClampedArray(r.area[0] * r.area[1] * 4));
+          const src = (id) => { const a = assetOf(id); return { rgba: a.rgba(), w: a.w, h: a.h }; };
+          data = relit({ parts: r.parts.map((p) => ({ ...src(p.id), over: (p.over ?? []).filter((o) => isFilled(o) || hasAsset(o)).map((o) => src(o).rgba) })), scale: r.scale ?? 1, figH: r.figH ?? 0, sink: r.sink ?? 0, inset: r.inset ?? 12, area: r.area, anchor: r.anchor, bg: r.bg && (isFilled(r.bg.id) || hasAsset(r.bg.id)) ? { ...src(r.bg.id), x: r.bg.at[0], y: r.bg.at[1] } : null }); return data; } }; } });
+        break;
       }
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
       case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size, r.band)); break;
@@ -86,13 +114,20 @@ export function registerPictures(reqs, env) {
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); const pic = stampPicture(fr, g, r.read).build(); return r.k ? dimPicture(pic, r.k) : pic; }); break;   // with a k the stamp is dimmed in linear light when it is rasterised (stamplook.mjs)
       case "founder": { const painted = placedPic(`mibi-adult-${r.species}-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1]);   // Create founder A (interim): the species' painted adult, one flat picture, in place of the rig render
         put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted); }, painted ? { status: "master" } : {}); break; }   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
+      case "crop": {   // a window of a placed master, 1:1 (never scaled): the master's pixels at `at`, `size` wide and high, transparent where the window passes the master's edge; a master not placed leaves the labelled stand-in
+        const m = masterAt(r.master, r.of[0], r.of[1]), [w, h] = r.size, [x0, y0] = r.at; if (hasAsset(r.id)) break;
+        if (!m) { put(r.id, w, h, r.until, () => { const pb = new PB(w, h); pb.rect(0, 0, w, h, C.stone); return pb; }); break; }
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => { if (data) return data; const s = assetOf(r.master).rgba(), W = r.of[0], H = r.of[1]; data = new Uint8ClampedArray(w * h * 4);
+          for (let y = 0; y < h; y++) { const sy = y0 + y; if (sy < 0 || sy >= H) continue; for (let x = 0; x < w; x++) { const sx = x0 + x; if (sx < 0 || sx >= W) continue; data.set(s.subarray((sy * W + sx) * 4, (sy * W + sx) * 4 + 4), (y * w + x) * 4); } } return data; } }; } });
+        break;
+      }
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill
       case "portrait": {   // the sitting's portrait at 40×30, derived on the Station (derive.mjs): an empty slot until its source arrives, then filled (assets.mjs: a stand-in fills an empty slot); the status is "derived", never in the placeholder register
         const src = portraitSource(r.digest);
         if (!src) registerSlot({ id: r.id, w: 40, h: 30, until: "the sitting's portrait (derived on the Station from its opening)" }); else registerAsset({ id: r.id, w: 40, h: 30, status: "derived", build: () => src });
         break;
       }
-      case "mibi": { const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas (Station M1 §1.2): composed from its placed masters or §1.5's stand-ins
+      case "mibi": { if (r.looks) { registerLayered(r); break; } const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
       case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas (Station M1 §1.2): composed from its placed masters or §1.5's stand-ins
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       case "spread": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread masters (library.json masters)", () => (r.part === "stage" ? spreadStageArt(SPECS.library) : r.part === "gilt" ? spreadGiltArt(SPECS.library) : spreadSealArt(SPECS.library))); break;   // the stage, the gilt corner, the seal: the signed master when placed, else the labelled stand-in

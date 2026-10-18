@@ -62,7 +62,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     }
     if (pic.policy !== "art" && pic.policy !== "painted") throw new Error(`the picture ${id} has no layer policy: the host sends "art" or "painted" with every picture (host.mjs picture())`);   // the layer a picture shows on is the host's (ui/asset-policy.mjs); the transport never guesses it
     const status = pic.status === "master" ? "master" : "placeholder", policy = pic.policy;
-    if (send({ t: "asset", id, w: pic.w, h: pic.h, policy, status, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(pic.tile ? { tile: pic.tile } : {}), ...(pic.foot ? { foot: pic.foot } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
+    if (send({ t: "asset", id, w: pic.w, h: pic.h, policy, status, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(Number.isInteger(pic.tile) && pic.tile ? { tile: pic.tile } : {}), ...(pic.foot ? { foot: pic.foot } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
     const h = M._face_last_asset(), p = M._face_asset_pixels(h), d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
     handles.set(id, { h, used: sceneNo }); return h;

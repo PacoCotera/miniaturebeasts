@@ -147,7 +147,7 @@ const srgbMean = (img, [x, y, w, h]) => { let t = 0; for (let j = y; j < y + h; 
 const LABELS = {   // screen: [golden, the label's rect, the main object's rect (the pod, the founder, the bud, the resident), the stamp's case on it]
   pods: ["pods/pods-overview-identified-pod-focused.png", [804, 400, 120, 120], [184, 216, 144, 176]],
   create: ["create/create-shape.png", [804, 336, 120, 120], [360, 240, 304, 312]],   // the slot moved up 64 with the case (fix 5 Create)
-  incubator: ["incubator/incubator-growing.png", [804, 256, 120, 120], [448, 264, 128, 160]],
+  incubator: ["incubator/incubator-growing.png", [92, 200, 120, 120], [436, 255, 152, 160]],   // T-20261016-222: the label on the left wall, the sealed pod in the capsule
   habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],
 };
 for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the stamp label on ${screen} is dimmer than the specimen: mean and 95th percentile of linear luminance under the main object's, cell contrast at least 4.11, sRGB mean at most 111 (against the 115 cap)`, () => {
@@ -456,10 +456,10 @@ test("the Incubator's plate is the master stamp-plate-120x120 at 1:1, no K x WAR
   assert.equal(plateReq(req, 0.2), "stamp-plate-120-k20"); assert.deepEqual(asked[1], { kind: "stampplate", id: "stamp-plate-120-k20", size: 120, k: 0.2 }, "Create keeps the look's plate request");
   const here = new URL(".", import.meta.url), master = decodePNG(readFileSync(new URL("../../ui/assets/masters/pods/stamp-plate-120x120.png", here)));
   assert.deepEqual([master.width, master.height], [120, 120]); assert.ok(master.data.every((v, i) => i % 4 !== 3 || v === 255), "opaque");
-  // on the Incubator's goldens (growing, ready, hatch-1100) the plate's pixels outside the glyph's 104 x 104 recess are the master's, untouched
-  for (const state of ["growing", "ready", "hatch-1100"]) {
+  // on the Incubator's goldens (growing, ready, hatch-1090) the plate's pixels outside the glyph's 104 x 104 recess are the master's, untouched: the case's front master is clear over the 120 x 120 plate (it covers the frame band only)
+  for (const state of ["growing", "ready", "hatch-1090"]) {
     const cap = decodePNG(readFileSync(new URL(`../../face/golden/incubator/incubator-${state}.png`, here))); let bad = 0, n = 0;
-    for (let y = 0; y < 120; y++) for (let x = 0; x < 120; x++) { if (x >= 8 && x < 112 && y >= 8 && y < 112) continue; n++; for (let c = 0; c < 3; c++) if (cap.data[((232 + y) * cap.width + 804 + x) * 4 + c] !== master.data[(y * 120 + x) * 4 + c]) { bad++; break; } }
+    for (let y = 0; y < 120; y++) for (let x = 0; x < 120; x++) { if (x >= 8 && x < 112 && y >= 8 && y < 112) continue; n++; for (let c = 0; c < 3; c++) if (cap.data[((200 + y) * cap.width + 92 + x) * 4 + c] !== master.data[(y * 120 + x) * 4 + c]) { bad++; break; } }
     assert.equal(bad, 0, `${state}: ${bad} of ${n} plate pixels outside the recess differ from the master`);
   }
   const bone = RGB[C.bone], hair = RGB[C.hairline]; assert.deepEqual([...labelPlate(120, bone, hair, 0.20).rgba().slice(0, 4)], [...hair, 255], "Create's plate keeps its hairline");

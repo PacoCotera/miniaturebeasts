@@ -1,0 +1,26 @@
+{
+ "$comment": "The props of the Incubate | Keep shaping panel (T-20261016-222; panel.json `incubate`; build-spec 6a): `overlay` on Create's message while the panel is open, form `incubate`. Props name what, never where: the two verbs, the price as the bottom line's price string (empty when every figure is 0), the founder's pod (a 16 x 20 picture), the left window's pictures (the sealed capsule: the dusk room, interior, this founder's relit pod, the glass, the shell, the seal ring) with their sizes, and the focus targets by id. The right window is Create as it stood, the face's own snapshot (prim_snapshot): nothing is sent for it. The rectangles are panel.json's.",
+ "type": "object",
+ "required": ["id", "state", "form", "regions", "focus"],
+ "additionalProperties": false,
+ "properties": {
+  "id": { "enum": ["panel"] },
+  "state": { "enum": ["open"] },
+  "form": { "enum": ["incubate"] },
+  "regions": {
+   "type": "object",
+   "required": ["cards", "verbs", "price", "pod", "left"],
+   "additionalProperties": false,
+   "properties": {
+    "cards": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "object", "required": ["id"], "additionalProperties": false, "properties": { "id": { "enum": ["incubate", "keep"] } } } },
+    "verbs": { "type": "object", "required": ["incubate", "keep"], "additionalProperties": false, "properties": { "incubate": { "type": "string" }, "keep": { "type": "string" } } },
+    "price": { "type": "string" },
+    "pod": { "type": "string" },
+    "left": { "type": "object", "required": ["room", "interior", "shell", "seal", "glass", "layerSize", "pod", "podSize", "podAnchor"], "additionalProperties": false, "properties": {
+      "room": { "type": "string" }, "interior": { "type": "string" }, "shell": { "type": "string" }, "seal": { "type": "string" }, "glass": { "type": "string" }, "pod": { "type": "string" },
+      "layerSize": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }, "podSize": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }, "podAnchor": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 } } }
+   }
+  },
+  "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "enum": ["card.incubate", "card.keep"] }, "targets": { "type": "array", "items": { "type": "object", "required": ["id", "enabled"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "enabled": { "type": "boolean" } } } } } }
+ }
+}

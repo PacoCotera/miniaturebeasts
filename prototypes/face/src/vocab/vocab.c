@@ -36,6 +36,11 @@ int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, in
   prim_node(v_id(id), FN_SPRITE, x, y, w, h, ((uint32_t)sx << 16) | (uint32_t)sy, hd, 0); return 1;   /* the window of the picture at source (sx, sy): its w x h, 1:1 */
 }
 
+int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]) {
+  int hd = wire_asset_slot(asset); if (hd < 0) return 0;
+  int ins[4] = { 0, 0, 0, 0 }, tile = 0; if (!wire_asset_nine(hd, ins, &tile) && insets) { for (int k = 0; k < 4; k++) ins[k] = insets[k]; }
+  prim_node(v_id(id), FN_NINE, x, y, w, h, ((uint32_t)ins[0] << 24) | ((uint32_t)ins[1] << 16) | ((uint32_t)ins[2] << 8) | (uint32_t)ins[3], hd, tile); return 1;
+}
 int v_sprite_hidden(const char *id, const char *asset, int x, int y) {
   int hd = wire_asset_slot(asset); if (hd < 0) return 0;
   prim_node(v_id(id), FN_SPRITE, x, y, 0, 0, 1u << 16, hd, 0); return 1;   /* a window of no size at source x 1: it draws nothing and counts for nothing, and is the same node as the shown one */

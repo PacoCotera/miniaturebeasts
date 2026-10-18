@@ -197,6 +197,27 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await ctx.close();
 }
 
+// ---- K. the Caddy's screen (T-20261016-109): raised from the cradle at a seat, 6000 ms, then lowered; Shift+C pins it (1920 × 1080, the bench shelf) ----
+{
+  const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3" });
+  await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
+  const sheet = () => page.evaluate(() => __play.caddySheet);
+  eq((await sheet()).up, false, "K: hidden by default"); expect(await page.locator("#caddySheet").isHidden(), "K: the sheet is not shown before a dock");
+  await page.click("#dockCtl"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "K: docked");
+  let k = await sheet(); eq(k.up, true, "K: the dock raises the Caddy's screen");
+  eq(await box(page, "#caddySheet"), [734, 760, 808, 288], "K: the sheet"); eq(await box(page, "#caddyView"), [742, 768, 792, 272], "K: the view, 1 lp per view pixel");
+  eq([k.lines.line1, k.lines.line2], ["Companion home", "one crate"], "K: its lines read the docked state");
+  eq(await page.evaluate(() => [document.getElementById("caddyView").width, document.getElementById("caddyView").height]), [792, 272], "K: the canvas is the view's 792 × 272");
+  eq(await box(page, "#bench"), [12, 760, 1522, 308], "K: the bench shelf has not moved");
+  await clip(page, "play-caddy-sheet.png");   // the Caddy's screen raised over the shelf, docked with one crate
+  await page.waitForTimeout(6200); eq((await sheet()).up, false, "K: lowered 6000 ms after the dock");
+  await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); k = await sheet(); eq([k.up, k.pinned], [true, true], "K: Shift+C pins it up");
+  await page.waitForTimeout(6200); eq((await sheet()).up, true, "K: a pinned screen stays past 6000 ms");
+  await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); k = await sheet(); eq([k.up, k.pinned], [false, false], "K: Shift+C again lowers it");
+  eq(k.refreshes, 2, "K: two partial refreshes: away at load, then docked (Shift+C redraws nothing)");
+  await ctx.close();
+}
+
 // ---- standard (1440 × 900), the wide developer column and the standalone control, for the captures ----
 {
   const { ctx, page, st } = await open(1440, 900);
@@ -206,7 +227,13 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.click("#tabBench"); await page.waitForTimeout(300); await page.click("#tabBench"); await page.waitForTimeout(200);
   eq(await page.evaluate(() => [__play.owner, !document.getElementById("bench").classList.contains("hidden")]), ["bench", true], "standard: a second press on the Bench tab does nothing");
   await page.click("#tabCompanion"); await page.waitForTimeout(300);
-  await clip(page, "play-standard-companion.png"); await ctx.close();
+  await clip(page, "play-standard-companion.png");
+  await page.click("#dockCtl"); await page.waitForTimeout(700);   // K, standard tier: no sheet; the bar's note says the Caddy's lines for 4000 ms
+  eq(await page.evaluate(() => [__play.caddySheet.up, document.getElementById("caddySheet").classList.contains("hidden")]), [false, true], "K: standard: no Caddy sheet");
+  eq(await page.evaluate(() => [document.getElementById("note").textContent, !document.getElementById("note").classList.contains("hidden")]), ["Caddy: Companion home · one crate", true], "K: standard: the note shows the Caddy's line after a dock");
+  await page.keyboard.press("Shift+C"); await page.waitForTimeout(200); eq(await page.evaluate(() => __play.caddySheet.up), false, "K: standard: Shift+C does nothing");
+  await page.waitForTimeout(4200); eq(await page.evaluate(() => document.getElementById("note").classList.contains("hidden")), true, "K: standard: the note goes after 4000 ms");
+  await ctx.close();
 }
 {
   const { ctx, page, st } = await open(1920, 1080, { query: "?test&dev" });

@@ -255,3 +255,33 @@ test("the goal is drawn in the notice zone in mist with no lamp; a name too wide
   const both = await start(scene({ adults: 1, carry: [] }), { frame: { need: "a new pod waits", goal: { text: "read Dot's chapters", icons: "", plain: "" } } }), only = await start(scene({ adults: 1, carry: [] }), { frame: { need: "a new pod waits" } });
   logOf(both); logOf(only); both.frame((both.t += 16)); only.frame((only.t += 16)); assert.equal(widthOf(both), widthOf(only), "the need keeps the zone");
 });
+
+// ---- the lift's send-off on the bed (T-20261016-58; home.json events.sendoff; specs/station-dock-arrival-spec.md §4, amended T-67) ----
+function sendoffScene(o = {}) {
+  const st = world(); S.seedAdults(st, "S01", 5, o.adults ?? 3, settings); painted(st); st.dock = { docked: false, at: T0 };   // lifted: the top bar and the Cargo module say so; the bed keeps its sleepers until the send-off ends
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: st.mibis.slice(0, o.sleepers ?? 3).map((m) => m.id), tier: 1, shield: 3 };
+  return homeBuild({ st, sv, settings, docked: false, sendoff: o.sendoff ?? true, ui: {}, focus: null, light: "day" }, homeSpec, frameSpec);
+}
+const SO = homeSpec.events.sendoff;
+test("the send-off's props: the bed stays docked with its sleepers and each carries its standing painting (the resident's own, 144 × 152), the flag is on; without the send-off nothing is added and the lifted bed is away", () => {
+  const b = sendoffScene(), bed = b.props.regions.bed; assert.equal(bed.state, "docked"); assert.equal(bed.sendoff, true); assert.equal(bed.sleepers.length, 3);
+  for (const p of bed.sleepers) assert.match(p.stand, /^mibi:/, "the standing painting is the resident's own: " + p.stand);
+  const n = sendoffScene({ sendoff: false }).props.regions.bed; assert.equal(n.state, "away"); assert.equal("sendoff" in n, false); assert.ok(n.sleepers.every((p) => !("stand" in p)));
+});
+test("the send-off at the instants of home.json events.sendoff: the rightmost sleeper wakes at 200 (the standing painting in its box, a cut), hops once, dithers out over 400 ms; the next 200 ms later; none is drawn after; every frame redraws at most a quarter of the screen (the worst is printed)", { skip }, async () => {
+  const b = sendoffScene(), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); dirty(f);
+  const sl = b.props.regions.bed.sleepers, ns = sl.length, standColour = (p) => hash(p.stand);
+  const at = (ms) => { f.frame(t0 + ms); return f; }, px = (p, i) => { const r = homeSpec.regions.bed.sleepers, foot = r.places[ns][i], box = [foot - 72, r.footY - 152, 144, 152]; return f.pixel(box[0] + 72, box[1] + 100); };
+  f.send({ t: "event", kind: "sendoff", target: "bed", ms: SO.ms, hold: SO.hold }); f.frame(t0);
+  const stood = (p, i) => { const c = px(p, i), k = standColour(p); return c[0] === 70 + (k & 127) && c[1] === 70 + ((k >> 7) & 127) && c[2] === 70 + ((k >> 14) & 127); };
+  at(100); assert.ok(sl.every((p, i) => !stood(p, i)), "before 200 every sleeper is asleep (the nap pose)");
+  at(SO.start + 40); assert.ok(stood(sl[ns - 1], ns - 1), "the rightmost wakes first"); assert.ok(!stood(sl[0], 0), "the others still sleep");
+  at(SO.start + SO.stagger + 40); assert.ok(stood(sl[ns - 2], ns - 2), "the next 200 ms later");
+  let worst = 0, wat = 0; f.frame(t0); dirty(f); for (let t = 16; t <= SO.ms + 100; t += 16) { f.frame(t0 + t); const d = dirty(f); if (d > worst) { worst = d; wat = t; } }
+  console.log(`# the send-off, frames every 16 ms: worst refresh ${worst} px (${(100 * worst / 614400).toFixed(1)}%) at ${wat} ms`); assert.ok(worst <= 153600, `the send-off redrew ${worst} px at ${wat} ms`); assert.deepEqual(f.errors(), []);
+  const g = await start(b, { t0: 1000 }), s0 = g.t; g.send({ t: "event", kind: "sendoff", target: "bed", ms: SO.ms, hold: SO.hold }); g.frame(s0); g.frame(s0 + SO.ms + 50);
+  assert.ok(sl.every((p, i) => { const c = (() => { const r = homeSpec.regions.bed.sleepers, foot = r.places[ns][i]; return g.pixel(foot, r.footY - 52); })(); const k = standColour(p); return !(c[0] === 70 + (k & 127) && c[1] === 70 + ((k >> 7) & 127)); }), "after the send-off none is drawn");
+});
+test("with reduced motion the send-off is not drawn: the flag is never set and the bed empties to its away mark at the lift (the host's rule, intents/frame.mjs sendOff)", () => {
+  const b = sendoffScene({ sendoff: false }); assert.equal(b.props.regions.bed.state, "away"); assert.equal(b.props.regions.bed.mark !== "", true, "the Companion's mark over the empty bed");
+});

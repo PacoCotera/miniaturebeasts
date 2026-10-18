@@ -22,21 +22,26 @@ const SCENES = {
   "shape-onelook": { want: "shape", set: (w) => { w.shape("S01", 4, 4); w.at(0); } },
   "shape-short":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); const st = window.__st.ST; st.s = 1; st.e = 9; w.persist(); } },
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },
+  "shape-ready":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(true); } },   // the chamber with a bud that is ready: the door open, that bud's pod, the bar lit (it mirrors the Incubator)
   "shape-samelook": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },   // S01 Crown, the pod's leaf crest hiding bare head (genome seed 3), the crest chosen: "Crown: leaf crest, hides nothing" (fix 5 Create)
   "shape-sealed":  { want: "shape", set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // one S02 pod, every readable chapter read, its sealed chapter shut: "all read, Character sealed"
+  "confirm":       { want: "shape", panel: true, set: (w) => { w.shape("S01", 3, 2); w.at(1); } },   // Create's confirm state: the Incubate | Keep shaping panel (a Loika founder), the ring on Incubate
+  "confirm-keep":  { want: "shape", panel: true, set: (w) => { w.shape("S01", 3, 2); w.at(1); }, then: () => window.__st.press("right") },   // the ring on Keep shaping
+  "confirm-S02":   { want: "shape", panel: true, set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // a second species
   "shape-first":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.ST.firstMibi = true; } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${CREATE.toString()})`]);
 // the timed points: the scene, the key or intent that starts the event, and the instant after it
 const TIMED = {
   "roll-100":   { scene: "shape", go: () => window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }), at: 100 },
-  "grow-150":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 150, want: "grow" },
-  "grow":       { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 450, want: "grow" },   // 450 ms: the pod passes behind the tray's left edge (fix 5 Create)
-  "grow-end":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 890, want: "grow" },
-  "grow-nothing": { scene: "nothingRead", go: () => window.__st.press("confirm"), at: 20, want: "grow" },
+  "confirm-dither-90": { scene: "shape", go: () => window.__st.press("confirm"), at: 90, want: "shape" },   // the dither in to the panel, halfway (level 8 of 16)
+  "grow-150":   { scene: "shape-changed", go: () => window.__st.press("confirm"), then: () => window.__st.press("confirm"), at: 150, want: "grow" },
+  "grow":       { scene: "shape-changed", go: () => window.__st.press("confirm"), then: () => window.__st.press("confirm"), at: 450, want: "grow" },   // 450 ms: the pod passes behind the tray's left edge (fix 5 Create)
+  "grow-end":   { scene: "shape-changed", go: () => window.__st.press("confirm"), then: () => window.__st.press("confirm"), at: 890, want: "grow" },
+  "grow-nothing": { scene: "nothingRead", go: () => window.__st.press("confirm"), then: () => window.__st.press("confirm"), at: 20, want: "grow" },
 };
 async function apply(page, sc) {
-  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); w.adults(2); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; }, [sc.set.toString()]);
+  await page.evaluate(([setSrc]) => { const w = window.__world; window.__st.settings.jump = "arrival"; window.__st.UI.panel = null; window.__st.UI.arrival = null; w.reset(); w.fresh(); w.adults(2); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; }, [sc.set.toString()]);
 }
 export async function createStates(visit, { motion = false, timed = true } = {}) {
   const r = await still(visit); if (motion || !timed) return r;
@@ -49,6 +54,7 @@ async function still(visit) {
     for (const [name, sc] of Object.entries(SCENES)) {
       await apply(page, sc); await step(400);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state })); if (u.screen !== "create" || u.props !== sc.want) fail(`create-${name}: on ${u.screen}, props ${u.props}`);
+      if (sc.panel) { await page.evaluate(() => window.__st.press("confirm")); await step(400); if (sc.then) { await page.evaluate(sc.then); await step(100); } const pn = await page.evaluate(() => window.__st.UI.panel?.id ?? null); if (pn !== "incubate") fail(`create-${name}: the panel is ${pn}`); }
       await visit("create-" + name, page, fail);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
@@ -61,7 +67,7 @@ async function timedStates(visit) {
   try {
     for (const [name, tp] of Object.entries(TIMED)) {
       await apply(page, SCENES[tp.scene]); await step(1200);   // the screen change's dither is over
-      await page.evaluate(tp.go); await step(tp.at);
+      await page.evaluate(tp.go); if (tp.then) { await step(200); await page.evaluate(tp.then); } await step(tp.at);   // then: the second key, after the panel's dither in has ended
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state })); const want = tp.want ?? SCENES[tp.scene].want;
       if (u.screen !== "create" || u.props !== want) fail(`create-${name}: on ${u.screen}, props ${u.props}`);
       await visit("create-" + name, page, fail); await step(2000);

@@ -1,10 +1,11 @@
 // Pods' intents: the rule call behind each ✓, ←, ◀ ▶ of a state, the state it moves to and where the ring goes. The pad's moves are the face's (the focus graph, run in C); the keys that reach the host are
 // the intents: ✓ (confirm) on a focused target, ← (back), the room keys, and Compare's ◀ ▶ (step:left, step:right on the open tab).
-//   h.ui.pods: { view, cur, ci, cmp, wildArm, focus }; the spec's strings (hatchAgain) and the kin's maximum come from `h.specs.pods`.
+//   h.ui.pods: { view, cur, ci, cmp, focus }; the spec's strings and the kin's maximum come from `h.specs.pods`.
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { compareBackFocus } from "../views/pods-props.mjs";
 import { openCreate } from "./create.mjs";
+import { openPanel } from "./panel.mjs";
 
 export const ID_MS = 2000, READ_MS = 2000, RIBBON_MS = 6000;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -38,12 +39,13 @@ const CONFIRM = {
     return read(h, q, ch);   // on the page, ✓ reads an unread chapter (a read chapter has no ✓)
   },
   kin: (h, q, id) => { const k = kinOf(h, q)[+id.slice(4)]; if (k) h.ui.pods.cmp = { a: q.id, b: k.id, ci: 0 }; },
-  hatch: (h, q) => {   // ✓ ✓: the first arms, the second returns; any other key disarms
-    const p = h.ui.pods;
-    if (!p.wildArm) { p.wildArm = 1; h.say(h.specs.pods.strings.hatchAgain); return; }
-    p.wildArm = 0; S.returnPod(h.st, q, h.settings, h.now()); p.cur = null; go(h, "collection"); h.save();
-  },
+  hatch: (h, q) => openPanel(h, "pods", "wildPod"),   // ✓ on the leaf plate opens the Return panel (decision panel spec §1.6); its Return card runs returnNow
 };
+// The Return card's act: the rule gives the pod back to the wild (+1 Essence), the collection shows without it.
+export function returnPodNow(h) {
+  const p = h.ui.pods, q = h.st.tray.find((x) => x.id === p.cur); if (!q) return;
+  S.returnPod(h.st, q, h.settings, h.now()); p.cur = null; go(h, "collection"); h.save();
+}
 // `target`: the focused target's id; `verb`: confirm | back | step:left | step:right (the pad's other directions are the face's, and nothing reaches the host).
 export function intent(h, target, verb) {
   const p = h.ui.pods;
@@ -57,7 +59,6 @@ export function intent(h, target, verb) {
     }
     return;
   }
-  if (verb !== "confirm") p.wildArm = 0;   // any other key disarms the hatch
   if (verb === "back") {   // ← always goes up one level
     if (p.view === "collection") h.goto("home");
     else if (p.view === "overview") go(h, "collection", placeOf(h.st, p.cur));
