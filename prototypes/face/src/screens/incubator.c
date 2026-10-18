@@ -74,16 +74,22 @@ static void change_box(const char *a, const int r[4], int b[4]) {
   int h = wire_asset_slot(a); if (h < 0 || prim_asset_box(h, b) < 0 || b[2] <= 0) { b[0] = 0; b[1] = 0; b[2] = r[2]; b[3] = r[3]; }
   int dy = stage_top() - (r[1] + b[1]); if (dy > 0) { b[1] += dy; b[3] -= dy; }
 }
+/* a picture drawn as its change box only (its own pixels' box on the stage): the same pixels as the whole picture, so a node that stands in for a dither of this box invalidates that box and no more */
+static void put_box(const char *id, const char *a, const int r[4]) {
+  int b[4]; change_box(a, r, b);
+  if (b[0] == 0 && b[1] == 0 && (b[2] != r[2] || b[3] != r[3] - (stage_top() > r[1] ? stage_top() - r[1] : 0))) { put(id, a, r); return; }   /* a window at the picture's origin is the whole picture */
+  v_sprite_window(id, a, b[0], b[1], r[0] + b[0], r[1] + b[1], b[2], b[3]);
+}
 /* in from clear at level n (n <= 0: nothing; n >= 16: the picture); the dither covers the picture's change box only */
 static void come_in(const char *id, const char *a, int n, const int r[4]) {
   v_name(id); if (!has(a) || n <= 0) return;
-  if (n >= 16) { put(id, a, r); return; }
+  if (n >= 16) { put_box(id, a, r); return; }
   int b[4]; change_box(a, r, b); v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), NULL, 0, 0, a, b[0], b[1], n, r[0] + b[0], r[1] + b[1], b[2], b[3]);
 }
 /* out to clear at level n (n <= 0: the picture; n >= 16: nothing); the dither covers the picture's change box only */
 static void go_out(const char *id, const char *a, int n, const int r[4]) {
   v_name(id); if (!has(a) || n >= 16) return;
-  if (n <= 0) { put(id, a, r); return; }
+  if (n <= 0) { put_box(id, a, r); return; }
   int b[4]; change_box(a, r, b); v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), a, b[0], b[1], NULL, 0, 0, n, r[0] + b[0], r[1] + b[1], b[2], b[3]);
 }
 
@@ -117,6 +123,8 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
   /* the look: closed (glass, no door) or open (door, no glass) */
   int closed = st_growing && (t_gn < 0 || t_gn < 400), opening = t_gn >= 400 && t_gn < 580 ? level_at(t_gn, 400) : (t_gn >= 580 ? 16 : 0), open_look = !st_growing || t_gn >= 580;
   int dither_open = st_growing && t_gn >= 400 && t_gn < 580;
+  /* one level clock, two boxes: the glass goes out and the door comes in over the same 180 ms, the glass redrawing on even 16 ms ticks and the door on odd ones, so no frame redraws both boxes; each holds the level of its last tick and both end at level 16 */
+  int tick = dither_open ? (t_gn - 400) / 16 : 0, glass_level = dither_open ? (tick >= 10 ? 16 : level_at(400 + (tick & ~1) * 16, 400)) : opening, door_level = dither_open ? (tick >= 11 ? 16 : tick > 0 ? level_at(400 + ((tick & 1) ? tick : tick - 1) * 16, 400) : 0) : opening;   /* the glass is out on tick 10 and the door is in on tick 11: the last two frames of the dither, one box each */
   v_region("room", LAYER_PAINTED);
   swap("room", v_pstr("regions.room.dusk"), v_pstr("regions.room.day"), dn, room);
   swap("interior", v_pstr("regions.capsule.interior.dusk"), v_pstr("regions.capsule.interior.day"), dn, cap);
@@ -144,10 +152,10 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
     }
   }
   /* the glass: closed looks only (growing, the incubate moment); it goes out as Hatch now opens the door */
-  { const char *gl = v_pstr("regions.capsule.glass"); if (closed) { v_name("glass"); if (has(gl) && !dither_open) put("glass", gl, cap); else if (has(gl)) go_out("glass", gl, opening, cap); } else if (dither_open) go_out("glass", gl, opening, cap); }
+  { const char *gl = v_pstr("regions.capsule.glass"); if (closed) { v_name("glass"); if (has(gl) && !dither_open) put_box("glass", gl, cap); else if (has(gl)) go_out("glass", gl, glass_level, cap); } else if (dither_open && glass_level >= 16 && has(gl)) { int b[4]; change_box(gl, cap, b); v_name("glass"); v_region("glass", LAYER_PAINTED); v_dither_window("glass.dither", gl, b[0], b[1], NULL, 0, 0, 16, cap[0] + b[0], cap[1] + b[1], b[2], b[3]); }   /* gone: its node stands, clear, until the event ends, so the door's node after it is not moved */ else if (dither_open) go_out("glass", gl, glass_level, cap); }
   swap("shell", v_pstr("regions.capsule.shell.dusk"), v_pstr("regions.capsule.shell.day"), dn, cap);
   /* the door: open looks (empty, ready, the hatch); Hatch now brings it in with the dither at 400 */
-  { const char *dr = v_pstr("regions.capsule.door"); if (dither_open) come_in("door", dr, opening, cap); else { v_name("door"); if (open_look && has(dr)) put("door", dr, cap); } }
+  { const char *dr = v_pstr("regions.capsule.door"); if (dither_open) come_in("door", dr, door_level, cap); else { v_name("door"); if (open_look && has(dr)) put_box("door", dr, cap); } }
   /* the bar: empty off; the incubate moment off until 1200, then from its first pixel; growing at its width, Hatch now filling it in 8 cuts; ready and the hatch full */
   {
     const char *b = v_pstr("regions.capsule.bar"); int max = ci("regions.capsule.bar.max", 158), px = v_pint("regions.capsule.barPx", 0);

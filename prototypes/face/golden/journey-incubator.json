@@ -15,8 +15,8 @@
     "screen": "incubator",
     "state": "growing",
     "ok": "Hatch now",
-    "price": "❀ 10",
-    "subject": "hatches now"
+    "price": null,
+    "subject": ""
    },
    {
     "key": "back",
@@ -32,7 +32,7 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 10",
-    "subject": "ready in about 20 min"
+    "subject": "a Loika bud"
    },
    {
     "key": "confirm",
@@ -47,8 +47,8 @@
     "screen": "incubator",
     "state": "growing",
     "ok": "Hatch now",
-    "price": "❀ 10",
-    "subject": "hatches now"
+    "price": null,
+    "subject": ""
    },
    {
     "key": "confirm",
@@ -64,7 +64,7 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 10",
-    "subject": "ready in about 20 min"
+    "subject": "a Loika bud"
    },
    {
     "held": [

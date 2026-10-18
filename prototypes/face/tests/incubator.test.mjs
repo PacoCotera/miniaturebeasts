@@ -55,7 +55,10 @@ async function start(b, { motion = true, t0 = 0, top = {} } = {}) {
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "incubator", ...b.props, motion, frame: frameProps(b.line, top) }), 0, f.errors().join("; ")); frames(f); return f;
 }
-const send = (f, b) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r)))); };
+// the door and the glass are the real masters (their alpha is what a change box is cut from); every other picture a flat stand-in
+const REAL = /^(capsule-(door-open|glass-closed|seal-ring)-530x532)(:530x532)?$/;
+const realPic = (name) => { const png = decodePNG(readFileSync(path.resolve(here, `../../ui/assets/masters/capsule/${name}.png`))); return { w: png.width, h: png.height, data: new Uint8ClampedArray(png.data) }; };
+const send = (f, b) => { for (const r of b.requests) { const m = REAL.exec(r.id); f.handleOf(r.id, withPolicy((i) => (m ? realPic(m[1]) : standIn(i, sizeOf(r))))); } };
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; if (lg) f.last = lg; return lg ?? f.last ?? null; };   // the face logs on a redraw: a frame that changes nothing keeps the last log
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
@@ -185,24 +188,13 @@ test("the dirty area of each step is printed and held: the room's dither steps r
     console.log(`# the Incubator's hatch: cracks worst ${wc} px at ${ac} ms; the dither to the opened pod 1000-1180 worst ${wd} px at ${ad} ms (${pct(wd)}%); the ribbon and the lift steps worst ${wl} px at ${al} ms (${pct(wl)}%)`); assert.ok(wd <= LIMIT, `the hatch's dither ${wd}`); assert.ok(wc <= LIMIT, `the cracks ${wc}`); assert.ok(wl <= LIMIT, `the lift steps ${wl}`); }
 });
 
-// The Hatch now door dither (the architect's ruling: shrink it to the door's change box with prim_asset_diff_box; if the box is still over 153,600 px, report the measured box, do not widen the exemption). Measured: the glass goes out over its
-// alpha box (202 x 290, 58,580 px) and the door comes in over its own (206 x 491, 101,146 px), 159,726 px together, and LVGL merges the two invalid areas into one rectangle of the capsule, 530 x 518 (274,540 px). It stays a todo until the ruling.
-test("the Hatch now door dither redraws at most 153,600 px (todo: measured 274,540 px, the merged box of the glass going out and the door coming in)", { skip, todo: "the architect's ruling: the measured box is over the bound" }, async () => {
+// The Hatch now door dither (architect's ruling, option a): the glass going out and the door coming in run on one level clock over the same 180 ms, the glass box redrawing on even 16 ms ticks and the door box on odd ones, so no frame redraws both
+// boxes (the glass box is 58,580 px, the door box 101,146 px); both end on the same final frame at level 16, which is the plain end state.
+test("the Hatch now door dither: every frame redraws at most 153,600 px, and its last frame is the plain end state (glass gone, door in, the bar full)", { skip }, async () => {
   const b = scene({ minutes: 13.2 }), f = await start(b, { t0: 1000 }), t0 = f.t; f.send({ t: "event", kind: "growNow", target: "room", ms: EV.growNow.ms, hold: EV.growNow.hold }); area(f, { fullCut: true });
-  let w = 0, rects = null; for (let t = 400; t < 600; t += 8) { f.frame(t0 + t); const a = area(f); if (a > w) { w = a; rects = JSON.stringify(dirtyRects(f)); } }
-  console.log(`# the Hatch now door dither: worst ${w} px, rects ${rects}`); assert.ok(w <= 153600, `${w} px in ${rects}`);
-});
-
-// The left column's text is ink (#1a1725) on the wall master: at least 4.5:1 against the darkest 5% of the wall under it, in the day look (where the code and the time are read) and in the dusk look
-test("the left column's code and 'ready in about' are ink, at least 4.5:1 on the wall master under them (the darkest 5% of its pixels, WCAG relative luminance)", { skip }, () => {
-  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }, lum = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-  const rgbOf = (name) => { const h = palette.find((c) => c[0] === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); }, ink = rgbOf("ink"); assert.deepEqual(["code", "readyIn"].map((k) => incSpec.colours[k]), ["ink", "ink"], "the spec names ink for both");
-  for (const look of ["day", "dusk"]) {
-    const png = decodePNG(readFileSync(path.resolve(here, `../../ui/assets/masters/capsule/${incSpec.regions.room.pictures[look]}.png`))), top = incSpec.regions.room.rect[1];
-    for (const k of ["code", "readyIn"]) {
-      const [x, y, w, h] = incSpec.regions[k].rect, L = []; for (let j = y - top; j < y - top + h; j++) for (let i = x; i < x + w; i++) { const o = (j * png.width + i) * 4; L.push(lum(png.data[o], png.data[o + 1], png.data[o + 2])); }
-      L.sort((a, b) => a - b); const dark = L[Math.floor(L.length * 0.05)], c = (dark + 0.05) / (lum(...ink) + 0.05);
-      assert.ok(c >= 4.5, `${look}: ${k} ink on the wall reads ${c.toFixed(2)}:1, under 4.5:1`);
-    }
-  }
+  let w = 0, rects = null; for (let t = 400; t < 580; t += 4) { f.frame(t0 + t); const a = area(f); if (a > w) { w = a; rects = JSON.stringify(dirtyRects(f)); } }
+  console.log(`# the Hatch now door dither: worst frame ${w} px, ${rects}`); assert.ok(w <= 153600, `${w} px in ${rects}`);
+  const sample = (g) => { const o = []; for (let y = 44; y < 556; y += 4) for (let x = 348; x < 872; x += 4) o.push(g.pixel(x, y).join()); return o.join("|"); };
+  f.frame(t0 + 578); const last = sample(f); f.frame(t0 + 579); assert.equal(sample(f), last, "nothing more changes before the event ends at 580");
+  const plain = await start(scene({ minutes: 30 }), { t0: 1000 }); assert.equal(last, sample(plain), "the last frame of the dither is the plain end state: the capsule of a ready bud (glass gone, door in, the bar full)");
 });

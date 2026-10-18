@@ -231,6 +231,24 @@
      }
     ],
     "screen": "create",
+    "panel": "incubate",
+    "ring": "card.incubate",
+    "ok": "Incubate",
+    "e": 32,
+    "d": 22,
+    "s": 57
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.incubate",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
     "create": {
      "f": 3,
      "choices": [],
