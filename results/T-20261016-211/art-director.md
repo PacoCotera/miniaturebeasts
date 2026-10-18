@@ -22,3 +22,10 @@ Two faults in the build itself:
 ## For UI/UX
 - Home's away frame goes to 64 × 64 so it holds the 54 px figure. Yours to set in the Home spec.
 - The Habitat's resident region shrinks to fit 150/110 with the feet near y 380. Yours to set too.
+
+## Round 2 (T-20261016-212, built at 89e0cc8e): pass
+
+- **"Size and pose"** in `design/art-direction.md` matches the ticket's text word for word (a diff against the ticket, blank lines aside, shows no difference). It sits after Rules, and the page's sentence about values is changed as asked.
+- **The other files point to it:** the style guide and the station layouts each keep their heading with the one pointer line, and the asset-policy comment carries no numbers.
+- **The withdrawal stands:** the three lying Probe ids are out of the index.
+- **The public text** has no ticket ids, dates, names or quotes.
