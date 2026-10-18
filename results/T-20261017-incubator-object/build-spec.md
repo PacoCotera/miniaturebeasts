@@ -12,7 +12,7 @@ Everything not named here keeps its current rule in `incubator.json`: the hand-o
 - The art director's gate (`results/T-20261017-incubator-object/art-director.md`) and the four pictures:
   - `closed` and `incubate` (masters-pods cc402996, `concepts/incubator-capsule-hs/`);
   - `open-fixed` and `hatch-now-fixed` (`house-style/` here).
-- **Retired:** the round-2 Grow panels (T-20261016-195, the panel structure §2–3: Grow it | Keep shaping, Grow now | Wait). Incubate keeps a decision panel, **Incubate | Keep shaping** (the owner, 00:57; §6a). Hatch now has none (§6).
+- **Decision panels:** Incubate has one, **Incubate | Keep shaping** (the owner, 00:57). It is a first build, fully specified in §6a. Hatch now has none (§6), and there is no "Hatch now | Wait" panel.
 
 All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage is the frame's `(0, 40, 1024, 522)`; the top bar (40) and the bottom line (38) are the frame's own. Every image is placed at 1:1, nothing is scaled at runtime, and nothing is anti-aliased.
 
@@ -164,39 +164,81 @@ These views are specified in their own screens' specs.
 - **Incubate** (on Create) opens the Incubate | Keep shaping panel (§6a). Its ✓ Incubate plays Create's grow event (unchanged), then lands on the Incubator's incubate moment (4.1).
 - **Hatch now** is the Incubator's ✓ with its price, in place. Waiting is not pressing: ← Home, or simply staying. The bar and "ready in about {n} min" show what waiting means, so the game text's "Hatch now | Wait" panel is not built.
 
-## 6a. The Incubate panel (on Create): Incubate | Keep shaping
-
-The house decision-panel frame (T-20261016-195 round 2, §1): two bezels on the device ground, a header with the verb and the price, the living windows, the house ring, and the 180 ms dither in and out.
-
-| Element | Rect | Draws |
-| --- | --- | --- |
-| left bezel: **Incubate** | 16, 46, 490, 506 | panel, radius 10, `hairline` edge, `bevel` light on top |
-| right bezel: **Keep shaping** | 518, 46, 490, 506 | the same |
-| headers | 30 tall, in each bezel | the verb (15 medium, `bone`) at x + 12. Incubate's price at the right, icon before figure (13, `fog`): ⚡ {n} ❀ {n} ◆ {n} (one Data per shaped trait), then **the pod itself**: the founder's pod, the renderer's collection pod reduced to 16 × 20 (`masters/proof-pod-price-16x20.png`), the last item. The pod is part of the price: it becomes the mibi. Keep shaping has no icons |
-| left window | 24, 76, 474, 468 | **the sealed capsule:** `panel/capsule-room-dusk-474x468` at (24, 76) (the dusk room, cols 275–749, rows 108–576); then the capsule at ×0.733, 296 × 459 at **(116, 80)**: `capsule-interior-dusk-296x459`, **this founder's pod** 147 tall with its foot on the moss line **y 416** (relit, its shadow and the moss blades, as in §1), the glass in code, `capsule-shell-dusk-296x459` and `capsule-seal-ring-296x459`. Proof: `masters/proof-panel-incubate-474x468.png` |
-| right window | 526, 76, 474, 468 | **Create's bench as it is now:** Create's own screen drawn at 1:1, clipped to the window and offset so Create's stage rect (275, 90, 474, 468) fills it, with the founder centred, its edits lit in the scan light, and the rail and roll as they stand |
-
-- **World size:** neither window shows a mibi in its world (a pod in its capsule; the founder on the workbench, a close-up), so the 54/40 table does not apply. The founder keeps bench scale.
-- **No fact band.** The sealed capsule and the price say it.
-- **Focus:** the house ring on the bezel (radius 14), starting on the **left**, Incubate, the option the player came for. ◀ ▶ move between the bezels; ▲ ▼ do nothing. Both bezels are styled alike.
-- **The guard:** Incubate uses the pod (irreversible), so ✓ on it is taken only once the panel has settled (its dither has ended), as Release.
-- **Bottom line:** ✓ the focused verb; the middle slot is empty; ← "Back".
-- **✓ Incubate:**
-  1. the panel cuts away;
-  2. Create's grow event plays (unchanged);
-  3. the jump lands on the Incubator's incubate moment (4.1).
-  
-  A refusal (no bay, a bud already growing, short) is refused on Create's ✓ before the panel opens, with Create's refusal plate as now, so the panel never offers a press that can't be paid.
-- **✓ Keep shaping, or ←:** the 180 ms dither back to Create, as it was, with nothing spent.
-- **Masters:** `masters/panel/` as above, the renderer's pod at 147 tall and at 16 × 20, and the frame's bezel and ring. No new painting.
-
 **Strings** (`incubator.json strings`):
 - new: `readyIn` "ready in about {n} min";
 - unchanged: `grow` "Hatch now", `open` "Open", `choose` "Choose a pod", `empty`, `noBay`, `noBayPlate`, `bud`, `crossBud`, `hatchRibbon`, `painting`, `offline`;
 - `plaque` goes.
 
+## 6a. The Incubate panel (on Create): Incubate | Keep shaping
+
+A first build: no panel code exists on station-gate, so everything the panel needs is here.
+
+### 6a.1 Where it lives
+
+- **It is a state of Create, `confirm`,** not a screen of its own and not a jump. Create's state stays as it was under the panel, so closing it returns to Create exactly as it was, and the right window can show Create's own render.
+- **How the face composes it** (an overlay over Create's own drawing, or a separate layer set) is the architect's ruling. Whichever it is, the player sees only the panel's composition below over the device ground, with the frame's top bar and bottom line.
+- **The way in:** Create's ✓ **Incubate** (the bottom line's action in `shape` and `nothingRead`):
+  - if `growBlock` holds (no bay free, a bud already growing, short of a material), the press is refused with Create's refusal plate, as now, and the panel does not open;
+  - otherwise the 180 ms dither (16 levels) from Create to the panel, and `confirm` begins.
+- **The way out:** ✓ Keep shaping, ←, or a room key, each with the dither back (§6a.4). ✓ Incubate goes on to Create's `grow` state (§6a.4).
+
+### 6a.2 The composition (1× on 1024 × 600; the stage 0, 40, 1024, 522 is the device ground, `ground`)
+
+| Element | Rect | Draws |
+| --- | --- | --- |
+| left bezel: **Incubate** | 16, 46, 490, 506 | fill `panel`, radius 10; 1 px edge `hairline`; the bevel: a 1 px `fog` line at y + 1 from x + 10 to x + w − 10 |
+| right bezel: **Keep shaping** | 518, 46, 490, 506 | the same |
+| header (each bezel) | x, y, w, 30 | the verb, Inter 15 medium, `bone`, its baseline at y + 20, from x + 12 |
+| Incubate's price | right-aligned to x + w − 12, in the header | icon before figure, as the bottom line draws a price: ⚡ {n} ❀ {n} ◆ {n} (icons 16, figures Inter 13 `price`; 4 between an icon and its figure, 12 between items; an item whose figure is 0 is left out). Last: **the founder's pod**, the renderer's collection pod reduced to 16 × 20, its top at y + 5. The pod is part of the price: it becomes the mibi. Keep shaping's header has no price |
+| left window | 24, 76, 474, 468 | radius 6, a 1 px `void` inner edge. **The sealed capsule,** in order: `masters/panel/capsule-room-dusk-474x468` at (24, 76); `capsule-interior-dusk-296x459` at (116, 80); **this founder's pod**, 147 tall, its foot centred on the moss line y 416 at the capsule's axis x 264, relit with its contact shadow and the moss blades in front of its foot (as §1); the glass, drawn in code along the window mask at this reduction; `capsule-shell-dusk-296x459` at (116, 80); `capsule-seal-ring-296x459` at (116, 80). Proof: `masters/proof-panel-incubate-474x468.png` |
+| right window | 526, 76, 474, 468 | radius 6, a 1 px `void` inner edge. **Create as it is under the panel,** drawn at 1:1 and clipped to the window, offset so that Create's stage rect (275, 90, 474, 468) fills it: the founder centred, its edits lit in the scan light, and the rail and roll as they stand. No ring is drawn inside it |
+| the focus ring | round the focused bezel | the house ring (`frame.json focus.ring`), shape `{ "rect": 10 }`: the bezel grown by its reach |
+
+- **World size:** neither window shows a mibi in its world (a pod in its capsule; the founder on the workbench, a close-up), so the 54/40 size table does not apply. The founder keeps bench scale.
+- **Words:** the two verbs and the price only. No title, no fact band, no line in either window.
+
+### 6a.3 Focus and keys
+
+| Focus | ◀ | ▶ | ▲ ▼ | ✓ sends | ← sends |
+| --- | --- | --- | --- | --- | --- |
+| `incubate` (initial) | none | `keep` | none | `confirm`, target `incubate` | `back` |
+| `keep` | `incubate` | none | none | `confirm`, target `keep` | `back` |
+
+- **The ring starts on Incubate,** the option the player came for, on the left. Both bezels are styled alike, and nothing is dimmed.
+- **A room key** sends `room:<x>`: the panel closes as a cut (nothing spent), then the key acts as it would on Create.
+- **Held:** during both dithers (in and out), and during `grow` after ✓ Incubate, the pad, ✓ and ← do nothing, and a room key waits, then acts.
+- **This is also the guard:** ✓ Incubate is taken only once the dither in has ended. Incubate uses the pod and can't be undone, so a double press of Create's ✓ never passes through the panel.
+
+**The bottom line in `confirm`:**
+
+| Slot | Shows |
+| --- | --- |
+| action | ✓ and the focused verb: "Incubate" or "Keep shaping" (the price stands in the panel's header, not here) |
+| context | empty |
+| notice | empty |
+| back | "Back" |
+
+### 6a.4 Intents and what the host does
+
+| Intent | The host |
+| --- | --- |
+| `confirm` on `incubate` | runs Create's grow exactly as Create's ✓ did before (`state.grow`, the same checks, price and log line: "Incubated {a} {species} founder · …"). The panel goes as a cut, and Create's `grow` state and `events.grow` play unchanged (the stamp prints, the pod travels to the dome), then the jump lands on the Incubator's incubate moment (§4.1). If the press is refused at this point (the state changed while the panel stood), the panel closes as a cut and Create shows its refusal plate; nothing is spent |
+| `confirm` on `keep` | the 180 ms dither back to Create, its state as it was; nothing is spent |
+| `back` | the same as Keep shaping |
+| `room:<x>` | the panel closes as a cut, then the room key acts |
+
+- **Reduced motion:** both dithers are cuts. ✓ Incubate then follows Create's reduced-motion grow (the jump on the frame of ✓).
+
+### 6a.5 Strings (`create.json strings.panel`)
+
+`incubate` "Incubate", `keep` "Keep shaping", `back` "Back".
+
+### 6a.6 Masters
+
+`masters/panel/` (`capsule-room-dusk-474x468`, `capsule-interior-dusk-296x459`, `capsule-shell-dusk-296x459`, `capsule-seal-ring-296x459`), the renderer's pod at 147 tall and at 16 × 20, and the frame's ring. The bezels, windows and glass are drawn in code. No new painting.
+
 ## 7. Checks for the builder
 
-- **The goldens** (once §5's cuts land): empty, growing (bar at 0, ½ and nearly full), ready, the incubate moment at 0, the hatch at 1000 and 1400, and Hatch now at 0 and 400. One Loika bud and one cross bud.
+- **The goldens** (once §5's cuts land): empty, growing (bar at 0, ½ and nearly full), ready, the incubate moment at 0, the hatch at 1000 and 1400, and Hatch now at 0 and 400. One Loika bud and one cross bud. The Incubate panel: focus on each bezel, with a Loika founder and a second species, and its dither in at 90 ms.
 - **The per-frame dirty area:** each dither step (whole stage, ≤ 153,600 px a frame, as the house dither), the bar's fill step (8 cuts), and the hatch's lift steps. Print them.
 - **Generators:** print each build-time cut's time and size.
