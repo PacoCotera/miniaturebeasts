@@ -6,6 +6,7 @@
   "S01": {
    "adult": {
     "traits": [
+     "colour",
      "markings",
      "crown",
      "eye-rings"
@@ -20,6 +21,13 @@
     "sizes": {
      "304x312": {
       "base": "S01-adult-304x312-base.png",
+      "bases": {
+       "russet": "S01-adult-304x312-base-russet.png",
+       "ash": "S01-adult-304x312-base-ash.png",
+       "charcoal and russet": "S01-adult-304x312-base-charcoal-and-russet.png",
+       "charcoal and ash": "S01-adult-304x312-base-charcoal-and-ash.png",
+       "russet and ash": "S01-adult-304x312-base-russet-and-ash.png"
+      },
       "layers": [
        {
         "trait": "markings",
@@ -56,6 +64,7 @@
    },
    "juvenile": {
     "traits": [
+     "colour",
      "markings",
      "crown",
      "eye-rings"
@@ -70,6 +79,13 @@
     "sizes": {
      "304x312": {
       "base": "S01-juvenile-304x312-base.png",
+      "bases": {
+       "russet": "S01-juvenile-304x312-base-russet.png",
+       "ash": "S01-juvenile-304x312-base-ash.png",
+       "charcoal and russet": "S01-juvenile-304x312-base-charcoal-and-russet.png",
+       "charcoal and ash": "S01-juvenile-304x312-base-charcoal-and-ash.png",
+       "russet and ash": "S01-juvenile-304x312-base-russet-and-ash.png"
+      },
       "layers": [
        {
         "trait": "markings",
@@ -205,6 +221,36 @@
   }
  },
  "files": {
+  "S01-adult-304x312-base-ash.png": {
+   "file": "S01-adult-304x312-base-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "cb8506e810f14490fb375abf26383203bdc71e5808a8da1c60bbf4cce627f45c"
+  },
+  "S01-adult-304x312-base-charcoal-and-ash.png": {
+   "file": "S01-adult-304x312-base-charcoal-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a869574e2b3f6ea296ee8b194cbd267b3ca22d98cdab59a0e0075c9d305e4f0b"
+  },
+  "S01-adult-304x312-base-charcoal-and-russet.png": {
+   "file": "S01-adult-304x312-base-charcoal-and-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "5baa7c42199bf4f8ff847c2ab7785be699e423059f1a629e8fcae3b66bb87b9f"
+  },
+  "S01-adult-304x312-base-russet-and-ash.png": {
+   "file": "S01-adult-304x312-base-russet-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "52faea3efdad96120db7a671547d64b76c3ad43a14f6509aa99dc730f35678fd"
+  },
+  "S01-adult-304x312-base-russet.png": {
+   "file": "S01-adult-304x312-base-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "69249944ce5ade2de0ba1832fef9d1ac4be9a841303c05baa4b63a4778dbd32a"
+  },
   "S01-adult-304x312-base.png": {
    "file": "S01-adult-304x312-base.png",
    "w": 304,
@@ -221,13 +267,43 @@
    "file": "S01-adult-304x312-patches.png",
    "w": 304,
    "h": 312,
-   "sha256": "f749355367524d79f070e9a2104ec41ed364206e1d42ca67cb40e63a730c7e6d"
+   "sha256": "194c3f8cf1a140bb13f698403b43287dbb51a12269a1660c5cbf3ef7bec6627a"
   },
   "S01-adult-304x312-stripes.png": {
    "file": "S01-adult-304x312-stripes.png",
    "w": 304,
    "h": 312,
    "sha256": "4069f6f2693e63cd1b13aca816e94d715fedd51142c31b98568d6d3fac29177b"
+  },
+  "S01-juvenile-304x312-base-ash.png": {
+   "file": "S01-juvenile-304x312-base-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "3389604b30ddd276744123f5b38b6efd8f34c8ed43caa0973659193da56371fb"
+  },
+  "S01-juvenile-304x312-base-charcoal-and-ash.png": {
+   "file": "S01-juvenile-304x312-base-charcoal-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "27c801c39c721af39bcf1c3d2c093e0e9014806fa710f6169ab1c354e0131228"
+  },
+  "S01-juvenile-304x312-base-charcoal-and-russet.png": {
+   "file": "S01-juvenile-304x312-base-charcoal-and-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "90997014c43d25bcf0d583a675cd93805adea76f295ed86662b524d03171d107"
+  },
+  "S01-juvenile-304x312-base-russet-and-ash.png": {
+   "file": "S01-juvenile-304x312-base-russet-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "64cf18180f81602dcaf376ae6bfeb43ff353a49cc384917026f2d9448c3691b0"
+  },
+  "S01-juvenile-304x312-base-russet.png": {
+   "file": "S01-juvenile-304x312-base-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "3a17e5736820f33e0631f3a76f80bedd5566d107021d7ca4f16f6a4e7aa75a31"
   },
   "S01-juvenile-304x312-base.png": {
    "file": "S01-juvenile-304x312-base.png",
@@ -245,7 +321,7 @@
    "file": "S01-juvenile-304x312-patches.png",
    "w": 304,
    "h": 312,
-   "sha256": "47fa421310fc4282bee4ce43823691663e3621d0393528ad75ac6351d4b5e777"
+   "sha256": "1f103e4021901c066acf32e45d19a4a6e6a93bc6177a4a53f8502fa5361124e2"
   },
   "S01-juvenile-304x312-stripes.png": {
    "file": "S01-juvenile-304x312-stripes.png",
