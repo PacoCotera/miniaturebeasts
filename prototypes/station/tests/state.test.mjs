@@ -217,7 +217,7 @@ test("need: crates, then new pods, then glints, then unread pods", () => {
   st.e = 5; S.identify(st, st.tray[0], settings);
   assert.match(S.need(st, sv, settings).text, /Loika pod waits/);
   S.skipRead(st, st.tray[0], settings);
-  assert.match(S.need(st, sv, settings).text, /is ready to incubate/);
+  assert.match(S.need(st, sv, settings).text, /pod, ready to incubate/);
 });
 
 test("developer seeds go through the same rules: a seeded crate arrives at the dock, a pasted genome is checked whole", () => {

@@ -206,7 +206,7 @@ test("need(): a pod that cannot yet grow or be read says what is short, with no 
   const p = podOf(st, "S01", ["coat"]); st.e = 0; st.s = 0;
   const c = S.growCost(st, {}, settings);
   const short = S.need(st, sv, settings).text; assert.ok(/^a pod incubates with ⚡ \d+ ❀ \d+ more$/.test(short) || /^a pod incubates with (⚡|❀) \d+ more$/.test(short), short); assert.ok(!/·/.test(short));
-  st.e = 99; st.s = 99; assert.match(S.need(st, sv, settings).text, /^(a|an) \w+ pod is ready to incubate$/); void c; void p;
+  st.e = 99; st.s = 99; assert.match(S.need(st, sv, settings).text, /^(a|an) \w+ pod, ready to incubate$/); void c; void p;
 });
 
 // ---- 10. sitting order ----
