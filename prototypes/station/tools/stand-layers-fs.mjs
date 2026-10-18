@@ -4,10 +4,11 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG } from "../../ui/png.mjs";
-import { setStandLayers } from "../src/layered-stand.mjs";
+import { setStandLayers, setStandSizes } from "../src/layered-stand.mjs";
 import { setStandLooks } from "../src/looks.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+export const SIZES_FILE = path.resolve(here, "../../ui/specs/station/stand-sizes.json");
 export const STANDS_DIR = path.resolve(here, "../../ui/assets/stands"), LOOKS_FILE = path.resolve(here, "../../ui/specs/station/stand-looks.json");
 export function loadStandLayersFs(dir = STANDS_DIR) {
   const index = JSON.parse(readFileSync(path.join(dir, "index.json"), "utf8"));
@@ -17,7 +18,8 @@ export function loadStandLayersFs(dir = STANDS_DIR) {
     const p = decodePNG(buf); if (p.width !== e.w || p.height !== e.h) throw new Error(`stand layer ${name}: ${e.file} is ${p.width}×${p.height}, the index says ${e.w}×${e.h}`);
     return { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) };
   });
-  return index;
+  loadStandSizesFs(); return index;
 }
 export const loadStandLooksFs = (file = LOOKS_FILE) => { const j = JSON.parse(readFileSync(file, "utf8")); setStandLooks(j); return j; };
-export const unloadStands = () => { setStandLayers(null); setStandLooks(null); };
+export function loadStandSizesFs(file = SIZES_FILE) { const j = JSON.parse(readFileSync(file, "utf8")); setStandSizes(j); return j; }
+export const unloadStands = () => { setStandLayers(null); setStandLooks(null); setStandSizes(null); };

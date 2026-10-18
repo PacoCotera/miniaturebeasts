@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Cuts the Loika's layered stand (T-20261016-201) from the signed version 4 set (T-20261016-200), derived DOWN to each standing size.
+"""Cuts the Loika's layered stand (T-20261016-201) from the signed version 4 set (T-20261016-200).
   base   masters-pods floor/S01/keys: the bare-headed base key (mibi-<stage>-S01-base-anchor-304x312)
   crown  floor/S01/overlays: the crest overlay (over), for the look "leaf crest"; a bare head is the base
   marks  work-queue results/T-20261016-200/layers: the patches and the stripes layers (over), inside the key's fur mask;
          "stripes and patches" is both, patches first (make-window-masters.py)
   eyes   the ring overlays are not cut yet: thin and wide stand in with the base's "between" rings (the 16 stand-ins of layers/register.json are carried in the index)
 Colour ramps are T-203's: every stand is the charcoal base for now. The anchor key is the standing pose every still picture takes; the other keys are the motion sets'.
-Each size is the 304x312 canvas scaled by the one factor that fits and bottom-centred; base and layers are cut with the same transform. Nothing is scaled up.
+Only the 304x312 canvas is cut. A stand at any smaller size is composed at that size in the logic process (layered-stand.mjs), so the size is a parameter of the picture, not of the art. Nothing is scaled up.
 
   python3 -I prototypes/station/tools/make-stand-layers.py FLOOR_S01_DIR LAYERS_DIR     (writes prototypes/ui/assets/stands/)
 """
@@ -17,18 +17,9 @@ FLOOR, LAYERS = sys.argv[1:3]
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../..'))
 OUT = os.path.join(ROOT, 'prototypes/ui/assets/stands')
 CW, CH = 304, 312
-SIZES = {'adult': [(304, 312), (144, 152), (48, 48)], 'juvenile': [(304, 312), (104, 112), (48, 48)]}
 POSE = 'anchor'
 
 def rd(path): return Image.open(path).convert('RGBA')
-
-def fit(im, w, h):
-    if (w, h) == (CW, CH): return im
-    s = min(w / CW, h / CH)
-    nw, nh = max(1, round(CW * s)), max(1, round(CH * s))
-    small = im.resize((nw, nh), Image.LANCZOS)          # premultiplied resampling for RGBA
-    out = Image.new('RGBA', (w, h), (0, 0, 0, 0)); out.alpha_composite(small, ((w - nw) // 2, h - nh))
-    return out
 
 os.makedirs(OUT, exist_ok=True)
 for f in os.listdir(OUT):
@@ -48,8 +39,9 @@ for stage in ('adult', 'juvenile'):
         'stripes': rd(f'{LAYERS}/mibi-{stage}-S01-{POSE}-stripes-304x312.png'),
     }
     sizes = {}
-    for (w, h) in SIZES[stage]:
+    for (w, h) in [(CW, CH)]:
         key = f'{w}x{h}'; n = lambda part: f'S01-{stage}-{key}-{part}.png'
+        fit = lambda im, w, h: im
         sizes[key] = {'base': save(fit(src['base'], w, h), n('base')), 'layers': [
             {'trait': 'markings', 'looks': ['patches', 'stripes and patches'], 'order': 10, 'op': 'over', 'file': save(fit(src['patches'], w, h), n('patches'))},
             {'trait': 'markings', 'looks': ['stripes', 'stripes and patches'], 'order': 11, 'op': 'over', 'file': save(fit(src['stripes'], w, h), n('stripes'))},

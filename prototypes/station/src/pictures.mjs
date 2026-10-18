@@ -63,8 +63,8 @@ const movingSource = (env) => ({
 // A light grades the composed picture (light-grade.mjs), as it grades a master. The layers are proof cut-outs until the masters land (art.mjs PLACEHOLDERS "stand-layers"), so the picture is a placeholder.
 const LAYER_UNTIL = "the eye-ring overlays and the colour ramps (T-20261016-200, T-20261016-203): the stand is the signed version 4 base and layers, with the base's rings and charcoal coat";
 function registerLayered(r) {
-  const stand = layeredStand(r.species, r.stage, r.size); if (!stand) throw new Error(`mibi ${r.id}: the species has no layered stand at ${r.size.join("×")}`);
-  const [w, h] = r.size, day = standPictureId(stand, r.looks);
+  const stand = layeredStand(r.species, r.stage, r.size); if (!stand) throw new Error(`mibi ${r.id}: the species has no layered stand at ${(r.size).join("×")}`);
+  const [w, h] = stand.size, day = standPictureId(stand, r.looks);
   if (!hasAsset(day)) registerAsset({ id: day, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => composeStand(stand, r.looks) });
   if (r.id !== day && !hasAsset(r.id)) registerAsset({ id: r.id, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => grade(assetOf(day), r.light ?? "day") });
 }

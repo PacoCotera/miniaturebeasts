@@ -45,74 +45,6 @@
         "file": "S01-adult-304x312-crest.png"
        }
       ]
-     },
-     "144x152": {
-      "base": "S01-adult-144x152-base.png",
-      "layers": [
-       {
-        "trait": "markings",
-        "looks": [
-         "patches",
-         "stripes and patches"
-        ],
-        "order": 10,
-        "op": "over",
-        "file": "S01-adult-144x152-patches.png"
-       },
-       {
-        "trait": "markings",
-        "looks": [
-         "stripes",
-         "stripes and patches"
-        ],
-        "order": 11,
-        "op": "over",
-        "file": "S01-adult-144x152-stripes.png"
-       },
-       {
-        "trait": "crown",
-        "looks": [
-         "leaf crest"
-        ],
-        "order": 30,
-        "op": "over",
-        "file": "S01-adult-144x152-crest.png"
-       }
-      ]
-     },
-     "48x48": {
-      "base": "S01-adult-48x48-base.png",
-      "layers": [
-       {
-        "trait": "markings",
-        "looks": [
-         "patches",
-         "stripes and patches"
-        ],
-        "order": 10,
-        "op": "over",
-        "file": "S01-adult-48x48-patches.png"
-       },
-       {
-        "trait": "markings",
-        "looks": [
-         "stripes",
-         "stripes and patches"
-        ],
-        "order": 11,
-        "op": "over",
-        "file": "S01-adult-48x48-stripes.png"
-       },
-       {
-        "trait": "crown",
-        "looks": [
-         "leaf crest"
-        ],
-        "order": 30,
-        "op": "over",
-        "file": "S01-adult-48x48-crest.png"
-       }
-      ]
      }
     }
    },
@@ -155,74 +87,6 @@
         "order": 30,
         "op": "over",
         "file": "S01-juvenile-304x312-crest.png"
-       }
-      ]
-     },
-     "104x112": {
-      "base": "S01-juvenile-104x112-base.png",
-      "layers": [
-       {
-        "trait": "markings",
-        "looks": [
-         "patches",
-         "stripes and patches"
-        ],
-        "order": 10,
-        "op": "over",
-        "file": "S01-juvenile-104x112-patches.png"
-       },
-       {
-        "trait": "markings",
-        "looks": [
-         "stripes",
-         "stripes and patches"
-        ],
-        "order": 11,
-        "op": "over",
-        "file": "S01-juvenile-104x112-stripes.png"
-       },
-       {
-        "trait": "crown",
-        "looks": [
-         "leaf crest"
-        ],
-        "order": 30,
-        "op": "over",
-        "file": "S01-juvenile-104x112-crest.png"
-       }
-      ]
-     },
-     "48x48": {
-      "base": "S01-juvenile-48x48-base.png",
-      "layers": [
-       {
-        "trait": "markings",
-        "looks": [
-         "patches",
-         "stripes and patches"
-        ],
-        "order": 10,
-        "op": "over",
-        "file": "S01-juvenile-48x48-patches.png"
-       },
-       {
-        "trait": "markings",
-        "looks": [
-         "stripes",
-         "stripes and patches"
-        ],
-        "order": 11,
-        "op": "over",
-        "file": "S01-juvenile-48x48-stripes.png"
-       },
-       {
-        "trait": "crown",
-        "looks": [
-         "leaf crest"
-        ],
-        "order": 30,
-        "op": "over",
-        "file": "S01-juvenile-48x48-crest.png"
        }
       ]
      }
@@ -329,30 +193,6 @@
   }
  },
  "files": {
-  "S01-adult-144x152-base.png": {
-   "file": "S01-adult-144x152-base.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "4f7de449834e8916a086bec0f5ff258d76dcdf9f0b572a6a789246048a28b6a1"
-  },
-  "S01-adult-144x152-crest.png": {
-   "file": "S01-adult-144x152-crest.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "3d49119b244723081c6309d09d563ff288c056b44b49d63fae60cf54116c34a5"
-  },
-  "S01-adult-144x152-patches.png": {
-   "file": "S01-adult-144x152-patches.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "267866592747975e5ebdcaf1fea0306009fc7f4f97a22155823b816e281fb451"
-  },
-  "S01-adult-144x152-stripes.png": {
-   "file": "S01-adult-144x152-stripes.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "7b1f972ace6df79c4556213168c3be1e85c6998468fdabf4619d2281c595519f"
-  },
   "S01-adult-304x312-base.png": {
    "file": "S01-adult-304x312-base.png",
    "w": 304,
@@ -377,54 +217,6 @@
    "h": 312,
    "sha256": "4069f6f2693e63cd1b13aca816e94d715fedd51142c31b98568d6d3fac29177b"
   },
-  "S01-adult-48x48-base.png": {
-   "file": "S01-adult-48x48-base.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "57e006e4fa4523cab1241dbfb2468eef3a31dbe7eabefd2089b91ecfc667ab00"
-  },
-  "S01-adult-48x48-crest.png": {
-   "file": "S01-adult-48x48-crest.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "c919db46c09c2d69ffc11222516b26378f85e8c3a3bf73f06f6f6bfda2f7c020"
-  },
-  "S01-adult-48x48-patches.png": {
-   "file": "S01-adult-48x48-patches.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "5fc4e909d171d48e1f2f9e1c658d22f365c74ef5d40ebb94e6d29e7d3d811a26"
-  },
-  "S01-adult-48x48-stripes.png": {
-   "file": "S01-adult-48x48-stripes.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "d7747fe55a6707074b9f846365a7119ed3c1782c4d2032ac0c89dae2bb4cdc82"
-  },
-  "S01-juvenile-104x112-base.png": {
-   "file": "S01-juvenile-104x112-base.png",
-   "w": 104,
-   "h": 112,
-   "sha256": "b9216fdc4523fd1119dff716b88bf593cf93093ce49e21f0fd7f5abb389d9d8a"
-  },
-  "S01-juvenile-104x112-crest.png": {
-   "file": "S01-juvenile-104x112-crest.png",
-   "w": 104,
-   "h": 112,
-   "sha256": "caa1ea8949a10c0f22bc63e074618e9f2ee5fa246e5eeff2f61076d960f54f99"
-  },
-  "S01-juvenile-104x112-patches.png": {
-   "file": "S01-juvenile-104x112-patches.png",
-   "w": 104,
-   "h": 112,
-   "sha256": "b56908a15371251454dbdd340c5650b8ef09e02c3d74aabf6013e1d5583740e5"
-  },
-  "S01-juvenile-104x112-stripes.png": {
-   "file": "S01-juvenile-104x112-stripes.png",
-   "w": 104,
-   "h": 112,
-   "sha256": "9297ea4484098db9ea06e111a6ca37adc83d48e1b2767c3891d11416ab5fbd84"
-  },
   "S01-juvenile-304x312-base.png": {
    "file": "S01-juvenile-304x312-base.png",
    "w": 304,
@@ -448,30 +240,6 @@
    "w": 304,
    "h": 312,
    "sha256": "a673286cef5efc0c998dbd2b200890c662e53006a10ee34353330fb313486c15"
-  },
-  "S01-juvenile-48x48-base.png": {
-   "file": "S01-juvenile-48x48-base.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "c81298a1c49c91484359c6734f3fff716608c693020220a76014359d26d70c35"
-  },
-  "S01-juvenile-48x48-crest.png": {
-   "file": "S01-juvenile-48x48-crest.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "9358dad0170f3e3f654131ec8e2c4496aff8618eec2dbbee0196ec96df2a01fa"
-  },
-  "S01-juvenile-48x48-patches.png": {
-   "file": "S01-juvenile-48x48-patches.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "9164ad0802ac9b28b0df3d67980d1f0dc2a3416962affdc17c33f00e6c57e0b3"
-  },
-  "S01-juvenile-48x48-stripes.png": {
-   "file": "S01-juvenile-48x48-stripes.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "b385b83356616359171fd4829c0eeffccfc6758baef9fbd4837cf0adee4a20b5"
   }
  }
 }

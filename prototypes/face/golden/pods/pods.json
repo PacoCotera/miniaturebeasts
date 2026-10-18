@@ -14,31 +14,31 @@
    "png": "pods-overview-identify-warns.png"
   },
   "chapter page, unread": {
-   "hash": "fbf239ae",
+   "hash": "ff2dffa5",
    "png": "pods-chapter-page-unread.png"
   },
   "overview, identified, pod focused": {
-   "hash": "cdc6dbde",
+   "hash": "1db57d63",
    "png": "pods-overview-identified-pod-focused.png"
   },
   "overview, kin focused": {
-   "hash": "99e990f8",
+   "hash": "c5e91ea0",
    "png": "pods-overview-kin-focused.png"
   },
   "overview, hatch focused": {
-   "hash": "27e140c4",
+   "hash": "04f767b0",
    "png": "pods-overview-hatch-focused.png"
   },
   "overview, a rail tab focused": {
-   "hash": "d2620ed7",
+   "hash": "0d6d3283",
    "png": "pods-overview-a-rail-tab-focused.png"
   },
   "chapter page": {
-   "hash": "9d17f644",
+   "hash": "540e3a9f",
    "png": "pods-chapter-page.png"
   },
   "chapter page, a doing": {
-   "hash": "9cdb00d6",
+   "hash": "174b35b7",
    "png": "pods-chapter-page-a-doing.png"
   },
   "chapter page, sealed": {
@@ -46,7 +46,7 @@
    "png": "pods-chapter-page-sealed.png"
   },
   "compare": {
-   "hash": "9fc4b943",
+   "hash": "2fadffcc",
    "png": "pods-compare.png"
   }
  }

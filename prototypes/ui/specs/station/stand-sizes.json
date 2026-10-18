@@ -1,0 +1,9 @@
+{
+ "note": "The size each place draws a layered stand at (T-20261016-201; the owner's ruling of 2026-10-17 21:36: the mibis are tiny in every world view). `places` maps the size a view asks for (its slot in the spec; the picture is that size, since the face places a picture 1:1) to the box the figure is composed in, in the logic process, from the art cut once at 304x312 (the face never scales; the figure stands on the picture's foot, transparent around it). One scale for every stage: size is not a locus. A size that is not listed is not a standing pose and is not layered. The art director's table fills the per-view sizes; the 144x152 and 104x112 residents are the living windows' (Home, the Vivarium, Idle), drawn at an adult figure about 54 px tall (a 57x59 box).",
+ "places": {
+  "144x152": [57, 59],
+  "104x112": [57, 59],
+  "304x312": [304, 312],
+  "48x48": [48, 48]
+ }
+}

@@ -18,6 +18,7 @@ import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habit
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters, loadStandLayers } from "./masters.mjs";
+import { setStandSizes } from "./layered-stand.mjs";
 import { setStandLooks } from "./looks.mjs";
 import { injectPortraitSource } from "./portrait-source.mjs";
 import { bootFace } from "./face-lvgl.mjs";
@@ -195,7 +196,7 @@ const bootAssets = async () => {
   for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "cross"]) SPECS[k] = await spec(k + ".json");
   { const ix = await spec("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = await spec(`moving/${id}.json`); SPECS.moving = sets; setMoving(sets); }   // the moving sets (Station M1 §2.2): one file a species, one spec on the face
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
-  setStandLooks(await spec("stand-looks.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)
+  setStandLooks(await spec("stand-looks.json")); setStandSizes(await spec("stand-sizes.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
 };
