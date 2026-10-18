@@ -62,3 +62,39 @@ At head 96316446 the code plays the arrival over Pods, and Later returns to Pods
   - `station-layouts.md` line 60: the landing list goes, and the line says the same thing.
   - `idle.keys.dock` (from Idle: wake, then Home) is unchanged.
   - The waits for Create, Cross, the namer and the Sitting are unchanged.
+
+## 3. Addendum (16:45): the art director's three Pods flags (`art-director.md`, a61d4862)
+
+All three are small: strings, one flag and one label condition. **Fold them into this round.** The game designer confirms the wording of 3.1 and the fact in 3.2, which are theirs. If they change a word, theirs stands, and the builder swaps the string.
+
+### 3.1 "nothing spent until Grow"
+
+- **The fix:** `pods.json` `outcomes.create` becomes **"free until Incubate"**.
+  - The straight swap, "nothing spent until Incubate", measures about 207 px at Inter 16, against the slot's 208, so it is too tight to ship.
+  - "free until Incubate" is about 135 px and three words, and it says the same: opening Create costs nothing, and the spend comes at Incubate.
+- **To update with it:** `pods-props.test.mjs` lines 143 and 144, and the metrics vectors.
+
+### 3.2 The Return panel → the Release panel (T-20261016-195, never built into `panel.json`)
+
+`panel.json` `strings`, for both wild panels (the Vivarium's is the same string and must not ship either):
+
+| | wildPod | wildMibi |
+| --- | --- | --- |
+| title | **""** (none, as `dock`) | **""** |
+| left card, the verb | **"Release it"**, ❀ +1 (unchanged) | **"Release {name}"**, ❀ +2 (unchanged) |
+| its fact | **"it stays in the wild from now on"** (about 233 px; fits the card's 348) | **"{name} lives in the wild from now on"** (T-195) |
+| right card | "Keep it" (unchanged) | "Keep {name}" (unchanged) |
+
+- **The fact is drawn in `bone`, the text colour, never coral, with no ✕.** The Release card is no longer a loss. Clear the card's loss flag (tone) wherever the code sets it.
+- **Focus then follows `focus.initial` by itself.** With no loss card, the first card is Release, on the left: the option the player came for (T-195 §3). Update `focus.initial`'s text to "the first card that is not dimmed (the option the player came for, on the left)".
+- **← reads "Back"**, as it does now.
+- **The settle guard** (✓ on Release is taken only once the panel has settled) also comes from T-195. If it's already built, keep it. If not, it is the one part that is a follow-up ticket, because the panel's open is a cut today, so a double press can't fall through.
+- **Goldens:** `pods-panel-return` (rename it `pods-panel-release`), the Vivarium's wild panel, and `journey-vivarium.json`'s "gone for good" subject.
+
+### 3.3 The rack's "Loika" under sealed shells: the label is wrong, the picture is right
+
+- **What the golden shows:** the collection's Loika pods are unidentified: `pods-states.mjs` says "the save's own S01 pods are unidentified", and the focused one's line reads "sealed until identified". The generic sealed shell is therefore correct.
+- **What's wrong:** the name label gives the species away. `pods-overview-unidentified` shows the same leak: its find text says "a creature", and ✓ Identify promises "the species shows", but the label already reads "Loika".
+- **The rule:** the pod's name label (`pods.json` `name`, in the rack and on the overview) shows the species only once the pod is identified. Until then it reads **"Unknown"** (71 px at 16 px, 20 px as the label's px), in the same plate. The species never shows earlier, in a label, a line or a picture.
+- **Identified pods** keep the species name and show their species' pod, as the Tuikis does. If an identified Loika in the rack shows the generic shell, that is a missing v4 rack picture: the art director's, then the builder's.
+- **Goldens:** `pods-collection` and `pods-overview-unidentified`.
