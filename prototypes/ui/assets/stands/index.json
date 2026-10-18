@@ -38,7 +38,7 @@
          "vivarium",
          "idle"
         ],
-        "canvas": [
+        "size": [
          304,
          48
         ],
@@ -79,7 +79,7 @@
     },
     "curl": {
      "shadow": "S01-adult-curl-304x48-shadow.png",
-     "canvas": [
+     "size": [
       304,
       48
      ],
@@ -120,7 +120,7 @@
          "vivarium",
          "idle"
         ],
-        "canvas": [
+        "size": [
          304,
          48
         ],
@@ -161,7 +161,7 @@
     },
     "curl": {
      "shadow": "S01-juvenile-curl-304x48-shadow.png",
-     "canvas": [
+     "size": [
       304,
       48
      ],

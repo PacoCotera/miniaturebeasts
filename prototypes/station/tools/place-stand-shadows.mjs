@@ -20,8 +20,8 @@ for (const stage of ["adult", "juvenile"]) {
     copyFileSync(path.join(from, name), path.join(dest, name)); index.files[name] = { file: name, w, h, sha256: createHash("sha256").update(buf).digest("hex") }; return name;
   };
   size.layers = size.layers.filter((l) => l.op !== "under");
-  size.layers.unshift({ op: "under", order: 0, file: put(`S01-${stage}-304x48-shadow.png`), views, canvas: [304, 48], feetRow: FEET_ROW, standFeet: STAND_FEET });
-  set.curl = { shadow: put(`S01-${stage}-curl-304x48-shadow.png`), canvas: [304, 48], feetRow: FEET_ROW };
+  size.layers.unshift({ op: "under", order: 0, file: put(`S01-${stage}-304x48-shadow.png`), views, size: [304, 48], feetRow: FEET_ROW, standFeet: STAND_FEET });
+  set.curl = { shadow: put(`S01-${stage}-curl-304x48-shadow.png`), size: [304, 48], feetRow: FEET_ROW };
 }
 index.files = Object.fromEntries(Object.entries(index.files).sort(([a], [b]) => a.localeCompare(b)));
 writeFileSync(indexFile, JSON.stringify(index, null, 1) + "\n");

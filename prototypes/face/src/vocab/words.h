@@ -9,6 +9,7 @@ void word_hairline(const char *id, int x, int y, int len, const char *colour, in
 void word_focusRing(const char *id, const char *spec, const char *target, const int drawn[4]);
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
 void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);
+void word_focusRingFigure(const char *id, const char *spec, const char *target, const char *picture, int fx, int feetY, int W);   /* a figure's ring: (W + 10) x (fh + 10) on its feet point (build-spec §1) */
 /* station/ */
 void word_bench(void);   /* Pods' stage: the ground and the room master over it */
 void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */

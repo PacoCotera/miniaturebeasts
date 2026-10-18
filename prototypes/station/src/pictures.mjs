@@ -7,7 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
-import { layeredStand, composeStand, standPictureId, fitDown } from "./layered-stand.mjs";
+import { layeredStand, composeStand, standPictureId, fitDown, curlPicture } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
@@ -128,6 +128,12 @@ export function registerPictures(reqs, env) {
         break;
       }
       case "mibi": { if (r.looks) { registerLayered(r); break; } const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
+      case "curl": {   // a sleeper's curl at the world size (build-spec §5): the nap master reduced by the standing figure's factor with its own shadow (layered-stand.mjs curlPicture), composed once here; a light grades it as it grades a stand
+        const src = assetOf(r.master), pic = curlPicture(src, r.species, r.stage, r.factor, r.view, r.master);
+        if (!hasAsset(r.day)) registerAsset({ id: r.day, w: pic.w, h: pic.h, status: "derived", until: null, build: () => pic });
+        if (r.id !== r.day && !hasAsset(r.id)) registerAsset({ id: r.id, w: pic.w, h: pic.h, status: "derived", until: null, build: () => grade(assetOf(r.day), r.light ?? "day") });
+        break;
+      }
       case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas (Station M1 §1.2): composed from its placed masters or §1.5's stand-ins
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       case "spread": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread masters (library.json masters)", () => (r.part === "stage" ? spreadStageArt(SPECS.library) : r.part === "gilt" ? spreadGiltArt(SPECS.library) : spreadSealArt(SPECS.library))); break;   // the stage, the gilt corner, the seal: the signed master when placed, else the labelled stand-in

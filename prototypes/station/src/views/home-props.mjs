@@ -6,8 +6,10 @@ import * as S from "../state.mjs";
 import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable } from "../moving.mjs";
 import { standLook } from "../stands.mjs";
+import { asset as assetOf } from "../../../ui/assets.mjs";
 import { drawnLooks } from "../looks.mjs";
-import { layeredStand, standPictureId } from "../layered-stand.mjs";
+import { layeredStand, standPictureId, standFigure, curlFactor, curlPicture } from "../layered-stand.mjs";
+import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 
@@ -28,6 +30,20 @@ export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "def
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
   return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn };
 };
+// A standing mibi's figure, [dx, dy, W, H]: the drawn bbox of its composed figure in its picture (build-spec §0), or null when the picture is not a layered stand
+export const figureOf = (st, mb, size, settings, view = "default") => {
+  const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view); if (!stand) return null;
+  return standFigure(stand, drawnLooks(frameOf(sp), mb));
+};
+// A sleeper's curl at the world size (build-spec §5): the nap master reduced by the standing figure's factor for its stage, with its own shadow. { id, figure, request } when the nap master is placed; else null (the 96 × 88 nap picture as it was)
+export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
+  const look = lookOf(st, mb, nap, settings); if (look.step === 3) return null;
+  const sp = S.speciesOf(mb), master = `mibi-${look.stage === "juvenile" ? "juvenile" : "adult"}-${sp}-${nap[0]}x${nap[1]}`, f = curlFactor(look.stage, view, slot[1]); if (!f) return null;
+  const src = assetOf(master); if (!src) return null;
+  const pic = curlPicture(src, sp, look.stage, f, view, master); if (!pic.figure) return null;
+  const ms = look.stage === "juvenile" ? "juvenile" : "adult", day = `mibi:${sp}~${keyToken(`curl|${master}|${view}|${f}`)}:${ms}:${pic.w}x${pic.h}`;
+  return { id: day + (light === "day" ? "" : ":" + light), figure: pic.figure, request: { kind: "curl", id: day + (light === "day" ? "" : ":" + light), day, master, species: sp, stage: look.stage, view, factor: f, ...(light === "day" ? {} : { light }) } };
+}
 export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default") => { const p = mibiPictureOf(st, mb, size, settings, light, view); return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }) }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
@@ -90,10 +106,15 @@ export function livingOf(m, R, req, ph, L) {
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
-  const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; const look = lookOf(st, mb, size, settings); return { id: String(mb.id), name: mb.name, stage: look.stage, picture: pic(mb, size), waiting: false, ...extra }; };   // `stage` is the stage drawn: a juvenile stand sizes the box, the ring, the lift and the lamp as a juvenile's
+  const person = (mb, extra = {}) => {
+    const nap = !!extra.nap, size = nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; const look = lookOf(st, mb, size, settings);
+    const curl = nap && !extra.noCurl ? curlOfMibi(st, mb, size, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home") : null; delete extra.noCurl;   // a sleeper takes the world-size curl when its nap master is placed
+    const figure = curl ? curl.figure : nap ? null : figureOf(st, mb, size, settings, m.view ?? "home");
+    return { id: String(mb.id), name: mb.name, stage: look.stage, picture: curl ? req(curl.request) : pic(mb, size), ...(figure ? { figure } : {}), waiting: false, ...extra };
+  };   // `stage` is the stage drawn: a juvenile stand sizes the box, the ring, the lift and the lamp as a juvenile's
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
   const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, stageOf(mb), req, m); if (mv) p.moving = mv; if (rest) p.rest = rest[String(mb.id)]; return p; });
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const p = person(mb, { seed: hash(mb.id), nap: true }), mv = movingProp(mb, stageOf(mb), req, m, ["nap"]); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
+  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state

@@ -87,6 +87,15 @@
       "asleep"
      ],
      "description": "Station M1 §2.6: by restOf (the rest stagger) from the Station time"
+    },
+    "figure": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4,
+     "description": "T-20261018-235 build-spec §0: [dx, dy, W, H], the drawn bbox of the figure (ink alpha >= 128, its contact shadow left out) in its picture; the geometry of the ring, the tag, the walk and the keep-out is measured from it. Absent: the picture is the figure"
     }
    }
   },

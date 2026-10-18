@@ -134,6 +134,13 @@ void word_focusRingFootprint(const char *id, const char *spec, const char *targe
   ring_of(id, spec, target, drawn, foot, picture, mirrored);
 }
 
+/* A figure's ring (T-20261018-235, build-spec §1): the footprint form on the figure the host measured (its drawn bbox, the shadow left out): the ellipse (W + 10) x (fh + 10), fh = 2 floor((W + 6) / 12) held to 6..16, centred on
+   the feet point F = (fx, feetY), W the figure's width. `picture` names the light as a footprint's does. The ring stays on the ground: the caller gives the unlifted feet. */
+void word_focusRingFigure(const char *id, const char *spec, const char *target, const char *picture, int fx, int feetY, int W) {
+  int foot[3] = { fx - W / 2, feetY, W }, r[4] = { 0, 0, 0, 0 };
+  ring_of(id, spec, target, r, foot, picture, 0);
+}
+
 /* the ring of the target group of the screen in props (the rail's, Pods'): the target whose `group` this is */
 void word_focusRingFor(const char *id, const int drawn[4], const char *group) {
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);

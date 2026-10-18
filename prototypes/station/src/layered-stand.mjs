@@ -104,9 +104,9 @@ export function inkBox(px, w, h, alpha = 128) {
 }
 // The shadow laid under the art on a canvas extended below to hold it: the art's rows 0..ch, the shadow's row `feetRow` on the stand's feet row; { px, h } the extended canvas
 function withShadow(art, cw, ch, under, shadow) {
-  const top = under.standFeet - under.feetRow, rows = Math.max(ch, top + under.canvas[1]), px = new Uint8ClampedArray(cw * rows * 4);
+  const top = under.standFeet - under.feetRow, rows = Math.max(ch, top + under.size[1]), px = new Uint8ClampedArray(cw * rows * 4);
   const s = shadow.rgba();
-  for (let y = 0; y < under.canvas[1]; y++) for (let x = 0; x < cw; x++) { const i = (y * cw + x) * 4, o = ((top + y) * cw + x) * 4; px.set(s.subarray(i, i + 4), o); }
+  for (let y = 0; y < under.size[1]; y++) for (let x = 0; x < cw; x++) { const i = (y * cw + x) * 4, o = ((top + y) * cw + x) * 4; px.set(s.subarray(i, i + 4), o); }
   for (let i = 0; i < cw * ch * 4; i += 4) {   // the art over the shadow (straight alpha)
     const sa = art[i + 3]; if (!sa) continue;
     const da = px[i + 3], oa = sa + da * (255 - sa) / 255;
@@ -150,7 +150,7 @@ function curlBuild(src, species, stage, factor, view) {   // src: { w, h, rgba()
   const last = cb[1] + cb[3] - 1;   // the curl's last ink row
   let sp = null, sw = 0, sh = 0, fr = 0;
   if (shadow) { const stand = layeredStand(species, stage, [144, 152], view) ?? layeredStand(species, stage, [104, 112], view); if (stand) {
-    const s = scaleOf(stand), [cw] = ART_SIZE.split("x").map(Number); sw = Math.max(1, Math.round(cw * s)); sh = Math.max(1, Math.round(set.curl.canvas[1] * s)); sp = fitDownBy(shadow.rgba(), cw, set.curl.canvas[1], s, sw, sh); fr = Math.floor((set.curl.feetRow + 0.5) * s); } }
+    const s = scaleOf(stand), [cw] = ART_SIZE.split("x").map(Number); sw = Math.max(1, Math.round(cw * s)); sh = Math.max(1, Math.round(set.curl.size[1] * s)); sp = fitDownBy(shadow.rgba(), cw, set.curl.size[1], s, sw, sh); fr = Math.floor((set.curl.feetRow + 0.5) * s); } }
   const top = sp ? last - fr : 0, y0 = Math.min(0, top), y1 = Math.max(nh, sp ? top + sh : nh), pw = Math.max(nw, sw), ph = y1 - y0, out = new Uint8ClampedArray(pw * ph * 4);
   if (sp) for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) { const i = (y * sw + x) * 4, o = ((top - y0 + y) * pw + ((pw - sw) >> 1) + x) * 4; out.set(sp.subarray(i, i + 4), o); }
   const ox = (pw - nw) >> 1, oy = -y0;
