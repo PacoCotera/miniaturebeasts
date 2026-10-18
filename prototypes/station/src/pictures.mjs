@@ -56,7 +56,7 @@ const putOrMaster = (id, masterId, w, h, until, build, extra = {}, pixelsOf = ma
 
 // The sources of a moving set's stand-in cells (Station M1 §1.5): the placed juvenile stand-in at the size, or for an adult Pip's placed stand (the adult plan), else the rig of the species' type specimen at that size; the 96 × 88 juvenile stand-in for the curl.
 const placedPic = (id, w, h, light = "day") => { const m = masterAt(id, w, h); return m ? assetOf(gradedOf(id, light)) : null; };   // a placed master takes the scene's light (fix 7); the rig is never graded
-const movingSource = (env) => ({
+export const movingSource = (env) => ({
   stand: (species, stage, w, h, light) => placedPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h, light) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
   nap: (species, light) => placedPic(`mibi-juvenile-${species}-96x88`, 96, 88, light) ?? speciesArt(env.frameOf(species), 96, 88, "three-quarter"),
 });
@@ -128,7 +128,7 @@ export function registerPictures(reqs, env) {
         break;
       }
       case "mibi": { if (r.looks) { registerLayered(r); break; } const [w, h] = r.size, young = r.stage === "juvenile"; putOrMaster(r.id, young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, w, h, young ? "the juvenile stand-in at this size (art director), then the painted mibi" : "the adult's signed stand at this size (the adult plan); an adult without one is asked as its species' juvenile stand (stands.mjs, station-layouts.md Composed states rule 5), and only a species with no juvenile stand reaches the rig here, shown as a stand-in", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), w, h, "three-quarter"), {}, gradedOf(young ? `mibi-juvenile-${r.species}-${w}x${h}` : `mibi-adult-${r.species}-${w}x${h}`, r.light ?? "day")); break; }   // the adult hook: an adult or elder takes mibi-adult-SXX-WxH when placed; else the view has asked for mibi-juvenile-SXX at the place's size (stands.mjs); else the rig at the adult's own size      case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas: composed from its placed masters or §1.5's stand-ins
-      case "curl": {   // a sleeper's curl at the world size (build-spec §5): the nap master reduced by the standing figure's factor with its own shadow (layered-stand.mjs curlPicture), composed once here; a light grades it as it grades a stand
+      case "curl": {   // a sleeper's curl at the world size: the nap master reduced by the standing figure's factor with its own shadow (layered-stand.mjs curlPicture), composed once here; a light grades it as it grades a stand
         const src = assetOf(r.master), pic = curlPicture(src, r.species, r.stage, r.factor, r.view, r.master);
         if (!hasAsset(r.day)) registerAsset({ id: r.day, w: pic.w, h: pic.h, status: "derived", until: null, build: () => pic });
         if (r.id !== r.day && !hasAsset(r.id)) registerAsset({ id: r.id, w: pic.w, h: pic.h, status: "derived", until: null, build: () => grade(assetOf(r.day), r.light ?? "day") });

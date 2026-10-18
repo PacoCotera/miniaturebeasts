@@ -13,7 +13,7 @@ const arg = (k) => { const i = process.argv.indexOf("--" + k); return i > 0 ? pr
 const from = arg("from"); if (!from) { console.error("usage: place-stand-shadows.mjs --from <folder> [--views home,vivarium,idle]"); process.exit(2); }
 const views = (arg("views") ?? "home,vivarium,idle").split(",");
 const dims = (buf) => { if (buf.subarray(1, 4).toString("ascii") !== "PNG") throw new Error("not a PNG"); return [buf.readUInt32BE(16), buf.readUInt32BE(20)]; };
-const index = JSON.parse(readFileSync(indexFile, "utf8")), FEET_ROW = 24, STAND_FEET = 305;   // the shadow's row 24 sits on the stand's feet line, stand row 305 (build-spec §3)
+const index = JSON.parse(readFileSync(indexFile, "utf8")), FEET_ROW = 24, STAND_FEET = 305;   // the shadow's row 24 sits on the stand's feet line, stand row 305
 for (const stage of ["adult", "juvenile"]) {
   const set = index.stands.S01[stage], size = set.sizes["304x312"], put = (name) => {
     const buf = readFileSync(path.join(from, name)), [w, h] = dims(buf); if (w !== 304 || h !== 48) throw new Error(`${name} is ${w}×${h}, a shadow is 304×48`);

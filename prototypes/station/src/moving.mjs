@@ -91,6 +91,24 @@ export function compose(id, src, layers = []) {
   return out;
 }
 // register an atlas in the manifest (pictures.mjs `case "moving"`): built by compose, status master only when every cell is a placed master
+// ---- the figure of a moving set (T-20261018-235): measured once per atlas, when it is composed ----
+// The union of the ink bbox (alpha >= 128, the shadow is its own atlas) over the set's grounded cells (the walk atlas's cells but the hop's air frame and the curls, mirrors included, so the box is the same either way it
+// faces), as [dx, dy, W, H] in the cell: its width and x-centre, and its lowest ink row. The resident's ring and tag hold still on it while the cells animate; a hop keeps its F. Kept with the atlas by id.
+const FIGURES = new Map(); let SOURCE = null;
+export const setMovingSource = (src) => { SOURCE = src; FIGURES.clear(); };
+const AIRBORNE = /^(air|curl|curl-b1)$/;
+export function atlasFigure(id, pic) {
+  const a = parse(id); if (!a || a.part !== "walk") return null;
+  const cells = cellsOf(a.species, a.stage, "walk", a.w, a.h), px = pic.rgba(); let x0 = a.w, y0 = a.h, x1 = -1, y1 = -1;
+  cells.forEach((c, i) => { if (AIRBORNE.test(c.name)) return; const ox = 1 + i * a.w;
+    for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (px[(y * pic.w + ox + x) * 4 + 3] >= 128) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } });
+  return x1 < 0 ? null : [x0, y0, x1 - x0 + 1, y1 - y0 + 1];
+}
+// the figure of the set's walk atlas of a species, stage and look, composed here from its sources (the day atlas: a light grades colour, never alpha), cached by the atlas id; null with no source or no ink
+export function movingFigure(walkId) {
+  if (FIGURES.has(walkId)) return FIGURES.get(walkId); if (!SOURCE) return null;
+  const f = atlasFigure(walkId, compose(walkId.replace(/:(dawn|dusk|night)$/, ""), SOURCE)); FIGURES.set(walkId, f); return f;
+}
 export function registerMoving(id, src) {
   if (hasAsset(id)) return id; const a = parse(id), n = cellsOf(a.species, a.stage, a.part, a.w, a.h).length;
   registerAsset({ id, w: 1 + n * a.w, h: a.h, status: atlasIsMaster(id) ? "master" : "placeholder", until: "the motion proof's signed cells (Station M1 §1.3, M1b)", build: () => compose(id, src, []) });

@@ -71,7 +71,7 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), ty, g_tagSlot ? 0 : tw, px, ink);
 }
 
-/* The living window's name tag (T-20261018-235, build-spec §2): the same panel and name as build_nameTag, centred on the figure's feet point `fx`, its top at `yBelow` (feetY + 16), or at `yOver` (over the figure) when its bottom would pass
+/* The living window's name tag (T-20261018-235): the same panel and name as build_nameTag, centred on the figure's feet point `fx`, its top at `yBelow` (feetY + 16), or at `yOver` (over the figure) when its bottom would pass
    8 px inside the window or `forceOver` (a sleeper's tag is always over its curl); slid to stay 8 px inside the window. Returns the tag's rect in out. */
 void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx, int yBelow, int yOver, int forceOver, int out[4]) {
   int h = si(sp, "regions.nameTag.h", 24), pad = si(sp, "regions.nameTag.pad", 8), px = si(sp, "regions.nameTag.px", 16), round = si(sp, "regions.nameTag.round", 8), mn = si(sp, "regions.nameTag.min", 48), mx = si(sp, "regions.nameTag.max", 1 << 20);

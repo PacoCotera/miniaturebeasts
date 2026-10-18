@@ -103,7 +103,7 @@ test("the bed and its sleepers are two regions: a bed moved 8 px, a sleeper 56 p
     assert.ok(lg.regions.some((r) => r.id === "bed.sleepers" && r.layer === (painted ? "painted" : "art")), `the sleepers are their own region on the ${painted ? "painted" : "art"} layer`);
     assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, n), [], painted ? "sleepers painted with the bed" : "sleepers art");
     assert.match(bad((c) => { c.regions.find((r) => r.id === "bed" && r.layer === "painted").rect[0] += 8; }).join("; "), /bed is not drawn exactly/);
-    assert.match(bad((c) => { c.regions.find((r) => r.id === "bed.sleepers").rect[1] -= 56; }).join("; "), /sleeper/);
+    assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "bed.sleepers").rect; r[3] = 60; r[1] -= 56; }).join("; "), /sleeper/);
   }
 });
 test("the keys: ✓ and ← and the room keys are intents on the focused target, the pad moves the ring by vivarium.json's graph (▼ a resident's own tile, ▲ its resident, ◀ ▶ along the tiles)", { skip }, async () => {
@@ -303,7 +303,7 @@ test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no 
   assert.equal(lg2.regions.filter((r) => r.id === "strip" && r.rect[2] > 2).length, 0, "no tile housed or out: the strip has no plate");
 });
 
-// ---- T-20261018-235: the figure's geometry (build-spec §0 to §4) ----
+// ---- T-20261018-235: the figure's geometry ----
 const FIG = [47, 105, 49, 43], PROFILE = R.resident.walk.profile;   // an adult's figure as the host measures it: [dx, dy, W, H] in its 144 × 152 picture
 const groundTop = (fx) => { let t = PROFILE.top[0]; PROFILE.x.forEach((x, i) => { if (fx >= x) t = PROFILE.top[i]; }); return t; };
 const feetOf = (rect, fig = FIG) => ({ fx: rect[0] + fig[0] + Math.floor(fig[2] / 2), feetY: rect[1] + fig[1] + fig[3] - 1 });
@@ -345,4 +345,13 @@ test("the walk of twelve figures with their shadow layers: no refresh redraws mo
   for (let t = 16; t < 120000; t += 16) { f.frame(5000 + t); area = Math.max(area, dirty(f)); steps = Math.max(steps, f.M._face_test_steps()); }
   assert.ok(area <= 153600, `dirty area ${area}`); assert.ok(steps <= 6, `${steps} residents stepped in one frame`);
   console.log(`# the Vivarium's walk with the shadow layers, twelve figures, frames every 16 ms for 120 s: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen), worst ${steps} steps`);
+});
+
+test("a moving resident's ring and tag hold still on its atlas figure while its cells breathe, and the ring is the formula's on F", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 1, focus: "resident:0" }), FIGM = [30, 38, 72, 108]; sc.props.regions.residents[0].figure = FIGM;
+  const f = await bootScene(sc, { motion: true }); assert.deepEqual(f.errors(), []);
+  runFrames(f, 8000); const seen = new Set(); let rings = 0;
+  for (let t = 0; t < 10000; t += 16) { f.frame((f.t += 16)); for (let m; (m = f.poll("log"));) { const ring = m.regions.filter((r) => r.id === "focus").map((r) => r.rect.join()); const tag = m.regions.filter((r) => r.id === "nameTag" && r.layer === "chrome").map((r) => r.rect.join()); if (ring.length) { rings++; seen.add(ring.join("|") + "#" + tag.join("|")); } } }
+  assert.ok(rings > 0, "the ring is drawn"); assert.equal(seen.size, 1, "the ring and the tag stay put: " + [...seen].join(" ; "));
+  const [W] = [FIGM[2]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12))), ring = [...seen][0].split("#")[0].split(",").map(Number); assert.deepEqual([ring[2], ring[3]], [W + 10, fh + 10], "the ring is (W + 10) × (fh + 10)");
 });

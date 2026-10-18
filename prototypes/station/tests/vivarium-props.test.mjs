@@ -11,6 +11,8 @@ import * as S from "../src/state.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 import { loadStandLayersFs, loadStandLooksFs, unloadStands } from "../tools/stand-layers-fs.mjs";
 import { placeMaster, dropAsset } from "../../ui/assets.mjs";
+import { layeredStand, composeStand, inkBox } from "../src/layered-stand.mjs";
+import { keepOutOf, measureCurls } from "../tools/curl-measure.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -109,7 +111,7 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   const grown = ids(build(w, sv));
   // every id has the stage swapped; a resident's size is its stage's (home.json sizes: a juvenile's 104×112, an adult's 144×152), the sleepers' and the tiles' size does not change with it
   assert.deepEqual(grown.map((id) => id.replace(/:adult:\d+x\d+$/, "")), young.map((id) => id.replace(/:juvenile:\d+x\d+$/, "")));
-  assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
+  assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":48x48")), young.join(" "));   // with no nap master a sleeper sleeps as its standing figure, never at the old 96 × 88 grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
 
 // ---- Station M1 §2.6: residents with moving sets and their rest fit vivarium.props.json ----
@@ -128,7 +130,7 @@ test("fix 7: the Vivarium's residents take the scene's light (id suffix and requ
   for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light); assert.equal(got.length, day.length); for (const r of got) assert.equal(r.size[0] === 48 && r.size[1] === 48 ? !("light" in r) : r.light === light && r.id.endsWith(":" + light), true, r.id); assert.ok(got.some((r) => r.light === light) && got.some((r) => r.size[0] === 48)); }
 });
 
-// T-20261018-235 (build-spec §0, §5, §6): the figure the props carry and the keep-out against the sleepers' tags, on the signed stands and the placed nap masters
+// T-20261018-235: the figure the props carry and the keep-out against the sleepers' tags, on the signed stands and the placed nap masters
 test("residents carry their figure, sleepers the world-size curl and its figure, and keepOut holds against the sleepers' tags", () => {
   const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
   loadStandLooksFs(); loadStandLayersFs();
@@ -141,7 +143,20 @@ test("residents carry their figure, sleepers the world-size curl and its figure,
     for (const sl of R.bed.sleepers) { assert.ok(sl.figure, "a sleeper carries the curl's figure"); assert.match(sl.picture, /^mibi:S01~[0-9a-f]{8}:(adult|juvenile):\d+x\d+$/); }
     const curlH = Math.max(...R.bed.sleepers.map((sl) => sl.figure[3])), tagTop = 456 - curlH - 32, K = spec.regions.resident.walk.keepOut;
     assert.ok(curlH >= 28 && curlH <= 34, "the adult's curl is about 34 × 31: " + curlH);
-    assert.ok(K[1] <= tagTop - 40, `keepOut's top ${K[1]} holds a walker's tag (feetY + 16 to + 40) above the sleepers' tag top ${tagTop} (measured curlH ${curlH}; the spec's rect is for about 31)`); assert.deepEqual(K, [752, 353, 256, 119]); assert.equal(K[1] + K[3], 472);
+    assert.ok(K[1] <= tagTop - 40, `keepOut's top ${K[1]} holds a walker's tag (feetY + 16 to + 40) above the sleepers' tag top ${tagTop} (measured curlH ${curlH})`);
+    assert.deepEqual(K, keepOutOf(spec, measureCurls()), "keepOut is derived from the measured curls (station/tools/make-keepout.mjs), never typed"); assert.equal(K[1], 356); assert.equal(K[1] + K[3], 472);
     assert.ok(b.requests.some((r) => r.kind === "curl"));
   } finally { for (const id of placed) dropAsset(id); unloadStands(); }
+});
+
+test("the figure is measured on the stand without its shadow: feetY is the last ink row of the shadowless composition", () => {
+  loadStandLooksFs(); loadStandLayersFs();
+  try {
+    for (const [stage, place] of [["adult", [144, 152]], ["juvenile", [104, 112]]]) for (const looks of [{ colour: "charcoal", markings: "none", crown: "bare" }, { colour: "russet", markings: "stripes", crown: "leaf crest" }]) {
+      const st = layeredStand("S01", stage, place, "vivarium"), plain = layeredStand("S01", stage, place, "vivarium"); plain.layers = plain.layers.filter((l) => l.op !== "under");
+      const withShadow = composeStand(st, looks), without = composeStand(plain, looks), box = inkBox(without.rgba(), without.w, without.h), all = inkBox(withShadow.rgba(), withShadow.w, withShadow.h);
+      assert.ok(Math.abs(withShadow.figure[2] - box[2]) <= 1 && Math.abs(withShadow.figure[3] - box[3]) <= 1, `${stage}: the figure is the shadowless figure's size (to a rounding row): ${withShadow.figure} against ${box}`);
+      assert.ok(all[1] + all[3] > withShadow.figure[1] + withShadow.figure[3], `${stage}: the shadow's rows reach past the feet, and are not in the figure`);
+    }
+  } finally { unloadStands(); }
 });

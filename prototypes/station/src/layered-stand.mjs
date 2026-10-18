@@ -3,7 +3,7 @@
 // The composition is made once in the logic process and kept in the asset cache by id, like the stamp; the face shows the picture 1:1 and never knows a layer existed.
 //   op "over"   the layer's pixels are laid over the picture (straight alpha, the usual "over");
 //   op "erase"  the layer's alpha is how much alpha the picture loses there (a crest taken off).
-//   op "under"  the contact shadow (T-20261018-235, build-spec §3): its own 304×48 canvas, drawn before the base, its row `feetRow` on the stand's feet line (`standFeet`), for the views it names; the stand's canvas is
+//   op "under"  the contact shadow (T-20261018-235): its own 304×48 canvas, drawn before the base, its row `feetRow` on the stand's feet line (`standFeet`), for the views it names; the stand's canvas is
 //               extended below to hold it, and the whole is reduced once by the figure's factor. It is not a look, so it has no trait; `figure` (the drawn bbox of the figure alone, ink alpha >= 128) never includes it.
 // Layers are applied in `order`. Everything is derived down from the close stand, never scaled up (tools/make-stand-layers.py cuts every size).
 import { standKey, keyToken } from "./looks.mjs";
@@ -96,7 +96,7 @@ function artOf(stand, looks) {
   }
   return out;
 }
-// The drawn bbox of a picture, [dx, dy, W, H]: the pixels with ink alpha >= 128 (build-spec §0), or null when it has none
+// The drawn bbox of a picture, [dx, dy, W, H]: the pixels with ink alpha >= 128, or null when it has none
 export function inkBox(px, w, h, alpha = 128) {
   let x0 = w, y0 = h, x1 = -1, y1 = -1;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (px[(y * w + x) * 4 + 3] >= alpha) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
@@ -131,10 +131,10 @@ function composed(stand, looks) {
   const r = { w, h, px, figure }; COMPOSED.set(key, r); return r;
 }
 export function composeStand(stand, looks) { const c = composed(stand, looks); return { w: c.w, h: c.h, rgba: () => c.px, figure: c.figure }; }
-// A stand's figure, [dx, dy, W, H] in its picture (build-spec §0): the logic process's, part of the stand's cache entry
+// A stand's figure, [dx, dy, W, H] in its picture: the logic process's, part of the stand's cache entry
 export const standFigure = (stand, looks) => composed(stand, looks).figure;
 
-// ---- the sleeper's curl at world size (build-spec §5, the art director's ruling) ----
+// ---- the sleeper's curl at world size ----
 // The nap picture (the 96×88 master) reduced by the standing figure's factor for its stage: the view's figure height over the standing slot's (54 / 152 for an adult, 40 / 112 for a juvenile), about 34 × 31, with the curl's own
 // shadow under it, reduced by the stand's factor (the same rule as the standing shadow) and its row `feetRow` on the curl's last ink row. The picture is as wide as the curl and its shadow and as tall as both. { w, h, rgba(), figure }.
 export function curlFactor(stage, view, slotH) { const h = SIZES?.views?.[view]?.[stageKey(stage)]; return h ? h / slotH : null; }

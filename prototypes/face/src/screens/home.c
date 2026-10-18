@@ -45,7 +45,7 @@ static void walk_load(void) {
     g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
   } else { g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1); g_xlo = glass[0] + 8; g_xhi = glass[0] + glass[2] - 8; }
   g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
-  /* the ground profile (build-spec §4), the whole's and Idle's, 80 px lower on Idle; Home keeps its band */
+  /* the ground profile, the whole's and Idle's, 80 px lower on Idle; Home keeps its band */
   g_pn = 0;
   if (g_viv || g_idle) { g_pdy = g_idle ? spec_int("vivarium", "regions.resident.walk.profile.idle", 80) : 0;
     int n = spec_len("vivarium", "regions.resident.walk.profile.x"); if (n > 8) n = 8;
@@ -102,7 +102,7 @@ extern int g_home_steps;
 enum { C_REST, C_HOP, C_WALK, C_CURL, C_ASLEEP, C_WAKE, C_STIR, C_ACK };
 enum { P_CROUCH, P_AIR, P_LAND, P_STAND };
 typedef struct {
-  char id[24], set[8], walk[96], shadow[96]; int stage; unsigned seed, s; int w, h, native, group, idx;
+  char id[24], set[8], walk[96], shadow[96]; int stage; unsigned seed, s; int w, h, native, group, idx, fw, fh, fdx, fdy, bo, hasfig;   /* w, h: the atlas cell; the figure (the rule, measured once per atlas): its width fw and height fh, left fdx and top fdy in the cell, bo the cell row of its feet (no figure: fw = w, fdx = fdy = 0, bo = h) */
   const mv_stage_t *S;
   int x, feet, facing, clip, ct, phase, pt, cell, lift, dy, sh75;     /* the drawn box: (x, feet − h − lift + dy) */
   int dl, dfrom, dto, ddf, ddt;                                       /* a dither: its level (0 none), its from and to base cells and their dy */
@@ -128,14 +128,14 @@ static int mv_travelling(const mv_t *m) { return (m->clip == C_HOP || m->clip ==
 static int mv_airborne(const mv_t *m) { return m->clip == C_HOP && m->phase == P_AIR; }
 static int mv_awake(const mv_t *m) { return m->clip == C_REST || m->clip == C_HOP || m->clip == C_WALK || m->clip == C_ACK; }
 /* a sleeper's spot (UI/UX item 11): [x + w/2 − 56, feet − 12, 112, 24] */
-static int in_spot(const mv_t *o, int gx, int gf) { int fx = o->x + o->w / 2; return gx >= fx - 56 && gx < fx + 56 && gf >= o->feet - 12 && gf < o->feet + 12; }
+static int in_spot(const mv_t *o, int gx, int gf) { int fx = o->x + o->fw / 2; return gx >= fx - 56 && gx < fx + 56 && gf >= o->feet - 12 && gf < o->feet + 12; }
 static int spot_taken(const mv_t *self, int x, int feet, int w) { for (int i = 0; i < g_nm; i++) { const mv_t *o = &g_m[i]; if (o != self && strcmp(o->id, self->id) && mv_frozen_ground(o) && in_spot(o, x + w / 2, feet)) return 1; } return 0; }
 static void mv_draw_point(mv_t *m, int xa, int xb, int fa, int fb, int *x, int *feet) {   /* a point in the window [xa, xb] × [fa, fb] (clipped to the band) by the resident's own LCG */
-  int lo = g_xlo > xa ? g_xlo : xa, hi = (g_xhi - m->w) < xb ? (g_xhi - m->w) : xb, flo = g_flo > fa ? g_flo : fa, fhi = (g_flo + g_fn - 1) < fb ? (g_flo + g_fn - 1) : fb;
+  int lo = g_xlo > xa ? g_xlo : xa, hi = (g_xhi - m->fw) < xb ? (g_xhi - m->fw) : xb, flo = g_flo > fa ? g_flo : fa, fhi = (g_flo + g_fn - 1) < fb ? (g_flo + g_fn - 1) : fb;
   if (hi < lo) hi = lo; if (fhi < flo) fhi = flo;
   *x = lo + (int)(mr(m) % (unsigned)(hi - lo + 1)); *feet = flo + (int)(mr(m) % (unsigned)(fhi - flo + 1));
 }
-static int mv_path_clear(const mv_t *m, int x1, int f1) { wk_t k; memset(&k, 0, sizeof k); k.x = m->x; k.feet = m->feet; k.w = m->w; return path_clear(&k, x1, f1); }
+static int mv_path_clear(const mv_t *m, int x1, int f1) { wk_t k; memset(&k, 0, sizeof k); k.x = m->x; k.feet = m->feet; k.w = m->fw; return path_clear(&k, x1, f1); }
 static int mv_rest_len(mv_t *m) { return 25 + (int)(mr(m) % 38u); }
 static void mv_place(mv_t *m, int x, int f) { m->x = x; m->feet = f; }
 /* along the trip's line, d of M (the major axis by d, the minor by Bresenham, as the stills' walk) */
@@ -150,7 +150,7 @@ static int mv_trip(mv_t *m, int reach) {
   for (int i = 0; i < 8 && !ok; i++) {
     if (r > 0) mv_draw_point(m, m->x - r, m->x + r, m->feet - r, m->feet + r, &wx, &wf); else mv_draw_point(m, g_xlo, g_xhi, g_flo, g_flo + g_fn - 1, &wx, &wf);
     int dx = wx - m->x, dy = wf - m->feet, M = (dx < 0 ? -dx : dx) > (dy < 0 ? -dy : dy) ? (dx < 0 ? -dx : dx) : (dy < 0 ? -dy : dy);
-    ok = M >= 32 && (reach <= 0 || M <= reach) && !meets_k(wx, wf, m->w) && walkable(wx, wf, m->w) && mv_path_clear(m, wx, wf) && !spot_taken(m, wx, wf, m->w);
+    ok = M >= 32 && (reach <= 0 || M <= reach) && !meets_k(wx, wf, m->fw) && walkable(wx, wf, m->fw) && mv_path_clear(m, wx, wf) && !spot_taken(m, wx, wf, m->fw);
   }
   if (!ok) return 0;
   int dx = wx - m->x, dy = wf - m->feet, ma = dx < 0 ? -dx : dx, mb = dy < 0 ? -dy : dy;
@@ -175,7 +175,7 @@ static void mv_step(mv_t *m, long j, int air_ok) {
   switch (m->clip) {
   case C_REST:
     if (m->want && !m->wander && mv_may_flip(m, j)) {   /* a settle flip: curl where it stands (after one trip off another sleeper's spot) */
-      if (!m->settle_tried && spot_taken(m, m->x, m->feet, m->w)) { m->settle_tried = 1; if (mv_trip(m, 0)) return; }
+      if (!m->settle_tried && spot_taken(m, m->x, m->feet, m->fw)) { m->settle_tried = 1; if (mv_trip(m, 0)) return; }
       mv_curl_begin(m); return;
     }
     if (m->wander && j >= m->wander_until && m->ct >= 2 * loop_period(&S->breathe) && mv_may_flip(m, j)) { mv_curl_begin(m); return; }   /* at least two breaths */   /* the wanderer's rest is over: it curls where it stands */
@@ -230,13 +230,13 @@ static void mv_step(mv_t *m, long j, int air_ok) {
   }
 }
 /* the box the picture takes, and its shadow's, for the budget: a change's area is the union of the old and new boxes plus the shadow's when it changes */
-static void mv_box(const mv_t *m, int b[4]) { b[0] = m->x; b[1] = m->feet - m->h - m->lift + m->dy; b[2] = m->w; b[3] = m->h; }
+static void mv_box(const mv_t *m, int b[4]) { b[0] = m->x - m->fdx; b[1] = m->feet - m->bo - m->lift + m->dy; b[2] = m->w; b[3] = m->h; }
 static int mv_shown_cell(const mv_t *m) { return moving_shown(m->S, m->cell, m->facing, m->native); }
 static int uarea(const int a[4], const int b[4]) { int x0 = a[0] < b[0] ? a[0] : b[0], y0 = a[1] < b[1] ? a[1] : b[1], x1 = a[0] + a[2] > b[0] + b[2] ? a[0] + a[2] : b[0] + b[2], y1 = a[1] + a[3] > b[1] + b[3] ? a[1] + a[3] : b[1] + b[3]; return (x1 - x0) * (y1 - y0); }
 static int mv_change_area(const mv_t *o, const mv_t *n) {
   int a[4], b[4]; mv_box(o, a); mv_box(n, b);
   int pic = (a[0] != b[0] || a[1] != b[1] || mv_shown_cell(o) != mv_shown_cell(n) || o->dl != n->dl || (n->dl && (o->dfrom != n->dfrom || o->dto != n->dto))) ? uarea(a, b) : 0;
-  int sa[4] = { o->x, o->feet - 16, o->w, 16 }, sb[4] = { n->x, n->feet - 16, n->w, 16 };
+  int sa[4] = { o->x - o->fdx, o->feet - 16, o->w, 16 }, sb[4] = { n->x - n->fdx, n->feet - 16, n->w, 16 };
   int sh = (o->x != n->x || o->feet != n->feet || o->sh75 != n->sh75) ? uarea(sa, sb) : 0;
   return pic + sh;
 }
@@ -328,7 +328,7 @@ static int mv_household(long j) {
 }
 
 /* ---- what the last draw put where (the focus reads these boxes) ---- */
-typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, sbox[4]; unsigned seed; } ent_t;   /* hasfig: box is the figure's (build-spec §0), draw the picture's; sbox: the slot a stand picture takes (the send-off) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
+typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, sbox[4]; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes (the send-off) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
 static ent_t g_e[MAXR + MAXS]; static int g_ne;
 int g_home_steps;   /* test hook: the residents that stepped since face_frame began (face_test_steps) */
 
@@ -341,13 +341,13 @@ static int walk_clock(uint32_t now) {
   return (g_nm || g_nnap) ? mv_household(g_wticks - 1) : 0;
 }
 /* a moving resident new to the props: at its seed's start point on the current tick (no replay), in its rest: asleep in the asleep loop at phase seed mod 60, awake breathing at phase seed mod the breath's period */
-static void mv_init(mv_t *m, const char *id, unsigned seed, const char *set, int stage, const mv_stage_t *S, int w, int h, int want, const mv_t *earlier, int ne) {
-  memset(m, 0, sizeof *m); snprintf(m->id, sizeof m->id, "%s", id); snprintf(m->set, sizeof m->set, "%s", set); m->seed = seed; m->s = seed; m->stage = stage; m->S = S; m->w = w; m->h = h; m->want = want; m->flip_due = -1; m->curl_end = -100000; m->trip_start = 0;
+static void mv_init(mv_t *m, const char *id, unsigned seed, const char *set, int stage, const mv_stage_t *S, int w, int h, const int fig[4], int want, const mv_t *earlier, int ne) {
+  memset(m, 0, sizeof *m); snprintf(m->id, sizeof m->id, "%s", id); snprintf(m->set, sizeof m->set, "%s", set); m->seed = seed; m->s = seed; m->stage = stage; m->S = S; m->w = w; m->h = h; m->hasfig = fig != NULL; m->fw = fig ? fig[2] : w; m->fh = fig ? fig[3] : h; m->fdx = fig ? fig[0] : 0; m->fdy = fig ? fig[1] : 0; m->bo = fig ? fig[1] + fig[3] - 1 : h; m->want = want; m->flip_due = -1; m->curl_end = -100000; m->trip_start = 0;
   { const mv_set_t *ms = moving_set(set); m->native = ms ? ms->native_right : 1; }
   int x = 32, feet = 300, ok = 0;
-  for (int i = 0; i < 8 && !ok; i++) { mv_draw_point(m, g_xlo, g_xhi, g_flo, g_flo + g_fn - 1, &x, &feet); ok = !meets_k(x, feet, w) && walkable(x, feet, w);
-    if (ok && want) for (int k = 0; k < ne; k++) if (earlier[k].want && in_spot(&earlier[k], x + w / 2, feet)) ok = 0; }   /* at screen show, asleep: not in an earlier sleeper's spot */
-  if (!ok) { x = g_xlo; if (g_pn && feet < ground_top(x + w / 2)) feet = ground_top(x + w / 2); }
+  for (int i = 0; i < 8 && !ok; i++) { mv_draw_point(m, g_xlo, g_xhi, g_flo, g_flo + g_fn - 1, &x, &feet); ok = !meets_k(x, feet, m->fw) && walkable(x, feet, m->fw);
+    if (ok && want) for (int k = 0; k < ne; k++) if (earlier[k].want && in_spot(&earlier[k], x + m->fw / 2, feet)) ok = 0; }   /* at screen show, asleep: not in an earlier sleeper's spot */
+  if (!ok) { x = g_xlo; if (g_pn && feet < ground_top(x + m->fw / 2)) feet = ground_top(x + m->fw / 2); }
   m->x = x; m->feet = feet; m->facing = (int)(mr(m) & 1u); m->rest = mv_rest_len(m); m->rested = 0;
   if (want) mv_to_asleep(m, (int)(seed % (unsigned)loop_period(&S->asleep))); else { mv_to_rest(m, 0); m->ct = (int)(seed % (unsigned)loop_period(&S->breathe)); m->cell = loop_cell(&S->breathe, m->ct); }
 }
@@ -374,9 +374,11 @@ static int ent_load(const char *cur) {
     if (MS && has(mwalk) && MS->ww == w && MS->wh == h && nmk < MAXR) {
       int want = strcmp(v_pstr(v_fmt("%s.rest", P)), "asleep") == 0;
       mv_t *old = NULL; for (int j = 0; j < g_nm; j++) if (!strcmp(g_m[j].id, e->id) && g_m[j].seed == e->seed && !strcmp(g_m[j].set, mset) && g_m[j].stage == stage) old = &g_m[j];
-      mv_t *m = &mk[nmk];
+      mv_t *m = &mk[nmk]; int fig[4], hf = 0;   /* the atlas's figure, when the props give one inside the cell */
+      if (v_plen(v_fmt("%s.figure", P)) == 4) { for (int q = 0; q < 4; q++) fig[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1); hf = fig[0] >= 0 && fig[1] >= 0 && fig[2] > 0 && fig[3] > 0 && fig[0] + fig[2] <= w && fig[1] + fig[3] <= h; }
       if (old) { *m = *old; if (m->want != want) { m->want = want; m->flip_due = (long)g_wticks; m->settle_tried = 0; } }
-      else mv_init(m, e->id, e->seed, mset, stage, MS, w, h, want, mk, nmk);
+      else mv_init(m, e->id, e->seed, mset, stage, MS, w, h, hf ? fig : NULL, want, mk, nmk);
+      if (old) { m->hasfig = hf; m->fw = hf ? fig[2] : w; m->fh = hf ? fig[3] : h; m->fdx = hf ? fig[0] : 0; m->fdy = hf ? fig[1] : 0; m->bo = hf ? fig[1] + fig[3] - 1 : h; }
       m->S = MS; m->idx = i; snprintf(m->walk, sizeof m->walk, "%s", mwalk); snprintf(m->shadow, sizeof m->shadow, "%s", mshadow);
       { int f = ent_focused(e, cur); if (f && !m->focus) { m->focus_t = 0; m->acked = 0; } m->focus = f; }
       if (!motion) {   /* motion off: stand, or curl when asleep, in the facing it has; no travel, no step, no dither; flips are cuts */
@@ -384,13 +386,14 @@ static int ent_load(const char *cur) {
         m->x = x; m->feet = f; m->facing = fc; m->cell = moving_walk_cell(MS, m->want ? "curl" : "stand"); m->wander = 0; m->pending_stir = 0;
       }
       e->mv = nmk++; e->asleep = mv_in_asleep_form(m);
-      e->box[0] = m->x; e->box[1] = m->feet - h; e->box[2] = w; e->box[3] = h;   /* the focus target: the ground box, never lifted (UI/UX §2) */
-      mv_box(m, e->draw); e->hasfig = 0; memcpy(e->sbox, e->box, sizeof e->sbox);
-      { int fx = m->x + w / 2; e->ink[0] = fx - 48; e->ink[1] = m->feet - 88; e->ink[2] = 96; e->ink[3] = 88; }
+      e->hasfig = m->hasfig;   /* the focus target: the figure's ground box (no figure: the slot's), never lifted (UI/UX §2) */
+      if (m->hasfig) { e->box[0] = m->x; e->box[1] = m->feet + 1 - m->fh; e->box[2] = m->fw; e->box[3] = m->fh; } else { e->box[0] = m->x; e->box[1] = m->feet - h; e->box[2] = w; e->box[3] = h; }
+      mv_box(m, e->draw); memcpy(e->sbox, e->box, sizeof e->sbox);
+      { int fx = m->x + m->fw / 2; e->ink[0] = fx - 48; e->ink[1] = m->feet - 88; e->ink[2] = 96; e->ink[3] = 88; }
       for (const char *c = e->id; *c; c++) { ids ^= (uint8_t)*c; ids *= 16777619u; }
       g_ne++; continue;
     }
-    /* a still: the walk is the figure's (build-spec §0): its box x is the figure's left, its feet the last ink row; the picture is placed so that its drawn bbox [dx, dy, W, H] lands there. No figure: the picture is the figure */
+    /* a still: the walk is the figure's: its box x is the figure's left, its feet the last ink row; the picture is placed so that its drawn bbox [dx, dy, W, H] lands there. No figure: the picture is the figure */
     int fig[4] = { 0, 0, w, h }; e->hasfig = 0;
     if (v_plen(v_fmt("%s.figure", P)) == 4) { int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1);
       if (f[0] >= 0 && f[1] >= 0 && f[2] > 0 && f[3] > 0 && f[0] + f[2] <= w && f[1] + f[3] <= h) { memcpy(fig, f, sizeof fig); e->hasfig = 1; } }
@@ -427,8 +430,8 @@ static int ent_load(const char *cur) {
     else { e->box[0] = foot - hk("regions.bed.sleepers.adult.size", 0) / 2; e->box[1] = footY - hk("regions.bed.sleepers.adult.size", 1); e->box[2] = hk("regions.bed.sleepers.adult.size", 0); e->box[3] = hk("regions.bed.sleepers.adult.size", 1); }
     e->draw[0] = foot - bw / 2; e->draw[1] = footY - bh; e->draw[2] = bw; e->draw[3] = bh;   /* the stand-in fitted in the nap pose's ink, centred on the foot, its bottom on the foot's y */
     memcpy(e->sbox, e->box, sizeof e->sbox); e->hasfig = 0;
-    { int ps[2], sl = wire_asset_slot(e->pic);   /* the world-size curl (build-spec §5): the picture is as its host made it, its drawn bbox [dx, dy, W, H] sits on the foot (F.x = the place, the last ink row on the row above footY) */
-      if (sl >= 0 && prim_asset_size(sl, ps) == 0 && v_plen(v_fmt("%s.figure", P)) == 4 && !*v_pstr(v_fmt("%s.moving.set", P))) { int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1);
+    { int ps[2], sl = wire_asset_slot(e->pic);   /* the world-size curl: the picture is as its host made it, its drawn bbox [dx, dy, W, H] sits on the foot (F.x = the place, the last ink row on the row above footY) */
+      if (sl >= 0 && prim_asset_size(sl, ps) == 0 && !*v_pstr(v_fmt("%s.moving.set", P)) && (v_plen(v_fmt("%s.figure", P)) == 4 || ps[0] != bw || ps[1] != bh)) { int f[4] = { 0, 0, ps[0], ps[1] }; if (v_plen(v_fmt("%s.figure", P)) == 4) for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1);   /* no figure and not the nap's size: it sleeps as its standing picture, the whole of it the figure */
         if (f[0] >= 0 && f[1] >= 0 && f[2] > 0 && f[3] > 0 && f[0] + f[2] <= ps[0] && f[1] + f[3] <= ps[1]) {
           e->box[0] = foot - f[2] / 2; e->box[1] = footY - f[3]; e->box[2] = f[2]; e->box[3] = f[3]; e->draw[0] = e->box[0] - f[0]; e->draw[1] = e->box[1] - f[1]; e->draw[2] = ps[0]; e->draw[3] = ps[1]; e->hasfig = 1; } } }
     { char mset[8], mnap[96]; snprintf(mset, sizeof mset, "%s", v_pstr(v_fmt("%s.moving.set", P))); snprintf(mnap, sizeof mnap, "%s", v_pstr(v_fmt("%s.moving.nap", P)));   /* a nap set: curl and curl·b1 from the nap atlas at the ink rect, breathing on its group tick */
@@ -455,18 +458,20 @@ static void mv_draw(const ent_t *e, int focused, int lift) {
   const mv_t *m = &g_m[e->mv]; const mv_stage_t *S = m->S; int asleep = mv_in_asleep_form(m);
   int up = focused && !asleep && m->clip != C_HOP && m->clip != C_WALK ? lift : 0;
   int b[4]; mv_box(m, b); b[1] -= up;
-  if (has(m->shadow)) { v_name("resident.shadow"); v_sprite_window(v_fmt("g.%s.s", e->id), m->shadow, 1 + (m->sh75 ? 1 : 0) * S->sww, 0, m->x, m->feet - S->swh, S->sww, S->swh); }
-  if (focused) { int rb[4] = { m->x, m->feet - m->h, m->w, m->h }; v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", m->walk, foot_cell(m, asleep), rb); }   /* the footprint on the ground, not lifted */
+  if (has(m->shadow)) { v_name("resident.shadow"); v_sprite_window(v_fmt("g.%s.s", e->id), m->shadow, 1 + (m->sh75 ? 1 : 0) * S->sww, 0, m->x - m->fdx, m->feet - m->bo + m->h - S->swh, S->sww, S->swh); }
+  if (focused) { int rb[4] = { m->x - m->fdx, m->feet - m->bo, m->w, m->h }; v_region("focus", LAYER_CHROME);
+    if (m->hasfig && !asleep) word_focusRingFigure("focus", sp(), "focus.targets.resident", m->walk, m->x + m->fw / 2, m->feet, m->fw);   /* held still on the figure's feet while the cells animate; a hop keeps its F */
+    else word_focusRingFootprint("focus", sp(), "focus.targets.resident", m->walk, foot_cell(m, asleep), rb); }   /* the footprint on the ground, not lifted */
   v_name("resident");
   if (m->dl) {
     v_sprite_hidden(v_fmt("g.%s", e->id), m->walk, b[0], b[1]);
     int ca = moving_shown(S, m->dfrom, m->facing, m->native), cb = moving_shown(S, m->dto, m->facing, m->native), D = m->ddf > m->ddt ? m->ddf : m->ddt, hh = m->h - (m->ddf > m->ddt ? m->ddf - m->ddt : m->ddt - m->ddf);
-    int y0 = m->feet - m->h - m->lift + D - up;   /* both cells at their own dy: the node starts at the lower of the two and drops the rows the other lacks */
-    v_dither_window(v_fmt("g.%s.d", e->id), m->walk, 1 + ca * m->w, D - m->ddf, m->walk, 1 + cb * m->w, D - m->ddt, m->dl, m->x, y0, m->w, hh);
+    int y0 = m->feet - m->bo - m->lift + D - up;   /* both cells at their own dy: the node starts at the lower of the two and drops the rows the other lacks */
+    v_dither_window(v_fmt("g.%s.d", e->id), m->walk, 1 + ca * m->w, D - m->ddf, m->walk, 1 + cb * m->w, D - m->ddt, m->dl, m->x - m->fdx, y0, m->w, hh);
   } else v_sprite_window(v_fmt("g.%s", e->id), m->walk, 1 + mv_shown_cell(m) * m->w, 0, b[0], b[1], m->w, m->h);
   v_name("resident.lamp");
   if (asleep) build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->ink[0] + e->ink[2] - 12, e->ink[1], e->waiting);
-  else build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, b[1], e->waiting);
+  else build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, b[1] + m->fdy, e->waiting);
 }
 static void nap_draw(const ent_t *e) {
   const nap_t *z = &g_nap[e->nap]; int c = 0; for (int i = 0; i < z->S->nnap; i++) if (moving_walk_cell(z->S, z->S->ncell[i]) == z->cell) c = i;
@@ -498,7 +503,7 @@ static void sleeper_draw(const ent_t *e, int t) {
   v_name("bed.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->sbox[0] + e->sbox[2] - 12, e->sbox[1] - lift, e->waiting);
 }
 
-/* the focused one's name tag (build-spec §2): below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
+/* the focused one's name tag: below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
 static void ent_tag(const ent_t *e, const char *glass) {
   int tag[4], below = hi("regions.nameTag.below", 16), over = hi("regions.nameTag.over", 32), lift = hi("regions.resident.lift", 4);
   if (e->sleeper) { const int *b = e->hasfig ? e->box : e->draw; build_nameTagAt(sp(), glass, e->name, b[0] + b[2] / 2, 0, b[1] - over, 1, tag); }

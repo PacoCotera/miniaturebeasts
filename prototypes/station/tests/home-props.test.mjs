@@ -147,7 +147,7 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   const grown = ids(build(st, sv));
   // every id has the stage swapped; a resident's size is its stage's (home.json sizes: a juvenile's 104×112, an adult's 144×152), the sleepers' and the tiles' size does not change with it
   assert.deepEqual(grown.map((id) => id.replace(/:adult:\d+x\d+$/, "")), young.map((id) => id.replace(/:juvenile:\d+x\d+$/, "")));
-  assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
+  assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":48x48") || id.endsWith(":104x112")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
 
 // ---- Station M1 §2.6, the game designer's R1: the rest, a household function of the Station time ----

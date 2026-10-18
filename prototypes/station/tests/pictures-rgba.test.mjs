@@ -260,12 +260,12 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
     const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
     const pics = (b) => b.requests.filter((r) => r.kind === "mibi");
 
-    test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and 96×88 (a sleeper), an S03 adult its own stand; the drawn stage follows", () => {
+    test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and, with no nap picture, a sleeper that sleeps as that standing figure (never at the old 96×88), an S03 adult its own stand; the drawn stage follows", () => {
       const st = world(); S.seedAdults(st, "S04", 5, 1, settings); S.seedAdults(st, "S03", 9, 1, settings); const [s4, s3] = st.mibis;
       const b = homeBuild({ st, sv: sv0({ carried: [s4.id] }), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), R = b.props.regions;
       const res = (m) => R.residents.find((r) => r.id === String(m.id)), slp = R.bed.sleepers[0];
       assert.equal(res(s3).stage, "adult"); assert.equal(res(s3).picture, `mibi:${genomeDigest(s3.genome)}:adult:144x152`);
-      const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:96x88`); assert.ok(r4, "the sleeper asks for the juvenile at 96×88"); assert.deepEqual([r4.size, r4.stage, r4.species], [[96, 88], "juvenile", "S04"]);
+      const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:104x112`); assert.ok(r4, "the sleeper asks for the juvenile standing, at 104×112"); assert.deepEqual([r4.size, r4.stage, r4.species], [[104, 112], "juvenile", "S04"]);
       assert.equal(slp.stage, "juvenile");
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0];
       const b2 = homeBuild({ st: w, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), p = b2.props.regions.residents[0];
