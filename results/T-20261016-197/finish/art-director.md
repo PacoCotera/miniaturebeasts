@@ -71,3 +71,14 @@ The owner approved Cargo (21:51). It covers two things: UI/UX's crate-by-crate s
 - **Waiting spot: settled with UI/UX.** It is now 24, 424, 160 × 80, the floor under the hatch. Three stored pods sit in a row, oldest at the left, and a newcomer settles at the right. A fourth or more shows as "+n". The stills are redrawn to it.
 - **The back wall:** at rest and at the end, the upper third of the bay is its back wall alone, and `cargo-bay-992x320` is soft there. It holds, since this is a quiet room between crates, but a sharper painted back wall would be the first master to upgrade. It is one request, not made.
 - **A find with no page** stays parked with the creative director, as the structure says.
+
+## The two concept elements: gated
+
+`crate-lifting-256x200` and `pods-hatch-open-160x260` (masters-pods `art/station-masters/pods/concepts/panels-cargo/`) **pass as masters once their edges are cleaned.**
+- **The defect:** both carried the studio's magenta ground in their cut edge, so the half-transparent pixels read pink on the bay's dark ground. The mean edge colour was red-shifted by about 50 levels against the interior.
+- **The fix:** `despill.py` gives every non-opaque pixel the colour of its nearest opaque neighbours and keeps the cut alpha. The cleaned files are in `cuts/`, and `crate-lifting-176x138` is re-reduced from the cleaned crate. Checked at 3× on dark and light grounds: no fringe.
+- **Anchors:**
+  - the lifting crate's foot sits on canvas row 186, 13 px above the canvas foot, so it registers to the sealed crate placed 11 px higher;
+  - the open hatch's well centres are (49, 60), (103, 58), (49, 120), (103, 119), (50, 180), (104, 182).
+
+The builder takes these from `cuts/`, and the "not final" flag comes off.
