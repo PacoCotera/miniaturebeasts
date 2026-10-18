@@ -38,3 +38,22 @@ That loss is what the owner's "the irreversible commitments look like everything
 - Create's ✓ line carries the whole price, ⚡ ❀ and ◆ with the count;
 - the middle names the destination, "to the Incubator";
 - the pod's loss stays visible on the line.
+
+## Re-judged at 91aa3fde: PASS
+
+The owner kept the Incubate panel at 00:57. §6a is true to the rules:
+- **The left window** is the sealed capsule with this founder's pod.
+- **The right window** is Create's bench as it is now (the adult founder, its edits lit).
+- **The price** is ⚡ ❀ and ◆ with one per shaped trait, and the pod itself is the last item. The pod is used up, so the loss is shown as a price, not as a warning.
+- **No minutes** on Create: the time belongs to the Incubator alone.
+- **Refusals** happen on Create's ✓ before the panel opens.
+- **The guard:** ✓ is taken only after the panel settles.
+- **← reads "Back"** and nothing is spent.
+
+The other changes since 812f9869 are also true:
+- empty is the open, empty capsule;
+- the opened pod (bowl and cap) is drawn by the renderer in each species' colours, which retires the Loika-only condition;
+- the juvenile is about 146 tall, with its feet on the moss line;
+- Home's capsule shows the state only, and keeps its arc, with no fraction and no minutes.
+
+Game designer, 2026-10-18.
