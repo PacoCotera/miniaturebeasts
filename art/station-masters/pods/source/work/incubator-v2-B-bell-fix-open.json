@@ -1,0 +1,20 @@
+[
+ {
+  "name": "incubator-v2-B-bell-fix-open",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/incubator-object-B-open.jpg",
+    "The painting to edit: keep it identical except the two changes described."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod only: charcoal shell, russet dots, rounded russet cap (#ae674d). Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "Edit the first reference painting. Change ONLY two things. (1) Remove the floor lamp at the right edge of the picture, its shade, its stand and its base, and its light: fill that space with the same warm-brown wall, sage trim and tabletop, continuing them naturally, with no lamp and no lit fixture. (2) Repaint the pod so its shell is the charcoal of the second reference with russet dots and a russet cap (#ae674d), as in that reference, not blue-grey, still glowing softly from its core. Keep everything else identical: the glass bell and its knob, the base, the moss and felt, the plant and pot, the window and trim, the camera, the composition and the lighting. No text, no creature, no frame."
+ }
+]
