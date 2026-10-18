@@ -1,0 +1,20 @@
+[
+ {
+  "name": "incubator-gaps-interior-dusk",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/incubator-capsule-hs/incubate-1024x600.png",
+    "The painting to edit: keep everything identical except the one change described (it is the dusk version)."
+   ],
+   [
+    "art/station-masters/pods/source/raw/incubator-gaps-interior-day.jpg",
+    "REFERENCE for how the empty moss bed looks once the pod is removed (this is the day version; keep the dusk lighting of the first picture)."
+   ]
+  ],
+  "prompt": "Edit the first reference painting, the dusk version. Remove the pod completely and repaint the moss-and-soil bed where it stood, the same moss and soil continuing naturally with a clean empty moss line, as in the second reference. Keep the dusk: the evening light, the mint ring sealing the window and the dark base bar. Keep the capsule, its shell, its roof lamp and warm light, the glass, the mint base bar, the wall, the table, the camera and the painted style exactly as they are. The capsule is empty: no pod, no egg, no shell, no creature. NO text, NO logos, NO hands, NO creature, NO frame or border."
+ }
+]

@@ -1,0 +1,20 @@
+[
+ {
+  "name": "incubator-gaps-opened-pod-layers",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/pc/pods-2x.png",
+    "REFERENCE for the rendering and scale: this neutral grey, matte, softly modelled pod (left sealed, right with a crack): its shape, its raised ribs and band, the rounded cap, the way the grey is shaded with light from the top left. Ignore the magenta ground and the dark ellipse under it."
+   ],
+   [
+    "art/station-masters/pods/concepts/incubator-capsule-hs/hatch-now-1024x600.png",
+    "REFERENCE for the pose of the opened pod only: the shell lying in two halves with the cap tipped aside. Ignore everything else: the capsule, the creature, the moss, the colours."
+   ]
+  ],
+  "prompt": "A single painted sheet on a FLAT, uniform magenta ground #FF00FF, nothing else in the picture. Three separate pieces of ONE opened pod, in a row, well apart, all in the same neutral mid-grey (no colour at all, only greys), matte, softly modelled with the light from the top left, in the same rendering as the grey reference pod: (1) the LEFT half of the shell standing upright, a rounded half-egg with a jagged torn upper rim, its inside visible as a darker hollow, its outside carrying the raised ribs and a few shallow round dot dimples; (2) the RIGHT half of the shell, the mirror-opposite half, also with a jagged torn rim, inside hollow visible, ribs and dimples; (3) the rounded CAP, tipped on its side as if tossed aside, showing its smooth outside and its underside rim. The pieces are seen front-on, all at the scale of the reference pod, each fully inside the picture. Every piece has clean edges against the magenta, no shadow on the ground, no glow, no pink or magenta spill on the grey. NO text, NO creature, NO colour, NO frame or border."
+ }
+]
