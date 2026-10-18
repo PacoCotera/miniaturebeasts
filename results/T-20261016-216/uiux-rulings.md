@@ -44,3 +44,11 @@ UI/UX is content with them as pictures: the face palette has none of those colou
 | The hold ceiling: crates that fit in ≤ 30 s play; the rest are taken in by the rule | **Confirmed.** In play there are at most four crates, which is well inside 30 s |
 | ✓ Look at the pods rings the newest pod | **Confirmed** |
 | The frame title is "Bay" | **Confirmed** |
+
+## 5. The done crates in the end state (the lead's follow-up)
+
+**Checked: the end uses the done cut.** `cargo.json` places `crate-sealed-256x176-done` at (0, 102) in each berth (and the 176 and sitting done cuts with a portrait crate in). Measured on the stills, the first crate's box (200, 354, 256 × 176) has a mean of rgb 142, 108, 57 at rest (`01-bay`) and 108, 83, 46 at the end (`06-end`): about 0.76 of the sealed value. That is the art director's "value × 0.72, hue kept", plus the same shadow.
+
+**It is right that a done crate is a closed crate.** The spec's done state is "its lid closes in its berth and it dims", so the crates are not drawn open. What tells them apart is the dimming as each finishes, in sequence, while the next lights up.
+
+**One question to the art director (passed on):** at the end every crate is done, so there is no sealed crate beside them to compare against, and 0.72 alone may read as "unchanged" at 1×. Whether to deepen the value step (for example to 0.6) is a paint call, so it is theirs. UI/UX asks for no new mark or word: dimming stays the only sign, as the owner's "nothing negative" and minimal-words rulings want.
