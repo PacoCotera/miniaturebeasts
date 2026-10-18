@@ -7,7 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
-import { layeredStand, composeStand, standPictureId, fitDown, curlPicture } from "./layered-stand.mjs";
+import { layeredStand, composeStand, standPictureId, fitDown, curlPicture, traitTile } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
@@ -104,6 +104,12 @@ export function registerPictures(reqs, env) {
         const m = assetEntry(r.master), e = assetEntry(r.id);
         if (m && m.file && m.status !== "empty" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(r.master)); }
         else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], until: r.until });
+        break;
+      }
+      case "traittile": {   // a Colour or Markings tile on a read chapter page: the layered stand cropped and reduced once here (layered-stand.mjs traitTile); an empty slot where the species has no layered stand
+        const [w, h] = r.size; if (hasAsset(r.id)) break;
+        if (!layeredStand(r.species, "adult", [304, 312], "default")) { registerSlot({ id: r.id, w, h, until: r.until }); break; }
+        registerAsset({ id: r.id, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => traitTile(r.species, "adult", r.trait, r.look, r.size) });
         break;
       }
       case "hatch": putOrMaster(r.id, `ring-hatch-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0])); break;

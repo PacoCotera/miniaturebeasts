@@ -4,6 +4,7 @@
 // asset manifest registers), mode, cur, empty }. Runs in Node, tested there. It is the only view of Pods: the JavaScript drawing it replaced is deleted.
 import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
+import { keyToken } from "../looks.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { pageGrid } from "../../../ui/specs/derive.mjs";
 import { founderPicture } from "./create-props.mjs";
@@ -147,7 +148,8 @@ function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") 
     const state = traitState(fr, t, p.genome);
     const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
     if (state.doing) cell.doing = true;   // a doing: one plate per trait, the same for every value; its value is the line under the name (fix 5 P7)
-    if (state.shows) cell.crop = slot(req, state.doing ? `trait-${sid}-${slug(t.name)}-${pw}x${ph}` : `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
+    if (state.shows && !state.doing && (t.id === "colour" || t.id === "markings")) cell.crop = req({ kind: "traittile", id: `mibi:${sid}~${keyToken(`tile:${t.id}=${state.shows}`)}:adult:${pw}x${ph}`, species: sid, trait: t.id, look: state.shows, size: [pw, ph], until: "the trait's crop master" });   // the layered stand cropped (layered-stand.mjs traitTile), composed in the logic process; its id is in the layered stands' family (mibi:<SXX>~<variant>:adult:<w>x<h>), the variant naming the tile
+    else if (state.shows) cell.crop = slot(req, state.doing ? `trait-${sid}-${slug(t.name)}-${pw}x${ph}` : `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
     cell.lines = [state.line];
     const LM = region.lineMarks, glyph = (key) => slot(req, LM.glyphs[key].slice, [0, 0, ...LM.glyphs[key].size], "the line glyph master");   // the glyphs after the name are the studio's: slots by id (an empty slot draws nothing)
     if (LM) {

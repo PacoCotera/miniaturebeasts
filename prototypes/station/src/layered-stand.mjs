@@ -135,6 +135,19 @@ export function composeStand(stand, looks) { const c = composed(stand, looks); r
 // A stand's figure, [dx, dy, W, H] in its picture: the logic process's, part of the stand's cache entry
 export const standFigure = (stand, looks) => composed(stand, looks).figure;
 
+// ---- a trait's tile on the Pods chapter page ----
+// The Colour tile is the stand in that coat, cropped to head and shoulders; the Markings tile is the plain charcoal stand with that marking layer, cropped to the flank behind the shoulder, where the marks sit. Both are
+// composed here in the logic process from the close art (304×312, at scale 1 as the "default" view draws it) and reduced once to the tile's size; the face is given the pixels 1:1. The window is `w` art pixels wide at (x, y)
+// and as tall as the tile's shape asks; where it passes the art's edge it is transparent. Only the traits in TILE are drawn this way.
+export const TILE = { colour: { w: 210, x: 10, y: 50, plain: ["markings"] }, markings: { w: 150, x: 150, y: 95, plain: ["colour"] } };
+export function traitTile(species, stage, trait, look, size) {
+  const T = TILE[trait], stand = T && layeredStand(species, stage, [304, 312], "default"); if (!stand) return null;
+  const looks = { [trait]: look }; for (const k of T.plain) delete looks[k];
+  const art = composed(stand, looks).px, [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = size, wh = Math.round(T.w * h / w), win = new Uint8ClampedArray(T.w * wh * 4);
+  for (let y = 0; y < wh; y++) { const sy = T.y + y; if (sy < 0 || sy >= ch) continue; for (let x = 0; x < T.w; x++) { const sx = T.x + x; if (sx < 0 || sx >= cw) continue; win.set(art.subarray((sy * cw + sx) * 4, (sy * cw + sx) * 4 + 4), (y * T.w + x) * 4); } }
+  const px = resample(win, T.w, wh, w, h); return { w, h, rgba: () => px };
+}
+
 // ---- the sleeper's curl at world size ----
 // The nap picture (the 96×88 master) reduced by the standing figure's factor for its stage: the view's figure height over the standing slot's (54 / 152 for an adult, 40 / 112 for a juvenile), about 34 × 31, with the curl's own
 // shadow under it, reduced by the stand's factor (the same rule as the standing shadow) and its row `feetRow` on the curl's last ink row. The picture is as wide as the curl and its shadow and as tall as both. { w, h, rgba(), figure }.
