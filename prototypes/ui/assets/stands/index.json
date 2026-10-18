@@ -1,6 +1,6 @@
 {
- "schema": "mb-stands/1",
- "note": "Layered stands: a base plus one cut-out layer per look a stand can show, chosen by drawnLooks (prototypes/station/src/looks.mjs). Proof-quality stand-ins cut from the accepted Pip pair by prototypes/station/tools/make-stand-layers.py, until the painted masters land.",
+ "schema": "mb-stands/2",
+ "note": "Layered stands: a base plus one cut-out layer per look a stand can show, chosen by drawnLooks (prototypes/station/src/looks.mjs). The signed version 4 set (T-20261016-200: floor/S01 bare keys and crest overlays, the patches and stripes layers), cut by prototypes/station/tools/make-stand-layers.py. Colour ramps are T-20261016-203.",
  "status": "placeholder",
  "stands": {
   "S01": {
@@ -10,44 +10,39 @@
      "crown",
      "eye-rings"
     ],
+    "pose": "anchor",
     "sizes": {
      "304x312": {
       "base": "S01-adult-304x312-base.png",
       "layers": [
        {
         "trait": "markings",
-        "look": "patches",
+        "looks": [
+         "patches",
+         "stripes and patches"
+        ],
         "order": 10,
         "op": "over",
         "file": "S01-adult-304x312-patches.png"
        },
        {
-        "trait": "crown",
-        "look": "bare head",
-        "order": 20,
-        "op": "erase",
-        "file": "S01-adult-304x312-bare-erase.png"
+        "trait": "markings",
+        "looks": [
+         "stripes",
+         "stripes and patches"
+        ],
+        "order": 11,
+        "op": "over",
+        "file": "S01-adult-304x312-stripes.png"
        },
        {
         "trait": "crown",
-        "look": "bare head",
-        "order": 21,
-        "op": "over",
-        "file": "S01-adult-304x312-bare-fill.png"
-       },
-       {
-        "trait": "eye-rings",
-        "look": "thin rings",
+        "looks": [
+         "leaf crest"
+        ],
         "order": 30,
         "op": "over",
-        "file": "S01-adult-304x312-eyes-thin.png"
-       },
-       {
-        "trait": "eye-rings",
-        "look": "wide pale rings",
-        "order": 30,
-        "op": "over",
-        "file": "S01-adult-304x312-eyes-wide.png"
+        "file": "S01-adult-304x312-crest.png"
        }
       ]
      },
@@ -56,38 +51,32 @@
       "layers": [
        {
         "trait": "markings",
-        "look": "patches",
+        "looks": [
+         "patches",
+         "stripes and patches"
+        ],
         "order": 10,
         "op": "over",
         "file": "S01-adult-144x152-patches.png"
        },
        {
-        "trait": "crown",
-        "look": "bare head",
-        "order": 20,
-        "op": "erase",
-        "file": "S01-adult-144x152-bare-erase.png"
+        "trait": "markings",
+        "looks": [
+         "stripes",
+         "stripes and patches"
+        ],
+        "order": 11,
+        "op": "over",
+        "file": "S01-adult-144x152-stripes.png"
        },
        {
         "trait": "crown",
-        "look": "bare head",
-        "order": 21,
-        "op": "over",
-        "file": "S01-adult-144x152-bare-fill.png"
-       },
-       {
-        "trait": "eye-rings",
-        "look": "thin rings",
+        "looks": [
+         "leaf crest"
+        ],
         "order": 30,
         "op": "over",
-        "file": "S01-adult-144x152-eyes-thin.png"
-       },
-       {
-        "trait": "eye-rings",
-        "look": "wide pale rings",
-        "order": 30,
-        "op": "over",
-        "file": "S01-adult-144x152-eyes-wide.png"
+        "file": "S01-adult-144x152-crest.png"
        }
       ]
      },
@@ -96,38 +85,144 @@
       "layers": [
        {
         "trait": "markings",
-        "look": "patches",
+        "looks": [
+         "patches",
+         "stripes and patches"
+        ],
         "order": 10,
         "op": "over",
         "file": "S01-adult-48x48-patches.png"
        },
        {
-        "trait": "crown",
-        "look": "bare head",
-        "order": 20,
-        "op": "erase",
-        "file": "S01-adult-48x48-bare-erase.png"
+        "trait": "markings",
+        "looks": [
+         "stripes",
+         "stripes and patches"
+        ],
+        "order": 11,
+        "op": "over",
+        "file": "S01-adult-48x48-stripes.png"
        },
        {
         "trait": "crown",
-        "look": "bare head",
-        "order": 21,
-        "op": "over",
-        "file": "S01-adult-48x48-bare-fill.png"
-       },
-       {
-        "trait": "eye-rings",
-        "look": "thin rings",
+        "looks": [
+         "leaf crest"
+        ],
         "order": 30,
         "op": "over",
-        "file": "S01-adult-48x48-eyes-thin.png"
+        "file": "S01-adult-48x48-crest.png"
+       }
+      ]
+     }
+    }
+   },
+   "juvenile": {
+    "traits": [
+     "markings",
+     "crown",
+     "eye-rings"
+    ],
+    "pose": "anchor",
+    "sizes": {
+     "304x312": {
+      "base": "S01-juvenile-304x312-base.png",
+      "layers": [
+       {
+        "trait": "markings",
+        "looks": [
+         "patches",
+         "stripes and patches"
+        ],
+        "order": 10,
+        "op": "over",
+        "file": "S01-juvenile-304x312-patches.png"
        },
        {
-        "trait": "eye-rings",
-        "look": "wide pale rings",
+        "trait": "markings",
+        "looks": [
+         "stripes",
+         "stripes and patches"
+        ],
+        "order": 11,
+        "op": "over",
+        "file": "S01-juvenile-304x312-stripes.png"
+       },
+       {
+        "trait": "crown",
+        "looks": [
+         "leaf crest"
+        ],
         "order": 30,
         "op": "over",
-        "file": "S01-adult-48x48-eyes-wide.png"
+        "file": "S01-juvenile-304x312-crest.png"
+       }
+      ]
+     },
+     "104x112": {
+      "base": "S01-juvenile-104x112-base.png",
+      "layers": [
+       {
+        "trait": "markings",
+        "looks": [
+         "patches",
+         "stripes and patches"
+        ],
+        "order": 10,
+        "op": "over",
+        "file": "S01-juvenile-104x112-patches.png"
+       },
+       {
+        "trait": "markings",
+        "looks": [
+         "stripes",
+         "stripes and patches"
+        ],
+        "order": 11,
+        "op": "over",
+        "file": "S01-juvenile-104x112-stripes.png"
+       },
+       {
+        "trait": "crown",
+        "looks": [
+         "leaf crest"
+        ],
+        "order": 30,
+        "op": "over",
+        "file": "S01-juvenile-104x112-crest.png"
+       }
+      ]
+     },
+     "48x48": {
+      "base": "S01-juvenile-48x48-base.png",
+      "layers": [
+       {
+        "trait": "markings",
+        "looks": [
+         "patches",
+         "stripes and patches"
+        ],
+        "order": 10,
+        "op": "over",
+        "file": "S01-juvenile-48x48-patches.png"
+       },
+       {
+        "trait": "markings",
+        "looks": [
+         "stripes",
+         "stripes and patches"
+        ],
+        "order": 11,
+        "op": "over",
+        "file": "S01-juvenile-48x48-stripes.png"
+       },
+       {
+        "trait": "crown",
+        "looks": [
+         "leaf crest"
+        ],
+        "order": 30,
+        "op": "over",
+        "file": "S01-juvenile-48x48-crest.png"
        }
       ]
      }
@@ -135,114 +230,248 @@
    }
   }
  },
+ "standIns": {
+  "mibi-adult-S01-air-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-air-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-anchor-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-anchor-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-crouch-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-crouch-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-stand-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-adult-S01-stand-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-adult-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-air-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-air-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-air-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-anchor-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-anchor-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-anchor-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-crouch-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-crouch-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-crouch-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-stand-eyes-thin-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  },
+  "mibi-juvenile-S01-stand-eyes-wide-304x312": {
+   "sha256": null,
+   "from": null,
+   "status": "stand-in",
+   "stands_in_with": "the base key's own \"between\" rings (mibi-juvenile-S01-base-stand-304x312): eye rings do not vary between stands until the hand-cut overlay lands"
+  }
+ },
  "files": {
-  "S01-adult-144x152-bare-erase.png": {
-   "file": "S01-adult-144x152-bare-erase.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "499fa3946020f773ca0839d80306492dca90ca9b699f835683a4c6826072e7a7"
-  },
-  "S01-adult-144x152-bare-fill.png": {
-   "file": "S01-adult-144x152-bare-fill.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "4b620bd641511303597e58a8c16a6d06870729c131633cfa78a69d614cd40383"
-  },
   "S01-adult-144x152-base.png": {
    "file": "S01-adult-144x152-base.png",
    "w": 144,
    "h": 152,
-   "sha256": "5ff2e927a8609f7d220e9ed15424a6fab59a514a1b64bb06cad780a8b771b8f8"
+   "sha256": "4f7de449834e8916a086bec0f5ff258d76dcdf9f0b572a6a789246048a28b6a1"
   },
-  "S01-adult-144x152-eyes-thin.png": {
-   "file": "S01-adult-144x152-eyes-thin.png",
+  "S01-adult-144x152-crest.png": {
+   "file": "S01-adult-144x152-crest.png",
    "w": 144,
    "h": 152,
-   "sha256": "f07afae0053afabe87b9353e41ba50a2936451d8412efeed4692b1b81ce9320f"
-  },
-  "S01-adult-144x152-eyes-wide.png": {
-   "file": "S01-adult-144x152-eyes-wide.png",
-   "w": 144,
-   "h": 152,
-   "sha256": "3fd77b0c8919d79e85971c498cb202707ec1455068cadfd616acacbf021f7272"
+   "sha256": "3d49119b244723081c6309d09d563ff288c056b44b49d63fae60cf54116c34a5"
   },
   "S01-adult-144x152-patches.png": {
    "file": "S01-adult-144x152-patches.png",
    "w": 144,
    "h": 152,
-   "sha256": "3c3fc87ffcb84fcb48d4b4e2ba73b82d4c387bd5a4c1bca5a3e9e7d70550d549"
+   "sha256": "267866592747975e5ebdcaf1fea0306009fc7f4f97a22155823b816e281fb451"
   },
-  "S01-adult-304x312-bare-erase.png": {
-   "file": "S01-adult-304x312-bare-erase.png",
-   "w": 304,
-   "h": 312,
-   "sha256": "b3d61ca8b24da517bc62faab33d24e955418742730c9f3a9e5cf76e9d4bbec55"
-  },
-  "S01-adult-304x312-bare-fill.png": {
-   "file": "S01-adult-304x312-bare-fill.png",
-   "w": 304,
-   "h": 312,
-   "sha256": "3e7b50fa93b158865edb7b61126b8e5a09e6ea56a5ea8896b3fe87ebf9a96374"
+  "S01-adult-144x152-stripes.png": {
+   "file": "S01-adult-144x152-stripes.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "7b1f972ace6df79c4556213168c3be1e85c6998468fdabf4619d2281c595519f"
   },
   "S01-adult-304x312-base.png": {
    "file": "S01-adult-304x312-base.png",
    "w": 304,
    "h": 312,
-   "sha256": "f2a4aa01ed6036cbd6bd9cc68d52e01b4678c4f1833ccb4603bc5927b7958382"
+   "sha256": "a4daefe8241346c11e71dfc1b6f5a2499950919dbec4f47683e24351a382a127"
   },
-  "S01-adult-304x312-eyes-thin.png": {
-   "file": "S01-adult-304x312-eyes-thin.png",
+  "S01-adult-304x312-crest.png": {
+   "file": "S01-adult-304x312-crest.png",
    "w": 304,
    "h": 312,
-   "sha256": "638de6563ebaa826a58e7515a5ad85ca37d1b581695d975f49f9eb13dbd9a023"
-  },
-  "S01-adult-304x312-eyes-wide.png": {
-   "file": "S01-adult-304x312-eyes-wide.png",
-   "w": 304,
-   "h": 312,
-   "sha256": "67c7114fc9e13b011a63cb625fde011ad0e6b9207fddeb9cebb2cfb37924caf7"
+   "sha256": "449ceeda851787813b4cf8a9559be2d4f33d6702ae9dd7c70eae1c8c06eae8e2"
   },
   "S01-adult-304x312-patches.png": {
    "file": "S01-adult-304x312-patches.png",
    "w": 304,
    "h": 312,
-   "sha256": "2790b3b4313b0081825e2544e93e5f9aef60354cbca758a4bcb5b011e9ec6efe"
+   "sha256": "f749355367524d79f070e9a2104ec41ed364206e1d42ca67cb40e63a730c7e6d"
   },
-  "S01-adult-48x48-bare-erase.png": {
-   "file": "S01-adult-48x48-bare-erase.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "05d24d936139f20f5cf4ca07673724ed2b4f644cce47b08134973a3a06af6e18"
-  },
-  "S01-adult-48x48-bare-fill.png": {
-   "file": "S01-adult-48x48-bare-fill.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "61da877081e8a0c18e4665aaa239f0b95247e939303a7fe04cd2afcb2065fefa"
+  "S01-adult-304x312-stripes.png": {
+   "file": "S01-adult-304x312-stripes.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "4069f6f2693e63cd1b13aca816e94d715fedd51142c31b98568d6d3fac29177b"
   },
   "S01-adult-48x48-base.png": {
    "file": "S01-adult-48x48-base.png",
    "w": 48,
    "h": 48,
-   "sha256": "edcc706b1178911fbbe3c6a01bcf9cc713c59f9b6ff426d3dc61a8367e1f6fa7"
+   "sha256": "57e006e4fa4523cab1241dbfb2468eef3a31dbe7eabefd2089b91ecfc667ab00"
   },
-  "S01-adult-48x48-eyes-thin.png": {
-   "file": "S01-adult-48x48-eyes-thin.png",
+  "S01-adult-48x48-crest.png": {
+   "file": "S01-adult-48x48-crest.png",
    "w": 48,
    "h": 48,
-   "sha256": "417518735f9c028da4a3e52c6b4a03092a8d1ea299e8cb68681077df10e44815"
-  },
-  "S01-adult-48x48-eyes-wide.png": {
-   "file": "S01-adult-48x48-eyes-wide.png",
-   "w": 48,
-   "h": 48,
-   "sha256": "f72fada3758bca79c0a4d8a018b7535bfa05ca53700ea5750e6436735c82d3e9"
+   "sha256": "c919db46c09c2d69ffc11222516b26378f85e8c3a3bf73f06f6f6bfda2f7c020"
   },
   "S01-adult-48x48-patches.png": {
    "file": "S01-adult-48x48-patches.png",
    "w": 48,
    "h": 48,
-   "sha256": "2427cfb82585f2e0b76d6f39f91749e77fafe375e5e1993098f928acade57000"
+   "sha256": "5fc4e909d171d48e1f2f9e1c658d22f365c74ef5d40ebb94e6d29e7d3d811a26"
+  },
+  "S01-adult-48x48-stripes.png": {
+   "file": "S01-adult-48x48-stripes.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "d7747fe55a6707074b9f846365a7119ed3c1782c4d2032ac0c89dae2bb4cdc82"
+  },
+  "S01-juvenile-104x112-base.png": {
+   "file": "S01-juvenile-104x112-base.png",
+   "w": 104,
+   "h": 112,
+   "sha256": "b9216fdc4523fd1119dff716b88bf593cf93093ce49e21f0fd7f5abb389d9d8a"
+  },
+  "S01-juvenile-104x112-crest.png": {
+   "file": "S01-juvenile-104x112-crest.png",
+   "w": 104,
+   "h": 112,
+   "sha256": "caa1ea8949a10c0f22bc63e074618e9f2ee5fa246e5eeff2f61076d960f54f99"
+  },
+  "S01-juvenile-104x112-patches.png": {
+   "file": "S01-juvenile-104x112-patches.png",
+   "w": 104,
+   "h": 112,
+   "sha256": "b56908a15371251454dbdd340c5650b8ef09e02c3d74aabf6013e1d5583740e5"
+  },
+  "S01-juvenile-104x112-stripes.png": {
+   "file": "S01-juvenile-104x112-stripes.png",
+   "w": 104,
+   "h": 112,
+   "sha256": "9297ea4484098db9ea06e111a6ca37adc83d48e1b2767c3891d11416ab5fbd84"
+  },
+  "S01-juvenile-304x312-base.png": {
+   "file": "S01-juvenile-304x312-base.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "7bb4bffaf61c17940a701c4fa2277f1eed3f82ab1ed9dbb621acda9a6ca269b4"
+  },
+  "S01-juvenile-304x312-crest.png": {
+   "file": "S01-juvenile-304x312-crest.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "660745ee3eb0a6418c3abe9a766f13a4b5dcfafdd23541e15476bd72730b3a79"
+  },
+  "S01-juvenile-304x312-patches.png": {
+   "file": "S01-juvenile-304x312-patches.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "47fa421310fc4282bee4ce43823691663e3621d0393528ad75ac6351d4b5e777"
+  },
+  "S01-juvenile-304x312-stripes.png": {
+   "file": "S01-juvenile-304x312-stripes.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a673286cef5efc0c998dbd2b200890c662e53006a10ee34353330fb313486c15"
+  },
+  "S01-juvenile-48x48-base.png": {
+   "file": "S01-juvenile-48x48-base.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "c81298a1c49c91484359c6734f3fff716608c693020220a76014359d26d70c35"
+  },
+  "S01-juvenile-48x48-crest.png": {
+   "file": "S01-juvenile-48x48-crest.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9358dad0170f3e3f654131ec8e2c4496aff8618eec2dbbee0196ec96df2a01fa"
+  },
+  "S01-juvenile-48x48-patches.png": {
+   "file": "S01-juvenile-48x48-patches.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "9164ad0802ac9b28b0df3d67980d1f0dc2a3416962affdc17c33f00e6c57e0b3"
+  },
+  "S01-juvenile-48x48-stripes.png": {
+   "file": "S01-juvenile-48x48-stripes.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "b385b83356616359171fd4829c0eeffccfc6758baef9fbd4837cf0adee4a20b5"
   }
  }
 }

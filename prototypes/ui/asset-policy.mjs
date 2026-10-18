@@ -15,8 +15,8 @@ const PAINTED = [
 ];
 const MOVES_WITH_MASTER = [/^moving:(juvenile|adult):S\d{2}:(walk|close|nap):\d+x\d+:([0-9a-f]{16}|species)(:(dawn|dusk|night))?$/, /^moving:(juvenile|adult):S\d{2}:shadow:\d+x\d+(:(dawn|dusk|night))?$/, /^chapter-plate-/, /^library-stage-spread-1024x522$/, /^spread-plate-S\d{2}-80x96$/, /^spread-study-S\d{2}-80x96$/, /^kinring:/, /^hatch:/, /^mibi:/, /^crate-(sealed|opening|open|sitting)-\d/, /^cargo-(well|bay-shut|bay-shut-report)-\d/, /^icon-(pod|shield)-\d+$/, /^founder:S\d{2}:[^:]+:clear:\d+x\d+$/, /^roll-/, /^bud-small-/, /^bud-(early|late|ready|ready-front|crack-[12])-128x160(:\d+x\d+)?$/, /^bench-(probe-upright-t[12]|cradle-upright-empty)-288x432$/, /^bench-switch-(track-(off|on)-80x40|knob-40x40)$/, /^bench-socket-160$/, /^bench-part-t2-(dim|ready|fitted)-128$/, /^bench-(reach|deep)-t2-40(-new)?$/, /^bench-plate-(whole|gone)-32x32$/, /^mark-dock-24x24$/, /^icon-(pod|shield)-16-new$/, /^icon-shield-gone-16$/, /^bench-plate-strip-t[12]-(144|192)x48$/];
 // A layered stand (station/src/layered-stand.mjs, T-20261016-201): a base and cut-out layers composed in the logic process. It is the painted layer in every status, as the layers are painted cut-outs
-// (stand-ins until the masters land; the placeholder register names them), never palette-exact art: mibi:<SXX>~<variant>:<adult>:<w>x<h>[:<light>]
-const LAYERED = [/^mibi:S\d{2}~[0-9a-f]{8}:adult:\d+x\d+(:(dawn|dusk|night))?$/];
+// ("painted" is the draw policy, not a sign-off: the register still names the stand-ins), never palette-exact art: mibi:<SXX>~<variant>:<juvenile|adult>:<w>x<h>[:<light>]
+const LAYERED = [/^mibi:S\d{2}~[0-9a-f]{8}:(juvenile|adult):\d+x\d+(:(dawn|dusk|night))?$/];
 export function policyOf(id, status = "placeholder") {
   if (LAYERED.some((re) => re.test(id))) return "painted";
   if (MOVES_WITH_MASTER.some((re) => re.test(id))) return status === "master" ? "painted" : "art";

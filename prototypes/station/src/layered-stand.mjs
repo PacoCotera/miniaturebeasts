@@ -1,5 +1,5 @@
 // The layered stand: a base picture and, for each look a stand can show, cut-out layers placed on it, chosen by `drawnLooks` (looks.mjs). It is generic over loci: the layers are data
-// (ui/assets/stands/index.json: { trait, look, order, op, file } per layer), so a new locus's layers plug in with no code change. A look with no layer draws as the base for that trait.
+// (ui/assets/stands/index.json: { trait, looks: [the looks it draws for], order, op, file } per layer), so a new locus's layers plug in with no code change. A look with no layer draws as the base for that trait.
 // The composition is made once in the logic process and kept in the asset cache by id, like the stamp; the face shows the picture 1:1 and never knows a layer existed.
 //   op "over"   the layer's pixels are laid over the picture (straight alpha, the usual "over");
 //   op "erase"  the layer's alpha is how much alpha the picture loses there (a crest taken off).
@@ -22,9 +22,9 @@ export function layeredStand(species, stage, [w, h]) {
   return { species, stage: stageKey(stage), size: [w, h], traits: set.traits, base: sz.base, layers: sz.layers };
 }
 // The layers a mibi's looks call for, in order: a layer whose trait shows exactly its look
-export const layersFor = (stand, looks) => stand.layers.filter((l) => looks[l.trait] === l.look).sort((a, b) => a.order - b.order || a.file.localeCompare(b.file));
+export const layersFor = (stand, looks) => stand.layers.filter((l) => l.looks.includes(looks[l.trait])).sort((a, b) => a.order - b.order || a.file.localeCompare(b.file));
 // The picture's variant key for a stand and a mibi's looks: the looks the stand HAS a layer for (a trait it cannot show, or a look it has no layer for, is the base), so two mibis that draw the same pixels are one picture
-export function standVariant(stand, looks) { const shown = {}; for (const l of layersFor(stand, looks)) shown[l.trait] = l.look; const key = standKey(stand.species, stand.traits, shown); return { key, token: keyToken(key) }; }
+export function standVariant(stand, looks) { const shown = {}; for (const l of layersFor(stand, looks)) shown[l.trait] = looks[l.trait]; const key = standKey(stand.species, stand.traits, shown); return { key, token: keyToken(key) }; }
 export const standPictureId = (stand, looks, light = "day") => { const { token } = standVariant(stand, looks); return `mibi:${stand.species}~${token}:${stand.stage}:${stand.size[0]}x${stand.size[1]}${light === "day" ? "" : ":" + light}`; };
 
 // The composed picture: { w, h, rgba() } with straight alpha

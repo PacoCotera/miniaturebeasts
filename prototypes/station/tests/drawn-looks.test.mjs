@@ -93,38 +93,42 @@ describe("drawnLooks(frame, mibi)", () => {
 describe("the layered stand", () => {
   test("a base and layers per look, derived at each standing size; the layer table is data (every layer is in the index with its hash)", () => {
     const index = loadStandLayersFs(); assert.ok(standLayersLoaded());
-    for (const size of [[304, 312], [144, 152], [48, 48]]) { const s = layeredStand("S01", "adult", size); assert.ok(s, size.join("x")); assert.deepEqual(s.traits, ["markings", "crown", "eye-rings"]); assert.equal(s.layers.length, 5); }
+    for (const [stage, sizes] of [["adult", [[304, 312], [144, 152], [48, 48]]], ["juvenile", [[304, 312], [104, 112], [48, 48]]]]) for (const size of sizes) { const s = layeredStand("S01", stage, size); assert.ok(s, stage + size.join("x")); assert.deepEqual(s.traits, ["markings", "crown", "eye-rings"]); assert.equal(s.layers.length, 3); assert.equal(s.stage, stage); }
     assert.equal(layeredStand("S01", "elder", [144, 152]).stage, "adult", "an elder takes the adult's stand");
-    assert.equal(layeredStand("S01", "juvenile", [104, 112]), null, "no layers for a juvenile: its signed stand");
     assert.equal(layeredStand("S01", "adult", [96, 88]), null, "the sleeper's curl is not a stand pose: its signed picture");
     assert.equal(layeredStand("S03", "adult", [144, 152]), null, "a species with no layers is drawn as before");
     for (const [name, e] of Object.entries(index.files)) assert.equal(sha(readFileSync(path.join(STANDS_DIR, e.file))), e.sha256, name);
-    assert.equal(index.status, "placeholder", "proof cut-outs, listed in the placeholder register");
+    assert.equal(Object.keys(index.standIns).length, 16, "the 16 eye-ring overlays are carried as stand-ins (layers/register.json)");
+    assert.ok(Object.entries(index.standIns).every(([k, v]) => v.status === "stand-in" && /-eyes-(thin|wide)-/.test(k)));
   });
 
-  test("a layer shows its look and no other: the base, patches, a bare head and each ring give different pictures", () => {
-    const st = layeredStand("S01", "adult", [144, 152]), base = pixels(st, {});
-    const variants = [{ markings: "patches" }, { crown: "bare head" }, { "eye-rings": "thin rings" }, { "eye-rings": "wide pale rings" }, { markings: "patches", crown: "bare head", "eye-rings": "wide pale rings" }];
-    const seen = new Set([base]);
-    for (const v of variants) { const h = pixels(st, v); assert.ok(!seen.has(h), JSON.stringify(v)); seen.add(h); }
-    assert.equal(pixels(st, { markings: "stripes", "eye-rings": "between", crown: "leaf crest", colour: "ash" }), base, "a look with no layer, and the base's own looks, are the base: nothing is invented");
-    assert.deepEqual(layersFor(st, { crown: "bare head" }).map((l) => l.op), ["erase", "over"], "a bare head is the crest taken off and the head closed, in that order");
+  test("a layer shows its look and no other: the bare base, the crest, patches, stripes and both give different pictures", () => {
+    for (const [stage, size] of [["adult", [144, 152]], ["juvenile", [104, 112]]]) {
+      const st = layeredStand("S01", stage, size), bare = pixels(st, { crown: "bare head" });
+      const variants = [{ crown: "leaf crest" }, { markings: "patches" }, { markings: "stripes" }, { markings: "stripes and patches" }, { crown: "leaf crest", markings: "stripes and patches" }];
+      const seen = new Set([bare]);
+      for (const v of variants) { const h = pixels(st, v); assert.ok(!seen.has(h), stage + JSON.stringify(v)); seen.add(h); }
+      assert.equal(pixels(st, { markings: "plain", "eye-rings": "between", crown: "bare head", colour: "ash" }), bare, "a look with no layer (plain, a colour, the base's own rings) is the base: nothing is invented");
+      assert.equal(pixels(st, { "eye-rings": "thin rings" }), bare, "the ring overlays are stand-ins: the base's rings");
+      assert.equal(pixels(st, { "eye-rings": "wide pale rings" }), bare);
+      assert.deepEqual(layersFor(st, { markings: "stripes and patches", crown: "leaf crest" }).map((l) => l.order), [10, 11, 30], "patches, then stripes, then the crest");
+    }
   });
 
-  test("a bare head takes the crest off: the crown's rows lose their leaves and nothing else of the body moves", () => {
-    const st = layeredStand("S01", "adult", [304, 312]), a = composeStand(st, {}).rgba(), b = composeStand(st, { crown: "bare head" }).rgba();
-    let top = 0, topOpaque = 0, below = 0, last = 0;
-    for (let y = 0; y < 312; y++) for (let x = 0; x < 304; x++) { const i = (y * 304 + x) * 4, same = a[i] === b[i] && a[i + 1] === b[i + 1] && a[i + 2] === b[i + 2] && a[i + 3] === b[i + 3]; if (!same) { last = Math.max(last, y); if (y < 160) top++; else below++; } if (y < 40 && b[i + 3] > 128) topOpaque++; }
-    assert.ok(top > 2000, "the crest is gone from the top"); assert.equal(topOpaque, 0, "no leaf is left above the head"); assert.ok(last < 175, `the body is the base's below the head: the last changed row is ${last}`);
+  test("the crest is an overlay on the bare head: it changes only the crown's rows and leaves the body as the base's", () => {
+    const st = layeredStand("S01", "adult", [304, 312]), a = composeStand(st, { crown: "leaf crest" }).rgba(), b = composeStand(st, { crown: "bare head" }).rgba();
+    let top = 0, last = 0;
+    for (let y = 0; y < 312; y++) for (let x = 0; x < 304; x++) { const i = (y * 304 + x) * 4; if (a[i] !== b[i] || a[i + 1] !== b[i + 1] || a[i + 2] !== b[i + 2] || a[i + 3] !== b[i + 3]) { top++; last = Math.max(last, y); } }
+    assert.ok(top > 2000, "the crest is drawn"); assert.ok(last < 140, `only the crown's rows change: the last changed row is ${last}`);
   });
 
   test("the variant is the picture: the same looks are one id, different looks are different ids, an unread look is the base's", () => {
     const st = layeredStand("S01", "adult", [144, 152]), id = (l, light) => standPictureId(st, l, light);
     assert.match(id({}), /^mibi:S01~[0-9a-f]{8}:adult:144x152$/); assert.match(id({}, "night"), /:night$/);
-    assert.equal(id({ colour: "ash", markings: "stripes" }), id({}), "colour and stripes have no layer yet: the base");
-    assert.notEqual(id({ crown: "bare head" }), id({})); assert.equal(standVariant(st, { crown: "bare head", markings: "patches" }).key, "S01~crown=bare head,markings=patches");
+    assert.equal(id({ colour: "ash", markings: "plain", "eye-rings": "thin rings", crown: "bare head" }), id({}), "colour, plain and the rings have no layer yet: the base");
+    assert.notEqual(id({ crown: "leaf crest" }), id({})); assert.notEqual(id({ markings: "stripes" }), id({ markings: "patches" })); assert.equal(standVariant(st, { crown: "leaf crest", markings: "patches" }).key, "S01~crown=leaf crest,markings=patches");
     assert.equal(keyToken("S01~"), keyToken("S01~")); assert.notEqual(keyToken("S01~"), keyToken("S01~crown=bare head"));
-    assert.equal(policyOf(id({ crown: "bare head" }), "placeholder"), "painted"); assert.equal(policyOf(id({}, "dusk"), "placeholder"), "painted");
+    assert.equal(policyOf(id({ crown: "leaf crest" }), "placeholder"), "painted"); assert.equal(policyOf("mibi:S01~0123abcd:juvenile:104x112:night", "placeholder"), "painted", "a layered juvenile too"); assert.equal(policyOf(id({}, "dusk"), "placeholder"), "painted");
     assert.equal(policyOf("mibi:S01-9b58efeb:adult:144x152", "placeholder"), "art", "a rig stand-in named by a genome digest is still art"); assert.equal(policyOf("mibi:S01-9b58efeb:adult:144x152", "master"), "painted");
   });
 });
@@ -132,10 +136,10 @@ describe("the layered stand", () => {
 // four Loikas whose drawn looks differ in what a stand can show: found by search over pods, so the test follows the frame
 const FOUR = (() => {
   const picks = [], keys = new Set(), st = layeredStand("S01", "adult", [144, 152]);
-  for (let s = 1; s < 400 && picks.length < 4; s++) {
+  const wants = [{ markings: "patches", crown: "leaf crest" }, { markings: "stripes", crown: "bare head" }, { markings: "stripes and patches", crown: "leaf crest" }, { markings: "patches", crown: "bare head" }];
+  for (let s = 1; s < 800 && picks.length < 4; s++) {
     const gs = (Math.imul(s, 2654435761)) >>> 0, looks = drawnLooks(fr, mibi(gs)), v = standVariant(st, looks).key;
-    const want = [{ markings: "patches" }, { crown: "bare head" }, { "eye-rings": "wide pale rings" }, { crown: "bare head", markings: "patches" }][picks.length];
-    if (!keys.has(v) && Object.entries(want).every(([t, l]) => looks[t] === l) && !(picks.length < 2 && looks.crown === "bare head" && picks.length === 0)) { keys.add(v); picks.push(s); }
+    if (!keys.has(v) && Object.entries(wants[picks.length]).every(([t, l]) => looks[t] === l)) { keys.add(v); picks.push(s); }
   }
   return picks;
 })();
@@ -184,11 +188,11 @@ describe("four Loikas, four stands", () => {
     m.name = "Renamed"; m.outings = 9; assert.equal(mibiPictureOf(st, m, [144, 152], settings).id, after, "nothing but the read looks changes the picture");
   });
 
-  test("a juvenile, a sleeper's curl and a species with no layers are drawn as before: the genome's digest names the picture", () => {
-    const st = world(), m = st.mibis[0]; m.born = st.turn;   // a juvenile
+  test("a juvenile is layered at its own size; a sleeper's curl and a species with no layers are drawn as before: the genome's digest names the picture", () => {
+    const st = world(), m = st.mibis[0]; m.born = st.turn;   // a juvenile is layered too, at its own size
     assert.equal(S.mibiStage(st, m, settings), "juvenile");
-    const j = mibiPictureOf(st, m, [144, 152], settings); assert.equal(j.looks, undefined); assert.match(j.id, new RegExp(`^mibi:${genomeDigest(m.genome)}:juvenile:\\d+x\\d+$`), "the old name: the genome's digest");
-    m.born = st.turn - 99; assert.equal(mibiPictureOf(st, m, [96, 88], settings).looks, undefined, "96×88 is the curl");
+    const j = mibiPictureOf(st, m, [104, 112], settings); assert.deepEqual(j.looks, drawnLooks(fr, m)); assert.match(j.id, /^mibi:S01~[0-9a-f]{8}:juvenile:104x112$/);
+    m.born = st.turn - 99; assert.equal(mibiPictureOf(st, m, [96, 88], settings).looks, undefined, "96×88 is the curl: not a standing pose, its signed picture");
     const w = { st: S.freshSt("w1", 3, T0) }; S.normalize(w.st); S.seedAdults(w.st, "S03", 9, 1, settings);
     const t = mibiPictureOf(w.st, w.st.mibis[0], [144, 152], settings); assert.equal(t.looks, undefined); assert.equal(t.id, `mibi:${genomeDigest(w.st.mibis[0].genome)}:adult:144x152`);
   });
@@ -210,6 +214,6 @@ describe("four Loikas, four stands", () => {
   });
 
   test("the stand-ins are in the placeholder register", async () => {
-    const { PLACEHOLDERS } = await import("../src/art.mjs"); assert.ok(PLACEHOLDERS.some((p) => p.id === "stand-layers" && /proof/.test(p.what)));
+    const { PLACEHOLDERS } = await import("../src/art.mjs"); assert.ok(PLACEHOLDERS.some((p) => p.id === "stand-layers" && /16 eye-ring overlays/.test(p.what)));
   });
 });

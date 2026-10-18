@@ -22,7 +22,7 @@ export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.m
 // A species with a layered stand at the place (layered-stand.mjs) draws each mibi as itself: the picture is the stand's variant for the mibi's drawn looks (looks.mjs drawnLooks), named by that variant, so two mibis with the same looks
 // are one picture and a child that is read later is a new one; the request carries the looks. Every other stand is the species' own, named by the genome's digest, as before.
 export const mibiPictureOf = (st, mb, size, settings, light = "day") => {
-  const sp = S.speciesOf(mb), grown = S.mibiStage(st, mb, settings), stand = grown === "juvenile" ? null : layeredStand(sp, grown, size);
+  const sp = S.speciesOf(mb), grown = S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size);
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...size], looks }; }
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
   return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn };

@@ -61,7 +61,7 @@ const movingSource = (env) => ({
 });
 // A layered stand (layered-stand.mjs): the base with the layers the mibi's drawn looks call for, composed here in the logic process once and kept by id like the stamp; the face is given the pixels 1:1 and never a layer.
 // A light grades the composed picture (light-grade.mjs), as it grades a master. The layers are proof cut-outs until the masters land (art.mjs PLACEHOLDERS "stand-layers"), so the picture is a placeholder.
-const LAYER_UNTIL = "the painted bare-headed bases and the cut layers (T-20261016-190: the layers are proof cut-outs of the accepted Pip pair)";
+const LAYER_UNTIL = "the eye-ring overlays and the colour ramps (T-20261016-200, T-20261016-203): the stand is the signed version 4 base and layers, with the base's rings and charcoal coat";
 function registerLayered(r) {
   const stand = layeredStand(r.species, r.stage, r.size); if (!stand) throw new Error(`mibi ${r.id}: the species has no layered stand at ${r.size.join("×")}`);
   const [w, h] = r.size, day = standPictureId(stand, r.looks);
