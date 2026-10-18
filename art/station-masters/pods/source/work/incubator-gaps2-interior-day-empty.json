@@ -1,0 +1,16 @@
+[
+ {
+  "name": "incubator-gaps2-interior-day-empty",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/gaps/open-fixed-1024x600.png",
+    "The painting to edit: keep everything identical except the one change described."
+   ]
+  ],
+  "prompt": "Edit the reference painting. The same picture with the pod removed. Where it stood, the moss-and-soil bed continues, repainted to match the moss around it, in the same painted hand, with no hole, ring or shadow left behind. The roof lamp's warm pool now falls on the empty moss. Everything else identical: the capsule, open door, bar, wall, light and camera. No pod, no egg, no shell, no creature, no text."
+ }
+]

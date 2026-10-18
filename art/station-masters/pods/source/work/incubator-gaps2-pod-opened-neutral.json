@@ -1,0 +1,20 @@
+[
+ {
+  "name": "incubator-gaps2-pod-opened-neutral",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/gaps/pod-collection-shade-mag.png",
+    "REFERENCE: the closed pod's neutral shading layer: the light, the view, the shading. Ignore the magenta ground."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod's shape, ribs and cap. Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "A single painted element on a FLAT, uniform magenta ground #FF00FF, nothing else. The same pod as the references, painted in neutral mid-grey only (no colour), in the same soft painted style, with the same top-left light and the same front three-quarter view. It has just opened: its shell lies in two halves standing a little apart, with jagged soft-broken rims, and its rounded cap lies tipped on its side in front of the left half. The insides of the halves are a slightly lighter grey, softly lit. The ribs and the cap are painted as distinct raised parts, one value step darker than the shell, so they can be masked. NO pattern (no dots), NO colour, NO creature, NO moss, NO shadow on the ground, NO text."
+ }
+]
