@@ -103,6 +103,6 @@ All three are small: strings, one flag and one label condition. **Fold them into
 
 - **The cut fact is not acceptable.** An ellipsis on the one fact a player needs before an irreversible press is the worst place for one. It shows on both Release panels ("it goes back to the pond e…", "Fig lives in the wild from n…").
 - **The fix is not shorter words: the middle slot is empty on a panel**, as T-20261016-195 §1 already rules ("Bottom line, middle: empty on a panel"). The fact sits on its card, in full, where the ring is. Repeating it below only cuts it.
-- **This holds for every decision panel**, not just Release. The ✓ verb with its icons and ← "Back" stay as they are, and so does the status cue on the right ("two new pods in the rack").
+- **This holds for every card-form decision panel**, not just Release. The dock's strip form keeps its subject ("two crates to the rack"), because the strip has no card to carry it, and `home-dock-arrival` asserts it. The ✓ verb with its icons and ← "Back" stay as they are, and so does the status cue on the right ("two new pods in the rack").
 - **Goldens:** `pods-panel-release` and the Vivarium's wild panel.
 - **The settle guard** goes to the follow-up ticket, as the lead says.
