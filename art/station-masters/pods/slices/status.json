@@ -7088,5 +7088,25 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
   "note": "T-20261016-156, the world row"
+ },
+ "crate-lifting-256x200": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new (10-18): promoted from concepts/panels-cargo/ on the lead's note and the art director's finish pass; awaiting the art director's judgement (not signed)"
+ },
+ "pods-hatch-open-160x260": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new (10-18): promoted from concepts/panels-cargo/ on the lead's note and the art director's finish pass; awaiting the art director's judgement (not signed)"
+ },
+ "hatch-shut-160x260": {
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "note": "derived-from-concept (10-18): a straight crop of the placed shut bay, no painting; awaiting the art director's judgement (not signed)"
+ },
+ "berth-shut-256x292": {
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "note": "derived-from-concept (10-18): a straight crop of the placed shut bay, no painting; awaiting the art director's judgement (not signed)"
  }
 }

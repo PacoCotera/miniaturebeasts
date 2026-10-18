@@ -21770,5 +21770,57 @@
   "status": "signed",
   "signed_in": "art director at 1x, 2026-10-17: T-20261016-156, in cargo-report/t156/proof (the world marks at 1x and 4x; the report with the world row)",
   "status_note": "new (10-17, T-20261016-156)"
+ },
+ "crate-lifting-256x200": {
+  "size": [
+   256,
+   200
+  ],
+  "rect": null,
+  "src": "source/raw/panels-cargo-*.jpg (gemini-3-pro-image, one request each, the panels-cargo job), keyed and set at 1x by tools/panelscargo_cut.py",
+  "made": "the yellow crate with its lid lifted and warm light in the gap, contents not visible; the body is the width of crate-sealed-256x176 (x 10-244) and its foot sits 13 px above the canvas foot, so it stands where crate-sealed-256x176 stands, the extra height above. Anchors: foot row 187 of 200.",
+  "sha256": "23c95423536f1c6cf9a1321395d04b14ff963fc550b4dde3ccd74a54920d6cf0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-18): promoted from concepts/panels-cargo/ on the lead's note and the art director's finish pass; awaiting the art director's judgement (not signed)"
+ },
+ "pods-hatch-open-160x260": {
+  "size": [
+   160,
+   260
+  ],
+  "rect": null,
+  "src": "source/raw/panels-cargo-*.jpg (gemini-3-pro-image, one request each, the panels-cargo job), keyed and set at 1x by tools/panelscargo_cut.py",
+  "made": "the Pods hatch swung open, six empty pod wells and a narrow find strip at its foot. Well centres (49, 60), (103, 58), (49, 120), (103, 119), (50, 180), (104, 182) as the art director measured them.",
+  "sha256": "8212515ea6b9f51d5458319337b1c9ed93ca9020f7cdd6b227c5893aff96ef46",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new (10-18): promoted from concepts/panels-cargo/ on the lead's note and the art director's finish pass; awaiting the art director's judgement (not signed)"
+ },
+ "hatch-shut-160x260": {
+  "size": [
+   160,
+   260
+  ],
+  "rect": null,
+  "src": "slices/cargo-bay-shut-976x304.png",
+  "made": "the shut Pods hatch, cut 1:1 from cargo-bay-shut-976x304 at (40, 20); the stills place it at the hatch's spot and put ring-hatch-80x56 at +(40, 16)",
+  "sha256": "501b29fb7b3c3d2a42633e27254eb50f13309c410f964ef09758e1301338d83e",
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "status_note": "derived-from-concept (10-18): a straight crop of the placed shut bay, no painting; awaiting the art director's judgement (not signed)"
+ },
+ "berth-shut-256x292": {
+  "size": [
+   256,
+   292
+  ],
+  "rect": null,
+  "src": "slices/cargo-bay-shut-976x304.png",
+  "made": "an empty berth, slatted and shut: cut 1:1 from the slatted door of cargo-bay-shut-976x304 at (360, 6), clear of both latches",
+  "sha256": "b1c37713b2d2b5e22a1aa30c87751f00525944f52892a3bcdd91a58581e0c6d9",
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "status_note": "derived-from-concept (10-18): a straight crop of the placed shut bay, no painting; awaiting the art director's judgement (not signed)"
  }
 }
