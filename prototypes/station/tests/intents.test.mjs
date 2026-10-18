@@ -147,7 +147,7 @@ test("Cargo's opening with reduced motion (the host stages each step as props at
   assert.deepEqual(seen.filter((x) => x[3] === "opening"), [...steps(0, 3), [3000, 1, 0, "opening"], ...steps(1, 2)].filter((x, i, a) => a.findIndex((y) => y[0] === x[0]) === i), "the host's stage by time");
   assert.deepEqual(seen.at(-1), [6000, 0, 0, "report"], "the report at crates × 3000");
 });
-test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wait and hatches in one press, growNow with the leaves, then the hatch held 2780 ms with the hand-off at 2600 on the resident), Open (a bud that finished on its own: no price); ← Home on Home's Incubator module", () => {
+test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wait and hatches in one press, growNow with the bar and the door, then the hatch held 2780 ms with the hand-off at 2600 on the resident), Open (a bud that finished on its own: no price); ← Home on Home's Incubator module", () => {
   const st = world(), h = host(st); h.t = T0; h.specs.incubator = incubatorSpec;
   INTENTS.incubator.intent(h, "room", "confirm"); assert.deepEqual([h.went.length, h.played.length], [0, 0], "no pod in the rack: ✓ does nothing");
   const a = pod(st, "S01", [], 5, false), b = pod(st, "S01", chapters("S01"), 6); INTENTS.incubator.intent(h, "room", "confirm");
@@ -156,8 +156,8 @@ test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wa
   const q = pod(st, "S01", chapters("S01")); st.tray = [q]; assert.ok(S.grow(st, q, {}, settings, T0).ok); h.played.length = 0; h.timers.length = 0;
   assert.ok(S.instantGrowCost(st, settings, T0).s > 4, "this bud's price is above ❀ 4"); { const s00 = st.s; INTENTS.incubator.intent(h, "bud", "confirm"); assert.deepEqual([h.ui.panel?.id, h.played.length, st.s], ["growNow", 0, s00], "above ❀ 4 ✓ opens the panel and spends nothing"); }
   const minutes = st.bud.minutes, s0 = st.s;
-  INTENTS.panel.intent(h, "card.grow", "confirm"); const gn = h.played.at(-1); assert.deepEqual([gn.kind, gn.target, gn.ms, gn.hold, gn.to, gn.from <= gn.to], ["growNow", "room", 400, 400, minutes, true]);
-  assert.deepEqual([st.bud, st.mibis.length, s0 - st.s], [null, 1, S.instantGrowCost({ ...st, bud: { start: T0, minutes, early: false } }, settings, T0).s], "one press: the price paid once, the wait ended and the bud opened"); assert.ok(h.ui.inc.grow.bud && !h.ui.inc.hatch, "the leaves turn first; the screen keeps the bud");
+  INTENTS.panel.intent(h, "card.grow", "confirm"); const gn = h.played.at(-1); assert.deepEqual([gn.kind, gn.target, gn.ms, gn.hold], ["growNow", "room", 580, 580], "the bar fills and the door opens (580 ms), then the hatch");
+  assert.deepEqual([st.bud, st.mibis.length, s0 - st.s], [null, 1, S.instantGrowCost({ ...st, bud: { start: T0, minutes, early: false } }, settings, T0).s], "one press: the price paid once, the wait ended and the bud opened"); assert.ok(h.ui.inc.grow.bud && !h.ui.inc.hatch, "the bar fills first; the screen keeps the bud");
   assert.equal(h.timers.length, 1); h.played.length = 0; h.timers.shift().fn(); assert.equal(h.ui.inc.grow, null); assert.ok(h.ui.inc.hatch, "then the hatch");
   const hatch = h.played.find((e) => e.kind === "hatch"); assert.deepEqual([hatch.ms, hatch.hold], [2600, 2780]); const meet = h.timers.at(-1); assert.equal(meet.ms, 2600, "the hand-off by the timer, never on done");
   { const hb = host(world()); hb.specs.incubator = incubatorSpec; const sb = hb.st, pb = pod(sb, "S01", chapters("S01")); sb.tray = [pb]; S.grow(sb, pb, {}, settings, T0); hb.settings = { ...settings, growNowAbove: 99 }; INTENTS.incubator.intent(hb, "bud", "confirm"); assert.deepEqual([hb.ui.panel ?? null, hb.played.at(-1)?.kind], [null, "growNow"], "at or below the threshold ✓ acts as before: no panel");
@@ -245,15 +245,16 @@ test("Create ▲ ▼: a trait that rolls changes its look and the founder cross-
 });
 
 test("Create ✓: the rule pays and the grow event plays (900 ms, input held 1080), the code is the screen's while it holds, and the jump to the Incubator comes at 900 ms from the timer; with reduced motion the jump is on the frame of ✓", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.ui.pods.cur = p.id;
-  INTENTS.create.intent(h, "roll", "confirm"); assert.ok(!h.ui.panel, "Incubate opens no panel until T-222");
-  assert.deepEqual([h.saved, h.ui.pods.cur], [1, null], "✓ Grow saves the spend and the bud, and pods.cur no longer names the pod that left the rack");
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.specs.incubator = incubatorSpec; h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.ui.pods.cur = p.id;
+  INTENTS.create.intent(h, "roll", "confirm"); assert.deepEqual([h.ui.panel.id, h.ui.panel.focus], ["incubate", "card.incubate"], "✓ opens the Incubate | Keep shaping panel and spends nothing"); assert.ok(!st.bud); assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.ms, e.hold]), [["dither", "stage", 180, 180]]); h.played.length = 0;
+  INTENTS.panel.intent(h, "card.incubate", "confirm"); assert.equal(h.ui.panel, null, "the panel goes as a cut");
+  assert.deepEqual([h.saved, h.ui.pods.cur], [1, null], "✓ Incubate saves the spend and the bud, and pods.cur no longer names the pod that left the rack");
   assert.ok(st.bud); assert.ok(!st.tray.includes(p), "the pod is gone from the rack"); assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.ms, e.hold]), [["grow", "pod", 900, 1080]]);
   assert.deepEqual([h.went.length, h.ui.create.grown.code, typeof h.ui.create.grown.cost.e], [0, st.bud.code, "number"], "still on Create, holding"); assert.deepEqual(h.timers.map((t) => t.ms), [900]); assert.deepEqual(h.said, [], "no plate");
   INTENTS.create.intent(h, "roll", "confirm"); INTENTS.create.intent(h, "roll", "step:down"); assert.equal(h.timers.length, 1, "nothing acts while it grows");
-  h.timers[0].fn(); assert.deepEqual([h.went.at(-1), h.ui.create], ["incubator", null]);
-  const st2 = world(), p2 = pod(st2, "S01", []), h2 = host(st2); h2.moving = false; h2.ui.create = { podId: p2.id, choices: {}, f: 0, clash: [], grown: null };
-  INTENTS.create.intent(h2, "room", "confirm"); assert.deepEqual([h2.went.at(-1), h2.ui.create, h2.played.length, h2.timers.length], ["incubator", null, 0, 0], "a cut: nothing to wait for");
+  h.timers[0].fn(); assert.deepEqual([h.went.at(-1), h.ui.create], ["incubator", null]); assert.deepEqual(h.played.at(-1), { kind: "incubate", target: "room", ms: 1380, hold: 1380 }, "the Incubator plays its incubate moment");
+  const st2 = world(), p2 = pod(st2, "S01", []), h2 = host(st2); h2.moving = false; h2.specs.incubator = incubatorSpec; h2.ui.create = { podId: p2.id, choices: {}, f: 0, clash: [], grown: null };
+  INTENTS.create.intent(h2, "room", "confirm"); assert.ok(h2.ui.panel, "the panel opens as a cut"); assert.equal(h2.played.length, 0); INTENTS.panel.intent(h2, "card.incubate", "confirm"); assert.deepEqual([h2.went.at(-1), h2.ui.create, h2.played.length, h2.timers.length], ["incubator", null, 0, 0], "a cut: nothing to wait for");
 });
 
 test("Create ✓ refused: a short purse says what is short and nothing is spent, the screen stays", () => {

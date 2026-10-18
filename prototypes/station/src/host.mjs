@@ -171,8 +171,9 @@ export function cargoBody() {
 export function createBody() {
   const body = createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods), pn = UI.panel;
   if (pn && pn.screen === "create" && !UI.create?.grown) {   // the decision panel is open: its props ride on Create's (an overlay) and its bottom line is built from the focused card
-    const pb = panelBuild({ st: G.st, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
+    const pb = panelBuild({ st: G.st, settings: G.settings, ui: UI, jump: G.settings.jump, create: SPECS.create, glass: SPECS.incubator.glass }, SPECS.panel, SPECS.frame, SPECS.pods);
     pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+    if (pn.id === "incubate") body.props.focus = { cur: "", targets: [] };   // Create under the Incubate panel is a snapshot with no ring (build-spec 6a.2): the panel's own focus is the overlay's
   } else if (pn) UI.panel = null;
   return body;
 }
@@ -229,7 +230,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "moment", "read", "mend", "switch", "install", "sendoff"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "sendoff"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)

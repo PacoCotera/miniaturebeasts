@@ -106,7 +106,18 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
   }
   return 0;
 }
+/* the Incubate | Keep shaping panel is open over Create (panel.json `incubate`): Create's own words are not drawn; the face holds Create as one snapshot picture for the panel's right window */
+static int incubate_open(void) { char id[24], form[16]; if (spec_len("props", "overlay") < 0) return 0; spec_str("props", "overlay.id", id, sizeof id); spec_str("props", "overlay.form", form, sizeof form); return strcmp(id, "panel") == 0 && strcmp(form, "incubate") == 0; }
+/* Create as it stands when it is left: its words drawn once on their own (no ring: the host sends Create's focus as none under the panel, no frame), the stage rect copied into the snapshot picture (lv_snapshot) */
+static void snapshot_create(void) {
+  int r[4]; if (!v_spec_rect("panel", "incubate.right.snapshot", r)) return;
+  prim_begin(); v_set_focal(NULL); create_words(); prim_end();
+  if (prim_snapshot(r[0], r[1], r[2], r[3]) < 0) v_error("panel: the snapshot of Create could not be taken");
+}
 static void draw(void) {
+  { char sc[32]; spec_str("props", "screen", sc, sizeof sc);
+    if (strcmp(sc, "create") == 0 && spec_has("create") && spec_has("pods") && spec_has("panel") && spec_len("props", "regions") >= 0 && incubate_open()) { if (prim_snapshot_handle() < 0) snapshot_create(); }
+    else prim_snapshot_free(); }
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
     if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
@@ -118,7 +129,7 @@ static void draw(void) {
     else if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_words(); }
     else if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { home_hidden(); bench_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
-    else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); create_words(); }
+    else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); if (!incubate_open()) create_words(); }
     else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); incubator_words(); }
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") >= 0) build_idleLine(); }   /* Idle: the living window above, its line last */

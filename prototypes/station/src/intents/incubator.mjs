@@ -3,7 +3,6 @@
 import * as S from "../state.mjs";
 import { toPods } from "./create.mjs";
 import { knownChapters } from "../views/incubator-props.mjs";
-import { plays } from "../moving.mjs";
 import { openPanel } from "./panel.mjs";
 
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
@@ -35,7 +34,7 @@ function startHatch(h, B, mibi) {
   const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
   {
     // a juvenile with a moving set (Station M1 §2.5, R2, R5): the longer hatch, held to the stand (to the stand after the first hop on a save's first hatch, bud.firstEver, kept on the hatch: the bud is cleared at the hand-off), then a key cuts to the meet
-    const moving = plays(B.species, "juvenile", h.settings.motionSets), ev = moving ? spec.events.hatch.moving : spec.events.hatch, id = mibi.id, hold = moving && B.firstEver ? ev.firstHold : ev.hold;
+    const moving = false, ev = spec.events.hatch, id = mibi.id, hold = ev.hold;   // the moving-set hatch (Station M1 section 2.5) is not built on the capsule: its close atlas is 304 x 312 and the capsule's mibi is 146 tall (open question, T-20261016-222)
     h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind, moving, hold, cuttable: moving && !!ev.cut, over: false }; h.save();
     const over = (cut = false) => { const hh = h.ui.inc.hatch; if (!hh || hh.over) return; hh.over = true; h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "resident"; h.goto("habitat", 0, cut ? { cut: true, meetHold: spec.events.hatch.moving.cutMeetHold ?? 300 } : {}); };   // the hatch is over: meet the mibi, the ring on the resident (habitat.json focus.targets.resident); a cut landing draws no dither and the meet holds input 300 ms
     h.ui.inc.hatch.land = () => over(true);
@@ -43,14 +42,14 @@ function startHatch(h, B, mibi) {
     if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold, ...(moving && ev.cut ? { cut: true } : {}), ...(sk ? { skip: true } : {}) }); h.at(ev.ms, () => over(false), sk); } else over();   // reduced motion: a cut, the meet on the frame of ✓
   }
 }
-// Hatch now (and the panel's Hatch now card): pay, end the wait and open, in one press. The leaves still to fill turn whole first (the old growNow event), then the hatch plays as on Open.
+// Hatch now (and the panel's Hatch now card): pay, end the wait and open, in one press. The bar fills in 8 cuts and the door opens (events.growNow, 580 ms), then the hatch plays as on Open.
 export function growNow(h) {
   const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
-  const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "", progress: S.budProgress(h.st, h.settings, h.now()), left: S.budMinutesLeft(h.st, h.settings, h.now()), bud: B };
+  const B = h.st.bud, before = { known: knownChapters(h.st, B, h.settings, h.now()), cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "", progress: S.budProgress(h.st, h.settings, h.now()), left: S.budMinutesLeft(h.st, h.settings, h.now()), bud: B };
   const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-  if (motion) {   // the screen shows the bud as it was (the snapshot, `bud` included: the chamber is already empty) until the leaves are done; the hatch starts when the event ends
+  if (motion) {   // the screen shows the bud as it was (the snapshot, `bud` included: the chamber is already empty) until the event is done; the hatch starts when it ends
     const ev = spec.events.growNow; h.ui.inc.grow = { ...before, until: h.now() + ev.ms }; h.ui.meet = r.mibi.id; h.save();
-    h.play({ kind: "growNow", target: "room", from: L.full, to: L.total, ms: ev.ms, hold: ev.hold }); h.at(ev.ms, () => { h.ui.inc.grow = null; startHatch(h, B, r.mibi); });
+    h.play({ kind: "growNow", target: "room", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, () => { h.ui.inc.grow = null; startHatch(h, B, r.mibi); });
   } else startHatch(h, B, r.mibi);
   return r;
 }

@@ -30,6 +30,9 @@ char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL end
 int prim_text_size(void);
 int prim_measure(int px);       /* the width in px of prim_text() set in Inter at px */
 uint8_t *prim_asset(int handle, int w, int h);   /* a picture's pixels (B, G, R, A in memory), for the page to fill; NULL when refused */
+int prim_snapshot(int x, int y, int w, int h);   /* the screen's objects as drawn now, the rect (x, y, w, h) copied into the face's one snapshot picture (lv_snapshot): its handle, or -1 */
+void prim_snapshot_free(void);                   /* release the snapshot */
+int prim_snapshot_handle(void);                  /* the snapshot's handle, or -1 when there is none */
 uint8_t *prim_asset_ptr(int handle);   /* the pixels of a picture already allocated, or NULL */
 void prim_asset_free(int handle);       /* release a picture (its pixels); a node still showing it is refused until it is sent again */
 int prim_asset_limit(void);

@@ -59,6 +59,12 @@
   "growNow": {
    "opens": "incubator",
    "by": "✓ Hatch now when the price is above `growNowAbove` (at or below it ✓ acts as before)"
+  },
+  "incubate": {
+   "opens": "create",
+   "by": "the check Incubate on Create (shape and nothingRead), once the refusals (busy, no bay, short) have passed",
+   "form": "incubate",
+   "spec": "results/T-20261017-incubator-object/build-spec.md section 6a"
   }
  },
  "growNowAbove": 4,
@@ -144,6 +150,99 @@
      "line": "ready in about {n} min"
     }
    }
+  }
+ },
+ "incubate": {
+  "note": "T-20261016-222, build-spec 6a.2 at 1x on 1024 x 600: the Incubate | Keep shaping form. The stage (0, 40, 1024, 522) is the device ground; the frame's top bar and bottom line stay. Create's props ride on the overlay; the face draws only this composition and keeps Create as a snapshot (prim_snapshot) for the right window. Open and close are the 180 ms stage dither (the host plays it); the pad moves between the two bezels, the check sends confirm on the focused one, back and a room key close it.",
+  "ground": "ground",
+  "bezels": {
+   "incubate": [
+    16,
+    46,
+    490,
+    506
+   ],
+   "keep": [
+    518,
+    46,
+    490,
+    506
+   ],
+   "radius": 10,
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": {
+    "colour": "fog",
+    "inset": 10,
+    "dy": 1
+   }
+  },
+  "header": {
+   "h": 30,
+   "px": 16,
+   "baseline": 20,
+   "x": 12,
+   "colour": "bone",
+   "note": "the spec says Inter 15 medium; the face has Inter 16, 20 and 28 (open question in the T-20261016-222 report)"
+  },
+  "price": {
+   "right": 12,
+   "gap": 12,
+   "px": 16,
+   "colour": "price",
+   "pod": {
+    "size": [
+     16,
+     20
+    ],
+    "top": 5
+   },
+   "note": "icon before figure, then the founder's pod last; the spec's Inter 13 figures and 4 px icon gaps are the kit price run's Inter 16 (open question)"
+  },
+  "windows": {
+   "left": [
+    24,
+    76,
+    474,
+    468
+   ],
+   "right": [
+    526,
+    76,
+    474,
+    468
+   ],
+   "radius": 6,
+   "edge": "void"
+  },
+  "left": {
+   "layers": [
+    116,
+    80
+   ],
+   "foot": [
+    264,
+    416
+   ],
+   "podHeight": 147,
+   "note": "capsule-room-dusk-474x468 at (24, 76); capsule-interior-dusk-296x459 at (116, 80); this founder's pod, 147 tall, its foot on the moss line y 416 at the capsule's axis x 264, relit with its shadow and moss blades; the glass; capsule-shell-dusk-296x459 and capsule-seal-ring-296x459 at (116, 80). The art director's views.json puts the axis at 261; the spec's 264 is used"
+  },
+  "right": {
+   "snapshot": [
+    275,
+    90,
+    474,
+    468
+   ],
+   "note": "Create's stage rect, copied when Create is left (prim_snapshot), shown 1:1 in the right window, with no ring (the host sends Create's focus as none while the panel is open)"
+  },
+  "focus": {
+   "initial": "incubate",
+   "keys": "the pad: left and right between the bezels, up and down nothing"
+  },
+  "events": {
+   "open": "the 180 ms stage dither (16 levels), input held; reduced motion: a cut",
+   "close": "the 180 ms stage dither back, input held; a room key: a cut"
   }
  }
 }

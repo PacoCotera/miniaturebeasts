@@ -7,28 +7,32 @@ import { createPod, founderPicture } from "./create-props.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
 import { mibiReq } from "./home-props.mjs";
+import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
+import { slot } from "./pods-props.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
-export const JUVENILE = [176, 128], FOUNDER = [144, 152];   // the juvenile and the founder as the card shows them (T-20261016-70: each stands at least 80 px tall in the 160 slot; the spec's 104 × 112 stood at 43 %)
+// (the Grow this founder? panel and its JUVENILE and FOUNDER pictures are retired with T-20261016-222)   // the juvenile and the founder as the card shows them (T-20261016-70: each stands at least 80 px tall in the 160 slot; the spec's 104 × 112 stood at 43 %)
 
-// The cards of the Grow this founder? panel, in order (§1.6, §3): the way out is always last. `act` and `room` stay on the host (the face is sent neither).
-export function growCards(m, spec, frame, requests) {
-  const { st, settings } = m, cr = m.ui.create, Sg = spec.strings.grow, p = createPod(st, cr), species = S.speciesOf(p), jump = m.jump === "fork" ? "fork" : "arrival";
-  const req = (r) => { requests.push(r); return r.id; };
-  const cost = S.growCost(st, cr.choices, settings), short = S.canPay(st, cost.e, cost.d, cost.s) ? "" : S.shortIcons(st, cost.e, cost.d, cost.s);
-  const price = S.priceText(cost.e, cost.d, cost.s, 0);   // no minute count here: owner ruling 3 allows one, in the Incubator's context line and nowhere else
-  const fr = frameOf(species), unread = fr.chapters.filter((c) => !p.read.includes(c.id) && !S.shutSealed(c, settings));
-  const surprise = unread.length === 1 ? fill(Sg.cards.grow.line.one, { Chapter: unread[0].name }) : unread.length > 1 ? fill(Sg.cards.grow.line.more, { "n in words": SPELL[unread.length] ?? "many" }) : "";
-  const jid = `mibi-juvenile-${species}-${JUVENILE.join("x")}`, juvenile = req({ kind: "slot", id: jid, master: jid, size: JUVENILE, until: "the founder's juvenile at 176 × 128 (T-20261016-70: cut from the 304 painting; S01 only so far: a species without it draws nothing)" });
-  const founder = req({ kind: "founder", id: founderPicture(p, cr.choices, FOUNDER).id, pod: p.id, choices: cr.choices, species, read: [...p.read], size: FOUNDER });
-  const mark = frame.regions.marks.room.research;
-  const grow = (id, line, room) => ({ id, act: id, room, picture: juvenile, pictureSize: JUVENILE, mark, name: Sg.cards[id].name, cost: price, gain: false, short, line, loss: false, dim: !!short });
-  const cards = jump === "fork"
-    ? [grow("watch", Sg.cards.watch.line, "research"), grow("read", Sg.cards.read.line, "research")]
-    : [grow("grow", surprise, "research")];
-  cards.push({ id: "shape", act: "shape", room: null, picture: founder, pictureSize: FOUNDER, mark: "", name: Sg.cards.shape.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false });
-  return cards;
+
+// The Incubate | Keep shaping panel (T-20261016-222; build-spec 6a): Create's `confirm` state, drawn by the face's panel overlay in its `incubate` form. The two cards are the two bezels; the left window is the sealed capsule with this founder's pod,
+// the right is Create as it stands (the face's snapshot; nothing to send). The price is the founder's: ⚡ ❀ ◆ from the rules, then the pod itself (16 x 20), which becomes the mibi. Props name what: ids, strings and the price; the places are panel.json's `incubate`.
+export function incubateCards() {
+  return [{ id: "incubate", act: "incubate", room: null, dim: false, loss: false, name: "incubate", cost: "", short: "" }, { id: "keep", act: "keep", room: null, dim: false, loss: false, name: "keep", cost: "", short: "" }];
+}
+export function incubateBuild(m, spec, frame, pods, createSpec) {
+  const { st, settings } = m, cr = m.ui.create, requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.incubate, Sg = createSpec.strings.panel, p = createPod(st, cr), species = S.speciesOf(p), signed = "signed (art director, capsule-masters.md)";
+  const cost = S.growCost(st, cr.choices, settings), text = S.priceText(cost.e, cost.d, cost.s, 0), [lw, lh] = P.windows.left.slice(2);
+  const room = slot(req, "capsule-room-dusk-474x468", [0, 0, lw, lh], signed);
+  const sz = [296, 459], L = layers(req, sz, ["interior-dusk", "shell-dusk", "seal-ring"]), glass = req({ kind: "glass", id: `capsule-glass:panel:${sz.join("x")}:v1`, size: sz, mask: L["interior-dusk"], glass: m.glass });
+  const cv = podArea(P.left.podHeight), at = P.left.layers, foot = P.left.foot;
+  const pod = relitPod(req, { species, variant: "pod", light: "dusk", h: P.left.podHeight, area: cv, bg: bgOf({ id: L["interior-dusk"], at }, foot, cv.anchor) });
+  const icon = req({ kind: "podicon", id: `podicon:${species}:16x20`, species, size: P.price.pod.size });
+  const regions = { cards: [{ id: "incubate" }, { id: "keep" }], verbs: { incubate: Sg.incubate, keep: Sg.keep }, price: text === "free" ? "" : text, pod: icon,
+    left: { room, interior: L["interior-dusk"], shell: L["shell-dusk"], seal: L["seal-ring"], glass, layerSize: sz, pod, podSize: cv.size, podAnchor: cv.anchor } };
+  const ui = m.ui.panel, cur = ui.focus === "card.keep" ? "card.keep" : "card.incubate";
+  const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: null, back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
+  return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };
 }
 // The cards of the Return panels (§1.6): Return it (the gain from the rules, the loss "gone for good", the subject on its place's scene) and Keep (the subject as it is). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
 export const WILD = [144, 152], WILD_POD = [88, 112];
@@ -93,7 +97,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ? growCards(m, spec, frame, requests) : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec, frame, requests) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec, frame, requests) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });
@@ -105,6 +109,7 @@ export const titleOf = (m, spec) => {
 export const initialFocus = (cards) => "card." + (cards.find((c) => !c.dim && !c.loss) ?? cards.at(-1)).id;
 
 export function panelBuild(m, spec, frame, pods) {
+  if (m.ui.panel.id === "incubate") return incubateBuild(m, spec, frame, pods, m.create);
   const requests = [], cards = cardsOf(m, spec, frame, requests), Sg = spec.strings, ui = m.ui.panel;
   const cur = cards.some((c) => "card." + c.id === ui.focus) ? ui.focus : initialFocus(cards), card = cards.find((c) => "card." + c.id === cur);
   const strip = ui.id === "dock";   // the strip form: no veil, housing or masters of its own (the code-drawn plate and wells), the cards carry no art

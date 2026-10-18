@@ -1,27 +1,27 @@
 {
- "$comment": "The props of the Incubator (lvgl-switch.md §2.1): what views/incubator-props.mjs gives the face, beside the frame's. Props name what, never where: the state, counts, strings, flags and asset ids; no rectangle, no measure, no layout rule, no colour (the words read those from incubator.json and the palette). From growing on every part is named in every state, whether or not it shows, so the face keeps its nodes (§2.2); the empty state names only the chamber, the base and the plaque. The ready bud's front is registered and never named here; the base master carries the plaque plate and the foot light.",
+ "$comment": "The props of the Incubator, the painted capsule (T-20261016-222; lvgl-switch.md section 2.1): what views/incubator-props.mjs gives the face, beside the frame's. Props name what, never where: the state, counts, strings, flags, asset ids and picture sizes and anchors; no rectangle, no measure, no layout rule, no colour (the words read those from incubator.json and the palette). The capsule's layers are named in every state (the face keeps its nodes); the empty state names no pod, stamp or code. A relit picture is relit:{species}:{variant}:{light}:{w}x{h}:v{recipe} (station/src/relight.mjs).",
  "$defs": {
-  "tab": { "type": "object", "required": ["id", "word", "state", "glint", "emblem"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read"] }, "glint": { "type": "boolean" }, "emblem": { "type": "string" } } },
-  "pic": { "type": "string" }
+  "pic": { "type": "string" },
+  "size": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }
  },
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["empty", "growing", "ready", "hatch"] },
-  "regions": { "type": "object", "required": ["bench", "dome", "nest", "nestFront", "domeFront", "base", "plaque", "plaqueAfter", "lamp"], "additionalProperties": false, "properties": {
-   "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "$ref": "pic" } } } },
-   "rail": { "type": "object", "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": "null" }, "open": { "type": "integer" }, "star": { "type": "string" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
-   "leaves": { "type": "object", "required": ["total", "full", "rows", "empty", "filled"], "additionalProperties": false, "properties": { "total": { "type": "integer", "minimum": 0, "maximum": 40 }, "full": { "type": "integer", "minimum": 0, "maximum": 40 }, "rows": { "type": "integer", "minimum": 0, "maximum": 19 }, "empty": { "$ref": "pic" }, "filled": { "$ref": "pic" } } },
-   "dome": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "$ref": "pic" } } },
-   "nest": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
-   "nestFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
-   "domeFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
-   "bud": { "type": "object", "required": ["stage", "early", "late", "ready", "crack1", "crack2", "shape", "front"], "additionalProperties": false, "properties": { "stage": { "enum": ["early", "late", "ready", "hatch"] }, "early": { "$ref": "pic" }, "late": { "$ref": "pic" }, "ready": { "$ref": "pic" }, "crack1": { "$ref": "pic" }, "crack2": { "$ref": "pic" }, "shape": { "$ref": "pic" }, "front": { "$ref": "pic" } } },
-   "base": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
-   "plaque": { "type": "string" }, "plaqueAfter": { "type": "string" },
-   "lamp": { "type": "object", "required": ["picture", "on", "why"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "on": { "type": "boolean" }, "why": { "enum": ["", "waiting", "offline"] } } },
-   "stamp": { "type": "object", "required": ["size", "N", "cell", "plate", "asset"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "$ref": "pic" } } },
+  "regions": { "type": "object", "required": ["bench", "room", "capsule"], "additionalProperties": false, "properties": {
+   "bench": { "type": "object", "additionalProperties": false, "properties": {} },
+   "room": { "type": "object", "required": ["day", "dusk"], "additionalProperties": false, "properties": { "day": { "$ref": "pic" }, "dusk": { "$ref": "pic" } } },
+   "capsule": { "type": "object", "required": ["interior", "shell", "door", "bar", "seal", "glass", "barPx"], "additionalProperties": false, "properties": {
+     "interior": { "type": "object", "required": ["day", "dusk"], "additionalProperties": false, "properties": { "day": { "$ref": "pic" }, "dusk": { "$ref": "pic" } } },
+     "shell": { "type": "object", "required": ["day", "dusk"], "additionalProperties": false, "properties": { "day": { "$ref": "pic" }, "dusk": { "$ref": "pic" } } },
+     "door": { "$ref": "pic" }, "bar": { "$ref": "pic" }, "seal": { "$ref": "pic" }, "glass": { "$ref": "pic" },
+     "barPx": { "type": "integer", "minimum": 0, "maximum": 158, "description": "the lit width of the bar in px: floor(158 x progress) while growing, 158 when ready and in the hatch" } } },
+   "inside": { "type": "object", "required": ["pod", "opened"], "additionalProperties": false, "properties": {
+     "pod": { "type": "object", "required": ["day", "dusk", "crack1", "crack2"], "additionalProperties": false, "properties": { "day": { "$ref": "pic" }, "dusk": { "$ref": "pic" }, "crack1": { "$ref": "pic" }, "crack2": { "$ref": "pic" } } },
+     "opened": { "$ref": "pic" } } },
+   "stamp": { "type": "object", "required": ["case", "size", "N", "cell", "plate", "asset"], "additionalProperties": false, "properties": { "case": { "type": "object", "required": ["back", "front"], "additionalProperties": false, "properties": { "back": { "$ref": "pic" }, "front": { "$ref": "pic" } } }, "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "$ref": "pic" } } },
    "code": { "type": "string" },
-   "juvenile": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "moving": { "oneOf": [{ "enum": [""] }, { "type": "object", "required": ["set", "close", "shadow"], "additionalProperties": false, "properties": { "set": { "type": "string" }, "close": { "type": "string" }, "shadow": { "type": "string" } } }], "description": "Station M1 §2.5: the hatch's first motion for a juvenile with a moving set" } } },
+   "readyIn": { "type": "string" },
+   "juvenile": { "type": "object", "required": ["picture", "size", "anchor"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" }, "size": { "$ref": "size" }, "anchor": { "$ref": "size" } } },
    "ribbon": { "type": "string" }
   } },
   "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "const": "room" }, "targets": { "type": "array", "maxItems": 0 } } }

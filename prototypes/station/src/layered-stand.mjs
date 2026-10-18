@@ -48,7 +48,7 @@ export const standPictureId = (stand, looks, light = "day") => { const { token }
 
 // Scaling down (Lanczos 3, premultiplied alpha, separable): the canvas fitted into w×h by the one factor that fits, bottom-centred, transparent around
 const lanczos = (x) => { x = Math.abs(x); if (x < 1e-9) return 1; if (x >= 3) return 0; const px = Math.PI * x; return (3 * Math.sin(px) * Math.sin(px / 3)) / (px * px); };
-function taps(n, m) {   // for each of m output samples, its source indexes and weights over n source samples
+export function taps(n, m) {   // for each of m output samples, its source indexes and weights over n source samples
   const sc = n / m, f = Math.max(1, sc), out = [];
   for (let o = 0; o < m; o++) {
     const c = (o + 0.5) * sc, lo = Math.max(0, Math.floor(c - 3 * f)), hi = Math.min(n - 1, Math.ceil(c + 3 * f)), idx = [], wt = []; let sum = 0;
@@ -89,4 +89,18 @@ export function composeStand(stand, looks) {
   }
   const px = fitDown(out, cw, ch, fw, fh, w, h);
   return { w, h, rgba: () => px };
+}
+
+// The picture resampled to nw x nh (Lanczos 3, premultiplied alpha, either way): the logic process's one resampler, for the pictures that are rendered at a size the art was not cut at (T-20261016-222: the capsule's pod). Returns straight-alpha RGBA.
+export function resample(src, sw, sh, nw, nh) {
+  if (nw === sw && nh === sh) return new Uint8ClampedArray(src);
+  const tx = taps(sw, nw), ty = taps(sh, nh), mid = new Float32Array(nw * sh * 4);
+  for (let y = 0; y < sh; y++) for (let x = 0; x < nw; x++) { let r = 0, g = 0, b = 0, a = 0; const t = tx[x];
+    for (let k = 0; k < t.idx.length; k++) { const i = (y * sw + t.idx[k]) * 4, al = src[i + 3] / 255, wgt = t.wt[k]; r += src[i] * al * wgt; g += src[i + 1] * al * wgt; b += src[i + 2] * al * wgt; a += al * wgt; }
+    const o = (y * nw + x) * 4; mid[o] = r; mid[o + 1] = g; mid[o + 2] = b; mid[o + 3] = a; }
+  const out = new Uint8ClampedArray(nw * nh * 4);
+  for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) { let r = 0, g = 0, b = 0, a = 0; const t = ty[y];
+    for (let k = 0; k < t.idx.length; k++) { const i = (t.idx[k] * nw + x) * 4, wgt = t.wt[k]; r += mid[i] * wgt; g += mid[i + 1] * wgt; b += mid[i + 2] * wgt; a += mid[i + 3] * wgt; }
+    const o = (y * nw + x) * 4; a = Math.min(1, Math.max(0, a)); if (a > 0) { out[o] = r / a; out[o + 1] = g / a; out[o + 2] = b / a; } out[o + 3] = Math.round(a * 255); }
+  return out;
 }

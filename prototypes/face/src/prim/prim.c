@@ -32,7 +32,8 @@ static lv_obj_t *g_nursery;
 static char g_text[1024];
 static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
 typedef struct { int w, h, layer, ring; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
-static asset_t g_a[MAX_ASSET + MAX_SRC];
+#define SNAP_SLOT (MAX_ASSET + MAX_SRC)   /* the one face-owned picture a snapshot fills (prim_snapshot), after the sources */
+static asset_t g_a[MAX_ASSET + MAX_SRC + 1];
 /* the tag of the nodes now arriving, and the clip they are inside */
 static int g_layer = LAYER_CHROME, g_region;
 static char g_reg[MAX_REGION][48];
@@ -61,7 +62,7 @@ int prim_painted_at(int x, int y) {
   for (int i = 0; i < g_n; i++) { const node_t *n = &g_o[i]; if (n->seen && n->kind == FN_SPRITE && n->parent == 0 && n->layer == LAYER_PAINTED && n->w > 0 && n->h > 0 && x >= n->x && y >= n->y && x < n->x + n->w && y < n->y + n->h) return 1; }
   return 0;
 }
-int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
+int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC + 1; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
 static const lv_font_t *font_of(int px) { return px == 16 ? &face_inter_16 : px == 20 ? &face_inter_20 : px == 28 ? &face_inter_28 : NULL; }
 int prim_measure(int px) {
   const lv_font_t *f = font_of(px); if (!f) return -1;
@@ -140,6 +141,15 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
       if (ring_mask(mask, bw, bh, width, radius, ell) < 0) { free(mask); return -1; }
       for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
+      free(mask);
+    } else if (nl == 7 && strncmp(name, "ringOut", 7) == 0 && tok[i].size == 9) {   /* ["ringOut", "round", x, y, w, h, width, radius, colour]: the same mask as ring, drawn where the ring's whole (a width of half the box or more) is NOT: a rounded box's corners outside it (the Incubate panel's windows, whose pictures are square) */
+      if (!COL(7)) return -1;
+      if (tok[j].type != JSMN_STRING || tok[j].end - tok[j].start != 5 || strncmp(ops + tok[j].start, "round", 5) != 0) return -1;
+      int x = A(1), y = A(2), bw = A(3), bh = A(4), width = A(5), radius = A(6);
+      if (g_bad || width > 4096 || radius > 4096 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, width, radius, 0) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (!mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
     } else if (nl == 7 && strncmp(name, "tabRing", 7) == 0 && tok[i].size == 13) {  g_ringdrawn = 1;   /* ["tabRing", x, y, body, width, slant, outside, top, slantTo, bottom, radius, tabTop, colour] */
       if (!COL(11)) return -1;
@@ -232,6 +242,19 @@ int prim_source(const char *ops, int w, int h) {
   if (prim_compose(s->px, w, h, ops) < 0) { free(s->px); s->px = NULL; return -1; }
   s->w = w; s->h = h; s->src_key = key; s->ring = g_ringdrawn; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return free_slot;
 }
+/* The framebuffer rect (x, y, w, h) as the screen's objects draw it now, copied into the face's one snapshot picture (lv_snapshot): the Incubate panel's right window shows Create as it stood when it was left. Returns the picture's handle, or -1 (a rect outside the screen, no memory). A later call replaces the picture; prim_snapshot_free releases it. */
+int prim_snapshot(int x, int y, int w, int h) {
+  if (x < 0 || y < 0 || w <= 0 || h <= 0 || x + w > 1024 || y + h > 600) return -1;
+  lv_draw_buf_t *b = lv_snapshot_take(lv_screen_active(), LV_COLOR_FORMAT_ARGB8888); if (!b) return -1;
+  asset_t *s = &g_a[SNAP_SLOT]; free(s->px); s->px = (uint8_t *)calloc((size_t)w * h, 4);
+  if (!s->px) { lv_draw_buf_destroy(b); return -1; }
+  const uint8_t *src = (const uint8_t *)b->data; const uint32_t stride = b->header.stride;
+  for (int yy = 0; yy < h; yy++) memcpy(s->px + (size_t)yy * w * 4, src + (size_t)(y + yy) * stride + (size_t)x * 4, (size_t)w * 4);
+  lv_draw_buf_destroy(b);
+  s->w = w; s->h = h; s->layer = LAYER_PAINTED; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return SNAP_SLOT;
+}
+void prim_snapshot_free(void) { asset_t *s = &g_a[SNAP_SLOT]; free(s->px); memset(s, 0, sizeof *s); }
+int prim_snapshot_handle(void) { return g_a[SNAP_SLOT].px ? SNAP_SLOT : -1; }
 uint8_t *prim_asset_ptr(int handle) { return handle >= 0 && handle < MAX_ASSET ? g_a[handle].px : NULL; }
 /* the nine parts of a picture as views into its own pixels (no copy): the corners at the insets l, t, r, b, and the edges and the middle as one tile each (the first `tile` px
    of the strip, or all of it when tile is 0), repeated by the objects over the target */
@@ -310,7 +333,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (w < 0 || h < 0) REFUSE();   /* a size is never negative: a node with no size is a slot kept for a step that has not come (0 by 0) */
   if (kind == FN_TEXT && !font_of(a)) REFUSE();
   int sx = (int)(rgb >> 16), sy = (int)(rgb & 0xffff);
-  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET + MAX_SRC + 1 || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
   if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
   if (kind == FN_COMPOSED && (w <= 0 || h <= 0 || (long)w * h > 1024L * 600)) REFUSE();

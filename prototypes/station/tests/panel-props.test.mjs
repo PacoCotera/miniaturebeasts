@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { panelBuild, growCards, initialFocus } from "../src/views/panel-props.mjs";
+import { panelBuild, initialFocus, growNowCards } from "../src/views/panel-props.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openPanel } from "../src/intents/panel.mjs";
 import { createMeasure } from "../../ui/specs/measure.mjs";
@@ -17,9 +17,8 @@ import { validate } from "./habitat-props.test.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-// The Grow this founder? panel was superseded (T-20261016-223; T-222 brings Incubate | Keep shaping): its strings are gone from panel.json and Create opens no panel. The frame and its code stay, so they are tested here on the retired strings kept as a fixture.
-const GROW = JSON.parse(readFileSync(path.resolve(here, "fixtures/grow-panel.json"), "utf8")), withGrow = (sp) => ({ ...sp, panels: { ...sp.panels, grow: GROW.panel }, strings: { ...sp.strings, grow: GROW.strings } });
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = withGrow(J("panel.json")), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json");
+// The Grow this founder? panel (T-195 r2 sections 2 and 3: Grow it, Grow and watch, Grow keep reading, the arrival and fork jump modes) is retired with its fixture (T-20261016-222): Create's Incubate opens the Incubate | Keep shaping panel (build-spec 6a).
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = J("panel.json"), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json"), incSchema = J("panel.incubate.props.json"), incubatorSpec = J("incubator.json");
 const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, P = frameSpec.regions.panel;
 const words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
@@ -41,80 +40,64 @@ function open(o = {}) {
 }
 const view = (h) => panelBuild({ st: h.st, settings: h.settings, ui: h.ui, jump: h.settings.jump }, panelSpec, frameSpec, podsSpec);
 
-test("the geometry and the width limits: a card is 776, 380 or 248 wide for one, two or three; a name, line and cost fit the card less 32, measured, in the budgets", () => {
+test("the geometry and the width limits: a card is 776, 380 or 248 wide for one, two or three; a name, line and cost fit the card less 32, measured, in the budgets (the two cards of the Hatch now? panel)", () => {
   const w = (n) => (P.cards.width - P.cards.gap * (n - 1)) / n;
   assert.deepEqual([1, 2, 3].map(w), [776, 380, 248]); assert.deepEqual([1, 2, 3].map((n) => P.limits[n].card), [776, 380, 248]); assert.deepEqual([1, 2, 3].map((n) => P.limits[n].text), [744, 348, 216]);
   assert.deepEqual([1, 2, 3].map((n) => P.limits[n].picture), [[744, 160], [348, 160], [216, 160]]);
   assert.deepEqual([P.rect, P.title.rect, P.cards.y, P.cards.h, P.card.picture.floor], [[92, 80, 840, 440], [124, 96, 776, 36], 152, 288, 168]);
-  const S0 = panelSpec.strings.grow;
-  assert.ok(words(S0.title) <= 4 && measure(S0.title, 28) <= P.title.rect[2], S0.title);
-  for (const [n, jump] of [[2, "arrival"], [3, "fork"]]) {
-    const { h } = open({ jump }), cards = growCards({ st: h.st, settings: h.settings, ui: h.ui, jump }, panelSpec, frameSpec, []), limit = P.limits[n].text;
-    assert.equal(cards.length, n);
-    for (const c of cards) {
-      assert.ok(words(c.name) <= 3 && measure(c.name, 20) <= limit, `${c.name} (${measure(c.name, 20)} px of ${limit})`);
-      if (c.line) assert.ok(words(c.line) <= 6 && measure(c.line, 16) <= Math.min(limit, 208) && !/\d/.test(c.line), `${c.line} (${measure(c.line, 16)} px): ≤ 6 words, never a figure, and inside the bottom line's subject zone (208)`);
-      assert.ok((c.cost.match(/[⚡❀◆⧗]/g) ?? []).length <= P.card.costs.groups && !/⧗/.test(c.cost), c.cost + ": at most four groups, no minute count (owner ruling 3)");
-      assert.ok(c.pictureSize[0] <= P.limits[n].picture[0] && c.pictureSize[1] <= P.limits[n].picture[1], "the picture fits its slot, never scaled");
-    }
+  const st = world(), p = (S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0), st.tray[0]); S.skipIdentify(st, p); assert.ok(S.grow(st, p, {}, settings, T0).ok);
+  const cards = growNowCards({ st, settings, ui: {}, now: T0 }, panelSpec, frameSpec, []), limit = P.limits[2].text; assert.equal(cards.length, 2);
+  for (const c of cards) {
+    assert.ok(words(c.name) <= 3 && measure(c.name, 20) <= limit, `${c.name} (${measure(c.name, 20)} px of ${limit})`);
+    if (c.line) assert.ok(words(c.line) <= 6 && measure(c.line, 16) <= Math.min(limit, 208), `${c.line} (${measure(c.line, 16)} px)`);
+    assert.ok((c.cost.match(/[⚡❀◆⧗]/g) ?? []).length <= P.card.costs.groups, c.cost + ": at most four groups"); assert.ok(c.pictureSize[0] <= P.limits[2].picture[0] && c.pictureSize[1] <= P.limits[2].picture[1], "the picture fits its slot, never scaled");
   }
-  // the one-chapter line names the chapter: the widest name of every species fits the subject zone
-  let widest = 0; for (const id of ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16"]) for (const c of frameOf(id)?.chapters ?? []) widest = Math.max(widest, measure(S0.cards.grow.line.one.replace("{Chapter}", c.name), 16));
-  assert.ok(widest <= 208, widest + " px");
   assert.ok(measure("to " + panelSpec.strings.rooms.research, 16) <= 208 && measure(panelSpec.strings.arrival.text.replace("{Species}", "Untuva"), 16) <= P.rect[2]);
 });
-test("the props validate against panel.props.json in both modes, name no rectangle, and fit the budget", () => {
-  for (const jump of ["arrival", "fork"]) for (const short of [false, true]) {
-    const { h } = open({ jump, short }); h.ui.panel = { screen: "create", id: "grow", focus: "" }; const v = view(h), bad = validate(v.overlay, schema, schema);
-    assert.deepEqual(bad, [], `${jump} ${short}: ${bad.slice(0, 3).join("; ")}`);
-    const json = JSON.stringify(v.overlay); assert.ok(!/"(x|y|w|h|rect|at|size|box|pitch)"\s*:/.test(json), "props name what, never where"); assert.ok(json.length < 4096, json.length + " bytes");
-    assert.deepEqual(v.overlay.focus.targets.map((t) => t.id), v.overlay.regions.cards.map((c) => "card." + c.id)); assert.equal(v.overlay.regions.cards.at(-1).id, "shape", "the way out is last");
-  }
-});
-test("focus opens on the first card that is neither dimmed nor a loss, else the way out; a dimmed card can be focused and read; the bottom line is the focused card's", () => {
-  const { h } = open({ jump: "fork" }); h.ui.panel = { screen: "create", id: "grow", focus: "" }; let v = view(h);
-  assert.equal(v.overlay.focus.cur, "card.watch"); assert.deepEqual([v.line.ok, v.line.subject, v.line.back, v.line.price], ["Grow and watch", "watch it in the Incubator", "Back", "⚡ 2 ❀ 4"]);
-  h.ui.panel.focus = "card.shape"; v = view(h); assert.deepEqual([v.line.ok, v.line.subject, v.line.back, "price" in v.line], ["Keep shaping", "", "Back", false], "the way out: no cost, no line, no destination");
-  const s = open({ short: true }); s.h.ui.panel = { screen: "create", id: "grow", focus: "" }; v = view(s.h);
-  assert.equal(v.overlay.regions.cards[0].dim, true); assert.equal(v.overlay.focus.cur, "card.shape", "every card but the way out is dimmed: the way out");
-  s.h.ui.panel.focus = "card.grow"; v = view(s.h); assert.deepEqual([v.line.ok, v.line.dim, typeof v.line.short, v.line.need], ["Grow it", true, "string", "needs more ❀"], "a dimmed card can be focused and read: its short figure, its notice");
+test("focus opens on the first card that is neither dimmed nor a loss, else the way out", () => {
   assert.equal(initialFocus([{ id: "a", dim: true, loss: false }, { id: "b", dim: false, loss: true }, { id: "c", dim: false, loss: false }, { id: "d", dim: false, loss: false }]), "card.c");
   assert.equal(initialFocus([{ id: "a", dim: false, loss: true }, { id: "b", dim: true, loss: false }]), "card.b", "all dimmed or a loss: the way out");
-  const dest = panelBuild({ st: h.st, settings: h.settings, ui: { ...h.ui, panel: { screen: "create", id: "grow", focus: "card.grow" } }, jump: "arrival" }, panelSpec, frameSpec, podsSpec);
-  assert.equal(dest.line.subject, "chapters stay a surprise", "two chapters unread: the line is the card's"); assert.equal(dest.overlay.regions.cards[0].mark, frameSpec.regions.marks.room.research, "the destination mark is the title bar's");
 });
 
-test("the retired Grow this founder? panel (a fixture; Create opens none): it opens by openPanel and spends nothing; ←, a room key and a dimmed card spend nothing and the screen is as before", () => {
-  const { st, h } = open(); const e0 = [st.e, st.d, st.s];
-  openPanel(h, "create", "grow"); assert.equal(h.ui.panel.id, "grow"); assert.equal(h.ui.panel.focus, "card.grow"); assert.deepEqual([st.e, st.d, st.s], e0); assert.equal(st.bud, null);
-  dispatch(h, { screen: "panel", target: "card.grow", verb: "back" }); assert.equal(h.ui.panel, null); assert.ok(h.ui.create && !h.ui.create.grown, "Create as before"); assert.deepEqual([st.e, st.d, st.s], e0);
-  { const r = open(); openPanel(r.h, "create", "grow"); dispatch(r.h, { screen: "panel", target: "card.grow", verb: "room:research" }); assert.equal(r.h.ui.panel, null, "a room key closes it"); assert.equal(r.st.bud, null); }
-  openPanel(h, "create", "grow"); dispatch(h, { screen: "panel", target: "card.shape", verb: "confirm" }); assert.equal(h.ui.panel, null, "Keep shaping closes it"); assert.equal(st.bud, null); assert.equal(h.saved, 0);
-  const s = open({ short: true }); s.h.ui.panel = { screen: "create", id: "grow", focus: "card.grow" };
-  dispatch(s.h, { screen: "panel", target: "card.grow", verb: "confirm" }); assert.ok(s.h.ui.panel, "a dimmed card does nothing"); assert.deepEqual(s.h.said.map((x) => x[0]), ["needs more ❀"]); assert.equal(s.st.bud, null);
+// ---- the Incubate | Keep shaping panel (T-20261016-222; build-spec 6a): Create's `confirm` state ----
+const incView = (h, focus = "card.incubate") => { h.ui.panel = { screen: "create", id: "incubate", focus }; return panelBuild({ st: h.st, settings: h.settings, ui: h.ui, jump: h.settings.jump, create: createSpec, glass: incubatorSpec.glass }, panelSpec, frameSpec, podsSpec); };
+test("the Incubate panel's geometry (panel.json incubate): two bezels 490 x 506 at y 46 with a 12 px gap, each window inside its bezel (8 px in, under a 30 px header), the verbs and Incubate's price fit the header", () => {
+  const I = panelSpec.incubate, [l, r] = [I.bezels.incubate, I.bezels.keep];
+  assert.deepEqual([l, r], [[16, 46, 490, 506], [518, 46, 490, 506]]); assert.equal(r[0] - (l[0] + l[2]), 12);
+  assert.deepEqual([I.windows.left, I.windows.right], [[24, 76, 474, 468], [526, 76, 474, 468]]); for (const [b, w] of [[l, I.windows.left], [r, I.windows.right]]) assert.deepEqual([w[0] - b[0], w[1] - b[1], b[2] - w[2], b[1] + b[3] - (w[1] + w[3])], [8, 30, 16, 8], "8 in, 30 under the top, 8 at the foot");
+  assert.deepEqual([I.header.h, I.header.baseline, I.header.x, I.price.right, I.price.pod.size, I.price.pod.top, I.price.gap, I.bezels.radius, I.windows.radius], [30, 20, 12, 12, [16, 20], 5, 12, 10, 6]);
+  const { h } = open(); const v = incView(h), Sg = createSpec.strings.panel;
+  assert.deepEqual([v.overlay.regions.verbs.incubate, v.overlay.regions.verbs.keep, Sg.back], ["Incubate", "Keep shaping", "Back"]);
+  const need = measure("Incubate", 16) + 12 + measure(v.overlay.regions.price.replace(/[⚡❀◆]/g, "xx"), 16) + 16 + 12 + 12; assert.ok(need <= 490, `the left header needs about ${need} of 490`);
+  assert.deepEqual(I.left.layers, [116, 80]); assert.deepEqual(I.right.snapshot, [275, 90, 474, 468], "Create's stage rect fills the right window");
 });
-test("the arrival mode end to end: ✓, ✓ Grow it, the event, the jump to the Incubator with the 2000 ms plate; ← returns to Pods, this pod's place, until another key; then ← is Home", () => {
-  const { st, h, p } = open({ more: 2 }), place = st.tray.indexOf(p); assert.equal(place, 0);
-  openPanel(h, "create", "grow"); dispatch(h, { screen: "panel", target: "card.grow", verb: "confirm" });
-  assert.ok(st.bud && !st.tray.includes(p)); assert.deepEqual(h.played.map((e) => [e.kind, e.ms]), [["grow", 900]]); assert.ok(st.log.some((l) => l.includes("Grow this founder?") && l.includes("Grow it")), "the card pressed is in the log");
-  h.timers[0].fn(); assert.equal(h.went.at(-1), "incubator");
-  assert.deepEqual(h.said, [["Incubator: your Loika bud is growing", 2000]]); assert.ok(h.ui.arrival);
-  INTENTS.incubator.intent(h, "room", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.arrival], ["pods", "collection", "place.0", null], "← to Pods, this pod's place");
-  h.ui.screen = "incubator"; INTENTS.incubator.intent(h, "room", "back"); assert.equal(h.went.at(-1), "home", "after that ← is Home as now");
+test("the Incubate panel's props validate against panel.incubate.props.json, name no rectangle, fit the budget; the price is the rules' (⚡ ❀ ◆, a figure of 0 left out), the pod is the last item, the right window sends nothing", () => {
+  for (const short of [false]) {
+    const { st, h, p } = open({ short }); const v = incView(h), bad = validate(v.overlay, incSchema, incSchema); assert.deepEqual(bad, [], bad.slice(0, 3).join("; "));
+    const json = JSON.stringify(v.overlay); assert.ok(!/"(x|y|w|h|rect|at|box|pitch)"\s*:/.test(json), "props name what, never where"); assert.ok(json.length < 4096, json.length + " bytes");
+    const c = S.growCost(st, {}, settings); assert.equal(v.overlay.regions.price, S.priceText(c.e, c.d, c.s, 0) === "free" ? "" : S.priceText(c.e, c.d, c.s, 0)); assert.ok(!/⧗/.test(v.overlay.regions.price), "no minutes on Create: the time belongs to the Incubator alone");
+    assert.match(v.overlay.regions.pod, /^podicon:S01:16x20$/); assert.deepEqual(v.overlay.focus.targets.map((t) => t.id), ["card.incubate", "card.keep"]); assert.equal(v.overlay.regions.right, undefined);
+    assert.ok(v.requests.some((r) => r.kind === "relit" && /^relit:S01:pod:dusk:\d+x\d+:v\d+$/.test(r.id)), "this founder's pod, relit at dusk"); assert.ok(v.requests.some((r) => r.kind === "podicon" && r.size.join("x") === "16x20"));
+    assert.equal(p.id, h.ui.create.podId);
+  }
 });
-test("the fork mode end to end: Grow and watch lands in the Incubator with no plate; Grow, keep reading lands in Pods' collection with the ring on the next pod; both pay the same and play the same event", () => {
-  const a = open({ jump: "fork", more: 2 }); openPanel(a.h, "create", "grow"); assert.deepEqual(view(a.h).overlay.regions.cards.map((c) => c.id), ["watch", "read", "shape"]);
-  dispatch(a.h, { screen: "panel", target: "card.watch", verb: "confirm" }); a.h.timers[0].fn();
-  assert.deepEqual([a.h.went.at(-1), a.h.said.length, a.h.ui.arrival], ["incubator", 0, null], "no arrival plate in the fork"); assert.ok(a.st.log.some((l) => l.includes("Grow and watch")));
-  const b = open({ jump: "fork", more: 2 }); openPanel(b.h, "create", "grow"); b.h.ui.panel.focus = "card.read"; dispatch(b.h, { screen: "panel", target: "card.read", verb: "confirm" }); b.h.timers[0].fn();
-  assert.deepEqual([b.h.went.at(-1), b.h.ui.pods.view, b.h.ui.pods.focus.cur, b.h.ui.pods.cur], ["pods", "collection", "place.0", b.st.tray[0].id], "the next pod: the one now at the grown pod's place");
-  assert.deepEqual([a.st.e, a.st.d, a.st.s], [b.st.e, b.st.d, b.st.s], "the same spend"); assert.deepEqual(a.h.played.map((e) => [e.kind, e.ms, e.hold]), b.h.played.map((e) => [e.kind, e.ms, e.hold]), "the same event");
-  assert.ok(b.st.log.some((l) => l.includes("Grow, keep reading")));
+test("focus opens on Incubate; the bottom line is the verb of the focused bezel with no price, no subject and no notice, and Back", () => {
+  const { h } = open(); let v = incView(h); assert.equal(v.overlay.focus.cur, "card.incubate"); assert.deepEqual([v.line.ok, v.line.subject, v.line.need, v.line.back, "price" in v.line], ["Incubate", "", null, "Back", false]);
+  v = incView(h, "card.keep"); assert.equal(v.overlay.focus.cur, "card.keep"); assert.deepEqual([v.line.ok, v.line.back, "price" in v.line], ["Keep shaping", "Back", false]);
 });
-test("reduced motion: the card's Grow jumps on the frame of ✓; the panel and the jump flag read ?jump= only for arrival and fork", () => {
-  const { st, h } = open(); h.moving = false; openPanel(h, "create", "grow"); dispatch(h, { screen: "panel", target: "card.grow", verb: "confirm" });
-  assert.deepEqual([h.went.at(-1), h.played.length, h.timers.length, !!st.bud], ["incubator", 0, 0, true]);
-  assert.equal(S.DEFAULT_SETTINGS.jump, "arrival");
+test("the Incubate panel opens from Create's ✓ and spends nothing; ←, Keep shaping and a room key close it with nothing spent and Create as before; only ✓ Incubate pays", () => {
+  const { st, h } = open(); const e0 = [st.e, st.d, st.s]; h.specs.incubator = incubatorSpec; h.ui.screen = "create";
+  INTENTS.create.intent(h, "roll", "confirm"); assert.deepEqual([h.ui.panel.id, h.ui.panel.focus, st.bud], ["incubate", "card.incubate", null]); assert.deepEqual([st.e, st.d, st.s], e0);
+  dispatch(h, { screen: "panel", target: "card.incubate", verb: "back" }); assert.equal(h.ui.panel, null); assert.ok(h.ui.create && !h.ui.create.grown, "Create as before"); assert.deepEqual([st.e, st.d, st.s], e0);
+  INTENTS.create.intent(h, "roll", "confirm"); dispatch(h, { screen: "panel", target: "card.keep", verb: "confirm" }); assert.equal(h.ui.panel, null, "Keep shaping closes it"); assert.equal(st.bud, null); assert.equal(h.saved, 0);
+  assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.ms, e.hold]), Array(4).fill(["dither", "stage", 180, 180]), "open, back, open, Keep shaping: the dither each way");
+  { const r = open(); r.h.ui.screen = "create"; INTENTS.create.intent(r.h, "roll", "confirm"); dispatch(r.h, { screen: "create", target: "roll", verb: "room:research" }); assert.equal(r.h.ui.panel, null, "a room key closes it as a cut"); assert.equal(r.st.bud, null); }
+  INTENTS.create.intent(h, "roll", "confirm"); const log0 = st.log.length; dispatch(h, { screen: "panel", target: "card.incubate", verb: "confirm" }); assert.ok(st.bud && h.ui.create.grown, "✓ Incubate pays and the grow event plays"); assert.ok(st.log.slice(log0).some((l) => /Incubated /.test(l)), "the log line is Create's grow, unchanged"); assert.ok(st.log.some((l) => l.includes("Incubate | Keep shaping")), "the card pressed is in the log");
+});
+test("Incubate is refused before the panel opens when a bud is already growing, no bay is free or a material is short: no panel, and a short ✓ says what is short; if the state changes while the panel stands, ✓ Incubate closes it and Create shows its plate, nothing spent", () => {
+  { const { st, h } = open(); h.specs.incubator = incubatorSpec; S.grow(st, st.tray[0], {}, settings, T0); }
+  { const { st, h } = open({ short: true }); h.specs.incubator = incubatorSpec; st.e = 0; INTENTS.create.intent(h, "roll", "confirm"); assert.equal(h.ui.panel, null, "short: no panel"); assert.equal(h.said.length, 1); }
+  { const { st, h } = open(); h.specs.incubator = incubatorSpec; INTENTS.create.intent(h, "roll", "confirm"); assert.ok(h.ui.panel); st.e = 0; st.d = 0; st.s = 0; const s0 = [st.e, st.d, st.s]; dispatch(h, { screen: "panel", target: "card.incubate", verb: "confirm" }); assert.equal(h.ui.panel, null); assert.equal(st.bud, null); assert.equal(h.said.length, 1, "Create's refusal plate"); assert.deepEqual([st.e, st.d, st.s], s0, "nothing spent"); }
 });
 
 // ---- the Return panels (T-20261016-51; spec §1.6): Return it ❀ +2 (a mibi) or ❀ +1 (a pod) from the rules, "gone for good" on the loss card, the ring on Keep, ← and Keep spend nothing ----

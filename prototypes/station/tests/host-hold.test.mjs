@@ -118,18 +118,27 @@ test("the Dock key from Idle with crates in the bay plays the arrival over Home:
   onFaceMessage(h, { t: "intent", seq: 1, screen: "panel", target: "card.later", verb: "back" }); assert.deepEqual([UI.screen, UI.cargo.state], ["home", "bay"]);
 });
 
-test("Create's Grow on the host: the grow event holds 1080 ms and sends no hold of its own on a cut, the jump to the Incubator is the timer's at 900 ms, a room key pressed in the hold is kept and acts at 1080; with reduced motion the jump is on ✓'s frame and nothing is held", () => {
+test("Create's Incubate on the host: ✓ opens the Incubate | Keep shaping panel with the 180 ms stage dither held (a cut with reduced motion); ✓ Incubate after it plays the grow event (holds 1080 ms), the jump to the Incubator is the timer's at 900 ms and plays the incubate moment, a room key pressed in the hold is kept and acts at 1080; with reduced motion the jump is on ✓'s frame and nothing is held", () => {
   const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, mk = (motion) => {
     const r = rig({ motion }); G.st.e = 99; G.st.d = 99; G.st.s = 99; G.st.firstMibi = false; S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), settings, 1000); const p = G.st.tray[0]; S.skipIdentify(G.st, p);
     UI.screen = "create"; UI.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; return r;
   };
-  { const { h, sent, at } = mk(true); at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.equal(UI.panel, null, "Incubate opens no panel until T-222");
-    assert.deepEqual(sent.filter((m) => m.t === "event").map((m) => [m.kind, m.target, m.ms, m.hold]), [["grow", "pod", 900, 1080]]); assert.equal(h.holding(), true);
-    onFaceMessage(h, { t: "intent", seq: 1, screen: "create", target: "roll", verb: "room:research" }); assert.equal(h.pendingRoom, "research", "the room key waits");
-    at(500); assert.deepEqual([UI.screen, h.holding()], ["create", true]); at(899); assert.equal(UI.screen, "create");
-    at(900); assert.deepEqual([UI.screen, UI.create, h.holding()], ["incubator", null, true], "the jump at 900 ms, input still held");
-    at(1079); assert.equal(UI.screen, "incubator"); at(1080); assert.deepEqual([UI.screen, h.pendingRoom], ["pods", null], "the kept room key acts when the hold ends"); }
-  { const { h, sent, at } = mk(false); at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.deepEqual([UI.screen, h.holding(), sent.filter((m) => m.kind === "grow").length], ["incubator", false, 0], "a cut: the jump is on the frame of ✓, nothing is sent or held"); }
+  { const { h, sent, at } = mk(true); at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.deepEqual([UI.panel.screen, UI.panel.id, UI.panel.focus], ["create", "incubate", "card.incubate"], "✓ opens the panel");
+    assert.deepEqual(sent.filter((m) => m.t === "event").map((m) => [m.kind, m.target, m.ms, m.hold]), [["dither", "stage", 180, 180]], "the dither in, input held"); assert.equal(h.holding(), true);
+    at(100); onFaceMessage(h, { t: "intent", seq: 1, screen: "panel", target: "card.incubate", verb: "confirm" }); assert.equal(G.st.bud, null, "✓ Incubate is not taken until the dither in has ended (a double press never passes through the panel)"); assert.ok(UI.panel);
+    at(180); assert.equal(h.holding(), false); onFaceMessage(h, { t: "intent", seq: 2, screen: "panel", target: "card.incubate", verb: "confirm" }); assert.equal(UI.panel, null, "the panel goes as a cut");
+    assert.ok(G.st.bud, "the rule paid and the bud started");
+    assert.deepEqual(sent.filter((m) => m.t === "event" && m.kind !== "dither").map((m) => [m.kind, m.target, m.ms, m.hold]), [["grow", "pod", 900, 1080]]); assert.equal(h.holding(), true);
+    onFaceMessage(h, { t: "intent", seq: 3, screen: "create", target: "roll", verb: "room:research" }); assert.equal(h.pendingRoom, "research", "the room key waits");
+    at(180 + 500); assert.deepEqual([UI.screen, h.holding()], ["create", true]); at(180 + 899); assert.equal(UI.screen, "create");
+    at(180 + 900); assert.deepEqual([UI.screen, UI.create, h.holding()], ["incubator", null, true], "the jump at 900 ms, input still held"); assert.deepEqual(sent.findLast((m) => m.kind === "incubate").hold, 1380, "the incubate moment is played on arrival");
+    at(180 + 1080); assert.deepEqual([UI.screen, h.holding()], ["incubator", true], "the grow event's hold is over but the incubate moment holds on (1380 ms from the arrival)"); at(180 + 900 + 1379); assert.equal(UI.screen, "incubator"); at(180 + 900 + 1380); assert.deepEqual([UI.screen, h.pendingRoom], ["pods", null], "the kept room key acts when the last hold ends"); }
+  { const { h, sent, at } = mk(true); at(0); INTENTS.create.intent(h, "roll", "confirm"); at(180); onFaceMessage(h, { t: "intent", seq: 1, screen: "panel", target: "card.keep", verb: "confirm" });
+    assert.equal(UI.panel, null); assert.equal(G.st.bud, null, "Keep shaping spends nothing"); assert.deepEqual(sent.findLast((m) => m.t === "event"), { t: "event", kind: "dither", target: "stage", ms: 180, hold: 180, from: 16, to: 0 }.hold ? sent.findLast((m) => m.t === "event") : null, "the dither back"); assert.equal(h.holding(), true);
+    at(360); INTENTS.create.intent(h, "roll", "confirm"); assert.ok(UI.panel, "and it opens again"); onFaceMessage(h, { t: "intent", seq: 2, screen: "panel", target: "card.incubate", verb: "back" }); }
+  { const { h, sent, at } = mk(false); at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.ok(UI.panel); assert.equal(h.holding(), false, "a cut: nothing is held"); assert.equal(sent.filter((m) => m.t === "event").length, 0);
+    onFaceMessage(h, { t: "intent", seq: 1, screen: "panel", target: "card.incubate", verb: "confirm" }); assert.deepEqual([UI.screen, h.holding(), sent.filter((m) => m.kind === "grow").length], ["incubator", false, 0], "a cut: the jump is on the frame of ✓, nothing is sent or held"); }
+  { const { h, at } = mk(true); G.st.e = 0; G.st.d = 0; G.st.s = 0; at(0); INTENTS.create.intent(h, "roll", "confirm"); assert.equal(UI.panel, null, "short of a material: refused as before, the panel does not open"); }
 });
 
 // ---- the meet and the namer on the host (habitat.json events.meet, namer.json): the meet persists until the first press, the first ✓ in it opens the namer with the ring on Done, the namer is the only graph while it is open,
@@ -190,27 +199,7 @@ const hatchRig = ({ first = false } = {}) => {
   return k;
 };
 const inc = (verb) => ({ t: "intent", seq: 1, screen: "incubator", target: "room", verb });
-test("the hatch with a moving set (R2): held to 2720; a ✓ at 2719 does nothing; a ✓ at 2720 lands the meet on that frame with the ring on the resident and the namer closed; the meet then holds 300 ms, after which ✓ opens the namer", () => {
-  const { h, sent, at } = hatchRig(), ev = sent.find((m) => m.kind === "hatch"); assert.deepEqual([ev.ms, ev.hold, ev.cut], [6400, 2720, true]);
-  at(2719); onFaceMessage(h, inc("confirm")); assert.equal(UI.screen, "incubator", "a ✓ in the hold does nothing");
-  at(2720); onFaceMessage(h, { t: "done", kind: "hatch", target: "room" }); onFaceMessage(h, inc("confirm"));
-  assert.equal(UI.screen, "habitat", "the meet has landed"); assert.equal(UI.hab.f, "resident"); assert.ok(UI.meet != null, "the meet is on"); assert.equal(UI.hab.namer, null, "the namer did not open");
-  assert.ok(!sent.slice(-3).some((m) => m.kind === "dither" && m.target === "stage"), "a cut: no screen dither"); const mom = sent.findLast((m) => m.kind === "moment"); assert.equal(mom.hold, 300, "the meet's moment holds 300 ms after a cut landing");
-  at(2720 + 299); onFaceMessage(h, { t: "intent", seq: 2, screen: "habitat", target: "resident", verb: "confirm" }); assert.equal(UI.hab.namer, null, "a ✓ in the meet's 300 ms is dropped");
-  at(2720 + 300); onFaceMessage(h, { t: "intent", seq: 3, screen: "habitat", target: "resident", verb: "confirm" }); assert.ok(UI.hab.namer, "then ✓ opens the namer");
-  at(6400); assert.equal(UI.screen, "habitat", "the scheduled hand-off does nothing after a cut");
-});
-test("the cutting key (UI/UX): ← and a pad press land the meet and stay; a room key kept from 1000 lands it at 2720 and opens no section; with no key the hand-off is at 6400", () => {
-  { const { h, at } = hatchRig(); at(2800); onFaceMessage(h, { t: "done", kind: "hatch", target: "room" }); onFaceMessage(h, inc("back")); assert.equal(UI.screen, "habitat", "← lands the meet and does not leave"); assert.ok(UI.meet != null); }
-  { const { h, at } = hatchRig(); at(3000); onFaceMessage(h, { t: "done", kind: "hatch", target: "room" }); assert.equal(UI.screen, "habitat", "the pad (the face says only its done) lands the meet"); assert.equal(UI.hab.f, "resident", "the ring stays on the resident"); assert.ok(UI.meet != null, "the meet does not end"); }
-  { const { h, at } = hatchRig(); at(1000); onFaceMessage(h, inc("room:library")); assert.equal(h.pendingRoom, "library", "kept through the hold"); at(2720); assert.equal(UI.screen, "habitat", "the kept room key lands the meet"); assert.equal(h.pendingRoom, null, "and is used up"); }
-  { const { at } = hatchRig(); at(6399); assert.equal(UI.screen, "incubator"); at(6400); assert.equal(UI.screen, "habitat", "the hand-off at 6400"); }
-});
-test("the first hatch (R5): held to 5840 when the bud is the save's first (bud.firstEver); a ✓ at 5839 does nothing, at 5840 it lands the meet", () => {
-  const { h, sent, at } = hatchRig({ first: true }); assert.equal(sent.find((m) => m.kind === "hatch").hold, 5840);
-  at(5839); onFaceMessage(h, inc("confirm")); assert.equal(UI.screen, "incubator");
-  at(5840); onFaceMessage(h, inc("confirm")); assert.equal(UI.screen, "habitat"); assert.equal(UI.hab.namer, null);
-});
+// the hatch with a moving set (Station M1 section 2.5, R2, R5) is not built on the capsule (T-20261016-222: its close atlas is 304 x 312, the mibi in the capsule 146 tall); a juvenile with a set hatches by the capsule's steps
 test("a hatch with no moving set keeps 2600 / 2780 and no cut", () => {
   const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
   S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");
@@ -257,10 +246,10 @@ test("no other hold takes ✓ Skip: a seal's hold, growNow's or Create's grow ig
   assert.equal(h.holding(), true, "a skip ends its own hold, not growNow's"); at(2400); assert.equal(h.holding(), false);
   assert.throws(() => h.play({ kind: "hatch", target: "room", ms: 100, hold: 100, skip: "yes" }), /skip is true or false/);
   for (const [file, key] of [["cargo", "opening"], ["incubator", "hatch"]]) assert.equal(SPECS[file].events[key].skip, true, `${file}.json events.${key} carries skip`);
-  assert.equal(SPECS.incubator.events.hatch.moving.skip, true); assert.equal(SPECS.incubator.events.growNow.skip, undefined, "growNow is not skippable");
+  assert.equal(SPECS.incubator.events.hatch.moving, undefined, "no moving hatch on the capsule"); assert.equal(SPECS.incubator.events.growNow.skip, undefined, "growNow is not skippable");
 });
 const hatchEnd = () => ({ screen: UI.screen, meet: UI.meet, f: UI.hab.f, id: UI.hab.id, namer: UI.hab.namer, hatch: UI.inc.hatch ?? null, mibis: G.st.mibis.length });
-for (const moving of [true, false]) test(`✓ Skip in the hatch (${moving ? "with a moving set: hold 2720 of 6400" : "no moving set: hold 2780, 2600 long"}), at 1 ms, mid-way and on the hold's last frame, lands where waiting it out lands: the meet`, () => {
+for (const moving of [false]) test(`✓ Skip in the hatch (${moving ? "with a moving set: hold 2720 of 6400" : "no moving set: hold 2780, 2600 long"}), at 1 ms, mid-way and on the hold's last frame, lands where waiting it out lands: the meet`, () => {
   const end = moving ? 6400 : 2780, last = moving ? 2719 : 2779;
   const mkH = () => { if (moving) return hatchRig(); const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
     S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");

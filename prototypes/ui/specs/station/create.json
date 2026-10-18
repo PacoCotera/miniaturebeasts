@@ -31,11 +31,11 @@
   "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
   "needed": []
  },
- "states": ["nothingRead", "shape", "grow"],
+ "states": ["nothingRead", "shape", "grow", "confirm"],
  "initial": "nothingRead when the pod has no chapter read, else shape",
  "stateRule": "nothingRead: an identified pod with no chapter read; the founder grows as the pod is (game designer, 2026-10-09 13:27). shape: at least one chapter read, at rest and while rolling; its conditions (changed, clash, busy, noBay, short) change marks and the bottom line, never regions. grow: from ✓ Grow it until the screen changes to the Incubator (events.grow), input held, from either state. A region with `inStates` exists only in those states; the others exist in all three",
  "composed": { "nothingRead": { "main": "founder", "rect": [360, 240, 304, 312] }, "shape": { "main": "founder", "rect": [360, 240, 304, 312] }, "grow": { "main": "founder", "rect": [360, 240, 304, 312], "end": "founder; then the jump: incubator.json composed.growing (bud)" }, "roll": { "end": "shape" }, "clearances": "nothingRead: the headroom [296, 88, 432, 144], lit; grow from 300: the pod's column [64, 88, 248, 448] (fix 5 C2, C11)" },
- "overlays": { "panel": { "spec": "panel.json", "id": "grow", "from": "✓ Grow it (the bottom line)", "closes": "to shape, the ring on the roll (← or Keep shaping), or Grow: the event, then the jump" } },
+ "overlays": { "panel": { "spec": "panel.json", "id": "incubate", "form": "incubate", "from": "✓ Incubate (the bottom line), once growBlock passes: confirm is Create under the Incubate | Keep shaping panel (build-spec 6a)", "closes": "Keep shaping, ← or a room key: Create as it was, nothing spent; Incubate: the grow event, then the jump to the Incubator's incubate moment" } },
  "regions": {
   "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-create", "note": "the research bench's ground: room-bench-stage-create, signed (art director, 528b73d5)" },
   "rail": {
@@ -155,6 +155,7 @@
 
  },
  "strings": {
+  "panel": { "incubate": "Incubate", "keep": "Keep shaping", "back": "Back", "by": "UI/UX build spec 6a.5 (T-20261016-222)" },
   "title": "Create",
   "action": "Incubate",
   "back": "{pod}",
