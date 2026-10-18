@@ -74,3 +74,13 @@ In `vivarium-back-slope-twelve`, Dot's feet now stand inside the upper half of i
 3. **Until the atlases carry the layers,** a moving resident is drawn as its **layered stand translated along its path**, with no walk cycle. Size and identity come before the cycle. The atlas returns for that species once it carries the layers at world size.
 
 **Test:** a moving resident's figure height equals the standing figure's (54 / 40, ±1 px), and its composed looks match its stand's.
+
+## The moving-resident fix (build 3bdafbb7; stills at work-queue 1f40bf62)
+
+**UI/UX: the sizes and looks now read right.** In `vivarium-moving` every resident stands at world size, S01 in its own coat and marks and the S05 residents reduced. Nothing is "big again". The art director's re-gate decides the art.
+
+**Ruling on sleep: a sleeping S01 resident curls; it never sleeps standing.** Sleep has to read as sleep. S01 has the signed world-size curl (§5 of the spec, with its curl shadow), so:
+- asleep (`curl`, `asleep` or `stir`), it draws its curl in place, its foot on its standing feet line, with the curl's figure geometry for the ring and tag;
+- on waking it cuts back to its layered stand.
+
+Only species with no curl at all (the rig species, S04 onward, as ruled) sleep as their standing figure.
