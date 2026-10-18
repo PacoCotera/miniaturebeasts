@@ -75,8 +75,8 @@ Times are in ms from the crate's start. Each travel is one sprite at 1:1, on a s
 
 - **The crate's length:** `1700 + 300 × max(0, pods + finds − 1) + 600 + 180 + 300`. With no pod and no find: `700 + 150 × (materials − 1) + 600 + 300`. The host sends each crate's length, and their sum is the event's `ms`, with the hold 20 longer (the current `byCrates` table goes).
 - **Order:** crates open left to right, the portrait crate last.
-- **The portrait crate:** at 200 its painting appears in the display's centre, as the Habitat card's portrait picture draws it (40 × 30, `habitat.json regions.portrait.frame.picture`). At 700 it travels to (−200, 40), the one travel allowed to leave the bay, out at the top left; the screen does not follow it. Nothing else is in it; its length is `700 + 600 + 300`.
-- **Reduced motion:** every travel is a cut to its end, and every dither is a cut.
+- **The portrait crate:** at 200 its painting appears in the display's centre: the 48 × 40 frame with its 40 × 30 picture, as §8.5 says. At 700 it travels to (−200, 40), the one travel allowed to leave the bay, out at the top left; the screen does not follow it. Nothing else is in it; its length is `700 + 600 + 300`.
+- **Reduced motion:** every travel is a cut to its end, and every dither is a cut (§8.3).
 
 ## 5. Masters
 
@@ -142,11 +142,47 @@ There is no painting request: the masters list is complete.
 
 ## 7. The dock panel's windows (T-20261016-195)
 
-**Ship now:** §1–§6 and "Open the bay" below. **A separate follow-on:** "Later", which waits on the Home build.
+**Not in this build: the whole of §7 is a follow-on.** No dock-panel code exists on station-gate yet (the dock's choice strip is not in `prototypes/station` or `prototypes/caddy`), so "Open the bay" goes with "Later" into the follow-on that builds the two-window panel (T-20261016-195), after the Home build. This build ships §1–§6. The window specs below stand for that follow-on.
 
 The panel is "Open the bay | Later", with two windows of 474 × 468 at (24, 76) and (526, 76).
 
 - **Open the bay:** `crate-open-432x272` at (45, 236), centred, its feet 36 above the window's foot (y 508), with `crate-shadow-432x24` at (45, 496). The crate's inner light takes the lifting crate's warm colour (the art director's note).
 - **Later:** Home's own screen at 1:1, clipped to the window and offset so that Home's Bay module's right and bottom edges sit 16 px inside the window's right and bottom edges. Its lamp is amber (`home-lamp-amber-12x12`), with the crates' fronts in its berths, as Home draws them.
   - There is no new painting.
-  - **The follow-on, not this build:** it waits on the Home build. "Open the bay"'s window is built and checked now. The two-window panel goes live with "Later"; until then, the dock keeps its current choice strip, so no player sees an empty window.
+  - It waits on the Home build, like the rest of §7.
+
+## 8. Build answers (the builder's questions on 28143fb2)
+
+Question 1 ("Open the bay") is answered in §7: it moves to the follow-on. Question 2 is the architect's, and 6–8 are the art director's.
+
+### 8.3 Per-crate lengths and reduced motion
+- **Yes:** the host sends a per-crate start table in the props, `regions.opening.starts` (ms from the event's start, one per crate, the first 0), built from §4's lengths. The event's `ms` is the last start plus the last length, with the hold 20 longer.
+- **`opening_clock`** takes crate k as the last with `starts[k] <= elapsed`, and `lt = elapsed − starts[k]`. `perCrate` goes.
+- **Reduced motion:** the event ends at once, as now. The host stages `regions.opening.crate` and `.at`, stepping `at` through the same step times as §4 (0, 200, 500, 700 and each material's 150 after it, 1500, each pod's and find's start, last + 300). Each step is a cut to its end state: an item that travels is drawn at its destination from its start time, already swapped to its stored size. The total time is the same, so Skip and ← behave alike in both modes.
+
+### 8.4 Skip and ← during the opening
+
+This amends `focus.held`.
+- **While the opening holds,** the face sends `confirm` and `back` on "room" as well as `room:<x>`. The pad still sends nothing.
+- **`confirm` (Skip):** the host applies the current crate's end state at once:
+  - every content at its destination;
+  - the counters at their final values;
+  - its pods in their wells or on the mat;
+  - the crate done.
+  
+  It then restarts the event for the remaining crates, with `starts` rebased to 0. On the last crate, Skip goes to `end`.
+- **`back` (←):** the host applies the current crate's end state exactly as Skip does, opens no further crate, and goes to Home with the ring on the Bay module. The crates not yet opened stay sealed in their berths, so Home's Bay lamp stays amber, and the next visit opens them.
+- **A room key** during the hold does the same as ←, then opens its room.
+- **A Dock** during the hold waits for `end`, as now.
+
+### 8.5 The portrait crate's data path
+- **The fourth berth** comes from `sitting.mjs readyCrates(st, settings, now)`. The berth shows the oldest ready crate (by `start`), and at most one at a time. A second ready crate takes the berth on the next visit, after the first is opened.
+- **cargo-props** gains `sittingCrate`: that crate's id, its mibi, and the picture request below. It also gains the layout flag `berths: 4` whenever `sittingCrate` is set, docked or away. Away, the walk berths are slatted and shut, and the portrait crate alone is ready: ✓ "Open it".
+- **`walkCrates`** is unchanged.
+- **The opening** (`intents/cargo.mjs` `openRun`) adds the portrait crate as the last crate of the run. Its end step calls `openSittingCrate(st, id, settings, now)`, which marks the portrait delivered. Its ribbon value is unused, since the ribbon is gone (§6).
+- **The display's painting:**
+  - with a digest: the Habitat card's portrait request, `{ kind: "portrait", id: "portrait:<digest first 16>:40x30", digest: mibi.portrait.digest, size: [40, 30] }`, placed inside `sitting-frame-portrait-48x40` (the picture at the frame's (4, 4)), the pair 48 × 40 centred in the display;
+  - with no digest (the first build paints none): the frame `sitting-frame-portrait-48x40` alone.
+  
+  The pair travels and leaves as §4 says.
+
