@@ -52,10 +52,10 @@ Contents rise into the display when a crate opens. They sit in one row, centred 
 | --- | --- | --- |
 | the recess (always under a crate) | `berth-recess-256x292` (to cut) | `berth-recess-188x292` (to cut) |
 | empty: slatted and shut | `berth-shut-256x292` (to cut) | `berth-shut-188x292` (to cut) |
-| crate sealed | `crate-sealed-256x176`, its top at berth y + 102 (feet 14 above the berth's foot); `crate-shadow-256x24` at berth y + 260 | `crate-sealed-176x121` at (berth x + 6, berth y + 157); `crate-shadow-176x17` at (berth x + 6, berth y + 266) (**to paint**) |
-| crate lifting | `crate-lifting-256x200` at berth y + 91: its foot is 13 above its canvas foot, so the feet line holds (to promote) | `crate-lifting-176x138` (**to paint**), with the same foot rule |
-| crate done | `crate-sealed-256x176-done` (to cut: the sealed crate at value × 0.72, hue kept) | `crate-sealed-176x121-done` (to cut from the painted crate) |
-| portrait crate | — | `crate-sitting-frame-176x{h}` (**to paint**: frame-shaped, in the crates' style), feet on the same line, with its done cut |
+| crate sealed | `crate-sealed-256x176`, its top at berth y + 102 (feet 14 above the berth's foot); `crate-shadow-256x24` at berth y + 260 | `crate-sealed-176x121` at (berth x + 6, berth y + 157); `crate-shadow-176x16` at (berth x + 6, berth y + 266) |
+| crate lifting | `crate-lifting-256x200` at berth y + 91: its foot is 13 above its canvas foot, so the feet line holds (to promote) | `crate-lifting-176x138` at (berth x + 6, berth y + 132) |
+| crate done | `crate-sealed-256x176-done` (to cut: the sealed crate at value × 0.72, hue kept) | `crate-sealed-176x121-done` and `crate-sitting-176x121-done` (to cut, the same way) |
+| portrait crate | — | `crate-sitting-176x121`: the signed sitting crate, the same object as Home's portrait crate (`crate-sitting-48x40`), placed as the sealed crate. **The fourth berth carries the difference,** drawn in code: a 2 px edge in `gold`, a rounded rect from (berth x − 3, berth y − 3) to (berth x + 190, berth y + 294), radius 9; outside it a 1 px keyline `#5a400c`, from (berth x − 5, berth y − 5) to (berth x + 192, berth y + 296), radius 10 (`finish/make-portrait-in.py`, `finish/cargo-portrait-in.png`) |
 
 ## 4. The opening, per crate (replaces `events.opening.crate`)
 
@@ -102,11 +102,13 @@ Times are in ms from the crate's start. Each travel is one sprite at 1:1, on a s
 - `well-lit-64x64`;
 - `crate-sealed-256x176-done` and the 176 done cuts.
 
-**To paint** (one request, in the crates' existing style):
+**Placed as 176 reductions** (masters-pods 10f46a5a: the signed 256 masters reduced at build time, with no painting):
 - `crate-sealed-176x121`;
 - `crate-lifting-176x138`;
-- `crate-shadow-176x17`;
-- `crate-sitting-frame-176x{h}`.
+- `crate-shadow-176x16`;
+- `crate-sitting-176x121`.
+
+There is no painting request: the masters list is complete.
 
 ## 6. States, keys and the bottom line (replaces `states`, `keys`, `line` and `strings` where named)
 
@@ -138,11 +140,13 @@ Times are in ms from the crate's start. Each travel is one sprite at 1:1, on a s
 - **A Dock during the opening** waits for `end`, as now.
 - **The end state** goes back to `bay` on the next key, after that key's action.
 
-## 7. The dock panel's windows (T-20261016-195, for the same build)
+## 7. The dock panel's windows (T-20261016-195)
+
+**Ship now:** §1–§6 and "Open the bay" below. **A separate follow-on:** "Later", which waits on the Home build.
 
 The panel is "Open the bay | Later", with two windows of 474 × 468 at (24, 76) and (526, 76).
 
 - **Open the bay:** `crate-open-432x272` at (45, 236), centred, its feet 36 above the window's foot (y 508), with `crate-shadow-432x24` at (45, 496). The crate's inner light takes the lifting crate's warm colour (the art director's note).
 - **Later:** Home's own screen at 1:1, clipped to the window and offset so that Home's Bay module's right and bottom edges sit 16 px inside the window's right and bottom edges. Its lamp is amber (`home-lamp-amber-12x12`), with the crates' fronts in its berths, as Home draws them.
   - There is no new painting.
-  - **It waits on the Home build.** Until then, this window is not built.
+  - **The follow-on, not this build:** it waits on the Home build. "Open the bay"'s window is built and checked now. The two-window panel goes live with "Later"; until then, the dock keeps its current choice strip, so no player sees an empty window.
