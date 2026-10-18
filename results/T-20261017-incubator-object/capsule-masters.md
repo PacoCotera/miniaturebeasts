@@ -15,7 +15,7 @@ All coordinates below are in those stills' 1024 × 600 frame. UI/UX's build spec
 | `capsule-shell` | about 384 × 600 | closed: the slate body, roof-lamp housing and base, with the window and the bar area transparent | shell box x 322–706, y 0–600 |
 | `capsule-interior-day` | the window's box, about 300 × 420 | **missing**: the lit back wall, the roof lamp's pool and the moss-and-soil bed, with NO pod | window box, moss line y ≈ 432 |
 | `capsule-interior-dusk` | the same | **missing**: the same at dusk | the same |
-| `capsule-glass-closed` | the window's box | closed: the glass reflections only, as alpha over the interior | window box |
+| `capsule-glass-closed` | the window's box | drawn in code: two soft highlights matching closed's painted reflections, as alpha over the interior and the pod. A painting's glass can't be separated from what's behind it | window box |
 | `capsule-door-open` | about 300 × 560 | open: the swung curved door, alpha | hinge at the shell's right edge, x ≈ 700 |
 | `capsule-bar-on` | about 230 × 40 | closed: the mint bar and its glow, alpha | bar centre ≈ (512, 520) |
 | `capsule-bar-off` | the same | incubate: the dark bar slot | the same |
@@ -46,7 +46,7 @@ All coordinates below are in those stills' 1024 × 600 frame. UI/UX's build spec
 
 ## Missing, so to request
 
-1. **The empty interiors, day and dusk.** Two studio edits: closed with the pod removed, then the same at dusk. The moss bed is repainted where the pod stood.
+1. **The empty interiors, day and dusk.** Two studio edits, with the moss bed repainted where the pod stood: the day one from open, which has no glass in front of the interior; the dusk one from incubate.
 2. **The opened-pod renderer layers.** One studio painting of the halves and cap in neutral grey on magenta, cut into the pod layers like the closed pod's.
 
 Everything else is cut from the four stills by the art director, with no painting.
