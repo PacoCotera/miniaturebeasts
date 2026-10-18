@@ -50,7 +50,7 @@ test("a growing bud: the bar is floor(158 x progress) px, the time is 'ready in 
   const { st, p } = world(); const r = S.grow(st, p, {}, settings, T0); assert.ok(r.ok);
   const g = build(st, { inc: {} }, T0 + 1000);
   assert.equal(g.props.state, "growing"); assert.equal(g.line.ok, spec.strings.grow); assert.ok(g.line.price); assert.equal(g.props.regions.readyIn, "ready in about " + S.budMinutesLeft(st, settings, T0 + 1000) + " min", "the minutes left, owner ruling 3"); assert.equal(S.budMinutesLeft(st, settings, T0 + st.bud.minutes * 60_000 - 1), 1, "at least one minute");
-  assert.equal(g.props.regions.capsule.barPx, Math.floor(158 * S.budProgress(st, settings, T0 + 1000))); assert.match(g.line.subject, /bud$/, "the context is the bud, not the time");
+  assert.equal(g.props.regions.capsule.barPx, Math.max(1, Math.floor(158 * S.budProgress(st, settings, T0 + 1000))), "the bar is lit from its first pixel"); assert.match(g.line.subject, /bud$/, "the context is the bud, not the time");
   const mid = build(st, { inc: {} }, T0 + st.bud.minutes * 30_000); assert.ok(mid.props.regions.capsule.barPx > 70 && mid.props.regions.capsule.barPx < 90, "half way: about 79 px"); assert.equal(mid.props.regions.capsule.barPx, Math.floor(158 * S.budProgress(st, settings, T0 + st.bud.minutes * 30_000)));
   const near = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 - 1000); assert.equal(near.props.regions.capsule.barPx, Math.floor(158 * S.budProgress(st, settings, T0 + st.bud.minutes * 60_000 - 1000))); assert.ok(near.props.regions.capsule.barPx >= 157);
   assert.ok(g.props.regions.inside.pod.day && g.props.regions.inside.pod.dusk && !g.props.regions.inside.opened, "the sealed pod, day and dusk; no opened pod yet");
@@ -78,7 +78,7 @@ test("every state is plain JSON, names no rectangle, and fits the 32 KiB budget;
   const hatch = { mibi: o.mibi.id, species: o.mibi.species, code: o.mibi.code, read: o.mibi.read, kind: "founder", parents: null };
   const h = build(st, { inc: { hatch } }, now, "waiting");
   assert.deepEqual(validate(h.props, schema), [], "hatch validates"); assert.equal(h.props.state, "hatch"); assert.equal(h.line.ok, null); assert.ok(h.props.regions.juvenile.picture); assert.ok(JSON.stringify(h.props).length < 24_000);
-  const I = h.props.regions.inside; assert.ok(I.pod.crack1 && I.pod.crack2 && I.opened && I.pod.day); assert.match(I.opened, /^relit:S01:opened:day:384x216:v\d+$/); assert.match(h.props.regions.juvenile.picture, /^relit:S01:/);
+  const I = h.props.regions.inside; assert.ok(I.pod.crack && !("crack2" in I.pod) && I.opened && I.pod.day); assert.match(I.opened, /^relit:S01:opened:day:384x216:v\d+$/); assert.match(h.props.regions.juvenile.picture, /^relit:S01:/);
   assert.equal(h.line.subject, spec.strings.painting, "the waiting painting's words stand on the line");
 });
 
@@ -87,8 +87,8 @@ test("the capsule's pictures: every layer is a placed master of the room view's 
   const { st, p } = world(); S.grow(st, p, {}, settings, T0); const e = build(st, { inc: {} }, T0 + 1000), C = e.props.regions.capsule, sl = (id) => e.requests.find((r) => r.id === id);
   for (const id of [e.props.regions.room.day, e.props.regions.room.dusk, C.interior.day, C.interior.dusk, C.shell.day, C.shell.dusk, C.door, C.bar, C.seal]) assert.equal(sl(id).kind, "slot", id);
   assert.deepEqual(sl(C.shell.day).size, [530, 532]); assert.deepEqual(sl(e.props.regions.room.day).size, [1024, 522]);
-  assert.match(C.glass, /^capsule-glass:room:530x532:v1$/); assert.deepEqual(sl(C.glass).size, [530, 532]); assert.equal(sl(C.glass).mask, C.interior.day);
-  const pod = sl(e.props.regions.inside.pod.day); assert.equal(pod.kind, "relit"); assert.deepEqual([pod.area, pod.anchor, pod.scale], [[384, 216], [192, 180], 170 / 160]); assert.equal(pod.bg.id, C.interior.day);
+  assert.equal(C.glass.split(":")[0], "capsule-glass-closed-530x532"); assert.equal(sl(C.glass).kind, "slot");
+  const pod = sl(e.props.regions.inside.pod.day); assert.equal(pod.kind, "relit"); assert.deepEqual([pod.area, pod.anchor, pod.scale], [[384, 216], [192, 180], 160 / 160]); assert.equal(pod.bg.id, C.interior.day);
   assert.deepEqual(pod.parts.map((x) => x.id), [`pod:S01:s:144x176`]); assert.deepEqual(sl(e.props.regions.inside.pod.dusk).bg.id, C.interior.dusk);
 });
 

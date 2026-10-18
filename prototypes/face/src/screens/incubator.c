@@ -4,7 +4,7 @@
    (lit from the left, as the progress), the seal ring, then the left wall's column (the stamp case, the stamp, the code, "ready in about {n} min") and the ribbon. No ring in any state: ✓ acts on the room.
    Every picture is placed 1:1 at the place the spec gives it; the pictures of one layer that two looks differ in (dusk and day) are two pictures of one size, and a step between looks is a cut or the house dither (16 levels, 180 ms, the
    screen's Bayer), never a fade. The events: `incubate` (0: the dusk look, sealed; 1200 to 1380: the dither to growing; the column cuts in at 1200), `growNow` (the bar fills in 8 cuts 50 ms apart; at 400 the 180 ms dither from closed to open:
-   the glass goes, the door comes in) and `hatch` (a still beat; crack 1 at 600 and 2 at 800 on the pod; at 1000 the 180 ms dither to the opened pod, the juvenile dithering in from clear; the ribbon at 1200; the two steps at 1400 and 1800;
+   the glass goes, the door comes in) and `hatch` (a still beat; the crack at 600 on the pod (held to 1000); at 1000 the 180 ms dither to the opened pod, the juvenile dithering in from clear; the ribbon at 1200; the two steps at 1400 and 1800;
    the hand-off at 2600 is the host's). A picture the host has not sent is a slot not yet filled: nothing is drawn. */
 #include "../layout/layout.h"
 #include "screens.h"
@@ -32,7 +32,7 @@ static int clampi(int v, int lo, int hi) { return v < lo ? lo : v > hi ? hi : v;
 /* ---- the clocks: how far each moment has got (-1: it is not playing; with motion off every moment is at its end) ---- */
 #define END 1000000
 static int moment_time(int kind) { anim_state_t t; if (!v_pbool("motion", 1)) return END; return anim_get(kind, "room", &t) ? t.elapsed : -1; }
-static int hatch_time(void) { return in_state("hatch") ? moment_time(ANIM_HATCH) : -1; }
+static int hatch_time(void) { if (!in_state("hatch")) return -1; int t = moment_time(ANIM_HATCH); return t < 0 ? END : t; }   /* no event playing: the hatch's end state */
 static int grownow_time(void) { return in_state("growing") ? moment_time(ANIM_GROW_NOW) : -1; }
 static int incubate_time(void) { return in_state("growing") ? moment_time(ANIM_INCUBATE) : -1; }
 /* the dither's level n at t ms for a 180 ms dither that starts at t0: floor(16 (t - t0) / 180), 0 before it, 16 after */
@@ -113,7 +113,7 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
     if (pod_on) {
       const char *day = v_pstr("regions.inside.pod.day"), *dusk = v_pstr("regions.inside.pod.dusk");
       if (st_hatch) {
-        const char *shown = t_h >= 800 ? v_pstr("regions.inside.pod.crack2") : t_h >= 600 ? v_pstr("regions.inside.pod.crack1") : day;
+        const char *shown = t_h >= 600 ? v_pstr("regions.inside.pod.crack") : day;
         if (!has(shown)) shown = day;
         const char *op = v_pstr("regions.inside.opened");
         if (opened_n <= 0) { v_name("pod"); if (has(shown)) v_sprite("pod", shown, ins[0], ins[1], ins[2], ins[3]); }
@@ -162,7 +162,7 @@ static void build_column(int t_inc) {
 }
 static void build_ribbon(int t) {
   if (!in_state("hatch")) return;
-  int r[4]; crect("regions.ribbon.rect", r); int at = ci("events.hatch.steps.4.at", 1200); const char *words = v_pstr("regions.ribbon");
+  int r[4]; crect("regions.ribbon.rect", r); int at = ci("events.hatch.steps.3.at", 1200); const char *words = v_pstr("regions.ribbon");
   v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 0), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text"));
 }
 

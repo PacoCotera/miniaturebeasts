@@ -9,6 +9,7 @@ import { standLook } from "../stands.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { layeredStand, standPictureId } from "../layered-stand.mjs";
 import { goalWords } from "./goal-words.mjs";
+import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
@@ -76,6 +77,14 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 
+// Home's Incubator station: the painted capsule at x0.137, 56 x 86, the state only (build-spec section 5): the glass with the pod (growing), the door open with the pod (ready), the door open and empty (empty); the bar is lit or off, never a fraction.
+// The pod is 27 tall, relit like the others. The places are home.json regions.incubator.capsule*.
+function capsuleOf(req, I, state, bud) {
+  const size = I.capsule.slice(2), L = layers(req, size, ["interior-day", "shell", "door-open", "bar-lit", "glass-closed"]), at = I.capsuleRect.slice(0, 2), foot = [at[0] + I.capsuleFoot[0], at[1] + I.capsuleFoot[1]], area = podArea(I.capsulePodHeight);
+  const out = { interior: L["interior-day"], shell: L.shell, door: L["door-open"], bar: L["bar-lit"], glass: L["glass-closed"] };
+  if (bud) Object.assign(out, { pod: relitPod(req, { species: bud.species, variant: "pod", light: "day", h: I.capsulePodHeight, area, bg: bgOf({ id: L["interior-day"], at }, foot, area.anchor) }), podSize: area.size, podAnchor: area.anchor });
+  return out;
+}
 export function livingOf(m, R, req, ph, L) {
   const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
@@ -126,7 +135,7 @@ export function homeBuild(m, spec, frame) {
   const incState = !bud ? "empty" : ready ? "ready" : "growing";
   const incubator = {
     plate: plate(), state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
-    chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}-72x72`, R.incubator.chamber.slice(2)),
+    capsule: capsuleOf(req, R.incubator, incState, bud),
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;

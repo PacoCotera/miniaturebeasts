@@ -16,7 +16,7 @@
      "door": { "$ref": "pic" }, "bar": { "$ref": "pic" }, "seal": { "$ref": "pic" }, "glass": { "$ref": "pic" },
      "barPx": { "type": "integer", "minimum": 0, "maximum": 158, "description": "the lit width of the bar in px: floor(158 x progress) while growing, 158 when ready and in the hatch" } } },
    "inside": { "type": "object", "required": ["pod", "opened"], "additionalProperties": false, "properties": {
-     "pod": { "type": "object", "required": ["day", "dusk", "crack1", "crack2"], "additionalProperties": false, "properties": { "day": { "$ref": "pic" }, "dusk": { "$ref": "pic" }, "crack1": { "$ref": "pic" }, "crack2": { "$ref": "pic" } } },
+     "pod": { "type": "object", "required": ["day", "dusk", "crack"], "additionalProperties": false, "properties": { "day": { "$ref": "pic" }, "dusk": { "$ref": "pic" }, "crack": { "$ref": "pic" } } },
      "opened": { "$ref": "pic" } } },
    "stamp": { "type": "object", "required": ["case", "size", "N", "cell", "plate", "asset"], "additionalProperties": false, "properties": { "case": { "type": "object", "required": ["back", "front"], "additionalProperties": false, "properties": { "back": { "$ref": "pic" }, "front": { "$ref": "pic" } } }, "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "$ref": "pic" } } },
    "code": { "type": "string" },

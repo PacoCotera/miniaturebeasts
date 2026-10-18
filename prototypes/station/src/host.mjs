@@ -171,7 +171,7 @@ export function cargoBody() {
 export function createBody() {
   const body = createBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, frame: SPECS.frame }, SPECS.create, SPECS.pods), pn = UI.panel;
   if (pn && pn.screen === "create" && !UI.create?.grown) {   // the decision panel is open: its props ride on Create's (an overlay) and its bottom line is built from the focused card
-    const pb = panelBuild({ st: G.st, settings: G.settings, ui: UI, jump: G.settings.jump, create: SPECS.create, glass: SPECS.incubator.glass }, SPECS.panel, SPECS.frame, SPECS.pods);
+    const pb = panelBuild({ st: G.st, settings: G.settings, ui: UI, jump: G.settings.jump, create: SPECS.create }, SPECS.panel, SPECS.frame, SPECS.pods);
     pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
     if (pn.id === "incubate") body.props.focus = { cur: "", targets: [] };   // Create under the Incubate panel is a snapshot with no ring (build-spec 6a.2): the panel's own focus is the overlay's
   } else if (pn) UI.panel = null;

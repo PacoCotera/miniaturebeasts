@@ -95,7 +95,7 @@
     "seal": "capsule-seal-ring-530x532"
    },
    "mossY": 415,
-  "podHeight": 170,
+   "podHeight": 160,
    "bar": {
     "max": 158,
     "litFrom": [
@@ -118,7 +118,7 @@
      530,
      532
     ],
-    "note": "drawn in code by the host (station/src/glass.mjs) along the interior's own alpha, which is the window; closed states only (growing and the incubate moment); the picture is capsule-glass:room:530x532:v1"
+    "note": "the art director's cut master capsule-glass-closed (room/, 530 x 532 at (344, 26)): a white highlight layer over the pod and under the shell and seal ring; closed states only (growing and the incubate moment); Hatch now takes it out by the 400 dither (build-spec section 1, capsule-masters.md)"
    }
   },
   "inside": {
@@ -136,7 +136,7 @@
     192,
     180
    ],
-   "note": "the canvas the sealed pod and the opened pod (bowl and tipped cap) are rendered in, relit, with their shadow and moss blades: foot (the pod's bottom centre) on (512, 415). The pod is about 170 tall (build-spec section 1)"
+   "note": "the canvas the sealed pod and the opened pod (bowl and tipped cap) are rendered in, relit, with their shadow and moss blades: foot (the pod's bottom centre) on (512, 415). The pod is pod-large at its own 160 px height, no up-scale (uiux-rulings.md 3)"
   },
   "juvenile": {
    "foot": [
@@ -208,10 +208,10 @@
   },
   "readyIn": {
    "rect": [
-    64,
+    16,
     384,
-    176,
-    20
+    272,
+    24
    ],
    "component": "text",
    "inStates": [
@@ -222,7 +222,7 @@
    "align": "centre",
    "centre": 152,
    "lineTop": 384,
-   "note": "the spec says Inter 13; the face has Inter 16, 20 and 28 only, so it is set at 16 (open question in the T-20261016-222 report). The time, a fact the bar cannot carry"
+   "note": "UI/UX ruling (uiux-rulings.md 1): Inter 16, mist, centred on x 152, in a box widened to stay inside the plain wall"
   },
   "ribbon": {
    "rect": [
@@ -699,11 +699,7 @@
     },
     {
      "at": 600,
-     "do": "the pod cracks: the renderer's crack layer on the pod (crack 1)"
-    },
-    {
-     "at": 800,
-     "do": "crack 2 (the renderer has one crack layer, pod-large-crack: the same layer; open question in the T-20261016-222 report)"
+     "do": "the pod cracks: the renderer's one crack layer on the pod, held to 1000 (uiux-rulings.md 4)"
     },
     {
      "at": 1000,
@@ -904,29 +900,5 @@
   ],
   "by": "copywriter, 2026-10-09 13:27"
  },
- "spec": "results/T-20261017-incubator-object/build-spec.md",
- "glass": {
-  "note": "PROVISIONAL (the builder's numbers: the spec says only 'two soft highlights along the window mask, alpha over the interior and the pod'; the art director owes their geometry). Each highlight is a vertical band with a cosine profile across and along, in warm white, clipped to the window; x, y, w, h are fractions of the window's box.",
-  "colour": [
-   255,
-   248,
-   235
-  ],
-  "bands": [
-   {
-    "x": 0.1,
-    "y": 0.22,
-    "w": 0.07,
-    "h": 0.56,
-    "peak": 0.2
-   },
-   {
-    "x": 0.8,
-    "y": 0.3,
-    "w": 0.035,
-    "h": 0.26,
-    "peak": 0.14
-   }
-  ]
- }
+ "spec": "results/T-20261017-incubator-object/build-spec.md"
 }

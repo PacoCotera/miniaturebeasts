@@ -17,7 +17,6 @@ import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { relit } from "./relight.mjs";
-import { glassPicture } from "./glass.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
@@ -94,10 +93,6 @@ export function registerPictures(reqs, env) {
           if (!ok) return (data = new Uint8ClampedArray(r.area[0] * r.area[1] * 4));
           const src = (id) => { const a = assetOf(id); return { rgba: a.rgba(), w: a.w, h: a.h }; };
           data = relit({ parts: r.parts.map((p) => ({ ...src(p.id), over: (p.over ?? []).filter((o) => isFilled(o) || hasAsset(o)).map((o) => src(o).rgba) })), scale: r.scale ?? 1, figH: r.figH ?? 0, area: r.area, anchor: r.anchor, bg: r.bg && (isFilled(r.bg.id) || hasAsset(r.bg.id)) ? { ...src(r.bg.id), x: r.bg.at[0], y: r.bg.at[1] } : null }); return data; } }; } });
-        break;
-      }
-      case "glass": {   // the capsule's glass, drawn in code along the interior's alpha (glass.mjs)
-        registerAsset({ id: r.id, w: r.size[0], h: r.size[1], status: "derived", until: null, build: () => { let data = null; return { w: r.size[0], h: r.size[1], rgba: () => { if (data) return data; data = isFilled(r.mask) || hasAsset(r.mask) ? glassPicture(assetOf(r.mask).rgba(), r.size[0], r.size[1], r.glass) : new Uint8ClampedArray(r.size[0] * r.size[1] * 4); return data; } }; } });
         break;
       }
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;

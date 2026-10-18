@@ -65,7 +65,8 @@ static void build_pod(int grow) {
     rest = t < 0 || t >= ci("regions.travel.rest.at", 530);   /* from 530 ms (and with reduced motion) the pod rests at the collection class, a step and never interpolated, on the same foot */
   }
   v_region(grow ? "travel" : "pod", LAYER_PAINTED);
-  if (rest && has(v_pstr("regions.pod.dome"))) { int w = ck("regions.travel.rest.size", 0), h = ck("regions.travel.rest.size", 1); v_sprite("pod", v_pstr("regions.pod.dome"), ci("regions.pod.axis", 160) + dx - v_half(w), ci("regions.pod.feet", 408) + dy - h, w, h); }
+  if (rest && has(v_pstr("regions.pod.dome"))) { int w = v_pint("regions.pod.domeSize.0", 0), h = v_pint("regions.pod.domeSize.1", 0), ax = v_pint("regions.pod.domeAnchor.0", 0), ay = v_pint("regions.pod.domeAnchor.1", 0);   /* the relit pod of the capsule (T-20261016-222): its foot on the travel's foot */
+    v_sprite("pod", v_pstr("regions.pod.dome"), ci("regions.pod.axis", 160) + dx - ax, ci("regions.pod.feet", 408) + dy - ay, w, h); }
   else v_sprite("pod", pic, b[0] + dx, b[1] + dy, b[2], b[3]);
 }
 static void build_origin(void) {
@@ -181,7 +182,6 @@ void create_words(void) {
   build_bench();
   word_rail(C);
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
-  { int r[4]; crect("regions.bud.rect", r); v_name("bud"); pic_or("bud", v_pbool("regions.bud.busy", 0), v_pstr("regions.bud.picture"), r[0], r[1], r[2], r[3]); }
   build_pod(grow);
   { char u[8]; if (spec_str(C, "regions.cradleFront.until", u, sizeof u) <= 0) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front")); }   /* the dish's near lip over the pod, drawn once Create's own stage lands (the spec drops `until`) */
   build_origin();
@@ -191,7 +191,10 @@ void create_words(void) {
   picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamberFront.picture"));   /* the tray's rim and floor, over the founder: its ink is rows 310 to 319 only */
   build_roll();
   build_traitLine();
-  picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));   /* the small chamber's front, over the bud and the travelling pod */
+  { int r[4]; crect("regions.domeFront.rect", r);   /* the capsule's glass (code-drawn), shell and bar, over the travelling pod; the bar is lit while another bud grows (T-20261016-222, build-spec section 5) */
+    v_name("domeGlass"); { const char *g = v_pstr("regions.dome.glass"); if (has(g)) v_sprite("dome.glass", g, r[0], r[1], r[2], r[3]); }
+    picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));
+    v_name("domeBar"); { const char *b = v_pstr("regions.dome.bar"); if (has(b) && v_pbool("regions.dome.busy", 0)) v_sprite("dome.bar", b, r[0], r[1], r[2], r[3]); } }
   build_stamp();
   build_code();
   build_ring();

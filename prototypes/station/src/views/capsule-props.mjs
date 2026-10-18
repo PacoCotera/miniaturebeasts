@@ -2,8 +2,6 @@
 // the places are the specs' (incubator.json regions.capsule, regions.inside, regions.juvenile; create.json; panel; home.json). Pure on the request function `req`, which registers a picture and returns its id.
 import { slot } from "./pods-props.mjs";
 import { RECIPE } from "../relight.mjs";
-import { mibiReq } from "./home-props.mjs";
-import * as S from "../state.mjs";
 export const POD_REF_H = 160;   // the large pod's alpha height: the pod renders at height / 160 of its 144 x 176 layers (about 170 in the room, 147 in the panel, 72 in Create, 27 on Home)
 const SIGNED = "signed (art director, capsule-masters.md)";
 const cap = (req, name, [w, h]) => slot(req, `capsule-${name}-${w}x${h}`, [0, 0, w, h], SIGNED);
@@ -25,14 +23,5 @@ export function relitPod(req, { species, variant, light, h, area, bg }) {
   }
   return req({ kind: "relit", id, parts, scale, area: area.size, anchor: area.anchor, bg });
 }
-// A relit juvenile: the new mibi's own juvenile stand (layered, from drawnLooks) at the incubator view's figure height (stand-sizes.json views.incubator), lit the same way. Returns { picture, size, anchor }.
-// bg: the interior the blades come from, { id, size, at: its top left on the screen }; the juvenile's feet are on spec.regions.juvenile.foot.
-export function relitJuvenile(req, st, mb, settings, spec, light = "day", interior = null) {
-  const H = spec.regions.juvenile.height, species = S.speciesOf(mb);
-  const src = mibiReq(req, st, mb, [304, 312], settings, light, "incubator"), area = podArea(H), id = `relit:${species ?? "-"}:${src}:${light}:${area.size.join("x")}:v${RECIPE}`;
-  req({ kind: "relit", id, parts: [{ id: src }], figH: H, area: area.size, anchor: area.anchor, bg: interior && bgOf(interior, spec.regions.juvenile.foot, area.anchor) });
-  return { picture: id, size: area.size, anchor: area.anchor };
-}
-
 // The interior a area's blades come from: the layer's id and where its top left is on the screen, as the area sees it (its own top left is foot - anchor).
 export const bgOf = (interior, foot, anchor) => ({ id: interior.id, at: [interior.at[0] - (foot[0] - anchor[0]), interior.at[1] - (foot[1] - anchor[1])] });

@@ -151,8 +151,8 @@ static void composed_box(const char *id, int x, int y, int w, int h, const char 
 /* a bezel: fill `panel`, radius 10, a 1 px `hairline` edge, the bevel (a 1 px `fog` line at y + 1 from x + 10 to x + w - 10) */
 static void build_bezel(int i, const int r[4], const char *verb) {
   int rad = pi_("bezels.radius", 10); char ops[320];
-  snprintf(ops, sizeof ops, "[[\"ring\",\"round\",0,0,%d,%d,4000,%d,\"%s\"],[\"ring\",\"round\",0,0,%d,%d,1,%d,\"%s\"],[\"h\",%d,%d,%d,\"%s\"]]", r[2], r[3], rad, pcol("bezels.fill"), r[2], r[3], rad, pcol("bezels.edge"), pi_("bezels.bevel.inset", 10), pi_("bezels.bevel.dy", 1), r[2] - 2 * pi_("bezels.bevel.inset", 10), pcol("bezels.bevel.colour"));
-  v_region("panel", LAYER_CHROME); composed_box(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], ops);
+  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"],[\"h\",%d,%d,%d,\"%s\"]]", r[2], r[3], rad, pcol("bezels.fill"), pcol("bezels.edge"), pi_("bezels.bevel.inset", 10), pi_("bezels.bevel.dy", 1), r[2] - 2 * pi_("bezels.bevel.inset", 10), pcol("bezels.bevel.colour"));
+  v_region(v_fmt("panelBezel.%d", i), LAYER_CHROME); composed_box(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], ops);
   /* the header: the verb, Inter 16 (the spec says 15 medium; the face has 16, 20 and 28), its baseline at y + 20, from x + 12 */
   int px = pi_("header.px", 16), base = pi_("header.baseline", 20); v_region("panelHeader", LAYER_TYPE);
   v_text(v_fmt("panel.verb.%d", i), verb, r[0] + pi_("header.x", 12), r[1] + base - v_cap(px), v_measure(verb, px), px, pcol("header.colour"));
@@ -167,8 +167,8 @@ static void build_price(const int r[4]) {
 /* a window's frame over its picture: the corners outside the radius 6 in the bezel's colour, then a 1 px `void` inner edge on the radius */
 static void build_window_frame(int i, const int w[4]) {
   int rad = pi_("windows.radius", 6); char ops[300];
-  snprintf(ops, sizeof ops, "[[\"ringOut\",\"round\",0,0,%d,%d,4000,%d,\"%s\"],[\"ring\",\"round\",0,0,%d,%d,1,%d,\"%s\"]]", w[2], w[3], rad, pcol("bezels.fill"), w[2], w[3], rad, pcol("windows.edge"));
-  v_region("panelWindow", LAYER_CHROME); composed_box(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], ops);
+  snprintf(ops, sizeof ops, "[[\"rcorners\",0,0,%d,%d,%d,\"%s\"],[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", w[2], w[3], rad, pcol("bezels.fill"), w[2], w[3], rad, pcol("windows.edge"));
+  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); composed_box(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], ops);
 }
 static void build_incubate_left(const int w[4]) {
   const char *room = v_pstr("overlay.regions.left.room"), *interior = v_pstr("overlay.regions.left.interior"), *pod = v_pstr("overlay.regions.left.pod"), *glass = v_pstr("overlay.regions.left.glass"), *shell = v_pstr("overlay.regions.left.shell"), *seal = v_pstr("overlay.regions.left.seal");

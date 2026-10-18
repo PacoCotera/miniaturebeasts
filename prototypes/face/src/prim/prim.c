@@ -142,13 +142,22 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       if (ring_mask(mask, bw, bh, width, radius, ell) < 0) { free(mask); return -1; }
       for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
-    } else if (nl == 7 && strncmp(name, "ringOut", 7) == 0 && tok[i].size == 9) {   /* ["ringOut", "round", x, y, w, h, width, radius, colour]: the same mask as ring, drawn where the ring's whole (a width of half the box or more) is NOT: a rounded box's corners outside it (the Incubate panel's windows, whose pictures are square) */
-      if (!COL(7)) return -1;
-      if (tok[j].type != JSMN_STRING || tok[j].end - tok[j].start != 5 || strncmp(ops + tok[j].start, "round", 5) != 0) return -1;
-      int x = A(1), y = A(2), bw = A(3), bh = A(4), width = A(5), radius = A(6);
-      if (g_bad || width > 4096 || radius > 4096 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+    } else if (nl == 5 && strncmp(name, "rrect", 5) == 0 && tok[i].size == 8) {   /* ["rrect", x, y, w, h, radius, fill, edge]: a rounded box, its whole in `fill` ("" none) and a 1 px edge on its outline in `edge` ("" none), integer corners with no anti-aliasing (the Incubate panel's bezels and window edges; not a focus ring, so it sets no ring flag) */
+      uint32_t fillc = 0, edgec = 0; int hasf = tok[j + 5].end > tok[j + 5].start, hase = tok[j + 6].end > tok[j + 6].start;
+      if (hasf && colour_of(ops + tok[j + 5].start, tok[j + 5].end - tok[j + 5].start, &fillc) != 0) return -1;
+      if (hase && colour_of(ops + tok[j + 6].start, tok[j + 6].end - tok[j + 6].start, &edgec) != 0) return -1;
+      int x = A(0), y = A(1), bw = A(2), bh = A(3), radius = A(4);
+      if (g_bad || radius < 0 || radius > 4096 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
       uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
-      if (ring_mask(mask, bw, bh, width, radius, 0) < 0) { free(mask); return -1; }
+      if (hasf) { if (ring_mask(mask, bw, bh, 4000, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, fillc); }
+      if (hase) { if (ring_mask(mask, bw, bh, 1, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, edgec); }
+      free(mask);
+    } else if (nl == 8 && strncmp(name, "rcorners", 8) == 0 && tok[i].size == 7) {   /* ["rcorners", x, y, w, h, radius, colour]: the corners of a w x h box that lie outside its rounded shape, in colour (a square picture seated in a rounded window) */
+      if (!COL(5)) return -1;
+      int x = A(0), y = A(1), bw = A(2), bh = A(3), radius = A(4);
+      if (g_bad || radius < 0 || radius > 4096 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, 4000, radius, 0) < 0) { free(mask); return -1; }
       for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (!mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
     } else if (nl == 7 && strncmp(name, "tabRing", 7) == 0 && tok[i].size == 13) {  g_ringdrawn = 1;   /* ["tabRing", x, y, body, width, slant, outside, top, slantTo, bottom, radius, tabTop, colour] */

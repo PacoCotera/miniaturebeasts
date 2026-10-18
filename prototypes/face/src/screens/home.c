@@ -560,9 +560,17 @@ static void pods_objects(int dy) {
     const char *glint = v_pstr(v_fmt("regions.pods.wells.%d.glint", i)); if (*glint) v_sprite(v_fmt("pods.glint.%d", i), glint, r[0] + hk("regions.pods.starAt", 0), r[1] + hk("regions.pods.starAt", 1) + dy, sw, sh);
   }
 }
+/* Home's Incubator station (T-20261016-222; build-spec section 5): the painted capsule at x0.137, 56 x 86, the state only: the interior, the relit pod (growing and ready), the glass (growing), the shell, the door (empty and ready) and the bar (lit while growing and ready, never a fraction) */
 static void incubator_objects(int dy) {
-  v_name("incubator");
-  put("incubator.chamber", v_pstr("regions.incubator.chamber"), "regions.incubator.chamberRect", dy);
+  const char *state = v_pstr("regions.incubator.state"); int growing = strcmp(state, "growing") == 0, ready = strcmp(state, "ready") == 0, r[4];
+  v_name("incubator"); hrect("regions.incubator.capsuleRect", r);
+  { const char *a = v_pstr("regions.incubator.capsule.interior"); if (*a) v_sprite("incubator.interior", a, r[0], r[1] + dy, r[2], r[3]); }
+  { const char *pod = v_pstr("regions.incubator.capsule.pod"); int w = v_pint("regions.incubator.capsule.podSize.0", 0), h = v_pint("regions.incubator.capsule.podSize.1", 0), ax = v_pint("regions.incubator.capsule.podAnchor.0", 0), ay = v_pint("regions.incubator.capsule.podAnchor.1", 0);
+    if (*pod && w > 0 && (growing || ready)) v_sprite("incubator.pod", pod, r[0] + hk("regions.incubator.capsuleFoot", 0) - ax, r[1] + hk("regions.incubator.capsuleFoot", 1) + dy - ay, w, h); }
+  { const char *a = v_pstr("regions.incubator.capsule.glass"); if (*a && growing) v_sprite("incubator.glass", a, r[0], r[1] + dy, r[2], r[3]); }
+  { const char *a = v_pstr("regions.incubator.capsule.shell"); if (*a) v_sprite("incubator.shell", a, r[0], r[1] + dy, r[2], r[3]); }
+  { const char *a = v_pstr("regions.incubator.capsule.door"); if (*a && !growing) v_sprite("incubator.door", a, r[0], r[1] + dy, r[2], r[3]); }
+  { const char *a = v_pstr("regions.incubator.capsule.bar"); if (*a && (growing || ready)) v_sprite("incubator.bar", a, r[0], r[1] + dy, r[2], r[3]); }
 }
 static void probe_objects(int dy) {
   v_name("probe");

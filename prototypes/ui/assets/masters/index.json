@@ -6863,6 +6863,34 @@
    "h": 128,
    "sha256": "707b0974aa87fee34c0fa02629ed38ca7c51c86ba29a93cfe1fe73959a7af829",
    "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)"
+  },
+  "capsule-glass-closed-530x532": {
+   "file": "capsule/capsule-glass-closed-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "dd321bef266d6e9c6e2da3d52377d99dcd8605f0f688cffa8276b015346974a6",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)"
+  },
+  "capsule-glass-closed-145x224": {
+   "file": "capsule/capsule-glass-closed-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "49b6429b9d4ff575cf78d01626864aa5b5c0a5b2d19e963d02d8b659fc16018d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)"
+  },
+  "capsule-glass-closed-56x86": {
+   "file": "capsule/capsule-glass-closed-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "e597ebea815ef261c806057dfb050c6020d6a644a366d470b093015212b91032",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)"
+  },
+  "capsule-glass-closed-296x459": {
+   "file": "capsule/capsule-glass-closed-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "3d861c1ac743d9229a379346d52411b700d44a41e243180db92c0c68d19812bc",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)"
   }
  }
 }

@@ -60,7 +60,7 @@ test("the state: nothing read with no chapter read (no roll, the ring on the roo
   const a = make("S01", 3, 0).build(); assert.equal(a.props.state, "nothingRead"); assert.equal(a.props.regions.roll, undefined); assert.deepEqual(a.props.focus, { cur: "room", targets: [] }); assert.equal(a.props.regions.rail.open, -1);
   const b = make("S01", 3, 1).build(); assert.equal(b.props.state, "shape"); assert.deepEqual(b.props.focus, { cur: "roll", targets: [{ id: "roll", group: "roll" }] });
   const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p, minutes: r.bud.minutes }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
-  assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'");
+  assert.equal(g.props.regions.dome.busy, false, "the bud that just grew is not 'another bud'");
   assert.ok(g.line.ok === null && g.line.back === null && g.line.price == null && g.line.need === "", "grow: the line is Growing, no action, price or way back, an empty right slot (fix 5 C6)"); assert.equal(g.line.subject, spec.strings.growing); assert.deepEqual([g.line.dim, g.line.blocked, g.line.short], [undefined, undefined, undefined]);
   assert.equal(g.props.regions.roll.shown, false, "grow: the roll keeps its nodes with no size"); assert.equal(g.props.regions.roll.pictures.length, 3, "the roll pictures stay requested in grow"); assert.deepEqual(g.props.focus, { cur: "room", targets: [] }, "grow: no ring"); assert.equal(g.props.regions.rail.open, -1); assert.ok(g.props.regions.rail.tabs.every((t) => !("lift" in t)), "no tab open and no lift (fix 11: the lift is retired)"); assert.deepEqual([g.props.regions.traitLine.text, g.props.regions.traitLine.changed], ["", false], "no trait line in grow, the tag included");
   assert.equal(b.props.regions.roll.shown, true); assert.equal(a.props.regions.traitLine.text, "", "nothingRead: no trait line"); assert.equal(a.line.subject, "it grows as the pod is", "nothingRead: the sentence moves to the context");
@@ -102,7 +102,7 @@ test("the bottom line: ✓ Incubate and the price with ◆ a change (the first f
   m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
   assert.equal(make("S01", 3, 0).build().line.subject, Sg.traitLine.none); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina unread"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
   { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
-  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.bud.busy, true); }
+  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.dome.busy, true, "the capsule's bar is lit while another bud grows"); }
   { const k = make("S01", 3, 2); for (let i = 0; i < 12; i++) k.st.mibis.push({ id: 100 + i, bay: i, released: false }); L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.noBay]); }
   { const k = make("S01", 3, 2); k.st.s = 1; L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked, L.need], [true, "❀", undefined, "needs ❀: go out or return pods"]); }
   { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.deepEqual([L.dim, L.short, L.need], [true, "⚡ ❀", "needs more ⚡ ❀: go out"]); }
@@ -136,12 +136,14 @@ test("regions.podShadow.picture is the class's contact shadow slot: pod-large-sh
   const all = make("S01", 3, 2).build(); assert.deepEqual(validate(all.props, schema), []);
 });
 
-// the pod at rest in the small chamber (create.json regions.travel.rest): the collection class, whatever the species' own class
-test("regions.pod.dome is the pod at the collection class, pod:<species>:i:88x112, for a large, a medium and a small species", () => {
+// the pod at rest in the capsule (create.json regions.dome, regions.travel.rest; build-spec section 5): the relit pod, 72 tall, whatever the species' own class
+test("regions.pod.dome is the relit pod of the capsule: relit:<species>:pod:day:<w>x<h>:v<recipe>, 72 tall at the moss line y 268 (scale 72 / 160), its blades from the capsule's interior", () => {
   for (const [id, cls] of [["S02", "large"], ["S01", "medium"], ["S03", "small"]]) {
     const b = make(id, 3, 0).build(), pod = b.props.regions.pod;
-    assert.equal(pod.sizeClass, cls); assert.equal(pod.dome, `pod:${id}:i:88x112`); assert.notEqual(pod.dome, pod.picture);
-    const r = b.requests.find((x) => x.id === pod.dome); assert.ok(r && r.kind === "pod" && r.size.join("x") === "88x112" && r.species === id, "the request is the collection class's picture");
+    assert.equal(pod.sizeClass, cls); assert.match(pod.dome, new RegExp(`^relit:${id}:pod:day:${pod.domeSize.join("x")}:v\\d+$`)); assert.notEqual(pod.dome, pod.picture);
+    const r = b.requests.find((x) => x.id === pod.dome); assert.ok(r && r.kind === "relit" && r.scale === 72 / 160, "the request is the relit pod at 72 tall"); assert.equal(r.bg.id, b.props.regions.dome.back, "the blades come from the interior master");
+    assert.deepEqual([r.area, r.anchor], [pod.domeSize, pod.domeAnchor]); assert.deepEqual(spec.regions.travel.foot.to, [864, 268], "the travel ends on the moss line");
+    assert.deepEqual([b.props.regions.dome.back.split(":")[0], b.props.regions.domeFront.picture.split(":")[0]], ["capsule-interior-day-145x224", "capsule-shell-145x224"]); assert.equal(b.props.regions.dome.glass.split(":")[0], "capsule-glass-closed-145x224");
   }
 });
 

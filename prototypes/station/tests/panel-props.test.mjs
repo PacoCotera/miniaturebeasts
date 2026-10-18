@@ -60,12 +60,12 @@ test("focus opens on the first card that is neither dimmed nor a loss, else the 
 });
 
 // ---- the Incubate | Keep shaping panel (T-20261016-222; build-spec 6a): Create's `confirm` state ----
-const incView = (h, focus = "card.incubate") => { h.ui.panel = { screen: "create", id: "incubate", focus }; return panelBuild({ st: h.st, settings: h.settings, ui: h.ui, jump: h.settings.jump, create: createSpec, glass: incubatorSpec.glass }, panelSpec, frameSpec, podsSpec); };
+const incView = (h, focus = "card.incubate") => { h.ui.panel = { screen: "create", id: "incubate", focus }; return panelBuild({ st: h.st, settings: h.settings, ui: h.ui, jump: h.settings.jump, create: createSpec }, panelSpec, frameSpec, podsSpec); };
 test("the Incubate panel's geometry (panel.json incubate): two bezels 490 x 506 at y 46 with a 12 px gap, each window inside its bezel (8 px in, under a 30 px header), the verbs and Incubate's price fit the header", () => {
   const I = panelSpec.incubate, [l, r] = [I.bezels.incubate, I.bezels.keep];
   assert.deepEqual([l, r], [[16, 46, 490, 506], [518, 46, 490, 506]]); assert.equal(r[0] - (l[0] + l[2]), 12);
   assert.deepEqual([I.windows.left, I.windows.right], [[24, 76, 474, 468], [526, 76, 474, 468]]); for (const [b, w] of [[l, I.windows.left], [r, I.windows.right]]) assert.deepEqual([w[0] - b[0], w[1] - b[1], b[2] - w[2], b[1] + b[3] - (w[1] + w[3])], [8, 30, 16, 8], "8 in, 30 under the top, 8 at the foot");
-  assert.deepEqual([I.header.h, I.header.baseline, I.header.x, I.price.right, I.price.pod.size, I.price.pod.top, I.price.gap, I.bezels.radius, I.windows.radius], [30, 20, 12, 12, [16, 20], 5, 12, 10, 6]);
+  assert.deepEqual([I.header.h, I.header.baseline, I.header.x, I.price.right, I.price.pod.size, I.price.pod.top, I.price.gap, I.bezels.radius, I.windows.radius], [30, 21, 12, 12, [16, 20], 5, 12, 10, 6]);
   const { h } = open(); const v = incView(h), Sg = createSpec.strings.panel;
   assert.deepEqual([v.overlay.regions.verbs.incubate, v.overlay.regions.verbs.keep, Sg.back], ["Incubate", "Keep shaping", "Back"]);
   const need = measure("Incubate", 16) + 12 + measure(v.overlay.regions.price.replace(/[⚡❀◆]/g, "xx"), 16) + 16 + 12 + 12; assert.ok(need <= 490, `the left header needs about ${need} of 490`);

@@ -24,12 +24,12 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
   const { st, settings } = m, cr = m.ui.create, requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.incubate, Sg = createSpec.strings.panel, p = createPod(st, cr), species = S.speciesOf(p), signed = "signed (art director, capsule-masters.md)";
   const cost = S.growCost(st, cr.choices, settings), text = S.priceText(cost.e, cost.d, cost.s, 0), [lw, lh] = P.windows.left.slice(2);
   const room = slot(req, "capsule-room-dusk-474x468", [0, 0, lw, lh], signed);
-  const sz = [296, 459], L = layers(req, sz, ["interior-dusk", "shell-dusk", "seal-ring"]), glass = req({ kind: "glass", id: `capsule-glass:panel:${sz.join("x")}:v1`, size: sz, mask: L["interior-dusk"], glass: m.glass });
+  const sz = [296, 459], L = layers(req, sz, ["interior-dusk", "shell-dusk", "seal-ring", "glass-closed"]);
   const cv = podArea(P.left.podHeight), at = P.left.layers, foot = P.left.foot;
   const pod = relitPod(req, { species, variant: "pod", light: "dusk", h: P.left.podHeight, area: cv, bg: bgOf({ id: L["interior-dusk"], at }, foot, cv.anchor) });
   const icon = req({ kind: "podicon", id: `podicon:${species}:16x20`, species, size: P.price.pod.size });
   const regions = { cards: [{ id: "incubate" }, { id: "keep" }], verbs: { incubate: Sg.incubate, keep: Sg.keep }, price: text === "free" ? "" : text, pod: icon,
-    left: { room, interior: L["interior-dusk"], shell: L["shell-dusk"], seal: L["seal-ring"], glass, layerSize: sz, pod, podSize: cv.size, podAnchor: cv.anchor } };
+    left: { room, interior: L["interior-dusk"], shell: L["shell-dusk"], seal: L["seal-ring"], glass: L["glass-closed"], layerSize: sz, pod, podSize: cv.size, podAnchor: cv.anchor } };
   const ui = m.ui.panel, cur = ui.focus === "card.keep" ? "card.keep" : "card.incubate";
   const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: null, back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
   return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };

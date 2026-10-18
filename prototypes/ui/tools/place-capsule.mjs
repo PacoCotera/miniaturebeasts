@@ -11,10 +11,10 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(h
 const from = process.argv[process.argv.indexOf("--from") + 1]; if (!from || process.argv.indexOf("--from") < 0) { console.error("--from <masters dir>"); process.exit(2); }
 const SIGNED = "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)";
 const LIST = [
-  ...["capsule-room-day-1024x522", "capsule-room-dusk-1024x522", "capsule-shell-530x532", "capsule-shell-dusk-530x532", "capsule-interior-day-530x532", "capsule-interior-dusk-530x532", "capsule-bar-lit-530x532", "capsule-door-open-530x532", "capsule-seal-ring-530x532"].map((n) => ["room", n]),
-  ...["capsule-shell-145x224", "capsule-interior-day-145x224", "capsule-bar-lit-145x224"].map((n) => ["create", n]),
-  ...["capsule-shell-56x86", "capsule-interior-day-56x86", "capsule-bar-lit-56x86", "capsule-door-open-56x86"].map((n) => ["home", n]),
-  ...["capsule-room-dusk-474x468", "capsule-interior-dusk-296x459", "capsule-shell-dusk-296x459", "capsule-seal-ring-296x459"].map((n) => ["panel", n]),
+  ...["capsule-room-day-1024x522", "capsule-room-dusk-1024x522", "capsule-shell-530x532", "capsule-shell-dusk-530x532", "capsule-interior-day-530x532", "capsule-interior-dusk-530x532", "capsule-bar-lit-530x532", "capsule-door-open-530x532", "capsule-seal-ring-530x532", "capsule-glass-closed-530x532"].map((n) => ["room", n]),
+  ...["capsule-shell-145x224", "capsule-interior-day-145x224", "capsule-bar-lit-145x224", "capsule-glass-closed-145x224"].map((n) => ["create", n]),
+  ...["capsule-shell-56x86", "capsule-interior-day-56x86", "capsule-bar-lit-56x86", "capsule-door-open-56x86", "capsule-glass-closed-56x86"].map((n) => ["home", n]),
+  ...["capsule-room-dusk-474x468", "capsule-interior-dusk-296x459", "capsule-shell-dusk-296x459", "capsule-seal-ring-296x459", "capsule-glass-closed-296x459"].map((n) => ["panel", n]),
   ...["bowl-shade", "bowl-mask-body", "bowl-mask-accent", ...["bands", "dots", "plates", "plates-relief", "ribs", "segments", "segments-relief", "stripes"].map((p) => "bowl-pattern-" + p), "cap-shade", "cap-mask-body", "cap-mask-accent"].map((n) => ["opened", "pod-opened-" + n]),
 ];
 const index = JSON.parse(readFileSync(indexFile, "utf8"));

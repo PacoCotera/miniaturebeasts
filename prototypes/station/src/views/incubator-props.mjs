@@ -9,7 +9,9 @@ import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
-import { layers, relitPod, relitJuvenile, podArea, bgOf } from "./capsule-props.mjs";
+import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
+import { mibiReq } from "./home-props.mjs";
+import { RECIPE } from "../relight.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
@@ -18,6 +20,15 @@ export function knownChapters(st, B, settings, now) {
   const fr = frameOf(B.species);
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
+// A relit juvenile: the new mibi's own juvenile stand (layered, from drawnLooks) at the incubator view's figure height (stand-sizes.json views.incubator), lit the same way. Returns { picture, size, anchor }.
+// bg: the interior the blades come from, { id, size, at: its top left on the screen }; the juvenile's feet are on spec.regions.juvenile.foot.
+export function relitJuvenile(req, st, mb, settings, spec, light = "day", interior = null) {
+  const H = spec.regions.juvenile.height, species = S.speciesOf(mb);
+  const src = mibiReq(req, st, mb, [304, 312], settings, light, "incubator"), area = podArea(H), id = `relit:${species ?? "-"}:${src}:${light}:${area.size.join("x")}:v${RECIPE}`;
+  req({ kind: "relit", id, parts: [{ id: src }], figH: H, area: area.size, anchor: area.anchor, bg: interior && bgOf(interior, spec.regions.juvenile.foot, area.anchor) });
+  return { picture: id, size: area.size, anchor: area.anchor };
+}
+
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const signed = "signed (art director, capsule-masters.md)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: Hatch now is playing (it has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was until the event ends, then the hatch on one refresh
@@ -29,17 +40,16 @@ export function incubatorBuild(m, spec, pods) {
   const roomSize = R.capsule.rect.slice(2), RM = (n) => slot(req, n, R.room.rect, signed);
   regions.room = { day: RM(R.room.pictures.day), dusk: RM(R.room.pictures.dusk) };
   // the capsule: its layers (room view, 530 x 532 at (344, 26)); the glass is the host's, drawn in code along the interior's alpha
-  const L = layers(req, roomSize, ["interior-day", "interior-dusk", "shell", "shell-dusk", "door-open", "bar-lit", "seal-ring"]);
-  const gl = spec.glass, glassId = req({ kind: "glass", id: `capsule-glass:room:${roomSize.join("x")}:v1`, size: roomSize, mask: L["interior-day"], glass: gl });
-  const barPx = state === "growing" ? Math.floor(R.capsule.bar.max * (gs ? gs.progress : S.budProgress(st, settings, now))) : R.capsule.bar.max;
-  regions.capsule = { interior: { day: L["interior-day"], dusk: L["interior-dusk"] }, shell: { day: L.shell, dusk: L["shell-dusk"] }, door: L["door-open"], bar: L["bar-lit"], seal: L["seal-ring"], glass: glassId, barPx };
+  const L = layers(req, roomSize, ["interior-day", "interior-dusk", "shell", "shell-dusk", "door-open", "bar-lit", "seal-ring", "glass-closed"]);
+    const barPx = state === "growing" ? Math.max(1, Math.floor(R.capsule.bar.max * (gs ? gs.progress : S.budProgress(st, settings, now)))) : R.capsule.bar.max;   // from its first pixel (build-spec 4.1: the bar from its first pixel), so the lit bar never pops off in the wait's first seconds
+  regions.capsule = { interior: { day: L["interior-day"], dusk: L["interior-dusk"] }, shell: { day: L.shell, dusk: L["shell-dusk"] }, door: L["door-open"], bar: L["bar-lit"], seal: L["seal-ring"], glass: L["glass-closed"], barPx };
   // what stands inside: the bud's sealed pod (growing, ready, the hatch's beat), its cracks, the opened pod; the juvenile
   const species = hatch ? hatch.species : B?.species;
   if (state !== "empty") {
     const cv = { size: R.inside.rect.slice(2), anchor: R.inside.anchor }, at = R.capsule.rect, topLeft = [R.inside.foot[0] - cv.anchor[0], R.inside.foot[1] - cv.anchor[1]], h = R.capsule.podHeight;
     const bgOf2 = (light) => ({ id: L[light === "dusk" ? "interior-dusk" : "interior-day"], at: [at[0] - topLeft[0], at[1] - topLeft[1]] });
     const pod = (variant, light) => relitPod(req, { species, variant, light, h, area: cv, bg: bgOf2(light) });
-    regions.inside = { pod: { day: pod("pod", "day"), dusk: state === "growing" ? pod("pod", "dusk") : "", crack1: state === "hatch" ? pod("crack1", "day") : "", crack2: state === "hatch" ? pod("crack2", "day") : "" }, opened: state === "hatch" ? pod("opened", "day") : "" };
+    regions.inside = { pod: { day: pod("pod", "day"), dusk: state === "growing" ? pod("pod", "dusk") : "", crack: state === "hatch" ? pod("crack", "day") : "" }, opened: state === "hatch" ? pod("opened", "day") : "" };
   }
   // the stamp of the chapters the bud knows, its code, "ready in about {n} min"; in the hatch the juvenile and its ribbon
   const fr = species ? frameOf(species) : null, kind = hatch ? hatch.kind : B?.kind;

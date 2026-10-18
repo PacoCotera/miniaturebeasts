@@ -180,7 +180,7 @@
   "header": {
    "h": 30,
    "px": 16,
-   "baseline": 20,
+   "baseline": 21,
    "x": 12,
    "colour": "bone",
    "note": "the spec says Inter 15 medium; the face has Inter 16, 20 and 28 (open question in the T-20261016-222 report)"
