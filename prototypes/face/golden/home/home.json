@@ -6,19 +6,19 @@
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "2c6f5d8f",
+   "hash": "06cbc9f1",
    "png": "home-docked.png"
   },
   "home-docked-dawn": {
-   "hash": "8b778760",
+   "hash": "8da313e5",
    "png": "home-docked-dawn.png"
   },
   "home-docked-dusk": {
-   "hash": "c6d40d5c",
+   "hash": "6889f2ba",
    "png": "home-docked-dusk.png"
   },
   "home-docked-night": {
-   "hash": "9b910d90",
+   "hash": "3f0e0f76",
    "png": "home-docked-night.png"
   },
   "home-goal-docked": {
@@ -26,47 +26,47 @@
    "png": "home-goal-docked.png"
   },
   "home-goal-away": {
-   "hash": "cdff2ca3",
+   "hash": "549f0e98",
    "png": "home-goal-away.png"
   },
   "home-away": {
-   "hash": "2888bb65",
+   "hash": "b1179f9b",
    "png": "home-away.png"
   },
   "home-waiting": {
-   "hash": "a5727f68",
+   "hash": "67d29d17",
    "png": "home-waiting.png"
   },
   "home-bed-none": {
-   "hash": "a7ba0dcd",
+   "hash": "a470172e",
    "png": "home-bed-none.png"
   },
   "home-cargo-empty": {
-   "hash": "813fd4f9",
+   "hash": "808d2852",
    "png": "home-cargo-empty.png"
   },
   "home-incubator-empty": {
-   "hash": "d8db5f37",
+   "hash": "4a5c8844",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-growing": {
-   "hash": "173cb4d1",
+   "hash": "c9a8d76a",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-ready": {
-   "hash": "cdbcdd22",
+   "hash": "599f85e1",
    "png": "home-incubator-ready.png"
   },
   "home-probe-docked": {
-   "hash": "a240531f",
+   "hash": "04a49030",
    "png": "home-probe-docked.png"
   },
   "home-probe-away": {
-   "hash": "708ddbfb",
+   "hash": "1b602720",
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
-   "hash": "c8a457bf",
+   "hash": "667f4b48",
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
@@ -74,27 +74,27 @@
    "png": "home-library-empty.png"
   },
   "home-library-pages": {
-   "hash": "f77ab17e",
+   "hash": "d2edd811",
    "png": "home-library-pages.png"
   },
   "home-knob-rest": {
-   "hash": "f73bbee9",
+   "hash": "880f3ca6",
    "png": "home-knob-rest.png"
   },
   "home-knob-focused": {
-   "hash": "3cdfea05",
+   "hash": "ade9f846",
    "png": "home-knob-focused.png"
   },
   "home-vivarium-focused": {
-   "hash": "3ec468df",
+   "hash": "df066b98",
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
-   "hash": "d522ef59",
+   "hash": "5205c6f6",
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "7afcaae1",
+   "hash": "0f9e6272",
    "png": "home-sleeper-focused.png"
   },
   "home-moving-asleep": {
@@ -102,15 +102,15 @@
    "png": "home-moving-asleep.png"
   },
   "home-knob-pressed": {
-   "hash": "7b28b192",
+   "hash": "bc9317c1",
    "png": "home-knob-pressed.png"
   },
   "home-walk-8000ms": {
-   "hash": "856b7e14",
+   "hash": "a8739206",
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "0071f86a",
+   "hash": "5d3727f3",
    "png": "home-crates-arriving.png"
   }
  }
