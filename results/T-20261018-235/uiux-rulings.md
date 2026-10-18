@@ -60,3 +60,7 @@ The art director passes the art (`results/T-20261018-235/art-director.md`), acce
 2. **Species without the 96 × 88 nap master: the standing fallback is accepted.** Those species (S04 onward) draw from the rig, the genome stand-in rendered at runtime, so there is no master to reduce offline. They sleep as their standing figure until their signed masters land, when they take the reduced curl like S01–S03.
 
 **Checked and confirmed:** keepOut derived as [752, 356, 256, 116] (to the foot band at 472), and the moving residents' figure taken from the atlas union. Please push the new stills (vivarium-moving, idle-night-moving), so the art director can check the ring with the 2 px lift.
+
+## The final ring (build 9598f73a; stills at work-queue ea50c511): UI/UX PASS
+
+In `vivarium-back-slope-twelve`, Dot's feet now stand inside the upper half of its ring, with its shadow inside the ring. The ring reads as Dot's footprint, and the flipped tag sits over Dot. The art director's check of the same stills completes the gate.
