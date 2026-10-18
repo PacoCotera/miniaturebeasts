@@ -93,7 +93,7 @@ describe("drawnLooks(frame, mibi)", () => {
 describe("the layered stand", () => {
   test("a base and layers per look, derived at each standing size; the layer table is data (every layer is in the index with its hash)", () => {
     const index = loadStandLayersFs(); assert.ok(standLayersLoaded());
-    for (const [stage, places] of [["adult", [[304, 312], [144, 152], [48, 48]]], ["juvenile", [[304, 312], [104, 112], [48, 48]]]]) for (const place of places) { const s = layeredStand("S01", stage, place); assert.ok(s, stage + place.join("x")); assert.deepEqual(s.traits, ["markings", "crown", "eye-rings"]); assert.equal(s.layers.length, 3); assert.equal(s.stage, stage); assert.deepEqual(s.size, place, "the picture is the place's"); assert.deepEqual(s.figure, place, "a view the table does not give draws the whole canvas fitted in its place: unchanged"); }
+    for (const [stage, places] of [["adult", [[304, 312], [144, 152], [48, 48]]], ["juvenile", [[304, 312], [104, 112], [48, 48]]]]) for (const place of places) { const s = layeredStand("S01", stage, place); assert.ok(s, stage + place.join("x")); assert.deepEqual(s.traits, ["colour", "markings", "crown", "eye-rings"]); assert.equal(s.layers.length, 3); assert.equal(s.stage, stage); assert.deepEqual(s.size, place, "the picture is the place's"); assert.deepEqual(s.figure, place, "a view the table does not give draws the whole canvas fitted in its place: unchanged"); }
     assert.deepEqual(layeredStand("S01", "adult", [144, 152], "home").figure, [57, 59]); assert.deepEqual(layeredStand("S01", "juvenile", [104, 112], "home").figure, [64, 66]); assert.deepEqual(layeredStand("S01", "adult", [304, 312], "habitat").figure, [158, 163]);
     assert.equal(layeredStand("S01", "elder", [144, 152]).stage, "adult", "an elder takes the adult's stand");
     assert.equal(layeredStand("S01", "adult", [96, 88]), null, "the sleeper's curl is not a stand pose: its signed picture");
@@ -109,7 +109,7 @@ describe("the layered stand", () => {
       const variants = [{ crown: "leaf crest" }, { markings: "patches" }, { markings: "stripes" }, { markings: "stripes and patches" }, { crown: "leaf crest", markings: "stripes and patches" }];
       const seen = new Set([bare]);
       for (const v of variants) { const h = pixels(st, v); assert.ok(!seen.has(h), stage + JSON.stringify(v)); seen.add(h); }
-      assert.equal(pixels(st, { markings: "plain", "eye-rings": "between", crown: "bare head", colour: "ash" }), bare, "a look with no layer (plain, a colour, the base's own rings) is the base: nothing is invented");
+      assert.equal(pixels(st, { markings: "plain", "eye-rings": "between", crown: "bare head", colour: "charcoal" }), bare, "a look with no layer (plain, charcoal, the base's own rings) is the base: nothing is invented");
       assert.equal(pixels(st, { "eye-rings": "thin rings" }), bare, "the ring overlays are stand-ins: the base's rings");
       assert.equal(pixels(st, { "eye-rings": "wide pale rings" }), bare);
       assert.deepEqual(layersFor(st, { markings: "stripes and patches", crown: "leaf crest" }).map((l) => l.order), [10, 11, 30], "patches, then stripes, then the crest");
@@ -150,7 +150,7 @@ describe("the layered stand", () => {
   test("the variant is the picture: the same looks are one id, different looks are different ids, an unread look is the base's", () => {
     const st = layeredStand("S01", "adult", [144, 152]), id = (l, light) => standPictureId(st, l, light);
     assert.match(id({}), /^mibi:S01~[0-9a-f]{8}:adult:144x152$/); assert.match(id({}, "night"), /:night$/);
-    assert.equal(id({ colour: "ash", markings: "plain", "eye-rings": "thin rings", crown: "bare head" }), id({}), "colour, plain and the rings have no layer yet: the base");
+    assert.equal(id({ colour: "charcoal", markings: "plain", "eye-rings": "thin rings", crown: "bare head" }), id({}), "charcoal, plain and the rings have no layer: the base"); assert.notEqual(id({ colour: "ash" }), id({}), "a coat is its own picture");
     assert.notEqual(id({ crown: "leaf crest" }), id({})); assert.notEqual(id({ markings: "stripes" }), id({ markings: "patches" })); assert.equal(standVariant(st, { crown: "leaf crest", markings: "patches" }).key, "S01~crown=leaf crest,markings=patches@144x152", "the figure box is a parameter of the variant");
     assert.equal(keyToken("S01~"), keyToken("S01~")); assert.notEqual(keyToken("S01~"), keyToken("S01~crown=bare head"));
     assert.equal(policyOf(id({ crown: "leaf crest" }), "placeholder"), "painted"); assert.equal(policyOf("mibi:S01~0123abcd:juvenile:104x112:night", "placeholder"), "painted", "a layered juvenile too"); assert.equal(policyOf(id({}, "dusk"), "placeholder"), "painted");
