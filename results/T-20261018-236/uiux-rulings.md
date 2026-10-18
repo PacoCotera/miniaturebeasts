@@ -98,3 +98,11 @@ All three are small: strings, one flag and one label condition. **Fold them into
 - **The rule:** the pod's name label (`pods.json` `name`, in the rack and on the overview) shows the species only once the pod is identified. Until then it reads **"Unknown"** (71 px at 16 px, 20 px as the label's px), in the same plate. The species never shows earlier, in a label, a line or a picture.
 - **Identified pods** keep the species name and show their species' pod, as the Tuikis does. If an identified Loika in the rack shows the generic shell, that is a missing v4 rack picture: the art director's, then the builder's.
 - **Goldens:** `pods-collection` and `pods-overview-unidentified`.
+
+### 3.4 The bottom line's middle on a panel (after 2aa5556f)
+
+- **The cut fact is not acceptable.** An ellipsis on the one fact a player needs before an irreversible press is the worst place for one. It shows on both Release panels ("it goes back to the pond e…", "Fig lives in the wild from n…").
+- **The fix is not shorter words: the middle slot is empty on a panel**, as T-20261016-195 §1 already rules ("Bottom line, middle: empty on a panel"). The fact sits on its card, in full, where the ring is. Repeating it below only cuts it.
+- **This holds for every decision panel**, not just Release. The ✓ verb with its icons and ← "Back" stay as they are, and so does the status cue on the right ("two new pods in the rack").
+- **Goldens:** `pods-panel-release` and the Vivarium's wild panel.
+- **The settle guard** goes to the follow-up ticket, as the lead says.
