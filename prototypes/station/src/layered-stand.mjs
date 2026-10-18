@@ -32,16 +32,18 @@ export function figureBox(stand, place, view) {
 export function layeredStand(species, stage, place, view = "default") {
   const st = stageKey(stage), set = INDEX?.stands?.[species]?.[st]; if (!set) return null;
   if (!SIZES?.places?.includes(`${place[0]}x${place[1]}`)) return null;
-  const [cw, ch] = ART_SIZE.split("x").map(Number), sz = set.sizes?.[ART_SIZE]; if (!sz || !PIXELS.has(sz.base) || !sz.layers.every((l) => PIXELS.has(l.file))) return null;
-  const stand = { species, stage: st, size: [...place], view, traits: set.traits, base: sz.base, layers: sz.layers }, figure = figureBox(stand, place, view);
+  const [cw, ch] = ART_SIZE.split("x").map(Number), sz = set.sizes?.[ART_SIZE]; if (!sz || !PIXELS.has(sz.base) || !Object.values(sz.bases ?? {}).every((f) => PIXELS.has(f)) || !sz.layers.every((l) => PIXELS.has(l.file))) return null;
+  const stand = { species, stage: st, size: [...place], view, traits: set.traits, base: sz.base, bases: sz.bases ?? {}, layers: sz.layers }, figure = figureBox(stand, place, view);
   const fig = set.figure, sc = Math.min(figure[0] / cw, figure[1] / ch);   // never up past the art, and the figure itself (not the canvas around it) must fit its picture
   if (sc > 1 || (fig[2] - fig[0] + 1) * sc > place[0] + 0.5 || (fig[3] - fig[1] + 1) * sc > place[1] + 0.5) return null;
   return { ...stand, figure };
 }
+// The base a mibi's coat calls for: a coat the stand has a painted base for (the version 4 colours, recoloured by the signed ramps), else the stand's own base (charcoal, or a coat it has no ramp for)
+export const baseFor = (stand, looks) => stand.bases[looks.colour] ?? stand.base;
 // The layers a mibi's looks call for, in order: a layer whose trait shows exactly its look
 export const layersFor = (stand, looks) => stand.layers.filter((l) => l.looks.includes(looks[l.trait])).sort((a, b) => a.order - b.order || a.file.localeCompare(b.file));
 // The picture's variant key for a stand and a mibi's looks: the looks the stand HAS a layer for (a trait it cannot show, or a look it has no layer for, is the base), so two mibis that draw the same pixels are one picture
-export function standVariant(stand, looks) { const shown = {}; for (const l of layersFor(stand, looks)) shown[l.trait] = looks[l.trait]; const key = standKey(stand.species, stand.traits, shown) + "@" + stand.figure.join("x"); return { key, token: keyToken(key) }; }
+export function standVariant(stand, looks) { const shown = {}; if (stand.bases[looks.colour]) shown.colour = looks.colour; for (const l of layersFor(stand, looks)) shown[l.trait] = looks[l.trait]; const key = standKey(stand.species, stand.traits, shown) + "@" + stand.figure.join("x"); return { key, token: keyToken(key) }; }
 export const standPictureId = (stand, looks, light = "day") => { const { token } = standVariant(stand, looks); return `mibi:${stand.species}~${token}:${stand.stage}:${stand.size[0]}x${stand.size[1]}${light === "day" ? "" : ":" + light}`; };
 
 // Scaling down (Lanczos 3, premultiplied alpha, separable): the canvas fitted into w×h by the one factor that fits, bottom-centred, transparent around
@@ -72,7 +74,7 @@ export function fitDown(src, sw, sh, bw, bh, w = bw, h = bh) {   // the sw×sh p
 
 // The composed picture at the place's size, the figure at its box: { w, h, rgba() } with straight alpha. The layers are laid on the canvas, then the whole is fitted down once.
 export function composeStand(stand, looks) {
-  const [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = stand.size, [fw, fh] = stand.figure, b = PIXELS.get(stand.base).rgba(), out = new Uint8ClampedArray(b);
+  const [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = stand.size, [fw, fh] = stand.figure, b = PIXELS.get(baseFor(stand, looks)).rgba(), out = new Uint8ClampedArray(b);
   if (out.length !== cw * ch * 4) throw new Error(`stand ${stand.species}: the base is not ${cw}×${ch}`);
   for (const l of layersFor(stand, looks)) {
     const s = PIXELS.get(l.file).rgba(); if (s.length !== out.length) throw new Error(`stand layer ${l.file} is not ${cw}×${ch}`);
