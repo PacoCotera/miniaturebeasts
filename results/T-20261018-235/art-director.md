@@ -25,3 +25,16 @@
 - **A sleeping S01 drawn as its world-size curl in place, never standing:** agreed as a rule. **The sign-off on the curl itself is held** until a still shows an S01 asleep in place and focused; `idle-night-moving` shows only a standing S01.
 
 T-235 passes on the art, except the S01 curl, which waits for that still.
+
+## The S01 curl: it exists, so no painting is needed
+
+The signed version 4 set already has the curl, lying down with its eyes closed, for adult and juvenile, with every layer the stands use:
+- **Base keys:** masters-pods `art/station-masters/pods/floor/S01/keys/mibi-{adult,juvenile}-S01-base-curl-304x312.png`.
+- **Crest overlays:** `floor/S01/overlays/mibi-{adult,juvenile}-S01-curl-crest-304x312.png`.
+- **Fur mask, zone mask and stripes:** work-queue `results/T-20261016-200/layers/mibi-{adult,juvenile}-S01-curl-*-304x312.png`.
+- **Patches:** the signed round 2 in `results/T-20261016-203/patches-r2/mibi-{adult,juvenile}-S01-curl-patches-304x312.png`.
+- **Contact shadows:** `results/T-20261018-vivarium/shadows/S01-{adult,juvenile}-curl-304x48-shadow.png`.
+
+It is 304 × 312 with the feet on the stands' line. The layered stands were cut from the anchor pose only, which is why the build found no curl among them.
+
+**Ruling:** merge T-235 now, since the reduced standing picture is a stopgap. Then a small build ticket, not an art ticket: `tools/make-stand-layers.py` also cuts the curl pose from these files. A sleeping S01 draws its layered curl, reduced by the standing factor, with its curl shadow. The ruled behaviour is unchanged. The art director gates its still.
