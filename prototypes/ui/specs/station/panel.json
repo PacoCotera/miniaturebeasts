@@ -133,11 +133,11 @@
    "oneCrate": "a crate to the rack"
   },
   "growNow": {
-   "title": "Hatch now?",
+   "title": "Hatch the {Species} now?",
    "cards": {
     "grow": {
      "name": "Hatch now",
-     "line": "ready at once"
+     "line": "hatches now"
     },
     "wait": {
      "name": "Wait",

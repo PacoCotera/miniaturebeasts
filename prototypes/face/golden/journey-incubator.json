@@ -16,7 +16,7 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 10",
-    "subject": "ready at once"
+    "subject": "hatches now"
    },
    {
     "key": "back",
@@ -48,7 +48,7 @@
     "state": "growing",
     "ok": "Hatch now",
     "price": "❀ 10",
-    "subject": "ready at once"
+    "subject": "hatches now"
    },
    {
     "key": "confirm",

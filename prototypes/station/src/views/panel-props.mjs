@@ -61,7 +61,7 @@ export function fitCards(m, spec, frame, requests) {
     { id: "later", act: "notNow", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
   ];
 }
-// The cards of the Hatch now? panel (§1.6): Hatch now (the bud at its ready step, ❀ n from the rules, "ready at once"; dimmed when short) and Wait (the bud at its step now, nothing spent, "ready in about {n} min": the one minute count, owner ruling 3).
+// The cards of the Hatch the {Species} now? panel (§1.6): Hatch now (the bud at its ready step, ❀ n from the rules, "hatches now"; dimmed when short) and Wait (the bud at its step now, nothing spent, "ready in about {n} min": the one minute count, owner ruling 3).
 export const BUD = [128, 160];
 export function growNowCards(m, spec, frame, requests) {
   const { st, settings } = m, Sg = spec.strings.growNow, now = m.now ?? Date.now(), req = (r) => { requests.push(r); return r.id; };
@@ -97,6 +97,7 @@ export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "grow" ?
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });
+  if (id === "growNow") return fill(t, { Species: S.cap(S.spName(m.st.bud)) });
   return t;
 };
 

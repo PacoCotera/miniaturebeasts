@@ -176,8 +176,8 @@ const gview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: 
 test("the Hatch now? panel: the price from the rules, the ready bud and the bud as it is, the minute count only in the Wait card and its line, the threshold is a spec value", () => {
   const h = growNowHost(), v = gview(h), [grow, wait] = v.cards, c = S.instantGrowCost(h.st, settings, T0), n = S.budMinutesLeft(h.st, settings, T0);
   assert.equal(panelSpec.growNowAbove, 4); assert.ok(c.s > panelSpec.growNowAbove, "this bud is above the threshold");
-  assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, "Hatch now?");
-  assert.deepEqual([grow.id, wait.id], ["grow", "wait"]); assert.equal(grow.cost, S.priceText(c.e, c.d, c.s)); assert.match(grow.cost, /^❀ \d+$/); assert.equal(grow.line, "ready at once"); assert.equal(wait.cost, ""); assert.equal(wait.line, `ready in about ${n} min`);
+  assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, `Hatch the ${S.cap(S.spName(h.st.bud))} now?`);
+  assert.deepEqual([grow.id, wait.id], ["grow", "wait"]); assert.equal(grow.cost, S.priceText(c.e, c.d, c.s)); assert.match(grow.cost, /^❀ \d+$/); assert.equal(grow.line, "hatches now"); assert.equal(wait.cost, ""); assert.equal(wait.line, `ready in about ${n} min`);
   assert.equal(grow.picture, "bud-ready-128x160"); assert.match(wait.picture, /^bud-(early|late)-128x160$/);
   for (const t of [grow.name, grow.line, grow.cost, wait.name, v.overlay.regions.title]) assert.ok(!/\bmin\b|⧗/.test(t), "no minute count outside the Wait line: " + t);
   assert.equal(v.overlay.focus.cur, "card.grow"); h.ui.panel.focus = "card.wait"; assert.equal(gview(h).line.subject, `ready in about ${n} min`, "the context carries the count");
