@@ -59,7 +59,7 @@ Contents rise into the display when a crate opens. They sit in one row, centred 
 
 ## 4. The opening, per crate (replaces `events.opening.crate`)
 
-Times are in ms from the crate's start. Each travel is one sprite at 1:1, on a straight line, eased in and out with `cargo.json regions.travel.ease` and a 600 ms duration, never leaving the bay.
+Times are in ms from the crate's start. Each travel is one sprite at 1:1, on a straight line, eased in and out with `cargo.json regions.travel.ease` and a 600 ms duration, within the travel rect [16, 0, 992, 552]: the bay and the top bar, where materials land (drawn after, over them). A box may overhang the bay's edge until it swaps (`results/T-20261016-216/uiux-rulings.md` §4).
 
 | At | Does |
 | --- | --- |
