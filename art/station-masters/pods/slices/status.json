@@ -7108,5 +7108,25 @@
   "status": "derived-from-concept",
   "signed_in": null,
   "note": "derived-from-concept (10-18): a straight crop of the placed shut bay, no painting; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sealed-176x121": {
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-sealed-256x176 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "crate-lifting-176x138": {
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-lifting-256x200 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "crate-shadow-176x16": {
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-shadow-256x24 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sitting-176x121": {
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-sitting-256x176 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
  }
 }

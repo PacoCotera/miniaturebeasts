@@ -21822,5 +21822,57 @@
   "status": "derived-from-concept",
   "signed_in": null,
   "status_note": "derived-from-concept (10-18): a straight crop of the placed shut bay, no painting; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sealed-176x121": {
+  "size": [
+   176,
+   121
+  ],
+  "rect": null,
+  "src": "slices/crate-sealed-256x176.png (reduced by the art director, cuts/crate-sealed-176x121.png)",
+  "made": "the 176 px reduction of crate-sealed-256x176, 'every crate in the bay a reduction of its signed master'",
+  "sha256": "c210bd462c02befcbd2dfc9707a866dee0b3f635d0d0e3d92c53899ba72fb580",
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "status_note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-sealed-256x176 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "crate-lifting-176x138": {
+  "size": [
+   176,
+   138
+  ],
+  "rect": null,
+  "src": "slices/crate-lifting-256x200.png (reduced by the art director, cuts/crate-lifting-176x138.png)",
+  "made": "the 176 px reduction of crate-lifting-256x200, 'every crate in the bay a reduction of its signed master'",
+  "sha256": "d05d4760351af0640a0f2154991e64321be3d0c51f5847fcc05bcfbf879d04bc",
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "status_note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-lifting-256x200 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "crate-shadow-176x16": {
+  "size": [
+   176,
+   16
+  ],
+  "rect": null,
+  "src": "slices/crate-shadow-256x24.png (reduced by the art director, cuts/crate-shadow-176x16.png)",
+  "made": "the 176 px reduction of crate-shadow-256x24, 'every crate in the bay a reduction of its signed master'",
+  "sha256": "33a6345bfc66590eef40f0760242e15301a0bbdc6400522b52db1b3a4e911d5c",
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "status_note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-shadow-256x24 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sitting-176x121": {
+  "size": [
+   176,
+   121
+  ],
+  "rect": null,
+  "src": "slices/crate-sitting-256x176.png (reduced by the art director, cuts/crate-sitting-176x121.png)",
+  "made": "the 176 px reduction of crate-sitting-256x176, 'every crate in the bay a reduction of its signed master'",
+  "sha256": "276ecaea8b7004ccb3c395093b2c63d8f0773704556139882b61716159e9b2d3",
+  "status": "derived-from-concept",
+  "signed_in": null,
+  "status_note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-sitting-256x176 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
  }
 }
