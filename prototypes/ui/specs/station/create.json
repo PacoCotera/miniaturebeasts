@@ -7,7 +7,7 @@
  "wireframes": ["design/style-guide/station-layouts/03-create.png", "design/style-guide/station-layouts/03b-create-clash.png", "design/style-guide/station-layouts/03c-create-grow.png", "design/style-guide/station-layouts/03d-create-nav.png", "design/style-guide/station-layouts/03e-create-nothing-read.png"],
  "note": "The one home of the Create numbers, transcribed from station-layouts.md (Create) and its wireframes 03-create.svg to 03e-create-nothing-read.svg. Rectangles are [x, y, w, h] in screen pixels. Create shapes a founder from one identified pod: the founder is the spotlight, the roll of the focused trait sits over it, the pod at the left and the incubation dome and the stamp at the right balance it, the total is on the bottom line.",
  "derived": {
-  "fix 5": "UI/UX, 2026-10-15 07:16 (boards: fix 5 Create): the right column one stack (case 788, 320; label 804, 336; code 776, 481); nothingRead draws the stamp, no trait line; the grow line Growing; the roll's gate (silhouette and change box 160×160, else a cut); the right slot Create's own, block reasons first; the tag from the plate-name series; Create's own cradle front",
+  "fix 5": "UI/UX, 2026-10-15 07:16 (boards: fix 5 Create): the right column one stack (case 788, 320; label 804, 336; code 776, 481); nothingRead draws the stamp, no trait line; the grow line Incubating; the roll's gate (silhouette and change box 160×160, else a cut); the right slot Create's own, block reasons first; the tag from the plate-name series; Create's own cradle front",
   "roll pictures": "UI designer, 2026-10-09: 128×72 (was 128×88), so the notches sit outside the ring and the trait line clears the chamber. Art director, 13:28: re-cut from the chapter page's source (the painting's crop by the rig's region, or the per-look plate), never from its 128×160 picture; a surface or quality trait (Colour, Markings, Fluff, Sheen, Scales, Feathers, Tufts) a bleed crop filling all 128×72 with no ground; a part or posture (Beak, Crown, Crest, Tail, Head, Eyes, Carriage) whole inside the centred 75%, 96×54 at (16, 9), its ground keyed; only ever reduced",
   "one ring": "UI designer, 2026-10-09: the cream ring is on the chosen roll picture, the screen's one focus target; the four keys step what it holds, as on Cross (architect, 13:24: the stepper accepted). The rail's open tab is the focused trait's chapter and the trait's pip lifts 2 px; no second ring round a pip",
   "no mark on a picture": "UI designer, 2026-10-09, after the owner's 2026-10-08 21:55 rule: the changed tag and the clash ✕ in the trait line; a clash is a 2 px red edge on the picture's own rectangle",
@@ -91,7 +91,7 @@
   "grow": {
    "kind": "grow", "target": "pod", "ms": 900, "hold": 1080,
    "steps": [
-    { "at": 0, "ms": 300, "rows": "N+2", "rowsRule": "rows drawn at t = min(N + 2, floor(t × (N + 2) / 300)), top first, whole rows; N the stamp's modules a side (station-layouts.md, the stamp's cells); nothingRead: the empty frame at t 0, a cut; reduced motion: every row on the frame of ✓", "do": "at t 0: the line goes to Growing (ok, price, back null; need \"\"); the roll, notches, ring, trait line (its tag too), the rail's open tab and lift take no size (fix 5 Create C6, C7); the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
+    { "at": 0, "ms": 300, "rows": "N+2", "rowsRule": "rows drawn at t = min(N + 2, floor(t × (N + 2) / 300)), top first, whole rows; N the stamp's modules a side (station-layouts.md, the stamp's cells); nothingRead: the empty frame at t 0, a cut; reduced motion: every row on the frame of ✓", "do": "at t 0: the line goes to Incubating (ok, price, back null; need \"\"); the roll, notches, ring, trait line (its tag too), the rail's open tab and lift take no size (fix 5 Create C6, C7); the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
     { "at": 300, "do": "the code and its rule appear (a cut); the origin's lines take no size (fix 5 Create C4, C7)" },
     { "at": 300, "ms": 600, "do": "the pod travels from its box to the dome (regions.travel); the dish stays, empty" },
     { "at": 900, "ms": 180, "do": "the screen transition (16-level Bayer dither) to the Incubator, growing (incubator.json): a jump, so ← there reads Home (derived.grow is a jump)" }
@@ -155,7 +155,7 @@
  },
  "strings": {
   "title": "Create",
-  "action": "Grow it",
+  "action": "Incubate",
   "back": "{pod}",
   "changed": "chosen",
   "growing": "it goes to the Incubator",

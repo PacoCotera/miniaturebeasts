@@ -1,6 +1,6 @@
 // The Incubator in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `incubator-empty` (a pod in the rack: ✓ Choose a pod), `incubator-growing` (the wait's first half),
 // `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
-// `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the ready state).
+// `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the hatch, which Hatch now starts as the leaves end).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -34,7 +34,7 @@ const TIMED = {
   // Station M1 §2.5: the hatch with S01's moving set on its stand-in close cells, under the developer switch; 2720 (the R2 cut point) is taken last so the others keep their mibis
   ...Object.fromEntries([1090, 2500, 5440, 5840, 2720].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
-  "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "ready" },
+  "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "hatch" },
 };
 // The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
 export const hatched = { name: null };

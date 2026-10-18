@@ -95,9 +95,9 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
   assert.equal(make("S01", 3, 0).build().props.regions.traitLine.text, "", "nothingRead: no size, the sentence is the context's"); assert.equal(T.none, "it grows as the pod is");
 });
 
-test("the bottom line: ✓ Grow it and the price with ◆ a change (the first founder no Essence), what stays a surprise, the first block in the rules' order with its notice; ← the pod", () => {
+test("the bottom line: ✓ Incubate and the price with ◆ a change (the first founder no Essence), what stays a surprise, the first block in the rules' order with its notice; ← the pod", () => {
   const Sg = spec.strings, m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
-  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Grow it", "⚡ 2 ❀ 4 ⧗ 20", "Loika", "two chapters unread", ""]);
+  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Incubate", "⚡ 2 ❀ 4 ⧗ 20", "Loika", "two chapters unread", ""]);
   const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "the wait last: 20 and one a change");
   m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
   assert.equal(make("S01", 3, 0).build().line.subject, Sg.traitLine.none); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina unread"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
