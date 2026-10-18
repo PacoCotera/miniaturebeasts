@@ -16,30 +16,41 @@ Everything not named here keeps its current rule in `incubator.json`: the hand-o
 
 All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage is the frame's `(0, 40, 1024, 522)`; the top bar (40) and the bottom line (38) are the frame's own. Every image is placed at 1:1, nothing is scaled at runtime, and nothing is anti-aliased.
 
-**Provisional geometry.** The capsule numbers come from the closed painting reduced ×0.85 at build time (§5). The art director registers the four paintings to it and confirms them (open items 1 and 2). If a number moves, the builder takes the art director's.
+**The masters** are the art director's (`results/T-20261017-incubator-object/capsule-masters.md`). They are cut once at the stills' scale (1024 × 600, the authority) and reduced offline per view, never at runtime.
 
-## 1. The picture: the capsule, in layers
+## 1. The picture: the capsule, in layers (the Incubator room)
 
-The paintings fill a 1024 × 600 frame, and the capsule runs from y 0 to 595 in them. So every master is a build-time cut: reduced ×0.85 about the capsule's axis (x 512), and registered so the capsule stands at one place in every state. At runtime the screen is three layers, and the pod and the mibi are the player's own:
+**Placement in this view:**
+- The capsule is reduced **×0.85**. The shell box (authority x 322–706, y 0–600) lands at **349, 48, 327, 510**, with its axis on x 512.
+- Mapping: screen x = 512 + 0.85 · (x − 514), screen y = 48 + 0.85 · y.
+- The moss line (authority 432) lands at **y 415**, and the bar's centre at **(512, 490)**.
+- **The room is not reduced:** it is a 1:1 crop of `capsule-room-{day,dusk}`, 1024 × 522 (authority rows r0 to r0 + 522), with r0 set by the art director so that the table line meets the reduced capsule's foot (about 65). It fills the stage.
 
-| Layer | Rect | Draws |
+**Draw order and rects:**
+
+| Layer | Rect (screen) | Master |
 | --- | --- | --- |
-| `back` | 0, 40, 1024, 522 | `incubator-{look}-back-1024x522`: the wall, the floor, the capsule's body, its roof lamp and the moss behind the pod, with **the pod painted out** |
-| `pod` | box 440, 212, 144, 176 (bottom-centred on 512, 388) | the bud's pod from the pod renderer, class `large` (144 × 176), its species' shell (`pod-collection-*` layers at that class) |
-| `front` | 340, 48, 344, 472 | `incubator-{look}-front-344x472`: the moss's front rim over the pod's foot, and the glass (its edge and the faint reflection) |
-| `bar` | 433, 487, 158, 12 | the base's mint light bar, **the progress** (§3): `incubator-bar-off-158x12`, with `incubator-bar-lit-158x12` revealed from the left |
-| `juvenile` | box 441, 242, 142, 146 (feet on 388, axis 512) | hatch only: the new mibi at 142 × 146 (§4) |
+| room | 0, 40, 1024, 522 | `capsule-room-day` or `-dusk`, cropped |
+| interior | the window's box at ×0.85 | `capsule-interior-day` or `-dusk` (empty moss bed) |
+| pod | foot bottom-centred on (512, 415), about 170 tall | the renderer's pod for the bud's species, at the class the art director's reduction gives, relit to the roof lamp (as `composite-juvenile.py`), with the moss blades in front of the foot |
+| juvenile | feet on (532, 415), about 146 tall | hatch only: the new mibi's own juvenile stand (from `drawnLooks`), rendered by the host at that size and relit the same way |
+| glass | the window's box | `capsule-glass-closed`, drawn in code as alpha highlights (the closed states only) |
+| shell | 349, 48, 327, 510 | `capsule-shell` (window and bar area transparent) |
+| door | hinged at the shell's right edge (authority x ≈ 700, so screen x ≈ 668) | `capsule-door-open` (the open states only) |
+| bar | centre (512, 490) | `capsule-bar-off`, with `capsule-bar-on` revealed from the left as the progress (§3) |
+| seal | the window's box plus its glow | `capsule-seal-ring` (the incubate moment only) |
 
-**The looks:**
+**The states' layers** (the art director's table):
 
-| `{look}` | From | In |
-| --- | --- | --- |
-| `closed` | `closed-1024x600` | empty (pod layer off), growing |
-| `incubate` | `incubate-1024x600`: the door sealing, with the mint ring round the window | the incubate moment (§4) |
-| `open` | `open-fixed-1024x600` | ready |
-| `hatched` | `hatch-now-fixed-1024x600`, with the painted juvenile and shell painted out | hatch, from its step at 1000 (§4) |
+| State | Room | Interior | Glass / door | Bar | Seal | Inside |
+| --- | --- | --- | --- | --- | --- | --- |
+| empty | day | day | door open | off | off | nothing |
+| growing | day | day | glass closed | on, revealed to the progress | off | the sealed pod |
+| ready | day | day | door open | on, full | off | the sealed pod |
+| incubate moment | dusk | dusk | glass closed | off | on | the sealed pod |
+| hatch, from its step at 1000 | day | day | door open | on, full | off | the opened pod and the juvenile |
 
-**Draw order:** `back`, `pod`, `front`, `bar`, then `juvenile` (hatch, over the front's moss rim, with its feet in the moss), then the stamp and the frame.
+"Looks" in §3 and §4 name these rows: `closed` = growing, `open` = ready, `incubate`, and `hatched`. The empty state is the open look with nothing inside: an open, empty capsule as the invitation.
 
 ## 2. The left column: the stamp
 
@@ -59,7 +70,7 @@ The capsule fills the centre (body x about 349–672; the open door reaches abou
 
 | State | Look | Pod | Bar | Column | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `empty` | `closed` | off (the moss bare) | off | bare | an invitation: the empty capsule |
+| `empty` | `open`, empty | off (the moss bare) | off | bare | an invitation: the open, empty capsule |
 | `growing` | `closed` | the bud's pod, whole | lit width `floor(158 × elapsed / total)` px from the left, redrawn when it gains a pixel | stamp, code, readyIn | |
 | `ready` | `open` | the bud's pod, whole | full | stamp, code | the door stands open: the wait is done |
 | `hatch` | §4 | §4 | full | stamp, code | input held |
@@ -100,32 +111,36 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 | 0 | the `open` look stands still, with the pod whole: a still beat |
 | 600 | the pod cracks: the renderer's `crack` layer on the pod (crack 1) |
 | 800 | crack 2 (as now, `bud-crack-2` rule, on the renderer's pod) |
-| 1000 | the 180 ms dither to the `hatched` look: the pod's halves (open item 3) on the moss, and the new mibi standing at 142 × 146, feet on 388, axis 512 |
+| 1000 | the 180 ms dither to the `hatched` look: the pod's halves (open item 3) on the moss, and the new mibi standing about 146 tall, feet on (532, 415) |
 | 1200 | the ribbon: "{Name}, a young {Species}" (`strings.hatchRibbon`), rect 312, 56, 400, 40, the house ribbon |
-| 1400 and 1800 | the two steps, each with the `lift` table as now (px above the feet line 388) |
+| 1400 and 1800 | the two steps, each with the `lift` table as now (px above the feet line 415) |
 | 2600 | the 180 ms dither to one mibi up close, in the meet (`handoff`, unchanged) |
 
-- **The moving set** (`events.hatch.moving`): its timings are unchanged; its boxes are this section's (the mibi at 142 × 146 on 388).
+- **The moving set** (`events.hatch.moving`): its timings are unchanged; its boxes are this section's (the mibi about 146 tall, feet on (532, 415)).
 - **Reduced motion:** the cut to the meet on the frame of ✓, as now.
-- **The new mibi's picture:** the host renders it at 142 × 146 from its own looks, with its feet on its box's foot. It is relit to the capsule's roof lamp by the same function as `composite-juvenile.py` (warm from above, a rim on the crest, a contact shadow on the moss), in Node, before the props. Until it lands, its placeholder is used, as now.
+- **The new mibi's picture:** the host renders it about 146 tall from its own looks, with its feet on its box's foot. It is relit to the capsule's roof lamp by the same function as `composite-juvenile.py` (warm from above, a rim on the crest, a contact shadow on the moss), in Node, before the props. Until it lands, its placeholder is used, as now.
 
 ## 5. Masters
 
-**Cut at build time** (no painting): reduced ×0.85 about x 512, registered to `closed`, each by a script beside `house-style/fix-house-style.py` and checked against the four approved pictures:
-- `incubator-{closed,incubate,open,hatched}-back-1024x522`;
-- `incubator-{closed,incubate,open,hatched}-front-344x472`;
-- `incubator-bar-lit-158x12` and `incubator-bar-off-158x12`. The lit cut is the painting's own bar. The off cut is the same bar at the base's unlit value: a recolour, as `fix-capsule-bar.py` recolours.
+All are the art director's (`capsule-masters.md`): cut once at the authority scale, registered to closed's frame, and reduced offline to ×0.85 for this view.
+- **Cut from the stills** (no painting):
+  - `capsule-room-day` and `-dusk`;
+  - `capsule-shell`;
+  - `capsule-door-open`;
+  - `capsule-bar-on` and `-off`;
+  - `capsule-seal-ring`.
+- **Drawn in code:** `capsule-glass-closed`.
+- **Placed and used as they are:** the pod renderer's layers, the stamp case, the frame's bars and caps, and the ribbon.
 
-**Placed and used as they are:**
-- the pod renderer's `pod-collection-*` layers at class `large`, with `crack`;
-- the stamp case;
-- the frame's bars and caps;
-- the ribbon.
+**Missing: gates on this build** (studio work, so the lead sets the budget):
+1. **`capsule-interior-day` and `-dusk`:** the empty moss bed. Until they exist, every state needs a pod in the window, so empty can't be drawn and other species' pods can't replace the painted Loika. The builder ships the Loika-only path behind the existing placeholder rule.
+2. **The opened-pod renderer layers** (the two halves and the tipped cap, in neutral, species-coloured by the masks). Until they exist, the hatch keeps the renderer's `crack` layer on the whole pod behind the juvenile.
 
-**Open, for the art director** (the spec builds on the numbers above until these are answered):
-1. **Registration:** open, incubate and hatch-now drift about 20 px from closed (the mint bar's top: 516 / 535 / 543; the lamp's top: 68 / 85 / 79). Translate each to closed before the cuts, then confirm §1's rects.
-2. **The pod painted out** of each back (and the painted juvenile and shell out of `hatched`). This needs a studio edit, so its budget is the lead's to set. Until then the backs keep the painted Loika, and **only a Loika bud is correct**: the builder ships it behind the existing placeholder rule for every other species.
-3. **The halves after the hatch:** a renderer layer set (`pod-halves-left` and `-right` at class `large`, species-coloured by the renderer's masks), or the `crack` layer kept on the whole pod as the fallback.
+**Other views of the capsule** (the same masters at their own reductions, set by the art director):
+- Create's chamber, `create.json regions.dome` 776, 104, 176, 224, at about ×0.373, with no room;
+- Home's Incubator station picture, at about ×0.143.
+
+These views are specified in their own screens' specs.
 
 ## 6. Keys, the bottom line and the two decision moments
 
@@ -150,6 +165,6 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 
 ## 7. Checks for the builder
 
-- **The goldens:** empty, growing (bar at 0, ½ and nearly full), ready, the incubate moment at 0, the hatch at 1000 and 1400, and Hatch now at 0 and 400. One Loika bud and one cross bud.
+- **The goldens** (once the gates in §5 are met): empty, growing (bar at 0, ½ and nearly full), ready, the incubate moment at 0, the hatch at 1000 and 1400, and Hatch now at 0 and 400. One Loika bud and one cross bud.
 - **The per-frame dirty area:** each dither step (whole stage, ≤ 153,600 px a frame, as the house dither), the bar's fill step (8 cuts), and the hatch's lift steps. Print them.
 - **Generators:** print each build-time cut's time and size.
