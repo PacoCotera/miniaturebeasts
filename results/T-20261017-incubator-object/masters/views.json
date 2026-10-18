@@ -1,0 +1,61 @@
+{
+ "room": {
+  "scale": 0.85,
+  "size": [
+   530,
+   532
+  ],
+  "at": [
+   344,
+   26
+  ],
+  "moss_y": 415,
+  "bar_centre": [
+   512,
+   490
+  ],
+  "pod_h": 170,
+  "juvenile_h": 146,
+  "room_crop": "rows 65-587 of capsule-room-{day,dusk}, on the stage at y 40"
+ },
+ "create": {
+  "scale": 0.3578,
+  "size": [
+   145,
+   224
+  ],
+  "at": [
+   793,
+   104
+  ],
+  "moss_y": 268,
+  "pod_h": 72
+ },
+ "home": {
+  "scale": 0.1374,
+  "size": [
+   56,
+   86
+  ],
+  "at": [
+   432,
+   488
+  ],
+  "moss_y": 551,
+  "pod_h": 27
+ },
+ "panel": {
+  "scale": 0.733,
+  "size": [
+   296,
+   459
+  ],
+  "at": [
+   116,
+   80
+  ],
+  "moss_y": 416,
+  "pod_h": 147,
+  "room_crop": "capsule-room-dusk cols 275-749, rows 108-576"
+ }
+}
