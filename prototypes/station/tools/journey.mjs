@@ -443,8 +443,8 @@ await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
   await page.waitForTimeout(600); const p = await props(), s1 = await st(); cur.push({ hatch: p.state, ok: p.frame.line.ok });
   expect(p.state === "hatch" && s1.s < s0.s && !s1.bud, "Hatch now paid Essence and the bud is hatching in the same press: " + JSON.stringify([p.state, s1.bud])); }
 { const p = await props(); expect(p.state === "hatch" && (await page.evaluate(() => window.__st.holding())), "✓ Hatch now: the hatch holds input: " + p.state); await frameShot("page-hatch", true); }
-await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);
-{ const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad, ✓ and ← do nothing during the hatch: " + JSON.stringify([u.screen, m])); }
+await said(); for (const k of ["up", "left", "back"]) await press(k, 0);   // ✓ is left out: in the hatch's hold it skips (a skippable hold, lvgl-switch.md §2.1; tests/host-hold.test.mjs)
+{ const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad and ← do nothing during the hatch: " + JSON.stringify([u.screen, m])); }
 await page.waitForTimeout(2600);
 s = await st(); const fig = s.mibis.at(-1);
 expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 && fig.read.length === 4, "Moss opened into bay 2, fully read");

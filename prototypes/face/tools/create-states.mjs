@@ -24,8 +24,6 @@ const SCENES = {
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },
   "shape-samelook": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },   // S01 Crown, the pod's leaf crest hiding bare head (genome seed 3), the crest chosen: "Crown: leaf crest, hides nothing" (fix 5 Create)
   "shape-sealed":  { want: "shape", set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // one S02 pod, every readable chapter read, its sealed chapter shut: "all read, Character sealed"
-  "panel-grow-arrival": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.press("confirm"); } },   // ✓ Grow it opens the Grow this founder? panel: two cards (the arrival mode of the jump flag), the ring on Grow it
-  "panel-grow-fork":    { want: "shape", set: (w) => { window.__st.settings.jump = "fork"; w.shape("S01", 3, 2); w.at(1); window.__st.press("confirm"); } },   // the fork mode: three cards, the two landings
   "shape-first":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.ST.firstMibi = true; } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${CREATE.toString()})`]);

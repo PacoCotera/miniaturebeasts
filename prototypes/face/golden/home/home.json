@@ -6,19 +6,19 @@
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "f9f12329",
+   "hash": "a6b2f8f4",
    "png": "home-docked.png"
   },
   "home-docked-dawn": {
-   "hash": "4ceb2b0c",
+   "hash": "67e84e39",
    "png": "home-docked-dawn.png"
   },
   "home-docked-dusk": {
-   "hash": "12fe060c",
+   "hash": "2dfb2939",
    "png": "home-docked-dusk.png"
   },
   "home-docked-night": {
-   "hash": "d8927d63",
+   "hash": "7e73024a",
    "png": "home-docked-night.png"
   },
   "home-goal-docked": {
@@ -42,39 +42,39 @@
    "png": "home-bed-none.png"
   },
   "home-cargo-empty": {
-   "hash": "433543f3",
+   "hash": "61b117e0",
    "png": "home-cargo-empty.png"
   },
   "home-incubator-empty": {
-   "hash": "9b7ab821",
+   "hash": "5b77da7e",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-growing": {
-   "hash": "bc2e6c1f",
+   "hash": "327fa364",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-ready": {
-   "hash": "0e35aaf0",
+   "hash": "b2be272f",
    "png": "home-incubator-ready.png"
   },
   "home-probe-docked": {
-   "hash": "3fbd4cb1",
+   "hash": "77e5d412",
    "png": "home-probe-docked.png"
   },
   "home-probe-away": {
-   "hash": "8798e1d9",
+   "hash": "9def0dfe",
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
-   "hash": "ae84294d",
+   "hash": "51a50096",
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
-   "hash": "30e0c083",
+   "hash": "95375a70",
    "png": "home-library-empty.png"
   },
   "home-library-pages": {
-   "hash": "e5586b34",
+   "hash": "837a2e7b",
    "png": "home-library-pages.png"
   },
   "home-knob-rest": {
@@ -86,7 +86,7 @@
    "png": "home-knob-focused.png"
   },
   "home-vivarium-focused": {
-   "hash": "197cb7b9",
+   "hash": "caf09cbe",
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
@@ -109,9 +109,9 @@
    "hash": "012a3334",
    "png": "home-walk-8000ms.png"
   },
-  "home-crates-arriving": {
-   "hash": "d235f601",
-   "png": "home-crates-arriving.png"
+  "home-sendoff-800": {
+   "hash": "7a322cd4",
+   "png": "home-sendoff-800.png"
   }
  }
 }
