@@ -27,7 +27,7 @@ export function intent(h, target, verb) {
   }
   const above = h.settings.growNowAbove ?? h.specs.panel?.growNowAbove ?? 4;   // a large Hatch now asks first (decision panel spec §1.6); at or below the threshold ✓ acts as before
   const cost = S.instantGrowCost(h.st, h.settings, h.now());
-  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence the refusal plate shows and the panel does not open
+  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.bayFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with no bay free the refusal plate shows (as Open's words) and the panel does not open
   return growNow(h);
 }
 // The hatch both presses play: Open (a ready bud) at once, Hatch now after the leaves have turned. The rule has already made the mibi and emptied the chamber.

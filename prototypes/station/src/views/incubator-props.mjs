@@ -30,7 +30,7 @@ export function incubatorBuild(m, spec, pods) {
   regions.bench = {};
   const roomSize = R.capsule.rect.slice(2), RM = (n) => slot(req, n, R.room.rect, signed);
   regions.room = { day: RM(R.room.pictures.day), dusk: RM(R.room.pictures.dusk) };
-  // the capsule: its layers (room view, 530 x 532 at (344, 26)); the glass is the host's, drawn in code along the interior's alpha
+  // the capsule: its layers (room view, 530 x 532 at (344, 26)); the glass is the art director's cut master, a layer of its own
   const L = layers(req, roomSize, ["interior-day", "interior-dusk", "shell", "shell-dusk", "door-open", "bar-lit", "seal-ring", "glass-closed"]);
     const barPx = state === "growing" ? Math.max(1, Math.floor(R.capsule.bar.max * (gs ? gs.progress : S.budProgress(st, settings, now)))) : R.capsule.bar.max;   // from its first pixel (build spec 4.1: the bar from its first pixel), so the lit bar never pops off in the wait's first seconds
   regions.capsule = { interior: { day: L["interior-day"], dusk: L["interior-dusk"] }, shell: { day: L.shell, dusk: L["shell-dusk"] }, door: L["door-open"], bar: L["bar-lit"], seal: L["seal-ring"], glass: L["glass-closed"], barPx };
