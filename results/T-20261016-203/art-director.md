@@ -30,3 +30,21 @@ The cause is in the signed patch layer (T-20261016-200), not the build: the patc
 - The patch layers are repainted: M1 for the adult keys and M3 for the juveniles, on the T-200 spec with this shape rule.
 - That is two studio requests, under the lead's cap and the owner's go.
 - Stripes, ramps, zones and the build are unchanged, and the new layers drop in through `make-stand-layers.py`.
+
+## The patches, round 2: signed (masters-pods 14fe2c4a, `concepts/loika-v4-patches-r2/`)
+
+**Pass, cut with the head left off. No retry is needed.** The cut layers are in `patches-r2/`, and they replace the eleven `*-patches-304x312.png` in `T-20261016-200/layers/`.
+
+- **The paint:** the adult and juvenile patches are now big, rounded and soft, on the back and haunch, with no crescents.
+- **Its fault:** some keys put patches on the head. Every juvenile has one on the crown, and the adult crouch, curl and stand have them on the crown or round the eye.
+  - The patch layer is cut as the difference from the bare base key, so a patch on the head is removed by cutting the head out of the layer. That leaves the base's own head, as painted.
+  - `heads-off.py` does this with one soft ellipse per key over the head. It also removes the adult air key's narrow upright rump patch, which was a near-crescent.
+  - So the retry isn't needed.
+- **The extra patches** (the crouch's four, a third oval of about 40 px on some keys) are kept. They are large rounded masses, so they still say "patches", and more of them reads as more patchy, not as stripes.
+- **The checks:**
+  - outside the coat, 0 pixels on every layer;
+  - registration by the same placement inverse as T-200 (`cut-patches-r2.py`, reusing `cut-layers.py`);
+  - at 3×, `contact-r2-cut.png` shows every key with its head ellipse.
+- **Separation:** `stripes-vs-patches-r2-54-40-3x.png` shows, left to right, stripes then patches for the adult anchor and stand at 54 and the juvenile anchor and stand at 40. At 1× the adults separate at once: a row of bars against pale masses. The juveniles separate at 40, more softly, since the cap is small.
+
+To recut: `python3 -I cut-patches-r2.py KEYS SHEETS OUT ../../T-20261016-200/cut-layers.py`, then `python3 -I heads-off.py OUT`, with the base keys in `OUT/../keys`.
