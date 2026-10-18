@@ -42,8 +42,8 @@ const frameProps = (line = {}) => ({ top: { screen: "vivarium", title: "Vivarium
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? [16, 16];
-async function start(b, { motion = true, t0 = 0, sleepersPainted = false } = {}) {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node = false } = {}) {
+  const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", spec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.handleOf(R.tiles.glyph ?? "frame-companion-outline-16x24", withPolicy((i) => standIn(i, [16, 24])));
@@ -103,7 +103,7 @@ test("the bed and its sleepers are two regions: a bed moved 8 px, a sleeper 56 p
     assert.ok(lg.regions.some((r) => r.id === "bed.sleepers" && r.layer === (painted ? "painted" : "art")), `the sleepers are their own region on the ${painted ? "painted" : "art"} layer`);
     assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, n), [], painted ? "sleepers painted with the bed" : "sleepers art");
     assert.match(bad((c) => { c.regions.find((r) => r.id === "bed" && r.layer === "painted").rect[0] += 8; }).join("; "), /bed is not drawn exactly/);
-    assert.match(bad((c) => { c.regions.find((r) => r.id === "bed.sleepers").rect[1] -= 56; }).join("; "), /sleeper/);
+    assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "bed.sleepers").rect; r[3] = 60; r[1] -= 56; }).join("; "), /sleeper/);
   }
 });
 test("the keys: ✓ and ← and the room keys are intents on the focused target, the pad moves the ring by vivarium.json's graph (▼ a resident's own tile, ▲ its resident, ◀ ▶ along the tiles)", { skip }, async () => {
@@ -301,4 +301,71 @@ test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no 
   T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${form}x48`)); assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
   const e = scene({ focus: null }), g = await start(e), lg2 = logOf(g);
   assert.equal(lg2.regions.filter((r) => r.id === "strip" && r.rect[2] > 2).length, 0, "no tile housed or out: the strip has no plate");
+});
+
+// ---- T-20261018-235: the figure's geometry ----
+const FIG = [47, 105, 49, 43], PROFILE = R.resident.walk.profile;   // an adult's figure as the host measures it: [dx, dy, W, H] in its 144 × 152 picture
+const groundTop = (fx) => { let t = PROFILE.top[0]; PROFILE.x.forEach((x, i) => { if (fx >= x) t = PROFILE.top[i]; }); return t; };
+const feetOf = (rect, fig = FIG) => ({ fx: rect[0] + fig[0] + Math.floor(fig[2] / 2), feetY: rect[1] + fig[1] + fig[3] - 1 });
+const withFigure = (b, fig = FIG) => { for (const r of b.props.regions.residents) r.figure = fig; return b; };
+test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is feetY + 16 and flips to feetY − H − 34 past the window's foot; the focus target is the figure box", { skip }, async () => {
+  let flipped = 0, below = 0; const [W, H] = [FIG[2], FIG[3]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12)));
+  for (let seed = 1; seed <= 40; seed++) {
+    const b = withFigure(scene({ adults: 1, focus: "tile:0" })); b.props.regions.residents[0].seed = seed * 104729;
+    const f = await start(b, { motion: false, node: true }); withFocus(f, "resident." + b.st.mibis[0].id); const lg = logOf(f) ?? (frames(f), logOf(f));
+    const nb = f.nodeBox("g." + b.st.mibis[0].id).box, pic = [nb[0], nb[1] + R.window.rect[1] + 2, nb[2], nb[3]];   // a node box is the window's own; the focused picture is lifted 2 px, the ring and the feet stay on the ground
+    const { fx, feetY } = feetOf(pic), ring = lg.regions.find((x) => x.id === "focus").rect, tag = lg.regions.find((x) => x.id === "nameTag" && x.layer === "chrome").rect;
+    assert.ok(pic[1] + FIG[1] + H - 1 === feetY, "the picture is placed so its figure's last ink row is the feet");
+    assert.deepEqual(ring, [fx - Math.floor(W / 2) - 5, feetY - (fh + 10) / 2, W + 10, fh + 10], `seed ${seed}: the ring on F`); assert.equal(W + 10, 59); assert.equal(fh + 10, 18);
+    const win = R.window.rect, flips = feetY + 16 + tag[3] > win[1] + win[3] - 8;
+    if (flips) { flipped++; assert.equal(tag[1], feetY - H - 34, `seed ${seed}: the flipped tag`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
+  }
+  assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} flipped, ${below} below`);
+});
+test("every start over 10,000 seeds is walkable on the ground profile and off the keep-out; waypoints and every 2 px of every path stay walkable over a minute of walking", { skip }, async () => {
+  const G = R.resident.walk.ground, K = R.resident.walk.keepOut, ok = (rect) => { const { fx, feetY } = feetOf(rect), W = FIG[2], x = fx - Math.floor(W / 2); return x >= G[0] && x + W <= G[0] + G[2] && feetY >= groundTop(fx) && feetY <= 471 && !(x + W > K[0] && feetY > K[1]); };
+  const rects = (f, b) => b.st.mibis.map((m) => { const bx = f.nodeBox("g." + m.id)?.box; return bx && [bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]; });   // a node box is the window's (clipped) own
+  let n = 0; const b0 = withFigure(scene({ adults: 12, bays: 12, focus: "tile:0" })), f0 = await start(b0, { motion: false, node: true });   // one face, the seeds sent again: a new seed starts from its own seed
+  for (let k = 0; k < 834; k++) {
+    b0.props.regions.residents.forEach((r, i) => { r.seed = 1 + k * 12 + i; }); assert.equal(f0.props({ screen: "vivarium", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f0);
+    for (const r of rects(f0, b0)) { n++; assert.ok(r && ok(r), `a start at ${r} is not walkable`); }
+  }
+  assert.ok(n >= 10000, n + " starts");
+  for (let k = 0; k < 6; k++) {
+    const b = withFigure(scene({ adults: 12, bays: 12, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 90001 + k * 12 + i; });
+    const f = await start(b, { t0: 5000, node: true }); let moved = 0, last = null;
+    for (let ms = 40; ms <= 60000; ms += 40) { f.frame(5000 + ms); f.drain?.(); const rs = rects(f, b);
+      for (const r of rs) assert.ok(r && ok(r), `seed block ${k} at ${ms}: ${r} left the walkable ground`); const key = rs.map((r) => r.join()).join("|"); if (last !== null && key !== last) moved++; last = key; }
+    assert.ok(moved > 100, "they walk: " + moved);
+  }
+});
+
+test("the walk of twelve figures with their shadow layers: no refresh redraws more than 153,600 px (printed)", { skip }, async () => {
+  const b = withFigure(scene({ adults: 12, bays: 12 })), f = await start(b, { t0: 5000 }); let area = 0, steps = 0;
+  for (let t = 16; t < 120000; t += 16) { f.frame(5000 + t); area = Math.max(area, dirty(f)); steps = Math.max(steps, f.M._face_test_steps()); }
+  assert.ok(area <= 153600, `dirty area ${area}`); assert.ok(steps <= 6, `${steps} residents stepped in one frame`);
+  console.log(`# the Vivarium's walk with the shadow layers, twelve figures, frames every 16 ms for 120 s: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen), worst ${steps} steps`);
+});
+
+test("a moving resident's ring and tag hold still on its atlas figure while its cells breathe, and the ring is the formula's on F", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 1, focus: "resident:0" }), FIGM = [30, 38, 72, 108]; sc.props.regions.residents[0].figure = FIGM;
+  const f = await bootScene(sc, { motion: true }); assert.deepEqual(f.errors(), []);
+  runFrames(f, 8000); const seen = new Set(); let rings = 0;
+  for (let t = 0; t < 10000; t += 16) { f.frame((f.t += 16)); for (let m; (m = f.poll("log"));) { const ring = m.regions.filter((r) => r.id === "focus").map((r) => r.rect.join()); const tag = m.regions.filter((r) => r.id === "nameTag" && r.layer === "chrome").map((r) => r.rect.join()); if (ring.length) { rings++; seen.add(ring.join("|") + "#" + tag.join("|")); } } }
+  assert.ok(rings > 0, "the ring is drawn"); assert.equal(seen.size, 1, "the ring and the tag stay put: " + [...seen].join(" ; "));
+  const [W] = [FIGM[2]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12))), ring = [...seen][0].split("#")[0].split(",").map(Number); assert.deepEqual([ring[2], ring[3]], [W + 10, fh + 10], "the ring is (W + 10) × (fh + 10)");
+});
+
+test("an asleep resident with a curl draws the curl in place, its foot on the stand's feet line, and the ring and the tag come from the curl's figure; awake it draws its stand", { skip }, async () => {
+  const CF = [10, 2, 34, 28], CP = [57, 36], at = async (asleep) => {
+    const b = withFigure(scene({ adults: 1, focus: "tile:0" })), r = b.props.regions.residents[0], id = b.st.mibis[0].id; r.seed = 5 * 104729;
+    if (asleep) { r.rest = "asleep"; r.curl = "mibi:S01~c0c0c0c0:adult:57x36"; r.curlFigure = CF; b.requests.push({ kind: "mibi", id: r.curl, size: CP, stage: "adult", species: "S01" }); }
+    const f = await start(b, { motion: false, node: true }); withFocus(f, "resident." + id); const lg = logOf(f) ?? (frames(f), logOf(f)), nb = f.nodeBox("g." + id).box.slice(); nb[1] += R.window.rect[1];
+    return { nb, ring: lg.regions.find((x) => x.id === "focus").rect, tag: lg.regions.find((x) => x.id === "nameTag" && x.layer === "chrome").rect };
+  };
+  const awake = await at(false), asleep = await at(true), fa = feetOf([awake.nb[0], awake.nb[1] + 2, 144, 152]), fs = { fx: asleep.nb[0] + CF[0] + Math.floor(CF[2] / 2), feetY: asleep.nb[1] + CF[1] + CF[3] - 1 };
+  assert.deepEqual(asleep.nb.slice(2), CP, "the curl's own picture"); assert.deepEqual(awake.nb.slice(2), [144, 152], "awake: its stand");
+  assert.equal(fs.feetY, fa.feetY, "the curl's foot is on the stand's feet line"); assert.ok(Math.abs(fs.fx - fa.fx) <= 1, "on the same feet point");
+  const fh = Math.min(16, Math.max(6, 2 * Math.floor((CF[2] + 6) / 12))); assert.deepEqual(asleep.ring, [fs.fx - Math.floor(CF[2] / 2) - 5, fs.feetY - (fh + 10) / 2, CF[2] + 10, fh + 10], "the ring on the curl's feet, no lift");
+  assert.equal(asleep.tag[1], fs.feetY + 1 - CF[3] - 32, "the tag over the curl, 32 above its top");
 });

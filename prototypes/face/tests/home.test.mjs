@@ -260,7 +260,9 @@ test("the goal is drawn in the notice zone in mist with no lamp; a name too wide
 function sendoffScene(o = {}) {
   const st = world(); S.seedAdults(st, "S01", 5, o.adults ?? 3, settings); painted(st); st.dock = { docked: false, at: T0 };   // lifted: the top bar and the Cargo module say so; the bed keeps its sleepers until the send-off ends
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: st.mibis.slice(0, o.sleepers ?? 3).map((m) => m.id), tier: 1, shield: 3 };
-  return homeBuild({ st, sv, settings, docked: false, sendoff: o.sendoff ?? true, ui: {}, focus: null, light: "day" }, homeSpec, frameSpec);
+  const b = homeBuild({ st, sv, settings, docked: false, sendoff: o.sendoff ?? true, ui: {}, focus: null, light: "day" }, homeSpec, frameSpec);
+  for (const p of b.props.regions.bed.sleepers) { const id = p.picture.replace(/:\d+x\d+$/, ":96x88"); b.requests.push({ kind: "mibi", id, size: [96, 88], stage: p.stage, species: "S01" }); p.picture = id; delete p.figure; }   // the nap picture at its own size: a sleeper with no nap master would sleep as its standing figure, which the send-off could not tell from its standing painting
+  return b;
 }
 const SO = homeSpec.events.sendoff;
 test("the send-off's props: the bed stays docked with its sleepers and each carries its standing painting (the resident's own, 144 × 152), the flag is on; without the send-off nothing is added and the lifted bed is away", () => {

@@ -66,7 +66,7 @@ async function moments(visit) {
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, moving: !!window.__st.props?.regions?.resident?.moving })); if (u.screen !== "habitat" || !u.moving) fail(`habitat-moment-S01-${at}: ` + JSON.stringify(u));
       await visit("habitat-moment-S01-" + at, page, fail); await step(2500);
     }
-    await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = null; });
+    await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = "12:00"; });
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };

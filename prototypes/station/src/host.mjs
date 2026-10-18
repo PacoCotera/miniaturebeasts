@@ -24,7 +24,8 @@ import { incubatorTick } from "./intents/incubator.mjs";
 import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
 import { arrivePending } from "./intents/arrival.mjs";
-import { registerPictures, iconRequests } from "./pictures.mjs";
+import { registerPictures, iconRequests, movingSource } from "./pictures.mjs";
+import { setMovingSource } from "./moving.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf, isBuilt } from "./nav.mjs";
 import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
@@ -37,6 +38,7 @@ import { footOf } from "./moving.mjs";
 // A picture's pixels for the face: RGBA, straight alpha, with its slice and tile when it is a nine-slice, and its status. `env` reaches the builders (palette lookup).
 let ENV = null;
 export const setEnv = (env) => { ENV = env; };
+setMovingSource(movingSource({ frameOf }));   // a moving set's figure is measured from its atlas when its resident's props are built (moving.mjs movingFigure)
 export function picture(id) {
   const a = assetOf(id, ENV); if (!a) return null;
   const e = assetEntry(id), status = e?.status === "master" ? "master" : "placeholder", p = { w: a.w, h: a.h, status, policy: policyOf(id, status), data: a.rgba() };   // the layer it shows on, from the one family table (an id outside every family throws: a new family is the art director's to place)

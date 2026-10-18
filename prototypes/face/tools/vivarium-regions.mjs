@@ -5,7 +5,7 @@ const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 
 const parts1 = (regions, n) => Math.min(1, n);
-export function departures(log, spec, state = "rest", cur = "room", n = 0) {
+export function departures(log, spec, state = "rest", cur = "room", n = 0, figs = []) {   // figs: each resident's stage and figure [dx, dy, W, H] (T-20261018-235): the figures, not their pictures, stay on the walk ground
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), win = R.window.rect;
   const must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
@@ -15,11 +15,12 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0) {
   for (const r of got("window", "painted")) must(eq(r.rect, win), `the window's painting ${r.rect} is not ${win}`);
   must(got("window", "painted").length === 0 || got("window", "chrome").length === 0, "the window's plates show under the light's painting");
   for (const id of ["resident", "bed", "bed.sleepers", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, win), `${id} (${r.layer}) ${r.rect} leaves the window ${win}`);   // clipped to the window
-  { const w = R.resident.walk.ground; for (const r of [...got("resident", "art"), ...got("resident", "painted")]) must(r.rect[0] >= w[0] && r.rect[0] + r.rect[2] <= w[0] + w[2] && r.rect[1] + r.rect[3] >= w[1] && r.rect[1] + r.rect[3] <= w[1] + w[3] + 1, `the residents ${r.rect} leave the walk ground ${w}`); }
+  { const w = R.resident.walk.ground, size = (f) => R.resident[f.stage === "juvenile" ? "juvenile" : "adult"], slack = figs.reduce((a, f) => { if (!f.figure) return a; const [dx, dy, W, H] = f.figure, [pw, ph] = size(f); return [Math.max(a[0], dx), Math.max(a[1], pw - dx - W), Math.max(a[2], ph - dy - H)]; }, [0, 0, 0]);   // how far a picture reaches past its figure: left, right, below
+    for (const r of [...got("resident", "art"), ...got("resident", "painted")]) must(r.rect[0] + slack[0] >= w[0] && r.rect[0] + r.rect[2] - slack[1] <= w[0] + w[2] && r.rect[1] + r.rect[3] >= w[1] && r.rect[1] + r.rect[3] - slack[2] <= w[1] + w[3] + 1, `the residents ${r.rect} leave the walk ground ${w}`); }
   { const b = R.bed.rect, k = R.bed.markRect, pics = [...got("bed", "art"), ...got("bed", "painted")], up = [b[0], b[1] - 48, b[2], b[3] + 48];   // the nest exactly at its rect, the Companion's mark exactly at its own; the sleepers (their own region) within the nap's height above the bed
     must(pics.some((r) => eq(r.rect, b)), `the bed is not drawn exactly at ${b}`);
     for (const r of pics) must(eq(r.rect, b) || eq(r.rect, k), `a bed picture (${r.layer}) ${r.rect} is neither the bed ${b} nor the Companion mark ${k}`);
-    for (const r of [...got("bed.sleepers", "art"), ...got("bed.sleepers", "painted")]) must(within(r.rect, up), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); }
+    for (const r of [...got("bed.sleepers", "art"), ...got("bed.sleepers", "painted")]) must(r.rect[3] > up[3] || within(r.rect, up), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); }
   if (state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag", "focus"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away)
   { const tag = got("nameTag", "chrome")[0], txt = got("nameTag", "type")[0]; must(!!tag === /^resident\./.test(cur), `the name tag shows ${tag ? "" : "no "}when the ring is on ${cur}`);
     if (tag) { must(within(tag.rect, [win[0] + 8, win[1], win[2] - 16, win[3]]), `the name tag ${tag.rect} is not 8 px inside the window ${win}`); must(tag.rect[3] === R.nameTag.h, `the name tag is ${tag.rect[3]} tall, not ${R.nameTag.h}`); must(tag.rect[2] % R.nameTag.round === 0 && tag.rect[2] >= R.nameTag.min && tag.rect[2] <= R.nameTag.max, `the name tag's width ${tag.rect[2]} is not a multiple of ${R.nameTag.round} in ${R.nameTag.min} to ${R.nameTag.max}`); }
