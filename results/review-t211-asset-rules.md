@@ -1,12 +1,12 @@
 ---
-ticket: T-20261016-212
+ticket: T-20261016-214
 status: done
 branch: PacoCotera/miniaturebeasts:rules/mibi-sizes-probe-upright
 head: 42ec92ab
 ci: not run (the checks below were run locally)
 ---
-## Verdict: FAIL (fix ticket T-20261016-213)
-The three lying Probe ids are withdrawn correctly. The rules text is not what the ticket asks for, it is in the wrong places, and the public guard fails on it. This review was asked for in a message from the lead; I wrote and claimed T-20261016-212 for it.
+## Verdict: FAIL on 42ec92ab (the round-one text); the rework is T-20261016-212
+The three lying Probe ids are withdrawn correctly. The rules text is not what the ticket asks for, it is in the wrong places, and the public guard fails on it. This review was asked for in a message from the lead; I wrote and claimed T-20261016-214 for it (first numbered 212; the lead's rework ticket took 212, so mine was renumbered).
 
 ## Which text the table must match
 The lead's message names results/T-20261018-probe-and-scale/art-director.md. That file contains no table: it says the size table "is in T-20261016-211, the ticket". The text to match is therefore the amended ticket's "The text to paste" (lead's amendment 2026-10-18 03:47:56). The builder's last commit is 28 seconds later (03:48:24); the result does not mention the amendment and follows the earlier version of the ticket.
@@ -41,3 +41,9 @@ Home's Probe module still places `home-cradle-full/empty-96x72` (the old net Pro
 
 ## Fix ticket
 **T-20261016-213** (builder, docs): paste the amended text verbatim into `design/art-direction.md` as `## Size and pose` after `## Rules` and change the quoted sentence; one pointer line in the style guide and nothing else; remove the station-layouts copy and the asset-policy comment; keep the index withdrawal; guard exit 0.
+
+## Addendum: the art director's message (03:50) supersedes my fix ticket
+The art director says the branch matches the ticket's first text and that the rework is T-20261016-212 (the lead's builder ticket, same branch): one table only, in `design/art-direction.md` under "Size and pose"; the style guide and station layouts get a one-line pointer; the asset-policy comment carries no numbers; the sizes (adult/juvenile) change to Home's window, the Vivarium full screen and Idle 54/40 (one world at one scale), a decision panel 54/40 in both windows, the Habitat and Sitting 150/110, the benches and the dock arrival at bench scale (not settled), Cargo none; and "the owner's measure" comes out. They ask me to judge the branch against T-212's text, not T-211's.
+- **My fix ticket T-20261016-213 is withdrawn** (deleted from the queue): it told the builder to paste the amended T-211 text (92/68, 64/48 and 36/28), which the art director has now overruled. T-212 is the one to build.
+- **This verdict stands for 42ec92ab only.** On it, the findings that survive T-212's text: the guard fails (2 hits on "the owner's measure", also removed by T-212); the numbers sit in four places; the lying Probe ids are withdrawn correctly. The size rows I listed as differing from the T-211 paste are moot.
+- **Not yet reviewable against T-212:** the branch head is still 42ec92ab; T-212 has not been built. When it is, I will check it against T-212's text and run the guard.
