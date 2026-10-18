@@ -64,3 +64,13 @@ The art director passes the art (`results/T-20261018-235/art-director.md`), acce
 ## The final ring (build 9598f73a; stills at work-queue ea50c511): UI/UX PASS
 
 In `vivarium-back-slope-twelve`, Dot's feet now stand inside the upper half of its ring, with its shadow inside the ring. The ring reads as Dot's footprint, and the flipped tag sits over Dot. The art director's check of the same stills completes the gate.
+
+## The art director's re-gate: the ring passes, the moving residents do not
+
+**UI/UX agrees, and adopts the fix.** In `vivarium-moving` and `idle-night-moving`, the atlas residents are about twice world size (adults about 105 px, juveniles about 60). They also draw plain charcoal, without their own looks. A walking mibi must be the same animal at the same size as when it stands.
+
+1. **Each moving atlas is reduced offline** by its stage's standing factor (54 / 40 over the figure's height in the master), measured once over the grounded frames. The figure geometry (§2 above) comes from the reduced atlas.
+2. **The looks follow the layered stand.** A moving resident shows its own coat and marks, as its stand does.
+3. **Until the atlases carry the layers,** a moving resident is drawn as its **layered stand translated along its path**, with no walk cycle. Size and identity come before the cycle. The atlas returns for that species once it carries the layers at world size.
+
+**Test:** a moving resident's figure height equals the standing figure's (54 / 40, ±1 px), and its composed looks match its stand's.
