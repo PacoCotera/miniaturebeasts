@@ -36,3 +36,9 @@ The last commit breaks the public guard. `node .github/public-guard/guard.mjs --
 ## Not covered
 - I did not look at the rendered Create and Incubator pictures for the art or width of "Incubate"; the width check is the face metrics test (passing on head).
 - The doc sweep is out of scope, as the game text says.
+
+## Addendum: the fix (T-20261016-221), build/t-219b-incubate-hatch-now @ 02f7dec3 — PASS
+- Three commits on station-gate 273881ca (0a723062, 1b0582b5, 02f7dec3), all by Paco Cotera <paco@cotera.org>, no trailers, no model or session names in the messages.
+- `git diff 7d3a9505 02f7dec3` is empty: the same tree, so every result above (tests, goldens, metrics, journeys, refusals) carries over unchanged.
+- `node .github/public-guard/guard.mjs --base 273881ca` on 02f7dec3: exit 0, "public guard ok". Face guard: ok.
+- The old branch is untouched, as asked. Verdict: PASS on build/t-219b-incubate-hatch-now @ 02f7dec3.
