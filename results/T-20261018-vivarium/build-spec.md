@@ -28,14 +28,14 @@ A resident's picture stays its place's size (144 × 152 adult, 104 × 112 juveni
 
 ## 1. The ring (`frame.json focus.ring.shapes.footprint`, applied to the figure)
 
-- **Shape:** an ellipse of (W + 10) × (fh + 10), centred on F, with fh = 2·⌊(W + 6) / 12⌋ held to 6–16. At these sizes fh = 6, so the ring is (W + 10) × 16, spanning feetY − 8 to feetY + 8. It keeps the same bands (key/core/key) and the same cut in and out.
+- **Shape:** an ellipse of (W + 10) × (fh + 10), centred on F, with fh = 2·⌊(W + 6) / 12⌋ held to 6–16. **The formula rules** (the house footprint): fh follows W. For example, W 57 gives fh 10, so the ring is 67 × 20, spanning feetY − 10 to feetY + 10; W 40 gives fh 6, so the ring is 50 × 16. (An earlier "fh = 6 at these sizes" was wrong for adults.) It keeps the same bands (key/core/key) and the same cut in and out.
 - **Lift:** the focused figure lifts 4 px. The ring stays on the ground at F.
 - **The focus target box** (for `nearestIn`) is the figure box (§0), not the picture.
 
 ## 2. The name tag (h 24, Inter 16, width rule unchanged)
 
 - **x:** centred on F.x, slid to stay 8 px inside the window.
-- **y:** its top at **feetY + 16**, 8 px under the ring's lower edge.
+- **y:** its top at **feetY + 16**, below the ring's lower edge (feetY + fh/2 + 5, at most feetY + 13).
 - **Flip:** if its bottom would pass 8 px inside the window's foot, it sits over the figure, its top at **feetY − H − 36** (the 4 px lift included).
 - **Home's event tag** (grown up, born, until visited) shows without focus, so it takes no lift: its flipped top is feetY − H − 32.
 
@@ -114,6 +114,6 @@ Juveniles are exempt, by the ruling.
   - Home with an event tag.
 - **Tests:**
   - every start and waypoint over 10,000 seeds is walkable, and no path crosses a profile step from above;
-  - the ring is (W + 10) × 16 on F, the tag top is at feetY + 16, and it flips to feetY − H − 36;
+  - the ring is (W + 10) × (fh + 10) on F, with fh from the formula (67 × 20 at W 57), the tag top is at feetY + 16, and it flips to feetY − H − 36;
   - keepOut holds against the sleepers' tags;
 - **Print** the per-frame dirty area of a walk step with the shadow layer (≤ 153,600 px).
