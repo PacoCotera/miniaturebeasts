@@ -267,7 +267,7 @@
    "file": "S01-adult-304x312-patches.png",
    "w": 304,
    "h": 312,
-   "sha256": "f749355367524d79f070e9a2104ec41ed364206e1d42ca67cb40e63a730c7e6d"
+   "sha256": "194c3f8cf1a140bb13f698403b43287dbb51a12269a1660c5cbf3ef7bec6627a"
   },
   "S01-adult-304x312-stripes.png": {
    "file": "S01-adult-304x312-stripes.png",
@@ -321,7 +321,7 @@
    "file": "S01-juvenile-304x312-patches.png",
    "w": 304,
    "h": 312,
-   "sha256": "47fa421310fc4282bee4ce43823691663e3621d0393528ad75ac6351d4b5e777"
+   "sha256": "1f103e4021901c066acf32e45d19a4a6e6a93bc6177a4a53f8502fa5361124e2"
   },
   "S01-juvenile-304x312-stripes.png": {
    "file": "S01-juvenile-304x312-stripes.png",
