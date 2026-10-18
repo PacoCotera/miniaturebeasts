@@ -507,6 +507,10 @@ The rules every screen, master and painting meets before it is shown. The looks 
 - A placeholder stands only where no master exists yet. It is registered in the asset manifest at its exact size, with `status: placeholder` and the master it waits for.
 - A slot with neither a master nor a placeholder is registered with `status: empty` at its exact size and draws nothing. The layout does not move when the slot fills.
 
+### Mibi height per view
+
+Mibi sizes per view and the upright Probe are rules of the look: see [Size and pose](../art-direction.md#size-and-pose).
+
 ### Mibi paintings
 
 How a mibi's painting is made is in the [art pipeline](../proposals/art-pipeline.md) and [the Grow service](../../prototypes/workbench/grow/README.md). Every painting meets these:
