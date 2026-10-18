@@ -5,7 +5,7 @@
 // accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
-import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 3;
@@ -51,7 +51,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
 export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
+export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -226,6 +226,11 @@ export function carriedIds(st, sv) {
   const raw = sv && Array.isArray(sv.carried) ? sv.carried : sv && sv.with != null ? [sv.with] : [];
   return raw.filter((id) => { const m = mibiById(st, id); return m && !m.released; });
 }
+// The Companion's partner, as the Companion picks it: its lead if carried and grown, else the first grown mibi with it, else none (exploration partnerMibi). The Caddy's lifted line names it.
+export function partnerOf(st, sv, settings = DEFAULT_SETTINGS) {
+  const c = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean), grown = (m) => !!m && isAdult(st, m, settings), l = c.find((m) => m.id === (sv && sv.lead));
+  return grown(l) ? l : c.find(grown) || null;
+}
 // The requests the Companion has not applied yet, in seq order. The face shows them as pending, never as carried.
 export const pendingCarry = (st, sv) => (st.carryReqs || []).filter((r) => r.seq > ((sv && sv.carrySeen) || 0)).sort((a, b) => a.seq - b.seq);
 // The set as it will be once every request applies (the Companion's own rules: an add is refused when full, already carried or released; a home is a no-op when not carried).
@@ -289,7 +294,8 @@ export function shortText(st, e, d, s) {
 // The two forms of a log line or a button: what is gained and what is spent. One place, so the answer on the wording is a one-line change (forms PLACEHOLDER until the UI designer and copywriter answer).
 export const gainText = (s) => "❀ +" + s;
 export const spendText = (e, d, s) => [e ? "⚡ −" + e : "", s ? "❀ −" + s : "", d ? "◆ −" + d : ""].filter(Boolean).join(" ") || "free";
-export const priceText = (e, d, s) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : ""].filter(Boolean).join(" ") || "free";
+// `w` the bud's wait in minutes, the last group (Create's Grow line, fix 6 N1a): "free" only when all four are 0
+export const priceText = (e, d, s, w = 0) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : "", w ? "⧗ " + w : ""].filter(Boolean).join(" ") || "free";
 
 // --- dock and the bay ------------------------------------------------------------------------------
 export function probeNow(st, sv) {
@@ -338,8 +344,10 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 }
 export function fillWells(st, settings = DEFAULT_SETTINGS, now = Date.now()) { const rack = rackSize(settings); while (st.tray.length < rack && st.waiting.length) { const p = st.waiting.shift(); p.landAt = now; st.tray.push(p); } }
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
-export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const cs = bayCrates(st, sv); if (!docked(st) || !cs.length) return { ok: false, plays: [] };
+export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
+// The same for the crates named (a run opens them one at a time, T-20261016-216: the crates not yet opened stay sealed in the bay when the player leaves).
+export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now(), cs = bayCrates(st, sv)) {
+  if (!docked(st) || !cs.length) return { ok: false, plays: [] };
   const plays = [], rack = rackSize(settings);
   for (const c of cs) {
     st.accepted.push(c.id); if (st.accepted.length > 60) st.accepted.splice(0, st.accepted.length - 60);
@@ -528,6 +536,8 @@ export function installTier2(st, settings = DEFAULT_SETTINGS) {
 }
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
+// The minutes a growing bud has left, rounded up and at least 1 (the Incubator's "ready in about {n} min", owner ruling 3).
+export const budMinutesLeft = (st, settings, now) => { const B = st.bud; return B ? Math.max(1, Math.ceil(B.minutes * (1 - budProgress(st, settings, now)) - 1e-9)) : 0; };
 export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
 // The leaves of the wait, one rule for the Incubator, its intents and Home's chamber: total the bud's minutes (at most max), full the whole minutes passed, rows 0 to rowsOf - 1 of the current leaf (rowsOf whole rows a minute: a row every 3 s at the real pace); rows is 0 once full reaches total.
 export function budLeaves(st, settings, now, max, rowsOf = 20) {
@@ -547,12 +557,12 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
   const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod waits" : "new pods wait"), act: "pods", label: "Look at the pods" };
+  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod in the rack" : "new pods in the rack"), act: "pods", label: "Look at the pods" };
   const glinting = st.tray.filter((p) => podGlints(st, p));
   if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
   if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
-  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod could grow" : "a pod grows with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
+  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod, ready to incubate" : "a pod incubates with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
@@ -609,7 +619,7 @@ export function guideComplete(st, id, settings = DEFAULT_SETTINGS) {
   for (const ch of fr.chapters) {
     const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
     if (!shut && ch.traits.length > 0) open = true;
-    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += traitLooks(fr, t).filter((l) => !seen.includes(l)).length; }
+    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += currentLooks(fr, t).filter((l) => !seen.includes(l)).length; }
   }
   return unseen === 0 && open;
 }
@@ -628,6 +638,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   const crossOpen = !!doors && doors.cross === true, aT = settings.adultTurns ?? JUVENILE_TURNS;
   const living = st.mibis.filter((m) => !m.released).sort((a, b) => a.id - b.id), cs = bayCrates(st, sv), bud = st.bud;
   const short = (e, d, s) => ({ key: "short", icons: shortIcons(st, e, d, s), from: shortFrom(st, e, d, s) });
+  const kn = (sp) => (sp && st.knownIds.includes(sp) ? sp : null);   // a goal fact names a species only once the player knows it (a pod of it identified, or adults of it arrived): never before the first Identify (game designer, 2026-10-15 07:56)
   const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()) });
   // the pod chain for one species (or, with none named, for the first pod there is)
   const chain = (species) => {
@@ -635,10 +646,10 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     const mine = st.tray.filter((p) => !species || speciesOf(p) === species);
     const idd = mine.find((p) => p.idd);
     if (idd) { if (bud) return budStep(); if (bayFull(st, settings)) return { key: "noBay" };
-      const c = growCost(st, {}, settings); return canPay(st, c.e, c.d, c.s) ? { key: "grow", species: speciesOf(idd) } : short(c.e, c.d, c.s); }
+      const c = growCost(st, {}, settings); return canPay(st, c.e, c.d, c.s) ? { key: "grow", species: kn(speciesOf(idd)) } : short(c.e, c.d, c.s); }
     const fresh = mine.find((p) => !p.idd);
-    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: speciesOf(fresh) } : short(0, c, 0); }
-    return { key: "findPod", species: species || null };
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: kn(speciesOf(fresh)) } : short(0, c, 0); }
+    return { key: "findPod", species: kn(species) };
   };
   const speciesIn = (m) => speciesOf(m), members = (sp) => living.filter((m) => speciesIn(m) === sp);
   const unreadOf = (m) => { const fr = frameFor(m); return fr ? fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : null; };
@@ -657,7 +668,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   };
   let g = null;
   if (!living.length && !bud && !st.tray.length && !st.waiting.length && !cs.length) g = { key: "firstPod", step: { key: "goOut" } };
-  else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(st.tray[0] ? speciesOf(st.tray[0]) : null) };
+  else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(null) };   // no species named: the chain runs on the first pod there is
   else {
     const spOrder = [...new Set(living.map(speciesIn))], count = (sp) => members(sp).length + (bud && speciesOf(bud) === sp ? 1 : 0);
     if (!spOrder.some((sp) => count(sp) >= 2)) { const m = living[0], sp = speciesIn(m); g = { key: "pair", name: m.name, species: sp, step: chain(sp) }; }
@@ -677,7 +688,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     }
     if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
     // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
-    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && st.knownIds.includes(x) && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
   }
   // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
   if (!g && tierNow(st, sv) < 2) g = { key: "probe", step: st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };   // the Probe stands in; a save with no Probe goes out, never fits
@@ -703,7 +714,8 @@ export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, a
   const g = goalKey(st, sv, settings, doors); if (!g) return null;
   const step = g.step, p = { e: price.e || 0, d: price.d || 0, s: price.s || 0 }, grow = growCost(st, {}, settings), ident = { e: 0, d: identifyCost(st, settings), s: 0 };
   let next = null, who = {}, key = step.key;
-  if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
+  if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; if (step.species == null) return null;   // a goal that names no species has no nameless warning (ruling): silent, whether the act identifies another unknown pod or anything else
+     const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
   else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
   else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
   else if (step.key === "read" && g.key === "guide") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; }
@@ -804,7 +816,7 @@ export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clas
 // Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the
 // Grow paints nothing: the mibi is drawn from its layers (decisions 10-11 14:17); the own painting is made only at the sitting. Validated whole before anything is spent.
 export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Grow it · " + b };
+  const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Incubate · " + b };
   const fr = frameFor(p), cost = growCost(st, choices, settings), changed = changedTraits(choices), genome = founderGenome(p, choices), sha = genomeSha(genome);
   st.e -= cost.e; st.s -= cost.s; st.d -= cost.d;
   const first = !!st.firstMibi, minutes = budMinutes(st, changed.length, settings);
@@ -813,11 +825,11 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   st.bud = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
   st.firstMibi = false;
   st.tray = st.tray.filter((q) => q !== p); fillWells(st, settings, now);
-  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
+  logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
-const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
+export const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
 // The bud's chapters. A read chapter is known from the start. A bred bud (kind "cross") keeps every other chapter unread, always: while it grows, after Grow now and skipBud, at ready and after (what
 // the Station could be sure of is B.read, set from the parents). A founder (a missing kind counts as one) clears its unread chapters one by one across the wait: with U the unread chapters in frame order
 // (a shut sealed chapter is never among them) and n = |U|, U[k] is known when the bud is (k + 1) / (n + 1) grown.
@@ -834,23 +846,33 @@ export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now(
   const left = B.minutes * (1 - budProgress(st, settings, now));
   return { e: 0, d: 0, s: left > 1e-9 ? price(Math.ceil(left / 2 - 1e-9), settings) : 0 };
 }
+// Hatch now: pays the price for the minutes left, ends the wait and opens the bud as Open does, in one press (game text 1). The bay is checked before anything is spent: no free bay (only a developer
+// path reaches it) refuses with Open's words and spends nothing, then short of Essence refuses with "Hatch now · {short}". One log line, "Hatched {name} now · ...". Returns { ok, mibi, bud, cost }.
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
-  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
-  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · " + spendText(c.e, c.d, c.s)); return { ok: true };
+  if (freeBay(st, settings) < 0) return { ok: false, msg: NO_BAY_OPEN };
+  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Hatch now · " + shortText(st, c.e, c.d, c.s) };
+  st.e -= c.e; st.d -= c.d; st.s -= c.s; const bud = st.bud; bud.early = true;
+  const r = hatchBud(st, settings, (m, sp, bay) => "Hatched " + m.name + " now · " + sp + " · juvenile · bay " + (bay + 1) + " · " + spendText(c.e, c.d, c.s));
+  return { ok: true, mibi: r.mibi, bud, cost: c };
 }
+const NO_BAY_OPEN = "No bay free · return a mibi to the wild first";
 // Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).
 export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!budReady(st, settings, now)) return { ok: false, msg: "The bud is still growing" };
-  const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
-  const B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
+  if (freeBay(st, settings) < 0) return { ok: false, msg: NO_BAY_OPEN };
+  return hatchBud(st, settings, (m, sp, bay) => "Opened · " + m.name + " · " + sp + " · juvenile · bay " + (bay + 1));
+}
+// The hatch both presses share (the bay is already known free): the bud's mibi, known as the rules say, the field guide, the chamber emptied, the one log line `line(mibi, species name, bay)`.
+function hatchBud(st, settings, line) {
+  const bay = freeBay(st, settings), B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
   const name = drawName(st);
   // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
   const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, bay, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
-  logEv(st, "Opened · " + m.name + " · " + fr.species.name + " · juvenile · bay " + (bay + 1));
+  logEv(st, line(m, fr.species.name, bay));
   return { ok: true, mibi: m };
 }
 // Return a mibi to the wild (research-economy.md §6): +2 Essence, a field-guide note, the release handed to the

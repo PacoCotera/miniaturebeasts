@@ -17,6 +17,7 @@ const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 for (const n of range(0, 13)) for (const centred of [0, 1]) for (const open of n ? [...new Set([0, Math.min(n - 1, 3), n - 1])] : [0]) add("slantTabs", "frame", "regions.rail", [n, open, centred]);
 for (const r of range(0, 39)) add("slantAt", "frame", "regions.rail", [r]);
 for (const p of ["regions.chapter.page", "regions.compareA"]) for (const n of range(0, 10)) { add("pageSize", "pods", p, [n]); add("pageGrid", "pods", p, [n]); }
+for (const cols of range(0, 5)) for (const rows of range(0, 3)) add("pageOrigin", "pods", "regions.chapter.page", [cols, rows]);   // the frame's origin, and a frame past either end of the table
 for (const i of range(0, 5)) { add("placeRect", "pods", "regions.collection", [i]); add("kinRect", "pods", "regions.overview.kin", [i]); }
 for (const w of [...range(0, 40).map((i) => i * 7), 0, 56, 57, 200, 500, 80 - 25, 224 - 24, 224 - 23]) add("plateWidth", "pods", "regions.overview.name", [w]);
 for (const w of [0, 56, 57, 200, 500]) add("plateIndex", "pods", "regions.overview.name", [w]);   // the series id the width names: its place in the series and the series' length

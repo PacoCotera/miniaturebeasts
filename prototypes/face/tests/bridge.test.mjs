@@ -72,12 +72,14 @@ test("a focus graph that cannot be walked is refused at load: each of focus.json
   const f = await boot(); for (const n of ["pods", "home", "habitat", "bench"]) assert.equal(f.send({ t: "spec", screen: n, json: J(n) }), 0, n + ": " + f.errors().join());
 });
 
-test("a ring form the loader does not know is refused: only round, feet, tab, a circle with radius and centre, or a circle outside, and no extra key", { skip }, async () => {
+test("a ring shape the loader does not know is refused: only oval, footprint, tab, rect (with chip), or a circle of box or of centre and r, and no extra key; the old `ring` key goes", { skip }, async () => {
   const J = () => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8"));
-  const bad = [["dashed", "dashed"], ["a circle of no radius", { circle: { radius: 0, centre: [1, 2] } }], ["a circle with no centre", { circle: { radius: 5 } }], ["a negative outside", { circle: { outside: -1 } }], ["an extra key on the ring", { circle: { outside: 4 }, glow: 1 }],
-    ["an extra key on the circle", { circle: { outside: 4, radius: 3 } }], ["a number", 7], ["a bare object", { radius: 5 }]];
-  for (const [what, ring] of bad) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, what); assert.match(f.errors().join(), /targets\.kin\.ring/, what); }
-  for (const ring of ["round", "feet", "tab", { circle: { outside: 0 } }, { circle: { radius: 84, centre: [96, 112] } }]) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(ring) + ": " + f.errors().join()); }
+  const bad = [["dashed", "dashed"], ["a round", "round"], ["a negative rect", { rect: -1 }], ["a circle of no r", { circle: { r: 0, centre: [1, 2] } }], ["a circle with no centre", { circle: { r: 5 } }], ["an extra key on the shape", { rect: 6, glow: 1 }],
+    ["an extra key on the circle", { circle: { centre: [1, 2], r: 3, outside: 4 } }], ["a number", 7], ["a bare object", { radius: 5 }], ["a negative chip", { rect: 0, chip: -1 }], ["a circle of nothing", { circle: "ring" }]];
+  for (const [what, shape] of bad) { const f = await boot(), j = J(); j.targets.kin.shape = shape; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, what); assert.match(f.errors().join(), /targets\.kin\.shape/, what); }
+  { const f = await boot(), j = J(); j.targets.kin.ring = "round"; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, "the old ring key"); assert.match(f.errors().join(), /targets\.kin: `ring` is replaced by `shape`/); }
+  { const f = await boot(), j = J(); j.targets.kin.ground = "gilt"; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, "a ground of gilt"); assert.match(f.errors().join(), /ground/); }
+  for (const shape of ["oval", "footprint", "tab", { rect: 0 }, { rect: 6, chip: 4 }, { circle: "box" }, { circle: { centre: [96, 112], r: 88 } }]) { const f = await boot(), j = J(); j.targets.kin.shape = shape; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(shape) + ": " + f.errors().join()); }
 });
 
 test("an asset carries its layer policy and status, and is refused without a valid pair; a sprite takes its layer from its asset, a rect from its word", { skip }, async () => {

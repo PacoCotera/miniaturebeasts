@@ -1,6 +1,6 @@
 // Check 1 for the Probe bench (lvgl-switch.md §4): every part the face's log says it drew, against the rectangles bench.json gives it, and every node's box as the face holds it. The log holds one union rectangle a region and layer, so each
 // region's union is held to the union of the parts the state gives, exactly: the stage over the whole stage; the cradle's picture at the cradle's rectangle; the plates (docked only) at the tier's places, lifted while the ring is on them; each
-// module's panel (lifted 2 px while the ring is on it), its lamp, and its pictures at their offsets from the module; the ring 4 px outside the focused region lifted by its lift. `departures` returns the list, empty when none.
+// module's panel (lifted 2 px while the ring is on it), its lamp, and its pictures at their offsets from the module; the ring 5 px outside the focused object as drawn (the plates: the union of the drawn plates). `departures` returns the list, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [...] }; spec: bench.json; props: the bench's props (state, regions, focus); cur: the ring.
 // `partDepartures(boxOf, spec, props, cur)`: the per-node check (boxOf(id) is the node's [x, y, w, h] by its id string, or null): the plates' four nodes and every picture of both modules, each exactly at its place; a place the tier lacks a node of no size.
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
@@ -11,6 +11,8 @@ const union = (rs) => { rs = rs.filter(Boolean); if (!rs.length) return null; co
 export function expected(spec, props, cur) {
   const R = spec.regions, T = spec.focus.targets, lift = (id) => (cur === id ? T[id].lift : 0), docked = props.state === "docked", out = { parts: {} };
   const at = (o, a) => [o[0] + a[0], o[1] + a[1], a[2], a[3]];
+  // the plate strip (fix 5 P3): the tier's painted strip, in both states, under the plates
+  out.strip = R.strip.byTier[props.regions.strip.tier]; out.parts["plates.strip"] = out.strip;
   // the plates
   const P = R.plates, most = Math.max(...Object.values(P.places).map((t) => t.length));   // the stable plate nodes: as many as the longest table; away every one stays, with no size
   if (docked) { const tier = props.regions.plates.tier, whole = props.regions.plates.whole, places = P.places[tier]; if (!places) throw new Error("no table for tier " + tier); if (whole > places.length) throw new Error("whole above the table");
@@ -30,22 +32,23 @@ export function expected(spec, props, cur) {
   for (let i = 0; i < AD.pods.count; i++) out.parts[`slot.pod.${i}`] = [n[0] + AD.pods.at[0] + AD.pods.pitch * i, n[1] + AD.pods.at[1], AD.pods.icon[0], AD.pods.icon[1]];
   for (let i = 0; i < AD.plates.count; i++) out.parts[`slot.plate.${i}`] = [n[0] + AD.plates.at[0] + AD.plates.pitch * i, n[1] + AD.plates.at[1], AD.plates.icon[0], AD.plates.icon[1]];
   for (const k of ["reach", "deep"]) out.parts[`slot.${k}`] = [n[0] + AD[k].at[0], n[1] + AD[k].at[1], AD[k].size[0], AD[k].size[1]];
-  // the ring: the focused region's rectangle lifted by its lift, 4 px outside
-  if (cur) { const r = R[cur].rect, y = r[1] - lift(cur); out.ring = [r[0] - 4, y - 4, r[2] + 8, r[3] + 8]; }
+  // the ring (fix 14): the object as drawn, its rectangle lifted by its lift (the plates: the union of the drawn plates, lifted), grown by 5
+  if (cur) { const o = cur === "plates" ? union(Object.entries(out.parts).filter(([k, v]) => /^plates\.\d+$/.test(k) && v[2]).map(([, v]) => v)) : [R[cur].rect[0], R[cur].rect[1] - lift(cur), R[cur].rect[2], R[cur].rect[3]]; out.ring = o && [o[0] - 5, o[1] - 5, o[2] + 10, o[3] + 10]; }   // the plates, not the strip they stand on (a container: the ring may lie on it)
   return out;
 }
 
 export function departures(log, spec, props, cur) {
   const out = [], R = spec.regions, regions = log.regions ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
-  const E = expected(spec, props, cur), pic = (id) => { const rs = [...got(id, "art"), ...got(id, "painted")].map((r) => r.rect); return union(rs); };
+  const E = expected(spec, props, cur), pic = (id) => { const rs = [...got(id, "art"), ...got(id, "painted")].map((r) => r.rect).filter((r) => !(r[2] >= 300 && r[3] >= 128 && (id === "switch" || id === "slot"))); return union(rs); };
   must(got("bench", "chrome").length === 1 && eq(got("bench", "chrome")[0].rect, R.bench.rect), `the stage ground ${got("bench", "chrome")[0]?.rect} is not ${R.bench.rect}`);
   for (const r of [...got("bench", "art"), ...got("bench", "painted")]) must(eq(r.rect, R.bench.rect), `the stage picture ${r.rect} is not ${R.bench.rect}`);
   must(got("cradle", "art").length + got("cradle", "painted").length >= 1 && eq(pic("cradle"), R.cradle.rect), `the cradle ${pic("cradle")} is not ${R.cradle.rect}`);
-  if (props.state === "docked") must(eq(pic("plates") ?? [], union(Object.entries(E.parts).filter(([k]) => k.startsWith("plates.")).map(([, v]) => (v[2] ? v : null))) ?? []), `the plates ${pic("plates")} are not the tier's places`);
+  must(eq(pic("strip") ?? [], E.strip), `the plate strip ${pic("strip")} is not the tier's ${E.strip}`); if (props.state === "docked" && pic("plates")) must(within(pic("plates"), E.strip), `the plates ${pic("plates")} leave their strip ${E.strip}`);
+  if (props.state === "docked") must(eq(pic("plates") ?? [], union(Object.entries(E.parts).filter(([k]) => /^plates\.\d/.test(k)).map(([, v]) => (v[2] ? v : null))) ?? []), `the plates ${pic("plates")} are not the tier's places`);
   else must(!got("plates", "art").length && !got("plates", "painted").length, "no plates drawn away");
   for (const [mod, panel, lampBox, keys] of [["switch", E.switchPanel, E.switchLamp, (k) => k.startsWith("switch.")], ["slot", E.slotPanel, E.slotLamp, (k) => k.startsWith("slot.")]]) {
-    const pan = got(mod, "chrome"); must(pan.length === 1 && eq(pan[0].rect, panel), `${mod}'s panel ${pan[0]?.rect} is not ${panel}`);
+    const pan = got(mod + ".plate", "painted").filter((r) => r.rect[2] === panel[2] && r.rect[3] === panel[3]); must(pan.length <= 1 && pan.every((r) => eq(r.rect, panel)), `${mod}'s plate ${pan[0]?.rect} is not ${panel}`); must(!got(mod, "chrome").length, `${mod} draws no fill, edge or bevel row (fix 2 F1)`);   // the plate stands where its master is placed at the module's size (312 wide once fix 5 moves the modules)
     const lamp = got(mod + ".lamp"); must(lamp.length >= 1 && lamp.every((r) => eq(r.rect, lampBox)), `${mod}'s lamp ${lamp.map((r) => r.rect)} is not ${lampBox}`);
     const want = union(Object.entries(E.parts).filter(([k, v]) => keys(k) && v[2]).map(([, v]) => v)); must(eq(pic(mod) ?? [], want ?? []), `${mod}'s pictures ${pic(mod)} are not the union of their places ${want}`);
     must(within(panel, [0, 0, 1024, 600]), `${mod}'s panel leaves the screen`);

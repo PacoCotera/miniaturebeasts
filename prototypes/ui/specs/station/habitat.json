@@ -49,6 +49,12 @@
   "note": "the glass's painting by the light of the hour (frame.json light.from), one a light, the master id `<picture>-544x408`: switched with Home's glass and Idle's painting, dropped on a light change as theirs are"
  },
  "overlays": {
+  "panel": {
+   "spec": "panel.json",
+   "id": "wildMibi",
+   "from": "✓ on Wild (the Return gate)",
+   "closes": "Keep, ← or a room key: the screen as before, nothing spent; Return: the release"
+  },
   "namer": {
    "spec": "namer.json",
    "panel": [592, 48, 416, 424],
@@ -90,7 +96,7 @@
     "rect": [436, 80, 12, 12],
     "slice": "home-lamp-sky-12x12",
     "at": "the box's top right",
-    "when": "while the placeholder is drawn: the painting on its way, or waiting for the cloud",
+    "when": "while the placeholder is drawn: the painting on its way, or waiting for a signal",
     "rides": "the 4 px lift"
    },
    "lift": 4,
@@ -138,6 +144,7 @@
   },
   "card": {
    "rect": [592, 48, 416, 208],
+   "plate": "plate-device-416x208",
    "component": "panel",
    "inStates": ["rest", "meet", "out"],
    "heart": {
@@ -190,7 +197,7 @@
    "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
    "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
   },
-  "stamp": {"rect": [872, 64, 120, 120], "component": "stampLabel", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: the bare bone label, no words", "fromFocal": 424},
+  "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424},
   "plates": {
    "rect": [608, 200, 376, 40],
    "component": "list",
@@ -208,6 +215,7 @@
   },
   "door": {
    "rect": [592, 272, 272, 96],
+   "plate": "plate-device-272x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
@@ -222,32 +230,38 @@
     "away": "the same: the carried mibis drawn at 48, so the set reads while they are out; the outline glyph says they are out",
     "waiting": "an add request waiting: its picture at 48 with frame-lamp-8-stone at the place's (40, 0)",
     "lampAt": [40, 0],
-    "recess": "each place's box, [648|712|776, 312, 48, 48], filled colours.door.recess (ground), no edge; the picture over it at 48; a free place adds the dash outline 1 px inside; no recess round the row; chrome, no master",
-    "free": "a place the set does not fill: a composed `dash` outline 1 px inside the place's box, 1 px `hairline`, dash [2, 2], as the strip's free bay, so the three places read with no figure"
+    "recess": "fix 2 F4: each place's box, [648|712|776, 312, 48, 48], is `plate-well-48x48` 1:1 in every state (props places[i].well), painted, no fill; the mibi's picture over it at 48",
+    "free": "fix 2 F4: a place the set does not fill is the well alone, no dash, no fill; the door.free node keeps its box with no ops"
    },
    "states": {"docked": "the solid glyph and the three places", "away": "the outline glyph and the three places", "none": "nobody carried: the glyph and three free places"}
   },
   "portrait": {
    "rect": [872, 272, 136, 96],
+   "plate": "plate-device-136x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
    "word": [16, 12],
    "lamp": null,
    "frame": {
-    "at": [52, 40],
-    "size": [32, 48],
-    "slices": {"none": "sitting-frame-empty-32x48", "held": "sitting-frame-held-32x48", "painting": "sitting-frame-held-32x48", "portrayed": "sitting-frame-portrait-32x48"}
+    "at": [44, 40],
+    "size": [48, 40],
+    "rect": [916, 312, 48, 40],
+    "slices": {"none": "sitting-frame-empty-48x40", "held": "sitting-frame-held-48x40", "painting": "sitting-frame-held-48x40", "portrayed": "sitting-frame-portrait-48x40"},
+    "window": {"at": [4, 4], "size": [40, 30], "rect": [920, 316, 40, 30], "rails": {"side": 4, "top": 4, "foot": 6}, "rule": "every frame master paints its window opaque, never hollow: the module's panel never shows through"},
+    "picture": {"at": [4, 4], "size": [40, 30], "rect": [920, 316, 40, 30], "when": "portrayed, and its portrait picture has landed", "asset": "the mibi's portrait at 40x30, placed 1:1 (props regions.portrait.picture; request portrait:<d16>:40x30, per the architect's ruling)", "over": "the frame: drawn after it, exactly its window", "until": "nothing (w 0, h 0): the portrait frame's own window shows"},
+    "lift": "rides the module's 2 px lift (focus.targets.portrait.lift): frame 916,310; window and picture 920,314"
    },
    "states": {
-    "none": "no sitting held: the frame's outline",
-    "held": "a sitting held: the gilt frame lit",
-    "painting": "its sitting begun, the crate on its way: the gilt frame",
-    "portrayed": "its portrait came: the frame filled"
+    "none": "no sitting held: the empty frame, its window debossed",
+    "held": "a sitting held: the held frame, its window dark",
+    "painting": "its sitting begun, the crate on its way: the held frame, its window dark",
+    "portrayed": "its portrait came: the portrait frame, its window a warm paper fill (never the mibi) until the picture lands, then the picture over it"
    }
   },
   "cross": {
    "rect": [592, 376, 272, 96],
+   "plate": "plate-device-272x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
@@ -275,15 +289,16 @@
   },
   "wild": {
    "rect": [872, 376, 136, 96],
+   "plate": "plate-device-136x96",
    "component": "panel",
    "build": "module",
    "inStates": ["rest", "meet", "out"],
    "word": [16, 12],
    "lamp": null,
-   "gate": {"at": [44, 40], "size": [48, 48], "slices": {"shut": "gate-wild-shut-48x48", "armed": "gate-wild-open-48x48"}},
-   "states": {"shut": "at rest", "armed": "after the first ✓: the gate ajar"}
+   "gate": {"at": [44, 40], "size": [48, 48], "slices": {"shut": "gate-wild-shut-48x48"}},
+   "states": {"shut": "at rest (✓ opens the Return panel: specs/station-decision-panel-spec.md §1.6)"}
   },
-  "strip": {"rect": [16, 488, 992, 64], "component": "panel"},
+  "strip": {"rect": [16, 488, 992, 64], "plate": "plate-device-992x64", "component": "panel"},
   "tiles": {
    "rect": [32, 496, 952, 48],
    "component": "list",
@@ -325,7 +340,7 @@
   "stamp",
   "plates",
   "door",
-  "portrait",
+  "portrait (its frame, then its picture)",
   "cross",
   "wild",
   "strip",
@@ -445,7 +460,7 @@
   "targets": {
    "resident": {
     "group": "resident",
-    "ring": "feet",
+    "shape": "footprint",
     "box": "regions.resident.rect",
     "ellipse": [136, 380, 320, 24],
     "lift": 4,
@@ -453,53 +468,52 @@
    },
    "name": {
     "group": "name",
-    "ring": "round",
+    "shape": { "rect": 0 },
     "box": "the tag as drawn, inside regions.nameTag.rect",
     "lift": 0,
     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
    },
-   "species": {"group": "species", "ring": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "always"},
+   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "doorOpen(book); until slot 8 read-only (no ✓ cap, bottomLine.species.shut)"},
    "plate": {
     "group": "plate",
     "id": "plate.<i>, i from 0 in ring order",
-    "ring": "round",
+    "shape": { "rect": 0 },
     "box": "regions.plates.places, plate i",
     "lift": 2,
     "enabled": "an unread chapter of a bred child that is not sealed, at home or out with the Companion (readMibi does not check the carried set)"
    },
    "door": {
     "group": "top",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "regions.door.rect",
     "lift": 2,
     "enabled": "always on a shown mibi: ✓ Take when it is not in the set as it will be (state.projectCarried) and that set holds fewer than three; ✓ Bring when it is carried (state.carriedIds) and no request for it waits; otherwise read-only, no ✓ cap: a request for it waits (state.pendingCarry) or the set is full, and the context says which (bottomLine.door)"
    },
    "portrait": {
     "group": "top",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "regions.portrait.rect",
     "lift": 2,
-    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting"
+    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (until slot 9 read-only, bottomLine.portrait.shut)"
    },
    "cross": {
     "group": "low",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "regions.cross.rect",
     "lift": 2,
-    "enabled": "an adult or an elder, at home or docked, with at least one partner it can pick (state.crossPartners less the partners out with the Companion while it is away; elders counted as adults)"
+    "enabled": "an adult or an elder, at home or docked, with at least one partner it can pick (state.crossPartners less the partners out with the Companion while it is away; elders counted as adults); and doorOpen(cross) (until slot 7 read-only, bottomLine.cross.shut)"
    },
-   "wild": {"group": "low", "ring": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty"},
+   "wild": {"group": "low", "shape": { "rect": 6 }, "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty"},
    "tile": {
     "group": "tile",
     "id": "tile.<mibi id>, housed mibis only (at home or out); free bays are not targets",
-    "ring": "round",
+    "shape": { "rect": 6 },
     "box": "the tile's rectangle (regions.tiles, its form)",
     "lift": 2,
     "focusShows": "focusing a tile shows its mibi in the window (events.swap); the resident target is then that mibi"
    }
   },
-  "armed": {"wild": "after the first ✓ on a mibi that may go", "clear": "any key but ✓ clears the arm; the arm never survives a screen change"},
   "held": "while events.moment, read, release or back holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends); after the moment's hold, the first key cuts it to its end and then acts (notes.cut); while the namer is open its own graph has every key",
   "vectors": [
    {"from": "resident", "key": "right", "to": "name"},
@@ -550,7 +564,8 @@
   },
   "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); out, strings.out"},
   "tile": "as resident, for the tile's mibi",
-  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library"},
+  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library",
+   "shut": {"action": null, "context": "strings.shut.guide", "when": "doorOpen(book) false (until slot 8)"}},
   "plate": {
    "read": {"action": null, "context": "strings.plateRead"},
    "unread": {
@@ -578,18 +593,19 @@
    },
    "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed; out, strings.portraitOut"},
    "painting": {"action": null, "context": "strings.portraitOnWay"},
-   "portrayed": {"action": null, "context": "strings.portrayed"}
+   "portrayed": {"action": null, "context": "strings.portrayed"},
+   "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (until slot 9)"}
   },
   "cross": {
    "adult": {"action": "strings.cross", "context": "strings.partners"},
    "out": {"action": null, "context": "strings.crossOut", "when": "state out: the shown mibi is out with the Companion"},
    "away": {"action": null, "context": "strings.crossAway", "when": "an adult at home whose partners are all out with the Companion, away"},
    "alone": {"action": null, "context": "strings.noPartner"},
-   "young": {"action": null, "context": "strings.crossLater"}
+   "young": {"action": null, "context": "strings.crossLater"},
+   "shut": {"action": null, "context": "strings.shut.cross", "when": "state adult and doorOpen(cross) false (until slot 7); the partner faces drawn as for adult"}
   },
   "wild": {
    "may": {"action": "strings.wild", "price": "❀ +2 (state.PRICE.wildMibi), icon before figure", "context": "strings.wildContext"},
-   "armed": {"action": "strings.wildAgain", "price": "❀ +2", "context": "strings.wildAgainContext"},
    "blocked": {"action": null, "context": "state.returnMibiBlock's words (strings.wildBlocks)"}
   },
   "price": "no price is shown when there is none",
@@ -606,18 +622,15 @@
   "glass": {"edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
-  "ribbon": {"fill": "tealD", "edge": "aqua", "text": "bone"},
-  "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
-  "stampLabel": {"fill": "bone", "edge": "slate"},
-  "module": {"fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal"},
-  "door": {"recess": "ground"},
+  "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
+  "card": {"species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
+  "stampLabel": {"k": 0.2, "warm": [1.0, 0.93, 0.80], "note": "Habitat GB2 (art director's ruling): the label's plate is the signed plate-well-120x120 at (872, 64), the C5 well with its ground floor, drawn 1:1; the stamp is printed in it as before, multiplied in linear light by k × warm (art director, masters-pods 001bcd51), centred; the 1 px #3d434b edge is dropped, the well's own hairline replaces it; no fill, light, glow, frame or pane of its own"},
+  "module": {"word": "metal"},
   "faceRing": "bevel",
-  "strip": {"fill": "ground", "edge": "hairline"},
-  "tile": {"fill": "panel", "shown": "hairline", "free": "hairline"},
   "faceRingAway": "stone"
  },
  "masters": {
-  "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`)",
+  "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`). The portrait's picture, portrait:<d16>:40x30, is derived on the Station, not a master (the architect's ruling). Until signed, gate-wild-*, chapter-plate-* and mark-guide-16 are empty slots that draw nothing (rule 3; fix 3c-habitat)",
   "new": [
    {
     "id": "vivarium-near-{dawn,day,dusk,night}-544x408",
@@ -644,9 +657,9 @@
    "notch-skill-16x24 (new)",
    "mark-out-with-companion-64x96 (new)",
    "heart-full-24",
-   "sitting-frame-empty-32x48",
-   "sitting-frame-held-32x48",
-   "sitting-frame-portrait-32x48",
+   "sitting-frame-empty-48x40",
+   "sitting-frame-held-48x40",
+   "sitting-frame-portrait-48x40",
    "gate-wild-shut-48x48",
    "gate-wild-open-48x48",
    "chapter-plate-read-40x40",
@@ -678,7 +691,13 @@
   "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
   "painting": "its painting is on its way",
-  "offline": "waiting for the cloud",
+  "offline": "waiting for a signal",
+  "shut": {
+   "cross": "crossing is not open yet",
+   "portrait": "portraits are not open yet",
+   "guide": "the guide is not open yet",
+   "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; until slots 7, 8, 9 (doorOpen)"
+  },
   "guide": "Open the guide",
   "every": "every {Species}",
   "plateRead": "{Chapter}, read",
@@ -707,8 +726,6 @@
   "crossLater": "crosses once adult",
   "wild": "Return {name}",
   "wildContext": "goes back to the wild",
-  "wildAgain": "Again: return {name}",
-  "wildAgainContext": "never taken back",
   "wildBlocks": {"bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": "already with you", "waiting": "goes at the next dock"},
   "releasePlate": "{name} goes back to the {place}",
   "watchPlate": "{name} is seen {habit}",
@@ -729,7 +746,7 @@
   "the state empty goes: with no housed mibi the whole shows its empty state, and the last release here lands there",
   "a new state out: the shown mibi out with the Companion keeps its page; the out mark in its place, no greet, its chapters readable",
   "the card gains the skill notches (regions.card.notches) and the code's box narrows to 152",
-  "the Companion module draws the carried set while the Companion is away too, and its free places as dashed outlines",
+  "the Companion module draws the carried set while the Companion is away too, and its free places as the well alone (fix 2 F4)",
   "the title reads Vivarium and the way back Vivarium",
   "Cross: a mibi out with the Companion, away, may not cross, as the shown mibi or as a partner (state.crossBlock and crossPartners gain the check); docked it crosses as any adult. Away partners' faces are drawn dimmed on a `stone` ring and are not picked on Cross",
   "the watch runs only on one mibi up close, never on a carried mibi (state.benchWatch is called from this level alone)",

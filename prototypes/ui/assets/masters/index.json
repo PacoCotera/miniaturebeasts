@@ -5,15 +5,15 @@
    "file": "pods/base-336x96.png",
    "w": 336,
    "h": 96,
-   "sha256": "4130e141b41a1453dba1b2cf335f50c703c5d56beeb4096aff1a617d212bbe98",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "f5534c9b3d1140ed32ba6f61401f8ecad14842859da2c610016c53709d84d942",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
-  "bench-cradle-empty-480x288": {
-   "file": "pods/bench-cradle-empty-480x288.png",
-   "w": 480,
-   "h": 288,
-   "sha256": "e9d3dbf171cbfb9e86f4cbb081e11939a6d0d25f22833ad80b6882de65bb32f5",
-   "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  "bench-cradle-upright-empty-288x432": {
+   "file": "pods/bench-cradle-upright-empty-288x432.png",
+   "w": 288,
+   "h": 432,
+   "sha256": "fb05ee58bbf4c7534d5208b74a7430a405c14207900eddf520c7678896f3b819",
+   "signed": "Paco Cotera"
   },
   "bench-deep-t2-40": {
    "file": "pods/bench-deep-t2-40.png",
@@ -57,6 +57,20 @@
    "sha256": "a6e66e3621481c0c5a56a781b637d4c9bfa6ac6d07ee518abce69e726603bdc4",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "bench-plate-strip-t1-144x48": {
+   "file": "pods/bench-plate-strip-t1-144x48.png",
+   "w": 144,
+   "h": 48,
+   "sha256": "aadf24f64afae389e7eb37463bbc564a5d65d4df4ae48d98be30366abe444479",
+   "signed": "station lead's brief (fix 5 Incubator/Probe): PA1, masters-pods bea42f4d; signed by the AD in the capture"
+  },
+  "bench-plate-strip-t2-192x48": {
+   "file": "pods/bench-plate-strip-t2-192x48.png",
+   "w": 192,
+   "h": 48,
+   "sha256": "9faa9a2e68da31ca3592f2ecf583f49dd0d39ab37254cdec9a794159e78a49f5",
+   "signed": "station lead's brief (fix 5 Incubator/Probe): PA1, masters-pods bea42f4d; signed by the AD in the capture"
+  },
   "bench-plate-whole-32x32": {
    "file": "pods/bench-plate-whole-32x32.png",
    "w": 32,
@@ -64,19 +78,19 @@
    "sha256": "a6fb19925510e664dfe2704da40dacbce3cc2b44cea128572001504870c68000",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
-  "bench-probe-t1-480x288": {
-   "file": "pods/bench-probe-t1-480x288.png",
-   "w": 480,
-   "h": 288,
-   "sha256": "7a511778d522893f1e82c8ab910ab0becd931cb279109a19abd9bb8458b93003",
-   "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  "bench-probe-upright-t1-288x432": {
+   "file": "pods/bench-probe-upright-t1-288x432.png",
+   "w": 288,
+   "h": 432,
+   "sha256": "ed4407ee305f4c37cf758db5da739c9fd504cdde4f40fb38caa6ba88ecbab988",
+   "signed": "Paco Cotera"
   },
-  "bench-probe-t2-480x288": {
-   "file": "pods/bench-probe-t2-480x288.png",
-   "w": 480,
-   "h": 288,
-   "sha256": "93a7b84f9da1f2cd073cfd1e2520a60b3e5b14abd582db3d9354c4be12d64d50",
-   "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  "bench-probe-upright-t2-288x432": {
+   "file": "pods/bench-probe-upright-t2-288x432.png",
+   "w": 288,
+   "h": 432,
+   "sha256": "784f50368edf366a29e4111ba0dfe5de009b317f8c777e0a9774997761b06cd0",
+   "signed": "Paco Cotera"
   },
   "bench-reach-t2-40": {
    "file": "pods/bench-reach-t2-40.png",
@@ -119,6 +133,55 @@
    "h": 40,
    "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  },
+  "berth-edge-190x294": {
+   "file": "pods/berth-edge-190x294.png",
+   "w": 190,
+   "h": 294,
+   "sha256": "5e9aa3f7981ccf451e9af0a2cbd92dd6d9bbf22dca1d3fb5e07969acc72aef61",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-edge-258x294": {
+   "file": "pods/berth-edge-258x294.png",
+   "w": 258,
+   "h": 294,
+   "sha256": "9fc394827f8151cc49dc6f9257545f15ec2f784f692c4e57df827ba2dbc68d32",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-gilt-198x302": {
+   "file": "pods/berth-gilt-198x302.png",
+   "w": 198,
+   "h": 302,
+   "sha256": "6a5a5bfc2b28f0b58b41c53de1e8e03730b63caf4cc193b4db22cb3af0185571",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-recess-188x292": {
+   "file": "pods/berth-recess-188x292.png",
+   "w": 188,
+   "h": 292,
+   "sha256": "5006ac027ff6449f74c00595ffcdf40b1c42d86e6dd802178837210b8d3f7356",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-recess-256x292": {
+   "file": "pods/berth-recess-256x292.png",
+   "w": 256,
+   "h": 292,
+   "sha256": "e7d6d49efa7fdc7d08d3a5d0fbf5ee34b940dfe33f23be28dfa989f2a34a3d20",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-shut-188x292": {
+   "file": "pods/berth-shut-188x292.png",
+   "w": 188,
+   "h": 292,
+   "sha256": "c8e747d2daf60cd3f08357e4799673d452fbdb7d47bc77b400b324a2ab5b2603",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-shut-256x292": {
+   "file": "pods/berth-shut-256x292.png",
+   "w": 256,
+   "h": 292,
+   "sha256": "b1c37713b2d2b5e22a1aa30c87751f00525944f52892a3bcdd91a58581e0c6d9",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
   },
   "bud-crack-1-128x160": {
    "file": "pods/bud-crack-1-128x160.png",
@@ -183,26 +246,488 @@
    "sha256": "2e68b3c526f406a9c1cbe6442d13c56f8316a47a4c0a255295482d4230aeb355",
    "signed": "art director, verdict (963f4eab)"
   },
+  "capsule-bar-lit-145x224": {
+   "file": "capsule/capsule-bar-lit-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "d50612744bd14a82c21520b1a75468946fd29a15a9ddcd509b4f68c3087c4b4e",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-bar-lit-296x459": {
+   "file": "capsule/capsule-bar-lit-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "8890b7af626bee4dcf8a0c922580b1915ad5b99214c658c77ef424b8e84d2c4b",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-bar-lit-530x532": {
+   "file": "capsule/capsule-bar-lit-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "7e53b5c5f36c977f2baf22b9b6726b2ff164bfe497747bc8c3335906c678e491",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-bar-lit-56x86": {
+   "file": "capsule/capsule-bar-lit-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "772705acd21407eea0998d06f25b630469c4aaa8f329637d1c9f6bdd06ddcb85",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-145x224": {
+   "file": "capsule/capsule-door-open-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "832bc28119c4b7dddbb0c8f15f2c7be6adde14674929834662dff41b4fb08535",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-457x459": {
+   "file": "capsule/capsule-door-open-457x459.png",
+   "w": 457,
+   "h": 459,
+   "sha256": "b62bc8cac20f139ff90102d3300ee70acc625f3b9e0fa5ed7bcc30e34054ebd0",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-530x532": {
+   "file": "capsule/capsule-door-open-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "fbcc0a7f389c96cc69b2564f8fe83625d53c3171c6cfea7076bae5bbd5c42988",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-56x86": {
+   "file": "capsule/capsule-door-open-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "c64b2b9727d8d8a082d242ea49f6e7d1f31da629b5092b7a0293fab1d866fb8e",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-145x224": {
+   "file": "capsule/capsule-glass-closed-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "49b6429b9d4ff575cf78d01626864aa5b5c0a5b2d19e963d02d8b659fc16018d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-296x459": {
+   "file": "capsule/capsule-glass-closed-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "3d861c1ac743d9229a379346d52411b700d44a41e243180db92c0c68d19812bc",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-530x532": {
+   "file": "capsule/capsule-glass-closed-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "dd321bef266d6e9c6e2da3d52377d99dcd8605f0f688cffa8276b015346974a6",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-56x86": {
+   "file": "capsule/capsule-glass-closed-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "e597ebea815ef261c806057dfb050c6020d6a644a366d470b093015212b91032",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-145x224": {
+   "file": "capsule/capsule-interior-day-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "5e2f52f182399231e8baee470ff1fd223eb0f5ebc2348a9edb766ba912d5c138",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-296x459": {
+   "file": "capsule/capsule-interior-day-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "3ef42319d03f274aa192b678be9cf56a63cece05eab550e128db614b1c738de9",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-530x532": {
+   "file": "capsule/capsule-interior-day-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "ba8c8679d9908b3d5b72eb1c0e91e08d697f26f503a208a85fa04bed420e8b82",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-56x86": {
+   "file": "capsule/capsule-interior-day-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "c7326e7a35b85fce7df69e3652ed5c9bc0f7f6c2d7bccbbba7a1a6747ab524cf",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-dusk-296x459": {
+   "file": "capsule/capsule-interior-dusk-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "756536f9a3a0f40addb4ec4cb305d30d81e4424842869bf72bb2d3d44525d555",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-dusk-530x532": {
+   "file": "capsule/capsule-interior-dusk-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "a368ef16fdc4c462196cabc9514cb1945dd31a0167c301cbbce8c112846e2379",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-day-1024x522": {
+   "file": "capsule/capsule-room-day-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "6881af4e9cd2feaf7063f2a5648d4266c605c4d6f9de3eec05b54d969718043a",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-day-474x468": {
+   "file": "capsule/capsule-room-day-474x468.png",
+   "w": 474,
+   "h": 468,
+   "sha256": "23c43daf7acbe9dd048486693a689352e165d3ae2388fcaae4690b26abf30e12",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-dusk-1024x522": {
+   "file": "capsule/capsule-room-dusk-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "51904de6a0c0a4a425b76e31c7dec57979a7a3a21646be831ab7d27315fdcaa3",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-dusk-474x468": {
+   "file": "capsule/capsule-room-dusk-474x468.png",
+   "w": 474,
+   "h": 468,
+   "sha256": "dc7365f2880e899bbe5bf79853afc2222b6de37438cdf73fda25029d38d10807",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-seal-ring-296x459": {
+   "file": "capsule/capsule-seal-ring-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "6977c8ea4fffdaa0206f9a3536697fab68c1fe9a238ccfa822008f774c2bf8e3",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-seal-ring-530x532": {
+   "file": "capsule/capsule-seal-ring-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "9a74dd19f2bbacf5480ff4721213dce608b1811cc23c54e5e25f922fb881cbcf",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-145x224": {
+   "file": "capsule/capsule-shell-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "faf365614f34dae7a61f680ec969ed0e31b5a7b03722f92a511267af30472cc2",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-296x459": {
+   "file": "capsule/capsule-shell-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "87ea3fa3f152a3983cc0941257686f9362b89f73b6e4cd788e55e8b32801be67",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-530x532": {
+   "file": "capsule/capsule-shell-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "e227ee13e9e7ac3bb337f82aa8cafa789eeb3f72b86db736c958d49958756680",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-56x86": {
+   "file": "capsule/capsule-shell-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "d6a8f2899074f4df1156095cc3ed818396c41efb7072b704cebab448cc476917",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-dusk-296x459": {
+   "file": "capsule/capsule-shell-dusk-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "ea21252a9b20e4f5795d58ef390a46f52849ba859ef2f7cf44f8ab3f9e9645b1",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-dusk-530x532": {
+   "file": "capsule/capsule-shell-dusk-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "c8faad9843c139322f52919fc3a907cdb7563c2f84bc9f4e6c7aa501e173d482",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-stamp-case-front-152x152": {
+   "file": "capsule/capsule-stamp-case-front-152x152.png",
+   "w": 152,
+   "h": 152,
+   "sha256": "ffc01ac79c21d6c10db72255bc193d5f89fa7264bc4f5e5ab294e0e2c5b7e9a5",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list); the case's front veil recut with alpha 0 over the plate, for the Incubator's wall"
+  },
+  "cargo-bay-992x320": {
+   "file": "pods/cargo-bay-992x320.png",
+   "w": 992,
+   "h": 320,
+   "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-bay-992x506": {
+   "file": "pods/cargo-bay-992x506.png",
+   "w": 992,
+   "h": 506,
+   "sha256": "bd8f1ea9a094087cf374127399420a98e7ccd973dc856be2afd5947e8d54a976",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "cargo-bay-apron-992x180": {
+   "file": "pods/cargo-bay-apron-992x180.png",
+   "w": 992,
+   "h": 180,
+   "sha256": "4a9b5cbc865a67bb9e095eaf346253c89ca74426159eebe624835711294406f9",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-120, in dock/proof (the arrival at t 2.2 s with two coming home; the show's end; beside the old proof); to re-check in the builder's captures"
+  },
+  "cargo-bay-shut-976x304": {
+   "file": "pods/cargo-bay-shut-976x304.png",
+   "w": 976,
+   "h": 304,
+   "sha256": "28c5bd98e365f724763dd2a71a23d0a83b9c1d0d78500834a9f5a3067ee32582",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-bay-shut-report-976x304": {
+   "file": "pods/cargo-bay-shut-report-976x304.png",
+   "w": 976,
+   "h": 304,
+   "sha256": "1bc1ffad77c64ec3b854f2730e55b197ab909f5cc70ba4dedac3599d1c77c2de",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-crate-64x64": {
+   "file": "pods/cargo-crate-64x64.png",
+   "w": 64,
+   "h": 64,
+   "sha256": "9f78ebe827d5fd2b4c1237b4a44bac20fc54b6725348cf1b70e370c423478b29",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
+  },
   "cargo-data-48x64": {
    "file": "pods/cargo-data-48x64.png",
    "w": 48,
    "h": 64,
-   "sha256": "0e9f79a8ebd4ba63a66c1a753fdcc5ba3ddc06065d1b839d65d845140ec13fd4",
-   "signed": "art director, haul containers (owner's yes 10-10 12:02; masters-pods b758a617)"
+   "sha256": "e9bfa0cfc444cb7b9c04ac43704d6c8ca640f71903e2e0e33847f0b30ea45790",
+   "signed": "Paco Cotera"
+  },
+  "cargo-data-72x96": {
+   "file": "pods/cargo-data-72x96.png",
+   "w": 72,
+   "h": 96,
+   "sha256": "7b6ca5ac8ebfd79a419632afba4d03bd03294874794d55cd44fd0b6276b0e48b",
+   "signed": "Paco Cotera"
   },
   "cargo-energy-48x64": {
    "file": "pods/cargo-energy-48x64.png",
    "w": 48,
    "h": 64,
-   "sha256": "bab3edbd4fd91201be7a1f403cd93c115d4c778edf0c49be5453f4abfb0d1d9a",
-   "signed": "art director, haul containers (owner's yes 10-10 12:02; masters-pods b758a617)"
+   "sha256": "da8f62219aaca7d009c424f9b92a7b90d6b744613d9b98cc8baa37bdfd353f7e",
+   "signed": "Paco Cotera"
+  },
+  "cargo-energy-72x96": {
+   "file": "pods/cargo-energy-72x96.png",
+   "w": 72,
+   "h": 96,
+   "sha256": "0a145efecdebe126e54ba6e5203d83b0cce8dba8a3664eca349025719758ab86",
+   "signed": "Paco Cotera"
   },
   "cargo-essence-48x64": {
    "file": "pods/cargo-essence-48x64.png",
    "w": 48,
    "h": 64,
-   "sha256": "78288e63687cef819586b77e0adb8c74a9a578f31611d899c88c6c0608648bc9",
-   "signed": "art director, haul containers (owner's yes 10-10 12:02; masters-pods b758a617)"
+   "sha256": "dbc5e346e953d7e89e109a9d8115e631f341cf97d70190e74a6273780a086b70",
+   "signed": "Paco Cotera"
+  },
+  "cargo-essence-72x96": {
+   "file": "pods/cargo-essence-72x96.png",
+   "w": 72,
+   "h": 96,
+   "sha256": "25a3dc1a2f958f0e795e7d180d8a3ed9cad6ea3bd2f4d61f94b6e2c5d3103a97",
+   "signed": "Paco Cotera"
+  },
+  "cargo-link-light-976x8": {
+   "file": "pods/cargo-link-light-976x8.png",
+   "w": 976,
+   "h": 8,
+   "sha256": "3c73091e5a9e9d66303e717bb54ea4549ba7d094e4a6cb58c8c7129ed468d331",
+   "signed": "named with --ids"
+  },
+  "cargo-mat-160x80": {
+   "file": "pods/cargo-mat-160x80.png",
+   "w": 160,
+   "h": 80,
+   "sha256": "d86fdfb9a1647ed08263e69434ebf3e4a3cd9f6e55939d36d6424eb88e4e2e39",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "cargo-rack-992x168": {
+   "file": "pods/cargo-rack-992x168.png",
+   "w": 992,
+   "h": 168,
+   "sha256": "fc61c2838e0f466455506b060c923e80b716819cb7e8841981574f0b2eaecc1a",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-report-plate-560x128": {
+   "file": "pods/cargo-report-plate-560x128.png",
+   "w": 560,
+   "h": 128,
+   "sha256": "3e646744ab219f55130824206c1dd4a4bd2fb94fce8c2e84c1f3f8886fa43eb7",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x136": {
+   "file": "pods/cargo-report-plate-560x136.png",
+   "w": 560,
+   "h": 136,
+   "sha256": "35778a3b75904d00e23786b93ffa196dffff3eb97a63578e01276adc410e0247",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
+  },
+  "cargo-report-plate-560x144": {
+   "file": "pods/cargo-report-plate-560x144.png",
+   "w": 560,
+   "h": 144,
+   "sha256": "f65e42b373213c80941baec11d6c7b9ebd89323f96de08343caa002c4402513d",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x152": {
+   "file": "pods/cargo-report-plate-560x152.png",
+   "w": 560,
+   "h": 152,
+   "sha256": "46a2806a0c3d3c6f1b96f636a1deaf943117728a9e456d980b4f04c18aa4a3ac",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x160": {
+   "file": "pods/cargo-report-plate-560x160.png",
+   "w": 560,
+   "h": 160,
+   "sha256": "6d04d2a7eb42592ea2c6ce17a3f339d6b90267c2d6787a02ffedfde3cd978331",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x168": {
+   "file": "pods/cargo-report-plate-560x168.png",
+   "w": 560,
+   "h": 168,
+   "sha256": "ad3c44af84bdd7552420fa73958e3c6b779e4f5f94033a45aca40bd56f8df7cf",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x176": {
+   "file": "pods/cargo-report-plate-560x176.png",
+   "w": 560,
+   "h": 176,
+   "sha256": "48740e1e961c6220fcd44bec1d54ececf8d5ddb4a81cb7a62a030d1a3a37de26",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
+  },
+  "cargo-report-plate-560x184": {
+   "file": "pods/cargo-report-plate-560x184.png",
+   "w": 560,
+   "h": 184,
+   "sha256": "b6199c4fdd26d55a8c930f15270286ae437d2441281648a7a6dbe19be86029b5",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x192": {
+   "file": "pods/cargo-report-plate-560x192.png",
+   "w": 560,
+   "h": 192,
+   "sha256": "45d9c6afe0fa259e619097ad01094b7659e2bed344f18206b57fc63e3bbfd43f",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x200": {
+   "file": "pods/cargo-report-plate-560x200.png",
+   "w": 560,
+   "h": 200,
+   "sha256": "c92b33aeba742708092921997df7b0ce1c3cd6fa9b0a54edb5c24321bc84b6a0",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x208": {
+   "file": "pods/cargo-report-plate-560x208.png",
+   "w": 560,
+   "h": 208,
+   "sha256": "79f42234480106b8a5d8856a12bfe00ec44b0e7782df20be6f3a6d6b2277e90a",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
+  },
+  "cargo-report-plate-560x216": {
+   "file": "pods/cargo-report-plate-560x216.png",
+   "w": 560,
+   "h": 216,
+   "sha256": "db42b40aa9a290472563536a633e8231e49807460b38c0cee9dcacb069ea29af",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x224": {
+   "file": "pods/cargo-report-plate-560x224.png",
+   "w": 560,
+   "h": 224,
+   "sha256": "99fa1bde6f72a9282435652776f13951f17420be438121c2c00e33678caa599f",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x232": {
+   "file": "pods/cargo-report-plate-560x232.png",
+   "w": 560,
+   "h": 232,
+   "sha256": "42a813a7a0441ca742ef1629923d4f10d67c274bd1208240194c9d427f38693b",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x240": {
+   "file": "pods/cargo-report-plate-560x240.png",
+   "w": 560,
+   "h": 240,
+   "sha256": "3f18210322810849e9c0198896108e47beddebd3bac53ae754bd60f1f719b80d",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x248": {
+   "file": "pods/cargo-report-plate-560x248.png",
+   "w": 560,
+   "h": 248,
+   "sha256": "8f7adf6002151f41f6093103a80a0fcb9023b3b7de77f414652c7fb4f8462a59",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x256": {
+   "file": "pods/cargo-report-plate-560x256.png",
+   "w": 560,
+   "h": 256,
+   "sha256": "8ccb851adecd7d7676697c7438bd06d5dc29b753a6738bb0a3c774375c682170",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x264": {
+   "file": "pods/cargo-report-plate-560x264.png",
+   "w": 560,
+   "h": 264,
+   "sha256": "ced022b5e3de25b03166e64792481e5fc5ff02cc21bf55c913f5cec1b87ff77b",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x272": {
+   "file": "pods/cargo-report-plate-560x272.png",
+   "w": 560,
+   "h": 272,
+   "sha256": "63b50e12910b0b7c9b248a1bda841a695dddab897d4e0b9ae47ffebbaca10333",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x280": {
+   "file": "pods/cargo-report-plate-560x280.png",
+   "w": 560,
+   "h": 280,
+   "sha256": "744077b1c57cbe90b2b872bf27c5bafe6683d1c0ddade5d7a718e950fdc9552c",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-report-plate-560x288": {
+   "file": "pods/cargo-report-plate-560x288.png",
+   "w": 560,
+   "h": 288,
+   "sha256": "95cdc98970b6e0b3f3944a4f8e4d32f828cdc54d5f98a4f443030b178dfbe9eb",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-store-shadow-48x14": {
+   "file": "pods/cargo-store-shadow-48x14.png",
+   "w": 48,
+   "h": 14,
+   "sha256": "2eda8ac44d6c299b6216a81b79d771d1d7ff5f97f57d34078d9dc688305aaf68",
+   "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-store-shadow-72x21": {
+   "file": "pods/cargo-store-shadow-72x21.png",
+   "w": 72,
+   "h": 21,
+   "sha256": "b60f17222edb46ffc4cd0c6f9388dd421636077ebbca23f0052709d3e166736a",
+   "signed": "Paco Cotera"
   },
   "cell-outline-unread-128x160": {
    "file": "pods/cell-outline-unread-128x160.png",
@@ -215,8 +740,8 @@
    "file": "pods/chamber-back-400x320.png",
    "w": 400,
    "h": 320,
-   "sha256": "1461315c826094795877827f277003fc8c9a1607baa10d53d3802ec641536228",
-   "signed": "art director, verdict (72561d74)"
+   "sha256": "a4c77d5a04034b55ec616f72be5b59cdcbbaea6d10b51b285085c96b8cdffce1",
+   "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
   },
   "chamber-front-400x320": {
    "file": "pods/chamber-front-400x320.png",
@@ -225,152 +750,257 @@
    "sha256": "e156b1f2b90d15eec36da296fac058efe14e3e651c3e24577d0e2b7c9dc854c3",
    "signed": "art director, verdict (72561d74)"
   },
-  "clan-roundel-C01-12x12": {
-   "file": "pods/clan-roundel-C01-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "7bab21d5e210b0786e126c115b51683ff390cd74ef1aadb2240a72acee4f4945",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "chapter-plate-read-40x40": {
+   "file": "pods/chapter-plate-read-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "01399fcf562404f2ba6831a7dbf97c3d7882a982128cfd31032da86c2538af8e",
+   "signed": "named with --ids"
   },
-  "clan-roundel-C02-12x12": {
-   "file": "pods/clan-roundel-C02-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "e8ee46f6b98cfe994c7315a942a3f70a6119832d00e5d65989152f196a7840cd",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "chapter-plate-sealed-40x40": {
+   "file": "pods/chapter-plate-sealed-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "8c1b3687d57b127f71021a3e57128a324f043a9fcb6e879b53eac5874f0f63f7",
+   "signed": "named with --ids"
   },
-  "clan-roundel-C03-12x12": {
-   "file": "pods/clan-roundel-C03-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "8a5cec16bd5c04af863c3a2179c532a785ef04bcfe4d2034bbf8ffbcb1849db0",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "chapter-plate-unread-40x40": {
+   "file": "pods/chapter-plate-unread-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "35633c7e700eab12071e78a743c9d04bed08ab90c0ab9434f32be558f9210b0f",
+   "signed": "named with --ids"
   },
-  "clan-roundel-C04-12x12": {
-   "file": "pods/clan-roundel-C04-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "20c4e0bb77b2be41f052b0ffb0db5125e00791bf6f264732b1b00049184c81c0",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C01-16x16": {
+   "file": "pods/clan-roundel-C01-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "7abce3c4eff0c17571cfe7118c6314d3197bddfa2cb9868706f7a8191fa174ba",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C05-12x12": {
-   "file": "pods/clan-roundel-C05-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c653524070fa6b2cc6453d4521db201edc1627d69eb9413063036492fa0865cc",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C02-16x16": {
+   "file": "pods/clan-roundel-C02-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "2ff8d6f06a41bff8a4424952992ad707153823246e708893acddb654b0c3ec1e",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C06-12x12": {
-   "file": "pods/clan-roundel-C06-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c6b1b589b00f74cf0b9698a03e29e08544cd7805972f08400c30b11c5cdc0fbd",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C03-16x16": {
+   "file": "pods/clan-roundel-C03-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "2db1439574d37740aab7742d8c91c8e44576a66e0e7958691cadcdf582edde1b",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C07-12x12": {
-   "file": "pods/clan-roundel-C07-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "9b3179450cd8aa565677e55ecf2581d86dd0488e805c0704ab15f0c09fa61d1a",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C04-16x16": {
+   "file": "pods/clan-roundel-C04-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "c9fab649f7592beacf2ed54e3de8a265d8f28c33a442edc0fa9fb378c69735a9",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C08-12x12": {
-   "file": "pods/clan-roundel-C08-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "017552ef7295be11681339c1ab59dcdb79a4e903b0031aad3e6e7fe7111459c6",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C05-16x16": {
+   "file": "pods/clan-roundel-C05-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "b350253060ad9c19b82f0fe92e933db7104063b520cb3f9e538762828d98247b",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C09-12x12": {
-   "file": "pods/clan-roundel-C09-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "c7510489e0a52797367c78bde4e50abf9284d0dbb3d395ab8257e76bca30b4a8",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C06-16x16": {
+   "file": "pods/clan-roundel-C06-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "0719b748850b028325ebd8ad427ac6bae778b25ec6cacaf9a6a00b01ca85e7ac",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C10-12x12": {
-   "file": "pods/clan-roundel-C10-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "017df447de616bde50c3632dec11f2bb57442f0b948049fbf46f638cc2d204c1",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C07-16x16": {
+   "file": "pods/clan-roundel-C07-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "1c8138ae073c254c2cff977a7aee8f16a612f7c94f68b81ae9ee36621837c487",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C11-12x12": {
-   "file": "pods/clan-roundel-C11-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "52e06fbb8c59e449f873548896835b380b6722d178ad1f06ff32bab3ed71f406",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C08-16x16": {
+   "file": "pods/clan-roundel-C08-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "dfd76364bf1b0d03d99da19c743cae32f396a4fd26f2569273f9e72896ec5c51",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C12-12x12": {
-   "file": "pods/clan-roundel-C12-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "9a8f4535a923b4240e933321c5d25ff350af039a02da9cb36bbe9131ea134849",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C09-16x16": {
+   "file": "pods/clan-roundel-C09-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "11ed0878459a94ba2272e0bc4ad97dae7c6e68096485b186b2a3259806ec096d",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C13-12x12": {
-   "file": "pods/clan-roundel-C13-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "3d64e08ccc57ced3b7857d5b33733b839db79a4cbd123cbfee4e72c3b7e99800",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C10-16x16": {
+   "file": "pods/clan-roundel-C10-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "a7eb30d0de364f22626805958e8b36f973f7455283968619cc6efc5adf243a11",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C14-12x12": {
-   "file": "pods/clan-roundel-C14-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "ce465d7452880d9bf1b71291741d1af14aa0f6999486b548112463011447fdeb",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C11-16x16": {
+   "file": "pods/clan-roundel-C11-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "d5a3f1f7a2cc064b8a95db5b78251be3bfdcef3357e923b6f2e71e980e9c66f9",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C15-12x12": {
-   "file": "pods/clan-roundel-C15-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "dca90b590d8dbbca9fe609d6e91ed10261c91298e813480c168835e3cf2b36b4",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C12-16x16": {
+   "file": "pods/clan-roundel-C12-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "e1c50da730f46296d052d10436e5fd0922e97c406c72a2f5215677b012fc2f07",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
-  "clan-roundel-C16-12x12": {
-   "file": "pods/clan-roundel-C16-12x12.png",
-   "w": 12,
-   "h": 12,
-   "sha256": "08178e9744f4eb41f6ec21dc6efbd32f324cb68fcf9ad07df80b99472cceb792",
-   "signed": "art director (home hand masters, 942821f6, #112)"
+  "clan-roundel-C13-16x16": {
+   "file": "pods/clan-roundel-C13-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "20becd9c08d1cce11ebc492ed97cfe35b97ce7b5d6b354a167a3442bddf8aa21",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "clan-roundel-C14-16x16": {
+   "file": "pods/clan-roundel-C14-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "0a4854e2c0761741b520fc959a360cdeaaec8cb0b8b784cf5eff7f8eb28bca8a",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "clan-roundel-C15-16x16": {
+   "file": "pods/clan-roundel-C15-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "815188d629b9d76e4aee14da0e806d3d3173492847b7fbf316ee762e6f430229",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "clan-roundel-C16-16x16": {
+   "file": "pods/clan-roundel-C16-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "4c5b2eabaeab12fb3d153dbc3c6ee0f0b1726e18c5162dffea6c187ab0b6c6d3",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "crate-lifting-176x138": {
+   "file": "pods/crate-lifting-176x138.png",
+   "w": 176,
+   "h": 138,
+   "sha256": "55419d84fc23feb0d46d4b5e7ff4bdcf2a9c79ba1791a0deab17b27731b3ea6c",
+   "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
+  },
+  "crate-lifting-256x200": {
+   "file": "pods/crate-lifting-256x200.png",
+   "w": 256,
+   "h": 200,
+   "sha256": "65b02defa153a7e2e0af1c8e63c2476b1135ac47768947b31857a2eae3afe517",
+   "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
   },
   "crate-open-432x272": {
    "file": "pods/crate-open-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "d01bb748fd122e6bbce9f2ecaf2764c71f4a0694900d0e601bb275849e80a4c4",
-   "signed": "art director, verdict (87d6a9a9)"
+   "sha256": "13d336dcb014c74ff86060d802d9a6a5e97805c1070c4f176243085c322a60e2",
+   "signed": "Paco Cotera"
   },
   "crate-opening-432x272": {
    "file": "pods/crate-opening-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "0e6f7d6ca896b32c7ae0888100003c858c4967961c30490e1baa48afa0a13ccd",
-   "signed": "art director, verdict (87d6a9a9)"
+   "sha256": "09324b287325201dc1863c6161d5a511d828d19b528c80712af707246951e2a8",
+   "signed": "Paco Cotera"
+  },
+  "crate-sealed-176x121": {
+   "file": "pods/crate-sealed-176x121.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "c210bd462c02befcbd2dfc9707a866dee0b3f635d0d0e3d92c53899ba72fb580",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-sealed-176x121-done": {
+   "file": "pods/crate-sealed-176x121-done.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "64502204212227a6ef867ce9137595fc6059eb133805ee622d4aa9954d8b4a40",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "fbbad4302e2f5d06828667bb43272327d6524fee304b20a9cf67a9d18424a419",
-   "signed": "art director, verdict (963f4eab)"
+   "sha256": "e36e31b84bd563289693c0422f890a6da8b4d0476a476e835e4a34110e29248a",
+   "signed": "Paco Cotera"
+  },
+  "crate-sealed-256x176-done": {
+   "file": "pods/crate-sealed-256x176-done.png",
+   "w": 256,
+   "h": 176,
+   "sha256": "c89c9d92eca00f1dd242ce2b03c1079598168098da75496b5a1a652f5246e0d4",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
-   "sha256": "b8c3476801552ffefae81636e04d13571ee8b96f55ccf6b814be2eeaca3669e6",
-   "signed": "art director, verdict (87d6a9a9)"
+   "sha256": "ab6b5765579e92b1b307119c592ff58eeb87564230692255be2269cdc37f40f3",
+   "signed": "Paco Cotera"
+  },
+  "crate-shadow-176x16": {
+   "file": "pods/crate-shadow-176x16.png",
+   "w": 176,
+   "h": 16,
+   "sha256": "33a6345bfc66590eef40f0760242e15301a0bbdc6400522b52db1b3a4e911d5c",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-shadow-256x24": {
+   "file": "pods/crate-shadow-256x24.png",
+   "w": 256,
+   "h": 24,
+   "sha256": "9851e6aa1d00de083672a600a0d0865f09177abd278f6708ea5ca34e8b8d5e82",
+   "signed": "art director, Cargo art fix (masters-pods d50dce21)"
+  },
+  "crate-shadow-432x24": {
+   "file": "pods/crate-shadow-432x24.png",
+   "w": 432,
+   "h": 24,
+   "sha256": "07c836ee9f01fcb7a50d25d6a482240b30584d8c221408740cebab5c3c861aa4",
+   "signed": "art director, Cargo art fix (masters-pods d50dce21)"
+  },
+  "crate-sitting-176x121": {
+   "file": "pods/crate-sitting-176x121.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "276ecaea8b7004ccb3c395093b2c63d8f0773704556139882b61716159e9b2d3",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-sitting-176x121-done": {
+   "file": "pods/crate-sitting-176x121-done.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "0c71ed09582f118960c64bb18a88a2008f4d35b09e037443ee9f9b5a352d8bad",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sitting-256x176": {
    "file": "pods/crate-sitting-256x176.png",
    "w": 256,
    "h": 176,
-   "sha256": "0f003e5f0ea23d2919d7d49111ed3680c9bcacdbc928412939c8a69a62dcabb8",
-   "signed": "art director, verdict (963f4eab)"
+   "sha256": "bb5cdfaa6036ab0196f7d97cfc1925ebbc2e46f808c04f2af6494f4c6300ab42",
+   "signed": "Paco Cotera"
+  },
+  "crate-sitting-48x40": {
+   "file": "pods/crate-sitting-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "2ec5a8133d197f44a580deca5e9f63c773ce1fe8764023be967742f4fba28d48",
+   "signed": "Paco Cotera"
+  },
+  "crate-sitting-80x56": {
+   "file": "pods/crate-sitting-80x56.png",
+   "w": 80,
+   "h": 56,
+   "sha256": "e663597c495f927495a35bceb82ae04846376eb79b7f5ad5803fe613742e6ecc",
+   "signed": "Paco Cotera"
   },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
@@ -488,8 +1118,8 @@
    "file": "pods/dome-front-304x272.png",
    "w": 304,
    "h": 272,
-   "sha256": "dd60be032e0c821dc50661805bef519d5b8714a2c4ccd14177c2465b3113e0f7",
-   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
+   "sha256": "12a6190fdffa2e89f102380132083b365ede6657a9ab3a7f77f79f416c2645b2",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "dome-inside-ready-304x272": {
    "file": "pods/dome-inside-ready-304x272.png",
@@ -554,12 +1184,33 @@
    "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "face-S01-24": {
+   "file": "pods/face-S01-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "1cc1a26cce48268c2ec864ab9350175e1fc68301011a88e9a6434f2ac4d2ec1f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S02-24": {
+   "file": "pods/face-S02-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "c72d5096ff25e4732f06a3111881523ffcaf194bf08783339e2d4e8ae6dfbc69",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S03-24": {
+   "file": "pods/face-S03-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f627c9af7e2ba50ca8992694d3b38940956c4a7c5f29addd470dba44b70075b7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
   "find-crystal-112x112": {
    "file": "pods/find-crystal-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "5ea8aab1ef003299f03fb59c1c1b972f0620728e6338b9ed683919e8f14bd382",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-crystal-16x16": {
    "file": "pods/find-crystal-16x16.png",
@@ -572,8 +1223,8 @@
    "file": "pods/find-pearl-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "e4352f8cafaca0fe29a72f38c35a6c380b4c5c80560d1f7836ca92e87ce81187",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-pearl-16x16": {
    "file": "pods/find-pearl-16x16.png",
@@ -586,8 +1237,8 @@
    "file": "pods/find-shard-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "fa3b2c6b679aaad0309a19a75b6612d75fba6922d3a04a8b98f5e33d59ab651d",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-shard-16x16": {
    "file": "pods/find-shard-16x16.png",
@@ -595,6 +1246,13 @@
    "h": 16,
    "sha256": "0efb62f44b4cb30eee324d83c75908aa6f849cb0df1d42edf40ff03ba847a47c",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "founder-shadow-224x14": {
+   "file": "pods/founder-shadow-224x14.png",
+   "w": 224,
+   "h": 14,
+   "sha256": "9147ff2586b00132db2b91d557910b5159a072cee284c88343dc377764232dcd",
+   "signed": "named with --ids"
   },
   "frame-bottom-line-1024x38": {
    "file": "pods/frame-bottom-line-1024x38.png",
@@ -701,6 +1359,20 @@
    "sha256": "545ae9c79dbc56250c44f28f2e66b172c05ee383eee1048b6c4ca7c48f80f92f",
    "signed": "art director (frame bars, #112 78b6bfbc)"
   },
+  "gate-wild-open-48x48": {
+   "file": "pods/gate-wild-open-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "22aa57453638a881909bf67cb6244b1bf8336aa082e06ece5f4febab5a8c6bb6",
+   "signed": "named with --ids"
+  },
+  "gate-wild-shut-48x48": {
+   "file": "pods/gate-wild-shut-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "23627459f292a4feb102e1f13142d1c5c134ba10ee2ae88fb27e9927abc1f1e5",
+   "signed": "named with --ids"
+  },
   "glint-star-12x12": {
    "file": "pods/glint-star-12x12.png",
    "w": 12,
@@ -708,12 +1380,40 @@
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "hatch-frame-166x266": {
+   "file": "pods/hatch-frame-166x266.png",
+   "w": 166,
+   "h": 266,
+   "sha256": "154ae1aeb1994b22d3580906220800c2f6ff8db41873580389a0a00286b224a5",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
+  },
+  "hatch-shut-160x260": {
+   "file": "pods/hatch-shut-160x260.png",
+   "w": 160,
+   "h": 260,
+   "sha256": "501b29fb7b3c3d2a42633e27254eb50f13309c410f964ef09758e1301338d83e",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
   "heart-full-24": {
    "file": "pods/heart-full-24.png",
    "w": 24,
    "h": 24,
    "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
    "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-bay-open-176x72": {
+   "file": "home/home-bay-open-176x72.png",
+   "w": 176,
+   "h": 72,
+   "sha256": "261fcea830792d8c80baa534265ac4788cf03e25007456a2d09e2d101ad12a68",
+   "signed": "art director, pass 138 (db66efbf)"
+  },
+  "home-bay-shut-176x72": {
+   "file": "home/home-bay-shut-176x72.png",
+   "w": 176,
+   "h": 72,
+   "sha256": "70a31efda54232c7245704cb96bfb48b1c18dea95864d15b1ad6e4fec3c5fa56",
+   "signed": "art director, hand recut (pass 137), signed at 1x 10-11 14:37"
   },
   "home-bed-dawn-192x56": {
    "file": "home/home-bed-dawn-192x56.png",
@@ -750,12 +1450,47 @@
    "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
    "signed": "art director, verdict (d09acb12)"
   },
+  "home-chamber-empty-72x72": {
+   "file": "home/home-chamber-empty-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-chamber-growing-72x72": {
+   "file": "home/home-chamber-growing-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-chamber-ready-72x72": {
+   "file": "home/home-chamber-ready-72x72.png",
+   "w": 72,
+   "h": 72,
+   "sha256": "e57b1c225c968a69f355fa6fa0f645b2897a0e02de712e20a3d7edaf10893a0d",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-cradle-empty-96x72": {
+   "file": "home/home-cradle-empty-96x72.png",
+   "w": 96,
+   "h": 72,
+   "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "home-cradle-full-96x72": {
+   "file": "home/home-cradle-full-96x72.png",
+   "w": 96,
+   "h": 72,
+   "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
   "home-crate-48x40": {
    "file": "pods/home-crate-48x40.png",
    "w": 48,
    "h": 40,
-   "sha256": "87d9a930ffd62bfcbb1a9fb522e12aefb8f29595dcd0e4d90346c867a4bb7d0d",
-   "signed": "art director (home hand masters, #112 and #116)"
+   "sha256": "491b655f86348d539d3b57a78d6ccdf1ae1b794215383a8f04e59235bc8234db",
+   "signed": "Paco Cotera"
   },
   "home-glass-dawn-640x488": {
    "file": "home/home-glass-dawn-640x488.png",
@@ -785,6 +1520,13 @@
    "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
    "signed": "art director, light verdict (eb64c0d6)"
   },
+  "home-journal-104x72": {
+   "file": "home/home-journal-104x72.png",
+   "w": 104,
+   "h": 72,
+   "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
   "home-lamp-amber-12x12": {
    "file": "pods/home-lamp-amber-12x12.png",
    "w": 12,
@@ -813,6 +1555,83 @@
    "sha256": "96321b87d0283a57d0543a22bd46b398b4d2acea4af77304a01cfc8251326ee7",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-rack-pod-accent-24x32": {
+   "file": "pods/home-rack-pod-accent-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "172313d6d3c600d6a4617c0d77524fcdd0eb16ca0774b3ec9a8572c58979795b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-body-24x32": {
+   "file": "pods/home-rack-pod-body-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "e78384b3cac271c61f01d00db0704ab1f017aa7bdeee2ce326fac7d267e447ce",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-light-24x32": {
+   "file": "pods/home-rack-pod-light-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "4ce2f1ce69dc60ba5dcbc41e53fb7ddb2f05a8f2b661af9b5ca8086ed9f37d1b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-outline-24x32": {
+   "file": "pods/home-rack-pod-outline-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "ab4144236c16519639a4546f8c16af2a5f466397d86cfbc91c8215c1aca91e5d",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-bands-24x32": {
+   "file": "pods/home-rack-pod-pattern-bands-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "89b5db434b657898ec82702f653867d3c9b885c6ed1edc0d3093a489e89c1d40",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-dots-24x32": {
+   "file": "pods/home-rack-pod-pattern-dots-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "0ba226431bb006e34696cd192295522f0438a0c07690e5c6f7c91cd17e86511d",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-plates-24x32": {
+   "file": "pods/home-rack-pod-pattern-plates-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "aa14653e529546fc8f0a253a60aa850459620283d3eed19b8134f71b1bfcfd14",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-ribs-24x32": {
+   "file": "pods/home-rack-pod-pattern-ribs-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "8589a8563b5ba33fcd68503ee9b70fa14c6fcb0ff3cd284d72cc0519a6c2de1f",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-segments-24x32": {
+   "file": "pods/home-rack-pod-pattern-segments-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "c77d41c42620a81f2ad95d44707c3fe756c7ed0b9c97f0851b2313030a65775b",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-pattern-stripes-24x32": {
+   "file": "pods/home-rack-pod-pattern-stripes-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "1ba72652eb378b2d603842be198dd6141a1c4857d62889a2ce6a55c907684bff",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
+  "home-rack-pod-shade-24x32": {
+   "file": "pods/home-rack-pod-shade-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "19916a8e503df7c97ee3886b4dd2e2ca2f8de896231f381b23478109d2c6ba49",
+   "signed": "art director (home hand masters, #115 4e9ab252)"
+  },
   "home-shield-lost-12x24": {
    "file": "pods/home-shield-lost-12x24.png",
    "w": 12,
@@ -827,12 +1646,33 @@
    "sha256": "7ee2c9c9237a32278cbd14034e3e9d7f840637e9629f832fa1788e19b2eca3a9",
    "signed": "art director (home hand masters, #112 and #116)"
   },
-  "home-sitting-24x32": {
-   "file": "pods/home-sitting-24x32.png",
-   "w": 24,
+  "home-sitting-32x24": {
+   "file": "pods/home-sitting-32x24.png",
+   "w": 32,
+   "h": 24,
+   "sha256": "80ba90b17fa0df1a87d974cbbd88ca2d78b7911d48cafe88a6a915efca039298",
+   "signed": "named with --ids"
+  },
+  "home-well-32x32": {
+   "file": "home/home-well-32x32.png",
+   "w": 32,
    "h": 32,
-   "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
-   "signed": "art director (home hand masters, #112 and #116)"
+   "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44",
+   "signed": "art director, Home column verdict (1f7d4a83)"
+  },
+  "icon-cross-16": {
+   "file": "pods/icon-cross-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "a191383a949e74a57e4da08dbfff8e2dc87bec25a244d8f7834fe7d5a5f25d6f",
+   "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
+  },
+  "icon-map-14x12": {
+   "file": "pods/icon-map-14x12.png",
+   "w": 14,
+   "h": 12,
+   "sha256": "f807b32461b9ec0b218d81a120d044309cdd7e74415cfe69584dd1ca5c7c6897",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",
@@ -869,6 +1709,13 @@
    "sha256": "313188842cf353a44a70004b17a7357dd38e51e4776b98a19f4a06d0311f2d8e",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "icon-wait-16": {
+   "file": "pods/icon-wait-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "66c71382f2729ec1e83106de6159fa7322a5a57e381faff18522a7bb4e5939fe",
+   "signed": "named with --ids"
+  },
   "idle-vivarium-dawn-1024x568": {
    "file": "vivarium/idle-vivarium-dawn-1024x568.png",
    "w": 1024,
@@ -897,12 +1744,19 @@
    "sha256": "fd1cafcf07d3845eb9555fb42d6f5ec7ed445236c0b11266e8bc0c8171d35ee5",
    "signed": "art director, Idle seam fix (masters-pods b758a617)"
   },
+  "label-plate-cream-216x32": {
+   "file": "pods/label-plate-cream-216x32.png",
+   "w": 216,
+   "h": 32,
+   "sha256": "48757b73c248bd31ed7385788d53c948097a408d951cbe1971dbdcc0a694deda",
+   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
   "leaf-empty-16x20": {
    "file": "pods/leaf-empty-16x20.png",
    "w": 16,
    "h": 20,
-   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "ba5b8fd579287034efe924b75129ce76f16fc44a1d258f31c33078b7880d4744",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "leaf-empty-8x12": {
    "file": "pods/leaf-empty-8x12.png",
@@ -915,8 +1769,8 @@
    "file": "pods/leaf-full-16x20.png",
    "w": 16,
    "h": 20,
-   "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "d9f131ad97a74432c81a052ecc17a573b6398ee86a4e71be4bbf1d7d6c7f0773",
+   "signed": "art director at 1x, 2026-10-15 21:59 CST: T-20261015-01, the mock in today's incubator-growing capture (stage-incubator/rework/proof); re-checked in the builder's whole captures"
   },
   "leaf-full-8x12": {
    "file": "pods/leaf-full-8x12.png",
@@ -925,12 +1779,19 @@
    "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a",
    "signed": "art director, verdict (d09acb12)"
   },
+  "library-stage-spread-1024x522": {
+   "file": "pods/library-stage-spread-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "1b2024ca343b294e4793e0dc72efe1178d5cc4eb9eb778776a3fcd516e5722a2",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
    "w": 24,
    "h": 16,
-   "sha256": "ae714dc2e8583f348ce682f5865e4baa35cab0d27f9afa718a7fb77275e7bdff",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "9e3296786edbf527d372744555ea086317328a475c08ee100dd0128dfe701406",
+   "signed": "station lead's brief (Pods GB3): the art director's recut of mark-asleep-24x16, masters-pods 20266e67 (same id and size)"
   },
   "mark-breed-28x16": {
    "file": "pods/mark-breed-28x16.png",
@@ -1072,6 +1933,27 @@
    "sha256": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "mark-guide-16": {
+   "file": "pods/mark-guide-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
+   "signed": "named with --ids"
+  },
+  "mark-home-16": {
+   "file": "pods/mark-home-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "fded6152272f79225ca2472e3ea0745e8ebd853e04815d5a48845987bdcf824f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "mark-line-only-16x16": {
+   "file": "pods/mark-line-only-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "162c369faea78c4ecc5cc8c12656c2d420df31457134f3a992a2361053453953",
+   "signed": "station lead's brief (Pods GB1 C6, fix 11), masters-pods 8a8985b6: the name-line seeds redrawn at 12 px, the only glyph (status new; the AD signs in the captures)"
+  },
   "mark-line-only-16x8": {
    "file": "pods/mark-line-only-16x8.png",
    "w": 16,
@@ -1083,15 +1965,15 @@
    "file": "pods/mark-line-seed-12x16.png",
    "w": 12,
    "h": 16,
-   "sha256": "5d2480ccc01fab311f73a90c355cd9891f1c6a409f14b400a89533954241fae7",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "13dd87f2dbc840de1ebf73990d043dc01b8a667ea4548f519cd05dba9579486e",
+   "signed": "station lead's brief (Pods GB1 C6, fix 11), masters-pods 8a8985b6: the name-line seeds redrawn at 12 px, the only glyph (status new; the AD signs in the captures)"
   },
   "mark-line-seed-pair-20x16": {
    "file": "pods/mark-line-seed-pair-20x16.png",
    "w": 20,
    "h": 16,
-   "sha256": "0bd94a522721d74f9fb156df37e731a09252e01a8225302f8220df37ed3a4203",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "32ca35ff6b0229ac381ea11db3d7be06f3ce983e3ed3897d7a6bb5ff0b1e985f",
+   "signed": "station lead's brief (Pods GB1 C6, fix 11), masters-pods 8a8985b6: the name-line seeds redrawn at 12 px, the only glyph (status new; the AD signs in the captures)"
   },
   "mark-only-72x8": {
    "file": "pods/mark-only-72x8.png",
@@ -1099,6 +1981,13 @@
    "h": 8,
    "sha256": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mark-out-16": {
+   "file": "pods/mark-out-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "eda797ec7a81ce7565f6b75496851a5e9d4c37571a49db1040c1bbf962b57447",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
   },
   "mark-out-with-companion-64x96": {
    "file": "pods/mark-out-with-companion-64x96.png",
@@ -1260,6 +2149,97 @@
    "h": 24,
    "sha256": "12920d916e647e00fc37823a11d2d7777118730628d3b107043c08740ea2534d",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mibi-adult-S01-144x152": {
+   "file": "pods/mibi-adult-S01-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "967e5ee02d2d8331a61f39e8f6ecb81aa0643098d21f55a2b292121c26e44541",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-304x312": {
+   "file": "pods/mibi-adult-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "5c143f8fb40a350fb540e13dd759db50ea5e8e9d0eae7b0960dc096928663976",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-48x48": {
+   "file": "pods/mibi-adult-S01-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "1163284a198d623c8f0bc2f1266856a0a2b30d09dbda5a7feb735d9a3411d96a",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S01-96x88": {
+   "file": "pods/mibi-adult-S01-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542",
+   "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
+  },
+  "mibi-adult-S02-144x152": {
+   "file": "pods/mibi-adult-S02-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "1362c33472a99649a99c223d21c30d2ee57f9b66e05fa784b54b1f5f9f5044c9",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S02-304x312": {
+   "file": "pods/mibi-adult-S02-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2deffd984707a18c6c9109cb4945f95532f059394c0a18bf04f1b726c8bcbf49",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S02-48x48": {
+   "file": "pods/mibi-adult-S02-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "0e23ae35585fa728f5fb2eac65de3439d1837c44dedd1ef99acda860512a4269",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S02-96x88": {
+   "file": "pods/mibi-adult-S02-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "facedb7f27a6b41169100bb65cfb833da2cb23b78e56ebb1dcbccc8eb5b305b8",
+   "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-144x152": {
+   "file": "pods/mibi-adult-S03-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "171ebe6dc4d0fcc8edd6137b1dec038f7ace5e5f3d0c0c6f263fe34e3b2e4543",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-304x312": {
+   "file": "pods/mibi-adult-S03-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bd426004a698ee45aca2b7919910424f7a3e50de280a1b9cd5745e8229e59a8c",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-48x48": {
+   "file": "pods/mibi-adult-S03-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "ce2a291d07e4e1d3737295fc30f936fe629744689fa6f09b6705770310660b62",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-96x88": {
+   "file": "pods/mibi-adult-S03-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "85f11b8ade52bc9d15764c14f7d13b0dfbb7ece44622aea6c1eb7807fbf0ca23",
+   "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-halo-empty-128x160": {
+   "file": "pods/mibi-halo-empty-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
@@ -1511,85 +2491,92 @@
    "file": "pods/mibi-juvenile-S01-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "a365b5f5966e2511c487139c1e48d3e2e636c3fca24e5afd1e07c8b255dbfe5f",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "3a0bf9b7ce973d6fb06852d946c227fd9094117cd8a020655578562e3bcab049",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
+  },
+  "mibi-juvenile-S01-176x128": {
+   "file": "pods/mibi-juvenile-S01-176x128.png",
+   "w": 176,
+   "h": 128,
+   "sha256": "5ebad11fb8bab70f11564d6334ebf95d8f1aebfaf3075ce6f5e07f20cdf92f84",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
   },
   "mibi-juvenile-S01-304x312": {
    "file": "pods/mibi-juvenile-S01-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "5e4a0f8811acb6982c4d6781d74f88fd5d50af394f52631d8f19bea5307c9fb4",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "13d8fb322b0ddfb614eb031fc5a6a171b8337e2529c6678f8338fb64b0856a13",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S01-48x48": {
    "file": "pods/mibi-juvenile-S01-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "c15b498df7ce6eb2d57e948e9d4a9a1d42f1da73ea83db18fd05b501e44b6ed9",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "d1a7b2427d29cf0848984969d2bc40e869b7baf37f4503ee17084dafe79d3250",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S01-96x88": {
    "file": "pods/mibi-juvenile-S01-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "f0cfd504aca7d7659e7d4a33653f1fa8f83798c43575302644ff2327b1ef0e1a",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "ba772eafc1577bf48ba427744e2e63221baa90c6de1e35f9f5a8b57b7f3667c9",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-104x112": {
    "file": "pods/mibi-juvenile-S02-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "d7cc988a83e2159cee6ee00b5868137d61de9a100de5133d2f069d2739c4b01c",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "3d5ff0d119505aeb378c8f9bb591236c3d21fa05d63809a5fcaa7e1bce73e013",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-304x312": {
    "file": "pods/mibi-juvenile-S02-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "dce28955f0a22e60518ed8738e9e91a33e45c0f8d8f90f783b2f005b73eb2f95",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "8ad444042b78c1f47de544494806729b408db6f5089fe3448e1de1eb1d06ccf6",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-48x48": {
    "file": "pods/mibi-juvenile-S02-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "cc67e4b684faccb3705ba39e43386dadd0985befeebc255b6391d2c44e2ff758",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "b3be64f70ef0e412d40b03447056e2c00520864664b777ac5cab39ab09ed75ac",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S02-96x88": {
    "file": "pods/mibi-juvenile-S02-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "b15d27a4e620e534a27fb953916cb38f2c69c6aec5815ca9473d811d642e83ed",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "1e3f7adbf12b151d721156347aa5ead136e5d9d4b5f1a0381b725fd25e85f5fe",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-104x112": {
    "file": "pods/mibi-juvenile-S03-104x112.png",
    "w": 104,
    "h": 112,
-   "sha256": "4e713c24e24ce01bf92b5b7b25127c2062e847e206bfe5f64d41c6054f35ef75",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "c0fd88f15c7bfad7606c16669b01c1aababdad22f25289a51f43c5c4eeaf2b78",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-304x312": {
    "file": "pods/mibi-juvenile-S03-304x312.png",
    "w": 304,
    "h": 312,
-   "sha256": "53d664866437dfcb2964d2388b62c8a4bc7bc5dbe7b333e7488e63643df86d9d",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "2ff012027372a84a89921a6e8d3475ddf4cde6fe92f4c569e930970d2b7a8eb3",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-48x48": {
    "file": "pods/mibi-juvenile-S03-48x48.png",
    "w": 48,
    "h": 48,
-   "sha256": "4084c6704cec68ac9054cf2cb4a724239b28295b520571989c52559b2b95375c",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "925c3c32691181d83f1ce7c16792a1ec7c3e8230cf66a9528c3145afd5992388",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S03-96x88": {
    "file": "pods/mibi-juvenile-S03-96x88.png",
    "w": 96,
    "h": 88,
-   "sha256": "1c37d9ab03f2c5a79c2ad9d61c92cf9b1e5ddffc5b9eafe68bc459f25df8696b",
-   "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+   "sha256": "fd2f97e9ef86f4b0759e76e22a41cb8212078594d255c5942134e13972880f88",
+   "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
   "mibi-juvenile-S04-104x112": {
    "file": "pods/mibi-juvenile-S04-104x112.png",
@@ -1997,6 +2984,167 @@
    ],
    "tile": 32
   },
+  "panel-card-248x288": {
+   "file": "pods/panel-card-248x288.png",
+   "w": 248,
+   "h": 288,
+   "sha256": "760cdbaebd2aedca8262cb6f65889d963bf0049f8c1d5a28672132966298db6c",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-248x288-focused": {
+   "file": "pods/panel-card-248x288-focused.png",
+   "w": 248,
+   "h": 288,
+   "sha256": "8c62551743aca86a3a4a685d21fb94480dc29bc5dd4ac13a8045608058025908",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-380x288": {
+   "file": "pods/panel-card-380x288.png",
+   "w": 380,
+   "h": 288,
+   "sha256": "974beabf861cf357bc1943a72f4063e00110897b43ac83a49741d99662c92077",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-380x288-focused": {
+   "file": "pods/panel-card-380x288-focused.png",
+   "w": 380,
+   "h": 288,
+   "sha256": "f85efc30a8f3c599c5606de60b2202daec26ddc0ddff5f0b8baca16b8b1ad0b0",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-776x288": {
+   "file": "pods/panel-card-776x288.png",
+   "w": 776,
+   "h": 288,
+   "sha256": "f2ae2e19dd2fef388d68825eea971f8884ac585b6cd1a78dadce310351af59f1",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-776x288-focused": {
+   "file": "pods/panel-card-776x288-focused.png",
+   "w": 776,
+   "h": 288,
+   "sha256": "25da4ef8bde9e72379c4f08ccdab122d7be5e1931192f8dfc5068c315f8d3170",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-chip-40x20": {
+   "file": "pods/panel-chip-40x20.png",
+   "w": 40,
+   "h": 20,
+   "sha256": "064590ce92716f656a1fda55fed78ae045fda609d26a2bd78b7fa66c55df31ee",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+   "slice": [
+    10,
+    0,
+    10,
+    0
+   ],
+   "tile": "stretch"
+  },
+  "panel-contact-shadow-128x16": {
+   "file": "pods/panel-contact-shadow-128x16.png",
+   "w": 128,
+   "h": 16,
+   "sha256": "441cd51ec369ab027ac0428fe53875a143afcd948d24b3766f0eb88eedbf40fb",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-glow-216x160": {
+   "file": "pods/panel-glow-216x160.png",
+   "w": 216,
+   "h": 160,
+   "sha256": "90d94449df36cc7bda8790b4d68ece0ad09e3721e1e1ffaaef50be86cf5517b0",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-glow-348x160": {
+   "file": "pods/panel-glow-348x160.png",
+   "w": 348,
+   "h": 160,
+   "sha256": "ea1ae973b0dd68887f5e0486350dd6b4241a694db0f1c7f362f91c18589fce6f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-glow-744x160": {
+   "file": "pods/panel-glow-744x160.png",
+   "w": 744,
+   "h": 160,
+   "sha256": "9272363c0e899265d743e357a77f4cef850d41b583eabf743ea62498a0a4a7c1",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-housing-840x440": {
+   "file": "pods/panel-housing-840x440.png",
+   "w": 840,
+   "h": 440,
+   "sha256": "0fa476aa72a875494d88c9049e4259c78bf5a958867c94d215538d7692c78b7b",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-light-216x160": {
+   "file": "pods/panel-light-216x160.png",
+   "w": 216,
+   "h": 160,
+   "sha256": "8237bde40b3c47ade62ac52659b76db71c5b7bb3ada6f16b06486143439ef2b7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-light-348x160": {
+   "file": "pods/panel-light-348x160.png",
+   "w": 348,
+   "h": 160,
+   "sha256": "1db637898e58679878c9d75c1115c926c4b1f444d66d9369bfce16fe2168d0bc",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-light-744x160": {
+   "file": "pods/panel-light-744x160.png",
+   "w": 744,
+   "h": 160,
+   "sha256": "7f0e2b1b421485efe26d90abe920e8681d2292994466d1f6b2050183b9f24fc9",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-216x152": {
+   "file": "pods/panel-scene-wild-216x152.png",
+   "w": 216,
+   "h": 152,
+   "sha256": "2f898a28f180df520072f139b91f311ddfd58e5a9a5f8a7d31494f5c9fc13d8d",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-348x152": {
+   "file": "pods/panel-scene-wild-348x152.png",
+   "w": 348,
+   "h": 152,
+   "sha256": "269ce55e1b6d09d171f9487a19fa8625658ec459a3003e317d8824e6b8761649",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-744x152": {
+   "file": "pods/panel-scene-wild-744x152.png",
+   "w": 744,
+   "h": 152,
+   "sha256": "e0c7f9d895b84cd39bd0ecddc9e8ad74c992a4316b1027500a525eaabff1d49f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-stage-216x48": {
+   "file": "pods/panel-stage-216x48.png",
+   "w": 216,
+   "h": 48,
+   "sha256": "d9ebe8909d2c500b5340b2b29002da80fb2a7072a4e87a027a9cf25cea3dd6a6",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-stage-348x48": {
+   "file": "pods/panel-stage-348x48.png",
+   "w": 348,
+   "h": 48,
+   "sha256": "07a9257e88cd99bf867a45a6cffed71730f30ede957c2eec4f7b8fdba0766eb7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-stage-744x48": {
+   "file": "pods/panel-stage-744x48.png",
+   "w": 744,
+   "h": 48,
+   "sha256": "1c0957c6c503b65793562253edad5b346a2401ef214d8c2b6c7174b1081adfb2",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-veil-1024x522": {
+   "file": "pods/panel-veil-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "99cb083927d3bdd2c69575a4d8a2f416f05208036ff3b33d23a64c99ca6ce539",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
   "place-cave-48x48": {
    "file": "pods/place-cave-48x48.png",
    "w": 48,
@@ -2066,6 +3214,76 @@
    "h": 64,
    "sha256": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "plate-device-136x96": {
+   "file": "pods/plate-device-136x96.png",
+   "w": 136,
+   "h": 96,
+   "sha256": "ebf78ba0a093e26cd5db54253ef8891d94f9f1e2c2d4c9bbccf00b089a64beed",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-272x96": {
+   "file": "pods/plate-device-272x96.png",
+   "w": 272,
+   "h": 96,
+   "sha256": "39bf1272630355934e18f3c2fc9b6d1e972de6610e6b13b0fd31bdf2995dbefe",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-312x128": {
+   "file": "pods/plate-device-312x128.png",
+   "w": 312,
+   "h": 128,
+   "sha256": "2723b69930932df444950e164f8392ce061775e7d815dfaa31424f185722936c",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-312x248": {
+   "file": "pods/plate-device-312x248.png",
+   "w": 312,
+   "h": 248,
+   "sha256": "e1e3287420d71a3bff414b6fb20f1c577299e5a97e94cad480724e23ca6330f9",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-320x88": {
+   "file": "pods/plate-device-320x88.png",
+   "w": 320,
+   "h": 88,
+   "sha256": "2d35fe1b820b0018507a0779e6fc8744e0e81e63026855552e8caab818cfb8cf",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-408x300": {
+   "file": "pods/plate-device-408x300.png",
+   "w": 408,
+   "h": 300,
+   "sha256": "6d122b6acb9ec78f603a64049f4a0c6723abfda72fa2c4ae5b1e4a3076fb92bc",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-408x416": {
+   "file": "pods/plate-device-408x416.png",
+   "w": 408,
+   "h": 416,
+   "sha256": "7efa8a1daf4e5f98b4399c628083dfd9fab5f01d9fe58225b8f603a991e31c18",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-416x208": {
+   "file": "pods/plate-device-416x208.png",
+   "w": 416,
+   "h": 208,
+   "sha256": "0f8c764c96c1c3a86cc0d90693da2271665450818df2e19a0a267ea3245932dc",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-416x424": {
+   "file": "pods/plate-device-416x424.png",
+   "w": 416,
+   "h": 424,
+   "sha256": "f478d1bb0c32e736f914a490becf3d29a404ed1af4830772c987c9407d0caeab",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-device-992x64": {
+   "file": "pods/plate-device-992x64.png",
+   "w": 992,
+   "h": 64,
+   "sha256": "017e5bb95cdd95eee5d36ee54ca0a0cf34633643f48a6e9276c601b2e5ab3068",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
   },
   "plate-message-640x36": {
    "file": "pods/plate-message-640x36.png",
@@ -2164,6 +3382,202 @@
    "h": 24,
    "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "plate-rail-well-168x48": {
+   "file": "pods/plate-rail-well-168x48.png",
+   "w": 168,
+   "h": 48,
+   "sha256": "a245beb4a4228aff71ec216bed384f1599c8401c64dc9643e8558d7049690c78",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-304x48": {
+   "file": "pods/plate-rail-well-304x48.png",
+   "w": 304,
+   "h": 48,
+   "sha256": "4a9fd279b8bb06e486bb5de79c9f1d45e42e41fe441eda84e17cca76c152410b",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-424x48": {
+   "file": "pods/plate-rail-well-424x48.png",
+   "w": 424,
+   "h": 48,
+   "sha256": "3a9253aeaef3dc49ba94300340c3dc094f5e990cd82ac05a5fa3621fe392d486",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-440x48": {
+   "file": "pods/plate-rail-well-440x48.png",
+   "w": 440,
+   "h": 48,
+   "sha256": "f442927872faf685e28d8825feba62c668d05aecf22fda43e11aa9edbaea58d1",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-480x48": {
+   "file": "pods/plate-rail-well-480x48.png",
+   "w": 480,
+   "h": 48,
+   "sha256": "967810b2d5806ab5ad1d80bc79eb86a6674fbf6fc3cb5d088a2d63d19b1b2223",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-504x48": {
+   "file": "pods/plate-rail-well-504x48.png",
+   "w": 504,
+   "h": 48,
+   "sha256": "6597d8d00be8347c8ffd36d90ea762f3976da7d832052bbeafe0e5b7ba99cba5",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-536x48": {
+   "file": "pods/plate-rail-well-536x48.png",
+   "w": 536,
+   "h": 48,
+   "sha256": "93a9ee7dcd603314985699e6525930f58b9b7cad8afb4cb139ed7b9dd64d2a45",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-560x48": {
+   "file": "pods/plate-rail-well-560x48.png",
+   "w": 560,
+   "h": 48,
+   "sha256": "22d9645b324a70a35ee5d67d057e3e509b731a662c465c5d3c02387215f8b0b7",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-576x48": {
+   "file": "pods/plate-rail-well-576x48.png",
+   "w": 576,
+   "h": 48,
+   "sha256": "8ef5d050ba53ceefa0ce83a6d31b844f265e1338538485cdf4426035cfe1b8d6",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-592x48": {
+   "file": "pods/plate-rail-well-592x48.png",
+   "w": 592,
+   "h": 48,
+   "sha256": "9f133748611229d30682e7dbd9e6a6e85a651e5709dd51e7d0e471c93af518ba",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-616x48": {
+   "file": "pods/plate-rail-well-616x48.png",
+   "w": 616,
+   "h": 48,
+   "sha256": "dd68b8556569d61e8ad60a12de8ba9b0a4c4abbd4b9c5af4f8e166c63ae25355",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-648x48": {
+   "file": "pods/plate-rail-well-648x48.png",
+   "w": 648,
+   "h": 48,
+   "sha256": "47d0c6cdc0d445e013572e1bc1ef98be93309eddcd58c1e2afc87a141a340f4d",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-672x48": {
+   "file": "pods/plate-rail-well-672x48.png",
+   "w": 672,
+   "h": 48,
+   "sha256": "92693c1cd6fe0533fcd6c56c5bec48fb0c46a7792fbcc79ecd9c5592f182d9f9",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-704x48": {
+   "file": "pods/plate-rail-well-704x48.png",
+   "w": 704,
+   "h": 48,
+   "sha256": "487c0847aafa2ef896808b2e745f889019a7f6554c70ea3fe44b554f811978bb",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-712x48": {
+   "file": "pods/plate-rail-well-712x48.png",
+   "w": 712,
+   "h": 48,
+   "sha256": "5cd5a80740c28dcf59aa72ad0bd8b699220833ff6fbead48e6f78758ebf93c52",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-728x48": {
+   "file": "pods/plate-rail-well-728x48.png",
+   "w": 728,
+   "h": 48,
+   "sha256": "54962fd5825626bf4d21f31cba6d9e7f6a802a0c75494a6eb20f76d251221b3e",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-784x48": {
+   "file": "pods/plate-rail-well-784x48.png",
+   "w": 784,
+   "h": 48,
+   "sha256": "1e085e5e8daba7613cff458e9726780eff115befc82fe3e339c586534ffbe129",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-rail-well-848x48": {
+   "file": "pods/plate-rail-well-848x48.png",
+   "w": 848,
+   "h": 48,
+   "sha256": "225b4e587640aeb49139b10b7cff0ffeafa58bc530adc23c4b174392342067a1",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
+  },
+  "plate-well-112x104": {
+   "file": "pods/plate-well-112x104.png",
+   "w": 112,
+   "h": 104,
+   "sha256": "20cb709a34c7c9ea1e4abb0f4933c71306be54a86ae2d2948b50e66c45e2efaf",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-112x168": {
+   "file": "pods/plate-well-112x168.png",
+   "w": 112,
+   "h": 168,
+   "sha256": "7bec12230770ecf27785451eb37718c676d29f9abc6ecc67bc4b9b306fe9ab9f",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-120x120": {
+   "file": "pods/plate-well-120x120.png",
+   "w": 120,
+   "h": 120,
+   "sha256": "8fb2ad32e18fa70a3d0861300a3d71df0d67441ef61dd9169f8230cd990e4426",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-136x168": {
+   "file": "pods/plate-well-136x168.png",
+   "w": 136,
+   "h": 168,
+   "sha256": "700652b7023ad217be6e19c8c264148f19d200d07456066de138016f9c7e94fc",
+   "signed": "station lead's brief (Pods GB1 D1), masters-pods 45a9c3cd: the four ground-floored wells for the chapter cells (status new; the AD signs in the captures)"
+  },
+  "plate-well-152x48": {
+   "file": "pods/plate-well-152x48.png",
+   "w": 152,
+   "h": 48,
+   "sha256": "11ef49fa84e5a426826e99f65e68068c648979e5fe41aad8a6f27e4d588e0a34",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-well-152x48-shown": {
+   "file": "pods/plate-well-152x48-shown.png",
+   "w": 152,
+   "h": 48,
+   "sha256": "efd42aca554e0404c2d8fa4a35a979363596378ab219e8cd0d016494a56d8664",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-well-328x48": {
+   "file": "pods/plate-well-328x48.png",
+   "w": 328,
+   "h": 48,
+   "sha256": "a494a9d2c2d27ecb026b93b1c8904edf9b8421cd283aac5bc120b14f9970b121",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-well-48x48": {
+   "file": "pods/plate-well-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "2411d89979ae3415f76aa0ba7870d1097b35fc8420d3b90e20b0dd92f75014d6",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-well-72x48": {
+   "file": "pods/plate-well-72x48.png",
+   "w": 72,
+   "h": 48,
+   "sha256": "ae2a94179e4c1dfa0b542e181246cfec2d123ba81512d7d27d23629983cb3d32",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
+  },
+  "plate-well-72x48-shown": {
+   "file": "pods/plate-well-72x48-shown.png",
+   "w": 72,
+   "h": 48,
+   "sha256": "0e9702c101d82a0d60171b6f5c7fc15782df47eae49f199ba156afd255e69e88",
+   "signed": "station lead's brief (fix 2): the device-plate kit, masters-pods 1fe7a3fa/dc61db2e (status new; the AD signs in each screen's capture)"
   },
   "pod-collection-band": {
    "file": "pods/pod-collection-band.png",
@@ -2281,8 +3695,8 @@
    "file": "pods/pod-collection-unknown.png",
    "w": 88,
    "h": 112,
-   "sha256": "f6a1ad4e46d4d276ca860ed7b01520201d7091549855155929a8cdc296674cf0",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "aec5f8ca355e1f7ac4699f7f2c54afd5483fe52acee19c867a2b1f5271a42468",
+   "signed": "Paco Cotera"
   },
   "pod-large-band": {
    "file": "pods/pod-large-band.png",
@@ -2400,8 +3814,8 @@
    "file": "pods/pod-large-unknown.png",
    "w": 144,
    "h": 176,
-   "sha256": "e7d0644ea30d3177b4967b3515995fce4435194ac481700184f3910dc3b017c0",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "324abc55af34e5d05fa0fff303a21ff2550d31249287b7429dc1729aa14dafb0",
+   "signed": "Paco Cotera"
   },
   "pod-medium-band": {
    "file": "pods/pod-medium-band.png",
@@ -2519,8 +3933,106 @@
    "file": "pods/pod-medium-unknown.png",
    "w": 120,
    "h": 152,
-   "sha256": "4094787088cc3f4152b25030ad8b2497eed27de1bcb17aa629a7112333e475c5",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "353115c5f9ad20d98148c235e2f927ba49be1871b0c56ac1a6a1acbb8cba5694",
+   "signed": "Paco Cotera"
+  },
+  "pod-opened-bowl-mask-accent": {
+   "file": "capsule/pod-opened-bowl-mask-accent.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "5fe42765e63b869d5c21d08526b60c12666845d8429e13a7226a40ea02ff56d7",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-mask-body": {
+   "file": "capsule/pod-opened-bowl-mask-body.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "07f1daf7f14e557d611c8e968ca909a9ab38d09a5eef486bcaf1aaed4e3a966a",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-bands": {
+   "file": "capsule/pod-opened-bowl-pattern-bands.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "a81b5214f892f6a3ccc02eb4c014d2fc11068326302291fb62d1514904ba9ec8",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-dots": {
+   "file": "capsule/pod-opened-bowl-pattern-dots.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "6a340c389adeac4a5a15235d5caea7618c893c31edd8083f1bd5f63e72b2ff40",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-plates": {
+   "file": "capsule/pod-opened-bowl-pattern-plates.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "eeddcdeefa7b09b489ec15f41bd97989448dc7656b19f5c326bf83a1c3f5417d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-plates-relief": {
+   "file": "capsule/pod-opened-bowl-pattern-plates-relief.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "005034410f79b4d85a3d334a793a770b9ea6cbcbab174cf179410d53c68e4e7e",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-ribs": {
+   "file": "capsule/pod-opened-bowl-pattern-ribs.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "ae1ec09756f25f96dac051436937b6e128ac3d5fcb02855c297c55a40565c142",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-segments": {
+   "file": "capsule/pod-opened-bowl-pattern-segments.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "99f6c2812d47854f849dbd970ddd13d0e1b0454a5bf82327360de57518e1282f",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-segments-relief": {
+   "file": "capsule/pod-opened-bowl-pattern-segments-relief.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "d7ab8e698ba949ee1618ac531da8843442b02bb0c2225a00d42edc7b381ac723",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-stripes": {
+   "file": "capsule/pod-opened-bowl-pattern-stripes.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "703020973f2f781d6dc5155fbf99a02cf2eaa3bb6967f65b65f28c958110887d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-shade": {
+   "file": "capsule/pod-opened-bowl-shade.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "a5307569775d820fab24e33ea2c14fac5c50a9e3d514cc5d58cb2a8717c9aa7d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-cap-mask-accent": {
+   "file": "capsule/pod-opened-cap-mask-accent.png",
+   "w": 89,
+   "h": 88,
+   "sha256": "365c95d94a88a153dbf6a60c4e14a5bc8c645e59ea99e6302a459050e9c5bc83",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-cap-mask-body": {
+   "file": "capsule/pod-opened-cap-mask-body.png",
+   "w": 89,
+   "h": 88,
+   "sha256": "a2a387dfab1184955906cfe88367c2c5132579e8b91d323d541b41b31b39e985",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-cap-shade": {
+   "file": "capsule/pod-opened-cap-shade.png",
+   "w": 89,
+   "h": 88,
+   "sha256": "0a8f387c1fe3c9a604d2220564ac5a63cd63cd68d2c9165bba3fd10bbca9c10d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
   },
   "pod-small-band": {
    "file": "pods/pod-small-band.png",
@@ -2638,8 +4150,8 @@
    "file": "pods/pod-small-unknown.png",
    "w": 104,
    "h": 128,
-   "sha256": "d394efb849f88bcdc23846b5f66e711dd4f361059f9444bff9803f16c3da5244",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "6c66f668a5e44d703193e71dbaa3b68350dd93fb6bd0c58c9912f0539975e531",
+   "signed": "Paco Cotera"
   },
   "pod-well-band": {
    "file": "pods/pod-well-band.png",
@@ -2757,8 +4269,15 @@
    "file": "pods/pod-well-unknown.png",
    "w": 40,
    "h": 48,
-   "sha256": "05d476feb77e39341e24a64adef2a40c56740c05fe1747066c511e7bfa930550",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "e572bc320c52e03d783290321766495dbd8cad61a19cafd37bd52a074180e9c7",
+   "signed": "Paco Cotera"
+  },
+  "pods-hatch-open-160x260": {
+   "file": "pods/pods-hatch-open-160x260.png",
+   "w": 160,
+   "h": 260,
+   "sha256": "cf54f2c97eae72655cb5f1ac3e365f40e8f7fcd02bbf33fefae0e3dac94fd263",
+   "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
   },
   "rail-emblem-character-read-24x24": {
    "file": "pods/rail-emblem-character-read-24x24.png",
@@ -2960,8 +4479,8 @@
    "file": "pods/rail-tab-fill-open-full-152x40.png",
    "w": 152,
    "h": 40,
-   "sha256": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f",
-   "signed": "art director (pass 83 re-sign, 6f751b7d)"
+   "sha256": "9048cd142f666635ef1caba8d025f3308d668a0839f997b677f8a0b491c5ead6",
+   "signed": "station lead's brief (fix 2 F11), masters-pods 917173ca: F2-A5 the 18 rail wells, F2-A6 the recut open tab (status new; the AD signs in the captures)"
   },
   "rail-tab-fill-read-compact-72x40": {
    "file": "pods/rail-tab-fill-read-compact-72x40.png",
@@ -3821,8 +5340,8 @@
    "file": "pods/ring-hatch-80x56.png",
    "w": 80,
    "h": 56,
-   "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
-   "signed": "art director, Pods room verdict (README fa105365)"
+   "sha256": "c92bc7aee08d1830309a9baf86bf3b4c44f81709e254c0c1395c50c4ab987d9b",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "ring-kin-56x56": {
    "file": "pods/ring-kin-56x56.png",
@@ -3830,6 +5349,69 @@
    "h": 56,
    "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
    "signed": "art director, Pods room verdict (README fa105365)"
+  },
+  "roll-S01-crown-bare-head-128x72": {
+   "file": "pods/roll-S01-crown-bare-head-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "31bb61c2b97dc7ff288d32f7666564b84dffc6e0102ca49e8c74b09de986c9cf",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-crown-leaf-crest-128x72": {
+   "file": "pods/roll-S01-crown-leaf-crest-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "fa8a9fab783bb4f9574f07c355b1c1d5b76ec5500f8ab240397a09e63534047f",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-drive-128x72": {
+   "file": "pods/roll-S01-drive-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "6a4cd91c5a0d35ab9efcfaca8d649bbe422bba3dbb5fc895d8e9ad574eb41258",
+   "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
+  },
+  "roll-S01-efficiency-128x72": {
+   "file": "pods/roll-S01-efficiency-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "1fe82de79e06eae2e6db7caeff1da6c24355ffafd8a39e1cf60996a5d6433fc5",
+   "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
+  },
+  "roll-S01-eyes-between-128x72": {
+   "file": "pods/roll-S01-eyes-between-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "f07d59175805e756d45047706c1b080e37aa5e58245e28344ef14ac11365bf4d",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-eyes-thin-rings-128x72": {
+   "file": "pods/roll-S01-eyes-thin-rings-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "714c2ad8e456aa315f4cee67018a0a352d333b7cae0146a41e71994abc4fee16",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-eyes-wide-pale-rings-128x72": {
+   "file": "pods/roll-S01-eyes-wide-pale-rings-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "1b6220c30453e9d0fd1269ebec4bda5b8cc1ddb39a8c221c0e20c52547716483",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-markings-pale-patches-128x72": {
+   "file": "pods/roll-S01-markings-pale-patches-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "7762115cbe78ca70bb14891852289fdde913a4dc7a8eaa2709eecdbc43138987",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
+  },
+  "roll-S01-markings-plain-128x72": {
+   "file": "pods/roll-S01-markings-plain-128x72.png",
+   "w": 128,
+   "h": 72,
+   "sha256": "63c2f1e3c14a9455b9163c1226633534593f04ce8f7ce704129555fdb1ee3edd",
+   "signed": "art director, the S01 look rolls (masters-pods a544f735 or later, dce3d3cc)"
   },
   "room-bench-stage": {
    "file": "pods/room-bench-stage.png",
@@ -3842,8 +5424,8 @@
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
-   "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf",
-   "signed": "art director, Pods room verdict (README fa105365)"
+   "sha256": "916835019f62aa917d3f4cd8958dd6e749b4b0f2001eb11229fbba84b9237cbb",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
@@ -3863,29 +5445,29 @@
    "file": "pods/room-bench-stage-create.png",
    "w": 1024,
    "h": 522,
-   "sha256": "209f9fda09c7f3f1a32cb47e3d1e33bf2f9ea7237dca521e0f7f16f9e8c26d2d",
-   "signed": "art director, verdict (528b73d5)"
+   "sha256": "d48e37b576f13f4f3bcedc347b2cdb7d35b39d33953d85ec7dd8ed6ed26a5a29",
+   "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
   },
   "room-bench-stage-incubator": {
    "file": "pods/room-bench-stage-incubator.png",
    "w": 1024,
    "h": 522,
-   "sha256": "37c92cbd023977ef3483bdc496ea8d27af1f933a116f8c09c7b3bb7593fac686",
-   "signed": "art director, verdict (d09acb12)"
+   "sha256": "293b716f7a00d7b2aa1d8609e66784a317ee8d38657244feda69732b14870a58",
+   "signed": "art director at 1x, 2026-10-15 23:16 CST: T-20261015-07 (IA2), the whole-screen mock in today's incubator-growing capture with the base at 440 (stage-incubator/rework/proof-ia2); to re-check in the builder's whole captures incubator-empty, -growing, -ready and -hatch-1100 after place-masters"
   },
   "room-bench-stage-overview": {
    "file": "pods/room-bench-stage-overview.png",
    "w": 1024,
    "h": 522,
-   "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038",
-   "signed": "art director, Pods room verdict (README fa105365)"
+   "sha256": "3581670aa531fb6f525f66985e52fdf3e5ce00e11e8565873e0ffe4c3847bd55",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
   },
   "room-bench-stage-probe": {
    "file": "pods/room-bench-stage-probe.png",
    "w": 1024,
    "h": 522,
-   "sha256": "2fbc562fdb7a95379ffb19976e5704ce5b7273ed02f2828b6e6b26ae63b6e6a6",
-   "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+   "sha256": "fb5bf87677abc99cb9c1d46f74110b49b06261c0290a1d5549a6fd60cbeec04e",
+   "signed": "Paco Cotera"
   },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",
@@ -3894,19 +5476,26 @@
    "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a",
    "signed": "art director, Pods room verdict (README fa105365)"
   },
+  "room-cradle-front-create-224x96": {
+   "file": "pods/room-cradle-front-create-224x96.png",
+   "w": 224,
+   "h": 96,
+   "sha256": "7c933d3da94332df0d0ace023bbf4064ad2e55fbcb186cb37560cfb00764cc80",
+   "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
+  },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",
    "w": 152,
    "h": 152,
-   "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
-   "signed": "art director, Pods room verdict (README fa105365)"
+   "sha256": "793516357cb1670cc85cd4bb93be6c5a6c0c3f46d92d840f687883d09ab77544",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "room-stamp-case-152x152-front": {
    "file": "pods/room-stamp-case-152x152-front.png",
    "w": 152,
    "h": 152,
-   "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
-   "signed": "art director, Pods room verdict (README fa105365)"
+   "sha256": "fa704f60934f6e18cb598fb391e0370da6feb09f7d7ea2597b5e4513071e3f16",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "shell-key-home-24": {
    "file": "shell/shell-key-home-24.png",
@@ -3936,19 +5525,82 @@
    "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
    "signed": "art director, original concept marks (#117)"
   },
-  "spread-progress-empty-8x8": {
-   "file": "pods/spread-progress-empty-8x8.png",
-   "w": 8,
-   "h": 8,
-   "sha256": "f6eeb286a2828a9336c469b78335c3c44b3100b5d3e6c428710c7efb27184d83",
-   "signed": "art director (home hand masters, #112 and #116)"
+  "sitting-frame-empty-48x40": {
+   "file": "pods/sitting-frame-empty-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "17467000042f8881ad4e75234ba5c3dc4deb15698471999f0cd416889f4250c5",
+   "signed": "station lead's brief (Habitat GB2): the art director's recut of the empty sitting frame, masters-sitting-frames 2f5e5779 (the window an empty recess)"
   },
-  "spread-progress-full-8x8": {
-   "file": "pods/spread-progress-full-8x8.png",
-   "w": 8,
-   "h": 8,
-   "sha256": "71beb5ba2d7b7619bf9fb33bf1d46e5fb1fca2d8745be3d55336560f6e80d98f",
-   "signed": "art director (home hand masters, #112 and #116)"
+  "sitting-frame-held-48x40": {
+   "file": "pods/sitting-frame-held-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "e36f2be8826b38c096103ecfccd3ba61e92326bf34c1e571ae9041354b027857",
+   "signed": "named with --ids"
+  },
+  "sitting-frame-portrait-48x40": {
+   "file": "pods/sitting-frame-portrait-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
+   "signed": "named with --ids"
+  },
+  "spread-gilt-corner-16x16": {
+   "file": "pods/spread-gilt-corner-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "7b7b95274472ff3f8be92ade9c6c9c0502e3eb15e50d17c6b25581623ae99495",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S01-80x96": {
+   "file": "pods/spread-plate-S01-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "1fc4f9886aac1b709333ee266fb00d50c298d03548de97b54556f9a6cd5e2add",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S02-80x96": {
+   "file": "pods/spread-plate-S02-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "4b15fe0962648789cec56e59b2542fb83fae3d5d048721d340fbc9302eff2d10",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S03-80x96": {
+   "file": "pods/spread-plate-S03-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "1a44e0230f92e2a6bb7449423d903b10c65b4d04ea7d39ea3bfc0a693ddb0134",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S09-80x96": {
+   "file": "pods/spread-plate-S09-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "09dbcff4bb47f1d962491ee4b02b20152f28bd46b5317d86becb2b0a35bbeabb",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-progress-empty-12x12": {
+   "file": "pods/spread-progress-empty-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "8c7cc8713eb336f18c041ce86f032eb03decfeb23a29715eb665a23d58bad492",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-progress-full-12x12": {
+   "file": "pods/spread-progress-full-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "13ed81d7074b97349cb80de31b12537ab9746583f512ed264021e3072a053125",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-seal-16x16": {
+   "file": "pods/spread-seal-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "5fb39721f9fa0ba2802564820780252101c22ec19bcd29d68a4cef99248efb8c",
+   "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
   "stamp-label-120x120": {
    "file": "pods/stamp-label-120x120.png",
@@ -3957,122 +5609,1034 @@
    "sha256": "474f93f940e3d682378c8943d2532816f5b811a52bbfba97bbb344eb53faef39",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "stamp-plate-120x120": {
+   "file": "pods/stamp-plate-120x120.png",
+   "w": 120,
+   "h": 120,
+   "sha256": "9dcf1942d8c36ac6da75497ad4d91820a420ae0df6e62e3dbc6edbc067226184",
+   "signed": "named with --ids"
+  },
+  "trait-S01-crown-bare-head-104x160": {
+   "file": "pods/trait-S01-crown-bare-head-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "27f390347d7c111c9d6e6d1d90d42f9809cda53c353bcb4aa111ba389470d6be",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-bare-head-104x64": {
+   "file": "pods/trait-S01-crown-bare-head-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "3d8658652bac4e96da4bf74621fd0ea1a031d1ca38be678511caba3385f4204c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-bare-head-104x96": {
+   "file": "pods/trait-S01-crown-bare-head-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "12c647de16d8eae60e8e163b95a59145ce7e5f7ac3f8e42750aa320d49331012",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-bare-head-128x160": {
+   "file": "pods/trait-S01-crown-bare-head-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "dba54858b49d03d9edf4ac9e093876820f87a32ac1dfa68fd2da75917eae6525",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-bare-head-144x176": {
+   "file": "pods/trait-S01-crown-bare-head-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "8ab79786ca51b3c81b8dd8b42b2f56d92742118163354c219127a1f19aec0b66",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
   "trait-S01-crown-leaf-crest-104x160": {
    "file": "pods/trait-S01-crown-leaf-crest-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "a135a009ac3e8a4c6b6882c410f74aacd7be4583e27ba0235b9c644f993daa56",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "33e3c1ae5b3a46ea6ad23aa729b57eb79265bf8eb0aa48a06b57eea24d877142",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-104x64": {
    "file": "pods/trait-S01-crown-leaf-crest-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "3a55004a949cde0626bbc53c8c2e1afb78a35dcee18270d093cd566e205ec564",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "4c546e5d8d52d9248c4a358a1be1381bef976f50272083ec98b7d4b6e6d833e1",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-104x96": {
    "file": "pods/trait-S01-crown-leaf-crest-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "d163453d2723f249a8209be31780a42a52e59da00eea58e7afabea5676c82ca4",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "dd80da2e685a994040b629e8627386b7f3336923b7efff08bf7bec4b9748a75e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-128x160": {
    "file": "pods/trait-S01-crown-leaf-crest-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "6342f0e32e187c98092aeca0911e76a1dbe2660e14ba7b7fefa761f55dc35353",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "0a541c6401b84a794bb41449383e24229271f1dd6a1b2fb572c83269fe67214f",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-crown-leaf-crest-144x176": {
    "file": "pods/trait-S01-crown-leaf-crest-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "18a163cb2a8f7d98db14ae54112f0b371176577117fa62ecff2875b7a873cc79",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "fbc71768bcbfee5b53209c80ffb38e475dcdb6a8e7c32c34bc545d666777b546",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-leaf-crest-40x40": {
+   "file": "pods/trait-S01-crown-leaf-crest-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "0e1d6fac57aa60034806115b0cc55c9bfd260e6ab0007f59298c333275417a84",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-crown-leaf-crest-56x56": {
+   "file": "pods/trait-S01-crown-leaf-crest-56x56.png",
+   "w": 56,
+   "h": 56,
+   "sha256": "dece508c5757e4210fef6ebf98f83a2f8a767933cc0580e63966ad460be2122d",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-drive-128x160": {
+   "file": "pods/trait-S01-drive-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c5302efbc3e91026b845aaaa9fc871e2fa1d1ae17ff11ab5f8cfdcc6c709d479",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S01-efficiency-128x160": {
+   "file": "pods/trait-S01-efficiency-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "ff10c5e59b5761212ec2f7135db7227939b48b97921c3b66906fe24373170cc0",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S01-eyes-between-104x160": {
+   "file": "pods/trait-S01-eyes-between-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "3fb864d5431105ee4397d5126d89ddce533267202dc6e757de295221ec5bc42c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-104x64": {
+   "file": "pods/trait-S01-eyes-between-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "85a925359b2c6bc438eae3ee7bec775810444e98b70e51d041ae24deeb351b58",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-104x96": {
+   "file": "pods/trait-S01-eyes-between-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "d13e799178c9a5e496c5f5a9057df272e331415f76c8ee05ebf5cbe18ce3f397",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-128x160": {
+   "file": "pods/trait-S01-eyes-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "10978b1443fb69da9bffd73a378edfa483b92f19a03b85f61e143c92d6220c86",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-144x176": {
+   "file": "pods/trait-S01-eyes-between-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "e487985ddf33387b976d0a12359dd86352682fc56dd11400bf38c07450a9d9e8",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-104x160": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "aac1a5ab70270075b5df898f1a47ba876b552cac24a9cca6eda3fe6fe7e94244",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "2b1061e8c34832451ee29f59f441bd7932014b744cccdbec07197bfe20408229",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-104x64": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "f57402d091ba61705cd3cd8f5cefc8cf150c19314e17e26a4d08b4cacb16295a",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "7e1908f0367201183f12d46fa5d7524f4aa6430aed45863da5533d0c8ebb6221",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-104x96": {
    "file": "pods/trait-S01-eyes-between-small-and-large-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "529885a951dcf212fd105b49ac81e8a7fab47db0bb3330a047b78901b5aaa925",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "2185de826b401cb756691f73ad69e5dce8cd2419e4050c0d950bee740ae0a25c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-128x160": {
    "file": "pods/trait-S01-eyes-between-small-and-large-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "41a4514d6c17b579315f23337ef552747470a3db4b1526ef3fe700faa019c15d",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "c1bf3e1fc6627a273bbeb46a8c56eea25c43104496b988c281bccb3e6aa92eea",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
   },
   "trait-S01-eyes-between-small-and-large-144x176": {
    "file": "pods/trait-S01-eyes-between-small-and-large-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "9d0276fee7cd1eca2331612d49df2c04dd5147e55dab26003b41cc307d8e9b98",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "2b8b372f8d48a6a8896e05388112e28c78cf2df3fc051231b324933ad20fdb0d",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-small-and-large-40x40": {
+   "file": "pods/trait-S01-eyes-between-small-and-large-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "457a0f60dc5687a987bb0e94b15b7ad7f4ac3790dfccb3e24cbca7f49eabb458",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-between-small-and-large-56x56": {
+   "file": "pods/trait-S01-eyes-between-small-and-large-56x56.png",
+   "w": 56,
+   "h": 56,
+   "sha256": "e41ecf8acf19b65054c5e8d41e729d0bb3467a3ec513b5b1f82f5ad5187481d1",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-104x160": {
+   "file": "pods/trait-S01-eyes-thin-rings-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "960e488b03261c5b4a33dfd356196cde2d5f8b481960ed6bd610b20ba948775d",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-104x64": {
+   "file": "pods/trait-S01-eyes-thin-rings-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "5e58b0708cfe0d4a5d15d912c187784a9b8c7404e792b9bcdd97284e726167a4",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-104x96": {
+   "file": "pods/trait-S01-eyes-thin-rings-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "2a7f001c78ed4f806c456b34c1cff40d44f260dbf90d5254444a874d6b9c8a0b",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-128x160": {
+   "file": "pods/trait-S01-eyes-thin-rings-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "fa0ad22b79bad63240a560e13ac60f1d8e91c63520320c9d1ef802b27897d855",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-thin-rings-144x176": {
+   "file": "pods/trait-S01-eyes-thin-rings-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "f3520d466cc687ed5a02f1d0361f28276e55fc696666fbe945880b7e5e6072eb",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-104x160": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "10dcde27c9eb04240c3f1783a0959e85d0f3183985178fbd9e22c932702004af",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-104x64": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "82dacc9d532102b51f160ac4aeb213f6a51c9b6c8cdc18578c4f22b3c8e0013e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-104x96": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "b336d592f3e66ae5b9a001de9f0c6e645bdf00093d810597f6cba54441ec45fd",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-128x160": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "119c92cacfc8deaee8f6632b8a635d1a66abddeac3659bbdb04032f097090a3e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-eyes-wide-pale-rings-144x176": {
+   "file": "pods/trait-S01-eyes-wide-pale-rings-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "36a55a42f5b886f73c3d0fff0fae63479573305ab784b1e84fff4a4b26e5c40a",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S01-markings-pale-patches-104x160": {
+   "file": "pods/trait-S01-markings-pale-patches-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "54a974d0c2b16aeeba3d8a2657457a9c084e5c6e64c152ec45cd412f4ecef32c",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S01-markings-pale-patches-104x96": {
+   "file": "pods/trait-S01-markings-pale-patches-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "776b528932295b42c911d8714caf8d84591dc11905729cef6dc98c541fc54656",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S01-markings-pale-patches-128x160": {
+   "file": "pods/trait-S01-markings-pale-patches-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "bbee805379cf21d613fb86d3c9eb59fecf21ca37efa79acdc12d0ac7ed4c470e",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "trait-S01-markings-plain-104x160": {
    "file": "pods/trait-S01-markings-plain-104x160.png",
    "w": 104,
    "h": 160,
-   "sha256": "7d404a64c1ee72b6bbc50668b4027e10d49194de1a49d9f87071941d0ec24bad",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "02a01a9b237286510ab24dee35d8f8e0fe5f3d1a164365e40babcb0e251e33f1",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-markings-plain-104x64": {
    "file": "pods/trait-S01-markings-plain-104x64.png",
    "w": 104,
    "h": 64,
-   "sha256": "5d2d115179cb4898e4d7b4679cfa9a0e806615bf47841268909c430e24896aae",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "91d5e74aaca4c8bcc553105d2aa9023b103fe8b2752587b3aea280359ab9efc1",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-markings-plain-104x96": {
    "file": "pods/trait-S01-markings-plain-104x96.png",
    "w": 104,
    "h": 96,
-   "sha256": "826839c602e9bc4c6de189e557d5f671b12abcf6424668c48665d79d6bf63a1c",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "3ca8ba4a2ffb383cdaede43281fe612f5a5cec166dfc5c3a6b8f6874bbdd092b",
+   "signed": "new (masters-pods 580a7cd7), not final"
   },
   "trait-S01-markings-plain-128x160": {
    "file": "pods/trait-S01-markings-plain-128x160.png",
    "w": 128,
    "h": 160,
-   "sha256": "3dce76216eda4ae4f87f4dc8376d2f281b90746bf0e708e99a5ea289d06fb218",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "54794e1e801050d00f71d27bd7b5da5b687d4a4c7466e0f0570f5520beaf2400",
+   "signed": "art director, trait wave 1, 10-11"
   },
   "trait-S01-markings-plain-144x176": {
    "file": "pods/trait-S01-markings-plain-144x176.png",
    "w": 144,
    "h": 176,
-   "sha256": "69d906a5e09b0c41340423798ecac272fe01539d598c6e63c6f9bc348d39b615",
-   "signed": "new (masters-pods b3b7e04), not final",
-   "status": "new"
+   "sha256": "d1e2608e003341196d0bdeeaa7c3a96036373c9471269ab465da03c4de92b48d",
+   "signed": "new (masters-pods 580a7cd7), not final"
+  },
+  "trait-S02-flecks-bare-104x160": {
+   "file": "pods/trait-S02-flecks-bare-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "db46a630bd92407aaf80183438cde1a11242243a6423cdd49349c867473ac6f9",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-flecks-bare-104x96": {
+   "file": "pods/trait-S02-flecks-bare-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "32be711eac36f81816c34cf81a1a411aef9a4bbf7409963edc93d58e3da1153c",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-flecks-bare-128x160": {
+   "file": "pods/trait-S02-flecks-bare-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "109d98717793ec33410860ed910613b7893718f90ef813c6934de624f749799d",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-flecks-spots-104x160": {
+   "file": "pods/trait-S02-flecks-spots-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "43f82dc59ac69aa973fe12dfe15f76605ee4e45ea4d1f866d79146e2cdbfe288",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-flecks-spots-104x96": {
+   "file": "pods/trait-S02-flecks-spots-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "77025420c95f92657f853b2e68f4629590b5b981916955aa0967d51d1e48313a",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-flecks-spots-128x160": {
+   "file": "pods/trait-S02-flecks-spots-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c995ce3ea306f9fdb1e6d745081923ad7bf62920447a2f131103e5a316dee715",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-long-swept-104x160": {
+   "file": "pods/trait-S02-fluff-long-swept-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "76c5b6f751771b299594bd260de388a974016a71e13c5b3e9861204ef67b4698",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-long-swept-104x96": {
+   "file": "pods/trait-S02-fluff-long-swept-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "8f579515f961f84af542abdb32eb52c6f908ea542d9548d88846166a8773f9c4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-long-swept-128x160": {
+   "file": "pods/trait-S02-fluff-long-swept-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "4b152befaf6d1e2110a4800fda5014a2056431e0ad82e987070a83dc3b3ccbf4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-short-straight-104x160": {
+   "file": "pods/trait-S02-fluff-short-straight-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "cae6ef6045841a6224a804a3c4f25863cb10b07d22d48d74e968df93db85362f",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-short-straight-104x96": {
+   "file": "pods/trait-S02-fluff-short-straight-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "b2807da8bca73e022c0292abe8daf100b6f69871fb01d042cb892bcd2700aed3",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-fluff-short-straight-128x160": {
+   "file": "pods/trait-S02-fluff-short-straight-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "dcc6a46ed8ab0e144688f6467fa5a459a99169d8e3e45ed8ff168fd01e2c5076",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-between-104x160": {
+   "file": "pods/trait-S02-span-between-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "e90d91715f1a05febdc72b3635c43a9398994a75cf729f55246584063625b755",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-between-104x96": {
+   "file": "pods/trait-S02-span-between-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "01191207fedbcf56daa160458e97952b8db563c6715c0d91bc2169be0313b495",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-between-128x160": {
+   "file": "pods/trait-S02-span-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "dca807c04c0662fc4b20ba92a82455d570d66c927d843bbdab6c47155ed16368",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-small-cap-104x160": {
+   "file": "pods/trait-S02-span-small-cap-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "f64bcb5e1705f9f0b2087fe1cb72fe931f5808e31ebacfcc6a5c39b6c882f5da",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-small-cap-104x96": {
+   "file": "pods/trait-S02-span-small-cap-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "34c890d4c7931f2daaa7ca05d781e3f087c601f2c61d27aac92a4b92a51c174a",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-small-cap-128x160": {
+   "file": "pods/trait-S02-span-small-cap-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "0ccb696c472f13b9bdeee73ee378e6eb70bea8488fc99870de58123d6ca5fbf1",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-wide-cap-104x160": {
+   "file": "pods/trait-S02-span-wide-cap-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "eb8a2b8bfa68f397889087ce1a5acf0809278ca431e6550ec3fc44a960c3fd28",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-wide-cap-104x96": {
+   "file": "pods/trait-S02-span-wide-cap-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "2b48f65682e375b49d5387231983247ec96c9ebcc2f231cfd368815ad35c1ab8",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-span-wide-cap-128x160": {
+   "file": "pods/trait-S02-span-wide-cap-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "6463c5553d90daa61d6f70df700a193af574628a3b40a94cde867a5fe2577014",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-104x160": {
+   "file": "pods/trait-S02-spots-bands-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "076d2eb1704689f0c009a3e9d49d1c304a9c77a0566a6e46bfb84f94cde0f2e5",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-104x96": {
+   "file": "pods/trait-S02-spots-bands-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "ae8bb7cd099a9864bbcc069216105d5b04ad2148015fc99062a94b6fdfcb63cd",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-128x160": {
+   "file": "pods/trait-S02-spots-bands-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "d2cecc7c8a0d6a9212880badf4d6b473c48a940b1e3f0c920d8d8906a606eec8",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-and-spots-104x160": {
+   "file": "pods/trait-S02-spots-bands-and-spots-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "529a4f15e414e8fe4ff8429acc611bfdd730aa5e48b535918d411793f9886219",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-and-spots-104x96": {
+   "file": "pods/trait-S02-spots-bands-and-spots-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "54aa40c58e308b61156a222c08f162acebd9cc331ed9483d4eb62f58abcaebb3",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bands-and-spots-128x160": {
+   "file": "pods/trait-S02-spots-bands-and-spots-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "efbee845c6e205815ad6a8b4ad5e4466c995b22c78ab6038d1c180e9183e10a7",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bare-104x160": {
+   "file": "pods/trait-S02-spots-bare-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "ceae60a7978fcd5090cf3555e31ed6e2d634f162f8c698902783fec7081a5cf4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bare-104x96": {
+   "file": "pods/trait-S02-spots-bare-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "e96258d803f4bbdf2df22992f886510ee4c61f7acd1f48e5f2903fa9d18fafb9",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-bare-128x160": {
+   "file": "pods/trait-S02-spots-bare-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "ff3f9c020837758c8f5e8fc0d297cb24922bad301b31494beeb50ecdc7e3e855",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-spots-104x160": {
+   "file": "pods/trait-S02-spots-spots-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "37a914752de04df018020101545ce1af4057e7b12bf78f6c420771f3cdce44b6",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-spots-104x96": {
+   "file": "pods/trait-S02-spots-spots-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "d0fa6463f077b84c6f0a3cd20ceffc130e00b1c41a0c0b10b76766af2b82b737",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S02-spots-spots-128x160": {
+   "file": "pods/trait-S02-spots-spots-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "1885871e33cac541c6686cc5c073037f409f429e2448fc8e2bdb03c3081f8aa5",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-curls-up-104x160": {
+   "file": "pods/trait-S03-carriage-curls-up-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "c0e1fe2b919278d45a9f29b2f40e83065e804d2d33b8be395a4e2d21ed281fa6",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-curls-up-104x96": {
+   "file": "pods/trait-S03-carriage-curls-up-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "85dcc255712b72755665f37f5299a60ea81aa06ec499ed2af11a78ab2cf8dbd4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-curls-up-128x160": {
+   "file": "pods/trait-S03-carriage-curls-up-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "cafabbc8b48907a5c06a95c849badb54182e64f15c0a90aa606bfaccb43a92cc",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-hangs-104x160": {
+   "file": "pods/trait-S03-carriage-hangs-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "0a41f8595e67bde8357a567ed61c491463a47bfb68165a4b30f78f3fdd79ca54",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-hangs-104x96": {
+   "file": "pods/trait-S03-carriage-hangs-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "4e0acfd56beb5679c63b57ed5769dd769e67dcadeeb6d2e252cc81c83193cd56",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-hangs-128x160": {
+   "file": "pods/trait-S03-carriage-hangs-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c71b9d3decb4080ba20ebe959ae98191d5eaa7510b408db48a0ad13f98a3eabb",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-straight-104x160": {
+   "file": "pods/trait-S03-carriage-straight-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "d159f94b3dff2a8fb1341c6d715c5b610896cdbcd2bab88772fc04b45d6a5ca0",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-straight-104x96": {
+   "file": "pods/trait-S03-carriage-straight-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "975038f5af361442193ff8710597e682d6a6196be4fe6b2d1c6de96c71b64c68",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-carriage-straight-128x160": {
+   "file": "pods/trait-S03-carriage-straight-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "273b1607c4b7400afea0bb332441657ecfae2920bb55e62f6765825059b257b7",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-claws-digging-wedges-104x160": {
+   "file": "pods/trait-S03-claws-digging-wedges-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "20e625d5b70dc964f2a50564cb5c81d6b9859530e485bff034e2aa229483d019",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-digging-wedges-104x64": {
+   "file": "pods/trait-S03-claws-digging-wedges-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "52709f258d2359182ac1b0ece1ef5a59646ef1ebbfea56dc5032b2546381e2cc",
+   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-claws-digging-wedges-104x96": {
+   "file": "pods/trait-S03-claws-digging-wedges-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "6645f47c1bac7d789bdd19bd8838bb0c56de9a03d47e3eba93dced1105b8aa43",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-digging-wedges-128x160": {
+   "file": "pods/trait-S03-claws-digging-wedges-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c2f091b580f17181f0d3f3a1f9a1da57e239899bedb8fdddcc2da9bb5ed51971",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-digging-wedges-144x176": {
+   "file": "pods/trait-S03-claws-digging-wedges-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "e4e77141e9ed3645c8dfd0b7404962dbb5eb23fcab5d47a5fc739b3d8c0eede5",
+   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-claws-pads-104x160": {
+   "file": "pods/trait-S03-claws-pads-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "1d346bb407d5cbb716370a51d57f5aabd6d5f0eb65134e2a35b113a5f4975c4e",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-pads-104x64": {
+   "file": "pods/trait-S03-claws-pads-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "33431fee2cbd7ab5e8124ae194e8ae49c3058edc7d3c0184ed3f4c72e8316b34",
+   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-claws-pads-104x96": {
+   "file": "pods/trait-S03-claws-pads-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "0c87d44abbbd9f73f5e5f89c34c394be444b117dc28ecc3f916a13639b3e7cb5",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-pads-128x160": {
+   "file": "pods/trait-S03-claws-pads-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "4013ca229ba14ecf8196c40db400f808612f2ec0655eb452108ec5b871e244ae",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-pads-144x176": {
+   "file": "pods/trait-S03-claws-pads-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "ec0b2b917c76bd8928fb766656ed95d085c82a30b8be4aa70a4cb4595c3a6279",
+   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-claws-round-feet-104x160": {
+   "file": "pods/trait-S03-claws-round-feet-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "6bc64c0ef0a011e9f8f77e813831be2065623b85980a1c48b674a6c9b5655b9c",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-round-feet-104x64": {
+   "file": "pods/trait-S03-claws-round-feet-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "04fe0757ff1150e2fe2abef81617d63e8cd09706044df3c209b7a8221dd1b924",
+   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-claws-round-feet-104x96": {
+   "file": "pods/trait-S03-claws-round-feet-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "8c4e41aa1539d46cd4bf39993016dd913e2768bfc9ea63cce5527899d477fb4a",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-round-feet-128x160": {
+   "file": "pods/trait-S03-claws-round-feet-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "2a5a2e5af9201d31c2e4893b4bf1b6b7a0627360958f2ee0c9830341904fd0c0",
+   "signed": "station lead's brief (Pods round 2): masters-pods 6bbecda6; signed by the AD in the retake"
+  },
+  "trait-S03-claws-round-feet-144x176": {
+   "file": "pods/trait-S03-claws-round-feet-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "2bef63959be5ed4907e28f24d28aac1fb9ed0cd20bb02ad11242620489225d9a",
+   "signed": "station lead's brief: S03 scales and claws at 104x64 and 144x176 (masters-pods 5cd4491e); status new"
+  },
+  "trait-S03-crest-between-104x160": {
+   "file": "pods/trait-S03-crest-between-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "14aa7f27d44625d253cba1dc56ba162bbbd2fd4ddde24aee04f609fab9267c22",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-between-104x96": {
+   "file": "pods/trait-S03-crest-between-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "bdcc036e1a9e964ed7f14facdc50d921fde3e710cc7e6abc932ec28aa4217027",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-between-128x160": {
+   "file": "pods/trait-S03-crest-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "ea59ad2de5dce960af5299dc105e817fe1e9538e263074b09d149529d098c666",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-low-crest-104x160": {
+   "file": "pods/trait-S03-crest-low-crest-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "c1b793034554183e3b59253039d5469e5353825d973e39894d9c537dead4d902",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-low-crest-104x96": {
+   "file": "pods/trait-S03-crest-low-crest-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "9d33a275160af8c5a6938115ffd2f8373c515578c41ef55f5efeca833638b4d8",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-low-crest-128x160": {
+   "file": "pods/trait-S03-crest-low-crest-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c4130b3d5e061e64969e7b5e3c9d70e1df36f4c09375042d62289b24c56a28b4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-tall-crest-104x160": {
+   "file": "pods/trait-S03-crest-tall-crest-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "5fce1bc4a08c529231b7d7732aa45c1424aa95cd74157efc39d18730494ede56",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-tall-crest-104x96": {
+   "file": "pods/trait-S03-crest-tall-crest-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "25521db2e3c97c44584817809e02bbf814aeca82b35861a830d98ea1a3cade4a",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-crest-tall-crest-128x160": {
+   "file": "pods/trait-S03-crest-tall-crest-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "dc0575d6adc9bfe453da6090481e3feaa1d920dd8bd79be3858171f6b8d088c3",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-plain-104x160": {
+   "file": "pods/trait-S03-markings-plain-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "acde09476b98a05352fb40c3cdc15f48292f373cdeef5292a5e1fe1b4cde6d87",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-plain-104x96": {
+   "file": "pods/trait-S03-markings-plain-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "43ab53eeea46be8ac529abeda15abc4b8a47fe4881bfdc74cda20dff74ca9ee4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-plain-128x160": {
+   "file": "pods/trait-S03-markings-plain-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "f470f0a8060ee8632df53866d620de65740c2954c104f54b43324a048ed07b6e",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-spots-104x160": {
+   "file": "pods/trait-S03-markings-spots-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "bbbb75a15697d1403f7b0cdfed70d33551259d21920ef4e98695f75a1e4559cc",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-spots-104x96": {
+   "file": "pods/trait-S03-markings-spots-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "c77a1671ab3fcbbadfea1c2830b393acb3a8f52cb37c6503e98f9792e4c24a8f",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-spots-128x160": {
+   "file": "pods/trait-S03-markings-spots-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "3e53ece1f3dcb98f426fc8429dfb1747ec8dbc1ff831729b1bf1f77a10a91797",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-104x160": {
+   "file": "pods/trait-S03-markings-stripes-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "b27769c9ae01fffbfb21a3bc254821425250a6956ee1fc1b5938899f90f31f64",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-104x96": {
+   "file": "pods/trait-S03-markings-stripes-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "ad769fe98d9d682c8badba474af1632c121207517709b4479236339086c647ee",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-128x160": {
+   "file": "pods/trait-S03-markings-stripes-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "f244595ea2e28971116b2d50da3d1a9c617d177961bd2791ae13dfd26aff8d55",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-and-spots-104x160": {
+   "file": "pods/trait-S03-markings-stripes-and-spots-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "ae80fd0ea37d899ed175ddb67be132355a9415de3c9e2bca72c00387f628921b",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-and-spots-104x96": {
+   "file": "pods/trait-S03-markings-stripes-and-spots-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "b90924cb579700d5ff44a57c5c62ab09aa0e8f35958cead39400578fcf30892b",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-markings-stripes-and-spots-128x160": {
+   "file": "pods/trait-S03-markings-stripes-and-spots-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "dd2a426c07813bf18a2d7b4d4eb767855a89b93a4f257856816745587e74d017",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-scales-between-104x160": {
+   "file": "pods/trait-S03-scales-between-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "4c826e9a1b9702d882ae308d5e36e24f870ab69395dd5de6100161ca5c665489",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-between-104x64": {
+   "file": "pods/trait-S03-scales-between-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "1c0c5820b7be7f891bff68cb5796b4f9957afc0d594e576a2c015c46444f5b2e",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-between-104x96": {
+   "file": "pods/trait-S03-scales-between-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "b5dcaab5dd835a8b58be54caacf7e4cec109045114d07daed9bd6ce0842909d1",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-between-128x160": {
+   "file": "pods/trait-S03-scales-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "0ae6bbe03ade69196823d043d5d81c0e8d02192a5d483947ce6f2011916907fb",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-between-144x176": {
+   "file": "pods/trait-S03-scales-between-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "3e8c4513a0e1a28234f43fee10622798c5be19f92b4e24427cc72058d21bb44b",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-few-fine-104x160": {
+   "file": "pods/trait-S03-scales-few-fine-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "9fdd40d130ebdf36712014a81f2f110c72964e3dee5ea9abd973e408ec88c739",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-few-fine-104x64": {
+   "file": "pods/trait-S03-scales-few-fine-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "0ececc44142680a011e57f1eddc2b20e3202aec8f66679c2fe2ca9f74307515c",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-few-fine-104x96": {
+   "file": "pods/trait-S03-scales-few-fine-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "1aa1d4c05087ac0cd2d17354422f6f3e528b76b0e4096cd530ea458180897304",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-few-fine-128x160": {
+   "file": "pods/trait-S03-scales-few-fine-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c3cc045351176b18081d84d885c8872d6e784ed9c05c11f85862c88ed76994e4",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-few-fine-144x176": {
+   "file": "pods/trait-S03-scales-few-fine-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "e1b4b8ab0a3e4c620ea3a6924acf5d5ad5a4a62b6c8915a231adf959d683d415",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-many-coarse-104x160": {
+   "file": "pods/trait-S03-scales-many-coarse-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "7364bc3f306741daa66d75ef3241673bb17c729614355acfc380f0b7b745b273",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-many-coarse-104x64": {
+   "file": "pods/trait-S03-scales-many-coarse-104x64.png",
+   "w": 104,
+   "h": 64,
+   "sha256": "4d5221312b61c44a8721374b408139ec8ec478263ab6bab0f8a44b872450b03b",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-many-coarse-104x96": {
+   "file": "pods/trait-S03-scales-many-coarse-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "befda61b4547c139de65e6fb2073686d4efcf21dbf92472a89f423f7a3c75d12",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-many-coarse-128x160": {
+   "file": "pods/trait-S03-scales-many-coarse-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "2190d20a066b1f87b8db87aed486c063dcab07049a5671961909ce7668ca9820",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-scales-many-coarse-144x176": {
+   "file": "pods/trait-S03-scales-many-coarse-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "8ac32c8eda70bf71de991bd28a130561ddc26d4d0ec7338705dcd0b83ead5431",
+   "signed": "station lead's brief (Pods GB3), masters-pods 417ca260 and aaba926b: the chapter stage's heading band cleared, the S01 crown and eyes and S03 scales crops re-keyed (0 MXN, same ids and sizes)"
+  },
+  "trait-S03-tail-between-104x160": {
+   "file": "pods/trait-S03-tail-between-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "33c67331150ef9e924781741ac6d794b29e660e4abbd510c778a899b662129de",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-between-104x96": {
+   "file": "pods/trait-S03-tail-between-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "42a2c88d5d38653a54d1a919a1217de63cb50b1fc495a642d8a4a5cb46484d29",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-between-128x160": {
+   "file": "pods/trait-S03-tail-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "6b8e8ffba2a5e5d0e56fb59c82eba9dd26fa2f5d931370676f99f87ec65dc362",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-long-thick-104x160": {
+   "file": "pods/trait-S03-tail-long-thick-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "28ff16cf2b7439bcaf5d0a18c5b222e4854f162b882872192f270e41a96cc807",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-long-thick-104x96": {
+   "file": "pods/trait-S03-tail-long-thick-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "0f9c73ac0ceef1fa23397ea00aa4d3a309a09bf0eb0b8389a4cf6623447cefd4",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-long-thick-128x160": {
+   "file": "pods/trait-S03-tail-long-thick-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c1bad8ef1d3c178588c82eb8a28a42a6c24b24f3dfbc6637edb3c6b117e491b5",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-short-thin-104x160": {
+   "file": "pods/trait-S03-tail-short-thin-104x160.png",
+   "w": 104,
+   "h": 160,
+   "sha256": "68387169f39d54a3c1a6998ed630c6976f9f9ab8279e0cabfb438a5e95db0a8b",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-short-thin-104x96": {
+   "file": "pods/trait-S03-tail-short-thin-104x96.png",
+   "w": 104,
+   "h": 96,
+   "sha256": "76a262936167ffa7ade8fbcfd9a032622e2e44129150542cfbc9cadc58606969",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "trait-S03-tail-short-thin-128x160": {
+   "file": "pods/trait-S03-tail-short-thin-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "9e54a9a8e05a5762c88ccf4be2de16b62e25fe789361d940249901313a4248bf",
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
   },
   "trait-S09-beak-between-104x160": {
    "file": "pods/trait-S09-beak-between-104x160.png",
@@ -4516,6 +7080,13 @@
    "h": 408,
    "sha256": "f5ac46fcd6618a41f1a078ab08391fad817678cd9834233cbedebc464b772ab8",
    "signed": "art director, verdict (night pair grade)"
+  },
+  "well-lit-64x64": {
+   "file": "pods/well-lit-64x64.png",
+   "w": 64,
+   "h": 64,
+   "sha256": "44a9a0462150bc7511415686a13c2dd247dbfa24c1c95126610ac3e89276c7ed",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   }
  }
 }

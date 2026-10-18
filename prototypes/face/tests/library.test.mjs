@@ -16,6 +16,7 @@ import * as Lib from "../../station/src/library.mjs";
 import { frameOf } from "../../station/src/genome.mjs";
 import { libraryBuild } from "../../station/src/views/library-props.mjs";
 import { partDepartures } from "../tools/library-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("library");
@@ -74,3 +75,10 @@ for (const [name, patch, part] of PATCHES) {
     const d = partDepartures(boxOf(f), spec, b.props); assert.ok(d.length >= 1 && d.some((m) => m.includes("." + part + " ")), `a departure naming ${part}: ${JSON.stringify(d.slice(0, 3))}`);
   });
 }
+
+// A focus move is a cut: the old and the new ring boxes (2 × 106 × 122) and the bottom line's context zone (208 × 24); the picture's 2 px lift lies inside them (specs/station-library-spec.md §3: 30,856 or less).
+test("a focus move on the spread redraws the two ring boxes and the context zone, 30,856 px or less", { skip }, async () => {
+  const b = wireframe20(), f = await start(b); dirty(f);
+  b.props.focus.cur = "frame.S04"; f.setProps(); b.props.focus.cur = "frame.S09"; assert.equal(f.props({ screen: "library", ...b.props, motion: false, frame: frameProps(b.line) }), 0); f.frame((f.t += 16));
+  const px = dirty(f); console.log(`library focus move S04 -> S09: dirty area ${px.toLocaleString("en-US")} px`); assert.ok(px <= 30856, `${px} px`);
+});

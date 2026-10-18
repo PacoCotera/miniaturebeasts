@@ -5,9 +5,56 @@
    {
     "key": "dock",
     "said": [],
+    "screen": "cargo",
+    "focus": "room",
+    "ok": "Skip",
+    "subject": "two sealed crates",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "show",
+      "verb": "skip"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "room",
+    "ok": "Open the bay",
+    "subject": "two crates to the rack",
+    "idle": false
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "panel",
+      "target": "card.later"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "room",
+    "ok": "Later",
+    "subject": "they wait while docked",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.later",
+      "verb": "back"
+     }
+    ],
     "screen": "home",
     "focus": "room",
-    "ok": "Open Cargo",
+    "ok": "Open the bay",
     "subject": "",
     "idle": false
    },
@@ -22,43 +69,17 @@
   ],
   "home-bay": [
    {
-    "key": "confirm",
+    "key": "right",
     "said": [
      {
-      "t": "intent",
+      "t": "focus",
       "screen": "home",
-      "target": "room",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "cargo",
-    "focus": "room",
-    "ok": "Open the bay",
-    "subject": "two sealed crates",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [],
-    "screen": "cargo",
-    "focus": "room",
-    "ok": "Open the bay",
-    "subject": "two sealed crates",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "back"
+      "target": "cargo"
      }
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "two sealed crates",
     "idle": false
    },
@@ -74,8 +95,49 @@
     ],
     "screen": "cargo",
     "focus": "cargo",
-    "ok": "Open the bay",
+    "ok": "Open them all",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [],
+    "screen": "cargo",
+    "focus": "cargo",
+    "ok": "Open them all",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "cargo",
+    "ok": "Go to Cargo",
     "subject": "two sealed crates",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "cargo",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "cargo",
+    "ok": "Open them all",
+    "subject": "",
     "idle": false
    },
    {
@@ -90,61 +152,36 @@
     ],
     "screen": "cargo",
     "focus": "cargo",
-    "ok": null,
-    "subject": "the bay is opening",
+    "ok": "Skip",
+    "subject": "",
     "idle": false
    },
    {
-    "key": "confirm",
+    "key": "down",
     "said": [],
     "screen": "cargo",
     "focus": "cargo",
-    "ok": null,
-    "subject": "the bay is opening",
+    "ok": "Skip",
+    "subject": "",
     "idle": false
    },
    {
-    "key": "back",
-    "said": [],
-    "screen": "cargo",
-    "focus": "cargo",
-    "ok": null,
-    "subject": "the bay is opening",
-    "idle": false
-   },
-   {
-    "report": true,
-    "rows": [
-     [
-      "First crate",
-      1,
-      "",
-      "half the land explored"
-     ],
-     [
-      "Developer crate",
-      1,
-      "",
-      ""
-     ]
+    "end": true,
+    "wells": [
+     null,
+     null,
+     {
+      "crate": 0,
+      "order": 0
+     },
+     {
+      "crate": 1,
+      "order": 0
+     },
+     null,
+     null
     ],
-    "gathered": [
-     "+8",
-     "+8",
-     "+11",
-     "with the top-up"
-    ],
-    "probe": {
-     "lead": "Probe",
-     "plates": 1,
-     "text": "mended for ⚡ 1"
-    },
-    "world": {
-     "lead": "Meanwhile, the world turned",
-     "lines": [
-      "The pond edge filled with rain"
-     ]
-    }
+    "ok": "Look at the pods"
    },
    {
     "key": "confirm",
@@ -158,7 +195,7 @@
     ],
     "screen": "pods",
     "focus": "cargo",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    },
@@ -168,13 +205,13 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "place.0",
+      "target": "place.3",
       "verb": "back"
      }
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    }
@@ -191,7 +228,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    },
@@ -221,7 +258,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "the Incubator is empty",
     "idle": false
    },
@@ -236,7 +273,7 @@
     ],
     "screen": "home",
     "focus": "probe",
-    "ok": "Open the Probe",
+    "ok": "Go to the Probe",
     "subject": "the Probe in its cradle",
     "idle": false
    },
@@ -251,7 +288,7 @@
     ],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the field journal",
     "idle": false
    },
@@ -305,7 +342,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "one mibi at home",
     "idle": false
    },
@@ -320,7 +357,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    },
@@ -364,7 +401,7 @@
     "screen": "cargo",
     "focus": "cargo",
     "ok": null,
-    "subject": "the bay is empty",
+    "subject": "",
     "idle": false
    },
    {
@@ -379,7 +416,7 @@
     ],
     "screen": "home",
     "focus": "cargo",
-    "ok": "Open Cargo",
+    "ok": "Go to Cargo",
     "subject": "the bay is empty",
     "idle": false
    },
@@ -411,7 +448,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "the Incubator is empty",
     "idle": false
    },
@@ -443,7 +480,7 @@
     ],
     "screen": "home",
     "focus": "probe",
-    "ok": "Open the Probe",
+    "ok": "Go to the Probe",
     "subject": "the Probe in its cradle",
     "idle": false
    },
@@ -459,7 +496,7 @@
     ],
     "screen": "library",
     "focus": "library",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "idle": false
    },
@@ -475,7 +512,7 @@
     ],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the field journal",
     "idle": false
    },
@@ -523,7 +560,7 @@
     ],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    },
@@ -639,7 +676,7 @@
     ],
     "screen": "pods",
     "focus": "knob",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    }
@@ -666,12 +703,37 @@
     "said": [],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Open",
+    "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
    },
    {
     "key": "dock",
+    "said": [],
+    "screen": "cargo",
+    "focus": "room",
+    "ok": null,
+    "subject": "the bay is empty",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Look at the pods",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
     "said": [],
     "screen": "home",
     "focus": "room",

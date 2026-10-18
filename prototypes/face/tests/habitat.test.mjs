@@ -16,6 +16,8 @@ import { habitatBuild } from "../../station/src/views/habitat-props.mjs";
 import { namerBuild } from "../../station/src/views/namer-props.mjs";
 import { departures } from "../tools/habitat-regions.mjs";
 import { dirty, dirtyRects } from "./dirty.mjs";
+import { footOf } from "../../station/src/moving.mjs";
+import { footprintRing } from "../../ui/rings.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("habitat"), namerSpec = J("namer"), homeSpec = J("home");
@@ -29,11 +31,12 @@ function scene(o = {}) {
   const settings = cfg(o.bays ?? 8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: !o.away, at: T0 };
   S.seedAdults(st, "S01", 5, o.adults ?? 4, settings); for (const m of st.mibis) m.paint = { state: "landed" };
   if (o.waiting) st.mibis[0].paint = { state: "sent" };
+  if (o.portrait) { st.sitting = { source: "dev", key: null, at: 0 }; if (o.portrait === "portrayed") st.mibis[0].portrait = { state: "delivered", ...(o.digest ? { digest: o.digest } : {}) }; }   // a sitting held; portrayed: its portrait came, with its picture when the digest is named
   if (o.bonded) { st.mibis[0].bonded = true; st.mibis[0].notches = 3; }
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
-  const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, armed: !!o.armed };
+  const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null };
   const b = habitatBuild(m, spec, frameSpec, homeSpec);
-  if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
+  if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; b.requests = [...b.requests, ...nb.requests]; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
   return { ...b, st, m };
 }
 const frameProps = (line = {}) => ({ top: { screen: "habitat", title: "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Vivarium", need: "", ...line }, plate: { text: "" } });
@@ -41,7 +44,8 @@ const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const SIZES = { "frame-companion-outline-16x24": [16, 24], "frame-companion-solid-16x24": [16, 24], "home-lamp-sky-12x12": [12, 12], "home-lamp-hairline-12x12": [12, 12], "home-lamp-sprout-12x12": [12, 12], "home-lamp-amber-12x12": [12, 12], "frame-lamp-8-stone": [8, 8], "heart-full-24": [24, 24], "notch-skill-16x24": [16, 24], "mark-out-with-companion-64x96": [64, 96], "face-loika-24": [24, 24], "face-loika-24-away": [24, 24] };
 const sizeOf = (r) => Array.isArray(r.size) ? r.size : typeof r.size === "number" ? [r.size, r.size] : r.kind === "emblem" ? [24, 24] : [16, 16];
-const push = (f, b, over = {}) => { const props = { screen: "habitat", ...b.props, motion: f.motion, frame: frameProps(b.line), ...over }; for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r)))); for (const [id, sz] of Object.entries(SIZES)) f.handleOf(id, withPolicy((i) => standIn(i, sz))); return f.props(props); };
+let UNSIGNED = null;   // ids whose master is not placed: no picture is handed to the face for them (fix 3c-habitat)
+const push = (f, b, over = {}) => { const props = { screen: "habitat", ...b.props, motion: f.motion, frame: frameProps(b.line), ...over }; for (const r of b.requests) if (!UNSIGNED?.has(r.id)) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r)))); for (const [id, sz] of Object.entries(SIZES)) f.handleOf(id, withPolicy((i) => standIn(i, sz))); return f.props(props); };
 async function start(b, { motion = true, t0 = 0 } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["habitat", spec], ["namer", namerSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
@@ -62,7 +66,7 @@ const SCENES = {
   "a bonded mibi: the heart, three notches": { bonded: true, focus: "plate.0" },
   "its painting on its way: the placeholder's lamp": { waiting: true, focus: "resident" },
   "twelve bays, compact tiles": { bays: 12, adults: 12, focus: "tile:3" },
-  "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross" }, "the ring on Wild, armed": { focus: "wild", armed: true },
+  "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross" }, "the ring on Wild": { focus: "wild" },
   "by the light of dusk": { light: "dusk", focus: "resident" },
   "the namer over the meet": { meet: true, namer: true }, "the namer, typed, the accents page": { namer: true, fs: "typed", text: "Mo", page: "accents", nf: "key.3" }, "the namer, a refusal": { namer: true, say: { text: "Start with a letter", tone: "refused" } },
 };
@@ -82,15 +86,15 @@ test("the departure check bites: the card moved, a plate off its pitch, a module
   const b = scene({ focus: "resident", namer: true }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
   const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, n, true); };
   assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, n, true), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "card" && r.layer === "chrome").rect[0] += 8; })[0], /card/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "door" && r.layer === "chrome" && r.rect[2] === 272).rect[1] += 8; })[0], /door module/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "card" && r.layer === "painted").rect[0] += 8; })[0], /card/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "door.plate" && r.layer === "painted" && r.rect[2] === 272).rect[1] += 8; })[0], /door module/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome" && r.rect[2] > 2).rect[0] = 2; })[0], /tag/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "field" && r.layer === "type").rect[0] = 940; })[0], /field/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "panel" && r.layer === "chrome").rect[2] += 40; })[0], /panel/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "panel" && r.layer === "painted").rect[2] += 40; })[0], /panel/);
 });
 
 test("the namer opens and closes as cuts: the raw dirty area of the opening and of the closing is under the architect's ceilings (panel with its shadow, the ribbon and the tag, the feet ring, the bottom line); opening on a cut moment adds the resident's lifted box; the named flash frames stay under a quarter of the screen; the nodes are gone when it closes", { skip }, async () => {
-  const CEIL = 178_486 + 12_160 + 7_680 + 38_912, WITH_MOMENT = CEIL + 96_064;
+  const CEIL = 178_486 + 12_160 + 8_164 + 38_912, WITH_MOMENT = CEIL + 96_064;   // 237,722 and 333,786: the footprint ring's largest case, (304 + 10) × (16 + 10) = 8,164, where the feet ring's was 7,680 (fix 14, architect)
   const b0 = scene({ meet: true, focus: "resident" }), f = await start(b0); const objects0 = f.objects();
   const b1 = scene({ meet: true, namer: true }); frames(f); assert.equal(dirtyOf(f), 0, "the settled meet: nothing dirty");
   assert.equal(push(f, b1), 0, f.errors().join("; ")); frames(f, 1); const openRects = dirtyRects(f), open = dirtyOf(f), opened = f.objects(); assert.ok(!openRects.some(([x, y]) => x === 0 && y === 0), `the opening redraws nothing at the origin: ${JSON.stringify(openRects.filter(([x, y]) => x === 0 && y === 0))}`); assert.ok(opened > objects0 && opened <= 400, `${opened} objects open`);
@@ -159,7 +163,7 @@ async function upClose(o = {}) {
   const settings = cfg(8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
   S.seedAdults(st, o.species ?? "S01", 5, 2, settings); for (const m of st.mibis) m.paint = { state: "landed" }; if (o.juvenile) st.mibis[0].born = st.turn;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
-  const b = habitatBuild({ st, sv, settings, docked: true, light: "day", focus: o.focus ?? "name", habId: st.mibis[0].id, meetId: null, armed: false, time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: true }, spec, frameSpec, homeSpec);
+  const b = habitatBuild({ st, sv, settings, docked: true, light: "day", focus: o.focus ?? "name", habId: st.mibis[0].id, meetId: null, time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: true }, spec, frameSpec, homeSpec);
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["habitat", spec], ["namer", namerSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
   assert.equal(sendMoving(f), 0, f.errors().join("; "));
@@ -210,4 +214,88 @@ test("S05 up close (the animator's ruling): no hop: an eager step twice on the h
   for (let t = 0; t <= 1900; t += 20) { f.frame((f.t += 20)); const c = f.M._face_test_close_cell(), name = c < 0 ? "dither" : cells[c]; if (name !== last) { tr.push([t, name, f.M._face_test_close_lift()]); last = name; } }
   const steps = tr.filter((x) => x[1] === "stepa"); assert.equal(steps.length, 2, JSON.stringify(tr)); assert.ok(tr.every((x) => x[2] === 0), "lift 0"); assert.ok(Math.abs(steps[1][0] - steps[0][0] - 900) <= 20, "the steps 900 ms apart");
   const cr = tr.find((x) => x[1] === "crouch"); assert.ok(steps[0][0] - cr[0] >= 140 && steps[0][0] - cr[0] <= 180, "crouch 160 first");
+});
+
+// ---- fix 2: the device plates (F1 to F6, F8) ----
+const painted = (lg, id) => lg.regions.filter((r) => r.id === id && r.layer === "painted" && r.rect[2] > 0).map((r) => r.rect), chromeOf = (lg, id) => lg.regions.filter((r) => r.id === id && r.layer === "chrome" && r.rect[2] > 2);
+test("fix 2 F1, F2: the card and the four modules are their plates, 1:1 at the spec's rectangles and painted, with no fill, edge or bevel row; the focused module's plate lifts with it", { skip }, async () => {
+  for (const focus of ["resident", "door", "wild"]) {
+    const b = scene({ focus }), f = await start(b), lg = logOf(f);
+    assert.deepEqual(painted(lg, "card").filter((r) => r[2] === 416), [R.card.rect], "the card's plate");
+    assert.equal(chromeOf(lg, "card").length, 0, "no card fill, edge or top row");
+    for (const m of ["door", "portrait", "cross", "wild"]) {
+      const want = [R[m].rect[0], R[m].rect[1] - (focus === m ? (R[m].lift ?? 2) : 0), R[m].rect[2], R[m].rect[3]];
+      assert.deepEqual(painted(lg, m + ".plate").filter((r) => r[2] === want[2] && r[3] === want[3]), [want], `${m}'s plate (focus ${focus})`);
+      assert.equal(chromeOf(lg, m).filter((r) => r[2] === want[2]).length, 0, `${m} draws no panel`);
+    }
+  }
+});
+test("fix 2 F4: the Companion's three places are the 48 well in every state, a free place the well alone (no dash)", { skip }, async () => {
+  for (const o of [{ carry: [] }, { carry: [1, 2, 3] }, { carry: [1], away: true }]) {
+    const b = scene({ ...o, focus: "resident" }), f = await start(b), lg = logOf(f);
+    const door = painted(lg, "door"); assert.ok(door.length >= 1 && door.every((r) => r[0] >= R.door.rect[0] - 2 && r[0] + r[2] <= R.door.rect[0] + R.door.rect[2]), "the door region draws its plate and wells: " + JSON.stringify(o));
+    assert.equal(b.props.regions.door.places.length, 3); assert.ok(b.props.regions.door.places.every((p) => p.well === "plate-well-48x48"), "every place, filled or free, names its well");
+    assert.equal(lg.regions.filter((r) => /dash/.test(r.id)).length, 0);
+  }
+});
+test("fix 2 F5, F8: the namer's plate and its name well draw only while the namer is open, with no drop shadow", { skip }, async () => {
+  const shut = await start(scene({ focus: "resident" })), lgShut = logOf(shut);
+  assert.equal(painted(lgShut, "panel").length + painted(lgShut, "field").length, 0, "no namer plate while it is shut");
+  const b = scene({ focus: "resident", namer: true }), f = await start(b), lg = logOf(f), P = namerSpec.regions.panel.rect;
+  assert.deepEqual(painted(lg, "panel"), [P], "the namer's plate, 1:1");
+  assert.deepEqual(painted(lg, "field").filter((r) => r[2] === 328), [namerSpec.regions.field.rect], "the name well, 1:1");
+  assert.equal(chromeOf(lg, "panel").length, 0, "no panel fill, edge, bevel row or shadow");
+  assert.ok(!lg.regions.some((r) => r.id === "panel.shadow"));
+});
+test("fix 2 F4: the strip's tiles name their well by form and state (full or compact; the shown tile its -shown well), a free bay none; the strip names its plate", { skip }, () => {
+  for (const [bays, form] of [[8, "compact"], [4, "full"]]) {
+    const b = scene({ bays, adults: 3, focus: "resident" }), w = form === "full" ? 152 : 72, T = b.props.regions.tiles.items;
+    assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
+    T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${w}x48${t.shown ? "-shown" : ""}`));
+    assert.equal(T.filter((t) => t.shown).length, 1); assert.ok(T.some((t) => t.state === "free"), "a free bay");
+  }
+});
+test("fix 2 F6: no plate picture, no plate: a module whose plate master is not there draws no fill and keeps no plate", { skip }, async () => {
+  const b = scene({ focus: "resident" }); b.requests = b.requests.filter((r) => !/^plate-/.test(r.id));
+  const f = await start(b), lg = logOf(f);
+  assert.equal(painted(lg, "card").length, 0); assert.equal(chromeOf(lg, "card").length, 0, "nothing falls back to a fill");
+  for (const m of ["door", "portrait", "cross", "wild"]) assert.equal(chromeOf(lg, m).filter((r) => r[2] === R[m].rect[2]).length, 0);
+});
+
+test("the Portrait picture: one node after the frame, at 920,316 resting and 920,314 lifted, 0x0 when there is none (ruling (c))", { skip }, async () => {
+  const D = "0123456789abcdef", id = `portrait:${D}:40x30`, colour = (i) => Array.from(standIn(i, [1, 1]).data.slice(0, 3)), win = (dy) => [[920, 316 + dy], [959, 345 + dy], [940, 330 + dy]];
+  const reg = (lg, layer) => lg.regions.find((r) => r.id === "portrait" && r.layer === layer && r.rect[2] > 0);
+  const objects = {};
+  for (const [focus, dy] of [["resident", 0], ["portrait", -2]]) {
+    const b = scene({ portrait: "portrayed", digest: D, focus }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    assert.equal(b.props.regions.portrait.picture, id); assert.deepEqual(reg(lg, "painted").rect, [920, 316 + dy, 40, 30]); assert.deepEqual(reg(lg, "art").rect, [916, 312 + dy, 48, 40]);
+    assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
+    objects[focus] = f.objects(); f.pass(3); for (const [x, y] of win(dy)) assert.deepEqual(f.pixel(x, y), colour(id), `the picture shows at ${x},${y} (drawn after the frame)`);
+    assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40:48x40"), "the frame's rail beside the window");
+  }
+  for (const [o, focus] of [[{ portrait: "portrayed" }, "resident"], [{ portrait: "held" }, "portrait"], [{}, "resident"]]) {
+    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
+    const dy = focus === "portrait" ? -2 : 0, fr = b.props.regions.portrait.frame.id ?? b.props.regions.portrait.frame; f.pass(3); assert.deepEqual(f.pixel(940, 330 + dy), colour(fr), "the frame's own window shows"); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
+  }
+  const b = scene({ portrait: "portrayed", digest: D, focus: "resident" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false); };
+  assert.match(bad((c) => { reg(c, "painted").rect[0] += 1; })[0], /portrait/, "proved to fail on a moved picture");
+});
+
+test("fix 3c-habitat: with no Wild gate, chapter plate or guide mark master placed nothing is drawn at the gate (916,416), the plates' grounds (608+48i,200) or the guide mark; with them, each is drawn", { skip }, async () => {
+  const drawn = (lg, id) => lg.regions.filter((r) => r.id === id && (r.layer === "art" || r.layer === "painted") && r.rect[2] > 0);   // the picture layers (the emblems on the plates are art too, 24 high; a ground is 40)
+  try {
+    const b = scene({ focus: "resident" }), ids = new Set(b.requests.filter((r) => r.kind === "slot" && /^(gate-wild|chapter-plate|mark-guide)/.test(r.id)).map((r) => r.id)); assert.ok(ids.size >= 3, [...ids].join());
+    UNSIGNED = ids; const f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []);
+    assert.deepEqual(drawn(lg, "wild"), [], "no gate at 916,416"); assert.deepEqual(drawn(lg, "speciesLine"), [], "no guide mark"); assert.ok(drawn(lg, "plates").every((r) => r.rect[3] < 40), "no plate ground at 608+48i,200: only the emblems");
+    UNSIGNED = null; const g = await start(scene({ focus: "resident" })), lg2 = logOf(g);
+    assert.deepEqual(drawn(lg2, "wild").map((r) => r.rect), [[916, 416, 48, 48]], "the gate, placed"); assert.ok(drawn(lg2, "plates").some((r) => r.rect[1] === 200 && r.rect[3] === 40), "the plates' grounds, placed"); assert.deepEqual(drawn(lg2, "speciesLine").map((r) => r.rect[2] + "x" + r.rect[3]), ["16x16"], "the guide mark, placed");
+  } finally { UNSIGNED = null; }
+});
+
+// fix 14, rule 6 (a creature's ring does not move with its 4 px lift); the Wild module's armed twin is retired with the arm (T-20261016-51)
+test("a resident's ring is its footprint on the ground: the 4 px lift moves the creature and not the ring (fix 14, rule 6)", { skip }, async () => {
+  const b = scene({ focus: "resident" }), f = await start(b), rg = b.props.regions.resident, pid = rg.picture, box = R.resident.rect, req = b.requests.find((q) => q.id === pid), pic = standIn(pid, sizeOf(req ?? { size: box.slice(2) }));
+  const lg = logOf(f) ?? f.lastLog, ring = lg.regions.find((q) => q.id === "focus" && q.layer === "chrome").rect, foot = footOf(pid, pic, () => null); assert.ok(foot, "the resident's picture has a footprint");
+  assert.deepEqual(ring, footprintRing(foot, box), "the ring is the footprint of the unlifted box");
+  const pr = lg.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); assert.ok(pr && pr.rect[1] < box[1], "the picture itself has risen");
 });

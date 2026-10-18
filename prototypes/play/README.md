@@ -34,16 +34,23 @@ One device has the keys: the ring on its shell, its filled tab and, in the short
 | `` ` `` | next device: Station, Companion, Bench |
 | Shift+`` ` `` | previous device |
 | Shift+D | the Dock control |
+| Shift+C | the Caddy's screen: pins it up, or lowers it (wide tier with the bench shelf only) |
 | Shift+T | developer tools |
 | Shift+/ (?) | the keys panel |
 
 Every other key reaches the device untouched. Drawn keys press exactly as the keyboard does: `pointerdown` gives the device the keys and sends it a `keydown`, `pointerup` sends the `keyup`. They carry glyphs only; the names are `aria-label`s.
+
+## The Caddy's screen
+
+The Caddy's 792 × 272 four-gray e-paper (`src/caddy.mjs`) shows its two lines for the dock: "Companion home" with the crates, "charging", "{n} crates home" with the new pods after the opening, or "Companion out" with the partner. It is a sheet raised from the cradle at 734, 760, 808, 288 lp, the view inside it at 1 lp per view pixel, over the right of the bench shelf; nothing moves under it. It rises at each seat or lift and at the opening's end, stays 6000 ms (a new line restarts it), and lowers; Shift+C pins it up until Shift+C again. The paper redraws once per change of its lines and never animates. Only the wide tier with the bench shelf has room for it; in every other tier the bar's note shows the two lines as one for 4000 ms at the same moments. The Station posts what it needs in `mb-caddy` (`opened`, `partner`).
 
 ## The Dock control, the cradle and the seat
 
 The control in the bar reads **Dock** with the outline mark while the Companion is away and **Lift** with the solid mark while it is docked, with an amber dot when crates are aboard. It is disabled (the word and the hint in stone) while the Companion has no world. The cradle under the Companion's shell has a mint lamp when docked, and the shell sits 8 lp lower. A press: seat (160 ms, a cut under reduced motion), ask, and on the Station's reply the contact beat: the lamp, the control and the keys cut together (Dock gives the keys to the Station, Lift to the Companion). A dock kept in a hold keeps the page seated and pressed until the hold ends; a page never sits pressed for more than a second with no answer.
 
 Docked from the page while another device has the keys, the Station lands where it can be seen (`frame.json` `navigation.dock`); a lift never moves the screen.
+
+**The dock moments (T-20261016-58; `specs/station-dock-arrival-spec.md`, `specs/dock-moments.md`).** One seat or lift is one event seen from three places in step: the Station (the `mb-dock` message, the arrival or the send-off below), the Companion frame (the shared save's dock flag: its "home" and "Off we go" frames and its crate marks clearing as the Station confirms each crate) and the Caddy's screen (the Station's `mb-caddy` post). **Seated:** the Station plays the arrival over the screen the player is on, over Home from Idle, or after their next screen change when they are mid-decision (the plate says "The Companion is home" for 2 s): Cargo's bay with the ribbon, the link light, the crates sliding in, who came home standing big on the apron, the Probe's plates mending and who leaves, then one choice (Open the bay, Later); any key skips the show to the choice. **Lifted:** the screen never changes; on Home and Idle the sleepers on the bed wake, hop and dither out, and the plate says what went unfinished. The Dock control's keys are unchanged.
 
 ## postMessage contract
 

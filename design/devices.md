@@ -13,7 +13,7 @@ been built or measured yet.
 | --- | --- | --- | --- |
 | Role | Portable: explore (Probe mode), carry finds (Cargo), spend time with a travelling mibi (Companions) | Home: research, creation, incubation, residents, habitats, families | Shared dock: charging, quiet collection summaries, printing |
 | Software profile | 450×600 portrait, color | 1024×600 landscape, color | 792×272, four-gray e-paper |
-| Reference hardware (**Proposal**) | Waveshare ESP32-S3 AMOLED 2.41" (8 MB PSRAM, 16 MB flash, Wi-Fi/BLE, motion sensor) | Raspberry Pi 4 with a 7" HDMI panel | ESP32-S3 module with a 5.79" e-paper panel and a 58 mm thermal printer |
+| Reference hardware (proposed) | Waveshare ESP32-S3 AMOLED 2.41" (8 MB PSRAM, 16 MB flash, Wi-Fi/BLE, motion sensor) | Raspberry Pi 4 with a 7" HDMI panel | ESP32-S3 module with a 5.79" e-paper panel, a 58 mm thermal printer, and per cradle a hall sensor (seat sensing) and an RGB lamp ([the cradles](#the-cradles-seat-sensing-and-lamps)) |
 
 **Decided:**
 - **Software stack.** Station runs Linux on a Raspberry Pi; Companion and Caddy are
@@ -43,6 +43,56 @@ mibi or awards anything.
 **Open:** display technology, final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
 
+
+## The cradles: seat sensing and lamps
+
+Each cradle gets seat sensing and a lamp; sound and haptics come later. The Caddy has two cradles, one shaped for the Companion and one for the Station, so a cradle names the device seated in it. Docking must feel like magic across the three devices ([dock moments](../specs/dock-moments.md) §4): the Caddy knows a handheld is seated, lights its cradle, and tells the Station within about 0.5 s. The event the Caddy sends is in [technical architecture §4.4](proposals/technical-architecture.md#44-the-dock-seated-and-lifted).
+
+**Seat sensing: a magnet in each handheld and a hall sensor under each cradle.**
+
+| Method | For | Against | Verdict |
+| --- | --- | --- | --- |
+| **Magnet and hall sensor** | Independent of charging: it reads true with a flat battery, a full battery (when a charger may stop transferring power) and a charger fault. A level, not an edge, so the Caddy knows the truth again at boot. Reacts in microseconds. Omnipolar, so the magnet's orientation cannot be assembled wrong. The same magnet gives the seat a small pull, which helps the coil line up | One magnet per handheld and one sensor per cradle. The magnet must stay clear of the charging coil's ferrite and be measured in the real shells (gate 4) | **Chosen** |
+| Charging-coil status | No extra parts | Depends on a charger chip not yet chosen ("Can the Caddy charge both handhelds safely?" is open). Presence is seen only while power is offered: a full or flat battery, foreign-object detection or a fault can read as "lifted". Detection takes one ping cycle or more | Kept as a second reading, never the event's source |
+| A contact | Simplest electrically | Everything is wireless, with no connectors (above). Contacts wear, corrode and bounce | Rejected |
+
+- **Sensor:** one digital omnipolar hall-effect switch per cradle, TI DRV5033 (always on, 2.5–38 V, open-drain output with a pull-up to 3.3 V, about 3 mA). The Caddy runs from the wall, so an always-on part's draw does not matter, and it avoids a low-power part's sampling delay.
+- **Magnet:** one axially magnetised neodymium disc (about 6 × 2 mm, N42 or stronger) in the back of each handheld, opposite its cradle's sensor, offset from the receiver coil and outside its ferrite. Distance through the two shell walls about 3–4 mm. The field at the sensor must clear the sensor's operate point with margin; this is measured at gate 2 before the shell is fixed.
+- **Wiring:** each sensor's output to one RTC-capable GPIO of the ESP32-S3, read by interrupt on both edges and by level at boot.
+- **The second reading:** once the charger chip is chosen, its status line per cradle is read too. It is logged beside the hall reading and used for diagnosis (seated but not charging), never to make or cancel a seat.
+- **The Companion's motion sensor** can feel a lift a moment before the Caddy does, but the Caddy's sensor is the one source of the event, so the three devices never disagree about whether a handheld is seated.
+
+**Cradle lamp: one RGB LED per cradle, behind a diffuser.**
+
+- **Part:** a top-view common-anode RGB LED in a 1.6 × 1.6 mm package per cradle (the exact part is fixed at gate 1 with the board's footprint), seen through a frosted, matte light window in the cradle's face so it reads as a soft glow, not a bright dot. RGB because the lamp's colours and brightness for each state are the art direction's to give, not the board's to fix.
+- **Drive:** each channel sunk directly by an ESP32-S3 LEDC PWM output through its own resistor, at most 5 mA a channel, PWM at about 5 kHz so it never flickers on a camera. Three LEDC channels per cradle, six of the S3's eight. Fades (doors, rails and lamps move in 200–400 ms, [style guide](style-guide/README.md)) are LEDC's hardware fade.
+- **Behaviour:** the lamp lights at a seat and goes out at a lift ([dock moments](../specs/dock-moments.md) §1–2), driven by the Caddy itself at the same instant it sends the event, so it never waits on Wi-Fi. Its colours, levels and any other states are given by the art direction; the firmware takes them as data.
+- **Power budget:** a lamp at full white is at most 3 × 5 mA at 3.3 V, about 50 mW; both lamps about 0.1 W. The two hall sensors about 20 mW together. Sensing and lamps together stay under 0.15 W, small beside charging two handhelds.
+
+**Deferred: sound and haptics.** No speaker or amplifier on any device, and no vibration motor or driver in the Companion. Nothing is reserved on a board for them yet; when they are wanted, they are placed at gate 1 with the rest of the pins. The seated and lifted events already carry what a sound or a buzz would be keyed on.
+
+**Not measured:** none of this has run on a board. The magnet's field at the sensor, the sensor's behaviour beside a live charging coil, the lamp's look through the printed window and the 0.5 s from seat to Station are measured at gates 2–4.
+
+## Reference bill of parts
+
+Proposed: what the reference hardware is made of, by device, as far as it is chosen; quantities per kit. No prices here.
+
+| Device | Part | Qty | For |
+| --- | --- | --- | --- |
+| Companion | Waveshare ESP32-S3 AMOLED 2.41" board (8 MB PSRAM, 16 MB flash, Wi-Fi/BLE, motion sensor) | 1 | Its screen, logic and radio |
+| Companion | Neodymium disc magnet, about 6 × 2 mm, axially magnetised | 1 | Seat sensing in its Caddy cradle |
+| Station | Raspberry Pi 4 | 1 | Its logic and face |
+| Station | 7" HDMI panel, 1024×600 | 1 | Its screen |
+| Station | Neodymium disc magnet, about 6 × 2 mm, axially magnetised | 1 | Seat sensing in its Caddy cradle |
+| Caddy | ESP32-S3 module | 1 | Its service, Wi-Fi, BLE, sensing and lamps |
+| Caddy | 5.79" four-gray e-paper panel, 792×272 | 1 | Its screen |
+| Caddy | 58 mm thermal printer | 1 | Printing |
+| Caddy | SD card | 1 | Portraits and the service's data |
+| Caddy | TI DRV5033 omnipolar hall-effect switch, with its pull-up and decoupling | 2 | Seat sensing, one per cradle |
+| Caddy | Common-anode RGB LED, 1.6 × 1.6 mm, top view, with three resistors | 2 | The cradle lamps, one per cradle |
+| Caddy | Frosted light window, printed or stock | 2 | The lamp's glow in each cradle's face |
+
+Not chosen yet, so not listed: batteries and charging (the coils and the charger chips), the Caddy's power supply, controls, the reader, cases and fasteners.
 
 ## Look and construction
 

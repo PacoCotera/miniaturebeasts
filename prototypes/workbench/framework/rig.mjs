@@ -555,11 +555,15 @@ function moveNode(node, center) {
   node.mesh.vertices = node.mesh.vertices.map((p) => add(p, d));
   node.center = center;
 }
+const meets = (a, b, envOf) => { try { sharedWitness(a, b, envOf(a), envOf(b)); return true; } catch { return false; } };
 function connect(parent, child, direction, join, v, push, envOf, L, label = null) {
   const dir = unit(direction);
   const pe = extentAlong(parent, dir, envOf), ce = extentAlong(child, mul(dir, -1), envOf);
   const distance = norm(sub(child.center, parent.center));
-  if (join === "broad" || distance <= pe + ce) { push(child, parent); return; }
+  // Two regions that meet join directly. A narrow join whose regions only just meet (a waist blended
+  // between thin and broad, about 0.59 to 0.66: crossed children land there) leaves no point inside
+  // both, so it takes the connector instead; every body that built before is unchanged.
+  if (join === "broad" || (distance <= pe + ce && meets(parent, child, envOf))) { push(child, parent); return; }
   const pen = 0.12 * Math.min(L, ce);
   const start = add(parent.center, mul(dir, pe - pen)), end = sub(child.center, mul(dir, ce - pen));
   const radius = (v["region.connectorRadiusRatio"] ?? 0.5) * Math.min(parent.radii[1], parent.radii[2], child.radii[1], child.radii[2]);

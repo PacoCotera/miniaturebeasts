@@ -1,6 +1,6 @@
 // The Incubator in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `incubator-empty` (a pod in the rack: ✓ Choose a pod), `incubator-growing` (the wait's first half),
-// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
-// `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the ready state).
+// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, `incubator-panel-grownow` (✓ Hatch now above ❀ 4: the Hatch now | Wait panel), and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
+// `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the hatch, which Hatch now starts as the leaves end).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -16,25 +16,36 @@ const SCENES = {
   "growing":      { want: "growing", set: (w) => { w.adults(2); w.budAt(2); } },
   "growing-late": { want: "growing", set: (w) => { w.adults(2); w.budAt(13.2); } },
   "ready":        { want: "ready",   set: (w) => { w.adults(2); w.bud(true); } },
-  "ready-moving": { want: "ready", timedOnly: true, set: (w) => { w.adults(2); w.bud(true); const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "12:00"; } },
+  "panel-grownow": { want: "growing", panel: true, set: (w) => { w.adults(2); w.budAt(2); } },   // ✓ Hatch now at ❀ 9 (above ❀ 4) opens the Hatch now | Wait panel, the ring on Hatch now
+  "panel-wait": { want: "growing", panel: true, then: () => window.__st.press("right"), set: (w) => { w.adults(2); w.budAt(10); } },   // the ring on Wait, the bud a little over halfway (the bar at about half)
+  "growing-half": { want: "growing", set: (w) => { w.adults(2); w.budAt(10); } },
+  "growing-start": { want: "growing", set: (w) => { w.adults(2); w.budAt(0.05); } },
+  "cross-growing": { want: "growing", set: (w) => { w.adults(2); w.budAt(6); const st = window.__st.ST; st.bud.kind = "cross"; st.bud.parents = [{ name: "Fig" }, { name: "Pip" }]; } },
+  "via-create": { want: "empty", timedOnly: true, set: (w) => { const S = window.__st; w.adults(2); S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 2); S.openCreate(p.id); } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${INC.toString()})`]);
-async function apply(page, sc) {
-  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; w.open(); }, [sc.set.toString()]);
+async function apply(page, sc, step) {
+  await page.evaluate(([setSrc, panel, noOpen]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; S.UI.panel = null; if (!noOpen) w.open(); if (panel) S.press("confirm"); }, [sc.set.toString(), !!sc.panel, !!sc.timedOnly && sc.want === "empty" && /openCreate/.test(sc.set.toString())]);
+  if (sc.then && step) { await step(400); await page.evaluate(sc.then); await step(100); }   // a key after the panel is open (the ring on Wait)
 }
 // the timed points: the scene, the key that starts the event, the instants after it
 const TIMED = {
-  "hatch-100":  { scene: "ready", go: () => window.__st.press("confirm"), at: 100,  want: "hatch" },
+  "incubate-100":  { scene: "via-create", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 900, at: 100, want: "growing" },   // from Create's panel: 100 ms into the incubate moment (dusk, sealed)
+  "incubate-1290": { scene: "via-create", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 900, at: 1290, want: "growing" },   // the dither to growing, halfway (level 8 of 16)
   "hatch-300":  { scene: "ready", go: () => window.__st.press("confirm"), at: 300,  want: "hatch" },
   "hatch-650":  { scene: "ready", go: () => window.__st.press("confirm"), at: 650,  want: "hatch" },
-  "hatch-850":  { scene: "ready", go: () => window.__st.press("confirm"), at: 850,  want: "hatch" },
-  "hatch-1100": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, want: "hatch" },
+  "hatch-1000": { scene: "ready", go: () => window.__st.press("confirm"), at: 1000, want: "hatch" },
+  "hatch-1090": { scene: "ready", go: () => window.__st.press("confirm"), at: 1090, want: "hatch" },
+  "hatch-1400": { scene: "ready", go: () => window.__st.press("confirm"), at: 1400, want: "hatch" },
   "hatch-1500": { scene: "ready", go: () => window.__st.press("confirm"), at: 1500, want: "hatch" },
   "hatch-2000": { scene: "ready", go: () => window.__st.press("confirm"), at: 2000, want: "hatch" },
-  // Station M1 §2.5: the hatch with S01's moving set on its stand-in close cells, under the developer switch; 2720 (the R2 cut point) is taken last so the others keep their mibis
-  ...Object.fromEntries([1090, 2500, 5440, 5840, 2720].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
+  "growNow-0":   { scene: "growing-late", go: () => window.__st.press("confirm"), at: 16, want: "growing" },
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
-  "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "ready" },
+  "growNow-400": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 400, want: "growing" },
+  "growNow-500": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 500, want: "growing" },
+  "panel-dither-90": { scene: "growing", go: () => window.__st.press("confirm"), at: 90, want: "growing" },   // ✓ Hatch now above ❀ 4: the dither in to the Hatch now | Wait panel, halfway (level 8 of 16)
+  "panel-grownow-200": { scene: "growing", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 0, at: 200, want: "growing" },   // the panel's ✓ Hatch now: a cut to the room, 200 ms into the bar's cuts
+  "hatch-skip": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, skip: true, want: "habitat" },
 };
 // The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
 export const hatched = { name: null };
@@ -48,7 +59,7 @@ async function still(visit) {
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       if (sc.timedOnly) continue;
-      await apply(page, sc); await step(400);
+      await apply(page, sc, step); await step(400);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state })); if (u.screen !== "incubator" || u.props !== sc.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
       await visit("incubator-" + name, page, fail);
     }
@@ -62,9 +73,12 @@ async function timedStates(visit) {
   try {
     for (const [name, tp] of Object.entries(TIMED)) {
       await apply(page, SCENES[tp.scene]); await step(1200);   // the screen change's dither is over
-      await page.evaluate(tp.go); await step(tp.at);
+      if (tp.then) { await page.evaluate(tp.go); await step(200); for (const t of tp.then) await page.evaluate(t); await step(tp.arrive); }
+      else await page.evaluate(tp.go);
+      await step(tp.at);
+      if (tp.skip) { await page.evaluate(() => window.__st.press("confirm")); await step(16); }   // the skip, and the frame after it
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
-      if (u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
+      if (tp.skip ? u.screen !== tp.want : u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
       await visit("incubator-" + name, page, fail);
       if (/^hatch-\d+$/.test(name)) {
         const h = await page.evaluate(() => { const S = window.__st, m = S.ST.mibis[S.ST.mibis.length - 1], r = S.props?.regions; return { name: m.name, code: m.code, ribbon: r?.ribbon ?? "", shown: r?.code ?? "" }; });

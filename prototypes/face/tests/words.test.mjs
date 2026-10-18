@@ -8,6 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { withPolicy, amberLamp } from "./node-scene.mjs";
+import { focusRingOps, ringRaster, ringDepartures } from "../../ui/rings.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -64,20 +65,50 @@ test("props without a frame section are only kept; a frame section needs the fra
   assert.equal(f.props(cases[0].props), -1); assert.match(f.errors()[0], /frame spec has not been sent/);
 });
 
-// the focus ring word: every form on its box, against the pixels the JavaScript component drew (focus-ring-words.json)
-const rings = JSON.parse(readFileSync(path.join(here, "vectors/focus-ring-words.json"), "utf8")).cases;
+// the focus ring word (fix 14): every shape on its rect, every pixel of the ring's box against the roles the oracle gives (ui/rings.mjs focusRingOps, ringRaster); the vectors are focus-ring-words.json
+const rings = JSON.parse(readFileSync(path.join(here, "vectors/focus-ring-words.json"), "utf8")).cases, T = frameSpec.focus.ring;
 const cstr = (M, s) => { const b = new TextEncoder().encode(s + "\0"), p = M._malloc(b.length); M.HEAPU8.set(b, p); return p; };
-const ringOn = (f, form, box, colour) => { const M = f.M, a = cstr(M, JSON.stringify(form)), c = cstr(M, colour); const rc = M._face_test_ring(a, ...box, c); M._free(a); M._free(c); frames(f); return rc; };
+const rgbOf = (name) => { const h = palette.find(([n]) => n === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
+const ringOn = (f, target, box, picture = "", cell = "") => { const M = f.M, a = cstr(M, JSON.stringify(target)), pc = cstr(M, picture), cl = cstr(M, cell); const rc = M._face_test_ring(a, ...box, pc, cl); M._free(a); M._free(pc); M._free(cl); frames(f); return rc; };
+const creature = (f, id, c) => f.handleOf(id, withPolicy(() => ({ w: c.pic.w, h: c.pic.h, data: new Uint8ClampedArray(c.pic.w * c.pic.h * 4), foot: c.pic.foot })));
 for (const c of rings) {
-  test(`the focus ring word draws what the component drew: ${c.name}`, { skip }, async () => {
-    const f = await setup(); assert.equal(ringOn(f, c.form, c.box, c.colour), 0, "no node refused"); assert.deepEqual(f.errors(), []);
-    assert.equal(f.hash(), c.hash);
+  test(`the focus ring word draws the oracle's ring: ${c.name}`, { skip }, async () => {
+    const f = await setup(), id = `mibi:ring-test:${c.name}`; if (c.pic) creature(f, id, c);
+    const o = { ground: c.target.ground ?? "default", tabTop: frameSpec.regions.rail.y };
+    let shape = c.target.shape; if (c.pic) { const mirrored = c.cell.endsWith("-m"), cell = c.cell.replace(/-m$/, ""); o.foot = Array.isArray(c.pic.foot) ? c.pic.foot : c.pic.foot[cell]; o.mirrored = mirrored; }
+    const ring = focusRingOps(shape, c.box, T, o), roles = ringRaster(ring);
+    frames(f); const before = []; for (let y = 0; y < ring.h; y++) for (let x = 0; x < ring.w; x++) before.push(f.pixel(ring.x + x, ring.y + y));
+    assert.equal(ringOn(f, c.target, c.box, c.pic ? id : "", c.cell ?? ""), 0, "no node refused"); assert.deepEqual(f.errors(), []);
+    { let lg = null; for (let m; (m = f.poll("log"));) lg = m; assert.equal(lg.regions.find((r) => r.id === "focus" && r.layer === "chrome")?.ring, 1, "rule 1: one ring node in the focus region (a nine-slice inherits its source's flag)"); assert.deepEqual(ringDepartures(lg), []); }
+    const key = rgbOf("void"), core = rgbOf("focus"); let bad = 0, key_n = 0, core_n = 0;
+    for (let y = 0; y < ring.h; y++) for (let x = 0; x < ring.w; x++) {
+      const want = roles[y * ring.w + x] === 2 ? core : roles[y * ring.w + x] === 1 ? key : before[y * ring.w + x], got = f.pixel(ring.x + x, ring.y + y);
+      if (roles[y * ring.w + x] === 2) core_n++; if (roles[y * ring.w + x] === 1) key_n++;
+      if (!want.every((v, k) => v === got[k])) bad++;
+    }
+    assert.equal(bad, 0, `${bad} pixels of ${ring.w}x${ring.h} at (${ring.x}, ${ring.y}) differ from the oracle`); assert.ok(core_n > 0 && key_n > 0, "a core and keys");
   });
 }
-test("the focus ring word refuses a target too small for a round ring and a form it does not know; the source picture is kept once", { skip }, async () => {
+test("the focus ring word refuses a ring box under 2R, a footprint with no foot, and a shape it does not know; the nine-slice sources are kept once each", { skip }, async () => {
   const f = await setup();
-  ringOn(f, {}, [10, 10, 7, 40], "focus"); assert.match(f.errors().join(), /under 8 px/);
-  ringOn(f, { ring: "square" }, [10, 10, 40, 40], "focus"); assert.match(f.errors().join(), /not a ring form/);
-  let log = null; for (const box of [[10, 10, 40, 40], [200, 100, 90, 90], [300, 300, 50, 70]]) { ringOn(f, {}, box, "focus"); for (let m; (m = f.poll("log"));) log = m; }
-  assert.equal(log.pictures, PICTURES.length + 1, "the 20x20 source is one picture beside the host's, whatever the target's size"); assert.equal(log.table, 1);
+  ringOn(f, { shape: { rect: 6 } }, [10, 10, 10, 40]); assert.match(f.errors().join(), /under 2R/);
+  ringOn(f, { shape: "footprint" }, [10, 10, 40, 40], "mibi:nobody", "stand"); assert.match(f.errors().join(), /no footprint for mibi:nobody/);
+  ringOn(f, { shape: "square" }, [10, 10, 40, 40]); assert.match(f.errors().join(), /not a ring shape/);
+  let log = null; const seen = (n, target, boxes) => { for (const box of boxes) { ringOn(f, target, box); for (let m; (m = f.poll("log"));) log = m; } assert.equal(log.pictures, PICTURES.length + n, `${n} ring sources beside the host's pictures`); assert.equal(log.table, 1); };
+  seen(1, { shape: { rect: 0 } }, [[10, 10, 40, 40], [200, 100, 90, 90], [300, 300, 50, 70]]);   // 14 x 14 whatever the target's size
+  seen(2, { shape: { rect: 6 } }, [[10, 10, 40, 40], [200, 100, 300, 90]]);                         // and 26 x 26 for the plates
+});
+test("the footprint ring's weight follows the light of its picture (the 2 px floor): a map of equal values needs no light; a map that differs reads the id's suffix; an unknown suffix is refused", { skip }, async () => {
+  const withMap = async (weight) => { const f = await bootFace(pathToFileURL(dist + "/"), { test: true }), fs = JSON.parse(JSON.stringify(frameSpec)); fs.focus.ring.shapes.footprint.weight = weight;
+    f.send({ t: "palette", name: "station", colours: palette }); f.send({ t: "spec", screen: "frame", json: fs }); f.send({ t: "spec", screen: "pods", json: podsSpec }); return f; };
+  const pic = { w: 104, h: 112, foot: [10, 100, 56] }, box = [200, 300, 104, 112], T2 = frameSpec.focus.ring, target = { shape: "footprint" };
+  const roles = (light) => ringRaster(focusRingOps("footprint", box, T2, { foot: pic.foot, light }));
+  const drawn = async (f, id) => { f.handleOf(id, withPolicy(() => ({ w: pic.w, h: pic.h, data: new Uint8ClampedArray(pic.w * pic.h * 4), foot: pic.foot }))); frames(f); const r = focusRingOps("footprint", box, T2, { foot: pic.foot }), want = {}; ringOn(f, target, box, id, "");
+    const key = rgbOf("void"), core = rgbOf("focus"), got = new Uint8Array(r.w * r.h); for (let y = 0; y < r.h; y++) for (let x = 0; x < r.w; x++) { const p = f.pixel(r.x + x, r.y + y); got[y * r.w + x] = p.every((v, k) => v === core[k]) ? 2 : p.every((v, k) => v === key[k]) ? 1 : 0; } void want; return got; };
+  const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+  { const f = await withMap({ dawn: "default", day: "light", dusk: "default", night: "default" });
+    assert.ok(same(await drawn(f, "mibi:abc:adult:104x112:night"), roles(false)), "a :night picture draws the default ops"); assert.deepEqual(f.errors(), []);
+    const g = await withMap({ dawn: "default", day: "light", dusk: "default", night: "default" }); assert.ok(same(await drawn(g, "mibi:abc:adult:104x112"), roles(true)), "an unsuffixed picture draws the light ops");
+    const h = await withMap({ dawn: "default", day: "light", dusk: "default", night: "default" }); await drawn(h, "mibi:abc:adult:104x112:zzz"); assert.match(h.errors().join(), /unknown light on mibi:abc:adult:104x112:zzz/); }
+  { const f = await setup(); assert.ok(same(await drawn(f, "mibi:abc:adult:104x112:night"), roles(false)) && same(await drawn(await setup(), "mibi:abc:adult:104x112"), roles(false)), "with the station's own map both draw the default ops"); }
 });

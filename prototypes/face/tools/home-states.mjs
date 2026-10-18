@@ -8,6 +8,9 @@ import { openStation } from "./station-page.mjs";
 const SCENES = {
   fresh:      { f: "room", set: () => {} },
   docked:     { f: "room", set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
+  "docked-dawn":  { f: "room", light: "dawn",  set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },   // the same scene at three lights (fix 7: the residents take the grade)
+  "docked-dusk":  { f: "room", light: "dusk",  set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
+  "docked-night": { f: "room", light: "night", set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
   "goal-docked": { f: "room", set: (w) => { w.young(2); w.carry([0, 1]); } },
   "goal-away": { f: "room", set: (w) => { w.young(2); w.carry([0]); w.away(); } },
   away:       { f: "room", set: (w) => { w.adults(4); w.young(3); w.carry([0]); w.away(); w.pods(3); } },
@@ -53,7 +56,8 @@ export const WORLD = () => ({
 const TIMED = {
   "knob-pressed": { scene: "knob-focused", at: 100, go: (w) => window.__st.intent({ screen: "home", target: "knob", verb: "confirm" }) },
   "walk-8000ms": { scene: "twelve", at: 8000, pre: 0, go: () => {} },   // twelve residents walking, 8000 ms of the face's clock into Home: the walk's reference for the three builds (B4b)
-  "crates-arriving": { scene: "away", at: 375, go: (w) => { w.crates(3); window.__st.dockKey(); } },
+  "sendoff-800": { scene: "docked", at: 800, go: () => window.__st.dockKey() },   // the lift's send-off (T-20261016-58, home.json events.sendoff): 800 ms in, the rightmost sleeper has hopped and is dithering out, the other has woken
+
 };
 
 export async function homeStates(visit, { motion = false, timed = true } = {}) {
@@ -84,10 +88,10 @@ async function staticStates(visit, { motion }) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate(`(${WORLD.toString()})`).catch(() => {});
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (name, sc) => page.evaluate(([setSrc, f]) => {
+  const apply = (name, sc) => page.evaluate(([setSrc, f, light]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.UI.home.f = f.startsWith("resident:") ? "resident." + S.ST.mibis[+f.slice(9)].id : f; S.UI.idle = false; S.goto("home");
-  }, [sc.set.toString(), sc.f]);
+    const S = window.__st; S.settings.light = light; S.UI.home.f = f.startsWith("resident:") ? "resident." + S.ST.mibis[+f.slice(9)].id : f; S.UI.idle = false; S.goto("home");
+  }, [sc.set.toString(), sc.f, sc.light ?? "day"]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       if (sc.motionOnly) continue;   // taken on the virtual clock below

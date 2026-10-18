@@ -30,7 +30,7 @@ test("B1 a founder clears its unread chapters at (k + 1) / (n + 1) of the wait; 
   const f = fresh(); const q = podOf(f, "S01", ["coat"]); assert.equal(f.firstMibi, true); S.grow(f, q, {}, settings, T0); assert.equal(f.bud.minutes, 5);
   for (const [ch, ms] of [[face, 75000], [movement, 150000], [stamina, 225000]]) { assert.equal(S.budChapterKnown(f, ch, settings, T0 + ms - 1), false); assert.equal(S.budChapterKnown(f, ch, settings, T0 + ms), true); }
 });
-function crossed(seedAdultsSeed = 3, rngSeed = 7) {
+function crossed(seedAdultsSeed = 226, rngSeed = 7) {   // the Loika at frame version 4 (T-20261016-200): seed 226 is a pair whose Coat is certain (both hold the same pure colour and pattern)
   const st = fresh(), r = S.seedAdults(st, "S01", seedAdultsSeed, 2, settings), [a, b] = r.mibis, c = S.doCross(st, { with: null }, a, b, settings, T0, lcg(rngSeed));
   assert.equal(c.ok, true, c.msg); return st;
 }
@@ -41,11 +41,10 @@ test("B2 a cross: the chapters the Station could be sure of are known from the s
   assert.equal(S.budReady(st, settings, T0 + 20 * MIN), true);
   const o = S.openBud(st, null, settings, T0 + 20 * MIN); assert.deepEqual(o.mibi.read, ["coat"]);
 });
-test("B3 a cross with Grow now: ready at once, the unread chapters still unknown, Open gives the same read", () => {
+test("B3 a cross with Hatch now: it hatches at once, the unread chapters still unread, the same read Open gives", () => {
   const st = crossed(); const c = S.instantGrowCost(st, settings, T0 + MIN); assert.equal(c.s, 10, "19 minutes left: 10 Essence");
-  assert.equal(S.instantGrow(st, settings, T0 + MIN).ok, true); assert.equal(S.budReady(st, settings, T0 + MIN), true);
-  assert.equal(S.budChapterKnown(st, chapters("S01")[1], settings, T0 + MIN), false); assert.deepEqual(known(st, "S01", settings, T0 + MIN), ["coat"]);
-  assert.deepEqual(S.openBud(st, null, settings, T0 + MIN).mibi.read, ["coat"]);
+  const r = S.instantGrow(st, settings, T0 + MIN); assert.equal(r.ok, true); assert.equal(st.bud, null, "the chamber is empty");
+  assert.deepEqual(r.mibi.read, ["coat"]);
 });
 test("B4 a cross with skipBud mid and ready: as B2", () => {
   for (const how of ["mid", "ready"]) { const st = crossed(); S.skipBud(st, settings, how); const now = Date.now() + 5; assert.deepEqual(known(st, "S01", settings, now), ["coat"], how); if (how === "ready") assert.deepEqual(S.openBud(st, null, settings, now).mibi.read, ["coat"]); }
@@ -54,9 +53,9 @@ test("B5 a cross with nothing known: nothing is ever known and the child is read
   const st = crossed(31); st.bud.read = []; for (const m of [0, 10, 20, 60]) assert.deepEqual(known(st, "S01", settings, T0 + m * MIN), [], `+${m}`);
   assert.deepEqual(S.openBud(st, null, settings, T0 + 20 * MIN).mibi.read, []);
 });
-test("B6 a founder with Grow now: every chapter is known right after", () => {
-  const st = fresh(); st.firstMibi = false; const p = podOf(st, "S01", ["coat"]); S.grow(st, p, {}, settings, T0); assert.equal(S.instantGrow(st, settings, T0 + MIN).ok, true);
-  assert.deepEqual(known(st, "S01", settings, T0 + MIN), chapters("S01"));
+test("B6 a founder with Hatch now: every chapter is known right after", () => {
+  const st = fresh(); st.firstMibi = false; const p = podOf(st, "S01", ["coat"]); S.grow(st, p, {}, settings, T0); const r = S.instantGrow(st, settings, T0 + MIN); assert.equal(r.ok, true);
+  assert.deepEqual(r.mibi.read, chapters("S01"));
 });
 
 // ---- 6. sealed founders ----
@@ -195,7 +194,7 @@ test("need(): counts spelled out, dropped above the picture, shortfalls as icon 
   const st = fresh(); st.firstMibi = false;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
   const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: "x" + i, idd: 0, read: [], g: "meadow" }));
-  for (const [n, want] of [[1, "a new pod waits"], [2, "two new pods wait"], [6, "six new pods wait"], [7, "new pods wait"]]) { st.tray = fake(n); assert.equal(S.need(st, sv, settings).text, want, "fresh " + n); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
+  for (const [n, want] of [[1, "a new pod in the rack"], [2, "two new pods in the rack"], [6, "six new pods in the rack"], [7, "new pods in the rack"]]) { st.tray = fake(n); assert.equal(S.need(st, sv, settings).text, want, "fresh " + n); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
   st.tray = []; for (const [n, want] of [[1, "a pod waits for a well"], [3, "three pods wait for a well"], [7, "pods wait for a well"]]) { st.waiting = fake(n); assert.equal(S.need(st, sv, settings).text, want, "waiting " + n); }
   st.waiting = [];
   st.docked = true; st.dock = { docked: true, at: 0 };
@@ -206,8 +205,8 @@ test("need(): a pod that cannot yet grow or be read says what is short, with no 
   const st = fresh(); st.firstMibi = false; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
   const p = podOf(st, "S01", ["coat"]); st.e = 0; st.s = 0;
   const c = S.growCost(st, {}, settings);
-  const short = S.need(st, sv, settings).text; assert.ok(/^a pod grows with ⚡ \d+ ❀ \d+ more$/.test(short) || /^a pod grows with (⚡|❀) \d+ more$/.test(short), short); assert.ok(!/·/.test(short));
-  st.e = 99; st.s = 99; assert.match(S.need(st, sv, settings).text, /^(a|an) \w+ pod could grow$/); void c; void p;
+  const short = S.need(st, sv, settings).text; assert.ok(/^a pod incubates with ⚡ \d+ ❀ \d+ more$/.test(short) || /^a pod incubates with (⚡|❀) \d+ more$/.test(short), short); assert.ok(!/·/.test(short));
+  st.e = 99; st.s = 99; assert.match(S.need(st, sv, settings).text, /^(a|an) \w+ pod, ready to incubate$/); void c; void p;
 });
 
 // ---- 10. sitting order ----
@@ -272,4 +271,51 @@ test("W2 a lone Loika watched on three days records shake-dry, then sleep-curled
 test("W1 every habit of every frame has its words in habitat.json strings.watchHabits", () => {
   const words = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/habitat.json"), "utf8")).strings.watchHabits;
   for (const f of readdirSync(fdir).filter((x) => x.startsWith("species-"))) for (const hb of JSON.parse(readFileSync(path.join(fdir, f), "utf8")).habits || []) assert.ok(words[hb], `${f}: the habit ${hb} has no words in strings.watchHabits`);
+});
+
+// ---- 7. Incubate and Hatch now (T-20261016-219; results/incubate-and-hatch-now-game-text.md §1, §4) ----
+const hatchLog = (st, m, spend) => `T${st.turn + 1} · Hatched ${m.name} now · ${frameOf(m.species).species.name} · juvenile · bay ${m.bay + 1} · ${spend}`;
+const twin = (cross = false) => { const st = cross ? crossed() : fresh(); if (!cross) { st.firstMibi = false; S.seedAdults(st, "S01", 5, 1, settings); S.grow(st, podOf(st, "S01", ["coat"]), {}, settings, T0); } return st; };
+for (const cross of [false, true]) {
+  test(`T-219 case ${cross ? 2 : 1}: Hatch now on ${cross ? "a bred" : "a founder's"} bud pays once, ends the wait and opens it in the first free bay, as Open does, with one log line`, () => {
+    const a = twin(cross), b = twin(cross), now = T0 + MIN, cost = S.instantGrowCost(a, settings, now), e0 = [a.e, a.d, a.s], log0 = a.log.length, n0 = a.mibis.length;
+    assert.ok(cost.s > 0); const freeBay = S.freeBay(a, settings), r = S.instantGrow(a, settings, now);
+    assert.equal(r.ok, true); assert.deepEqual([a.e - e0[0], a.d - e0[1], a.s - e0[2]], [0, 0, -cost.s], "the price is paid once"); assert.equal(a.bud, null, "the chamber is empty");
+    const m = r.mibi; assert.equal(a.mibis.length, n0 + 1); assert.equal(a.mibis.at(-1), m); assert.deepEqual([m.bay, m.born, S.mibiStage(a, m)], [freeBay, a.turn, "juvenile"], "the first free bay, born this turn, a juvenile");
+    // Open on the twin, once it has finished on its own: the same chapters known, the same field guide
+    const o = S.openBud(b, null, settings, T0 + 60 * MIN); assert.equal(o.ok, true);
+    assert.deepEqual(m.read, o.mibi.read, "known as Open makes it known"); if (cross) assert.deepEqual(m.read, ["coat"], "the cross child's unread chapters stay unread"); else assert.deepEqual(m.read, chapters("S01"));
+    assert.deepEqual(a.guide, b.guide, "the field guide gains what Open adds");
+    assert.equal(a.log.length, log0 + 1, "one line, no separate Opened line"); assert.equal(a.log.at(-1), hatchLog(a, m, S.spendText(cost.e, cost.d, cost.s)));
+    assert.ok(!a.log.slice(log0).some((l) => /Opened|Grew/.test(l)));
+  });
+}
+test("T-219 case 3: Open after a natural finish is as before: no price, its own log line; Hatch now is not offered on a ready bud", () => {
+  const st = twin(), s0 = [st.e, st.d, st.s], now = T0 + 20 * MIN;
+  assert.equal(S.budReady(st, settings, now), true); assert.deepEqual(S.instantGrowCost(st, settings, now), { e: 0, d: 0, s: 0 });
+  const log0 = st.log.length, bud = st.bud, no = S.instantGrow(st, settings, now); assert.deepEqual(no, { ok: false }); assert.equal(st.bud, bud); assert.equal(st.log.length, log0, "Hatch now does nothing on a ready bud");
+  const o = S.openBud(st, null, settings, now); assert.equal(o.ok, true); assert.deepEqual([st.e, st.d, st.s], s0, "no price"); assert.equal(st.log.length, log0 + 1);
+  assert.equal(st.log.at(-1), `T${st.turn + 1} · Opened · ${o.mibi.name} · Loika · juvenile · bay ${o.mibi.bay + 1}`);
+});
+test("T-219 case 4: refusals keep the rules, with the new words: nothing is spent and nothing hatches", () => {
+  const st = twin(), s0 = [st.e, st.d, st.s]; st.s = 0; const log0 = st.log.length, n0 = st.mibis.length, bud = st.bud;
+  const no = S.instantGrow(st, settings, T0 + MIN); assert.equal(no.ok, false); assert.match(no.msg, /^Hatch now · /); assert.deepEqual([st.s, st.mibis.length, st.bud, st.log.length], [0, n0, bud, log0]); void s0;
+  // Incubate with a bud in the chamber
+  const p2 = podOf(st, "S01", ["coat"]); st.s = 99; const busy = S.grow(st, p2, {}, settings, T0); assert.deepEqual([busy.ok, busy.msg], [false, "Incubate · the incubator is busy"]);
+  // Incubate with no free bay
+  const f = fresh(); f.firstMibi = false; S.seedAdults(f, "S01", 5, S.bayCount(f, settings), settings); assert.equal(S.bayFull(f, settings), true);
+  const p3 = podOf(f, "S01", ["coat"]), nb = S.grow(f, p3, {}, settings, T0); assert.deepEqual([nb.ok, nb.msg], [false, "Incubate · no bay free · return one"]); assert.equal(f.bud, null);
+  // Open with no free bay
+  const g = twin(); S.seedAdults(g, "S01", 9, S.bayCount(g, settings), settings); assert.equal(S.bayFull(g, settings), true);
+  const op = S.openBud(g, null, settings, T0 + 20 * MIN); assert.deepEqual([op.ok, op.msg], [false, "No bay free · return a mibi to the wild first"]); assert.notEqual(g.bud, null);
+});
+test("T-219 case 5: a refused hatch never spends: every bay full while a bud grows, Hatch now refuses with Open's words and Essence is unchanged", () => {
+  const st = twin(); S.seedAdults(st, "S01", 9, S.bayCount(st, settings), settings); assert.equal(S.bayFull(st, settings), true); assert.notEqual(st.bud, null);
+  const s0 = [st.e, st.d, st.s], log0 = st.log.length, n0 = st.mibis.length, g0 = JSON.stringify(st.guide), bud = { ...st.bud };
+  const r = S.instantGrow(st, settings, T0 + MIN); assert.deepEqual([r.ok, r.msg], [false, "No bay free · return a mibi to the wild first"]);
+  assert.deepEqual([st.e, st.d, st.s], s0); assert.deepEqual([st.mibis.length, st.log.length, JSON.stringify(st.guide)], [n0, log0, g0]); assert.deepEqual(st.bud, bud, "the bud is untouched, not even ended");
+});
+test("T-219 case 6: with the free preset Hatch now hatches with no price, and the log line ends with no spend", () => {
+  const free = { ...settings, instantGrowPreset: "free" }, st = twin(), s0 = [st.e, st.d, st.s], r = S.instantGrow(st, free, T0 + MIN);
+  assert.equal(r.ok, true); assert.deepEqual([st.e, st.d, st.s], s0); assert.equal(st.bud, null); assert.equal(st.log.at(-1), hatchLog(st, r.mibi, S.spendText(0, 0, 0))); assert.ok(st.log.at(-1).endsWith(" · free"));
 });

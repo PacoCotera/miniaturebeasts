@@ -289,7 +289,7 @@
      "h": 16
     }
    ],
-   "hash": "eb84c6f4"
+   "hash": "7dd5b944"
   },
   {
    "state": "overview",
@@ -324,11 +324,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "mibi-halo-empty-128x160:128x160",
-      "who": [
-       "mark-species-frost-24x24:24x24",
-       "mark-species-frost-24x24:24x24"
-      ]
+      "figure": "mibi-halo-empty-128x160:128x160"
      },
      "rail": null,
      "page": null,
@@ -417,11 +413,6 @@
      "h": 160
     },
     {
-     "id": "mark-species-frost-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
      "id": "place:meadow:64",
      "w": 64,
      "h": 64
@@ -447,7 +438,7 @@
      "h": 16
     }
    ],
-   "hash": "75b3f9d3"
+   "hash": "82be185d"
   },
   {
    "state": "overview",
@@ -482,11 +473,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "mibi-halo-empty-128x160:128x160",
-      "who": [
-       "mark-species-frost-24x24:24x24",
-       "mark-species-frost-24x24:24x24"
-      ]
+      "figure": "mibi-halo-empty-128x160:128x160"
      },
      "rail": null,
      "page": null,
@@ -574,11 +561,6 @@
      "h": 160
     },
     {
-     "id": "mark-species-frost-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
      "id": "place:meadow:64",
      "w": 64,
      "h": 64
@@ -604,7 +586,7 @@
      "h": 16
     }
    ],
-   "hash": "f0515226"
+   "hash": "82190b8e"
   },
   {
    "state": "overview",
@@ -639,11 +621,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:pond:64",
-      "figure": "mibi-halo-empty-128x160:128x160",
-      "who": [
-       "mark-species-frost-24x24:24x24",
-       "mark-species-frost-24x24:24x24"
-      ]
+      "figure": "mibi-halo-empty-128x160:128x160"
      },
      "rail": null,
      "page": null,
@@ -732,11 +710,6 @@
      "h": 160
     },
     {
-     "id": "mark-species-frost-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
      "id": "place:pond:64",
      "w": 64,
      "h": 64
@@ -762,7 +735,7 @@
      "h": 16
     }
    ],
-   "hash": "3e6d1525"
+   "hash": "9a741867"
   },
   {
    "state": "overview",
@@ -806,12 +779,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S01:0/4",
-      "who": [
-       "mark-species-S01-24x24:24x24",
-       "mark-clan-C01-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S01:0/4"
      },
      "rail": {
       "focused": null,
@@ -969,13 +937,8 @@
     },
     {
      "id": "figure:S01:0/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1043,7 +1006,7 @@
      "h": 16
     }
    ],
-   "hash": "8fdc5e24"
+   "hash": "dd781ed8"
   },
   {
    "state": "overview",
@@ -1087,12 +1050,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S02:0/4",
-      "who": [
-       "mark-species-S02-24x24:24x24",
-       "mark-clan-C02-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S02:0/4"
      },
      "rail": {
       "focused": null,
@@ -1244,18 +1202,8 @@
     },
     {
      "id": "figure:S02:0/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-species-S02-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "mark-clan-C02-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1328,7 +1276,7 @@
      "h": 16
     }
    ],
-   "hash": "a8fe2878"
+   "hash": "f64edf6f"
   },
   {
    "state": "overview",
@@ -1363,12 +1311,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S01:0/4",
-      "who": [
-       "mark-species-S01-24x24:24x24",
-       "mark-clan-C01-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S01:0/4"
      },
      "rail": {
       "focused": null,
@@ -1546,13 +1489,8 @@
     },
     {
      "id": "figure:S01:0/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1630,7 +1568,7 @@
      "h": 16
     }
    ],
-   "hash": "53af3862"
+   "hash": "db49d806"
   },
   {
    "state": "overview",
@@ -1665,12 +1603,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S01:2/4",
-      "who": [
-       "mark-species-S01-24x24:24x24",
-       "mark-clan-C01-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S01:2/4"
      },
      "rail": {
       "focused": 1,
@@ -1827,13 +1760,8 @@
     },
     {
      "id": "figure:S01:2/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -1906,7 +1834,7 @@
      "h": 16
     }
    ],
-   "hash": "d2c8e443"
+   "hash": "fb9863ab"
   },
   {
    "state": "overview",
@@ -1941,12 +1869,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S04:2/5",
-      "who": [
-       "mark-species-S04-24x24:24x24",
-       "mark-clan-C04-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S04:2/5"
      },
      "rail": {
       "focused": 1,
@@ -2117,13 +2040,8 @@
     },
     {
      "id": "figure:S04:2/5",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C04-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -2201,7 +2119,7 @@
      "h": 16
     }
    ],
-   "hash": "ddfbaed6"
+   "hash": "197752f6"
   },
   {
    "state": "overview",
@@ -2236,12 +2154,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S08:2/6",
-      "who": [
-       "mark-species-S08-24x24:24x24",
-       "mark-clan-C08-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S08:2/6"
      },
      "rail": {
       "focused": 1,
@@ -2421,13 +2334,8 @@
     },
     {
      "id": "figure:S08:2/6",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-species-S08-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -2510,7 +2418,7 @@
      "h": 16
     }
    ],
-   "hash": "3a13090d"
+   "hash": "eee35c55"
   },
   {
    "state": "overview",
@@ -2545,12 +2453,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S02:3/4",
-      "who": [
-       "mark-species-S02-24x24:24x24",
-       "mark-clan-C02-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S02:3/4"
      },
      "rail": {
       "focused": 3,
@@ -2713,18 +2616,8 @@
     },
     {
      "id": "figure:S02:3/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-species-S02-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "mark-clan-C02-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -2807,7 +2700,7 @@
      "h": 16
     }
    ],
-   "hash": "4739259c"
+   "hash": "60dbee73"
   },
   {
    "state": "overview",
@@ -2842,12 +2735,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S06:5/5",
-      "who": [
-       "mark-species-S06-24x24:24x24",
-       "mark-clan-C06-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S06:5/5"
      },
      "rail": {
       "focused": 4,
@@ -3029,13 +2917,8 @@
     },
     {
      "id": "figure:S06:5/5",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C06-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -3118,7 +3001,7 @@
      "h": 16
     }
    ],
-   "hash": "b53bd26d"
+   "hash": "8f53b9f9"
   },
   {
    "state": "overview",
@@ -3162,12 +3045,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S01:2/4",
-      "who": [
-       "mark-species-S01-24x24:24x24",
-       "mark-clan-C01-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S01:2/4"
      },
      "rail": {
       "focused": 1,
@@ -3324,13 +3202,8 @@
     },
     {
      "id": "figure:S01:2/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -3403,7 +3276,7 @@
      "h": 16
     }
    ],
-   "hash": "86be5ba7"
+   "hash": "fb9863ab"
   },
   {
    "state": "chapter",
@@ -3481,6 +3354,10 @@
      "page": {
       "region": "page",
       "chapter": "coat",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:coat:unread:24",
        "word": "Coat"
@@ -3646,7 +3523,7 @@
      "h": 16
     }
    ],
-   "hash": "f32326f5"
+   "hash": "d71f39d9"
   },
   {
    "state": "chapter",
@@ -3724,6 +3601,10 @@
      "page": {
       "region": "page",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:face:read:24",
        "word": "Face"
@@ -3932,7 +3813,7 @@
      "h": 16
     }
    ],
-   "hash": "be57b448"
+   "hash": "d74a7bec"
   },
   {
    "state": "chapter",
@@ -4019,6 +3900,10 @@
      "page": {
       "region": "page",
       "chapter": "shape",
+      "frame": {
+       "cols": 1,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:shape:read:24",
        "word": "Shape"
@@ -4207,7 +4092,7 @@
      "h": 16
     }
    ],
-   "hash": "96c7b245"
+   "hash": "56a78bb9"
   },
   {
    "state": "chapter",
@@ -4303,6 +4188,10 @@
      "page": {
       "region": "page",
       "chapter": "movement",
+      "frame": {
+       "cols": 4,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:movement:read:24",
        "word": "Movement"
@@ -4548,7 +4437,7 @@
      "h": 16
     }
    ],
-   "hash": "c7e54967"
+   "hash": "91f60ea4"
   },
   {
    "state": "chapter",
@@ -4626,6 +4515,10 @@
      "page": {
       "region": "page",
       "chapter": "coat",
+      "frame": {
+       "cols": 3,
+       "rows": 2
+      },
       "heading": {
        "emblem": "emblem:coat:read:24",
        "word": "Coat"
@@ -4879,7 +4772,7 @@
      "h": 16
     }
    ],
-   "hash": "e9fa32c7"
+   "hash": "9a3f6b9e"
   },
   {
    "state": "chapter",
@@ -4966,6 +4859,10 @@
      "page": {
       "region": "page",
       "chapter": "face",
+      "frame": {
+       "cols": 3,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:face:unread:24",
        "word": "Face"
@@ -5146,7 +5043,7 @@
      "h": 16
     }
    ],
-   "hash": "cb07b020"
+   "hash": "42c0f60c"
   },
   {
    "state": "chapter",
@@ -5224,6 +5121,10 @@
      "page": {
       "region": "page",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
        "emblem": "emblem:face:unread:24",
        "word": "Face"
@@ -5403,7 +5304,7 @@
      "h": 16
     }
    ],
-   "hash": "a1f01f1e"
+   "hash": "3feb434e"
   },
   {
    "state": "compare",
@@ -5467,12 +5368,12 @@
      "pageA": {
       "region": "compareA",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
-       "pod": "pod:S01:i:40x48",
-       "who": [
-        "mark-species-S01-24x24:24x24",
-        "mark-clan-C01-24x24:24x24"
-       ]
+       "pod": "pod:S01:i:40x48"
       },
       "cells": [
        {
@@ -5483,7 +5384,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
        },
        {
         "name": "Eyes",
@@ -5493,7 +5394,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-eyes-between-184x256:184x256"
+        "crop": "trait-S01-eyes-between-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5507,12 +5408,12 @@
      "pageB": {
       "region": "compareB",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
-       "pod": "pod:S01:i:40x48",
-       "who": [
-        "mark-species-S01-24x24:24x24",
-        "mark-clan-C01-24x24:24x24"
-       ]
+       "pod": "pod:S01:i:40x48"
       },
       "cells": [
        {
@@ -5523,7 +5424,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": false,
-        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
        },
        {
         "name": "Eyes",
@@ -5533,7 +5434,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": false,
-        "crop": "trait-S01-eyes-between-184x256:184x256"
+        "crop": "trait-S01-eyes-between-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5624,14 +5525,9 @@
      "h": 48
     },
     {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
-     "w": 184,
-     "h": 256
+     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
+     "w": 128,
+     "h": 160
     },
     {
      "id": "icon:energy:16",
@@ -5649,7 +5545,7 @@
      "h": 16
     }
    ],
-   "hash": "28c2d946"
+   "hash": "c228ca85"
   },
   {
    "state": "compare",
@@ -5713,12 +5609,12 @@
      "pageA": {
       "region": "compareA",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
-       "pod": "pod:S01:i:40x48",
-       "who": [
-        "mark-species-S01-24x24:24x24",
-        "mark-clan-C01-24x24:24x24"
-       ]
+       "pod": "pod:S01:i:40x48"
       },
       "cells": [
        {
@@ -5729,7 +5625,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
        },
        {
         "name": "Eyes",
@@ -5739,7 +5635,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S01-eyes-between-184x256:184x256"
+        "crop": "trait-S01-eyes-between-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5753,12 +5649,12 @@
      "pageB": {
       "region": "compareB",
       "chapter": "face",
+      "frame": {
+       "cols": 2,
+       "rows": 1
+      },
       "heading": {
-       "pod": "pod:S01:i:40x48",
-       "who": [
-        "mark-species-S01-24x24:24x24",
-        "mark-clan-C01-24x24:24x24"
-       ]
+       "pod": "pod:S01:i:40x48"
       },
       "cells": [
        {
@@ -5871,14 +5767,9 @@
      "h": 48
     },
     {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
-     "w": 184,
-     "h": 256
+     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
+     "w": 128,
+     "h": 160
     },
     {
      "id": "icon:energy:16",
@@ -5896,7 +5787,7 @@
      "h": 16
     }
    ],
-   "hash": "91e895e7"
+   "hash": "8e403a14"
   },
   {
    "state": "compare",
@@ -5969,12 +5860,12 @@
      "pageA": {
       "region": "compareA",
       "chapter": "face",
+      "frame": {
+       "cols": 1,
+       "rows": 1
+      },
       "heading": {
-       "pod": "pod:S04:i:40x48",
-       "who": [
-        "mark-species-S04-24x24:24x24",
-        "mark-clan-C04-24x24:24x24"
-       ]
+       "pod": "pod:S04:i:40x48"
       },
       "cells": [
        {
@@ -5985,7 +5876,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": true,
-        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+        "crop": "trait-S04-eyes-small-close-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -5999,12 +5890,12 @@
      "pageB": {
       "region": "compareB",
       "chapter": "face",
+      "frame": {
+       "cols": 1,
+       "rows": 1
+      },
       "heading": {
-       "pod": "pod:S04:i:40x48",
-       "who": [
-        "mark-species-S04-24x24:24x24",
-        "mark-clan-C04-24x24:24x24"
-       ]
+       "pod": "pod:S04:i:40x48"
       },
       "cells": [
        {
@@ -6015,7 +5906,7 @@
         "glyphs": [],
         "diff": false,
         "isNew": false,
-        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+        "crop": "trait-S04-eyes-small-close-128x160:128x160"
        }
       ],
       "differs": "frame-lamp-12-amber:12x12",
@@ -6116,14 +6007,9 @@
      "h": 48
     },
     {
-     "id": "mark-clan-C04-24x24:24x24",
-     "w": 24,
-     "h": 24
-    },
-    {
-     "id": "trait-S04-eyes-small-close-376x264:376x264",
-     "w": 376,
-     "h": 264
+     "id": "trait-S04-eyes-small-close-128x160:128x160",
+     "w": 128,
+     "h": 160
     },
     {
      "id": "icon:energy:16",
@@ -6141,7 +6027,7 @@
      "h": 16
     }
    ],
-   "hash": "b9448af4"
+   "hash": "d9c9241f"
   },
   {
    "state": "overview",
@@ -6184,12 +6070,7 @@
       ],
       "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S01:0/4",
-      "who": [
-       "mark-species-S01-24x24:24x24",
-       "mark-clan-C01-24x24:24x24",
-       null
-      ]
+      "figure": "figure:S01:0/4"
      },
      "rail": {
       "focused": null,
@@ -6358,13 +6239,8 @@
     },
     {
      "id": "figure:S01:0/4",
-     "w": 128,
-     "h": 160
-    },
-    {
-     "id": "mark-clan-C01-24x24:24x24",
-     "w": 24,
-     "h": 24
+     "w": 144,
+     "h": 152
     },
     {
      "id": "place:meadow:64",
@@ -6442,7 +6318,7 @@
      "h": 16
     }
    ],
-   "hash": "b14e9c94"
+   "hash": "f3f3f0ce"
   },
   {
    "state": "collection",
@@ -6608,7 +6484,7 @@
      "h": 16
     }
    ],
-   "hash": "5730b7ce"
+   "hash": "1cc8802e"
   },
   {
    "state": "collection",
@@ -6887,7 +6763,7 @@
      "h": 16
     }
    ],
-   "hash": "96bf8102"
+   "hash": "2ab6c3b2"
   },
   {
    "state": "collection",
@@ -7096,7 +6972,7 @@
      "h": 16
     }
    ],
-   "hash": "842c62ba"
+   "hash": "eab3dc42"
   },
   {
    "state": "collection",
@@ -7255,7 +7131,7 @@
      "h": 16
     }
    ],
-   "hash": "bdeb8e1b"
+   "hash": "718efb3f"
   }
  ]
 }

@@ -7,7 +7,8 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameIds } from "../src/genome.mjs";
+import { setFrames, frameIds, frameOf } from "../src/genome.mjs";
+import { traitLooks, currentLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import * as Lib from "../src/library.mjs";
 import { libraryBuild } from "../src/views/library-props.mjs";
@@ -58,10 +59,10 @@ test("found, met and unmet frames: the plate, the study, the name, the clan and 
   const st = world(); st.knownIds = ["S01", "S02", "S03"]; st.metIds = ["S04"]; S.seedAdults(st, "S05", 4, 1, settings);
   const b = build(st, { page: 0, i: 2 }), its = items(b), by = Object.fromEntries(its.map((i) => [i.id, i]));
   assert.deepEqual(validate(b.props, schema), [], "validates");
-  for (const id of ["S01", "S02", "S03", "S05"]) { const i = by[id]; assert.equal(i.status, "found", id); assert.equal(i.picture, `spread-plate-${id}-80x96`); assert.match(i.roundel, /^clan-roundel-C\d\d-12x12$/); assert.ok(i.name && !/\d/.test(i.name)); assert.ok(i.progress >= 1 && i.progress <= 4); }
+  for (const id of ["S01", "S02", "S03", "S05"]) { const i = by[id]; assert.equal(i.status, "found", id); assert.equal(i.picture, `spread-plate-${id}-80x96`); assert.match(i.roundel, /^clan-roundel-C\d\d-16x16$/); assert.ok(i.name && !/\d/.test(i.name)); assert.ok(i.progress >= 1 && i.progress <= 4); }
   assert.deepEqual([by.S04.status, by.S04.picture, by.S04.progress, by.S04.portrayed, by.S04.complete], ["met", "spread-study-S04-80x96", null, false, false]); assert.match(by.S04.roundel, /^clan-roundel-/); assert.ok(by.S04.name);
   assert.deepEqual([by.S06.status, by.S06.name, by.S06.picture, by.S06.roundel], ["unmet", null, null, null]);
-  assert.equal(b.props.focus.cur, "frame.S03"); assert.equal(b.line.ok, SP.strings.open); assert.equal(b.line.subject, by.S03.name);
+  assert.equal(b.props.focus.cur, "frame.S03"); assert.equal(b.line.ok, null, "found: no ✓ cap until slot 8 (the Book is shut)"); assert.equal(b.line.subject, by.S03.name);
   assert.deepEqual(build(st, { page: 0, i: 3 }).line, { ok: null, subject: `${by.S04.name}, only seen`, back: "Home", need: null }, "met: no ✓ cap");
   assert.equal(build(st, { page: 0, i: 8 }).line.subject, "an empty frame");
   assert.ok(!/"(rect|x|y|w|h|colour|color)":/.test(JSON.stringify(b.props)), "names no rectangle and no colour"); assert.ok(JSON.stringify(b.props).length < 8 * 1024, "props " + JSON.stringify(b.props).length);
@@ -89,4 +90,23 @@ test("the gilt corner: any delivered portrait of a mibi of the species, a releas
 test("the Library's ring: the kept frame (ui.i) is the cur, clamped to the spread; a second page is not built", () => {
   const st = world(); assert.equal(build(st, { page: 0, i: 15 }).props.focus.cur, "frame.S16"); assert.equal(build(st, { page: 0, i: 99 }).props.focus.cur, "frame.S16"); assert.equal(build(st, { page: 0, i: -3 }).props.focus.cur, "frame.S01");
   assert.ok(!JSON.stringify(build(st).props).includes("turn"), "no turn node, no turn prop");
+});
+
+test("a seen legacy look does not move the species progress: the Loika's plain, and several legacy looks, leave the S01 seed where it was", () => {
+  const st = world(); st.knownIds = ["S01"]; const fr = frameOf("S01"), ts = fr.chapters.flatMap((c) => c.traits), at = () => items(build(st)).find((i) => i.id === "S01").progress;
+  const mk = ts.find((t) => traitLooks(fr, t).includes("plain")); let n = 0;
+  for (const t of ts) for (const l of currentLooks(fr, t)) if (n++ < 4) S.guideAdd(st, "S01", t.id, [l]);
+  const before = at(); assert.equal(before, 1, "four of twenty: the first step");
+  S.guideAdd(st, "S01", mk.id, ["plain"]); assert.equal(at(), before, "a seen plain moves nothing");
+  S.guideAdd(st, "S01", mk.id, ["legacy-a", "legacy-b", "legacy-c"]); assert.equal(at(), before, "more legacy looks move nothing either");
+  for (const t of ts) S.guideAdd(st, "S01", t.id, currentLooks(fr, t)); assert.deepEqual([at(), items(build(st)).find((i) => i.id === "S01").complete], [4, true]);
+});
+
+test("a Loika with a seen plain has the same seed as the same save without it at every step, and reads complete exactly when every current look is seen", () => {
+  const fr = frameOf("S01"), ts = fr.chapters.flatMap((c) => c.traits), mk = ts.find((t) => traitLooks(fr, t).includes("plain")), all = ts.flatMap((t) => currentLooks(fr, t).map((l) => [t.id, l]));
+  for (let k = 0; k <= all.length; k++) {
+    const a = world(), b = world(); for (const st of [a, b]) { st.knownIds = ["S01"]; all.slice(0, k).forEach(([t, l]) => S.guideAdd(st, "S01", t, [l])); } S.guideAdd(b, "S01", mk.id, ["plain"]);
+    const ia = items(build(a)).find((i) => i.id === "S01"), ib = items(build(b)).find((i) => i.id === "S01");
+    assert.deepEqual([ib.progress, ib.complete], [ia.progress, ia.complete], k + " current looks seen"); assert.equal(ib.complete, k === all.length); if (ib.complete) assert.equal(ib.progress, 4);
+  }
 });

@@ -1,12 +1,12 @@
-// Pods in each of its states on the Station page (?test: the face in test mode), as the layer check and the goldens take them: a fresh crate of two S04 pods docked and opened, then the eight states in order, each reached
+// Pods in each of its states on the Station page (?test: the face in test mode), as the layer check and the goldens take them: a fresh crate of two S01 pods docked and opened, then the states in order, each reached
 // by the page's own hooks and asserted (screen, view, focus, cmp) before `visit(name, page)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 
 export async function podsStates(visit) {
   const { page, fails, fail, close } = await openStation();
-  await page.evaluate(() => window.__st.seedCrate("S04", 2, 4101)); await page.evaluate(() => window.__st.act("dock")); await page.waitForTimeout(300);
+  const crateId = await page.evaluate(() => window.__st.seedCrate("S01", 2, 4101).crate.id); await page.evaluate(() => window.__st.act("dock")); await page.waitForTimeout(300);
   await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300)
-  const pods = await page.evaluate(() => window.__st.ST.tray.filter((p) => p.species === "S04" && !p.idd).map((p) => p.id));   // a fresh crate of two pods of one species, as journey.mjs compareShot does
+  const pods = await page.evaluate((crateId) => window.__st.ST.tray.filter((p) => p.id.startsWith(crateId + ":")).map((p) => p.id), crateId);   // the dev crate's own pods, by its id (openBay names them crate:pod); the save's bay crate opens with it
   if (pods.length !== 2) fail("no two pods of one species in the rack");
   const ui = () => page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, cur: window.__st.UI.pods.cur, focus: window.__st.UI.pods.focus.cur, cmp: !!window.__st.UI.pods.cmp }));
   const at = async (name, want) => {
@@ -18,16 +18,27 @@ export async function podsStates(visit) {
   try {
     await go(pods[0], "place.0", "collection"); await at("collection", { screen: "pods", view: "collection", focus: "place.0" });
     await go(pods[0], "pod", "overview"); await at("overview, unidentified", { view: "overview", focus: "pod" });
-    // the warning before a spend: the goal's next step (identify one pod, then grow) is payable now and Identify here would leave it short, so the line warns; the ◆ is set to exactly what the two need, then given back
+    // the warning before a spend (frame.json goalWarn): the goal here is S01's (the save's own S01 pods are unidentified), so identifying a pod of the goal's own species is its step and warns of nothing; a pod of ANOTHER species is not, so
+    // with the ◆ set to exactly what identify and the goal's grow need, Identify here would leave the grow short and the line warns. The pod is seeded for this state and taken out again; the ◆ is given back
+    const warnId = await page.evaluate(() => window.__st.seedPod("S04", 4101).pod.id);
+    if (!(await page.evaluate((id) => window.__st.ST.tray.some((p) => p.id === id), warnId))) fail("identify warns: the S04 pod did not land in the rack");
     const kept = await page.evaluate(async () => { const S = await import("/station/src/state.mjs"), s = window.__st, st = s.ST, was = { e: st.e, d: st.d, s: st.s }, g = S.growCost(st, {}, s.settings), i = S.identifyCost(st, s.settings); st.e = Math.max(st.e, g.e); st.s = Math.max(st.s, g.s); st.d = i + g.d; return was; });
-    await go(pods[0], "pod", "overview"); await at("overview, identify warns", { view: "overview", focus: "pod" });
+    await go(warnId, "pod", "overview"); await at("overview, identify warns", { view: "overview", focus: "pod" });
+    { const need = await page.evaluate(() => window.__st.check().log.type.filter((t) => t.region === "need").map((t) => t.text).join(" ")); if (!need.trim()) fail("overview, identify warns: the right slot is empty, so the warning did not fire"); }
     await page.evaluate((was) => { Object.assign(window.__st.ST, was); }, kept);
+    await page.evaluate((id) => { const st = window.__st.ST; st.tray = st.tray.filter((p) => p.id !== id); }, warnId);
+    await page.evaluate((id) => window.__st.readSome(id, 0), pods[0]);   // identified, nothing read: the unread chapter page (a dotted outline and a name a trait)
+    await go(pods[0], "rail.0", "chapter", 0); await at("chapter page, unread", { view: "chapter", focus: "rail.0" });
     await page.evaluate((ids) => { for (const id of ids) window.__st.skipRead(id); }, pods);
     await go(pods[0], "pod", "overview"); await at("overview, identified, pod focused", { view: "overview", focus: "pod" });
     await go(pods[0], "kin.0", "overview"); await at("overview, kin focused", { view: "overview", focus: "kin.0", cmp: false });
     await go(pods[0], "hatch", "overview"); await at("overview, hatch focused", { view: "overview", focus: "hatch" });
+    await go(pods[0], "hatch", "overview"); await page.evaluate(() => window.__st.act("confirm")); await at("panel, return", { screen: "pods", view: "overview" }); await page.evaluate(() => { window.__st.UI.panel = null; });   // ✓ on the leaf plate opens the Return panel (the ring on Keep)
     await go(pods[0], "rail.0", "overview"); await at("overview, a rail tab focused", { view: "overview", focus: "rail.0" });
     await go(pods[0], "rail.0", "chapter", 0); await at("chapter page", { view: "chapter", focus: "rail.0" });
+    await go(pods[0], "rail.2", "chapter", 2); await at("chapter page, a doing", { view: "chapter", focus: "rail.2" });   // Movement: Drive, read: the one doing plate and the value in words
+    const sealed = await page.evaluate(() => { const r = window.__st.seedPod("S02", 4101); window.__st.skipRead(r.pod.id); return r.pod.id; });   // a pod of S02, read whole: its Character chapter stays shut
+    await go(sealed, "rail.3", "chapter", 3); await at("chapter page, sealed", { view: "chapter", focus: "rail.3" });
     await go(pods[0], "kin.0", "overview"); await page.evaluate(() => window.__st.act("confirm")); await at("compare", { screen: "pods", cmp: true });
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }

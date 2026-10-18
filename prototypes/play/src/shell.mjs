@@ -4,6 +4,8 @@
 //
 // Lengths are in lp: one lp is `f` CSS px, so every edge lands on a whole physical pixel. Colours are the Station's 14.
 
+import { canvasPainter, createPaper, caddyLines } from "./caddy.mjs";   // the Caddy's e-paper: play-page chrome like the rest, fed by the Station's mb-caddy
+
 const params = new URLSearchParams(location.search), TEST = params.has("test"), DEV = params.has("dev"), SEED = params.get("seed");
 const $ = (id) => document.getElementById(id);
 const R = 1546;   // the row's width: the Station shell, the gap and the Companion shell
@@ -29,7 +31,7 @@ let owner = "station", lastDevice = "station", ox = 0, seatOff = 0, benchRaised 
 let caddy = { canDock: false, docked: false, crates: 0, pending: false }, gotCaddy = false;
 let awaiting = null, pressed = false, askTimer = 0, seatBusy = false;
 const frames = { station: $("fStation"), companion: $("fCompanion"), bench: $("fBench") };
-const stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : ""), companionUrl = "../exploration/?embed" + (SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (DEV ? "&dev=1" : "");
+const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : ""), companionUrl = "../exploration/?embed" + (SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (DEV ? "&dev=1" : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 const SVG = {
@@ -112,7 +114,10 @@ function layout() {
   devBtn.textContent = short || narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
   layoutDock(iconOnly);
   const sheetUp = benchRaised && !hasShelf();
-  note.classList.toggle("hidden", !narrow || sheetUp); if (narrow) place(note, 12, 44, W - 24, 16);
+  // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one where the Caddy's screen has no room (T-20261016-109)
+  note.textContent = noteCaddy || NOTE_TEXT;
+  note.classList.toggle("hidden", !(noteCaddy || narrow) || sheetUp);
+  if (narrow) place(note, 12, 44, W - 24, 16); else if (noteCaddy) { const nx = short ? 352 : 412; place(note, nx, 12, Math.max(0, dockX - nx - 12), 16); }
   if (sheetUp) stage.setAttribute("inert", ""); else stage.removeAttribute("inert");
   // shells
   const sx = narrow ? 12 : 12 + oxr, sh = short ? 616 : 672;
@@ -138,6 +143,7 @@ function layout() {
   layoutBench(); const benchRect = benchBox();
   if (ringTarget) { ring.classList.remove("hidden"); place(ring, ringTarget[0] - 3, ringTarget[1] - 3, ringTarget[2] + 6, ringTarget[3] + 6); }
   else if (benchRect && !(narrow && sheetUp)) { ring.classList.remove("hidden"); place(ring, benchRect[0] - 3, benchRect[1] - 3, benchRect[2] + 6, benchRect[3] + 6); } else ring.classList.add("hidden");
+  layoutSheet();
   // the developer tools
   dev.classList.toggle("hidden", !devOpen); dev.classList.toggle("column", wide);
   if (wide) place(dev, W - 332, 52, 320, H - 64); else { const w = tier === "standard" ? 360 : Math.min(360, W); place(dev, W - w, 40, w, H - 40); }
@@ -212,6 +218,7 @@ function pageKey(e) {
   let hit = true;
   if (e.code === "Backquote") cycle(e.shiftKey ? -1 : 1);
   else if (e.shiftKey && e.code === "KeyD") dockPress();
+  else if (e.shiftKey && e.code === "KeyC") togglePin();
   else if (e.shiftKey && e.code === "KeyT") toggleDev();
   else if (e.shiftKey && e.code === "Slash") toggleKeys();
   else if (e.code === "Escape" && keysOpen) toggleKeys(false);
@@ -252,7 +259,9 @@ cradle.addEventListener("click", () => dockPress());
 const giveKeysBack = () => { if (document.activeElement === dockCtl) dockCtl.blur(); };
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin || e.source !== frames.station.contentWindow) return; const m = e.data || {}; if (m.t !== "mb-caddy") return;
-  const was = caddy; caddy = { canDock: !!m.canDock, docked: !!m.docked, crates: m.crates | 0, pending: !!m.pending };
+  const was = caddy; caddy = { canDock: !!m.canDock, docked: !!m.docked, crates: m.crates | 0, pending: !!m.pending, opened: m.opened ?? null, partner: m.partner ?? null };   // opened, partner: the Caddy's lines (src/caddy.mjs)
+  if (fontsOk) paper.show(caddy);   // the e-paper keeps its lines whether or not its sheet is up: one partial refresh per change
+  if (gotCaddy && (was.docked !== caddy.docked || (caddy.opened && JSON.stringify(caddy.opened) !== JSON.stringify(was.opened)))) caddyEvent();   // a seat, a lift, the opening's end
   if (!gotCaddy) { gotCaddy = true; seatOff = caddy.docked && tier !== "short" ? 8 : 0; layout(); return; }
   if (awaiting === "dock") {
     clearTimeout(askTimer);
@@ -271,21 +280,43 @@ window.addEventListener("message", (e) => {
   layout();
 });
 
+// ---- the Caddy's screen (T-20261016-109): a sheet raised from the cradle, in the wide tier with the bench shelf ----
+// It rises (160 ms, the seat's ease; a cut under reduced motion) at each seat or lift and at the opening's end, stays 6000 ms (a new line restarts it) and lowers; Shift+C pins it up until Shift+C again.
+// The sheet is 734, 760, 808, 288 lp, over the right of the bench shelf, so the shelf under it takes no pointer input; nothing moves. The view is 792 × 272 at 1 lp per view pixel, 8 lp inside.
+// Every other tier has no room: the bar's note shows the two lines as one for 4000 ms instead, and Shift+C does nothing.
+const SHEET = [734, 760, 808, 288], VIEW = [8, 8, 792, 272], CADDY_MS = 6000, NOTE_MS = 4000, NOTE_TEXT = note.textContent;
+const sheet = $("caddySheet"), view = $("caddyView"), painter = canvasPainter(view), paper = createPaper(painter.draw, painter.measure);
+let sheetH = 0, sheetPinned = false, sheetTimer = 0, sheetTween = null, noteCaddy = "", noteTimer = 0, fontsOk = false;
+document.fonts.load('500 28px "Inter"').then(() => document.fonts.load('500 20px "Inter"')).then(() => { fontsOk = true; if (gotCaddy) paper.show(caddy); });   // the paper draws in Inter, never a fallback
+function layoutSheet() {
+  const on = hasShelf() && sheetH > 0; sheet.classList.toggle("hidden", !on); if (!on) return;
+  place(sheet, SHEET[0], SHEET[1], SHEET[2], sheetH); place(view, VIEW[0], VIEW[1], VIEW[2], VIEW[3]);
+}
+function sheetTo(up) {
+  const target = up ? SHEET[3] : 0; if (sheetTween) sheetTween.cancel();
+  sheetTween = tween(sheetH, target, SEAT_MS, (v) => { sheetH = Math.round(v); layoutSheet(); }, () => { sheetH = target; sheetTween = null; layoutSheet(); });
+}
+function caddyEvent() {
+  if (hasShelf()) { sheetTo(true); clearTimeout(sheetTimer); if (!sheetPinned) sheetTimer = setTimeout(() => { if (!sheetPinned) sheetTo(false); }, CADDY_MS); return; }
+  const l = caddyLines(caddy); noteCaddy = "Caddy: " + l.line1 + (l.line2 ? " · " + l.line2 : ""); clearTimeout(noteTimer); noteTimer = setTimeout(() => { noteCaddy = ""; layout(); }, NOTE_MS); layout();
+}
+function togglePin() { if (!hasShelf()) return; sheetPinned = !sheetPinned; clearTimeout(sheetTimer); sheetTo(sheetPinned); }
+
 // ---- boot ----
 buildKeys();
 frames.bench.addEventListener("load", () => attach("bench"));
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
-if (DEV) devOpen = true;
+if (DEV) { devOpen = true; for (const id of ["devBtn", "stamp", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden"); }   // the Developer tools button, its help row and the build stamp show with ?dev only; the Shift+T key stays
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
 function onDpr() { layout(); armDpr(); }
 armDpr(); window.addEventListener("resize", layout);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
-  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
   $("stamp").textContent = short ? "build " + short + (t ? " · " + t : "") : "local build";
 }).catch(() => { $("stamp").textContent = "local build"; });
 layout();
 // for the play-page journey: read-only views of the shell's state
-window.__play = { get owner() { return owner; }, get tier() { return tier; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get awaiting() { return awaiting; }, get pressed() { return pressed; }, rects, frames };
+window.__play = { get owner() { return owner; }, get tier() { return tier; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get awaiting() { return awaiting; }, get pressed() { return pressed; }, get caddySheet() { return { up: hasShelf() && sheetH > 0, h: sheetH, pinned: sheetPinned, lines: paper.lines, refreshes: paper.refreshes, note: noteCaddy }; }, rects, frames };

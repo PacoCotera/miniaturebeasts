@@ -42,7 +42,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 9,
+  "version": 10,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -287,7 +287,8 @@
     "low"
    ],
    "guard": "rig: where along its region a limb pair roots",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.body-palette",
@@ -318,7 +319,8 @@
     "charcoal and raspberry",
     "raspberry"
    ],
-   "guard": "sketch: the body pigment slot"
+   "guard": "sketch: the body pigment slot",
+   "changedBy": "player"
   },
   {
    "id": "appearance.underside-palette",
@@ -344,7 +346,8 @@
     "peach and cream",
     "cream"
    ],
-   "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)"
+   "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
+   "changedBy": "player"
   },
   {
    "id": "appearance.surface-texture",
@@ -365,7 +368,8 @@
     "fine-ridged"
    ],
    "guard": "sketch: fine ridges as a surface grain",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "movement.contact-phase",
@@ -386,7 +390,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "movement.cycle-rate",
@@ -407,7 +412,8 @@
     "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "movement.stride-preference",
@@ -428,7 +434,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "movement.turn-control",
@@ -450,7 +457,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "changedBy": "breeding"
   },
   {
    "id": "movement.membrane-stroke",
@@ -471,7 +479,8 @@
     "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "movement.membrane-coordination",
@@ -492,7 +501,8 @@
     "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "energy.actuator-capacity",
@@ -514,7 +524,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "changedBy": "breeding"
   },
   {
    "id": "energy.reserve-capacity",
@@ -535,7 +546,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "energy.action-efficiency",
@@ -556,7 +568,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "development.regional-growth",
@@ -577,7 +590,8 @@
     "even"
    ],
    "guard": "rig: the mass hierarchy (even, central, anterior) scales the regions",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "structure.join-neck-ratio",
@@ -598,7 +612,8 @@
     "low"
    ],
    "guard": "rig: neck length between head and body on a narrow join",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.exterior-eye-presence",
@@ -619,7 +634,8 @@
     "on"
    ],
    "guard": "rig: modules.exteriorEyePair",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.core-half-length",
@@ -640,7 +656,8 @@
     "small"
    ],
    "guard": "rig: core.rx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.core-width-ratio",
@@ -661,7 +678,8 @@
     "low"
    ],
    "guard": "rig: core.ryOverRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.core-depth-ratio",
@@ -682,7 +700,8 @@
     "low"
    ],
    "guard": "rig: core.rzOverRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-length-ratio",
@@ -703,7 +722,8 @@
     "medium"
    ],
    "guard": "rig: head.rxOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-width-ratio",
@@ -724,7 +744,8 @@
     "high"
    ],
    "guard": "rig: head.ryOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-depth-ratio",
@@ -745,7 +766,8 @@
     "high"
    ],
    "guard": "rig: head.rzOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-lift-ratio",
@@ -766,7 +788,8 @@
     "low"
    ],
    "guard": "rig: head.centerLiftOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.support-drop-ratio",
@@ -787,7 +810,8 @@
     "short"
    ],
    "guard": "rig: support.rootToEndDropOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.support-splay-ratio",
@@ -808,7 +832,8 @@
     "high"
    ],
    "guard": "rig: support.outwardEndOffsetOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.support-radius-ratio",
@@ -829,7 +854,8 @@
     "fine"
    ],
    "guard": "rig: support.proximalRadiusOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.terminal-length-ratio",
@@ -850,7 +876,8 @@
     "narrow"
    ],
    "guard": "rig: terminal.rxOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.terminal-depth-ratio",
@@ -871,7 +898,8 @@
     "high"
    ],
    "guard": "rig: terminal.rzOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.exterior-eye-size-ratio",
@@ -892,7 +920,8 @@
     "large"
    ],
    "guard": "rig: eye.radiusOverHeadMinYZ",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -913,7 +942,8 @@
     "wide"
    ],
    "guard": "rig: eye.anchorYOverHeadRy",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.wing-span-ratio",
@@ -934,7 +964,8 @@
     "long"
    ],
    "guard": "rig: wing.outwardSpanOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.wing-chord-ratio",
@@ -955,7 +986,8 @@
     "wide"
    ],
    "guard": "rig: wing.longitudinalChordOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.wing-sweep-ratio",
@@ -976,7 +1008,8 @@
     "high"
    ],
    "guard": "rig: wing.posteriorSweepOverSpan",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.region-bend",
@@ -997,7 +1030,8 @@
     "down"
    ],
    "guard": "rig: region.bendRadians",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.region-taper",
@@ -1019,7 +1053,8 @@
     "between strong and gentle",
     "gentle"
    ],
-   "guard": "rig: region.childScale"
+   "guard": "rig: region.childScale",
+   "changedBy": "player"
   },
   {
    "id": "growth.join-throat-ratio",
@@ -1040,7 +1075,8 @@
     "thin"
    ],
    "guard": "rig: region.connectorRadiusRatio",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.region-cross-exponent",
@@ -1061,7 +1097,8 @@
     "rounded-square"
    ],
    "guard": "rig: region.crossExponent",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.region-longitudinal-form",
@@ -1082,7 +1119,8 @@
     "barrel"
    ],
    "guard": "rig: region.longitudinalForm",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.contact-terminal-form",
@@ -1103,7 +1141,8 @@
     "rounded"
    ],
    "guard": "rig: terminal.form",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "cognition.exploration-tendency",
@@ -1124,7 +1163,8 @@
     "seeking"
    ],
    "guard": "rig: innate.explorationClass",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "cognition.arousal-threshold",
@@ -1145,7 +1185,8 @@
     "low"
    ],
    "guard": "rig: innate.arousalThreshold",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.antenna-presence",
@@ -1166,7 +1207,8 @@
     "on"
    ],
    "guard": "rig: antenna pair on the head",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.antenna-length-ratio",
@@ -1187,7 +1229,8 @@
     "long"
    ],
    "guard": "rig: antenna length over head depth",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.antenna-form",
@@ -1208,7 +1251,8 @@
     "feather"
    ],
    "guard": "rig: thread, club or feather tip",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.flap-marking",
@@ -1232,7 +1276,8 @@
     "bars",
     "bars-and-spots"
    ],
-   "guard": "sketch: marking field on thin surfaces"
+   "guard": "sketch: marking field on thin surfaces",
+   "changedBy": "player"
   },
   {
    "id": "appearance.flap-translucency",
@@ -1254,7 +1299,8 @@
     "between opaque and clear",
     "clear"
    ],
-   "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)"
+   "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)",
+   "changedBy": "player"
   },
   {
    "id": "appearance.sheen",
@@ -1275,7 +1321,8 @@
     "matte"
    ],
    "guard": "sketch: specular highlight strength (surface texture's first consumer)",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.emission-brightness",
@@ -1296,7 +1343,8 @@
     "bright"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "appearance.emission-length",
@@ -1317,7 +1365,8 @@
     "long"
    ],
    "guard": "behaviour: how long the glow lasts",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   }
  ],
  "absent": [
@@ -1698,6 +1747,7 @@
   },
   "heritableLook": 5,
   "heritableDoing": 2,
+  "selfChanging": 0,
   "sleeping": 0,
   "sealed": 0,
   "open": 7,
@@ -1746,7 +1796,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S12",
-   "frameVersion": 3,
+   "frameVersion": 4,
    "loci": {
     "structure.attachment-position": [
      "low",
@@ -1972,8 +2022,10 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
+  "crossed": 196,
+  "crossedBuilt": 196,
   "failures": [],
-  "rule": "random copies from the species pools at every open locus; built by the rig and validated against the compositional contract"
+  "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
  "pools": {
   "appearance.body-palette": [

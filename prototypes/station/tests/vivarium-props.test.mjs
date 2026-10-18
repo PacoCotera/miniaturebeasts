@@ -117,3 +117,10 @@ test("the whole's residents with moving sets fit vivarium.props.json: moving and
   for (const [time, want] of [[23 * 3600, "asleep"], [12 * 3600, "awake"]]) { const b = build(w, sv, { time, restRules: rules, motionSets: true }); assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving?.walk && r.moving?.shadow && r.rest === want)); assert.ok(b.requests.some((q) => q.kind === "moving")); }
   assert.ok(build(w, sv, { time: 12 * 3600, restRules: rules, motionSets: false }).props.regions.residents.every((r) => !r.moving));
 });
+
+test("fix 7: the Vivarium's residents take the scene's light (id suffix and request light; the count as at day), the 48×48 tiles never do", () => {
+  const w = world(12); mibis(w, 6); dock(w.st); const sv = sv0({ carried: [w.st.mibis[0].id] });
+  const reqs = (light) => build(w, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
+  assert.ok(day.length >= 6 && day.every((r) => !("light" in r)));
+  for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light); assert.equal(got.length, day.length); for (const r of got) assert.equal(r.size[0] === 48 && r.size[1] === 48 ? !("light" in r) : r.light === light && r.id.endsWith(":" + light), true, r.id); assert.ok(got.some((r) => r.light === light) && got.some((r) => r.size[0] === 48)); }
+});

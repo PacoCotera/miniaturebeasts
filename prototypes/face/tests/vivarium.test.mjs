@@ -42,13 +42,13 @@ const frameProps = (line = {}) => ({ top: { screen: "vivarium", title: "Vivarium
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? [16, 16];
-async function start(b, { motion = true, t0 = 0 } = {}) {
+async function start(b, { motion = true, t0 = 0, sleepersPainted = false } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", spec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.handleOf(R.tiles.glyph ?? "frame-companion-outline-16x24", withPolicy((i) => standIn(i, [16, 24])));
   for (const id of ["frame-companion-outline-16x24", "home-lamp-sky-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-amber-12x12"]) f.handleOf(id, withPolicy((i) => standIn(i, id.includes("outline") ? [16, 24] : [12, 12])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r))));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(sleepersPainted && /^mibi:/.test(i) ? { status: "master" } : {}) })));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "vivarium", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -90,11 +90,21 @@ test("the departure check bites: the strip moved, a tile off its pitch, the name
   const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3" }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
   const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, b.props.state, b.props.focus.cur, n); };
   assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, n), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "strip" && r.layer === "chrome").rect[0] += 8; })[0], /strip/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "strip" && r.layer === "painted").rect[0] += 8; })[0], /strip/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "tile.2" && r.layer === "chrome").rect[0] += 4; })[0], /tile 2/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect[0] = 2; })[0], /name tag/);
   assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); r.rect[0] = 0; })[0], /walk ground/);
   assert.match(bad((c) => { c.regions.push({ id: "word", layer: "type", rect: [300, 200, 80, 20] }); })[0], /no word/);
+});
+test("the bed and its sleepers are two regions: a bed moved 8 px, a sleeper 56 px up are found, and sleepers on the painted layer with the bed (their masters placed) are no departure", { skip }, async () => {
+  const b = scene({ adults: 4, young: 3, carry: [0, 1] }), n = b.props.regions.tiles.items.length;
+  for (const painted of [false, true]) {
+    const f = await start(b, { sleepersPainted: painted }), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, b.props.state, b.props.focus.cur, n); };
+    assert.ok(lg.regions.some((r) => r.id === "bed.sleepers" && r.layer === (painted ? "painted" : "art")), `the sleepers are their own region on the ${painted ? "painted" : "art"} layer`);
+    assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, n), [], painted ? "sleepers painted with the bed" : "sleepers art");
+    assert.match(bad((c) => { c.regions.find((r) => r.id === "bed" && r.layer === "painted").rect[0] += 8; }).join("; "), /bed is not drawn exactly/);
+    assert.match(bad((c) => { c.regions.find((r) => r.id === "bed.sleepers").rect[1] -= 56; }).join("; "), /sleeper/);
+  }
 });
 test("the keys: ✓ and ← and the room keys are intents on the focused target, the pad moves the ring by vivarium.json's graph (▼ a resident's own tile, ▲ its resident, ◀ ▶ along the tiles)", { skip }, async () => {
   const b = scene({ adults: 4, young: 3, carry: [0, 1] }), f = await start(b), ids = b.st.mibis.map((m) => m.id), cur0 = b.props.focus.cur;
@@ -168,7 +178,9 @@ test("a walking resident keeps its box in 16..1008 and its feet in the band 296.
 });
 
 // ---- Station M1 §3: residents with moving sets (stand-in atlases synthesized at the slot sizes; moving-scene.mjs) ----
-import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds, rule2Run } from "./moving-scene.mjs";
+import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds, rule2Run, atlasPicture } from "./moving-scene.mjs";
+import { footOf } from "../../station/src/moving.mjs";
+import { footprintRing } from "../../ui/rings.mjs";
 const HOUSE = { adults: 6, juveniles: 5, s05: 1, sleepers: 3 };   // S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1, three bed sleepers breathing
 for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
   test(`MOVING (M1 §3): twelve residents with moving sets and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}, the top bar live: no frame over 153,600 px, no overflow, at most six residents changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
@@ -229,11 +241,12 @@ test("rest change (M1 §3, game designer R1; UI/UX asleep in place): awake → a
   const w = trace(f, 0, 2500), wd = w.filter((x) => x.clip === CLIP.wake && x.phase === 0), cr = w.find((x) => x.clip === CLIP.wake && x.phase === 1), st = w.find((x) => x.clip === CLIP.rest);
   assert.deepEqual(wd.map((x) => x.level), [4, 8, 12, 16], "the wake's dither, curl to crouch"); assert.equal(cr.cell.replace("*", ""), "crouch"); assert.equal(cr.dy, 2); assert.equal(st.t - cr.t, 400, "the crouch held 400 ms"); assert.equal(st.cell.replace("*", ""), "stand", "then stand, breathing from b0"); assert.equal(st.dy, 0, "risen to its line");
 });
-test("asleep in place (UI/UX, M1): a focused sleeper's ring is the feet form on its ink box [x + w/2 − 56, feet − 12, 112, 24], its tag's top feet − 120, and neither moves nor changes over 45 s while stirs fall due (they go to the other sleeper)", { skip }, async () => {
+test("asleep in place (UI/UX, M1): a focused sleeper's ring is the footprint of its curl cell on the ground (fix 14), its tag's top feet − 120, and neither moves nor changes over 45 s while stirs fall due (they go to the other sleeper)", { skip }, async () => {
   const sc = movingScene("vivarium", { adults: 2, time: 23 * 3600, focus: "resident:0" }), f = await bootScene(sc);
   const x = f.M._face_test_mv(0, 0), feet = f.M._face_test_mv(0, 1), w = 144;
   f.frame((f.t += 40)); let lg = null; for (let m; (m = f.poll("log"));) lg = m; const ring = lg.regions.find((r) => r.id === "focus" && r.layer === "chrome").rect, tag = lg.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect;
-  assert.deepEqual(ring, [x + w / 2 - 56, feet - 12, 112, 24], "the ring on the ink box"); assert.equal(tag[1], feet - 120, "the tag over the ink, no lift");
+  const walk = movingIds("S01", "adult").walk, foot = footOf(walk, atlasPicture(walk), atlasPicture).curl; assert.ok(foot, "the curl cell has a footprint");
+  assert.deepEqual(ring, footprintRing(foot, [x, feet - 152, w, 152]), "the ring on the curl cell's footprint, on the ground"); assert.equal(tag[1], feet - 120, "the tag over the ink, no lift");
   let stirs1 = 0, prev1 = 0;
   for (let t = 0; t < 45000; t += 40) { f.frame((f.t += 40)); const s0 = STATE(f.M._face_test_state(0)), s1 = STATE(f.M._face_test_state(1)); assert.notEqual(s0.clip, CLIP.stir, "no stir begins on the focused sleeper"); assert.equal(s0.clip, CLIP.asleep); if (s1.clip === CLIP.stir && prev1 !== CLIP.stir) stirs1++; prev1 = s1.clip; }
   assert.ok(stirs1 >= 1, "the due stirs went to the other sleeper: " + stirs1);
@@ -278,4 +291,14 @@ test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when fa
     sc.props.regions.residents.forEach((r) => (r.rest = "asleep")); resend(f); runFrames(f, 15000);
     for (let i = 0; i < 3; i++) assert.ok([curl, curl + 1].includes(f.M._face_test_cell(i)), "asleep: the curl as painted");
   }
+});
+
+test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no fill or edge); with no tile housed or out it has no plate; the tiles name their wells by form, a free bay none", { skip }, async () => {
+  const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3" }), f = await start(b), lg = logOf(f);
+  assert.deepEqual(lg.regions.filter((r) => r.id === "strip" && r.layer === "painted" && r.rect[2] > 0).map((r) => r.rect), [R.strip.rect]);
+  assert.equal(lg.regions.filter((r) => r.id === "strip" && r.layer === "chrome" && r.rect[2] > 2).length, 0);
+  const T = b.props.regions.tiles.items, form = T.length > 6 ? 72 : 152;
+  T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${form}x48`)); assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
+  const e = scene({ focus: null }), g = await start(e), lg2 = logOf(g);
+  assert.equal(lg2.regions.filter((r) => r.id === "strip" && r.rect[2] > 2).length, 0, "no tile housed or out: the strip has no plate");
 });

@@ -74,3 +74,16 @@ test("--status places signed, placeholder, held and new slices flagged in the in
   assert.deepEqual(Object.keys(after), ["page-pane-8x4"], "the held and the withdrawn leave the index"); assert.ok(!existsSync(path.join(root, "pods/room-shelf.png")), "and their files");
   assert.deepEqual(check(root), []);
 });
+
+// fix 14: every placed mibi-(juvenile|adult)-SXX-* master (a creature still or cell, a contact shadow) has a footprint: ink in its lowest rows, at alpha 128 (stills and cells) or at frame.json's shadowAlpha (the shadows).
+// They are the placement guard: the face never receives these ids, the host measures the pictures built from them (station/src/moving.mjs footOf).
+test("every placed mibi-(juvenile|adult)-SXX-* master has a non-null footprint (fix 14, FR4)", async () => {
+  const { decodePNG } = await import("../png.mjs"), { footprintOf } = await import("../specs/derive.mjs"), root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../assets/masters");
+  const idx = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters, T = JSON.parse(readFileSync(path.join(root, "../../specs/station/frame.json"), "utf8")).focus.ring.shapes.footprint; let n = 0;
+  for (const [id, m] of Object.entries(idx)) {
+    if (!/^mibi-(juvenile|adult)-S\d{2}-/.test(id)) continue;
+    const png = decodePNG(readFileSync(path.join(root, m.file))), foot = footprintOf({ w: png.width, h: png.height, rgba: () => png.data }, 0, png.width, { band: T.band, alpha: /-shadow-/.test(id) ? T.shadowAlpha : T.alpha });
+    n++; assert.ok(foot && foot[2] >= 1 && foot[1] <= png.height && foot[0] + foot[2] <= png.width, `${id} has a footprint: ${foot}`);
+  }
+  assert.ok(n >= 40, "the creature masters were measured: " + n);
+});

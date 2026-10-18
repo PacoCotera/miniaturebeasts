@@ -4,6 +4,8 @@
 // or, until it is placed, the stand-in of §1.5 (whole pixels, registered as a placeholder). An atlas is a master only when every one of its cells is; a set plays only when all its atlases are (the play gate), else only under
 // the developer switch "Motion sets (stand-ins)" or in the face tests. The face never makes an id: the props name the atlases.
 import { assetEntry, asset as assetOf, registerAsset, hasAsset } from "../../ui/assets.mjs";
+import { footprintOf } from "../../ui/specs/derive.mjs";
+import { gradedOf } from "./light-grade.mjs";
 
 let MOVING = {};
 // the stand-in shadow's ink (the art director's Q6 ruling for M1a: #1e1a22 at alpha 110, a literal, no new palette name); one constant, so a ruling changes one place
@@ -13,12 +15,13 @@ export const movingSpec = () => MOVING;
 const atlasStage = (stage) => (stage === "elder" ? "adult" : stage);   // an elder takes the adult's cells at the elder's tempo (the face reads the tempo)
 export function movingOf(species, stage) { const set = MOVING[species], s = set && set[atlasStage(stage)]; return s && s.walk ? { species, native: set.native, gait: set.gait, stage: atlasStage(stage), ...s } : null; }
 // the atlas ids (amendment 2): moving:<stage>:<SXX>:<part>:<w>x<h>:<look>, the look the literal `species` until layers exist; the shadows species-level, with no look
-export function movingIds(species, stage, look = "species") {
+export function movingIds(species, stage, look = "species", light = "day") {
   const s = movingOf(species, stage); if (!s) return null; const st = s.stage, [w, h] = s.walk.size, [cw, ch] = s.close.size, [nw, nh] = s.nap.size;
-  return { walk: `moving:${st}:${species}:walk:${w}x${h}:${look}`, close: `moving:${st}:${species}:close:${cw}x${ch}:${look}`, nap: `moving:${st}:${species}:nap:${nw}x${nh}:${look}`,
+  const L = light === "day" ? "" : ":" + light;   // fix 7: a graded atlas names its light (day, the master, adds nothing); the contact shadows are not graded, so their ids never carry one
+  return { walk: `moving:${st}:${species}:walk:${w}x${h}:${look}${L}`, close: `moving:${st}:${species}:close:${cw}x${ch}:${look}${L}`, nap: `moving:${st}:${species}:nap:${nw}x${nh}:${look}${L}`,
     shadow: `moving:${st}:${species}:shadow:${s.shadow.walk[0]}x${s.shadow.walk[1]}`, closeShadow: `moving:${st}:${species}:shadow:${s.shadow.close[0]}x${s.shadow.close[1]}` };
 }
-const parse = (id) => { const m = /^moving:(juvenile|adult):(S\d{2}):(walk|close|nap|shadow):(\d+)x(\d+)(?::([0-9a-f]{16}|species))?(?::(dawn|day|dusk|night))?$/.exec(id); return m && { stage: m[1], species: m[2], part: m[3], w: +m[4], h: +m[5], look: m[6] ?? null }; };
+const parse = (id) => { const m = /^moving:(juvenile|adult):(S\d{2}):(walk|close|nap|shadow):(\d+)x(\d+)(?::([0-9a-f]{16}|species))?(?::(dawn|day|dusk|night))?$/.exec(id); return m && { stage: m[1], species: m[2], part: m[3], w: +m[4], h: +m[5], look: m[6] ?? null, light: m[7] ?? "day" }; };
 // a part's cells in atlas order: the painted cells, then the mirrors (walk); each { name, master, mirror }
 export function cellsOf(species, stage, part, w, h) {
   const s = movingOf(species, stage); if (!s) return [];
@@ -26,6 +29,21 @@ export function cellsOf(species, stage, part, w, h) {
   if (part === "shadow") return [{ name: "shadow", master: id("shadow") }, { name: "shadow-75", master: id("shadow"), derived75: true }];
   const p = s[part], base = p.cells.map((name) => ({ name, master: id(name) }));
   return part === "walk" ? [...base, ...(p.mirror ?? []).map((name) => ({ name, master: id(name), mirror: true }))] : base;
+}
+// A creature picture's footprint, the `foot` the host sends on its `asset` message (fix 14, FR4; the architect's ruling of 08:12): a `mibi:` still, master copy or rig render (graded copies alike): [x, feetY, w] at alpha T.alpha; a walk or close
+// atlas: { stand, curl, shadow }, its cells found by name (the first painted, non-mirror cell of that name: no index is written anywhere) and `shadow` from cell 0 of the same-size shadow atlas at T.shadowAlpha, moved into the creature cell's
+// coordinates (feetY + h - the shadow's h); a nap atlas: { curl }; a shadow atlas and the mibi-* master ids: none. `picOf(id)` gives the shadow atlas. Alpha only, so a graded copy measures as its master. Null when nothing has ink.
+export function footOf(id, pic, picOf, T = { band: 6, alpha: 128, shadowAlpha: 1 }) {
+  const rgba = typeof pic.rgba === "function" ? pic : { w: pic.w, h: pic.h, rgba: () => pic.data };
+  if (/^mibi:/.test(id)) return footprintOf(rgba, 0, pic.w, T);
+  const a = parse(id); if (!a || a.part === "shadow") return null;
+  const cs = cellsOf(a.species, a.stage, a.part, a.w, a.h), at = (name) => { const i = cs.findIndex((c) => c.name === name && !c.mirror); return i < 0 ? null : 1 + i * a.w; }, out = {};
+  for (const name of a.part === "nap" ? ["curl"] : ["stand", "curl"]) { const x = at(name); if (x == null) continue; const f = footprintOf(rgba, x, a.w, T); if (f) out[name] = f; }
+  if (a.part !== "nap") {
+    const s = movingOf(a.species, a.stage), [sw, sh] = s?.shadow?.[a.part] ?? [0, 0], sp = sw ? picOf?.(`moving:${a.stage}:${a.species}:shadow:${sw}x${sh}`) : null;
+    if (sp) { const f = footprintOf(typeof sp.rgba === "function" ? sp : { w: sp.w, h: sp.h, rgba: () => sp.data }, 1, sw, { ...T, alpha: T.shadowAlpha }); if (f) out.shadow = [f[0], f[1] + a.h - sh, f[2]]; }
+  }
+  return Object.keys(out).length ? out : null;
 }
 const placed = (id) => { const e = assetEntry(id); return !!e && !!e.file && e.status !== "empty"; };   // a placed master (its file), not a built stand-in
 export const atlasIsMaster = (id) => { const a = parse(id); return !!a && cellsOf(a.species, a.stage, a.part, a.w, a.h).every((c) => placed(c.master)); };
@@ -60,7 +78,7 @@ export function compose(id, src, layers = []) {
   const a = parse(id); if (!a) throw new Error("not a moving atlas id: " + id);
   if (layers.length) throw new Error("moving: the look's layers are composed in the bake slot (layer-bake §3.1); M1 composes none");
   const cells = cellsOf(a.species, a.stage, a.part, a.w, a.h), out = pic(1 + cells.length * a.w, a.h);
-  const cellPic = (c) => { if (placed(c.master)) return assetOf(c.master); return a.part === "shadow" ? shadowStandIn(a.w, a.h, src.shadowInk ?? SHADOW_INK) : standIn(c.name, a.w, a.h, { stand: (w, h) => src.stand(a.species, a.stage, w, h), nap: () => src.nap(a.species) }); };
+  const cellPic = (c) => { if (placed(c.master)) return assetOf(a.part === "shadow" ? c.master : gradedOf(c.master, a.light)); return a.part === "shadow" ? shadowStandIn(a.w, a.h, src.shadowInk ?? SHADOW_INK) : standIn(c.name, a.w, a.h, { stand: (w, h) => src.stand(a.species, a.stage, w, h, a.light), nap: () => src.nap(a.species, a.light) }); };
   const byName = new Map();
   cells.forEach((c, i) => {
     let p = c.derived75 ? null : c.mirror ? byName.get(c.name) : cellPic(c);

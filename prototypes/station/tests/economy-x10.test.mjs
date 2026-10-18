@@ -59,8 +59,8 @@ test("goalKey, loops 1 to 3 as named: firstPod, firstMibi with the pod chain, pa
   // trip 1 docked: firstMibi, openBay, identify, grow, bud
   const sv1 = sv0([crate(1, [loikaPod(1, 11)])]), t = fresh(); S.dockKey(t, sv1, settings, 1000);
   let g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.deepEqual(g.step, { key: "openBay" });
-  S.openBay(t, sv1, settings, 1000); g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.deepEqual(g.step, { key: "identify", species: "S01" });
-  assert.equal(S.identify(t, t.tray[0], settings).ok, true); assert.deepEqual(S.goalKey(t, sv1).step, { key: "grow", species: "S01" });
+  S.openBay(t, sv1, settings, 1000); g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.deepEqual(g.step, { key: "identify", species: null }, "a fresh game: the goal names no species before the first Identify");
+  assert.equal(S.identify(t, t.tray[0], settings).ok, true); assert.deepEqual(S.goalKey(t, sv1).step, { key: "grow", species: "S01" }, "identified: the species is known and named");
   t.d = 0; const u = fresh(); S.dockKey(u, sv0([crate(1, [loikaPod(1, 11)])]), settings, 1000); u.tray.push({ id: "q", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 5, k: null, n: 0, idd: 0, read: [], fresh: 1 }); u.d = 0;
   assert.deepEqual(S.goalKey(u, sv0()).step, { key: "short", icons: "◆", from: "bench" }, "Identify short: the bench's Data");
   assert.equal(S.grow(t, t.tray[0], {}, settings, 1000).ok, true); g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.equal(g.step.key, "bud");
@@ -155,7 +155,7 @@ test("goalSpendWarn: a spend that would leave the step's next price short warns 
 const seedPods = (st, species, n, seed = 9) => { for (let i = 0; i < n; i++) assert.equal(S.seedPodFromGenome(st, podGenome(frameOf(species), seed + i), settings, 1000 + i).ok, true); };
 test("QA trip 4: two adult Loikas with a complete guide, Cross shut: the held Tuikis is the guide's species; fit replaces its step docked and affordable; the Probe stands in when nothing is held; tier 2 and nothing held is the only null", () => {
   const sv = sv0(), st = fresh(); adults(st, 2); fillGuide(st, "S01"); st.dock = { docked: true, at: 0 }; st.probe = { tier: 1, shield: 3, smax: 3 }; st.e = 13; st.d = 14; st.s = 9;
-  seedPods(st, "S03", 3);
+  seedPods(st, "S03", 3); st.knownIds.push("S03");   // a known species (a pod of it was identified before)
   let g = S.goalKey(st, sv, settings, { cross: false });
   assert.equal(g.key, "guide"); assert.equal(g.species, "S03");
   assert.deepEqual(g.step, { key: "fit" }, "fit replaces the guide's identify step while docked and affordable");
@@ -170,7 +170,19 @@ test("QA trip 4: two adult Loikas with a complete guide, Cross shut: the held Tu
 test("a held species counts for the guide rung whether the pod is identified or waiting, after the living species", () => {
   const sv = sv0(), st = fresh(); adults(st, 2); fillGuide(st, "S01"); st.probe = { tier: 2, shield: 3, smax: 3 }; st.dock = { docked: false, at: 0 };
   st.waiting.push({ id: "w1", species: "S04", sp: 0, g: "meadow", how: "calm", gs: 3, idd: 0, read: [] });
-  const g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.key, "guide"); assert.equal(g.species, "S04"); assert.deepEqual(g.step, { key: "findPod", species: "S04" }, "a waiting pod is not in a well: find one");
+  assert.equal(S.goalKey(st, sv, settings, { cross: false }), null, "an unknown held species is never the guide's (game designer, 2026-10-15)");
+  st.knownIds.push("S04"); const g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.key, "guide"); assert.equal(g.species, "S04"); assert.deepEqual(g.step, { key: "findPod", species: "S04" }, "a waiting pod is not in a well: find one");
+});
+test("the goal leak: a fresh game names no species; identifying a pod of S names it; the guide never names an unknown species; no warning when the goal names none and the pod is unknown", () => {
+  const sv = sv0(), st = fresh(); st.dock = { docked: false, at: 0 }; st.d = 5; st.e = 20; st.s = 20; seedPods(st, "S01", 1); assert.deepEqual(st.knownIds, []);
+  let g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.key, "firstMibi"); assert.deepEqual(g.step, { key: "identify", species: null });
+  seedPods(st, "S03", 1); g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.step.species, null, "two unknown pods: still no species");
+  const other = st.tray.find((p) => p.species === "S03" && !p.idd); st.d = 1;
+  assert.equal(S.goalSpendWarn(st, sv, settings, { d: 1 }, { key: "identify", pod: other }), null, "identifying another unknown pod with ◆ 1 left: no warning");
+  assert.equal(S.goalSpendWarn(st, sv, settings, { d: 1 }, { key: "read" }), null, "no nameless warning string for any act");
+  st.d = 5; const first = st.tray.find((p) => p.species === "S01"); assert.equal(S.identify(st, first, settings).ok, true); assert.ok(st.knownIds.includes("S01"));
+  g = S.goalKey(st, sv, settings, { cross: false }); assert.equal(g.step.key, "grow"); assert.equal(g.step.species, "S01", "the goal for a known species names it");
+  st.tray = st.tray.filter((p) => p.species !== "S01"); g = S.goalKey(st, sv, settings, { cross: false }); assert.ok(g.key !== "guide" || g.species !== "S03", "the guide never names the unknown S03");
 });
 test("careful: Dot and Moss growing up, one unidentified Tuikis pod in a well: the goal is growUp, not the pod", () => {
   const sv = sv0(), st = fresh(); const [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"], [1, 2]); st.turn = 2; st.dock = { docked: false, at: 0 }; st.probe = { tier: 1, shield: 3, smax: 3 };

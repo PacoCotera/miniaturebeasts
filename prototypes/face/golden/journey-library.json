@@ -32,7 +32,7 @@
     "screen": "home",
     "state": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the journal is empty",
     "back": null
    }
@@ -51,7 +51,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -83,7 +83,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -115,7 +115,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -147,7 +147,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -157,7 +157,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -189,7 +189,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -221,7 +221,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S09",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Belatz",
     "back": "Home"
    },
@@ -254,7 +254,7 @@
     "screen": "home",
     "state": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the field journal",
     "back": null
    },
@@ -293,9 +293,6 @@
     "back": "Home"
    },
    {
-    "plate": "Its Book needs its pod identified"
-   },
-   {
     "key": "left",
     "said": [
      {
@@ -307,7 +304,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -339,7 +336,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -377,9 +374,6 @@
     "back": "Home"
    },
    {
-    "plate": "Nothing is known here yet"
-   },
-   {
     "key": "up",
     "said": [
      {
@@ -391,7 +385,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S01",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Loika",
     "back": "Home"
    },
@@ -423,7 +417,7 @@
     "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -438,26 +432,9 @@
      }
     ],
     "screen": "library",
-    "state": "notBuilt",
-    "focus": "library",
-    "ok": null,
-    "subject": "",
-    "back": "Library"
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "library",
-      "target": "screen",
-      "verb": "back"
-     }
-    ],
-    "screen": "library",
     "state": "spread",
     "focus": "frame.S03",
-    "ok": "Open its Book",
+    "ok": null,
     "subject": "Tuikis",
     "back": "Home"
    },
@@ -474,7 +451,7 @@
     "screen": "home",
     "state": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "the field journal",
     "back": null
    }

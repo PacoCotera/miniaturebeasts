@@ -1,10 +1,12 @@
 // One mibi up close, the Vivarium's closest level (the habitat identifier stays; habitat.json): ✓ on the resident, the name, the species word, a chapter plate, the Companion, Portrait, Cross, Wild or a tile. The events are the spec's
-// (events.moment, read, release, back): no constant of time lives here. The first ✓ on Wild arms and the second does it; any other key disarms. The meet's first ✓ opens the namer (intents/namer.mjs).
+// (events.moment, read, release, back): no constant of time lives here. ✓ on Wild opens the Return panel (`returnNow` is its Return card). The meet's first ✓ opens the namer (intents/namer.mjs).
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
 import { openBook } from "./library.mjs";
+import { openPanel } from "./panel.mjs";
+import { doorOpen } from "../nav.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 // The mibi up close: the chosen one, else the first the Companion does not carry, else the first.
@@ -26,7 +28,7 @@ export function endMeet(h) { if (h.ui.meet != null) { h.ui.meet = null; return t
 
 // `target`: resident | name | species | plate.<i> | door | portrait | cross | wild | tile.<mibi id>.
 export function intent(h, target, verb) {
-  const a = h.ui.hab, m = shown(h); if (verb !== "confirm") a.wildArm = 0;
+  const a = h.ui.hab, m = shown(h);
   if (!m) { if (verb === "back") h.goto("vivarium"); return; }
   if (verb === "back") {   // the Vivarium's whole, the ring on this mibi's resident (its tile while it is out); the dither is held 180 ms
     if (a.id == null) a.id = m.id; endMeet(h); const e = h.specs.habitat.events.back; h.goto("vivarium", h.motion() ? e.hold : 0); return;
@@ -40,7 +42,7 @@ export function intent(h, target, verb) {
     else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said
   }
   else if (target === "name") openNamer(h, m, "rename");
-  else if (target === "species") { openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library
+  else if (target === "species") { if (!doorOpen("book")) return; openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);
@@ -51,21 +53,25 @@ export function intent(h, target, verb) {
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m);
     if (r.ok) h.save(); else if (r.why === "full") h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name }));
   }
-  else if (target === "portrait") { if (!S.isAway(h.st, h.sv, m) && h.st.sitting && !m.portrait) h.goto("sitting"); }   // the sitting: not built yet, a slot of its own
+  else if (target === "portrait") { if (doorOpen("sitting") && !S.isAway(h.st, h.sv, m) && h.st.sitting && !m.portrait) h.goto("sitting"); }   // the sitting: not built yet, a slot of its own
   else if (target === "cross") {
-    if (!S.isAdult(h.st, m, h.settings) || S.isAway(h.st, h.sv, m)) return;
+    if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings) || S.isAway(h.st, h.sv, m)) return;
     if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away)) openCross(h, m);   // only partners at home can be picked
   }
   else if (target === "wild") {
     if (S.returnMibiBlock(h.st, h.sv, m)) return;   // the block is the Wild module's context (bottomLine.wild.blocked): the intent says nothing
-    if (!a.wildArm) { a.wildArm = 1; return; }
-    a.wildArm = 0; const r = S.returnMibi(h.st, h.sv, m, h.settings);
-    if (!r.ok) return;
-    h.save(); const next = S.housed(h.st).sort((x, y) => x.bay - y.bay)[0] ?? null, ev = h.specs.habitat.events.release;
-    h.say(fill(h.specs.habitat.strings.releasePlate, { name: m.name, place: S.PLACE_WORD[m.from?.g] || "wild" }));
-    if (next) { a.id = next.id; a.f = S.isAway(h.st, h.sv, next) ? "name" : "resident"; play(h, "release"); }   // the resident dithers out to the next housed mibi in bay order
-    else { a.id = null; h.goto("vivarium", h.motion() ? ev.hold : 0); }   // none left: the whole, empty
+    openPanel(h, "habitat", "wildMibi");   // ✓ opens the Return panel (decision panel spec §1.6); its Return card runs returnNow
   }
+}
+// The Return card's act: the rule gives the mibi back to the wild (+2 Essence), the plate says where, and the resident dithers out to the next housed mibi in bay order, or the whole shows empty.
+export function returnNow(h) {
+  const a = h.ui.hab, m = shown(h); if (!m) return;
+  const r = S.returnMibi(h.st, h.sv, m, h.settings);
+  if (!r.ok) return;
+  h.save(); const next = S.housed(h.st).sort((x, y) => x.bay - y.bay)[0] ?? null, ev = h.specs.habitat.events.release;
+  h.say(fill(h.specs.habitat.strings.releasePlate, { name: m.name, place: S.PLACE_WORD[m.from?.g] || "wild" }));
+  if (next) { a.id = next.id; a.f = S.isAway(h.st, h.sv, next) ? "name" : "resident"; play(h, "release"); }
+  else { a.id = null; h.goto("vivarium", h.motion() ? ev.hold : 0); }
 }
 // What the watch says (events: a host rule, not an event): the shown mibi is watched while this level shows and the face is awake; the first habit it has not been seen doing is recorded at 60 s, once a mibi a day, with the Data trickle and the plate.
 export function watch(h, dt) {

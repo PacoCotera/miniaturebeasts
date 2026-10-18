@@ -52,7 +52,7 @@ const S01_FIXED = {
   "growth.support-drop-ratio": "short", "growth.support-radius-ratio": "stout", "growth.support-splay-ratio": "low",
   "growth.terminal-length-ratio": "narrow", "growth.terminal-depth-ratio": "small", "growth.belly-field-extent": "high",
   "anatomy.contact-terminal-form": "rounded", "anatomy.region-longitudinal-form": "ovoid", "anatomy.region-cross-exponent": "round",
-  "appearance.marking-layout": "patches", "appearance.marking-extent": "high", "appearance.marking-scale": "high",
+  "appearance.marking-extent": "high", "appearance.marking-scale": "high",
   "appearance.marking-contrast": "high", "cognition.exploration-tendency": "seeking", "cognition.arousal-threshold": "low",
 };
 const S02_FIXED = {
@@ -106,10 +106,12 @@ export const HABITS = {
 
 export const SPECIES = [
   { ...row("S01", "C01", "medium", "starter", "a round frog-hare, Pip (frame hopper)", "hops", "meadow, pond edge", null, "fruit", "calms wary creatures", "gentle and curious, a little shy"),
-    summary: "The starter: Pip as in the approved art. Exactly the five open traits of the Pip proof.",
+    summary: "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line.",
     fixed: S01_FIXED, typical: { "growth.exterior-eye-size-ratio": "huge" }, openSwitches: ["appearance.marking-switch", "anatomy.crown-presence"],
+    legacy: { "appearance.marking-switch": ["off"] },   // a version-3 Loika may carry "off" (plain): legal for inheritance, never drawn for a new pod
     open: [
-      { chapter: "coat", id: "markings", name: "Markings", loci: ["appearance.marking-switch"], looks: ["plain", "pale patches"] },
+      { chapter: "coat", id: "colour", name: "Colour", loci: ["appearance.body-palette"], pool: { "appearance.body-palette": ["charcoal", "russet", "ash"] } },
+      { chapter: "coat", id: "markings", name: "Markings", loci: ["appearance.marking-switch", "appearance.marking-layout"], looks: ["plain", "stripes", "patches", "stripes and patches"], pool: { "appearance.marking-switch": ["on"], "appearance.marking-layout": ["bands", "patches"] } },
       { chapter: "face", id: "crown", name: "Crown", loci: ["anatomy.crown-presence"], looks: ["bare head", "leaf crest"] },
       { chapter: "face", id: "eye-rings", name: "Eyes", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"], pool: { "growth.exterior-eye-size-ratio": ["large", "huge"] } },
       { chapter: "movement", id: "drive", name: "Drive", loci: ["movement.cycle-rate"], looks: ["steady", "between", "bursts"] },
@@ -134,6 +136,8 @@ export const SPECIES = [
   { ...row("S03", "C03", "small", "mid", "a lizard with a lantern tail (frame glowtail)", "scurries, digs", "wood, rock field", "opens narrow holes and Night", "dew", "digs narrow burrows; lights fog and Night", "a brave little torchbearer"),
     summary: "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow.",
     fixed: S03_FIXED, openSwitches: ["appearance.marking-switch"],
+    frameVersion: 5,   // the claws narrowed to the three digging forms (the game designer's call (A), T-20261016-194)
+    legacy: { "anatomy.contact-terminal-form": ["hoof", "webbed", "root"] },   // a version-3 or -4 Tuikis may carry these: legal for inheritance, never drawn for a new pod, described plainly ("hooves", "webbed feet", "roots")
     open: [
       { trait: "colour", pool: { "appearance.body-palette": ["lagoon", "jade", "marigold", "periwinkle"] }, looks: ["lagoon", "jade", "marigold", "periwinkle", "two side by side"] },
       { trait: "second-colour", name: "Trim", pool: { "appearance.underside-palette": ["milk-mint", "cream", "ice", "slate"] }, looks: ["milk-mint", "cream", "ice", "slate", "two side by side"] },
@@ -141,7 +145,7 @@ export const SPECIES = [
       { chapter: "face", id: "crest", name: "Crest", loci: ["growth.crown-height-ratio"], looks: ["low crest", "between", "tall crest"] },
       { trait: "eyes" }, { trait: "snout" }, { trait: "build" }, { trait: "hind-body" }, { trait: "back-line" },
       { chapter: "legs-tail", id: "legs", name: "Legs", loci: ["growth.support-drop-ratio", "growth.support-radius-ratio"], looks: ["short, fine", "between", "long, stout"] },
-      { trait: "feet", name: "Claws", shapeable: false, override: "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing" },
+      { trait: "feet", name: "Claws", shapeable: false, override: "breeding only: the claws are how a Tuikis digs, a field ability, so they change like a doing", pool: { "anatomy.contact-terminal-form": ["rounded", "pad", "wedge"] } },
       { trait: "tail" }, { trait: "tail-curl" }, { trait: "pace" }, { trait: "stride" },
       { chapter: "movement", id: "weave", name: "Weave", loci: ["movement.axial-amplitude", "movement.axial-phase"], looks: ["straight scurry", "between", "weaving glide"] },
       { trait: "turning" }, { trait: "strength" }, { trait: "reserve" }, { trait: "thrift" }, { trait: "curiosity" }, { trait: "nerve" },

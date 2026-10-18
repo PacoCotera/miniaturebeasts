@@ -1,4 +1,6 @@
-# Station layouts
+# Appendix: Station layouts
+
+**This appendix serves the [style guide](README.md).** It holds the pixel tables: rects, sizes and slots. The look (colours, materials, light, components, type, words and marks) is the guide's. Where a table here names a look the guide forbids (a moss nest, a cream plate or notch, leaf timers, a brown stage, an inner riveted bezel, paper that changes with play (a clipboard as a status screen), a just-cleared card, a painted plate picture such as `plate-device-*`, `plate-well-*`, the cargo report plate, `label-plate-cream` or the stamp case plaque, a report card or store tanks in Cargo), the guide wins, and the table is fixed when its screen is redesigned.
 
 The measured layout of every built Station screen at 1024×600, 1×, so the builder places each thing from a number rather than a guess. Rules and looks are in the [style guide](README.md) and [Station screens](station-screens.md); this file adds the measurements. Each layout starts from its concept plate and keeps these rules:
 
@@ -7,10 +9,19 @@ The measured layout of every built Station screen at 1024×600, 1×, so the buil
 - The rail shows as many chapters as the species has.
 - No digits where a picture can do the job. Prices on the bottom line are the exception.
 - Labels are one word. Never a text page. Never childish.
+- Every state is composed: it names its main object, an empty region draws nothing, and no flat-box stand-in reaches a golden ([Every state composed](#every-state-composed-one-rule-every-screen)).
 
 **For the builder.** Where a layout departs from its concept plate, it says so and why. The wireframes in [`station-layouts/`](station-layouts/) are measured boxes and labels only, with no art: one per screen, drawn from the same numbers as the tables below.
 
 **How to read a rectangle.** `(x, y, w, h)` in screen pixels, with the origin at the screen's top left. Every region sits on the 8 px grid. Hairlines are 1 px and are the only exception.
+
+## Placement rules every screen shares
+
+#### Mibi height per view
+
+Mibi sizes per view and the upright Probe are rules of the look: see [Size and pose](../art-direction.md#size-and-pose).
+
+---
 
 Pods comes first because it sets the pattern the other screens follow.
 
@@ -91,14 +102,14 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 
 | Region | Rectangle | For | Focus target |
 | --- | --- | --- | --- |
-| Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a round ring 4 px outside the bezel (12, 44, 664, 512); ▲ from the topmost resident; `✓ Open the vivarium` |
-| Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`, to that mibi up close |
+| Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a ring 5 px outside the bezel (11, 43, 666, 514); ▲ from the topmost resident; `✓ Open the vivarium` |
+| Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the footprint ring (fix 14); `✓ Look at Bean`, to that mibi up close |
 | With-you bed | 448, 472, 192, 56 | The carried set: one to three asleep when docked; away, the bed empty | each sleeper is a `resident` target, without the lift |
 | Name tag | under the focused resident | Which mibi this is | — |
 | Rest knob | 624, 544, 32, 8 | Put the Station on Idle | `knob`; `✓ Rest` |
 | Cargo module | 688, 48, 320, 88 | The crates in the bay; amber while they wait | `cargo`; `✓ Open the bay` |
 | Pods module | 688, 152, 320, 88 | The rack's six wells, the glints | `pods`; ✓ to Pods' collection |
-| Incubator module | 688, 256, 320, 88 | The dome and its leaves | `incubator`; ✓ to the Incubator |
+| Incubator module | 688, 256, 320, 88 | The chamber, its state in its picture | `incubator`; ✓ to the Incubator |
 | Probe module | 688, 360, 320, 88 | The Probe, its Shield plates, the sitting slot | `probe`; ✓ to the Probe bench |
 | Library module | 688, 464, 320, 88 | The field journal | `library`; ✓ to the Library's spread |
 
@@ -113,7 +124,7 @@ Each module is one engraved word at (16, 12), its 12×12 lamp at (296, 12) and i
 | Region | Rectangle | For | Focus target |
 | --- | --- | --- | --- |
 | Living window | 0, 40, 1024, 440, edge to edge, no bezel; ground band 0, 296, 1024, 176 | The whole Vivarium, the same painting Idle shows | — |
-| Residents | at their size, walking inside 16, 296, 992, 176 | Every mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`; ▼ to its bay tile |
+| Residents | at their size, walking inside 16, 296, 992, 176 | Every mibi at home | `resident.<id>`: the footprint ring (fix 14); `✓ Look at Bean`; ▼ to its bay tile |
 | With-you bed | 792, 416, 192, 56 | The carried set asleep, or the Companion mark | sleepers are `resident` targets |
 | Name tag | under the focused resident | Which mibi this is | — |
 | Strip of bays | 16, 488, 992, 64; tiles from 32, 496 | Every bay, at most twelve: each mibi, the free bays, the mibis out with the Companion (the outline glyph) | `tile.<id>`: ◀ ▶ along, ▲ to its resident; ✓ to that mibi up close |
@@ -129,7 +140,7 @@ Nothing else is on the stage: no card, no modules, no words in the window but th
 | Region | Rectangle | For | Focus target |
 | --- | --- | --- | --- |
 | Bezel, glass | 16, 48, 560, 424; 24, 56, 544, 408 | The mibi at home, in the Vivarium's light | — |
-| The mibi | 144, 80, 304, 312 | The one this level is about | `resident`: the feet ring; `✓ Greet Burr` (its species moment) |
+| The mibi | 144, 80, 304, 312 | The one this level is about | `resident`: the footprint ring (fix 14); `✓ Greet Burr` (its species moment) |
 | Name tag | in 184, 416, 224, 32 | Its name | `name`: `✓ Rename Burr`, the namer over the right column (592, 48, 416, 424) |
 | Card | 592, 48, 416, 208 | Who it is: species line, heart, story, code, skill notches, stamp, chapter plates | `species` (`✓ Open the guide`), `plate.<i>` |
 | Heart | 832, 64, 24, 24 | Bonded: drawn; unbonded: nothing | — |
@@ -214,9 +225,9 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 | Zone | Rectangle | What it says | Sentence or mark |
 | --- | --- | --- | --- |
-| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `focus` (cream) | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
+| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `focus` (cream); on Create the price ends with the bud's wait, `⧗` and its minutes (fix 6 N1a) | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
 | **The context** | 408, 570, 208, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
-| **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
+| **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of five words or fewer (the style guide's words budget, §10; the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
 
 **Home's goal in the notice zone.** With the Companion in the room and no first-group need (crates waiting, a bud ready, a meet, new pods, glints, waiting pods, a mibi that could grow and can be paid for), the zone carries the goal: the sentence `goalKey` names, in `mist`, right-aligned to x 896 as the notice is, with no lamp. A new pod is a first-group need until Pods has drawn it (the notice counts only pods not yet seen); once every unidentified pod has been seen it gives way to the goal, the room's ✓ stays "Look at the pods" and the Pods module's lamp is not amber. The goal's ladder reaches held species (the pods in the wells and waiting) after the living ones, and the Probe's upgrade stands in when no rung holds and the Probe is below tier 2. A first-group need keeps the zone amber with its lamp; with neither, the soft need shows as before. A step that is short of materials draws its icons as 16 px icons after the words (gap 4, pitch 20). When the name makes the line wider than the room (272 on Home) with its icons at 20 px each, the face takes the sibling sentence without the name. Away, a step that is going out reads the `aim` sentence. `needKey` and the room's ✓ do not change.
@@ -234,7 +245,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 The material icons are the kit's 16 px icons, as on the Companion.
 
-**Prices read icon before figure** on every Station screen, as the frame's counters do: `⚡ 2 ❀ 4`, `◆ 3`, `❀ +1`. Several materials read in the order ⚡ ❀ ◆, each icon with its figure, with no dot.
+**Prices read icon before figure** on every Station screen, as the frame's counters do: `⚡ 2 ❀ 4`, `◆ 3`, `❀ +1`. Several materials read in the order ⚡ ❀ ◆, each icon with its figure, with no dot. Create's Grow price ends with the bud's wait, ⧗ and its minutes (`icon-wait-16`), never short.
 
 **Slots, not words.** Every word in the frame fills a slot, written to the zone's rule above: no dot-separated fragments, a verb phrase for the action, a label for the context, a sentence for the notice, the title one word.
 
@@ -267,22 +278,31 @@ The material icons are the kit's 16 px icons, as on the Companion.
 
 ### Type
 
-**Tab and heading labels are capitalised word by word:** every word of a chapter's name starts with a capital, "&" stays as it is: "Coat", "Legs & Tail". The rule holds wherever a chapter's name is set (the rail, the page heading, the Book), so the build takes the names from the string table as written there; it never recases them. Sentences (the bottom line, captions, notices) stay in sentence case.
+**Tab and heading labels are written exactly as the frames write them:** "Coat", "Legs & tail" (the code wins). The rule holds wherever a chapter's name is set (the rail, the page heading, the Book), so the build takes the names from the string table as written there; it never recases them. Sentences (the bottom line, captions, notices) stay in sentence case.
 
 Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a species), **20 px** medium for titles (the screen name, a page heading, a ribbon), **16 px** regular for everything else (readouts, labels, trait lines, the bottom line). **One exception, Pods only:** the pod's name label under the dish is 20 px medium, so it reads as the plate's quiet label, not a headline over the specimen. Use tabular figures. Never set type at 13 px. Never bake text into art. Text on art gets a 1 px dark shadow.
 
 ### The stamp label (one rule, every screen that shows it)
 
-- **The label is 120×120**, a bone-coloured plate with a 1 px slate edge, and the stamp is centred on it.
+- **The label is 120×120**, and the stamp is centred on it. Its look (the case: fill, edge, light, glass, and the code's ink and rule) is the art director's hook `stampCase` (`frame.json regions.stampSlot.look`). It is never a white card. The look is signed (art director, masters-pods 001bcd51): the label's plate and the stamp are multiplied in linear light by K × (1.00, 0.93, 0.80) when the label is rasterised (a picture placed 1:1, never an overlay), K 0.20 on Create, the Incubator and the Habitat card and K 0.75 on Pods, with a 1 px `hairline` edge; on Pods the label stands in the case (`room-stamp-case-152x152` behind it, `-front`, the ground at 48 %, over it); the code is `mist` at 16 px on a 1 px `hairline` rule. The bone plate is the plate's colour before the multiply, not a look of its own.
+- **One slot** (UI/UX designer, 2026-10-12 00:02, fix 4 of the Station global fix plan). The label is at (804, 400, 120, 120) on the right column's axis 864. The code's line box is (776, 525, 176, 25), with its baseline at 541 and a 1 px rule at y 549 from x 776 to 952. The label stays in the same place from screen to screen, so it is not noticed fresh on each:
+  | Screen | Label | Code | Why |
+  | --- | --- | --- | --- |
+  | Pods, overview | (804, 400, 120, 120), case (788, 384, 152, 152) | none | the slot; was 872, 400 in the case at 856, 384 |
+  | Create | (804, 336, 120, 120), in its case (788, 320, 152, 152) | (776, 481, 176, 25), baseline 497, rule 505 | raised 64 so the small chamber, the case and the code read as one column (fix 5 Create); `nothingRead` draws the pod's stamp |
+  | Incubator (growing, ready, hatch) | (804, 232, 120, 120) | (776, 357, 176, 25), baseline 373, rule y 381, x 792 to 936 | raised 168, the right column's label place under the R machinery. It was 804, 256, and before that 840, 296, with its code at 808, 424 on the cable |
+  | One mibi up close (Habitat: rest, meet, out) | (872, 64, 120, 120), in the card | the card's own line (608, 160) | the slot would land on the Cross and Wild modules; the rect stays and the look demotes it. No asset: nothing drawn |
+  | Book | (832, 112, 120, 120) | none | the page's label; outside fix 4 |
+- **Never the brightest element.** At 1×, the label rect's mean and its 95th-percentile relative luminance are each below the same measures of the state's main object ([Every state composed](#every-state-composed-one-rule-every-screen)). On main 0a46bf1c the label measured a mean of 59 to 76 % and a p95 of 100 %, against the main object's mean of 20 to 34 % and p95 of 40 to 80 % (Create, Incubator, Pods overview, up close). It was the brightest thing on every one of those screens.
 - **The stamp is drawn on whole-pixel cells.** For a stamp of N modules (N + 2 with its quiet margin), the cell is the largest whole number of pixels that keeps the stamp within 104 px: `cell = floor(104 / (N + 2))`, never less than 2. For example, 21 modules give 23 × 4 = 92 px and 49 modules give 51 × 2 = 102 px.
-- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. One exception, on Pods only: the label stands on a small, dim, matte plate in the housing at the right, the label plus 16 px a side; the plate has no light, glow or beam of its own.
+- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. On Pods and Create the label stands in its case, the label plus 16 px a side. The case has no light, glow or beam of its own.
 - **It reads fifth or later** on every screen.
 
 ### The chapter rail (Pods, Create, Incubator)
 
 The rail is the same object on all three bench screens. It hangs from the top bar at the same height on each and moves only sideways.
 
-As the plate draws it, the tabs hang from the top bar and touch along their slants.
+As the plate draws it, the tabs hang from the top bar's rule inside the rail's well, cut into the housing's top bezel (fix 2 F11; `plate-rail-well-{w}x48`, 1:1 at (x0 − 8, 40), to y 88), and touch along their slants; the open tab is a cream label plate; the 6 × 6 pips are gone but on Create (fix 11).
 
 - **Where it hangs.** Every tab's top edge is the top bar's bottom rule, y 40, and its bottom edge is y 80: tabs are 40 tall. The rail is the one region that meets the top bar; the stage's 48 px start does not apply to it. Its region is (x0, 40, 832, 40).
 - **The slant.** A tab is a parallelogram whose two sides lean the same way, 16 px over its 40 px height: the bottom edge sits 16 px right of the top edge, as on the plate. A tab of width w (the width of its top edge, and of every row of it) at x has the box (x, 40, w + 16, 40); its sides are the lines x + 16 (y − 40) / 40 and x + w + 16 (y − 40) / 40.
@@ -299,7 +319,7 @@ As the plate draws it, the tabs hang from the top bar and touch along their slan
 - **What Create and Incubator inherit:** all of the above (the hanging at y 40, the 40 px height, the 16 px slant, the touching tabs, the two forms and their widths, the count rule, the 8 px pip pitch), centred as stated. On both the rail is not a focus target and shows no glint, so nothing hangs under it: their regions below the rail start at y 88, 8 px under it, and do not move. Create's own pip marks (changed, clash, the focused trait) sit on the 8 px pitch.
 - **Cross inherits it too.** On the chapter view, centred as stated: a tab is read when both parents have read the chapter, and unread when either has not. Its pips are filled where the trait's forecast is drawn and hollow where it is missing. Its glint slot carries `cross-wish-lit-12x12` on a chapter holding a pinned trait a child can reach ([Cross: the splice](#cross-the-splice)).
 - **Never** a second row, a scroll, a "more" arrow or a clipped word.
-- **One word per tab,** with one exception: the "Legs & Tail" tab shows "Legs & Tail" (every word capitalised, [Type](#type)); at 16 px Inter (78 px) it fits the 136 px full tab.
+- **One word per tab,** with one exception: the "Legs & tail" tab shows "Legs & tail" (as the frames write it, [Type](#type)); at 16 px Inter (78 px) it fits the 136 px full tab.
 - **No status words or prices on a tab:** no "read", "cleared", "misty" or "1 ◆". The tab's fill and pips show the state, and the price is on the bottom line.
 
 **State colours.** One fill, one word colour and one pip colour per state, from the kit's roles, and nothing else varies: no lit rim, no teal fill, no notch colour. Every tab's edges, the shared slants, are 1 px `bevel`. The focus ring is the only highlight. Each fill is a signed piece placed 1:1 at the tab's rect (`pods.json` `derived` "tab fills").
@@ -312,7 +332,7 @@ As the plate draws it, the tabs hang from the top bar and touch along their slan
 | Sealed | `panel` with horizontal slats in `bar` | `mist` | none |
 | Focused | its state's fill, word and pips, unchanged | | |
 
-The focused tab adds the focus ring in the `focus` role, in its tab shape (States shared by every screen, Focus ring), and nothing else: no lift, no lit edge, no change of fill. Read and unread share a fill and differ by word and pips; the open tab alone is one step lighter.
+The focused tab adds the focus ring in the `focus` role between its `void` keys, in its tab shape (States shared by every screen, Focus ring: the tab's outline grown, bottom corners 7 / 6 / 4), and nothing else: no lift, no lit edge, no change of fill. Read and unread share a fill and differ by word and pips; the open tab alone is one step lighter.
 
 | Other mark | How it is drawn |
 | --- | --- |
@@ -322,10 +342,13 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 
 ### States shared by every screen
 
-- **Focus ring.**
-  - One warm ring per screen, in the palette's `focus` role (warm cream, #ffe6ad; ui-kit §2), 2 px wide, 4 px outside its target, with a 6 px corner radius.
-  - On a creature it is an ellipse on the ground under its feet instead: the box width plus 16, by 24 px tall.
-  - **On a rail tab it follows the tab:** the tab's two slant lines moved 4 px outward, x − 4 + 16 (y − 40) / 40 and x + w + 4 + 16 (y − 40) / 40, running from y 42 to y 80 (the tab's bottom edge), then dropping straight down to a bottom run at y 84 (at x + 12 and x + w + 20), closed by a top run at y 42 (just under the top bar's rule). One rule: the slants stop at y 80, so the ring's box is exactly (x − 4, 42, w + 24, 42). The ring is 2 px and cream, its bottom corners rounded 6 and its top corners square against the top bar. It crosses 4 px onto each neighbouring tab. Its box is (x − 4, 42, w + 24, 42).
+- **Focus ring (fix 14).**
+  - One solid cased line per screen, outside its object and parallel to the object's outline: a 2 px core in the palette's `focus` role (warm cream, #ffe6ad; ui-kit §2) between two 1 px keys in `void`, one pixel of ground between the object and the line, 5 px out in all (`frame.json` `focus.ring`: `gap` 1, `bands` key 1 / core 2 / key 1, `reach` 5). 2 px of contrast in every light, on any ground.
+  - The object's shape picks the ring's shape, and its corners are concentric with the object's (radius + 5 / 4 / 2 for the keys and core): a plate or a well (radius 6) is ringed as a rounded rectangle (outer radius 11); a key, a frame, a tag, a bezel, the roll picture as a square (outer radius 5); a pod as an oval; a collection place or a kin ring as a circle; a creature by its footprint on the ground (below).
+  - On a creature it is an ellipse on the ground under its feet, the footprint of its picture as drawn: the lowest 6 rows of ink, (w + 10) × (fh + 10) with fh = 2 × round(w / 12) held between 6 and 16. The ring is drawn under the creature, so the body hides its back arc. Night keeps the same weight: the 2 px floor holds in every light.
+  - On the tome's paper (the Library) the ring is `rust`, the core alone, no keys, the same geometry.
+  - **On a rail tab it follows the tab:** the tab's outline grown by the bands, outer key 5 px out (top 41, bottom 85), core 4 (42, 84), inner key 2 (44, 82); bottom corners rounded 7 / 6 / 4 and the top square against the top bar's rule. It crosses 5 px onto each neighbouring tab.
+  - A cut: the whole ring on the first frame focus lands, gone on the frame it leaves; no grow, fade, travel or blink, with reduced motion too.
   - The focused thing lifts: chrome 2 px, a creature 4 px, over 200 ms. A hanging rail tab does not lift.
   - Never a list cursor, a side bar or a second ring.
   - A focus with nothing to confirm still draws the ring. The bottom line then has no ✓ cap.
@@ -334,6 +357,44 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why. Marks never sit on the picture.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
 - **No words in a living window.** The vivarium, the up-close window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); the vivarium's name tag, and its meet ribbon in the tag's place ([the vivarium, up close](#the-vivarium-the-whole-and-one-mibi-up-close)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
+
+### Every state composed (one rule, every screen)
+
+UI/UX designer, 2026-10-11 23:56, step 0 of the Station's global fix plan, after the owner rejected the screens as a whole (2026-10-11 23:49). Every layout in this file measured its parts and never said what a state looks like when a part is absent, so the builds followed the specs into empty frames, lavender boxes and dead fields. This rule closes that gap. It outranks every per-screen table below, the "Placeholders on …" tables included. Where a screen's spec still says otherwise, this rule wins, and the spec catches up before that screen's gate.
+
+1. **Each state names its main object.** Every state of every screen (each `states` entry of its spec, and each event's end frame) names one main object: the region id the eye lands on first, and its rect. Examples: Create shape, the founder (360, 240, 304, 312); the Incubator empty, the chamber (360, 200, 304, 272); Pods' overview, the pod (184, 216, 144, 176). The spec lists it as `composed.<state>: { "main": "<region id>", "rect": [x, y, w, h] }`. A state that cannot name one is not designed, and the builder does not build it. The main object is drawn in that state. If its master has not landed, the state is not ready for its gate.
+2. **An empty region draws nothing.** A region with nothing to show keeps its node with no size (w 0, h 0, as Grow keeps its nodes, [lvgl-switch.md §2.2](../proposals/lvgl-switch.md)). It never draws an empty frame, an outline, a dashed or dotted box, a bare panel, a dark well, a bare label plate, or a caption standing for the absent thing. An empty state that the design shows as an object is not an empty region: the empty dish, the shut journal, the dark chamber and the shut bay are objects, drawn from their masters. Retired by this rule, to be removed from each spec at its screen's gate:
+   - the bay strip's free bay as a `dash` outline (the vivarium, up close and the whole);
+   - the up-close Companion module's empty dark slots;
+   - the bare stamp label with no stamp (`habitat.json regions.stamp.until`);
+   - Pods' place tiles beside the collection rings (removed, fix 6);
+   - Home's module object boxes in their empty states, until each empty object is painted.
+3. **No flat-box stand-in on a golden.** Some stand-ins are a flat fill, an outline or an unpainted plate: the register's lavender `placeholder` plates, flat roll fills, `standIn` edge boxes, a `colours.*StandIn` fill. Such a stand-in is never drawn in a frame that is goldened, captured for a review or shown to the owner. The region stays with no size. A stand-in the art director has signed as a picture (named in the register with its signer, such as the juvenile stand-in) is art, not a box, and may be placed. Which creature renderings may stand in is the art director's question, not this rule's.
+4. **Placeholder slots show nothing until their art lands.** The "Placeholders on …" tables give the size each master is painted at. They are not things to draw. A slot whose picture is not a signed master (register status `placeholder` without the art director's stand-in signature) draws nothing. The layout does not move to fill the gap, as `create.c` already does for a picture the host has not sent. When the master lands, it is placed 1:1 at the slot's rect, and the rect does not change for it.
+
+5. **An adult without its signed stand stands as its species' juvenile** (UI/UX designer, 2026-10-12 00:09; supersedes this rule as written at 00:03, commit 000a9f9c, after the game designer's ruling that a mibi the player owns is never absent, internal `boards/station-unread-chapters.md` §4, 2fdd615; the creative director's conditions for the interim, relayed by the Station lead at 00:09: never scaled, kept in its own box, growing up not staged as a reveal). An adult or elder the player owns keeps its list entry, name, bay, tile, targets and actions on every screen. Its picture is the best that exists, in this order: (1) its species' signed adult stand, `mibi-adult-SNN-WxH`; (2) its species' signed juvenile stand, `mibi-juvenile-SNN-WxH`, at the size below; (3) the host's stand-in from its own genome (`mibiArt`, the rig) at the adult's size. Every picture is a signed master placed 1:1 or the rig at its own size: nothing is scaled, nothing fills the rest of an adult rect, and no state, motion or mark marks the moment a real adult stand replaces the juvenile.
+   - **The anchor is the feet.** Each place keeps the adult's feet point (footX, footY): the box's bottom-centre. The juvenile master is placed bottom-centred on that same point, at x = footX − w ÷ 2, y = footY − h. Measured on `masters-pods` (all 64 juvenile masters, S01 to S16): every one is ink-centred within 1 px and stands on a fixed foot gap (6 px at 304×312 and 104×112, 2 px at 96×88, 2 to 4 px at 48×48), the gap the juveniles already stand on; so the frame's bottom edge is the feet line, with no per-species offset.
+   - **Each place, the size that fills it, and the rect** (adult rect → juvenile master, 1:1):
+
+     | Place | Adult rect | Juvenile master | Juvenile rect | Rest of the adult rect |
+     | --- | --- | --- | --- | --- |
+     | Home, residents (ground band 24, 300, 640, 228) | (footX − 72, footY − 152, 144, 152) | `-104x112` | (footX − 52, footY − 112, 104, 112): the adult box + (20, 40) | nothing |
+     | Home, sleepers (feet y 512) | ink (footX − 48, 424, 96, 88) | `-96x88` | (footX − 48, 424, 96, 88) | — |
+     | Idle, residents (feet in 16, 376, 992, 176) | (footX − 72, footY − 152, 144, 152) | `-104x112` | (footX − 52, footY − 112, 104, 112) | nothing |
+     | Idle, sleepers (feet y 536) | ink (footX − 48, 448, 96, 88) | `-96x88` | (footX − 48, 448, 96, 88) | — |
+     | Vivarium whole, residents (feet in 16, 296, 992, 176) | (footX − 72, footY − 152, 144, 152) | `-104x112` | (footX − 52, footY − 112, 104, 112) | nothing |
+     | Vivarium whole, sleepers (feet y 456) | ink (footX − 48, 368, 96, 88) | `-96x88` | (footX − 48, 368, 96, 88) | — |
+     | One mibi up close (Habitat, every state), axis 296, feet 392 | (144, 80, 304, 312) | `-304x312` | (144, 80, 304, 312) | — |
+     | The Sitting's resident (144, 80, 304, 312), when built | the face's rect | `-304x312` | the face's rect | — |
+     | Rosters: bay tiles, the Companion's places, Cross's heads | the 48×48 rect | `-48x48` | the 48×48 rect | — |
+
+     There is no 144×152 juvenile; the 104×112 stays in its box and is never blown up to 144×152. Up close, the 304×312 juvenile is the juvenile's own painted up-close size, the one it hatched at (the hand-off), so the adult reads as the same creature it was, not a smaller one: it is the signed master at that size, not a scaled 104×112. (If the creative director's "its 104×112 box" was meant to hold up close too, the rect is (244, 280, 104, 112) on axis 296, feet 392, with nothing in the rest; that would put a 104 px figure under the 300×310 focal minimum, so this spec does not use it without the creative director's word.)
+   - **What follows the drawn box, not the adult's.** In the living windows the mibi's box is the juvenile's 104×112: its feet ring (box width + 16 = 120 by 24), its 4 px lift, its hit target, and its name tag's over-the-resident fallback (top = box.y − 4 − 32). The feet point, the walk band, the draw order by the feet's y, the bed places and the tag's top at feet + 24 do not change. Up close and in rosters every rect is unchanged.
+   - **Shown as a stand-in, never hidden.** No lamp and no words mark it: its context is its usual stage line ("an adult Untuva"), and the stage word and the card ("your Loika, adult") still say adult. No other mark.
+   - **The genome stand-in is the last resort.** Every species S01 to S16 has a signed juvenile stand at 304×312, 104×112, 96×88 and 48×48 (measured above), so no S01 to S16 adult reaches step 3. It stays only for a species with no juvenile stand; then the rig is drawn at the adult's own rect (144×152, 96×88 ink, 304×312, 48×48), feet on the same point, and it is a picture, not a flat box (rule 3). A golden or review capture of S01 to S16 never shows it.
+   - **For the builder.** `pictures.mjs`, kind `mibi` (main, line 81): for an adult or elder, take `mibi-adult-SNN-WxH` when placed; else `mibi-juvenile-SNN-<w'>x<h'>` with 144×152 → 104×112 and every other size unchanged, registered at its own size; else `mibiArt` at w×h. The screen places the returned picture bottom-centred on the feet point and takes its size as the resident's box. No scaling path exists.
+
+**How the gate checks it.** At 1×, on every golden of the screen, the reviewer names the main object and finds it drawn at its rect. Every other drawn rectangle must map to a region that holds content. A flat fill, outline or dotted box that holds no content fails the screen, wherever it sits.
 
 ### Never upscaled
 
@@ -344,7 +405,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 
 ### The vocabulary (closed)
 
-The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as a grid by pitch on Home's Incubator module and Create, or as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
+The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
 
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's five modules, the vivarium's five and the Probe bench's two are the modules; on the vivarium, up close a module has no lamp.
 - **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the up-close window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
@@ -406,7 +467,6 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | --- | --- | --- |
 | A | **Every rack place**, in rack order; an empty place is an empty well | The whole collection at a glance |
 | A | **Each pod's identity**: the sealed cap or the lit glyph, and the name label (the species, or "Unknown") | What it is |
-| A | **Its origin as a place picture** | Where it came from, without words |
 | A | **Its progress as the concept's ring**: one arc per chapter, filled when read, closed when every chapter is read | How far it is read, without digits |
 | A | **The glint star**; **one can-grow mark**, only where the ring and the seal do not already say what it can do | Where something new waits; what it can do |
 | A | **Pods waiting beyond the rack**: one quiet mark | That more are in the bay, never a number |
@@ -423,7 +483,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | C | **The page**: every trait of the chapter at once | The knowledge itself, as pictures |
 | All | **The bottom line** | The one action and its price; the context; the notice; the way back |
 
-**Not drawn:** a well column on B or C; place stamps beside a list; a page beside the pod on the overview.
+**Not drawn:** a well column on B or C; place stamps beside a list; a place picture beside a ring (the overview carries the origin); a page beside the pod on the overview.
 
 ### 3. Placement
 
@@ -455,11 +515,10 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Place c, r (c 0–2, r 0–1) | 64 + 300c, 72 + 240r, 288, 224 | A place on the plain bench `room-bench-stage-collection` (the signed plain recut): no panel, nothing drawn behind the ring; an empty place is the idle ring alone; the focus target. Its focus ring is a circle 4 px outside the ring: 2 px in the `focus` role, radius 84 round the ring's centre. Every place drawn; an empty place is the empty ring |
+| Place c, r (c 0–2, r 0–1) | 64 + 300c, 72 + 240r, 288, 224 | A place on the plain bench `room-bench-stage-collection` (the signed plain recut): no panel, nothing drawn behind the ring; an empty place is the idle ring alone; the focus target. Its focus ring is a circle round the gauge (fix 14): radius 93 round the ring's centre (the gauge's 88 + 5), cased, `focus` between `void` keys. Every place drawn; an empty place is the empty ring |
 | Ring | slice place + (8, 0, 176, 176), centred on place + (96, 88); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: `ring-collection-idle-176x176`, an empty place's ring and the base under the arcs; for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin; and when every chapter is read, the continuous band `ring-collection-closed-176x176` in place of the track and segments. There is no selected ring: the focus ring marks the focused place. The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline`; the build draws no arc |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph |
 | Name label | centred on place + (96, 184), hugging, kept inside the place, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
-| Place picture | place + (200, 40, 48, 48) | The origin as a picture: `place-<place>-48x48` |
 | Can-grow mark | place + (216, 104, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it |
 | Glint star | place + (148, 16, 12, 12) | `glint-star-12x12`, on the ring's band at its top right |
 | Waiting beyond the rack | 16, 528, 24, 24 | `mark-waiting-24`. One quiet mark, never a number |
@@ -481,8 +540,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Where it came from | place picture 600, 120, 64, 64 (`place-<place>-64x64`, a new master painted from the same painting at 64, never scaled); sentence 680, 128, 328, 40 | The origin sentence ([Words on Pods](#words-on-pods)), "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits |
 | Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | The ring is the master `ring-kin-56x56`, placed 1:1; the pod is the 40×48 list class. Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred |
-| Stamp case and front glass | 856, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`) |
-| **Stamp label** | 872, 400, 120, 120 | Small, at the edge; 544 px from the pod's box. Appears at Identify |
+| Stamp case and front glass | 788, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`) |
+| **Stamp label** | 804, 400, 120, 120 | Small, on the shared stamp slot (The stamp label); 476 px from the pod's box. Appears at Identify |
 | Ribbon ("New species") | 680, 128, 328, 40 | In the origin sentence's rectangle, 6 s, the read tab's cool look |
 
 **C · Chapter page**
@@ -492,10 +551,10 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Rail | 96, 40, 832, 40 | The open tab lighter; the focus on the rail |
 | Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The bench `room-bench-stage-chapter` at (0, 40, 1024, 522), which paints the dish and the slab (only `room-cradle-front` is drawn), its cone centred on x 216 and its pool at (216, 424). The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
 | Open page | 424, 112, w, h by the trait count (the size table below); at most 584×440 | **No pane.** The page is its heading, one 1 px `hairline` rule and the grid, standing on the bench; spacing does the grouping, no container. Left-aligned: the heading and the first cell at x 448, the top at y 112, fixed as the rail steps |
-| Page heading | 448, 118, w − 24, 24; the rule 448, 148, the grid's width, 1 | Emblem 24×24, then the chapter's word in 20 px `bone`, 8 px after it. Under it one 1 px `hairline` rule from the first column's left edge to the last column's right edge (12 px under the heading, 12 px over the cells). "Legs & Tail", the longest word, makes the heading 24 + 8 + 103 = 135 px; on a one-trait page that runs 7 px past the 128 px rule, which is fine with no pane to hold it |
+| Page heading | 448, 118, w − 24, 24; the rule 448, 148, the grid's width, 1 | Emblem 24×24, then the chapter's word in 20 px `bone`, 8 px after it. Under it one 1 px `hairline` rule from the first column's left edge to the last column's right edge (12 px under the heading, 12 px over the cells). "Legs & tail", the longest word, makes the heading 24 + 8 + 103 = 135 px; on a one-trait page that runs 7 px past the 128 px rule, which is fine with no pane to hold it |
 | Trait cells | the grid below | In the chapter's order, row by row: the picture P (128×160, one flat rectangle of `ground`, no frame, no card, no word), 4 px, the name line (20 px): the one-word name in 16 px `bone`, then its glyphs (Marks after the name), the name and the glyphs centred together on the cell. A picture's content sits inside P's centred 75%, 96×120 at (16, 20), the tone as its margin |
 
-**Page grid,** by the open chapter's trait count. Columns of 128 with **16 px gaps**, rows 208 apart (**24 px** between a name line and the next picture), the first column at x 448. Every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred in the one-trait cell's rectangle, (456, 196, 112, 112).
+**Page grid,** by the open chapter's trait count. Pictures in wells pressed into the case floor, the well's floor the flat tone (GB1 D1: `plate-well-136x168` at P − (4, 4), cells from x 384, P.y 232 for one row and 144 and 344 for two). Columns of 128 with **16 px gaps**, rows 200 apart (**24 px** between a name line and the next picture), the first column at x 448. Every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred in the one-trait cell's rectangle, (456, 196, 112, 112).
 
 **The page's size, one rule.** With no pane, the size bounds the rule and the grid, nothing is drawn at it. Columns are the count up to four, then half the count rounded up; the width is 24 + columns × 128 + (columns − 1) × 16, that is 8 + 144 × columns; the height is 232 for one row (48 + 184) and 440 for two (48 + 184 + 24 + 184). Left-aligned at x 424, so the heading and the first cell stay put as the rail steps; four columns end at x 1008, the screen's right margin, and two rows at y 552, 10 px over the bottom bar. A sealed chapter takes the one-trait size, whatever its count. `pods.json` `regions.chapter.page.sizeByCount`.
 
@@ -513,8 +572,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Traits | Cells (x, y, w, h) | Picture |
 | --- | --- | --- |
 | 1–4 | 448, 592, 736 or 880, at y 160; each 128×184 | 128×160 |
-| 5–6 | 448, 592 or 736, at y 160 and 368; each 128×184 | 128×160 |
-| 7–8 | 448, 592, 736 or 880, at y 160 and 368; each 128×184 | 128×160 |
+| 5–6 | 448, 592 or 736, at y 160 and 360; each 128×184 | 128×160 |
+| 7–8 | 448, 592, 736 or 880, at y 160 and 360; each 128×184 | 128×160 |
 | 9 or more | none today; not designed yet | |
 
 **The page, one state.**
@@ -630,7 +689,7 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 | --- | --- | --- | --- |
 | Left (action) | `✓ ‹Verb› ‹object›`, then the price as icon and number ([The frame](#the-frame)) | Two groups with a 24 px gap between them, no dot. The price shows only when there is one; "free" and "half" are not shown (a half price is the lower number) | `✓ Identify   ◆ 1`; `✓ Read Coat   ◆ 3`; `✓ Shape a founder`; `✓ Compare`; `✓ Return to the wild   ❀ +1` |
 | Centre (subject) | A short sentence on the focused thing: "‹Name› is ‹state›", at most 24 characters, no "·" | States: unread, partly read, fully read; a chapter: unread, read, sealed. May end in "…" | Unknown pod: "sealed until identified". Identified, nothing read: "Loika is unread". After a read bought: "Coat is read" on the tab, "Loika is partly read" on the pod. Hatch: "Back to the rock field". Empty: "the rack is empty" |
-| Right (need) | One amber sentence of six words or fewer, only what this screen cannot show; empty when nothing waits (no text and no hairline) | No counts, no "·", no "needs 3 ◆": "needs more ⚡" | Glint on the focused tab: "something new here". Glint elsewhere on the pod: "something new waits". Nothing new: empty. Short of Energy: "needs more ⚡". Empty rack: "dock the Companion for its crates" |
+| Right (need) | One amber sentence of five words or fewer, only what this screen cannot show; empty when nothing waits (no text and no hairline) | No counts, no "·", no "needs 3 ◆": "needs more ⚡" | Glint on the focused tab: "something new here". Glint elsewhere on the pod: "something new waits". Nothing new: empty. Short of Energy: "needs more ⚡". Empty rack: "dock the Companion for its crates" |
 | Right edge (way back) | `← ‹where›`, in its own zone (frame.json `regions.back`) | One word, from pods.json `strings.wayBack` | Collection: `← Home`. Overview: `← Pods`. Chapter page and Compare: `← Loika`; a name that does not fit: `← Back` |
 
 ### Placeholders on Pods (rendered at these sizes)
@@ -700,8 +759,8 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Lamps | 12×12, the signed picture of the state, frame.json `regions.marks.lamp12`: off `home-lamp-hairline-12x12`, well `home-lamp-sprout-12x12`, waiting `home-lamp-sky-12x12`, needs you `home-lamp-amber-12x12` | The kit's lamp roles |
 | Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
-| Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
-| Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting the matte sitting frame, `home-sitting-24x32` | The Probe as the project's Probe art draws it, never a needle |
+| Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside) | The bridge from research to the Vivarium |
+| Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting the matte sitting frame, `home-sitting-32x24` | The Probe as the project's Probe art draws it, never a needle |
 | Library | The field journal: cover `bark`, page edge `sand`; the glint `yellow` | The worn expedition volume |
 | Bed | A low nest: rim `bark`, hollow `soil`, lit rim `sand` | Inside the warm field |
 | Rest knob | `enamel`, lit `sand`, shade `bevel` | One step lighter than the bezel it sits on |
@@ -715,10 +774,10 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | --- | --- | --- |
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the footprint ring (fix 14), a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
 | `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`), 1:1. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (536, 488, 16, 24) over it; docked, no mark. Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
-| `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
+| `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (619, 539, 42, 16) |
 
 **The column.** Five modules of 320×88 at x 688 on a 104 px pitch. Each module's word is at (16, 12), 16 px; its 12×12 lamp at (296, 12), screen x 984; its objects in (112, 8, 176, 72), screen x 800 to 976. The longest word, "Incubator", is 72 px (704 to 776), 24 px clear of the objects.
 
@@ -728,10 +787,10 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 
 | Module (`home.json`) | Rectangle | Objects, measured | States |
 | --- | --- | --- | --- |
-| `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (800 + 64i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 928, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
+| `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (808 + 56i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 920, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
 | `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
-| `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber. The hatched mibi's painting on its way: lamp waiting |
-| `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
+| `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72 | Empty: the chamber's empty picture, lamp off. Growing: the chamber's growing picture (the bud's glow), lamp well. Ready: the chamber's ready picture (lit full), amber. The hatched mibi's painting on its way: lamp waiting |
+| `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 32×24 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
 | `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72 | No species found: the journal shut, lamp off. Otherwise the journal, lamp well |
 
 **The lamps.** Amber marks the module the room's ✓ acts on, and only it. The notice and the room's ✓ take the first of these that holds:
@@ -798,9 +857,9 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | From | ▲ | ▼ | ◀ | ▶ |
 | --- | --- | --- | --- | --- |
 | The room | `vivarium` | none | the nearest resident by row, else `vivarium` | `cargo` |
-| `vivarium` (the panel: a round ring 4 px outside the bezel, 12, 44, 664, 512; no lift) | none | the resident nearest its middle by column, else none | none | `cargo` |
+| `vivarium` (the panel: a ring 5 px outside the bezel, 11, 43, 666, 514; no lift) | none | the resident nearest its middle by column, else none | none | `cargo` |
 | `column` (`order`: cargo, pods, incubator, probe, library, knob; round rings, 2 px lift) | the one before; the end stops | the one after; the end stops | the nearest resident by row, else `vivarium` | none |
-| `resident` (the feet ring; sleepers too, without the lift) | the nearest resident ahead, else `vivarium` | the nearest resident ahead | the nearest resident ahead | the module nearest by row (the knob is one) |
+| `resident` (the footprint ring (fix 14); sleepers too, without the lift) | the nearest resident ahead, else `vivarium` | the nearest resident ahead | the nearest resident ahead | the module nearest by row (the knob is one) |
 
 **Vectors** (`home.json` `focus.vectors`, 31, played on 15a's residents: Bean 40, 264; Dot 200, 320; Fig 296, 336; Moss and Pip asleep at 448 and 496, 360; the same 31 are the Home cases of `prototypes/face/tests/vectors/focus.json`, which `ui/focus.mjs` and the face's C port both play). Among them: room ▶ cargo; room ▲ vivarium; room ◀ Bean; with no residents, room ◀ vivarium; vivarium ▼ Fig; vivarium ▶ cargo; cargo ▲ cargo; library ▼ knob; knob ▼ knob; knob ▲ library; cargo ◀ Bean; library ◀ Pip; Bean ▲ vivarium; Bean ◀ Bean; Fig ◀ Dot; Pip ◀ Moss; Moss ▶ probe; Bean ▶ incubator.
 
@@ -809,11 +868,10 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Thing | Pixel size |
 | --- | --- |
 | Vivarium (Home's glass) | 640×488 |
-| Residents, sleepers | 144×152 adult or elder; a sleeper in its nap pose. A juvenile is not a placeholder: its signed stand-in, mibi-juvenile-<species>-104x112, and asleep -96x88 |
+| Residents, sleepers | 144×152 adult or elder; a sleeper in its nap pose. A juvenile is not a placeholder: its signed stand-in, mibi-juvenile-<species>-104x112, and asleep -96x88. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) |
 | Bed | 192×56 |
 | Cargo's bay, open and shut | 176×72 |
 | Waiting mark | 24×24, `mark-waiting-24` |
-| Rack pod | 24×32, the rack class, rendered at its size |
 | Well | 32×32 |
 | Chamber | 72×72 |
 | Probe in its cradle | 96×72 |
@@ -827,38 +885,39 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 
 Cargo is the section where the Companion's crates open after the dock: the arrival. It takes the whole stage, under Home, with Home's mark. The numbers live in `prototypes/ui/specs/station/cargo.json`.
 
-<img src="station-layouts/17-cargo-bay.png" width="1024" alt="Cargo's bay: two sealed crates, the third place empty, the rack below">
+<img src="station-layouts/17-cargo-bay.png" width="1024" alt="Cargo's bay: two sealed crates centred as a group on the painted bay, the rack insert below">
 
-*17. Cargo, the bay: two sealed crates, the third place empty, the rack the pods will land in; `✓ Open the bay`, `← Home`. 1×, measured ([SVG](station-layouts/17-cargo-bay.svg)).*
+*17. Cargo, the bay: two sealed crates centred as a group on the painted bay, each on its contact shadow, the rack insert the pods will land in; `✓ Open the bay`, `← Home`. 1×, measured ([SVG](station-layouts/17-cargo-bay.svg)).*
 
 ### 1. Purpose
 
-The player sees how much came home, opens it with one press, watches each crate's pods go to the rack, and reads in one card what came home and what the world did meanwhile. **Reads first:** how many crates are in the bay. Nothing opens without a press.
+The player sees how much came home, opens it with one press, watches each crate's pods go to the rack, and reads in one plate what came home and what the world did meanwhile. Every state is a composition of the device's own painted parts: the bay, its door, the crate on its floor, the plate on its door and the rack's insert; nothing is a flat field. **Reads first:** how many crates are in the bay. Nothing opens without a press.
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **The bay** and its **crates**, sealed, at most three | How much came home, before anything opens |
-| **The rack**, the six wells | Where the pods go: the same wells, in the same order, as Pods' collection |
+| **The bay** (painted) and its **crates**, sealed, at most three, or its **door** when it holds nothing | How much came home, before anything opens |
+| **Pods waiting** for a well, on the bay's floor | The pods themselves, not a mark |
+| **The rack**, the painted insert with six fitted wells | Where the pods go: the same wells, in the same order, as Pods' collection |
 | **One crate, closer**, opening | One crate's arrival is one event |
 | **The ribbon** | Which crate this is, in words |
 | **The pods travelling** from the crate to their wells | The hand-off to Pods, seen |
 | The top bar's counters and turn, ticking | What was gathered; that the world turned |
-| **The report card** | What came home, in one look, for the player who looked away |
+| **The report plate**, set into the door's plain sage panel (the kit's construction; its heading on a cream label plate, GB-R6) | What came home, in one look, for the player who looked away |
 
 **Not drawn:** a beam or a glow; anything of the field; digits but beside a material icon.
 
 ### 3. Placement
 
-1. **The crates** in the bay, top, centred.
-2. **The rack** at the foot, centred.
-3. While opening: **the ribbon**, then **the crate**, then **the pods** on their way down.
-4. **The report card** over the empty bay, last.
+1. **The crates** in the bay, centred as a group on 512, each on its contact shadow; or the pods waiting on the floor; or, when the bay holds nothing, the door.
+2. **The rack** at the foot, the painted insert under the bay with a 16 px seam.
+3. While opening: **the ribbon** (fitted to its words), then **the crate** on the floor, then **the pods** on their way down.
+4. **The report plate** on the bay's door (`cargo-bay-shut-report-976x304`, the shut door with a plain sage panel), last; its heading on `label-plate-cream-216x32`.
 
 ### 4. Art direction
 
-The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
+The device's own painted parts, one key light top left: the bay is the signed painting (its back wall, its floor and lip, an 8 px rim) and its door `cargo-bay-shut-976x304`; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag, each on a contact shadow; the rack one painted insert, the sage strip with six fitted wells; the report a plate set into the door, built like the stamp case (a dim well, a lit top-left rim, a shaded lower-right, dark rubber corners), `bone` at least 7:1 and `mist` at least 4.5:1 on its floor. The ribbon is the one ribbon look (`bark`, `gold` edge, `bone` words); gold belongs to the ribbon. Nothing on Cargo's stage is amber, and the stage ground shows only its seams (16 px or less).
 
 ### 5. Composition
 
@@ -866,38 +925,38 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | Region (`cargo.json`) | Rectangle | Notes |
 | --- | --- | --- |
-| `bay` | 16, 48, 992, 320 | Inside 24, 56, 976, 304: open, the floor; away, the lid shut across it |
-| `crates` | 64, 120, 896, 176 | Three places 256×176 on a 320 pitch at x 64, 384, 704, centred on 512; a walk crate per place left to right in the order they open; a sitting crate from the right (704, then 384), walk crates first, at most three shown (more than three is developer only: the first three in the bay's order, walk crates first, and no others; the context line counts them all), its 12×12 fill lamp under it at (place x + 122, 304); an empty place shows the floor. Away, the lid is shut unless a sitting crate is in the bay |
-| `waiting` | 968, 328, 24, 24 | The waiting mark, while pods wait in the bay for a free well |
-| `rack` | 176, 400, 672, 144 | Six wells 96×128 on a 112 pitch from (184, 408), centred on 512; in each, its pod at the collection class 88×112 at well + (4, 8), or nothing |
+| `bay` | 16, 48, 992, 320 | The signed painting `cargo-bay-992x320`, 1:1, in every state (R1). The door `cargo-bay-shut-976x304` goes 1:1 at (24, 56, 976, 304) when the bay holds nothing, and always in the report (R2); each change of the door is a cut. Open when it holds a walk crate, a ready sitting crate or a waiting pod; the opening is open |
+| `crates` | by count, inside 64, 120, 896, 176 | n = min(walk crates, 3) places 256×176 on a 320 pitch centred on 512: one at 384; two at 224, 544; three at 64, 384, 704; y 120. Fixed by n on the Dock frame (crates sliding in never re-centre); a walk crate per place left to right in the order they open, sitting crates after them, at most three shown (more than three is developer only: the first three; the context line counts them all). Feet on y 282; the contact shadow `crate-shadow-256x24` at (place x, 270) from the frame its crate has landed. Its 12×12 fill lamp for a sitting crate at (place x + 122, 304) |
+| `waitingPods` | 352, 168, 320, 120 | While pods wait for a well, in the bay state: the first three, oldest first, 88×112 collection pods, feet on 280, axes 512; 460, 564; 408, 512, 616, each on `pod-collection-shadow` at (axis − 52, 273); the context line counts all. The mark leaves Cargo (it stays on Home's module) |
+| `rack` | 16, 384, 992, 168 | The painted insert `cargo-rack-992x168`, 1:1, 16 px under the bay. Six wells 96×128 on a 112 pitch from (184, 408), centred on 512, painted in; in each, its pod at the collection class 88×112 at well + (4, 8), or nothing. The face draws no panel, rule or well |
 
 **One crate opening.**
 
 <table><tr>
 <td valign="top"><img src="station-layouts/17a-cargo-opening.png" width="480" alt="One crate opening"><br><em>17a. The first crate, closer and open, its three pods, one on its way to its well; the ribbon; input held. 1×, measured (<a href="station-layouts/17a-cargo-opening.svg">SVG</a>).</em></td>
-<td valign="top"><img src="station-layouts/17b-cargo-report.png" width="480" alt="The report card at its fullest"><br><em>17b. The report card at its fullest, 232, 72, 560×312, over the empty bay; the new pods in the rack; <code>✓ See the new pods</code>, <code>← Cargo</code>. 1×, measured (<a href="station-layouts/17b-cargo-report.svg">SVG</a>).</em></td>
+<td valign="top"><img src="station-layouts/17b-cargo-report.png" width="480" alt="The report plate at its fullest"><br><em>17b. The report plate at its fullest, 232, 64, 560×288, set into the shut door; the new pods in the rack; <code>✓ See the new pods</code>, <code>← Cargo</code>. 1×, measured (<a href="station-layouts/17b-cargo-report.svg">SVG</a>).</em></td>
 </tr></table>
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
-| `crate` | 296, 120, 432, 272 | The crate closer, the whole case, centred on 512, 24 px under the ribbon and 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
-| Containers | 48×64 at (184, 320), (240, 320), (736, 320), feet on 384, opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-48x64`, `cargo-data-48x64`, `cargo-essence-48x64`; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end dither; the travelling pods draw over them; no digits, never kept |
-| Its pods | 88×112, 104 apart on y 152 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
-| `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
-| `rack` | as in the bay | A well stays empty until its pod lands |
+| `ribbon` | 208, 56, 608, 40 as the bound; the width fits its words (words + 32, up to 8, at least 160) centred on 512 | 20 px medium, one line: "First crate home", "Second crate home", "Third crate home"; a walk crate past the third and a developer crate (uncounted) "Another crate home"; a sitting crate "Fig's portrait". It shows from 500 ms, 8 px above the pods' boxes. A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
+| `crate` | 296, 72, 432, 272 | The crate closer, the whole case, centred on 512, standing on the floor (feet 337) with `crate-shadow-432x24` at (296, 325) in every step, 8 px above the rack: sealed, opening (the tag torn, the lid lifting), open (the lid off, its fitted cut-outs) |
+| Containers | 72×96 at (216, 240), (736, 240), (816, 240), feet on 336, each with `cargo-store-shadow-72x21` at y 325 (its core row 11 on 336), opening only, from 800 ms | A material's container only when the crate brought it (`gained > 0`, the report's Gathered figure); `cargo-energy-72x96`, `cargo-data-72x96`, `cargo-essence-72x96`; energy left of the closer, data then essence right of it, 8 px between rects; a cut at 800 ms with the counter tick, also with reduced motion, until the crate's end; the travelling pods draw over them; no digits, never kept |
+| Its pods | 88×112, 104 apart on y 108 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
+| `travel` | 176, 72, 672, 472 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
+| `rack` | as in the bay | A well stays empty until its pod lands; the bay is open and drawn in the opening |
 
-**The report.** The card at (232, 72, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), at most 320; its bottom at 384, 16 px above the rack. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
+**The report.** The plate `cargo-report-plate-560x{h}` at (232, 64 + 8 × floor((288 − h) / 16), 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 32 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), a multiple of 8 from 128 to 288, centred on the door's middle; at its fullest its bottom is 352, 8 px inside the door and 32 px above the rack. The plate is 21 exact heights cut from one signed master. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
 
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
-| Heading | 88, 32 tall | — | "Home from the field", 20 px medium |
-| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Developer crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "a first look around", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
-| Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
-| Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
-| The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
+| Heading | 80, 32 tall | — | "Home from the field", 20 px medium |
+| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 120, 144, 168 | "First crate", "Second crate", "Third crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "some of the land explored", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
+| Gathered | 200 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon |
+| Probe, when it was mended at the dock | 224 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
+| The world, when it turned | 256, lines from 280 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
 
-**The report's goal rows.** After the world block, a goal row (lead "Next") names the step `goalKey` gives, and a meanwhile row (lead "While you wait") the read to spend the wait on, with its ◆ price, when the step is a wait. The card is h + (a goal ? 8 + 24 × (1 + meanwhile) : 0) tall, at most 320: world lines drop from the last until it fits.
+**The report's goal rows.** After the world block, a goal row (lead "Next") names the step `goalKey` gives, and a meanwhile row (lead "While you wait") the read to spend the wait on, with its ◆ price, when the step is a wait. The plate is h + (a goal ? 8 + 24 × (1 + meanwhile) : 0) tall, at most 288: world lines drop from the last until it fits (the fullest goldened report keeps one world line, at 288).
 
 **The Probe row's source.** The row comes from the dock's mend, `{ free, paid, broke }`: free plates or a break (a break is mended free) read "mended free"; plates paid for read "mended for" and their price; no mend, no row. Cargo keeps the mend in its UI state from the dock until the report. It is not in the save: after a reload the report has no Probe row.
 
@@ -905,20 +964,20 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | ms | What plays |
 | --- | --- |
-| 0 | The dither, 180 ms, 16 levels, from the bay (or the crate before) to this crate closer, sealed |
+| 0 | A cut to this crate closer, sealed, on the open bay (no dither, no veil) |
 | 200 | The seal tag tears and the lid lifts, 300 ms: sealed, opening, open, its pods in their places |
 | 500 | The ribbon shows this crate's words (a cut) |
 | 800 | The counters tick this crate's materials |
 | 1200 | Each pod travels to its well, 600 ms, 150 ms apart, in well order; a pod with no free well stays in the crate |
 | 1650 | The world turn jumps to the crate's turn |
-| 3000 | The next crate; after the last, the dither back to the bay, empty, with the report card over it |
+| 3000 | A cut to the next crate; after the last, a cut to the report: the door shut, the plate on it; it stands still for the last 180 ms and the hold's 200 |
 
 The opening plays crates × 3000 + 180 ms and holds input crates × 3000 + 200 ms: one crate 3180 and 3200, two 6180 and 6200, three 9180 and 9200; in play at most three. The opening covers 1 to 9 crates (the hold at most 30000 ms); with ten or more (developer only) it plays the first nine, the rest are taken in, and the counters and the turn reach their final values at the end. With reduced motion each step is a cut at its time; the pace and the hold are the same, since each crate's words, materials and turn are read in turn.
 
 ### 6. Interactions
 
 <table><tr>
-<td valign="top"><img src="station-layouts/17c-cargo-shut.png" width="480" alt="Cargo with the Companion away"><br><em>17c. Away: the bay shut, no ✓, <code>← Home</code>. 1×, measured (<a href="station-layouts/17c-cargo-shut.svg">SVG</a>).</em></td>
+<td valign="top"><img src="station-layouts/17c-cargo-shut.png" width="480" alt="Cargo with the Companion away"><br><em>17c. Nothing in the bay (away, or docked and empty): the door shut over the painted bay, no ✓, <code>← Home</code>. 1×, measured (<a href="station-layouts/17c-cargo-shut.svg">SVG</a>).</em></td>
 <td valign="top"><img src="station-layouts/17d-cargo-nav.png" width="480" alt="The way through Cargo"><br><em>17d. The way through Cargo: Dock, Home's module, the bay, each crate, the report, the jump to Pods. 1× (<a href="station-layouts/17d-cargo-nav.svg">SVG</a>).</em></td>
 </tr></table>
 
@@ -927,15 +986,16 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 | State | ✓ | Context | Notice | ← |
 | --- | --- | --- | --- | --- |
 | The bay, crates ready to open (walk crates while docked; a ready sitting crate, docked or away) | `✓ Open the bay`: the opening | "two sealed crates", "a sealed crate" | The most pressing need after the crates | "Home", the ring on the Cargo module |
-| The bay, empty | none | "the bay is empty"; pods waiting "two pods wait for a well" | The notice | "Home" |
-| The bay, away | none | "the bay is shut" | The notice | "Home" |
+| Pods waiting for a well, docked or away | none | "two pods wait for a well" (before the away line: the open bay shows them) | The notice | "Home" |
+| The bay, empty (the door shut) | none | "the bay is empty" | The notice | "Home" |
+| The bay, away (the door shut) | none | "the bay is shut" | The notice | "Home" |
 | Opening | none (input held) | "the bay is opening" | none | none (it waits) |
-| Report | `✓ See the new pods` (one pod: `✓ See the new pod`), a jump to Pods' collection with the ring on the pod that most needs you; with no new pod, `✓ Done`, the card closes | "what came home" | none | "Cargo": the card closes, the bay shows, empty |
+| Report | `✓ See the new pods` (one pod: `✓ See the new pod`), a jump to Pods' collection with the ring on the pod that most needs you; with no new pod, `✓ Done`, the card closes | "what came home" | none | "Cargo": the plate closes, the door shows (or the waiting pods on the open bay) |
 
 - **Any key on the report** closes the card and does what it does: ✓ above, ← and the pad only close it, a coloured key closes it and opens its section. No press is swallowed.
 - **A coloured key during the opening** waits until the report shows.
-- **Dock while the bay shows:** the lid opens (a cut) and the crates slide in from 64 px above, 500 ms each, 250 ms apart. Lifted: the lid shuts (a cut). During the opening a lift waits for the report.
-- **The hand-off to Pods.** Each pod lands in a rack well, the Station's six; Pods' collection shows the same pods in the same wells, new until identified. A pod with no free well waits in the bay (the waiting mark here and on Home's Cargo module) and lands, oldest first, as a well frees.
+- **Dock while the bay shows:** the door opens (a cut) and the crates slide in from 64 px above, 500 ms each, 250 ms apart; the context line counts the crates drawn (a crate counts from the frame its slide starts). Lifted: the door shuts (a cut) when the bay then holds nothing. During the opening a lift waits for the report.
+- **The hand-off to Pods.** Each pod lands in a rack well, the Station's six; Pods' collection shows the same pods in the same wells, new until identified. A pod with no free well waits in the bay (standing on its floor here, the waiting mark on Home's Cargo module) and lands, oldest first, as a well frees.
 
 **Home's Cargo module, before and after.** Before: the bay open, one small sealed crate per crate, the lamp amber, the notice "two crates wait in the bay". After: the bay open and empty, the lamp off; the waiting mark while pods wait for a well, the lamp still off (the need lights Pods).
 
@@ -943,11 +1003,11 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 
 | Thing | Pixel size |
 | --- | --- |
-| Bay, open and shut | 992×320 |
+| Bay, open and shut (placed, `cargo-bay-992x320` and `cargo-bay-shut-976x304`) | 992×320 and 976×304 |
 | Crate in the bay | 256×176, `crate-sealed-256x176`, `crate-sitting-256x176` |
 | Crate closer | 432×272, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
-| Well | 96×128 |
+| Rack insert, placed (`cargo-rack-992x168`), report plate, 21 heights (`cargo-report-plate-560x128` to `560x288`), contact shadows (`crate-shadow-256x24`, `crate-shadow-432x24`, `cargo-store-shadow-72x21`) | 992×168; 560×128 to 288; 256×24, 432×24, 72×21 |
 | Waiting mark | 24×24, `mark-waiting-24` |
 
 ---
@@ -1021,7 +1081,7 @@ The Vivarium only, one painting a light (dawn, day, dusk, night), the warm key l
 | Thing | Pixel size |
 | --- | --- |
 | Vivarium | 1024×568, a painting per light |
-| Residents, sleepers | 144×152 adult; a juvenile is its signed stand-in, mibi-juvenile-<species>-104x112 |
+| Residents, sleepers | 144×152 adult; a juvenile is its signed stand-in, mibi-juvenile-<species>-104x112. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) |
 | Bed | 192×56 |
 
 ---
@@ -1052,19 +1112,21 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 | Idle's Vivarium | 1024×568 | Day, dusk and night. Its rows 120 to 560 are the Vivarium's whole |
 | The bed | 192×56 | One |
 | The nap poses | ink at most 96×88, centred on the feet in the sleeper's box | — |
-| Cargo module: the bay | 176×72 | Open and shut |
-| Cargo module: a crate | 48×40 | Walk and sitting |
-| Pods module: a well | 32×32 | One |
-| Incubator module: the chamber | 72×72 | Empty, growing and ready |
-| Probe module: the cradle | 96×72 | Full and empty |
+| Cargo module: the bay | 176×72 | Open and shut; signed, placed |
+| Cargo module: a crate | 48×40 | Walk and sitting; signed, placed; the walk crate is drawn, the sitting crate is not drawn |
+| Pods module: a well | 32×32 | One; signed, placed |
+| Incubator module: the chamber | 72×72 | Empty, growing and ready; signed, placed |
+| Probe module: the cradle | 96×72 | Full and empty; signed, placed |
 | Probe module: a Shield plate | 12×24 | One |
-| Probe module: the sitting frame | 24×32 | One |
-| Library module: the journal | 104×72 | One |
+| Probe module: the sitting frame | 32×24 | One |
+| Library module: the journal | 104×72 | One; signed, placed |
 | Module lamps | 12×12 | `sprout`, `sky` and `hairline` |
 | Cargo: the bay | 992×320 | Open and shut |
 | Cargo: a crate in the bay | 256×176 | Sealed and sitting |
 | Cargo: the crate closer | 432×272 | Sealed, opening and open |
-| Cargo: a rack well | 96×128 | One |
+| Cargo: the rack insert | 992×168 | One |
+| Cargo: the report plate | 560×128 to 560×288 | 21 heights |
+| Cargo: contact shadows | 256×24, 432×24, 48×14 | One each |
 | The room marks | 24×24 | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`, in [`art/device-buttons/marks/`](../../art/device-buttons/marks/) |
 
 ---
@@ -1108,14 +1170,14 @@ Create is where the player shapes a founder from an identified pod and sees what
 | **The trait line** (16 px): the trait and its chosen look; a "changed" tag, or the clash | One line naming the choice |
 | **The chapter rail** with trait pips | Where the focused trait sits; what is read, changed, clashing or still a surprise, with no digits |
 | **The pod** on its dish, with its origin | Where the founder comes from |
-| **The Incubator's chamber**, small, with the leaves the bud will take, drawn empty | Where it goes, and how long it will grow, as a picture |
+| **The Incubator's chamber**, small | Where it goes |
 | **Stamp label** (120) and a **blank code rule** | The stamp fills with the read and changed chapters; the code prints on the rule at Grow |
-| **Bottom line** | `✓ Grow it` and the total; what stays a surprise; what blocks Grow; `← Loika` |
+| **Bottom line** | `✓ Grow it`, the total and the bud's wait (`⧗ 20`); what stays a surprise; what blocks Grow; `← Loika` |
 
 **Not drawn:**
 
 - "◀ ▶ 3 of 3 read traits" or "changed: eye-rings": the pips show both.
-- "the code appears at Grow" (the blank rule shows it), "grows in 21 leaves" (the leaves show it) or "from the pod" (the pod shows it).
+- "the code appears at Grow" (the blank rule shows it), "grows in 21 minutes" (the line's `⧗ 21` shows it) or "from the pod" (the pod shows it).
 - Label plates ("founder", "chamber", "identified"), or "busy" and "empty" under the dome.
 - A stamp larger than the 120 label.
 - A clash plate on the founder ("this shape won't grow"): no words in a living window; the line, the pip and the notice say it.
@@ -1131,7 +1193,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 5. **The stamp label**, low right, with the code rule under it.
 6. **The bottom line** for the total.
 
-**At the edges:** pod (left), the small chamber, leaves and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
+**At the edges:** pod (left), the small chamber and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
 
 ### 4. Art direction
 
@@ -1154,19 +1216,18 @@ Create is where the player shapes a founder from an identified pod and sees what
 | Founder | Its own colours; unread parts `frostS` with a `frostD` texture | As Pods' unread frost |
 | Origin | `mist` | Context, quiet |
 | Small chamber (`dome`) | Back `ground`; set in the sage housing `metal`, as the Incubator's; its window's edge `hairline`, no highlight; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's chamber, small and empty |
-| Leaves | Empty, the small leaf's outline in `bevel` | The Incubator's leaf drawn at 8×12 |
-| Stamp label, code | `bone` label with a `slate` edge; the code `bone` on a `hairline` rule | The stamp label rule; a readout |
+| Stamp label, code | the `bone` plate and the stamp dimmed in linear light by K × (1.00, 0.93, 0.80), a `hairline` edge; the code `mist` on a `hairline` rule | The stamp label rule; a readout |
 
 ### 5. Composition
 
-The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder stands on its work tray in the lower centre. The pod stands on its dish to the left and the Incubator's small chamber to the right, its leaves and the stamp label under it.
+The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder stands on its work tray in the lower centre. The pod stands on its dish to the left and the Incubator's small chamber to the right, the stamp label under it.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Rail | 96, 40, 832, 40 | Hanging from the top bar, its run centred on x 512 (232 for Loika's four chapters); not a focus target; no glint |
 | Roll | 296, 88, 432, 104 | Three pictures of 128×72 at (304, 104), (448, 104), (592, 104), 16 px apart, in the order as the pod is, only the first copy, only the second copy (the trait state's hidden choice says which copy is the hidden look); one picture at (448, 104) when the trait does not roll (Tuikis Claws: "breed to change"). Not drawn when nothing is read |
 | ▲ and ▼ notches | 12×6 at (chosen.x + 58, 90) and (chosen.x + 58, 184) | 4 px outside the ring, only when the trait rolls |
-| Ring | 4 px outside the chosen picture: (x − 4, 100, 136, 80) | The screen's one focus ring; none when nothing is read |
+| Ring | 5 px outside the chosen picture: (x − 5, 99, 138, 82) | The screen's one focus ring; none when nothing is read |
 | Trait line | 296, 200, 432, 24 | 16 px, its line box 202 to 222, centred on x 512; with the changed tag (24 tall, 88 wide), 8 px before the words, the group centred |
 | Work tray (`chamber`) | 312, 232, 400, 320 | The tray in the housing; floor 312, 536, 400, 16 (the concept's 316, 232, 392, 320 on the grid) |
 | **Founder (focal)** | 360, 240, 304, 312 | At least 300×310, feet at y 536 |
@@ -1174,7 +1235,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | Dish | 48, 344, 224, 96 | Painted in Create's own stage, `room-cradle-front` registering at (48, 344); until it lands, nothing is drawn |
 | Origin | 40, 456, 240, 40 | 16 px `mist`, at most two lines, centred on x 160 |
 | Small chamber (`dome`) | 776, 104, 176, 224 | The Incubator's chamber, small and empty; its floor at y 274. While a bud grows its glow shows here (a 64×80 bud at 832, 194) and Grow is refused |
-| Leaves to grow | 768, 336, 192, 48 | The word `leaves`, form grid: 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48), all empty: one per minute it will take, 20 plus one a change, the first founder 5 whatever is shaped |
+| Founder's shadow | 400, 529, 224, 14 | The painted contact shadow under the founder's feet (specimen, part shadow; `founder-shadow-224x14`), drawn after the chamber and before the founder; no size until its picture is on the face |
 | **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box; x 804 centres it on the column's axis, 4 px off the grid, as Home's juvenile and the medium pod are |
 | Code | 776, 525, 176, 25 | The line box 525 to 545, baseline 541, a 1 px `hairline` rule at y 549, 8 px from the baseline to the rule (off the grid for that clearance); at Grow the code prints here, centred on x 864, in three groups with spaces ("K7Q 4MX P2D"). 176 wide: the widest code, "WWW WWW WWW", is 152 px |
 | Travel (grow only) | 88, 120, 848, 288 | The pod's path from its box to the dome, feet (864, 296); from 530 ms, behind the work tray, a step to 88×112 (the collection class) at (820, 184); behind the chamber and the roll; its feet behind the small chamber's sill |
@@ -1195,32 +1256,32 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | `origin` | 40, 456, 240, 40 | text | | — |
 | `dome`, `domeFront` | 776, 104, 176, 224 | living window, parts inside and frame | | empty; busy (the bud) |
 | `bud` | 832, 194, 64, 80 | specimen | | only while another bud grows |
-| `leaves` | 768, 336, 192, 48 | leaves, form grid | | the count of minutes, every leaf empty |
+| `founderShadow` | 400, 529, 224, 14 | specimen, part shadow | | the painted contact shadow under the founder; no size until its picture is on the face |
 | `stamp` | 804, 400, 120, 120 | stamp label | | live: the read and changed chapters; grow: printing |
 | `code` | 776, 525, 176, 25 | text, with its rule | | blank; grow: the code |
 | `travel` | 88, 120, 848, 288 | specimen, part travel | grow | the pod's path |
 
-The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** bench, rail, dish, dome, its bud, pod, the dish's front, origin, chamber, founder, the chamber's front, roll, trait line, the dome's front, leaves, stamp, code, ring, frame, message plate. The travelling pod passes behind the chamber and the roll and ends inside the dome, with no change of order during the event.
+The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** bench, rail, dish, dome, its bud, pod, the dish's front, origin, chamber, the founder's shadow, founder, the chamber's front, roll, trait line, the dome's front, stamp, code, ring, frame, message plate. The travelling pod passes behind the chamber and the roll and ends inside the dome, with no change of order during the event.
 
 **Clearance** (8 px from a word's baseline to an object's first ink): the trait line's baseline at y 218, the founder's box at 240 (22 px), the work tray at 232; the tab words' baselines at about y 62, the notch at 90; the code's baseline at 541, its rule at 549. Nothing in the roll touches the ring: the notches sit 4 px outside it, the neighbours 8 px.
 
 **States and conditions** (`create.json` `states`, `bottomLine.conditions`):
 
-- **Nothing read:** the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. Every pip hollow and no tab open; no roll, no ring and no target, so the arrows do nothing; the trait line "it grows as the pod is"; the stamp with no chapter filled; 20 leaves (5 for the first bud); `✓ Grow it · ⚡ 2 ❀ 4` (`⚡ 2` alone for the first founder), no ◆; the context "all of it stays a surprise".
+- **Nothing read:** the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. Every pip hollow and no tab open; no roll, no ring and no target, so the arrows do nothing; the trait line "it grows as the pod is"; the stamp with no chapter filled; `✓ Grow it · ⚡ 2 ❀ 4 ⧗ 20` (`⚡ 2 ⧗ 5` for the first founder), no ◆; the context "all of it stays a surprise".
 - **Shape, as the pod is:** no tag, every read pip filled, the total `✓ Grow it · ⚡ 2 ❀ 4`.
-- **Changed:** the tag in the line, the pip a `bone` diamond, the founder's part and the stamp's cells redrawn, ◆ 1 and one minute a change (choosing the shown look too); the first founder's leaves stay 5.
+- **Changed:** the tag in the line, the pip a `bone` diamond, the founder's part and the stamp's cells redrawn, ◆ 1 and ⧗ +1 a change (choosing the shown look too); the first founder's wait stays ⧗ 5.
 - **Blocked:** the notice names the first block in the rules' order: busy ("a bud is already growing"), no bay ("no bay free"), clash ("these looks clash"), short. Busy, no bay and clash: no ✓ cap; the verb and the total in `mist` so the total still reads; while busy the bud glows in the dome. A clash also wears its marks: the chosen picture's red edge, the line red with the ✕, the pip a ✕.
 - **Short:** the frame's dimmed ✓; the short material's figure `amber`; the notice "needs more ‹icons›"; ✓ shows a message plate naming what is short.
 - **Grow:** the event below, then the Incubator, growing. Grow it is a jump: ← on the Incubator reads "Home", with the ring on Home's Incubator module.
 
-**Prices** read icon before figure, the frame's rule ([The frame](#the-frame)): `⚡ 2 ❀ 4 ◆ 1` here, `❀ 7` on the Incubator.
+**Prices** read icon before figure, the frame's rule ([The frame](#the-frame)): `⚡ 2 ❀ 4 ◆ 1 ⧗ 21` here (the bud's wait last), `❀ 7` on the Incubator.
 
 ### 6. Interactions
 
 | Input | What happens, and how it shows |
 | --- | --- |
 | ◀ ▶ | Shape: `step:left`, `step:right`: the previous or next read trait in ring order, skipping unread chapters; the ends stop. The ring stays on the roll; the pictures, the trait line, the open tab and the lifted pip change on the frame of the key. Nothing read: nothing |
-| ▲ ▼ | Shape: `step:up`, `step:down`: the focused trait's look among its three, wrapping; the ring and notches move to the chosen picture; the founder cross-dithers to the new picture over 200 ms (the `roll` event); the stamp's cells, the pip, the price and the leaves change at once. Nothing read: nothing |
+| ▲ ▼ | Shape: `step:up`, `step:down`: the focused trait's look among its three, wrapping; the ring and notches move to the chosen picture; the founder cross-dithers to the new picture over 200 ms (the `roll` event); the stamp's cells, the pip, the price and the wait change at once. Nothing read: nothing |
 | ▲ ▼ on a doing, or a trait the pod carries one look of | Nothing: one picture, no notches, and the line already says why ("Claws: breed to change" with the two joined rings after the name; "Crown: one look in this pod"). No message plate |
 | ✓ | `✓ Grow it · ⚡ 2 ❀ 4 ◆ 1`, checked whole and then paid: the `grow` event, then the Incubator. Blocked: no ✓ cap and nothing happens. Short: the dimmed cap and a plate |
 | ← | Back to the pod's overview with the ring on the pod, nothing spent and the choices dropped: the way back reads the pod's name, "← Loika" |
@@ -1258,7 +1319,8 @@ With `motion: false` both jump to their ends.
 | Work tray (`chamber`) | 400×320, its floor 400×16: `chamber-back-400x320`, `chamber-front-400x320` | Signed (art director, 72561d74) |
 | Small chamber (`dome`) | 176×224, `dome-small-back-176x224` and `dome-small-front-176x224`; a busy bud 64×80, `bud-small-64x80` | Signed (art director, 72561d74 for the chamber, 963f4eab for the bud) |
 | Notches | 12×6 | Carried |
-| Leaves | 8×12, `leaf-empty-8x12` and `leaf-full-8x12`: the Incubator's leaf at the small size | Re-judged with the Incubator's leaf |
+| Founder shadow | 224×14, `founder-shadow-224x14` | art director, masters-pods cf3b0ac6 (fix 6 A2) |
+| Wait icon | 16×16, `icon-wait-16` | art director, masters-pods 37753a50 (fix 6 A3) |
 | Changed pip, clash pip | 6×6, `pip-changed-6x6` (a diamond), `pip-clash-6x6` | Carried |
 | Changed tag | 88×24, `plate-name-88x24` | Signed (art director, 5238569a) |
 | Stage | 1024×522, `room-bench-stage-create` | Signed (art director, 528b73d5): the work tray's stage |
@@ -1328,17 +1390,17 @@ The Incubator is the bridge between the research and the Vivarium: a bud grown f
 4. **The rail**: which surprises remain.
 5. **The stamp label** at the right, then the code under it.
 
-Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The left of the stage stays empty and dark, so the chamber reads alone.
+Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The chamber stands centred among the machinery that serves it, painted on the wall at both sides; the wall over the chamber stays clear for the leaves, and the label's place stays clear at the right (fix 5). The wall holds three columns on one 8 px grid, mirrored on x 512 (88–232, 248–776, 792–936), one 16 px gutter between neighbours, margins 17 left and right and 18 at the bottom, every standing object on the line y 530.
 
 ### 4. Art direction
 
-- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing.
+- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing. **Fix 5 (IA1):** the stage's wall carries the chamber's service machinery (lines, a vent, small units in the sage `metal`, the sand `enamel` and the hose rubber, joined to the hoses at the foot) painted in four paint zones only: L (88, 104, 144, 296), R (792, 104, 144, 112), LM (248, 336, 80, 64), RM (696, 336, 80, 64); the gauges in GL (88, 464, 72, 66) and GR (784, 464, 152, 66), their ink to y 529. It never paints in the keep-clear zones: the leaf band (248, 80, 528, 240), the chamber and its base (344, 200, 336, 336), the label's place (792, 232, 144, 152); the floor lip and the hoses' wall ends stay pixel for pixel. Nothing in it is lit and it has no text: inside each zone the 95th-percentile relative luminance is at or below that of the stage's gauge housings and the mean at or below the empty chamber's back. No bare rectangle of wall of 160×160 or more remains outside the leaf band and the label's place; in the empty state those two stay bare wall, the only bare fields accepted.
 - **The sage housing for the chamber, the sand housing for the base and the outer frame, matte;** the window set in the chamber with a `hairline` edge and no highlight; the hood a shallow lip, not a canopy; leaf greens for the timer.
 - **The chamber's ink** (window and hood) stays inside the arch outline (the chamber window row below), so the leaf arcs keep their clearance.
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
 - **The bud** grows in two pictures, the first half of the wait and the second (one generic `bud-late-128x160`, with no drift toward the species' hue).
 - **Ready:** the chamber's light comes up full and the species' shape is visible inside the bud. Nothing steps out until the player opens it. The shape is the species' juvenile-proportion silhouette from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat, soft-edged, dark warm shape with no eye and no detail; its ink at most 96×96 (measured at alpha ≥ 128), centred in its 112×112 box. `bud-ready-128x160` is drawn behind it and `bud-ready-front-128x160` over it.
-- **The leaf:** one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, an outline in `metal`. The same drawing at 8×12 is the small leaf of Create and Home.
+- **The leaf:** one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, the leaf's own silhouette in one flat, unlit fill, no outline and no vein.
 - **Empty invites:** a standby light inside (a soft warm pool on the bed, about half the growing glow); the clean window; the base's foot light on, as in every state; the nest lit and plump with its hollow visible; the plaque word in `fog`.
 - **Calm:** only the glow and the filling leaf move.
 
@@ -1351,7 +1413,7 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 | Bud (placeholder) | Bean `peach`, lit `cream`, edge `rust`; late `blush`; the ready shape `bark` | The one warm thing; the shape a dark warm silhouette, never amber |
 | Base | `enamel`, matte, lit `sand`, shade `bevel`, edge `hairline`; the foot light `sage`, a quiet line that says it is alive and working; the plaque's plate `panel` with a `hairline` edge | The sand housing |
 | Plaque | growing `fog`, ready `bone`, empty `fog` | Ready is the brightest word, for across a table; empty never recedes to `mist` |
-| Leaves | Full `sage` with a `sageD` vein; empty an outline in `metal`; the current leaf `sage` rows from its foot | The palette's leaf timer |
+| Leaves | Full `sage` with a `sageD` vein; empty the leaf's flat silhouette (the art director's value); the current leaf `sage` rows from its foot | The palette's leaf timer |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role |
 | Stamp label, code | `bone` label with a `slate` edge; code `bone` | A readout |
 | Ribbon | Fill `tealD`, rim `aqua`, words `bone` | The one ribbon look, as on Home and Pods |
@@ -1367,11 +1429,11 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Chamber window (`dome`) | 360, 200, 304, 272 | The window and its hood keep their ink inside an arch: a half circle of radius 152 on (512, 354), its top at y 202 (2 px into the region), over a body to y 472 (the old bell jar's outline, kept as the limit) |
 | **Bud (focal)** | 448, 264, 128, 160 | Rendered at size, centred on (512, 344). Ready: the species' shape at 456, 288, 112×112, its ink at most 96×96 (measured at alpha ≥ 128) |
 | Nest | 408, 400, 208, 48 | Empty: lit and plump, its hollow visible |
-| Base | 344, 456, 336, 96 | The sand housing, not wood; the chamber stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
-| Plaque | 448, 496, 128, 32 | One word, 16 px, centred on x 512, its line box 502 to 522 |
-| Waiting lamp | 652, 506, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
-| **Stamp label** | 840, 296, 120, 120 | 176 px from the chamber window |
-| Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446; three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
+| Base | 344, 440, 336, 96 | The sand housing, not wood; the chamber stands in it, behind its lip; the foot light 352, 532, 320, 2; the plaque's plate 448, 480, 128, 32 (the concept's about 328×96 on the grid) |
+| Plaque | 448, 480, 128, 32 | One word, 16 px, centred on x 512, its line box 486 to 506 |
+| Waiting lamp | 652, 490, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
+| **Stamp label** | 804, 232, 120, 120 | 140 px from the chamber window; the shared slot raised 168, the right column's label place under R (The stamp label) |
+| Code | 776, 357, 176, 25 | 16 px, centred on x 864, line box 357 to 381, baseline 373, a 1 px rule at y 381 from x 792 to 936 (the shared slot, as Create); three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
 | Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; 304×312 is the size of one mibi up close's mibi, where the hand-off lands it ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
 
@@ -1387,10 +1449,10 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
 | `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking: crack-1 then crack-2 over the ready bud |
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
-| `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
-| `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
-| `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
-| `code` | 808, 424, 184, 24 | text | growing, ready, hatch | — |
+| `base` | 344, 440, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
+| `plaque` | 448, 480, 128, 32 | text | | empty, growing, ready; blank in the hatch |
+| `stamp` | 804, 232, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
+| `code` | 776, 357, 176, 25 | text | growing, ready, hatch | — |
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
 | `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting, else its signed juvenile stand-in; the step lift |
 
@@ -1438,7 +1500,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | 0 | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | 400 ms | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its signed juvenile stand-in. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
+| `hatch` (2600 ms) | 2780 ms | 0: the leaves go (a cut); the plaque keeps its word, "ready". 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its signed juvenile stand-in; the plaque cuts to "hatched" (`strings.plaque.hatch`, 60 px at Inter 16). 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
 **The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the Vivarium: states and events](#the-vivarium-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). `frame.json` carries it: the whole `vivarium` under Home, `habitat` under it (← "Vivarium"), Cross and the Sitting under `habitat` (← the mibi's name). With `motion: false` the hatch jumps to its end, the meet.
 
@@ -1450,10 +1512,10 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte, its foot light `sage` |
 | Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Signed (art director, 963f4eab): the bean on moss |
 | Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 (measured at alpha ≥ 128) | S01 and S03 are placed (signed, art director at 1x, masters-pods 8c3b6a7b); S02 and S04–S16 are empty slots, nothing drawn until placed |
-| Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
+| Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | The arcs stay; the empty leaf repainted as a flat silhouette (fix 6, A1) |
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |
-| Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
+| Stage | 1024×522, `room-bench-stage-incubator`, signed (d09acb12); recut, fix 5 IA1; IA2 (onto the grid) | The wall carries the chamber's machinery in the four paint zones |
 | Juvenile | 304×312: the new mibi's painting, or its signed juvenile stand-in (mibi-juvenile-<species>-304x312) | Carried |
 
 ---
@@ -1561,7 +1623,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | --- | --- | --- | --- |
 | `stage` | 0, 40, 1024, 522 | frame, part stage | Flat `ground` round the strip |
 | `window` | 0, 40, 1024, 440 | living window, part inside, no frame | Idle's painting rows 120 to 560 at 1:1; ground band 0, 296, 1024, 176; foot 0, 472, 1024, 8 |
-| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the footprint ring (fix 14), a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
 | `bed` | 792, 416, 192, 56 | living window, build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
 | `nameTag` | 24 tall; the name + 16, up to 8, 48 to 176 | panel and text, build `nameTag` | Home's tag (16 px). Top at feet + 24; if its bottom would pass y 472 it sits over the resident (top = box.y − 4 − 32); a sleeper's over it. Slid to stay 8 px inside the window |
 | `strip` | 16, 488, 992, 64 | panel | The rectangle of one mibi up close |
@@ -1589,7 +1651,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `stamp` | 872, 64, 120, 120 | stamp label | | 424 px from the mibi's box |
 | `plates` | 608, 200, 376, 40 | list, build `chapterPlates` (rule `listPitch`) | | 40×40 on a 48 pitch from 608, up to eight, in ring order; the emblem 24×24 at (8, 8); no word, no pips |
 | `door` (Companion) | 592, 272, 272, 96 | panel, build `module`, no lamp | | Word at (16, 12); the glyph 16×24 at (24, 52), solid docked, outline away; three places 48×48 at (56, 40), (120, 40), (184, 40): the set as it will be, docked or away; an add waiting with `frame-lamp-8-stone` at the place's (40, 0); a free place a dashed `hairline` outline 1 px inside it |
-| `portrait` | 872, 272, 136, 96 | panel, build `module` | | The sitting frame 32×48 at (52, 40): none, held, painting, portrayed |
+| `portrait` | 872, 272, 136, 96 | panel, build `module` | | The sitting frame 48×40 at (44, 40), its window 40×30 at (4, 4): none, held, painting, portrayed; portrayed, the portrait 40×30 over the window |
 | `cross` | 592, 376, 272, 96 | panel, build `module` | | A face a partner, 24 on a 32 pitch: up to seven at (16, 56); eight to eleven in two rows at y 38 and 64. A partner out with the Companion while it is away is drawn dimmed, on a `stone` ring, and cannot be picked |
 | `wild` | 872, 376, 136, 96 | panel, build `module` | | The gate 48×48 at (44, 40), shut or ajar (armed) |
 | `strip` | 16, 488, 992, 64 | panel | | |
@@ -1653,7 +1715,7 @@ The way back reads "Vivarium", its ← cap at x 922. **The watch** (`state.bench
 
 Both graphs use the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): edges by name, selector, `nearestIn` with `ahead`, ordered lists and `axis`.
 
-**The whole** (`vivarium.json` `focus`). Targets: `resident.<id>` (the feet ring; sleepers too, without the lift) and `tile.<id>` (round, every housed mibi, at home or out). The selectors are the view's: `tile.of`, the focused resident's own tile; `resident.of`, the focused tile's resident, null for a mibi that is out, when the selector rule takes the first resident in the list.
+**The whole** (`vivarium.json` `focus`). Targets: `resident.<id>` (the footprint ring (fix 14); sleepers too, without the lift) and `tile.<id>` (round, every housed mibi, at home or out). The selectors are the view's: `tile.of`, the focused resident's own tile; `resident.of`, the focused tile's resident, null for a mibi that is out, when the selector rule takes the first resident in the list.
 
 | From | ◀ | ▶ | ▲ | ▼ |
 | --- | --- | --- | --- | --- |
@@ -1730,10 +1792,10 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 | `mark-out-with-companion-64x96` | 64×96 | `resident.out` | The mibi's place, kept: the Companion's outline standing on the ground | yes |
 | `room-vivarium-stage-habitat` | 1024×522 | up close's `stage` | The device's housing round the window, the card and the modules | — |
 | `heart-full-24` | 24×24 | the card's heart | A small painted enamel heart | — |
-| The mibi | 304×312 | `resident` | Its standard painting, else its placeholder; a juvenile's, its signed stand-in mibi-juvenile-<species>-304x312 | — |
+| The mibi | 304×312 | `resident` | Its standard painting, else its placeholder; a juvenile's, its signed stand-in mibi-juvenile-<species>-304x312. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) | — |
 | Residents, sleepers, the bed | 144×152, 104×112, 192×56 | the whole | As on Home and Idle | — |
-| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48; a juvenile, its signed stand-in mibi-juvenile-<species>-48x48, 1:1 | — |
-| `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
+| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48; a juvenile, its signed stand-in mibi-juvenile-<species>-48x48, 1:1. An adult with no signed stand: its species' juvenile stand, bottom-centred on its feet, 1:1 (Composed states, rule 5) | — |
+| `sitting-frame-{empty,held,portrait}-48x40` | 48×40 | Portrait | The frame; its window 40×30 at (4, 4), opaque: debossed (none), dark (held, painting), a warm paper fill (portrayed) | — |
 | `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
 | `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
 | `mark-guide-16`, `home-lamp-sky-12x12`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
@@ -1746,7 +1808,7 @@ The measurements of one mibi up close stand; these change, and why:
 - **The state empty goes** to the whole: one mibi up close always shows one mibi, and the last release lands on the whole, empty.
 - **A state out** for a mibi out with the Companion: its chapters can be read while it is out, so its page must open; the out mark keeps its place, and there is no greet.
 - **The skill notches** join the card, on the code's row; the code's box narrows from 248 to 152, which still holds the widest code.
-- **The Companion module shows the carried set while away too**, with the outline glyph, and its free places as dashed outlines: the set must read when Take and Bring are chosen away.
+- **The Companion module shows the carried set while away too**, with the outline glyph, and its free places as the well alone (fix 2: `plate-well-48x48` in every state, no dash): the set must read when Take and Bring are chosen away.
 - **The title reads Vivarium**; the frame's Companion zone shows three faces.
 - The near painting is named as a master, so the glass is no longer a flat stand-in by default.
 
@@ -1760,7 +1822,7 @@ Where the build departs from this layout is listed in `habitat.json` and `vivari
 
 ## Probe bench
 
-The Probe section: the one screen whose subject is a machine, the Probe on its work tray. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
+The Probe section: the one screen whose subject is a machine, the Probe standing upright in its cradle, as it is held. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
 
 **As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×32, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
 
@@ -1793,7 +1855,7 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 | Element | Why it is here |
 | --- | --- |
 | **The Probe on its work tray**, in its cradle, large | The subject: the device the Companion carries out, being mended |
-| **The Shield plates**, standing under it | The Shield's state with no words: whole or gone, the tier's count |
+| **The Shield plates**, standing under it in their strip | The Shield's state with no words: whole or gone, the tier's count; the tier's painted foam strip holds them in both states, and away it shows its empty slots (fix 5 P3) |
 | **The Mend module**: the switch, a picture of what it means (the dock, then the plates it leaves whole), a lamp | The standing choice: the dock mends every plate at its price, or two free |
 | **The Upgrade module**: the socket, the part, what it adds as pictures, a lamp | The upgrade: whether it can be fitted, and what it brings |
 | **Bottom line** | Mend a plate, switch, fit, each with its price; the context in words |
@@ -1804,16 +1866,16 @@ The Probe bench is where the player keeps the Probe ready for the next expeditio
 
 **Reading order:**
 
-1. **The Probe in its cradle**, left of centre, on the axis x 296.
-2. **The plates** under it.
+1. **The Probe standing upright in its cradle**, in the left column, on the axis x 184.
+2. **The plates** on their strip, in the middle column under the tools zone.
 3. **The Mend module**, top right.
 4. **The Upgrade module** under it.
 
-The cradle and the column form one group centred on x 512, from 56 to 968.
+Three columns on the floor (x 66 to 955, y 77 to 538): the cradle (40, 96, 288 × 432), the tools zone with the plates' box under it (368, 96, 208 × 352; the plates' box 368, 464, 208 × 64, axis x 472) and the column (624, 96, 312 wide). The margins are 18 to 19, the modules 48 apart, and one bottom line on y 520 holds the cradle's ink, the Upgrade module and both strips (the upright rework).
 
 ### 4. Art direction
 
-- **Room:** the device's work tray: the Probe lies on it among field tools and small gauges, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
+- **Room:** the device's work tray: the Probe stands upright in its cradle, as it is held, with the field tools and small gauges beside it in the tools zone, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
 - **The Probe** is the same device the Companion draws, as the project's Probe art draws it, never a needle, painted at the bench's size, one picture a tier. Away, the cradle on the tray is drawn empty, so the Probe reads as out, never missing.
 - **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
 - **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`home-lamp-sprout-12x12`) or off (`home-lamp-hairline-12x12`).
@@ -1829,10 +1891,11 @@ The cradle and the column form one group centred on x 512, from 56 to 968.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| **Cradle (focal)** | 56, 104, 480, 288 | The Probe standing in its cradle, one painted picture a tier; away, the empty cradle. Axis x 296; first ink at y 108 |
-| Plates | 192, 416, 208, 80 | Plates 32×32 at y 440, centred in the region, on a 48 pitch: tier 1 at x 232, 280, 328; tier 2 at 208, 256, 304, 352; centred on x 296; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
-| Mend module | 584, 104, 384, 128 | Word at (16, 12), lamp at (356, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
-| Upgrade module | 584, 248, 384, 248 | Word at (16, 12), lamp at (356, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
+| **Cradle (focal)** | 40, 96, 288, 432 | The Probe standing upright in its cradle, as it is held, one painted picture a tier; away, the empty cradle. Axis x 184; first ink at y 100, ink box (44, 4, 232, 420) in the slice |
+| Plate strip | tier 1: 400, 472, 144, 48; tier 2: 376, 472, 192, 48 (axis y 472) | `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48`, painted, in both states, under the plates, centred on the axis with 8 px of strip a side; away its slots show empty; it cuts t1 → t2 at the install's 300 |
+| Plates | 368, 464, 208, 64 | Plates 32×32 at y 480, centred in the region, on a 48 pitch: tier 1 at x 408, 456, 504; tier 2 at 384, 432, 480, 528; centred on x 472; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Mend module | 624, 96, 312, 128 | Word at (16, 12), lamp at (284, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
+| Upgrade module | 624, 272, 312, 248 | Word at (16, 12), lamp at (284, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
 
 Each module's objects start 8 px or more under its word's baseline (y + 28).
 
@@ -1841,12 +1904,15 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Region (`bench.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
 | `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`, signed) | | — |
-| `cradle` | 56, 104, 480, 288 | specimen (focal) | | tier 1, tier 2, empty |
-| `plates` | 192, 416, 208, 80 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
-| `switch` | 584, 104, 384, 128 | panel, build `module` | | off, on |
-| `slot` | 584, 248, 384, 248 | panel, build `module` | | dim, ready, armed, fitted |
+| `cradle` | 40, 96, 288, 432 | specimen (focal) | | tier 1, tier 2, empty |
+| `strip` | 376, 472, 192, 48 (bound; by tier) | picture, painted | | tier 1, tier 2 (both states) |
+| `plates` | 368, 464, 208, 64 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
+| `switch` | 624, 96, 312, 128 | panel, build `module` | | off, on |
+| `slot` | 616, 248, 312, 248 | panel, build `module` | | dim, ready, armed, fitted |
 
-**Draw order:** bench, cradle, plates, switch, slot, ring, frame, message plate.
+**Draw order:** bench, cradle, strip, plates, switch, slot, ring, frame, message plate.
+
+Rings (4 px out, 2 px lift): plates 364, 458, 216, 72; switch 620, 90, 320, 136; slot 620, 266, 320, 256.
 
 ### 6. Interactions
 
@@ -1868,7 +1934,7 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | `plates` | none | `nearestIn: module` (the slot, the row nearest) | none | none |
 | `module` (`order: [switch, slot]`) | `plates`, else none | none | the previous in the order | the next in the order |
 
-**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift (the rings: plates 188, 410, 216×88; switch 580, 98, 392×136; slot 580, 242, 392×256). **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends); the ring stays drawn where it is, with its lift, through the hold; it is not redrawn.
+**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** 5 px outside each object as drawn (the plates' ring round the drawn plates), with the 2 px chrome lift (the rings: plates 188, 410, 216×88; switch 580, 98, 392×136; slot 580, 242, 392×256). **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends); the ring stays drawn where it is, with its lift, through the hold; it is not redrawn.
 
 ### The bench's states and events
 
@@ -1888,8 +1954,9 @@ With `motion: false` every event jumps to its end.
 | Master | Pixel size |
 | --- | --- |
 | `room-bench-stage-probe` | 1024×522 |
-| `bench-probe-t1-480x288`, `bench-probe-t2-480x288`, `bench-cradle-empty-480x288` | 480×288, rows 0 to 3 kept empty |
+| `bench-probe-upright-t1-288x432`, `bench-probe-upright-t2-288x432`, `bench-cradle-upright-empty-288x432` | 288×432, rows 0 to 3 kept empty |
 | `bench-plate-whole-32x32`, `bench-plate-gone-32x32` | 32×32 |
+| `bench-plate-strip-t1-144x48`, `bench-plate-strip-t2-192x48` | 144×48; 192×48 (fix 5 PA1, masters-pods bea42f4d) |
 | `bench-switch-track-off-80x40`, `bench-switch-track-on-80x40`; `bench-switch-knob-40x40` | 80×40; 40×40 |
 | `mark-dock-24x24` | 24×24 |
 | `icon-shield-16`, `icon-shield-16-new`, `icon-shield-gone-16` | 16×16 |
@@ -2011,7 +2078,7 @@ The left half is the vivarium's: the window, the mibi and its tag at the same pl
 | `strip` | 16, 488, 992, 64 | panel | | — |
 | `steps` | 32, 496, 952, 48 | list, build `stepTiles` (rule `listPitch`) | | current, done (with its picture), ahead |
 
-The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 2 px chrome lift: on card 1, (740, 106, 120, 120). **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, deck, heading, cards or chosen, strip, steps, ring, frame, message plate.
+The ring is the frame's `focusRing` word, 5 px outside a card with the 2 px chrome lift: on card 1, (739, 105, 122, 122), radius 5. **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, deck, heading, cards or chosen, strip, steps, ring, frame, message plate.
 
 ### 6. Interactions
 
@@ -2048,7 +2115,7 @@ With `motion: false` every event jumps to its end.
 ### After begin: the vivarium, up close, and Home
 
 - **The message plate on the vivarium, up close:** "Fig's portrait is on its way", one line, 16 + 20 = 36 tall, its bottom at y 550. When a welcome sitting was waiting for the slot, begin gives it at once (`beginSitting`), and the same plate takes a second line, "Another sitting is yours": 16 + 40 = 56 tall, (399, 494, 226, 56) for Fig: the longer line, 193 px, plus 16 each side, rounded up to an even width so it centres on x 512. It covers the strip, not the mibi's box or the Portrait module, so it keeps its bottom edge at y 550.
-- **Home's sitting frame** (the Probe module, 912, 408, 24, 32) shows nothing after begin, or the gilt frame when the welcome sitting was given.
+- **Home's sitting frame** (the Probe module, 912, 408, 32, 24) shows nothing after begin, or the gilt frame when the welcome sitting was given.
 - **The sitting's crate** waits in Cargo from begin until it is opened: on Home's Cargo module and in Cargo's bay, from the right, with its fill lamp ([Home](#home-the-panel-and-the-column), [Cargo](#cargo)).
 
 ### Placeholders on the sitting
@@ -2080,7 +2147,7 @@ The Library's whole, its overview level ([The screen map](#the-screen-map)): Hom
 
 <img src="station-layouts/20a-library-spread-empty.png" width="1024" alt="The Library spread with the journal empty: sixteen empty frames, the ring on the first">
 
-*20a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap; the message plate a press shows. 1×, measured ([SVG](station-layouts/20a-library-spread-empty.svg)).*
+*20a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap, and a press does nothing. 1×, measured ([SVG](station-layouts/20a-library-spread-empty.svg)).*
 
 <img src="station-layouts/20b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows; the ring on Belatz over its gilt corner and seal">
 
@@ -2141,23 +2208,22 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Boards (in the slice) | 8, 48, 1008, 504 | — | The 8 px around them: the device's panel |
 | Pages (in the slice) | 24, 56, 480, 488 and 520, 56, 480, 488 | — | Gutter 504 to 520 |
 | Margin life (in the slice) | 40, 464, 448, 72 and 536, 464, 400, 72 | — | Never over a frame, a rule, a name or a mark |
-| Cloth marker (in the slice) | 500, 48, 24, 264 | — | Centred on x 512, 4 px off the grid as a centred region may be |
-| Left page's frames | 40, 88, 464, 368 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
-| Right page's frames | 536, 88, 464, 368 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
+| Cloth marker (in the slice) | 488, 48, 48, 288 | — | The painted ribbon (ink 491–532 × 54–329), centred on x 512 |
+| Left page's frames | 40, 88, 464, 376 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
+| Right page's frames | 536, 88, 464, 376 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
 | Frame columns | x 48, 160, 272, 384; 544, 656, 768, 880 | | Rows y 112 and 296 |
 | **Found plate (focal)** | frame + (8, 8), 80×96 | sprite `spread-plate-<SNN>-80x96` | In the 8 px mat; rendered or downsampled, never enlarged |
 | Met study | frame + (8, 8), 80×96 | sprite `spread-study-<SNN>-80x96` | |
-| Clan roundel | frame + (0, −18), 12×12 | sprite `clan-roundel-<Cnn>-12x12` | Centred on the rule's line (y 100 and 284); found and met only |
-| Clan rule | frame + (16, −14), 80×4 | rect in the clan's colour | y 98 to 102 and 282 to 286, 4 px after the roundel, 10 px of paper above the frame; found and met only |
+| Clan roundel | frame + (−2, −23), 16×16 | sprite `clan-roundel-<Cnn>-16x16` | Centred on the rule's line (y 97 and 281), 2 px clear of the ring's outer key; found and met only |
+| Clan rule | frame + (18, −17), 78×4 | rect in the clan's colour | y 95 to 98 and 279 to 282, 4 px after the roundel, 13 px of paper above the frame; found and met only |
 | Name | frame + (0, 120), 96×20 | text, 16 px, centred | y 232 and 416, on the caption rule at y 256 and 440 (the slice's). Widest today: Untuva, 53 px |
 | Gilt corner | frame + (88, −8), 16×16 | sprite `spread-gilt-corner-16x16` | Centred on the frame's top right corner; found and portrayed |
-| Progress | frame + (26, 152), 44×8 | four sprites, `spread-progress-full-8x8` or `spread-progress-empty-8x8`, 8×8 on a 12 pitch | y 264 and 448, centred on the frame, 8 px under the caption rule, 8 px over the next row's roundel and the margin life; found only |
+| Progress | frame + (21, 150), 54×12 | four sprites, `spread-progress-full-12x12` or `spread-progress-empty-12x12`, 12×12 on a 14 pitch | y 262 and 446, centred on the frame, 5 px under the caption rule, 5 px over the next row's clan rule and 6 px over the margin life; found only |
 | Seal | frame + (88, 104), 16×16 | sprite `spread-seal-16x16` | Centred on the frame's bottom right corner; found and complete |
-| Focus | frame outset 4, radius 6: 104×120 | the ring | `rust` on paper; nothing lifts; drawn last, over the gilt corner and the seal (their offsets stand) |
+| Focus | frame outset 5, radius 5: 106×122 | the ring | The default cased ring, 106×122 r 5: void, cream, void; the focused picture lifts 2; drawn last, over the gilt corner and the seal (their offsets stand) |
 | Page-turn corner | 968, 512, 24, 24 | sprite `book-corner-turn-24x24`, part of `spreadPage` | Its own region, never in the stage slice; only with a second spread |
-| Message plate | centred on x 512, bottom at y 550 | the frame's | 225×36 for "Nothing is known here yet" (193 px of text and 2 × 16 padding); 271×36 for "Its Book needs its pod identified" (239 px) |
 
-`spreadPage` is a composition, not a word (the region does not clip; every part lies inside the region rect): a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is the ring's `rust` (C01 is `tealD`).
+`spreadPage` is a composition, not a word (the region does not clip; every part lies inside the region rect): a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is a ring colour (C01 is `tealD`).
 
 ### 6. Interactions
 
@@ -2166,13 +2232,13 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Arrive | From Home's Library module or the Library key, the ring on the frame it was last on; a fresh world, on the first frame. From the Book's ←, the ring on that species |
 | ◀ ▶ | Along a row, across the gutter to the other page's same row; the outer edges stop, never a wrap |
 | ▲ ▼ | Between the page's two rows; the edges stop |
-| ✓ on a found frame | `✓ Open its Book`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library). The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
-| ✓ on a met frame | No ✓ cap; the context "{species}, only seen"; a press shows the message plate "Its Book needs its pod identified" and nothing opens |
-| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press shows the message plate "Nothing is known here yet" and nothing opens |
+| ✓ on a found frame | `✓ Open its Book`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library); until slot 8 a found frame has no ✓ cap and a press does nothing. The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
+| ✓ on a met frame | No ✓ cap; the context "{species}, only seen"; a press does nothing; the context says the next step |
+| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press does nothing |
 | The notice | The frame's notice, as on every screen |
 | ← | Home, the ring on the Library module |
 
-**Focus as data** (`library.json` `spread.focus`): sixteen targets `frame.<SNN>`, found, met or unmet, all enabled, each its frame's place with the round ring; ✓ on any of them reaches the intent table (target `frame.<SNN>`), which opens a found species' Book or shows a plate, and the bottom line drops the cap on met and unmet frames. One group `frame` whose four edges are `{ "nearestIn": "frame", "ahead": true }`, `fallback` `none`. Fourteen vectors play it with `ui/focus.mjs`, among them S04 ▶ S09 and S13 ◀ S08 across the gutter, S01 ▼ S05, and S01 ◀, S12 ▶ and S16 ▼ staying put.
+**Focus as data** (`library.json` `spread.focus`): sixteen targets `frame.<SNN>`, found, met or unmet, all enabled, each its frame's place with the round ring; ✓ on any of them reaches the intent table (target `frame.<SNN>`), which opens a found species' Book (once the Book is open) and otherwise does nothing, and the bottom line drops the cap on met and unmet frames. One group `frame` whose four edges are `{ "nearestIn": "frame", "ahead": true }`, `fallback` `none`. Fourteen vectors play it with `ui/focus.mjs`, among them S04 ▶ S09 and S13 ◀ S08 across the gutter, S01 ▼ S05, and S01 ◀, S12 ▶ and S16 ▼ staying put.
 
 **Events:** none of its own (`spread.events` is empty). ✓ on a found frame is a cut to the Book (`spread.keys.confirm`); ← from the Book is a cut back with the ring on that species (`spread.keys.library`); the screen change is the host's, as everywhere.
 
@@ -2191,8 +2257,6 @@ The copywriter's slots (`spread.strings`), signed by the copywriter.
 | Context, found | Six words or fewer, no digits | "{species}" |
 | Context, met | Six words or fewer, no digits; tells met from found in words | "{species}, only seen" (the widest, "Untuva, only seen", 132 px) |
 | Context, unmet | Six words or fewer, no digits | "an empty frame" |
-| Plate on a met frame | One sentence, at most 608 px of text | "Its Book needs its pod identified" |
-| Plate on an unmet frame | One sentence | "Nothing is known here yet" |
 | Way back | One word | "Home" |
 
 ### Masters for the spread
@@ -2205,8 +2269,8 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The code rig's type specimen at 80×96 for all sixteen |
 | `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
 | `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `clay` L, 4 px thick, along the top and right edges |
-| `clan-roundel-<Cnn>-12x12` | 12×12 | Sixteen: the clan's roundel beside its rule, in the clan's colour; signed, placed in L | A disc in the clan's colour, edged `bark` |
-| `spread-progress-full-8x8`, `spread-progress-empty-8x8` | 8×8 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it; signed and placed | An 8×8 `bark` disc; an 8×8 `clay` outline |
+| `clan-roundel-<Cnn>-16x16` | 16×16 | Sixteen: the clan's roundel beside its rule, in the clan's colour; signed, placed in L | A disc in the clan's colour, edged `bark` |
+| `spread-progress-full-12x12`, `spread-progress-empty-12x12` | 12×12 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it; signed and placed | A 12×12 `bark` disc; a 12×12 `clay` outline |
 | `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `sand` disc edged `bark` |
 
 ### Not designed yet
@@ -2444,7 +2508,7 @@ Wireframes, 1×: [09a-cross-overview.png](station-layouts/09a-cross-overview.png
 
 <img src="station-layouts/09a-cross-overview.png" width="1024" alt="Cross, the splice overview">
 
-*A · Overview: every locus at play at once, grouped by chapter. Two S09 Belatz half-siblings, Wisp and Rook (kinship an eighth); Rook's Shape and Legs & Tail are unread, and Movement is sealed. 1× wireframe on the bench's ground. Boxes with ids are masters; the rest is rect, text and 1 px lines.*
+*A · Overview: every locus at play at once, grouped by chapter. Two S09 Belatz half-siblings, Wisp and Rook (kinship an eighth); Rook's Shape and Legs & tail are unread, and Movement is sealed. 1× wireframe on the bench's ground. Boxes with ids are masters; the rest is rect, text and 1 px lines.*
 
 <img src="station-layouts/09b-cross-chapter.png" width="1024" alt="Cross, the splice chapter view">
 
@@ -2602,7 +2666,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Panel | `panel` fill, `hairline` edge, `bevel` top row, drop shadow `void` at (+2, +3) | The report card's look: an instrument readout standing over the scene |
+| Panel | `plate-device-416x424` 1:1, no fill, edge, bevel row or drop shadow (fix 2 F1, F8); the name field `plate-well-328x48` | Was the report card's look (`panel`, `hairline`, `bevel`, `void` shadow at +2, +3); now cut from the device's housing |
 | Field | Inside `ground`, edge `hairline`; the name `bone` | A recess, as the rack's wells, so the name reads as something held |
 | Selection | `tealD` behind the name | The cool look of the ribbon: selected, not warned |
 | Caret | `bone`, 2×28, steady | Plain, the same colour as the name |
@@ -2631,13 +2695,13 @@ The panel stands over the vivarium's right column, 16 px right of the window's b
 | Suggest | 636, 408, 160, 40 | |
 | **Done** | 804, 408, 160, 40 | Where the ring opens |
 
-The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside the lifted box: 48×48 on a 48 px pitch, so rings never touch a neighbouring key, and the ring over a key clears the row above by 2 px.
+The focused key lifts 2 px, the chrome lift, and its ring stands 5 px outside the lifted box: 50×50 on a 48 px pitch over 40 px keys, 3 px clear of the next key, and the ring over a key clears the row above by 2 px.
 
 **Regions and their words.** One state, **open**; the field's own states are selected, typed and empty (Interactions, below).
 
 | Region (`namer.json`) | Rectangle | Word or build | States it shows |
 | --- | --- | --- | --- |
-| `panel` | 592, 48, 416, 424 | panel, build `namer` (with its shadow) | — |
+| `panel` | 592, 48, 416, 424 | `plate-device-416x424`, build `namer` (no shadow, fix 2) | — |
 | `field` | 636, 64, 328, 48 | panel and text, build `nameField` | selected (the selection, no caret); typed (the caret after the name); empty (the caret at the start) |
 | `say` | 636, 120, 328, 24 | text | empty; a reason in `mist`; a refusal in `amber` for 4000 ms |
 | `keys` | 636, 160, 328, 184 | panel and text, build `keyGrid` | each key: drawn or not by the page; its character in the grid's case; focused (lifted 2 px); dimmed while the field is full |

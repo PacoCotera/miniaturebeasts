@@ -21,24 +21,25 @@
 <rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#888" stroke-width="1"/>
 <text x="690" y="60" font-size="11" fill="#222">Stamina</text>
 <rect x="719.5" y="71.5" width="5" height="5" fill="#555" stroke="#444" stroke-width="1"/>
-<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
-<text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
-<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the window</text>
-<rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
-<text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
+<rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
+<text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+<text x="808" y="270" font-size="9" fill="#777">140 from the window</text>
+<rect x="776.5" y="357.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="792" y1="381.5" x2="936" y2="381.5" stroke="#3c4b57" stroke-width="1"/>
+<text x="864" y="373" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+<text x="864" y="392" font-size="9" fill="#777" text-anchor="middle">code 776,357 176×25 · rule 792–936</text>
 <line x1="668" y1="300" x2="668" y2="96" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
 <text x="674" y="200" font-size="9" fill="#2b6cb0">window swings up on its hinge,</text>
 <text x="674" y="211" font-size="9" fill="#2b6cb0">3 slices in 0–600 ms (placeholder:</text>
 <text x="674" y="222" font-size="9" fill="#2b6cb0">lifts 384 px), clipped at y 88</text>
 <rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
 <text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
-<rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · placeholder</text>
-<rect x="448.5" y="496.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<rect x="352.5" y="547.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
-<text x="672" y="544" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
+<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
 <path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
 <rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
 <line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
@@ -52,13 +53,13 @@
 <rect x="312.5" y="104.5" width="399" height="39" fill="#0f4c50" stroke="#45d8be" stroke-width="1"/>
 <text x="512" y="130" font-size="16" fill="#f1ebdf" text-anchor="middle">Fig, a young Loika</text>
 <text x="716" y="116" font-size="9" fill="#777">ribbon 312,104 400×40</text>
-<rect x="652.5" y="506.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
+<rect x="652.5" y="490.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
 <text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms,</text>
 <text x="24" y="109" font-size="10" fill="#2b6cb0">a held state):</text>
-<text x="24" y="122" font-size="10" fill="#2b6cb0">0 leaves and plaque word go;</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">0 the leaves go (plaque keeps "ready");</text>
 <text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the window opens;</text>
 <text x="24" y="148" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
-<text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands</text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands; plaque "hatched"</text>
 <text x="24" y="174" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>
 <text x="24" y="187" font-size="10" fill="#2b6cb0">1200 the ribbon;</text>
 <text x="24" y="200" font-size="10" fill="#2b6cb0">1400, 1800 it steps 4 px;</text>
@@ -96,4 +97,26 @@
 <circle cx="951" cy="582" r="8" fill="#5d5974"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
+<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
+<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
+<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
+<text x="512" y="501" font-size="13" fill="#c6c4d8" text-anchor="middle">ready</text><text x="512" y="529" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plaque: "ready" to 1000, then "hatched"</text>
+<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
+<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
+<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
+<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
+<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
 </svg>

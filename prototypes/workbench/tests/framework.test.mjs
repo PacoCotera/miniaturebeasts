@@ -5,8 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
-import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS } from "../framework/species.mjs";
-import { cross, forecast, kinship, identity, relatedness, children, SPREAD } from "../framework/cross.mjs";
+import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf } from "../framework/species.mjs";
+import { cross, forecast, kinship, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
 
@@ -15,7 +15,7 @@ const framesDir = path.resolve(here, "../frames");
 const frames = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const frameOf = (id) => frames.find((f) => f.species.id === id);
 
-test("catalogue 9 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
+test("catalogue 10 carries catalogue6 plus the taxonomy's switches and loci, the three clan gaps and the added alleles", () => {
   const v1 = CATALOGUE.loci.filter((l) => l.provenance.catalogue.startsWith("genomic-compositional-source-experiment"));
   const mine = CATALOGUE.loci.filter((l) => l.provenance.catalogue === "mb-genome-framework@7");
   assert.equal(v1.filter((l) => l.status === "validated").length, 114);
@@ -28,8 +28,10 @@ test("catalogue 9 carries catalogue6 plus the taxonomy's switches and loci, the 
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 15, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, and the six of the Loika's calibration to Pip");
-  assert.equal(CATALOGUE.version, 9, "pin 9: the Loika calibrated to Pip");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
+  assert.equal(CATALOGUE.version, 10, "pin 10: ash for the fine-tuned Loika (T-20261016-200)");
+  assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
+  assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 9).length === 6);
   assert.ok(CATALOGUE.loci.some((l) => l.id === "growth.belly-field-extent") && CATALOGUE.loci.some((l) => l.id === "growth.exterior-eye-height-ratio"), "the two C01 loci of the calibration");
@@ -71,7 +73,10 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   assert.ok(loika.absent.some((a) => a.id === "growth.wing-span-ratio"), "a Loika has no wing locus at all");
   assert.ok(loika.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
   assert.ok(loika.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
-  assert.equal(loika.counts.open, 5, "exactly the five traits of the Pip proof");
+  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 10");
+  assert.equal(loika.counts.traits, 6, "six traits: the starter tier counts traits");
+  assert.equal(loika.counts.open, 7, "Colour, the marking switch and layout, Crown, Eyes, Drive, Efficiency");
+  assert.deepEqual(loika.loci.find((l) => l.id === "appearance.marking-switch").legacy, ["off"], "plain stays legal for a version-3 line");
   const s03 = frameOf("S03");
   assert.ok(s03.chapters.some((c) => c.id === "glow" && c.traits.every((t) => !t.shapeable)), "the glow is a doing");
   assert.ok(frameOf("S16").chapters.some((c) => c.id === "charge" && c.sealed), "the lightning kind's Charge chapter is sealed");
@@ -87,6 +92,34 @@ test("every sealed chapter names its find's kind beside its words: crystal, pear
   }
   for (const words of Object.values(FINDS)) assert.ok(findKindOf(words), `every chapter's default find is one the studio paints (${words})`);
   assert.equal(findKindOf("a find"), null, "a chapter sealed with no named find has no kind: the page keeps the stand-in card");
+});
+
+test("every locus names who changes it: the species, the player, breeding, or the mibi itself (Glow, Basking, Phase)", () => {
+  const PLACES = ["meadow", "pond", "rock", "wood", "cave"];   // the Station's place ids (station/src/state.mjs PLACE_WORD)
+  const selfTraits = Object.fromEntries(frames.flatMap((f) => f.chapters.flatMap((c) => c.traits.filter((t) => t.selfChanging).map((t) => [`${f.species.id}.${t.id}`, t.selfChanging]))));
+  assert.deepEqual(selfTraits, {
+    "S03.glow": { toward: "bright", places: ["cave", "wood"], storm: false, ...SELF_MARK },
+    "S15.light-feeding": { toward: "high", places: ["meadow", "pond", "rock"], storm: false, ...SELF_MARK },
+    "S16.phase": { toward: "solid", places: [], storm: true, ...SELF_MARK },
+  });
+  assert.deepEqual(SELF_MARK, { stepOf: 16, maxSteps: 4, fadeAfter: 3 });
+  for (const f of frames) {
+    const traits = new Map(f.chapters.flatMap((c) => c.traits.map((t) => [t.id, t])));
+    for (const l of f.loci) {
+      const t = traits.get(l.trait), want = l.kind === "locked" ? "species" : t.selfChanging ? "self" : t.shapeable ? "player" : "breeding";
+      assert.equal(l.changedBy, want, `${f.species.id} ${l.id}`);
+      if (l.changedBy === "player") assert.equal(t.nature, "look", `${f.species.id} ${l.id}: only a look is the player's`);
+    }
+    for (const t of traits.values()) if (t.selfChanging) {
+      assert.equal(t.shapeable, false, `${f.species.id} ${t.id}: the player never sets a self-changing trait`);
+      assert.equal(t.nature, "doing");
+      assert.deepEqual(t.loci.length, 1);
+      assert.ok(f.pools[t.loci[0]].includes(t.selfChanging.toward), `${f.species.id} ${t.id}: its end is in the pool`);
+      assert.ok(t.selfChanging.places.every((p) => PLACES.includes(p)) && (t.selfChanging.places.length > 0) !== t.selfChanging.storm, `${f.species.id} ${t.id}: one trigger, places or a storm`);
+      assert.deepEqual(t.selfChanging, { ...SELF_CHANGING[t.id], ...SELF_MARK });
+    }
+    assert.equal(f.counts.selfChanging, f.loci.filter((l) => l.changedBy === "self").length);
+  }
 });
 
 test("an individual resolves against its frame: sleeping parts, absent parts, foreign loci", () => {
@@ -359,4 +392,128 @@ test("C2: `sure` is the shown look certain (one look at weight 1, one bin for a 
   const sib = forecast(l, p, q, { kinship: 0.25 }).traits.find((t) => t.trait === "eye-rings");
   assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a sibling cross of equal eyes lands on one value"); assert.equal(sib.firm, false);
   for (const t of forecast(frameOf("S02"), sampleIndividual(frameOf("S02"), rng("s")), sampleIndividual(frameOf("S02"), rng("t"))).traits) if (t.kind === "sealed") assert.equal(t.sure, false);
+});
+
+test("a shown look is always one of its trait's words: the frame's looks, or a form's player word (S03's Claws: hooves, webbed feet, roots)", async () => {
+  const { lookOf } = await import("../framework/describe.mjs");
+  const legacy = ["hooves", "webbed feet", "roots"];
+  for (const f of frames) for (const ch of f.chapters) for (const t of ch.traits) {
+    const r = rng(`words:${f.species.id}:${t.id}`);
+    for (let i = 0; i < 60; i++) {
+      const g = sampleIndividual(f, r), w = lookOf(f, t, g);
+      assert.ok(w == null || t.looks.includes(w) || (f.species.id === "S03" && t.id === "feet" && legacy.includes(w)), `${f.species.id} ${t.id}: "${w}" is not one of ${JSON.stringify(t.looks)}`);
+    }
+  }
+});
+
+test("currentLooks: a trait's looks a new pod can show; a legacy look (the Loika's plain, the Tuikis's old feet) is never among them, and every other trait keeps all its looks", async () => {
+  const { currentLooks, traitLooks } = await import("../framework/describe.mjs");
+  const traitOf = (sp, id) => frameOf(sp).chapters.flatMap((c) => c.traits).find((t) => t.id === id);
+  const markings = traitOf("S01", "markings");
+  assert.deepEqual(currentLooks(frameOf("S01"), markings), traitLooks(frameOf("S01"), markings).filter((l) => l !== "plain"), "the Loika's plain only comes from a legacy off");
+  assert.deepEqual(currentLooks(frameOf("S03"), traitOf("S03", "feet")), ["round feet", "padded feet", "digging wedges"]);
+  for (const f of frames) for (const ch of f.chapters) for (const t of ch.traits) {
+    if (t.loci.some((id) => f.loci.find((l) => l.id === id)?.legacy?.length)) continue;
+    assert.deepEqual(currentLooks(f, t), traitLooks(f, t), `${f.species.id} ${t.id}`);
+  }
+});
+
+test("the Tuikis's claws: new pods draw only the three digging forms; a legacy hoof, webbed or root copy stays legal, breeds, and reads plainly", async () => {
+  const { lookOf } = await import("../framework/describe.mjs");
+  const f = frameOf("S03"), id = "anatomy.contact-terminal-form", row = f.loci.find((l) => l.id === id), claws = f.chapters.flatMap((c) => c.traits).find((t) => t.id === "feet");
+  assert.equal(frameVersionOf(f), 5, "the Tuikis at frame version 5 (T-20261016-194)");
+  assert.deepEqual(row.alleles, ["rounded", "pad", "wedge"]); assert.deepEqual(row.legacy, ["hoof", "webbed", "root"]);
+  assert.deepEqual(claws.looks, ["round feet", "padded feet", "digging wedges"], "the guide counts the three");
+  const r = rng("claws");
+  for (let i = 0; i < 200; i++) assert.ok(sampleIndividual(f, r).loci[id].every((c) => row.alleles.includes(c)), "a new pod never draws a legacy form");
+  const words = new Set();
+  for (const [x, y] of [["hoof", "hoof"], ["root", "webbed"], ["hoof", "pad"], ["webbed", "rounded"]]) {
+    const old = { ...typeSpecimen(f), loci: { ...typeSpecimen(f).loci, [id]: [x, y] } };
+    assert.deepEqual(checkGenome(f, old), [], `a living ${x}/${y} line stays valid`);
+    const kid = cross(f, { id: "old", genome: old }, { id: "new", genome: sampleIndividual(f, r) }, { rng: rng(`claws-${x}${y}`), kinship: 0 });
+    assert.deepEqual(checkGenome(f, kid), [], "and breeds a valid child");
+    const w = lookOf(f, claws, old); words.add(w);
+    assert.ok([...claws.looks, "hooves", "webbed feet", "roots"].includes(w), `"${w}" is a plain word, never an id`);
+  }
+  assert.ok(words.has("hooves") || words.has("roots"), "an old form shows as itself");
+});
+
+test("every cross of two valid members builds: the frames' viability counts crossed children, and the waist band that once disconnected the body joins by a connector", () => {
+  for (const f of frames) {
+    assert.ok(f.viability.crossed >= 150, `${f.species.id}: crossed children are checked`);
+    assert.equal(f.viability.crossedBuilt, f.viability.crossed, `${f.species.id}: every crossed child builds`);
+  }
+  // the band measured in T-20261016-185: a narrow join at a waist of about 0.59 to 0.66 (between thin 0.3 and broad 0.75)
+  for (const id of ["S08", "S09", "S13", "S16"]) {
+    const f = frameOf(id), base = typeSpecimen(f);
+    for (let v = 0.3; v <= 0.75 + 1e-9; v += 0.0075) {
+      const x = Math.round(v * 1e4) / 1e4, g = { ...base, loci: { ...base.loci, "growth.join-throat-ratio": [x, x] } };
+      assert.equal(buildIndividual(f, g).validation.status, "valid", `${id}: waist ${x} builds`);
+    }
+  }
+});
+
+test("the shed pod: a returned mibi's self cross never equals its parent, always builds, is seeded, takes only the parent's copies and keeps the line", () => {
+  assert.equal(SELF_KINSHIP, 1 / 8);
+  const valueOf = (locus, c) => (typeof c === "number" ? c : locus.alleles.find((a) => a.id === c).value);
+  const key = (frame, g) => JSON.stringify(frame.loci.map((l) => { const locus = LOCI.get(l.id); return g.loci[l.id].map((c) => String(isContinuous(locus) ? Math.round(valueOf(locus, c) * 1e6) / 1e6 : c)).sort(); }));
+  let surfaced = 0, carriers = 0;
+  for (const frame of frames) {
+    const pod = (s) => { const r = rng(`shed-parent:${frame.species.id}:${s}`); for (let i = 0; i < 24; i++) { const g = sampleIndividual(frame, r); try { if (!checkGenome(frame, g).length && buildIndividual(frame, g).validation.status === "valid") return g; } catch { /* the next draw */ } } throw new Error("no pod"); };
+    const parents = [];
+    for (let s = 0; s < 4; s++) parents.push({ id: `${frame.species.id}-p${s}`, genome: pod(s), parents: [] });
+    for (let s = 0; s < 4; s++) {   // bred parents: only a child that builds exists (children's rule)
+      const r = rng(`shed-bred:${frame.species.id}:${s}`);
+      for (let i = 0; i < 24; i++) { const g = cross(frame, parents[s], parents[(s + 1) % 4], { rng: r, kinship: 0 }); let ok = false; try { ok = buildIndividual(frame, g).validation.status === "valid"; } catch { /* not a child */ } if (ok) { parents.push({ id: `${frame.species.id}-b${s}`, genome: g, parents: [parents[s], parents[(s + 1) % 4]] }); break; } }
+    }
+    const byId = new Map(parents.map((p) => [p.id, p]));
+    for (const m of parents) for (let j = 0; j < 3; j++) {
+      const seed = `shed:${m.id}:${j}`, g = shedPod(frame, m, { rng: rng(seed) });
+      assert.ok(g, `${m.id}: a pod comes out`);
+      assert.deepEqual(shedPod(frame, m, { rng: rng(seed) }), g, `${m.id}: the same seed sheds the same pod`);
+      assert.notEqual(key(frame, g), key(frame, m.genome), `${m.id}: never a clone`);
+      assert.deepEqual(checkGenome(frame, g), [], `${m.id}: a whole genome of its frame`);
+      assert.equal(buildIndividual(frame, g).validation.status, "valid", `${m.id}: it builds`);
+      assert.deepEqual(g.origin.parents, [genomeDigest(m.genome), genomeDigest(m.genome)]);
+      assert.deepEqual(g.origin.parentIds, [m.id, m.id]);
+      for (const l of frame.loci) {
+        const locus = LOCI.get(l.id), p = m.genome.loci[l.id], c = g.loci[l.id];
+        if (l.kind === "locked") { assert.deepEqual([...c].sort(), [...l.copies].sort()); continue; }
+        if (isContinuous(locus)) {
+          const shown = (valueOf(locus, p[0]) + valueOf(locus, p[1])) / 2, [lo, hi] = valueRange(locus), reach = SPREAD * (hi - lo) * (1 - 4 * SELF_KINSHIP) + Math.abs(valueOf(locus, p[0]) - valueOf(locus, p[1])) / 2 * (1 - 4 * SELF_KINSHIP) + 1e-6 + (hi - lo) / 32;
+          assert.ok(Math.abs(c[0] - shown) <= reach, `${m.id} ${l.id}: a blend stays by its parent's (${c[0]} vs ${shown})`);
+        } else for (const x of c) assert.ok(p.includes(x), `${m.id} ${l.id}: copy ${x} is one of the parent's (${p})`);
+      }
+      for (const ch of frame.chapters) for (const t of ch.traits) {
+        const lead = t.loci.find((id) => !isContinuous(LOCI.get(id)));
+        if (!lead) continue;
+        const pp = m.genome.loci[lead];
+        if (pp[0] !== pp[1]) { carriers++; if (g.loci[lead][0] === g.loci[lead][1]) surfaced++; }
+      }
+      const rec = { id: `${m.id}-shed${j}`, genome: g, parents: [m, m] };
+      assert.ok(kinship(rec, m, (id) => byId.get(id)) >= 0.5, `${m.id}: the line is real in the pedigree`);
+    }
+  }
+  assert.ok(surfaced / carriers > 0.4 && surfaced / carriers < 0.75, `carried copies come out doubled about half the time (${surfaced}/${carriers})`);
+  assert.throws(() => cross(frames[0], { id: "x", genome: typeSpecimen(frames[0]) }, { id: "x", genome: typeSpecimen(frames[0]) }), /one mibi is not a pair/, "cross(m, m) stays refused");
+  assert.equal(PENALTY, "AB");
+});
+
+test("a shed pod is born on its frame's current version, and a parent born on an older one sheds as it crosses", () => {
+  for (const id of ["S01", "S03", "S05"]) {
+    const f = frameOf(id), m = { id: `${id}-old`, genome: { ...sampleIndividual(f, rng(`shed-old:${id}`)), frameVersion: 3 }, parents: [] };
+    const g = shedPod(f, m, { rng: rng(`shed-old-pod:${id}`) });
+    assert.ok(g, `${id}: a version-3 parent sheds`);
+    assert.equal(g.frameVersion, frameVersionOf(f), `${id}: the pod is born on version ${frameVersionOf(f)}`);
+    assert.deepEqual(checkGenome(f, g), [], `${id}: a whole genome of its frame`);
+  }
+});
+
+test("a shed pod's pedigree is known only when its parent resolves, as a cross child's", () => {
+  const f = frameOf("S01"), m = typeSpecimen(f), pod = shedPod(f, m, { rng: rng("shed-known") });
+  const byDigest = (d) => (d === genomeDigest(m) ? m : null);
+  const known = relatedness(f, pod, m, byDigest);
+  assert.equal(known.pedigreeKnown, true);
+  assert.ok(known.kinship >= 0.5, `kinship to its parent ${known.kinship}`);
+  assert.equal(relatedness(f, pod, m, () => null).pedigreeKnown, false, "an unresolvable parent: identity is the fallback");
 });

@@ -16,6 +16,7 @@ int layout_slant_tabs(const char *spec, const char *rail, int n, int open, int c
 int layout_slant_at(int slant, int h, int r);
 /* The chapter page's size by its trait count: page.sizeByCount (n clamped to the table), else the page rect's own size. */
 void layout_page_size(const char *spec, const char *page, int n, int out[2]);
+void layout_page_origin(const char *spec, const char *page, int cols, int rows, int out[2]);   /* the chapter page's origin by its frame (originX by the columns, originY by the rows) */
 #define LAYOUT_CELLS 8
 /* The page's grid by trait count (page.grid, keys "1", "2", "3-4"): the cells at the page's origin and the picture size. Returns the cells (0 for n <= 0), or -1 when no row holds n. */
 int layout_page_grid(const char *spec, const char *page, int n, int cells[LAYOUT_CELLS][4], int pic[2]);
