@@ -1,6 +1,6 @@
 # The Incubator as one object: the prompt intent for the Station studio (three directions, closed and open)
 
-Six paintings: three directions, each closed and then open. The art director gates them, then the creative director, then the owner.
+Six paintings: three directions, each closed and then open. Revised after the owner's second set of five references: premium minimal product design, with a window onto a living micro-world and moss as the nest. The art director gates them, then the creative director, then the owner.
 
 ## Shared, for every request
 
@@ -9,29 +9,29 @@ Six paintings: three directions, each closed and then open. The art director gat
   - The owner's five reference images, for mood only. Copy no specific product or design from them.
 - **Format:** 3:2, cropped to 1024 × 600 afterwards. Keep the object within the middle 90% of the width, and about 60% of the frame's height.
 - **Camera:** front three-quarter, slightly above, a calm still-life. The open painting uses the closed one as its reference: same object, same camera, same room, same light. Only the opening changes.
-- **The prompt core, every time:** "A single beloved household incubator, painted in the soft, tactile, matte storybook-realist style of a cosy miniature diorama. It holds one egg-like pod nested on a soft bed, lit warmly from inside and from one warm lamp, the warmest and brightest thing in the picture. The setting is a dim, quiet corner of a small field station: a warm brown wall with sage-green trim, a little moss and one small leafy plant. Calm, loved, gentle. Satin finish, soft sheen only."
-- **Always say NO to:** chrome, mirror gloss, exposed cables or wires, robot arms, screens, displays, gauges, dials, rivets, brass, holograms, text, logos, orange bands or trim, pink, a lab, a creature inside, hands, a frame or border.
+- **The prompt core, every time:** "A premium, minimal designer incubator, a beautifully made object someone would keep on their desk. It holds one egg-like pod nested in a living micro-world of moss and fine grass, seen through a large clear window. Lit like a product hero shot: soft, tactile, matte surfaces with fine material detail, and a shallow depth of field with a softly blurred background in warm dark and sage tones. The pod's warm inner glow and the object's own light are the warmest things in the picture. Calm, precious, loved. Satin and matte finishes only."
+- **Always say NO to:** a boxy appliance or kitchen look, chrome, mirror gloss, exposed cables or wires, robot arms, screens, displays, gauges, dials, rivets, brass, holograms, text, logos, orange bands or trim, pink, a lab, a creature or chick inside, hands, a frame or border.
 - **The pod:** sealed and whole, upright on its bed, glowing softly from its core so the shell's charcoal and russet still read. It is not a plain white egg.
 
-## A. The brooder
+## A. The capsule
 
-- **Closed:** "A squat, rounded incubator with a soft teal satin shell (deep sea-teal, like #1f9d8f fading to #0f4c50 in shadow), a clear glass dome over the nest, and a small rounded lamp hood above the dome on a short curved neck, its warm amber light pooling down onto the pod on cream fleece. The base sits on a dark matte slate foot. Friendly, chunky, rounded corners everywhere."
-- **Open:** "The same incubator with its glass dome hinged back like an open clamshell, the pod and fleece nest exposed under the lamp's warm pool."
+- **Closed:** "A tall, rounded capsule in dark slate-grey matte (like #2b3138), its whole front a clear curved glass window. Inside, a thin warm arch of light stands behind the pod like a halo, and the pod rests on a round plug of dark soil topped with moss and fine grass. A slim soft mint light bar (like #adf6e0) glows in the capsule's base: the only cool light."
+- **Open:** "The same capsule with its curved glass front swung open on a hinge at one side, the pod on its moss plug open to the air, the arch light still glowing behind it."
 
-## B. The bell jar
+## B. The egg
 
-- **Closed:** "A clear glass bell jar with a small round knob on top, standing on a soft-matte base in warm bone white (or soft sage green) with three short rounded legs and a fine horizontal vent line. Inside the top of the bell a warm amber light disc glows down. The pod rests on a bed of moss and cream felt inside the bell."
-- **Open:** "The same object with the glass bell lifted off by its knob and set down beside the base, the pod on its moss-and-felt bed open to the room, still lit warm."
+- **Closed:** "A smooth, egg-shaped incubator, two-tone: warm cream above and soft sage green below, divided by a fine seam. A large oval window in the cream half looks into a lush micro-world of moss and tiny ferns, where the pod sits nested. Soft daylight from one side, as if near a window."
+- **Open:** "The same egg with its cream upper shell lifted and tilted back on a hinge at the rear, like a lid, the mossy micro-world and the pod open to the light."
 
-## C. The household appliance
+## C. The porthole
 
-- **Closed:** "A friendly, rounded household appliance in warm bone-white satin, like a gentle kitchen device, with one round porthole window in its front through which the warm-lit pod is seen nested on cream fleece. A soft fabric-covered hose curves away from its side toward the left edge of the picture. It stands in a lived-in corner with a hanging leafy plant and a little moss, on a dark matte slate foot."
-- **Open:** "The same appliance with its round porthole door swung wide open on its hinge, the warm light spilling out over the pod and fleece and onto the floor."
+- **Closed:** "A rounded, softly squared cream object, like a small vintage television reimagined as a designer piece, with one deep round porthole window. Inside, the pod glows warm amber-gold on a bed of moss, filling the window with warm light. A slim warm gold light slot glows below the window. It sits on a soft sage felt mat."
+- **Open:** "The same object with its round porthole glass swung open on a side hinge, warm light spilling out over the felt mat, the pod on its moss bed now in the open."
 
 ## What the art director gates
 
 - The pod is this pod: charcoal and russet, readable through the glow.
-- The object reads as loved and domestic, not as a lab.
+- The object reads as premium, minimal and loved, at the finish of the owner's references. It is not a lab, a box or a diagram.
 - One warm light, with the object the warmest and brightest thing.
 - Closed and open share their camera and object exactly.
 - None of the NO list appears.
