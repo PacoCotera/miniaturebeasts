@@ -5160,5 +5160,107 @@
    "thoughtsTokenCount": 294,
    "totalTokenCount": 2542
   }
+ },
+ {
+  "tag": "incubator-v2-A-closed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.190024,
+  "mxn": 3.8005,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:34:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 752,
+   "candidatesTokenCount": 1361,
+   "thoughtsTokenCount": 210,
+   "totalTokenCount": 2323
+  }
+ },
+ {
+  "tag": "incubator-v2-A-open try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.176244,
+  "mxn": 3.5249,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:35:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1002,
+   "candidatesTokenCount": 1294,
+   "thoughtsTokenCount": 158,
+   "totalTokenCount": 2454
+  }
+ },
+ {
+  "tag": "incubator-v2-B-closed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187214,
+  "mxn": 3.7443,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:35:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 727,
+   "candidatesTokenCount": 1349,
+   "thoughtsTokenCount": 199,
+   "totalTokenCount": 2275
+  }
+ },
+ {
+  "tag": "incubator-v2-B-open try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.192566,
+  "mxn": 3.8513,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:35:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1003,
+   "candidatesTokenCount": 1337,
+   "thoughtsTokenCount": 251,
+   "totalTokenCount": 2591
+  }
+ },
+ {
+  "tag": "incubator-v2-B-bell-fix-closed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189752,
+  "mxn": 3.795,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:36:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 736,
+   "candidatesTokenCount": 1302,
+   "thoughtsTokenCount": 267,
+   "totalTokenCount": 2305
+  }
+ },
+ {
+  "tag": "incubator-v2-B-bell-fix-open try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186872,
+  "mxn": 3.7374,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:36:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 736,
+   "candidatesTokenCount": 1301,
+   "thoughtsTokenCount": 244,
+   "totalTokenCount": 2281
+  }
  }
 ]
