@@ -63,3 +63,24 @@ The owner chose the capsule. Four calls, in this order, each passing the named r
    - The creature is the reference juvenile, unchanged in design. It must not be redrawn as a different animal.
 
 **The shared NO list applies.** One camera across all four.
+
+## The capsule in the house style (four calls)
+
+The owner's ruling: close the style gap. The capsule set came out near-photographic, while the creatures and every other screen are illustrated. Repaint the four in the game's own illustrated style, so the signed pod and juvenile sit in them natively. The capsule is not redesigned: keep its form, colours, light and composition exactly. Only the rendering changes.
+
+**Style references, passed to every call:**
+- station-gate `prototypes/ui/assets/masters/pods/mibi-juvenile-S01-304x312.png` and `mibi-adult-S01-304x312.png`: how a creature is painted;
+- `ref-loika-pod-sealed-3x.png` (this folder): how the pod is painted;
+- masters-pods `art/station-masters/pods/idle-seam/idle-vivarium-day-1024x568.png`: how moss, soil and light are painted;
+- station-gate `prototypes/ui/assets/masters/pods/cargo-bay-992x320.png`: how a Station object is painted.
+
+**Content reference per call:** the capsule picture it repaints (masters-pods 45d903da `concepts/incubator-capsule/`).
+
+**The style, in the prompt:** "Repaint this exact scene in the soft, tactile, hand-painted illustration style of the style references: rounded, softly modelled forms; gentle painterly texture; simplified but careful detail; clean soft edges; warm, even, storybook-real lighting, like a cosy miniature diorama painted for a children's-book-quality game (not childish). The same composition, camera, objects, colours and light as the content reference. NOT photographic: no photo grain, no lens blur or bokeh, no glossy CG, no fine photographic texture in the moss or soil. The background is a soft painted wall in the same muted sage and warm tones, simplified, not blurred."
+
+1. **closed:** repaints `master-closed`. The matte slate capsule, the round warm roof lamp lighting the moss, the pod on its moss-and-soil plug, the mint base bar.
+2. **open:** repaints `master-open`. The same, with the curved glass door open on its hinge.
+3. **incubate:** repaints `incubate`. The capsule shut at dusk, a thin mint ring sealing the window, the base bar dark, the room in evening light.
+4. **hatch-now:** repaints work-queue `hatch-now-signed-juvenile-1024x600.png` (this folder), the version with our signed juvenile already in place, and passes the juvenile master as well. The shell is in two halves with the cap tipped aside, and the juvenile stands on the moss, facing as in its reference (not mirrored), looking out of the open door. Paint the juvenile exactly as the reference creature: the same colours, markings and face. The art director may composite the signed master over it again.
+
+**The pod in every call** is the reference pod: charcoal #465459, russet dots and ribs, a rounded russet cap. The shared NO list still applies.
