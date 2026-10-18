@@ -52,6 +52,7 @@ Every layer is cut in closed's frame, so a state change never moves the capsule.
 | --- | --- | --- | --- |
 | The Incubator room, full screen (with the Incubate and Hatch now moments as its states) | ×0.85 | y = 48 + 0.85·y_auth, x = 512 + 0.85·(x_auth − 514); shell at 349,48, 327×510 | The room is NOT reduced: a 1:1 crop of the room, rows 65–587 (r0 = 65, so the table line at 489 meets the reduced capsule's foot). The moss line at y 415. The pod about 170 tall, foot on (512, 415). The juvenile 146 tall, feet on (532, 415). The bar centred on (512, 490), and as progress `bar-lit` is revealed from the left in whole px over `bar-off`. The left wall (x 16–300) stays plain |
 | Create's chamber | ×0.373 | 776,104, 176×224 | Shell, interior, glass and bar, with no room. The moss line at about y 265. The pod about 75 tall |
+| The Incubate panel's window (Incubate \| Keep shaping, the owner's ruling) | set from UI/UX's window rect: the capsule framed with a little room around it, about ×0.73 for a 474 × 468 window | the dusk state composed (room dusk, shell, interior dusk, the founder's pod, glass, seal ring) and cropped to the window | Keep shaping's window is Create's bench, not a capsule. The pod is the founder's species, drawn per mibi as everywhere |
 | Home's Incubator station | ×0.143 | 56×86 at about (432, 488) | State only (glass with the pod, door open, empty). The bar is lit or off, never a fraction; Home keeps its arc for progress |
 
 ## Missing, so to request
