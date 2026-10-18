@@ -29,6 +29,6 @@ def extend(name, crown):
     Image.fromarray(out.clip(0, 255).astype(np.uint8), 'RGBA').save(f'{CUT}/{name}-1024x626.png')
 for n in ('capsule-shell', 'capsule-shell-dusk'):
     extend(n, True)
-for n in ('capsule-interior-day', 'capsule-interior-dusk', 'capsule-bar-lit', 'capsule-door-open', 'capsule-seal-ring'):
+for n in ('capsule-interior-day', 'capsule-interior-dusk', 'capsule-bar-lit', 'capsule-door-open', 'capsule-seal-ring', 'capsule-glass-closed'):
     extend(n, False)
 print('crown added: rows -26..-1')

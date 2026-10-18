@@ -116,3 +116,15 @@ Both use the renderer's Loika pod, not yet relit.
 **Known:** a few russet flecks of the carried band at the rim's top corners, and the left rib sits about 2 px off the painted ridge. Both are small at 1×, for a later touch-up by hand.
 
 **Placement at the hatch:** the bowl's foot is on the moss line at the pod's x. The cap lies tipped against the bowl's left side, as in the hatch-now still. Both are relit to the roof lamp, like the pod.
+
+## The glass, as a cut master (UI/UX's ruling, T-20261016-222)
+
+`capsule-glass-closed` is in `authority/` (600 and 626) and in each closed-glass view:
+- room: 530 × 532 at (344, 26);
+- panel: 296 × 459 at (116, 80);
+- create: 145 × 224;
+- home: 56 × 86.
+
+It is a white highlight layer, alpha only on the strokes, at most 0.53. It draws over the pod and under the seal ring.
+
+**Where the strokes come from** (`glass.py`): the closed still has no separable reflections. Closed minus the empty interior is only moss noise, and its glass reads by the rim's inner shadow. The studio did paint the glass's highlights on the open door, in the house hand. Those strokes are lifted from `capsule-door-open`, mirrored, mapped box to box onto the closed window, and kept inside the window. The result is a faint arc sheen that says "glass" without veiling the pod.

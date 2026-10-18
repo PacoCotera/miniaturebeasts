@@ -6,7 +6,7 @@ CUT, OUT, KIT = sys.argv[1:4]
 sys.path.insert(0, KIT)
 from station_kit import pod
 LAYERS = ['capsule-shell', 'capsule-shell-dusk', 'capsule-interior-day', 'capsule-interior-dusk', 'capsule-bar-lit',
-          'capsule-door-open', 'capsule-seal-ring']
+          'capsule-door-open', 'capsule-seal-ring', 'capsule-glass-closed']
 def premul_resize(im, size):
     a = np.asarray(im).astype(float); al = a[..., 3:4] / 255
     pm = Image.fromarray(np.dstack([a[..., :3] * al, a[..., 3:4]]).astype(np.uint8), 'RGBA').resize(size, Image.LANCZOS)
@@ -48,10 +48,10 @@ CAP = (316, 0, 720, 626)
 # B. Create's chamber 776,104, 176x224: the whole crowned capsule fits 224 tall
 k = 224 / 626; cw, ch = view('create', k, CAP); cx = 864 - round(k * (514 - 316)); rep['create'] = dict(scale=round(k, 4), size=(cw, ch), at=(cx, 104), moss_y=round(104 + k * 458), pod_h=round(k * 200))
 # C. Home's station box 56x86 at (432, 488)
-k = 86 / 626; hw, hh = view('home', k, CAP, ['capsule-shell', 'capsule-interior-day', 'capsule-bar-lit', 'capsule-door-open'])
+k = 86 / 626; hw, hh = view('home', k, CAP, ['capsule-shell', 'capsule-interior-day', 'capsule-bar-lit', 'capsule-door-open', 'capsule-glass-closed'])
 rep['home'] = dict(scale=round(k, 4), size=(hw, hh), at=(432, 488), moss_y=round(488 + k * 458), pod_h=round(k * 200))
 # D. the Incubate panel's left window 24,76, 474x468: x0.733, axis x 261, crown top at y 80
-k = 0.733; pw, ph = view('panel', k, CAP, ['capsule-shell-dusk', 'capsule-interior-dusk', 'capsule-seal-ring'])
+k = 0.733; pw, ph = view('panel', k, CAP, ['capsule-shell-dusk', 'capsule-interior-dusk', 'capsule-seal-ring', 'capsule-glass-closed'])
 px, py = round(261 - k * (514 - 316)), 80
 foot = py + k * (589 + 26); table = py + k * (489 + 26); r0 = round(489 - (table - 76))
 Image.open(f'{CUT}/capsule-room-dusk-1024x600.png').convert('RGB').crop((275, r0, 749, r0 + 468)).save(f'{OUT}/panel/capsule-room-dusk-474x468.png')
