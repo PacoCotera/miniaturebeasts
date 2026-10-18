@@ -24,13 +24,13 @@ All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage i
 - The capsule is reduced **×0.85**. The shell box (authority x 322–706, y 0–600) lands at **349, 48, 327, 510**, with its axis on x 512.
 - Mapping: screen x = 512 + 0.85 · (x − 514), screen y = 48 + 0.85 · y.
 - The moss line (authority 432) lands at **y 415**, and the bar's centre at **(512, 490)**.
-- **The room is not reduced:** it is a 1:1 crop of `capsule-room-{day,dusk}`, 1024 × 522 (authority rows r0 to r0 + 522), with r0 set by the art director so that the table line meets the reduced capsule's foot (about 65). It fills the stage.
+- **The room is not reduced:** it is a 1:1 crop of `capsule-room-{day,dusk}`, 1024 × 522 (authority rows r0 to r0 + 522), with **r0 = 65** (the table line at authority 489, closed's foot at 589: the foot lands at screen 549, the table line at 464). It fills the stage.
 
 **Draw order and rects:**
 
 | Layer | Rect (screen) | Master |
 | --- | --- | --- |
-| room | 0, 40, 1024, 522 | `capsule-room-day` or `-dusk`, cropped |
+| room | 0, 40, 1024, 522 | `capsule-room-day`, cropped at r0 65; dusk is the same layer graded to the incubate still's dusk by code |
 | interior | the window's box at ×0.85 | `capsule-interior-day` or `-dusk` (empty moss bed) |
 | pod | foot bottom-centred on (512, 415), about 170 tall | the renderer's pod for the bud's species, at the class the art director's reduction gives, relit to the roof lamp (as `composite-juvenile.py`), with the moss blades in front of the foot |
 | juvenile | feet on (532, 415), about 146 tall | hatch only: the new mibi's own juvenile stand (from `drawnLooks`), rendered by the host at that size and relit the same way |
@@ -38,7 +38,7 @@ All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage i
 | shell | 349, 48, 327, 510 | `capsule-shell` (window and bar area transparent) |
 | door | hinged at the shell's right edge (authority x ≈ 700, so screen x ≈ 668) | `capsule-door-open` (the open states only) |
 | bar | centre (512, 490) | `capsule-bar-off`, with `capsule-bar-on` revealed from the left as the progress (§3) |
-| seal | the window's box plus its glow | `capsule-seal-ring` (the incubate moment only) |
+| seal | closed's window rim | drawn in code: a mint stroke with its glow along the window's rim (the incubate moment and the panel's left window only) |
 
 **The states' layers** (the art director's table):
 
@@ -123,35 +123,34 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 ## 5. Masters
 
 All are the art director's (`capsule-masters.md`): cut once at the authority scale, registered to closed's frame, and reduced offline to ×0.85 for this view.
+- **Registration:** every layer is in closed's frame, so nothing moves between states. The open door is cut from the open still after a dy −19 translate. Nothing is cut from the incubate or hatch-now stills: dusk is closed's room, interior and shell graded by code, and the hatch draws the opened pod and the juvenile.
 - **Cut from the stills** (no painting):
-  - `capsule-room-day` and `-dusk`;
+  - `capsule-room-day`;
   - `capsule-shell`;
   - `capsule-door-open`;
-  - `capsule-bar-on` and `-off`;
-  - `capsule-seal-ring`.
-- **Drawn in code:** `capsule-glass-closed`.
+  - `capsule-bar-on` and `-off`.
+- **Drawn in code:** `capsule-glass-closed`, the dusk grade, and the seal ring.
 - **Placed and used as they are:** the pod renderer's layers, the stamp case, the frame's bars and caps, and the ribbon.
 
 **Painted and confirmed** (a58d2827, `masters/` beside `capsule-masters.md`):
 - `capsule-interior-day`: the empty moss bed, a clean studio edit;
-- `capsule-interior-dusk`: by code, from the incubate still;
+- `capsule-interior-dusk`: the day interior graded to dusk by code;
 - **the opened pod:** a bowl and a tipped cap in neutral, recoloured per species by the renderer like the closed pod's layers.
 
 The hatch therefore shows the species' opened pod (bowl and cap) beside the juvenile from its step at 1000. Empty draws the bare moss bed. Every species' pod is drawn by the renderer.
 
 **Still to cut by the art director** (no painting):
-- the room, day and dusk;
+- the room;
 - the shell;
 - the open door;
 - the bar, on and off;
-- the seal ring;
 - the opened pod's masks and pattern projection.
 
 The builder takes them as they land.
 
 **Other views of the capsule** (the same masters at their own reductions, set by the art director):
-- Create's chamber, `create.json regions.dome` 776, 104, 176, 224, at about ×0.373, with no room;
-- Home's Incubator station picture, at about ×0.143.
+- **Create's chamber:** `create.json regions.dome` 776, 104, 176, 224, at ×0.373 (confirmed), with the shell, interior, glass and bar and no room. The dome's floor moves to the moss line, y ≈ 265, and the pod is about 75 tall.
+- **Home's Incubator station picture:** ×0.143. At that size the bar reads only as a lit line, so **Home keeps its arc** beside a still capsule. The capsule shows the state only: the glass with the pod (growing), the door open (ready), or empty. Its bar is lit or off, never a fraction.
 
 These views are specified in their own screens' specs.
 
@@ -180,7 +179,7 @@ The house decision-panel frame (T-20261016-195 round 2, §1): two bezels on the 
 | left bezel: **Incubate** | 16, 46, 490, 506 | panel, radius 10, `hairline` edge, `bevel` light on top |
 | right bezel: **Keep shaping** | 518, 46, 490, 506 | the same |
 | headers | 30 tall, in each bezel | the verb (15 medium, `bone`) at x + 12. Incubate's price at the right, icon before figure (13, `fog`): ⚡ {n} ❀ {n} ◆ {n} (one Data per shaped trait), then **the pod itself**: the founder's pod from the renderer in a 16 × 20 box, the last item. The pod is part of the price: it becomes the mibi. Keep shaping has no icons |
-| left window | 24, 76, 474, 468 | **the sealed capsule:** the incubate look (§1, dusk, glass closed, bar off, seal ring on) with **this founder's pod** inside, reduced for this window: the shell about 440 tall (×0.733), its axis on x 261, its top at y 90, the moss line at y 407, the pod's foot on (261, 407). The room is a 1:1 crop of `capsule-room-dusk`, 474 × 468, its table meeting the capsule's foot. The art director gives the exact reduction |
+| left window | 24, 76, 474, 468 | **the sealed capsule:** the incubate look (§1, dusk, glass closed, bar off, seal ring on) with **this founder's pod** inside, reduced for this window: about ×0.73 with a little room around it (the art director fixes the exact figure to this rect): the shell about 440 tall, its axis on x 261, its top near y 90, the moss line near y 407, and the pod's foot on the moss line. The room is the dusk-graded room, cropped 474 × 468, its table meeting the capsule's foot. Composed of room, interior (dusk), the founder's pod, glass, shell and the seal ring |
 | right window | 526, 76, 474, 468 | **Create's bench as it is now:** Create's own screen drawn at 1:1, clipped to the window and offset so Create's stage rect (275, 90, 474, 468) fills it, with the founder centred, its edits lit in the scan light, and the rail and roll as they stand |
 
 - **World size:** neither window shows a mibi in its world (a pod in its capsule; the founder on the workbench, a close-up), so the 54/40 table does not apply. The founder keeps bench scale.
