@@ -36,3 +36,14 @@ The art director's gate is asked separately.
 | A curl's foot line is its last ink row | **Confirmed** |
 | Ground draws rejected above the profile (8 tries, then the fallback to groundTop) | **Confirmed** (§4) |
 | Home's event tag isn't built, because no event tag exists yet | **Confirmed.** Nothing to build until the event exists. The rule (§2) waits for it |
+
+## The art director's gate: PASS, with one bug (the ring's offset)
+
+The art director passes the art (`results/T-20261018-235/art-director.md`), accepting the shadow over the ring's middle, the reduced curls and one measure per atlas.
+
+**The bug: Dot's ring sits about 7 px below its drawn feet** (`vivarium-back-slope-twelve`, zoomed). It also shows the 4 px focus lift on top of that, so the ring reads as a mark on open moss. Dot is in front and is not hidden, so this is an offset, not draw order.
+
+- **The cause,** from the numbers: F is measured as the last ink row at alpha ≥ 128, after the shadow layer is composed. The shadow is warm near-black at 0.8 (alpha about 204), so its rows count as ink, and feetY lands on the shadow's foot, 4 to 6 px under the real feet.
+- **Fix:** measure `figure` (§0) on the stand **without its `under` layers**, from the base and its `over` layers only, then compose the shadow. F then sits on the feet, and the ring (centred on F, the figure lifted 4) lies under the feet as in §1.
+- The same holds for the curl's foot line and the moving atlases' measure.
+- **Test:** for each composed stand, feetY equals the last ink row of the stand composed without its shadow.

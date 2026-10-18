@@ -21,7 +21,7 @@ All rects are `[x, y, w, h]` in screen pixels at 1×. Nothing is scaled at runti
 
 A resident's picture stays its place's size (144 × 152 adult, 104 × 112 juvenile), with the figure composed at 54/40 and bottom-centred in it, transparent around it (`layered-stand.mjs`). Everything below is measured from the figure, never the picture box.
 
-**The props carry each resident's figure**, `figure: [dx, dy, W, H]`: the drawn bbox of the composed figure within its picture (ink alpha ≥ 128), computed by the logic process when it composes the stand. It is part of the stand's cache entry. From it:
+**The props carry each resident's figure**, `figure: [dx, dy, W, H]`: the drawn bbox of the composed figure within its picture (ink alpha ≥ 128), **measured without the stand's `under` layers** (the shadow), so the feet are the figure's own, computed by the logic process when it composes the stand. It is part of the stand's cache entry. From it:
 
 - **F, the feet point:** F.x = picture x + dx + ⌊W/2⌋; F.y = feetY = picture y + dy + H − 1 (the last ink row).
 - **The figure box:** `[F.x − ⌊W/2⌋, feetY − H + 1, W, H]`.
