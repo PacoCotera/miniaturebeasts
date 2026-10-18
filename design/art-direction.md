@@ -190,6 +190,13 @@ saved Pip and a pale-marked comparison, at Companion and Station size.
   bytes and hashes. Generated images are labelled as generated.
 - **Text is separate.** Never bake numbers or labels into artwork.
 
+## Size and the Probe
+
+The full table is in the [style guide](style-guide/README.md#mibi-height-per-view); the rules in short:
+
+- **Mibis are tiny everywhere.** An adult is 54 px tall in Home's Vivarium window and 92 px in the Vivarium full screen; the closest view, a mibi up close in the Habitat, is 150 px. A juvenile is about three quarters of the adult. A view without a size is sized so the world is large around the mibi; ask the art director first.
+- **The Probe is always drawn upright.** Antenna up, screen at the top, grip below. Smaller Probes are reductions of the upright masters, never rotations of a lying picture.
+
 ## From genome to creature
 
 A mibi's genome is the seed of its look. The rig sets its structure, proportions

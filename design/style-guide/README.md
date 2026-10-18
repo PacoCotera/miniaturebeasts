@@ -507,6 +507,29 @@ The rules every screen, master and painting meets before it is shown. The looks 
 - A placeholder stands only where no master exists yet. It is registered in the asset manifest at its exact size, with `status: placeholder` and the master it waits for.
 - A slot with neither a master nor a placeholder is registered with `status: empty` at its exact size and draws nothing. The layout does not move when the slot fills.
 
+### Mibi height per view
+
+Miniature beasts are tiny, and every view shows them small in a large world. A mibi's height is the figure's height, crest top to feet, at 1×.
+
+| View | Adult | Juvenile | Note |
+| --- | --- | --- | --- |
+| Home, the Vivarium window (the deck) | **54** | **40** | the owner's measure |
+| The Vivarium, full screen (stage 1024 × 522) | **92** | **68** | the same world as Home's window, opened: the window's scale × 1.7 |
+| The Habitat, a mibi up close | **150** | **110** | the closest camera; the world still fills most of the stage |
+| A decision panel's window, close framing (Keep, Say hello) | **64** | **48** | |
+| A decision panel's window, wide framing (Release) | **36** | **28** | small in a broad place |
+| Cargo and the dock arrival, a mibi walking in through the bay | **72** | **54** | |
+| Thumbnails and faces (48 px tiles, the 24 px face) | unchanged | unchanged | tiles, not the world |
+| The Companion (HiBit) | unchanged | unchanged | its own pixel scale |
+
+- **The juvenile** is about three quarters of the adult, as the stand masters are.
+- **Builds** compose each stand at the view's height in the logic process, as a reduction of the 304 × 312 master (scale = height ÷ the figure's height in the master). The face never scales.
+- **A view not listed here** is sized so the world is large around the mibi. Ask the art director before placing.
+
+### The Probe is held upright
+
+The Probe is always drawn upright: antenna up, screen at the top, grip below. The masters are `bench-probe-upright-t1/t2-288x432`, the cradle is `bench-cradle-upright-empty-288x432`, and the panel cards are `bench-probe-t1/t2-card-128x160`. Smaller Probes are reductions of these, never rotations of a lying picture. The lying 480 × 288 Probe and tray masters are withdrawn and are not placed anywhere.
+
 ### Mibi paintings
 
 How a mibi's painting is made is in the [art pipeline](../proposals/art-pipeline.md) and [the Grow service](../../prototypes/workbench/grow/README.md). Every painting meets these:
