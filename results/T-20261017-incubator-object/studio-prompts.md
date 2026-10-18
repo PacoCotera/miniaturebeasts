@@ -84,3 +84,17 @@ The owner's ruling: close the style gap. The capsule set came out near-photograp
 4. **hatch-now:** repaints work-queue `hatch-now-signed-juvenile-1024x600.png` (this folder), the version with our signed juvenile already in place, and passes the juvenile master as well. The shell is in two halves with the cap tipped aside, and the juvenile stands on the moss, facing as in its reference (not mirrored), looking out of the open door. Paint the juvenile exactly as the reference creature: the same colours, markings and face. The art director may composite the signed master over it again.
 
 **The pod in every call** is the reference pod: charcoal #465459, russet dots and ribs, a rounded russet cap. The shared NO list still applies.
+
+## The three missing pieces for the capsule masters (three calls)
+
+**1. interior-day-empty:** an edit of `house-style/open-fixed-1024x600.png` (this folder).
+- The door is open, so the interior shows without glass in front.
+- "The same picture with the pod removed. Where it stood, the moss-and-soil bed continues, repainted to match the moss around it, in the same painted hand, with no hole, ring or shadow left behind. The roof lamp's warm pool now falls on the empty moss. Everything else identical: the capsule, open door, bar, wall, light and camera."
+
+**2. interior-dusk-empty:** an edit of masters-pods cc402996 `concepts/incubator-capsule-hs/incubate-1024x600.png`.
+- "The same picture with the pod removed and the moss-and-soil bed repainted where it stood, as above. The mint seal ring, the dusk light, the dark bar and the camera stay identical."
+
+**3. pod-opened-neutral:** a new element for the pod renderer.
+- References: station-gate `prototypes/ui/assets/masters/pods/pod-collection-shade.png` (the closed pod's neutral shading layer) and `ref-loika-pod-sealed-3x.png`.
+- Prompt: "A single painted element on a FLAT, uniform magenta ground #FF00FF, nothing else. The same pod as the references, painted in neutral mid-grey only (no colour), in the same soft painted style, with the same top-left light and the same front three-quarter view. It has just opened: its shell lies in two halves standing a little apart, with jagged soft-broken rims, and its rounded cap lies tipped on its side in front of the left half. The insides of the halves are a slightly lighter grey, softly lit. The ribs and the cap are painted as distinct raised parts, one value step darker than the shell, so they can be masked. NO pattern (no dots), NO colour, NO creature, NO moss, NO shadow on the ground, NO text."
+- Size: as large as the model gives. The art director reduces it and cuts the shade, body and accent masks, and projects the species patterns.
