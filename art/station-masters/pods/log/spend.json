@@ -4956,5 +4956,73 @@
    "thoughtsTokenCount": 196,
    "totalTokenCount": 1971
   }
+ },
+ {
+  "tag": "panels-cargo-1-candled-pod-sealed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.18779,
+  "mxn": 3.7558,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T03:00:53Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 535,
+   "candidatesTokenCount": 1339,
+   "thoughtsTokenCount": 217,
+   "totalTokenCount": 2091
+  }
+ },
+ {
+  "tag": "panels-cargo-2-candled-pod-opening try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.173706,
+  "mxn": 3.4741,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T03:01:19Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 453,
+   "candidatesTokenCount": 1266,
+   "thoughtsTokenCount": 174,
+   "totalTokenCount": 1893
+  }
+ },
+ {
+  "tag": "panels-cargo-3-crate-lifting try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.179142,
+  "mxn": 3.5828,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T03:01:44Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 471,
+   "candidatesTokenCount": 1300,
+   "thoughtsTokenCount": 185,
+   "totalTokenCount": 1956
+  }
+ },
+ {
+  "tag": "panels-cargo-4-pods-hatch-open try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181892,
+  "mxn": 3.6378,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T03:02:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 526,
+   "candidatesTokenCount": 1298,
+   "thoughtsTokenCount": 209,
+   "totalTokenCount": 2033
+  }
  }
 ]
