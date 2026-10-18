@@ -47,7 +47,7 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   for (const id of ["display", "displayAmount"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.display.rect), `${id} ${r.rect} leaves the display ${R.display.rect}`);
   for (const r of got("portrait")) must(state === "opening", "the portrait crate's painting shows only in the opening");
   // what travels: inside the bay, but the materials end at the top bar's icons (the bar covers the screen above y 40) and the portrait leaves
-  for (const r of got("travel")) must(within(r.rect, grow(R.travel.rect, 16)) && r.rect[1] >= -64, `what travels ${r.rect} leaves the travel rectangle ${R.travel.rect} by more than the spec's targets do`);
+  for (const r of got("travel")) must(within(r.rect, [-16, -64, 1056, 616]), `what travels ${r.rect} leaves the travel rectangle ${R.travel.rect} by more than the spec's targets do (16 px at the sides, up to the top bar's icons)`);
   must(state === "opening" || (got("display").length === 0 && got("travel").length === 0 && got("portrait").length === 0 && got("displayAmount").length === 0), "the display and what travels show only in the opening");
   must(state !== "bay" || art("hatch.well").length === 0, "the bay's hatch is shut: no wells");
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);

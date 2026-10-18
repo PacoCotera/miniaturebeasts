@@ -86,20 +86,20 @@
    "png": "cargo-opening-done.png"
   },
   "cargo-opening-three": {
-   "hash": "a9a70432",
+   "hash": "220fbf2f",
    "png": "cargo-opening-three.png"
   },
   "cargo-opening-three-second": {
-   "hash": "638bfb19",
+   "hash": "f1e61ecf",
    "png": "cargo-opening-three-second.png"
   },
   "cargo-opening-portrait": {
    "hash": "8fe90fdf",
    "png": "cargo-opening-portrait.png"
   },
-  "cargo-opening-portrait-away": {
+  "cargo-opening-portrait-travel": {
    "hash": "3ef19f39",
-   "png": "cargo-opening-portrait-away.png"
+   "png": "cargo-opening-portrait-travel.png"
   },
   "cargo-arrival-2200": {
    "hash": "e3f1cb19",

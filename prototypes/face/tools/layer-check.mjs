@@ -2,7 +2,7 @@
 // The art director's layer table on the real pictures: the Station page's own face, in test mode (?test), drawing Pods from pods-props, Home from home-props Cargo from cargo-props and Create from create-props. At each of Pods' states and each of Home's, Cargo's and Create's capture points the
 // pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art) must read 0; painted pictures show only on pass 3. For Home, Cargo, Idle and Create also check 1 of the gate: no region of the face's log departs from home.json, cargo.json, frame.json (Idle) or create.json
 // (tools/home-regions.mjs, tools/cargo-regions.mjs, tools/idle-regions.mjs, tools/create-regions.mjs), and the budgets are printed (objects, pictures, props). Prints one line per state; exits 1 on any other reading.
-//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/layer-check.mjs   (after build.sh)
+//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/layer-check.mjs   (after build.sh; LAYER_ONLY=cargo takes only the screens named)
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -132,5 +132,5 @@ const reading = (screen) => async (name, page, fail) => {
   if (r.errors.length || r.refused) fail(name + ": " + r.errors.join("; ") + " refused " + r.refused);
   if (r.pass1 !== 0) fail(name + ": chrome reads " + r.pass1 + " off-palette pixels"); if (r.pass2 !== 0) fail(name + ": art reads " + r.pass2 + " off-palette pixels");
 };
-for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["incubator", incubatorStates], ["vivarium", vivariumStates], ["habitat", habitatStates], ["library", libraryStates], ["bench", benchStates], ["idle", idleStates]]) { const { fails } = await states(reading(screen)); failed += fails.length; }
+for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["incubator", incubatorStates], ["vivarium", vivariumStates], ["habitat", habitatStates], ["library", libraryStates], ["bench", benchStates], ["idle", idleStates]].filter(([screen]) => !process.env.LAYER_ONLY || process.env.LAYER_ONLY.split(",").includes(screen))) { const { fails } = await states(reading(screen)); failed += fails.length; }   // LAYER_ONLY=cargo,home: only those screens
 console.log(failed ? failed + " failure(s)" : "layer check ok"); process.exit(failed ? 1 : 0);

@@ -47,7 +47,7 @@ export function sendOff(h) {
   for (const q of S.pendingCarry(h.st, h.sv)) { const m = S.mibiById(h.st, q.id); if (m && !m.released) lines.push(P.goes.replace("{Name}", m.name)); }
   if (lines.length) { h.say(lines[0], P.ms); lines.slice(1, 2).forEach((t) => h.at(P.ms, () => h.say(t, P.ms))); }
 }
-// The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's report card; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card.
+// The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's end; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its end.
 export function idleTick(h, t, idleMs) {
   const ui = h.ui; if (ui.idle) return;
   if (ui.resting || ui.entering || h.arriving() || h.holding() || ui.cargo?.state === "end") ui.lastInput = Math.max(ui.lastInput, t);
