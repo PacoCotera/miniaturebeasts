@@ -57,6 +57,6 @@ The owner approved Cargo (21:51). It covers two things: UI/UX's crate-by-crate s
 
 ## Open
 
-- **Waiting spot (UI/UX):** at the wells' size, one waiting pod is small on a mat sized for the display pod. The mat could shrink to fit three stored pods in a row (about 160 × 80), leaving the floor for the bay.
+- **Waiting spot: settled with UI/UX.** It is now 24, 424, 160 × 80, the floor under the hatch. Three stored pods sit in a row, oldest at the left, and a newcomer settles at the right. A fourth or more shows as "+n". The stills are redrawn to it.
 - **The back wall:** at rest and at the end, the upper third of the bay is its back wall alone, and `cargo-bay-992x320` is soft there. It holds, since this is a quiet room between crates, but a sharper painted back wall would be the first master to upgrade. It is one request, not made.
 - **A find with no page** stays parked with the creative director, as the structure says.

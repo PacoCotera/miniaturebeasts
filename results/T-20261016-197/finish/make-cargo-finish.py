@@ -8,7 +8,7 @@ OUT = SCR + 'out/'
 RAW = SCR + 'raw/'
 BX, BY, BW, BH = 16, 46, 992, 506           # the bay window (screen)
 def w2s(x, y): return x - BX, y - BY        # screen -> window coords
-HATCH = w2s(24, 150) + (160, 260); WAIT = w2s(24, 420) + (160, 124); DISPLAY = w2s(200, 60) + (800, 180)
+HATCH = w2s(24, 150) + (160, 260); WAIT = w2s(24, 424) + (160, 80); DISPLAY = w2s(200, 60) + (800, 180)
 BERTHS = [w2s(200 + i * 272, 252) + (256, 292) for i in range(3)]
 POD_L = pod('collection', '#465459', '#ae674d', 'dots'); POD_T = pod('collection', '#269fa5', '#e8b83f', 'plates')
 WELL_L = pod('well', '#465459', '#ae674d', 'dots'); WELL_T = pod('well', '#269fa5', '#e8b83f', 'plates')
@@ -78,8 +78,8 @@ def waiting(c, pods):
     d.line((x + 8, y + 1, x + w - 9, y + 1), fill=(40, 44, 38))
     pw, ph = pods[0].size if pods else (0, 0); gap = 8; n = len(pods)
     for i, p in enumerate(pods):                                  # stored pods keep the wells' size, oldest at the left
-        px = x + (w - (n * pw + (n - 1) * gap)) // 2 + i * (pw + gap)
-        place(c, master('pods/cargo-store-shadow-48x14.png'), (px + (pw - 48) // 2, y + h - 30)); place(c, p, (px, y + h - ph - 22))
+        px = x + (w - (3 * pw + 2 * gap)) // 2 + i * (pw + gap)   # three fixed places; a newcomer settles at the right
+        place(c, master('pods/cargo-store-shadow-48x14.png'), (px + (pw - 48) // 2, y + h - 22)); place(c, p, (px, y + h - ph - 14))
 def display(c, items):
     x, y, w, h = DISPLAY; d = ImageDraw.Draw(c)
     for kind, obj, px, extra in items:
