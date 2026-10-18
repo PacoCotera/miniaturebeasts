@@ -23,20 +23,20 @@ A resident's picture stays its place's size (144 × 152 adult, 104 × 112 juveni
 
 **The props carry each resident's figure**, `figure: [dx, dy, W, H]`: the drawn bbox of the composed figure within its picture (ink alpha ≥ 128), **measured without the stand's `under` layers** (the shadow), so the feet are the figure's own, computed by the logic process when it composes the stand. It is part of the stand's cache entry. From it:
 
-- **F, the feet point:** F.x = picture x + dx + ⌊W/2⌋; F.y = feetY = picture y + dy + H − 1 (the last ink row).
+- **F, the feet point:** F.x = picture x + dx + ⌊W/2⌋; F.y = feetY = the figure's last **solid** row (alpha ≥ 200; a soft fringe below it is not ground contact, T-235 fix round).
 - **The figure box:** `[F.x − ⌊W/2⌋, feetY − H + 1, W, H]`.
 
 ## 1. The ring (`frame.json focus.ring.shapes.footprint`, applied to the figure)
 
 - **Shape:** an ellipse of (W + 10) × (fh + 10), centred on F, with fh = 2·⌊(W + 6) / 12⌋ held to 6–16. **The formula rules** (the house footprint): fh follows W. For example, W 57 gives fh 10, so the ring is 67 × 20, spanning feetY − 10 to feetY + 10; W 40 gives fh 6, so the ring is 50 × 16. (An earlier "fh = 6 at these sizes" was wrong for adults.) It keeps the same bands (key/core/key) and the same cut in and out.
-- **Lift:** the focused figure lifts 4 px. The ring stays on the ground at F.
+- **Lift:** the focused figure lifts **2 px at the world sizes** (54/40; 4 px at the 150/110 close-up and above). The ring stays on the ground at F, so the lifted feet stand inside its upper half.
 - **The focus target box** (for `nearestIn`) is the figure box (§0), not the picture.
 
 ## 2. The name tag (h 24, Inter 16, width rule unchanged)
 
 - **x:** centred on F.x, slid to stay 8 px inside the window.
 - **y:** its top at **feetY + 16**, below the ring's lower edge (feetY + fh/2 + 5, at most feetY + 13).
-- **Flip:** if its bottom would pass 8 px inside the window's foot, it sits over the figure, its top at **feetY − H − 36** (the 4 px lift included).
+- **Flip:** if its bottom would pass 8 px inside the window's foot, it sits over the figure, its top at **feetY − H − 34** (the 2 px lift included).
 - **Home's event tag** (grown up, born, until visited) shows without focus, so it takes no lift: its flipped top is feetY − H − 32.
 
 ## 3. Contact shadows (the art director's note 1)

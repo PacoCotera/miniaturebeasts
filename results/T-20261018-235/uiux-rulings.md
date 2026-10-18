@@ -47,3 +47,16 @@ The art director passes the art (`results/T-20261018-235/art-director.md`), acce
 - **Fix:** measure `figure` (§0) on the stand **without its `under` layers**, from the base and its `over` layers only, then compose the shadow. F then sits on the feet, and the ring (centred on F, the figure lifted 4) lies under the feet as in §1.
 - The same holds for the curl's foot line and the moving atlases' measure.
 - **Test:** for each composed stand, feetY equals the last ink row of the stand composed without its shadow.
+
+## The fix round (bbdb1776): two rulings
+
+**A correction first:** my diagnosis above was wrong. The figure was already measured without the shadow. The offset the art director saw is the 4 px focus lift, one soft pixel (alpha 133) under the solid feet, and the ring's own thickness. The ring's centre sits exactly on the last ink row.
+
+1. **The ring reading: two small changes, so the lifted feet stand inside their ring.**
+   - **The feet line is the last solid row** (alpha ≥ 200), not the last ink row at ≥ 128. A soft anti-aliased fringe isn't ground contact.
+   - **The focus lift scales with the figure: 2 px at the world sizes** (54 and 40). It stays 4 at the 150/110 close-up and above. At 144 px the 4 px lift was about 3 % of the figure; at 54 it is 7 %, enough to lift the feet off the ring.
+   - With both, the lifted feet sit at feetY − 2, inside the ring's upper half (feetY − 10 to feetY + 10 at W 57). The ring stays centred on the ground.
+   - The art director checks the result on the next stills.
+2. **Species without the 96 × 88 nap master: the standing fallback is accepted.** Those species (S04 onward) draw from the rig, the genome stand-in rendered at runtime, so there is no master to reduce offline. They sleep as their standing figure until their signed masters land, when they take the reduced curl like S01–S03.
+
+**Checked and confirmed:** keepOut derived as [752, 356, 256, 116] (to the foot band at 472), and the moving residents' figure taken from the atlas union. Please push the new stills (vivarium-moving, idle-night-moving), so the art director can check the ring with the 2 px lift.
