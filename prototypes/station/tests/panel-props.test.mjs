@@ -124,7 +124,7 @@ for (const [kind, gain] of [["mibi", S.PRICE.wildMibi], ["pod", S.PRICE.wild]]) 
   });
   test(`the Release panel (${kind}): the focused Release card puts the gain on the bottom line`, () => {
     const h = wildHost(kind); h.ui.panel.focus = "card.return"; const v = wview(h);
-    assert.equal(v.line.ok, kind === "mibi" ? `Release ${h.st.mibis[0].name}` : "Release it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, wview(h).cards[0].line);
+    assert.equal(v.line.ok, kind === "mibi" ? `Release ${h.st.mibis[0].name}` : "Release it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
   });
 }
 
@@ -138,7 +138,7 @@ test("the Fit the upgrade? panel: the cost from the rules, the part fitted and t
   assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, "Fit the upgrade?");
   assert.deepEqual([fit.id, later.id], ["fit", "later"]); assert.equal(fit.cost, S.priceText(e, d, 0)); assert.equal(fit.cost, "⚡ 12 ◆ 4"); assert.equal(fit.gain, false); assert.equal(fit.dim, false); assert.equal(fit.short, "");
   assert.equal(fit.picture, "bench-part-t2-fitted-128"); assert.equal(later.picture, "bench-part-t2-dim-128"); assert.deepEqual([fit.mark, later.mark, fit.line, later.cost], ["", "", "reaches further", ""]);
-  assert.equal(v.overlay.focus.cur, "card.fit"); assert.equal(v.line.ok, "Fit it"); assert.equal(v.line.price, "⚡ 12 ◆ 4"); assert.equal(v.line.subject, "reaches further");
+  assert.equal(v.overlay.focus.cur, "card.fit"); assert.equal(v.line.ok, "Fit it"); assert.equal(v.line.price, "⚡ 12 ◆ 4"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel");
   for (const c of [fit, later]) assert.ok(measure(c.name, 20) <= P.limits[2].text && words(c.name) <= 3, c.name);
   assert.ok(measure(fit.line, 16) <= 208 && words(fit.line) <= 6); assert.ok(!JSON.stringify(panelSpec.strings.fitUpgrade).match(/[⚡◆❀\d]/), "no figure in the strings");
 });

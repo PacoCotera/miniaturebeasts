@@ -137,7 +137,7 @@ export function panelBuild(m, spec, frame, pods) {
   const cur = cards.some((c) => "card." + c.id === ui.focus) ? ui.focus : initialFocus(cards), card = cards.find((c) => "card." + c.id === cur);
   const strip = ui.id === "dock";   // the strip form: no veil, housing or masters of its own (the code-drawn plate and wells), the cards carry no art
   const art = strip ? { housing: "", veil: "", shadow: "", chip: "" } : artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, art: own, ...c }) => ({ ...c, art: strip ? own : c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : art.card })) };
-  const subject = card.line || (card.room ? fill(Sg.toRoom, { room: Sg.rooms[card.room] }) : "");
+  const subject = !strip ? "" : card.line || (card.room ? fill(Sg.toRoom, { room: Sg.rooms[card.room] }) : "");
   const line = { ok: card.name, ...(card.cost ? { price: card.cost } : {}), subject, back: Sg.back, need: card.short ? fill(pods.strings.needMore, { icons: card.short }) : null };
   if (card.dim) { line.dim = true; line.short = card.short; }
   return { overlay: { id: "panel", state: "open", ...(strip ? { form: "strip" } : {}), regions, focus: { cur, targets: cards.map((c) => ({ id: "card." + c.id, enabled: true })) } }, line, requests, cards };

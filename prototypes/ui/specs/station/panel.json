@@ -71,7 +71,7 @@
  "growNowAbove": 4,
  "bottomLine": {
   "action": "✓ + the focused card's name + its cost",
-  "subject": "the focused card's line, else \"to {the room}\" when it has a destination mark",
+  "subject": "empty on a card-form panel (the card carries its line in full); on the dock's strip form, the focused card's line, else \"to {the room}\" when it has a destination mark",
   "need": "what is short, if anything",
   "back": "Back"
  },
