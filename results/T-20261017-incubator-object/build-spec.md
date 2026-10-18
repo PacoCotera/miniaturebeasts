@@ -130,7 +130,7 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
   - `panel/`: `capsule-{shell-dusk,interior-dusk,seal-ring}-296x459` and `capsule-room-dusk-474x468`;
   - the table of every view: `masters/views.json`.
 - **The glass:** `capsule-glass-closed` per view (`room/` 530 × 532, `panel/` 296 × 459, `create/` 145 × 224, `home/` 56 × 86), an alpha highlight layer by the art director (`glass.py`).
-- **The opened pod** (`masters/opened/`): the closed pod's own layer set at the `large` class, so the renderer composes it unchanged, in each species' colours. The **bowl** is 144 × 150 (shade, mask-body, mask-accent and every pattern-*). The **cap** is 104 × 128 (shade, an empty body mask, and accent for the whole cap). At the hatch the bowl's foot sits on the moss line at the pod's x, with the cap tipped against its left side. Both are relit to the roof lamp like the pod (owed by the build).
+- **The opened pod** (`masters/opened/`): the closed pod's own layer set at the `large` class, so the renderer composes it unchanged, in each species' colours. The **bowl** is 144 × 150 (shade, mask-body, mask-accent and every pattern-*). The **cap** is 104 × 128 (shade, an empty body mask, and accent for the whole cap). At the hatch, in the room: the bowl is 131 × 136 at (447, 283) and the cap (recut, about 0.62 of the pod's width, pre-tilted 14°) is 81 × 80 at (377, 339), behind the bowl's left side. Draw order: cap, bowl, juvenile (`results/T-20261016-222/uiux-rulings-2.md` §E). Both are relit to the roof lamp like the pod (owed by the build).
 
 **Painted and confirmed** (a58d2827, `masters/` beside `capsule-masters.md`):
 - `capsule-interior-day`: the empty moss bed, a clean studio edit;

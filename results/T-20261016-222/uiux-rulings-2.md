@@ -56,3 +56,16 @@ These rule on the Incubator build spec (`results/T-20261017-incubator-object/bui
 - **✓ Wait, or ←:** the dither back to the Incubator, unchanged.
 - **The guard:** ✓ Hatch now is taken only once the dither in has ended, as §6a.
 - **Masters for the panel's day looks:** `panel/` currently holds the dusk set only. The day set (room crop 474 × 468, interior-day, shell, door-open, bar-lit, glass) at ×0.733 is asked of the art director (passed on). Until it lands, the panel uses the room view's look and no window art, and is not shipped.
+
+## E. The art director's answers (625a1b52): the interims end
+
+1. **The cap** replaces §B.3's interim. It is recut to its true size, about 0.62 of the pod's width, pre-tilted 14° outward offline: `opened/pod-opened-cap-*` at 89 × 88 pod-large.
+   - **Draw order:** cap, then bowl, then juvenile.
+   - **In the room:** the bowl is 131 × 136 at (447, 283) and the cap 81 × 80 at (377, 339). The cap stands behind the bowl's left side, its bottom-right corner 11 px inside the bowl's left edge, its foot on the moss line. Its right edge (458) is clear of the juvenile's box (461 to 604).
+   - Proof: `opened/proof-hatch-room.png`.
+2. **The stamp case:** place `stamp-case/room-stamp-case-152x152-front.png` in place of station-gate's master of the same name. It is the same veil with alpha 0 over the 120 × 120 plate (16 to 135), so it covers the frame band only. The 4.11 assertion is back in.
+3. **The Hatch now | Wait panel's day set** is in `panel/` (×0.733), so the panel ships:
+   - `capsule-room-day-474x468`, the same crop as dusk;
+   - `capsule-shell`, `capsule-interior-day`, `capsule-bar-lit` and `capsule-glass-closed`, each 296 × 459 at (116, 80);
+   - `capsule-door-open-457x459` at (116, 80). It is wider than the window, so the window clips its far edge.
+   - **Inside:** the juvenile is 126 tall and the bowl about 113, with the cap in the same relation as the room's.
