@@ -21,24 +21,24 @@ All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage i
 ## 1. The picture: the capsule, in layers (the Incubator room)
 
 **Placement in this view:**
-- The capsule is reduced **×0.85**. The shell box (authority x 322–706, y 0–600) lands at **349, 48, 327, 510**, with its axis on x 512.
+- The capsule is reduced **×0.85**. The shell lands with its axis on x 512 and its crown under the top bar (the layers at 344, 26, 530 × 532).
 - Mapping: screen x = 512 + 0.85 · (x − 514), screen y = 48 + 0.85 · y.
 - The moss line (authority 432) lands at **y 415**, and the bar's centre at **(512, 490)**.
 - **The room is not reduced:** it is a 1:1 crop of `capsule-room-{day,dusk}`, 1024 × 522 (authority rows r0 to r0 + 522), with **r0 = 65** (the table line at authority 489, closed's foot at 589: the foot lands at screen 549, the table line at 464). It fills the stage.
 
-**Draw order and rects** (the masters in `results/T-20261017-incubator-object/masters/room/`, cut by `masters/reduce-views.py`; every capsule layer is 530 × 510, placed at **(344, 48)**):
+**Draw order and rects** (the masters in `results/T-20261017-incubator-object/masters/room/`, cut by `masters/reduce-views.py`; every capsule layer is 530 × 532, placed at **(344, 26)**: it includes the capsule's crown, drawn by the art director, which sits under the top bar):
 
 | Layer | Placed at | Master |
 | --- | --- | --- |
 | room | 0, 40 | `capsule-room-day-1024x522` or `capsule-room-dusk-1024x522` (the 1:1 crop at r0 65) |
-| interior | 344, 48 | `capsule-interior-day-530x510` or `capsule-interior-dusk-530x510` (the empty moss bed) |
+| interior | 344, 26 | `capsule-interior-day-530x532` or `capsule-interior-dusk-530x532` (the empty moss bed) |
 | pod | foot bottom-centred on (512, 415), about 170 tall | the renderer's pod for the bud's species. **The build owes** its relight to the roof lamp, its contact shadow on the moss, and the moss blades in front of its foot, as `composite-juvenile.py` does (the art director's proof shows the pod unrelit) |
 | juvenile | feet on (532, 415), about 146 tall | hatch only: the new mibi's own juvenile stand (from `drawnLooks`), rendered by the host at that size and relit the same way |
 | glass | the window | drawn in code: two soft highlights along the window mask (authority `masters/authority/window-mask-1024x600`, x 351–666, y 20–468; at this view x ≈ 373–641, y ≈ 65–446), alpha over the interior and the pod. Closed states only |
-| shell | 344, 48 | `capsule-shell-530x510`, or `capsule-shell-dusk-530x510` at dusk. Its own dark slot is the bar when off |
-| door | 344, 48 | `capsule-door-open-530x510` (the open states only) |
-| bar | 344, 48 | `capsule-bar-lit-530x510`, clipped from the left as the progress: visible x 433 to 433 + floor(158 × fraction) (§3). Off: not drawn (the shell's slot shows) |
-| seal | 344, 48 | `capsule-seal-ring-530x510` (the incubate moment only) |
+| shell | 344, 26 | `capsule-shell-530x532`, or `capsule-shell-dusk-530x532` at dusk. Its own dark slot is the bar when off |
+| door | 344, 26 | `capsule-door-open-530x532` (the open states only) |
+| bar | 344, 26 | `capsule-bar-lit-530x532`, clipped from the left as the progress: visible x 433 to 433 + floor(158 × fraction) (§3). Off: not drawn (the shell's slot shows) |
+| seal | 344, 26 | `capsule-seal-ring-530x532` (the incubate moment only) |
 
 **The states' layers** (the art director's table):
 
@@ -125,9 +125,11 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 All are the art director's (`capsule-masters.md`): cut once at the authority scale, registered to closed's frame, and reduced offline to ×0.85 for this view.
 - **Registration:** every layer is in closed's frame, so nothing moves between states (the door was cut after a dy −19 translate). Nothing is cut from the incubate or hatch-now stills.
 - **The cut masters, per view** (`results/T-20261017-incubator-object/masters/`, by `cut-capsule.py`, `dusk.py` and `reduce-views.py`):
-  - `room/`: `capsule-{shell,shell-dusk,interior-day,interior-dusk,bar-lit,door-open,seal-ring}-530x510` and `capsule-room-{day,dusk}-1024x522`;
-  - `create/`: the same capsule layers at 151 × 224 (no room);
-  - `home/`: the same capsule layers at 58 × 86 (no room).
+  - `room/`: `capsule-{shell,shell-dusk,interior-day,interior-dusk,bar-lit,door-open,seal-ring}-530x532` and `capsule-room-{day,dusk}-1024x522`;
+  - `create/`: the same capsule layers at 145 × 224 (×0.358, no room);
+  - `home/`: the same capsule layers at 56 × 86 (×0.137, no room);
+  - `panel/`: `capsule-{shell-dusk,interior-dusk,seal-ring}-296x459` and `capsule-room-dusk-474x468`;
+  - the table of every view: `masters/views.json`.
 - **Drawn in code:** the glass, along the window mask.
 - **The opened pod:** `pod-opened-bowl-shade-488x509` and `pod-opened-cap-shade-357x443`, in neutral. Its masks and pattern projection are still to come from the art director (`cut-opened-pod.py`).
 
@@ -138,11 +140,11 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
 
 The hatch therefore shows the species' opened pod (bowl and cap) beside the juvenile from its step at 1000. Empty draws the bare moss bed. Every species' pod is drawn by the renderer.
 
-**Still to come from the art director:** the opened pod's masks and pattern projection, and the Incubate panel window's cut (§6a). The builder takes them as they land.
+**Still to come from the art director:** the opened pod's masks and pattern projection. The builder takes them as they land.
 
 **Other views of the capsule** (the same masters at their own reductions, set by the art director):
-- **Create's chamber:** `create.json regions.dome` 776, 104, 176, 224, at ×0.373 (confirmed), with the shell, interior, glass and bar and no room. The dome's floor moves to the moss line, y ≈ 265, and the pod is about 75 tall.
-- **Home's Incubator station picture:** ×0.143. At that size the bar reads only as a lit line, so **Home keeps its arc** beside a still capsule. The capsule shows the state only: the glass with the pod (growing), the door open (ready), or empty. Its bar is lit or off, never a fraction.
+- **Create's chamber:** the capsule at ×0.358, 145 × 224 at (793, 104) inside `create.json regions.dome`, with the shell, interior, glass and bar and no room. The dome's floor moves to the moss line, **y 268**, and the pod is 72 tall.
+- **Home's Incubator station picture:** ×0.137, 56 × 86, the pod 27 tall. At that size the bar reads only as a lit line, so **Home keeps its arc** beside a still capsule. The capsule shows the state only: the glass with the pod (growing), the door open (ready), or empty. Its bar is lit or off, never a fraction.
 
 These views are specified in their own screens' specs.
 
@@ -170,8 +172,8 @@ The house decision-panel frame (T-20261016-195 round 2, §1): two bezels on the 
 | --- | --- | --- |
 | left bezel: **Incubate** | 16, 46, 490, 506 | panel, radius 10, `hairline` edge, `bevel` light on top |
 | right bezel: **Keep shaping** | 518, 46, 490, 506 | the same |
-| headers | 30 tall, in each bezel | the verb (15 medium, `bone`) at x + 12. Incubate's price at the right, icon before figure (13, `fog`): ⚡ {n} ❀ {n} ◆ {n} (one Data per shaped trait), then **the pod itself**: the founder's pod from the renderer in a 16 × 20 box, the last item. The pod is part of the price: it becomes the mibi. Keep shaping has no icons |
-| left window | 24, 76, 474, 468 | **the sealed capsule:** the incubate look (§1, dusk, glass closed, bar off, seal ring on) with **this founder's pod** inside, reduced for this window: about ×0.73 with a little room around it (the art director fixes the exact figure to this rect): the shell about 440 tall, its axis on x 261, its top near y 90, the moss line near y 407, and the pod's foot on the moss line. The room is the dusk-graded room, cropped 474 × 468, its table meeting the capsule's foot. Composed of room, interior (dusk), the founder's pod, glass, shell and the seal ring |
+| headers | 30 tall, in each bezel | the verb (15 medium, `bone`) at x + 12. Incubate's price at the right, icon before figure (13, `fog`): ⚡ {n} ❀ {n} ◆ {n} (one Data per shaped trait), then **the pod itself**: the founder's pod, the renderer's collection pod reduced to 16 × 20 (`masters/proof-pod-price-16x20.png`), the last item. The pod is part of the price: it becomes the mibi. Keep shaping has no icons |
+| left window | 24, 76, 474, 468 | **the sealed capsule:** `panel/capsule-room-dusk-474x468` at (24, 76) (the dusk room, cols 275–749, rows 108–576); then the capsule at ×0.733, 296 × 459 at **(116, 80)**: `capsule-interior-dusk-296x459`, **this founder's pod** 147 tall with its foot on the moss line **y 416** (relit, its shadow and the moss blades, as in §1), the glass in code, `capsule-shell-dusk-296x459` and `capsule-seal-ring-296x459`. Proof: `masters/proof-panel-incubate-474x468.png` |
 | right window | 526, 76, 474, 468 | **Create's bench as it is now:** Create's own screen drawn at 1:1, clipped to the window and offset so Create's stage rect (275, 90, 474, 468) fills it, with the founder centred, its edits lit in the scan light, and the rail and roll as they stand |
 
 - **World size:** neither window shows a mibi in its world (a pod in its capsule; the founder on the workbench, a close-up), so the 54/40 table does not apply. The founder keeps bench scale.
@@ -186,7 +188,7 @@ The house decision-panel frame (T-20261016-195 round 2, §1): two bezels on the 
   
   A refusal (no bay, a bud already growing, short) is refused on Create's ✓ before the panel opens, with Create's refusal plate as now, so the panel never offers a press that can't be paid.
 - **✓ Keep shaping, or ←:** the 180 ms dither back to Create, as it was, with nothing spent.
-- **Masters:** the capsule layers at this window's reduction (the art director's), the renderer's pod at this reduction and at the 16 × 20 price box, and the frame's bezel and ring. No new painting.
+- **Masters:** `masters/panel/` as above, the renderer's pod at 147 tall and at 16 × 20, and the frame's bezel and ring. No new painting.
 
 **Strings** (`incubator.json strings`):
 - new: `readyIn` "ready in about {n} min";
