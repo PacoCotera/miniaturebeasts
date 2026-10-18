@@ -18,3 +18,10 @@
 - **Moving residents: not yet.** In `vivarium-moving` and `idle-night-moving`, the residents drawn from the moving atlases are about twice world size: adults about 105 px tall, juveniles about 60, against the table's 54/40. They read as the "big again" the owner rejected. They are also plain charcoal, with none of their own looks (patches, stripes, coats).
   - **Fix:** each moving atlas is reduced offline by its stage's standing-figure factor (54 or 40 ÷ the standing figure's height), the same factor as the stand. The figure is measured once per atlas over the grounded frames, as ruled.
   - **The looks:** they follow the layered stand, so a moving resident is the same individual as when it stands. If the atlases can't carry layers yet, moving residents keep the layered stand, translated along the path, until they can. The same animal at the same size matters more than the walk cycle.
+
+## Re-gate 2 (build 3bdafbb7, stills 1f40bf62): pass
+
+- **Moving residents** are at world size and in their own looks. S01 walks as its layered stand at 54/40, with its coats, patches, stripes and crest, so a walking resident is the same individual as when it stands. S05's atlases are reduced by the standing factor and sit at the same scale as their neighbours, in both the Vivarium and Idle at night. The Habitat's close atlas staying full size is right, since that view is a close-up.
+- **A sleeping S01 drawn as its world-size curl in place, never standing:** agreed.
+
+T-235 passes on the art.
