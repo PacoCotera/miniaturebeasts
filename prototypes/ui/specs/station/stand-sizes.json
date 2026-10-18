@@ -1,9 +1,9 @@
 {
- "note": "How tall each view draws a layered stand (T-20261016-201; the owner's ruling of 2026-10-17 21:36, the art director's table of 21:44). `views[view][stage]` is the figure's height in px, crest to feet, adult and juvenile; the stand is composed at that size in the logic process from the art cut once at 304x312 (the face never scales). The picture is the place's size, because the face places a picture 1:1 in its slot: the figure stands on its foot, transparent around it. A view or stage not listed draws the whole canvas fitted in its place (tiles and the Companion are unchanged). `places` are the sizes that are standing poses (the sleeper's curl, 96x88, is not). One config: the per-view sizes are this table.",
+ "note": "How tall each view draws a layered stand: the figure's height in px, crest to feet, adult and juvenile. The table is `## Size and pose` in design/art-direction.md; this file carries its values and nothing here is the authority. The stand is composed at that height in the logic process from the art cut once at 304x312 (the face never scales). The picture is the place's own size, because the face places a picture 1:1 in its slot: the figure stands on its foot, transparent around it. A view not listed draws the whole art fitted in its place (tiles and the Companion: unchanged). `places` are the sizes that are standing poses.",
  "views": {
   "home": { "adult": 54, "juvenile": 40 },
-  "vivarium": { "adult": 92, "juvenile": 68 },
-  "idle": { "adult": 92, "juvenile": 68 },
+  "vivarium": { "adult": 54, "juvenile": 40 },
+  "idle": { "adult": 54, "juvenile": 40 },
   "habitat": { "adult": 150, "juvenile": 110 }
  },
  "places": ["144x152", "104x112", "304x312", "48x48"]

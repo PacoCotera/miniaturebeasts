@@ -132,10 +132,11 @@ describe("the layered stand", () => {
     };
     const near = (got, want) => assert.ok(Math.abs(got - want) <= 2, `${got} is about ${want}`);
     near(tall("adult", [144, 152], "home"), 54); near(tall("juvenile", [104, 112], "home"), 40);
-    near(tall("adult", [144, 152], "vivarium"), 92); near(tall("juvenile", [104, 112], "vivarium"), 68);
+    for (const v of ["vivarium", "idle"]) { near(tall("adult", [144, 152], v), 54); near(tall("juvenile", [104, 112], v), 40); }   // design/art-direction.md, Size and pose: the world is one scale
     near(tall("adult", [304, 312], "habitat"), 150); near(tall("juvenile", [304, 312], "habitat"), 110);
-    const a = layeredStand("S01", "adult", [144, 152], "home"), b = layeredStand("S01", "adult", [144, 152], "vivarium");
-    assert.notEqual(standPictureId(a, {}), standPictureId(b, {}), "another figure size is another picture id: the figure box is in the variant");
+    const a = layeredStand("S01", "adult", [144, 152], "home"), b = layeredStand("S01", "adult", [304, 312], "habitat");
+    assert.equal(standPictureId(a, {}), standPictureId(layeredStand("S01", "adult", [144, 152], "vivarium"), {}), "Home and the Vivarium are one scale: one picture");
+    assert.notEqual(standPictureId(a, {}), standPictureId({ ...a, figure: [100, 104] }, {}), "another figure size is another picture id: the figure box is in the variant"); assert.ok(b);
     try {
       setStandSizes({ views: { home: { adult: 100 } }, places: ["144x152", "48x48"] });
       assert.deepEqual(layeredStand("S01", "adult", [144, 152], "home").figure, [106, 108], "the table fills the size: one config");
