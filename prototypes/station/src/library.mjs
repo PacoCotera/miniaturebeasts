@@ -31,8 +31,8 @@ export function fieldGuide(st, id, settings = DEFAULT_SETTINGS) {
     });
     return { id: ch.id, name: ch.name, sealed: shut, traits, found: traits.reduce((n, t) => n + t.found.length, 0), unseen: traits.reduce((n, t) => n + t.unseen, 0), more: traits.some((t) => t.more) };
   });
-  const found = chapters.reduce((n, c) => n + c.found, 0), unseen = chapters.reduce((n, c) => n + c.unseen, 0);
-  return { species: id, name: fr.species.name, chapters, found, unseen, complete: unseen === 0 && chapters.some((c) => !c.sealed && c.traits.length > 0), oneFromFull: unseen === 1 };
+  const found = chapters.reduce((n, c) => n + c.found, 0), foundCurrent = chapters.reduce((n, c) => n + c.traits.reduce((m, t) => m + t.found.length - t.legacy.length, 0), 0), unseen = chapters.reduce((n, c) => n + c.unseen, 0);
+  return { species: id, name: fr.species.name, chapters, found, foundCurrent, unseen, complete: unseen === 0 && chapters.some((c) => !c.sealed && c.traits.length > 0), oneFromFull: unseen === 1 };
 }
 export const guideUnseen = (st, id, settings) => fieldGuide(st, id, settings)?.unseen ?? null;
 
