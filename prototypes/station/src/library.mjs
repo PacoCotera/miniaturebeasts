@@ -2,12 +2,13 @@
 // holds, what it still lacks ("more?"), whether a species is unmet, met or found, the face a portrayed mibi gives it, and the wish a player
 // pins. Everything is derived from the save (st.guide, st.knownIds, st.metIds, st.mibis, st.wish, st.face); no drawing, no screen.
 // A wish is knowledge, never material: nothing here writes a genome (research-loop.md §5: "knowing a variant never injects it").
-import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { frameOf, chapterLooks, traitState } from "./genome.mjs";
 import { frameFor, speciesOf, guideLooks, mibiById, forecastOf, DEFAULT_SETTINGS, logEv } from "./state.mjs";
 
-// Every look a trait can show, in the words a read gives (describe.traitLooks: the frame's own looks, never the catalogue's pair labels where the frame names its bins).
-export const possibleLooks = (frame, trait) => traitLooks(frame, trait);
+// Every look a new pod of the frame's current version can show, in the words a read gives (describe.currentLooks: the frame's own looks, never the catalogue's pair labels where the frame names its bins).
+// A legacy look (the Loika's plain, the Tuikis's old feet: kept in the pool only for inheritance) is never in this list, so it never counts toward completion and never shows as unseen (T-20261016-204).
+export const possibleLooks = (frame, trait) => currentLooks(frame, trait);
 
 // The species' page of the Library: a plate that is found (a pod of it identified, or a mibi of it), a pencil study that is met (seen
 // out on a walk), or an empty frame, unmet, with no cue.
@@ -25,12 +26,13 @@ export function fieldGuide(st, id, settings = DEFAULT_SETTINGS) {
     const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
     const traits = ch.traits.map((t) => {
       const possible = possibleLooks(fr, t), seen = guideLooks(st, id, t.id), unseen = possible.filter((l) => !seen.includes(l));   // a shut chapter's looks count as unseen (research-loop.md §4, the-portrait.md §8)
-      return { id: t.id, name: t.name, possible, found: shut ? [] : seen.slice(), unseen: unseen.length, more: unseen.length > 0, nature: t.nature };
+      const legacy = shut ? [] : seen.filter((l) => !possible.includes(l));   // seen looks outside the current looks: found, marked legacy, never counted
+      return { id: t.id, name: t.name, possible, found: shut ? [] : seen.slice(), legacy, unseen: unseen.length, more: unseen.length > 0, nature: t.nature };
     });
     return { id: ch.id, name: ch.name, sealed: shut, traits, found: traits.reduce((n, t) => n + t.found.length, 0), unseen: traits.reduce((n, t) => n + t.unseen, 0), more: traits.some((t) => t.more) };
   });
-  const found = chapters.reduce((n, c) => n + c.found, 0), unseen = chapters.reduce((n, c) => n + c.unseen, 0);
-  return { species: id, name: fr.species.name, chapters, found, unseen, complete: unseen === 0 && chapters.some((c) => !c.sealed && c.traits.length > 0), oneFromFull: unseen === 1 };
+  const found = chapters.reduce((n, c) => n + c.found, 0), foundCurrent = chapters.reduce((n, c) => n + c.traits.reduce((m, t) => m + t.found.length - t.legacy.length, 0), 0), unseen = chapters.reduce((n, c) => n + c.unseen, 0);
+  return { species: id, name: fr.species.name, chapters, found, foundCurrent, unseen, complete: unseen === 0 && chapters.some((c) => !c.sealed && c.traits.length > 0), oneFromFull: unseen === 1 };
 }
 export const guideUnseen = (st, id, settings) => fieldGuide(st, id, settings)?.unseen ?? null;
 
