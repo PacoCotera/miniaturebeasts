@@ -59,7 +59,7 @@ async function walk(visit) {
     await step(40); await step(8000);
     { const m = await page.evaluate(() => ({ screen: window.__st.UI.screen, moving: (window.__st.props?.regions?.residents ?? []).filter((r) => r.moving).length })); if (m.screen !== "vivarium" || m.moving !== 1) fail("vivarium-moving-8000ms: " + JSON.stringify(m)); }
     await visit("vivarium-moving-8000ms", page, fail);
-    await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = null; });
+    await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = "12:00"; });
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };
