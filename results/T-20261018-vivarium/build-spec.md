@@ -85,7 +85,7 @@ A walker's tag now spans feetY + 16 to feetY + 40. Near the bed it must stay abo
 
 **The check, on station-gate after T-203** (#234): the S01 adult, bare head, charcoal base, with the `stripes` layer against the `patches` layer, composed and reduced to 54 px tall (57 × 58) as `layered-stand.mjs` does.
 
-**At 1× they do not read apart.** Both are cream marks on the back (mark rgb about 202,173,151 and 214,187,160 on a charcoal body at about 66,56,62). The mean difference between the two composed figures is only **3.9** per channel. Their shapes differ (three thin bands against one saddle and a spot), but at 54 the bands are 1 to 2 px with 1 to 2 px gaps, so they blur into a saddle-like light area. The colour ramps add no cue, because both marks take the same cream.
+**At 1× they do not read apart** (`stripes-patches-54-1x-2x.png`, `stripes-patches-54-8x.png` beside this file). Both are cream marks on the back (mark rgb about 202,173,151 and 214,187,160 on a charcoal body at about 66,56,62). The mean difference between the two composed figures is only **3.9** per channel. Their shapes differ (three thin bands against one saddle and a spot), but at 54 the bands are 1 to 2 px with 1 to 2 px gaps, so they blur into a saddle-like light area. The colour ramps add no cue, because both marks take the same cream.
 
 **The fix, in the mark layers** (no new look, no new colour, no size change): **small-size mark cuts** for the world sizes, made by the art director from the 304 masters and signed. They are used when the figure is ≤ 60 px tall (home, vivarium, idle).
 
