@@ -64,3 +64,16 @@ The studio painted the first intent (brooder, bell jar, appliance); the revised 
 - the feet sunk in, with the scene's own lit grass blades brought back in front of the lowest rows, in the same shadow.
 
 The stand itself is unmirrored and unchanged in design. Note for every future composite: the photographic capsule and our painted mibis read as one world only when the mibi takes the scene's light.
+
+## The capsule in the house style (masters-pods cc402996, `concepts/incubator-capsule-hs/`): pass, with code fixes
+
+The repaint closes the style gap. The capsule, moss and light are now painted in the same hand as our creatures and the Home and Cargo paintings, and the form, colours and camera are kept. **The set for the owner:**
+
+| Picture | File | Verdict |
+| --- | --- | --- |
+| Closed | `closed-1024x600.png` (masters-pods) | pass as is |
+| Open | `house-style/open-fixed-1024x600.png` | pass, fixed by code: the bar recoloured to the closed painting's mint; the straw-orange moss turned back to the closed painting's green (a hue rotation inside a moss mask, with the pod, soil and wall untouched) |
+| Incubate | `incubate-1024x600.png` (masters-pods) | pass as is. The body and moss are darker and warmer, which is the dusk the moment asks for, and the mint ring seals the window |
+| Hatch now | `house-style/hatch-now-fixed-1024x600.png` | pass, fixed by code: the warm curtain stripe at the left replaced by the closed painting's wall (same camera, feathered); our signed juvenile composited over the redrawn one, relit to the roof lamp as before (`composite-juvenile.py`, 172 px, unmirrored) |
+
+**No retries.** With the style now shared, the composited juvenile sits natively in the painting: one hand, one light. `fix-house-style.py` and `composite-juvenile.py` reproduce both fixes from the studio's raws.
