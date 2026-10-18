@@ -1,0 +1,16 @@
+[
+ {
+  "name": "incubator-object-B-closed",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE: this exact Loika pod: keep its shape and colours (charcoal shell, russet dots, rounded russet cap). Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "A single beloved household incubator, painted in the soft, tactile, matte storybook-realist style of a cosy miniature diorama. It holds one egg-like pod nested on a soft bed, lit warmly from inside and from one warm lamp, the warmest and brightest thing in the picture. The setting is a dim, quiet corner of a small field station: a warm brown wall with sage-green trim, a little moss and one small leafy plant. Calm, loved, gentle. Satin finish, soft sheen only. A clear glass bell jar with a small round knob on top, standing on a soft-matte base in warm bone white (or soft sage green) with three short rounded legs and a fine horizontal vent line. Inside the top of the bell a warm amber light disc glows down. The pod rests on a bed of moss and cream felt inside the bell. The pod is exactly the pod in the reference image (ignore the magenta ground of that reference): sealed and whole, upright on its bed, keeping its charcoal shell, its russet dots and its rounded russet cap, glowing softly from its core so the charcoal and russet still read; it is not a plain white egg. Camera: front three-quarter, slightly above, a calm still-life; the object stays within the middle 90% of the width and fills about 60% of the frame's height. NO chrome, NO mirror gloss, NO exposed cables or wires, NO robot arms, NO screens, NO displays, NO gauges, NO dials, NO rivets, NO brass, NO holograms, NO text, NO logos, NO orange bands or trim, NO pink, NO lab, NO creature inside, NO hands, NO frame or border."
+ }
+]
