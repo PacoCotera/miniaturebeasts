@@ -42,12 +42,11 @@ A resident's picture stays its place's size (144 × 152 adult, 104 × 112 juveni
 ## 3. Contact shadows (the art director's note 1)
 
 - **Each standing figure gets its signed contact shadow, drawn before the figure, at the figure's width, under its feet.**
-- **The master:** the shadow is a layer of the stand, so it is cut once at the art's scale and composed with the figure. It then always matches the figure's width and pose.
-  - New layer: `S01-{adult,juvenile}-304x312-shadow.png`, with a new op `"under"` (drawn before the base, order 0) in `ui/assets/stands/index.json`.
-  - **The art director signs and cuts it.** It sits under the feet at the art scale, so that at 54/40 it reads as a soft contact shadow about the figure's width and 4 to 6 px tall.
-  - Until it is signed, residents draw without it (as now). The build carries the layer slot.
+- **The master (signed by the art director):** `shadows/S01-{adult,juvenile}-304x48-shadow.png` (beside this spec), a stand layer with a new op **`"under"`** (drawn before the base, order 0) in `ui/assets/stands/index.json`.
+  - It is its own 304 × 48 canvas, because the stand ends 7 rows below its feet line. Its row 24 sits on the feet line (stand row 305), and it is reduced with the figure.
+  - At 54 it is about 5 px tall, and 4 at 40, as wide as the body's foot extent: warm near-black at 0.8, nudged 2 px right.
 - **Draw order in a resident's slot:** shadow (now inside the picture), ring, picture, dither, lamp. The ring is drawn after the shadow and under the figure.
-- **Sleepers:** the curl gets its own shadow layer, also signed by the art director (§5).
+- **Sleepers:** the curl's own shadow, `shadows/S01-*-curl-304x48-shadow.png` (§5).
 
 ## 4. Walking on the ground (the art director's note 3)
 
@@ -62,13 +61,13 @@ These cover the pipe and stones at the left, the burrow mound, the open floor, t
 - **A point is walkable** when groundTop(F.x) ≤ feetY ≤ 471, and 16 + ⌊W/2⌋ ≤ F.x ≤ 1008 − ⌈W/2⌉.
 - **Start and waypoint draws** use the current draw (`lcg`), rejecting a point that isn't walkable, with the same 8-draw limit and fallback (a fallback point is moved down to its column's groundTop).
 - **A path** is rejected if any point on it, sampled every 8 px along the major axis, isn't walkable, or if it meets keepOut (§6). Paths therefore never cross the mound's step from above.
-- **The art director signs the profile** against the dawn, dusk and night paintings. They share the day painting's layout, so one profile serves all four.
+- **Signed by the art director for all four lights:** dawn, dusk and night correlate with day's edges at 0.86, 0.96 and 0.94, at zero offset.
 - **Idle:** the same profile, 80 px lower (Idle's screen y = Vivarium y + 80; its foot at 551).
 - **Home:** Home's glass shows a different crop. The builder measures its profile the same way, and the art director signs it, before Home's walk changes. Until then, Home keeps its band.
 
 ## 5. Sleepers
 
-- **The curl is reduced to the world size:** the nap picture at the adult's scale, 54 / 152 of today's 96 × 88 ink, about 34 × 31. It is cut offline by the art director from the nap master, with its own shadow layer (§3). The juvenile's curl is reduced by its own factor.
+- **The curl is reduced to the world size:** the nap picture at the adult's scale, 54 / 152 of today's 96 × 88 ink, about 34 × 31. It is reduced by the standing figure's factor for its stage (signed by the art director), with its shadow `shadows/S01-*-curl-304x48-shadow.png`.
 - **The bed** is unchanged: `regions.bed`, with sleepers' feet on y 456 at the places 840, 888 and 936.
 - **Ring and tag:** the same rules (§1–§2) on the curl's drawn bbox. The tag is always over the ink: its top at **ink top − 32**, with no lift. The old fixed 96 × 88 ink box and 112 × 24 ring go.
 
@@ -87,30 +86,27 @@ A walker's tag now spans feetY + 16 to feetY + 40. Near the bed it must stay abo
 
 **At 1× they do not read apart** (`stripes-patches-54-1x-2x.png`, `stripes-patches-54-8x.png` beside this file). Both are cream marks on the back (mark rgb about 202,173,151 and 214,187,160 on a charcoal body at about 66,56,62). The mean difference between the two composed figures is only **3.9** per channel. Their shapes differ (three thin bands against one saddle and a spot), but at 54 the bands are 1 to 2 px with 1 to 2 px gaps, so they blur into a saddle-like light area. The colour ramps add no cue, because both marks take the same cream.
 
-**The fix, in the mark layers** (no new look, no new colour, no size change): **small-size mark cuts** for the world sizes, made by the art director from the 304 masters and signed. They are used when the figure is ≤ 60 px tall (home, vivarium, idle).
+**The art director's ruling: no small-size cut.** At 1× the stripes are separate bars and the patches two rounded masses. The 3.9 mean measures paint area, which is equal by design, not shape. A size fork would double the mark layers. UI/UX accepts this: the metric was the wrong instrument for shape.
 
-- `S01-adult-304x312-stripes-small.png`: the same three bands, each drawn so that at 54 it lands as a **whole-pixel bar at least 2 px wide**, separated by **charcoal gaps at least 2 px wide**, with **a 1 px charcoal keyline** along each band's edge so the gaps survive the reduction. Stripes then read as bars.
-- `S01-adult-304x312-patches-small.png`: the same patches, with the saddle kept as one mass at least 6 px across at 54 and a charcoal margin round it at least 2 px. Patches then read as a blob.
-- `index.json` gains a `small` file per layer, `{ "file": …, "small": …, "smallAt": 60 }`, and `layeredStand` picks `small` when the figure height is ≤ `smallAt`.
+**So the gate is the covered test, on the device:** two adult residents side by side at 54 on the charcoal bare head, one with stripes and one with patches, read apart in two seconds. The game designer, who ruled on it, judges it.
 
-**Gate:**
-- the art director's sign-off on the two cuts;
-- at 54 the two composed figures differ by a mean of at least **8** per channel over the figure box;
-- the covered test: two residents side by side at 1×, read apart in two seconds.
+**If it fails,** the fix is the art director's: wider gaps between the stripes in the shared layers, at every size. No size fork and no new look.
 
 Juveniles are exempt, by the ruling.
 
 ## 8. Masters
 
 - **Exist and are used:** the S01 stands (`ui/assets/stands/`), the Idle and Vivarium paintings, `home-lamp-sky-12x12`, and the frame's ring and tag.
-- **To be signed by the art director before their parts ship.** Each part falls back to today's drawing until then:
-  1. `S01-{adult,juvenile}-304x312-shadow.png` (§3);
-  2. the curl at world size, with its shadow (§5);
-  3. `S01-adult-304x312-{stripes,patches}-small.png` (§7);
-  4. the ground profile (§4), and Home's profile when it is measured.
+- **Signed by the art director** (`results/T-20261018-vivarium/art-director.md`, `shadows/`):
+  1. the contact shadows `shadows/S01-{adult,juvenile}-304x48-shadow.png` (§3);
+  2. the curl at world size, with `shadows/S01-*-curl-304x48-shadow.png` (§5);
+  3. the ground profile for all four lights (§4).
+- **Still to come:** Home's profile, signed when it is measured.
+- **No new mark layers** (§7).
 
 ## 9. Checks for the builder
 
+- **The covered test** for stripes against patches, on the device (§7), for the game designer.
 - **Goldens:**
   - the Vivarium at rest with four adults and two juveniles (one crested with stripes, one bare with patches), with one focused near the window's foot (the tag flips);
   - a focused sleeper;
@@ -120,5 +116,4 @@ Juveniles are exempt, by the ruling.
   - every start and waypoint over 10,000 seeds is walkable, and no path crosses a profile step from above;
   - the ring is (W + 10) × 16 on F, the tag top is at feetY + 16, and it flips to feetY − H − 36;
   - keepOut holds against the sleepers' tags;
-  - the stripes/patches difference is ≥ 8 at 54 once the small cuts are placed.
 - **Print** the per-frame dirty area of a walk step with the shadow layer (≤ 153,600 px).
