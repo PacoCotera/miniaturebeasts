@@ -50,35 +50,35 @@
    "png": "cargo-opening-0.png"
   },
   "cargo-opening-dither": {
-   "hash": "09949cd8",
+   "hash": "c92008eb",
    "png": "cargo-opening-dither.png"
   },
   "cargo-opening-500": {
-   "hash": "f13b67e5",
+   "hash": "8436b1c5",
    "png": "cargo-opening-500.png"
   },
   "cargo-opening-materials": {
-   "hash": "a7b8cc82",
+   "hash": "22c9f9a4",
    "png": "cargo-opening-materials.png"
   },
   "cargo-opening-hatch": {
-   "hash": "d429702a",
+   "hash": "82c429d2",
    "png": "cargo-opening-hatch.png"
   },
   "cargo-opening-pod": {
-   "hash": "dd319097",
+   "hash": "c225ef27",
    "png": "cargo-opening-pod.png"
   },
   "cargo-opening-swap": {
-   "hash": "767e49ae",
+   "hash": "9907fdfa",
    "png": "cargo-opening-swap.png"
   },
   "cargo-opening-mat": {
-   "hash": "b12ebb4d",
+   "hash": "4680234d",
    "png": "cargo-opening-mat.png"
   },
   "cargo-opening-find": {
-   "hash": "cbd46daa",
+   "hash": "3c461141",
    "png": "cargo-opening-find.png"
   },
   "cargo-opening-done": {

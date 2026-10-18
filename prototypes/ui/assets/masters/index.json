@@ -1209,8 +1209,8 @@
    "file": "pods/find-crystal-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "5ea8aab1ef003299f03fb59c1c1b972f0620728e6338b9ed683919e8f14bd382",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-crystal-16x16": {
    "file": "pods/find-crystal-16x16.png",
@@ -1223,8 +1223,8 @@
    "file": "pods/find-pearl-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "e4352f8cafaca0fe29a72f38c35a6c380b4c5c80560d1f7836ca92e87ce81187",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-pearl-16x16": {
    "file": "pods/find-pearl-16x16.png",
@@ -1237,8 +1237,8 @@
    "file": "pods/find-shard-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "fa3b2c6b679aaad0309a19a75b6612d75fba6922d3a04a8b98f5e33d59ab651d",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-shard-16x16": {
    "file": "pods/find-shard-16x16.png",
