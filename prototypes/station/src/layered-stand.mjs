@@ -20,19 +20,19 @@ export const setStandSizes = (json) => { SIZES = json ?? null; };
 export const standLayersLoaded = () => !!INDEX;
 export const standLayersStatus = () => INDEX?.status ?? null;
 const stageKey = (stage) => (stage === "elder" ? "adult" : stage);   // an elder takes the adult's stand
-const CANVAS = "304x312";
+const ART_SIZE = "304x312";
 // The figure box a view draws a stage's stand in: the config's `views[view][stage]` is the figure's height in px (crest to feet), the box is the canvas scaled to that; a view or stage the table does not give draws
 // the whole canvas fitted in the place (a tile, the Companion: unchanged). `places` lists the sizes that are standing poses.
 export function figureBox(stand, place, view) {
   const h = SIZES?.views?.[view]?.[stageKey(stand.stage ?? "adult")]; if (!h) return [...place];
-  const fig = INDEX.stands[stand.species][stand.stage].figure, fh = fig[3] - fig[1] + 1, [cw, ch] = CANVAS.split("x").map(Number), s = h / fh;
+  const fig = INDEX.stands[stand.species][stand.stage].figure, fh = fig[3] - fig[1] + 1, [cw, ch] = ART_SIZE.split("x").map(Number), s = h / fh;
   return [Math.max(1, Math.round(cw * s)), Math.max(1, Math.round(ch * s))];
 }
 // the layered stand of a species and stage for a place (the size a view asks) in a view, or null: { species, stage, size (the picture: the place's), figure (the box the figure is fitted in), traits, base, layers }, every file loaded
 export function layeredStand(species, stage, place, view = "default") {
   const st = stageKey(stage), set = INDEX?.stands?.[species]?.[st]; if (!set) return null;
   if (!SIZES?.places?.includes(`${place[0]}x${place[1]}`)) return null;
-  const [cw, ch] = CANVAS.split("x").map(Number), sz = set.sizes?.[CANVAS]; if (!sz || !PIXELS.has(sz.base) || !sz.layers.every((l) => PIXELS.has(l.file))) return null;
+  const [cw, ch] = ART_SIZE.split("x").map(Number), sz = set.sizes?.[ART_SIZE]; if (!sz || !PIXELS.has(sz.base) || !sz.layers.every((l) => PIXELS.has(l.file))) return null;
   const stand = { species, stage: st, size: [...place], view, traits: set.traits, base: sz.base, layers: sz.layers }, figure = figureBox(stand, place, view);
   const fig = set.figure, sc = Math.min(figure[0] / cw, figure[1] / ch);   // never up past the art, and the figure itself (not the canvas around it) must fit its picture
   if (sc > 1 || (fig[2] - fig[0] + 1) * sc > place[0] + 0.5 || (fig[3] - fig[1] + 1) * sc > place[1] + 0.5) return null;
@@ -72,7 +72,7 @@ export function fitDown(src, sw, sh, bw, bh, w = bw, h = bh) {   // the sw×sh p
 
 // The composed picture at the place's size, the figure at its box: { w, h, rgba() } with straight alpha. The layers are laid on the canvas, then the whole is fitted down once.
 export function composeStand(stand, looks) {
-  const [cw, ch] = CANVAS.split("x").map(Number), [w, h] = stand.size, [fw, fh] = stand.figure, b = PIXELS.get(stand.base).rgba(), out = new Uint8ClampedArray(b);
+  const [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = stand.size, [fw, fh] = stand.figure, b = PIXELS.get(stand.base).rgba(), out = new Uint8ClampedArray(b);
   if (out.length !== cw * ch * 4) throw new Error(`stand ${stand.species}: the base is not ${cw}×${ch}`);
   for (const l of layersFor(stand, looks)) {
     const s = PIXELS.get(l.file).rgba(); if (s.length !== out.length) throw new Error(`stand layer ${l.file} is not ${cw}×${ch}`);
