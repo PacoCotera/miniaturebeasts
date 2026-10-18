@@ -7,7 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
-import { layeredStand, composeStand, standPictureId } from "./layered-stand.mjs";
+import { layeredStand, composeStand, standPictureId, fitDown } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
 import { portraitSource } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
@@ -16,6 +16,7 @@ import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt, speciesStudy
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
+import { relit } from "./relight.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
@@ -77,6 +78,22 @@ export function registerPictures(reqs, env) {
       case "rackpod": {   // the Home rack pod: the signed 24×32 layers recoloured by the species' pair (home.json regions.pods.pod.layers); an empty picture until the base layers are placed
         const P = SPECS.home.regions.pods.pod; if (!r.size || r.size[0] !== P.size[0] || r.size[1] !== P.size[1]) throw new Error(`rackpod ${r.id}: size ${r.size} is not the spec's ${P.size}`); const L = P.layers, patterns = SPECS.pods.podLayers.patterns, frame = r.species ? env.frameOf(r.species) : null, placed = rackLayersPlaced(L), pid = rackPatternId(frame, L, patterns);
         put(r.id, P.size[0], P.size[1], "the rack pod's layers (the home hand masters)", () => (placed ? rackPodFromLayers(frame, L, SPECS.cross.colours.pigmentChips, patterns, P.size) : new PB(P.size[0], P.size[1])), placed ? { status: leastFinal([...rackBase(L), ...(pid ? [pid] : [])]) } : {}); break;
+      }
+      case "podpart": {   // a piece of a pod from its signed layers at their own size (the opened pod's bowl and cap, pod-opened-*), recoloured by the species' pair, never scaled (T-20261016-222)
+        const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
+        put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
+      }
+      case "podicon": {   // the founder's pod in the Incubate panel's price (build spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
+        const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
+        put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
+      }
+      case "relit": {   // a figure lit to the capsule's roof lamp, with its shadow and the moss blades in front of its feet, one picture (relight.mjs), made in the logic process; parts: [{ id, over?: [id] }], bg: { id, at: [x, y] } or null
+        const ok = r.parts.every((p) => isFilled(p.id) || hasAsset(p.id));
+        registerAsset({ id: r.id, w: r.area[0], h: r.area[1], status: "derived", until: null, build: () => { let data = null; return { w: r.area[0], h: r.area[1], rgba: () => { if (data) return data;
+          if (!ok) return (data = new Uint8ClampedArray(r.area[0] * r.area[1] * 4));
+          const src = (id) => { const a = assetOf(id); return { rgba: a.rgba(), w: a.w, h: a.h }; };
+          data = relit({ parts: r.parts.map((p) => ({ ...src(p.id), over: (p.over ?? []).filter((o) => isFilled(o) || hasAsset(o)).map((o) => src(o).rgba) })), scale: r.scale ?? 1, figH: r.figH ?? 0, sink: r.sink ?? 0, inset: r.inset ?? 12, area: r.area, anchor: r.anchor, bg: r.bg && (isFilled(r.bg.id) || hasAsset(r.bg.id)) ? { ...src(r.bg.id), x: r.bg.at[0], y: r.bg.at[1] } : null }); return data; } }; } });
+        break;
       }
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
       case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size, r.band)); break;

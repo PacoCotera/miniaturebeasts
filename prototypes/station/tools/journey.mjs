@@ -409,7 +409,10 @@ await hpressC("down", 300);
   await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
-await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Incubate, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
+await said(); await hold(); await page.evaluate(() => window.__st.press("confirm")); await stepClock(300);   // ✓ Incubate on Create opens the Incubate | Keep shaping panel by the 180 ms dither (nothing is spent until its ✓ Incubate)
+{ const p = await props(), m = await said(), u = await ui(), l = await line(), s2 = await st(); cur.push({ key: "confirm", said: m, screen: u.screen, panel: p.overlay?.form ?? null, ring: p.overlay?.focus?.cur ?? null, ok: l.ok ?? null, e: s2.e, d: s2.d, s: s2.s });
+  expect(p.overlay?.id === "panel" && p.overlay.form === "incubate" && p.overlay.focus.cur === "card.incubate" && l.ok === "Incubate" && s2.e === e1 && s2.s === s1 && s2.d === d1 && !s2.bud, "✓ opens the Incubate | Keep shaping panel, the ring on Incubate, nothing spent: " + JSON.stringify([p.overlay?.form, p.overlay?.focus, l.ok])); await frameShot("page-create-panel", true); }
+await page.evaluate(() => window.__st.press("confirm")); await stepClock(450);   // ✓ Incubate in the panel, then exactly 450 ms of frames: the stamp printed, the code shown at 300, the pod passing behind the tray (fix 5 Create)
 { const m = await said(), u = await ui(), l = await line(); cur.push({ key: "confirm", said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
 { const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code) && p.frame.line.ok == null && p.frame.line.price == null && p.frame.line.back == null && p.frame.line.subject === "it goes to the Incubator", "✓ Grow it: the screen grows and holds input, the code is the screen's, the line is Growing (no ✓, price or way back): " + JSON.stringify([p.state, p.regions.code, p.frame.line])); }
 await frameShot("page-create-grow", true);
@@ -421,7 +424,7 @@ expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "th
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
 await page.waitForTimeout(900);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on the Incubator");
-{ const p = await props(); expect(p.state === "growing" && p.frame.line.back === "Home" && p.frame.line.ok === "Hatch now" && p.regions.leaves.total === 21, "after Incubate (a jump) the Incubator is built, growing 21 leaves, ← reads Home: " + JSON.stringify([p.state, p.frame.line, p.regions.leaves.total])); await frameShot("page-incubator", true); }
+{ const p = await props(); expect(p.state === "growing" && p.frame.line.back === "Home" && p.frame.line.ok === "Hatch now" && p.regions.capsule.barPx >= 1 && /^ready in about \d+ min$/.test(p.regions.readyIn), "after Incubate (a jump) the Incubator is built, growing, the bar lit from its first pixel, ← reads Home: " + JSON.stringify([p.state, p.frame.line, p.regions.capsule.barPx, p.regions.readyIn])); await frameShot("page-incubator", true); }
 // Create's journey on the face, held to prototypes/face/golden/journey-create.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-create.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("create-"))), json = JSON.stringify({ _note: "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
@@ -436,8 +439,8 @@ await page.waitForTimeout(1600);
 const hpressI = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("incubator-states");
 await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
-{ const s0 = await st(); await hpressI("confirm", 120); expect((await props()).overlay?.id === "panel" && (await props()).frame.line.ok === "Hatch now", "✓ Hatch now above ❀ 4 opens the Hatch now? panel: " + JSON.stringify((await props()).frame.line)); await hpressI("back", 120); expect(!(await props()).overlay, "← closes it, nothing spent"); await hpressI("confirm", 120); await hpressI("confirm", 120);   // ✓ Hatch now (the panel, then its Hatch now card): the leaves still to fill turn whole over 400 ms, input held 400 ms, then the hatch
-  expect((await props()).state === "growing" && (await page.evaluate(() => window.__st.holding())), "✓ Hatch now holds input while the leaves fill");
+{ const s0 = await st(); await hpressI("confirm", 300); expect((await props()).overlay?.id === "panel" && (await props()).overlay.form === "hatchnow" && (await props()).frame.line.ok === "Hatch now", "✓ Hatch now above ❀ 4 opens the Hatch now | Wait panel (the 180 ms dither): " + JSON.stringify((await props()).frame.line)); await hpressI("back", 300); expect(!(await props()).overlay, "← dithers back, nothing spent"); await hpressI("confirm", 300); await hpressI("confirm", 120);   // ✓ Hatch now (the panel, then its Hatch now card): the leaves still to fill turn whole over 400 ms, input held 400 ms, then the hatch
+  expect((await props()).state === "growing" && (await page.evaluate(() => window.__st.holding())), "✓ Hatch now holds input while the bar fills");
   await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);
   { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
   await page.waitForTimeout(600); const p = await props(), s1 = await st(); cur.push({ hatch: p.state, ok: p.frame.line.ok });
@@ -511,7 +514,7 @@ caddyUp = false;
 await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
 await press("research", 300);
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
-await press("confirm", 400); await press("confirm", 400); await press("confirm", 1300);   // Create, the Grow it panel, its ✓ Grow it
+await press("confirm", 400); await press("confirm", 400); await press("confirm", 2900);   // Create, the Incubate | Keep shaping panel, its ✓ Incubate: the grow event (1080 ms, the jump at 900), then the Incubator's incubate moment holds input to 1380 ms
 s = await st(); expect(s.bud && s.outbox.length === 0, "Grow paints nothing: the outbox stays empty");
 await page.evaluate(() => window.__st.skipBud("ready")); await intent({ screen: "incubator", target: "", verb: "confirm" }, 300); await page.waitForTimeout(3200);
 await press("home", 300);
@@ -752,8 +755,9 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   await loop("confirm", "✓ on the new pod opens its overview", () => window.__st.props?.state === "overview");
   await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Create from this pod");
   await loop("confirm", "✓ Create from this pod opens Create", () => window.__st.UI.screen === "create");
-  await loop("confirm", "✓ Incubate", () => window.__st.UI.screen === "incubator");
-  await loop("confirm", "✓ Hatch now (the leaves, the hatch, then the meet)", () => window.__st.UI.screen === "habitat");
+  await loop("confirm", "✓ Incubate opens the Incubate | Keep shaping panel", () => window.__st.props?.overlay?.form === "incubate");
+  await loop("confirm", "✓ Incubate in the panel (the grow event, then the Incubator's incubate moment)", () => window.__st.UI.screen === "incubator");
+  await loop("confirm", "✓ Hatch now (the bar, the door, the hatch, then the meet)", () => window.__st.UI.screen === "habitat");
   { const p = await props(); expect(p.screen === "habitat" && p.state === "meet" && p.focus.cur === "resident" && /^Name /.test(p.frame.line.ok) && !p.overlay, "fresh-loop: the hatch lands in the meet with the ring on the resident, ✓ Name it: " + JSON.stringify([p.state, p.focus.cur, p.frame.line.ok])); }
   await loop("confirm", "the meet's first ✓ opens the namer", () => window.__st.props?.overlay?.id === "namer");
   { const p = await props(); expect(p.overlay.focus.cur === "act.done" && p.state === "rest", "fresh-loop: the namer is open, the ring on Done: " + JSON.stringify([p.overlay.focus.cur, p.state])); }

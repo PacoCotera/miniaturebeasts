@@ -30,6 +30,9 @@ char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL end
 int prim_text_size(void);
 int prim_measure(int px);       /* the width in px of prim_text() set in Inter at px */
 uint8_t *prim_asset(int handle, int w, int h);   /* a picture's pixels (B, G, R, A in memory), for the page to fill; NULL when refused */
+int prim_snapshot(int x, int y, int w, int h);   /* the screen's objects as drawn now, the rect (x, y, w, h) copied into the face's one snapshot picture (lv_snapshot): its handle, or -1 */
+void prim_snapshot_free(void);                   /* release the snapshot */
+int prim_snapshot_handle(void);                  /* the snapshot's handle, or -1 when there is none */
 uint8_t *prim_asset_ptr(int handle);   /* the pixels of a picture already allocated, or NULL */
 void prim_asset_free(int handle);       /* release a picture (its pixels); a node still showing it is refused until it is sent again */
 int prim_asset_limit(void);
@@ -50,6 +53,9 @@ int prim_palette_has(uint32_t rgb);
 int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by name: 0, or -1 when the palette has no such name */
 /* The composed picture's ops, JSON: [["h", x, y, len, "colour"], ["v", x, y, len, "colour"], ["dash", x, y, len, "h"|"v", on, off, "colour"], ["dot", x, y, "colour"],
    ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"], ["bayerPick", from, to, level, ox, oy], or with the windows ["bayerPick", from, to, level, ox, oy, fsx, fsy, tsx, tsy] (from -1: clear)] (bayerPick: the picture of asset `to` where the Bayer cell at the screen position (ox + x, oy + y) is below `level`, else that of asset `from`; both are the picture's size) with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
+   Two ops for a rounded box, integer corners, no anti-aliasing, not a focus ring (they set no ring flag; the Incubate panel's bezels and windows):
+   ["rrect", x, y, w, h, radius, "fill", "edge"]: a w x h box with rounded corners of `radius` px, its whole in `fill` and a 1 px edge on its outline in `edge`; "" for either leaves it out; radius 0 is a square box; the box lies inside the picture and is at most 1024 x 600 px.
+   ["rcorners", x, y, w, h, radius, "colour"]: the pixels of the w x h box that lie outside that rounded shape (its four corners), in colour; radius 0 draws nothing.
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */
 int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
@@ -57,6 +63,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops);
 void prim_set_pass(int pass);
 void prim_set_hide(const char *region);   /* the nodes of a region hidden (NULL or "": none) */
 void prim_asset_layer(int handle, int layer);
+int prim_asset_box(int handle, int out[4]);   /* the box (x, y, w, h) of a held picture's pixels with alpha above 0 (all 0 when it is clear); 0, or -1 for an empty slot: the dither of a layer need only cover this box */
 int prim_asset_alpha_box(int fh, int th, int out[4]);   /* the silhouette box of two held pictures: pixels clear in one and not the other (0, or -1 when refused) */
 int prim_asset_diff_box(int fh, int th, int out[4]);    /* the change box: pixels whose alpha differs or, neither clear, whose colour differs */
 /* The feet of a held picture (the decision panel's composite rule, T-20261016-70): out = the lowest row holding a pixel of alpha >= `alpha`, and the first and last column of such pixels in that row and the `rows` - 1 above it (inclusive). 0, or -1 for an empty slot or a picture with no such pixel. */

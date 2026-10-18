@@ -55,6 +55,7 @@
 #define LV_USE_FLEX 0
 #define LV_USE_GRID 0
 #define LV_USE_BUTTON 0
+#define LV_USE_SNAPSHOT 1   /* prim_snapshot: Create as it stands under the Incubate | Keep shaping panel (T-20261016-222, architect-rulings 2) */
 #define LV_USE_IMAGE 1
 #define LV_USE_LABEL 1
 #define LV_USE_LINE 0

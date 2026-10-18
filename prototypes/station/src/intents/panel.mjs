@@ -3,7 +3,7 @@
 // The panel is one component for every commitment: a screen opens it with `openPanel(h, screen, id)` and `doCard` below answers the card pressed; Grow this founder? is Create's (intents/create.mjs growFounder).
 import * as S from "../state.mjs";
 import { panelBuild, cardsOf, initialFocus } from "../views/panel-props.mjs";
-import { growFounder } from "./create.mjs";
+import { incubateNow, keepShaping } from "./create.mjs";
 import { returnNow } from "./habitat.mjs";
 import { returnPodNow } from "./pods.mjs";
 import { fitNow } from "./bench.mjs";
@@ -21,14 +21,23 @@ export function closePanel(h) { h.ui.panel = null; }
 // `target`: card.<id>; `verb`: confirm | back (the room keys go to the frame's intent).
 export function intent(h, target, verb) {
   const ui = h.ui.panel; if (!ui) return;
+  if (ui.id === "incubate") {   // the Incubate | Keep shaping panel (build spec 6a.4): ✓ Incubate runs Create's grow; Keep shaping and ← dither back to Create as it was; a room key is the frame's (a cut, nothing spent)
+    if (verb === "back" || (verb === "confirm" && target === "card.keep")) { S.logEv(h.st, "Decision panel · Incubate | Keep shaping · Keep shaping"); keepShaping(h); return; }
+    if (verb === "confirm" && target === "card.incubate") { S.logEv(h.st, "Decision panel · Incubate | Keep shaping · Incubate"); incubateNow(h); }
+    return;
+  }
+  if (ui.id === "growNow") {   // the Hatch now | Wait panel (the Incubator's confirm state): ✓ Hatch now goes as a cut and the bar fills; Wait and ← dither back to the Incubator, nothing spent; a room key is the frame's (a cut)
+    if (verb === "back" || (verb === "confirm" && target === "card.wait")) { S.logEv(h.st, "Decision panel · Hatch now | Wait · Wait"); closePanel(h); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }
+    if (verb === "confirm" && target === "card.grow") { S.logEv(h.st, "Decision panel · Hatch now | Wait · Hatch now"); closePanel(h); growNow(h); }
+    return;
+  }
   if (verb === "back") { closePanel(h); if (ui.id === "dock") later(h); return; }   // ← on the dock arrival's strip is Later
   if (verb !== "confirm") return;
   const cards = cardsOf(model(h), h.specs.panel, h.specs.frame, []), card = cards.find((c) => "card." + c.id === target); if (!card) return;
   if (card.dim) { h.say(fill(h.specs.pods.strings.needMore, { icons: card.short })); return; }   // short of materials: the warn words, nothing spent
   S.logEv(h.st, "Decision panel · " + h.specs.panel.strings[ui.id].title + " · " + card.name);   // the card pressed, for the owner's own play to be read back
   closePanel(h);
-  if (ui.screen === "create" && ui.id === "grow" && card.act !== "shape") growFounder(h, card.act);   // Keep shaping is the way out: the panel closes, Create is as before
-  else if (card.act === "fit") fitNow(h);
+  if (card.act === "fit") fitNow(h);
   else if (card.act === "growNow") growNow(h);
   else if (card.act === "open") openFromArrival(h);
   else if (card.act === "later") later(h);

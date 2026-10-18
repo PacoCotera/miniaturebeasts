@@ -35,9 +35,10 @@ function scene(o = {}) {
   if (o.roll) { const list = reviewTraits(p, frameOf(id)), t = list[cr.f].t, opts = S.rollOptions(p, t.id); cr.choices[t.id] = o.roll; assert.ok(opts.length > 1, "the trait rolls"); }
   if (o.clash) cr.clash = Object.keys(cr.choices);
   if (o.busy) st.bud = { kind: "founder", species: id, sp: 0, gs: 5, genome: p.genome, sha: "bud", code: "BUD", start: T0, minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false };
+  if (o.ready) st.bud = { ...st.bud ?? { kind: "founder", species: id, sp: 0, gs: 5, genome: p.genome, sha: "bud", code: "BUD", minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false }, start: T0 - 3600_000 };
   if (o.short) st.s = 1;
   if (o.grown) { const r = S.grow(st, p, cr.choices, settings, T0); assert.ok(r.ok); cr.grown = { code: r.bud.code, cost: r.cost, pod: p }; }
-  return { ...createBuild({ st, settings, ui: { create: cr } }, createSpec, podsSpec), st, p, cr };
+  return { ...createBuild({ st, settings, ui: { create: cr }, now: T0 + 1000 }, createSpec, podsSpec), st, p, cr };
 }
 const frameProps = (line = {}) => ({ top: { screen: "create", title: "Create", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "", timed: false } });
 
@@ -45,7 +46,7 @@ const frameProps = (line = {}) => ({ top: { screen: "create", title: "Create", t
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const colourOf = (id) => { const k = hash(id); return [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)]; };
 function standIn(id, size, hollow = false) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), [r, g, b] = colourOf(id); for (let i = 0; i < w * h; i++) { const x = i % w, y = (i / w) | 0, edge = x === 0 || y === 0 || x === w - 1 || y === h - 1; d[i * 4] = r; d[i * 4 + 1] = g; d[i * 4 + 2] = b; d[i * 4 + 3] = hollow && !edge ? 0 : 255; } return { w, h, data: d }; }   // a PH hollow has its edge only
-const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
+const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size ?? r.area) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const PINNED = pinnedPictures(podsSpec, frameSpec);
 
 async function start(b, { motion = true, t0 = 0, noWait = false, skip = [] } = {}) {
@@ -371,4 +372,14 @@ test("every context the bottom line can show fits its 208 px zone and every trai
   }
   console.log("# contexts: " + widths.join("; "));
   const g = await growing(); assert.equal(region(g.at(150), "subject", "type").rect[2], 171, "strings.growing is 171 px"); assert.equal(region(logOf(await start(scene({ read: 0 }))), "subject", "type").rect[2], 158, "strings.traitLine.none is 158 px");
+});
+
+// The chamber mirrors the Incubator (UI/UX round 2): empty is the door open, no glass, the bar off, no pod; a bud growing is the glass closed over that bud's pod with the bar lit; ready is the door open, that bud's pod, the bar lit; after Incubate the glass closes over the new pod once it lands
+test("the chamber mirrors the Incubator: empty (door, no glass, no bar, no pod), growing (glass, pod, bar, no door), ready (door, pod, bar, no glass); glass only when closed", { skip }, async () => {
+  const present = (lg, id) => lg.regions.filter((r) => r.id === id && r.rect[2] > 0).length > 0, layers = ["domePod", "domeGlass", "domeDoor", "domeBar"];
+  const want = { empty: [0, 0, 1, 0], busy: [1, 1, 0, 1], ready: [1, 0, 1, 1] };
+  for (const [name, o] of [["empty", { read: 2, f: 1 }], ["busy", { read: 2, f: 1, busy: true }], ["ready", { read: 2, f: 1, ready: true, busy: true }]]) {
+    const f = await start(scene(o)), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.deepEqual(layers.map((l) => (present(lg, l) ? 1 : 0)), want[name], `${name}: pod, glass, door, bar`);
+  }
+  { const b = scene({ read: 2, f: 1, grown: true }), f = await start(b, { motion: false }), lg = logOf(f); assert.deepEqual(["travel", "domeGlass", "domeDoor", "domeBar"].map((l) => (present(lg, l) ? 1 : 0)), [1, 1, 0, 1], "after Incubate (the travel over): the glass closed over the new pod (the travelling pod at rest), the bar lit"); }
 });

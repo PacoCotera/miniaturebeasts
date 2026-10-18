@@ -200,7 +200,7 @@ Miniature beasts are small in their world, on every screen. The world is large a
 | --- | --- | --- | --- |
 | Home, the Vivarium window | **54** | **40** | the base measure. The away frame holds the same figure |
 | The Vivarium, full screen, and Idle | **54** | **40** | Home's window is a 1:1 part of the same painting, so opening it shows more world, never a bigger mibi |
-| A decision panel's windows | **54** | **40** | the same size in both windows, so neither option reads as the distant or lesser one. The two differ by place and company, not by the size of the mibi |
+| A decision panel's windows | **54** | **40** | when a window shows a mibi in its world. A window that frames a close-up (the workbench, the Incubator) takes that close-up's size at the panel's reduction. Either way both windows of a panel share one scale, so neither option reads as the distant or lesser one; the two differ by place and company, not by the size of the mibi |
 | The Habitat and Sitting, a mibi up close | **150** | **110** | the closest world view. The name tag, focus ring and kin marks follow the feet and scale with the mibi |
 | Close-ups, large: the workbench (Grow, Create, the Incubator, Cross) and the dock arrival | large | large | the two close-ups: a mibi held up for work, or greeted as it comes home. The size is set in each close-up's layout, up to the 304 × 312 master; builds never shrink these to the world sizes above |
 | Cargo (the bay) | none | none | no mibis on screen; the dock arrival is the close-up above |

@@ -189,12 +189,12 @@ const STEP_KEYS = ["up", "down", "left", "right"];
 test("the Create spec file agrees with the Create wireframes, region by region, and names a word for every region", () => {
   const cr = rd("../specs/station/create.json"), R = cr.regions, B = boxesOf("03-create.svg"), G = boxesOf("03c-create-grow.svg"), N = boxesOf("03e-create-nothing-read.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  for (const k of ["rail", "roll", "traitLine", "chamber", "founder", "pod", "cradle", "origin", "dome", "bud", "stamp", "code"]) is(R[k].rect, k);
-  for (const k of ["rail", "chamber", "founder", "pod", "dome", "stamp", "code"]) is(R[k].rect, k + " (nothing read)", N);   // the trait line has no size in nothingRead (fix 5 C2)
+  for (const k of ["rail", "roll", "traitLine", "chamber", "founder", "pod", "cradle", "origin", "stamp", "code"]) is(R[k].rect, k);   // the capsule's chamber (dome) is T-20261016-222's: 793, 104, 145, 224, not in the old wireframe
+  for (const k of ["rail", "chamber", "founder", "pod", "stamp", "code"]) is(R[k].rect, k + " (nothing read)", N);   // the trait line has no size in nothingRead (fix 5 C2)
   for (const k of ["stampCase", "stampCaseFront"]) { is(R[k].rect, k); is(R[k].rect, k + " (nothing read)", N); is(R[k].rect, k + " (grow)", G); }
   assert.ok(!N.has(R.roll.rect.join(",")), "no roll when nothing is read"); assert.deepEqual(R.roll.inStates, ["shape"]);
-  is(R.travel.rect, "travel", G); is(R.travel.to, "travel's end", G);
-  lintRegions(cr); assert.deepEqual(cr.states, ["nothingRead", "shape", "grow"]); assert.deepEqual(cr.rules.needed, []);
+  is(R.travel.rect, "travel", G);   // the travel's end is the capsule's moss line (T-20261016-222), not in the old wireframe
+  lintRegions(cr); assert.deepEqual(cr.states, ["nothingRead", "shape", "grow", "confirm"]); assert.deepEqual(cr.rules.needed, []);
   assert.deepEqual(R.rail.rect, [512 - run(6) / 2, frame.regions.rail.y, 832, frame.regions.rail.h], "the rail centred, as on Pods");
   const P = R.roll.forms.roll.pictures; assert.deepEqual(P.map((p) => p[0] + 64), [368, 512, 656], "three pictures centred on the founder's axis"); assert.deepEqual(R.roll.forms.single.pictures, [P[1]]);
   assert.deepEqual(R.roll.forms.roll.order, ["as the pod is", "only the first copy", "only the second copy"]);
@@ -208,14 +208,14 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.ok(inside(R.founder.rect, R.chamber.rect)); assert.equal(R.founder.rect[0] + R.founder.rect[2] / 2, 512); assert.equal(R.chamber.rect[0] + R.chamber.rect[2] / 2, 512); assert.ok(R.founder.rect[2] >= 300 && R.founder.rect[3] >= 310, "the founder at least 300×310");
   assert.ok(R.cradle.rect[0] + R.cradle.rect[2] + 16 <= R.chamber.rect[0] && R.chamber.rect[0] + R.chamber.rect[2] + 16 <= R.dome.rect[0], "the chamber clear of the dish and the dome");
   for (const k of ["pod", "cradle", "origin"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 160, k + " on the left column's axis");
-  for (const k of ["dome", "stamp", "code"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 864, k + " on the right column's axis");
+  assert.equal(R.dome.rect[0] + 71, 864, "the capsule's shell axis (71 px in) on the right column's axis"); for (const k of ["stamp", "code"]) assert.equal(R[k].rect[0] + R[k].rect[2] / 2, 864, k + " on the right column's axis");
   assert.deepEqual([R.pod.axis, R.pod.feet, R.cradle.rect[1], R.cradle.rect[1] + R.cradle.rect[3]], [160, 408, 408 - 64, 408 + 32], "the dish as on Pods' overview");
   assert.deepEqual(pods.classes.pod.large, R.pod.rect.slice(2), "the pod's region is the largest class");
   assert.equal(R.podShadow.slice, "pod-{class}-shadow"); assert.deepEqual([pods.shadow.widen, pods.shadow.h], [16, 14], "the shadow is Pods' rule: the class's width + 16, 14 tall");
-  assert.deepEqual(R.travel.to, [R.travel.foot.to[0] - 44, R.travel.foot.to[1] - 112, 88, 112], "the travel ends at the collection class, bottom-centred on the foot"); assert.deepEqual(R.travel.rest.size, pods.classes.pod.collection);
+  assert.deepEqual(R.travel.foot.to, [864, R.dome.floor], "the travel ends on the capsule's moss line, on the right column's axis"); assert.equal(R.dome.podHeight, 72);
   assert.ok(inside(R.travel.to, R.dome.rect), "the rest box lies inside the small chamber"); assert.ok(R.travel.to[1] > 183, "its top is under the lamp's last row (183)");
   assert.deepEqual(R.podShadow.rect, [80, 401, 160, 14]); assert.deepEqual(R.podShadow.rect, [R.pod.axis - (R.pod.rect[2] + 16) / 2, R.pod.feet - 7, R.pod.rect[2] + 16, 14], "the largest class's shadow, on the axis and 7 rows above the feet");
-  assert.deepEqual(R.dome.rect, [776, 104, 176, 224]); assert.equal(R.dome.floor, R.bud.foot[1]);
+  assert.deepEqual(R.dome.rect, [793, 104, 145, 224]); assert.equal(R.dome.floor, 268, "the moss line");
   assert.ok(R.stamp.rect[0] - (R.founder.rect[0] + R.founder.rect[2]) >= 96, "the stamp 96 px or more from the focal box"); assert.deepEqual(R.stamp.rect.slice(2), [120, 120]);
   assert.ok(!("leaves" in R), "Create draws no leaf grid (fix 6 N1): the bud's wait is the Grow line's last price group"); assert.deepEqual(R.founderShadow.rect, [400, 529, 224, 14]); assert.equal(R.founderShadow.slice, "founder-shadow-224x14"); assert.equal(R.founderShadow.rect[0] + R.founderShadow.rect[2] / 2, R.founder.axis, "the shadow centred on the founder's axis"); assert.equal(R.founderShadow.rect[1] + 7, R.founder.feet, "its centre on the feet");
   assert.deepEqual([R.code.lineTop, R.code.baseline, R.code.rule.y], [481, 497, 505]); assert.equal(R.code.rule.y - R.code.baseline, 8, "8 px from the code's baseline to its rule"); assert.ok(R.code.rect[2] >= 171, "the widest code fits"); assert.ok(R.stamp.rect[1] + R.stamp.rect[3] <= R.code.rect[1]);
@@ -251,38 +251,18 @@ test("the leafArc oracle (ui/specs/derive.mjs) places every run of 1 to 40 leave
   assert.throws(() => leafArc(R, 2 * L.perArc + 1), "more than 2 × perArc is refused");
 });
 
-test("the Incubator spec file agrees with the Incubator wireframes, region by region; the leaf arcs clear the rail and the glass", () => {
-  const inc = incSpec(), R = inc.regions, B = boxesOf("04-incubator-growing.svg"), Y = boxesOf("05-incubator-ready.svg"), H = boxesOf("05b-incubator-hatch.svg"), E = boxesOf("05c-incubator-empty.svg");
-  const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  for (const k of ["rail", "leaves", "dome", "nest", "bud", "base", "plaque", "stamp", "code"]) is(R[k].rect, k);
-  for (const k of ["dome", "nest", "base", "plaque"]) is(R[k].rect, k + " (empty)", E);
-  is(R.bud.shape.rect, "the shape in the ready bud", Y); is(R.base.lamp.rect, "the waiting lamp", Y); is(R.ribbon.rect, "ribbon", H); is(R.juvenile.rect, "juvenile", H);
-  lintRegions(inc); assert.deepEqual(inc.states, ["empty", "growing", "ready", "hatch"]); assert.deepEqual(inc.rules.needed, []); assert.ok(inc.rules.used.includes("leafArc"));
-  assert.equal(R.leaves.component, "leaves"); assert.equal(R.leaves.form, "arc"); assert.deepEqual(R.leaves.layout, ["leafArc"]); assert.deepEqual(R.leaves.leaf, [16, 20]); assert.equal(R.leaves.max, 2 * R.leaves.leafArc.perArc);
-  assert.deepEqual(R.rail.rect, [512 - run(6) / 2, frame.regions.rail.y, 832, frame.regions.rail.h]);
-  assert.deepEqual([R.bud.rect[0] + R.bud.rect[2] / 2, R.bud.rect[1] + R.bud.rect[3] / 2], R.leaves.leafArc.centre, "the arcs centred on the bud");
-  assert.ok(inside(R.bud.shape.rect, R.bud.rect)); assert.ok(R.bud.shape.ink.every((n, i) => n <= R.bud.shape.rect[2 + i])); assert.ok(inside(R.bud.rect, R.dome.rect)); assert.ok(inside(R.nest.rect, R.dome.rect)); assert.ok(inside(R.plaque.rect, R.base.rect)); assert.ok(inside(R.base.lamp.rect, R.base.rect)); assert.ok(inside(R.base.footLight.rect, R.base.rect));
-  assert.deepEqual(R.base.rect, [344, 440, 336, 96]); assert.equal(R.base.rect[1] + 90, R.bench.floor.line, "the base's block, slice rows 23–89, on the bottom line");
-  assert.ok(R.stamp.rect[0] - (R.dome.rect[0] + R.dome.rect[2]) >= 96, "the stamp 96 px or more from the dome"); assert.deepEqual(R.stamp.rect.slice(2), [120, 120]);
-  assert.equal(R.stamp.rect[0], frame.regions.stampSlot.label[0], "the label on the shared slot's x"); assert.deepEqual([R.code.rect[0], R.code.rect[2], R.code.rect[1] - (R.stamp.rect[1] + R.stamp.rect[3]), R.code.baseline - R.code.rect[1], R.code.rule.y - R.code.baseline], [776, 176, 5, 16, 8], "the code under the label as in the shared slot");
-  assert.equal(R.code.rect[0] + R.code.rect[2] / 2, R.stamp.rect[0] + R.stamp.rect[2] / 2); assert.ok(R.code.rect[2] >= 171, "the widest code fits");
-  assert.deepEqual(R.juvenile.rect.slice(2), [304, 312], "the juvenile at 304×312, the box the meet keeps"); assert.equal(R.juvenile.rect[1] + R.juvenile.rect[3], R.juvenile.feet);
-  assert.ok(R.ribbon.rect[1] + R.ribbon.rect[3] + 8 <= R.juvenile.rect[1], "the ribbon clear of the juvenile");
-  // every slot of both tables: inside its region, 8 px or more under the rail, 30 px or more off the bell jar (a half circle of radius 152 on 512, 354 over a body to y 472)
-  const L = R.leaves.leafArc, [lw, lh] = R.leaves.leaf, glass = (x, y) => (y <= 354 ? Math.hypot(x - 512, y - 354) - 152 : Math.hypot(Math.max(360 - x, 0, x - 664), Math.max(0, y - 472)));
-  assert.equal(R.dome.rect[1] + R.dome.inkTop, 354 - 152, "the glass's top");
-  for (const k of ["inner", "outer"]) for (const [i, [x, y]] of L[k].entries()) {
-    assert.equal(x + lw / 2 - 512, 512 - (L[k][38 - i][0] + lw / 2), `${k} slot ${i} mirrors slot ${38 - i}`); assert.equal(y, L[k][38 - i][1]);
-    assert.ok(inside([x, y, lw, lh], R.leaves.rect), `${k} slot ${i} inside the leaves' region`); assert.ok(y >= frame.regions.rail.y + frame.regions.rail.h + 8, `${k} slot ${i}: 8 px under the rail`);
-    for (const [px, py] of [[x, y], [x + lw, y], [x, y + lh], [x + lw, y + lh]]) assert.ok(glass(px, py) >= 30, `${k} slot ${i} 30 px or more off the glass`);
-  }
-  assert.deepEqual(inc.focus.targets, {}, "no ring on the Incubator"); assert.equal(inc.focus.roomKey, "room");
-  assert.equal(inc.events.hatch.hold, inc.events.hatch.steps.at(-1).at + inc.events.hatch.steps.at(-1).ms); assert.equal(inc.events.hatch.ms, 2600);
+test("the Incubator spec file (T-20261016-222, the painted capsule) agrees with the build spec: the room crop, the capsule's layers at (344, 26), the moss line, the bar, the left column, the ribbon, the events", () => {
+  const inc = incSpec(), R = inc.regions;
+  assert.deepEqual(inc.states, ["empty", "growing", "ready", "hatch"]); assert.deepEqual(R.room.rect, [0, 40, 1024, 522]); assert.deepEqual(R.capsule.rect, [344, 26, 530, 532]); assert.equal(R.capsule.mossY, 415); assert.equal(R.capsule.podHeight, 160);
+  assert.deepEqual([R.capsule.bar.max, R.capsule.bar.litFrom], [158, [89, 450]]); assert.deepEqual(R.inside.foot, [512, 415]); assert.deepEqual(R.juvenile.foot, [532, 415]); assert.equal(R.juvenile.height, 146);
+  assert.deepEqual([R.stampCase.rect, R.stamp.rect, R.code.rect, R.readyIn.rect, R.ribbon.rect], [[76, 184, 152, 152], [92, 200, 120, 120], [64, 344, 176, 25], [16, 384, 272, 24], [312, 56, 400, 40]]);
+  assert.ok(inside(R.readyIn.rect, [16, 40, 284, 522]), "the time stays on the plain wall (x 16 to 300)"); assert.ok(inside(R.stampCase.rect, [16, 40, 284, 522]));
+  assert.deepEqual([inc.events.incubate.ms, inc.events.incubate.hold, inc.events.growNow.ms, inc.events.hatch.ms, inc.events.hatch.hold], [1380, 1380, 580, 2600, 2780]); assert.equal(inc.events.hatch.moving, undefined, "no moving set on the capsule yet (uiux-rulings 5)");
+  assert.deepEqual(inc.events.hatch.steps.map((x) => x.at), [0, 600, 1000, 1200, 1400, 1800, 2600], "one crack layer, 600 to the dither at 1000 (uiux-rulings 4)");
+  assert.deepEqual(inc.focus.targets, {}, "no ring on the Incubator"); assert.equal(inc.focus.roomKey, "room"); assert.equal(inc.events.hatch.hold, inc.events.hatch.steps.at(-1).at + inc.events.hatch.steps.at(-1).ms);
   assert.equal(inc.handoff.to, "habitat"); assert.equal(frame.navigation.jumps.find((j) => j.from === "incubator" && j.action === "Open").to, "habitat");
   const choose = frame.navigation.jumps.find((j) => j.from === "incubator" && j.state === "empty"); assert.deepEqual([choose.action, choose.to, choose.view], [inc.strings.choose, "pods", "collection"]);
-  assert.equal(inc.colours.plaque.empty, "ink", "the plaque word is ink on the painted plate"); assert.notEqual(inc.colours.plaque.empty, "mist", "the empty plaque invites, never mist"); assert.notEqual(inc.colours.bud.shape, "amber"); assert.equal(inc.colours.leaves.empty, "sageD", "the empty leaf: one flat sageD, the art director's value (fix 6 A1)");
-  assert.deepEqual(R.nestFront.rect, R.nest.rect); const DO = inc.drawOrder; assert.ok(DO.indexOf("bud front") < DO.indexOf("nestFront") && DO.indexOf("nestFront") < DO.indexOf("domeFront"), "the nest's front rim over the bud, under the glass's front (art director, 2026-10-09 13:47)"); assert.equal(DO.indexOf("bud crack"), DO.indexOf("bud front") + 1, "the crack steps are drawn right after the front: over the ready bud");
-  assert.equal(R.bench.slice, "room-bench-stage-incubator"); assert.equal(R.bench.until, undefined, "signed: no stand-in slice");
+  assert.equal(inc.strings.plaque, undefined, "the plaque goes"); assert.equal(inc.strings.readyIn, "ready in about {n} min"); assert.equal(inc.glass, undefined, "no code-drawn glass: the cut master (uiux-rulings 2)");
   assert.deepEqual(paletteBad(inc.colours), []);
 });
 
@@ -379,7 +359,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   assert.deepEqual([R.bezel.rect[0] + R.bezel.inset, R.bezel.rect[1] + R.bezel.inset, R.bezel.rect[2] - 2 * R.bezel.inset, R.bezel.rect[3] - 2 * R.bezel.inset], R.glass.rect, "the 8 px bezel");
   // the mibi: the juvenile's box from the Incubator's hatch, inside the glass, its feet on the ground band; the tag 8 px under the ring's ellipse and 8 px inside the glass
   const res = R.resident.rect, glass = R.glass.rect;
-  assert.deepEqual(res.slice(2), incSpec().regions.juvenile.rect.slice(2), "the meet keeps the hatch's 304×312");
+  assert.deepEqual(res.slice(2), [304, 312], "the meet keeps the mibi's 304×312");
   assert.ok(inside(res, glass)); assert.equal(res[0] + res[2] / 2, R.resident.axis); assert.equal(res[1] + res[3], R.resident.feet);
   assert.ok(R.resident.feet > R.glass.ground[1] && R.resident.feet < R.glass.ground[1] + R.glass.ground[3], "the feet on the ground band");
   assert.ok(R.nameTag.rect[1] >= R.resident.feet + 12 + 8, "the tag 8 px or more under the feet ring"); assert.ok(R.nameTag.rect[1] + R.nameTag.rect[3] + 8 <= glass[1] + glass[3], "the tag 8 px inside the glass");
@@ -585,7 +565,7 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
   assert.deepEqual([R.knob.rect[0] + 16 - 24, R.knob.rect[1] + 4 - 12, ...R.knob.target], [616, 536, 48, 24]);
   // the column: five modules 320×88 on a 104 pitch; each its word, its lamp and its objects box; the objects clear of the word
   const mods = ["cargo", "pods", "incubator", "probe", "library"], at = (m, o) => [m.rect[0] + o[0], m.rect[1] + o[1], o[2], o[3]];
-  mods.forEach((k, i) => { const m = R[k]; is(m.rect, k); is(m.rect, k, C); assert.deepEqual(m.rect, [688, 48 + 104 * i, 320, 88]); assert.deepEqual(at(m, m.lamp), [984, m.rect[1] + 12, 12, 12]); assert.deepEqual(m.objects, [112, 8, 176, 72]); is(at(m, m.objects), k + " objects", C); assert.equal(m.build, "module"); assert.ok(m.objects[0] - m.word[0] >= 96, "80 px for the word, then 16"); assert.ok(at(m, m.objects)[0] + 176 + 8 <= at(m, m.lamp)[0], "the objects 8 px clear of the lamp"); });
+  mods.forEach((k, i) => { const m = R[k]; is(m.rect, k); is(m.rect, k, C); assert.deepEqual(m.rect, [688, 48 + 104 * i, 320, 88]); assert.deepEqual(at(m, m.lamp), [984, m.rect[1] + 12, 12, 12]); assert.deepEqual(m.objects, k === "incubator" ? [112, 1, 176, 86] : [112, 8, 176, 72]); if (k !== "incubator") is(at(m, m.objects), k + " objects", C); /* the Incubator's capsule is 86 tall (T-20261016-222): its objects box is taller than the wireframe's */  assert.equal(m.build, "module"); assert.ok(m.objects[0] - m.word[0] >= 96, "80 px for the word, then 16"); assert.ok(at(m, m.objects)[0] + 176 + 8 <= at(m, m.lamp)[0], "the objects 8 px clear of the lamp"); });
   assert.deepEqual(home.focus.graph.column.order.slice(0, 5), mods, "▲ ▼ walk the column top to bottom");
   const O = (k) => at(R[k], R[k].objects), within = (r, k) => assert.ok(inside(r, O(k)), `${r} inside ${k}'s objects`);
   // Cargo: three crates 48×40 on a 56 pitch, symmetric in the bay; the waiting mark centred
@@ -884,33 +864,6 @@ test("fix 2 F11: the rail sits in its well (frame.json regions.rail.well, painte
 });
 
 // ---- fix 5, the Incubator (boards/station-fix5-incubator-probe-spec.md I1 to I3) ----
-test("the Incubator's paint zones lie inside the wall, clear of the keep-clear zones and of every leaf of both arcs; every state names its main object; the hatch word is one word that fits the plate (fix 5 I1-I3)", async () => {
-  const { leafArc } = await import("../specs/derive.mjs"), inc = rd("../specs/station/incubator.json"), R = inc.regions, WALL = [70, 64, 882, 484], B = R.bench;
-  assert.deepEqual(B.paint, { L: [88, 104, 144, 296], R: [792, 104, 144, 112], LM: [248, 336, 80, 64], RM: [696, 336, 80, 64] }); assert.deepEqual(B.keepClear, { leafBand: [248, 80, 528, 240], chamber: [344, 200, 336, 336], label: [792, 232, 144, 152] });
-  const leaves = []; for (let n = 1; n <= 40; n++) for (const l of leafArc(R.leaves, n)) leaves.push(l);
-  for (const [z, r] of Object.entries(B.paint)) {
-    assert.ok(inside(r, WALL), `zone ${z} is on the wall`);
-    for (const [k, c] of Object.entries(B.keepClear)) assert.ok(apart(r, c), `zone ${z} is clear of ${k}`);
-    for (const l of leaves) assert.ok(apart(r, l), `zone ${z} is clear of the leaf at ${l}`);
-    assert.ok(r[1] + r[3] <= (z === "RM" ? 419 : 405), `zone ${z} stays above the hoses the stage keeps (left 405, right 419)`);
-  }
-  // the Incubator on one grid (specs/station-incubator-layout-spec.md)
-  { const G = B.grid, P = B.paint, F = B.floor, K = B.keepClear, fr = rd("../specs/station/frame.json"), well = fr.regions.rail.well; assert.deepEqual(G.margins, { left: 17, right: 17, bottom: 18, top: 16 });
-    const left = [P.L[0] - 71, F.GL[0] - 71], right = [953 - (P.R[0] + P.R[2]), 953 - (F.GR[0] + F.GR[2]), 953 - R.code.rule.x[1]], bottom = 548 - F.line;
-    assert.ok(left.every((v) => v === 17) && right.every((v) => v === 17) && bottom === 18, "margins 17 / 17 / 18"); assert.ok([...left, ...right, bottom].every((v) => v >= 16 && v <= 24) && left[0] === right[0]);
-    assert.equal(P.L[1], well.y + well.h + 16); assert.equal(P.R[1], P.L[1]); assert.equal(P.L[1], 104);
-    assert.equal(P.L[0] + P.R[0] + P.R[2], 1024); assert.equal(P.L[0] + P.L[2] + P.R[0], 1024); assert.equal(P.LM[0] + P.LM[2] + P.RM[0], 1024); assert.deepEqual([P.LM[1], P.RM[1]], [336, 336]);
-    const gutters = [K.leafBand[0] - (P.L[0] + P.L[2]), P.R[0] - (K.leafBand[0] + K.leafBand[2]), P.LM[0] - (P.L[0] + P.L[2]), K.chamber[0] - (P.LM[0] + P.LM[2]), P.RM[0] - (K.chamber[0] + K.chamber[2]), K.label[0] - (P.RM[0] + P.RM[2]), K.label[1] - (P.R[1] + P.R[3]), P.LM[1] - (K.leafBand[1] + K.leafBand[3])];
-    assert.ok(gutters.every((v) => v === 16), "one gutter of 16: " + gutters);
-    for (const r of [...Object.values(P), F.GL, F.GR, ...Object.values(K)]) assert.ok(r[0] % 8 === 0 && r[1] % 8 === 0 && r[2] % 8 === 0, "on the 8 grid: " + r);
-    assert.ok(F.GL[1] + F.GL[3] === F.line && F.GR[1] + F.GR[3] === F.line, "the floor rects end on the line");
-    assert.equal((R.code.rule.x[0] + R.code.rule.x[1]) / 2, R.stamp.rect[0] + 60, "the rule centred on the label"); assert.ok(inside(R.stamp.rect, K.label) && inside([R.code.rule.x[0], R.code.rect[1], R.code.rule.x[1] - R.code.rule.x[0], R.code.rect[3]], K.label), "the stamp and the code (its text line is the rule's width) inside the label place");
-    assert.ok(R.base.rect[1] + 23 <= R.dome.rect[1] + R.dome.rect[3] - 1, "the base seated"); assert.ok(inside(R.base.rect, K.chamber)); }
-  assert.deepEqual(Object.keys(inc.composed).filter((k) => k !== "bareAllowed"), ["empty", "growing", "ready", "hatch"]); assert.deepEqual(inc.composed.hatch.from1000.rect, R.juvenile.rect); assert.deepEqual(inc.composed.growing.rect, R.bud.rect); assert.deepEqual(inc.composed.empty.rect, R.dome.rect);
-  const word = inc.strings.plaque.hatch, M = rd("../../face/tests/vectors/metrics.json"), w = (M.cases ?? M).find((c) => c.px === 16 && c.text === word);
-  assert.match(word, /^[a-z]+$/, "one lowercase word, no digits"); assert.ok(w, "the real measurer's vector holds the word"); assert.ok(w.width <= 112, `"${word}" is ${w.width} px at Inter 16, the plate's limit is 112`); assert.equal(R.plaque.rect[2] - 16, 112);
-});
-
 // ---- fix 5, the Probe (boards/station-fix5-incubator-probe-spec.md P1 to P3) ----
 test("the Probe stands upright in three columns on the floor; each outer margin is 16 to 24 and one bottom line is 520; each module is the size of what it holds; each tier's strip is centred on the axis 472, holds its places with 8 px a side and clears the stage's tools (rework)", () => {
   const be = rd("../specs/station/bench.json"), R = be.regions, FLOORX = [66, 955], FLOORY = [77, 538], cr = R.cradle;

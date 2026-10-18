@@ -58,7 +58,14 @@
   },
   "growNow": {
    "opens": "incubator",
-   "by": "✓ Hatch now when the price is above `growNowAbove` (at or below it ✓ acts as before)"
+   "by": "✓ Hatch now when the price is above `growNowAbove` (at or below it ✓ acts as before)",
+   "form": "hatchnow"
+  },
+  "incubate": {
+   "opens": "create",
+   "by": "the check Incubate on Create (shape and nothingRead), once the refusals (busy, no bay, short) have passed",
+   "form": "incubate",
+   "spec": "results/T-20261017-incubator-object/build-spec.md section 6a"
   }
  },
  "growNowAbove": 4,
@@ -144,6 +151,161 @@
      "line": "ready in about {n} min"
     }
    }
+  }
+ },
+ "incubate": {
+  "note": "T-20261016-222, build-spec 6a.2 at 1x on 1024 x 600: the Incubate | Keep shaping form. The stage (0, 40, 1024, 522) is the device ground; the frame's top bar and bottom line stay. Create's props ride on the overlay; the face draws only this composition and keeps Create as a snapshot (prim_snapshot) for the right window. Open and close are the 180 ms stage dither (the host plays it); the pad moves between the two bezels, the check sends confirm on the focused one, back and a room key close it.",
+  "ground": "ground",
+  "bezels": {
+   "incubate": [
+    16,
+    46,
+    490,
+    506
+   ],
+   "keep": [
+    518,
+    46,
+    490,
+    506
+   ],
+   "radius": 10,
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": {
+    "colour": "fog",
+    "inset": 10,
+    "dy": 1
+   }
+  },
+  "header": {
+   "h": 30,
+   "px": 16,
+   "baseline": 21,
+   "x": 12,
+   "colour": "bone",
+   "note": "the spec says Inter 15 medium; the face has Inter 16, 20 and 28 (open question in the T-20261016-222 report)"
+  },
+  "price": {
+   "right": 12,
+   "gap": 12,
+   "px": 16,
+   "colour": "price",
+   "pod": {
+    "size": [
+     16,
+     20
+    ],
+    "top": 5
+   },
+   "note": "icon before figure, then the founder's pod last; the spec's Inter 13 figures and 4 px icon gaps are the kit price run's Inter 16 (open question)"
+  },
+  "windows": {
+   "left": [
+    24,
+    76,
+    474,
+    468
+   ],
+   "right": [
+    526,
+    76,
+    474,
+    468
+   ],
+   "radius": 6,
+   "edge": "void"
+  },
+  "left": {
+   "layers": [
+    116,
+    80
+   ],
+   "foot": [
+    264,
+    416
+   ],
+   "podHeight": 147,
+   "note": "capsule-room-dusk-474x468 at (24, 76); capsule-interior-dusk-296x459 at (116, 80); this founder's pod, 147 tall, its foot on the moss line y 416 at the capsule's axis x 264, relit with its shadow and moss blades; the glass; capsule-shell-dusk-296x459 and capsule-seal-ring-296x459 at (116, 80). The art director's views.json puts the axis at 261; the spec's 264 is used"
+  },
+  "right": {
+   "snapshot": [
+    275,
+    90,
+    474,
+    468
+   ],
+   "note": "Create's stage rect, copied when Create is left (prim_snapshot), shown 1:1 in the right window, with no ring (the host sends Create's focus as none while the panel is open)"
+  },
+  "focus": {
+   "initial": "incubate",
+   "keys": "the pad: left and right between the bezels, up and down nothing"
+  },
+  "events": {
+   "open": "the 180 ms stage dither (16 levels), input held; reduced motion: a cut",
+   "close": "the 180 ms stage dither back, input held; a room key: a cut"
+  }
+ },
+ "hatchnow": {
+  "note": "T-20261016-222, the Hatch now | Wait form (the UI/UX rulings, the panel section): the frame, bezels, windows, header, focus, dither and holds are `incubate`'s. The left bezel (focused first) is Hatch now with the Essence it costs and the hatched look in its window; the right is Wait with the growing look and its caption. The day set is at x0.733 (296 x 459 layers at (116, 80); the door 457 x 459, clipped by the window).",
+  "left": {
+   "layers": [
+    116,
+    80
+   ],
+   "foot": [
+    264,
+    416
+   ],
+   "podHeight": 147,
+   "openedScale": 0.755,
+   "juvenile": {
+    "height": 126,
+    "foot": [
+     281,
+     416
+    ]
+   },
+   "door": {
+    "rows": [
+     23,
+     425
+    ],
+    "note": "the open door master is 457 x 459 at the layers' place; its ink is in rows 23 to 447 and the window clips its far edge at the left window's right (x 498), so it is drawn as a window of 382 x 425 from source row 23"
+   },
+   "note": "room day crop, interior day, the bud's opened pod (the bowl about 113 tall, the cap behind its left side), the juvenile it becomes (126 tall, feet 17 px right of the axis as the room's 20 at x0.863), the shell, the open door clipped by the window, the bar full"
+  },
+  "right": {
+   "layers": [
+    618,
+    80
+   ],
+   "foot": [
+    766,
+    416
+   ],
+   "podHeight": 147,
+   "note": "room day crop, interior day, the bud's sealed pod (147 tall), the closed glass, the shell, the bar lit to its progress; the layers are the left window's moved by the windows' distance (502)"
+  },
+  "bar": {
+   "max": 137,
+   "litFrom": [
+    77,
+    389
+   ],
+   "h": 29,
+   "full": [
+    65,
+    389,
+    156,
+    29
+   ],
+   "note": "the room's bar (158 px wide, lit from layer x 89) at the panel's x0.865: 137 px wide, lit from layer x 77 of the 296 x 459 layer; the whole bar with its glow at 137"
+  },
+  "caption": {
+   "px": 16,
+   "colour": "fog",
+   "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (12 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
   }
  }
 }

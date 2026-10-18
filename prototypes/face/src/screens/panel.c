@@ -11,6 +11,7 @@
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
+#include "../anim/anim.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,8 +29,17 @@ static const char *rcol(const char *path) { char s[24]; if (spec_str(F, v_fmt(RP
 static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
 static int si(const char *p, int d) { return spec_int(F, v_fmt(RP ".strip.%s", p), d); }
 static int sk(const char *p, int k) { return spec_int(F, v_fmt(RP ".strip.%s.%d", p, k), 0); }
+/* the Incubate | Keep shaping form (T-20261016-222; build spec section 6a; panel.json `incubate`): two bezels over the device ground, each with a header (the verb; Incubate's price and the founder's pod) and a window: the sealed capsule with this founder's pod, and Create as it stood when it was left (the face's snapshot) */
+static int incubate_form(void) { return strcmp(v_pstr("overlay.form"), "incubate") == 0; }
+static int hatchnow_form(void) { return strcmp(v_pstr("overlay.form"), "hatchnow") == 0; }   /* the Hatch now | Wait form: the same frame (bezels, windows, header, focus) as the Incubate form, with the Incubator's day looks in the windows */
+#define PN "panel"
+static int pi_(const char *p, int d) { return spec_int(PN, v_fmt("incubate.%s", p), d); }
+static int pk_(const char *p, int k) { return spec_int(PN, v_fmt("incubate.%s.%d", p, k), 0); }
+static void prect(const char *p, int r[4]) { if (!v_spec_rect(PN, v_fmt("incubate.%s", p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
+static const char *pcol(const char *p) { char s[24]; static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(PN, v_fmt("incubate.%s", p), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); snprintf(o, 24, "%s", col(s)); return o; }
 static int ncards(void) { int n = v_plen("overlay.regions.cards"); return n < 0 ? 0 : n > MAXCARDS ? MAXCARDS : n; }
 static void card_rect(int i, int n, int r[4]) {
+  if (incubate_form() || hatchnow_form()) { prect(i == 0 ? "bezels.incubate" : "bezels.keep", r); (void)n; return; }
   if (strip()) { int gap = si("cards.gap", 16), w = si("cards.w", 396); r[0] = si("cards.x", 108) + i * (w + gap); r[1] = si("cards.y", 392); r[2] = w; r[3] = si("cards.h", 128); (void)n; return; }
   int gap = fi("cards.gap", 16), total = fi("cards.width", 776), w = (total - gap * (n - 1)) / n;
   r[0] = fi("cards.x", 124) + i * (w + gap); r[1] = fi("cards.y", 152); r[2] = w; r[3] = fi("cards.h", 288);
@@ -114,7 +124,7 @@ static void build_card(int i, int n, int focused) {
 static void build_ring(int n) {
   const char *c = v_focus_cur_at("overlay.focus.cur"); if (!*c) return;
   for (int i = 0; i < n; i++) if (strcmp(c, v_fmt("card.%s", card_id(i))) == 0) {
-    int r[4], box[4]; card_rect(i, n, r); int in = spec_int(F, "focus.ring.reach", 5) - fi("ring.out", 4); if (in < 0) in = 0;
+    int r[4], box[4]; card_rect(i, n, r); int in = incubate_form() || hatchnow_form() ? 0 : spec_int(F, "focus.ring.reach", 5) - fi("ring.out", 4); if (in < 0) in = 0;
     box[0] = r[0] + in; box[1] = r[1] + in; box[2] = r[2] - 2 * in; box[3] = r[3] - 2 * in;
     v_region("focus", LAYER_CHROME); word_focusRing("focus", "panel", "focus.targets.card", box); return;
   }
@@ -137,8 +147,112 @@ static void build_strip(int n) {
     (void)cur;
   }
 }
+
+/* ---- the Incubate | Keep shaping form ---- */
+static void composed_box(const char *id, int x, int y, int w, int h, const char *ops) { snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); }
+/* a bezel: fill `panel`, radius 10, a 1 px `hairline` edge, the bevel (a 1 px `fog` line at y + 1 from x + 10 to x + w - 10) */
+static void build_bezel(int i, const int r[4], const char *verb) {
+  int rad = pi_("bezels.radius", 10); char ops[320];
+  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"],[\"h\",%d,%d,%d,\"%s\"]]", r[2], r[3], rad, pcol("bezels.fill"), pcol("bezels.edge"), pi_("bezels.bevel.inset", 10), pi_("bezels.bevel.dy", 1), r[2] - 2 * pi_("bezels.bevel.inset", 10), pcol("bezels.bevel.colour"));
+  v_region(v_fmt("panelBezel.%d", i), LAYER_CHROME); composed_box(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], ops);
+  /* the header: the verb, Inter 16 (the spec says 15 medium; the face has 16, 20 and 28), its baseline at y + 20, from x + 12 */
+  int px = pi_("header.px", 16), base = pi_("header.baseline", 20); v_region("panelHeader", LAYER_TYPE);
+  v_text(v_fmt("panel.verb.%d", i), verb, r[0] + pi_("header.x", 12), r[1] + base - v_cap(px), v_measure(verb, px), px, pcol("header.colour"));
+}
+/* Incubate's price, right-aligned to x + w - 12: the figures (icon before figure), then the founder's pod (16 x 20, its top at y + 5), which is part of the price: it becomes the mibi */
+static void build_price(const int r[4]) {
+  const char *cost = v_pstr("overlay.regions.price"), *pod = v_pstr("overlay.regions.pod"); int right = r[0] + r[2] - pi_("price.right", 12), pw = pk_("price.pod.size", 0), ph = pk_("price.pod.size", 1), px = pi_("header.px", 16), base = pi_("header.baseline", 20);
+  if (!*pod) pw = 0;   /* Hatch now's price has no pod behind it */
+  v_region("panelPrice", LAYER_PAINTED); if (*pod && pw > 0) v_sprite("panel.price.pod", pod, right - pw, r[1] + pi_("price.pod.top", 5), pw, ph);
+  int endx = *pod ? right - pw - pi_("price.gap", 12) : right;
+  if (*cost) { v_region("panelPrice", LAYER_TYPE); v_run("panel.price", cost, endx, r[1] + base - v_cap(px), px, pcol("price.colour"), V_ALIGN_RIGHT); }
+}
+/* a window's frame over its picture: the corners outside the radius 6 in the bezel's colour, then a 1 px `void` inner edge on the radius */
+static void build_window_frame(int i, const int w[4]) {
+  int rad = pi_("windows.radius", 6); char ops[300];
+  snprintf(ops, sizeof ops, "[[\"rcorners\",0,0,%d,%d,%d,\"%s\"],[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", w[2], w[3], rad, pcol("bezels.fill"), w[2], w[3], rad, pcol("windows.edge"));
+  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); composed_box(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], ops);
+}
+static void build_incubate_left(const int w[4]) {
+  const char *room = v_pstr("overlay.regions.left.room"), *interior = v_pstr("overlay.regions.left.interior"), *pod = v_pstr("overlay.regions.left.pod"), *glass = v_pstr("overlay.regions.left.glass"), *shell = v_pstr("overlay.regions.left.shell"), *seal = v_pstr("overlay.regions.left.seal");
+  int iw = v_pint("overlay.regions.left.layerSize.0", 0), ih = v_pint("overlay.regions.left.layerSize.1", 0), ax = pk_("left.layers", 0), ay = pk_("left.layers", 1);
+  v_region("panelRoom", LAYER_PAINTED); if (*room) v_sprite("panel.left.room", room, w[0], w[1], w[2], w[3]);
+  if (*interior && iw > 0) v_sprite("panel.left.interior", interior, ax, ay, iw, ih);
+  { int pw = v_pint("overlay.regions.left.podSize.0", 0), ph = v_pint("overlay.regions.left.podSize.1", 0), anx = v_pint("overlay.regions.left.podAnchor.0", 0), any = v_pint("overlay.regions.left.podAnchor.1", 0);
+    if (*pod && pw > 0) v_sprite("panel.left.pod", pod, pk_("left.foot", 0) - anx, pk_("left.foot", 1) - any, pw, ph); }
+  if (*glass && iw > 0) v_sprite("panel.left.glass", glass, ax, ay, iw, ih);
+  if (*shell && iw > 0) v_sprite("panel.left.shell", shell, ax, ay, iw, ih);
+  if (*seal && iw > 0) v_sprite("panel.left.seal", seal, ax, ay, iw, ih);
+}
+/* the right window: Create as it stood when it was left, the face's own snapshot of it (prim_snapshot), 1:1 */
+static void build_incubate_right(const int w[4]) {
+  int h = prim_snapshot_handle(); v_region("panelSnapshot", LAYER_PAINTED);
+  if (h >= 0) { prim_tag(LAYER_PAINTED, "panelSnapshot"); prim_node(v_id("panel.right.snapshot"), FN_SPRITE, w[0], w[1], w[2], w[3], 0, h, 0); }
+}
+/* ---- the Hatch now | Wait form (panel.json `hatchnow`) ---- */
+static int hi_(const char *p, int d) { return spec_int(PN, v_fmt("hatchnow.%s", p), d); }
+static int hk_(const char *p, int k) { return spec_int(PN, v_fmt("hatchnow.%s.%d", p, k), 0); }
+/* the bar's window of its layer: lit from the left, `px` wide from litFrom; the whole bar with its glow at the full width */
+static void hn_bar(const char *id, const char *a, int ox, int oy, int px) {
+  if (px <= 0 || !*a) return;
+  int max = hi_("bar.max", 137), x = hk_("bar.litFrom", 0), y = hk_("bar.litFrom", 1), w = px, h = hi_("bar.h", 29);
+  if (px >= max) { x = hk_("bar.full", 0); y = hk_("bar.full", 1); w = hk_("bar.full", 2); h = hk_("bar.full", 3); }
+  v_sprite_window(id, a, x, y, ox + x, oy + y, w, h);
+}
+/* the hatched look: the room, the interior, the opened pod, the juvenile it becomes, the shell, the open door clipped by the window, the bar full */
+static void build_hatched(const int w[4]) {
+  const char *P = "overlay.regions.left."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), ax = hk_("left.layers", 0), ay = hk_("left.layers", 1);
+  v_region("panelHatched", LAYER_PAINTED);
+  { const char *a = v_pstr(v_fmt("%sroom", P)); if (*a) v_sprite("panel.hatched.room", a, w[0], w[1], w[2], w[3]); }
+  { const char *a = v_pstr(v_fmt("%sinterior", P)); if (*a && lw > 0) v_sprite("panel.hatched.interior", a, ax, ay, lw, v_pint(v_fmt("%slayerSize.1", P), 0)); }
+  { const char *a = v_pstr(v_fmt("%sopened", P)); int pw = v_pint(v_fmt("%sopenedSize.0", P), 0), ph = v_pint(v_fmt("%sopenedSize.1", P), 0);
+    if (*a && pw > 0) v_sprite("panel.hatched.opened", a, hk_("left.foot", 0) - v_pint(v_fmt("%sopenedAnchor.0", P), 0), hk_("left.foot", 1) - v_pint(v_fmt("%sopenedAnchor.1", P), 0), pw, ph); }
+  { const char *a = v_pstr(v_fmt("%sjuvenile", P)); int pw = v_pint(v_fmt("%sjuvenileSize.0", P), 0), ph = v_pint(v_fmt("%sjuvenileSize.1", P), 0);
+    if (*a && pw > 0) v_sprite("panel.hatched.juvenile", a, hk_("left.juvenile.foot", 0) - v_pint(v_fmt("%sjuvenileAnchor.0", P), 0), hk_("left.juvenile.foot", 1) - v_pint(v_fmt("%sjuvenileAnchor.1", P), 0), pw, ph); }
+  { const char *a = v_pstr(v_fmt("%sshell", P)); if (*a && lw > 0) v_sprite("panel.hatched.shell", a, ax, ay, lw, v_pint(v_fmt("%slayerSize.1", P), 0)); }
+  { const char *a = v_pstr(v_fmt("%sdoor", P)); int clip = w[0] + w[2] - ax, r0 = hk_("left.door.rows", 0), rh = hk_("left.door.rows", 1);   /* the window clips the door's far edge; a window at source (0, 0) is the whole picture, so it starts at the first row with any ink */
+    if (*a && clip > 0) v_sprite_window("panel.hatched.door", a, 0, r0, ax, ay + r0, clip, rh); }
+  hn_bar("panel.hatched.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, hi_("bar.max", 137));
+}
+/* the growing look: the room, the interior, the sealed pod, the closed glass, the shell, the bar lit to its progress; the window carries no text */
+static void build_growing(const int w[4]) {
+  const char *P = "overlay.regions.right."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), lh = v_pint(v_fmt("%slayerSize.1", P), 0), ax = hk_("right.layers", 0), ay = hk_("right.layers", 1);
+  v_region("panelGrowing", LAYER_PAINTED);
+  { const char *a = v_pstr(v_fmt("%sroom", P)); if (*a) v_sprite("panel.growing.room", a, w[0], w[1], w[2], w[3]); }
+  { const char *a = v_pstr(v_fmt("%sinterior", P)); if (*a && lw > 0) v_sprite("panel.growing.interior", a, ax, ay, lw, lh); }
+  { const char *a = v_pstr(v_fmt("%spod", P)); int pw = v_pint(v_fmt("%spodSize.0", P), 0), ph = v_pint(v_fmt("%spodSize.1", P), 0);
+    if (*a && pw > 0) v_sprite("panel.growing.pod", a, hk_("right.foot", 0) - v_pint(v_fmt("%spodAnchor.0", P), 0), hk_("right.foot", 1) - v_pint(v_fmt("%spodAnchor.1", P), 0), pw, ph); }
+  { const char *a = v_pstr(v_fmt("%sglass", P)); if (*a && lw > 0) v_sprite("panel.growing.glass", a, ax, ay, lw, lh); }
+  { const char *a = v_pstr(v_fmt("%sshell", P)); if (*a && lw > 0) v_sprite("panel.growing.shell", a, ax, ay, lw, lh); }
+  hn_bar("panel.growing.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, v_pint("overlay.regions.barPx", 1));
+}
+static void build_hatchnow(void) {
+  int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
+  v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], pcol("ground"));
+  int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); prect("windows.left", wl); prect("windows.right", wr);
+  build_bezel(0, l, v_pstr("overlay.regions.verbs.grow")); build_bezel(1, r, v_pstr("overlay.regions.verbs.wait"));
+  build_price(l);
+  { const char *t = v_pstr("overlay.regions.caption"); int px = hi_("caption.px", 16); static char cc[24]; char s[24];   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own */
+    if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(cc, sizeof cc, "%s", col(s)); int tw = v_measure(t, px);
+      v_region("panelCaption", LAYER_TYPE); v_text("panel.caption", t, r[0] + r[2] - pi_("price.right", 12) - tw, r[1] + pi_("header.baseline", 20) - v_cap(px), tw, px, cc); } }
+  build_hatched(wl); build_window_frame(0, wl);
+  build_growing(wr); build_window_frame(1, wr);
+  { anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) build_ring(2); }
+}
+static void build_incubate(void) {
+  int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
+  v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], pcol("ground"));
+  int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); prect("windows.left", wl); prect("windows.right", wr);
+  build_bezel(0, l, v_pstr("overlay.regions.verbs.incubate")); build_bezel(1, r, v_pstr("overlay.regions.verbs.keep"));
+  build_price(l);
+  build_incubate_left(wl); build_window_frame(0, wl);
+  build_incubate_right(wr); build_window_frame(1, wr);
+  { anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) build_ring(2); }   /* the ring stands once the dither in has settled: no ring while a hold drops it (rule 1) */
+}
 void panel_words(void) {
   int n = ncards(); if (n <= 0) { v_error("word decisionPanel: a panel has at least one card"); return; }
+  if (incubate_form()) { build_incubate(); return; }
+  if (hatchnow_form()) { build_hatchnow(); return; }
   if (strip()) { build_strip(n); build_ring(n); return; }
   build_veil(); build_plate(); build_title();
   const char *cur = v_focus_cur_at("overlay.focus.cur");
