@@ -15,3 +15,12 @@
 
 ## Small
 - A small white mark sits at the open hatch's lower left (06, about x 42, y 392). If it is the find strip's empty state, it should be dark like the strip. If it is something else, drop it.
+
+## The finds at 112, recut with alpha (from the code review)
+
+All three placed finds at 112 (`find-pearl`, `find-crystal`, `find-shard`) were opaque squares on the studio's navy ground (22, 42, 55), not the pearl alone. None was meant to have a square. The 16 px finds are already cut out.
+
+**Recut:** `finds/find-{pearl,crystal,shard}-112x112.png` replace station-gate's `prototypes/ui/assets/masters/pods/` files of the same names. The builder places them in this round.
+- **How:** the navy is keyed by colour distance with a soft ramp, and the navy is un-mixed from the soft edges and glows, so no dark halo remains (`cut-finds.py`).
+- **Checked** on the bay's dark ground and on a light ground.
+- **One known loss:** the crystal's and shard's dark soil bases sat close to the navy, so they keep a lighter, softer foot than painted. It reads at 1× on the bay deck.
