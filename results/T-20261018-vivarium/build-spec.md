@@ -45,7 +45,7 @@ A resident's picture stays its place's size (144 × 152 adult, 104 × 112 juveni
 - **The master (signed by the art director):** `shadows/S01-{adult,juvenile}-304x48-shadow.png` (beside this spec), a stand layer with a new op **`"under"`** (drawn before the base, order 0) in `ui/assets/stands/index.json`.
   - It is its own 304 × 48 canvas, because the stand ends 7 rows below its feet line. Its row 24 sits on the feet line (stand row 305), and it is reduced with the figure.
   - At 54 it is about 5 px tall, and 4 at 40, as wide as the body's foot extent: warm near-black at 0.8, nudged 2 px right.
-- **Draw order in a resident's slot:** shadow (now inside the picture), ring, picture, dither, lamp. The ring is drawn after the shadow and under the figure.
+- **Draw order in a resident's slot:** ring, picture (with its baked shadow), dither, lamp. The ring's outer ends show past the shadow, which is as wide as the foot (T-235 rulings §4).
 - **Sleepers:** the curl's own shadow, `shadows/S01-*-curl-304x48-shadow.png` (§5).
 
 ## 4. Walking on the ground (the art director's note 3)
@@ -75,9 +75,9 @@ These cover the pipe and stones at the left, the burrow mound, the open floor, t
 
 A walker's tag now spans feetY + 16 to feetY + 40. Near the bed it must stay above the sleepers' tags.
 
-- **The sleepers' tag top** = 456 − curlH − 32, with curlH the curl's drawn height (about 31): about 393.
-- **A walker's feet keep out** when F.x + ⌈W/2⌉ > 752 (the leftmost sleeper's tag reach, 840 − 88, unchanged) **and** feetY > sleepers' tag top − 40 (about 353).
-- The keepOut rect therefore becomes **[752, 353, 256, 119]** (to the window's foot at 472), recomputed from the measured curlH.
+- **The sleepers' tag top** = 456 − curlH − 32, with curlH the curl's measured drawn height (28 for the adult): 396.
+- **A walker's feet keep out** when F.x + ⌈W/2⌉ > 752 (the leftmost sleeper's tag reach, 840 − 88, unchanged) **and** feetY > sleepers' tag top − 40 (356).
+- The keepOut rect is derived from the measured curlH, never typed: with the measured adult curl of 28, it is **[752, 356, 256, 116]** (to the window's foot at 472).
 - `keepOutRule`'s text is updated to say this.
 
 ## 7. Stripes against patches at 54 (the game designer's ruling)
