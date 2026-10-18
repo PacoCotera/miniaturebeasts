@@ -134,6 +134,34 @@
    "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "berth-recess-188x292": {
+   "file": "pods/berth-recess-188x292.png",
+   "w": 188,
+   "h": 292,
+   "sha256": "26540edc88245f1faba7e8d4c815130551069fb9ecf7fd6e942134f72dd4f96c",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-recess-256x292": {
+   "file": "pods/berth-recess-256x292.png",
+   "w": 256,
+   "h": 292,
+   "sha256": "753c7e4f31c808067973df270206b3d68a5bd3cc6ce5644c8d71298aa279e647",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-shut-188x292": {
+   "file": "pods/berth-shut-188x292.png",
+   "w": 188,
+   "h": 292,
+   "sha256": "c8e747d2daf60cd3f08357e4799673d452fbdb7d47bc77b400b324a2ab5b2603",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-shut-256x292": {
+   "file": "pods/berth-shut-256x292.png",
+   "w": 256,
+   "h": 292,
+   "sha256": "b1c37713b2d2b5e22a1aa30c87751f00525944f52892a3bcdd91a58581e0c6d9",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
   "bud-crack-1-128x160": {
    "file": "pods/bud-crack-1-128x160.png",
    "w": 128,
@@ -203,6 +231,13 @@
    "h": 320,
    "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
    "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-bay-992x506": {
+   "file": "pods/cargo-bay-992x506.png",
+   "w": 992,
+   "h": 506,
+   "sha256": "bd8f1ea9a094087cf374127399420a98e7ccd973dc856be2afd5947e8d54a976",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   },
   "cargo-bay-shut-976x304": {
    "file": "pods/cargo-bay-shut-976x304.png",
@@ -582,6 +617,20 @@
    "sha256": "4c5b2eabaeab12fb3d153dbc3c6ee0f0b1726e18c5162dffea6c187ab0b6c6d3",
    "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
+  "crate-lifting-176x138": {
+   "file": "pods/crate-lifting-176x138.png",
+   "w": 176,
+   "h": 138,
+   "sha256": "d05d4760351af0640a0f2154991e64321be3d0c51f5847fcc05bcfbf879d04bc",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-lifting-256x200": {
+   "file": "pods/crate-lifting-256x200.png",
+   "w": 256,
+   "h": 200,
+   "sha256": "23c95423536f1c6cf9a1321395d04b14ff963fc550b4dde3ccd74a54920d6cf0",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
   "crate-open-432x272": {
    "file": "pods/crate-open-432x272.png",
    "w": 432,
@@ -596,6 +645,20 @@
    "sha256": "09324b287325201dc1863c6161d5a511d828d19b528c80712af707246951e2a8",
    "signed": "Paco Cotera"
   },
+  "crate-sealed-176x121": {
+   "file": "pods/crate-sealed-176x121.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "c210bd462c02befcbd2dfc9707a866dee0b3f635d0d0e3d92c53899ba72fb580",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-sealed-176x121-done": {
+   "file": "pods/crate-sealed-176x121-done.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "bed8e61ae7852ab489a82c6ae341c82ac644e6dcf1fbe6f0c9aecd978faab70a",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
    "w": 256,
@@ -603,12 +666,26 @@
    "sha256": "e36e31b84bd563289693c0422f890a6da8b4d0476a476e835e4a34110e29248a",
    "signed": "Paco Cotera"
   },
+  "crate-sealed-256x176-done": {
+   "file": "pods/crate-sealed-256x176-done.png",
+   "w": 256,
+   "h": 176,
+   "sha256": "00546faa2205d3d73814c2fb59b7e47b1b6d15f082f7955ef00582b324ec1611",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
    "sha256": "ab6b5765579e92b1b307119c592ff58eeb87564230692255be2269cdc37f40f3",
    "signed": "Paco Cotera"
+  },
+  "crate-shadow-176x16": {
+   "file": "pods/crate-shadow-176x16.png",
+   "w": 176,
+   "h": 16,
+   "sha256": "33a6345bfc66590eef40f0760242e15301a0bbdc6400522b52db1b3a4e911d5c",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
   },
   "crate-shadow-256x24": {
    "file": "pods/crate-shadow-256x24.png",
@@ -623,6 +700,20 @@
    "h": 24,
    "sha256": "07c836ee9f01fcb7a50d25d6a482240b30584d8c221408740cebab5c3c861aa4",
    "signed": "art director, Cargo art fix (masters-pods d50dce21)"
+  },
+  "crate-sitting-176x121": {
+   "file": "pods/crate-sitting-176x121.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "276ecaea8b7004ccb3c395093b2c63d8f0773704556139882b61716159e9b2d3",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-sitting-176x121-done": {
+   "file": "pods/crate-sitting-176x121-done.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "472c6819d6bd09105586a73556693a20aa0c70e321ba360875bdbc0f26dbb157",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   },
   "crate-sitting-256x176": {
    "file": "pods/crate-sitting-256x176.png",
@@ -1001,6 +1092,13 @@
    "h": 12,
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "hatch-shut-160x260": {
+   "file": "pods/hatch-shut-160x260.png",
+   "w": 160,
+   "h": 260,
+   "sha256": "501b29fb7b3c3d2a42633e27254eb50f13309c410f964ef09758e1301338d83e",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
   },
   "heart-full-24": {
    "file": "pods/heart-full-24.png",
@@ -3592,6 +3690,13 @@
    "h": 48,
    "sha256": "e572bc320c52e03d783290321766495dbd8cad61a19cafd37bd52a074180e9c7",
    "signed": "Paco Cotera"
+  },
+  "pods-hatch-open-160x260": {
+   "file": "pods/pods-hatch-open-160x260.png",
+   "w": 160,
+   "h": 260,
+   "sha256": "8212515ea6b9f51d5458319337b1c9ed93ca9020f7cdd6b227c5893aff96ef46",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
   },
   "rail-emblem-character-read-24x24": {
    "file": "pods/rail-emblem-character-read-24x24.png",
@@ -6394,6 +6499,13 @@
    "h": 408,
    "sha256": "f5ac46fcd6618a41f1a078ab08391fad817678cd9834233cbedebc464b772ab8",
    "signed": "art director, verdict (night pair grade)"
+  },
+  "well-lit-64x64": {
+   "file": "pods/well-lit-64x64.png",
+   "w": 64,
+   "h": 64,
+   "sha256": "fbda5300c0c8beb15a665a66aeb91381184e9d5ba5a14e934fb8bbc8d1dcab05",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   }
  }
 }
