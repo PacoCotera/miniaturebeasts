@@ -553,7 +553,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
   if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
-  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod could grow" : "a pod grows with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
+  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod, ready to incubate" : "a pod incubates with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
@@ -807,7 +807,7 @@ export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clas
 // Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the
 // Grow paints nothing: the mibi is drawn from its layers (decisions 10-11 14:17); the own painting is made only at the sitting. Validated whole before anything is spent.
 export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Grow it · " + b };
+  const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Incubate · " + b };
   const fr = frameFor(p), cost = growCost(st, choices, settings), changed = changedTraits(choices), genome = founderGenome(p, choices), sha = genomeSha(genome);
   st.e -= cost.e; st.s -= cost.s; st.d -= cost.d;
   const first = !!st.firstMibi, minutes = budMinutes(st, changed.length, settings);
@@ -816,7 +816,7 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   st.bud = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
   st.firstMibi = false;
   st.tray = st.tray.filter((q) => q !== p); fillWells(st, settings, now);
-  logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
+  logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
@@ -837,23 +837,33 @@ export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now(
   const left = B.minutes * (1 - budProgress(st, settings, now));
   return { e: 0, d: 0, s: left > 1e-9 ? price(Math.ceil(left / 2 - 1e-9), settings) : 0 };
 }
+// Hatch now: pays the price for the minutes left, ends the wait and opens the bud as Open does, in one press (game text 1). The bay is checked before anything is spent: no free bay (only a developer
+// path reaches it) refuses with Open's words and spends nothing, then short of Essence refuses with "Hatch now · {short}". One log line, "Hatched {name} now · ...". Returns { ok, mibi, bud, cost }.
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
-  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
-  st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · " + spendText(c.e, c.d, c.s)); return { ok: true };
+  if (freeBay(st, settings) < 0) return { ok: false, msg: NO_BAY_OPEN };
+  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Hatch now · " + shortText(st, c.e, c.d, c.s) };
+  st.e -= c.e; st.d -= c.d; st.s -= c.s; const bud = st.bud; bud.early = true;
+  const r = hatchBud(st, settings, (m, sp, bay) => "Hatched " + m.name + " now · " + sp + " · juvenile · bay " + (bay + 1) + " · " + spendText(c.e, c.d, c.s));
+  return { ok: true, mibi: r.mibi, bud, cost: c };
 }
+const NO_BAY_OPEN = "No bay free · return a mibi to the wild first";
 // Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).
 export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!budReady(st, settings, now)) return { ok: false, msg: "The bud is still growing" };
-  const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
-  const B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
+  if (freeBay(st, settings) < 0) return { ok: false, msg: NO_BAY_OPEN };
+  return hatchBud(st, settings, (m, sp, bay) => "Opened · " + m.name + " · " + sp + " · juvenile · bay " + (bay + 1));
+}
+// The hatch both presses share (the bay is already known free): the bud's mibi, known as the rules say, the field guide, the chamber emptied, the one log line `line(mibi, species name, bay)`.
+function hatchBud(st, settings, line) {
+  const bay = freeBay(st, settings), B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
   const name = drawName(st);
   // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
   const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, bay, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
-  logEv(st, "Opened · " + m.name + " · " + fr.species.name + " · juvenile · bay " + (bay + 1));
+  logEv(st, line(m, fr.species.name, bay));
   return { ok: true, mibi: m };
 }
 // Return a mibi to the wild (research-economy.md §6): +2 Essence, a field-guide note, the release handed to the

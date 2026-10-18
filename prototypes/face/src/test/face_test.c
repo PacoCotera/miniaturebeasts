@@ -166,12 +166,12 @@ static void metrics_vectors(const char *dir) {
   printf("metrics: %d cases, %d differ\n", n, bad);
   free(js);
 }
-/* fix 6 N1a: the Grow line's price with the bud's wait: ⧗ is the icon picture (20 px, 16 + 4), and the whole action (the cap at 16, 36 where the verb starts, the verb, the 24 px gap, the price) ends inside the zone (16, 570, 376, 24), x <= 392, with the widest price and three digits a figure */
+/* fix 6 N1a: the Incubate line's price with the bud's wait: ⧗ is the icon picture (20 px, 16 + 4), and the whole action (the cap at 16, 36 where the verb starts, the verb, the 24 px gap, the price) ends inside the zone (16, 570, 376, 24), x <= 392, with the widest price and three digits a figure */
 static void price_width(void) {
   const char *widest = "\xe2\x9a\xa1 999 \xe2\x9d\x80 999 \xe2\x97\x86 999 \xe2\xa7\x97 999", *real = "\xe2\x9a\xa1 2 \xe2\x9d\x80 4 \xe2\x97\x86 18 \xe2\xa7\x97 38";
   check(v_run_width("\xe2\xa7\x97", 16) == 20, "the wait counts as an icon: 20 px", "");
-  int end = 36 + v_measure("Grow it", 16) + 24 + v_run_width(widest, 16); check(end <= 392, "the Grow line with ⧗ 999 ends inside its zone", "");
-  int real_end = 36 + v_measure("Grow it", 16) + 24 + v_run_width(real, 16); check(real_end <= 392 && real_end > 36, "the widest real price ends inside its zone", "");
+  int end = 36 + v_measure("Incubate", 16) + 24 + v_run_width(widest, 16); check(end <= 392, "the Incubate line with ⧗ 999 ends inside its zone", "");
+  int real_end = 36 + v_measure("Incubate", 16) + 24 + v_run_width(real, 16); check(real_end <= 392 && real_end > 36, "the widest real price ends inside its zone", "");
   printf("price: the widest price ends at %d, a real one at %d (zone ends at 392)\n", end, real_end);
 }
 /* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */

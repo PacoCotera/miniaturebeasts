@@ -18,7 +18,7 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
+    "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
@@ -38,7 +38,7 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
+    "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
@@ -58,7 +58,27 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 3,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
@@ -74,14 +94,12 @@
     ],
     "screen": "create",
     "create": {
-     "f": 2,
-     "choices": [
-      "eye-rings"
-     ],
+     "f": 3,
+     "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
    {
@@ -116,7 +134,7 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
+    "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
@@ -136,7 +154,7 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
+    "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
@@ -156,7 +174,27 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:right"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 3,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    },
@@ -172,14 +210,12 @@
     ],
     "screen": "create",
     "create": {
-     "f": 2,
-     "choices": [
-      "eye-rings"
-     ],
+     "f": 3,
+     "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
     "subject": "two chapters unread"
    }
   ],
@@ -196,10 +232,8 @@
     ],
     "screen": "create",
     "create": {
-     "f": 2,
-     "choices": [
-      "eye-rings"
-     ],
+     "f": 3,
+     "choices": [],
      "grown": true
     },
     "ok": null,
