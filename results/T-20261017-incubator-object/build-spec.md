@@ -12,7 +12,7 @@ Everything not named here keeps its current rule in `incubator.json`: the hand-o
 - The art director's gate (`results/T-20261017-incubator-object/art-director.md`) and the four pictures:
   - `closed` and `incubate` (masters-pods cc402996, `concepts/incubator-capsule-hs/`);
   - `open-fixed` and `hatch-now-fixed` (`house-style/` here).
-- **Decision panels:** Incubate has one, **Incubate | Keep shaping** (the owner, 00:57). It is a first build, fully specified in §6a. Hatch now has none (§6), and there is no "Hatch now | Wait" panel.
+- **Decision panels:** Incubate has one, **Incubate | Keep shaping** (the owner, 00:57). It is a first build, fully specified in §6a. Hatch now has one too, **Hatch now | Wait**, in the same frame (§6, `results/T-20261016-222/uiux-rulings-2.md` §E).
 
 All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage is the frame's `(0, 40, 1024, 522)`; the top bar (40) and the bottom line (38) are the frame's own. Every image is placed at 1:1, nothing is scaled at runtime, and nothing is anti-aliased.
 
@@ -60,8 +60,8 @@ The capsule fills the centre (body x about 349–672; the open door reaches abou
 | --- | --- | --- |
 | `stampCase` | 76, 184, 152, 152 | the stamp case, as on Create (`stampCase` look) |
 | `stamp` | 92, 200, 120, 120 | the bud's stamp, its chapters filling as they clear (unchanged rule, `regions.stamp.live`) |
-| `code` | 64, 344, 176, 25 | the bud's code, as now (16, centred on x 152) |
-| `readyIn` | 16, 384, 272, 24 | growing only: "ready in about {n} min" (Inter 16, `mist`, centred on x 152). This is the time, a fact the bar can't carry, in the Incubator's own context |
+| `code` | 64, 344, 176, 25 | the bud's code (Inter 16, **`ink`**, centred on x 152) |
+| `readyIn` | 16, 384, 272, 24 | growing only: "ready in about {n} min" (Inter 16, **`ink`**, centred on x 152; text on the painted wall is `ink`, at least 4.5:1 against the wall). This is the time, a fact the bar can't carry, in the Incubator's own context |
 
 - The column is shown in growing, ready and hatch. In empty it is bare wall.
 - **Gone:** the chapter rail (`regions.rail`), the leaves (`regions.leaves`), the dome, nest, base and plaque regions, and the right-column stamp place. The chapters' clearing now shows on the stamp alone. `events.wipe` keeps its timing but draws only the stamp's redraw (no tab).
@@ -161,7 +161,7 @@ These views are specified in their own screens' specs.
 
 **The decision moments:**
 - **Incubate** (on Create) opens the Incubate | Keep shaping panel (§6a). Its ✓ Incubate plays Create's grow event (unchanged), then lands on the Incubator's incubate moment (4.1).
-- **Hatch now** is the Incubator's ✓ with its price, in place. Waiting is not pressing: ← Home, or simply staying. The bar and "ready in about {n} min" show what waiting means, so the game text's "Hatch now | Wait" panel is not built.
+- **Hatch now** opens the **Hatch now | Wait** panel (kept by the game designer's 10-18 correction), built in §6a's frame: `results/T-20261016-222/uiux-rulings-2.md` §E.
 
 **Strings** (`incubator.json strings`):
 - new: `readyIn` "ready in about {n} min";
