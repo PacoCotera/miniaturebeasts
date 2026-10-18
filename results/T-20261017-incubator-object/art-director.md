@@ -37,3 +37,22 @@ The studio painted the first intent (brooder, bell jar, appliance); the revised 
 - **The appliance:** it reads as a washing machine.
 
 **No pod retries ordered.** The capsule needed only the bar, and the faults in the egg and the bell jar don't change the choice. Whichever direction the owner picks gets one clean master pass.
+
+## The capsule: the master and the two moments (masters-pods 45d903da, `concepts/incubator-capsule/`)
+
+**All four pass, one of them as a composite.** No retry was needed.
+
+- **master-closed, master-open: pass.**
+  - The pod is the reference pod: charcoal, russet dots and ribs, and a rounded russet cap.
+  - The arch came out as a soft round lamp in the capsule's roof. It lights down over the moss and the pod's shoulders, which is the creative director's point: a lamp, not a neon outline.
+  - The mint bar shows in both. One camera, and the door swings on its hinge.
+- **incubate: pass.**
+  - The door is shut, and a thin mint ring now traces the whole window: the seal, read as a signal. The base bar is off. The room has gone to evening, with a warm lamp and a sofa in soft focus.
+  - The brief asked for "almost shut" and the bar kept. But a mint ring all round the glass says "sealed" more clearly than a seam alone, and the evening shift is the tucked-in feeling asked for. The capsule, pod and camera are unchanged.
+- **hatch-now: pass as `hatch-now-signed-juvenile-1024x600.png`.**
+  - The studio redrew the creature (a darker cap, a paler face, brighter leaves), so it wasn't our juvenile.
+  - `composite-juvenile.py` places the signed `mibi-juvenile-S01-304x312` master over it. It is reduced once to 166 px, never mirrored, with its feet on the moss where the painted one stood. It is warmed a little to the capsule's lamp and given a soft contact shadow, and it fully covers the painted creature.
+  - The painted scene is untouched: the open door, the shell in halves with the cap tipped aside, and the lamp.
+  - It is a composite, so the creature's light is the master's own (top left) under the roof lamp. It holds at 1×. The master painting, if it's built, paints the juvenile under the roof lamp.
+
+**The two moments read apart in two seconds:** a dusk capsule sealed with a mint ring, against an open capsule with a broken shell and a new creature looking out. It is no longer "the same machine at two brightnesses".
