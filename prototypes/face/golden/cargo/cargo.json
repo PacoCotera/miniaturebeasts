@@ -2,103 +2,103 @@
  "_note": "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the frame after ✓ Skip, the report: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "cargo-bay": {
-   "hash": "cf83d4ae",
+   "hash": "4db80af8",
    "png": "cargo-bay.png"
   },
   "cargo-bay-one": {
-   "hash": "ca00ab4a",
+   "hash": "efa25700",
    "png": "cargo-bay-one.png"
   },
   "cargo-bay-two": {
-   "hash": "1e35df3c",
+   "hash": "7d5847ea",
    "png": "cargo-bay-two.png"
   },
   "cargo-bay-empty": {
-   "hash": "b3307364",
+   "hash": "a1f5c252",
    "png": "cargo-bay-empty.png"
   },
   "cargo-bay-away": {
-   "hash": "550c0a1c",
+   "hash": "07677d4a",
    "png": "cargo-bay-away.png"
   },
   "cargo-bay-waiting": {
-   "hash": "3ae50ec3",
+   "hash": "1593e605",
    "png": "cargo-bay-waiting.png"
   },
   "cargo-bay-waiting-many": {
-   "hash": "66499219",
+   "hash": "a7ee92e3",
    "png": "cargo-bay-waiting-many.png"
   },
   "cargo-bay-portrait": {
-   "hash": "a8819fef",
+   "hash": "877095cd",
    "png": "cargo-bay-portrait.png"
   },
   "cargo-bay-portrait-away": {
-   "hash": "12c32140",
+   "hash": "b5d4b336",
    "png": "cargo-bay-portrait-away.png"
   },
   "cargo-end": {
-   "hash": "3130460b",
+   "hash": "567e9a08",
    "png": "cargo-end.png"
   },
   "cargo-end-no-pods": {
-   "hash": "e5cf1f24",
+   "hash": "9f1383f3",
    "png": "cargo-end-no-pods.png"
   },
   "cargo-opening-0": {
-   "hash": "5d248e2e",
+   "hash": "eb019368",
    "png": "cargo-opening-0.png"
   },
   "cargo-opening-dither": {
-   "hash": "f0c860b2",
+   "hash": "09949cd8",
    "png": "cargo-opening-dither.png"
   },
   "cargo-opening-500": {
-   "hash": "4937cd2b",
+   "hash": "f13b67e5",
    "png": "cargo-opening-500.png"
   },
   "cargo-opening-materials": {
-   "hash": "dbaf599c",
+   "hash": "a7b8cc82",
    "png": "cargo-opening-materials.png"
   },
   "cargo-opening-hatch": {
-   "hash": "83690180",
+   "hash": "d429702a",
    "png": "cargo-opening-hatch.png"
   },
   "cargo-opening-pod": {
-   "hash": "40fa3874",
+   "hash": "dd319097",
    "png": "cargo-opening-pod.png"
   },
   "cargo-opening-swap": {
-   "hash": "38077b9f",
+   "hash": "767e49ae",
    "png": "cargo-opening-swap.png"
   },
   "cargo-opening-mat": {
-   "hash": "fe109b48",
+   "hash": "b12ebb4d",
    "png": "cargo-opening-mat.png"
   },
   "cargo-opening-find": {
-   "hash": "e3041228",
+   "hash": "cbd46daa",
    "png": "cargo-opening-find.png"
   },
   "cargo-opening-done": {
-   "hash": "c4556915",
+   "hash": "c3e5172e",
    "png": "cargo-opening-done.png"
   },
   "cargo-opening-three": {
-   "hash": "220fbf2f",
+   "hash": "1da36d79",
    "png": "cargo-opening-three.png"
   },
   "cargo-opening-three-second": {
-   "hash": "f1e61ecf",
+   "hash": "f9ba52c8",
    "png": "cargo-opening-three-second.png"
   },
   "cargo-opening-portrait": {
-   "hash": "8fe90fdf",
+   "hash": "5764aa21",
    "png": "cargo-opening-portrait.png"
   },
   "cargo-opening-portrait-travel": {
-   "hash": "3ef19f39",
+   "hash": "c0a60743",
    "png": "cargo-opening-portrait-travel.png"
   },
   "cargo-arrival-2200": {
@@ -114,7 +114,7 @@
    "png": "cargo-arrival-empty-trip.png"
   },
   "cargo-opening-skip": {
-   "hash": "ec1d6f89",
+   "hash": "e1d6e062",
    "png": "cargo-opening-skip.png"
   }
  }

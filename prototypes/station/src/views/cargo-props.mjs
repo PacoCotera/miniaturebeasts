@@ -66,7 +66,7 @@ export function cargoBuild(m, spec, home, frame) {
 
   // ---- the hatch and the mat ----
   const H = R.hatch, W = R.waiting, wellSize = H.wells.pod.size, bigSize = R.display.pod.size;
-  regions.hatch = { shut: pic(H.slices.shut), open: pic(H.slices.open), ring: pic(H.ring.slice), lit: pic(H.wells.lit.slice), wells: [] };
+  regions.hatch = { shut: pic(H.slices.shut), open: pic(H.slices.open), frame: pic(H.frame.slice), ring: pic(H.ring.slice), lit: pic(H.wells.lit.slice), wells: [] };
   regions.waiting = { mat: pic(W.mat.slice), shadow: slot(W.pods.shadow.slice, W.pods.shadow.size), pods: [] };
   const fromOf = (q) => { if (!run) return null; for (let k = 0; k < run.items.length; k++) { const j = run.items[k].pods.findIndex((p) => p.id === q.id); if (j >= 0) return { crate: k, order: j }; } return null; };
   const trayOf = state === "bay" ? st.tray : run.plan.sim.tray, waitOf = state === "bay" ? st.waiting : run.plan.sim.waiting, rack = Math.min(S.rackSize(settings), H.wells.centres.length);

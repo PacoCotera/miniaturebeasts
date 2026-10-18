@@ -922,8 +922,8 @@
    "file": "pods/crate-sealed-176x121-done.png",
    "w": 176,
    "h": 121,
-   "sha256": "bed8e61ae7852ab489a82c6ae341c82ac644e6dcf1fbe6f0c9aecd978faab70a",
-   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+   "sha256": "64502204212227a6ef867ce9137595fc6059eb133805ee622d4aa9954d8b4a40",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
@@ -936,8 +936,8 @@
    "file": "pods/crate-sealed-256x176-done.png",
    "w": 256,
    "h": 176,
-   "sha256": "00546faa2205d3d73814c2fb59b7e47b1b6d15f082f7955ef00582b324ec1611",
-   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+   "sha256": "c89c9d92eca00f1dd242ce2b03c1079598168098da75496b5a1a652f5246e0d4",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
@@ -978,8 +978,8 @@
    "file": "pods/crate-sitting-176x121-done.png",
    "w": 176,
    "h": 121,
-   "sha256": "472c6819d6bd09105586a73556693a20aa0c70e321ba360875bdbc0f26dbb157",
-   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+   "sha256": "0c71ed09582f118960c64bb18a88a2008f4d35b09e037443ee9f9b5a352d8bad",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sitting-256x176": {
    "file": "pods/crate-sitting-256x176.png",
@@ -1379,6 +1379,13 @@
    "h": 12,
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "hatch-frame-166x266": {
+   "file": "pods/hatch-frame-166x266.png",
+   "w": 166,
+   "h": 266,
+   "sha256": "154ae1aeb1994b22d3580906220800c2f6ff8db41873580389a0a00286b224a5",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "hatch-shut-160x260": {
    "file": "pods/hatch-shut-160x260.png",

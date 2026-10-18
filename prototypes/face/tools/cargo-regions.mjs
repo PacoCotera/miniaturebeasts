@@ -38,8 +38,8 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   for (const r of art("berth")) must(within(r.rect, band), `the berths ${r.rect} leave their band ${band}`);
   must(art("berth").length >= 1, "the berths are drawn");
   // the hatch: its picture, ring, wells, lit wells and the find strip, inside the hatch's rectangle
-  for (const id of ["hatch", "hatch.well", "hatch.strip"]) for (const r of art(id)) must(within(r.rect, R.hatch.rect), `${id} ${r.rect} leaves the hatch ${R.hatch.rect}`);
-  must(art("hatch").some((r) => eq(r.rect, R.hatch.rect)), "the hatch is drawn at its rect in every state");
+  for (const id of ["hatch", "hatch.well", "hatch.strip"]) for (const r of art(id)) must(within(r.rect, grow(R.hatch.rect, 3)), `${id} ${r.rect} leaves the hatch ${R.hatch.rect}`);
+  must(art("hatch").some((r) => eq(r.rect, grow(R.hatch.rect, 3))), "the hatch and its frame are drawn at the hatch rect grown by 3 in every state");
   // the waiting mat and the pods stored on it, "+n" on it
   for (const id of ["waiting", "waiting.pod", "waitingMore"]) for (const r of regions.filter((x) => x.id === id)) must(within(r.rect, R.waiting.rect), `${id} ${r.rect} is not on the mat ${R.waiting.rect}`);
   must(art("waiting").some((r) => eq(r.rect, R.waiting.rect)), "the mat is drawn at its rect in every state");

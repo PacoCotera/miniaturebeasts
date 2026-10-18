@@ -69,6 +69,9 @@ def edge(w, h):              # a berth's own outline and lip, which the build dr
 def gilt(w, h):              # the fourth berth's gold edge: 2 px gold, rounded, from (x - 3, y - 3) to (x + w + 2, y + h + 2), radius 9, and a 1 px keyline outside it, radius 10 (the picture's origin is (x - 5, y - 5))
     c = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0)); d = ImageDraw.Draw(c)
     d.rounded_rectangle((2, 2, w + 7, h + 7), 9, outline=GOLD, width=2); d.rounded_rectangle((0, 0, w + 9, h + 9), 10, outline=KEY); return c
+def hatch_frame():           # the hatch's rim (art director, T-216): a 3 px rim in the bay's sage (70, 84, 70), radius 8, a (40, 46, 40) outline; the opening is clear (the hatch picture sits in it), at the hatch rect - 3
+    c = Image.new("RGBA", (166, 266), (0, 0, 0, 0)); d = ImageDraw.Draw(c)
+    d.rounded_rectangle((0, 0, 165, 265), 8, fill=(70, 84, 70, 255), outline=(40, 46, 40, 255)); d.rectangle((3, 3, 162, 262), fill=(0, 0, 0, 0)); return c
 def mat():                   # the waiting mat (build-spec 1): radius 8, fill #383e36, a 1 px outline #546052, a 1 px top line #282c26 from x + 8 to x + w - 9, one row inside the outline (finish/make-cargo-finish.py waiting())
     c = Image.new("RGBA", (160, 80), (0, 0, 0, 0)); d = ImageDraw.Draw(c)
     d.rounded_rectangle((0, 0, 159, 79), 8, fill=(56, 62, 54, 255), outline=(84, 96, 82, 255)); d.line((8, 1, 160 - 9, 1), fill=(40, 44, 38, 255)); return c
@@ -83,10 +86,11 @@ cuts = {
     "berth-edge-190x294": lambda: edge(188, 292),
     "berth-gilt-198x302": lambda: gilt(188, 292),
     "cargo-mat-160x80": mat,
+    "hatch-frame-166x266": hatch_frame,
     "well-lit-64x64": lit_well,
-    "crate-sealed-256x176-done": lambda: dim(master("crate-sealed-256x176"), 0.72),
-    "crate-sealed-176x121-done": lambda: dim(master("crate-sealed-176x121"), 0.72),
-    "crate-sitting-176x121-done": lambda: dim(master("crate-sitting-176x121"), 0.72),
+    "crate-sealed-256x176-done": lambda: dim(master("crate-sealed-256x176"), 0.6),
+    "crate-sealed-176x121-done": lambda: dim(master("crate-sealed-176x121"), 0.6),
+    "crate-sitting-176x121-done": lambda: dim(master("crate-sitting-176x121"), 0.6),
 }
 slices = os.path.join(args.out, "slices"); os.makedirs(slices, exist_ok=True); manifest = {}
 for name, make in cuts.items():

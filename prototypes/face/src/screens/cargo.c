@@ -115,6 +115,7 @@ static int hatch_open(void) {
 static void build_hatch(void) {
   int r[4]; crect("regions.hatch.rect", r); hx = r[0]; hy = r[1]; int open = hatch_open();
   v_region("hatch", LAYER_ART); v_name("hatch");
+  nat("hatch.frame", v_pstr("regions.hatch.frame"), ck("regions.hatch.frame.at", 0), ck("regions.hatch.frame.at", 1));
   nat("hatch", v_pstr(open ? "regions.hatch.open" : "regions.hatch.shut"), r[0], r[1]);
   if (!open) { nat("hatch.ring", v_pstr("regions.hatch.ring"), ck("regions.hatch.ring.at", 0), ck("regions.hatch.ring.at", 1)); return; }
   int pw = ck("regions.hatch.wells.pod.size", 0), ph = ck("regions.hatch.wells.pod.size", 1), ax = ck("regions.hatch.wells.pod.at", 0), ay = ck("regions.hatch.wells.pod.at", 1), lx = ck("regions.hatch.wells.lit.at", 0), ly = ck("regions.hatch.wells.lit.at", 1);
@@ -135,7 +136,7 @@ static void build_hatch(void) {
 }
 
 /* ---- the waiting mat: the pods stored on it, oldest at the left; a fourth or more start at x 32 with "+n" at the right ---- */
-static int wait_x(int i, int count) { return count <= 3 ? ck("regions.waiting.pods.x", i) : ck("regions.waiting.pods.moreX", i); }
+static int wait_x(int i, int count) { return count <= 3 ? ck(v_fmt("regions.waiting.pods.byCount.%d", count), i) : ck("regions.waiting.pods.moreX", i); }
 static void build_waiting(void) {
   int r[4]; crect("regions.waiting.rect", r); v_region("waiting", LAYER_ART); v_name("waiting"); nat("waiting.mat", v_pstr("regions.waiting.mat"), r[0], r[1]);
   int n = v_plen("regions.waiting.pods"), present = 0, top = ci("regions.waiting.pods.top", 434), pw = ck("regions.waiting.pods.size", 0), ph = ck("regions.waiting.pods.size", 1), sdx = ck("regions.waiting.pods.shadow.at", 0), sdy = ck("regions.waiting.pods.shadow.at", 1);
@@ -144,7 +145,7 @@ static void build_waiting(void) {
   for (int i = 0; i < n; i++) { int fc = v_pint(v_fmt("regions.waiting.pods.%d.from.crate", i), -1), fo = v_pint(v_fmt("regions.waiting.pods.%d.from.order", i), 0); p3[i] = fc < 0 ? 3 : item_phase(fc, fo); if (p3[i] >= 2) present++; }
   for (int i = 0, seen = 0; i < n && seen < 3; i++) {
     if (p3[i] < 2) continue; seen++;
-    int x = wait_x(i, present), shown = p3[i] == 3;
+    int x = wait_x(seen - 1, present), shown = p3[i] == 3;
     v_name("waiting.pod"); natslot(v_fmt("waiting.shadow.%d", i), shadow, x + sdx, top + sdy, p3[i] >= 2);
     slot(v_fmt("waiting.pod.%d", i), v_pstr(v_fmt("regions.waiting.pods.%d.pod", i)), x, top, pw, ph, shown);
   }

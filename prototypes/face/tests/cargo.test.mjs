@@ -52,7 +52,7 @@ const frameProps = (line = {}) => ({ top: { screen: "cargo", title: "Bay", turn:
 // stand-in pictures: a flat block keyed by id, at the size the id names or the request's; the colour is the id's, so a picture is told by one pixel
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const colourOf = (id) => { const k = hash(id); return [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)]; };
-const HOLLOW = /^(berth-edge-|berth-gilt-|well-lit-)/;   // the edge, the gold edge and the lit well are outlines and a glow in the art: the stand-in is its 1 px border only, so what is under it can be read
+const HOLLOW = /^(berth-edge-|berth-gilt-|well-lit-|hatch-frame-)/;   // the edge, the gold edge and the lit well are outlines and a glow in the art: the stand-in is its 1 px border only, so what is under it can be read
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), [r, g, b] = colourOf(id), hollow = HOLLOW.test(id); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; if (hollow && x > 0 && y > 0 && x < w - 1 && y < h - 1) continue; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? (r.kind === "star" ? [12, 12] : [16, 16]);
 const painted = (id) => /^(crate-|cargo-|berth-|hatch-|pods-hatch|well-|find-.*-112|pod:|portrait:)/.test(id);   // the studio's masters and the pictures made from them show on the painted pass
@@ -151,7 +151,11 @@ test("the hatch is shut with its ring in the bay (160 × 260 at (24, 150), the r
   const b = scene({ crates: 1, waiting: 2, pods: 6 }), f = await start(b, { node: true }); logOf(f);
   assert.deepEqual(nb(f, "hatch"), [24, 150, 160, 260]); assert.ok(pixelIs(f, 100, 300, "hatch-shut-160x260")); assert.deepEqual(nb(f, "hatch.ring"), [64, 166, 80, 56]);
   assert.deepEqual(nb(f, "waiting.mat"), [24, 424, 160, 80]);
-  assert.deepEqual([0, 1].map((i) => nb(f, `waiting.pod.${i}`)), [[36, 434, 40, 48], [84, 434, 40, 48]], "the stored pods on the mat, 8 apart, oldest at the left"); assert.deepEqual([0, 1].map((i) => nb(f, `waiting.shadow.${i}`)), [[32, 474, 48, 14], [80, 474, 48, 14]]);
+  assert.deepEqual([0, 1].map((i) => nb(f, `waiting.pod.${i}`)), [[60, 434, 40, 48], [108, 434, 40, 48]], "two pods on the mat, centred by count (60 and 108), oldest at the left"); assert.deepEqual([0, 1].map((i) => nb(f, `waiting.shadow.${i}`)), [[56, 474, 48, 14], [104, 474, 48, 14]]);
+});
+test("the mat row is centred by count: one pod at 84, two at 60 and 108", { skip }, async () => {
+  const one = await start(scene({ pods: 6, waiting: 1 }), { node: true }); logOf(one); assert.deepEqual(nb(one, "waiting.pod.0").slice(0, 2), [84, 434]);
+  const two = await start(scene({ pods: 6, waiting: 2 }), { node: true }); logOf(two); assert.deepEqual([0, 1].map((i) => nb(two, `waiting.pod.${i}`).slice(0, 2)), [[60, 434], [108, 434]]);
 });
 test("the mat holds three pods in a row at x 36, 84 and 132; a fourth or more start at x 32 with \"+n\" right-aligned at x 180, centred on y 458", { skip }, async () => {
   const three = await start(scene({ pods: 6, waiting: 3 }), { node: true }); logOf(three); assert.deepEqual([0, 1, 2].map((i) => nb(three, `waiting.pod.${i}`).slice(0, 2)), [[36, 434], [84, 434], [132, 434]]); assert.equal(nb(three, "waiting.more")[2], 0, "no +n for three");
@@ -232,8 +236,8 @@ test("a pod with no free well goes to the mat: it travels to the row's next plac
   const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 2, pods: 5, waiting: 1 }); const c = rg.crates[0];
   assert.deepEqual(c.pods.map((p) => [p.well, p.mat]), [[5, -1], [-1, 1]], "one free well: the first pod takes it, the second goes behind the pod already waiting");
   at(1700 + 300 + 100);
-  at(1700 + 300 + 599); const end = nb(f, "t.pod.1.t"), place = [84, 434]; assert.ok(Math.abs(end[0] - (place[0] - 24)) <= 2 && Math.abs(end[1] - (place[1] - 64)) <= 2, `the travel ends at the place minus (24, 64): ${end}`);
-  at(2000 + 600 + 181); assert.deepEqual(nb(f, "waiting.pod.1"), [84, 434, 40, 48], "stored on the mat, the second place"); assert.deepEqual(nb(f, "waiting.shadow.1"), [80, 474, 48, 14]); assert.deepEqual(nb(f, "waiting.pod.0"), [36, 434, 40, 48], "the older pod stays at the left");
+  at(1700 + 300 + 599); const end = nb(f, "t.pod.1.t"), place = [108, 434]; assert.ok(Math.abs(end[0] - (place[0] - 24)) <= 2 && Math.abs(end[1] - (place[1] - 64)) <= 2, `the travel ends at the place minus (24, 64): ${end}`);
+  at(2000 + 600 + 181); assert.deepEqual(nb(f, "waiting.pod.1"), [108, 434, 40, 48], "stored on the mat, the second place of two"); assert.deepEqual(nb(f, "waiting.shadow.1"), [104, 474, 48, 14]); assert.deepEqual(nb(f, "waiting.pod.0"), [60, 434, 40, 48], "the older pod at the left of two");
 });
 test("a find goes after the pods, 300 apart, to the next place of the strip (36 + 20 i, 384) and swaps to 16 × 16 by the dither; it is on the strip when it has landed", { skip }, async () => {
   const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 1, finds: ["pearl", "shard"] }); at(1700 + 300 - 10); assert.equal(nb(f, "t.find.0.t"), null, "the find waits for the pod's 300");
