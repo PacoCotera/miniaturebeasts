@@ -26,19 +26,19 @@ All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage i
 - The moss line (authority 432) lands at **y 415**, and the bar's centre at **(512, 490)**.
 - **The room is not reduced:** it is a 1:1 crop of `capsule-room-{day,dusk}`, 1024 × 522 (authority rows r0 to r0 + 522), with **r0 = 65** (the table line at authority 489, closed's foot at 589: the foot lands at screen 549, the table line at 464). It fills the stage.
 
-**Draw order and rects:**
+**Draw order and rects** (the masters in `results/T-20261017-incubator-object/masters/room/`, cut by `masters/reduce-views.py`; every capsule layer is 530 × 510, placed at **(344, 48)**):
 
-| Layer | Rect (screen) | Master |
+| Layer | Placed at | Master |
 | --- | --- | --- |
-| room | 0, 40, 1024, 522 | `capsule-room-day`, cropped at r0 65; dusk is the same layer graded to the incubate still's dusk by code |
-| interior | the window's box at ×0.85 | `capsule-interior-day` or `-dusk` (empty moss bed) |
-| pod | foot bottom-centred on (512, 415), about 170 tall | the renderer's pod for the bud's species, at the class the art director's reduction gives, relit to the roof lamp (as `composite-juvenile.py`), with the moss blades in front of the foot |
+| room | 0, 40 | `capsule-room-day-1024x522` or `capsule-room-dusk-1024x522` (the 1:1 crop at r0 65) |
+| interior | 344, 48 | `capsule-interior-day-530x510` or `capsule-interior-dusk-530x510` (the empty moss bed) |
+| pod | foot bottom-centred on (512, 415), about 170 tall | the renderer's pod for the bud's species. **The build owes** its relight to the roof lamp, its contact shadow on the moss, and the moss blades in front of its foot, as `composite-juvenile.py` does (the art director's proof shows the pod unrelit) |
 | juvenile | feet on (532, 415), about 146 tall | hatch only: the new mibi's own juvenile stand (from `drawnLooks`), rendered by the host at that size and relit the same way |
-| glass | the window's box | `capsule-glass-closed`, drawn in code as alpha highlights (the closed states only) |
-| shell | 349, 48, 327, 510 | `capsule-shell` (window and bar area transparent) |
-| door | hinged at the shell's right edge (authority x ≈ 700, so screen x ≈ 668) | `capsule-door-open` (the open states only) |
-| bar | centre (512, 490) | `capsule-bar-off`, with `capsule-bar-on` revealed from the left as the progress (§3) |
-| seal | closed's window rim | drawn in code: a mint stroke with its glow along the window's rim (the incubate moment and the panel's left window only) |
+| glass | the window | drawn in code: two soft highlights along the window mask (authority `masters/authority/window-mask-1024x600`, x 351–666, y 20–468; at this view x ≈ 373–641, y ≈ 65–446), alpha over the interior and the pod. Closed states only |
+| shell | 344, 48 | `capsule-shell-530x510`, or `capsule-shell-dusk-530x510` at dusk. Its own dark slot is the bar when off |
+| door | 344, 48 | `capsule-door-open-530x510` (the open states only) |
+| bar | 344, 48 | `capsule-bar-lit-530x510`, clipped from the left as the progress: visible x 433 to 433 + floor(158 × fraction) (§3). Off: not drawn (the shell's slot shows) |
+| seal | 344, 48 | `capsule-seal-ring-530x510` (the incubate moment only) |
 
 **The states' layers** (the art director's table):
 
@@ -123,14 +123,13 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 ## 5. Masters
 
 All are the art director's (`capsule-masters.md`): cut once at the authority scale, registered to closed's frame, and reduced offline to ×0.85 for this view.
-- **Registration:** every layer is in closed's frame, so nothing moves between states. The open door is cut from the open still after a dy −19 translate. Nothing is cut from the incubate or hatch-now stills: dusk is closed's room, interior and shell graded by code, and the hatch draws the opened pod and the juvenile.
-- **Cut from the stills** (no painting):
-  - `capsule-room-day`;
-  - `capsule-shell`;
-  - `capsule-door-open`;
-  - `capsule-bar-on` and `-off`.
-- **Drawn in code:** `capsule-glass-closed`, the dusk grade, and the seal ring.
-- **Placed and used as they are:** the pod renderer's layers, the stamp case, the frame's bars and caps, and the ribbon.
+- **Registration:** every layer is in closed's frame, so nothing moves between states (the door was cut after a dy −19 translate). Nothing is cut from the incubate or hatch-now stills.
+- **The cut masters, per view** (`results/T-20261017-incubator-object/masters/`, by `cut-capsule.py`, `dusk.py` and `reduce-views.py`):
+  - `room/`: `capsule-{shell,shell-dusk,interior-day,interior-dusk,bar-lit,door-open,seal-ring}-530x510` and `capsule-room-{day,dusk}-1024x522`;
+  - `create/`: the same capsule layers at 151 × 224 (no room);
+  - `home/`: the same capsule layers at 58 × 86 (no room).
+- **Drawn in code:** the glass, along the window mask.
+- **The opened pod:** `pod-opened-bowl-shade-488x509` and `pod-opened-cap-shade-357x443`, in neutral. Its masks and pattern projection are still to come from the art director (`cut-opened-pod.py`).
 
 **Painted and confirmed** (a58d2827, `masters/` beside `capsule-masters.md`):
 - `capsule-interior-day`: the empty moss bed, a clean studio edit;
@@ -139,14 +138,7 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
 
 The hatch therefore shows the species' opened pod (bowl and cap) beside the juvenile from its step at 1000. Empty draws the bare moss bed. Every species' pod is drawn by the renderer.
 
-**Still to cut by the art director** (no painting):
-- the room;
-- the shell;
-- the open door;
-- the bar, on and off;
-- the opened pod's masks and pattern projection.
-
-The builder takes them as they land.
+**Still to come from the art director:** the opened pod's masks and pattern projection, and the Incubate panel window's cut (§6a). The builder takes them as they land.
 
 **Other views of the capsule** (the same masters at their own reductions, set by the art director):
 - **Create's chamber:** `create.json regions.dome` 776, 104, 176, 224, at ×0.373 (confirmed), with the shell, interior, glass and bar and no room. The dome's floor moves to the moss line, y ≈ 265, and the pod is about 75 tall.
