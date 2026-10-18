@@ -114,6 +114,6 @@ Juveniles are exempt, by the ruling.
   - Home with an event tag.
 - **Tests:**
   - every start and waypoint over 10,000 seeds is walkable, and no path crosses a profile step from above;
-  - the ring is (W + 10) × (fh + 10) on F, with fh from the formula (67 × 20 at W 57), the tag top is at feetY + 16, and it flips to feetY − H − 36;
+  - the ring is (W + 10) × (fh + 10) on F, with fh from the formula (67 × 20 at W 57), the tag top is at feetY + 16, and it flips to feetY − H − 34;
   - keepOut holds against the sleepers' tags;
 - **Print** the per-frame dirty area of a walk step with the shadow layer (≤ 153,600 px).
