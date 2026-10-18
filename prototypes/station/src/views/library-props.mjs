@@ -18,12 +18,12 @@ export function libraryBuild(m, spec, frame) {
   const guideOf = (id) => Lib.fieldGuide(st, id, settings);
   const items = Lib.spread(st, ids).map(({ id, status }) => {
     const known = status !== "unmet", fr = known ? frameOf(id) : null, found = status === "found", g = found ? guideOf(id) : null;
-    const clan = fr?.taxonomy?.clan ?? null, denom = g ? g.found + g.unseen : 0;
+    const clan = fr?.taxonomy?.clan ?? null, cur = g ? g.foundCurrent : 0, denom = g ? cur + g.unseen : 0;   // current looks only: a seen legacy look moves nothing
     return {
       id, status, name: known ? fr.species.name : null, clan,
       portrayed: found && st.mibis.some((x) => S.speciesOf(x) === id && x.portrait?.state === "delivered"),   // any delivered portrait of the species, a released mibi's included
       complete: found && !!g.complete,
-      progress: found ? Math.min(4, Math.floor((4 * g.found) / (denom || 1)) + 1) : null,   // integers only: a quarter, a half, three quarters, and four from there
+      progress: found ? Math.min(4, Math.floor((4 * cur) / (denom || 1)) + 1) : null,   // integers only: a quarter, a half, three quarters, and four from there
       picture: found ? req({ kind: "species", id: SP.item.plate.slice.replace("{SNN}", id), species: id, look: "plate", size: SP.item.plate.at.slice(2) }) : status === "met" ? req({ kind: "species", id: SP.item.study.slice.replace("{SNN}", id), species: id, look: "study", size: SP.item.study.at.slice(2) }) : null,
       roundel: known && clan ? slot(SP.item.roundel.slice.replace("{Cnn}", clan), SP.item.roundel.at.slice(2)) : null,
     };
