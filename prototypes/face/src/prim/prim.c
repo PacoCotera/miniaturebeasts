@@ -226,6 +226,7 @@ static int box_of(int fh, int th, int out[4], int diff) {
   if (x1 >= 0) { out[0] = x0; out[1] = y0; out[2] = x1 - x0 + 1; out[3] = y1 - y0 + 1; }
   return 0;
 }
+int prim_asset_size(int handle, int out[2]) { out[0] = out[1] = 0; if (handle < 0 || handle >= MAX_ASSET + MAX_SRC + 1 || !g_a[handle].px) return -1; out[0] = g_a[handle].w; out[1] = g_a[handle].h; return 0; }
 int prim_asset_box(int handle, int out[4]) {
   out[0] = out[1] = out[2] = out[3] = 0; if (handle < 0 || handle >= MAX_ASSET + MAX_SRC + 1 || !g_a[handle].px) return -1;
   const uint8_t *a = g_a[handle].px; int w = g_a[handle].w, h = g_a[handle].h, x0 = w, y0 = h, x1 = -1, y1 = -1;

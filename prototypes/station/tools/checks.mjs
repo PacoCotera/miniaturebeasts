@@ -83,8 +83,8 @@ for (const s of rec.shots) {
     must(got("painted", "stamp.plate").length === 1 && got("art", "founder").length + got("painted", "founder").length >= 1 && got("chrome", "roll").length >= 1, "Create draws the roll, the founder and the stamp label");
   } else if (c.screen === "incubator" && c.props?.state !== "notBuilt") {   // the Incubator: every region of the face's log against incubator.json (face/tools/incubator-regions.mjs): zero departures
     const d = keep(incubatorDepartures(lg, incubatorSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
-  } else if (c.screen === "cargo" && c.props?.state === "arrival") {   // the dock arrival: every region of the face's log against cargo.json regions.arrival (face/tools/cargo-regions.mjs): zero departures
-    const d = keep(cargoDepartures(lg, cargoSpec, frame, "arrival")); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+  } else if (c.screen === "cargo" && c.props && ["arrival", "bay", "opening", "end"].includes(c.props.state)) {   // the Bay and the dock arrival: every region of the face's log against cargo.json (face/tools/cargo-regions.mjs): zero departures
+    const d = keep(cargoDepartures(lg, cargoSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "vivarium" && c.viv) {   // the Vivarium's whole: every region of the face's log against vivarium.json (face/tools/vivarium-regions.mjs): zero departures; a tile a bay
     const d = keep(vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "bench" && c.bench) {   // the Probe bench: every region of the face's log against bench.json (face/tools/bench-regions.mjs): zero departures

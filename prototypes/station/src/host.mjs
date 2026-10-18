@@ -156,9 +156,9 @@ export function libraryBody() {
 }
 
 // ---- Cargo ----
-// The bay, the crate opening and the report: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
+// The bay, the crate opening and the end: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
-  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow() }, SPECS.cargo, SPECS.home, SPECS.frame), pn = UI.panel, a = UI.cargo.arrival;
+  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame), pn = UI.panel, a = UI.cargo.arrival;
   if (pn && pn.screen === "cargo" && UI.cargo.state === "arrival" && a && a.phase === "choice") {   // the dock arrival's choice: the strip's props ride on Cargo's (an overlay) and its bottom line is built from the focused card
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
     pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
@@ -240,7 +240,7 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
   const holding = () => nowMs() < holdUntil || nowMs() < skipUntil;
   const arriving = () => nowMs() < arrivalUntil;   // an arrival plays (Home's crates sliding in holds nothing, and the idle timer waits for its end)
   const play = (e) => {
-    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && (e.target === "turn" || e.target === "nameTag")))) return;
+    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && ["turn", "nameTag", "e", "d", "s"].includes(e.target)))) return;
     const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
     if (e.skip !== undefined && typeof e.skip !== "boolean") throw new Error(`play ${e.kind}: skip is true or false, not ${e.skip}`);
     if (hold && e.skip) { skipUntil = Math.max(skipUntil, nowMs() + hold); UI.skip = { kind: e.kind, target: e.target }; } else if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
@@ -307,6 +307,7 @@ export function onFaceMessage(h, m) {
   if (m.screen === "habitat" && UI.hab.namer && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while the namer is open
   if (m.screen === "habitat" && m.verb?.startsWith("room:") && !h.holding()) endMeet(h);   // the first press ends the meet, a room key too
   if (m.verb === "back" && m.screen !== "namer" && m.screen !== "panel" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (m.screen === "cargo" && UI.screen === "cargo" && UI.cargo.state === "opening" && (m.verb === "confirm" || m.verb === "back" || m.verb?.startsWith("room:"))) { INTENTS.cargo.held(h, m.verb, INTENTS.frame.roomKey); return; }   // while the opening holds the face also says ✓, ← and a room key (build spec 8.4): Skip, Home, or a room, each ending the current crate as a cut
   if (m.verb?.startsWith("room:") && UI.cargo.state === "arrival") h.skip();   // a room key on the arrival is Later, and then it acts: the show's hold ends now (the key itself closes the arrival: intents/frame.mjs roomKey)
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
   if (m.verb === "wake") { dispatch(h, m); const w = SPECS.frame.idle.wake, cut = !(h.motion ? h.motion() : true); h.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: cut ? 0 : w.hold }); return; }

@@ -159,6 +159,11 @@ void screens_say(const char *kind, const char *target, const char *verb) {
   wire_emit(b);
 }
 void screens_key(int code) {
+  { char st[48], sc[32]; spec_str("props", "screen", sc, sizeof sc);   /* Cargo's opening holds (build spec 8.4): ✓, ← and a room key end the hold on the face and are said on "room" (confirm, back, room:<x>); the host applies the current crate's end state; the pad sends nothing */
+    if (strcmp(sc, "cargo") == 0 && anim_skippable(st, sizeof st) && strcmp(st, "crate") == 0) {
+      const char *v = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+      if (v) { anim_skip(); screens_say("intent", "room", v); screens_redraw(); }
+      return; } }
   { char st[48]; int room = code == 2 || code == 114 || code == 108 || code == 98;   /* the dock arrival's show (target "show") is cut by any key but a room key (which is Later, then acts: the host's) */
     if ((code == 10 || (!room && anim_skippable(st, sizeof st) && strcmp(st, "show") == 0)) && anim_skippable(st, sizeof st)) { anim_skip(); screens_say("intent", st, "skip"); screens_redraw(); return; } }   /* ✓ in a skippable hold (§2.1): the event cuts to its end, says done, and ✓ is said as `skip` on its target; nothing else takes ✓ in a hold */
   if (anim_holding()) {   /* an event holds input: no key is acted on but a room key, which is said on the current focus target (or the screen); the host keeps the last one and dispatches it when the hold ends (§2.1) */

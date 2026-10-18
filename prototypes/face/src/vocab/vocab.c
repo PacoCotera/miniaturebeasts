@@ -25,6 +25,7 @@ void v_rect(const char *id, int x, int y, int w, int h, const char *colour) { pr
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour) {
   settext(s); prim_node(v_id(id), FN_TEXT, x, y, w, px * 5 / 4, v_col(colour), px, v_cap(px));
 }
+int v_asset_size(const char *asset, int out[2]) { out[0] = out[1] = 0; int hd = asset && *asset ? wire_asset_slot(asset) : -1; return hd < 0 ? -1 : prim_asset_size(hd, out); }
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h) {
   int hd = wire_asset_slot(asset); if (hd < 0) return 0;
   prim_node(v_id(id), FN_SPRITE, x, y, w, h, 0, hd, 0); return 1;

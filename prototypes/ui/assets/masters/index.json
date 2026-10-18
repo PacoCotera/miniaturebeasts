@@ -134,6 +134,55 @@
    "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "berth-edge-190x294": {
+   "file": "pods/berth-edge-190x294.png",
+   "w": 190,
+   "h": 294,
+   "sha256": "5e9aa3f7981ccf451e9af0a2cbd92dd6d9bbf22dca1d3fb5e07969acc72aef61",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-edge-258x294": {
+   "file": "pods/berth-edge-258x294.png",
+   "w": 258,
+   "h": 294,
+   "sha256": "9fc394827f8151cc49dc6f9257545f15ec2f784f692c4e57df827ba2dbc68d32",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-gilt-198x302": {
+   "file": "pods/berth-gilt-198x302.png",
+   "w": 198,
+   "h": 302,
+   "sha256": "6a5a5bfc2b28f0b58b41c53de1e8e03730b63caf4cc193b4db22cb3af0185571",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-recess-188x292": {
+   "file": "pods/berth-recess-188x292.png",
+   "w": 188,
+   "h": 292,
+   "sha256": "5006ac027ff6449f74c00595ffcdf40b1c42d86e6dd802178837210b8d3f7356",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-recess-256x292": {
+   "file": "pods/berth-recess-256x292.png",
+   "w": 256,
+   "h": 292,
+   "sha256": "e7d6d49efa7fdc7d08d3a5d0fbf5ee34b940dfe33f23be28dfa989f2a34a3d20",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-shut-188x292": {
+   "file": "pods/berth-shut-188x292.png",
+   "w": 188,
+   "h": 292,
+   "sha256": "c8e747d2daf60cd3f08357e4799673d452fbdb7d47bc77b400b324a2ab5b2603",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-shut-256x292": {
+   "file": "pods/berth-shut-256x292.png",
+   "w": 256,
+   "h": 292,
+   "sha256": "b1c37713b2d2b5e22a1aa30c87751f00525944f52892a3bcdd91a58581e0c6d9",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
   "bud-crack-1-128x160": {
    "file": "pods/bud-crack-1-128x160.png",
    "w": 128,
@@ -197,12 +246,236 @@
    "sha256": "2e68b3c526f406a9c1cbe6442d13c56f8316a47a4c0a255295482d4230aeb355",
    "signed": "art director, verdict (963f4eab)"
   },
+  "capsule-bar-lit-145x224": {
+   "file": "capsule/capsule-bar-lit-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "d50612744bd14a82c21520b1a75468946fd29a15a9ddcd509b4f68c3087c4b4e",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-bar-lit-296x459": {
+   "file": "capsule/capsule-bar-lit-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "8890b7af626bee4dcf8a0c922580b1915ad5b99214c658c77ef424b8e84d2c4b",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-bar-lit-530x532": {
+   "file": "capsule/capsule-bar-lit-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "7e53b5c5f36c977f2baf22b9b6726b2ff164bfe497747bc8c3335906c678e491",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-bar-lit-56x86": {
+   "file": "capsule/capsule-bar-lit-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "772705acd21407eea0998d06f25b630469c4aaa8f329637d1c9f6bdd06ddcb85",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-145x224": {
+   "file": "capsule/capsule-door-open-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "832bc28119c4b7dddbb0c8f15f2c7be6adde14674929834662dff41b4fb08535",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-457x459": {
+   "file": "capsule/capsule-door-open-457x459.png",
+   "w": 457,
+   "h": 459,
+   "sha256": "b62bc8cac20f139ff90102d3300ee70acc625f3b9e0fa5ed7bcc30e34054ebd0",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-530x532": {
+   "file": "capsule/capsule-door-open-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "fbcc0a7f389c96cc69b2564f8fe83625d53c3171c6cfea7076bae5bbd5c42988",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-door-open-56x86": {
+   "file": "capsule/capsule-door-open-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "c64b2b9727d8d8a082d242ea49f6e7d1f31da629b5092b7a0293fab1d866fb8e",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-145x224": {
+   "file": "capsule/capsule-glass-closed-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "49b6429b9d4ff575cf78d01626864aa5b5c0a5b2d19e963d02d8b659fc16018d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-296x459": {
+   "file": "capsule/capsule-glass-closed-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "3d861c1ac743d9229a379346d52411b700d44a41e243180db92c0c68d19812bc",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-530x532": {
+   "file": "capsule/capsule-glass-closed-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "dd321bef266d6e9c6e2da3d52377d99dcd8605f0f688cffa8276b015346974a6",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-glass-closed-56x86": {
+   "file": "capsule/capsule-glass-closed-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "e597ebea815ef261c806057dfb050c6020d6a644a366d470b093015212b91032",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-145x224": {
+   "file": "capsule/capsule-interior-day-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "5e2f52f182399231e8baee470ff1fd223eb0f5ebc2348a9edb766ba912d5c138",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-296x459": {
+   "file": "capsule/capsule-interior-day-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "3ef42319d03f274aa192b678be9cf56a63cece05eab550e128db614b1c738de9",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-530x532": {
+   "file": "capsule/capsule-interior-day-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "ba8c8679d9908b3d5b72eb1c0e91e08d697f26f503a208a85fa04bed420e8b82",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-day-56x86": {
+   "file": "capsule/capsule-interior-day-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "c7326e7a35b85fce7df69e3652ed5c9bc0f7f6c2d7bccbbba7a1a6747ab524cf",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-dusk-296x459": {
+   "file": "capsule/capsule-interior-dusk-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "756536f9a3a0f40addb4ec4cb305d30d81e4424842869bf72bb2d3d44525d555",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-interior-dusk-530x532": {
+   "file": "capsule/capsule-interior-dusk-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "a368ef16fdc4c462196cabc9514cb1945dd31a0167c301cbbce8c112846e2379",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-day-1024x522": {
+   "file": "capsule/capsule-room-day-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "6881af4e9cd2feaf7063f2a5648d4266c605c4d6f9de3eec05b54d969718043a",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-day-474x468": {
+   "file": "capsule/capsule-room-day-474x468.png",
+   "w": 474,
+   "h": 468,
+   "sha256": "23c43daf7acbe9dd048486693a689352e165d3ae2388fcaae4690b26abf30e12",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-dusk-1024x522": {
+   "file": "capsule/capsule-room-dusk-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "51904de6a0c0a4a425b76e31c7dec57979a7a3a21646be831ab7d27315fdcaa3",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-room-dusk-474x468": {
+   "file": "capsule/capsule-room-dusk-474x468.png",
+   "w": 474,
+   "h": 468,
+   "sha256": "dc7365f2880e899bbe5bf79853afc2222b6de37438cdf73fda25029d38d10807",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-seal-ring-296x459": {
+   "file": "capsule/capsule-seal-ring-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "6977c8ea4fffdaa0206f9a3536697fab68c1fe9a238ccfa822008f774c2bf8e3",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-seal-ring-530x532": {
+   "file": "capsule/capsule-seal-ring-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "9a74dd19f2bbacf5480ff4721213dce608b1811cc23c54e5e25f922fb881cbcf",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-145x224": {
+   "file": "capsule/capsule-shell-145x224.png",
+   "w": 145,
+   "h": 224,
+   "sha256": "faf365614f34dae7a61f680ec969ed0e31b5a7b03722f92a511267af30472cc2",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-296x459": {
+   "file": "capsule/capsule-shell-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "87ea3fa3f152a3983cc0941257686f9362b89f73b6e4cd788e55e8b32801be67",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-530x532": {
+   "file": "capsule/capsule-shell-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "e227ee13e9e7ac3bb337f82aa8cafa789eeb3f72b86db736c958d49958756680",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-56x86": {
+   "file": "capsule/capsule-shell-56x86.png",
+   "w": 56,
+   "h": 86,
+   "sha256": "d6a8f2899074f4df1156095cc3ed818396c41efb7072b704cebab448cc476917",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-dusk-296x459": {
+   "file": "capsule/capsule-shell-dusk-296x459.png",
+   "w": 296,
+   "h": 459,
+   "sha256": "ea21252a9b20e4f5795d58ef390a46f52849ba859ef2f7cf44f8ab3f9e9645b1",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-shell-dusk-530x532": {
+   "file": "capsule/capsule-shell-dusk-530x532.png",
+   "w": 530,
+   "h": 532,
+   "sha256": "c8faad9843c139322f52919fc3a907cdb7563c2f84bc9f4e6c7aa501e173d482",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "capsule-stamp-case-front-152x152": {
+   "file": "capsule/capsule-stamp-case-front-152x152.png",
+   "w": 152,
+   "h": 152,
+   "sha256": "ffc01ac79c21d6c10db72255bc193d5f89fa7264bc4f5e5ab294e0e2c5b7e9a5",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list); the case's front veil recut with alpha 0 over the plate, for the Incubator's wall"
+  },
   "cargo-bay-992x320": {
    "file": "pods/cargo-bay-992x320.png",
    "w": 992,
    "h": 320,
    "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
    "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
+  },
+  "cargo-bay-992x506": {
+   "file": "pods/cargo-bay-992x506.png",
+   "w": 992,
+   "h": 506,
+   "sha256": "bd8f1ea9a094087cf374127399420a98e7ccd973dc856be2afd5947e8d54a976",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   },
   "cargo-bay-apron-992x180": {
    "file": "pods/cargo-bay-apron-992x180.png",
@@ -280,6 +553,13 @@
    "h": 8,
    "sha256": "3c73091e5a9e9d66303e717bb54ea4549ba7d094e4a6cb58c8c7129ed468d331",
    "signed": "named with --ids"
+  },
+  "cargo-mat-160x80": {
+   "file": "pods/cargo-mat-160x80.png",
+   "w": 160,
+   "h": 80,
+   "sha256": "d86fdfb9a1647ed08263e69434ebf3e4a3cd9f6e55939d36d6424eb88e4e2e39",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   },
   "cargo-rack-992x168": {
    "file": "pods/cargo-rack-992x168.png",
@@ -603,6 +883,20 @@
    "sha256": "4c5b2eabaeab12fb3d153dbc3c6ee0f0b1726e18c5162dffea6c187ab0b6c6d3",
    "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
+  "crate-lifting-176x138": {
+   "file": "pods/crate-lifting-176x138.png",
+   "w": 176,
+   "h": 138,
+   "sha256": "55419d84fc23feb0d46d4b5e7ff4bdcf2a9c79ba1791a0deab17b27731b3ea6c",
+   "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
+  },
+  "crate-lifting-256x200": {
+   "file": "pods/crate-lifting-256x200.png",
+   "w": 256,
+   "h": 200,
+   "sha256": "65b02defa153a7e2e0af1c8e63c2476b1135ac47768947b31857a2eae3afe517",
+   "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
+  },
   "crate-open-432x272": {
    "file": "pods/crate-open-432x272.png",
    "w": 432,
@@ -617,6 +911,20 @@
    "sha256": "09324b287325201dc1863c6161d5a511d828d19b528c80712af707246951e2a8",
    "signed": "Paco Cotera"
   },
+  "crate-sealed-176x121": {
+   "file": "pods/crate-sealed-176x121.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "c210bd462c02befcbd2dfc9707a866dee0b3f635d0d0e3d92c53899ba72fb580",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-sealed-176x121-done": {
+   "file": "pods/crate-sealed-176x121-done.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "64502204212227a6ef867ce9137595fc6059eb133805ee622d4aa9954d8b4a40",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
+  },
   "crate-sealed-256x176": {
    "file": "pods/crate-sealed-256x176.png",
    "w": 256,
@@ -624,12 +932,26 @@
    "sha256": "e36e31b84bd563289693c0422f890a6da8b4d0476a476e835e4a34110e29248a",
    "signed": "Paco Cotera"
   },
+  "crate-sealed-256x176-done": {
+   "file": "pods/crate-sealed-256x176-done.png",
+   "w": 256,
+   "h": 176,
+   "sha256": "c89c9d92eca00f1dd242ce2b03c1079598168098da75496b5a1a652f5246e0d4",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
+  },
   "crate-sealed-432x272": {
    "file": "pods/crate-sealed-432x272.png",
    "w": 432,
    "h": 272,
    "sha256": "ab6b5765579e92b1b307119c592ff58eeb87564230692255be2269cdc37f40f3",
    "signed": "Paco Cotera"
+  },
+  "crate-shadow-176x16": {
+   "file": "pods/crate-shadow-176x16.png",
+   "w": 176,
+   "h": 16,
+   "sha256": "33a6345bfc66590eef40f0760242e15301a0bbdc6400522b52db1b3a4e911d5c",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
   },
   "crate-shadow-256x24": {
    "file": "pods/crate-shadow-256x24.png",
@@ -644,6 +966,20 @@
    "h": 24,
    "sha256": "07c836ee9f01fcb7a50d25d6a482240b30584d8c221408740cebab5c3c861aa4",
    "signed": "art director, Cargo art fix (masters-pods d50dce21)"
+  },
+  "crate-sitting-176x121": {
+   "file": "pods/crate-sitting-176x121.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "276ecaea8b7004ccb3c395093b2c63d8f0773704556139882b61716159e9b2d3",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "crate-sitting-176x121-done": {
+   "file": "pods/crate-sitting-176x121-done.png",
+   "w": 176,
+   "h": 121,
+   "sha256": "0c71ed09582f118960c64bb18a88a2008f4d35b09e037443ee9f9b5a352d8bad",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
   },
   "crate-sitting-256x176": {
    "file": "pods/crate-sitting-256x176.png",
@@ -873,8 +1209,8 @@
    "file": "pods/find-crystal-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "5ea8aab1ef003299f03fb59c1c1b972f0620728e6338b9ed683919e8f14bd382",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-crystal-16x16": {
    "file": "pods/find-crystal-16x16.png",
@@ -887,8 +1223,8 @@
    "file": "pods/find-pearl-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "e4352f8cafaca0fe29a72f38c35a6c380b4c5c80560d1f7836ca92e87ce81187",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-pearl-16x16": {
    "file": "pods/find-pearl-16x16.png",
@@ -901,8 +1237,8 @@
    "file": "pods/find-shard-112x112.png",
    "w": 112,
    "h": 112,
-   "sha256": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "fa3b2c6b679aaad0309a19a75b6612d75fba6922d3a04a8b98f5e33d59ab651d",
+   "signed": "art director, finds recut with alpha (pwq 81b16c2b, cut-finds.py)"
   },
   "find-shard-16x16": {
    "file": "pods/find-shard-16x16.png",
@@ -1043,6 +1379,20 @@
    "h": 12,
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "hatch-frame-166x266": {
+   "file": "pods/hatch-frame-166x266.png",
+   "w": 166,
+   "h": 266,
+   "sha256": "154ae1aeb1994b22d3580906220800c2f6ff8db41873580389a0a00286b224a5",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216; the art director's gate: done at value x 0.6, the hatch frame)"
+  },
+  "hatch-shut-160x260": {
+   "file": "pods/hatch-shut-160x260.png",
+   "w": 160,
+   "h": 260,
+   "sha256": "501b29fb7b3c3d2a42633e27254eb50f13309c410f964ef09758e1301338d83e",
+   "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
   },
   "heart-full-24": {
    "file": "pods/heart-full-24.png",
@@ -3586,6 +3936,104 @@
    "sha256": "353115c5f9ad20d98148c235e2f927ba49be1871b0c56ac1a6a1acbb8cba5694",
    "signed": "Paco Cotera"
   },
+  "pod-opened-bowl-mask-accent": {
+   "file": "capsule/pod-opened-bowl-mask-accent.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "5fe42765e63b869d5c21d08526b60c12666845d8429e13a7226a40ea02ff56d7",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-mask-body": {
+   "file": "capsule/pod-opened-bowl-mask-body.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "07f1daf7f14e557d611c8e968ca909a9ab38d09a5eef486bcaf1aaed4e3a966a",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-bands": {
+   "file": "capsule/pod-opened-bowl-pattern-bands.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "a81b5214f892f6a3ccc02eb4c014d2fc11068326302291fb62d1514904ba9ec8",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-dots": {
+   "file": "capsule/pod-opened-bowl-pattern-dots.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "6a340c389adeac4a5a15235d5caea7618c893c31edd8083f1bd5f63e72b2ff40",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-plates": {
+   "file": "capsule/pod-opened-bowl-pattern-plates.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "eeddcdeefa7b09b489ec15f41bd97989448dc7656b19f5c326bf83a1c3f5417d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-plates-relief": {
+   "file": "capsule/pod-opened-bowl-pattern-plates-relief.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "005034410f79b4d85a3d334a793a770b9ea6cbcbab174cf179410d53c68e4e7e",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-ribs": {
+   "file": "capsule/pod-opened-bowl-pattern-ribs.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "ae1ec09756f25f96dac051436937b6e128ac3d5fcb02855c297c55a40565c142",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-segments": {
+   "file": "capsule/pod-opened-bowl-pattern-segments.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "99f6c2812d47854f849dbd970ddd13d0e1b0454a5bf82327360de57518e1282f",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-segments-relief": {
+   "file": "capsule/pod-opened-bowl-pattern-segments-relief.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "d7ab8e698ba949ee1618ac531da8843442b02bb0c2225a00d42edc7b381ac723",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-pattern-stripes": {
+   "file": "capsule/pod-opened-bowl-pattern-stripes.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "703020973f2f781d6dc5155fbf99a02cf2eaa3bb6967f65b65f28c958110887d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-bowl-shade": {
+   "file": "capsule/pod-opened-bowl-shade.png",
+   "w": 144,
+   "h": 150,
+   "sha256": "a5307569775d820fab24e33ea2c14fac5c50a9e3d514cc5d58cb2a8717c9aa7d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-cap-mask-accent": {
+   "file": "capsule/pod-opened-cap-mask-accent.png",
+   "w": 89,
+   "h": 88,
+   "sha256": "365c95d94a88a153dbf6a60c4e14a5bc8c645e59ea99e6302a459050e9c5bc83",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-cap-mask-body": {
+   "file": "capsule/pod-opened-cap-mask-body.png",
+   "w": 89,
+   "h": 88,
+   "sha256": "a2a387dfab1184955906cfe88367c2c5132579e8b91d323d541b41b31b39e985",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-opened-cap-shade": {
+   "file": "capsule/pod-opened-cap-shade.png",
+   "w": 89,
+   "h": 88,
+   "sha256": "0a8f387c1fe3c9a604d2220564ac5a63cd63cd68d2c9165bba3fd10bbca9c10d",
+   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
   "pod-small-band": {
    "file": "pods/pod-small-band.png",
    "w": 104,
@@ -3823,6 +4271,13 @@
    "h": 48,
    "sha256": "e572bc320c52e03d783290321766495dbd8cad61a19cafd37bd52a074180e9c7",
    "signed": "Paco Cotera"
+  },
+  "pods-hatch-open-160x260": {
+   "file": "pods/pods-hatch-open-160x260.png",
+   "w": 160,
+   "h": 260,
+   "sha256": "cf54f2c97eae72655cb5f1ac3e365f40e8f7fcd02bbf33fefae0e3dac94fd263",
+   "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
   },
   "rail-emblem-character-read-24x24": {
    "file": "pods/rail-emblem-character-read-24x24.png",
@@ -5041,13 +5496,6 @@
    "h": 152,
    "sha256": "fa704f60934f6e18cb598fb391e0370da6feb09f7d7ea2597b5e4513071e3f16",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
-  },
-  "capsule-stamp-case-front-152x152": {
-   "file": "capsule/capsule-stamp-case-front-152x152.png",
-   "w": 152,
-   "h": 152,
-   "sha256": "ffc01ac79c21d6c10db72255bc193d5f89fa7264bc4f5e5ab294e0e2c5b7e9a5",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list); the case's front veil recut with alpha 0 over the plate, for the Incubator's wall"
   },
   "shell-key-home-24": {
    "file": "shell/shell-key-home-24.png",
@@ -6633,313 +7081,12 @@
    "sha256": "f5ac46fcd6618a41f1a078ab08391fad817678cd9834233cbedebc464b772ab8",
    "signed": "art director, verdict (night pair grade)"
   },
-  "capsule-room-day-1024x522": {
-   "file": "capsule/capsule-room-day-1024x522.png",
-   "w": 1024,
-   "h": 522,
-   "sha256": "6881af4e9cd2feaf7063f2a5648d4266c605c4d6f9de3eec05b54d969718043a",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-room-dusk-1024x522": {
-   "file": "capsule/capsule-room-dusk-1024x522.png",
-   "w": 1024,
-   "h": 522,
-   "sha256": "51904de6a0c0a4a425b76e31c7dec57979a7a3a21646be831ab7d27315fdcaa3",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-shell-530x532": {
-   "file": "capsule/capsule-shell-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "e227ee13e9e7ac3bb337f82aa8cafa789eeb3f72b86db736c958d49958756680",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-shell-dusk-530x532": {
-   "file": "capsule/capsule-shell-dusk-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "c8faad9843c139322f52919fc3a907cdb7563c2f84bc9f4e6c7aa501e173d482",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-interior-day-530x532": {
-   "file": "capsule/capsule-interior-day-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "ba8c8679d9908b3d5b72eb1c0e91e08d697f26f503a208a85fa04bed420e8b82",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-interior-dusk-530x532": {
-   "file": "capsule/capsule-interior-dusk-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "a368ef16fdc4c462196cabc9514cb1945dd31a0167c301cbbce8c112846e2379",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-bar-lit-530x532": {
-   "file": "capsule/capsule-bar-lit-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "7e53b5c5f36c977f2baf22b9b6726b2ff164bfe497747bc8c3335906c678e491",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-door-open-530x532": {
-   "file": "capsule/capsule-door-open-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "fbcc0a7f389c96cc69b2564f8fe83625d53c3171c6cfea7076bae5bbd5c42988",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-seal-ring-530x532": {
-   "file": "capsule/capsule-seal-ring-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "9a74dd19f2bbacf5480ff4721213dce608b1811cc23c54e5e25f922fb881cbcf",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-shell-145x224": {
-   "file": "capsule/capsule-shell-145x224.png",
-   "w": 145,
-   "h": 224,
-   "sha256": "faf365614f34dae7a61f680ec969ed0e31b5a7b03722f92a511267af30472cc2",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-interior-day-145x224": {
-   "file": "capsule/capsule-interior-day-145x224.png",
-   "w": 145,
-   "h": 224,
-   "sha256": "5e2f52f182399231e8baee470ff1fd223eb0f5ebc2348a9edb766ba912d5c138",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-bar-lit-145x224": {
-   "file": "capsule/capsule-bar-lit-145x224.png",
-   "w": 145,
-   "h": 224,
-   "sha256": "d50612744bd14a82c21520b1a75468946fd29a15a9ddcd509b4f68c3087c4b4e",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-shell-56x86": {
-   "file": "capsule/capsule-shell-56x86.png",
-   "w": 56,
-   "h": 86,
-   "sha256": "d6a8f2899074f4df1156095cc3ed818396c41efb7072b704cebab448cc476917",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-interior-day-56x86": {
-   "file": "capsule/capsule-interior-day-56x86.png",
-   "w": 56,
-   "h": 86,
-   "sha256": "c7326e7a35b85fce7df69e3652ed5c9bc0f7f6c2d7bccbbba7a1a6747ab524cf",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-bar-lit-56x86": {
-   "file": "capsule/capsule-bar-lit-56x86.png",
-   "w": 56,
-   "h": 86,
-   "sha256": "772705acd21407eea0998d06f25b630469c4aaa8f329637d1c9f6bdd06ddcb85",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-door-open-56x86": {
-   "file": "capsule/capsule-door-open-56x86.png",
-   "w": 56,
-   "h": 86,
-   "sha256": "c64b2b9727d8d8a082d242ea49f6e7d1f31da629b5092b7a0293fab1d866fb8e",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-room-dusk-474x468": {
-   "file": "capsule/capsule-room-dusk-474x468.png",
-   "w": 474,
-   "h": 468,
-   "sha256": "dc7365f2880e899bbe5bf79853afc2222b6de37438cdf73fda25029d38d10807",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-interior-dusk-296x459": {
-   "file": "capsule/capsule-interior-dusk-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "756536f9a3a0f40addb4ec4cb305d30d81e4424842869bf72bb2d3d44525d555",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-shell-dusk-296x459": {
-   "file": "capsule/capsule-shell-dusk-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "ea21252a9b20e4f5795d58ef390a46f52849ba859ef2f7cf44f8ab3f9e9645b1",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-seal-ring-296x459": {
-   "file": "capsule/capsule-seal-ring-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "6977c8ea4fffdaa0206f9a3536697fab68c1fe9a238ccfa822008f774c2bf8e3",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-shade": {
-   "file": "capsule/pod-opened-bowl-shade.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "a5307569775d820fab24e33ea2c14fac5c50a9e3d514cc5d58cb2a8717c9aa7d",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-mask-body": {
-   "file": "capsule/pod-opened-bowl-mask-body.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "07f1daf7f14e557d611c8e968ca909a9ab38d09a5eef486bcaf1aaed4e3a966a",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-mask-accent": {
-   "file": "capsule/pod-opened-bowl-mask-accent.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "5fe42765e63b869d5c21d08526b60c12666845d8429e13a7226a40ea02ff56d7",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-bands": {
-   "file": "capsule/pod-opened-bowl-pattern-bands.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "a81b5214f892f6a3ccc02eb4c014d2fc11068326302291fb62d1514904ba9ec8",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-dots": {
-   "file": "capsule/pod-opened-bowl-pattern-dots.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "6a340c389adeac4a5a15235d5caea7618c893c31edd8083f1bd5f63e72b2ff40",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-plates": {
-   "file": "capsule/pod-opened-bowl-pattern-plates.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "eeddcdeefa7b09b489ec15f41bd97989448dc7656b19f5c326bf83a1c3f5417d",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-plates-relief": {
-   "file": "capsule/pod-opened-bowl-pattern-plates-relief.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "005034410f79b4d85a3d334a793a770b9ea6cbcbab174cf179410d53c68e4e7e",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-ribs": {
-   "file": "capsule/pod-opened-bowl-pattern-ribs.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "ae1ec09756f25f96dac051436937b6e128ac3d5fcb02855c297c55a40565c142",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-segments": {
-   "file": "capsule/pod-opened-bowl-pattern-segments.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "99f6c2812d47854f849dbd970ddd13d0e1b0454a5bf82327360de57518e1282f",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-segments-relief": {
-   "file": "capsule/pod-opened-bowl-pattern-segments-relief.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "d7ab8e698ba949ee1618ac531da8843442b02bb0c2225a00d42edc7b381ac723",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-bowl-pattern-stripes": {
-   "file": "capsule/pod-opened-bowl-pattern-stripes.png",
-   "w": 144,
-   "h": 150,
-   "sha256": "703020973f2f781d6dc5155fbf99a02cf2eaa3bb6967f65b65f28c958110887d",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-cap-shade": {
-   "file": "capsule/pod-opened-cap-shade.png",
-   "w": 89,
-   "h": 88,
-   "sha256": "0a8f387c1fe3c9a604d2220564ac5a63cd63cd68d2c9165bba3fd10bbca9c10d",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-cap-mask-body": {
-   "file": "capsule/pod-opened-cap-mask-body.png",
-   "w": 89,
-   "h": 88,
-   "sha256": "a2a387dfab1184955906cfe88367c2c5132579e8b91d323d541b41b31b39e985",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "pod-opened-cap-mask-accent": {
-   "file": "capsule/pod-opened-cap-mask-accent.png",
-   "w": 89,
-   "h": 88,
-   "sha256": "365c95d94a88a153dbf6a60c4e14a5bc8c645e59ea99e6302a459050e9c5bc83",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-glass-closed-530x532": {
-   "file": "capsule/capsule-glass-closed-530x532.png",
-   "w": 530,
-   "h": 532,
-   "sha256": "dd321bef266d6e9c6e2da3d52377d99dcd8605f0f688cffa8276b015346974a6",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-glass-closed-145x224": {
-   "file": "capsule/capsule-glass-closed-145x224.png",
-   "w": 145,
-   "h": 224,
-   "sha256": "49b6429b9d4ff575cf78d01626864aa5b5c0a5b2d19e963d02d8b659fc16018d",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-glass-closed-56x86": {
-   "file": "capsule/capsule-glass-closed-56x86.png",
-   "w": 56,
-   "h": 86,
-   "sha256": "e597ebea815ef261c806057dfb050c6020d6a644a366d470b093015212b91032",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-glass-closed-296x459": {
-   "file": "capsule/capsule-glass-closed-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "3d861c1ac743d9229a379346d52411b700d44a41e243180db92c0c68d19812bc",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-room-day-474x468": {
-   "file": "capsule/capsule-room-day-474x468.png",
-   "w": 474,
-   "h": 468,
-   "sha256": "23c43daf7acbe9dd048486693a689352e165d3ae2388fcaae4690b26abf30e12",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-shell-296x459": {
-   "file": "capsule/capsule-shell-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "87ea3fa3f152a3983cc0941257686f9362b89f73b6e4cd788e55e8b32801be67",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-interior-day-296x459": {
-   "file": "capsule/capsule-interior-day-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "3ef42319d03f274aa192b678be9cf56a63cece05eab550e128db614b1c738de9",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-bar-lit-296x459": {
-   "file": "capsule/capsule-bar-lit-296x459.png",
-   "w": 296,
-   "h": 459,
-   "sha256": "8890b7af626bee4dcf8a0c922580b1915ad5b99214c658c77ef424b8e84d2c4b",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-door-open-457x459": {
-   "file": "capsule/capsule-door-open-457x459.png",
-   "w": 457,
-   "h": 459,
-   "sha256": "b62bc8cac20f139ff90102d3300ee70acc625f3b9e0fa5ed7bcc30e34054ebd0",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
-  },
-  "capsule-door-open-145x224": {
-   "file": "capsule/capsule-door-open-145x224.png",
-   "w": 145,
-   "h": 224,
-   "sha256": "832bc28119c4b7dddbb0c8f15f2c7be6adde14674929834662dff41b4fb08535",
-   "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  "well-lit-64x64": {
+   "file": "pods/well-lit-64x64.png",
+   "w": 64,
+   "h": 64,
+   "sha256": "44a9a0462150bc7511415686a13c2dd247dbfa24c1c95126610ac3e89276c7ed",
+   "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
   }
  }
 }

@@ -28,9 +28,9 @@ export function timesOf(spec, a) {
 
 // Starts the show over the screen the player is on (or, from Idle, over Home). The crates and the Probe are the rules' (the dock already ran): this only draws them.
 export function startShow(h, r, over) {
-  const c = h.ui.cargo; if (c.state === "opening" || c.state === "report") return false;   // the opening's own hold keeps the Dock, the report card stands until closed
+  const c = h.ui.cargo; if (c.state === "opening" || c.state === "end") return false;   // the opening's own hold keeps the Dock, the end stands until a key
   const a = { ...arrivalOf(h.st, h.sv, r), from: over, phase: "show" }; a.choice = a.crates > 0;
-  c.arrival = a; c.state = "arrival"; c.at = 0; c.run = null; c.drawn = null;
+  c.arrival = a; c.state = "arrival"; c.at = 0; c.run = null;
   if (h.ui.screen !== "cargo") h.goto("cargo");   // the dither, 180 ms; on Cargo itself no transition
   const T = timesOf(h.specs.cargo, a), motion = h.motion ? h.motion() : true;
   if (motion) {

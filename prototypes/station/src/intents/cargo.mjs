@@ -1,101 +1,124 @@
-// Cargo's intents (cargo.json: the keys, the line, events.opening, handoff): the rule call behind ✓ and ← in the bay and the report, the opening's timeline, and the report that follows it. Cargo has no targets: the ring is on nothing,
-// the pad does nothing in the bay, and every key but ✓ and ← only closes the report. The pad's moves are the face's (there are none).
-//   h.ui.cargo: { state: "bay" | "opening" | "report", crate, at, mend, run, shown, drawn, slide }
-//   run: what ✓ Open the bay made, in the order the crates opened: { crates: [ { ribbon, pods: [ { id, well } ], dev, gained: { e, d, s } } ], report }; shown: the counters and the turn as the top bar shows them while the crates open; drawn: the crates drawn while they slide in (null: all), slide: the slide that may stage it (cratesIn)
+// Cargo's intents (cargo.json: the keys, the line, events.opening, handoff): the rule call behind ✓ and ← in the bay, the opening and the end, and the opening's timeline. Cargo has no targets: the ring is on nothing and the pad does nothing.
+//   h.ui.cargo: { state: "bay" | "opening" | "end" | "arrival", crate, at, run, shown, arrival }
+//   run: what ✓ Open them all made (cargo-run.mjs planRun): { items, plan, pre, rest, base, starts, lens, gen, newest } — the crates in the order they open, each with what it holds and where each pod lands; item.st is its progress.
+//   shown: the counters and the turn as the top bar shows them while the crates open.
+// The rules are applied one crate at a time, at its start (S.openCrates, T.openSittingCrate), so the crates not yet opened stay sealed when the player leaves (build spec 8.4). The timeline is the spec's (events.opening.steps).
 import * as S from "../state.mjs";
-import { ribbonOf, reachStep } from "../views/cargo-props.mjs";
+import * as T from "../sitting.mjs";
+import { readyList, planRun, timesOf, fitCount, stepTimes } from "../cargo-run.mjs";
 import { toPods } from "./home.mjs";
-import { goalWords, meanwhileOf } from "../views/goal-words.mjs";
 import { skipShow } from "./arrival.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
+// The crates ready to open: the walk crates while docked and the portrait crate (docked or away).
+export const readyCount = (h) => readyList(h.st, h.sv, h.settings, h.now()).length;
 
-// One crate's steps in ms from its start (events.opening.crate): the lid, the ribbon, the counters, the first pod's travel and the pods' stagger, the turn. Read from the spec, not kept here.
-export function stepsOf(spec) {
-  const ev = spec.events.opening, [cut, lid, ribbon, counters, travel, turn] = ev.crate;
-  return { perCrate: ev.perCrate, lid: lid.at, ribbon: ribbon.at, counters: counters.at, travel: travel.at, stagger: travel.each, travelMs: travel.ms, turn: turn.at, cut: cut.ms, end: ev.end.ms };
-}
-// The opening's length and hold for n crates: crates × 3000 + 180 and + 200 (events.opening.byCrates: the host sends whole ms), for at most nine (hold ≤ 30000, lvgl-switch.md §2.7).
-export const OPENING_MAX = 9;
-export const openingMs = (spec, n) => n * spec.events.opening.perCrate + spec.events.opening.byCrates["1"].ms - spec.events.opening.perCrate;
-export const openingHold = (spec, n) => n * spec.events.opening.perCrate + spec.events.opening.byCrates["1"].hold - spec.events.opening.perCrate;
-// A crate's place among the walk crates opened (from 0), or -1 for a developer crate: the ordinal of the ribbon and of the report's lead counts walk crates only.
-const walkOrdinals = (plays) => { let w = 0; return plays.map((p) => (p.c.dev ? -1 : w++)); };
-
-// The report's data from the crates that opened and the dock's mend (cargo.json regions.report): one tile for each of the first three crates opened (its pods, its reach step 0 to 4), what every crate gathered, the Probe's plates and what they cost,
-// the goal after the crates and the read to suggest while it waits. Figures and counts, no sentences: the card's only words are the goal's.
-function reportOf(spec, plays, settings, mend, st, sv, frameSpec) {
-  const R = spec.regions.report, podMax = R.crates.pods.max, past = R.crates.pods.past;
-  const crates = plays.slice(0, R.crates.max).map((p) => {
-    const n = p.ids.length;   // the pods that landed, never the crate's raw contents (a pod of no species is not opened)
-    return { pods: Math.min(n, n > podMax ? past : n), more: n > podMax ? n - past : 0, reach: reachStep(p.c) };
-  });
-  const sum = (key) => plays.reduce((a, p) => a + p.gained[key], 0);
-  const gathered = { e: "+" + sum("e"), d: "+" + sum("d"), s: "+" + sum("s") };
-  let probe = null;
-  if (mend && (mend.free || mend.paid || mend.broke)) probe = { plates: (mend.free | 0) + (mend.paid | 0), spent: mend.spent | 0 };   // the Energy the plates cost, as the dock rule paid it: none when the economy is free
-  const newPods = plays.reduce((a, p) => a + p.ids.filter((id) => st.tray.some((q) => q.id === id)).length, 0);
-  // the goal after the crates: goalKey's step in Home's words, and the read to suggest while the step is a wait
-  const g = frameSpec ? S.goalKey(st, sv, settings) : null, goal = g ? goalWords(g, S.docked(st), frameSpec) : null, meanwhile = g && goal ? meanwhileOf(g.meanwhile) : null;
-  return { crates, gathered, probe, newPods, goal, meanwhile };
-}
-
-// ✓ Open the bay: the rule opens every crate at once; the host then plays them one at a time (events.opening): the arrival (the face's clock), the counters and the turn as the top bar shows them, and, with reduced motion, each step as a cut at its time.
+// ✓ Open them all (Open it): the run plays the ready crates one at a time, left to right, the portrait crate last (events.opening); the counters and the turn reach the top bar crate by crate.
 export function openBay(h) {
-  const c = h.ui.cargo, spec = h.specs.cargo, st = h.st, T = stepsOf(spec);
-  const before = { e: st.e, d: st.d, s: st.s, turn: st.turn };
-  const r = S.openBay(st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-  const motion = h.motion ? h.motion() : true;
-  // what plays: at most nine crates (the hold stays under 30000 ms); the rest are taken in by the rule and the counters and the turn reach their final values at the end
-  const plays = r.plays.slice(0, OPENING_MAX), n = plays.length, walk = walkOrdinals(plays);
-  // the well each pod went to: its place in the rack, or -1 when it waits in the bay
-  const crates = plays.map((p, k) => ({ ribbon: ribbonOf(spec, p.c, walk[k]), dev: !!p.c.dev, gained: { e: p.gained.e, d: p.gained.d, s: p.gained.s }, pods: p.ids.map((id) => ({ id, well: st.tray.findIndex((q) => q.id === id) })) }));
-  c.run = { crates, report: reportOf(spec, r.plays, h.settings, c.mend, st, h.sv, h.specs.frame) }; c.mend = null;
-  c.state = "opening"; c.crate = 0; c.at = 0; c.shown = { ...before };
-  const sk = spec.events.opening.skip === true;   // a skippable hold (lvgl-switch.md §2.1): ✓ Skip runs every step below at once, to the report
-  h.play({ kind: "arrival", target: "crate", ms: openingMs(spec, n), hold: openingHold(spec, n), ...(sk ? { skip: true } : {}) });
-  plays.forEach((p, k) => {
-    const t0 = k * T.perCrate;
-    if (k) h.at(t0, () => { c.crate = k; c.at = 0; }, sk);   // a cut to the next closer, sealed (cargo.json events.opening.crate: R8)
-    const gain = (key) => p.gained[key] - (key === "e" ? p.spent : 0);
-    h.at(t0 + T.counters, () => { for (const key of ["e", "d", "s"]) c.shown[key] += gain(key); }, sk);
-    h.at(t0 + T.turn, () => { c.shown.turn = p.turnTo; }, sk);
-    if (!motion) {   // each step as a cut at its time: open at 200, the ribbon, the counters, each pod to its well, the turn
-      const points = [T.lid, T.ribbon, T.counters, ...crates[k].pods.map((_, j) => T.travel + j * T.stagger), T.turn];
-      for (const at of points) h.at(t0 + at, () => { c.crate = k; c.at = at; }, sk);
-    }
+  const c = h.ui.cargo, spec = h.specs.cargo, steps = spec.events.opening.steps, now = h.now();
+  const list = readyList(h.st, h.sv, h.settings, now); if (!list.length) return { ok: false, plays: [] };
+  const maxN = spec.events.opening.crates.max, first = list.slice(0, maxN), plan = planRun(h.st, h.sv, h.settings, now, first), n = fitCount(steps, plan.items);
+  const run = { items: plan.items.slice(0, n), plan, pre: plan.pre, rest: [...first.slice(n), ...list.slice(maxN)], base: 0, starts: [], lens: [], gen: 0, newest: null };
+  for (const it of run.items) it.st = { applied: false, given: [], mat: new Set(), done: false };
+  c.run = run; c.state = "opening"; c.shown = { e: h.st.e, d: h.st.d, s: h.st.s, turn: h.st.turn };
+  startEvent(h, run, 0);
+  return { ok: true, plays: run.items };
+}
+
+export const openRun = openBay;   // the build spec's name for the run (8.5): the portrait crate is its last crate and its end step marks the portrait delivered
+
+// The event for the items from `base` on, its times rebased to 0, and the host's steps for each (counters, flashes, the mat's line, the crate's end).
+function startEvent(h, run, base) {
+  const c = h.ui.cargo, steps = h.specs.cargo.events.opening.steps, motion = h.motion ? h.motion() : true;
+  const gen = ++run.gen, tm = timesOf(steps, run.items, base); run.base = base; run.starts = tm.starts; run.lens = tm.lens;
+  const at = (ms, fn) => h.at(ms, () => { if (c.run === run && run.gen === gen) fn(); });
+  c.crate = base; c.at = 0; if (h.skip) h.skip();
+  h.play({ kind: "arrival", target: "crate", ms: tm.ms, hold: tm.hold, skip: true });
+  run.items.slice(base).forEach((it, i) => {
+    const k = base + i, t0 = tm.starts[i], L = tm.lens[i];
+    if (i === 0) begin(h, run, k); else at(t0, () => begin(h, run, k));
+    it.mats.forEach((m, q) => {
+      const go = steps.materials + steps.materialEach * q;
+      at(t0 + go + (motion ? steps.travel : 0), () => give(h, run, k, q));   // the object arrives (or with reduced motion is gone at its step) and the counter ticks
+    });
+    if (motion && it.mats.length) at(t0 + steps.flash, () => { for (const m of it.mats) h.play({ kind: "flash", target: m.key, ms: steps.flashMs }); });   // the materials answer: each present material's top-bar figure flashes (frame.json materials.flashMs)
+    it.pods.forEach((p, j) => { if (p.mat >= 0) at(t0 + steps.pods + steps.podEach * j + (motion ? steps.travel : 0), () => it.st.mat.add(j)); });   // a pod has gone to the mat: the middle slot says so
+    if (!motion) for (const s of stepTimes(steps, it)) { if (s === 0) continue; at(t0 + s, () => { c.crate = k; c.at = s; }); }
+    at(t0 + L, () => { finish(h, run, k); c.at = L; });
   });
-  const opened = { crates: r.plays.length, newPods: c.run.report.newPods ?? 0 };   // what the Caddy says after the opening (play/src/caddy.mjs), kept until the next dock or lift
-  h.at(n * T.perCrate, () => { c.state = "report"; c.shown = null; c.crate = 0; c.at = 0; h.ui.caddyOpened = opened; }, sk);   // a cut to the report: the door shut, the plate on it (R8)
-  h.save(); return r;
+  at(tm.ms + 20, () => endRun(h));
+}
+// A crate starts: its rule is applied now (the pods find their wells or the mat; the counters wait for their steps).
+function begin(h, run, k) {
+  const c = h.ui.cargo; c.crate = k; c.at = 0; apply(h, run, k);
+}
+function apply(h, run, k) {
+  const it = run.items[k], s = it.st; if (s.applied) return; s.applied = true;
+  if (it.kind === "walk") S.openCrates(h.st, h.sv, h.settings, h.now(), [it.c]);
+  else T.openSittingCrate(h.st, it.id, h.settings, h.now());
+  for (const p of it.pods) if (p.well >= 0) run.newest = p.id;
+  h.save();
+}
+// The counter ticks with the house flash (the presenter sees the figure rise): the amount the crate brought for this material, less the plates it paid for.
+function give(h, run, k, q) {
+  const it = run.items[k], s = it.st; if (s.given[q]) return; s.given[q] = true;
+  const c = h.ui.cargo, m = it.mats[q]; if (!c.shown) return;
+  c.shown[m.key] += it.play.gained[m.key] - (m.key === "e" ? it.play.spent : 0);
+}
+// A crate's end: everything of it has arrived (also what Skip does at once): the counters at their final values, the pods in their wells or on the mat, the world turn, the crate done.
+function finish(h, run, k) {
+  const it = run.items[k], s = it.st, c = h.ui.cargo; if (s.done) return;
+  apply(h, run, k); it.mats.forEach((_, q) => give(h, run, k, q)); it.pods.forEach((p, j) => { if (p.mat >= 0) s.mat.add(j); });
+  if (c.shown && it.play) c.shown.turn = Math.max(c.shown.turn, it.play.turnTo);
+  s.done = true;
+}
+const openedOf = (run) => ({ crates: run.items.filter((it) => it.st.done).length, newPods: run.items.reduce((a, it) => a + (it.st.done ? it.pods.filter((p) => p.well >= 0).length : 0), 0) });
+
+// ✓ Skip (build spec 8.4): the current crate's end state at once, then the next crate starts with the times rebased to 0; on the last crate, the end.
+export function skipCrate(h) {
+  const c = h.ui.cargo, run = c.run; if (c.state !== "opening" || !run) return false;
+  const k = c.crate; finish(h, run, k);
+  if (k >= run.items.length - 1) { endRun(h); return true; }
+  startEvent(h, run, k + 1); return true;
+}
+// The run ends after its last crate: the leftover crates (past the hold's ceiling) are taken in by the rule, the counters and the turn are the rules', the end shows until a key.
+export function endRun(h) {
+  const c = h.ui.cargo, run = c.run; if (c.state !== "opening" || !run) return;
+  run.gen++; if (h.skip) h.skip();
+  for (let k = 0; k < run.items.length; k++) finish(h, run, k);
+  const walk = run.rest.filter((e) => e.kind === "walk"); if (walk.length) S.openCrates(h.st, h.sv, h.settings, h.now(), walk.map((e) => e.c));
+  c.state = "end"; c.shown = null; c.crate = 0; c.at = 0; h.ui.caddyOpened = openedOf(run); h.save();
+}
+// ← (or a room key) during the opening: the current crate's end state as Skip makes it, no further crate opens, the run is over. The crates not yet opened stay sealed in the bay (their rules were never applied).
+export function abortRun(h) {
+  const c = h.ui.cargo, run = c.run; if (c.state !== "opening" || !run) return;
+  finish(h, run, c.crate); run.gen++; if (h.skip) h.skip();
+  h.ui.caddyOpened = openedOf(run); c.state = "bay"; c.run = null; c.shown = null; c.crate = 0; c.at = 0; h.save();
+}
+// The end closes (the next key, after its action): the bay shows again.
+export function closeEnd(h) { const c = h.ui.cargo; if (c.state === "end") { c.state = "bay"; c.run = null; } }
+// A room key or any other way out of Cargo: an opening in progress finishes as a cut (nothing half taken), the end closes.
+export function leaveCargo(h) { const c = h.ui.cargo; if (c.state === "opening") abortRun(h); else closeEnd(h); }
+
+// The keys the face says while the opening holds (build spec 8.4): ✓ is Skip, ← ends the run and goes Home, a room key does what ← does and then opens its room. Called by the host before its hold drops the key.
+export function held(h, verb, roomKey) {
+  if (verb === "confirm") return skipCrate(h);
+  if (verb === "back") { abortRun(h); h.ui.home.f = "cargo"; h.goto("home"); return true; }
+  if (verb && verb.startsWith("room:")) { abortRun(h); return roomKey(h, verb.slice(5)); }
+  return false;
 }
 
-// The crates sliding into the bay on the Dock (cargo.json events.crateIn, line.bay): the event, and the count of crates drawn, staged as Cargo's UI state at each slide's start
-// (a crate counts from the frame its slide starts; with reduced motion every crate is in on the Dock frame, nothing staged). Each call starts a new slide; a step of an older slide writes
-// nothing, so a Lift and a Dock inside one slide never leave the line counting the old one. n = 0 (a Lift) only voids the slide in flight.
-export function cratesIn(h, n) {
-  const c = h.ui.cargo, ci = h.specs.cargo.events.crateIn.each, slide = (c.slide = (c.slide ?? 0) + 1);
-  c.drawn = null; if (!n) return;
-  h.play({ kind: "arrival", target: "crates", ms: ci.ms + ci.stagger * (n - 1), hold: 0 });
-  if (!h.motion()) return;
-  const step = (v) => () => { if (c.slide === slide) c.drawn = v; };
-  c.drawn = 1; for (let i = 1; i < n; i++) h.at(i * ci.stagger, step(i + 1)); h.at(ci.ms + ci.stagger * (n - 1), step(null));
-}
-
-// the report closes: the bay shows (the crates are accepted): the shut door when it holds nothing, the waiting pods on the open bay when pods wait; the plate's rows go with it
-export function closeReport(h) { const c = h.ui.cargo; if (c.state === "report") { c.state = "bay"; c.run = null; } }
-
-// `target`: "room" (Cargo has no other); `verb`: confirm | back | pad (any of the four directions, in the report only) | room:<key> (the frame's).
+// `target`: "room" (Cargo has no other); `verb`: confirm | back | pad (any of the four directions, in the end only) | room:<key> (the frame's).
 export function intent(h, target, verb) {
   const c = h.ui.cargo;
   if (c.state === "arrival") { skipShow(h); return; }   // a key in the show (reduced motion, or after the face's hold): the show cuts to its choice
-  if (c.state === "opening") return;   // the hold: nothing acts (the face says only a room key, kept by the host)
-  if (c.state === "report") {   // any key closes the card and also does what it does: ✓ follows the bottom line, ← and the pad only close it
-    const newPods = c.run?.report.newPods ?? 0;
-    closeReport(h);
-    if (verb === "confirm" && newPods) toPods(h);
+  if (c.state === "opening") { if (verb === "confirm") skipCrate(h); else if (verb === "back") { abortRun(h); h.ui.home.f = "cargo"; h.goto("home"); } return; }   // the face says ✓ and ← on the room while the opening holds; the pad does nothing
+  if (c.state === "end") {   // any key does what it does, and then the bay shows again: ✓ follows the bottom line, ← is Home, the pad only closes it
+    const run = c.run, newest = run?.newest ?? null, came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false;
+    closeEnd(h);
+    if (verb === "confirm" && came) toPods(h, newest);
+    else if (verb === "back") { h.ui.home.f = "cargo"; h.goto("home"); }
     return;
   }
-  if (verb === "back") { h.ui.home.f = "cargo"; h.goto("home"); return; }   // ← Home, the ring on the Cargo module
-  if (verb === "confirm" && S.docked(h.st) && S.bayCrates(h.st, h.sv).length) return openBay(h);
+  if (verb === "back") { h.ui.home.f = "cargo"; h.goto("home"); return; }   // ← Home, the ring on the Bay module
+  if (verb === "confirm" && readyCount(h)) return openBay(h);
 }

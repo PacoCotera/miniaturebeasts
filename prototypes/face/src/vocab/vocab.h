@@ -26,6 +26,7 @@ void v_plate_in(const char *spec, const char *id, const char *namePath, int w, i
 int v_silhouette_box(const char *from, const char *to, int out[4]);   /* the pictures' boxes by id: 0, or -1 when either is not on the face or they differ in size (prim.h) */
 int v_change_box(const char *from, const char *to, int out[4]);
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
+int v_asset_size(const char *asset, int out[2]);   /* a picture's own size: 0, or -1 when the host has not sent it (a word that places a picture at its own size, 1:1) */
 int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite */
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);

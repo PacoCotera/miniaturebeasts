@@ -95,8 +95,8 @@
     ],
     "screen": "cargo",
     "focus": "cargo",
-    "ok": "Open the bay",
-    "subject": "two sealed crates",
+    "ok": "Open them all",
+    "subject": "",
     "idle": false
    },
    {
@@ -104,8 +104,8 @@
     "said": [],
     "screen": "cargo",
     "focus": "cargo",
-    "ok": "Open the bay",
-    "subject": "two sealed crates",
+    "ok": "Open them all",
+    "subject": "",
     "idle": false
    },
    {
@@ -136,8 +136,8 @@
     ],
     "screen": "cargo",
     "focus": "cargo",
-    "ok": "Open the bay",
-    "subject": "two sealed crates",
+    "ok": "Open them all",
+    "subject": "",
     "idle": false
    },
    {
@@ -153,43 +153,35 @@
     "screen": "cargo",
     "focus": "cargo",
     "ok": "Skip",
-    "subject": "the bay is opening",
+    "subject": "",
     "idle": false
    },
    {
-    "key": "back",
+    "key": "down",
     "said": [],
     "screen": "cargo",
     "focus": "cargo",
     "ok": "Skip",
-    "subject": "the bay is opening",
+    "subject": "",
     "idle": false
    },
    {
-    "report": true,
-    "rows": [
-     [
-      1,
-      "",
-      2
-     ],
-     [
-      1,
-      "",
-      0
-     ]
-    ],
-    "gathered": [
-     "+8",
-     "+8",
-     "+11",
+    "end": true,
+    "wells": [
+     null,
+     null,
+     {
+      "crate": 0,
+      "order": 0
+     },
+     {
+      "crate": 1,
+      "order": 0
+     },
+     null,
      null
     ],
-    "probe": {
-     "plates": 1,
-     "spent": "1"
-    },
-    "goal": "identify the Loika pod"
+    "ok": "Look at the pods"
    },
    {
     "key": "confirm",
@@ -213,7 +205,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "place.0",
+      "target": "place.3",
       "verb": "back"
      }
     ],
@@ -409,7 +401,7 @@
     "screen": "cargo",
     "focus": "cargo",
     "ok": null,
-    "subject": "the bay is empty",
+    "subject": "",
     "idle": false
    },
    {

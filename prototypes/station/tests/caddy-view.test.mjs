@@ -67,10 +67,12 @@ const rig = () => {
 };
 test("the opening's end records what it brought for the Caddy (crates opened, new pods), ✓ Skip included; the next dock or lift clears it", () => {
   { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); assert.equal(UI.caddyOpened, null, "not before the end");
-    at(6000); assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }); assert.deepEqual(caddyLines({ docked: true, crates: 0, opened: UI.caddyOpened }), { line1: "two crates home", line2: null, crates: 0 });
-    at(6300); INTENTS.frame.dock(h); assert.equal(UI.caddyOpened, null, "the lift clears it"); }
-  { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "crate", verb: "skip" });
+    at(3820); assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }); assert.deepEqual(caddyLines({ docked: true, crates: 0, opened: UI.caddyOpened }), { line1: "two crates home", line2: null, crates: 0 });
+    at(4000); INTENTS.frame.dock(h); assert.equal(UI.caddyOpened, null, "the lift clears it"); }
+  { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "room", verb: "confirm" }); onFaceMessage(h, { t: "intent", seq: 3, screen: "cargo", target: "room", verb: "confirm" });
     assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }, "a skip records it too"); }
+  { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "room", verb: "back" });
+    assert.deepEqual(UI.caddyOpened, { crates: 1, newPods: 0 }, "← records the crate that was open, the other waits sealed"); }
 });
 test("the partner the lifted line names: the lead if carried and grown, else the first grown mibi with the Companion, else none", () => {
   rig(); const mk = (id, name, grown) => ({ id, name, sp: 0, born: 0, ...(grown ? { grownTurn: 0 } : { bonded: true }) });   // grownTurn: an adult; bonded with no grownTurn: a juvenile (stageAt)

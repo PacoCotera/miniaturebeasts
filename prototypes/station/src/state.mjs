@@ -344,8 +344,10 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 }
 export function fillWells(st, settings = DEFAULT_SETTINGS, now = Date.now()) { const rack = rackSize(settings); while (st.tray.length < rack && st.waiting.length) { const p = st.waiting.shift(); p.landAt = now; st.tray.push(p); } }
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
-export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const cs = bayCrates(st, sv); if (!docked(st) || !cs.length) return { ok: false, plays: [] };
+export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
+// The same for the crates named (a run opens them one at a time, T-20261016-216: the crates not yet opened stay sealed in the bay when the player leaves).
+export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now(), cs = bayCrates(st, sv)) {
+  if (!docked(st) || !cs.length) return { ok: false, plays: [] };
   const plays = [], rack = rackSize(settings);
   for (const c of cs) {
     st.accepted.push(c.id); if (st.accepted.length > 60) st.accepted.splice(0, st.accepted.length - 60);
