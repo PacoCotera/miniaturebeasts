@@ -14,10 +14,14 @@ const PAINTED = [
   /^home-(glass|bay|well|chamber|cradle|journal)/, /^idle-vivarium/, /^vivarium-near-/, /^home-bed-(dawn|day|dusk|night)-192x56$/, /^bud-shape-S\d{2}-112x112(:\d+x\d+)?$/, /^dome-(back|front|inside-(standby|ready))-304x272(:\d+x\d+)?$/, /^stamp-plate-120x120(:\d+x\d+)?$/, /^nest(-front)?-208x48(:\d+x\d+)?$/, /^base-336x96(:\d+x\d+)?$/, /^cargo-(energy|data|essence)-72x96(:\d+x\d+)?$/, /^cargo-bay-992x320$/, /^cargo-rack-992x168$/, /^cargo-report-plate-560x(128|136|144|152|160|168|176|184|192|200|208|216|224|232|240|248|256|264|272|280|288)$/, /^crate-shadow-(256|432)x24$/, /^cargo-store-shadow-72x21$/, /^founder-shadow-224x14$/, /^portrait:[^:]+:40x30$/, /^chamber-(back|front)-400x320(:\d+x\d+)?$/, /^dome-small-(back|front)-176x224(:\d+x\d+)?$/,
 ];
 const MOVES_WITH_MASTER = [/^moving:(juvenile|adult):S\d{2}:(walk|close|nap):\d+x\d+:([0-9a-f]{16}|species)(:(dawn|dusk|night))?$/, /^moving:(juvenile|adult):S\d{2}:shadow:\d+x\d+(:(dawn|dusk|night))?$/, /^chapter-plate-/, /^library-stage-spread-1024x522$/, /^spread-plate-S\d{2}-80x96$/, /^spread-study-S\d{2}-80x96$/, /^kinring:/, /^hatch:/, /^mibi:/, /^crate-(sealed|opening|open|sitting)-\d/, /^cargo-(well|bay-shut|bay-shut-report)-\d/, /^icon-(pod|shield)-\d+$/, /^founder:S\d{2}:[^:]+:clear:\d+x\d+$/, /^roll-/, /^bud-small-/, /^bud-(early|late|ready|ready-front|crack-[12])-128x160(:\d+x\d+)?$/, /^bench-(probe-upright-t[12]|cradle-upright-empty)-288x432$/, /^bench-switch-(track-(off|on)-80x40|knob-40x40)$/, /^bench-socket-160$/, /^bench-part-t2-(dim|ready|fitted)-128$/, /^bench-(reach|deep)-t2-40(-new)?$/, /^bench-plate-(whole|gone)-32x32$/, /^mark-dock-24x24$/, /^icon-(pod|shield)-16-new$/, /^icon-shield-gone-16$/, /^bench-plate-strip-t[12]-(144|192)x48$/];
+// A layered stand (station/src/layered-stand.mjs, T-20261016-201): a base and cut-out layers composed in the logic process. It is the painted layer in every status, as the layers are painted cut-outs
+// (stand-ins until the masters land; the placeholder register names them), never palette-exact art: mibi:<SXX>~<variant>:<adult>:<w>x<h>[:<light>]
+const LAYERED = [/^mibi:S\d{2}~[0-9a-f]{8}:adult:\d+x\d+(:(dawn|dusk|night))?$/];
 export function policyOf(id, status = "placeholder") {
+  if (LAYERED.some((re) => re.test(id))) return "painted";
   if (MOVES_WITH_MASTER.some((re) => re.test(id))) return status === "master" ? "painted" : "art";
   if (ART.some((re) => re.test(id))) return "art";
   if (PAINTED.some((re) => re.test(id))) return "painted";
   throw new Error(`asset ${id} is in no layer family (ui/asset-policy.mjs): the art director places a new family`);
 }
-export const FAMILIES = { ART, PAINTED, MOVES_WITH_MASTER };
+export const FAMILIES = { ART, PAINTED, MOVES_WITH_MASTER, LAYERED };

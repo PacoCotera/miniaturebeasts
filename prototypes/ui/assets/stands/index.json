@@ -1,0 +1,248 @@
+{
+ "schema": "mb-stands/1",
+ "note": "Layered stands: a base plus one cut-out layer per look a stand can show, chosen by drawnLooks (prototypes/station/src/looks.mjs). Proof-quality stand-ins cut from the accepted Pip pair by prototypes/station/tools/make-stand-layers.py, until the painted masters land.",
+ "status": "placeholder",
+ "stands": {
+  "S01": {
+   "adult": {
+    "traits": [
+     "markings",
+     "crown",
+     "eye-rings"
+    ],
+    "sizes": {
+     "304x312": {
+      "base": "S01-adult-304x312-base.png",
+      "layers": [
+       {
+        "trait": "markings",
+        "look": "patches",
+        "order": 10,
+        "op": "over",
+        "file": "S01-adult-304x312-patches.png"
+       },
+       {
+        "trait": "crown",
+        "look": "bare head",
+        "order": 20,
+        "op": "erase",
+        "file": "S01-adult-304x312-bare-erase.png"
+       },
+       {
+        "trait": "crown",
+        "look": "bare head",
+        "order": 21,
+        "op": "over",
+        "file": "S01-adult-304x312-bare-fill.png"
+       },
+       {
+        "trait": "eye-rings",
+        "look": "thin rings",
+        "order": 30,
+        "op": "over",
+        "file": "S01-adult-304x312-eyes-thin.png"
+       },
+       {
+        "trait": "eye-rings",
+        "look": "wide pale rings",
+        "order": 30,
+        "op": "over",
+        "file": "S01-adult-304x312-eyes-wide.png"
+       }
+      ]
+     },
+     "144x152": {
+      "base": "S01-adult-144x152-base.png",
+      "layers": [
+       {
+        "trait": "markings",
+        "look": "patches",
+        "order": 10,
+        "op": "over",
+        "file": "S01-adult-144x152-patches.png"
+       },
+       {
+        "trait": "crown",
+        "look": "bare head",
+        "order": 20,
+        "op": "erase",
+        "file": "S01-adult-144x152-bare-erase.png"
+       },
+       {
+        "trait": "crown",
+        "look": "bare head",
+        "order": 21,
+        "op": "over",
+        "file": "S01-adult-144x152-bare-fill.png"
+       },
+       {
+        "trait": "eye-rings",
+        "look": "thin rings",
+        "order": 30,
+        "op": "over",
+        "file": "S01-adult-144x152-eyes-thin.png"
+       },
+       {
+        "trait": "eye-rings",
+        "look": "wide pale rings",
+        "order": 30,
+        "op": "over",
+        "file": "S01-adult-144x152-eyes-wide.png"
+       }
+      ]
+     },
+     "48x48": {
+      "base": "S01-adult-48x48-base.png",
+      "layers": [
+       {
+        "trait": "markings",
+        "look": "patches",
+        "order": 10,
+        "op": "over",
+        "file": "S01-adult-48x48-patches.png"
+       },
+       {
+        "trait": "crown",
+        "look": "bare head",
+        "order": 20,
+        "op": "erase",
+        "file": "S01-adult-48x48-bare-erase.png"
+       },
+       {
+        "trait": "crown",
+        "look": "bare head",
+        "order": 21,
+        "op": "over",
+        "file": "S01-adult-48x48-bare-fill.png"
+       },
+       {
+        "trait": "eye-rings",
+        "look": "thin rings",
+        "order": 30,
+        "op": "over",
+        "file": "S01-adult-48x48-eyes-thin.png"
+       },
+       {
+        "trait": "eye-rings",
+        "look": "wide pale rings",
+        "order": 30,
+        "op": "over",
+        "file": "S01-adult-48x48-eyes-wide.png"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "files": {
+  "S01-adult-144x152-bare-erase.png": {
+   "file": "S01-adult-144x152-bare-erase.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "499fa3946020f773ca0839d80306492dca90ca9b699f835683a4c6826072e7a7"
+  },
+  "S01-adult-144x152-bare-fill.png": {
+   "file": "S01-adult-144x152-bare-fill.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "4b620bd641511303597e58a8c16a6d06870729c131633cfa78a69d614cd40383"
+  },
+  "S01-adult-144x152-base.png": {
+   "file": "S01-adult-144x152-base.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "5ff2e927a8609f7d220e9ed15424a6fab59a514a1b64bb06cad780a8b771b8f8"
+  },
+  "S01-adult-144x152-eyes-thin.png": {
+   "file": "S01-adult-144x152-eyes-thin.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "f07afae0053afabe87b9353e41ba50a2936451d8412efeed4692b1b81ce9320f"
+  },
+  "S01-adult-144x152-eyes-wide.png": {
+   "file": "S01-adult-144x152-eyes-wide.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "3fd77b0c8919d79e85971c498cb202707ec1455068cadfd616acacbf021f7272"
+  },
+  "S01-adult-144x152-patches.png": {
+   "file": "S01-adult-144x152-patches.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "3c3fc87ffcb84fcb48d4b4e2ba73b82d4c387bd5a4c1bca5a3e9e7d70550d549"
+  },
+  "S01-adult-304x312-bare-erase.png": {
+   "file": "S01-adult-304x312-bare-erase.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b3d61ca8b24da517bc62faab33d24e955418742730c9f3a9e5cf76e9d4bbec55"
+  },
+  "S01-adult-304x312-bare-fill.png": {
+   "file": "S01-adult-304x312-bare-fill.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "3e7b50fa93b158865edb7b61126b8e5a09e6ea56a5ea8896b3fe87ebf9a96374"
+  },
+  "S01-adult-304x312-base.png": {
+   "file": "S01-adult-304x312-base.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f2a4aa01ed6036cbd6bd9cc68d52e01b4678c4f1833ccb4603bc5927b7958382"
+  },
+  "S01-adult-304x312-eyes-thin.png": {
+   "file": "S01-adult-304x312-eyes-thin.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "638de6563ebaa826a58e7515a5ad85ca37d1b581695d975f49f9eb13dbd9a023"
+  },
+  "S01-adult-304x312-eyes-wide.png": {
+   "file": "S01-adult-304x312-eyes-wide.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "67c7114fc9e13b011a63cb625fde011ad0e6b9207fddeb9cebb2cfb37924caf7"
+  },
+  "S01-adult-304x312-patches.png": {
+   "file": "S01-adult-304x312-patches.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2790b3b4313b0081825e2544e93e5f9aef60354cbca758a4bcb5b011e9ec6efe"
+  },
+  "S01-adult-48x48-bare-erase.png": {
+   "file": "S01-adult-48x48-bare-erase.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "05d24d936139f20f5cf4ca07673724ed2b4f644cce47b08134973a3a06af6e18"
+  },
+  "S01-adult-48x48-bare-fill.png": {
+   "file": "S01-adult-48x48-bare-fill.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "61da877081e8a0c18e4665aaa239f0b95247e939303a7fe04cd2afcb2065fefa"
+  },
+  "S01-adult-48x48-base.png": {
+   "file": "S01-adult-48x48-base.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "edcc706b1178911fbbe3c6a01bcf9cc713c59f9b6ff426d3dc61a8367e1f6fa7"
+  },
+  "S01-adult-48x48-eyes-thin.png": {
+   "file": "S01-adult-48x48-eyes-thin.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "417518735f9c028da4a3e52c6b4a03092a8d1ea299e8cb68681077df10e44815"
+  },
+  "S01-adult-48x48-eyes-wide.png": {
+   "file": "S01-adult-48x48-eyes-wide.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "f72fada3758bca79c0a4d8a018b7535bfa05ca53700ea5750e6436735c82d3e9"
+  },
+  "S01-adult-48x48-patches.png": {
+   "file": "S01-adult-48x48-patches.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "2427cfb82585f2e0b76d6f39f91749e77fafe375e5e1993098f928acade57000"
+  }
+ }
+}
