@@ -1,0 +1,36 @@
+[
+ {
+  "name": "incubator-capsule-hs-incubate",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/incubator-capsule/incubate-1024x600.png",
+    "CONTENT reference: the picture to repaint."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/mibi-juvenile-S01-mag.png",
+    "STYLE reference: how a young creature is painted (do not add it to the scene unless the prompt says so). Ignore the magenta ground."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/hs/mibi-adult-S01-mag.png",
+    "STYLE reference: how an adult creature is painted (do not add it to the scene). Ignore the magenta ground."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod: charcoal shell, russet dots and ribs, rounded russet cap. Ignore the magenta ground."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/hs/idle-vivarium-day-1024x568.png",
+    "STYLE reference: how moss, soil and light are painted."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/hs/cargo-bay-992x320.png",
+    "STYLE reference: how a Station object is painted."
+   ]
+  ],
+  "prompt": "Repaint this exact scene in the soft, tactile, hand-painted illustration style of the style references: rounded, softly modelled forms; gentle painterly texture; simplified but careful detail; clean soft edges; warm, even, storybook-real lighting, like a cosy miniature diorama painted for a children's-book-quality game (not childish). The same composition, camera, objects, colours and light as the content reference. NOT photographic: no photo grain, no lens blur or bokeh, no glossy CG, no fine photographic texture in the moss or soil. The background is a soft painted wall in the same muted sage and warm tones, simplified, not blurred. The capsule shut at dusk, a thin mint ring sealing the window, the base bar dark, the room in soft evening light, the roof lamp warm on the moss and the pod. The pod is the reference pod: charcoal #465459, russet dots and ribs, a rounded russet cap. NO text, NO logos, NO chrome, NO exposed cables, NO screens, NO gauges, NO hands, NO arms, NO frame or border."
+ }
+]
