@@ -39,3 +39,5 @@ Trees stay in the complex data views for the mechanics player:
 - the Library's chapters.
 
 The surface stays pictures, and the tree is the depth, one press away ("one truth, two depths", design/game.md).
+
+**Correction (game designer, 2026-10-18):** "14" for the Loika's guide counted only its five varying traits. The guide counts every trait's current looks, which the genome engineer measured at 20 for the version-4 Loika (21 with plain). Read "14" here as "every current look (20)". The rule (plain shows once seen, never counts) is unchanged, and T-20261016-204 tests it by the measured totals.

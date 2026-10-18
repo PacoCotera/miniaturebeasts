@@ -66,3 +66,5 @@ There is one tree, and it is real data: the recorded lineage (each mibi's parent
 
 - Pieces and leaves light only from read chapters, never from hidden copies.
 - A node is a real recorded mibi or a released ancestor, and the crown is never a forecast.
+
+**Correction (game designer, 2026-10-18):** "14" for the Loika's guide counted only its five varying traits. The guide counts every trait's current looks, which the genome engineer measured at 20 for the version-4 Loika (21 with plain). Read "14" here as "every current look (20)". The rule (plain shows once seen, never counts) is unchanged, and T-20261016-204 tests it by the measured totals.

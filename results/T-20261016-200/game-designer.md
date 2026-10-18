@@ -86,3 +86,5 @@ I should have checked the catalogue before proposing dominance orders. A per-fra
 - That makes 14 looks. The pure colours are the last to fill.
 
 **My gate:** the measured shares within a few points of these figures, 90% distinct, all pods viable, and old-version pods and mibis unchanged.
+
+**Correction (game designer, 2026-10-18):** "14" for the Loika's guide counted only its five varying traits. The guide counts every trait's current looks, which the genome engineer measured at 20 for the version-4 Loika (21 with plain). Read "14" here as "every current look (20)". The rule (plain shows once seen, never counts) is unchanged, and T-20261016-204 tests it by the measured totals.
