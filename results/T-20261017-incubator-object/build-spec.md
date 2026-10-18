@@ -32,9 +32,9 @@ All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage i
 | --- | --- | --- |
 | room | 0, 40 | `capsule-room-day-1024x522` or `capsule-room-dusk-1024x522` (the 1:1 crop at r0 65) |
 | interior | 344, 26 | `capsule-interior-day-530x532` or `capsule-interior-dusk-530x532` (the empty moss bed) |
-| pod | foot bottom-centred on (512, 415), about 170 tall | the renderer's pod for the bud's species. **The build owes** its relight to the roof lamp, its contact shadow on the moss, and the moss blades in front of its foot, as `composite-juvenile.py` does (the art director's proof shows the pod unrelit) |
+| pod | foot bottom-centred on (512, 415), pod-large at its own 160 px height (no up-scale) | the renderer's pod for the bud's species. **The build owes** its relight to the roof lamp, its contact shadow on the moss, and the moss blades in front of its foot, as `composite-juvenile.py` does (the art director's proof shows the pod unrelit) |
 | juvenile | feet on (532, 415), about 146 tall | hatch only: the new mibi's own juvenile stand (from `drawnLooks`), rendered by the host at that size and relit the same way |
-| glass | the window | drawn in code: two soft highlights along the window mask (authority `masters/authority/window-mask-1024x600`, x 351–666, y 20–468; at this view x ≈ 373–641, y ≈ 65–446), alpha over the interior and the pod. Closed states only |
+| glass | the window | `capsule-glass-closed` (the art director's cut, 1:1; until it lands, no glass layer; `results/T-20261016-222/uiux-rulings.md` §2). It follows the window mask (authority `masters/authority/window-mask-1024x600`, x 351–666, y 20–468; at this view x ≈ 373–641, y ≈ 65–446), alpha over the interior and the pod. Closed states only |
 | shell | 344, 26 | `capsule-shell-530x532`, or `capsule-shell-dusk-530x532` at dusk. Its own dark slot is the bar when off |
 | door | 344, 26 | `capsule-door-open-530x532` (the open states only) |
 | bar | 344, 26 | `capsule-bar-lit-530x532`, clipped from the left as the progress: visible x 433 to 433 + floor(158 × fraction) (§3). Off: not drawn (the shell's slot shows) |
@@ -61,7 +61,7 @@ The capsule fills the centre (body x about 349–672; the open door reaches abou
 | `stampCase` | 76, 184, 152, 152 | the stamp case, as on Create (`stampCase` look) |
 | `stamp` | 92, 200, 120, 120 | the bud's stamp, its chapters filling as they clear (unchanged rule, `regions.stamp.live`) |
 | `code` | 64, 344, 176, 25 | the bud's code, as now (16, centred on x 152) |
-| `readyIn` | 64, 384, 176, 20 | growing only: "ready in about {n} min" (13, `mist`, centred on x 152). This is the time, a fact the bar can't carry, in the Incubator's own context |
+| `readyIn` | 16, 384, 272, 24 | growing only: "ready in about {n} min" (Inter 16, `mist`, centred on x 152). This is the time, a fact the bar can't carry, in the Incubator's own context |
 
 - The column is shown in growing, ready and hatch. In empty it is bare wall.
 - **Gone:** the chapter rail (`regions.rail`), the leaves (`regions.leaves`), the dome, nest, base and plaque regions, and the right-column stamp place. The chapters' clearing now shows on the stamp alone. `events.wipe` keeps its timing but draws only the stamp's redraw (no tab).
@@ -109,14 +109,13 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 | At | Does |
 | --- | --- |
 | 0 | the `open` look stands still, with the pod whole: a still beat |
-| 600 | the pod cracks: the renderer's `crack` layer on the pod (crack 1) |
-| 800 | crack 2 (as now, `bud-crack-2` rule, on the renderer's pod) |
+| 600 | the pod cracks: the renderer's one `crack` layer on the pod, held to 1000 |
 | 1000 | the 180 ms dither to the `hatched` look: the species' opened pod (bowl and tipped cap, §5) on the moss, and the new mibi standing about 146 tall, feet on (532, 415) |
 | 1200 | the ribbon: "{Name}, a young {Species}" (`strings.hatchRibbon`), rect 312, 56, 400, 40, the house ribbon |
 | 1400 and 1800 | the two steps, each with the `lift` table as now (px above the feet line 415) |
 | 2600 | the 180 ms dither to one mibi up close, in the meet (`handoff`, unchanged) |
 
-- **The moving set** (`events.hatch.moving`): its timings are unchanged; its boxes are this section's (the mibi about 146 tall, feet on (532, 415)).
+- **The moving set** (`events.hatch.moving`) is not used on the capsule yet: every juvenile hatches by the plain steps (`results/T-20261016-222/uiux-rulings.md` §5).
 - **Reduced motion:** the cut to the meet on the frame of ✓, as now.
 - **The new mibi's picture:** the host renders it about 146 tall from its own looks, with its feet on its box's foot. It is relit to the capsule's roof lamp by the same function as `composite-juvenile.py` (warm from above, a rim on the crest, a contact shadow on the moss), in Node, before the props. Until it lands, its placeholder is used, as now.
 
@@ -130,7 +129,7 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
   - `home/`: the same capsule layers at 56 × 86 (×0.137, no room);
   - `panel/`: `capsule-{shell-dusk,interior-dusk,seal-ring}-296x459` and `capsule-room-dusk-474x468`;
   - the table of every view: `masters/views.json`.
-- **Drawn in code:** the glass, along the window mask.
+- **The glass:** `capsule-glass-closed` per view, an alpha cut by the art director from the closed still's reflections. Until it lands, no glass layer.
 - **The opened pod** (`masters/opened/`): the closed pod's own layer set at the `large` class, so the renderer composes it unchanged, in each species' colours. The **bowl** is 144 × 150 (shade, mask-body, mask-accent and every pattern-*). The **cap** is 104 × 128 (shade, an empty body mask, and accent for the whole cap). At the hatch the bowl's foot sits on the moss line at the pod's x, with the cap tipped against its left side. Both are relit to the roof lamp like the pod (owed by the build).
 
 **Painted and confirmed** (a58d2827, `masters/` beside `capsule-masters.md`):
@@ -188,9 +187,9 @@ A first build: no panel code exists on station-gate, so everything the panel nee
 | --- | --- | --- |
 | left bezel: **Incubate** | 16, 46, 490, 506 | fill `panel`, radius 10; 1 px edge `hairline`; the bevel: a 1 px `fog` line at y + 1 from x + 10 to x + w − 10 |
 | right bezel: **Keep shaping** | 518, 46, 490, 506 | the same |
-| header (each bezel) | x, y, w, 30 | the verb, Inter 15 medium, `bone`, its baseline at y + 20, from x + 12 |
-| Incubate's price | right-aligned to x + w − 12, in the header | icon before figure, as the bottom line draws a price: ⚡ {n} ❀ {n} ◆ {n} (icons 16, figures Inter 13 `price`; 4 between an icon and its figure, 12 between items; an item whose figure is 0 is left out). Last: **the founder's pod**, the renderer's collection pod reduced to 16 × 20, its top at y + 5. The pod is part of the price: it becomes the mibi. Keep shaping's header has no price |
-| left window | 24, 76, 474, 468 | radius 6, a 1 px `void` inner edge. **The sealed capsule,** in order: `masters/panel/capsule-room-dusk-474x468` at (24, 76); `capsule-interior-dusk-296x459` at (116, 80); **this founder's pod**, 147 tall, its foot centred on the moss line y 416 at the capsule's axis x 264, relit with its contact shadow and the moss blades in front of its foot (as §1); the glass, drawn in code along the window mask at this reduction; `capsule-shell-dusk-296x459` at (116, 80); `capsule-seal-ring-296x459` at (116, 80). Proof: `masters/proof-panel-incubate-474x468.png` |
+| header (each bezel) | x, y, w, 30 | the verb, Inter 16, `bone`, its baseline at y + 21, from x + 12 |
+| Incubate's price | right-aligned to x + w − 12, in the header | icon before figure, as the bottom line draws a price: ⚡ {n} ❀ {n} ◆ {n} (icons 16, figures Inter 16 `price`; 4 between an icon and its figure, 12 between items; an item whose figure is 0 is left out). Last: **the founder's pod**, the renderer's collection pod reduced to 16 × 20, its top at y + 5. The pod is part of the price: it becomes the mibi. Keep shaping's header has no price |
+| left window | 24, 76, 474, 468 | radius 6, a 1 px `void` inner edge. **The sealed capsule,** in order: `masters/panel/capsule-room-dusk-474x468` at (24, 76); `capsule-interior-dusk-296x459` at (116, 80); **this founder's pod**, 147 tall, its foot centred on the moss line y 416 at the capsule's axis x 264, relit with its contact shadow and the moss blades in front of its foot (as §1); `capsule-glass-closed` at this view (until it lands, none); `capsule-shell-dusk-296x459` at (116, 80); `capsule-seal-ring-296x459` at (116, 80). Proof: `masters/proof-panel-incubate-474x468.png` |
 | right window | 526, 76, 474, 468 | radius 6, a 1 px `void` inner edge. **Create as it is under the panel,** drawn at 1:1 and clipped to the window, offset so that Create's stage rect (275, 90, 474, 468) fills it: the founder centred, its edits lit in the scan light, and the rail and roll as they stand. No ring is drawn inside it |
 | the focus ring | round the focused bezel | the house ring (`frame.json focus.ring`), shape `{ "rect": 10 }`: the bezel grown by its reach |
 
@@ -235,7 +234,7 @@ A first build: no panel code exists on station-gate, so everything the panel nee
 
 ### 6a.6 Masters
 
-`masters/panel/` (`capsule-room-dusk-474x468`, `capsule-interior-dusk-296x459`, `capsule-shell-dusk-296x459`, `capsule-seal-ring-296x459`), the renderer's pod at 147 tall and at 16 × 20, and the frame's ring. The bezels, windows and glass are drawn in code. No new painting.
+`masters/panel/` (`capsule-room-dusk-474x468`, `capsule-interior-dusk-296x459`, `capsule-shell-dusk-296x459`, `capsule-seal-ring-296x459`), the renderer's pod at 147 tall and at 16 × 20, and the frame's ring. The bezels and windows are drawn in code. No new painting.
 
 ## 7. Checks for the builder
 
