@@ -13,8 +13,8 @@ All coordinates below are in those stills' 1024 × 600 frame. UI/UX's build spec
 | `capsule-room-day` | 1024 × 600 | closed: the painted sage wall and table, with the capsule removed | full frame |
 | `capsule-room-dusk` | 1024 × 600 | incubate: the same, evening grade | full frame |
 | `capsule-shell` | about 384 × 600 | closed: the slate body, roof-lamp housing and base, with the window and the bar area transparent | shell box x 322–706, y 0–600 |
-| `capsule-interior-day` | the window's box, about 300 × 420 | **missing**: the lit back wall, the roof lamp's pool and the moss-and-soil bed, with NO pod | window box, moss line y ≈ 432 |
-| `capsule-interior-dusk` | the same | **missing**: the same at dusk | the same |
+| `capsule-interior-day` | the window's box, about 300 × 420 | the studio's `interior-day` (d6efa10d): the lit back wall, the roof lamp's pool and the empty moss bed | window box, moss line y ≈ 432 |
+| `capsule-interior-dusk` | the same | `masters/interior-dusk-coded-1024x600.png`: the incubate still registered into this frame, with its window replaced by the empty interior graded to dusk, and the seal ring kept | the same |
 | `capsule-glass-closed` | the window's box | drawn in code: two soft highlights matching closed's painted reflections, as alpha over the interior and the pod. A painting's glass can't be separated from what's behind it | window box |
 | `capsule-door-open` | about 300 × 560 | open: the swung curved door, alpha | hinge at the shell's right edge, x ≈ 700 |
 | `capsule-bar-on` | about 230 × 40 | closed: the mint bar and its glow, alpha | bar centre ≈ (512, 520) |
@@ -27,7 +27,7 @@ All coordinates below are in those stills' 1024 × 600 frame. UI/UX's build spec
   - Placement: the pod's foot on the moss line at about (512, 432), at the pod height the stills show (about 200 px at authority scale).
   - Relit to the roof lamp as `composite-juvenile.py` does: warm from above, shade below, a rim on top, a contact shadow on the moss, and the moss blades in front of the foot.
 - **The hatchling:** the founder's own juvenile stand (layered, from `drawnLooks`), its feet on the moss at about (538, 432), at about 172 px at authority scale. This is a close-up, which the size table allows. It is relit in the same way.
-- **The opened pod** for Hatch now: **missing.** The pod renderer has no opened state. It needs a new renderer layer set for the two shell halves and the tipped cap (shade, body mask, accent mask, pattern), painted once in neutral like the closed pod's layers, so every species' pod opens in its own colours.
+- **The opened pod** for Hatch now: the bowl and the tipped cap, neutral (`masters/pod-opened-*-shade-*.png`); the masks and pattern projection are to be cut. Originally The pod renderer has no opened state. It needs a new renderer layer set for the two shell halves and the tipped cap (shade, body mask, accent mask, pattern), painted once in neutral like the closed pod's layers, so every species' pod opens in its own colours.
 
 ## The states
 

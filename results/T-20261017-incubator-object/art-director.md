@@ -77,3 +77,18 @@ The repaint closes the style gap. The capsule, moss and light are now painted in
 | Hatch now | `house-style/hatch-now-fixed-1024x600.png` | pass, fixed by code: the warm curtain stripe at the left replaced by the closed painting's wall (same camera, feathered); our signed juvenile composited over the redrawn one, relit to the roof lamp as before (`composite-juvenile.py`, 172 px, unmirrored) |
 
 **No retries.** With the style now shared, the composited juvenile sits natively in the painting: one hand, one light. `fix-house-style.py` and `composite-juvenile.py` reproduce both fixes from the studio's raws.
+
+## The three gap pieces (masters-pods d6efa10d, `concepts/incubator-capsule-gaps/`)
+
+| Piece | Verdict |
+| --- | --- |
+| `interior-day` | **pass as is.** The empty moss bed is repainted cleanly where the pod stood, the roof lamp's pool falls on it, and the door is gone, so the interior stands clear. It registers to closed's frame (shell offset 0, −1 px) |
+| `interior-dusk` | **replaced by code.** The studio's came out near-day without the seal ring. `masters/make-dusk-plate.py` registers the incubate still into the day frame (2.5% larger, offset −29.6, −6.9), then replaces its window, pod and all, with the empty day interior graded to incubate's dusk colour. The mint seal ring and the rim are never painted over. Result: `masters/interior-dusk-coded-1024x600.png` |
+| `opened-pod-neutral` | **pass in part.** The bowl (the lower shell with its broken rim) and the tipped cap are clean and in our pod's shape. The third piece is a vertical half seen from its broken side, which reads as a torn shell, so it is left out: the bowl and the cap tell "opened" without it. `masters/cut-opened-pod.py` keys both off magenta and keeps them neutral grey, giving `masters/pod-opened-bowl-shade-488x509.png` and `pod-opened-cap-shade-357x443.png` |
+
+**Next, by the art director:**
+- cut the bowl's and cap's body and accent masks (the ribs, the rim, the cap's lip);
+- project the species patterns onto them, so the renderer opens every pod in its own colours;
+- cut the remaining layers listed in `capsule-masters.md` from closed's frame.
+
+**Retries for tomorrow: none needed.** Optional, if the owner wants the two-halves read of the hatch-now still rather than a bowl: one call for a matching second half, broken on its left side.
