@@ -5024,5 +5024,39 @@
    "thoughtsTokenCount": 209,
    "totalTokenCount": 2033
   }
+ },
+ {
+  "tag": "loika-v4-adult-patches-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.199972,
+  "mxn": 3.9994,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:13:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 626,
+   "candidatesTokenCount": 1311,
+   "thoughtsTokenCount": 345,
+   "totalTokenCount": 2282
+  }
+ },
+ {
+  "tag": "loika-v4-juvenile-patches-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.1795,
+  "mxn": 3.59,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-17",
+  "time": "2026-10-18T05:13:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 710,
+   "candidatesTokenCount": 1290,
+   "thoughtsTokenCount": 194,
+   "totalTokenCount": 2194
+  }
  }
 ]
