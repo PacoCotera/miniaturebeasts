@@ -19,6 +19,7 @@ All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage i
 | --- | --- | --- |
 | `bay` | 16, 46, 992, 506 | one image, `cargo-bay-992x506` (to cut, §5): the back wall, the floor and the bay's one light from the top left. Radius 6, with the frame's inner shade, as every window |
 | `hatch` | 24, 150, 160, 260 | shut: `hatch-shut-160x260` (to cut), with `ring-hatch-80x56` at (64, 166). Open: `pods-hatch-open-160x260` (to promote) |
+| `hatch.frame` | 21, 147, 166, 266 | `hatch-frame-166x266` (cut by script): a 3 px rim, radius 8, sage (70, 84, 70) with a (40, 46, 40) outline, shut and open (the art director, T-216) |
 | `hatch.wells` | centres, from the hatch's origin: (49, 60), (103, 58), (49, 120), (103, 119), (50, 180), (104, 182), in rack order | a stored pod is the `list` class, 40 × 48 (`pod-well-*` layers), its box at (cx − 20, cy − 26) |
 | `hatch.wellLit` | a 64 × 64 box centred on the well | `well-lit-64x64` (to cut): the mint ring (2 px, radius 25) and its pool, one image |
 | `hatch.strip` | 32, 382, 144, 20 | the find strip. A find is `find-{kind}-16x16`, at (36 + 20 i, 384) |
@@ -54,7 +55,7 @@ Contents rise into the display when a crate opens. They sit in one row, centred 
 | empty: slatted and shut | `berth-shut-256x292` (to cut) | `berth-shut-188x292` (to cut) |
 | crate sealed | `crate-sealed-256x176`, its top at berth y + 102 (feet 14 above the berth's foot); `crate-shadow-256x24` at berth y + 260 | `crate-sealed-176x121` at (berth x + 6, berth y + 157); `crate-shadow-176x16` at (berth x + 6, berth y + 266) |
 | crate lifting | `crate-lifting-256x200` at berth y + 91: its foot is 13 above its canvas foot, so the feet line holds (to promote) | `crate-lifting-176x138` at (berth x + 6, berth y + 132) |
-| crate done | `crate-sealed-256x176-done` (to cut: the sealed crate at value × 0.72, hue kept) | `crate-sealed-176x121-done` and `crate-sitting-176x121-done` (to cut, the same way) |
+| crate done | `crate-sealed-256x176-done` (to cut: the sealed crate at value × 0.6, hue kept) | `crate-sealed-176x121-done` and `crate-sitting-176x121-done` (to cut, the same way) |
 | portrait crate | — | `crate-sitting-176x121`: the signed sitting crate, the same object as Home's portrait crate (`crate-sitting-48x40`), placed as the sealed crate. **The fourth berth carries the difference,** drawn in code: a 2 px edge in `gold`, a rounded rect from (berth x − 3, berth y − 3) to (berth x + 190, berth y + 294), radius 9; outside it a 1 px keyline `#5a400c`, from (berth x − 5, berth y − 5) to (berth x + 192, berth y + 296), radius 10 (`finish/make-portrait-in.py`, `finish/cargo-portrait-in.png`) |
 
 ## 4. The opening, per crate (replaces `events.opening.crate`)

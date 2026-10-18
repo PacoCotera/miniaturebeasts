@@ -52,3 +52,11 @@ UI/UX is content with them as pictures: the face palette has none of those colou
 **It is right that a done crate is a closed crate.** The spec's done state is "its lid closes in its berth and it dims", so the crates are not drawn open. What tells them apart is the dimming as each finishes, in sequence, while the next lights up.
 
 **One question to the art director (passed on):** at the end every crate is done, so there is no sealed crate beside them to compare against, and 0.72 alone may read as "unchanged" at 1×. Whether to deepen the value step (for example to 0.6) is a paint call, so it is theirs. UI/UX asks for no new mark or word: dimming stays the only sign, as the owner's "nothing negative" and minimal-words rulings want.
+
+## 6. The art director's gate (`results/T-20261016-216/art-director.md`): PASS with three fixes, adopted
+
+1. **The done crates go to value × 0.6,** hue kept. This answers §5. The build spec's cuts are amended.
+2. **The hatch frame is drawn:** `hatch-frame-166x266`, cut by script, at the hatch rect − 3 (21, 147), shut and open. This answers §2.1, and the spec's §1 gains the row.
+3. **The portrait painting in flight** uses `sitting-frame-portrait-48x40` alone until the portrait itself is drawn, never the four-colour placeholder square. This is the spec's §8.5 no-digest rule.
+
+**Small:** the white mark at the open hatch's lower left (about 42, 392 in `06-end`). If it is the find strip's empty state, it is drawn dark (the strip's own dark fill); otherwise it goes.
