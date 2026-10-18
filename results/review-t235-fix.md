@@ -36,3 +36,18 @@ At 9598f73a and at 3bdafbb7 every one of the above, goldens included, was clean 
 - The nine pods failures and the 22 Create face failures are the base's.
 - The standing-sleeper fallback for species with no nap master is UI/UX's decision, accepted in their ruling.
 - The moving-atlas height test uses a synthetic body, not a real atlas; the moving golden is the real-art check and shows the right size.
+
+## Addendum: the T-239 fix — build/t-235-vivarium-polish @ 07aeabf6 — PASS
+One commit on 68594338 by Paco Cotera <paco@cotera.org>, no trailers: seven tool files, one line each. The shared harness (`station-page.mjs`) puts `stationTime` "12:00" in its dev defaults, the journey does the same, and the state tools for vivarium, idle, home, habitat and incubator reset to "12:00" instead of null; the sleeper scenes keep their own explicit 23:00. That is what T-239 asks (pin the Station time at noon in the still states, sleeper states keeping their own time); no golden was re-baked, as T-239 expected (the committed goldens were taken awake).
+
+I ran the three-clock check myself on 07aeabf6, with `goldens.mjs --check vivarium idle home habitat incubator` under four clocks:
+| clock | local time | result |
+|---|---|---|
+| default | 20:37 (the clock that failed at 68594338) | all five sets match |
+| Pacific/Kiritimati | 10:40 | all five match |
+| Europe/Moscow | 23:42 (in the sleep window) | all five match |
+| Asia/Tokyo | 05:45 (in the sleep window) | all five match |
+
+Also on 07aeabf6: the public guard against 5c7e5101 exits 0; `journey.mjs` has no "differs from the golden" line (the same 9 in-page FAILs as the base's); `checks.mjs` reports "layer checks ok". Only tools changed, so the tests, the face build and the other results at 68594338 are unchanged.
+
+Verdict for the whole branch: PASS at 07aeabf6 (T-237 and T-239 are both fixed; everything in the earlier sections holds).
