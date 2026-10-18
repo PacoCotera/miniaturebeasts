@@ -4,13 +4,13 @@
 
 ## What it is
 
-Three same-origin documents in one page, and the page's own chrome around them:
+Two same-origin documents in one page (the workbench's bench is hidden, below), and the page's own chrome around them:
 
 | Frame | Source | Size (lp) |
 | --- | --- | --- |
 | Station | `../station/?embed` (plus `&dev` and `&test` when the play page has them) | 1024 × 600 |
 | Companion | `../exploration/?embed` (plus `&seed=<n>` and `&dev=1` as given) | 450 × 600 |
-| Bench | `../workbench/`, set the first time the bench is shown | the bench container |
+| Bench | `../workbench/` (hidden: the bench container, its handle and its tab are not shown and the frame is never loaded; the workbench's own page stays, and the page's `BENCH` constant in `src/shell.mjs` turns the bench back on until the page is removed) | none |
 
 `?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: each screen keeps its whole CSS size (1024 and 450 px) and is scaled by `k / devicePixelRatio` with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change; on the page one lp is `k / devicePixelRatio` CSS pixels. The play page applies the same rule to every edge it places.
 
@@ -20,9 +20,9 @@ Three same-origin documents in one page, and the page's own chrome around them:
 
 | Tier | When (lp) | Shows |
 | --- | --- | --- |
-| Wide | W ≥ 1878, H ≥ 800 | both devices, the Dock control and the cradle; the bench as a shelf when H ≥ 1072, else a handle and a sheet; developer tools as a column |
-| Standard | 1064 ≤ W < 1878, H ≥ 800 | both devices on a row of 1546 that pans to the device with the keys (160 ms); the handle and the sheet; a developer drawer |
-| Short | W ≥ 1064, 672 ≤ H < 800 | as standard with the focused device's keys in the bar, a band for the seat and the bench as a tab |
+| Wide | W ≥ 1878, H ≥ 800 | both devices, the Dock control and the cradle; developer tools as a column |
+| Standard | 1064 ≤ W < 1878, H ≥ 800 | both devices on a row of 1546 that pans to the device with the keys (160 ms); a developer drawer |
+| Short | W ≥ 1064, 672 ≤ H < 800 | as standard with the focused device's keys in the bar and a band for the seat |
 | Narrow | otherwise | one device at a time, the one with the keys; the other keeps running, hidden |
 
 ## Keys
@@ -31,10 +31,10 @@ One device has the keys: the ring on its shell, its filled tab and, in the short
 
 | Key | Does |
 | --- | --- |
-| `` ` `` | next device: Station, Companion, Bench |
+| `` ` `` | next device: Station, Companion |
 | Shift+`` ` `` | previous device |
 | Shift+D | the Dock control |
-| Shift+C | the Caddy's screen: pins it up, or lowers it (wide tier with the bench shelf only) |
+| Shift+C | the Caddy's screen: pins it up, or lowers it (wide tier with H ≥ 1072 only) |
 | Shift+T | developer tools |
 | Shift+/ (?) | the keys panel |
 
@@ -42,7 +42,7 @@ Every other key reaches the device untouched. Drawn keys press exactly as the ke
 
 ## The Caddy's screen
 
-The Caddy's 792 × 272 four-gray e-paper (`src/caddy.mjs`) shows its two lines for the dock: "Companion home" with the crates, "charging", "{n} crates home" with the new pods after the opening, or "Companion out" with the partner. It is a sheet raised from the cradle at 734, 760, 808, 288 lp, the view inside it at 1 lp per view pixel, over the right of the bench shelf; nothing moves under it. It rises at each seat or lift and at the opening's end, stays 6000 ms (a new line restarts it), and lowers; Shift+C pins it up until Shift+C again. The paper redraws once per change of its lines and never animates. Only the wide tier with the bench shelf has room for it; in every other tier the bar's note shows the two lines as one for 4000 ms at the same moments. The Station posts what it needs in `mb-caddy` (`opened`, `partner`).
+The Caddy's 792 × 272 four-gray e-paper (`src/caddy.mjs`) shows its two lines for the dock: "Companion home" with the crates, "charging", "{n} crates home" with the new pods after the opening, or "Companion out" with the partner. It is a sheet raised from the cradle at 734, 760, 808, 288 lp, the view inside it at 1 lp per view pixel, over the lower right (where the bench shelf was; the shelf is hidden now); nothing moves under it. It rises at each seat or lift and at the opening's end, stays 6000 ms (a new line restarts it), and lowers; Shift+C pins it up until Shift+C again. The paper redraws once per change of its lines and never animates. Only the wide tier with the bench shelf has room for it; in every other tier the bar's note shows the two lines as one for 4000 ms at the same moments. The Station posts what it needs in `mb-caddy` (`opened`, `partner`).
 
 ## The Dock control, the cradle and the seat
 

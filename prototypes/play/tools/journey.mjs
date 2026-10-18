@@ -73,7 +73,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await page.evaluate(() => __play.tier), "wide", "A: the tier at 1920 × 1080");
   eq(await box(page, "#fStation"), [20, 60, 1024, 600], "A: the Station frame"); eq(await box(page, "#fCompanion"), [1076, 60, 450, 600], "A: the Companion frame");
   eq(await box(page, "#dockCtl"), [1484, 4, 168, 32], "A: the control"); eq(await box(page, "#cradle"), [1068, 728, 466, 28], "A: the cradle"); eq(await box(page, "#lamp"), [1080, 744, 8, 8], "A: the lamp");
-  eq(await box(page, "#bench"), [12, 760, 1522, 308], "A: the bench shelf");
+  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("bench")).display, !!document.getElementById("fBench").getAttribute("src")]), ["none", false], "A: the workbench is hidden and not loaded");
   const sImg = rd(await page.screenshot({ clip: { x: 20, y: 60, width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
   expect(sameImage(sImg, sCap), "A: the page's Station frame is pixel-equal to __st.capture() (1:1)");
   const cImg = rd(await page.screenshot({ clip: { x: 1076, y: 60, width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
@@ -140,9 +140,9 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await st().evaluate(() => window.__st.said());
   await page.keyboard.press("Backquote"); await page.waitForTimeout(200); s = await state(page); const o1 = s.owner;
   await page.keyboard.press("Backquote"); await page.waitForTimeout(400); s = await state(page); const o2 = s.owner;
-  eq([o1, o2], ["bench", "station"], "B6: the focus key cycles Companion, Bench → Bench, Station from the Companion");
-  const loaded = await page.evaluate(() => !!document.getElementById("fBench").getAttribute("src")); expect(loaded, "B6: the bench frame loaded");
-  await page.keyboard.press("Shift+Backquote"); await page.waitForTimeout(200); eq((await state(page)).owner, "bench", "B6: Shift+` goes back");
+  eq([o1, o2], ["station", "companion"], "B6: the focus key cycles Station, Companion (no bench) from the Companion");
+  const loaded = await page.evaluate(() => !!document.getElementById("fBench").getAttribute("src")); expect(!loaded, "B6: the bench frame is never loaded");
+  await page.keyboard.press("Shift+Backquote"); await page.waitForTimeout(200); eq((await state(page)).owner, "station", "B6: Shift+` goes back");
   eq(await st().evaluate(() => window.__st.said()), [], "B6: no device heard the focus keys");
   // B7: errors
   const errs = await st().evaluate(() => ({ r: window.__st.renderErrors, f: window.__st.faceErrors })); eq([errs.r, errs.f], [[], []], "B7: the Station's render and face errors");
@@ -163,11 +163,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.ST.dock.docked]), ["home", true], "C: it shows Home, docked");
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion"), await st().evaluate(() => window.__st.ST.dock.docked)], ["hidden", "visible", false], "C: Lift shows the Companion");
-  // the bench in narrow: the sheet is a fixed child of the body, the stage is inert, and the note and the ring are gone while it is raised; a second press on the tab does nothing
-  await page.click("#tabBench"); await page.waitForTimeout(300);
-  const up = await page.evaluate(() => ({ owner: __play.owner, pos: getComputedStyle(document.getElementById("bench")).position, parent: document.getElementById("bench").parentElement.tagName, inert: document.getElementById("stage").hasAttribute("inert"), note: document.getElementById("note").classList.contains("hidden"), ring: document.getElementById("ring").classList.contains("hidden"), pressed: document.getElementById("tabBench").getAttribute("aria-pressed"), others: [document.getElementById("tabStation").getAttribute("aria-pressed"), document.getElementById("tabCompanion").getAttribute("aria-pressed")] }));
-  eq([up.owner, up.pos, up.parent, up.inert, up.note, up.ring, up.pressed, up.others], ["bench", "fixed", "BODY", true, true, true, "true", ["false", "false"]], "C: the raised sheet in narrow");
-  await page.click("#tabBench"); await page.waitForTimeout(200); eq((await state(page)).owner, "bench", "C: a second press on the Bench tab does nothing");
+  // the bench is hidden in narrow too: no tab, no sheet, the stage stays live
+  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, getComputedStyle(document.getElementById("bench")).display, document.getElementById("stage").hasAttribute("inert")]), ["none", "none", false], "C: no Bench tab and no sheet");
   await page.click("#tabCompanion"); await page.waitForTimeout(300);
   eq(await page.evaluate(() => [__play.owner, document.getElementById("stage").hasAttribute("inert"), document.getElementById("note").classList.contains("hidden")]), ["companion", false, false], "C: the Companion tab lowers the sheet and the stage is live again");
   // the hidden frame's storage path: the Station is hidden, a crate arrives, the control's dot changes within 600 ms
@@ -208,7 +205,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await box(page, "#caddySheet"), [734, 760, 808, 288], "K: the sheet"); eq(await box(page, "#caddyView"), [742, 768, 792, 272], "K: the view, 1 lp per view pixel");
   eq([k.lines.line1, k.lines.line2], ["Companion home", "one crate"], "K: its lines read the docked state");
   eq(await page.evaluate(() => [document.getElementById("caddyView").width, document.getElementById("caddyView").height]), [792, 272], "K: the canvas is the view's 792 × 272");
-  eq(await box(page, "#bench"), [12, 760, 1522, 308], "K: the bench shelf has not moved");
+  eq(await page.evaluate(() => getComputedStyle(document.getElementById("bench")).display), "none", "K: the workbench stays hidden");
   await clip(page, "play-caddy-sheet.png");   // the Caddy's screen raised over the shelf, docked with one crate
   await page.waitForTimeout(6200); eq((await sheet()).up, false, "K: lowered 6000 ms after the dock");
   await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); k = await sheet(); eq([k.up, k.pinned], [true, true], "K: Shift+C pins it up");
@@ -224,8 +221,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
   await page.click("#tabCompanion"); await page.waitForTimeout(400);
   near((await box(page, "#fCompanion"))[0], 1440 - 1546 + 1068 + 8, "standard: the Companion focused pans −106", 0.51);
-  await page.click("#tabBench"); await page.waitForTimeout(300); await page.click("#tabBench"); await page.waitForTimeout(200);
-  eq(await page.evaluate(() => [__play.owner, !document.getElementById("bench").classList.contains("hidden")]), ["bench", true], "standard: a second press on the Bench tab does nothing");
+  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, getComputedStyle(document.getElementById("benchHandle")).display]), ["none", "none"], "standard: no Bench tab and no handle");
   await page.click("#tabCompanion"); await page.waitForTimeout(300);
   await clip(page, "play-standard-companion.png");
   await page.click("#dockCtl"); await page.waitForTimeout(700);   // K, standard tier: no sheet; the bar's note says the Caddy's lines for 4000 ms
