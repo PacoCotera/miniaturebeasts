@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { incubatorBuild } from "../src/views/incubator-props.mjs";
+import { incubatorBuild, knownChapters } from "../src/views/incubator-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -45,7 +45,7 @@ test("an empty Incubator offers Choose a pod only when the rack holds a pod and 
   st.tray.length = 0; assert.equal(build(st).line.ok, null);
 });
 
-test("a growing bud: the leaves count the minutes, the filling one its rows; Grow now and its price; ready: Open", () => {
+test("a growing bud: the leaves count the minutes, the filling one its rows; Hatch now and its price; ready: Open (Hatch now is not offered on a ready bud)", () => {
   const { st, p } = world(); const r = S.grow(st, p, {}, settings, T0); assert.ok(r.ok);
   const g = build(st, { inc: {} }, T0 + 1000);
   assert.equal(g.props.state, "growing"); assert.equal(g.line.ok, spec.strings.grow); assert.match(g.line.subject, /^an? \w+ bud$/, "a founder's bud reads in the spec's lower case"); assert.ok(g.line.price);
@@ -53,6 +53,16 @@ test("a growing bud: the leaves count the minutes, the filling one its rows; Gro
   const mid = S.budLeaves(st, settings, T0 + st.bud.minutes * 30_000, 40); assert.ok(mid.full >= 0 && mid.rows <= 19);
   const rd = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 + 10_000);
   assert.equal(rd.props.state, "ready"); assert.equal(rd.line.ok, spec.strings.open); assert.equal(rd.props.regions.leaves.full, rd.props.regions.leaves.total);
+  assert.equal(spec.strings.grow, "Hatch now"); assert.notEqual(rd.line.ok, spec.strings.grow); assert.ok(!("price" in rd.line), "Open has no price");
+});
+
+test("while Hatch now's leaves turn the chamber is already empty, and the screen keeps the bud it hatched: growing, the leaves, the tabs, the stamp and the line as they were", () => {
+  const { st, p } = world(); S.grow(st, p, {}, settings, T0); const now = T0 + 1000, B = st.bud, was = build(st, { inc: {} }, now);
+  const grow = { known: knownChapters(st, B, settings, now), leaves: S.budLeaves(st, settings, now, spec.regions.leaves.max, spec.regions.leaves.leaf[1]), cost: S.instantGrowCost(st, settings, now), need: was.line.need, progress: S.budProgress(st, settings, now), bud: B, until: now + 400 };
+  assert.equal(S.instantGrow(st, settings, now).ok, true); assert.equal(st.bud, null);
+  const mid = build(st, { inc: { grow } }, now + 100); assert.equal(mid.props.state, "growing"); assert.deepEqual(mid.props.regions.leaves, was.props.regions.leaves); assert.deepEqual(mid.line, was.line); assert.deepEqual(mid.props.regions.rail, was.props.regions.rail);
+  assert.equal(mid.props.regions.bud.stage, was.props.regions.bud.stage); assert.equal(mid.props.regions.code, was.props.regions.code);
+  assert.equal(build(st, { inc: { grow } }, now + 400).props.state, "empty", "after the event the hatch (ui.inc.hatch) takes over; without it the chamber is empty");
 });
 
 test("every state is plain JSON, names no rectangle, and fits the 32 KiB budget", () => {

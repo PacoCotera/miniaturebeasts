@@ -21,7 +21,7 @@ export function knownChapters(st, B, settings, now) {
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const ph = (id, size, hollow, until) => req({ kind: "ph", id, size, hollow, until });
-  const stale = "its master (incubator.json placeholders)", signed = "signed (art director)", B = st.bud, gs = !hatch && B && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null;   // gs: growNow is playing: the screen shows the bud as it was (the leaves, the tabs, the stamp, the line) until the event ends, then the ready state on one refresh
+  const stale = "its master (incubator.json placeholders)", signed = "signed (art director)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: growNow is playing (Hatch now has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was (the leaves, the tabs, the stamp, the line) until the event ends, then the ready state on one refresh
   const ready = !!B && !gs && S.budReady(st, settings, now);
   const mb = hatch ? S.mibiById(st, hatch.mibi) : null;   // the mibi that hatched, while the hatch plays
   const state = hatch ? "hatch" : !B ? "empty" : ready ? "ready" : "growing";
@@ -50,7 +50,7 @@ export function incubatorBuild(m, spec, pods) {
   regions.domeFront = { picture: slot(req, "dome-front-304x272", R.domeFront.rect, signed) };
   regions.nest = { picture: slot(req, "nest-208x48", R.nest.rect, signed) };
   if (state !== "empty") {
-    const [bw, bh] = R.bud.rect.slice(2), p = B ? S.budProgress(st, settings, now) : 1, pic = (id) => ph(id, [bw, bh], false, stale);
+    const [bw, bh] = R.bud.rect.slice(2), p = gs ? gs.progress : B ? S.budProgress(st, settings, now) : 1, pic = (id) => ph(id, [bw, bh], false, stale);
     regions.bud = { stage: state === "hatch" ? "hatch" : ready ? "ready" : p < 0.5 ? "early" : "late", early: pic("bud-early-128x160"), late: pic("bud-late-128x160"), ready: pic("bud-ready-128x160"),
       crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master"), front: slot(req, "bud-ready-front-128x160", R.bud.rect, signed) };
   }
@@ -73,7 +73,7 @@ export function incubatorBuild(m, spec, pods) {
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
 
-  // the bottom line (incubator.json bottomLine): Choose a pod, Grow now, Open; the context, the notice, ← Home
+  // the bottom line (incubator.json bottomLine): Choose a pod, Hatch now, Open; the context, the notice, ← Home
   const Sg = spec.strings; let line = { ok: null, back: Sg.back, subject: "", need: null };
   if (state === "empty") { line = { ok: choosePod({ st, settings }) !== null ? Sg.choose : null, back: Sg.back, subject: Sg.empty, need: S.bayFull(st, settings) ? Sg.noBay : null }; }
   else if (state === "growing" || state === "ready") {

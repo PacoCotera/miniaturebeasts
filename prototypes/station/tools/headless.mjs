@@ -72,14 +72,14 @@ export class Player {
   // Shape one read trait of the pod to a look it can carry that it does not show, if there is one.
   shape(p) { for (const t of S.shapeableTraits(p)) { const o = S.rollOptions(p, t.id); const alt = o.find((x) => x.choice && x.look !== o[0].look); if (alt) return { [t.id]: alt.choice }; } return {}; }
   grow(p, choices = {}, label = "grow") { const c = S.growCost(this.st, choices, this.settings); this.afford(c.e, c.d, c.s); return this.step(label, () => S.grow(this.st, p, choices, this.settings, this.now)); }
-  // The bud: wait out what is left of its minutes (the rule's own, from its start), then open it (a press). With `growNow` the player pays Grow now (1 Essence per 2 minutes left) instead
+  // The bud: wait out what is left of its minutes (the rule's own, from its start), then open it (a press). With `growNow` the player pays Hatch now (1 Essence per 2 minutes left, and the bud hatches in the same press) instead
   // of waiting whenever it can pay.
   waitBud() {
     const B = this.st.bud, left = () => Math.max(0, B.start + B.minutes * MIN - this.now);
-    if (this.growNow && left() > 0) { const c = S.instantGrowCost(this.st, this.settings, this.now); if (S.canPay(this.st, c.e, c.d, c.s)) { const was = left(); this.step("grow now (" + Math.round(was / MIN) + " min left)", () => S.instantGrow(this.st, this.settings, this.now)); return this.step("the bud is grown now", () => ({ ok: true })); } }
+    if (this.growNow && left() > 0) { const c = S.instantGrowCost(this.st, this.settings, this.now); if (S.canPay(this.st, c.e, c.d, c.s)) { const was = left(); const r = this.step("hatch now (" + Math.round(was / MIN) + " min left)", () => S.instantGrow(this.st, this.settings, this.now)); this.hatchedNow = r.mibi; return r; } }   // Hatch now hatches: open() below hands back that mibi
     const ms = left(); return this.step("the bud grows (" + B.minutes + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms });
   }
-  open() { return this.step("open the bud", () => S.openBud(this.st, this.sv, this.settings, this.now)); }
+  open() { if (this.hatchedNow) { const mibi = this.hatchedNow; this.hatchedNow = null; return { ok: true, mibi }; } return this.step("open the bud", () => S.openBud(this.st, this.sv, this.settings, this.now)); }
   // Walks until a mibi is adult (the Companion's world turns: one expedition each).
   growUp(m) { let n = 0; while (!S.isAdult(this.st, m, this.settings) && n < 10) { this.takeWalk(); n++; } return n; }
   cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => { const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed)); this.st.dock.docked = was; return r; }); }   // a mibi out with the Companion cannot be crossed until it docks: the cross is made at the dock

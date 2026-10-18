@@ -180,7 +180,7 @@ test("no refresh redraws more than a quarter of the screen across the hatch (fra
 });
 test("growNow with reduced motion is one cut on the key's frame: the leaves, the tabs and the ready state in one refresh of at most 162,432 px", { skip }, async () => {
   const before = scene({ minutes: 13.2 }), f = await start(before, { motion: false, t0: 1000, top: { materials: { e: 9, d: 10, s: 9 } } });   // the grow spends ◆ 4 (10 → 6): the top bar changes and flashes with the line, as on the page
-  const after = scene({ minutes: 13.2, grow: undefined }); const st = after.st; S.instantGrow(st, settings, after.now);
+  const after = scene({ minutes: 13.2, grow: undefined }); const st = after.st; st.bud.early = true;   // the wait ended (Hatch now goes on to hatch it; this face contract is the ready state a growNow lands on)
   const b2 = incubatorBuild({ st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line, { materials: { e: 9, d: 6, s: 9 }, flash: { d: true } }) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f), n = f.M._face_dirty_count();
@@ -190,7 +190,7 @@ test("growNow with reduced motion is one cut on the key's frame: the leaves, the
 test("growNow with motion on: the props show the bud as it was until 400, then the ready state lands on one refresh of at most 153,600 px", { skip }, async () => {
   const b = scene({ minutes: 13.2 }), L = b.props.regions.leaves, f = await start(b, { t0: 1000 }), t0 = f.t;
   f.send({ t: "event", kind: "growNow", target: "room", from: L.full, to: L.total, ms: EV.growNow.ms, hold: EV.growNow.hold }); for (let t = 16; t < 400; t += 16) f.frame(t0 + t);
-  const after = scene({ minutes: 13.2 }); S.instantGrow(after.st, settings, after.now);
+  const after = scene({ minutes: 13.2 }); after.st.bud.early = true;
   const b2 = incubatorBuild({ st: after.st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame(t0 + 400); const a = area(f);
