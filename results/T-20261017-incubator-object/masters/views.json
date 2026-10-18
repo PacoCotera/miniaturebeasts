@@ -54,6 +54,15 @@
    116,
    80
   ],
+  "door_size": [
+   457,
+   459
+  ],
+  "door_at": [
+   116,
+   80
+  ],
+  "juvenile_h": 126,
   "moss_y": 416,
   "pod_h": 147,
   "room_crop": "capsule-room-dusk cols 275-749, rows 108-576"

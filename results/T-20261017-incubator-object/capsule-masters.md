@@ -128,3 +128,20 @@ Both use the renderer's Loika pod, not yet relit.
 It is a white highlight layer, alpha only on the strokes, at most 0.53. It draws over the pod and under the seal ring.
 
 **Where the strokes come from** (`glass.py`): the closed still has no separable reflections. Closed minus the empty interior is only moss noise, and its glass reads by the rim's inner shadow. The studio did paint the glass's highlights on the open door, in the house hand. Those strokes are lifted from `capsule-door-open`, mirrored, mapped box to box onto the closed window, and kept inside the window. The result is a faint arc sheen that says "glass" without veiling the pod.
+
+## Three fixes from the T-222 stills (UI/UX, uiux-rulings-2)
+
+**1. The opened pod's cap at the hatch.** The cap was cut too large: its long axis was 128 at pod-large, nearly the bowl's height. It is recut to its true size, about 0.62 of the pod's width, so the long axis is 92. It is also pre-tilted 14° outward offline, giving 89 × 88 at pod-large (`opened/pod-opened-cap-*`).
+- **Draw order:** cap, then bowl, then juvenile.
+- **The bowl:** centred on the pod's x, foot on the moss line.
+- **The cap:** stands behind the bowl's left side, its bottom-right corner 12 px (pod-large units, ×0.909 in the room, so 11 px) inside the bowl's left edge, its foot on the moss line.
+- **The juvenile:** in front, feet at (532, 415).
+- **In the room** (`opened/proof-hatch-room.png`): the bowl is 131 × 136 at (447, 283) and the cap 81 × 80 at (377, 339). The cap's right edge is at 458, clear of the juvenile's box (x 461–604).
+
+**2. The stamp case's front glass** stops short of the plate. `stamp-case/room-stamp-case-152x152-front.png` replaces station-gate's `prototypes/ui/assets/masters/pods/room-stamp-case-152x152-front.png`. It is the same uniform veil (29, 35, 43 at alpha 122), now with alpha 0 over the plate's 120 × 120 (rows and columns 16–135), so it covers the frame band only. The builder places it.
+
+**3. The panel's day set at ×0.733** (`panel/`):
+- `capsule-room-day-474x468` (the same crop as dusk: cols 275–749, rows 108–576);
+- `capsule-shell`, `capsule-interior-day`, `capsule-bar-lit`, `capsule-glass-closed`, each at 296 × 459, placed at (116, 80);
+- `capsule-door-open-457x459` at (116, 80). It is wider than the window, so the window clips the door's far edge, as a framed close-up does.
+- The juvenile is 126 tall and the pod 147. The opened pod is reduced at ×0.733 from pod-large's 176 scale, so the bowl is about 113 tall.

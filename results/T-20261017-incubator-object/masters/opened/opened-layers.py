@@ -12,7 +12,11 @@ bowl = Image.open(glob.glob(f'{CUT}/pod-opened-bowl-shade-*.png')[0]).convert('R
 cap = Image.open(glob.glob(f'{CUT}/pod-opened-cap-shade-*.png')[0]).convert('RGBA')
 W = 144                                                                  # pod-large's width
 bowl = bowl.resize((W, round(bowl.height * W / bowl.width)), Image.LANCZOS)
-cap = cap.resize((round(cap.width * 0.29), round(cap.height * 0.29)), Image.LANCZOS)   # the cap at the bowl's scale
+# the cap at its true size: the closed pod's cap is about 0.62 of its width (about 90 at pod-large), so the painted cap's
+# long axis is reduced to 92; then it is pre-tilted 14 degrees outward (its top leaning away from the bowl), offline
+k = 92 / cap.height
+cap = cap.resize((round(cap.width * k), 92), Image.LANCZOS).rotate(14, resample=Image.BICUBIC, expand=True)
+cap = cap.crop(cap.getbbox())
 def shade(im):                                                           # neutral grey, mean matched to pod-large's shade
     a = np.asarray(im).astype(float); m = a[..., 3] > 128
     g = a[..., 0] * (134 / a[m][:, 0].mean())

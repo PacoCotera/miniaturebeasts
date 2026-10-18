@@ -51,14 +51,17 @@ k = 224 / 626; cw, ch = view('create', k, CAP); cx = 864 - round(k * (514 - 316)
 k = 86 / 626; hw, hh = view('home', k, CAP, ['capsule-shell', 'capsule-interior-day', 'capsule-bar-lit', 'capsule-door-open', 'capsule-glass-closed'])
 rep['home'] = dict(scale=round(k, 4), size=(hw, hh), at=(432, 488), moss_y=round(488 + k * 458), pod_h=round(k * 200))
 # D. the Incubate panel's left window 24,76, 474x468: x0.733, axis x 261, crown top at y 80
-k = 0.733; pw, ph = view('panel', k, CAP, ['capsule-shell-dusk', 'capsule-interior-dusk', 'capsule-seal-ring', 'capsule-glass-closed'])
+k = 0.733; pw, ph = view('panel', k, CAP, ['capsule-shell-dusk', 'capsule-interior-dusk', 'capsule-seal-ring', 'capsule-glass-closed',
+                                'capsule-shell', 'capsule-interior-day', 'capsule-bar-lit'])
+pw2, ph2 = view('panel', k, (316, 0, 940, 626), ['capsule-door-open'])   # the open door needs its own wider box
 px, py = round(261 - k * (514 - 316)), 80
 foot = py + k * (589 + 26); table = py + k * (489 + 26); r0 = round(489 - (table - 76))
-Image.open(f'{CUT}/capsule-room-dusk-1024x600.png').convert('RGB').crop((275, r0, 749, r0 + 468)).save(f'{OUT}/panel/capsule-room-dusk-474x468.png')
+for g in ('day', 'dusk'):
+    Image.open(f'{CUT}/capsule-room-{g}-1024x600.png').convert('RGB').crop((275, r0, 749, r0 + 468)).save(f'{OUT}/panel/capsule-room-{g}-474x468.png')
 win = Image.open(f'{OUT}/panel/capsule-room-dusk-474x468.png').convert('RGBA')
 d = compose(win, 'panel', pw, ph, (px - 24, py - 76), 'dusk', round(k * 200), (261 - 24, round(py + k * 458) - 76), seal=True, bar=False)
 d.convert('RGB').save(f'{OUT}/proof-panel-incubate-474x468.png')
-rep['panel'] = dict(scale=k, size=(pw, ph), at=(px, py), moss_y=round(py + k * 458), pod_h=round(k * 200), room_crop=f'capsule-room-dusk cols 275-749, rows {r0}-{r0 + 468}')
+rep['panel'] = dict(scale=k, size=(pw, ph), at=(px, py), door_size=(pw2, ph2), door_at=(px, py), juvenile_h=round(k * 172), moss_y=round(py + k * 458), pod_h=round(k * 200), room_crop=f'capsule-room-dusk cols 275-749, rows {r0}-{r0 + 468}')
 # E. the pod in the price header: the renderer's collection pod reduced to 16 x 20
 pod('collection', '#465459', '#ae674d', 'dots').resize((16, 20), Image.LANCZOS).save(f'{OUT}/proof-pod-price-16x20.png')
 import json; json.dump(rep, open(f'{OUT}/views.json', 'w'), indent=1); print(json.dumps(rep, indent=1))
