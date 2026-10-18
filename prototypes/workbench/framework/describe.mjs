@@ -76,6 +76,17 @@ export function traitLooks(frame, trait, opts = {}) {
   return labels;
 }
 
+// The looks a new pod of the frame's current version can show (T-20261016-205): the trait's looks (traitLooks) reachable when every copy
+// of every one of its loci comes from the locus row's pool (`alleles`), never its `legacy` allowance. The field guide counts these;
+// a legacy look (the Loika's plain, the Tuikis's hooves) is found only on an old line and never counted (T-20261016-204).
+export function currentLooks(frame, trait) {
+  const rows = trait.loci.map((id) => frame.loci.find((l) => l.id === id)); if (rows.some((r) => !r)) return traitLooks(frame, trait);
+  const pairs = rows.map((r) => r.alleles.flatMap((a, i) => r.alleles.slice(i).map((b) => [a, b])));
+  const shown = new Set(), walk = (k, loci) => { if (k === rows.length) { const l = lookOf(frame, trait, { loci }); if (l != null) shown.add(l); return; } for (const p of pairs[k]) walk(k + 1, { ...loci, [rows[k].id]: p }); };
+  walk(0, {});
+  return traitLooks(frame, trait).filter((l) => shown.has(l));
+}
+
 // Proportions in plain words: the rig's ratio loci whose two copies agree on an end of their range.
 const PROPORTION_WORDS = {
   "growth.core-half-length": { small: "a small body", large: "a large body" },
