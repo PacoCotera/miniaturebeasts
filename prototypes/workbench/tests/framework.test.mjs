@@ -406,6 +406,18 @@ test("a shown look is always one of its trait's words: the frame's looks, or a f
   }
 });
 
+test("currentLooks: a trait's looks a new pod can show; a legacy look (the Loika's plain, the Tuikis's old feet) is never among them, and every other trait keeps all its looks", async () => {
+  const { currentLooks, traitLooks } = await import("../framework/describe.mjs");
+  const traitOf = (sp, id) => frameOf(sp).chapters.flatMap((c) => c.traits).find((t) => t.id === id);
+  const markings = traitOf("S01", "markings");
+  assert.deepEqual(currentLooks(frameOf("S01"), markings), traitLooks(frameOf("S01"), markings).filter((l) => l !== "plain"), "the Loika's plain only comes from a legacy off");
+  assert.deepEqual(currentLooks(frameOf("S03"), traitOf("S03", "feet")), ["round feet", "padded feet", "digging wedges"]);
+  for (const f of frames) for (const ch of f.chapters) for (const t of ch.traits) {
+    if (t.loci.some((id) => f.loci.find((l) => l.id === id)?.legacy?.length)) continue;
+    assert.deepEqual(currentLooks(f, t), traitLooks(f, t), `${f.species.id} ${t.id}`);
+  }
+});
+
 test("the Tuikis's claws: new pods draw only the three digging forms; a legacy hoof, webbed or root copy stays legal, breeds, and reads plainly", async () => {
   const { lookOf } = await import("../framework/describe.mjs");
   const f = frameOf("S03"), id = "anatomy.contact-terminal-form", row = f.loci.find((l) => l.id === id), claws = f.chapters.flatMap((c) => c.traits).find((t) => t.id === "feet");
