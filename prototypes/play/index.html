@@ -95,6 +95,9 @@ iframe{border:0; display:block; background:var(--void)}
 .bk.confirm svg{stroke:#fff8ef; stroke-width:3}
 .bk img{width:calc(var(--f) * 24px); height:calc(var(--f) * 24px); image-rendering:pixelated; pointer-events:none}
 /* the bench */
+#caddySheet{position:fixed; background:var(--bar); box-shadow:inset 0 calc(var(--f) * 1px) 0 var(--bevel); border-radius:calc(var(--f) * 8px); overflow:hidden; z-index:12}   /* the Caddy's screen, raised from the cradle (T-20261016-109): the cradle's body colour, an 8 lp bezel */
+#caddySheet.hidden{display:none}
+#caddyView{position:absolute; image-rendering:pixelated; display:block}
 #bench{position:fixed; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); z-index:10}
 #bench header{position:absolute; left:0; top:0; right:0; border-bottom:calc(var(--f) * 1px) solid var(--hairline); color:var(--fog)}
 #bench header span{position:absolute}
@@ -140,6 +143,7 @@ iframe{border:0; display:block; background:var(--void)}
 </div>
   <div id="bench" class="hidden"><header><span id="benchTitle">Bench</span><button type="button" class="ctl" id="benchLower">Lower ↓</button></header><iframe id="fBench" title="Bench" allow=""></iframe></div>
   <button type="button" id="benchHandle" class="hidden"><span>Raise the bench ↑, or press ` until it has the keys</span></button>
+  <div id="caddySheet" class="hidden" aria-label="The Caddy's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
   <div id="dev" class="hidden"><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
 <div id="bar">
   <button type="button" class="ctl" id="tabStation">Station</button>
@@ -155,7 +159,7 @@ iframe{border:0; display:block; background:var(--void)}
   <h2>Keys</h2>
   <p>Only the device with the keys hears them. Shift keys belong to the page.</p>
   <h3>Page (any device, not while typing)</h3>
-  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd></dl>
+  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt>Shift+C</dt><dd>The Caddy's screen</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd></dl>
   <h3>Station</h3>
   <dl><dt>← ↑ → ↓</dt><dd>Move the ring</dd><dt>Enter, Space</dt><dd>✓, what the bottom line names</dd><dt>Esc, Backspace</dt><dd>← Back one view</dd><dt>H</dt><dd>Home</dd><dt>B</dt><dd>Vivarium</dd><dt>R</dt><dd>Research</dd><dt>L</dt><dd>Library</dd></dl>
   <h3>Companion</h3>

@@ -22,11 +22,12 @@ import { departures as vivariumDepartures } from "../../face/tools/vivarium-regi
 import { departures as habitatDepartures } from "../../face/tools/habitat-regions.mjs";
 import { departures as libraryDepartures } from "../../face/tools/library-regions.mjs";
 import { departures as benchDepartures } from "../../face/tools/bench-regions.mjs";
+import { departures as cargoDepartures } from "../../face/tools/cargo-regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 if (!existsSync(file)) { console.error("no journey record at " + file); process.exit(2); }
-const incubatorSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/incubator.json"), "utf8")), vivariumSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/vivarium.json"), "utf8"));
+const cargoSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/cargo.json"), "utf8")), incubatorSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/incubator.json"), "utf8")), vivariumSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/vivarium.json"), "utf8"));
 const benchSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/bench.json"), "utf8")), librarySpec = JSON.parse(readFileSync(path.join(ui, "specs/station/library.json"), "utf8")), habitatSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/habitat.json"), "utf8")), namerSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/namer.json"), "utf8"));
 const rec = JSON.parse(readFileSync(file, "utf8")), home = JSON.parse(readFileSync(path.join(ui, "specs/station/home.json"), "utf8")), pods = JSON.parse(readFileSync(path.join(ui, "specs/station/pods.json"), "utf8")), createSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/create.json"), "utf8")), frame = JSON.parse(readFileSync(path.join(ui, "specs/station/frame.json"), "utf8"));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.join(ui, "palettes/station.json"), "utf8")).colours);
@@ -63,6 +64,7 @@ let regionsChecked = 0;
 for (const s of rec.shots) {
   const c = s.check, lg = c.log ?? { type: [], regions: [] }, got = (layer, id) => lg.regions.filter((r) => r.layer === layer && r.id === id);
   const must = (ok, m) => { regionsChecked++; if (!ok) fail(`${s.name}: ${m}`); };
+  const panelOpen = c.props?.overlay === "panel", keep = (d) => (panelOpen ? d.filter((m) => !/\bring\b|focus draws nothing|namer's plate/.test(m)) : d);   // a decision panel is open: its ring and plate are the panel's (face/tests/panel.test.mjs)
   const one = (layer, id, want, what) => { for (const r of got(layer, id)) must(eq(r.rect, want), `${what ?? id} ${r.rect} is not ${want}`); };
   const inside = (layer, id, box) => { for (const r of got(layer, id)) must(within(r.rect, box), `${id} ${r.rect} is not inside ${box}`); };
   if (c.idle) { for (const m of idleDepartures(lg, frame)) must(false, m); regionsChecked += lg.regions.length; must(got("chrome", "idle.strip").length === 1 && got("chrome", "vivarium").length + got("painted", "vivarium").length >= 1, "Idle draws the Vivarium (its plates, or the light's painting) and the strip"); continue; }   // Idle: every region of the face's log against frame.json idle (face/tools/idle-regions.mjs)
@@ -73,18 +75,20 @@ for (const s of rec.shots) {
     const d = departures(lg, home, frame, c.homeFocus ?? "room"); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
     must(got("chrome", "glass").length + got("painted", "glass").length === 1 && got("chrome", "bezel").length === 1 && MODULES.every((m) => got("painted", m + ".plate").filter((r) => r.rect[2] === home.regions[m].rect[2] && r.rect[3] === home.regions[m].rect[3]).length === 1 && !got("chrome", m).length), "Home draws the bezel, the glass and the five modules once each");
   } else if (c.screen === "create" && c.props?.state !== "notBuilt") {   // Create: every region of the face's log against create.json (face/tools/create-regions.mjs): zero departures; the roll, the founder and the stamp label are drawn
-    const d = createDepartures(lg, createSpec, frame, c.props.state); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(createDepartures(lg, createSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
     must(got("painted", "stamp.plate").length === 1 && got("art", "founder").length + got("painted", "founder").length >= 1 && got("chrome", "roll").length >= 1, "Create draws the roll, the founder and the stamp label");
   } else if (c.screen === "incubator" && c.props?.state !== "notBuilt") {   // the Incubator: every region of the face's log against incubator.json (face/tools/incubator-regions.mjs): zero departures
-    const d = incubatorDepartures(lg, incubatorSpec, frame, c.props.state); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(incubatorDepartures(lg, incubatorSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+  } else if (c.screen === "cargo" && c.props?.state === "arrival") {   // the dock arrival: every region of the face's log against cargo.json regions.arrival (face/tools/cargo-regions.mjs): zero departures
+    const d = keep(cargoDepartures(lg, cargoSpec, frame, "arrival")); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "vivarium" && c.viv) {   // the Vivarium's whole: every region of the face's log against vivarium.json (face/tools/vivarium-regions.mjs): zero departures; a tile a bay
-    const d = vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "bench" && c.bench) {   // the Probe bench: every region of the face's log against bench.json (face/tools/bench-regions.mjs): zero departures
-    const d = benchDepartures(lg, benchSpec, c.bench.props, c.bench.cur); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(benchDepartures(lg, benchSpec, c.bench.props, c.bench.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "library" && c.lib) {   // the Library spread: every region of the face's log against library.json (face/tools/library-regions.mjs): zero departures; each part at place + at, inside its page
-    const d = libraryDepartures(lg, librarySpec, c.lib.props, c.lib.cur); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(libraryDepartures(lg, librarySpec, c.lib.props, c.lib.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "habitat" && c.hab) {   // one mibi up close: every region of the face's log against habitat.json (and namer.json while the namer is open) (face/tools/habitat-regions.mjs): zero departures
-    const d = habitatDepartures(lg, habitatSpec, namerSpec, c.hab.state, c.hab.cur, c.hab.n, c.hab.open); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(habitatDepartures(lg, habitatSpec, namerSpec, c.hab.state, c.hab.cur, c.hab.n, c.hab.open)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen !== "pods" || c.props?.state === "notBuilt") {   // a screen the face has no words for: the frame, the stage in the ground and the line, centred on 512 with its cap top on 288
     must(c.props?.state === "notBuilt", `${c.screen} is not built and sends state notBuilt`);
     one("chrome", "notBuilt.stage", F.stage.rect, "the stage ground");
@@ -113,7 +117,7 @@ for (const s of rec.shots) {
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
 for (const screen of ["cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
-for (const [pt, state] of [["page-bench", "docked"], ["page-bench-armed", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "spread"], ["page-library-spread", "spread"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
+for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "spread"], ["page-library-spread", "spread"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
 // the moving sets (Station M1 §3, vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole, Home's glass and Idle; up close and in the hatch
 // the up-close hop scales down to fit when the rect leaves less above the figure, so it never clips (the animator's closeHop note)
 { const MV = path.join(ui, "specs/station/moving"), ix = JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")), sets = Object.fromEntries(ix.sets.map((id) => [id, JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"))]));

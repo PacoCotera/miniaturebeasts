@@ -32,3 +32,28 @@ export function intent(h, target, verb) {
 }
 // Create opens on a pod: nothing chosen, the first read trait.
 export function openCreate(h, p) { h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.goto("create"); }
+
+// The Grow, from a card of the Grow this founder? panel (`act`: grow | watch | read): the rule pays and the bud starts, the event plays, and the jump lands where the card said. grow and watch land in the Incubator (grow: with the arrival plate in
+// the arrival mode of the jump flag, settings.jump); read lands in Pods' collection with the ring on the next pod.
+export function growFounder(h, act = "grow") {
+  const cr = h.ui.create, p = cr && createPod(h.st, cr); if (!p || cr.grown) return;
+  const spec = h.specs.create, place = Math.max(0, h.st.tray.findIndex((q) => q.id === p.id));
+  const r = S.grow(h.st, p, cr.choices, h.settings, h.now());
+  if (!r.ok) { h.say(r.msg); return r; }
+  const ev = spec.events.grow, motion = h.motion ? h.motion() : true;
+  cr.grown = { code: r.bud.code, cost: r.cost, pod: p, minutes: r.bud.minutes }; h.ui.pods.cur = null; h.save();   // the bud's own minutes: grow() clears firstMibi, so recomputing them after Grow would show 20 for the first founder
+  const jump = () => { h.ui.create = null; if (act === "read") toPods(h, place); else toIncubator(h, p, place, act === "grow"); };   // Grow it is a jump (both cards that grow play the same event; only the landing differs)
+  if (motion) { h.play({ kind: "grow", target: "pod", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, jump); } else jump();   // reduced motion: the event is a cut, so the jump is on the frame of ✓
+  return r;
+}
+// Pods' collection, the ring on the next pod: the one now at the grown pod's place in the rack (the last when it was the last), else nothing.
+export function toPods(h, place) {
+  const t = h.st.tray, i = Math.min(place, t.length - 1), p = h.ui.pods; p.view = "collection"; p.focusView = null; p.cmp = null;
+  if (i >= 0) { p.cur = t[i].id; p.focus.set("place." + i); } else { p.cur = null; p.focus.set(null); }
+  h.goto("pods");
+}
+// The Incubator, growing; ← there reads Home. Arrival mode: the plate says where we are for its time with no press, and ← goes back to Pods, this pod's place, until another key.
+function toIncubator(h, p, place, arrival) {
+  h.goto("incubator");
+  if (arrival && h.settings.jump !== "fork") { const a = h.specs.panel.strings.arrival; h.ui.arrival = { place }; h.say(a.text.replace("{Species}", S.cap(S.spName(p))), a.ms); }
+}

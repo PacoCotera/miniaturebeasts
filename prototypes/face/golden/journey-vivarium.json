@@ -771,18 +771,35 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Again: return Tuft",
+    "ok": "Keep Tuft",
+    "price": null,
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "panel",
+      "target": "card.return"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return it",
     "price": "❀ +2",
-    "subject": "never taken back",
-    "back": "Vivarium"
+    "subject": "gone for good",
+    "back": "Back"
    },
    {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
-      "screen": "habitat",
-      "target": "wild",
+      "screen": "panel",
+      "target": "card.return",
       "verb": "confirm"
      }
     ],
@@ -1005,7 +1022,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "the mibis at home",
     "back": null
    },
@@ -1021,8 +1038,24 @@
    {
     "key": "dock",
     "said": [],
+    "screen": "cargo",
+    "focus": "vivarium",
+    "ok": null,
+    "subject": "the bay is empty",
+    "back": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
     "screen": "vivarium",
-    "focus": "tile.1",
+    "focus": "resident.1",
     "ok": "Look at Dot",
     "subject": "an adult Loika, asleep",
     "back": "Home"

@@ -89,7 +89,7 @@ test("the lamps: Cargo needs you with crates, Pods with a new pod; amber on one 
 
 test("the notice and the line spell the counts and read home.json's strings", () => {
   const sc = scenes(), c = build(sc.crates.st, sc.crates.sv);
-  assert.equal(c.line.need, "two crates wait in the bay"); assert.equal(c.line.ok, "Open Cargo"); assert.equal(c.line.back, null); assert.equal(c.line.subject, "");
+  assert.equal(c.line.need, "two crates wait in the bay"); assert.equal(c.line.ok, "Open the bay"); assert.equal(c.line.back, null); assert.equal(c.line.subject, "");
   assert.equal(build(sc.crates.st, sc.crates.sv, { focus: "cargo" }).line.subject, "two sealed crates");
   assert.equal(build(sc.crates.st, { ...sc.crates.sv, bay: [crate(1)] }).line.need, "a crate waits in the bay");
   const d = scenes().docked; const m = d.st.mibis[2];

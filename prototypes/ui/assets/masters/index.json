@@ -204,6 +204,13 @@
    "sha256": "04d819b34c178dc0bfe71024dffda0bf418eba7071688c004dce039e536dcf4d",
    "signed": "masters-pods 93011c94 (status new; the art director signs at 1x in the Cargo captures)"
   },
+  "cargo-bay-apron-992x180": {
+   "file": "pods/cargo-bay-apron-992x180.png",
+   "w": 992,
+   "h": 180,
+   "sha256": "4a9b5cbc865a67bb9e095eaf346253c89ca74426159eebe624835711294406f9",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-120, in dock/proof (the arrival at t 2.2 s with two coming home; the show's end; beside the old proof); to re-check in the builder's captures"
+  },
   "cargo-bay-shut-976x304": {
    "file": "pods/cargo-bay-shut-976x304.png",
    "w": 976,
@@ -217,6 +224,13 @@
    "h": 304,
    "sha256": "1bc1ffad77c64ec3b854f2730e55b197ab909f5cc70ba4dedac3599d1c77c2de",
    "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+  },
+  "cargo-crate-64x64": {
+   "file": "pods/cargo-crate-64x64.png",
+   "w": 64,
+   "h": 64,
+   "sha256": "9f78ebe827d5fd2b4c1237b4a44bac20fc54b6725348cf1b70e370c423478b29",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-data-48x64": {
    "file": "pods/cargo-data-48x64.png",
@@ -260,6 +274,13 @@
    "sha256": "25a3dc1a2f958f0e795e7d180d8a3ed9cad6ea3bd2f4d61f94b6e2c5d3103a97",
    "signed": "Paco Cotera"
   },
+  "cargo-link-light-976x8": {
+   "file": "pods/cargo-link-light-976x8.png",
+   "w": 976,
+   "h": 8,
+   "sha256": "3c73091e5a9e9d66303e717bb54ea4549ba7d094e4a6cb58c8c7129ed468d331",
+   "signed": "named with --ids"
+  },
   "cargo-rack-992x168": {
    "file": "pods/cargo-rack-992x168.png",
    "w": 992,
@@ -279,7 +300,7 @@
    "w": 560,
    "h": 136,
    "sha256": "35778a3b75904d00e23786b93ffa196dffff3eb97a63578e01276adc410e0247",
-   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-report-plate-560x144": {
    "file": "pods/cargo-report-plate-560x144.png",
@@ -314,7 +335,7 @@
    "w": 560,
    "h": 176,
    "sha256": "48740e1e961c6220fcd44bec1d54ececf8d5ddb4a81cb7a62a030d1a3a37de26",
-   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-report-plate-560x184": {
    "file": "pods/cargo-report-plate-560x184.png",
@@ -342,7 +363,7 @@
    "w": 560,
    "h": 208,
    "sha256": "79f42234480106b8a5d8856a12bfe00ec44b0e7782df20be6f3a6d6b2277e90a",
-   "signed": "station lead's brief (gate batch 1, the Cargo report in the housing), masters-pods 8bf78660: AR5r, AR6, AR7 (status new; the AD signs in the whole-screen captures)"
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
   },
   "cargo-report-plate-560x216": {
    "file": "pods/cargo-report-plate-560x216.png",
@@ -827,6 +848,27 @@
    "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "face-S01-24": {
+   "file": "pods/face-S01-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "1cc1a26cce48268c2ec864ab9350175e1fc68301011a88e9a6434f2ac4d2ec1f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S02-24": {
+   "file": "pods/face-S02-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "c72d5096ff25e4732f06a3111881523ffcaf194bf08783339e2d4e8ae6dfbc69",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S03-24": {
+   "file": "pods/face-S03-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f627c9af7e2ba50ca8992694d3b38940956c4a7c5f29addd470dba44b70075b7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
   "find-crystal-112x112": {
    "file": "pods/find-crystal-112x112.png",
    "w": 112,
@@ -1275,6 +1317,13 @@
    "sha256": "a191383a949e74a57e4da08dbfff8e2dc87bec25a244d8f7834fe7d5a5f25d6f",
    "signed": "art director, the two doing rolls and the cross icon (masters-pods dce3d3cc)"
   },
+  "icon-map-14x12": {
+   "file": "pods/icon-map-14x12.png",
+   "w": 14,
+   "h": 12,
+   "sha256": "f807b32461b9ec0b218d81a120d044309cdd7e74415cfe69584dd1ca5c7c6897",
+   "signed": "art director at 1x, 2026-10-17: T-20261016-149, in cargo-report/t149/proof (the picture-led report, longest case, on the report door)"
+  },
   "icon-pod-16": {
    "file": "pods/icon-pod-16.png",
    "w": 16,
@@ -1541,6 +1590,13 @@
    "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
    "signed": "named with --ids"
   },
+  "mark-home-16": {
+   "file": "pods/mark-home-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "fded6152272f79225ca2472e3ea0745e8ebd853e04815d5a48845987bdcf824f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
   "mark-line-only-16x16": {
    "file": "pods/mark-line-only-16x16.png",
    "w": 16,
@@ -1575,6 +1631,13 @@
    "h": 8,
    "sha256": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mark-out-16": {
+   "file": "pods/mark-out-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "eda797ec7a81ce7565f6b75496851a5e9d4c37571a49db1040c1bbf962b57447",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
   },
   "mark-out-with-companion-64x96": {
    "file": "pods/mark-out-with-companion-64x96.png",
@@ -2081,6 +2144,13 @@
    "sha256": "3a0bf9b7ce973d6fb06852d946c227fd9094117cd8a020655578562e3bcab049",
    "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
+  "mibi-juvenile-S01-176x128": {
+   "file": "pods/mibi-juvenile-S01-176x128.png",
+   "w": 176,
+   "h": 128,
+   "sha256": "5ebad11fb8bab70f11564d6334ebf95d8f1aebfaf3075ce6f5e07f20cdf92f84",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
   "mibi-juvenile-S01-304x312": {
    "file": "pods/mibi-juvenile-S01-304x312.png",
    "w": 304,
@@ -2563,6 +2633,167 @@
     16
    ],
    "tile": 32
+  },
+  "panel-card-248x288": {
+   "file": "pods/panel-card-248x288.png",
+   "w": 248,
+   "h": 288,
+   "sha256": "760cdbaebd2aedca8262cb6f65889d963bf0049f8c1d5a28672132966298db6c",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-248x288-focused": {
+   "file": "pods/panel-card-248x288-focused.png",
+   "w": 248,
+   "h": 288,
+   "sha256": "8c62551743aca86a3a4a685d21fb94480dc29bc5dd4ac13a8045608058025908",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-380x288": {
+   "file": "pods/panel-card-380x288.png",
+   "w": 380,
+   "h": 288,
+   "sha256": "974beabf861cf357bc1943a72f4063e00110897b43ac83a49741d99662c92077",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-380x288-focused": {
+   "file": "pods/panel-card-380x288-focused.png",
+   "w": 380,
+   "h": 288,
+   "sha256": "f85efc30a8f3c599c5606de60b2202daec26ddc0ddff5f0b8baca16b8b1ad0b0",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-776x288": {
+   "file": "pods/panel-card-776x288.png",
+   "w": 776,
+   "h": 288,
+   "sha256": "f2ae2e19dd2fef388d68825eea971f8884ac585b6cd1a78dadce310351af59f1",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-card-776x288-focused": {
+   "file": "pods/panel-card-776x288-focused.png",
+   "w": 776,
+   "h": 288,
+   "sha256": "25da4ef8bde9e72379c4f08ccdab122d7be5e1931192f8dfc5068c315f8d3170",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-chip-40x20": {
+   "file": "pods/panel-chip-40x20.png",
+   "w": 40,
+   "h": 20,
+   "sha256": "064590ce92716f656a1fda55fed78ae045fda609d26a2bd78b7fa66c55df31ee",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)",
+   "slice": [
+    10,
+    0,
+    10,
+    0
+   ],
+   "tile": "stretch"
+  },
+  "panel-contact-shadow-128x16": {
+   "file": "pods/panel-contact-shadow-128x16.png",
+   "w": 128,
+   "h": 16,
+   "sha256": "441cd51ec369ab027ac0428fe53875a143afcd948d24b3766f0eb88eedbf40fb",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-glow-216x160": {
+   "file": "pods/panel-glow-216x160.png",
+   "w": 216,
+   "h": 160,
+   "sha256": "90d94449df36cc7bda8790b4d68ece0ad09e3721e1e1ffaaef50be86cf5517b0",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-glow-348x160": {
+   "file": "pods/panel-glow-348x160.png",
+   "w": 348,
+   "h": 160,
+   "sha256": "ea1ae973b0dd68887f5e0486350dd6b4241a694db0f1c7f362f91c18589fce6f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-glow-744x160": {
+   "file": "pods/panel-glow-744x160.png",
+   "w": 744,
+   "h": 160,
+   "sha256": "9272363c0e899265d743e357a77f4cef850d41b583eabf743ea62498a0a4a7c1",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-housing-840x440": {
+   "file": "pods/panel-housing-840x440.png",
+   "w": 840,
+   "h": 440,
+   "sha256": "0fa476aa72a875494d88c9049e4259c78bf5a958867c94d215538d7692c78b7b",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
+  },
+  "panel-light-216x160": {
+   "file": "pods/panel-light-216x160.png",
+   "w": 216,
+   "h": 160,
+   "sha256": "8237bde40b3c47ade62ac52659b76db71c5b7bb3ada6f16b06486143439ef2b7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-light-348x160": {
+   "file": "pods/panel-light-348x160.png",
+   "w": 348,
+   "h": 160,
+   "sha256": "1db637898e58679878c9d75c1115c926c4b1f444d66d9369bfce16fe2168d0bc",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-light-744x160": {
+   "file": "pods/panel-light-744x160.png",
+   "w": 744,
+   "h": 160,
+   "sha256": "7f0e2b1b421485efe26d90abe920e8681d2292994466d1f6b2050183b9f24fc9",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-216x152": {
+   "file": "pods/panel-scene-wild-216x152.png",
+   "w": 216,
+   "h": 152,
+   "sha256": "2f898a28f180df520072f139b91f311ddfd58e5a9a5f8a7d31494f5c9fc13d8d",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-348x152": {
+   "file": "pods/panel-scene-wild-348x152.png",
+   "w": 348,
+   "h": 152,
+   "sha256": "269ce55e1b6d09d171f9487a19fa8625658ec459a3003e317d8824e6b8761649",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-scene-wild-744x152": {
+   "file": "pods/panel-scene-wild-744x152.png",
+   "w": 744,
+   "h": 152,
+   "sha256": "e0c7f9d895b84cd39bd0ecddc9e8ad74c992a4316b1027500a525eaabff1d49f",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-stage-216x48": {
+   "file": "pods/panel-stage-216x48.png",
+   "w": 216,
+   "h": 48,
+   "sha256": "d9ebe8909d2c500b5340b2b29002da80fb2a7072a4e87a027a9cf25cea3dd6a6",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-stage-348x48": {
+   "file": "pods/panel-stage-348x48.png",
+   "w": 348,
+   "h": 48,
+   "sha256": "07a9257e88cd99bf867a45a6cffed71730f30ede957c2eec4f7b8fdba0766eb7",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-stage-744x48": {
+   "file": "pods/panel-stage-744x48.png",
+   "w": 744,
+   "h": 48,
+   "sha256": "1c0957c6c503b65793562253edad5b346a2401ef214d8c2b6c7174b1081adfb2",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-70, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close, re-proofed)"
+  },
+  "panel-veil-1024x522": {
+   "file": "pods/panel-veil-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "99cb083927d3bdd2c69575a4d8a2f416f05208036ff3b33d23a64c99ca6ce539",
+   "signed": "art director at 1x, 2026-10-16: T-20261016-47, in decision-panel/proof (the Grow it panel over Create, the Return panel over the Vivarium up close)"
   },
   "place-cave-48x48": {
    "file": "pods/place-cave-48x48.png",

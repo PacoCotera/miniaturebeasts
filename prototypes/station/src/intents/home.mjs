@@ -1,5 +1,7 @@
 // Home's intents (home.json: the keys, the line): the rule calls behind ✓ on the room, the Vivarium, a resident, a module of the column and the rest knob. The pad is the face's (focus.graph); ← does nothing on Home.
 import * as S from "../state.mjs";
+import { openBay } from "./cargo.mjs";
+import { intent as incubatorIntent } from "./incubator.mjs";
 
 export const toPods = (h) => { const p = S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
 const toVivarium = (h, id) => { const ui = h.ui; if (id != null && S.mibiById(h.st, id)) ui.hab.id = id; ui.hab.f = "resident"; h.goto("habitat"); };   // the ring on the resident; a new mibi opens in its meet (ui.meet), ended by the first press there
@@ -7,8 +9,8 @@ const toLibrary = (h) => { h.ui.lib.f = "spread"; h.goto("library"); };
 // The room's ✓: what needs the player (the notice's own action).
 export function doNeed(h, nd) {
   if (!nd) return;
-  if (nd.act === "cargo") h.goto("cargo");
-  else if (nd.act === "incubator") h.goto("incubator");
+  if (nd.act === "cargo") { h.goto("cargo"); if (nd.key === "crates") openBay(h); }   // the crates need: ✓ Open the bay goes through Cargo on the same key (decision panel spec, cut 1)
+  else if (nd.act === "incubator") { h.goto("incubator"); if (nd.key === "budReady") incubatorIntent(h, "room", "confirm"); }   // the bud-ready need: ✓ Open the bud, the hatch on the same key (cut 2); a growing bud only looks
   else if (nd.act === "meet") { toVivarium(h, h.ui.meet); }
   else if (nd.act === "pods") toPods(h);
 }

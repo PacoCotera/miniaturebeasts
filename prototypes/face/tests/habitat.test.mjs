@@ -34,7 +34,7 @@ function scene(o = {}) {
   if (o.portrait) { st.sitting = { source: "dev", key: null, at: 0 }; if (o.portrait === "portrayed") st.mibis[0].portrait = { state: "delivered", ...(o.digest ? { digest: o.digest } : {}) }; }   // a sitting held; portrayed: its portrait came, with its picture when the digest is named
   if (o.bonded) { st.mibis[0].bonded = true; st.mibis[0].notches = 3; }
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3, carryReqs: [] };
-  const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null, armed: !!o.armed };
+  const m = { st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ?? null, habId: st.mibis[o.shown ?? 0].id, meetId: o.meet ? st.mibis[o.shown ?? 0].id : null };
   const b = habitatBuild(m, spec, frameSpec, homeSpec);
   if (o.namer) { const n = { mode: o.meet ? "meet" : "rename", id: b.shown.id, text: o.text ?? b.shown.name, fs: o.fs ?? "selected", page: o.page ?? "letters", shift: false, f: o.nf ?? "act.done", say: o.say ?? null, sugg: -1 }, nb = namerBuild({ st, mibi: b.shown, ui: n }, namerSpec); b.props.overlay = nb.overlay; b.line = nb.line; b.requests = [...b.requests, ...nb.requests]; if (o.meet) { b.props.state = "rest"; b.props.regions.meetRibbon.text = ""; b.props.regions.nameTag.text = b.shown.name; } }
   return { ...b, st, m };
@@ -66,7 +66,7 @@ const SCENES = {
   "a bonded mibi: the heart, three notches": { bonded: true, focus: "plate.0" },
   "its painting on its way: the placeholder's lamp": { waiting: true, focus: "resident" },
   "twelve bays, compact tiles": { bays: 12, adults: 12, focus: "tile:3" },
-  "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross" }, "the ring on Wild, armed": { focus: "wild", armed: true },
+  "the ring on the Companion, the Cross and the Wild modules": { focus: "door" }, "the ring on Cross": { focus: "cross" }, "the ring on Wild": { focus: "wild" },
   "by the light of dusk": { light: "dusk", focus: "resident" },
   "the namer over the meet": { meet: true, namer: true }, "the namer, typed, the accents page": { namer: true, fs: "typed", text: "Mo", page: "accents", nf: "key.3" }, "the namer, a refusal": { namer: true, say: { text: "Start with a letter", tone: "refused" } },
 };
@@ -163,7 +163,7 @@ async function upClose(o = {}) {
   const settings = cfg(8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
   S.seedAdults(st, o.species ?? "S01", 5, 2, settings); for (const m of st.mibis) m.paint = { state: "landed" }; if (o.juvenile) st.mibis[0].born = st.turn;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
-  const b = habitatBuild({ st, sv, settings, docked: true, light: "day", focus: o.focus ?? "name", habId: st.mibis[0].id, meetId: null, armed: false, time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: true }, spec, frameSpec, homeSpec);
+  const b = habitatBuild({ st, sv, settings, docked: true, light: "day", focus: o.focus ?? "name", habId: st.mibis[0].id, meetId: null, time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: true }, spec, frameSpec, homeSpec);
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["habitat", spec], ["namer", namerSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
   assert.equal(sendMoving(f), 0, f.errors().join("; "));
@@ -292,12 +292,7 @@ test("fix 3c-habitat: with no Wild gate, chapter plate or guide mark master plac
   } finally { UNSIGNED = null; }
 });
 
-// fix 14, rule 6: the ring says where you are, not what you can do (unchanged between focused, armed and read-only on the same target: its rect and the pixels of its bands), and a creature's ring does not move with its 4 px lift
-test("the Wild module's ring is the same armed and not (fix 14, rule 6)", { skip }, async () => {
-  const band = async (armed) => { const f = await start(scene({ focus: "wild", armed, adults: 3, shown: 0 })), r = logOf(f)?.regions.find((q) => q.id === "focus" && q.layer === "chrome")?.rect ?? f.lastLog?.regions.find((q) => q.id === "focus" && q.layer === "chrome")?.rect; assert.ok(r, "a ring"); const px = [];
-    for (let y = 0; y < r[3]; y++) for (let x = 0; x < r[2]; x++) if (x < 4 || y < 4 || x >= r[2] - 4 || y >= r[3] - 4) px.push(f.pixel(r[0] + x, r[1] + y)); return { r, px }; };
-  const a = await band(false), b = await band(true); assert.deepEqual(a.r, b.r, "the same rect"); assert.deepEqual(a.px, b.px, "the same pixels in its four bands");
-});
+// fix 14, rule 6 (a creature's ring does not move with its 4 px lift); the Wild module's armed twin is retired with the arm (T-20261016-51)
 test("a resident's ring is its footprint on the ground: the 4 px lift moves the creature and not the ring (fix 14, rule 6)", { skip }, async () => {
   const b = scene({ focus: "resident" }), f = await start(b), rg = b.props.regions.resident, pid = rg.picture, box = R.resident.rect, req = b.requests.find((q) => q.id === pid), pic = standIn(pid, sizeOf(req ?? { size: box.slice(2) }));
   const lg = logOf(f) ?? f.lastLog, ring = lg.regions.find((q) => q.id === "focus" && q.layer === "chrome").rect, foot = footOf(pid, pic, () => null); assert.ok(foot, "the resident's picture has a footprint");

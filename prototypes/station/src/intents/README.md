@@ -12,7 +12,7 @@ Targets are `frame.<SNN>` only; the host sets `ui.lib.i` from the face's `focus`
 
 ## Probe bench (`bench.mjs`)
 
-Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's `focus` message (`focus(h, target)`). Any key but ✓ clears the arm (`ui.bench.arm`). ← is Home with the ring on the Probe module.
+Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's `focus` message (`focus(h, target)`). ✓ on the slot opens the Fit the upgrade? panel (`intents/bench.mjs` `fitNow` is its Fit it card). ← is Home with the ring on the Probe module.
 
 | ✓ on | Does | Plays (numbers from `bench.json` `events`) |
 | --- | --- | --- |

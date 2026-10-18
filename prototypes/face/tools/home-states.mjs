@@ -56,7 +56,8 @@ export const WORLD = () => ({
 const TIMED = {
   "knob-pressed": { scene: "knob-focused", at: 100, go: (w) => window.__st.intent({ screen: "home", target: "knob", verb: "confirm" }) },
   "walk-8000ms": { scene: "twelve", at: 8000, pre: 0, go: () => {} },   // twelve residents walking, 8000 ms of the face's clock into Home: the walk's reference for the three builds (B4b)
-  "crates-arriving": { scene: "away", at: 375, go: (w) => { w.crates(3); window.__st.dockKey(); } },
+  "sendoff-800": { scene: "docked", at: 800, go: () => window.__st.dockKey() },   // the lift's send-off (T-20261016-58, home.json events.sendoff): 800 ms in, the rightmost sleeper has hopped and is dithering out, the other has woken
+
 };
 
 export async function homeStates(visit, { motion = false, timed = true } = {}) {

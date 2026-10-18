@@ -81,14 +81,14 @@ export function incubatorBuild(m, spec, pods) {
     const bud = kind === "cross" && B.parents?.length !== 2 ? fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) }) : subject;
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
-      line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)
+      line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: fill(Sg.readyIn, { n: gs ? gs.left : S.budMinutesLeft(st, settings, now) }), need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)
       if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
       else if (!gs && m.frame) line.need = warnWords(st, m.sv, settings, m.frame, c, { key: "growNow" }) ?? line.need;
     } else {
       const noBay = S.bayFull(st, settings);
       line = { ok: Sg.open, back: Sg.back, subject: bud, need: noBay ? Sg.noBay : null }; if (noBay) line.dim = true;   // a dimmed cap when no bay is free: a guard only
     }
-  } else line = { ok: null, back: Sg.back, subject: regions.lamp.why === "offline" ? Sg.offline : regions.lamp.why === "waiting" ? Sg.painting : "", need: null };
+  } else line = { ok: state === "hatch" && m.ui.skip ? Sg.skip : null, back: Sg.back, subject: regions.lamp.why === "offline" ? Sg.offline : regions.lamp.why === "waiting" ? Sg.painting : "", need: null };   // ✓ Skip only while the hatch's skippable hold runs (the host's ui.skip)
   const props = { state, regions, focus: { cur: "room", targets: [] } };
   return { props, line, requests };
 }

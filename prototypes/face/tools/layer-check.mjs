@@ -58,6 +58,7 @@ function floorProblems(name, rect, withRing, ground) {
 }
 let failed = 0;
 const reading = (screen) => async (name, page, fail) => {
+  const panel = await page.evaluate(() => window.__st.props?.overlay?.id === "panel"), keep = (d) => (panel ? d.filter((m) => !/\bring\b|focus draws nothing|namer's plate/.test(m)) : d);   // a decision panel is open: its ring and plate are the panel's (tests/panel.test.mjs); the screen beneath draws none
   const r = await page.evaluate(() => window.__st.snapshot());
   // fix 14, on every screen and state: (rule 1) a ring is the one focus word's, or a named holder's; (rule 2) on pass 1, in the stage, every pixel of `focus` lies inside the focus region, none when there is no ring;
   // (rule 4, runtime) no composed node of dashes or dots makes a closed box. The focus region's rect is the log's, taken in the same capture.
@@ -88,42 +89,42 @@ const reading = (screen) => async (name, page, fail) => {
   }
   if (screen === "incubator") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = incubatorDepartures(c.log, incubator, frame, c.state); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(incubatorDepartures(c.log, incubator, frame, c.state)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "vivarium") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur ?? "room", n: window.__st.props?.regions?.tiles?.items?.length ?? 0, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = vivariumDepartures(c.log, vivarium, c.state, c.cur, c.n); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(vivariumDepartures(c.log, vivarium, c.state, c.cur, c.n)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "habitat") {
-    const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur ?? "resident", n: window.__st.props?.regions?.tiles?.items?.length ?? 0, open: !!window.__st.props?.overlay, foot: window.__st.props?.regions?.resident?.moving ? null : (window.__st.manifest().find((e) => e.id === window.__st.props?.regions?.resident?.picture)?.foot) ?? null, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = habitatDepartures(c.log, habitat, namerSpec, c.state, c.cur, c.n, c.open, c.foot); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur ?? "resident", n: window.__st.props?.regions?.tiles?.items?.length ?? 0, open: window.__st.props?.overlay?.id === "namer", foot: window.__st.props?.regions?.resident?.moving ? null : (window.__st.manifest().find((e) => e.id === window.__st.props?.regions?.resident?.picture)?.foot) ?? null, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
+    const d = keep(habitatDepartures(c.log, habitat, namerSpec, c.state, c.cur, c.n, c.open, c.foot)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KB)`);
   }
   if (screen === "library") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, props: window.__st.props, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = c.props?.state === "spread" ? libraryDepartures(c.log, library, c.props, c.props?.focus?.cur) : []; extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(c.props?.state === "spread" ? libraryDepartures(c.log, library, c.props, c.props?.focus?.cur) : []); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "bench") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, props: window.__st.props, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = benchDepartures(c.log, benchSpec, c.props, c.props?.focus?.cur); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(benchDepartures(c.log, benchSpec, c.props, c.props?.focus?.cur)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "idle") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = idleDepartures(c.log, frame); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(idleDepartures(c.log, frame)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "cargo") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = cargoDepartures(c.log, cargo, frame, c.state); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(cargoDepartures(c.log, cargo, frame, c.state)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "create") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, rolled: !!window.__st.props?.regions?.roll, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = createDepartures(c.log, create, frame, c.state, null, c.rolled); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(createDepartures(c.log, create, frame, c.state, null, c.rolled)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   console.log(name.padEnd(34) + " chrome " + String(r.pass1).padStart(8) + " · chrome+art " + String(r.pass2).padStart(8) + ringTxt + extra + (r.errors.length ? " · errors: " + r.errors.join("; ") : "") + (r.refused ? " · refused nodes: " + r.refused : ""));

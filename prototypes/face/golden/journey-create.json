@@ -114,7 +114,7 @@
     ],
     "screen": "pods",
     "create": null,
-    "ok": "Open",
+    "ok": "Look at this pod",
     "price": null,
     "subject": "sealed until identified"
    },
@@ -227,6 +227,12 @@
       "t": "intent",
       "screen": "create",
       "target": "roll",
+      "verb": "confirm"
+     },
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
       "verb": "confirm"
      }
     ],

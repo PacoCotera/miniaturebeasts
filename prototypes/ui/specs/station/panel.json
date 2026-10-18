@@ -1,0 +1,149 @@
+{
+ "screen": "panel",
+ "device": "station",
+ "kind": "overlay",
+ "over": [
+  "create",
+  "habitat",
+  "pods",
+  "bench",
+  "incubator",
+  "cargo"
+ ],
+ "spec": "specs/station-decision-panel-spec.md",
+ "frame": "frame.json",
+ "note": "The decision panel's own spec (T-20261016-59): the overlay machinery needs a spec named for the overlay id, listing the screens it opens over; every number of the panel is frame.json regions.panel. Each screen that opens it lists `overlays.panel` in its own spec. Panels still to come add their screen to `over`.",
+ "overlay": {
+  "layer": "after the screen's words, before the frame's: the veil, the panel, the title, the cards, then the ring; the message plate stands over it",
+  "beneath": "the screen beneath keeps drawing under the veil and takes no key",
+  "open": "a cut",
+  "close": "a cut",
+  "owner": "ui.panel = { screen, id, focus }; a screen change, a room key and ← clear it"
+ },
+ "states": [
+  "open"
+ ],
+ "focus": {
+  "initial": "the first card that is neither dimmed nor a loss; if every card is one or the other, the way-out card",
+  "rule": "◀ ▶ the previous and next card, stopping at the ends; ▲ ▼ do nothing; the graph is not a spec graph: the face walks the props' targets in order",
+  "targets": {
+   "card": {
+    "group": "card",
+    "id": "card.<card id>",
+    "shape": {
+     "rect": 10
+    },
+    "box": "frame.json regions.panel.cards, one box a card",
+    "lift": 0
+   }
+  }
+ },
+ "panels": {
+  "wildMibi": {
+   "opens": "habitat",
+   "by": "✓ on Wild (the Return gate)"
+  },
+  "wildPod": {
+   "opens": "pods",
+   "by": "✓ on the leaf plate"
+  },
+  "fitUpgrade": {
+   "opens": "bench",
+   "by": "✓ on the slot"
+  },
+  "dock": {
+   "opens": "cargo",
+   "by": "the Companion's dock: at the show's end (form strip)",
+   "form": "strip"
+  },
+  "growNow": {
+   "opens": "incubator",
+   "by": "✓ Hatch now when the price is above `growNowAbove` (at or below it ✓ acts as before)"
+  }
+ },
+ "growNowAbove": 4,
+ "bottomLine": {
+  "action": "✓ + the focused card's name + its cost",
+  "subject": "the focused card's line, else \"to {the room}\" when it has a destination mark",
+  "need": "what is short, if anything",
+  "back": "Back"
+ },
+ "events": {},
+ "strings": {
+  "back": "Back",
+  "toRoom": "to {room}",
+  "rooms": {
+   "research": "Research",
+   "home": "Home",
+   "vivarium": "Vivarium",
+   "library": "Library"
+  },
+  "arrival": {
+   "text": "Incubator: your {Species} bud is growing",
+   "ms": 2000
+  },
+  "wildMibi": {
+   "title": "Return {name}?",
+   "cards": {
+    "return": {
+     "name": "Return it",
+     "line": "gone for good"
+    },
+    "keep": {
+     "name": "Keep {name}"
+    }
+   }
+  },
+  "wildPod": {
+   "title": "Return this pod?",
+   "cards": {
+    "return": {
+     "name": "Return it",
+     "line": "gone for good"
+    },
+    "keep": {
+     "name": "Keep it"
+    }
+   }
+  },
+  "fitUpgrade": {
+   "title": "Fit the upgrade?",
+   "cards": {
+    "fit": {
+     "name": "Fit it",
+     "line": "reaches further"
+    },
+    "later": {
+     "name": "Not now"
+    }
+   }
+  },
+  "dock": {
+   "title": "",
+   "cards": {
+    "open": {
+     "name": "Open the bay",
+     "line": "{n in words} crates to the rack"
+    },
+    "later": {
+     "name": "Later",
+     "line": "they wait while docked"
+    }
+   },
+   "oneCrate": "a crate to the rack"
+  },
+  "growNow": {
+   "title": "Hatch now?",
+   "cards": {
+    "grow": {
+     "name": "Hatch now",
+     "line": "ready at once"
+    },
+    "wait": {
+     "name": "Wait",
+     "line": "ready in about {n} min"
+    }
+   }
+  }
+ }
+}

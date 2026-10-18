@@ -30,7 +30,7 @@ test("Pods in three states: the collection's six places, rings, labels and the w
   assert.ok(apart(A.waiting.rect, places[3]) && A.waiting.rect[1] + A.waiting.rect[3] <= 552, "the waiting mark under the places");
   assert.deepEqual(pods.classes.pod.collection, [88, 112]);
   assert.ok(!("selected" in A.ring.masters)); assert.equal(A.ring.masters.closed, "ring-collection-closed-176x176"); assert.deepEqual(A.ring.focus, { form: "targets.place.shape" }, "the place ring is the target's shape: no copy of the tokens"); assert.deepEqual(pods.targets.place.shape, { circle: { centre: A.ring.centre, r: A.ring.slice[2] / 2 } }, "the ring round the gauge slice's radius 88"); assert.equal(A.glint.slice, "glint-star-12x12"); assert.deepEqual(A.ring.slice, [8, 0, 176, 176]); assert.equal(A.ring.slice[0] + 88, A.ring.centre[0]); assert.equal(A.ring.slice[1] + 88, A.ring.centre[1]); assert.ok(!("collectionRing" in pods.colours), "the build draws no arcs"); assert.ok(!("ringRead" in pods.colours), "one home for the ring's colours");
-  assert.equal(pods.strings.openChapter, "Open {chapter}"); assert.equal(pods.strings.wayBack.chapter, "{name}");
+  assert.equal(pods.strings.openChapter, "Turn to {chapter}"); assert.equal(pods.strings.wayBack.chapter, "{name}");
 });
 
 // P1 (fix 5): the painted floor of the case runs x 64 to 952 and y 88 to 535 (pixels, inclusive) on every Pods stage; the rail and the bottom line are the frame's
@@ -637,7 +637,7 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
 test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate opening, the report, the rack the pods land in; Cargo is under Home with Home's mark", () => {
   const cg = rd("../specs/station/cargo.json"), R = cg.regions, B = boxesOf("17-cargo-bay.svg"), O = boxesOf("17a-cargo-opening.svg"), P = boxesOf("17b-cargo-report.svg"), Z = boxesOf("17c-cargo-shut.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  lintRegions(cg); assert.deepEqual(cg.states, ["bay", "opening", "report"]);
+  lintRegions(cg); assert.deepEqual(cg.states, ["bay", "opening", "report", "arrival"]);
   const stage = frame.regions.stage.rect; for (const r of Object.values(R)) assert.ok(inside(r.rect, stage), "inside the stage");
   is(R.bay.rect, "bay"); is(R.bay.rect, "bay", O); is(R.bay.rect, "bay", P); is(R.bay.rect, "bay", Z); is(R.rack.rect, "rack"); is(R.rack.rect, "rack", O); is(R.rack.rect, "rack", P); is(R.rack.rect, "rack", Z);
   assert.deepEqual(R.bay.slices, { open: "cargo-bay-992x320", shut: "cargo-bay-shut-976x304", report: "cargo-bay-shut-report-976x304" }); assert.deepEqual(R.bay.rect, [16, 48, 992, 320]); assert.deepEqual(R.bay.door, [24, 56, 976, 304]); is(R.bay.door, "the door", P); is(R.bay.door, "the door", Z); assert.ok(inside(R.bay.door, R.bay.rect));
@@ -662,14 +662,14 @@ test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate o
   { const S = R.stores, ink = (m) => [S.places[m][0] + S.ink[m][0], S.places[m][0] + S.ink[m][1]], gaps = [ink("energy") && R.stores.closerInk[0] - ink("energy")[1], ink("data")[0] - S.closerInk[1], ink("essence")[0] - ink("data")[1]];
     gaps.forEach((g) => assert.ok(g >= 24 && g <= 48, `the ink gap ${g} is 24 to 48`)); assert.equal(S.places.data[0] - (R.crate.rect[0] + R.crate.rect[2]), 8, "8 px from the closer's rect"); assert.equal(R.crate.rect[0] - (S.places.energy[0] + S.size[0]), 8); assert.equal(S.places.essence[0] - (S.places.data[0] + S.size[0]), 8); }
   assert.ok(inside(R.crate.rect, R.travel.rect) && wells.every((w) => inside(w, R.travel.rect)), "the travel holds the crate and the wells"); assert.ok(R.crate.rect[1] + R.crate.rect[3] < R.rack.rect[1]);
-  // the report (R6): a plate set into the door, 128 to 288 tall by 8, centred on the door's middle; its fullest is 288 at y 64, the bottom 352 inside the door (360)
-  const hOf = (rows, worldLines, goalRows) => 104 + 24 * rows + (worldLines ? 32 + 24 * worldLines : 0) + (goalRows ? 8 + 24 * goalRows : 0);
-  assert.equal(hOf(4, 1, 1), 288); assert.equal(R.report.maxHeight, 288); assert.deepEqual(R.report.rect, [232, 64, 560, 288]); is(R.report.rect, "report", P); assert.equal(R.report.rect[0] + R.report.rect[2] / 2, 512);
-  assert.equal(R.report.world.gapAbove, 8); assert.equal(R.report.gathered.gapAbove, 8); assert.equal(R.report.goal.gapAbove, 8, "the same rhythm");
-  for (let h = 128; h <= 288; h += 8) { const y = 64 + 8 * Math.floor((288 - h) / 16); assert.ok(y % 8 === 0 && y >= R.report.rect[1] && y + h <= R.bay.door[1] + R.bay.door[3] - 8, `h ${h} at y ${y} sits on the door, 8 px inside its bottom`); assert.ok(Math.abs((y + h / 2) - 208) <= 8, `h ${h} centred on the door's middle (208)`); }
-  assert.equal(R.report.rect[1] + R.report.rect[3], R.report.full.bottom); assert.equal(R.report.full.bottom, 352); assert.equal(R.rack.rect[1] - R.report.full.bottom, 32);
-  assert.equal(R.report.full.heading, R.report.rect[1] + R.report.heading.at[1]); assert.equal(R.report.full.crates[0], R.report.rect[1] + R.report.rows.first); assert.equal(R.report.full.goal + 24 + 0, R.report.full.bottom - 16, "the goal row ends 16 px above the bottom: the pad");
-  assert.deepEqual(R.report.full.crates.map((y) => y - R.report.rect[1]), [56, 80, 104]); assert.equal(R.report.full.gathered, R.report.full.crates.at(-1) + 24 + 8); assert.equal(R.report.full.probe, R.report.full.gathered + 24); assert.equal(R.report.full.world, R.report.full.probe + 24 + 8); assert.equal(R.report.full.lines[0], R.report.full.world + 24); assert.equal(R.report.full.goal, R.report.full.lines[0] + 24 + 8);
+  // the report (R6, T-20261016-144): a plate set into the door, 136, 176 or 208 tall, centred on the door's middle; its fullest is 208 at y 104, the bottom 312 inside the door (360)
+  const hOf = (goal, read) => 16 + 64 + 16 + 24 + 16 + (goal ? 24 + 16 : 0) + (goal && read ? 32 : 0);
+  assert.deepEqual([hOf(0, 0), hOf(1, 0), hOf(1, 1)], [136, 176, 208]); assert.equal(R.report.maxHeight, 288); assert.deepEqual(R.report.rect, [232, 64, 560, 288]); is(R.report.rect, "report", P); assert.equal(R.report.rect[0] + R.report.rect[2] / 2, 512);
+  assert.deepEqual(R.report.crates.tile, [160, 64]); assert.equal(R.report.crates.pitch, 184); assert.deepEqual(R.report.crates.at, [16, 16]); assert.equal(R.report.crates.max, 3); assert.equal(16 + 184 * 2 + 160 + 16, 560, "three tiles fill the card's width with the pad");
+  assert.equal(R.report.gathered.y, 16 + 64 + 16); assert.equal(R.report.goal.y, R.report.gathered.y + 24 + 16); assert.equal(R.report.meanwhile.y, R.report.goal.y + 32, "the read sits 8 px into the goal row's pad");
+  for (const h of [136, 176, 208]) { const y = 64 + 8 * Math.floor((288 - h) / 16); assert.ok(y % 8 === 0 && y >= R.report.rect[1] && y + h <= R.bay.door[1] + R.bay.door[3] - 8, `h ${h} at y ${y} sits on the door, 8 px inside its bottom`); assert.ok(Math.abs((y + h / 2) - 208) <= 8, `h ${h} centred on the door's middle (208)`); }
+  assert.equal(R.report.heading, undefined, "no heading"); assert.equal(R.report.label, undefined, "no label plate"); assert.equal(R.report.world, undefined, "no world lines"); assert.equal(cg.strings.report, undefined, "no sentence on the card but the goal's");
+  for (const c of Object.values(cg.colours.report).filter((v) => typeof v === "string")) assert.ok(!/amber|orange|gold|bark/.test(c), "no amber on the card: " + c);
   assert.equal(R.report.colours, undefined); assert.equal(cg.colours.report.contrast.bone, 7); assert.equal(cg.colours.report.contrast.mist, 4.5); assert.equal(cg.colours.bay, undefined, "the bay is painted"); assert.equal(cg.colours.rack, undefined, "the rack is painted");
   // the stage ground shows only its seams (16 px or less): beside the bay, between it and the rack, under the rack
   for (const g of [R.bay.rect[0], 1024 - (R.bay.rect[0] + R.bay.rect[2]), R.rack.rect[1] - (R.bay.rect[1] + R.bay.rect[3]), R.bay.rect[1] - 40, 562 - (R.rack.rect[1] + R.rack.rect[3])]) assert.ok(g <= 16, "a seam of " + g);
@@ -767,7 +767,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   // the frame: the title and its mark, the way back, the room key, the jumps; Home's Library module opens it
   assert.equal(frame.strings.titles.library, S.strings.title); assert.equal(frame.regions.title.marks.library, S.title.mark); const BC = S.buildChanges.find((c) => c.key === "navigation.screens.library"); assert.deepEqual(BC.now, { parent: "home", back: "Home" }); assert.deepEqual(frame.navigation.screens.library, BC.becomes, "the build made the change: the tree names the spread and its spec"); assert.deepEqual(BC.becomes, { ...BC.now, states: S.states, spec: "library.json" });
   assert.equal(frame.navigation.roomKeys.library.state, "spread"); assert.equal(frame.navigation.screens.book.back, "Library"); assert.equal(S.strings.back, frame.navigation.screens.library.back);
-  const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Open the Library"); assert.ok(/spread/.test(home.keys.library));
+  const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Go to the Library"); assert.ok(/spread/.test(home.keys.library));
   // the words: an action of four words or fewer, contexts of six or fewer, no digits; no ✓ cap on an empty frame
   assert.ok(wordsIn(S.strings.open) <= 4); for (const s of stringsOf(S.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.equal(S.line.unmet.action, null); assert.equal(S.line.found.action, "strings.open"); assert.equal(S.line.met.action, null, "a met species does not open the Book");
@@ -816,7 +816,7 @@ const SHAPES = {
   "habitat.json": { resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
   "pods.json": { place: { circle: { centre: [96, 88], r: 88 } }, pod: "oval", tab: "tab", kin: { circle: "box" }, hatch: { rect: 6 } },
-  "create.json": { roll: { rect: 0 } }, "library.json": { frame: { rect: 0 } }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 0 } } };
+  "create.json": { roll: { rect: 0 } }, "library.json": { frame: { rect: 0 } }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 0 } }, "panel.json": { card: { rect: 10 } } };
 test("fix 14, the shape rule: every focus target has a shape of the five kinds and no `ring`; its rect radius is its object's; no spec but frame.json holds ring tokens or a ring colour; six (radius, ground) pairs at most", () => {
   const pairs = new Set(); let seen = 0;
   for (const [file, spec] of STATION) {
@@ -941,11 +941,9 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
   assert.deepEqual(Object.keys(be.composed), ["docked", "away"]); assert.deepEqual(be.focus.lift.match(/plates \[364, 458, 216, 72\], switch \[620, 90, 320, 136\], slot \[620, 266, 320, 256\]/)?.length, 1, "the rings from the spec");
 });
 
-test("GB-R6: the Cargo report's heading is `ink` on a cream label plate that lies at least 6 px inside the plate and ends at least 12 px above the first row, and the report door is the report slice", () => {
-  const R = rd("../specs/station/cargo.json"), rp = R.regions.report, L = rp.label;
-  assert.equal(R.colours.report.heading, "ink"); assert.equal(L.slice, "label-plate-cream-216x32"); assert.deepEqual(L.size, [216, 32]);
-  assert.ok(L.at[0] >= 6 && L.at[1] >= 6, "inside the plate by F3"); assert.ok(L.at[1] + L.size[1] + 12 <= rp.rows.first, "12 px above the first row");
-  assert.equal(rp.heading.at[0], 24); assert.ok(rp.heading.at[0] >= L.at[0] && rp.heading.at[0] + 192 <= L.at[0] + L.size[0], "the heading's 191 px lies on the label");
+test("GB-R6 (T-20261016-144): the Cargo report has no heading and no cream label plate, and the report door is the report slice", () => {
+  const R = rd("../specs/station/cargo.json");
+  assert.equal(R.regions.report.label, undefined); assert.equal(R.regions.report.heading, undefined); assert.equal(R.colours.report.heading, undefined);
   assert.equal(R.regions.bay.slices.report, "cargo-bay-shut-report-976x304");
 });
 

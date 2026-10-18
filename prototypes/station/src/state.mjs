@@ -51,7 +51,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
 export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
+export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -225,6 +225,11 @@ export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
 export function carriedIds(st, sv) {
   const raw = sv && Array.isArray(sv.carried) ? sv.carried : sv && sv.with != null ? [sv.with] : [];
   return raw.filter((id) => { const m = mibiById(st, id); return m && !m.released; });
+}
+// The Companion's partner, as the Companion picks it: its lead if carried and grown, else the first grown mibi with it, else none (exploration partnerMibi). The Caddy's lifted line names it.
+export function partnerOf(st, sv, settings = DEFAULT_SETTINGS) {
+  const c = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean), grown = (m) => !!m && isAdult(st, m, settings), l = c.find((m) => m.id === (sv && sv.lead));
+  return grown(l) ? l : c.find(grown) || null;
 }
 // The requests the Companion has not applied yet, in seq order. The face shows them as pending, never as carried.
 export const pendingCarry = (st, sv) => (st.carryReqs || []).filter((r) => r.seq > ((sv && sv.carrySeen) || 0)).sort((a, b) => a.seq - b.seq);
@@ -529,6 +534,8 @@ export function installTier2(st, settings = DEFAULT_SETTINGS) {
 }
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
+// The minutes a growing bud has left, rounded up and at least 1 (the Incubator's "ready in about {n} min", owner ruling 3).
+export const budMinutesLeft = (st, settings, now) => { const B = st.bud; return B ? Math.max(1, Math.ceil(B.minutes * (1 - budProgress(st, settings, now)) - 1e-9)) : 0; };
 export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
 // The leaves of the wait, one rule for the Incubator, its intents and Home's chamber: total the bud's minutes (at most max), full the whole minutes passed, rows 0 to rowsOf - 1 of the current leaf (rowsOf whole rows a minute: a row every 3 s at the real pace); rows is 0 once full reaches total.
 export function budLeaves(st, settings, now, max, rowsOf = 20) {

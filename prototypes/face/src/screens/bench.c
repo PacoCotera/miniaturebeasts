@@ -128,7 +128,7 @@ static void build_slot(const char *cur) {
   int r[4]; brect("regions.slot.rect", r); int dy = -lift_of("slot", cur), mx = r[0], my = r[1] + dy;
   char state[96], lamp[96]; ps("regions.slot.state", state); ps("regions.slot.lamp", lamp);
   anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t), drop = 0;
-  int fitted = strcmp(state, "fitted") == 0, armed = strcmp(state, "armed") == 0, dim = strcmp(state, "dim") == 0, level = fitted ? -2 : -1;   /* the adds: plain once fitted, else the `-new` slice on the one each adds */
+  int fitted = strcmp(state, "fitted") == 0, armed = 0, dim = strcmp(state, "dim") == 0, level = fitted ? -2 : -1;   /* the adds: plain once fitted, else the `-new` slice on the one each adds */
   if (inst >= 0) {   /* the install: the armed part drops, then cuts to the fitted one; the adds settle last */
     if (inst < 300) { fitted = 0; armed = 1; drop = 8 * inst / 300; level = -1; } else if (inst < 600) { fitted = 1; level = -1; } else { fitted = 1; level = 16 * (inst - 600) / 300; }
   }
@@ -162,7 +162,7 @@ int bench_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
 
 /* the ring on the focused target, round the object as drawn: its region's rect lifted by the target's lift (the plates: the union of the drawn plates, lifted); it is drawn through the bench's holds, where it is */
 static void build_ring(const char *cur) {
-  if (!cur[0]) return;
+  if (!cur[0] || spec_len("props", "overlay") >= 0) return;   /* the decision panel is open: its ring is the only one */
   int box[4]; brect(v_fmt("regions.%s.rect", cur), box); if (box[2] <= 0) return;
   if (strcmp(cur, "plates") == 0) {   /* the drawn plates' union: the places of the tier, each plate-sized */
     char tp[48]; snprintf(tp, sizeof tp, "regions.plates.places.%d", v_pint("regions.plates.tier", 1)); int n = spec_len(S, tp); if (n <= 0) return;
