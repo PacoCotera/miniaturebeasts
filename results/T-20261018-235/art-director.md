@@ -22,6 +22,6 @@
 ## Re-gate 2 (build 3bdafbb7, stills 1f40bf62): pass
 
 - **Moving residents** are at world size and in their own looks. S01 walks as its layered stand at 54/40, with its coats, patches, stripes and crest, so a walking resident is the same individual as when it stands. S05's atlases are reduced by the standing factor and sit at the same scale as their neighbours, in both the Vivarium and Idle at night. The Habitat's close atlas staying full size is right, since that view is a close-up.
-- **A sleeping S01 drawn as its world-size curl in place, never standing:** agreed.
+- **A sleeping S01 drawn as its world-size curl in place, never standing:** agreed as a rule. **The sign-off on the curl itself is held** until a still shows an S01 asleep in place and focused; `idle-night-moving` shows only a standing S01.
 
-T-235 passes on the art.
+T-235 passes on the art, except the S01 curl, which waits for that still.
