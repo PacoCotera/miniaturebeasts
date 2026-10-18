@@ -19,6 +19,7 @@ const SCENES = {
   "docked-dusk":  { f: null, state: "rest", light: "dusk",  set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   // fix 14 (§14.4): capture states, not goldens: the vivarium-docked seed with a juvenile resident focused, one a light; its ring crosses the dark grain and the lit moss (the 2 px floor, layer-check rule F2; the CD's frames)
+  "four-loikas": { f: null, state: "rest", captureOnly: true, set: (w) => { w.bays(8); const st = window.__st.ST, k = st.mibis.length; for (const seed of [2, 3, 10, 22]) window.__st.seedAdults("S01", seed, 1); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; } },   // T-20261016-201 proof: four Loikas whose read looks differ (patches; patches and a bare head; wide rings; a bare head with thin rings), each drawn as itself
   ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { f: "resident:4", state: "rest", light: l, captureOnly: true, set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } }])),
 };
 async function enter(page, sc) {

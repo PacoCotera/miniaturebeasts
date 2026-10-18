@@ -2,35 +2,35 @@
  "_note": "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "idle-docked": {
-   "hash": "3479588a",
+   "hash": "a2a81f74",
    "png": "idle-docked.png"
   },
   "idle-docked-dawn": {
-   "hash": "ccd5c493",
+   "hash": "2416ec72",
    "png": "idle-docked-dawn.png"
   },
   "idle-docked-dusk": {
-   "hash": "ae1b4226",
+   "hash": "fa326dee",
    "png": "idle-docked-dusk.png"
   },
   "idle-docked-night": {
-   "hash": "235afe42",
+   "hash": "526a2cb6",
    "png": "idle-docked-night.png"
   },
   "idle-away": {
-   "hash": "c63a9795",
+   "hash": "dc75f414",
    "png": "idle-away.png"
   },
   "idle-none": {
-   "hash": "f680998d",
+   "hash": "69e082f4",
    "png": "idle-none.png"
   },
   "idle-empty": {
-   "hash": "23236f98",
+   "hash": "22ff165a",
    "png": "idle-empty.png"
   },
   "idle-walk-8000ms": {
-   "hash": "c07e7645",
+   "hash": "55512561",
    "png": "idle-walk-8000ms.png"
   },
   "idle-night-pip-60000ms": {
