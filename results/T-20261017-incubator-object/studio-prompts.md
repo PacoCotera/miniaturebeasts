@@ -36,3 +36,30 @@ Six paintings: three directions, each closed and then open. Revised after the ow
 - Closed and open share their camera and object exactly.
 - None of the NO list appears.
 - At 1× it holds as a picture people would want on their desk.
+
+## The capsule, chosen: the master and the two moments (four calls)
+
+The owner chose the capsule. Four calls, in this order, each passing the named references. No retries without the art director.
+
+**References for all four:**
+- `ref-loika-pod-sealed-3x.png`;
+- your `capsule-closed-1024x600.png` (masters-pods aa017583);
+- this folder's `capsule-open-mint-1024x600.png`.
+
+1. **master-closed**, an edit of `capsule-closed`.
+   - Keep the capsule, room, camera and light identical.
+   - Change two things:
+     - (a) "The pod is exactly the reference pod: a charcoal slate shell (#465459), russet dots and russet ribs (#ae674d), a rounded russet cap, glowing softly from its core."
+     - (b) "The warm arch is a lamp, not an outline. It is a wider, soft warm light set into the capsule's back wall above and behind the pod. It casts warm light down over the moss and onto the pod's shoulders, with a gentle falloff across the moss and soil. It is not a thin neon line hugging the pod's silhouette."
+   - The mint bar in the base stays mint.
+2. **master-open**, from 1 as the reference, with `capsule-open-mint` for the door.
+   - "The same capsule, camera and light as the reference, with only the curved glass door swung open on its side hinge, as in the second reference."
+   - The mint bar stays mint. The pod and the arch-lamp are as in 1.
+3. **incubate**, from 2.
+   - "The same capsule and camera. The door is just closing, almost shut. The pod has been set down on the moss and is settling. A thin mint light traces the door's seam as it seals. The arch-lamp glows warm on the moss. A calm, tucked-in moment, the room a touch dimmer, as at evening."
+   - No hands, arms or tools.
+4. **hatch-now**, from 2, also passing `mibi-juvenile-S01-304x312.png` (station-gate `prototypes/ui/assets/masters/pods/`).
+   - "The same capsule with its door open, the arch-lamp warm. On the moss, the pod has opened: its shell lies in two halves with the russet cap tipped aside. Standing on the moss between them is this exact young creature from the reference: same colours, markings and face, facing the same way as in the reference (not mirrored), small and new, looking out of the open door. A soft, bright, joyful light. The mint bar glows."
+   - The creature is the reference juvenile, unchanged in design. It must not be redrawn as a different animal.
+
+**The shared NO list applies.** One camera across all four.
