@@ -73,16 +73,18 @@ test("the Dock key from Idle docks and the arrival plays over Home with the ring
 test("an arrival is tracked by the host (the idle timer waits for the end of Home's crates sliding in, which hold nothing)", () => {
   const { h, at } = rig(); at(0); assert.equal(h.arriving(), false); h.play({ kind: "arrival", target: "cargo", ms: 750 }); assert.equal(h.holding(), false); assert.equal(h.arriving(), true); at(749); assert.equal(h.arriving(), true); at(750); assert.equal(h.arriving(), false);
 });
-test("Cargo's opening on the host: it holds crates × 3000 + 200 ms; a ✓ in it is dropped, a room key is kept and, at the hold's end, closes the report and opens its section, and a Dock key waits for the report", () => {
-  const { h, sent, at } = rig(); const crate = { id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] };
-  G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false; at(0);
-  onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" });
-  assert.equal(UI.cargo.state, "opening"); assert.equal(h.holding(), true); assert.deepEqual(sent.find((m) => m.kind === "arrival" && m.target === "crate"), { t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200, skip: true });
-  onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "room", verb: "confirm" }); assert.equal(UI.cargo.state, "opening", "a ✓ in the hold is dropped (nothing opens twice)");
-  onFaceMessage(h, { t: "intent", seq: 3, screen: "cargo", target: "room", verb: "room:research" }); assert.equal(h.pendingRoom, "research"); h.pendingDock = true;   // main.mjs act: a Dock key in Cargo's opening waits
-  at(2999); assert.equal(UI.cargo.state, "opening"); at(3000); assert.equal(UI.cargo.state, "report"); at(3100); assert.equal(UI.screen, "cargo", "the hold runs 200 ms past the report: nothing is dispatched yet"); assert.equal(G.st.dock.docked, true);
-  at(3200); assert.equal(h.holding(), false); assert.equal(G.st.dock.docked, false, "the Dock key waited for the report and lifted"); assert.equal(h.pendingDock, false);
-  assert.equal(UI.screen, "pods", "the room key opens its section"); assert.equal(UI.cargo.state, "bay", "and closed the report");
+test("Cargo's opening on the host: a one-crate opening of materials only is 700 + 150 × 2 + 600 + 300 = 1900 ms and holds 20 ms longer; ✓ in it is Skip (the last crate: the end), a room key ends it at once and opens its section, and a Dock key waits for the end", () => {
+  const mk = () => { const r = rig(); const crate = { id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] };
+    G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.skip = null; r.h.pendingDock = false; r.at(0); return r; };
+  { const { h, sent, at } = mk(); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" });
+    assert.equal(UI.cargo.state, "opening"); assert.equal(h.holding(), true); assert.deepEqual(sent.find((m) => m.kind === "arrival" && m.target === "crate"), { t: "event", kind: "arrival", target: "crate", ms: 1900, hold: 1920, skip: true });
+    h.pendingDock = true;   // main.mjs act: a Dock key in Cargo's opening waits
+    at(1900); assert.equal(UI.cargo.state, "opening", "the hold runs 20 ms past the crate's end"); assert.equal(G.st.dock.docked, true); at(1919); assert.equal(UI.cargo.state, "opening");
+    at(1920); assert.equal(UI.cargo.state, "end"); assert.equal(h.holding(), false); assert.equal(G.st.dock.docked, false, "the Dock key waited for the end and lifted"); assert.equal(h.pendingDock, false); assert.equal(UI.screen, "cargo"); }
+  { const { h, at } = mk(); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500);
+    onFaceMessage(h, { t: "intent", seq: 3, screen: "cargo", target: "room", verb: "room:research" }); assert.equal(UI.screen, "pods", "a room key during the hold ends the opening and opens its section at once"); assert.equal(UI.cargo.state, "bay"); assert.equal(h.pendingRoom ?? null, null); assert.equal(h.holding(), false); assert.equal(G.st.accepted.length, 1, "the crate that was open is taken in"); }
+  { const { h, at } = mk(); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 4, screen: "cargo", target: "room", verb: "back" });
+    assert.deepEqual([UI.screen, UI.cargo.state, UI.home.f], ["home", "bay", "cargo"], "← finishes the crate as a cut and goes Home, the ring on the Bay module"); assert.equal(h.holding(), false); }
 });
 
 test("the Dock during a hold: kept and acting when the hold ends, before a kept room key; two presses cancel; during Home's rest it wakes onto Home with the dock applied", () => {
@@ -92,19 +94,19 @@ test("the Dock during a hold: kept and acting when the hold ends, before a kept 
   { const { h, at } = mk(); at(0); h.play({ kind: "seal", target: "p", ms: 1000, hold: 1000 }); h.pendingDock = true; onFaceMessage(h, { t: "intent", seq: 1, screen: "pods", target: "room", verb: "room:library" }); at(1000); assert.equal(G.st.dock.docked, true); assert.equal(UI.screen, "cargo", "the arrival plays over Pods and holds"); at(3500); assert.equal(UI.screen, "library", "the kept room key follows the arrival's end (an empty trip closes at 2500, then the key acts)"); }
   { const r = rig({ onDock: (h) => { const was = UI.idle; UI.idle = false; INTENTS.frame.dock(h, was); } }); G.sv.mibis = []; G.st.dock = { docked: false, at: 0 }; const { h, at } = r; UI.screen = "pods"; UI.home.f = "knob"; at(0); UI.idle = true; h.play({ kind: "rest", target: "knob", ms: 200, hold: 380 }); h.pendingDock = true; at(380); assert.equal(G.st.dock.docked, true, "the Dock kept through Home's rest acts at its end"); assert.equal(UI.screen, "cargo", "the arrival over Home"); assert.equal(UI.cargo.arrival.from, "home"); }
 });
-test("two Dock presses during Cargo's opening leave the dock unchanged at its end (3200 ms); a Dock on Cargo leaves no plate", () => {
+test("two Dock presses during Cargo's opening leave the dock unchanged at its end (1920 ms); a Dock on Cargo leaves no plate", () => {
   const { h, at } = rig(); const crate = { id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] };
   G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false; at(0);
-  onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); h.pendingDock = !h.pendingDock; h.pendingDock = !h.pendingDock; at(3200); assert.equal(G.st.dock.docked, true);
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); h.pendingDock = !h.pendingDock; h.pendingDock = !h.pendingDock; at(1920); assert.equal(G.st.dock.docked, true);
   const said = []; h.say = (m) => said.push(m); G.st.dock = { docked: false, at: 0 }; UI.cargo.state = "bay"; INTENTS.frame.dock(h); assert.deepEqual(said, [], "no plate on Cargo"); assert.equal(G.st.dock.docked, true);
 });
 
-test("the idle timer counts 60 s from the last press, not during a hold, an arrival or Cargo's report card, and 60 s from the end of each", () => {
+test("the idle timer counts 60 s from the last press, not during a hold, an arrival or Cargo's end, and 60 s from the end of each", () => {
   const { h, at } = rig(); const tick = (ms) => { at(ms); idleTick(h, ms, 60000); };
   UI.lastInput = 0; tick(59000); assert.equal(UI.idle, false); tick(60001); assert.equal(UI.entering || UI.idle, true, "fires 60 s after the last press");
   at(60300); assert.equal(UI.idle, true); UI.idle = false; at(70000); UI.lastInput = 70000;
-  UI.cargo.state = "report"; tick(200000); assert.equal(UI.idle, false, "never during the report card"); assert.equal(UI.lastInput, 200000);
-  UI.cargo.state = "bay"; tick(259000); assert.equal(UI.idle, false, "not yet 60 s after the card closed"); tick(260001); assert.equal(UI.entering || UI.idle, true, "60 s after the card closes"); at(260400); assert.equal(UI.idle, true); UI.idle = false;
+  UI.cargo.state = "end"; tick(200000); assert.equal(UI.idle, false, "never during the end"); assert.equal(UI.lastInput, 200000);
+  UI.cargo.state = "bay"; tick(259000); assert.equal(UI.idle, false, "not yet 60 s after the end closed"); tick(260001); assert.equal(UI.entering || UI.idle, true, "60 s after the end closes"); at(260400); assert.equal(UI.idle, true); UI.idle = false;
   at(300000); UI.lastInput = 300000; h.play({ kind: "arrival", target: "cargo", ms: 750 }); tick(300749); tick(360700); assert.equal(UI.entering || UI.idle, false, "the arrival's end restarts the count: 60 s from 300750"); tick(360751); assert.equal(UI.entering || UI.idle, true);
 });
 
@@ -214,30 +216,36 @@ test("fix 7: the swap's from names the id of the light shown: the resident's gra
   }
 });
 
-// ---- A skippable hold (lvgl-switch.md §2.1; ceremony cut 4): ✓ Skip ends the bay's opening and the hatch at their end states, and nothing else ----
+// ---- A skippable hold (lvgl-switch.md §2.1; ceremony cut 4): ✓ Skip ends the hatch's hold at its end state; in Cargo the face says ✓, ← and a room key on "room" (build spec 8.4) and the host applies the crate's end state ----
 const skipOf = (screen, target) => ({ t: "intent", seq: 9, screen, target, verb: "skip" });
+const heldKey = (verb) => ({ t: "intent", seq: 9, screen: "cargo", target: "room", verb });
 const cargoRig = () => {
   const r = rig(); const crate = (id, n, turn) => ({ id, n, turn, at: 0, e: 3, d: 2, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
   G.sv.bay = [crate("c1", 1, 2), crate("c2", 2, 3)]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.skip = null; r.h.pendingDock = false; r.at(0);
   onFaceMessage(r.h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); return r;
 };
 const cargoEnd = () => ({ state: UI.cargo.state, shown: UI.cargo.shown, e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn, accepted: [...G.st.accepted], screen: UI.screen });
-test("✓ Skip in Cargo's opening, at 1 ms, mid-way and on the hold's last frame, lands where waiting it out lands: the report, every crate taken in once", () => {
-  const { at } = cargoRig(); assert.deepEqual(UI.skip, { kind: "arrival", target: "crate" }, "the host marks the skippable hold for the line"); at(6200); const waited = cargoEnd(); assert.equal(waited.state, "report"); assert.equal(UI.skip, null);
-  for (const t of [1, 3100, 6199]) {
-    const { h, at: go } = cargoRig(); go(t); onFaceMessage(h, skipOf("cargo", "crate"));
-    assert.equal(h.holding(), false, `the hold ends at ${t}`); assert.equal(UI.skip, null); assert.deepEqual(cargoEnd(), waited, `a skip at ${t} lands the waited end state`);
+test("✓ Skip in Cargo's opening, at 1 ms, mid-way and on the hold's last frame, lands where waiting it out lands: the end, every crate taken in once", () => {
+  const { at } = cargoRig(); assert.deepEqual(UI.skip, { kind: "arrival", target: "crate" }, "the host marks the skippable hold for the line"); at(3820); const waited = cargoEnd(); assert.equal(waited.state, "end"); assert.equal(UI.skip, null);
+  for (const t of [1, 1900, 3819]) {
+    const { h, at: go } = cargoRig(); go(t); onFaceMessage(h, heldKey("confirm")); if (UI.cargo.state === "opening") onFaceMessage(h, heldKey("confirm"));   // at 1900 the second crate has already started: one skip ends it
+    assert.equal(h.holding(), false, `the hold ends at ${t}`); assert.equal(UI.skip, null); assert.deepEqual(cargoEnd(), waited, `two skips at ${t} land the waited end state`);
     go(t + 16); go(7000); assert.deepEqual(cargoEnd(), waited, "and nothing runs twice afterwards");
   }
 });
-test("Cargo's line shows ✓ Skip only while the opening's hold runs", () => {
-  const { h, at } = cargoRig(); assert.equal(screenProps().msg.frame.line.ok, SPECS.cargo.strings.skip); onFaceMessage(h, skipOf("cargo", "crate")); assert.equal(UI.cargo.state, "report"); assert.notEqual(screenProps().msg.frame.line.ok, SPECS.cargo.strings.skip);
-  const r = cargoRig(); r.at(3000); assert.equal(screenProps().msg.frame.line.ok, SPECS.cargo.strings.skip); r.at(6200); assert.equal(UI.skip, null, "run out: the line drops it");
+test("✓ Skip once: the first crate's end state at once and the second crate starts with its times from 0 (a new event, a new hold)", () => {
+  const { h, sent, at } = cargoRig(); at(300); onFaceMessage(h, heldKey("confirm")); const ev = sent.filter((m) => m.kind === "arrival" && m.target === "crate");
+  assert.deepEqual(ev.map((m) => [m.ms, m.hold]), [[3800, 3820], [1900, 1920]]); assert.equal(UI.cargo.state, "opening"); assert.equal(UI.cargo.crate, 1); assert.equal(G.st.accepted.length, 2); assert.equal(h.holding(), true, "the second crate holds"); assert.deepEqual(UI.skip, { kind: "arrival", target: "crate" });
+  at(300 + 1900); assert.equal(UI.cargo.state, "opening"); at(300 + 1920); assert.equal(UI.cargo.state, "end");
 });
-test("a room key kept through the opening still fires after a skip; a Dock key too", () => {
-  const { h, at } = cargoRig(); at(500); onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "room", verb: "room:research" }); h.pendingDock = true;
-  at(900); onFaceMessage(h, skipOf("cargo", "crate")); assert.equal(UI.cargo.state, "report"); at(916);
-  assert.equal(G.st.dock.docked, false, "the kept Dock key acted at the hold's end"); assert.equal(UI.screen, "pods", "the kept room key opened its section"); assert.equal(UI.cargo.state, "bay", "and closed the report");
+test("Cargo's line shows ✓ Skip only while the opening's hold runs", () => {
+  const { h, at } = cargoRig(); assert.equal(screenProps().msg.frame.line.ok, SPECS.cargo.strings.skip); onFaceMessage(h, heldKey("confirm")); onFaceMessage(h, heldKey("confirm")); assert.equal(UI.cargo.state, "end"); assert.notEqual(screenProps().msg.frame.line.ok, SPECS.cargo.strings.skip);
+  const r = cargoRig(); r.at(1900); assert.equal(screenProps().msg.frame.line.ok, SPECS.cargo.strings.skip); r.at(3820); assert.equal(UI.skip, null, "run out: the line drops it");
+});
+test("a Dock key kept through the opening still acts after a skip; a room key during the hold ends the opening and opens its section at once", () => {
+  const { h, at } = cargoRig(); at(500); h.pendingDock = true; onFaceMessage(h, heldKey("confirm")); onFaceMessage(h, heldKey("confirm")); assert.equal(UI.cargo.state, "end"); at(516);
+  assert.equal(G.st.dock.docked, false, "the kept Dock key acted at the hold's end");
+  const r = cargoRig(); r.at(900); onFaceMessage(r.h, heldKey("room:research")); assert.equal(UI.screen, "pods", "the room key opened its section"); assert.equal(UI.cargo.state, "bay"); assert.equal(r.h.holding(), false);
 });
 test("no other hold takes ✓ Skip: a seal's hold, growNow's or Create's grow ignores it and keeps holding", () => {
   const { h, at } = rig(); at(0); h.play({ kind: "seal", target: "p", ms: 2000, hold: 2000 }); assert.equal(UI.skip, null);

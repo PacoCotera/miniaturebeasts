@@ -2,83 +2,119 @@
  "_note": "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the frame after ✓ Skip, the report: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "cargo-bay": {
-   "hash": "f7f19379",
+   "hash": "cf83d4ae",
    "png": "cargo-bay.png"
   },
   "cargo-bay-one": {
-   "hash": "677638db",
+   "hash": "ca00ab4a",
    "png": "cargo-bay-one.png"
   },
-  "cargo-bay-three": {
-   "hash": "5d17affc",
-   "png": "cargo-bay-three.png"
+  "cargo-bay-two": {
+   "hash": "1e35df3c",
+   "png": "cargo-bay-two.png"
   },
   "cargo-bay-empty": {
-   "hash": "98bc3c34",
+   "hash": "b3307364",
    "png": "cargo-bay-empty.png"
   },
   "cargo-bay-away": {
-   "hash": "56c4f749",
+   "hash": "550c0a1c",
    "png": "cargo-bay-away.png"
   },
   "cargo-bay-waiting": {
-   "hash": "8f48b85d",
+   "hash": "3ae50ec3",
    "png": "cargo-bay-waiting.png"
   },
-  "cargo-report": {
-   "hash": "513bf955",
-   "png": "cargo-report.png"
+  "cargo-bay-waiting-many": {
+   "hash": "66499219",
+   "png": "cargo-bay-waiting-many.png"
   },
-  "cargo-report-small": {
-   "hash": "5893b781",
-   "png": "cargo-report-small.png"
+  "cargo-bay-portrait": {
+   "hash": "a8819fef",
+   "png": "cargo-bay-portrait.png"
   },
-  "cargo-report-waiting": {
-   "hash": "381857ec",
-   "png": "cargo-report-waiting.png"
+  "cargo-bay-portrait-away": {
+   "hash": "12c32140",
+   "png": "cargo-bay-portrait-away.png"
+  },
+  "cargo-end": {
+   "hash": "3130460b",
+   "png": "cargo-end.png"
+  },
+  "cargo-end-no-pods": {
+   "hash": "e5cf1f24",
+   "png": "cargo-end-no-pods.png"
   },
   "cargo-opening-0": {
-   "hash": "952d1312",
+   "hash": "5d248e2e",
    "png": "cargo-opening-0.png"
   },
-  "cargo-opening-200": {
-   "hash": "23c98cc0",
-   "png": "cargo-opening-200.png"
+  "cargo-opening-dither": {
+   "hash": "f0c860b2",
+   "png": "cargo-opening-dither.png"
   },
   "cargo-opening-500": {
-   "hash": "a77b7fdb",
+   "hash": "4937cd2b",
    "png": "cargo-opening-500.png"
   },
-  "cargo-opening-800": {
-   "hash": "5c48be50",
-   "png": "cargo-opening-800.png"
+  "cargo-opening-materials": {
+   "hash": "dbaf599c",
+   "png": "cargo-opening-materials.png"
   },
-  "cargo-opening-1200": {
-   "hash": "00c60f72",
-   "png": "cargo-opening-1200.png"
+  "cargo-opening-hatch": {
+   "hash": "83690180",
+   "png": "cargo-opening-hatch.png"
   },
-  "cargo-opening-1650": {
-   "hash": "e1c1c065",
-   "png": "cargo-opening-1650.png"
+  "cargo-opening-pod": {
+   "hash": "40fa3874",
+   "png": "cargo-opening-pod.png"
   },
-  "cargo-opening-end": {
-   "hash": "0035d34a",
-   "png": "cargo-opening-end.png"
+  "cargo-opening-swap": {
+   "hash": "38077b9f",
+   "png": "cargo-opening-swap.png"
+  },
+  "cargo-opening-mat": {
+   "hash": "fe109b48",
+   "png": "cargo-opening-mat.png"
+  },
+  "cargo-opening-find": {
+   "hash": "e3041228",
+   "png": "cargo-opening-find.png"
+  },
+  "cargo-opening-done": {
+   "hash": "c4556915",
+   "png": "cargo-opening-done.png"
+  },
+  "cargo-opening-three": {
+   "hash": "a9a70432",
+   "png": "cargo-opening-three.png"
+  },
+  "cargo-opening-three-second": {
+   "hash": "638bfb19",
+   "png": "cargo-opening-three-second.png"
+  },
+  "cargo-opening-portrait": {
+   "hash": "8fe90fdf",
+   "png": "cargo-opening-portrait.png"
+  },
+  "cargo-opening-portrait-away": {
+   "hash": "3ef19f39",
+   "png": "cargo-opening-portrait-away.png"
   },
   "cargo-arrival-2200": {
-   "hash": "36f3e9f0",
+   "hash": "e3f1cb19",
    "png": "cargo-arrival-2200.png"
   },
   "cargo-arrival-choice": {
-   "hash": "9407a731",
+   "hash": "8bec56dc",
    "png": "cargo-arrival-choice.png"
   },
   "cargo-arrival-empty-trip": {
-   "hash": "7b7c081e",
+   "hash": "cd4eb2e7",
    "png": "cargo-arrival-empty-trip.png"
   },
   "cargo-opening-skip": {
-   "hash": "e1db15e9",
+   "hash": "ec1d6f89",
    "png": "cargo-opening-skip.png"
   }
  }
