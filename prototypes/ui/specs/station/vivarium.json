@@ -76,7 +76,7 @@
    "walk": {"ground": [16, 296, 992, 176], "keepOut": [752, 356, 256, 116], "box": "figure box x 16..1008−W, feetY groundTop(F.x)..471 (draws still 296..471, rejected above the profile)", "keepOutRule": "a figure meets K exactly when F.x + ⌈W/2⌉ > 752 and feetY > 353, in every bed state; K is the sleepers' tags: left 840 − 88 (the widest tag on the leftmost place), top = the sleepers' tag top less 40, so that a walker's tag, feetY + 16 to + 40, stays above them; the sleepers' tag top is 456 − curlH − 32 (396 with the measured curl height 28); the rect is derived from the measured curls by station/tools/make-keepout.mjs (and checked), never typed", "profile": {"x": [16, 100, 330, 560, 900], "top": [372, 352, 316, 324, 344], "idle": 80, "note": "the ground profile: the lowest feetY (groundTop) by F.x band 16–99, 100–329, 330–559, 560–899, 900–1008, measured on idle-vivarium-day-1024x568 and signed for all four lights; Idle reads it 80 px lower; Home keeps its band until its own profile is signed"}, "start": "box.x 16 + r mod (993 − w), feetY 296 + r mod 176; redrawn while it meets keepOut, up to 8 draws; fallback box.x 16 with the last feetY", "waypoint": "the same draw; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "rule": "each walks with its feet in the band, as on Idle 80 px higher; its keep-out reaches the sleepers' tags (Idle shows none)"},
    "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
    "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
-   "lift": 4,
+   "lift": 2,
    "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "lamp": "[x + w/2 + 36, feet − 88, 12, 12]", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither, lamp", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" },
    "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
   },
@@ -207,7 +207,7 @@
     "id": "resident.<mibi id>",
     "shape": "footprint",
     "box": "the resident's box where the face has stepped it; each sleeper is one, with no lift",
-    "lift": 4,
+    "lift": 2,
     "present": "rest, every mibi at home"
    },
    "tile": {

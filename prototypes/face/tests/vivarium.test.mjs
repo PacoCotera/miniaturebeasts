@@ -308,17 +308,17 @@ const FIG = [47, 105, 49, 43], PROFILE = R.resident.walk.profile;   // an adult'
 const groundTop = (fx) => { let t = PROFILE.top[0]; PROFILE.x.forEach((x, i) => { if (fx >= x) t = PROFILE.top[i]; }); return t; };
 const feetOf = (rect, fig = FIG) => ({ fx: rect[0] + fig[0] + Math.floor(fig[2] / 2), feetY: rect[1] + fig[1] + fig[3] - 1 });
 const withFigure = (b, fig = FIG) => { for (const r of b.props.regions.residents) r.figure = fig; return b; };
-test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is feetY + 16 and flips to feetY − H − 36 past the window's foot; the focus target is the figure box", { skip }, async () => {
+test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is feetY + 16 and flips to feetY − H − 34 past the window's foot; the focus target is the figure box", { skip }, async () => {
   let flipped = 0, below = 0; const [W, H] = [FIG[2], FIG[3]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12)));
   for (let seed = 1; seed <= 40; seed++) {
     const b = withFigure(scene({ adults: 1, focus: "tile:0" })); b.props.regions.residents[0].seed = seed * 104729;
     const f = await start(b, { motion: false, node: true }); withFocus(f, "resident." + b.st.mibis[0].id); const lg = logOf(f) ?? (frames(f), logOf(f));
-    const nb = f.nodeBox("g." + b.st.mibis[0].id).box, pic = [nb[0], nb[1] + R.window.rect[1] + 4, nb[2], nb[3]];   // a node box is the window's own; the focused picture is lifted 4 px, the ring and the feet stay on the ground
+    const nb = f.nodeBox("g." + b.st.mibis[0].id).box, pic = [nb[0], nb[1] + R.window.rect[1] + 2, nb[2], nb[3]];   // a node box is the window's own; the focused picture is lifted 2 px, the ring and the feet stay on the ground
     const { fx, feetY } = feetOf(pic), ring = lg.regions.find((x) => x.id === "focus").rect, tag = lg.regions.find((x) => x.id === "nameTag" && x.layer === "chrome").rect;
     assert.ok(pic[1] + FIG[1] + H - 1 === feetY, "the picture is placed so its figure's last ink row is the feet");
     assert.deepEqual(ring, [fx - Math.floor(W / 2) - 5, feetY - (fh + 10) / 2, W + 10, fh + 10], `seed ${seed}: the ring on F`); assert.equal(W + 10, 59); assert.equal(fh + 10, 18);
     const win = R.window.rect, flips = feetY + 16 + tag[3] > win[1] + win[3] - 8;
-    if (flips) { flipped++; assert.equal(tag[1], feetY - H - 36, `seed ${seed}: the flipped tag`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
+    if (flips) { flipped++; assert.equal(tag[1], feetY - H - 34, `seed ${seed}: the flipped tag`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
   }
   assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} flipped, ${below} below`);
 });

@@ -154,7 +154,7 @@ test("the figure is measured on the stand without its shadow: feetY is the last 
   try {
     for (const [stage, place] of [["adult", [144, 152]], ["juvenile", [104, 112]]]) for (const looks of [{ colour: "charcoal", markings: "none", crown: "bare" }, { colour: "russet", markings: "stripes", crown: "leaf crest" }]) {
       const st = layeredStand("S01", stage, place, "vivarium"), plain = layeredStand("S01", stage, place, "vivarium"); plain.layers = plain.layers.filter((l) => l.op !== "under");
-      const withShadow = composeStand(st, looks), without = composeStand(plain, looks), box = inkBox(without.rgba(), without.w, without.h), all = inkBox(withShadow.rgba(), withShadow.w, withShadow.h);
+      const withShadow = composeStand(st, looks), without = composeStand(plain, looks), box = inkBox(without.rgba(), without.w, without.h), all = inkBox(withShadow.rgba(), withShadow.w, withShadow.h, 1, 1);
       assert.ok(Math.abs(withShadow.figure[2] - box[2]) <= 1 && Math.abs(withShadow.figure[3] - box[3]) <= 1, `${stage}: the figure is the shadowless figure's size (to a rounding row): ${withShadow.figure} against ${box}`);
       assert.ok(all[1] + all[3] > withShadow.figure[1] + withShadow.figure[3], `${stage}: the shadow's rows reach past the feet, and are not in the figure`);
     }

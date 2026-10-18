@@ -99,9 +99,10 @@ export const setMovingSource = (src) => { SOURCE = src; FIGURES.clear(); };
 const AIRBORNE = /^(air|curl|curl-b1)$/;
 export function atlasFigure(id, pic) {
   const a = parse(id); if (!a || a.part !== "walk") return null;
-  const cells = cellsOf(a.species, a.stage, "walk", a.w, a.h), px = pic.rgba(); let x0 = a.w, y0 = a.h, x1 = -1, y1 = -1;
+  const cells = cellsOf(a.species, a.stage, "walk", a.w, a.h), px = pic.rgba(); let x0 = a.w, y0 = a.h, x1 = -1, y1 = -1, sy = -1;   // sy: the lowest solid row (alpha >= 200), the feet line; a soft fringe is not ground
   cells.forEach((c, i) => { if (AIRBORNE.test(c.name)) return; const ox = 1 + i * a.w;
-    for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (px[(y * pic.w + ox + x) * 4 + 3] >= 128) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } });
+    for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) { const al = px[(y * pic.w + ox + x) * 4 + 3]; if (al >= 128) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; if (al >= 200 && y > sy) sy = y; } } });
+  if (x1 >= 0 && sy >= 0) y1 = sy;
   return x1 < 0 ? null : [x0, y0, x1 - x0 + 1, y1 - y0 + 1];
 }
 // the figure of the set's walk atlas of a species, stage and look, composed here from its sources (the day atlas: a light grades colour, never alpha), cached by the atlas id; null with no source or no ink

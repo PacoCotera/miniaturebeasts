@@ -97,10 +97,11 @@ function artOf(stand, looks) {
   return out;
 }
 // The drawn bbox of a picture, [dx, dy, W, H]: the pixels with ink alpha >= 128, or null when it has none
-export function inkBox(px, w, h, alpha = 128) {
-  let x0 = w, y0 = h, x1 = -1, y1 = -1;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (px[(y * w + x) * 4 + 3] >= alpha) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-  return x1 < 0 ? null : [x0, y0, x1 - x0 + 1, y1 - y0 + 1];
+export function inkBox(px, w, h, alpha = 128, solid = 200) {   // the feet line is the last solid row (alpha >= `solid`): a soft fringe is not ground
+  let x0 = w, y0 = h, x1 = -1, y1 = -1, sy = -1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const a = px[(y * w + x) * 4 + 3]; if (a >= alpha) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; if (a >= solid) sy = y; } }
+  if (x1 < 0) return null; if (sy >= 0) y1 = sy;
+  return [x0, y0, x1 - x0 + 1, y1 - y0 + 1];
 }
 // The shadow laid under the art on a canvas extended below to hold it: the art's rows 0..ch, the shadow's row `feetRow` on the stand's feet row; { px, h } the extended canvas
 function withShadow(art, cw, ch, under, shadow) {
