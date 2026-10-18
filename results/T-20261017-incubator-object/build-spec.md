@@ -111,7 +111,7 @@ Every step is a cut or the house dither (16 levels, 180 ms). Nothing scales or s
 | 0 | the `open` look stands still, with the pod whole: a still beat |
 | 600 | the pod cracks: the renderer's `crack` layer on the pod (crack 1) |
 | 800 | crack 2 (as now, `bud-crack-2` rule, on the renderer's pod) |
-| 1000 | the 180 ms dither to the `hatched` look: the pod's halves (open item 3) on the moss, and the new mibi standing about 146 tall, feet on (532, 415) |
+| 1000 | the 180 ms dither to the `hatched` look: the species' opened pod (bowl and tipped cap, §5) on the moss, and the new mibi standing about 146 tall, feet on (532, 415) |
 | 1200 | the ribbon: "{Name}, a young {Species}" (`strings.hatchRibbon`), rect 312, 56, 400, 40, the house ribbon |
 | 1400 and 1800 | the two steps, each with the `lift` table as now (px above the feet line 415) |
 | 2600 | the 180 ms dither to one mibi up close, in the meet (`handoff`, unchanged) |
@@ -132,9 +132,22 @@ All are the art director's (`capsule-masters.md`): cut once at the authority sca
 - **Drawn in code:** `capsule-glass-closed`.
 - **Placed and used as they are:** the pod renderer's layers, the stamp case, the frame's bars and caps, and the ribbon.
 
-**Missing: gates on this build** (studio work, so the lead sets the budget):
-1. **`capsule-interior-day` and `-dusk`:** the empty moss bed. Until they exist, every state needs a pod in the window, so empty can't be drawn and other species' pods can't replace the painted Loika. The builder ships the Loika-only path behind the existing placeholder rule.
-2. **The opened-pod renderer layers** (the two halves and the tipped cap, in neutral, species-coloured by the masks). Until they exist, the hatch keeps the renderer's `crack` layer on the whole pod behind the juvenile.
+**Painted and confirmed** (a58d2827, `masters/` beside `capsule-masters.md`):
+- `capsule-interior-day`: the empty moss bed, a clean studio edit;
+- `capsule-interior-dusk`: by code, from the incubate still;
+- **the opened pod:** a bowl and a tipped cap in neutral, recoloured per species by the renderer like the closed pod's layers.
+
+The hatch therefore shows the species' opened pod (bowl and cap) beside the juvenile from its step at 1000. Empty draws the bare moss bed. Every species' pod is drawn by the renderer.
+
+**Still to cut by the art director** (no painting):
+- the room, day and dusk;
+- the shell;
+- the open door;
+- the bar, on and off;
+- the seal ring;
+- the opened pod's masks and pattern projection.
+
+The builder takes them as they land.
 
 **Other views of the capsule** (the same masters at their own reductions, set by the art director):
 - Create's chamber, `create.json regions.dome` 776, 104, 176, 224, at about ×0.373, with no room;
@@ -165,6 +178,6 @@ These views are specified in their own screens' specs.
 
 ## 7. Checks for the builder
 
-- **The goldens** (once the gates in §5 are met): empty, growing (bar at 0, ½ and nearly full), ready, the incubate moment at 0, the hatch at 1000 and 1400, and Hatch now at 0 and 400. One Loika bud and one cross bud.
+- **The goldens** (once §5's cuts land): empty, growing (bar at 0, ½ and nearly full), ready, the incubate moment at 0, the hatch at 1000 and 1400, and Hatch now at 0 and 400. One Loika bud and one cross bud.
 - **The per-frame dirty area:** each dither step (whole stage, ≤ 153,600 px a frame, as the house dither), the bar's fill step (8 cuts), and the hatch's lift steps. Print them.
 - **Generators:** print each build-time cut's time and size.
