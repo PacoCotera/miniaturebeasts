@@ -61,3 +61,26 @@ Every layer is cut in closed's frame, so a state change never moves the capsule.
 2. **The opened-pod renderer layers.** One studio painting of the halves and cap in neutral grey on magenta, cut into the pod layers like the closed pod's.
 
 Everything else is cut from the four stills by the art director, with no painting.
+
+## Cut (art director)
+
+All layers are in `masters/`. Scripts in run order: `cut-capsule.py` → `dusk.py` → `reduce-views.py`.
+
+- **`authority/`, 1024 × 600, in closed's frame:**
+  - `capsule-room-day`, `capsule-room-dusk`;
+  - `capsule-shell`, `capsule-shell-dusk`;
+  - `capsule-interior-day`, `capsule-interior-dusk`;
+  - `capsule-bar-lit`;
+  - `capsule-door-open`, registered from open with dy −19;
+  - `capsule-seal-ring`;
+  - `window-mask`: a clean arch-topped window, x 351–666, y 20–468, which the drawn glass and the ring follow.
+  - The bar-off state is the shell's own dark slot, so it is not a separate layer.
+  - The dusk layers are the day layers graded by code to incubate's colour. The ring is a mint stroke with a glow, measured on incubate as (158, 216, 176).
+- **`room/`, ×0.85:**
+  - the capsule layers at 530 × 510, placed at (344, 48), with the door's box included;
+  - `capsule-room-{day,dusk}-1024x522`: a 1:1 crop of rows 65–587, on the stage at y 40.
+- **`create/`, ×0.373:** 151 × 224, the capsule only.
+- **`home/`, ×0.143:** 58 × 86, the capsule only.
+- **`proof-room-growing-and-sealed.png`:** the room view with a renderer Loika pod at 170 tall. Growing (day, bar lit) and sealed (dusk, ring, bar off).
+- **The build still owes, per mibi:** the pod's relight to the roof lamp, its contact shadow, and the moss blades in front of its foot, as in `composite-juvenile.py`. The proof shows the pod unrelit.
+- **The superseded registered dusk plate** has been removed.
