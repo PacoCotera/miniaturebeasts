@@ -1,0 +1,24 @@
+[
+ {
+  "name": "incubator-capsule-hatch-now",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/incubator-capsule-master-open.jpg",
+    "BASE: the open capsule; keep it, the room, camera, lamp and mint bar."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/mibi-juvenile-S01-mag.png",
+    "REFERENCE for the young creature: this exact design, colours, markings and face, facing the same way (do NOT mirror it). Ignore the magenta ground."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod only: charcoal shell, russet dots and ribs, rounded russet cap. Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "The same capsule with its door open, the arch lamp warm, as in the first reference. On the moss, the pod has opened: its charcoal shell with russet dots lies in two halves with the russet cap tipped aside. Standing on the moss between them is this exact young creature from the second reference: same colours, markings and face, facing the same way as in the reference (not mirrored), small and new, looking out of the open door. A soft, bright, joyful light. The mint bar glows mint. The creature is the reference juvenile unchanged in design; it must not be redrawn as a different animal. Same capsule, room, camera and light. No text, no logos, NO chrome, NO exposed cables, NO screens, NO gauges, NO hands, NO arms, NO tools, NO frame or border. "
+ }
+]

@@ -1,0 +1,24 @@
+[
+ {
+  "name": "incubator-capsule-master-open",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/incubator-capsule-master-closed.jpg",
+    "BASE: keep the capsule, room, camera, light, pod and arch lamp exactly."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/capsule-open-mint-1024x600.png",
+    "REFERENCE for the open door only: the curved glass door swung open on its side hinge, the mint bar mint."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod only: charcoal shell, russet dots and ribs, rounded russet cap. Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "The same capsule, camera and light as the first reference, with only the curved glass door swung open on its side hinge, as in the second reference. The mint bar stays mint. The pod and the arch lamp are as in the first reference. The pod is exactly the reference pod: a charcoal slate shell (#465459), russet dots and russet ribs (#ae674d), a rounded russet cap, glowing softly from its core. Same capsule, room, camera and light. No text, no logos, NO chrome, NO exposed cables, NO screens, NO gauges, NO hands, NO arms, NO tools, NO frame or border. "
+ }
+]

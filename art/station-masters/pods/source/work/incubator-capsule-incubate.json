@@ -1,0 +1,20 @@
+[
+ {
+  "name": "incubator-capsule-incubate",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/incubator-capsule-master-open.jpg",
+    "BASE: the open capsule; keep it, the room, camera and pod."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod only: charcoal shell, russet dots and ribs, rounded russet cap. Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "The same capsule and camera as the reference. The door is just closing, almost shut. The pod has been set down on the moss and is settling. A thin mint light traces the door's seam as it seals. The arch lamp glows warm on the moss. A calm, tucked-in moment, the room a touch dimmer, as at evening. The pod is exactly the reference pod: a charcoal slate shell (#465459), russet dots and russet ribs (#ae674d), a rounded russet cap, glowing softly from its core. Same capsule, room, camera and light. No text, no logos, NO chrome, NO exposed cables, NO screens, NO gauges, NO hands, NO arms, NO tools, NO frame or border. "
+ }
+]

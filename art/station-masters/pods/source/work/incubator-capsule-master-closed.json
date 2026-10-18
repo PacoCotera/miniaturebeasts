@@ -1,0 +1,20 @@
+[
+ {
+  "name": "incubator-capsule-master-closed",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/incubator-object-r2/capsule-closed-1024x600.png",
+    "The painting to edit: keep the capsule, room, camera and light identical."
+   ],
+   [
+    "art/station-masters/pods/source/work/guides/inc/ref-loika-pod-sealed-3x.png",
+    "REFERENCE for the pod only: charcoal shell, russet dots and ribs, rounded russet cap. Ignore the magenta ground."
+   ]
+  ],
+  "prompt": "Edit the first reference painting; keep the capsule, room, camera and light identical. Change two things only. (a) The pod is exactly the reference pod: a charcoal slate shell (#465459), russet dots and russet ribs (#ae674d), a rounded russet cap, glowing softly from its core. (b) The warm arch is a lamp, not an outline: a wider, soft warm light set into the capsule's back wall above and behind the pod, casting warm light down over the moss and onto the pod's shoulders with a gentle falloff across the moss and soil; not a thin neon line hugging the pod's silhouette. The mint bar in the base stays mint. Same capsule, room, camera and light. No text, no logos, NO chrome, NO exposed cables, NO screens, NO gauges, NO hands, NO arms, NO tools, NO frame or border. "
+ }
+]
