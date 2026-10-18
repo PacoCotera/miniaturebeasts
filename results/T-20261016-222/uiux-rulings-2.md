@@ -7,7 +7,7 @@ These rule on the Incubator build spec (`results/T-20261017-incubator-object/bui
 1. **Text on the painted wall is too faint.** The code ("C7E WCA V1H") and "ready in about {n} min" are in `mist` on the sage wall (about rgb 170, 178, 155). Light grey on a light wall fails at 1×.
    - **Rule:** the left column's text is **`ink`** (#1a1725), Inter 16. That is about 7:1 on the wall.
    - The face test asserts at least 4.5:1, measured against the wall master under each text box.
-2. **The Hatch now | Wait panel is the old card, not the house panel.** The stills show a slate pane with the title "Hatch the Loika now?", an egg on a dish in both windows, and a "hatches now" fact line. None of that is the capsule or the panel frame. It is rebuilt as §E below.
+2. **The Hatch now | Wait panel is the old card, not the house panel.** The stills show a slate pane with the title "Hatch the Loika now?", an egg on a dish in both windows, and a "hatches now" fact line. None of that is the capsule or the panel frame. It is rebuilt as §D below.
 
 ## B. The open questions
 
@@ -37,10 +37,10 @@ These rule on the Incubator build spec (`results/T-20261017-incubator-object/bui
 | The panel price as the kit's price run (Inter 16, its icon spacing) | **Confirmed.** It is the same run as the bottom line, which is better than my 4/12 px |
 | The panel axis at x 264 | **Confirmed.** 116 + 296 / 2 = 264; my 261 was an estimate |
 | The bar at max(1, floor(158 × progress)) | **Confirmed.** The first pixel shows from the start, matching §4.1 |
-| The Hatch now \| Wait panel is kept (the game designer's 10-18 correction) | **Confirmed, and §6 is amended:** the panel is built in the house frame, as §E |
+| The Hatch now \| Wait panel is kept (the game designer's 10-18 correction) | **Confirmed, and §6 is amended:** the panel is built in the house frame, as §D |
 | "Cross them" is not built, so only Incubate plays the incubate moment | **Confirmed.** §4.1 applies to Cross when it is built |
 
-## E. The Hatch now | Wait panel (replaces the old card)
+## D. The Hatch now | Wait panel (replaces the old card)
 
 - **Where it lives:** a state of the Incubator, `confirm`, drawn by the same panel overlay as Create's (the architect's ruling).
 - **The way in:** the Incubator's ✓ **Hatch now** while growing. A refusal (short of Essence, no bay) shows the refusal plate, as now, and the panel does not open.

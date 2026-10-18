@@ -12,7 +12,7 @@ Everything not named here keeps its current rule in `incubator.json`: the hand-o
 - The art director's gate (`results/T-20261017-incubator-object/art-director.md`) and the four pictures:
   - `closed` and `incubate` (masters-pods cc402996, `concepts/incubator-capsule-hs/`);
   - `open-fixed` and `hatch-now-fixed` (`house-style/` here).
-- **Decision panels:** Incubate has one, **Incubate | Keep shaping** (the owner, 00:57). It is a first build, fully specified in §6a. Hatch now has one too, **Hatch now | Wait**, in the same frame (§6, `results/T-20261016-222/uiux-rulings-2.md` §E).
+- **Decision panels:** Incubate has one, **Incubate | Keep shaping** (the owner, 00:57). It is a first build, fully specified in §6a. Hatch now has one too, **Hatch now | Wait**, in the same frame (§6, `results/T-20261016-222/uiux-rulings-2.md` §D).
 
 All rects are `[x, y, w, h]` in screen pixels at 1× on 1024 × 600. The stage is the frame's `(0, 40, 1024, 522)`; the top bar (40) and the bottom line (38) are the frame's own. Every image is placed at 1:1, nothing is scaled at runtime, and nothing is anti-aliased.
 
@@ -161,7 +161,7 @@ These views are specified in their own screens' specs.
 
 **The decision moments:**
 - **Incubate** (on Create) opens the Incubate | Keep shaping panel (§6a). Its ✓ Incubate plays Create's grow event (unchanged), then lands on the Incubator's incubate moment (4.1).
-- **Hatch now** opens the **Hatch now | Wait** panel (kept by the game designer's 10-18 correction), built in §6a's frame: `results/T-20261016-222/uiux-rulings-2.md` §E.
+- **Hatch now** opens the **Hatch now | Wait** panel (kept by the game designer's 10-18 correction), built in §6a's frame: `results/T-20261016-222/uiux-rulings-2.md` §D.
 
 **Strings** (`incubator.json strings`):
 - new: `readyIn` "ready in about {n} min";
