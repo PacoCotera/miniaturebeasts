@@ -29,7 +29,7 @@ static const char *rcol(const char *path) { char s[24]; if (spec_str(F, v_fmt(RP
 static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
 static int si(const char *p, int d) { return spec_int(F, v_fmt(RP ".strip.%s", p), d); }
 static int sk(const char *p, int k) { return spec_int(F, v_fmt(RP ".strip.%s.%d", p, k), 0); }
-/* the Incubate | Keep shaping form (T-20261016-222; build-spec section 6a; panel.json `incubate`): two bezels over the device ground, each with a header (the verb; Incubate's price and the founder's pod) and a window: the sealed capsule with this founder's pod, and Create as it stood when it was left (the face's snapshot) */
+/* the Incubate | Keep shaping form (T-20261016-222; build spec section 6a; panel.json `incubate`): two bezels over the device ground, each with a header (the verb; Incubate's price and the founder's pod) and a window: the sealed capsule with this founder's pod, and Create as it stood when it was left (the face's snapshot) */
 static int incubate_form(void) { return strcmp(v_pstr("overlay.form"), "incubate") == 0; }
 #define PN "panel"
 static int pi_(const char *p, int d) { return spec_int(PN, v_fmt("incubate.%s", p), d); }

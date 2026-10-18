@@ -21,7 +21,7 @@ export function closePanel(h) { h.ui.panel = null; }
 // `target`: card.<id>; `verb`: confirm | back (the room keys go to the frame's intent).
 export function intent(h, target, verb) {
   const ui = h.ui.panel; if (!ui) return;
-  if (ui.id === "incubate") {   // the Incubate | Keep shaping panel (build-spec 6a.4): ✓ Incubate runs Create's grow; Keep shaping and ← dither back to Create as it was; a room key is the frame's (a cut, nothing spent)
+  if (ui.id === "incubate") {   // the Incubate | Keep shaping panel (build spec 6a.4): ✓ Incubate runs Create's grow; Keep shaping and ← dither back to Create as it was; a room key is the frame's (a cut, nothing spent)
     if (verb === "back" || (verb === "confirm" && target === "card.keep")) { S.logEv(h.st, "Decision panel · Incubate | Keep shaping · Keep shaping"); keepShaping(h); return; }
     if (verb === "confirm" && target === "card.incubate") { S.logEv(h.st, "Decision panel · Incubate | Keep shaping · Incubate"); incubateNow(h); }
     return;

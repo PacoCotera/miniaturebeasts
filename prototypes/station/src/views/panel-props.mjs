@@ -15,13 +15,13 @@ const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eig
 // (the Grow this founder? panel and its JUVENILE and FOUNDER pictures are retired with T-20261016-222)   // the juvenile and the founder as the card shows them (T-20261016-70: each stands at least 80 px tall in the 160 slot; the spec's 104 × 112 stood at 43 %)
 
 
-// The Incubate | Keep shaping panel (T-20261016-222; build-spec 6a): Create's `confirm` state, drawn by the face's panel overlay in its `incubate` form. The two cards are the two bezels; the left window is the sealed capsule with this founder's pod,
+// The Incubate | Keep shaping panel (T-20261016-222; build spec 6a): Create's `confirm` state, drawn by the face's panel overlay in its `incubate` form. The two cards are the two bezels; the left window is the sealed capsule with this founder's pod,
 // the right is Create as it stands (the face's snapshot; nothing to send). The price is the founder's: ⚡ ❀ ◆ from the rules, then the pod itself (16 x 20), which becomes the mibi. Props name what: ids, strings and the price; the places are panel.json's `incubate`.
 export function incubateCards() {
   return [{ id: "incubate", act: "incubate", room: null, dim: false, loss: false, name: "incubate", cost: "", short: "" }, { id: "keep", act: "keep", room: null, dim: false, loss: false, name: "keep", cost: "", short: "" }];
 }
 export function incubateBuild(m, spec, frame, pods, createSpec) {
-  const { st, settings } = m, cr = m.ui.create, requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.incubate, Sg = createSpec.strings.panel, p = createPod(st, cr), species = S.speciesOf(p), signed = "signed (art director, capsule-masters.md)";
+  const { st, settings } = m, cr = m.ui.create, requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.incubate, Sg = createSpec.strings.panel, p = createPod(st, cr), species = S.speciesOf(p), signed = "signed (art director, the capsule masters list)";
   const cost = S.growCost(st, cr.choices, settings), text = S.priceText(cost.e, cost.d, cost.s, 0), [lw, lh] = P.windows.left.slice(2);
   const room = slot(req, "capsule-room-dusk-474x468", [0, 0, lw, lh], signed);
   const sz = [296, 459], L = layers(req, sz, ["interior-dusk", "shell-dusk", "seal-ring", "glass-closed"]);

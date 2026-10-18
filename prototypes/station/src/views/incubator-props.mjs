@@ -1,4 +1,4 @@
-// The Incubator props, the painted capsule (T-20261016-222; build-spec.md; lvgl-switch.md §2.1, §4 R; incubator.json): pure selectors from the state, the screen's UI state and the presentation to the props of the face's Incubator words. Props name *what*, never *where*: the state, counts, asset
+// The Incubator props, the painted capsule (T-20261016-222; the UI/UX build spec; lvgl-switch.md §2.1, §4 R; incubator.json): pure selectors from the state, the screen's UI state and the presentation to the props of the face's Incubator words. Props name *what*, never *where*: the state, counts, asset
 // ids, strings and flags; no rectangle, no measure, no layout rule, no colour (the words place everything from incubator.json). The output is plain JSON:
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }.
 // Runs in Node, tested there (tests/incubator-props.test.mjs); the shape is incubator.props.json.
@@ -31,7 +31,7 @@ export function relitJuvenile(req, st, mb, settings, spec, light = "day", interi
 
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
-  const signed = "signed (art director, capsule-masters.md)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: Hatch now is playing (it has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was until the event ends, then the hatch on one refresh
+  const signed = "signed (art director, the capsule masters list)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: Hatch now is playing (it has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was until the event ends, then the hatch on one refresh
   const ready = !!B && !gs && S.budReady(st, settings, now);
   const mb = hatch ? S.mibiById(st, hatch.mibi) : null;   // the mibi that hatched, while the hatch plays
   const state = hatch ? "hatch" : !B ? "empty" : ready ? "ready" : "growing";
@@ -41,7 +41,7 @@ export function incubatorBuild(m, spec, pods) {
   regions.room = { day: RM(R.room.pictures.day), dusk: RM(R.room.pictures.dusk) };
   // the capsule: its layers (room view, 530 x 532 at (344, 26)); the glass is the host's, drawn in code along the interior's alpha
   const L = layers(req, roomSize, ["interior-day", "interior-dusk", "shell", "shell-dusk", "door-open", "bar-lit", "seal-ring", "glass-closed"]);
-    const barPx = state === "growing" ? Math.max(1, Math.floor(R.capsule.bar.max * (gs ? gs.progress : S.budProgress(st, settings, now)))) : R.capsule.bar.max;   // from its first pixel (build-spec 4.1: the bar from its first pixel), so the lit bar never pops off in the wait's first seconds
+    const barPx = state === "growing" ? Math.max(1, Math.floor(R.capsule.bar.max * (gs ? gs.progress : S.budProgress(st, settings, now)))) : R.capsule.bar.max;   // from its first pixel (build spec 4.1: the bar from its first pixel), so the lit bar never pops off in the wait's first seconds
   regions.capsule = { interior: { day: L["interior-day"], dusk: L["interior-dusk"] }, shell: { day: L.shell, dusk: L["shell-dusk"] }, door: L["door-open"], bar: L["bar-lit"], seal: L["seal-ring"], glass: L["glass-closed"], barPx };
   // what stands inside: the bud's sealed pod (growing, ready, the hatch's beat), its cracks, the opened pod; the juvenile
   const species = hatch ? hatch.species : B?.species;

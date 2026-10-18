@@ -77,7 +77,7 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 
-// Home's Incubator station: the painted capsule at x0.137, 56 x 86, the state only (build-spec section 5): the glass with the pod (growing), the door open with the pod (ready), the door open and empty (empty); the bar is lit or off, never a fraction.
+// Home's Incubator station: the painted capsule at x0.137, 56 x 86, the state only (build spec section 5): the glass with the pod (growing), the door open with the pod (ready), the door open and empty (empty); the bar is lit or off, never a fraction.
 // The pod is 27 tall, relit like the others. The places are home.json regions.incubator.capsule*.
 function capsuleOf(req, I, state, bud) {
   const size = I.capsule.slice(2), L = layers(req, size, ["interior-day", "shell", "door-open", "bar-lit", "glass-closed"]), at = I.capsuleRect.slice(0, 2), foot = [at[0] + I.capsuleFoot[0], at[1] + I.capsuleFoot[1]], area = podArea(I.capsulePodHeight);

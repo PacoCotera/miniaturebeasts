@@ -1,4 +1,4 @@
-// The Incubator on the face, the painted capsule (T-20261016-222; build-spec; lvgl-switch.md §4 R): the words and the binding table (screens/incubator.c) on the props views/incubator-props.mjs gives, in Node on the WebAssembly build.
+// The Incubator on the face, the painted capsule (T-20261016-222; build spec; lvgl-switch.md §4 R): the words and the binding table (screens/incubator.c) on the props views/incubator-props.mjs gives, in Node on the WebAssembly build.
 // Every state draws without an error or a refusal inside the budgets with no region departing from incubator.json (tools/incubator-regions.mjs, proved here to fail on a moved region); the layers by state; the incubate moment (dusk, sealed,
 // then the 180 ms dither to growing); Hatch now (the bar in 8 cuts, the door by dither); the hatch (a still beat, the crack, the dither to the opened pod, the juvenile dithering in and stepping out, the ribbon); the bar as the progress;
 // the keys (one subject: ✓ ← and the room keys say theirs on the room, the pad says nothing; a hold says only a room key); and the dirty area of every step, printed. Skipped when the face has not been built (build.sh).
@@ -86,7 +86,7 @@ test("the departure check bites: the shell moved, the room resized, the stamp of
   assert.match(bad(() => {}, "empty").join("; "), /empty Incubator draws no/);
 });
 
-// ---- the layers of each state (build-spec section 1) ----
+// ---- the layers of each state (build spec section 1) ----
 test("the layers: empty is the open, empty capsule (door, no glass, no bar, no pod, bare wall); growing is closed (glass, no door, the bar, the pod, the column); ready is open (door, bar full, pod); the hatch ends on the opened pod and the juvenile", { skip }, async () => {
   const want = { empty: ["room", "interior", "shell", "door"], growing: ["room", "interior", "pod", "glass", "shell", "bar", "stamp", "code"], ready: ["room", "interior", "pod", "shell", "door", "bar", "stamp", "code"], hatch: ["room", "interior", "pod", "shell", "door", "bar", "juvenile", "stamp", "code", "ribbon"] };
   const all = ["room", "interior", "pod", "glass", "shell", "door", "bar", "seal", "juvenile", "stamp", "code"];

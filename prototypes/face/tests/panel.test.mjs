@@ -120,7 +120,7 @@ test("a focus move redraws the two cards' boxes only: at most 2 × 256 × 296 = 
   for (const q of dirtyRects(f)) assert.ok(q[0] >= 124 - 8 && q[1] >= 152 - 8 && q[0] + q[2] <= 124 + 776 + 8 && q[1] + q[3] <= 440 + 8, `${q} inside the cards' band`);
 });
 
-// ---- the Incubate | Keep shaping form (build-spec 6a; panel.json incubate) ----
+// ---- the Incubate | Keep shaping form (build spec 6a; panel.json incubate) ----
 const I = panelSpec.incubate, BEZ = [I.bezels.incubate, I.bezels.keep];
 for (const [name, o] of [["a Loika founder", { species: "S01" }], ["a second species", { species: "S02" }], ["focus on Keep shaping", { focus: "card.keep" }]]) {
   test(`the Incubate panel, ${name}: draws without an error or a refusal; the ground, two bezels, both windows with their frames and the pictures at the spec's places; the one ring 5 px round the focused bezel`, { skip }, async () => {

@@ -17,7 +17,7 @@ import { validate } from "./habitat-props.test.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-// The Grow this founder? panel (T-195 r2 sections 2 and 3: Grow it, Grow and watch, Grow keep reading, the arrival and fork jump modes) is retired with its fixture (T-20261016-222): Create's Incubate opens the Incubate | Keep shaping panel (build-spec 6a).
+// The Grow this founder? panel (T-195 r2 sections 2 and 3: Grow it, Grow and watch, Grow keep reading, the arrival and fork jump modes) is retired with its fixture (T-20261016-222): Create's Incubate opens the Incubate | Keep shaping panel (build spec 6a).
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = J("panel.json"), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json"), incSchema = J("panel.incubate.props.json"), incubatorSpec = J("incubator.json");
 const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, P = frameSpec.regions.panel;
@@ -59,7 +59,7 @@ test("focus opens on the first card that is neither dimmed nor a loss, else the 
   assert.equal(initialFocus([{ id: "a", dim: false, loss: true }, { id: "b", dim: true, loss: false }]), "card.b", "all dimmed or a loss: the way out");
 });
 
-// ---- the Incubate | Keep shaping panel (T-20261016-222; build-spec 6a): Create's `confirm` state ----
+// ---- the Incubate | Keep shaping panel (T-20261016-222; build spec 6a): Create's `confirm` state ----
 const incView = (h, focus = "card.incubate") => { h.ui.panel = { screen: "create", id: "incubate", focus }; return panelBuild({ st: h.st, settings: h.settings, ui: h.ui, jump: h.settings.jump, create: createSpec }, panelSpec, frameSpec, podsSpec); };
 test("the Incubate panel's geometry (panel.json incubate): two bezels 490 x 506 at y 46 with a 12 px gap, each window inside its bezel (8 px in, under a 30 px header), the verbs and Incubate's price fit the header", () => {
   const I = panelSpec.incubate, [l, r] = [I.bezels.incubate, I.bezels.keep];

@@ -560,7 +560,7 @@ static void pods_objects(int dy) {
     const char *glint = v_pstr(v_fmt("regions.pods.wells.%d.glint", i)); if (*glint) v_sprite(v_fmt("pods.glint.%d", i), glint, r[0] + hk("regions.pods.starAt", 0), r[1] + hk("regions.pods.starAt", 1) + dy, sw, sh);
   }
 }
-/* Home's Incubator station (T-20261016-222; build-spec section 5): the painted capsule at x0.137, 56 x 86, the state only: the interior, the relit pod (growing and ready), the glass (growing), the shell, the door (empty and ready) and the bar (lit while growing and ready, never a fraction) */
+/* Home's Incubator station (T-20261016-222; build spec section 5): the painted capsule at x0.137, 56 x 86, the state only: the interior, the relit pod (growing and ready), the glass (growing), the shell, the door (empty and ready) and the bar (lit while growing and ready, never a fraction) */
 static void incubator_objects(int dy) {
   const char *state = v_pstr("regions.incubator.state"); int growing = strcmp(state, "growing") == 0, ready = strcmp(state, "ready") == 0, r[4];
   v_name("incubator"); hrect("regions.incubator.capsuleRect", r);

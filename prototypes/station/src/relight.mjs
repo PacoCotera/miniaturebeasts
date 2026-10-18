@@ -1,4 +1,4 @@
-// The relit picture (T-20261016-222; build-spec §1, architect-rulings 3): a figure (a pod, the opened pod, a juvenile) lit to the capsule's roof lamp, the port of the art director's composite-juvenile.py:
+// The relit picture (T-20261016-222; build spec section 1, architect-rulings 3): a figure (a pod, the opened pod, a juvenile) lit to the capsule's roof lamp, the port of the art director's composite-juvenile.py:
 //   1. light from above: gain 1.10 - 0.38 t^1.4 down the figure, times a warm (1.08, 0.99, 0.84);
 //   2. a warm rim (255, 222, 170) at 0.55 on the top edges (pixels whose upper neighbours, 1 to 3 px up, are clear), blurred 1 px;
 //   3. a contact shadow on the moss (two blurred ellipses under the foot, (18, 12, 6));

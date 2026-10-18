@@ -83,7 +83,7 @@ export function registerPictures(reqs, env) {
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
         put(r.id, r.size[0], r.size[1], "the opened pod's layers", () => (layersPlaced(r.cls) ? podFromLayers(r.cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false) : new PB(r.size[0], r.size[1])), layersPlaced(r.cls) ? { status: podStatus(r.cls) } : {}); break;
       }
-      case "podicon": {   // the founder's pod in the Incubate panel's price (build-spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
+      case "podicon": {   // the founder's pod in the Incubate panel's price (build spec 6a.2): the renderer's collection pod (88 x 112) reduced once to 16 x 20 in the logic process
         const frame = r.species ? env.frameOf(r.species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR(), [w, h] = r.size;
         put(r.id, w, h, "the collection pod's layers", () => { if (!layersPlaced("collection")) return new PB(w, h); const big = podFromLayers("collection", pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, false), px = fitDown(big.rgba(), big.w, big.h, w, h); return { w, h, rgba: () => px }; }); break;
       }

@@ -1,9 +1,9 @@
-// The capsule as the views show it (T-20261016-222; build-spec sections 1, 5, 6a): the masters of each view's layers, and the relit pictures (the sealed pod, its cracks, the opened pod, a juvenile) that stand inside it. Props name *what*: ids and sizes;
+// The capsule as the views show it (T-20261016-222; build spec sections 1, 5, 6a): the masters of each view's layers, and the relit pictures (the sealed pod, its cracks, the opened pod, a juvenile) that stand inside it. Props name *what*: ids and sizes;
 // the places are the specs' (incubator.json regions.capsule, regions.inside, regions.juvenile; create.json; panel; home.json). Pure on the request function `req`, which registers a picture and returns its id.
 import { slot } from "./pods-props.mjs";
 import { RECIPE } from "../relight.mjs";
 export const POD_REF_H = 160;   // the large pod's alpha height: the pod renders at height / 160 of its 144 x 176 layers (about 170 in the room, 147 in the panel, 72 in Create, 27 on Home)
-const SIGNED = "signed (art director, capsule-masters.md)";
+const SIGNED = "signed (art director, the capsule masters list)";
 const cap = (req, name, [w, h]) => slot(req, `capsule-${name}-${w}x${h}`, [0, 0, w, h], SIGNED);
 // the layer masters of a view at its size: the names a view uses (the room has every layer; the others the layers the build spec names)
 export function layers(req, size, names) { const o = {}; for (const n of names) o[n] = cap(req, n, size); return o; }

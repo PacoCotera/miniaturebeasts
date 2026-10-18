@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Places the art director's capsule masters (results/T-20261017-incubator-object/capsule-masters.md, masters-pods a58d2827) into assets/masters/capsule/ and the index: the Incubator's room view (530 x 532 layers and the
+// Places the art director's capsule masters (results/T-20261017-incubator-object/the capsule masters list, masters-pods a58d2827) into assets/masters/capsule/ and the index: the Incubator's room view (530 x 532 layers and the
 // 1024 x 522 room crops), Create's chamber (145 x 224), Home's station (56 x 86), the Incubate panel's window (296 x 459 layers, the 474 x 468 room) and the opened pod's layers (bowl and cap, pod-opened-*).
 // The ids are the file names without .png. Only the layers the build spec uses are placed. Re-running is idempotent.
 //   node prototypes/ui/tools/place-capsule.mjs --from <dir holding masters/ of the work-queue result>
@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url)), dest = path.resolve(here, "../assets/masters"), indexFile = path.join(dest, "index.json");
 const from = process.argv[process.argv.indexOf("--from") + 1]; if (!from || process.argv.indexOf("--from") < 0) { console.error("--from <masters dir>"); process.exit(2); }
-const SIGNED = "art director, the Incubator capsule masters (masters-pods a58d2827; capsule-masters.md)";
+const SIGNED = "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)";
 const LIST = [
   ...["capsule-room-day-1024x522", "capsule-room-dusk-1024x522", "capsule-shell-530x532", "capsule-shell-dusk-530x532", "capsule-interior-day-530x532", "capsule-interior-dusk-530x532", "capsule-bar-lit-530x532", "capsule-door-open-530x532", "capsule-seal-ring-530x532", "capsule-glass-closed-530x532"].map((n) => ["room", n]),
   ...["capsule-shell-145x224", "capsule-interior-day-145x224", "capsule-bar-lit-145x224", "capsule-glass-closed-145x224"].map((n) => ["create", n]),

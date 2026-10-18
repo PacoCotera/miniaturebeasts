@@ -1,4 +1,4 @@
-/* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json; build-spec results/T-20261017-incubator-object/build-spec.md): the painted capsule. The words that draw each of its states (empty, growing, ready, hatch)
+/* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json; build spec results/T-20261017-incubator-object/the UI/UX build spec): the painted capsule. The words that draw each of its states (empty, growing, ready, hatch)
    and its moments (the incubate moment, Hatch now, the hatch) in draw order, from the `incubator` spec and the props' regions, the frame's words after (screens.c): the stage ground, the room (a 1:1 crop, day or dusk), the capsule's
    interior, the pod inside (the host's relit picture, with its shadow and moss blades), the opened pod at the hatch, the juvenile, the glass (the host's code-drawn picture, closed looks only), the shell, the door (open looks), the bar
    (lit from the left, as the progress), the seal ring, then the left wall's column (the stamp case, the stamp, the code, "ready in about {n} min") and the ribbon. No ring in any state: ✓ acts on the room.

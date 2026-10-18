@@ -191,7 +191,7 @@ void create_words(void) {
   picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamberFront.picture"));   /* the tray's rim and floor, over the founder: its ink is rows 310 to 319 only */
   build_roll();
   build_traitLine();
-  { int r[4]; crect("regions.domeFront.rect", r);   /* the capsule's glass (code-drawn), shell and bar, over the travelling pod; the bar is lit while another bud grows (T-20261016-222, build-spec section 5) */
+  { int r[4]; crect("regions.domeFront.rect", r);   /* the capsule's glass (code-drawn), shell and bar, over the travelling pod; the bar is lit while another bud grows (T-20261016-222, build spec section 5) */
     v_name("domeGlass"); { const char *g = v_pstr("regions.dome.glass"); if (has(g)) v_sprite("dome.glass", g, r[0], r[1], r[2], r[3]); }
     picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));
     v_name("domeBar"); { const char *b = v_pstr("regions.dome.bar"); if (has(b) && v_pbool("regions.dome.busy", 0)) v_sprite("dome.bar", b, r[0], r[1], r[2], r[3]); } }

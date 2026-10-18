@@ -20,7 +20,7 @@ export function intent(h, target, verb) {
   }
   else if (verb === "confirm") {
     const block = S.growBlockKey(h.st, p, cr.choices, h.settings, cr.clash); if (block && (block.key === "busy" || block.key === "noBay" || block.key === "clash")) return;   // blocked: ✓ does nothing, no plate (the bottom line says why); only short keeps its plate
-    if (block && block.key === "short") { h.say(spec.strings.notices.shortFrom[block.from].replace("{icons}", block.short)); return; }   // refused as before: the plate, and the panel does not open (build-spec 6a.1)
+    if (block && block.key === "short") { h.say(spec.strings.notices.shortFrom[block.from].replace("{icons}", block.short)); return; }   // refused as before: the plate, and the panel does not open (build spec 6a.1)
     openIncubatePanel(h);   // the 180 ms dither (16 levels) from Create to the Incubate | Keep shaping panel; nothing is spent until its ✓ Incubate
   }
   else if (verb === "back") { h.ui.create = null; h.ui.pods.cur = p.id; h.ui.pods.view = "overview"; h.ui.pods.focus.set("pod"); h.goto("pods"); }
@@ -28,7 +28,7 @@ export function intent(h, target, verb) {
 // Create opens on a pod: nothing chosen, the first read trait.
 export function openCreate(h, p) { h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; h.goto("create"); }
 
-// The Incubate | Keep shaping panel (build-spec 6a; Create's `confirm` state): `h.ui.panel = { screen: "create", id: "incubate", focus }`. It opens with the stage dither (a cut with reduced motion), which holds input, so ✓ Incubate is
+// The Incubate | Keep shaping panel (build spec 6a; Create's `confirm` state): `h.ui.panel = { screen: "create", id: "incubate", focus }`. It opens with the stage dither (a cut with reduced motion), which holds input, so ✓ Incubate is
 // taken only once the dither in has ended: Incubate uses the pod and cannot be undone, so a double press of Create's ✓ never passes through the panel.
 export function openIncubatePanel(h) {
   h.ui.panel = { screen: "create", id: "incubate", focus: "card.incubate" };

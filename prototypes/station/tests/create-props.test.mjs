@@ -136,7 +136,7 @@ test("regions.podShadow.picture is the class's contact shadow slot: pod-large-sh
   const all = make("S01", 3, 2).build(); assert.deepEqual(validate(all.props, schema), []);
 });
 
-// the pod at rest in the capsule (create.json regions.dome, regions.travel.rest; build-spec section 5): the relit pod, 72 tall, whatever the species' own class
+// the pod at rest in the capsule (create.json regions.dome, regions.travel.rest; build spec section 5): the relit pod, 72 tall, whatever the species' own class
 test("regions.pod.dome is the relit pod of the capsule: relit:<species>:pod:day:<w>x<h>:v<recipe>, 72 tall at the moss line y 268 (scale 72 / 160), its blades from the capsule's interior", () => {
   for (const [id, cls] of [["S02", "large"], ["S01", "medium"], ["S03", "small"]]) {
     const b = make(id, 3, 0).build(), pod = b.props.regions.pod;
