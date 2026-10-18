@@ -39,7 +39,18 @@ The owner approved Cargo (21:51). It covers two things: UI/UX's crate-by-crate s
 - `hatch-shut-160x260`: the stills crop it live from `cargo-bay-shut-976x304` at (40, 20).
 - `berth-shut-256x292`: an empty berth is "slatted and shut", and no still draws it yet. Cut it from the same slatted door.
 
-**Missing, the one real gap:** the portrait berth. When a portrait crate is in, the structure gives four berths of 188 px each, and a 256 px crate doesn't fit. It needs a 176 px crate set (sealed, lifting, shadow) and the portrait crate itself in its frame shape. These are new paintings in the crate's existing style, one request in all.
+**The portrait berth: no painting needed** (`cargo-portrait-in.png`, `make-portrait-in.py`). With a portrait crate in, the four berths are 188 px wide, so every crate in the bay is a 176 px reduction of its signed 256 px master. These are cut once at build time, the same way stands are reduced, with the cuts in `cuts/`:
+- `crate-sealed-176x121`;
+- `crate-lifting-176x138` (from the promoted lifting crate);
+- `crate-shadow-176x16`;
+- `crate-sitting-176x121`.
+
+**The portrait crate is the signed sitting crate,** the same yellow case with the frame mark on its plate. It is already Home's portrait crate (`crate-sitting-48x40`), so the crate is one object on both screens. **Its berth carries the difference:** a 2 px edge in the house gold with a dark keyline, drawn in code. That edge is the "frame-shaped berth".
+
+**Not taken: the studio's proposed new case** (about 176 × 220, a blank card in a slim frame):
+- It would be a second portrait-crate design beside the signed one, a new object in the bay and on Home.
+- A blank card on a case reads as a paper label.
+- It costs a paid call that the reductions make unnecessary.
 
 **Drawn in code** (in the house palette, no master needed):
 - the berth recess;
