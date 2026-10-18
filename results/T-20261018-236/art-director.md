@@ -19,3 +19,17 @@
 - **The bottom line reads "nothing spent until Grow".** The owner renamed the press Incubate. This is a words fix for UI/UX and the game designer.
 - **`pods-panel-return.png`** is still the older Return panel, with "gone for good" in the warm colour. The owner's ruling on Return (an equal outcome, never a loss) and the approved Release panel replace it. It predates v4, but it should not ship as is.
 - **`pods-collection.png`:** the identified Loika pods in the rack still show the generic sealed shell (cream with a band), while the overview shows the v4 Loika. If "sealed until identified" means these are not identified yet, the "Loika" label under them contradicts that. If they are identified, they should show the species' pod. The game designer and UI/UX decide which.
+
+## Re-gate (build 2aa5556f, tiles efec6d7e, stills 56ec4421): pass
+
+- **The Coat tiles read.** Colour shows the animal's head and shoulders in its coat (russet to ash reads as a two-tone). Markings shows the charcoal flank with its marks. Both are true to the pod, and the chapter and compare pages are no longer blank.
+- **The builder's three choices:**
+  1. **The crop windows stand** as built: Colour 210 wide at (10, 50), Markings 150 wide at (150, 95), in art px on the 304 × 312 stand, reduced once offline.
+  2. **The layered-stand family id (`…:128x160`) stands.** They are pictures of the same stand, so the same draw policy applies, and their size keeps their ids distinct from the stand's. No family of their own.
+  3. **One tile per pod per page is right.** A hidden copy draws no tile: draw only what is known.
+- **The flagged items are resolved:**
+  - the rack's sealed shells now read "Unknown";
+  - the Return panel is now the approved Release panel ("Release it", "it goes back to the pond edge", no loss colour);
+  - the Habitat's wild panel is now "Release Fig".
+
+T-236 passes on the art. One remaining check, for the words owners: the "nothing spent until Grow" line wasn't in these stills, so confirm it reads Incubate.
