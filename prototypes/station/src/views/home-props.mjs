@@ -106,6 +106,8 @@ export function livingOf(m, R, req, ph, L) {
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
+  // A species with a layered stand draws a moving resident as that stand translated along its path, with no walk cycle, until its atlases carry the layers at world size: it keeps its own coat and marks, at the stand's size
+  const standOf = (mb) => layeredStand(S.speciesOf(mb), stageOf(mb), sizeOf(mb), m.view ?? "home");
   const person = (mb, extra = {}) => {
     const nap = !!extra.nap, kept = nap && !!extra.noCurl; delete extra.nap; delete extra.noCurl;   // kept: a moving nap set draws its own atlas at the old nap size
     const curl = nap && !kept ? curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home") : null;   // a sleeper takes the world-size curl when its nap master is placed
@@ -114,8 +116,8 @@ export function livingOf(m, R, req, ph, L) {
     return { id: String(mb.id), name: mb.name, stage: look.stage, picture: curl ? req(curl.request) : pic(mb, size), ...(figure ? { figure } : {}), waiting: false, ...extra };
   };
   const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
-  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)]; return p; });
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
+  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)]; return p; });
+  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state

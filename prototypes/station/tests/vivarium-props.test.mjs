@@ -160,3 +160,12 @@ test("the figure is measured on the stand without its shadow: feetY is the last 
     }
   } finally { unloadStands(); }
 });
+
+// T-20261018-235: a moving resident of a species with a layered stand is that stand, translated along its path: its own coat and marks, at the stand's size, with no moving set
+test("with the moving sets on, a resident with a layered stand is its stand (same picture, its figure) and carries no moving set", () => {
+  loadStandLooksFs(); loadStandLayersFs();
+  try {
+    const w = world(); dock(w.st); mibis(w, 3); const on = build(w, sv0(), { motionSets: true }).props.regions.residents, off = build(w, sv0(), { motionSets: false }).props.regions.residents;
+    assert.equal(on.length, 3); on.forEach((r, i) => { assert.ok(!r.moving, "no moving set"); assert.equal(r.picture, off[i].picture, "the stand's own picture, with its looks"); assert.deepEqual(r.figure, off[i].figure); assert.match(r.picture, /^mibi:S01~[0-9a-f]{8}:adult:144x152$/); });
+  } finally { unloadStands(); }
+});

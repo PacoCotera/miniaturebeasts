@@ -138,6 +138,8 @@ export const standFigure = (stand, looks) => composed(stand, looks).figure;
 // ---- the sleeper's curl at world size ----
 // The nap picture (the 96×88 master) reduced by the standing figure's factor for its stage: the view's figure height over the standing slot's (54 / 152 for an adult, 40 / 112 for a juvenile), about 34 × 31, with the curl's own
 // shadow under it, reduced by the stand's factor (the same rule as the standing shadow) and its row `feetRow` on the curl's last ink row. The picture is as wide as the curl and its shadow and as tall as both. { w, h, rgba(), figure }.
+// the figure height a view draws a stage at (54 adult, 40 juvenile in the world views), or null
+export const viewFigureHeight = (stage, view = "vivarium") => SIZES?.views?.[view]?.[stageKey(stage)] ?? null;
 export function curlFactor(stage, view, slotH) { const h = SIZES?.views?.[view]?.[stageKey(stage)]; return h ? h / slotH : null; }
 const CURLS = new Map();   // kept by the master, the stage, the factor and the view; a different master picture under the same id is a new entry
 export function curlPicture(src, species, stage, factor, view = "vivarium", id = "") {

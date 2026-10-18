@@ -6,6 +6,7 @@
 import { assetEntry, asset as assetOf, registerAsset, hasAsset } from "../../ui/assets.mjs";
 import { footprintOf } from "../../ui/specs/derive.mjs";
 import { gradedOf } from "./light-grade.mjs";
+import { fitDownBy, viewFigureHeight, curlFactor } from "./layered-stand.mjs";
 
 let MOVING = {};
 // the stand-in shadow's ink (the art director's Q6 ruling for M1a: #1e1a22 at alpha 110, a literal, no new palette name); one constant, so a ruling changes one place
@@ -74,7 +75,18 @@ function shadowStandIn(w, h, ink) {   // a flat ellipse of the shadow ink, w × 
   return out;
 }
 // compose one atlas: the gutter column clear, the cells at 1 + i·w, a mirror each row reversed, shadow-75 the shadow's alpha × 3 / 4 rounded down; `layers` (the look's, empty in M1) are composed over each cell by the bake slot
-export function compose(id, src, layers = []) {
+// A moving atlas at the world size, reduced offline (here, in the logic process, never on the face): every cell of the walk atlas and of its shadow atlas by the stage's standing factor (the view's figure height over the height of the
+// figure measured on the unreduced grounded cells), the nap atlas by the curl's factor, each cell kept in its own cell box, bottom-centred, so the cells' sizes and the feet at the cell's foot do not change.
+const FACTORS = new Map();
+const worldPart = (a) => a.part === "walk" || a.part === "nap" || (a.part === "shadow" && (movingOf(a.species, a.stage)?.shadow?.walk ?? []).join("x") === `${a.w}x${a.h}`);   // the close-up's atlases are not the world's
+function reduction(a, src) {
+  const walkId = `moving:${a.stage}:${a.species}:walk:${movingOf(a.species, a.stage).walk.size.join("x")}:${a.look ?? "species"}`;
+  if (a.part === "nap") { const f = curlFactor(a.stage, "vivarium", movingOf(a.species, a.stage).walk.size[1]); return f && f < 1 ? f : 1; }
+  if (FACTORS.has(walkId + "|" + (src === SOURCE))) return FACTORS.get(walkId + "|" + (src === SOURCE));
+  const target = viewFigureHeight(a.stage, "vivarium"), fig = target ? atlasFigure(walkId, compose(walkId, src, [], false)) : null, f = fig && target / fig[3] < 1 ? target / fig[3] : 1;
+  FACTORS.set(walkId + "|" + (src === SOURCE), f); return f;
+}
+export function compose(id, src, layers = [], reduce = true) {
   const a = parse(id); if (!a) throw new Error("not a moving atlas id: " + id);
   if (layers.length) throw new Error("moving: the look's layers are composed in the bake slot (layer-bake §3.1); M1 composes none");
   const cells = cellsOf(a.species, a.stage, a.part, a.w, a.h), out = pic(1 + cells.length * a.w, a.h);
@@ -82,6 +94,7 @@ export function compose(id, src, layers = []) {
   const byName = new Map();
   cells.forEach((c, i) => {
     let p = c.derived75 ? null : c.mirror ? byName.get(c.name) : cellPic(c);
+    if (reduce && !c.derived75 && !c.mirror && worldPart(a)) { const f = reduction(a, src); if (f < 1) { const px = fitDownBy(p.rgba(), a.w, a.h, f, a.w, a.h); p = pic(a.w, a.h, new Uint8ClampedArray(px)); } }
     if (c.derived75) { const s = byName.get("shadow").rgba(); p = pic(a.w, a.h, new Uint8ClampedArray(s)); for (let k = 3; k < p.data.length; k += 4) p.data[k] = Math.floor(p.data[k] * 3 / 4); }
     else if (c.mirror) { const s = p.rgba(), m = pic(a.w, a.h); for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) { const i2 = (y * a.w + x) * 4, o = (y * a.w + (a.w - 1 - x)) * 4; m.data[o] = s[i2]; m.data[o + 1] = s[i2 + 1]; m.data[o + 2] = s[i2 + 2]; m.data[o + 3] = s[i2 + 3]; } p = m; }
     else byName.set(c.name, p);

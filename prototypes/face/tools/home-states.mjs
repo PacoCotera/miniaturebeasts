@@ -101,7 +101,7 @@ async function staticStates(visit, { motion }) {
       await visit("home-" + name, page, fail);
     }
     if (!motion) { await apply("moving-asleep", MOVING_ASLEEP); await page.waitForTimeout(900);
-      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, rest: (window.__st.props?.regions?.residents ?? []).map((r) => (r.moving ? r.rest : "still")) }));
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, rest: (window.__st.props?.regions?.residents ?? []).map((r) => (r.rest ?? "still")) }));
       if (u.screen !== "home" || u.rest.some((r) => r !== "asleep")) fail("home-moving-asleep: " + JSON.stringify(u));
       await visit("home-moving-asleep", page, fail); await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = null; }); }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
