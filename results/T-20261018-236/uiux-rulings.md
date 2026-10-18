@@ -46,3 +46,19 @@ Every play-journey context seeds a crate, so every dock there plays the arrival 
 - **B3 onward** is unchanged, because it starts from Home after Later.
 
 This matches the play layout ruling's §4 (`results/T-20261018-play-layout/ruling.md`): the Station takes the keys at the contact beat and scrolls into view, so the arrival is seen.
+
+## 2a. Follow-up (16:12): Later returns to where the player was, (b)
+
+At head 96316446 the code plays the arrival over Pods, and Later returns to Pods. `frame.json` `navigation.dock` still sends a dock from Pods to Home. **The code is right, and the spec is corrected.** This replaces §2's B2 expectation.
+
+- **Why:**
+  - The play page's redirect to Home existed so that a dock made while another device has the keys lands somewhere it can be seen. Since the arrival plays over any screen and takes the keys, the arrival itself is the thing seen, so the redirect has no job left.
+  - On the device, a dock with the Station's keys never navigates (`navigation.dock.rule`, "each screen's own cut"). (b) makes the play page behave like the device, rather than a separate play-page rule.
+  - Returning the player to what they were doing is the expected default. Home's Cargo module still lights `needsYou`, so the crates are not lost.
+- **B2:** after the arrival and Later, expect `UI.screen === "pods"`, with Pods' ring where it was before the dock. Don't assert `UI.home.f`, because it is Home's memory and says nothing about Pods.
+- **C (narrow):** C docks from Home, so it keeps the §2 expectation, `["home", "room"]`, after Later.
+- **The spec fixes** (in the T-236 branch, as text only):
+  - `frame.json` `navigation.dock.rule`: the play-page clause becomes: "Pressed while another device has the keys (the play page): the Station takes the keys and behaves as if it had them: the arrival plays over the screen it is on (`arrival`), and Later returns there".
+  - `station-layouts.md` line 60: the landing list goes, and the line says the same thing.
+  - `idle.keys.dock` (from Idle: wake, then Home) is unchanged.
+  - The waits for Create, Cross, the namer and the Sitting are unchanged.
