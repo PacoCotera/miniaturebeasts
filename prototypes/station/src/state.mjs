@@ -5,7 +5,7 @@
 // accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
-import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 3;
@@ -610,7 +610,7 @@ export function guideComplete(st, id, settings = DEFAULT_SETTINGS) {
   for (const ch of fr.chapters) {
     const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
     if (!shut && ch.traits.length > 0) open = true;
-    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += traitLooks(fr, t).filter((l) => !seen.includes(l)).length; }
+    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += currentLooks(fr, t).filter((l) => !seen.includes(l)).length; }
   }
   return unseen === 0 && open;
 }
