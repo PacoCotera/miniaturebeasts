@@ -161,7 +161,7 @@ test("Compare's need line follows the spec's strings: here, in another chapter, 
   }
 });
 
-// ---- fix 5 (station-fix5-pods-spec.md §8) ----
+// ---- fix 5 ----
 import { pageFrame } from "../../ui/specs/derive.mjs";
 test("GB1 D1: every chapter-page and Compare cell names its well (the picture's size + 8), a sealed page the find's well, and no page carries a frame any more", () => {
   for (const id of SPECIES) {

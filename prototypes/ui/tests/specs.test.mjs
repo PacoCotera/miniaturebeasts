@@ -864,8 +864,8 @@ test("fix 2 F11: the rail sits in its well (frame.json regions.rail.well, painte
   assert.equal(rail.states.open.word, "ink"); assert.equal(rail.states.open.pip, "ink"); assert.match(rail.pip.draw, /none on Pods, the Incubator and Compare/);
 });
 
-// ---- fix 5, the Incubator (boards/station-fix5-incubator-probe-spec.md I1 to I3) ----
-// ---- fix 5, the Probe (boards/station-fix5-incubator-probe-spec.md P1 to P3) ----
+// ---- fix 5, the Incubator (I1 to I3) ----
+// ---- fix 5, the Probe (P1 to P3) ----
 test("the Probe stands upright in three columns on the floor; each outer margin is 16 to 24 and one bottom line is 520; each module is the size of what it holds; each tier's strip is centred on the axis 472, holds its places with 8 px a side and clears the stage's tools (rework)", () => {
   const be = rd("../specs/station/bench.json"), R = be.regions, FLOORX = [66, 955], FLOORY = [77, 538], cr = R.cradle;
   assert.deepEqual(cr.rect, [40, 96, 288, 432]); assert.deepEqual(cr.ink, [44, 4, 232, 420]); assert.equal(cr.axis, 184);
