@@ -9,6 +9,9 @@ import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
+import { loadStandLayersFs, loadStandLooksFs, unloadStands } from "../tools/stand-layers-fs.mjs";
+import { placeMaster, dropAsset } from "../../ui/assets.mjs";
+import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -123,4 +126,22 @@ test("fix 7: the Vivarium's residents take the scene's light (id suffix and requ
   const reqs = (light) => build(w, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
   assert.ok(day.length >= 6 && day.every((r) => !("light" in r)));
   for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light); assert.equal(got.length, day.length); for (const r of got) assert.equal(r.size[0] === 48 && r.size[1] === 48 ? !("light" in r) : r.light === light && r.id.endsWith(":" + light), true, r.id); assert.ok(got.some((r) => r.light === light) && got.some((r) => r.size[0] === 48)); }
+});
+
+// T-20261018-235 (build-spec §0, §5, §6): the figure the props carry and the keep-out against the sleepers' tags, on the signed stands and the placed nap masters
+test("residents carry their figure, sleepers the world-size curl and its figure, and keepOut holds against the sleepers' tags", () => {
+  const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
+  loadStandLooksFs(); loadStandLayersFs();
+  try {
+    for (const id of ["mibi-adult-S01-96x88", "mibi-juvenile-S01-96x88"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
+    const w = world(); dock(w.st); const m = mibis(w, 3); S.seedAdults(w.st, "S01", 9, 2, w.settings); for (const x of w.st.mibis) x.paint = { state: "landed" };
+    const b = build(w, sv0({ carried: [w.st.mibis[3].id, w.st.mibis[4].id] })), R = b.props.regions;
+    for (const r of R.residents) { assert.ok(Array.isArray(r.figure) && r.figure.length === 4 && r.figure.every(Number.isInteger), "a walker carries its figure [dx, dy, W, H]"); assert.ok(r.figure[2] > 0 && r.figure[3] > 0 && r.figure[1] + r.figure[3] <= (r.stage === "juvenile" ? 112 : 152)); }
+    assert.equal(R.bed.sleepers.length, 2);
+    for (const sl of R.bed.sleepers) { assert.ok(sl.figure, "a sleeper carries the curl's figure"); assert.match(sl.picture, /^mibi:S01~[0-9a-f]{8}:(adult|juvenile):\d+x\d+$/); }
+    const curlH = Math.max(...R.bed.sleepers.map((sl) => sl.figure[3])), tagTop = 456 - curlH - 32, K = spec.regions.resident.walk.keepOut;
+    assert.ok(curlH >= 28 && curlH <= 34, "the adult's curl is about 34 × 31: " + curlH);
+    assert.ok(K[1] <= tagTop - 40, `keepOut's top ${K[1]} holds a walker's tag (feetY + 16 to + 40) above the sleepers' tag top ${tagTop} (measured curlH ${curlH}; the spec's rect is for about 31)`); assert.deepEqual(K, [752, 353, 256, 119]); assert.equal(K[1] + K[3], 472);
+    assert.ok(b.requests.some((r) => r.kind === "curl"));
+  } finally { for (const id of placed) dropAsset(id); unloadStands(); }
 });

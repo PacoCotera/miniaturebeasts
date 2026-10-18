@@ -120,7 +120,7 @@ function withShadow(art, cw, ch, under, shadow) {
 const COMPOSED = new Map();
 export const scaleOf = (stand) => { const [cw, ch] = ART_SIZE.split("x").map(Number); return Math.min(stand.figure[0] / cw, stand.figure[1] / ch); };
 function composed(stand, looks) {
-  const key = standVariant(stand, looks).key; if (COMPOSED.has(key)) return COMPOSED.get(key);
+  const key = `${stand.stage}:${stand.size.join("x")}|${standVariant(stand, looks).key}`; if (COMPOSED.has(key)) return COMPOSED.get(key);
   const [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = stand.size, [fw, fh] = stand.figure, art = artOf(stand, looks), under = underOf(stand);
   let px, figure;
   if (!under) { px = fitDown(art, cw, ch, fw, fh, w, h); figure = inkBox(px, w, h); }

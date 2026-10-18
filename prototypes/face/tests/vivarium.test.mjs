@@ -42,8 +42,8 @@ const frameProps = (line = {}) => ({ top: { screen: "vivarium", title: "Vivarium
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? [16, 16];
-async function start(b, { motion = true, t0 = 0, sleepersPainted = false } = {}) {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node = false } = {}) {
+  const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", spec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.handleOf(R.tiles.glyph ?? "frame-companion-outline-16x24", withPolicy((i) => standIn(i, [16, 24])));
@@ -301,4 +301,48 @@ test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no 
   T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${form}x48`)); assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
   const e = scene({ focus: null }), g = await start(e), lg2 = logOf(g);
   assert.equal(lg2.regions.filter((r) => r.id === "strip" && r.rect[2] > 2).length, 0, "no tile housed or out: the strip has no plate");
+});
+
+// ---- T-20261018-235: the figure's geometry (build-spec §0 to §4) ----
+const FIG = [47, 105, 49, 43], PROFILE = R.resident.walk.profile;   // an adult's figure as the host measures it: [dx, dy, W, H] in its 144 × 152 picture
+const groundTop = (fx) => { let t = PROFILE.top[0]; PROFILE.x.forEach((x, i) => { if (fx >= x) t = PROFILE.top[i]; }); return t; };
+const feetOf = (rect, fig = FIG) => ({ fx: rect[0] + fig[0] + Math.floor(fig[2] / 2), feetY: rect[1] + fig[1] + fig[3] - 1 });
+const withFigure = (b, fig = FIG) => { for (const r of b.props.regions.residents) r.figure = fig; return b; };
+test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is feetY + 16 and flips to feetY − H − 36 past the window's foot; the focus target is the figure box", { skip }, async () => {
+  let flipped = 0, below = 0; const [W, H] = [FIG[2], FIG[3]], fh = Math.min(16, Math.max(6, 2 * Math.floor((W + 6) / 12)));
+  for (let seed = 1; seed <= 40; seed++) {
+    const b = withFigure(scene({ adults: 1, focus: "tile:0" })); b.props.regions.residents[0].seed = seed * 104729;
+    const f = await start(b, { motion: false, node: true }); withFocus(f, "resident." + b.st.mibis[0].id); const lg = logOf(f) ?? (frames(f), logOf(f));
+    const nb = f.nodeBox("g." + b.st.mibis[0].id).box, pic = [nb[0], nb[1] + R.window.rect[1] + 4, nb[2], nb[3]];   // a node box is the window's own; the focused picture is lifted 4 px, the ring and the feet stay on the ground
+    const { fx, feetY } = feetOf(pic), ring = lg.regions.find((x) => x.id === "focus").rect, tag = lg.regions.find((x) => x.id === "nameTag" && x.layer === "chrome").rect;
+    assert.ok(pic[1] + FIG[1] + H - 1 === feetY, "the picture is placed so its figure's last ink row is the feet");
+    assert.deepEqual(ring, [fx - Math.floor(W / 2) - 5, feetY - (fh + 10) / 2, W + 10, fh + 10], `seed ${seed}: the ring on F`); assert.equal(W + 10, 59); assert.equal(fh + 10, 18);
+    const win = R.window.rect, flips = feetY + 16 + tag[3] > win[1] + win[3] - 8;
+    if (flips) { flipped++; assert.equal(tag[1], feetY - H - 36, `seed ${seed}: the flipped tag`); } else { below++; assert.equal(tag[1], feetY + 16, `seed ${seed}: the tag top`); }
+  }
+  assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} flipped, ${below} below`);
+});
+test("every start over 10,000 seeds is walkable on the ground profile and off the keep-out; waypoints and every 2 px of every path stay walkable over a minute of walking", { skip }, async () => {
+  const G = R.resident.walk.ground, K = R.resident.walk.keepOut, ok = (rect) => { const { fx, feetY } = feetOf(rect), W = FIG[2], x = fx - Math.floor(W / 2); return x >= G[0] && x + W <= G[0] + G[2] && feetY >= groundTop(fx) && feetY <= 471 && !(x + W > K[0] && feetY > K[1]); };
+  const rects = (f, b) => b.st.mibis.map((m) => { const bx = f.nodeBox("g." + m.id)?.box; return bx && [bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]; });   // a node box is the window's (clipped) own
+  let n = 0; const b0 = withFigure(scene({ adults: 12, bays: 12, focus: "tile:0" })), f0 = await start(b0, { motion: false, node: true });   // one face, the seeds sent again: a new seed starts from its own seed
+  for (let k = 0; k < 834; k++) {
+    b0.props.regions.residents.forEach((r, i) => { r.seed = 1 + k * 12 + i; }); assert.equal(f0.props({ screen: "vivarium", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f0);
+    for (const r of rects(f0, b0)) { n++; assert.ok(r && ok(r), `a start at ${r} is not walkable`); }
+  }
+  assert.ok(n >= 10000, n + " starts");
+  for (let k = 0; k < 6; k++) {
+    const b = withFigure(scene({ adults: 12, bays: 12, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 90001 + k * 12 + i; });
+    const f = await start(b, { t0: 5000, node: true }); let moved = 0, last = null;
+    for (let ms = 40; ms <= 60000; ms += 40) { f.frame(5000 + ms); f.drain?.(); const rs = rects(f, b);
+      for (const r of rs) assert.ok(r && ok(r), `seed block ${k} at ${ms}: ${r} left the walkable ground`); const key = rs.map((r) => r.join()).join("|"); if (last !== null && key !== last) moved++; last = key; }
+    assert.ok(moved > 100, "they walk: " + moved);
+  }
+});
+
+test("the walk of twelve figures with their shadow layers: no refresh redraws more than 153,600 px (printed)", { skip }, async () => {
+  const b = withFigure(scene({ adults: 12, bays: 12 })), f = await start(b, { t0: 5000 }); let area = 0, steps = 0;
+  for (let t = 16; t < 120000; t += 16) { f.frame(5000 + t); area = Math.max(area, dirty(f)); steps = Math.max(steps, f.M._face_test_steps()); }
+  assert.ok(area <= 153600, `dirty area ${area}`); assert.ok(steps <= 6, `${steps} residents stepped in one frame`);
+  console.log(`# the Vivarium's walk with the shadow layers, twelve figures, frames every 16 ms for 120 s: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen), worst ${steps} steps`);
 });
