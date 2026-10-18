@@ -48,3 +48,7 @@ The cause is in the signed patch layer (T-20261016-200), not the build: the patc
 - **Separation:** `stripes-vs-patches-r2-54-40-3x.png` shows, left to right, stripes then patches for the adult anchor and stand at 54 and the juvenile anchor and stand at 40. At 1× the adults separate at once: a row of bars against pale masses. The juveniles separate at 40, more softly, since the cap is small.
 
 To recut: `python3 -I cut-patches-r2.py KEYS SHEETS OUT ../../T-20261016-200/cut-layers.py`, then `python3 -I heads-off.py OUT`, with the base keys in `OUT/../keys`.
+
+## The build with patches round 2 (build/t-203b-colour-ramps @ 4017aeb3): pass
+
+`charcoal-stripes-vs-patches-54-{1x,4x}-r2.png`: at 54 on charcoal, the build now reads as my test did. The stripes are a row of parallel bars behind the shoulder; the patches are two pale rounded masses, on the back and the haunch, with no crescent. They read apart at 1×. `vivarium-four-real-pods-54-r2.png` keeps the four coats distinct. Cleared to merge on the art.
