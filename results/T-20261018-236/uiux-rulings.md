@@ -82,7 +82,7 @@ All three are small: strings, one flag and one label condition. **Fold them into
 | --- | --- | --- |
 | title | **""** (none, as `dock`) | **""** |
 | left card, the verb | **"Release it"**, ❀ +1 (unchanged) | **"Release {name}"**, ❀ +2 (unchanged) |
-| its fact | **"it stays in the wild from now on"** (about 233 px; fits the card's 348) | **"{name} lives in the wild from now on"** (T-195) |
+| its fact | **"it goes back to the {place}"** (`PLACE_WORD` of the pod's own place, else "wild"; the game designer, 16:47, matching `returnPod`'s "Back to the {place}") | **"{name} lives in the wild from now on"** (T-195) |
 | right card | "Keep it" (unchanged) | "Keep {name}" (unchanged) |
 
 - **The fact is drawn in `bone`, the text colour, never coral, with no ✕.** The Release card is no longer a loss. Clear the card's loss flag (tone) wherever the code sets it.
