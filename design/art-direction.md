@@ -10,7 +10,7 @@ understand what changed without reading a label. The art carries the game.
 
 ## The look and feel
 
-This is the general guideline. Every screen on both devices, new or changed, is judged by it. The screens are prototypes and keep changing, and newer direction for the game overrides any rule on this page. The detailed [style guide](style-guide/README.md) sits below it as the current implementation reference: it holds the values and sizes, and this page holds none.
+This is the general guideline. Every screen on both devices, new or changed, is judged by it. The screens are prototypes and keep changing, and newer direction for the game overrides any rule on this page. The detailed [style guide](style-guide/README.md) sits below it as the current implementation reference: it holds the values and sizes; this page holds only the mibi size table below, because size is part of the look.
 
 ### The feel
 
@@ -189,6 +189,30 @@ saved Pip and a pale-marked comparison, at Companion and Station size.
 - **Keep originals.** Original images, exact prompts and source files keep their
   bytes and hashes. Generated images are labelled as generated.
 - **Text is separate.** Never bake numbers or labels into artwork.
+
+## Size and pose
+
+### Mibis are tiny
+
+Miniature beasts are small in their world, on every screen. The world is large around them, and the camera never zooms a mibi up to fill a view. Home, the Vivarium, Idle and the decision panels show one world at one scale, so one sprite size serves them all. The table gives a mibi's height at 1×, from crest top to feet.
+
+| View | Adult | Juvenile | Note |
+| --- | --- | --- | --- |
+| Home, the Vivarium window | **54** | **40** | the base measure. The away frame holds the same figure |
+| The Vivarium, full screen, and Idle | **54** | **40** | Home's window is a 1:1 part of the same painting, so opening it shows more world, never a bigger mibi |
+| A decision panel's windows | **54** | **40** | the same size in both windows, so neither option reads as the distant or lesser one. The two differ by place and company, not by the size of the mibi |
+| The Habitat and Sitting, a mibi up close | **150** | **110** | the closest world view. The name tag, focus ring and kin marks follow the feet and scale with the mibi |
+| Close-ups, large: the workbench (Grow, Create, the Incubator, Cross) and the dock arrival | large | large | the two close-ups: a mibi held up for work, or greeted as it comes home. The size is set in each close-up's layout, up to the 304 × 312 master; builds never shrink these to the world sizes above |
+| Cargo (the bay) | none | none | no mibis on screen; the dock arrival is the close-up above |
+| Tiles, faces, portraits, the Library's nodes, the Companion | unchanged | unchanged | pictures of a mibi, not the world; the Companion keeps its own pixel scale |
+
+- **The juvenile** is about three quarters of the adult.
+- **Builds** compose each stand at the view's height from the 304 × 312 master (scale = height ÷ the figure's height in the master). The face never scales.
+- **A view not listed** is sized so the world stays large around the mibi. Ask the art director before placing.
+
+### The Probe is held upright
+
+The Probe is always drawn upright, as a hand holds it: antenna up, screen at the top, grip below. The masters are `bench-probe-upright-t1/t2-288x432`, the cradle is `bench-cradle-upright-empty-288x432`, and the panel cards are `bench-probe-t1/t2-card-128x160`. Smaller Probes are reductions of these, never rotations of a lying picture. The lying 480 × 288 Probe and tray masters are withdrawn.
 
 ## From genome to creature
 

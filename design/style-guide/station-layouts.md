@@ -15,6 +15,14 @@ The measured layout of every built Station screen at 1024×600, 1×, so the buil
 
 **How to read a rectangle.** `(x, y, w, h)` in screen pixels, with the origin at the screen's top left. Every region sits on the 8 px grid. Hairlines are 1 px and are the only exception.
 
+## Placement rules every screen shares
+
+#### Mibi height per view
+
+Mibi sizes per view and the upright Probe are rules of the look: see [Size and pose](../art-direction.md#size-and-pose).
+
+---
+
 Pods comes first because it sets the pattern the other screens follow.
 
 ---
