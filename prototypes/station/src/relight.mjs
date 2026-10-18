@@ -6,7 +6,7 @@
 // It is made once in the logic process (Lanczos 3 for the size, never on the face) and is one picture with its shadow and moss alpha, placed 1:1 on the painted layer. Bump RECIPE whenever any of this changes (the cache id is
 // relit:{species}:{digest}:{light}:{w}x{h}:v{recipe}). Pure on RGBA arrays (straight alpha, Uint8ClampedArray).
 import { resample } from "./layered-stand.mjs";
-export const RECIPE = 1;
+export const RECIPE = 2;   // 2: the opened pod's cap overlaps the bowl
 const WARM = [1.08, 0.99, 0.84], RIM = [255, 222, 170];
 
 export function bboxOf(rgba, w, h, min = 1) {
@@ -34,14 +34,14 @@ const over = (dst, o, sr, sg, sb, sa) => {   // straight-alpha over, one pixel a
   const da = dst[o + 3] / 255, oa = sa + da * (1 - sa); if (oa <= 0) return;
   dst[o] = (sr * sa + dst[o] * da * (1 - sa)) / oa; dst[o + 1] = (sg * sa + dst[o + 1] * da * (1 - sa)) / oa; dst[o + 2] = (sb * sa + dst[o + 2] * da * (1 - sa)) / oa; dst[o + 3] = Math.round(oa * 255);
 };
-// parts: [{ rgba, w, h, over?: [rgba...] }]: the first is the primary (the foot is its alpha box's bottom, its axis the box's centre), a later one stands against the primary's left side on the same foot line (`side: "left"`).
+// parts: [{ rgba, w, h, over?: [rgba...] }]: the first is the primary (the foot is its alpha box's bottom, its axis the box's centre), a later one is tipped against the primary's left side on the same foot line, overlapping it by 45% of its width so that it stays inside the capsule's window (the builder's placement: the spec says only "tipped against its left side").
 // scale: the figure's reduction or enlargement of the source (1: as it is). area: [W, H] and anchor: [ax, ay] the foot's point in it. bg: the scene under the picture ({ rgba, w, h, x, y }: its top left in area coordinates), for the moss blades, or null.
 export function relit({ parts, scale = 1, figH = 0, area: [W, H], anchor: [ax, ay], bg = null }) {
   // 1. the figure, unscaled, in one picture
   const prim = parts[0], pb = bboxOf(prim.rgba, prim.w, prim.h), px = pb[0], py = pb[1];
   let minX = px, maxX = px + pb[2], minY = py;
   const placed = [{ ...prim, x: 0, y: 0 }];
-  for (const q of parts.slice(1)) { const qb = bboxOf(q.rgba, q.w, q.h); const x = px - (qb[0] + qb[2]), y = py + pb[3] - (qb[1] + qb[3]); placed.push({ ...q, x, y }); minX = Math.min(minX, qb[0] + x); minY = Math.min(minY, qb[1] + y); }
+  for (const q of parts.slice(1)) { const qb = bboxOf(q.rgba, q.w, q.h); const x = px - (qb[0] + qb[2]) + Math.round(0.45 * qb[2]), y = py + pb[3] - (qb[1] + qb[3]); placed.push({ ...q, x, y }); minX = Math.min(minX, qb[0] + x); minY = Math.min(minY, qb[1] + y); }
   const uw = maxX - minX, uh = py + pb[3] - minY, un = new Uint8ClampedArray(uw * uh * 4);
   for (const p of placed) {
     const src = p.over?.length ? new Uint8ClampedArray(p.rgba) : p.rgba;

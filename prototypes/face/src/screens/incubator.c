@@ -33,8 +33,8 @@ static int clampi(int v, int lo, int hi) { return v < lo ? lo : v > hi ? hi : v;
 #define END 1000000
 static int moment_time(int kind) { anim_state_t t; if (!v_pbool("motion", 1)) return END; return anim_get(kind, "room", &t) ? t.elapsed : -1; }
 static int hatch_time(void) { if (!in_state("hatch")) return -1; int t = moment_time(ANIM_HATCH); return t < 0 ? END : t; }   /* no event playing: the hatch's end state */
-static int grownow_time(void) { return in_state("growing") ? moment_time(ANIM_GROW_NOW) : -1; }
-static int incubate_time(void) { return in_state("growing") ? moment_time(ANIM_INCUBATE) : -1; }
+static int grownow_time(void) { if (!in_state("growing") || !v_pbool("motion", 1)) return -1; return moment_time(ANIM_GROW_NOW); }   /* reduced motion: the screen is the state as it stands (the host hatches on the frame of the press) */
+static int incubate_time(void) { if (!in_state("growing") || !v_pbool("motion", 1)) return -1; return moment_time(ANIM_INCUBATE); }
 /* the dither's level n at t ms for a 180 ms dither that starts at t0: floor(16 (t - t0) / 180), 0 before it, 16 after */
 static int level_at(int t, int t0) { return clampi(16 * (t - t0) / 180, 0, 16); }
 

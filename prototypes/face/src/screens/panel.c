@@ -11,6 +11,7 @@
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
+#include "../anim/anim.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -194,7 +195,7 @@ static void build_incubate(void) {
   build_price(l);
   build_incubate_left(wl); build_window_frame(0, wl);
   build_incubate_right(wr); build_window_frame(1, wr);
-  build_ring(2);
+  { anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) build_ring(2); }   /* the ring stands once the dither in has settled: no ring while a hold drops it (rule 1) */
 }
 void panel_words(void) {
   int n = ncards(); if (n <= 0) { v_error("word decisionPanel: a panel has at least one card"); return; }

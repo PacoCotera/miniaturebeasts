@@ -152,7 +152,7 @@ test("the hatch: the open look stands still with the pod whole to 600; the crack
   for (const ms of [1180, 1300, 2000]) { const lg = at(ms); assert.ok(podAt(P.opened), `${ms} ms: the opened pod`); assert.ok(present(lg, "juvenile"), `${ms} ms: the juvenile stands`); }
   { const lg = at(1100); const j = region(lg, "juvenile"); assert.ok(j && j.rect[2] > 0, "1100: the juvenile dithering in"); at(1020); assert.ok(!colourIs(f, fx, fy - 40, J.picture) || true); }
   let lg = at(1199); assert.ok(!lg.type.some((t) => t.region === "ribbon" && t.text), "no ribbon at 1199"); lg = at(1200); assert.ok(lg.type.some((t) => t.region === "ribbon" && /young/.test(t.text)), "the ribbon's words at 1200");
-  const TABLE = EV.hatch.steps[5].lift, lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], jtop = (ms) => region(at(ms), "juvenile").rect[1], base = jtop(1300);
+  const TABLE = EV.hatch.steps[4].lift, lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], jtop = (ms) => region(at(ms), "juvenile").rect[1], base = jtop(1300);
   assert.equal(base + J.anchor[1], fy, "the juvenile's anchor stands on the feet line 415");
   for (const start of [1400, 1800]) for (const d of [0, 20, 30, 60, 80, 110, 130, 160, 180, 199]) assert.equal(jtop(start + d), base - lift(d), `${start + d} ms: ${lift(d)} px up`);
   for (const ms of [1300, 1600, 2000, 2400]) assert.equal(jtop(ms), base, `${ms} ms: standing`);

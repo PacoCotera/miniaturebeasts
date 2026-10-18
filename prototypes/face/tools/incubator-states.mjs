@@ -17,26 +17,30 @@ const SCENES = {
   "growing-late": { want: "growing", set: (w) => { w.adults(2); w.budAt(13.2); } },
   "ready":        { want: "ready",   set: (w) => { w.adults(2); w.bud(true); } },
   "panel-grownow": { want: "growing", panel: true, set: (w) => { w.adults(2); w.budAt(2); } },   // ✓ Hatch now at ❀ 9 (above ❀ 4) opens the Hatch now? panel, the ring on Hatch now
-  "ready-moving": { want: "ready", timedOnly: true, set: (w) => { w.adults(2); w.bud(true); const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "12:00"; } },
+  "growing-half": { want: "growing", set: (w) => { w.adults(2); w.budAt(10); } },
+  "growing-start": { want: "growing", set: (w) => { w.adults(2); w.budAt(0.05); } },
+  "cross-growing": { want: "growing", set: (w) => { w.adults(2); w.budAt(6); const st = window.__st.ST; st.bud.kind = "cross"; st.bud.parents = [{ name: "Fig" }, { name: "Pip" }]; } },
+  "via-create": { want: "empty", timedOnly: true, set: (w) => { const S = window.__st; w.adults(2); S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 2); S.openCreate(p.id); } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${INC.toString()})`]);
 async function apply(page, sc) {
-  await page.evaluate(([setSrc, panel]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; S.UI.panel = null; w.open(); if (panel) S.press("confirm"); }, [sc.set.toString(), !!sc.panel]);
+  await page.evaluate(([setSrc, panel, noOpen]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.inc = {}; S.UI.panel = null; if (!noOpen) w.open(); if (panel) S.press("confirm"); }, [sc.set.toString(), !!sc.panel, !!sc.timedOnly && sc.want === "empty" && /openCreate/.test(sc.set.toString())]);
 }
 // the timed points: the scene, the key that starts the event, the instants after it
 const TIMED = {
-  "hatch-100":  { scene: "ready", go: () => window.__st.press("confirm"), at: 100,  want: "hatch" },
+  "incubate-100":  { scene: "via-create", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 900, at: 100, want: "growing" },   // from Create's panel: 100 ms into the incubate moment (dusk, sealed)
+  "incubate-1290": { scene: "via-create", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 900, at: 1290, want: "growing" },   // the dither to growing, halfway (level 8 of 16)
   "hatch-300":  { scene: "ready", go: () => window.__st.press("confirm"), at: 300,  want: "hatch" },
   "hatch-650":  { scene: "ready", go: () => window.__st.press("confirm"), at: 650,  want: "hatch" },
-  "hatch-850":  { scene: "ready", go: () => window.__st.press("confirm"), at: 850,  want: "hatch" },
-  "hatch-1100": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, want: "hatch" },
+  "hatch-1000": { scene: "ready", go: () => window.__st.press("confirm"), at: 1000, want: "hatch" },
+  "hatch-1090": { scene: "ready", go: () => window.__st.press("confirm"), at: 1090, want: "hatch" },
+  "hatch-1400": { scene: "ready", go: () => window.__st.press("confirm"), at: 1400, want: "hatch" },
   "hatch-1500": { scene: "ready", go: () => window.__st.press("confirm"), at: 1500, want: "hatch" },
   "hatch-2000": { scene: "ready", go: () => window.__st.press("confirm"), at: 2000, want: "hatch" },
-  // Station M1 §2.5: the hatch with S01's moving set on its stand-in close cells, under the developer switch; 2720 (the R2 cut point) is taken last so the others keep their mibis
-  ...Object.fromEntries([1090, 2500, 5440, 5840, 2720].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
+  "growNow-0":   { scene: "growing-late", go: () => window.__st.press("confirm"), at: 16, want: "growing" },
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
-  "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "hatch" },
-  // ✓ Skip (lvgl-switch.md §2.1): 1100 ms into the hatch a second ✓ skips it; the frame after the skip is the hand-off to the meet (one mibi up close). Taken last: it hatches a mibi
+  "growNow-400": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 400, want: "growing" },
+  "growNow-500": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 500, want: "growing" },
   "hatch-skip": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, skip: true, want: "habitat" },
 };
 // The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
@@ -65,7 +69,9 @@ async function timedStates(visit) {
   try {
     for (const [name, tp] of Object.entries(TIMED)) {
       await apply(page, SCENES[tp.scene]); await step(1200);   // the screen change's dither is over
-      await page.evaluate(tp.go); await step(tp.at);
+      if (tp.then) { await page.evaluate(tp.go); await step(200); for (const t of tp.then) await page.evaluate(t); await step(tp.arrive); }
+      else await page.evaluate(tp.go);
+      await step(tp.at);
       if (tp.skip) { await page.evaluate(() => window.__st.press("confirm")); await step(16); }   // the skip, and the frame after it
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
       if (tp.skip ? u.screen !== tp.want : u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);

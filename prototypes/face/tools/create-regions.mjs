@@ -6,6 +6,10 @@ const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 export function departures(log, spec, frame, state = "shape", pod = null, rolled = state !== "nothingRead") {   // rolled: the props carry a roll (Grow from nothing read has none)
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer));
   const must = (ok, m) => { if (!ok) out.push(m); };
+  if (regions.some((r) => r.id === "panelGround")) {   // the Incubate | Keep shaping panel is open (Create's confirm state): the panel's own composition, none of Create's words (panel.json incubate)
+    const I = frame.panel?.incubate ?? null; for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
+    for (const id of ["roll", "founder", "chamber", "stamp", "code", "rail.tab", "dome", "pod"]) must(got(id).length === 0, `${id} is not drawn under the Incubate panel`); must(got("panelSnapshot").length === 1, "the right window shows the snapshot"); void I; return out;
+  }
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const r of got("bench")) must(eq(r.rect, R.bench.rect), `the bench ${r.rect} is not ${R.bench.rect}`);
   { const tabs = regions.filter((x) => x.id === "rail.tab"), wells = regions.filter((x) => x.id === "rail.well" && x.layer === "painted" && x.rect[2] > 0);   // fix 2 F11: the rail sits in its well, one painted node at y 40, 48 tall (to y 88), covering every tab; no tab, no well

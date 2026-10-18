@@ -60,7 +60,7 @@
    "star": [12, 12], "starAt": [34, 10], "starNote": "a glint star in the 16 px gap right of its well, 2 px clear of either well"
   },
   "incubator": {
-   "rect": [688, 256, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "rect": [688, 256, 320, 88], "plate": "plate-device-320x88", "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 1, 176, 86],
    "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
    "capsule": [120, 1, 56, 86], "capsuleRect": [808, 257, 56, 86], "capsuleFoot": [27, 63], "capsulePodHeight": 27, "capsuleNote": "T-20261016-222 (build-spec section 5, Home's Incubator station): the painted capsule at x0.137, 56 x 86, shows the state only (glass with the pod: growing; door open: ready, with the pod; empty); its bar is lit or off, never a fraction. PLACEMENT is the builder's (the spec gives the size and the pod 27 tall but not the place in the module): centred on the chamber box, 1 px under the module's top, so the 86 px capsule stands inside the 88 px module. The moss line is 63 px under its top (551 - 488), the axis 27 px in",
    "states": { "empty": "the chamber's empty picture, lamp off", "growing": "the chamber's growing picture (the bud's glow), lamp well", "ready": "the chamber's ready picture (lit full), lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }

@@ -31,7 +31,7 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
   const regions = { cards: [{ id: "incubate" }, { id: "keep" }], verbs: { incubate: Sg.incubate, keep: Sg.keep }, price: text === "free" ? "" : text, pod: icon,
     left: { room, interior: L["interior-dusk"], shell: L["shell-dusk"], seal: L["seal-ring"], glass: L["glass-closed"], layerSize: sz, pod, podSize: cv.size, podAnchor: cv.anchor } };
   const ui = m.ui.panel, cur = ui.focus === "card.keep" ? "card.keep" : "card.incubate";
-  const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: null, back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
+  const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: "", back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
   return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };
 }
 // The cards of the Return panels (§1.6): Return it (the gain from the rules, the loss "gone for good", the subject on its place's scene) and Keep (the subject as it is). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.

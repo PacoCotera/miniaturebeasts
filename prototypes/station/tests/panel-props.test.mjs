@@ -82,7 +82,7 @@ test("the Incubate panel's props validate against panel.incubate.props.json, nam
   }
 });
 test("focus opens on Incubate; the bottom line is the verb of the focused bezel with no price, no subject and no notice, and Back", () => {
-  const { h } = open(); let v = incView(h); assert.equal(v.overlay.focus.cur, "card.incubate"); assert.deepEqual([v.line.ok, v.line.subject, v.line.need, v.line.back, "price" in v.line], ["Incubate", "", null, "Back", false]);
+  const { h } = open(); let v = incView(h); assert.equal(v.overlay.focus.cur, "card.incubate"); assert.deepEqual([v.line.ok, v.line.subject, v.line.need, v.line.back, "price" in v.line], ["Incubate", "", "", "Back", false]);
   v = incView(h, "card.keep"); assert.equal(v.overlay.focus.cur, "card.keep"); assert.deepEqual([v.line.ok, v.line.back, "price" in v.line], ["Keep shaping", "Back", false]);
 });
 test("the Incubate panel opens from Create's ✓ and spends nothing; ←, Keep shaping and a room key close it with nothing spent and Create as before; only ✓ Incubate pays", () => {
