@@ -6,7 +6,8 @@
   ],
   "sha256": "e9d3dbf171cbfb9e86f4cbb081e11939a6d0d25f22833ad80b6882de65bb32f5",
   "signed_in": "art director, Probe bench set (5f04d417)",
-  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat"
+  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat | withdrawn 10-18 on the art director's note (the lead asked): the Probe is always upright (the owner, 21:36); replaced by bench-cradle-upright-empty-288x432; file and bytes kept, removed from the game build's masters index (T-20261016-211)",
+  "status": "withdrawn"
  },
  "bench-deep-t2-40-new": {
   "size": [
@@ -72,7 +73,8 @@
   ],
   "sha256": "7a511778d522893f1e82c8ab910ab0becd931cb279109a19abd9bb8458b93003",
   "signed_in": "art director, Probe bench set (5f04d417)",
-  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat"
+  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat | withdrawn 10-18 on the art director's note (the lead asked): the Probe is always upright (the owner, 21:36); replaced by bench-probe-upright-t1-288x432 and bench-probe-t1-card-128x160; file and bytes kept, removed from the game build's masters index (T-20261016-211)",
+  "status": "withdrawn"
  },
  "bench-probe-t2-480x288": {
   "size": [
@@ -81,7 +83,8 @@
   ],
   "sha256": "93a7b84f9da1f2cd073cfd1e2520a60b3e5b14abd582db3d9354c4be12d64d50",
   "signed_in": "art director, Probe bench set (5f04d417)",
-  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat"
+  "status_note": "superseded 10-15 by the upright set (bench-probe-upright-*, bench-cradle-upright-empty-288x432): the owner rejected the device laid flat | withdrawn 10-18 on the art director's note (the lead asked): the Probe is always upright (the owner, 21:36); replaced by bench-probe-upright-t2-288x432 and bench-probe-t2-card-128x160; file and bytes kept, removed from the game build's masters index (T-20261016-211)",
+  "status": "withdrawn"
  },
  "bench-reach-t2-40-new": {
   "size": [
