@@ -251,15 +251,15 @@ await frameShot("page-identified");
 await press("up", 300);
 l = await line(); expect(/Turn to Coat/.test(l.ok) && !l.price, "on the overview a tab opens its page, free: " + JSON.stringify(l));
 await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.view)) === "chapter", "✓ on a tab opens the chapter page");
-l = await line(); expect(/Read Coat/.test(l.ok) && l.price === "◆ 1", "Coat costs 1 Data: " + JSON.stringify(l));
+l = await line(); expect(/Read Coat/.test(l.ok) && l.price === "◆ 2", "Coat costs 2 Data (its two traits, Colour and Markings): " + JSON.stringify(l));
 const d0 = s.d;
 await press("confirm", 2400);
-s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 1, "Coat read for 1 Data");
+s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 2, "Coat read for 2 Data");
 expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
 await press("right", 300);
 l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 2", "Face costs 2 Data: " + JSON.stringify(l));
 await press("confirm", 2400);
-s = await st(); expect(s.d === d0 - 3, "Face read for 2 Data");
+s = await st(); expect(s.d === d0 - 4, "Face read for 2 Data");
 await frameShot("page-read");
 // the art layer is on the palette exactly (pass 2 of the face's test mode); the type is the face's own
 { const r = await page.evaluate(() => window.__st.snapshot()); expect(r.pass1 === 0 && r.pass2 === 0, "chrome and art read 0 off-palette pixels: " + JSON.stringify([r.pass1, r.pass2])); }
@@ -393,9 +393,10 @@ await hpressC("confirm", 500);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Create");
 { const p = await props(), c = await page.evaluate(() => window.__st.check()); expect(p.state === "shape" && p.frame.line.back === "Loika" && p.focus.cur === "roll" && JSON.stringify(p.focus.targets) === JSON.stringify([{ id: "roll", group: "roll" }]), "Create is built: the ring on the roll, its way back names the pod: " + JSON.stringify([p.state, p.focus, p.frame.line]));
   expect(!c.log.type.some((t) => /not built/.test(t.text)) && c.log.regions.some((r) => r.id === "roll") && c.log.regions.some((r) => r.id === "founder"), "Create draws its roll and its founder"); await frameShot("page-create", true); }
-const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
-for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
-expect((await cui()).f === eyeIndex, "◀ ▶ walk the read traits: the ring is on Eye rings");
+// the one trait that rolls in this pod: the Loika v4 has Colour in three pigments, and this pod is mixed there only
+const rollIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "colour"); }, loika.id);
+for (let i = 0; i < rollIndex; i++) await hpressC("right", 60);
+expect((await cui()).f === rollIndex, "◀ ▶ walk the read traits: the ring is on Colour");
 { const p = await props(), L = p.frame.line; expect(L.ok === "Incubate" && L.price === "⚡ 2 ❀ 4 ⧗ 20" && !("leaves" in p.regions) && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4 ⧗ 20, no leaf grid: " + JSON.stringify(L)); }
 await hpressC("down", 300);
 { const p = await props(), cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost));
@@ -406,7 +407,7 @@ await hpressC("down", 300);
   expect(at.screen === "pods" && at.view === "collection" && at.create === null, "a room key on Create drops the unpaid choices and opens the room's top: " + JSON.stringify(at));
   await page.evaluate((id) => window.__st.podsGo(id, "pod"), crPod); await page.waitForTimeout(400); await hpressC("confirm", 500);
   expect((await page.evaluate(() => window.__st.UI.screen === "create" && Object.keys(window.__st.UI.create.choices).length === 0)), "back on Create it starts fresh");
-  for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
+  for (let i = 0; i < rollIndex; i++) await hpressC("right", 60);
   await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
 stepOf("create-grow");
@@ -421,7 +422,7 @@ await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 
 { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "create" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
 await stepClock(750); await release();   // 450 + 750 = 1200 ms in: past the hold and past the jump at 900
 s = await st();
-expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
+expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "colour", "the bud: 21 minutes, colour shaped");
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
 await page.waitForTimeout(900);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on the Incubator");
@@ -532,7 +533,7 @@ await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitF
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
-expect(fc.traits.filter((t) => t.kind === "switch").length === 2 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for markings and crown, a range for eye rings, drive and efficiency");
+expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for colour, markings and crown, a range for eye rings, drive and efficiency");
 expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");
 { await press("research", 300); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, cross: window.__st.UI.cross }));
   expect(at.screen === "pods" && at.cross === null, "a room key on Cross drops the unpaid choices: " + JSON.stringify(at));
