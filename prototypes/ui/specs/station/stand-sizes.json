@@ -1,0 +1,10 @@
+{
+ "note": "How tall each view draws a layered stand: the figure's height in px, crest to feet, adult and juvenile. The table is `## Size and pose` in design/art-direction.md; this file carries its values and nothing here is the authority. The stand is composed at that height in the logic process from the art cut once at 304x312 (the face never scales). The picture is the place's own size, because the face places a picture 1:1 in its slot: the figure stands on its foot, transparent around it. A view not listed draws the whole art fitted in its place (tiles and the Companion: unchanged). `places` are the sizes that are standing poses.",
+ "views": {
+  "home": { "adult": 54, "juvenile": 40 },
+  "vivarium": { "adult": 54, "juvenile": 40 },
+  "idle": { "adult": 54, "juvenile": 40 },
+  "habitat": { "adult": 150, "juvenile": 110 }
+ },
+ "places": ["144x152", "104x112", "304x312", "48x48"]
+}
