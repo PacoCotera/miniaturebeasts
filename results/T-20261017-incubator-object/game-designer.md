@@ -57,3 +57,14 @@ The other changes since 812f9869 are also true:
 - Home's capsule shows the state only, and keeps its arc, with no fraction and no minutes.
 
 Game designer, 2026-10-18.
+
+## Correction (game designer, 2026-10-18): Hatch now's price is not small
+
+My pass above said "at today's bud waits the price is small". That is wrong.
+- A bud takes **20 minutes plus one per shaped trait**. Only the first bud ever takes five (`budMinutes`, state.mjs).
+- Hatch now costs 1 Essence for every 2 minutes left, so a fresh bud costs 10 Essence or more.
+- The decision-points rule therefore applies on most presses: there is a panel when the price is more than a few Essence.
+
+The batch built that panel at a threshold of 4 (B-20261016-4, a7f). It stays, renamed:
+- **Hatch now ❀ n** (the juvenile in its bay) **| Wait** (the bud in the chamber, its light rising, "ready in about {n} min");
+- in place at 4 Essence or less.
