@@ -55,24 +55,38 @@ static int step_lift(int table, int ms) {
 }
 
 /* ---- the building blocks: a picture of one layer that changes between two pictures, comes in from clear or goes out to clear at a dither level ---- */
+/* the stage's top: the capsule's layers begin above it (their crown runs under the top bar), so every draw of a layer starts at the stage's first row, and a dither changes the stage only */
+static int stage_top(void) { int r[4]; return v_spec_rect("frame", "regions.stage.rect", r) ? r[1] : 0; }
+/* a picture of rect r drawn from the stage's top: the whole picture (v_sprite) or its window from the first row on the stage */
+static void put(const char *id, const char *a, const int r[4]) {
+  int dy = stage_top() - r[1]; if (dy <= 0) { v_sprite(id, a, r[0], r[1], r[2], r[3]); return; }
+  v_sprite_window(id, a, 0, dy, r[0], r[1] + dy, r[2], r[3] - dy);
+}
 /* from `a` to `b` at level n (n <= 0: a; n >= 16: b; else the dither of the two, which are one size and one place) */
 static void swap(const char *id, const char *a, const char *b, int n, const int r[4]) {
   v_name(id);
-  if (n <= 0 || n >= 16 || !has(a) || !has(b)) { const char *p = n >= 16 ? b : a; if (has(p)) v_sprite(id, p, r[0], r[1], r[2], r[3]); return; }
-  v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), a, 0, 0, b, 0, 0, n, r[0], r[1], r[2], r[3]);
+  if (n <= 0 || n >= 16 || !has(a) || !has(b)) { const char *p = n >= 16 ? b : a; if (has(p)) put(id, p, r); return; }
+  int dy = stage_top() - r[1]; if (dy < 0) dy = 0;
+  v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), a, 0, dy, b, 0, dy, n, r[0], r[1] + dy, r[2], r[3] - dy);
 }
-/* in from clear at level n (n <= 0: nothing; n >= 16: the picture) */
+/* the box of a picture's own pixels (alpha above 0), the only part a dither to or from clear changes (prim_asset_box); the whole picture when it is not on the face; then the part of it on the stage */
+static void change_box(const char *a, const int r[4], int b[4]) {
+  int h = wire_asset_slot(a); if (h < 0 || prim_asset_box(h, b) < 0 || b[2] <= 0) { b[0] = 0; b[1] = 0; b[2] = r[2]; b[3] = r[3]; }
+  int dy = stage_top() - (r[1] + b[1]); if (dy > 0) { b[1] += dy; b[3] -= dy; }
+}
+/* in from clear at level n (n <= 0: nothing; n >= 16: the picture); the dither covers the picture's change box only */
 static void come_in(const char *id, const char *a, int n, const int r[4]) {
   v_name(id); if (!has(a) || n <= 0) return;
-  if (n >= 16) { v_sprite(id, a, r[0], r[1], r[2], r[3]); return; }
-  v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), NULL, 0, 0, a, 0, 0, n, r[0], r[1], r[2], r[3]);
+  if (n >= 16) { put(id, a, r); return; }
+  int b[4]; change_box(a, r, b); v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), NULL, 0, 0, a, b[0], b[1], n, r[0] + b[0], r[1] + b[1], b[2], b[3]);
 }
-/* out to clear at level n (n <= 0: the picture; n >= 16: nothing) */
+/* out to clear at level n (n <= 0: the picture; n >= 16: nothing); the dither covers the picture's change box only */
 static void go_out(const char *id, const char *a, int n, const int r[4]) {
   v_name(id); if (!has(a) || n >= 16) return;
-  if (n <= 0) { v_sprite(id, a, r[0], r[1], r[2], r[3]); return; }
-  v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), a, 0, 0, NULL, 0, 0, n, r[0], r[1], r[2], r[3]);
+  if (n <= 0) { put(id, a, r); return; }
+  int b[4]; change_box(a, r, b); v_region(id, LAYER_PAINTED); v_dither_window(v_fmt("%s.dither", id), a, b[0], b[1], NULL, 0, 0, n, r[0] + b[0], r[1] + b[1], b[2], b[3]);
 }
+
 /* the bar's window of its layer: lit from the left, `px` wide from the layer's x 89 (screen 433); the whole bar with its glow at 158 px */
 static void bar_window(int px, int out[4]) {
   int max = ci("regions.capsule.bar.max", 158), h = ci("regions.capsule.bar.h", 34), x0 = ck("regions.capsule.bar.litFrom", 0), y0 = ck("regions.capsule.bar.litFrom", 1);
@@ -130,10 +144,10 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
     }
   }
   /* the glass: closed looks only (growing, the incubate moment); it goes out as Hatch now opens the door */
-  { const char *gl = v_pstr("regions.capsule.glass"); if (closed) { v_name("glass"); if (has(gl) && !dither_open) v_sprite("glass", gl, cap[0], cap[1], cap[2], cap[3]); else if (has(gl)) go_out("glass", gl, opening, cap); } else if (dither_open) go_out("glass", gl, opening, cap); }
+  { const char *gl = v_pstr("regions.capsule.glass"); if (closed) { v_name("glass"); if (has(gl) && !dither_open) put("glass", gl, cap); else if (has(gl)) go_out("glass", gl, opening, cap); } else if (dither_open) go_out("glass", gl, opening, cap); }
   swap("shell", v_pstr("regions.capsule.shell.dusk"), v_pstr("regions.capsule.shell.day"), dn, cap);
   /* the door: open looks (empty, ready, the hatch); Hatch now brings it in with the dither at 400 */
-  { const char *dr = v_pstr("regions.capsule.door"); if (dither_open) come_in("door", dr, opening, cap); else { v_name("door"); if (open_look && has(dr)) v_sprite("door", dr, cap[0], cap[1], cap[2], cap[3]); } }
+  { const char *dr = v_pstr("regions.capsule.door"); if (dither_open) come_in("door", dr, opening, cap); else { v_name("door"); if (open_look && has(dr)) put("door", dr, cap); } }
   /* the bar: empty off; the incubate moment off until 1200, then from its first pixel; growing at its width, Hatch now filling it in 8 cuts; ready and the hatch full */
   {
     const char *b = v_pstr("regions.capsule.bar"); int max = ci("regions.capsule.bar.max", 158), px = v_pint("regions.capsule.barPx", 0);
@@ -155,7 +169,7 @@ static void build_column(int t_inc) {
     word_stampCase(I, "regions", 0);
     v_region("stamp.plate", LAYER_PAINTED); { const char *pl = v_pstr("regions.stamp.plate"); if (has(pl)) { if (has(a) && size) v_sprite("stamp.plate", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp.plate", pl, r[0], r[1]); } }
     v_region("stamp", LAYER_PAINTED); if (has(a) && size) { v_name("stamp"); v_sprite("stamp.stamp", a, r[0] + v_half(r[2] - size), r[1] + v_half(r[3] - size), size, size); }
-    word_stampCase(I, "regions", 1);
+    word_stampCase(I, "regions", 1);   /* the case's front veil: the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
   }
   { const char *code = v_pstr("regions.code"); if (has(code)) { int px = ci("regions.code.px", 16), cx = ci("regions.code.centre", 152), w = v_measure(code, px); v_region("code", LAYER_TYPE); v_text("code", code, cx - v_half(w), ci("regions.code.lineTop", 344) + v_fdiv(20 - v_cap(px), 2), w, px, colr("colours.code")); } }
   { const char *s = v_pstr("regions.readyIn"); if (has(s) && in_state("growing")) { int px = ci("regions.readyIn.px", 16), cx = ci("regions.readyIn.centre", 152), w = v_measure(s, px); v_region("readyIn", LAYER_TYPE); v_text("readyIn", s, cx - v_half(w), ci("regions.readyIn.lineTop", 384) + v_fdiv(20 - v_cap(px), 2), w, px, colr("colours.readyIn")); } }

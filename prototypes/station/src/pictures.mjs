@@ -92,7 +92,7 @@ export function registerPictures(reqs, env) {
         registerAsset({ id: r.id, w: r.area[0], h: r.area[1], status: "derived", until: null, build: () => { let data = null; return { w: r.area[0], h: r.area[1], rgba: () => { if (data) return data;
           if (!ok) return (data = new Uint8ClampedArray(r.area[0] * r.area[1] * 4));
           const src = (id) => { const a = assetOf(id); return { rgba: a.rgba(), w: a.w, h: a.h }; };
-          data = relit({ parts: r.parts.map((p) => ({ ...src(p.id), over: (p.over ?? []).filter((o) => isFilled(o) || hasAsset(o)).map((o) => src(o).rgba) })), scale: r.scale ?? 1, figH: r.figH ?? 0, area: r.area, anchor: r.anchor, bg: r.bg && (isFilled(r.bg.id) || hasAsset(r.bg.id)) ? { ...src(r.bg.id), x: r.bg.at[0], y: r.bg.at[1] } : null }); return data; } }; } });
+          data = relit({ parts: r.parts.map((p) => ({ ...src(p.id), over: (p.over ?? []).filter((o) => isFilled(o) || hasAsset(o)).map((o) => src(o).rgba) })), scale: r.scale ?? 1, figH: r.figH ?? 0, sink: r.sink ?? 0, inset: r.inset ?? 12, area: r.area, anchor: r.anchor, bg: r.bg && (isFilled(r.bg.id) || hasAsset(r.bg.id)) ? { ...src(r.bg.id), x: r.bg.at[0], y: r.bg.at[1] } : null }); return data; } }; } });
         break;
       }
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;

@@ -8,9 +8,17 @@ export function departures(log, spec, frame, state = "growing") {
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer));
   const must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
+  if (got("panelGround").length) {   // the Hatch now | Wait panel is open over the Incubator (the Incubator's confirm state): the panel's own composition, none of the Incubator's words (panel.json hatchnow)
+    for (const id of ["panelGround", "panelBezel.0", "panelBezel.1", "panelWindow.0", "panelWindow.1", "panelHatched", "panelGrowing"]) must(got(id).length >= 1, `the Hatch now | Wait panel draws ${id}`);
+    for (const id of ["room", "interior", "pod", "shell", "door", "bar", "stamp", "stamp.plate", "code", "seal", "glass", "juvenile", "ribbon", "bench"]) must(got(id).length === 0 && !type.some((t) => t.region === id), `${id} is not drawn under the Hatch now | Wait panel`);
+    for (const t of type.filter((x) => x.region === "panelCaption" && x.rect)) must(within(t.rect, [526, 76, 474, 468]), `the caption ${t.rect} leaves the right window`);
+    return out;
+  }
   for (const r of got("bench")) must(eq(r.rect, R.bench.rect), `the stage ground ${r.rect} is not ${R.bench.rect}`);
   for (const r of got("room")) must(eq(r.rect, R.room.rect), `the room ${r.rect} is not ${R.room.rect}`);
-  for (const id of ["interior", "shell", "door", "glass", "seal"]) for (const r of got(id)) must(eq(r.rect, R.capsule.rect), `the capsule's ${id} ${r.rect} is not ${R.capsule.rect}`);
+  const S = frame.regions.stage.rect, C = R.capsule.rect, top = Math.max(C[1], S[1]), cap = [C[0], top, C[2], C[1] + C[3] - top];   // the capsule's layers are placed at the capsule rect and drawn from the stage's first row (the rows above it are under the top bar), so a dither changes the stage only
+  for (const id of ["interior", "shell"]) for (const r of got(id)) must(eq(r.rect, cap), `the capsule's ${id} ${r.rect} is not ${cap} (the capsule ${C} on the stage)`);
+  for (const id of ["door", "glass", "seal"]) for (const r of got(id)) must(within(r.rect, cap), `the capsule's ${id} ${r.rect} leaves ${cap} (the capsule ${C} on the stage; a dither covers the picture's own box)`);
   { const c = R.capsule.rect, f = R.capsule.bar.full; for (const r of got("bar")) must(within(r.rect, [c[0] + f[0], c[1] + f[1], f[2], f[3]]), `the bar ${r.rect} leaves its window ${f}`); }
   for (const r of got("pod")) must(eq(r.rect, R.inside.rect), `the pod ${r.rect} is not ${R.inside.rect}`);
   { const [fx, fy] = R.juvenile.foot, lift = Math.max(R.juvenile.lift, ...(spec.events?.hatch?.steps ?? []).flatMap((x) => (Array.isArray(x.lift) ? x.lift.map((l) => l[1]) : []))); for (const r of got("juvenile")) must(within(r.rect, [fx - 160, fy - 200 - lift, 320, 200 + lift + 60]), `the juvenile ${r.rect} leaves its place on (${fx}, ${fy})`); }

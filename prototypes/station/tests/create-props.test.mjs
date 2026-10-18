@@ -60,11 +60,17 @@ test("the state: nothing read with no chapter read (no roll, the ring on the roo
   const a = make("S01", 3, 0).build(); assert.equal(a.props.state, "nothingRead"); assert.equal(a.props.regions.roll, undefined); assert.deepEqual(a.props.focus, { cur: "room", targets: [] }); assert.equal(a.props.regions.rail.open, -1);
   const b = make("S01", 3, 1).build(); assert.equal(b.props.state, "shape"); assert.deepEqual(b.props.focus, { cur: "roll", targets: [{ id: "roll", group: "roll" }] });
   const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p, minutes: r.bud.minutes }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
-  assert.equal(g.props.regions.dome.busy, false, "the bud that just grew is not 'another bud'");
+  assert.equal(g.props.regions.dome.state, "grow", "the bud that just grew: the chamber plays the incubate moment, not 'another bud'");
   assert.ok(g.line.ok === null && g.line.back === null && g.line.price == null && g.line.need === "", "grow: the line is Growing, no action, price or way back, an empty right slot (fix 5 C6)"); assert.equal(g.line.subject, spec.strings.growing); assert.deepEqual([g.line.dim, g.line.blocked, g.line.short], [undefined, undefined, undefined]);
   assert.equal(g.props.regions.roll.shown, false, "grow: the roll keeps its nodes with no size"); assert.equal(g.props.regions.roll.pictures.length, 3, "the roll pictures stay requested in grow"); assert.deepEqual(g.props.focus, { cur: "room", targets: [] }, "grow: no ring"); assert.equal(g.props.regions.rail.open, -1); assert.ok(g.props.regions.rail.tabs.every((t) => !("lift" in t)), "no tab open and no lift (fix 11: the lift is retired)"); assert.deepEqual([g.props.regions.traitLine.text, g.props.regions.traitLine.changed], ["", false], "no trait line in grow, the tag included");
   assert.equal(b.props.regions.roll.shown, true); assert.equal(a.props.regions.traitLine.text, "", "nothingRead: no trait line"); assert.equal(a.line.subject, "it grows as the pod is", "nothingRead: the sentence moves to the context");
   assert.equal(createPod(m.st, m.cr).id, m.p.id, "the pod is the screen's own once it has left the rack");
+});
+
+test("the chamber mirrors the Incubator: empty, a bud growing, a bud ready, after Incubate", () => {
+  const e = make("S01", 3, 2).build().props.regions.dome; assert.equal(e.state, "empty"); assert.equal(e.pod, undefined, "empty: no pod");
+  const g = make("S01", 3, 2); g.st.bud = { kind: "founder", species: "S03", start: Date.now() + 1e9, minutes: 5 }; const gd = g.build().props.regions.dome; assert.equal(gd.state, "growing"); assert.ok(gd.pod && gd.bar && gd.glass, "growing: that bud's pod, the bar, the glass");
+  const r = make("S01", 3, 2); r.st.bud = { kind: "founder", species: "S03", start: Date.now() - 1e9, minutes: 5 }; const rd = r.build().props.regions.dome; assert.equal(rd.state, "ready"); assert.ok(rd.pod && rd.bar, "ready: that bud's pod and the bar");
 });
 
 test("the roll: three pictures in the order as the pod is, only the first copy, only the second (the look each shows); one picture for a doing, a trait with one look or a trait that cannot be shaped", () => {
@@ -102,7 +108,7 @@ test("the bottom line: ✓ Incubate and the price with ◆ a change (the first f
   m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
   assert.equal(make("S01", 3, 0).build().line.subject, Sg.traitLine.none); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina unread"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
   { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
-  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.dome.busy, true, "the capsule's bar is lit while another bud grows"); }
+  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.ok(["growing", "ready"].includes(k.build().props.regions.dome.state), "the capsule shows the bud (glass and bar while it grows, door open when ready)"); }
   { const k = make("S01", 3, 2); for (let i = 0; i < 12; i++) k.st.mibis.push({ id: 100 + i, bay: i, released: false }); L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.noBay]); }
   { const k = make("S01", 3, 2); k.st.s = 1; L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked, L.need], [true, "❀", undefined, "needs ❀: go out or return pods"]); }
   { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.deepEqual([L.dim, L.short, L.need], [true, "⚡ ❀", "needs more ⚡ ❀: go out"]); }

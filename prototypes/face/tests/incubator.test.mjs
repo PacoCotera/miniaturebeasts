@@ -15,7 +15,8 @@ import * as S from "../../station/src/state.mjs";
 import { incubatorBuild } from "../../station/src/views/incubator-props.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 import { departures } from "../tools/incubator-regions.mjs";
-import { dirty } from "./dirty.mjs";
+import { dirty, dirtyRects } from "./dirty.mjs";
+import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), incSpec = J("incubator"), createSpec = J("create");
@@ -175,11 +176,33 @@ test("keys: ✓ ← and the room keys say their intent on the room, the pad says
 
 // ---- the dirty area ----
 test("the dirty area of each step is printed and held: the room's dither steps redraw the room (the stage, 534,528 px, as the house's own screen dither does), Hatch now's bar cuts and the hatch's lift steps are small", { skip }, async () => {
-  const worst = (f, t0, from, until, step) => { let w = 0, at = 0; for (let t = from; t < until; t += step) { f.frame(t0 + t); const a = area(f); if (a > w) { w = a; at = t; } } return [w, at]; };
-  const pct = (w) => (100 * w / 614400).toFixed(1);
-  { const { f, t0 } = await incubating(); logOf(f); const [w1] = worst(f, t0, 16, 1200, 16), [w, at] = worst(f, t0, 1200, 1390, 16); console.log(`# the Incubator's incubate moment: the still ${w1} px; the dither 1200-1380: worst ${w} px at ${at} ms (${pct(w)}%)`); assert.ok(w <= 614400, `incubate dither ${w}`); }
+  const worst = (f, t0, from, until, step) => { let w = 0, at = 0; for (let t = from; t < until; t += step) { f.frame(t0 + t); const a = area(f); if (a > w) { w = a; at = t; f._worstRects = JSON.stringify(dirtyRects(f)); } } return [w, at]; };
+  const STAGE = 1024 * 522, LIMIT = 153600, pct = (w) => (100 * w / 614400).toFixed(1);
+  { const { f, t0 } = await incubating(); logOf(f); const [w1] = worst(f, t0, 16, 1200, 16), [w, at] = worst(f, t0, 1200, 1390, 16); console.log(`# the Incubator's incubate moment: the still ${w1} px; the dither 1200-1380: worst ${w} px at ${at} ms (${pct(w)}%)`); assert.ok(w <= STAGE, `the Incubate dither is the named exemption: at most the whole stage (${STAGE} px), got ${w}`); }
   { const b = scene({ minutes: 13.2 }), f = await start(b, { t0: 1000 }), t0 = f.t; f.send({ t: "event", kind: "growNow", target: "room", ms: EV.growNow.ms, hold: EV.growNow.hold }); area(f, { fullCut: true });
-    const [wb, ab] = worst(f, t0, 16, 400, 8), [wd, ad] = worst(f, t0, 400, 600, 8); console.log(`# the Incubator's Hatch now: the bar's cuts worst ${wb} px at ${ab} ms (${pct(wb)}%); the door's dither 400-580 worst ${wd} px at ${ad} ms (${pct(wd)}%)`); assert.ok(wb <= 20000, `the bar's cuts ${wb}`); assert.ok(wd <= 614400, `the door's dither ${wd}`); }
+    const [wb, ab] = worst(f, t0, 16, 400, 8), [wd, ad] = worst(f, t0, 400, 600, 8); console.log(`# the Incubator's Hatch now: the bar's cuts worst ${wb} px at ${ab} ms (${pct(wb)}%); the door's dither 400-580 worst ${wd} px at ${ad} ms (${pct(wd)}%)`); assert.ok(wb <= 20000, `the bar's cuts ${wb}`); assert.ok(wb <= LIMIT, `the bar cuts ${wb}`); f._doorDither = [wd, ad, f._worstRects]; }
   { const { f, t0 } = await hatching(); area(f, { fullCut: true }); const [wc, ac] = worst(f, t0, 16, 1000, 16), [wd, ad] = worst(f, t0, 1000, 1200, 16), [wl, al] = worst(f, t0, 1200, 2700, 16);
-    console.log(`# the Incubator's hatch: cracks worst ${wc} px at ${ac} ms; the dither to the opened pod 1000-1180 worst ${wd} px at ${ad} ms (${pct(wd)}%); the ribbon and the lift steps worst ${wl} px at ${al} ms (${pct(wl)}%)`); assert.ok(wd <= 614400, `the hatch's dither ${wd}`); assert.ok(wl <= 153600, `the lift steps ${wl}`); }
+    console.log(`# the Incubator's hatch: cracks worst ${wc} px at ${ac} ms; the dither to the opened pod 1000-1180 worst ${wd} px at ${ad} ms (${pct(wd)}%); the ribbon and the lift steps worst ${wl} px at ${al} ms (${pct(wl)}%)`); assert.ok(wd <= LIMIT, `the hatch's dither ${wd}`); assert.ok(wc <= LIMIT, `the cracks ${wc}`); assert.ok(wl <= LIMIT, `the lift steps ${wl}`); }
+});
+
+// The Hatch now door dither (the architect's ruling: shrink it to the door's change box with prim_asset_diff_box; if the box is still over 153,600 px, report the measured box, do not widen the exemption). Measured: the glass goes out over its
+// alpha box (202 x 290, 58,580 px) and the door comes in over its own (206 x 491, 101,146 px), 159,726 px together, and LVGL merges the two invalid areas into one rectangle of the capsule, 530 x 518 (274,540 px). It stays a todo until the ruling.
+test("the Hatch now door dither redraws at most 153,600 px (todo: measured 274,540 px, the merged box of the glass going out and the door coming in)", { skip, todo: "the architect's ruling: the measured box is over the bound" }, async () => {
+  const b = scene({ minutes: 13.2 }), f = await start(b, { t0: 1000 }), t0 = f.t; f.send({ t: "event", kind: "growNow", target: "room", ms: EV.growNow.ms, hold: EV.growNow.hold }); area(f, { fullCut: true });
+  let w = 0, rects = null; for (let t = 400; t < 600; t += 8) { f.frame(t0 + t); const a = area(f); if (a > w) { w = a; rects = JSON.stringify(dirtyRects(f)); } }
+  console.log(`# the Hatch now door dither: worst ${w} px, rects ${rects}`); assert.ok(w <= 153600, `${w} px in ${rects}`);
+});
+
+// The left column's text is ink (#1a1725) on the wall master: at least 4.5:1 against the darkest 5% of the wall under it, in the day look (where the code and the time are read) and in the dusk look
+test("the left column's code and 'ready in about' are ink, at least 4.5:1 on the wall master under them (the darkest 5% of its pixels, WCAG relative luminance)", { skip }, () => {
+  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }, lum = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const rgbOf = (name) => { const h = palette.find((c) => c[0] === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); }, ink = rgbOf("ink"); assert.deepEqual(["code", "readyIn"].map((k) => incSpec.colours[k]), ["ink", "ink"], "the spec names ink for both");
+  for (const look of ["day", "dusk"]) {
+    const png = decodePNG(readFileSync(path.resolve(here, `../../ui/assets/masters/capsule/${incSpec.regions.room.pictures[look]}.png`))), top = incSpec.regions.room.rect[1];
+    for (const k of ["code", "readyIn"]) {
+      const [x, y, w, h] = incSpec.regions[k].rect, L = []; for (let j = y - top; j < y - top + h; j++) for (let i = x; i < x + w; i++) { const o = (j * png.width + i) * 4; L.push(lum(png.data[o], png.data[o + 1], png.data[o + 2])); }
+      L.sort((a, b) => a - b); const dark = L[Math.floor(L.length * 0.05)], c = (dark + 0.05) / (lum(...ink) + 0.05);
+      assert.ok(c >= 4.5, `${look}: ${k} ink on the wall reads ${c.toFixed(2)}:1, under 4.5:1`);
+    }
+  }
 });

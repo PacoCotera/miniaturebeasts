@@ -75,12 +75,16 @@ const CLEAR = /^capsule-(shell|shell-dusk|door-open|bar-lit|seal-ring|glass-clos
 function panelScene(o = {}) {
   const st = world(), id = o.species ?? "S01"; S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p);
   frameOf(id).chapters.slice(0, o.read ?? 2).forEach((c) => S.read(st, p, c.id, settings));
-  const cr = { podId: p.id, choices: {}, f: 1, clash: [], grown: null }, kind = o.kind ?? "growNow", ui = { create: cr, panel: { screen: kind === "growNow" ? "incubator" : "create", id: kind, focus: o.focus ?? "" } };
-  if (kind === "growNow") { const q = st.tray[0]; assert.ok(S.grow(st, q, {}, settings, T0).ok); if (o.short) st.s = 0; }
-  const b = kind === "growNow" ? { ...incubatorBuild({ st, settings, now: T0 + 1000, ui: { inc: {}, ...ui }, lamp: "" }, incSpec, podsSpec), screen: "incubator" } : createBuild({ st, settings, ui }, createSpec, podsSpec), pb = panelBuild({ st, settings, ui, jump: "arrival", now: T0 + 1000, create: createSpec }, panelSpec, frameSpec, podsSpec);
+  const cr = { podId: p.id, choices: {}, f: 1, clash: [], grown: null }, kind = o.kind ?? "cards", onInc = kind !== "incubate", ui = { create: cr, panel: { screen: onInc ? "incubator" : "create", id: onInc ? "growNow" : kind, focus: o.focus ?? "" } };
+  if (onInc) { const q = st.tray[0]; assert.ok(S.grow(st, q, {}, settings, T0).ok); if (o.short) st.s = 0; }
+  const b = onInc ? { ...incubatorBuild({ st, settings, now: T0 + 1000, ui: { inc: {}, ...ui }, lamp: "" }, incSpec, podsSpec), screen: "incubator" } : createBuild({ st, settings, ui }, createSpec, podsSpec), pb = panelBuild({ st, settings, ui, jump: "arrival", now: T0 + 1000, create: createSpec }, panelSpec, frameSpec, podsSpec);
   if (kind === "incubate") b.props.focus = { cur: "", targets: [] };
   b.screen ??= "create";
-  if (kind === "growNow" && (o.cards ?? 2) !== 2) { const c = pb.overlay.regions.cards, extra = { ...c[0], id: "third", name: "Third" }; pb.overlay.regions.cards = o.cards === 3 ? [...c.slice(0, 1), c[0].id === "grow" ? { ...c[1], id: "wait2" } : c[1], c[1]].map((x, i) => ({ ...x, id: ["grow", "wait", "third"][i] })) : [c[0]]; { const n = pb.overlay.regions.cards.length, art = artOf(frameSpec, n, pb.requests); pb.overlay.regions.art = { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }; pb.overlay.regions.cards = pb.overlay.regions.cards.map((x) => ({ ...x, art: art.card })); } pb.overlay.focus.targets = pb.overlay.regions.cards.map((x) => ({ id: "card." + x.id, enabled: true })); pb.overlay.focus.cur = "card." + pb.overlay.regions.cards[0].id; void extra; }
+  if (kind === "cards") {   // the card form (one, two or three cards in the decision panel's housing): the Hatch now | Wait cards, given pictures and art here, as the wild and fit panels give theirs
+    const BUD = [128, 160], bud = (id) => { pb.requests.push({ kind: "slot", id, master: id, size: BUD, until: "the card form's test picture" }); return id; }, art0 = artOf(frameSpec, 2, pb.requests);
+    pb.overlay = { id: "panel", state: "open", regions: { title: "Hatch the Loika now?", art: { housing: art0.housing, veil: art0.veil, shadow: art0.shadow, chip: art0.chip }, cards: pb.cards.map(({ act, room, ...c }, i) => ({ ...c, picture: bud(i ? "bud-late-128x160" : "bud-ready-128x160"), pictureSize: BUD, art: art0.card })) }, focus: { cur: pb.overlay.focus.cur, targets: pb.overlay.focus.targets } };
+  }
+  if (kind === "cards" && (o.cards ?? 2) !== 2) { const c = pb.overlay.regions.cards, extra = { ...c[0], id: "third", name: "Third" }; pb.overlay.regions.cards = o.cards === 3 ? [...c.slice(0, 1), c[0].id === "grow" ? { ...c[1], id: "wait2" } : c[1], c[1]].map((x, i) => ({ ...x, id: ["grow", "wait", "third"][i] })) : [c[0]]; { const n = pb.overlay.regions.cards.length, art = artOf(frameSpec, n, pb.requests); pb.overlay.regions.art = { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }; pb.overlay.regions.cards = pb.overlay.regions.cards.map((x) => ({ ...x, art: art.card })); } pb.overlay.focus.targets = pb.overlay.regions.cards.map((x) => ({ id: "card." + x.id, enabled: true })); pb.overlay.focus.cur = "card." + pb.overlay.regions.cards[0].id; void extra; }
   b.props.overlay = pb.overlay; b.line = pb.line; b.requests = [...b.requests, ...pb.requests];
   return { ...b, st, p, pb };
 }
@@ -161,5 +165,55 @@ test("the Incubate panel's dither in: the stage dither at 90 ms is level 8 of 16
 test("a focus move between the two bezels redraws the two rings' places only, at most 2 x 500 x 516 px", { skip }, async () => {
   const b = panelScene({ kind: "incubate" }), f = await startPanel(b); dirty(f);
   f.send({ t: "key", k: "right" }); f.frame((f.t += 16)); const d = dirty(f); assert.ok(d > 0 && d <= 2 * 500 * 516, `${d} px`); console.log(`# the Incubate panel's focus move: ${d} px (${(100 * d / 614400).toFixed(1)}%)`);
+  for (const q of dirtyRects(f)) assert.ok(q[0] >= 8 && q[1] >= 38 && q[0] + q[2] <= 1016 && q[1] + q[3] <= 562, `${q} inside the stage`);
+});
+
+// ---- the Hatch now | Wait form (panel.json hatchnow; the UI/UX rulings, the panel section) ----
+const H = panelSpec.hatchnow;
+for (const [name, o] of [["a Loika bud", { species: "S01" }], ["a second species", { species: "S02" }], ["focus on Wait", { focus: "card.wait" }], ["short of Essence", { short: true }]]) {
+  test(`the Hatch now | Wait panel, ${name}: draws without an error or a refusal; the ground, two bezels, both windows with their frames, the two looks at the spec's places, the one ring 5 px round the focused bezel`, { skip }, async () => {
+    const b = panelScene({ kind: "hatchnow", ...o }), f = await startPanel(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    const lg = logOf(f), cur = b.props.overlay.focus.cur, at = cur === "card.wait" ? 1 : 0;
+    assert.deepEqual(region(lg, "panelGround").rect, [0, 40, 1024, 522]); for (const [i, r] of BEZ.entries()) assert.deepEqual(region(lg, `panelBezel.${i}`).rect, r, `bezel ${i} at ${r}`);
+    assert.deepEqual(region(lg, "panelHatched").rect.slice(0, 2), [24, 76], "the hatched look's room fills the left window"); assert.deepEqual(region(lg, "panelGrowing").rect.slice(0, 2), [526, 76], "the growing look's room fills the right window");
+    assert.deepEqual([region(lg, "panelWindow.0").rect, region(lg, "panelWindow.1").rect], [I.windows.left, I.windows.right], "the two window frames");
+    const rings = lg.regions.filter((r) => r.id === "focus" && r.layer === "chrome"); assert.equal(rings.length, 1); const [x, y, w, h] = BEZ[at]; assert.deepEqual(rings[0].rect, [x - 5, y - 5, w + 10, h + 10], "the house ring, reaching 5 px round the bezel");
+    assert.deepEqual(lg.type.filter((t) => t.region === "panelHeader").map((t) => t.text), ["Hatch now", "Wait"], "the two verbs and nothing else: no title");
+    assert.equal(f.objects() <= 400, true, `${f.objects()} objects`);
+  });
+}
+test("the Hatch now | Wait panel: Hatch now's price is the Essence it costs, right-aligned in its header; Wait has none", { skip }, async () => {
+  const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b), lg = logOf(f), price = lg.type.filter((t) => t.region === "panelPrice"); assert.equal(price.length, 1, JSON.stringify(price)); assert.match(price[0].text ?? "", /^\s*\d+$/, "the figure; the icon before it is a picture");
+  const l = BEZ[0], pr = region(lg, "panelPrice", "type").rect; assert.ok(Math.abs(pr[0] + pr[2] - (l[0] + l[2] - 12)) <= 1, `ends at the bezel's right less 12: ${pr}`);
+  assert.ok(pr[1] >= l[1] && pr[1] + pr[3] <= l[1] + 30, "in the 30 px header");
+});
+test("the Hatch now | Wait panel's caption: 'ready in about {n} min', Inter 16, ink, centred in the right window, its baseline 16 above the window's foot; nothing else says the time", { skip }, async () => {
+  const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b), lg = logOf(f), cap = lg.type.filter((t) => t.region === "panelCaption"); assert.equal(cap.length, 1);
+  const W = I.windows.right, n = b.props.overlay.regions.caption; assert.match(n, /^ready in about \d+ min$/); assert.equal(cap[0].text, n); assert.equal(cap[0].px, 16);
+  const [x, y, w, h] = region(lg, "panelCaption").rect; assert.ok(Math.abs((x + w / 2) - (W[0] + W[2] / 2)) <= 1, `centred (${x + w / 2} vs ${W[0] + W[2] / 2})`); assert.ok(y + h <= W[1] + W[3] - 16 + 6 && y + h >= W[1] + W[3] - 16 - 2, `16 above the foot: the box ends at ${y + h}`);
+  assert.equal(lg.type.filter((t) => /\bmin\b/.test(t.text ?? "")).length, 1, "the one fact the picture can't carry");
+});
+test("the Hatch now | Wait panel's bar: lit from its first pixel to floor(max x progress), a window of the bar layer from the lit start; the hatched look's bar is full", { skip }, async () => {
+  const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b), lg = logOf(f), R = b.props.overlay.regions, px = R.barPx;
+  assert.ok(px >= 1 && px <= H.bar.max, `${px} of ${H.bar.max}`);
+  const bars = lg.sprites?.filter((s) => /^panel\.(growing|hatched)\.bar$/.test(s.id)) ?? []; if (bars.length) { const g = bars.find((s) => s.id === "panel.growing.bar"), h = bars.find((s) => s.id === "panel.hatched.bar"); assert.equal(g.rect[2], px < H.bar.max ? px : H.bar.full[2]); assert.deepEqual(h.rect, [H.left.layers[0] + H.bar.full[0], H.left.layers[1] + H.bar.full[1], H.bar.full[2], H.bar.full[3]]); }
+});
+test("the Hatch now | Wait panel's keys: the pad moves between the two bezels and stops at the ends; the check says confirm on the focused one (Hatch now first), back says back, a room key says its room", { skip }, async () => {
+  const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b); assert.equal(b.props.overlay.focus.cur, "card.grow");
+  assert.deepEqual(key(f, "left"), []); assert.deepEqual(key(f, "up"), []); assert.deepEqual(key(f, "down"), []);
+  assert.deepEqual(key(f, "confirm").map((m) => [m.t, m.screen, m.target, m.verb]), [["intent", "panel", "card.grow", "confirm"]]);
+  assert.deepEqual(key(f, "right").map((m) => [m.t, m.screen, m.target]), [["focus", "panel", "card.wait"]]); assert.deepEqual(key(f, "right"), [], "the last bezel: the end");
+  assert.deepEqual(key(f, "confirm").map((m) => [m.t, m.screen, m.target, m.verb]), [["intent", "panel", "card.wait", "confirm"]]);
+  assert.deepEqual(key(f, "back").map((m) => [m.screen, m.target, m.verb]), [["panel", "card.wait", "back"]]); assert.deepEqual(key(f, "home").map((m) => [m.screen, m.verb]), [["panel", "room:home"]]);
+});
+test("the Hatch now | Wait panel's dither in: the stage dither at 90 ms is level 8 of 16, the panel stands whole at 180; the Incubator's own words are not drawn under it", { skip }, async () => {
+  const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b, { motion: true }); f.send({ t: "event", kind: "dither", target: "stage", ms: 180, hold: 180 }); const t0 = f.t;
+  f.frame(t0 + 90); let covered = 0; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) if (f.pixel(900 + i, 500 + j).join() === rgbOf("void").join()) covered++; assert.equal(covered, 8);
+  f.frame(t0 + 190); let after = 0; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) if (f.pixel(900 + i, 500 + j).join() === rgbOf("void").join()) after++; assert.equal(after, 0, "at 180 the stage is clear");
+  const lg = logOf(f); assert.equal(lg.regions.filter((r) => r.id === "room").length, 0, "the Incubator's room is not drawn under the panel");
+});
+test("a focus move between the two Hatch now | Wait bezels redraws the two rings' places only, at most 2 x 500 x 516 px", { skip }, async () => {
+  const b = panelScene({ kind: "hatchnow" }), f = await startPanel(b); dirty(f);
+  f.send({ t: "key", k: "right" }); f.frame((f.t += 16)); const d = dirty(f); assert.ok(d > 0 && d <= 2 * 500 * 516, `${d} px`);
   for (const q of dirtyRects(f)) assert.ok(q[0] >= 8 && q[1] >= 38 && q[0] + q[2] <= 1016 && q[1] + q[3] <= 562, `${q} inside the stage`);
 });

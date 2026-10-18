@@ -22,6 +22,7 @@ const SCENES = {
   "shape-onelook": { want: "shape", set: (w) => { w.shape("S01", 4, 4); w.at(0); } },
   "shape-short":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); const st = window.__st.ST; st.s = 1; st.e = 9; w.persist(); } },
   "shape-busy":    { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(false); } },
+  "shape-ready":   { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); w.bud(true); } },   // the chamber with a bud that is ready: the door open, that bud's pod, the bar lit (it mirrors the Incubator)
   "shape-samelook": { want: "shape", set: (w) => { w.shape("S01", 3, 2); w.at(1); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); window.__st.intent({ screen: "create", target: "roll", verb: "step:down" }); } },   // S01 Crown, the pod's leaf crest hiding bare head (genome seed 3), the crest chosen: "Crown: leaf crest, hides nothing" (fix 5 Create)
   "shape-sealed":  { want: "shape", set: (w) => { w.shape("S02", 3, 3); w.at(0); } },   // one S02 pod, every readable chapter read, its sealed chapter shut: "all read, Character sealed"
   "confirm":       { want: "shape", panel: true, set: (w) => { w.shape("S01", 3, 2); w.at(1); } },   // Create's confirm state: the Incubate | Keep shaping panel (a Loika founder), the ring on Incubate

@@ -156,7 +156,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
   const img = goldenPng(file), L = lumOf(img, label), M = founder ? lumMasked(img, main) : lumOf(img, main), inner = lumOf(img, [label[0] + 8, label[1] + 8, 104, 104]);
   assert.ok(mean(L) < mean(M), `${screen}: label mean ${mean(L).toFixed(3)} is not under the main object's ${mean(M).toFixed(3)}`);
   assert.ok(pct(L, 95) < pct(M, 95), `${screen}: label p95 ${pct(L, 95).toFixed(3)} is not under the main object's ${pct(M, 95).toFixed(3)}`);
-  const contrast = (pct(inner, 95) + 0.05) / (pct(inner, 5) + 0.05); if (screen !== "incubator") assert.ok(contrast >= 4.11, `${screen}: the stamp's cells read at ${contrast.toFixed(2)}, under 4.11`);   // the Incubator's label now sits in the stamp case on the left wall (T-20261016-222): its contrast reads 2.17 under the case's front glass; reported to the art director
+  const contrast = (pct(inner, 95) + 0.05) / (pct(inner, 5) + 0.05); assert.ok(contrast >= 4.11, `${screen}: the stamp's cells read at ${contrast.toFixed(2)}, under 4.11`);
   if (screen === "habitat") { assert.ok(mean(L) < 0.079, `habitat: label mean ${mean(L).toFixed(3)} is not under 0.079 (GB2: the label in its well)`); assert.ok(pct(L, 95) < 0.192, `habitat: label p95 ${pct(L, 95).toFixed(3)} is not under 0.192`); }
   const cap = screen === "create" ? 115 : 111;   // Create keeps the outer cap (art director, CA2); the others their own 111
   assert.ok(srgbMean(img, label) <= cap, `${screen}: the label's sRGB mean ${srgbMean(img, label).toFixed(1)} is over ${cap} (the outer cap is 115)`);
@@ -456,6 +456,11 @@ test("the Incubator's plate is the master stamp-plate-120x120 at 1:1, no K x WAR
   assert.equal(plateReq(req, 0.2), "stamp-plate-120-k20"); assert.deepEqual(asked[1], { kind: "stampplate", id: "stamp-plate-120-k20", size: 120, k: 0.2 }, "Create keeps the look's plate request");
   const here = new URL(".", import.meta.url), master = decodePNG(readFileSync(new URL("../../ui/assets/masters/pods/stamp-plate-120x120.png", here)));
   assert.deepEqual([master.width, master.height], [120, 120]); assert.ok(master.data.every((v, i) => i % 4 !== 3 || v === 255), "opaque");
-  // (the plate's pixels on the Incubator's goldens are no longer the master's untouched: the stamp case's front glass lies over the label on the left wall, T-20261016-222)
+  // on the Incubator's goldens (growing, ready, hatch-1090) the plate's pixels outside the glyph's 104 x 104 recess are the master's, untouched: the case's front master is clear over the 120 x 120 plate (it covers the frame band only)
+  for (const state of ["growing", "ready", "hatch-1090"]) {
+    const cap = decodePNG(readFileSync(new URL(`../../face/golden/incubator/incubator-${state}.png`, here))); let bad = 0, n = 0;
+    for (let y = 0; y < 120; y++) for (let x = 0; x < 120; x++) { if (x >= 8 && x < 112 && y >= 8 && y < 112) continue; n++; for (let c = 0; c < 3; c++) if (cap.data[((200 + y) * cap.width + 92 + x) * 4 + c] !== master.data[(y * 120 + x) * 4 + c]) { bad++; break; } }
+    assert.equal(bad, 0, `${state}: ${bad} of ${n} plate pixels outside the recess differ from the master`);
+  }
   const bone = RGB[C.bone], hair = RGB[C.hairline]; assert.deepEqual([...labelPlate(120, bone, hair, 0.20).rgba().slice(0, 4)], [...hair, 255], "Create's plate keeps its hairline");
 });

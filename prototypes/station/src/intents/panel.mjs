@@ -26,6 +26,11 @@ export function intent(h, target, verb) {
     if (verb === "confirm" && target === "card.incubate") { S.logEv(h.st, "Decision panel · Incubate | Keep shaping · Incubate"); incubateNow(h); }
     return;
   }
+  if (ui.id === "growNow") {   // the Hatch now | Wait panel (the Incubator's confirm state): ✓ Hatch now goes as a cut and the bar fills; Wait and ← dither back to the Incubator, nothing spent; a room key is the frame's (a cut)
+    if (verb === "back" || (verb === "confirm" && target === "card.wait")) { S.logEv(h.st, "Decision panel · Hatch now | Wait · Wait"); closePanel(h); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }
+    if (verb === "confirm" && target === "card.grow") { S.logEv(h.st, "Decision panel · Hatch now | Wait · Hatch now"); closePanel(h); growNow(h); }
+    return;
+  }
   if (verb === "back") { closePanel(h); if (ui.id === "dock") later(h); return; }   // ← on the dock arrival's strip is Later
   if (verb !== "confirm") return;
   const cards = cardsOf(model(h), h.specs.panel, h.specs.frame, []), card = cards.find((c) => "card." + c.id === target); if (!card) return;

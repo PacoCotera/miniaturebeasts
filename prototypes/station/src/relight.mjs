@@ -6,7 +6,7 @@
 // It is made once in the logic process (Lanczos 3 for the size, never on the face) and is one picture with its shadow and moss alpha, placed 1:1 on the painted layer. Bump RECIPE whenever any of this changes (the cache id is
 // relit:{species}:{digest}:{light}:{w}x{h}:v{recipe}). Pure on RGBA arrays (straight alpha, Uint8ClampedArray).
 import { resample } from "./layered-stand.mjs";
-export const RECIPE = 2;   // 2: the opened pod's cap overlaps the bowl
+export const RECIPE = 3;   // 3: the cap recut and placed behind the bowl (UI/UX round 2, E1)
 const WARM = [1.08, 0.99, 0.84], RIM = [255, 222, 170];
 
 export function bboxOf(rgba, w, h, min = 1) {
@@ -34,16 +34,16 @@ const over = (dst, o, sr, sg, sb, sa) => {   // straight-alpha over, one pixel a
   const da = dst[o + 3] / 255, oa = sa + da * (1 - sa); if (oa <= 0) return;
   dst[o] = (sr * sa + dst[o] * da * (1 - sa)) / oa; dst[o + 1] = (sg * sa + dst[o + 1] * da * (1 - sa)) / oa; dst[o + 2] = (sb * sa + dst[o + 2] * da * (1 - sa)) / oa; dst[o + 3] = Math.round(oa * 255);
 };
-// parts: [{ rgba, w, h, over?: [rgba...] }]: the first is the primary (the foot is its alpha box's bottom, its axis the box's centre), a later one is tipped against the primary's left side on the same foot line, overlapping it by 45% of its width so that it stays inside the capsule's window (the builder's placement: the spec says only "tipped against its left side").
+// parts: [{ rgba, w, h, over?: [rgba...] }]: the first is the primary (the foot is its alpha box's bottom, its axis the box's centre), a later one (the cap) stands behind the primary's left side, its bottom-right corner `inset` source px inside the primary's left edge, on the same foot line, and is drawn first; `sink`: px the foot sits below the anchor (the proof: 4 for the bowl, 3 for the juvenile).
 // scale: the figure's reduction or enlargement of the source (1: as it is). area: [W, H] and anchor: [ax, ay] the foot's point in it. bg: the scene under the picture ({ rgba, w, h, x, y }: its top left in area coordinates), for the moss blades, or null.
-export function relit({ parts, scale = 1, figH = 0, area: [W, H], anchor: [ax, ay], bg = null }) {
+export function relit({ parts, scale = 1, figH = 0, sink = 0, inset = 12, area: [W, H], anchor: [ax, ay], bg = null }) {
   // 1. the figure, unscaled, in one picture
   const prim = parts[0], pb = bboxOf(prim.rgba, prim.w, prim.h), px = pb[0], py = pb[1];
   let minX = px, maxX = px + pb[2], minY = py;
   const placed = [{ ...prim, x: 0, y: 0 }];
-  for (const q of parts.slice(1)) { const qb = bboxOf(q.rgba, q.w, q.h); const x = px - (qb[0] + qb[2]) + Math.round(0.45 * qb[2]), y = py + pb[3] - (qb[1] + qb[3]); placed.push({ ...q, x, y }); minX = Math.min(minX, qb[0] + x); minY = Math.min(minY, qb[1] + y); }
+  for (const q of parts.slice(1)) { const qb = bboxOf(q.rgba, q.w, q.h); const x = px - (qb[0] + qb[2]) + inset, y = py + pb[3] - (qb[1] + qb[3]); placed.push({ ...q, x, y }); minX = Math.min(minX, qb[0] + x); minY = Math.min(minY, qb[1] + y); }
   const uw = maxX - minX, uh = py + pb[3] - minY, un = new Uint8ClampedArray(uw * uh * 4);
-  for (const p of placed) {
+  for (const p of [...placed.slice(1), placed[0]]) {   // the later parts (the cap) first, the primary (the bowl) over them
     const src = p.over?.length ? new Uint8ClampedArray(p.rgba) : p.rgba;
     for (const ov of p.over ?? []) for (let i = 0; i < src.length; i += 4) { const a = ov[i + 3] / 255; if (a) over(src, i, ov[i], ov[i + 1], ov[i + 2], a); }
     for (let y = 0; y < p.h; y++) for (let x = 0; x < p.w; x++) {
@@ -63,7 +63,7 @@ export function relit({ parts, scale = 1, figH = 0, area: [W, H], anchor: [ax, a
   const rim = blur(rimRaw, fw, fh, 1.0);
   for (let i = 0; i < al.length; i++) for (let c = 0; c < 3; c++) lit[i * 4 + c] = lit[i * 4 + c] * (1 - 0.55 * rim[i]) + RIM[c] * 0.55 * rim[i];
   // 3. the area: shadow, then the figure
-  const out = new Uint8ClampedArray(W * H * 4), x0 = Math.round(ax - cxFig), y0 = ay - fh, s = Math.max(0.15, fh / 166), cx = ax, foot = ay;
+  const out = new Uint8ClampedArray(W * H * 4), x0 = Math.round(ax - cxFig), y0 = ay - fh + sink, s = Math.max(0.15, fh / 166), cx = ax, foot = ay + sink;
   const sh = new Float32Array(W * H), ell = (l, t, r, b, v) => { const mx = (l + r) / 2, my = (t + b) / 2, rx = (r - l) / 2, ry = (b - t) / 2; for (let y = Math.max(0, Math.floor(t)); y < Math.min(H, Math.ceil(b)); y++) for (let x = Math.max(0, Math.floor(l)); x < Math.min(W, Math.ceil(r)); x++) if (((x + 0.5 - mx) / rx) ** 2 + ((y + 0.5 - my) / ry) ** 2 <= 1) sh[y * W + x] = v; };
   const hw = fw / 2 + 4 * s;   // the shadow's half width: the figure's own (the art director's 76 for a 166 tall juvenile)
   ell(cx - hw - 2 * s, foot - 12 * s, cx + hw - 2 * s, foot + 9 * s, 185); ell(cx - 0.66 * hw, foot - 8 * s, cx + 0.61 * hw, foot + 4 * s, 230);

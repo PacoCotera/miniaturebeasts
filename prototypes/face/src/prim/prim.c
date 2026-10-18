@@ -226,6 +226,13 @@ static int box_of(int fh, int th, int out[4], int diff) {
   if (x1 >= 0) { out[0] = x0; out[1] = y0; out[2] = x1 - x0 + 1; out[3] = y1 - y0 + 1; }
   return 0;
 }
+int prim_asset_box(int handle, int out[4]) {
+  out[0] = out[1] = out[2] = out[3] = 0; if (handle < 0 || handle >= MAX_ASSET + MAX_SRC + 1 || !g_a[handle].px) return -1;
+  const uint8_t *a = g_a[handle].px; int w = g_a[handle].w, h = g_a[handle].h, x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3]) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  if (x1 >= 0) { out[0] = x0; out[1] = y0; out[2] = x1 - x0 + 1; out[3] = y1 - y0 + 1; }
+  return 0;
+}
 int prim_asset_alpha_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 0); }
 int prim_asset_diff_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 1); }
 int prim_asset_feet(int handle, int alpha, int rows, int out[3]) {

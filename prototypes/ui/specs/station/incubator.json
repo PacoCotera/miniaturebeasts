@@ -168,7 +168,7 @@
    ],
    "component": "stampLabel",
    "part": "caseFront",
-   "slice": "room-stamp-case-152x152-front"
+   "slice": "capsule-stamp-case-front-152x152"
   },
   "stamp": {
    "rect": [
@@ -204,7 +204,8 @@
    "align": "centre",
    "centre": 152,
    "lineTop": 344,
-   "text": "the bud's code (genome.codeText)"
+   "text": "the bud's code (genome.codeText)",
+   "note": "UI/UX round 2 (A1): the left column's text is ink (#1a1725), Inter 16, at least 4.5:1 on the wall master"
   },
   "readyIn": {
    "rect": [
@@ -222,7 +223,7 @@
    "align": "centre",
    "centre": 152,
    "lineTop": 384,
-   "note": "UI/UX ruling (uiux-rulings.md 1): Inter 16, mist, centred on x 152, in a box widened to stay inside the plain wall"
+   "note": "UI/UX ruling (uiux-rulings.md 1): Inter 16, ink (#1a1725), at least 4.5:1 on the wall master, centred on x 152, in a box widened to stay inside the plain wall"
   },
   "ribbon": {
    "rect": [
@@ -870,13 +871,13 @@
    "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"
   },
   "codeRule": "hairline",
-  "code": "mist",
+  "code": "ink",
   "ribbon": {
    "fill": "bark",
    "edge": "gold",
    "text": "bone"
   },
-  "readyIn": "mist"
+  "readyIn": "ink"
  },
  "strings": {
   "title": "Incubator",

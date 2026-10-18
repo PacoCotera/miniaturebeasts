@@ -9,6 +9,7 @@ import { habitatShown } from "../trickle.mjs";
 import { mibiReq } from "./home-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { slot } from "./pods-props.mjs";
+import { relitJuvenile } from "./hatch-props.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
@@ -65,16 +66,37 @@ export function fitCards(m, spec, frame, requests) {
     { id: "later", act: "notNow", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
   ];
 }
-// The cards of the Hatch the {Species} now? panel (§1.6): Hatch now (the bud at its ready step, ❀ n from the rules, "hatches now"; dimmed when short) and Wait (the bud at its step now, nothing spent, "ready in about {n} min": the one minute count, owner ruling 3).
-export const BUD = [128, 160];
-export function growNowCards(m, spec, frame, requests) {
-  const { st, settings } = m, Sg = spec.strings.growNow, now = m.now ?? Date.now(), req = (r) => { requests.push(r); return r.id; };
-  const c = S.instantGrowCost(st, settings, now), short = S.canPay(st, c.e, c.d, c.s) ? "" : S.shortIcons(st, c.e, c.d, c.s), p = S.budProgress(st, settings, now);
-  const bud = (id) => req({ kind: "slot", id, master: id, size: BUD, until: "the Incubator's bud master (incubator.json regions.bud)" });
+// The cards of the Hatch now | Wait panel (T-20261016-222; the Incubator's `confirm` state): Hatch now (the bud at its ready step, ❀ n from the rules; dimmed when short) and Wait (nothing spent, "ready in about {n} min": the one minute count, owner ruling 3). The pictures are the windows' (hatchNowBuild), not the cards'.
+export function growNowCards(m, spec) {
+  const { st, settings } = m, Sg = spec.strings.growNow, now = m.now ?? Date.now();
+  const c = S.instantGrowCost(st, settings, now), short = S.canPay(st, c.e, c.d, c.s) ? "" : S.shortIcons(st, c.e, c.d, c.s);
   return [
-    { id: "grow", act: "growNow", room: null, picture: bud("bud-ready-128x160"), pictureSize: BUD, mark: "", name: Sg.cards.grow.name, cost: S.priceText(c.e, c.d, c.s), gain: false, short, line: Sg.cards.grow.line, loss: false, dim: !!short },
-    { id: "wait", act: "wait", room: null, picture: bud(p < 0.5 ? "bud-early-128x160" : "bud-late-128x160"), pictureSize: BUD, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: fill(Sg.cards.wait.line, { n: S.budMinutesLeft(st, settings, now) }), loss: false, dim: false },
+    { id: "grow", act: "growNow", room: null, mark: "", name: Sg.cards.grow.name, cost: S.priceText(c.e, c.d, c.s), gain: false, short, line: Sg.cards.grow.line, loss: false, dim: !!short },
+    { id: "wait", act: "wait", room: null, mark: "", name: Sg.cards.wait.name, cost: "", gain: false, short: "", line: fill(Sg.cards.wait.line, { n: S.budMinutesLeft(st, settings, now) }), loss: false, dim: false },
   ];
+}
+// The bud as the juvenile it becomes, before it exists: the mibi the hatch will make (hatchBud's own `read`), at the juvenile stage. Only its looks are used.
+export function hatchedGhost(st, settings) {
+  const B = st.bud, fr = frameOf(B.species), read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !S.shutSealed(c, settings)).map((c) => c.id);
+  return { id: -1, sp: B.sp, species: B.species, genome: B.genome, sha: B.sha, read, stage: "juvenile" };
+}
+// The Hatch now | Wait panel's props (panel.json `hatchnow`, the day set at x0.733): the hatched look in the left window and the growing look in the right, drawn by the face from the same layers.
+export function hatchNowBuild(m, spec, frame, pods) {
+  const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.hatchnow, W = spec.incubate.windows, B = st.bud, species = B.species, signed = "signed (art director, the capsule masters list)";
+  const cards = growNowCards(m, spec), sz = [296, 459], [lw, lh] = W.left.slice(2);
+  const room = slot(req, "capsule-room-day-474x468", [0, 0, lw, lh], signed), L = layers(req, sz, ["interior-day", "shell", "bar-lit", "glass-closed"]), door = slot(req, "capsule-door-open-457x459", [0, 0, 457, 459], signed);
+  const lay = P.left.layers, rlay = P.right.layers, area = podArea(180), sealedArea = podArea(P.left.podHeight);
+  const interior = { id: L["interior-day"], at: lay };
+  const opened = relitPod(req, { species, variant: "opened", light: "day", h: P.left.podHeight, scale: P.left.openedScale, tag: "panel", area, bg: bgOf(interior, P.left.foot, area.anchor) });
+  const juv = relitJuvenile(req, st, hatchedGhost(st, settings), settings, { height: P.left.juvenile.height, foot: P.left.juvenile.foot, light: "day", interior });
+  const sealed = relitPod(req, { species, variant: "pod", light: "day", h: P.right.podHeight, area: sealedArea, bg: bgOf({ id: L["interior-day"], at: rlay }, P.right.foot, sealedArea.anchor) });
+  const progress = S.budProgress(st, settings, now), barPx = Math.max(1, Math.floor(P.bar.max * progress));
+  const regions = { cards: [{ id: "grow" }, { id: "wait" }], verbs: { grow: cards[0].name, wait: cards[1].name }, price: cards[0].cost, caption: cards[1].line, barPx,
+    left: { room, interior: L["interior-day"], shell: L.shell, door, bar: L["bar-lit"], layerSize: sz, opened, openedSize: area.size, openedAnchor: area.anchor, juvenile: juv.picture, juvenileSize: juv.size, juvenileAnchor: juv.anchor },
+    right: { room, interior: L["interior-day"], shell: L.shell, glass: L["glass-closed"], bar: L["bar-lit"], layerSize: sz, pod: sealed, podSize: sealedArea.size, podAnchor: sealedArea.anchor } };
+  const ui = m.ui.panel, cur = ui.focus === "card.wait" || ui.focus === "card.grow" ? ui.focus : initialFocus(cards), card = cur === "card.wait" ? cards[1] : cards[0];
+  const line = { ok: card.name, subject: "", need: card.dim ? fill(pods.strings.needMore, { icons: card.short }) : "", back: spec.strings.back ?? "Back" };
+  return { overlay: { id: "panel", state: "open", form: "hatchnow", regions, focus: { cur, targets: [{ id: "card.grow", enabled: true }, { id: "card.wait", enabled: true }] } }, line, requests, cards };
 }
 // The cards of the dock arrival's choice strip (the dock arrival spec, the strip form): Open the bay (the crates open, small; free; "{n in words} crates to the rack") and Later (the crates sealed, small; free; "they wait while docked").
 export const STRIP_PICTURE = [96, 96];
@@ -97,7 +119,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec, frame, requests) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });
@@ -110,6 +132,7 @@ export const initialFocus = (cards) => "card." + (cards.find((c) => !c.dim && !c
 
 export function panelBuild(m, spec, frame, pods) {
   if (m.ui.panel.id === "incubate") return incubateBuild(m, spec, frame, pods, m.create);
+  if (m.ui.panel.id === "growNow") return hatchNowBuild(m, spec, frame, pods);
   const requests = [], cards = cardsOf(m, spec, frame, requests), Sg = spec.strings, ui = m.ui.panel;
   const cur = cards.some((c) => "card." + c.id === ui.focus) ? ui.focus : initialFocus(cards), card = cards.find((c) => "card." + c.id === cur);
   const strip = ui.id === "dock";   // the strip form: no veil, housing or masters of its own (the code-drawn plate and wells), the cards carry no art

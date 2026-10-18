@@ -182,6 +182,8 @@ void create_words(void) {
   build_bench();
   word_rail(C);
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
+  { const char *pod = v_pstr("regions.dome.pod"); int w = v_pint("regions.dome.podSize.0", 0), h = v_pint("regions.dome.podSize.1", 0), ax = v_pint("regions.dome.podAnchor.0", 0), ay = v_pint("regions.dome.podAnchor.1", 0);   /* the bud growing or ready: its pod in the chamber */
+    v_name("domePod"); if (has(pod) && w > 0) v_sprite("dome.pod", pod, ck("regions.travel.foot.to", 0) - ax, ck("regions.travel.foot.to", 1) - ay, w, h); }
   build_pod(grow);
   { char u[8]; if (spec_str(C, "regions.cradleFront.until", u, sizeof u) <= 0) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front")); }   /* the dish's near lip over the pod, drawn once Create's own stage lands (the spec drops `until`) */
   build_origin();
@@ -192,9 +194,12 @@ void create_words(void) {
   build_roll();
   build_traitLine();
   { int r[4]; crect("regions.domeFront.rect", r);   /* the capsule's glass (code-drawn), shell and bar, over the travelling pod; the bar is lit while another bud grows (T-20261016-222, build spec section 5) */
-    v_name("domeGlass"); { const char *g = v_pstr("regions.dome.glass"); if (has(g)) v_sprite("dome.glass", g, r[0], r[1], r[2], r[3]); }
+    const char *ds = v_pstr("regions.dome.state"); int growing = strcmp(ds, "growing") == 0, ready = strcmp(ds, "ready") == 0, gr = strcmp(ds, "grow") == 0, landed = gr && (grow_time() < 0 || grow_time() >= ci("regions.travel.rest.at", 530));
+    int closed = growing || landed;   /* the glass only when it is closed, never with the door open */
+    v_name("domeGlass"); { const char *g = v_pstr("regions.dome.glass"); if (has(g) && closed) v_sprite("dome.glass", g, r[0], r[1], r[2], r[3]); }
     picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));
-    v_name("domeBar"); { const char *b = v_pstr("regions.dome.bar"); if (has(b) && v_pbool("regions.dome.busy", 0)) v_sprite("dome.bar", b, r[0], r[1], r[2], r[3]); } }
+    v_name("domeDoor"); { const char *d = v_pstr("regions.dome.door"); if (has(d) && !closed && !gr) v_sprite("dome.door", d, r[0], r[1], r[2], r[3]); }
+    v_name("domeBar"); { const char *b = v_pstr("regions.dome.bar"); if (has(b) && (growing || ready || landed)) v_sprite("dome.bar", b, r[0], r[1], r[2], r[3]); } }
   build_stamp();
   build_code();
   build_ring();

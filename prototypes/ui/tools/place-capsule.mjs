@@ -12,9 +12,9 @@ const from = process.argv[process.argv.indexOf("--from") + 1]; if (!from || proc
 const SIGNED = "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)";
 const LIST = [
   ...["capsule-room-day-1024x522", "capsule-room-dusk-1024x522", "capsule-shell-530x532", "capsule-shell-dusk-530x532", "capsule-interior-day-530x532", "capsule-interior-dusk-530x532", "capsule-bar-lit-530x532", "capsule-door-open-530x532", "capsule-seal-ring-530x532", "capsule-glass-closed-530x532"].map((n) => ["room", n]),
-  ...["capsule-shell-145x224", "capsule-interior-day-145x224", "capsule-bar-lit-145x224", "capsule-glass-closed-145x224"].map((n) => ["create", n]),
+  ...["capsule-shell-145x224", "capsule-interior-day-145x224", "capsule-bar-lit-145x224", "capsule-glass-closed-145x224", "capsule-door-open-145x224"].map((n) => ["create", n]),
   ...["capsule-shell-56x86", "capsule-interior-day-56x86", "capsule-bar-lit-56x86", "capsule-door-open-56x86", "capsule-glass-closed-56x86"].map((n) => ["home", n]),
-  ...["capsule-room-dusk-474x468", "capsule-interior-dusk-296x459", "capsule-shell-dusk-296x459", "capsule-seal-ring-296x459", "capsule-glass-closed-296x459"].map((n) => ["panel", n]),
+  ...["capsule-room-dusk-474x468", "capsule-interior-dusk-296x459", "capsule-shell-dusk-296x459", "capsule-seal-ring-296x459", "capsule-glass-closed-296x459", "capsule-room-day-474x468", "capsule-shell-296x459", "capsule-interior-day-296x459", "capsule-bar-lit-296x459", "capsule-door-open-457x459"].map((n) => ["panel", n]),
   ...["bowl-shade", "bowl-mask-body", "bowl-mask-accent", ...["bands", "dots", "plates", "plates-relief", "ribs", "segments", "segments-relief", "stripes"].map((p) => "bowl-pattern-" + p), "cap-shade", "cap-mask-body", "cap-mask-accent"].map((n) => ["opened", "pod-opened-" + n]),
 ];
 const index = JSON.parse(readFileSync(indexFile, "utf8"));
@@ -23,5 +23,9 @@ for (const [dir, name] of LIST) {
   if (buf.subarray(1, 4).toString("ascii") !== "PNG") throw new Error(src + ": not a PNG");
   copyFileSync(src, path.join(dest, "capsule", name + ".png"));
   index.masters[name] = { file: `capsule/${name}.png`, w: buf.readUInt32BE(16), h: buf.readUInt32BE(20), sha256: createHash("sha256").update(buf).digest("hex"), signed: SIGNED };
+}
+{ // the stamp case's front glass: the art director's recut (alpha 0 over the 120 x 120 plate, UI/UX round 2 E2), placed as the Incubator's own master: Pods and Create keep the veil that dims the plate under their label rule
+  const src = path.join(from, "stamp-case", "room-stamp-case-152x152-front.png"), buf = readFileSync(src), id = "capsule-stamp-case-front-152x152";
+  copyFileSync(src, path.join(dest, "capsule", id + ".png")); index.masters[id] = { file: `capsule/${id}.png`, w: buf.readUInt32BE(16), h: buf.readUInt32BE(20), sha256: createHash("sha256").update(buf).digest("hex"), signed: SIGNED + "; the case's front veil recut with alpha 0 over the plate, for the Incubator's wall" };
 }
 writeFileSync(indexFile, JSON.stringify(index, null, 1) + "\n"); console.log(`placed ${LIST.length} capsule masters`);

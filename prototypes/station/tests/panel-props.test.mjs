@@ -18,7 +18,7 @@ import { validate } from "./habitat-props.test.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 // The Grow this founder? panel (T-195 r2 sections 2 and 3: Grow it, Grow and watch, Grow keep reading, the arrival and fork jump modes) is retired with its fixture (T-20261016-222): Create's Incubate opens the Incubate | Keep shaping panel (build spec 6a).
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = J("panel.json"), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json"), incSchema = J("panel.incubate.props.json"), incubatorSpec = J("incubator.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = J("panel.json"), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json"), incSchema = J("panel.incubate.props.json"), hnSchema = J("panel.hatchnow.props.json"), incubatorSpec = J("incubator.json");
 const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, P = frameSpec.regions.panel;
 const words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
@@ -46,11 +46,11 @@ test("the geometry and the width limits: a card is 776, 380 or 248 wide for one,
   assert.deepEqual([1, 2, 3].map((n) => P.limits[n].picture), [[744, 160], [348, 160], [216, 160]]);
   assert.deepEqual([P.rect, P.title.rect, P.cards.y, P.cards.h, P.card.picture.floor], [[92, 80, 840, 440], [124, 96, 776, 36], 152, 288, 168]);
   const st = world(), p = (S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0), st.tray[0]); S.skipIdentify(st, p); assert.ok(S.grow(st, p, {}, settings, T0).ok);
-  const cards = growNowCards({ st, settings, ui: {}, now: T0 }, panelSpec, frameSpec, []), limit = P.limits[2].text; assert.equal(cards.length, 2);
+  const cards = growNowCards({ st, settings, ui: {}, now: T0 }, panelSpec), limit = P.limits[2].text; assert.equal(cards.length, 2);
   for (const c of cards) {
     assert.ok(words(c.name) <= 3 && measure(c.name, 20) <= limit, `${c.name} (${measure(c.name, 20)} px of ${limit})`);
     if (c.line) assert.ok(words(c.line) <= 6 && measure(c.line, 16) <= Math.min(limit, 208), `${c.line} (${measure(c.line, 16)} px)`);
-    assert.ok((c.cost.match(/[⚡❀◆⧗]/g) ?? []).length <= P.card.costs.groups, c.cost + ": at most four groups"); assert.ok(c.pictureSize[0] <= P.limits[2].picture[0] && c.pictureSize[1] <= P.limits[2].picture[1], "the picture fits its slot, never scaled");
+    assert.ok((c.cost.match(/[⚡❀◆⧗]/g) ?? []).length <= P.card.costs.groups, c.cost + ": at most four groups");
   }
   assert.ok(measure("to " + panelSpec.strings.rooms.research, 16) <= 208 && measure(panelSpec.strings.arrival.text.replace("{Species}", "Untuva"), 16) <= P.rect[2]);
 });
@@ -156,16 +156,25 @@ function growNowHost(o = {}) {
   const h = host(st); h.ui.screen = "incubator"; h.ui.inc = {}; h.ui.panel = { screen: "incubator", id: "growNow", focus: "" }; return h;
 }
 const gview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: "arrival", now: T0 }, panelSpec, frameSpec, podsSpec);
-test("the Hatch now? panel: the price from the rules, the ready bud and the bud as it is, the minute count only in the Wait card and its line, the threshold is a spec value", () => {
-  const h = growNowHost(), v = gview(h), [grow, wait] = v.cards, c = S.instantGrowCost(h.st, settings, T0), n = S.budMinutesLeft(h.st, settings, T0);
+test("the Hatch now | Wait panel: the price from the rules, the minute count only in the caption, the threshold is a spec value, the props validate and name no rectangle", () => {
+  const h = growNowHost(), v = gview(h), [grow, wait] = v.cards, c = S.instantGrowCost(h.st, settings, T0), n = S.budMinutesLeft(h.st, settings, T0), R = v.overlay.regions;
   assert.equal(panelSpec.growNowAbove, 4); assert.ok(c.s > panelSpec.growNowAbove, "this bud is above the threshold");
-  assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, `Hatch the ${S.cap(S.spName(h.st.bud))} now?`);
-  assert.deepEqual([grow.id, wait.id], ["grow", "wait"]); assert.equal(grow.cost, S.priceText(c.e, c.d, c.s)); assert.match(grow.cost, /^❀ \d+$/); assert.equal(grow.line, "hatches now"); assert.equal(wait.cost, ""); assert.equal(wait.line, `ready in about ${n} min`);
-  assert.equal(grow.picture, "bud-ready-128x160"); assert.match(wait.picture, /^bud-(early|late)-128x160$/);
-  for (const t of [grow.name, grow.line, grow.cost, wait.name, v.overlay.regions.title]) assert.ok(!/\bmin\b|⧗/.test(t), "no minute count outside the Wait line: " + t);
-  assert.equal(v.overlay.focus.cur, "card.grow"); h.ui.panel.focus = "card.wait"; assert.equal(gview(h).line.subject, `ready in about ${n} min`, "the context carries the count");
-  for (const x of [grow, wait]) assert.ok(measure(x.name, 20) <= P.limits[2].text && measure(x.line, 16) <= 208, x.name + " / " + x.line);
+  assert.deepEqual(validate(v.overlay, hnSchema, hnSchema), []); assert.equal(v.overlay.form, "hatchnow"); assert.equal(R.title, undefined, "no title");
+  assert.deepEqual([grow.id, wait.id], ["grow", "wait"]); assert.equal(grow.cost, S.priceText(c.e, c.d, c.s)); assert.equal(R.price, grow.cost); assert.match(R.price, /^❀ \d+$/); assert.equal(wait.cost, ""); assert.equal(R.caption, `ready in about ${n} min`);
+  assert.deepEqual([R.verbs.grow, R.verbs.wait], ["Hatch now", "Wait"]);
+  for (const t of [R.verbs.grow, R.verbs.wait, R.price]) assert.ok(!/\bmin\b|⧗/.test(t), "no minute count outside the caption: " + t);
+  assert.equal(v.overlay.focus.cur, "card.grow"); h.ui.panel.focus = "card.wait"; assert.equal(gview(h).overlay.focus.cur, "card.wait");
+  assert.ok(!/"(rect|x|y|at)"/.test(JSON.stringify(v.overlay)), "props name what, never where");
+  assert.ok(R.barPx >= 1 && R.barPx <= panelSpec.hatchnow.bar.max, "the bar is max(1, floor(max x progress))");
 });
-test("the Hatch now? panel when short of Essence: Hatch now is dimmed with the short icon, the ring opens on Wait", () => {
+test("the Hatch now | Wait panel's pictures: the hatched look (the opened pod, the juvenile it becomes, the open door) on the left, the growing look (the sealed pod, the glass, the bar) on the right, in the day set", () => {
+  const h = growNowHost(), v = gview(h), R = v.overlay.regions, ids = new Set(v.requests.map((r) => r.id));
+  for (const id of [R.left.room, R.left.interior, R.left.shell, R.left.door, R.left.bar, R.left.opened, R.left.juvenile, R.right.glass, R.right.pod]) assert.ok(ids.has(id), `${id} is requested`);
+  assert.match(R.left.room, /^capsule-room-day-474x468/); assert.match(R.left.door, /^capsule-door-open-457x459/); assert.match(R.right.glass, /^capsule-glass-closed-296x459/);
+  assert.match(R.left.opened, /^relit:S01:opened[^:]*:day:/); assert.match(R.left.juvenile, /^relit:S01:/); assert.match(R.right.pod, /^relit:S01:pod:day:/);
+  const jr = v.requests.find((r) => r.id === R.left.juvenile); assert.equal(jr.figH, panelSpec.hatchnow.left.juvenile.height, "the juvenile stands 126 tall");
+  assert.deepEqual(v.requests.map((r) => r.id), [...new Set(v.requests.map((r) => r.id))], "no picture twice");
+});
+test("the Hatch now | Wait panel when short of Essence: Hatch now is dimmed with the short icon, the ring opens on Wait (the Incubator itself refuses before it opens)", () => {
   const h = growNowHost({ s: 1 }), v = gview(h); assert.deepEqual([v.cards[0].dim, v.cards[0].short], [true, "❀"]); assert.equal(v.overlay.focus.cur, "card.wait");
 });

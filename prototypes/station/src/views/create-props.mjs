@@ -85,10 +85,12 @@ export function createBuild(m, spec, pods) {
   regions.podShadow = { picture: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + pods.shadow.widen, pods.shadow.h], "the contact shadow") };   // as Pods' rule: named in every state, the face keeps its node
   regions.cradle = { front: slot(req, R.cradleFront.slice, R.cradleFront.rect, "the dish's front (CA3: Create's own)") };   // the dish itself is painted into the stage; its front is drawn in every state
   regions.origin = S.podOriginLines(p);
-  { const size = R.dome.rect.slice(2), L = layers(req, size, ["interior-day", "shell", "bar-lit", "glass-closed"]);   // the capsule (T-20261016-222): its interior, the glass drawn in code, the shell and the bar; the bar is lit while another bud grows
-    regions.dome = { back: L["interior-day"], glass: L["glass-closed"], bar: L["bar-lit"], busy: !!st.bud && !grown };
+  { const size = R.dome.rect.slice(2), L = layers(req, size, ["interior-day", "shell", "bar-lit", "glass-closed", "door-open"]);   // the capsule (T-20261016-222): its interior, the glass drawn in code, the shell and the bar; the bar is lit while another bud grows
+    const B = !grown ? st.bud : null, dstate = grown ? "grow" : !B ? "empty" : S.budReady(st, settings, m.now ?? Date.now()) ? "ready" : "growing";   // the chamber mirrors the Incubator (UI/UX round 2, B2): empty door open; a bud growing glass closed, its pod, the bar lit; ready door open, its pod; after Incubate glass over the new pod once it lands
+    regions.dome = { back: L["interior-day"], glass: L["glass-closed"], door: L["door-open"], bar: L["bar-lit"], state: dstate };
     regions.domeFront = { picture: L.shell };
     const h = R.dome.podHeight, area = podArea(h), foot = R.travel.foot.to;   // the pod at rest in it: 72 tall, relit, its foot on the moss line
+    if (B) { const pa = podArea(h); Object.assign(regions.dome, { pod: relitPod(req, { species: B.species, variant: "pod", light: "day", h, area: pa, bg: bgOf({ id: L["interior-day"], at: R.dome.rect.slice(0, 2) }, foot, pa.anchor) }), podSize: pa.size, podAnchor: pa.anchor }); }
     regions.pod.dome = relitPod(req, { species: S.speciesOf(p), variant: "pod", light: "day", h, area, bg: bgOf({ id: L["interior-day"], at: R.dome.rect.slice(0, 2) }, foot, area.anchor) }); regions.pod.domeSize = area.size; regions.pod.domeAnchor = area.anchor; }
 
   // the painted contact shadow under the founder (fix 6 A2): named in every state, the face keeps its node and gives it no size until the picture is on the face

@@ -10,7 +10,7 @@ import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
-import { mibiReq } from "./home-props.mjs";
+import { relitJuvenile } from "./hatch-props.mjs";
 import { RECIPE } from "../relight.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -20,15 +20,6 @@ export function knownChapters(st, B, settings, now) {
   const fr = frameOf(B.species);
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
-// A relit juvenile: the new mibi's own juvenile stand (layered, from drawnLooks) at the incubator view's figure height (stand-sizes.json views.incubator), lit the same way. Returns { picture, size, anchor }.
-// bg: the interior the blades come from, { id, size, at: its top left on the screen }; the juvenile's feet are on spec.regions.juvenile.foot.
-export function relitJuvenile(req, st, mb, settings, spec, light = "day", interior = null) {
-  const H = spec.regions.juvenile.height, species = S.speciesOf(mb);
-  const src = mibiReq(req, st, mb, [304, 312], settings, light, "incubator"), area = podArea(H), id = `relit:${species ?? "-"}:${src}:${light}:${area.size.join("x")}:v${RECIPE}`;
-  req({ kind: "relit", id, parts: [{ id: src }], figH: H, area: area.size, anchor: area.anchor, bg: interior && bgOf(interior, spec.regions.juvenile.foot, area.anchor) });
-  return { picture: id, size: area.size, anchor: area.anchor };
-}
-
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const signed = "signed (art director, the capsule masters list)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: Hatch now is playing (it has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was until the event ends, then the hatch on one refresh
@@ -61,7 +52,7 @@ export function incubatorBuild(m, spec, pods) {
   if (state === "growing") regions.readyIn = fill(spec.strings.readyIn, { n: gs ? gs.left : S.budMinutesLeft(st, settings, now) });
   if (state === "hatch") {
     const interior = { id: L["interior-day"], size: roomSize, at: R.capsule.rect.slice(0, 2) };
-    regions.juvenile = relitJuvenile(req, st, mb, settings, spec, "day", interior);
+    regions.juvenile = relitJuvenile(req, st, mb, settings, { height: R.juvenile.height, foot: R.juvenile.foot, light: "day", interior });
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
   const waitingWhy = (state === "hatch" || state === "ready") && (m.lamp === "waiting" || m.lamp === "offline") ? m.lamp : "";   // the waiting painting, while the juvenile's painting has not landed
