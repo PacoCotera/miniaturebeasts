@@ -1,0 +1,16 @@
+[
+ {
+  "name": "loika-v4-adult-patches-r2",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/guides/compose-m-adult.png",
+    "The sheet to edit: the six adult base keys on flat magenta. Keep every creature exactly as it is; only add the patches described."
+   ]
+  ],
+  "prompt": "Edit the reference sheet. Paint pale cream PATCHES on the dark coat of every one of the six creatures. Each creature gets exactly TWO patches, no more, set well apart, both large, rounded and irregular, with soft painted edges: (1) one patch on the back or shoulder, behind the head and clear of the eye and the ear, and (2) one patch on the haunch. Each patch is one big rounded mass, roughly as wide as a third of the body's length (about 60 px on this sheet). NO crescents, NO curved bands, NO stripes or bars, NO long thin shapes, NO small spots or specks (nothing smaller than about 35 px across on this sheet), NO patch that runs along the flank like a stripe; the two masses must read as two separate blobs, not as marks in a row. Pale cream like the belly, with the fur's soft shading and the light from the top left over them. Patches go only on the dark fur of the body: none on the head, face, eye rings, belly cream, toes or legs below the thigh. In the closed-eye and curled poses the patches follow the visible body. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, silhouette, eyes, belly cream, toes, shadow and light (soft light from the top left) and the same flat magenta (#FF00FF) ground; no new object, no text, no labels, no borders, no glow, no leaves, no crest, no hands, no people."
+ }
+]
