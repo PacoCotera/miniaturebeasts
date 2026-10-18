@@ -43,6 +43,17 @@ async function open(width, height, { dsf = 1, motion = false, query = "?test" } 
   await st().evaluate(() => window.__st.ready); await mb().waitForFunction(() => window.__mb && window.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(600);
   return { ctx, page, st, mb };
 }
+// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the strip (Open the bay | Later) with the ring on Open the bay; ▶ then ✓ is Later
+const later = async (page, st, what, back, empty = false) => {
+  if (empty) {   // C docks with an empty bay: the show has no choice, so a key skips it and it closes on the screen the player was on
+    await page.waitForTimeout(1000); await page.keyboard.press("Enter"); await page.waitForTimeout(800); await back(); return;
+  }
+  await page.waitForTimeout(3600);   // one crate: the show holds 3200 ms
+  await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
+  eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open the bay");
+  await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(800);
+  await back();
+};
 const box = async (page, sel) => { const b = await page.locator(sel).boundingBox(); return [b.x, b.y, b.width, b.height]; };
 const rd = (buf) => decodePNG(Buffer.isBuffer(buf) ? buf : Buffer.from(buf));
 const dataPng = (url) => rd(Buffer.from(url.split(",")[1], "base64"));
@@ -102,15 +113,9 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await st().evaluate(() => window.__st.act("research")); await page.waitForTimeout(300);   // the Station on Pods
   eq(await st().evaluate(() => window.__st.UI.screen), "pods", "B2: the Station is on Pods");
   await page.mouse.click(1300, 300); await page.waitForTimeout(200);   // a click inside the Companion frame gives it the keys
+  const podsRing = await st().evaluate(() => window.__st.UI.pods.focus.cur);   // Pods' ring before the dock
   s = await state(page); eq(s.owner, "companion", "B2: the Companion has the keys");
   await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "place"); await page.waitForTimeout(700); await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "map"); await page.waitForTimeout(300);
-  // the arrival: one crate holds input for 3000 + 200 ms, then the strip (Open the bay | Later) with the ring on Open the bay; ▶ then ✓ is Later: Home with the ring on the room
-  const later = async (what) => {
-    await page.waitForTimeout(3600);
-    eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open the bay");
-    await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(800);
-    eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.home.f]), ["home", "room"], what + ": the landing rule: after the arrival, Later is Home with the ring on the room");
-  };
   const walk = () => mb().evaluate(() => { const e = window.__mb.S.exp; return { start: e.start, pos: e.pos, face: e.face }; }), w0 = await walk();
   eq([w0.face, w0.pos === w0.start], ["down", true], "B2: before D the Companion faces down at its start");
   expect(await mb().evaluate((p) => window.__mb.canStep(p, "right"), w0.pos), "B2: the step to the right is open from the start (the precondition)");
@@ -129,7 +134,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   const ring = await page.evaluate(() => __play.rects().ring), sh = await box(page, "#shStation"); expect(ring[0] < sh[0] && ring[1] < sh[1], "B2: the ring is on the Station shell");
   eq(s.active, "fStation", "B2: the keys went to the Station"); eq(s.live, "Companion docked", "B2: the live region");
   eq(await mb().evaluate(() => window.__mb.isDocked()), true, "B2: the Companion frame sees the dock");
-  await later("B2"); await clip(page, "play-wide-docked.png");   // the arrival is over and Later is pressed
+  await later(page, st, "B2", async () => eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.pods.focus.cur]), ["pods", podsRing], "B2: after the arrival, Later returns to Pods with its ring where it was")); await clip(page, "play-wide-docked.png");   // the arrival is over and Later is pressed
   await page.keyboard.press("r"); await page.waitForTimeout(300);
   eq(await st().evaluate(() => window.__st.UI.screen), "pods", "B3: the keys are the Station's: R shows Pods");
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600); s = await state(page);
@@ -168,7 +173,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion")], ["visible", "hidden"], "C: Dock shows the Station");
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.ST.dock.docked]), ["cargo", true], "C: Dock shows the Station: the arrival on Cargo, docked");
-  await later("C");
+  await later(page, st, "C", async () => eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.home.f]), ["home", "room"], "C: after the arrival, the screen is Home with the ring on the room"), true);
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion"), await st().evaluate(() => window.__st.ST.dock.docked)], ["hidden", "visible", false], "C: Lift shows the Companion");
   // the bench is hidden in narrow too: no tab, no sheet, the stage stays live
