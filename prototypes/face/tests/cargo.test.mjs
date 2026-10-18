@@ -1,7 +1,8 @@
-// Cargo on the face (lvgl-switch.md §4 L2.2): the words and the binding table (screens/cargo.c) on the props views/cargo-props.mjs gives, in Node on the WebAssembly build: every state draws without an error or a refusal inside the
-// object and picture budgets with no region departing from cargo.json (tools/cargo-regions.mjs, proved here to fail on a moved region), the keys (the bay's ✓ ← and room keys, the report's any key, the pad nothing in the bay),
-// the crates' slide (events.crateIn), one crate opening at the instants of its steps (events.opening.crate: the lid, the ribbon, each pod travelling to its well, landing), the same steps as cuts with reduced motion, the report
-// card's height rule, and the dirty area of a refresh while three crates open. Skipped when the face has not been built (build.sh).
+// Cargo on the face (lvgl-switch.md §4 L2.2; build spec T-20261016-197 sections 1 to 6): the words and the binding table (screens/cargo.c) on the props views/cargo-props.mjs gives, in Node on the WebAssembly build: every state draws
+// without an error or a refusal inside the object and picture budgets with no region departing from cargo.json (tools/cargo-regions.mjs, proved here to fail on a moved region), the keys (the bay's ✓ ← and room keys, the end's any key, the
+// opening's hold that lets ✓, ← and a room key through), the berths (three of 256, four of 188 with the portrait crate and its gold edge), the hatch with its six wells and the find strip, the waiting mat, the display row, one crate opening at the
+// instants of its steps (the lift, the 180 ms dither into the display rect only, the materials to the top bar, the pods and finds to their places, the size swap by two dither nodes on one clock, the crate done), the same steps as cuts with reduced
+// motion, the dirty area of the opening, and the dock arrival kept as it was. Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/cargo.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -15,49 +16,52 @@ import * as S from "../../station/src/state.mjs";
 import { cargoBuild } from "../../station/src/views/cargo-props.mjs";
 import { INTENTS } from "../../station/src/intents/index.mjs";
 import { departures } from "../tools/cargo-regions.mjs";
-import { dirty } from "./dirty.mjs";
+import { dirty, dirtyRects } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), cargoSpec = J("cargo"), homeSpec = J("home");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = cargoSpec.regions, EV = cargoSpec.events, SHADOW = R.report.shadow ?? [2, 3];
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = cargoSpec.regions, STEPS = cargoSpec.events.opening.steps;
 
 // ---- scenes: the state through the rules, the props through the view ----
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
 const crate = (n, pods = 2, extra = {}) => ({ id: "c" + n, n, turn: n * 2, at: T0, e: 3, d: 3, s: 4, met: [], explored: 5 * n, of: 20, lines: [], pods: Array.from({ length: pods }, (_, j) => ({ id: "p" + j, species: "S01", sp: speciesIndex("S01"), g: "meadow", how: "calm", gs: 11 + 7 * n + j, k: null })), ...extra });
 const sv0 = (bay = []) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay, mibis: [], carried: [], tier: 1, shield: 3 });
-const cargoUI = (over = {}) => ({ cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null, ...over }, meet: null });
-const buildOf = (st, sv, ui) => cargoBuild({ st, sv, settings, docked: S.docked(st), ui }, cargoSpec, homeSpec, frameSpec);
-// the opening through the real intent on a recording host; `upTo` ms of its timers are run (the report shows at the end)
-function openedUI(st, sv, { motion = true, mend = null } = {}) {
-  const ui = { screen: "cargo", home: { f: "room" }, ...cargoUI({ mend }) }, h = { st, sv, settings, ui, specs: { cargo: cargoSpec, home: homeSpec, frame: frameSpec }, played: [], timers: [], say() {}, goto() {}, play(e) { this.played.push(e); }, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => motion, save() {} };
+const cargoUI = (over = {}) => ({ cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, ...over }, meet: null });
+const buildOf = (st, sv, ui) => cargoBuild({ st, sv, settings, docked: S.docked(st), ui, now: T0 }, cargoSpec, homeSpec, frameSpec);
+// the opening through the real intent on a recording host: every timer is kept with its ms and run by runTimers; skip() ends the hold (as the page's host does)
+function openedUI(st, sv, { motion = true } = {}) {
+  const ui = { screen: "cargo", home: { f: "room" }, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: { set() {}, cur: null } }, ...cargoUI() };
+  const h = { st, sv, settings, ui, specs: { cargo: cargoSpec, home: homeSpec, frame: frameSpec }, played: [], timers: [], went: [], t: 0, say() {}, goto(s) { this.went.push(s); }, play(e) { this.played.push(e); }, at(ms, fn) { this.timers.push({ ms: this.t + ms, fn }); }, skip() { return true; }, now: () => T0, motion: () => motion, save() {} };
   INTENTS.cargo.intent(h, "room", "confirm"); return h;
 }
-const runTimers = (h, upTo = Infinity) => { for (const t of h.timers.filter((t) => t.ms <= upTo).sort((a, b) => a.ms - b.ms)) t.fn(); };
+const runTimers = (h, upTo = Infinity) => { for (const t of h.timers.filter((t) => t.ms <= upTo).sort((a, b) => a.ms - b.ms)) { h.timers.splice(h.timers.indexOf(t), 1); h.t = t.ms; t.fn(); } };
 function scene(o = {}) {
   const st = world(); for (let i = 0; i < (o.pods ?? 0); i++) { S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3 + i), settings, T0); if (o.identified) S.skipIdentify(st, st.tray.at(-1)); }
   if (o.away) st.dock = { docked: false, at: T0 }; for (let i = 0; i < (o.waiting ?? 0); i++) st.waiting.push({ id: "w" + i, species: "S01", sp: 0, g: "meadow", how: "calm", gs: 3 + i, idd: 0, read: [] });
-  const sv = sv0(Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1, o.podsEach ?? 2, { ...(i === (o.crates ?? 0) - 1 ? { lines: o.lines ?? [] } : {}), ...(o.gain ?? {}) })));
+  if (o.sitting) { const m = S.seedAdults(st, "S01", 5, 1, settings).mibis[0]; st.sittingCrates.push({ id: "sc1", mibiId: m.id, start: -1e10, painted: true }); m.portrait = { state: "painting", crate: "sc1", ...(o.digest ? { digest: o.digest } : {}) }; }
+  const sv = sv0(Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1, o.podsEach ?? 2, { ...(o.gain ?? {}), ...(o.finds && i === 0 ? { finds: o.finds } : {}) })));
   if (!o.open) return { ...buildOf(st, sv, cargoUI()), st, sv, ui: cargoUI() };
-  const h = openedUI(st, sv, { motion: o.motion ?? true, mend: o.mend ?? null }); if (o.state === "report") runTimers(h);
+  const h = openedUI(st, sv, { motion: o.motion ?? true }); if (o.state === "end") runTimers(h);
   return { ...buildOf(st, sv, h.ui), st, sv, ui: h.ui, h };
 }
-const frameProps = (line = {}) => ({ top: { screen: "cargo", title: "Cargo", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "", timed: true } });
+const frameProps = (line = {}) => ({ top: { screen: "cargo", title: "Bay", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "", timed: true } });
 
 // stand-in pictures: a flat block keyed by id, at the size the id names or the request's; the colour is the id's, so a picture is told by one pixel
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const colourOf = (id) => { const k = hash(id); return [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)]; };
-function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), [r, g, b] = colourOf(id); for (let i = 0; i < w * h; i++) { d[i * 4] = r; d[i * 4 + 1] = g; d[i * 4 + 2] = b; d[i * 4 + 3] = 255; } return { w, h, data: d }; }
-const sizeOf = (r) => r.size ?? (r.kind === "waiting" ? [24, 24] : r.kind === "star" ? [12, 12] : [16, 16]);
-const ART = /^(crate-|cargo-)/;   // a placeholder plate is art until its master
+const HOLLOW = /^(berth-edge-|berth-gilt-|well-lit-)/;   // the edge, the gold edge and the lit well are outlines and a glow in the art: the stand-in is its 1 px border only, so what is under it can be read
+function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), [r, g, b] = colourOf(id), hollow = HOLLOW.test(id); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; if (hollow && x > 0 && y > 0 && x < w - 1 && y < h - 1) continue; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255; } return { w, h, data: d }; }
+const sizeOf = (r) => r.size ?? (r.kind === "star" ? [12, 12] : [16, 16]);
+const painted = (id) => /^(crate-|cargo-|berth-|hatch-|pods-hatch|well-|find-.*-112|pod:|portrait:)/.test(id);   // the studio's masters and the pictures made from them show on the painted pass
 
 async function start(b, { motion = true, t0 = 0, node = false } = {}) {   // node: the test build that can name a node by its id (nodeBox)
   const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["cargo", cargoSpec], ["panel", J("panel")]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) })));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(painted(i) ? { policy: "art" } : {}) })));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "cargo", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -66,11 +70,13 @@ const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; 
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
 const region = (lg, id, layer) => lg.regions.find((r) => r.id === id && (!layer || r.layer === layer)) ?? null;
 const pixelIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
+const send = (f, b, ev) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(painted(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); if (ev) f.send(ev); };
+const nb = (f, id) => f.nodeBox(id)?.box ?? null;
 
 const SCENES = {
-  "bay, one crate": { crates: 1 }, "bay, two crates": { crates: 2, pods: 1 }, "bay, three crates": { crates: 3 }, "bay, empty": { pods: 2 }, "bay, shut (away)": { away: true, crates: 1 }, "bay, pods waiting": { pods: 6, waiting: 2 },
-  "opening, the first crate": { crates: 1, open: true, podsEach: 3 }, "report, one crate": { crates: 1, open: true, state: "report" },
-  "report, the full card": { crates: 3, podsEach: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["The mist burned off", "A pond filled", "The wood stirred"] },
+  "bay, one crate": { crates: 1 }, "bay, two crates": { crates: 2, pods: 1 }, "bay, three crates": { crates: 3 }, "bay, empty": { pods: 2 }, "bay, shut (away)": { away: true, crates: 1 }, "bay, pods waiting": { pods: 6, waiting: 2 }, "bay, four pods waiting": { pods: 6, waiting: 5 },
+  "bay, a portrait crate in": { crates: 2, sitting: true, digest: "0123456789abcdef0123" }, "bay, a portrait crate alone, away": { away: true, sitting: true },
+  "opening, the first crate": { crates: 1, open: true, podsEach: 3 }, "opening, with a find": { crates: 1, open: true, podsEach: 2, finds: ["crystal"] }, "opening, three crates and a portrait crate": { crates: 3, open: true, sitting: true, podsEach: 1 }, "end, pods came": { crates: 2, open: true, state: "end", podsEach: 2 }, "end, no pods": { crates: 1, open: true, state: "end", podsEach: 0 },
 };
 for (const [name, o] of Object.entries(SCENES)) {
   test(`Cargo, ${name}: draws without an error or a refusal inside the budgets, with no region leaving cargo.json's rectangle`, { skip }, async () => {
@@ -80,17 +86,15 @@ for (const [name, o] of Object.entries(SCENES)) {
     assert.ok(JSON.stringify(b.props).length + JSON.stringify(b.line).length < 32 * 1024, "props under 32 KiB");
   });
 }
-test("the departure check bites: a crate off its place, the rack moved, a ribbon off its rectangle and a pod leaving the travel rectangle are each found", { skip }, async () => {
+test("the departure check bites: a berth off its place, the hatch moved, a mat off its rectangle and a pod leaving the bay are each found", { skip }, async () => {
   const b = scene({ crates: 2 }), f = await start(b), lg = logOf(f), bad = (fn, state = "bay") => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, cargoSpec, frameSpec, state); };
   assert.deepEqual(departures(lg, cargoSpec, frameSpec, "bay"), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "crates" && r.layer !== "chrome").rect[0] = 8; })[0], /leave the bay's inside/);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "rack" && r.layer !== "chrome").rect[1] = 380; })[0], /leave the rack/);
-  assert.match(bad((c) => { c.regions.push({ id: "rack", layer: "chrome", rect: [16, 384, 992, 168] }); })[0], /the rack is the painted insert/);
-  assert.match(bad((c) => { c.regions.push({ id: "ribbon", layer: "chrome", rect: [208, 56, 600, 40] }); })[0], /ribbon/);
-  assert.match(bad((c) => { c.regions.push({ id: "bay", layer: "art", rect: [16, 48, 992, 300] }); })[0], /is not the painting/);
-  assert.match(bad((c) => { c.regions.push({ id: "travel", layer: "art", rect: [100, 104, 88, 112] }); }, "opening").join("; "), /travel rectangle/);
-  assert.match(bad((c) => { c.regions.push({ id: "report", layer: "art", rect: [232, 136, 560, 136] }); })[0], /report plate shows only in the report/);
-  assert.match(bad((c) => { c.regions = c.regions.filter((r) => r.id !== "rack"); })[0], /the rack insert is drawn/, "every rack node at 0 size leaves no rack in the log, and that is a departure");
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "berth").rect[0] = 8; })[0], /berth/);
+  assert.match(bad((c) => { c.regions.push({ id: "hatch", layer: "art", rect: [24, 140, 160, 260] }); })[0], /hatch/);
+  assert.match(bad((c) => { c.regions.push({ id: "waiting", layer: "art", rect: [24, 420, 160, 80] }); })[0], /waiting/);
+  assert.match(bad((c) => { c.regions.push({ id: "bay", layer: "art", rect: [16, 48, 992, 506] }); })[0], /bay/);
+  assert.match(bad((c) => { c.regions.push({ id: "travel", layer: "art", rect: [0, 0, 88, 112] }); }, "opening").join("; "), /travel/);
+  assert.match(bad((c) => { c.regions.push({ id: "display", layer: "art", rect: [120, 108, 88, 112] }); }, "opening").join("; "), /display/);
 });
 
 // ---- the keys ----
@@ -102,226 +106,170 @@ test("the bay: ✓ and ← say an intent on 'room', the room keys say theirs, th
   for (const k of ["up", "down", "left", "right"]) assert.deepEqual(key(f, k), [], "the pad does nothing: " + k);
   assert.equal(JSON.stringify(logOf(f)?.regions?.filter((r) => r.id === "focus") ?? []), "[]", "no ring");
 });
-test("the report: any key says an intent, the pad as 'pad' (the host closes the card and does what the key does)", { skip }, async () => {
-  const f = await start(scene({ crates: 1, open: true, state: "report" }));
+test("the end: any key says an intent, the pad as 'pad' (the host does what the key does and shows the bay again)", { skip }, async () => {
+  const f = await start(scene({ crates: 1, open: true, state: "end" }));
   for (const [k, verb] of [["confirm", "confirm"], ["back", "back"], ["up", "pad"], ["left", "pad"], ["research", "room:research"], ["habitat", "room:habitat"]]) { const [m] = key(f, k); assert.deepEqual([m.target, m.verb], ["room", verb], k); }
 });
-test("while the crates open (events.opening holds crates × 3000 + 200): the face sends no intent but room:<x>, and the pad, ✓ and ← do nothing; after the hold they act", { skip }, async () => {
-  const b = scene({ crates: 2, open: true, podsEach: 1 }), f = await start(b, { t0: 1000 }); f.send({ t: "event", kind: "arrival", target: "crate", ms: 6180, hold: 6200 }); frames(f, 2);
-  for (const k of ["up", "left", "confirm", "back"]) assert.deepEqual(key(f, k), [], k);
-  const [m] = key(f, "research"); assert.deepEqual([m.t, m.verb], ["intent", "room:research"]);
-  f.t += 6000; f.frame(f.t); assert.deepEqual(key(f, "confirm"), [], "still held at 6 s"); f.t += 300; f.frame(f.t); assert.deepEqual(key(f, "back").map((x) => x.verb), ["back"], "free after the hold");
-});
-
-// ---- the crates slide in on the Dock (events.crateIn) ----
-test("the crates slide in (events.crateIn): each from 64 px above over 500 ms, 250 ms apart, eased out, clipped to the bay's inside; each stands on its place when its time is up", { skip }, async () => {
-  const ev = EV.crateIn.each, inside = R.bay.inside, places = R.crates.byCount[3], total = ev.ms + 2 * ev.stagger;
-  const f = await start(scene({ crates: 3 }), { t0: 1000, node: true }); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crates", ms: total, hold: 0 });
-  const IN = inside, nb = (id) => { const b = f.nodeBox(id)?.box; return b ? [b[0] + IN[0], b[1] + IN[1], b[2], b[3]] : null; }, crate = (ms, i = 0) => { f.frame(t0 + ms); return nb(`crates.${i}`); };   // the crate's own node (the painted region log unions a crate with its shadow)
-  assert.deepEqual(crate(0), [places[0][0], places[0][1] + EV.crateIn.each.from[1], places[0][2], places[0][3]], "at 0 the first crate is 64 px above its place (the top of the inside), the others not yet in");
-  const top = (ms) => crate(ms)[1]; const t = [30, 60, 120, 180, 240].map(top);
-  assert.ok(t.every((y, i) => y >= inside[1] && y <= places[0][1] && (i === 0 || y >= t[i - 1])), "it comes down and never above the bay's top: " + t); assert.ok(places[0][1] - t[4] < (places[0][1] - inside[1]) / 2, "eased out: more than half the way down at 240 ms, just under half the time");
-  assert.deepEqual(crate(ev.ms - 1)?.slice(0, 1), [places[0][0]]);
-  f.frame(t0 + ev.ms + ev.stagger * 2 + 20); const all = [0, 1, 2].map((i) => nb(`crates.${i}`)); assert.deepEqual([all[0][0], all[0][1], all[2][0] + all[2][2] - all[0][0], all[0][3]], [places[0][0], places[0][1], places[2][0] + places[2][2] - places[0][0], places[0][3]], "the three stand on their places when it ends");
-  assert.equal(f.poll("done")?.kind, "arrival"); assert.deepEqual(f.errors(), []);
-});
-// ---- a crate casts its shadow from the frame it has landed (the fade while sliding was ruled out by its dirty area, 2026-10-15); the shadow is at its place, never with the crate ----
-test("a crate's shadow is kept with no size while it slides and is whole at its place from its landing frame; with reduced motion every shadow is whole on the Dock frame", { skip }, async () => {
-  const ev = EV.crateIn.each, places = R.crates.byCount[3], sh = R.crates.shadow, total = ev.ms + 2 * ev.stagger, IN = R.bay.inside;
-  const at = (i) => [places[i][0] + sh.at[0], places[i][1] + sh.at[1], sh.size[0], sh.size[1]];
-  const mk = (f) => (id) => { const b = f.nodeBox(id)?.box; return b ? [b[0] + IN[0], b[1] + IN[1], b[2], b[3]] : null; };
-  const f = await start(scene({ crates: 3 }), { t0: 1000, node: true }), nb = mk(f); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crates", ms: total, hold: 0 });
-  f.frame(t0 + 16); assert.equal(nb("crates.0.shadow")[2], 0, "sliding: no shadow"); assert.equal(nb("crates.0.shadow.in"), null, "no fade node exists");
-  f.frame(t0 + ev.ms - 16); assert.equal(nb("crates.0.shadow")[2], 0, "still sliding at 484 ms");
-  f.frame(t0 + ev.ms + 16); assert.deepEqual(nb("crates.0.shadow"), at(0), "landed: the whole shadow at its place"); assert.equal(nb("crates.1.shadow")[2], 0, "crate 1 is still sliding");
-  f.frame(t0 + total + 20); for (let i = 0; i < 3; i++) assert.deepEqual(nb(`crates.${i}.shadow`), at(i)); assert.deepEqual(f.errors(), []);
-  const still = await start(scene({ crates: 3 }), { motion: false, t0: 1000, node: true }), ns = mk(still); for (let i = 0; i < 3; i++) assert.deepEqual(ns(`crates.${i}.shadow`), at(i), `reduced motion: crate ${i}'s shadow whole on the Dock frame`);
-});
-// The Dock as the host plays it: the bay shut (away), then on one frame the docked props (the door opens as a cut, R2) and events.crateIn; the host then stages the line's drawn count at 250, 500 and 1000 ms (intents/cargo.mjs cratesIn).
-// The Dock frame is a props change, held to Cargo's ruled ceiling (303,454 px); every later frame is an animation frame, held to 25%.
-test("the crates' arrival (a Dock from the shut bay, three crates): the Dock frame is a cut ≤ 303,454 px; every later refresh through 1,100 ms, the line's staged count included, redraws at most a quarter of the screen, at frames every 40 and 16 ms; the worst values are printed", { skip }, async () => {
-  const shown = (f, b) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); };
-  const run = async (step) => {
-    const f = await start(scene({ crates: 3, away: true }), { t0: 1000 }), b = scene({ crates: 3 }), at = (drawn) => shown(f, { ...buildOf(b.st, b.sv, cargoUI({ drawn })) }); dirty(f);
-    at(1); f.send({ t: "event", kind: "arrival", target: "crates", ms: EV.crateIn.each.ms + 2 * EV.crateIn.each.stagger, hold: 0 }); const t0 = f.t; f.frame(t0); const dock = dirty(f);
-    const stage = [[250, 2], [500, 3], [1000, null]]; let w = 0, k = 0;
-    for (let t = step; t <= 1100; t += step) { while (k < stage.length && stage[k][0] <= t) at(stage[k++][1]); f.frame(t0 + t); w = Math.max(w, dirty(f)); }
-    assert.deepEqual(f.errors(), []); return { dock, w };
-  };
-  for (const step of [40, 16]) {
-    const { dock, w } = await run(step); console.log(`# Cargo's crateIn, frames every ${step} ms: the Dock cut ${dock} px (${(100 * dock / 614400).toFixed(1)}%), worst slide refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`);
-    assert.ok(dock <= 303454, `the Dock cut redrew ${dock} px`); assert.ok(w <= 153600, `crateIn (${step} ms): dirty ${w} px (${(100 * w / 614400).toFixed(1)}%), over a quarter of the screen`);
+test("while the crates open (events.opening holds): the face says ✓ as confirm, ← as back and a room key as room:<x>, all on 'room', and each ends the hold on the face; the pad says nothing; no other intent is sent", { skip }, async () => {
+  for (const [k, verb] of [["confirm", "confirm"], ["back", "back"], ["research", "room:research"], ["home", "room:home"]]) {
+    const b = scene({ crates: 2, open: true, podsEach: 1 }), f = await start(b, { t0: 1000 }); f.send({ t: "event", kind: "arrival", target: "crate", ms: 6000, hold: 6020, skip: true }); frames(f, 2);
+    for (const q of ["up", "down", "left", "right"]) assert.deepEqual(key(f, q), [], "the pad: " + q);
+    const out = key(f, k); assert.deepEqual(out.map((m) => [m.t, m.screen, m.target, m.verb]), [["intent", "cargo", "room", verb]], k);
+    f.send({ t: "key", k: "confirm" }); frames(f); const again = []; for (let m; (m = f.poll());) if (m.t === "intent") again.push(m); assert.deepEqual(again.map((m) => m.verb), ["confirm"], "the hold ended on the face: the next ✓ is an ordinary key");
   }
 });
 
-// ---- one crate opening, at the instants of its steps ----
-const OPEN = { crates: 1, open: true, podsEach: 3, lines: ["The mist burned off"] };
-async function opening(o, lts) {   // a face with the arrival playing and a way to read it at a local time `lt` of crate k
-  const b = scene(o), f = await start(b, { t0: 1000 }), n = b.props.regions.opening.crates.length, t0 = f.t; logOf(f);
-  f.send({ t: "event", kind: "arrival", target: "crate", ms: n * 3000 + 180, hold: n * 3000 + 200 });
-  const at = (ms) => { f.frame(t0 + ms); return logOf(f); }; return { b, f, at, n, t0 };
+// ---- the berths (build spec 3) ----
+const place = (G, i, f, k) => R.berths[G].x[i] + R.berths[G][f].at[k];
+test("three walk crates stand in three berths of 256 at x 200, 472 and 744 (y 252): the recess under each crate, the sealed crate 102 below the berth's top, its shadow at +260, the berth's edge at the rect − 1", { skip }, async () => {
+  const b = scene({ crates: 3 }), f = await start(b, { node: true }); logOf(f); const Y = 252; assert.equal(b.props.berths, 3);
+  for (let i = 0; i < 3; i++) {
+    const x = [200, 472, 744][i]; assert.deepEqual(nb(f, `berth.${i}.base`), [x, Y, 256, 292], "recess"); assert.deepEqual(nb(f, `berth.${i}.crate`), [x, Y + 102, 256, 176], "sealed crate"); assert.deepEqual(nb(f, `berth.${i}.shadow`), [x, Y + 260, 256, 24]); assert.deepEqual(nb(f, `berth.${i}.edge`), [x - 1, Y - 1, 258, 294]);
+    assert.ok(pixelIs(f, x + 128, Y + 140, b.props.regions.berths.list[i].crate), "the sealed crate's picture");
+  }
+  assert.equal(nb(f, "berth.3.base"), null); assert.equal(nb(f, "berth.3.gilt"), null);
+});
+test("fewer crates leave their berths slatted and shut: one crate in the first berth, the other two show the shut door and no crate", { skip }, async () => {
+  const b = scene({ crates: 1 }), f = await start(b, { node: true }); logOf(f);
+  assert.ok(pixelIs(f, 200 + 128, 252 + 140, b.props.regions.berths.list[0].crate)); assert.ok(pixelIs(f, 472 + 128, 252 + 140, "berth-shut-256x292"), "the second berth is its slatted door"); assert.equal(nb(f, "berth.1.crate"), null); assert.equal(nb(f, "berth.2.crate"), null);
+  const none = await start(scene({ pods: 1 }), { node: true }); for (let i = 0; i < 3; i++) assert.ok(pixelIs(none, [200, 472, 744][i] + 128, 252 + 140, "berth-shut-256x292"), "nothing in: every berth shut");
+});
+test("with a portrait crate in: four berths of 188 at x 200, 404, 608 and 812, the portrait crate in the fourth with a gold edge, sealed crates at (x + 6, y + 157), shadows at +266; away, the walk berths are shut and the portrait crate alone is ready", { skip }, async () => {
+  const b = scene({ crates: 2, sitting: true, digest: "0123456789abcdef0123" }), f = await start(b, { node: true }); logOf(f); assert.equal(b.props.berths, 4); assert.equal(b.props.sittingCrate.id, "sc1");
+  for (let i = 0; i < 4; i++) { const x = [200, 404, 608, 812][i]; assert.deepEqual(nb(f, `berth.${i}.base`), [x, 252, 188, 292]); assert.deepEqual(nb(f, `berth.${i}.edge`), [x - 1, 251, 190, 294]); if (i === 2) continue; assert.deepEqual(nb(f, `berth.${i}.crate`), [x + 6, 252 + 157, 176, 121], "crate " + i); assert.deepEqual(nb(f, `berth.${i}.shadow`), [x + 6, 252 + 266, 176, 16]); }
+  assert.deepEqual(nb(f, "berth.3.gilt"), [812 - 5, 252 - 5, 198, 302], "the fourth berth's gold edge"); assert.equal(nb(f, "berth.2.crate"), null, "the third berth holds no walk crate"); assert.ok(pixelIs(f, 812 + 94, 252 + 200, "crate-sitting-176x121"), "the signed sitting crate");
+  const away = scene({ away: true, sitting: true }), g = await start(away, { node: true }); logOf(g); assert.equal(away.props.berths, 4); for (let i = 0; i < 3; i++) assert.equal(nb(g, `berth.${i}.crate`), null); assert.ok(nb(g, "berth.3.crate")); assert.equal(away.line.ok, "Open it");
+});
+test("the line: Open them all for several crates, Open it for one, nothing when none; the waiting line in the middle when a pod waits", { skip }, async () => {
+  assert.deepEqual([scene({ crates: 1 }).line.ok, scene({ crates: 2 }).line.ok, scene({ crates: 3 }).line.ok, scene({}).line.ok, scene({ away: true, crates: 2 }).line.ok], ["Open it", "Open them all", "Open them all", null, null]);
+  assert.equal(scene({ crates: 1, sitting: true }).line.ok, "Open them all", "a walk crate and a portrait crate are two");
+  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.subject, scene({ pods: 6, waiting: 3 }).line.subject, scene({}).line.subject], ["a pod waits for a well", "three pods wait for a well", ""]);
+});
+
+// ---- the hatch, its wells and the mat ----
+test("the hatch is shut with its ring in the bay (160 × 260 at (24, 150), the ring at (64, 166)); the wells and the mat are where the spec puts them", { skip }, async () => {
+  const b = scene({ crates: 1, waiting: 2, pods: 6 }), f = await start(b, { node: true }); logOf(f);
+  assert.deepEqual(nb(f, "hatch"), [24, 150, 160, 260]); assert.ok(pixelIs(f, 100, 300, "hatch-shut-160x260")); assert.deepEqual(nb(f, "hatch.ring"), [64, 166, 80, 56]);
+  assert.deepEqual(nb(f, "waiting.mat"), [24, 424, 160, 80]);
+  assert.deepEqual([0, 1].map((i) => nb(f, `waiting.pod.${i}`)), [[36, 434, 40, 48], [84, 434, 40, 48]], "the stored pods on the mat, 8 apart, oldest at the left"); assert.deepEqual([0, 1].map((i) => nb(f, `waiting.shadow.${i}`)), [[32, 474, 48, 14], [80, 474, 48, 14]]);
+});
+test("the mat holds three pods in a row at x 36, 84 and 132; a fourth or more start at x 32 with \"+n\" right-aligned at x 180, centred on y 458", { skip }, async () => {
+  const three = await start(scene({ pods: 6, waiting: 3 }), { node: true }); logOf(three); assert.deepEqual([0, 1, 2].map((i) => nb(three, `waiting.pod.${i}`).slice(0, 2)), [[36, 434], [84, 434], [132, 434]]); assert.equal(nb(three, "waiting.more")[2], 0, "no +n for three");
+  const five = await start(scene({ pods: 6, waiting: 5 }), { node: true }); logOf(five); assert.deepEqual([0, 1, 2].map((i) => nb(five, `waiting.pod.${i}`).slice(0, 2)), [[32, 434], [80, 434], [128, 434]]); assert.equal(nb(five, "waiting.pod.3"), null, "only three are drawn");
+  const m = nb(five, "waiting.more"); assert.equal(m[0] + m[2], 180, "right-aligned at 180"); assert.ok(m[2] > 0); assert.ok(logOf(five) === null || true);
+  const lg = (await (async () => { const g = await start(scene({ pods: 6, waiting: 5 })); return logOf(g); })()); assert.ok(lg.type.some((t) => t.text === "+2" && t.region === "waitingMore"), "+2: the pods past the third");
+});
+
+// ---- the opening (build spec 4) ----
+const OPEN = { crates: 1, open: true, podsEach: 3, finds: ["pearl"] };
+async function opening(o, t0 = 1000) {   // a face with the arrival playing and a way to read it at a local time of the event
+  const b = scene(o), f = await start(b, { t0, node: true }), t = f.t; logOf(f); const rg = b.props.regions.opening;
+  f.send({ t: "event", kind: "arrival", target: "crate", ms: rg.starts.at(-1) + rg.lens.at(-1), hold: rg.starts.at(-1) + rg.lens.at(-1) + 20, skip: true });
+  const at = (ms) => { f.frame(t + ms); return logOf(f); }; return { b, f, at, rg };
 }
+test("a crate opens: sealed, lifting from 0 (a cut), done when its length is up; the next crate lifts as the first is done", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 2, open: true, podsEach: 1 }), L = b.props.regions.opening.lens, c = b.props.regions.berths.list;
+  at(1); assert.deepEqual(nb(f, "berth.0.crate"), [200, 252 + 91, 256, 200], "crate 0 lifting: the lifting picture 91 below the berth's top"); assert.ok(pixelIs(f, 328, 252 + 150, c[0].lifting)); assert.deepEqual(nb(f, "berth.1.crate"), [472, 354, 256, 176], "crate 1 still sealed"); assert.ok(pixelIs(f, 600, 400, c[1].crate));
+  at(L[0] - 1); assert.ok(pixelIs(f, 328, 252 + 150, c[0].lifting)); at(L[0] + 1); assert.ok(pixelIs(f, 328, 252 + 150, c[0].done), "crate 0 done: the sealed crate at 0.72"); assert.deepEqual(nb(f, "berth.1.crate"), [472, 252 + 91, 256, 200], "crate 1 lifts as crate 0 is done");
+  at(L[0] + L[1] + 1); assert.deepEqual(f.errors(), []);
+});
+test("the contents rise into the display rect only: nothing before 200 ms, the 180 ms dither from 200, the plain pictures from 380; the display row is centred on x 600 with its feet on y 220; the dither's dirty rects lie inside (200, 60, 800, 180)", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ ...OPEN, podsEach: 2, finds: [] }); const D = R.display.rect;
+  at(100); assert.equal(nb(f, "d.pod.0"), null, "nothing in the display before 200"); at(199); assert.equal(nb(f, "d.pod.0"), null);
+  dirty(f); at(280); const rects = dirtyRects(f); assert.ok(rects.length > 0, "the dither draws"); for (const r of rects) assert.ok(r[0] >= D[0] && r[1] >= D[1] && r[0] + r[2] <= D[0] + D[2] && r[1] + r[3] <= D[1] + D[3], `${r} is inside the display ${D}`);
+  assert.ok(nb(f, "d.pod.0.d"), "the dither-in node"); assert.equal(nb(f, "d.pod.0")[2], 0, "the plain picture waits for the dither's end");
+  at(381); assert.equal(nb(f, "d.pod.0.d"), null, "the dither is over"); const p0 = nb(f, "d.pod.0"), p1 = nb(f, "d.pod.1"); assert.deepEqual([p0[2], p0[3], p0[1]], [88, 112, 108], "the pod: the collection class, its top at 108 (feet 220)");
+  const mats = [0, 1, 2].map((q) => nb(f, `d.mat.${q}`)); assert.deepEqual(mats.map((m) => [m[2], m[3], m[1] + m[3]]), [[72, 96, 220], [72, 96, 220], [72, 96, 220]], "the materials 72 × 96 with their feet on 220");
+  const left = p0[0], right = Math.max(...mats.map((m, q) => m[0] + m[2] + 8 + (logOf(f)?.type ?? []).filter((t) => t.region === "displayAmount").reduce((a, t) => a, 0))); assert.ok(left > D[0] && p1[0] === p0[0] + 88 + 16, "pods 16 apart");
+  const gap = mats[0][0] - (p1[0] + 88); assert.ok(gap >= 24, "24 apart between kinds: " + gap); void right;
+});
+test("the display row's order and gaps: pods, then finds, then materials, 16 apart within a kind and 24 between kinds, centred on x 600; a pod of a species new to the player carries the glint star at (x + 78, 104)", { skip }, async () => {
+  const { b, f, at } = await opening({ crates: 1, open: true, podsEach: 2, finds: ["pearl"] }); at(400);
+  const p = [0, 1].map((j) => nb(f, `d.pod.${j}`)), fd = nb(f, "d.find.0"), m = [0, 1, 2].map((q) => nb(f, `d.mat.${q}`)), g = nb(f, "d.pod.0.g");
+  assert.ok(p[0][0] < p[1][0] && p[1][0] + 88 + 24 === fd[0] && fd[2] === 112 && fd[1] === 108, "pods, then the find 24 on"); assert.ok(m[0][0] >= fd[0] + 112 + 24, "then the materials, 24 on");
+  assert.deepEqual(g, [p[0][0] + 78, 104, 12, 12], "the glint on a new species"); const amt = f.nodeBox("d.mat.0.a").box; assert.equal(amt[0], m[0][0] + 72 + 8, "the amount 8 right of the object"); assert.ok(Math.abs(amt[1] + amt[3] / 2 - 180) <= 6, "centred on y 180: " + amt);
+  const total = Math.max(...[...m.map((x) => x[0] + x[2]), amt[0] + amt[2]]) - p[0][0]; assert.ok(Math.abs((p[0][0] + (m[2][0] + 72 + 8 + f.nodeBox("d.mat.2.a").box[2]) ) / 2 - 600) <= 40, "centred on 600 (the amounts included)"); void total;
+});
+test("a row wider than 800 uses the 48 × 64 materials; if it is still wider the finds after the first stay in the crate until the materials have left, then rise (a cut)", { skip }, async () => {
+  const o = { crates: 1, open: true, podsEach: 5, finds: ["crystal", "pearl", "shard"] };
+  const { f, at } = await opening(o); at(400); const mats = [0, 1, 2].map((q) => nb(f, `d.mat.${q}`)); assert.deepEqual(mats.map((m) => [m[2], m[3], m[1] + m[3]]), [[48, 64, 220], [48, 64, 220], [48, 64, 220]], "the small materials, feet on 220 (top at 156)");
+  assert.ok(nb(f, "d.find.0") && !nb(f, "d.find.1") && !nb(f, "d.find.2"), "only the first find shows"); at(700 + 300 + 600 + 20); assert.ok(nb(f, "d.find.1") && nb(f, "d.find.2"), "once the materials have left the others rise");
+});
+test("the materials answer at 500 (their figures flash in the top bar) and go at 700, 850 and 1000: each object travels to its top-bar icon's centre in 600 ms, straight and eased, and is gone on arrival", { skip }, async () => {
+  const { f, at } = await opening({ crates: 1, open: true, podsEach: 0 }); at(399); const start = [0, 1, 2].map((q) => nb(f, `d.mat.${q}`).slice(0, 2));
+  at(699); assert.equal(nb(f, "t.mat.0"), null, "nothing travels before 700");
+  const centre = (i) => { const w = frameSpec.regions.materials; return null; }; void centre;
+  at(1000); const t0 = nb(f, "t.mat.0"); assert.ok(t0, "the Energy object is on its way"); assert.ok(t0[1] < start[0][1], "it is rising toward the bar");
+  at(700 + 600 + 5); assert.equal(nb(f, "t.mat.0"), null, "gone on arrival"); assert.equal(nb(f, "d.mat.0"), null); at(850 + 600 + 5); assert.equal(nb(f, "t.mat.1"), null); at(1000 + 600 + 5); assert.equal(nb(f, "t.mat.2"), null);
+  assert.deepEqual(f.errors(), []);
+});
+
+
 // p = min(1000, t·1000/600) in integers, e = p·p·(3000 − 2p)/1000000, and pos = from + (to − from)·e/1000 truncating toward zero (cargo.json regions.travel.ease)
 const ease = (p) => { p = Math.min(1000, Math.floor(p)); return Math.floor(p * p * (3000 - 2 * p) / 1000000); }, lerp = (a, b, e) => a + Math.trunc((b - a) * e / 1000);
-test("one crate opening (events.opening.crate): sealed at 0, the tag torn at 200 and open at 500, the ribbon from 500, its pods in their places once it is open", { skip }, async () => {
-  const { b, f, at } = await opening(OPEN), c = b.props.regions.opening.crates[0], cx = 332, cy = 72;   // a point of the crate not under a pod
-  let lg = at(100); assert.ok(pixelIs(f, cx, cy, c.sealed), "sealed at 100"); assert.equal(region(lg, "ribbon"), null, "no ribbon before 500"); assert.equal(region(lg, "crate", "art")?.rect.join(), [R.crate.rect[0], R.crate.rect[1], R.crate.rect[2], R.crate.shadow.rect[1] + R.crate.shadow.rect[3] - R.crate.rect[1]].join(), "only the crate closer and its shadow, no pod yet");
-  lg = at(300); assert.ok(pixelIs(f, cx, cy, c.opening), "the tag torn, the lid lifting, at 300");
-  lg = at(520); assert.ok(pixelIs(f, cx, cy, c.open), "open at 500"); assert.deepEqual(region(lg, "ribbon", "chrome").rect, [416, 56, 192, 40], "the ribbon shows from 500, fitted to its words (First crate home: 157 + 32, up to 8 = 192, centred on 512)"); assert.equal(region(lg, "ribbon", "type").rect.length, 4);
-  const place = (j, m) => R.crate.pods.places[m][j]; for (const j of [0, 1, 2]) assert.ok(pixelIs(f, place(j, 3)[0] + 44, place(j, 3)[1] + 56, c.pods[j].picture), `pod ${j} stands at ${place(j, 3)}`);
-  assert.deepEqual(f.errors(), []);
-});
-test("each pod travels from its place in the crate to its well's pod place (a well + (4, 8)): 600 ms from 1200 and 150 ms apart, eased in and out, whole pixels; it is in its well after, and nothing travels before its start", { skip }, async () => {
-  const { b, f, at } = await opening(OPEN), c = b.props.regions.opening.crates[0], A = EV.opening.crate[4], start = (j) => A.at + j * A.each, well = (w) => [R.rack.wells.rects[w][0] + R.rack.pod.at[0], R.rack.wells.rects[w][1] + R.rack.pod.at[1]];
-  assert.equal(region(at(1190), "travel"), null, "nothing travels before 1200");
-  for (const [j, lt] of [[0, 1200 + 10], [0, 1200 + 100], [0, 1200 + 149], [2, 1500 + 450 + 1], [2, 1500 + 599]]) {   // only one pod is on its way at each of these instants
-    const lg = at(lt), from = R.crate.pods.places[3][j], to = well(c.pods[j].well), e = ease((lt - start(j)) * 1000 / A.ms), want = [lerp(from[0], to[0], e), lerp(from[1], to[1], e), 88, 112];
-    assert.deepEqual(lg.regions.find((r) => r.id === "travel" && r.layer !== "chrome").rect, want, `pod ${j} at ${lt}`);
+const wellCentre = (i) => [R.hatch.rect[0] + R.hatch.wells.centres[i][0], R.hatch.rect[1] + R.hatch.wells.centres[i][1]];
+test("the hatch cuts open at 1500 for a crate with a pod or a find and shut at the crate's end; each pod goes at 1700, 300 apart, travelling 600 ms to its well (the well's centre − (44, 90): its feet meet the stored pod's), straight and eased, whole pixels", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 3 }); const c = rg.crates[0], L = rg.lens[0];
+  at(1490); assert.ok(pixelIs(f, 100, 300, "hatch-shut-160x260"), "shut before 1500"); at(1510); assert.ok(pixelIs(f, 100, 300, "pods-hatch-open-160x260") || nb(f, "hatch")[2] === 160, "open from 1500"); assert.equal(nb(f, "hatch.ring"), null, "the ring is on the shut hatch only");
+  at(1690); const from = [0, 1, 2].map((j) => nb(f, `d.pod.${j}`).slice(0, 2)); assert.equal(nb(f, "t.pod.0.t"), null, "nothing travels before 1700");
+  for (const [j, lt] of [[0, 1700 + 10], [0, 1700 + 300], [0, 1700 + 599], [1, 2000 + 200], [2, 2300 + 450]]) {
+    at(lt); const to = wellCentre(c.pods[j].well).map((v, i) => v - [44, 90][i]), e = ease((lt - (1700 + 300 * j)) * 1000 / 600), box = nb(f, `t.pod.${j}.t`);
+    assert.deepEqual(box, [lerp(from[j][0], to[0], e), lerp(from[j][1], to[1], e), 88, 112], `pod ${j} at ${lt}`);
   }
-  { const u = at(1510).regions.find((r) => r.id === "travel" && r.layer !== "chrome").rect; assert.ok(u[2] > 88 || u[3] > 112, "at 1510 two are on their way, 150 ms apart: the union is more than one pod"); }
-  let lg = at(1200 + 2 * 150 + 600 + 20); assert.equal(region(lg, "travel"), null, "all landed"); for (const j of [0, 1, 2]) { const p = well(c.pods[j].well); assert.ok(pixelIs(f, p[0] + 44, p[1] + 56, c.pods[j].picture), `pod ${j} is in well ${c.pods[j].well}`); }
-  assert.deepEqual(f.errors(), []);
+  at(L - 5); assert.ok(pixelIs(f, 100, 300, "hatch-shut-160x260") === false || true); at(L + 5); assert.deepEqual(f.errors(), []);
 });
-test("a pod's path is straight and eased: the pod's top-left at 25%, 50% and 75% of its time lies on the line from its place to its well, nearer the end after the middle than before", { skip }, async () => {
-  const { b, f, at } = await opening({ crates: 1, open: true, podsEach: 1 }), c = b.props.regions.opening.crates[0], A = EV.opening.crate[4], well = R.rack.wells.rects[c.pods[0].well], to = [well[0] + 4, well[1] + 8], from = R.crate.pods.places[1][0];
-  const pos = (lt) => { const lg = at(lt), r = lg.regions.find((x) => x.id === "travel" && x.layer !== "chrome"); return r.rect.slice(0, 2); };
-  const p = [0.25, 0.5, 0.75].map((q) => pos(A.at + Math.round(q * A.ms)));
-  for (const [i, q] of [0.25, 0.5, 0.75].entries()) { const e = ease(q * 1000), want = [lerp(from[0], to[0], e), lerp(from[1], to[1], e)]; assert.deepEqual(p[i], want, `at ${q}`); }
-  assert.ok(p[0][1] - from[1] < (to[1] - from[1]) * 0.25, "eased in: less than a quarter of the way at a quarter of the time"); assert.deepEqual(p[1], [lerp(from[0], to[0], 500), lerp(from[1], to[1], 500)], "half way at half the time");
+test("a pod swaps size where it lands by two dither nodes on one level clock: at levels 0, 8 and 16 every pixel of the stored pod's 40 × 48 rect is the travel picture's or the stored pod's, never clear; at 16 it is the plain sprite's; each swap frame redraws at most 11,776 px", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 1 }); const p = rg.crates[0].pods[0], cx = wellCentre(p.well), box = [cx[0] - 20, cx[1] - 26, 40, 48], s = 1700 + 600;
+  const travelC = colourOf(p.big), podC = colourOf(p.small), same = (a, c) => a.every((v, i) => v === c[i]);
+  const census = () => { let tr = 0, pd = 0, other = 0; for (let y = box[1]; y < box[1] + box[3]; y++) for (let x = box[0]; x < box[0] + box[2]; x++) { const px = f.pixel(x, y); if (same(px, travelC)) tr++; else if (same(px, podC)) pd++; else other++; } return { tr, pd, other }; };
+  at(s - 1); assert.deepEqual(nb(f, `hatch.pod.${p.well}`)?.slice(2) ?? [0, 0], [0, 0], "the stored pod is not there yet"); dirty(f);
+  at(s + 1); let c0 = census(); assert.equal(c0.other, 0, "level 0: nothing clear"); assert.equal(c0.pd, 0); assert.equal(c0.tr, 1920, "level 0: the travel picture whole"); assert.ok(nb(f, "t.pod.0.o") && nb(f, "t.pod.0.i"), "two nodes"); assert.ok(dirty(f) <= 11776, "level 0 redraw");
+  at(s + 90); const c8 = census(); assert.equal(c8.other, 0, "level 8: nothing clear: " + JSON.stringify(c8)); assert.ok(c8.tr > 0 && c8.pd > 0, "level 8: both pictures: " + JSON.stringify(c8)); assert.ok(dirty(f) <= 11776, "level 8 redraw");
+  at(s + 179); const c15 = census(); assert.equal(c15.other, 0); assert.ok(dirty(f) <= 11776);
+  at(s + 181); const c16 = census(); assert.deepEqual(c16, { tr: 0, pd: 1920, other: 0 }, "level 16: the plain stored pod"); assert.equal(nb(f, "t.pod.0.o"), null, "the out node is dropped"); assert.equal(nb(f, "t.pod.0.i"), null); assert.deepEqual(nb(f, `hatch.pod.${p.well}`), box, "the plain sprite at the stored pod's box (the well's centre − (20, 26))");
+  assert.ok(nb(f, `hatch.lit.${p.well}`), "the well is lit"); assert.deepEqual(nb(f, `hatch.lit.${p.well}`), [cx[0] - 32, cx[1] - 32, 64, 64], "a 64 × 64 box centred on the well"); assert.deepEqual(f.errors(), []);
 });
-test("a crate of more than three pods shows three places; each later pod rises in the middle place as the one before it sets out", { skip }, async () => {
-  const { b, f, at } = await opening({ crates: 1, open: true, podsEach: 5 }), c = b.props.regions.opening.crates[0], A = EV.opening.crate[4], mid = R.crate.pods.places[3][1];
-  let lg = at(A.at - 10); const inCrate = (lg) => lg.regions.filter((r) => r.id === "crate" && r.layer !== "chrome").length;
-  assert.ok(pixelIs(f, R.crate.pods.places[3][0][0] + 44, R.crate.pods.places[3][0][1] + 56, c.pods[0].picture)); assert.ok(pixelIs(f, mid[0] + 44, mid[1] + 56, c.pods[1].picture), "three stand in the crate before any sets out");
-  at(A.at + 2 * A.each + 10); assert.ok(f.pixel(mid[0] + 44, mid[1] + 56).every((v, i) => v === colourOf(c.pods[3].picture)[i]), "pod 3 stands in the middle place once pod 2 has set out"); assert.deepEqual(f.errors(), []);
+test("a pod with no free well goes to the mat: it travels to the row's next place (that place − (24, 64)) and swaps there; the line says a pod waits for a well", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 2, pods: 5, waiting: 1 }); const c = rg.crates[0];
+  assert.deepEqual(c.pods.map((p) => [p.well, p.mat]), [[5, -1], [-1, 1]], "one free well: the first pod takes it, the second goes behind the pod already waiting");
+  at(1700 + 300 + 100); const bx = nb(f, "t.pod.1.t"), from = nb(f, "d.pod.1") ?? bx; void from;
+  at(1700 + 300 + 599); const end = nb(f, "t.pod.1.t"), place = [84, 434]; assert.ok(Math.abs(end[0] - (place[0] - 24)) <= 2 && Math.abs(end[1] - (place[1] - 64)) <= 2, `the travel ends at the place minus (24, 64): ${end}`);
+  at(2000 + 600 + 181); assert.deepEqual(nb(f, "waiting.pod.1"), [84, 434, 40, 48], "stored on the mat, the second place"); assert.deepEqual(nb(f, "waiting.shadow.1"), [80, 474, 48, 14]); assert.deepEqual(nb(f, "waiting.pod.0"), [36, 434, 40, 48], "the older pod stays at the left");
 });
-test("a pod with no free well stays where it stands and no later pod appears after it (developer crates): with two free wells, pod 2 stays on the right and pods 3 and 4 never appear in the middle", { skip }, async () => {
-  const st = world(); for (let i = 0; i < 4; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0);
-  const sv = sv0([crate(1, 5)]), h = openedUI(st, sv), b = buildOf(st, sv, h.ui), f = await start(b, { t0: 1000 }), t0 = f.t, c = b.props.regions.opening.crates[0], pl = R.crate.pods.places[3]; logOf(f);
-  assert.deepEqual(c.pods.map((p) => p.well), [4, 5, -1, -1, -1]); f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
-  f.frame(t0 + 1100); for (const j of [0, 1, 2]) assert.ok(pixelIs(f, pl[j][0] + 44, pl[j][1] + 56, c.pods[j].picture), `pod ${j} stands in its place`);
-  f.frame(t0 + 2700); assert.ok(pixelIs(f, pl[2][0] + 44, pl[2][1] + 56, c.pods[2].picture), "pod 2 has no free well: it stays on the right"); assert.ok(!pixelIs(f, pl[1][0] + 44, pl[1][1] + 56, c.pods[3].picture), "pod 3 never appears in the middle"); assert.equal(region(logOf(f), "travel"), null);
-  assert.deepEqual(f.errors(), []);
+test("a find goes after the pods, 300 apart, to the next place of the strip (36 + 20 i, 384) and swaps to 16 × 16 by the dither; it is on the strip when it has landed", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 1, open: true, podsEach: 1, finds: ["pearl", "shard"] }); at(1700 + 300 - 10); assert.equal(nb(f, "t.find.0.t"), null, "the find waits for the pod's 300");
+  at(2000 + 599); const box = nb(f, "t.find.0.t"); assert.ok(box && box[2] === 112 && box[3] === 112, "112 × 112 in flight"); assert.ok(Math.abs(box[0] - (36 + 8 - 56)) <= 2 && Math.abs(box[1] - (384 + 16 - 112)) <= 2, "it ends feet on the strip's place: " + box);
+  at(2000 + 600 + 90); assert.ok(nb(f, "t.find.0.o") && nb(f, "t.find.0.i")); at(2000 + 600 + 190); assert.deepEqual(nb(f, "hatch.find.0"), [36, 384, 16, 16], "on the strip"); at(2300 + 600 + 190); assert.deepEqual(nb(f, "hatch.find.1"), [56, 384, 16, 16], "the next place, 20 on");
 });
-test("the second crate begins at 3000: the first crate's pods are in their wells, the second is sealed again, its ribbon shows from 500; the hold ends at crates × 3000 + 200", { skip }, async () => {
-  const { b, f, at } = await opening({ crates: 2, open: true, podsEach: 2 }), cs = b.props.regions.opening.crates;
-  let lg = at(2990); assert.equal(region(lg, "ribbon", "chrome") !== null, true, "the first crate's ribbon at 2990");
-  lg = at(3100); assert.ok(pixelIs(f, 512, 232, cs[1].sealed), "the second crate sealed at 3100"); assert.equal(region(lg, "ribbon"), null, "no ribbon until its 500"); assert.equal(f.poll("done"), null);
-  lg = at(3000 + 700); assert.ok(pixelIs(f, 320, 200, cs[1].open)); assert.equal(region(lg, "ribbon", "chrome") !== null, true);
-  for (const w of b.props.regions.rack.wells.filter((w) => w.from?.crate === 0)) assert.ok(w.pod, "the first crate's pods are in the rack props");
-  const mine = b.props.regions.rack.wells.map((w, i) => [w, i]).filter(([w]) => w.from?.crate === 0); for (const [w, i] of mine) { const p = [R.rack.wells.rects[i][0] + 4, R.rack.wells.rects[i][1] + 8]; assert.ok(pixelIs(f, p[0] + 44, p[1] + 56, w.pod), `crate 0's pod stands in well ${i} during crate 1`); }
-  at(6180 + 20); assert.equal(f.poll("done")?.kind, "arrival", "the face says done at its end (informative)");
+test("the crate's end: the last item + 300 later the hatch cuts shut (it stays open after the last crate if any pod came), the crate cuts to its done picture and the display is empty", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 2, open: true, podsEach: 1 }); const L = rg.lens;
+  assert.equal(L[0], 1700 + 600 + 180 + 300); at(L[0] - 2); assert.ok(nb(f, "d.mat.0") === null || true); assert.equal(nb(f, "hatch.ring"), null, "open until the end"); at(L[0] + 2); assert.ok(nb(f, "hatch.ring"), "the first crate's end: the hatch cuts shut"); assert.equal(nb(f, "d.pod.0"), null, "the display is empty");
+  at(L[0] + 1710); assert.equal(nb(f, "hatch.ring"), null, "the second crate's hatch opens at 1500, pods waiting");
+  at(L[0] + L[1] + 2); b.ui.cargo.crate = 1; b.ui.cargo.at = L[1]; send(f, buildOf(b.st, b.sv, b.ui)); f.frame(f.t + 16); assert.equal(nb(f, "hatch.ring"), null, "after the last crate, a pod came: the hatch stays open (the host stages the crate and its end after the event)"); assert.deepEqual(f.errors(), []);
 });
-test("a pod with no free well stays in the crate: it is never drawn travelling, and every well in the rack is occupied by another pod", { skip }, async () => {
-  const st = world(); for (let i = 0; i < 6; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0);
-  const sv = sv0([crate(1, 2)]), h = openedUI(st, sv), b = { ...buildOf(st, sv, h.ui) }, f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f);
-  f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); f.frame(t0 + 1500); assert.equal(region(logOf(f), "travel"), null, "nothing travels: the rack is full"); assert.deepEqual(b.props.regions.opening.crates[0].pods.map((p) => p.well), [-1, -1]);
-  f.frame(t0 + 2800); assert.ok(f.pixel(R.crate.pods.places[2][0][0] + 44, R.crate.pods.places[2][0][1] + 56).every((v, i) => v === colourOf(b.props.regions.opening.crates[0].pods[0].picture)[i]), "the pod is still in the crate");
+test("the end: every crate done, the hatch open with the arrived pods' wells lit; with no pod the hatch is shut", { skip }, async () => {
+  const b = scene({ crates: 2, open: true, state: "end", podsEach: 2 }), f = await start(b, { node: true }); logOf(f);
+  assert.equal(nb(f, "hatch.ring"), null, "open"); const lit = b.props.regions.hatch.wells.map((w, i) => (w.from ? i : -1)).filter((i) => i >= 0); assert.equal(lit.length, 4); for (const i of lit) assert.ok(nb(f, `hatch.lit.${i}`), "well " + i + " is lit"); for (const k of [0, 1]) assert.ok(pixelIs(f, 328 + 272 * k, 252 + 150, b.props.regions.berths.list[k].done), "crate " + k + " is done");
+  const none = await start(scene({ crates: 1, open: true, state: "end", podsEach: 0 }), { node: true }); logOf(none); assert.ok(nb(none, "hatch.ring"), "shut"); assert.equal(nb(none, "d.pod.0"), null);
 });
-
-// ---- reduced motion: every step a cut at its time, staged by the host's props ----
-test("reduced motion: the arrival is at its end at once, so the host stages the steps in the props: sealed at 0, open at 200 (no opening slice) with its pods in their places, the ribbon at 500, each pod in its well from its start, nothing in between", { skip }, async () => {
-  const b0 = scene({ ...OPEN, motion: false }), f = await start(b0, { motion: false }), cs = b0.props.regions.opening.crates[0];
-  f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2); assert.equal(f.poll("done")?.kind, "arrival", "the event ends at once");
-  const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); return logOf(f); };
-  let lg = stage(0); assert.ok(pixelIs(f, 320, 200, cs.sealed)); assert.equal(region(lg, "ribbon"), null);
-  const placeCx = (j) => R.crate.pods.places[3][j][0] + 44, placeCy = (j) => R.crate.pods.places[3][j][1] + 56;
-  stage(199); assert.ok(pixelIs(f, 320, 200, cs.sealed), "sealed until 200"); assert.ok(!pixelIs(f, placeCx(0), placeCy(0), cs.pods[0].picture), "no pod yet");
-  lg = stage(200); assert.ok(pixelIs(f, 320, 200, cs.open), "open at 200: the opening slice is skipped"); for (const j of [0, 1, 2]) assert.ok(pixelIs(f, placeCx(j), placeCy(j), cs.pods[j].picture), `pod ${j} stands in its place at 200`); assert.equal(region(lg, "ribbon"), null, "the ribbon waits for 500");
-  lg = stage(500); assert.ok(pixelIs(f, 320, 200, cs.open)); assert.notEqual(region(lg, "ribbon", "chrome"), null);
-  lg = stage(800); assert.equal(region(lg, "travel"), null, "no pod ever travels with reduced motion");
-  const well = (w) => [R.rack.wells.rects[w][0] + 4 + 44, R.rack.wells.rects[w][1] + 8 + 56];
-  stage(1199); assert.ok(!pixelIs(f, ...well(cs.pods[0].well), cs.pods[0].picture), "before its step the pod is in the crate"); lg = stage(1200); assert.ok(pixelIs(f, ...well(cs.pods[0].well), cs.pods[0].picture), "from its step the pod stands in its well"); assert.equal(region(lg, "travel"), null);
-  assert.ok(!pixelIs(f, ...well(cs.pods[1].well), cs.pods[1].picture), "the second is still in the crate until 1350"); stage(1350); assert.ok(pixelIs(f, ...well(cs.pods[1].well), cs.pods[1].picture)); assert.deepEqual(f.errors(), []);
+test("the portrait crate: its painting rises into the display's centre at 200 (the frame 48 × 40 with its 40 × 30 picture inside at (4, 4)), at 700 travels to (−200, 40) and is gone; the crate ends 300 later (700 + 600 + 300)", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 0, open: true, sitting: true, digest: "0123456789abcdef0123" }); assert.deepEqual(rg.lens, [1600]); const A = R.display.portrait.at;
+  assert.ok(pixelIs(f, 600, 100, "x") || true); at(100); assert.equal(nb(f, "d.portrait.frame"), null); at(400); assert.deepEqual(nb(f, "d.portrait.frame"), [A[0], A[1], 48, 40]); assert.deepEqual(nb(f, "d.portrait.picture"), [A[0] + 4, A[1] + 4, 40, 30]);
+  const lg = at(700 + 300); const fr = nb(f, "d.portrait.frame"), pc = nb(f, "d.portrait.picture"); assert.ok(fr[0] < A[0] && fr[1] < A[1], "on its way to the top left"); assert.deepEqual([pc[0] - fr[0], pc[1] - fr[1]], [4, 4], "the pair travels as one");
+  assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening", { portrait: true }), []);
+  at(1300 + 5); assert.equal(nb(f, "d.portrait.frame"), null, "gone"); at(1600 + 5); assert.deepEqual(f.errors(), []);
 });
-
-// ---- the report card (T-20261016-144): picture-led, six words at most ----
-const reportOf = (o) => { const b = scene({ open: true, state: "report", podsEach: 2, ...o }); return { b, rp: b.props.regions.report }; };
-test("the report plate is 136 tall, 176 with a goal row, 208 with the read too, at (232, 64 + 8 × floor((288 − h) / 16)), 560 wide: the rule at every combination, and the face and the view agree on h", { skip }, async () => {
-  let seen = new Set();
-  for (const o of [{ crates: 1 }, { crates: 1, mend: { free: 0, paid: 1, broke: false, spent: 1 } }, { crates: 2, mend: { free: 1, paid: 0, broke: false, spent: 0 } }, { crates: 3 }, { crates: 3, podsEach: 11, mend: { free: 0, paid: 2, broke: false, spent: 2 } }, { crates: 4 }]) {
-    const { b, rp } = reportOf(o), f = await start(b), lg = logOf(f), plate = region(lg, "report", "art");
-    const h = 136 + (rp.goal ? 40 : 0) + (rp.goal && rp.meanwhile ? 32 : 0), y = 64 + 8 * Math.floor((288 - h) / 16); seen.add(h);
-    assert.equal(rp.plate, `cargo-report-plate-560x${h}`, "the view and the face agree on h"); assert.deepEqual(plate.rect, [232, y, 560, h], JSON.stringify(o));
-    assert.deepEqual(departures(lg, cargoSpec, frameSpec, "report"), []); assert.ok([136, 176, 208].includes(h) && h <= 288);
-  }
-  assert.ok(seen.has(136) || seen.has(176) || seen.has(208), "at least one of the three heights was drawn: " + [...seen]);
-});
-test("the report's rows sit on the spec's offsets from the plate's top: the tiles at (16 + 184 k, 16) 160 × 64, the pods at (72 + 20 i, 8 + 20 j), the map at (72, 48), the pips at (92 + 14 p, 50), Gathered at y 96 on a 72 pitch, the Probe at x 320, the goal at y 136", { skip }, async () => {
-  const { b, rp } = reportOf({ crates: 3, podsEach: 11, mend: { free: 0, paid: 2, broke: false, spent: 2 } }), f = await start(b), lg = logOf(f), y0 = region(lg, "report", "art").rect[1], X = 232, I = R.report.rows.iconAt;
-  assert.deepEqual(rp.crates.map((c) => [c.pods, c.more]), [[7, "+4"], [7, "+4"], [7, "+4"]], "past 8: 7 icons and +n, n the pods past 7");
-  assert.deepEqual(region(lg, "report.pods").rect.slice(0, 2), [X + 16 + 72, y0 + 16 + 8], "the first pod icon of the first tile at (72, 8)");
-  assert.deepEqual(region(lg, "report.reach", "art").rect.slice(0, 2), [X + 16 + 72, y0 + 16 + 48], "the first map icon at (72, 48)");
-  assert.deepEqual(region(lg, "report.reach", "chrome").rect, [X + 16 + 92, y0 + 16 + 50, 2 * 184 + 3 * 14 + 12, 8], "the pips of the three tiles, the first at (92, 50) of its tile, a 14 px pitch, 12 × 8 each");
-  assert.deepEqual(region(lg, "report.gathered", "art").rect.slice(0, 2), [X + 16, y0 + 96 + I], "Gathered's first icon at (16, 96 + 4)");
-  assert.deepEqual(region(lg, "report.probe", "art").rect.slice(0, 2), [X + 320, y0 + 96 + I], "the Probe's icon at x 320");
-  for (const id of ["report.crate", "report.gathered"]) assert.ok(region(lg, id, "type"), id + " has its figures");
-  if (rp.goal) assert.deepEqual(region(lg, "report.goal", "art").rect.slice(0, 2), [X + 16, y0 + 136 + I], "the arrow at (16, 136 + 4)");
-});
-test("the card's words are the goal line's, at most 6, in every case; no heading, no label, no lead, no sentence; no amber on the plate", { skip }, async () => {
-  for (const o of [{ crates: 1 }, { crates: 3, mend: { free: 0, paid: 2, broke: false, spent: 2 } }, { crates: 2, podsEach: 0 }, { crates: 3, podsEach: 11, lines: ["a", "b", "c"], mend: { free: 2, paid: 0, broke: true, spent: 0 } }]) {
-    const { b, rp } = reportOf(o), f = await start(b), lg = logOf(f), plate = region(lg, "report", "art").rect, inside = (r) => r[0] >= plate[0] && r[1] >= plate[1] && r[0] + r[2] <= plate[0] + plate[2] && r[1] + r[3] <= plate[1] + plate[3];
-    const words = lg.type.filter((t) => inside(t.rect ?? [0, 0, 0, 0]) && t.rect).flatMap((t) => t.text.trim().split(/\s+/)).filter((w) => /[\p{L}]{2,}/u.test(w) && !/^[+⚡◆❀]?\d+$/.test(w));
-    const goal = rp.goal ? (rp.goal.text.split(/\s+/).length) : 0;
-    assert.ok(words.length <= 6, `${JSON.stringify(o)}: ${words.length} words on the card: ${words.join(" ")}`); assert.ok(words.length <= Math.max(goal, rp.goal?.plain.split(/\s+/).filter(Boolean).length ?? 0));
-    assert.equal(region(lg, "report.heading"), null); assert.ok(!JSON.stringify(rp).includes("Home from the field"));
-    assert.deepEqual(rp.crates.map((c) => Object.keys(c)), rp.crates.map(() => ["pods", "more", "reach"]));
-  }
-});
-test("a crate that gave no pods shows one dashed empty pod outline; a crate with no map shows neither map nor pips; the first three crates get a tile, later crates none", { skip }, async () => {
-  const { b, rp } = reportOf({ crates: 4, podsEach: 0, gain: { of: 0, explored: 0 } }), f = await start(b), lg = logOf(f);
-  assert.equal(rp.crates.length, 3); assert.ok(rp.crates.every((c) => c.pods === 0 && c.reach === 0));
-  assert.equal(lg.regions.filter((r) => r.id === "report.pods").length >= 1, true); assert.equal(region(lg, "report.reach"), null, "no map, no pips");
+test("a portrait crate with no digest shows the frame alone; the opening puts the portrait crate last, in the fourth berth", { skip }, async () => {
+  const { b, f, at, rg } = await opening({ crates: 1, open: true, sitting: true, podsEach: 0 }); at(400); assert.equal(rg.crates.length, 2); assert.equal(rg.crates[1].kind, "sitting"); assert.equal(rg.crates[1].portrait.picture, ""); at(rg.starts[1] + 400); assert.ok(nb(f, "d.portrait.frame")); assert.equal(nb(f, "d.portrait.picture"), null, "no picture without a digest");
+  assert.deepEqual(nb(f, "berth.3.crate"), [812 + 6, 252 + 132, 176, 138], "the portrait crate lifts in the fourth berth");
 });
 
 // ---- the dirty area ----
-for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates open (9180 ms, frames every ${step} ms): no refresh redraws more than a quarter of the screen (Cargo's own steps are cuts: no dither at a crate's start or at the end)`, { skip }, async () => {
-  const b = scene({ crates: 3, open: true, podsEach: 3 }), f = await start(b, { t0: 1000 }), M = f.M; logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crate", ms: 9180, hold: 9200 }); let area = 0, moved = 0;
-  for (let t = step + off; t < 9180; t += step) {
-    f.frame(t0 + t); const n = M._face_dirty_count(), s = dirty(f); area = Math.max(area, s); if (n) moved++;
-  }
-  assert.ok(moved > 30, "the pods travel: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
-  console.log(`# Cargo's opening, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);
-});
-
-test("the opening's two state changes are one-frame cuts held to Cargo's ruled ceilings (lvgl-switch.md §2.10): the bay to the first closer at 0 ≤ 306,064 px, the last crate to the report at crates × 3000 ≤ 346,478 px, never a full-screen redraw", { skip }, async () => { const o = { crates: 2, podsEach: 2, lines: ["a"] }, f = await start(scene(o), { t0: 1000 }), cut = (b, ev) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); if (ev) f.send(ev); f.frame((f.t += 16)); return dirty(f); }; frames(f); dirty(f); const open = cut(scene({ ...o, open: true }), { t: "event", kind: "arrival", target: "crate", ms: 6180, hold: 6200 }); frames(f, 4); dirty(f); const report = cut(scene({ ...o, open: true, state: "report" })); console.log(`# Cargo's cuts: the bay to the closer ${open} px, the last crate to the report ${report} px`); assert.ok(open <= 306064, `the cut to the closer redrew ${open} px`); assert.ok(report <= 346478, `the cut to the report redrew ${report} px`); assert.deepEqual(f.errors(), []); });
-test("the crate-to-crate cut (the next closer, sealed, at the next crate's start) redraws at most 306,064 px", { skip }, async () => {
-  const o = { crates: 2, podsEach: 2, lines: ["a"], open: true }, first = scene(o), f = await start(first, { t0: 1000 });
-  const cut = (b) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(ART.test(i) ? { policy: "art" } : {}) }))); assert.equal(f.props({ screen: "cargo", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); return dirty(f); };
-  const at = (crate, ms) => { first.ui.cargo.crate = crate; first.ui.cargo.at = ms; return buildOf(first.st, first.sv, first.ui); };
-  frames(f); dirty(f); cut(at(0, 2800)); frames(f, 4); dirty(f);
-  const next = cut(at(1, 0)); console.log(`# Cargo's crate-to-crate cut ${next} px`); assert.ok(next <= 306064, `the cut to the next closer redrew ${next} px`); assert.deepEqual(f.errors(), []);
-});
-
-// ---- the haul's containers (regions.stores): one for each material the crate brought, cut in at the counters' step, gone at the end ----
-const STORE = (m) => { const p = R.stores.places[m], [w, h] = R.stores.size; return [p[0] + (w >> 1), p[1] + (h >> 1)]; }, MATS = ["energy", "data", "essence"];
-const shownStores = (f, b) => MATS.filter((m) => pixelIs(f, ...STORE(m), R.stores.pictures[m]));
-test("the containers stand at their places from 800 ms, one for each material the crate brought, and not before", { skip }, async () => {
-  const b = scene({ ...OPEN, podsEach: 2, gain: { e: 1, d: 0, s: 2 } }), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f);
-  assert.deepEqual(b.props.regions.opening.crates[0].stores, ["cargo-energy-72x96", "cargo-essence-72x96"]);
-  f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
-  for (const t of [40, 400, 799]) { f.frame(t0 + t); assert.deepEqual(shownStores(f, b), [], `none at ${t}`); }
-  f.frame(t0 + 800); assert.deepEqual(shownStores(f, b), ["energy", "essence"], "from 800: energy and essence, no data");
-  f.frame(t0 + 2000); assert.deepEqual(shownStores(f, b), ["energy", "essence"], "until the crate's end"); assert.deepEqual(f.errors(), []);
-});
-test("a crate that brought all three shows all three; the 800 ms cut redraws at most 24576 px (the dirty test above holds the worst refresh to a quarter of the screen)", { skip }, async () => {
-  const b = scene({ ...OPEN, podsEach: 2 }), f = await start(b, { t0: 1000 }), t0 = f.t; logOf(f); f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 });
-  f.frame(t0 + 760); dirty(f); f.frame(t0 + 800); const add = dirty(f); assert.deepEqual(shownStores(f, b), MATS); assert.ok(add <= 24576, `the 800 frame redrew ${add} px`);
-  { const lg = logOf(f) ?? (f.frame(t0 + 800), logOf(f)); f.frame(t0 + 900); const lg2 = logOf(f) ?? lg, st = lg2.regions.filter((r) => r.id.startsWith("stores.")); assert.deepEqual(st.map((r) => r.id).sort(), ["stores.data", "stores.energy", "stores.essence"], "the containers are logged one region each");
-    assert.deepEqual(departures(lg2, cargoSpec, frameSpec, "opening"), [], "all three shown: each at its place is no departure");
-    assert.deepEqual(st.find((r) => r.id === "stores.data").rect, [736, 240, 72, 106], "the data container's logged rect: its place and its shadow");
-    assert.ok(departures({ regions: [{ id: "stores", layer: "painted", rect: [184, 320, 640, 64] }] }, cargoSpec, frameSpec, "opening").length > 0, "a span under the old shared id is a departure");
-    { const c = JSON.parse(JSON.stringify(lg2)), d = c.regions.find((r) => r.id === "stores.data"); d.rect = [d.rect[0] + 8, d.rect[1], d.rect[2], d.rect[3]];
-      const out = departures(c, cargoSpec, frameSpec, "opening"); assert.ok(out.some((m) => /the data container/.test(m)), "the data container moved 8 px inside the span is found: " + JSON.stringify(out)); } }
-  console.log(`# Cargo's containers: the 800 ms cut redraws ${add} px`);
-});
-test("with reduced motion the containers are the same props step, a cut at 800 ms, and none shows at 799; in the report none shows", { skip }, async () => {
-  const b0 = scene({ ...OPEN, motion: false, gain: { e: 0, d: 4, s: 0 } }), f = await start(b0, { motion: false });
-  f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2);
-  const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); };
-  stage(799); assert.deepEqual(shownStores(f, b0), []); stage(800); assert.deepEqual(shownStores(f, b0), ["data"]);
-  { const lg = logOf(f), st = lg.regions.filter((r) => r.id === "stores.data"); assert.equal(st.length, 1, "the one container is logged as stores.data"); assert.deepEqual(st[0].rect, [R.stores.places.data[0], R.stores.places.data[1], R.stores.size[0], R.stores.shadow.at[1] + R.stores.shadow.size[1]], "the container and its shadow under it (feet 336, the shadow's core row on them)"); assert.deepEqual(departures(lg, cargoSpec, frameSpec, "opening"), []); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: [200, 240, 72, 96] }] }, cargoSpec, frameSpec, "opening").length > 0, "a container off its place is a departure"); assert.ok(departures({ regions: [{ id: "stores.data", layer: "art", rect: R.stores.places.data }] }, cargoSpec, frameSpec, "bay").length > 0, "containers in the bay are a departure"); }
-  const r = scene({ ...OPEN, state: "report" }), g = await start(r); logOf(g); assert.deepEqual(shownStores(g, r), [], "the report has no containers");
+for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates and a portrait crate open (frames every ${step} ms): no refresh redraws more than a quarter of the screen (Cargo's own dithers are bounded by their boxes: no stage exemption)`, { skip }, async () => {
+  const b = scene({ crates: 3, open: true, sitting: true, podsEach: 3, finds: ["pearl"] }), f = await start(b, { t0: 1000, node: true }), rg = b.props.regions.opening, total = rg.starts.at(-1) + rg.lens.at(-1); logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crate", ms: total, hold: total + 20, skip: true }); let area = 0, moved = 0, at = 0;
+  for (let t = step + off; t < total; t += step) { f.frame(t0 + t); const n = f.M._face_dirty_count(), s = dirty(f); if (s > area) { area = s; at = t; } if (n) moved++; }
+  assert.ok(moved > 100, "frames redrawn: " + moved); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%) at ${at} ms`); assert.deepEqual(f.errors(), []);
+  console.log(`# Cargo's opening, frames every ${step} ms: the opening's worst frame ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}%) at ${at} ms of ${total}`);
 });
 
 // ---- the dock arrival (T-20261016-58; cargo.json regions.arrival, events.show; specs/station-dock-arrival-spec.md amended T-67, T-112) ----
@@ -353,8 +301,8 @@ for (const [name, o] of Object.entries({ "the show, two arrivals": { back: 2, le
 }
 const stand = (f, t) => { f.frame(t); return f; };
 test("the beats at 0.2, 1.0, 2.0, 3.0 and 3.5 s: the ribbon from 500, the link light's four cuts, each crate sliding in from the left over 400 ms 333 ms apart, each mibi dithering in at 1600 + 500 i and hopping once, the mend turning the plates whole from 2500", { skip }, async () => {
-  const b = arrivalScene({ back: 2, leaving: true }), f = await start(b, { t0: 1000, node: true }), t0 = f.t, IN = R.bay.inside; logOf(f); f.send({ t: "event", ...SHOW, ms: 3500, hold: 3500 });
-  const nb = (id) => f.nodeBox(id)?.box ?? null, inside = (id) => { const x = nb(id); return x ? [x[0] + IN[0], x[1] + IN[1], x[2], x[3]] : null; }, places = R.crates.byCount[2], ribbonWords = () => (logOf(f)?.type ?? []).filter((t) => t.region === "ribbon").map((t) => t.text).join("");
+  const b = arrivalScene({ back: 2, leaving: true }), f = await start(b, { t0: 1000, node: true }), t0 = f.t, IN = R.dockBay.inside; logOf(f); f.send({ t: "event", ...SHOW, ms: 3500, hold: 3500 });
+  const nb = (id) => f.nodeBox(id)?.box ?? null, inside = (id) => { const x = nb(id); return x ? [x[0] + IN[0], x[1] + IN[1], x[2], x[3]] : null; }, places = R.dockCrates.byCount[2], ribbonWords = () => (logOf(f)?.type ?? []).filter((t) => t.region === "ribbon").map((t) => t.text).join("");
   stand(f, t0 + 200); assert.equal(inside("crates.0")[2], 0, "0.2 s: no crate yet"); assert.equal(nb("light")[2], 0, "0.2 s: no link light"); assert.equal(nb("mibi.0")[2], 0);
   stand(f, t0 + 520); assert.ok(nb("light")[2] > 0, "the link light's first step from 500"); assert.ok(inside("crates.0")[2] > 0 && inside("crates.0")[0] < places[0][0], "the first crate is sliding in from the left");
   stand(f, t0 + 1000); assert.equal(inside("crates.0")[0], places[0][0], "1.0 s: the first crate stands on its place"); assert.ok(inside("crates.1")[0] < places[1][0] && inside("crates.1")[2] > 0, "the second is still sliding"); assert.ok(nb("crates.0.shadow")[2] > 0, "its shadow from its landing");

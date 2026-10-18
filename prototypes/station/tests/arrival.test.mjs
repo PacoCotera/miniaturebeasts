@@ -49,7 +49,7 @@ test("the props of the show: validate against cargo.props.json, name no rectangl
   const R = b.props.regions.arrival; assert.equal(R.ribbon, cargo.strings.arrival.ribbon); assert.deepEqual(R.glints, [false, true]); assert.equal(R.mibis.length, 2); assert.ok(R.mibis.every((id) => /^mibi-adult-S01-304x312|^mibi:/.test(id) || id.includes("304x312") || id.includes("mibi")), R.mibis.join());
   assert.equal(R.plates.max, 3); assert.equal(R.plates.whole, 1); assert.equal(R.plates.mended, 1); assert.equal(R.plates.words, "one mended, free"); assert.equal(R.leaving.faces.length, 1); assert.equal(R.leaving.faces[0], "face-S01-24"); assert.equal(R.leaving.mark, "mark-out-16");
   assert.equal(R.apron, "cargo-bay-apron-992x180"); assert.equal(R.light, "cargo-link-light-976x8"); assert.equal(R.glint, "glint-star-12x12"); assert.equal(R.phase, "show");
-  assert.ok(!JSON.stringify(b.props).match(/"rect"/), "no rectangle in the props"); assert.equal(b.props.regions.crates.places.length, 2);
+  assert.ok(!JSON.stringify(b.props).match(/"rect"/), "no rectangle in the props"); assert.equal(b.props.regions.dockCrates.places.length, 2);
   const broken = build(w, { ...a, broke: true }); assert.equal(broken.props.regions.arrival.ribbon, cargo.strings.arrival.broken);
   const none = world({ mend: { free: 0, paid: 0, broke: false }, shield: 3, reqs: [] }); const n = build(none, { ...arrivalOf(none.st, none.sv, none.r), phase: "show", from: "home", choice: true }); assert.equal(n.props.regions.arrival.plates.words, "", "none mended: no words"); assert.equal(n.props.regions.arrival.leaving.mark, "", "no one leaves: the corner is empty");
 });
@@ -75,7 +75,7 @@ test("the beats' times come from the spec: the link light, the crates' stagger, 
   assert.equal(A.mibis.hop.ms, 175); assert.equal(A.end.at, 3500); assert.equal(A.mibis.at + A.mibis.each * 2 + A.mibis.dither.ms + A.mibis.hop.ms <= 3500, true, "the third mibi's hop ends before the show's end");
 });
 test("every string of the show at its longest, measured: the ribbon (words + 32 ≤ 608), the band's words (≤ 160), the strip's names and lines (≤ 252), the plates (≤ 608), at the spec's sizes and words", () => {
-  const Sg = cargo.strings.arrival, R = cargo.regions.ribbon, D = panel.strings.dock, P = frame.navigation.dock.plates, strip = frame.regions.panel.strip;
+  const Sg = cargo.strings.arrival, R = cargo.regions.dockRibbon, D = panel.strings.dock, P = frame.navigation.dock.plates, strip = frame.regions.panel.strip;
   assert.ok(measure(Sg.ribbon, R.px) + 32 <= 608, "ribbon"); assert.ok(measure(Sg.broken, R.px) <= 576, "the broken ribbon: " + measure(Sg.broken, R.px)); assert.ok(measure(Sg.mended.replace("{n in words}", "three"), 16) <= 160, "three mended, free");
   for (const t of [D.cards.open.name, D.cards.later.name]) assert.ok(words(t) <= 3 && measure(t, strip.name.px) <= strip.name.max, t);
   for (const t of [D.cards.open.line.replace("{n in words}", "three"), D.cards.open.line.replace("{n in words}", "twelve"), D.oneCrate, D.cards.later.line]) assert.ok(words(t) <= 6 && measure(t, strip.line.px) <= strip.line.max, `${t} (${measure(t, strip.line.px)} px)`);
