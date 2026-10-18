@@ -50,7 +50,7 @@ These rule on the Incubator build spec (`results/T-20261017-incubator-object/bui
 | --- | --- | --- |
 | header price | the Essence it costs (`instantGrowCost`), as the kit's price run | none |
 | window | **the hatched look at the panel's reduction (×0.733):** the day room crop, the day interior, this bud's species' **opened pod**, the **juvenile** it becomes (about 126 tall), and the open door. This is the room's hatch at 1000, framed as the panel frames the incubate look | **the growing look at the panel's reduction:** the day room crop, the day interior, the bud's sealed pod, the closed glass, and **the bar lit to its current progress** |
-| caption | none | "ready in about {n} min" (Inter 16, `ink`, centred, 16 above the window's foot). It is the one fact the picture can't carry |
+| caption | none | none. "ready in about {n} min" is Wait's header readout (round 3 §1) |
 
 - **✓ Hatch now:** the panel goes as a cut, and §4.2 plays (the bar fills, the door opens, the hatch).
 - **✓ Wait, or ←:** the dither back to the Incubator, unchanged.
