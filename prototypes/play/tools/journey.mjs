@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// The play-page journey: the page that holds the Station and the Companion side by side, played headless. It serves prototypes/ as the sandbox does, opens
-// /sandbox/play/?test in Chromium. There is no save fixture: each context starts a fresh Companion world, and A, B1–B7, C and the short tier seed their crate with `__st.seedCrate("S01", 2, 4101)`; B8 crosses a real
-// Companion crate. It proves: A, the layout at 1× (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
-// the lift; C, the narrow tier; D, the figures it prints (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize; and the short tier at 1280 × 690, where the
-// owner's window sits. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
+// The play-page journey: the page that holds the Station and the Companion, each with its key tray, played headless. It serves prototypes/ as the sandbox does, opens
+// /sandbox/play/?test in Chromium. There is no save fixture: each context starts a fresh Companion world, and A, B1-B7, C and the stack journey seed their crate with `__st.seedCrate("S01", 2, 4101)`; B8 crosses a real
+// Companion crate. It proves: A, the Row layout at 1x (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
+// the lift; C, the narrow tier; ST, the Stack and the dock round trip in it with the page scrolled (the Station wholly in view after the contact beat); M, the layouts and key minimums measured at 1280 x 720, 1440 x 900,
+// 1920 x 1080, 2560 x 1440 and 1440 x 900 at dpr 1.25 and 1.75 (each key's CSS box, the trays, the Companion never cut, both faces on whole device pixels); K, the Caddy's screen always shown; D, the figures it prints
+// (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
 //   node prototypes/play/tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
-//   PLAY_CAPTURES=1 node prototypes/play/tools/journey.mjs     also writes the 1× captures of img/ (clipped to the page)
+//   PLAY_CAPTURES=1 node prototypes/play/tools/journey.mjs     also writes the captures of img/ (clipped to the page)
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync, mkdirSync } from "node:fs";
 import path from "node:path";
@@ -81,19 +82,20 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
 // ---- A. layout at 1× (viewport 1920 × 1080) ----
 {
   const { ctx, page, st, mb } = await open(1920, 1080);
-  eq(await page.evaluate(() => __play.tier), "wide", "A: the tier at 1920 × 1080");
-  eq(await box(page, "#fStation"), [20, 60, 1024, 600], "A: the Station frame"); eq(await box(page, "#fCompanion"), [1076, 60, 450, 600], "A: the Companion frame");
-  eq(await box(page, "#dockCtl"), [1484, 4, 168, 32], "A: the control"); eq(await box(page, "#cradle"), [1068, 728, 466, 28], "A: the cradle"); eq(await box(page, "#lamp"), [1080, 744, 8, 8], "A: the lamp");
-  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("bench")).display, !!document.getElementById("fBench").getAttribute("src")]), ["none", false], "A: the workbench is hidden and not loaded");
-  const sImg = rd(await page.screenshot({ clip: { x: 20, y: 60, width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
+  eq(await page.evaluate(() => __play.tier), "row", "A: the layout at 1920 × 1080");
+  eq(await box(page, "#fStation"), [195, 64, 1024, 600], "A: the Station frame"); eq(await box(page, "#fCompanion"), [1259, 64, 450, 600], "A: the Companion frame");
+  eq(await box(page, "#dockCtl"), [1484, 0, 168, 40], "A: the control"); eq(await box(page, "#cradle"), [1251, 744, 466, 28], "A: the cradle"); eq(await box(page, "#lamp"), [1263, 760, 8, 8], "A: the lamp");
+  eq([await box(page, "#shStation"), await box(page, "#rowStation"), await box(page, "#shCompanion"), await box(page, "#rowCompanion")], [[187, 56, 1040, 616], [187, 672, 1040, 72], [1251, 56, 466, 616], [1251, 672, 466, 72]], "A: the shells and their joined trays");
+  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("fBench")).display, !!document.getElementById("fBench").getAttribute("src")]), ["none", false], "A: the workbench is hidden and not loaded");
+  const sImg = rd(await page.screenshot({ clip: { x: 195, y: 64, width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
   expect(sameImage(sImg, sCap), "A: the page's Station frame is pixel-equal to __st.capture() (1:1)");
-  const cImg = rd(await page.screenshot({ clip: { x: 1076, y: 60, width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
+  const cImg = rd(await page.screenshot({ clip: { x: 1259, y: 64, width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
   expect(sameImage(cImg, cCap), "A: the page's Companion frame is pixel-equal to __mb.capture() (1:1)");
   // one reading: every drawn key's img is whole at 24 px
-  const keyImgs = await page.evaluate(() => [...document.querySelectorAll(".k img, .bk img")].map((i) => ({ complete: i.complete, w: i.naturalWidth })));
+  const keyImgs = await page.evaluate(() => [...document.querySelectorAll(".k img")].map((i) => ({ complete: i.complete, w: i.naturalWidth })));
   expect(keyImgs.length >= 4 && keyImgs.every((i) => i.complete && i.w === 24), `A: each drawn key's img is complete with naturalWidth 24 (${keyImgs.length} read)`);
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
-  await clip(page, "play-wide-away.png");
+  await clip(page, "play-row-away.png");
   await ctx.close();
   // in a context created at dpr 1.25 the Station frame is 819.2 CSS px (1024 device px) and both screens equal their captures pixel for pixel
   const hi = await open(1920, 1080, { dsf: 1.25 });
@@ -130,16 +132,16 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "arrival"], "B2: the dock plays the arrival over the screen the player is on: Cargo's arrival");
   eq([s.word, s.mark.includes("solid"), s.dot], ["Lift", true, false], "B2: the control reads Lift with the solid mark and no dot");
   await lampIs(page, "mint", "B2");
-  near((await box(page, "#fCompanion"))[1], 68, "B2: the Companion frame is at y 68 (seated)");
+  near((await box(page, "#fCompanion"))[1], 72, "B2: the Companion frame is at y 72 (seated)");
   const ring = await page.evaluate(() => __play.rects().ring), sh = await box(page, "#shStation"); expect(ring[0] < sh[0] && ring[1] < sh[1], "B2: the ring is on the Station shell");
   eq(s.active, "fStation", "B2: the keys went to the Station"); eq(s.live, "Companion docked", "B2: the live region");
   eq(await mb().evaluate(() => window.__mb.isDocked()), true, "B2: the Companion frame sees the dock");
-  await later(page, st, "B2", async () => eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.pods.focus.cur]), ["pods", podsRing], "B2: after the arrival, Later returns to Pods with its ring where it was")); await clip(page, "play-wide-docked.png");   // the arrival is over and Later is pressed
+  await later(page, st, "B2", async () => eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.pods.focus.cur]), ["pods", podsRing], "B2: after the arrival, Later returns to Pods with its ring where it was")); await clip(page, "play-row-docked.png");   // the arrival is over and Later is pressed
   await page.keyboard.press("r"); await page.waitForTimeout(300);
   eq(await st().evaluate(() => window.__st.UI.screen), "pods", "B3: the keys are the Station's: R shows Pods");
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600); s = await state(page);
   eq(await st().evaluate(() => [window.__st.ST.dock.docked, window.__st.UI.screen]), [false, "pods"], "B4: lifted, and the Station stays on Pods");
-  eq([s.word, s.mark.includes("outline")], ["Dock", true], "B4: the control reads Dock again"); near((await box(page, "#fCompanion"))[1], 60, "B4: the Companion frame is back at y 60");
+  eq([s.word, s.mark.includes("outline")], ["Dock", true], "B4: the control reads Dock again"); near((await box(page, "#fCompanion"))[1], 64, "B4: the Companion frame is back at y 64");
   await lampIs(page, "stone", "B4"); eq(s.active, "fCompanion", "B4: the Companion has the keys"); eq(s.live, "Companion lifted", "B4: the live region");
   // B5: Create keeps the player where they are, with the plate
   await st().evaluate(() => { const S = window.__st; S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 1); S.openCreate(p.id); }); await page.waitForTimeout(400);
@@ -173,13 +175,14 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion")], ["visible", "hidden"], "C: Dock shows the Station");
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.ST.dock.docked]), ["cargo", true], "C: Dock shows the Station: the arrival on Cargo, docked");
+  expect(/^Caddy: Companion home/.test(await page.evaluate(() => document.getElementById("note").textContent)), "C: narrow has no Caddy block: the bar's note says the Caddy's lines"); eq(await page.evaluate(() => document.getElementById("caddySheet").classList.contains("hidden")), true, "C: no Caddy block in narrow");
   await later(page, st, "C", async () => eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.UI.home.f]), ["home", "room"], "C: after the arrival, the screen is Home with the ring on the room"), true);
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
   eq([await vis("shStation"), await vis("shCompanion"), await st().evaluate(() => window.__st.ST.dock.docked)], ["hidden", "visible", false], "C: Lift shows the Companion");
   // the bench is hidden in narrow too: no tab, no sheet, the stage stays live
-  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, getComputedStyle(document.getElementById("bench")).display, document.getElementById("stage").hasAttribute("inert")]), ["none", "none", false], "C: no Bench tab and no sheet");
+  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, document.getElementById("stage").hasAttribute("inert")]), ["none", false], "C: no Bench tab, the stage is live");
   await page.click("#tabCompanion"); await page.waitForTimeout(300);
-  eq(await page.evaluate(() => [__play.owner, document.getElementById("stage").hasAttribute("inert"), document.getElementById("note").classList.contains("hidden")]), ["companion", false, false], "C: the Companion tab lowers the sheet and the stage is live again");
+  eq(await page.evaluate(() => [__play.owner, document.getElementById("stage").hasAttribute("inert"), document.getElementById("note").classList.contains("hidden")]), ["companion", false, false], "C: the Companion tab has the keys and the note shows");
   // the hidden frame's storage path: the Station is hidden, a crate arrives, the control's dot changes within 600 ms
   eq((await state(page)).dot, false, "C: no dot before the crate");
   await st().evaluate(() => window.__st.seedCrate("S01", 1, 7)); await page.waitForTimeout(600);
@@ -187,61 +190,117 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   await ctx.close();
 }
 
-// ---- the short tier at 1280 × 690 (the owner's window): both devices at 1:1, and one dock ----
+// ---- ST. the Stack (1440 x 900): the Station on top, the Companion under it; the dock round trip with the page scrolled to the Companion ----
 {
-  const { ctx, page, st, mb } = await open(1280, 690);
-  eq(await page.evaluate(() => __play.tier), "short", "S: the tier at 1280 × 690");
-  const sb = await box(page, "#fStation"), cb = await box(page, "#fCompanion"); eq([sb[2], sb[3], cb[2], cb[3]], [1024, 600, 450, 600], "S: both frames at 1:1");
-  eq(sb.slice(0, 2), [20, 56], "S: the Station frame");
+  for (const motion of [false, true]) {
+    const { ctx, page, st, mb } = await open(1440, 900, { motion, query: "?test&seed=3" });
+    const tag = "ST" + (motion ? " (eased scroll)" : "");
+    eq(await page.evaluate(() => __play.tier), "stack", tag + ": the layout at 1440 × 900");
+    eq([await box(page, "#shStation"), await box(page, "#rowStation"), await box(page, "#shCompanion")], [[192, 56, 1040, 616], [192, 672, 1040, 72], [479, 768, 466, 616]], tag + ": the column: the Station shell, its tray, the Companion shell under it, both centred (the tray joined, 24 between the blocks)");
+    const [sc, ch, sh] = await page.evaluate(() => __play.scroll); eq([sh + 40, sc], [1812, 0], tag + ": the column is 1,812 tall and starts at the top");
+    await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
+    await page.click("#tabCompanion"); await page.waitForTimeout(motion ? 500 : 100);
+    const inView = async (sel) => { const b = await box(page, sel); return b[1] >= 40 - 0.5 && b[1] + b[3] <= 900 + 0.5; };
+    eq(await page.evaluate(() => __play.owner), "companion", tag + ": the tab gives the Companion the keys");
+    expect((await inView("#shCompanion")) && (await inView("#rowCompanion")), tag + ": the page scrolled the Companion wholly into view, its tray included");
+    expect((await page.evaluate(() => __play.scroll))[0] > 0, tag + ": the page scrolled");
+    await clip(page, "play-stack-companion.png");
+    await page.keyboard.press("Shift+D"); await page.waitForTimeout(motion ? 900 : 700);
+    eq(await st().evaluate(() => window.__st.ST.dock.docked), true, tag + ": docked");
+    eq(await page.evaluate(() => __play.owner), "station", tag + ": after the contact beat the Station has the keys");
+    await page.waitForTimeout(motion ? 400 : 100);
+    expect((await inView("#shStation")) && (await inView("#rowStation")), tag + ": and the Station is wholly in view, its tray included: the arrival is seen");
+    eq((await page.evaluate(() => __play.scroll))[0], 0, tag + ": the page scrolled back to the top");
+    await clip(page, "play-stack-docked.png");
+    await later(page, st, tag, async () => {});   // the arrival is over
+    await page.keyboard.press("Shift+D"); await page.waitForTimeout(motion ? 900 : 700);
+    eq([await st().evaluate(() => window.__st.ST.dock.docked), await page.evaluate(() => __play.owner)], [false, "companion"], tag + ": lifted: the Companion has the keys");
+    await page.waitForTimeout(motion ? 400 : 100); expect((await inView("#shCompanion")) && (await inView("#rowCompanion")), tag + ": the Companion is wholly in view after the lift");
+    // a device already wholly in view does not move the page
+    await page.evaluate(() => { document.getElementById("stage").scrollTop = 0; }); await page.waitForTimeout(100);
+    await page.click("#tabStation"); await page.waitForTimeout(200); const s0 = (await page.evaluate(() => __play.scroll))[0];
+    await page.click("#tabStation"); await page.waitForTimeout(300); eq((await page.evaluate(() => __play.scroll))[0], s0, tag + ": a device already in view does not move the page");
+    await ctx.close();
+  }
+}
+{
+  // the Stack at 1280 x 720 (the owner's window): the page scrolls, and one dock
+  const { ctx, page, st, mb } = await open(1280, 720);
+  eq(await page.evaluate(() => __play.tier), "stack", "S: the layout at 1280 × 720");
+  const sb = await box(page, "#fStation"); eq([sb[2], sb[3]], [1024, 600], "S: the Station frame is 1:1");
   const sImg = rd(await page.screenshot({ clip: { x: sb[0], y: sb[1], width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
   expect(sameImage(sImg, sCap), "S: the Station frame is pixel-equal to its capture");
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
-  await clip(page, "play-short.png");
+  await clip(page, "play-stack-720.png");
   await page.click("#dockCtl"); await page.waitForTimeout(700);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "S: the control docks once");
   await page.click("#tabCompanion"); await page.waitForTimeout(400);
-  const cb2 = await box(page, "#fCompanion"); eq([cb2[0], cb2[2], cb2[3]], [1280 - 1546 + 1068 + 8, 450, 600], "S: the Companion focused: the row panned by W − R");
+  const cb2 = await box(page, "#fCompanion"); eq([cb2[2], cb2[3]], [450, 600], "S: the Companion frame is 1:1");
   const cImg = rd(await page.screenshot({ clip: { x: cb2[0], y: cb2[1], width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
-  expect(sameImage(cImg, cCap), "S: the Companion frame is pixel-equal to its capture (the Station's check, applied to the Companion once it is panned into view)");
-  await clip(page, "play-short-companion.png");
+  expect(sameImage(cImg, cCap), "S: the Companion frame, scrolled into view, is pixel-equal to its capture");
+  const keys = await box(page, "#rowCompanion"); expect(keys[1] + keys[3] <= 720 + 0.5, "S: its key tray is in view too");
+  await clip(page, "play-stack-720-companion.png");
   await ctx.close();
 }
 
-// ---- K. the Caddy's screen (T-20261016-109): raised from the cradle at a seat, 6000 ms, then lowered; Shift+C pins it (1920 × 1080, the bench shelf) ----
+// ---- M. the layouts and the key minimums, measured (the ruling's checks) ----
+const SIZES = [[1280, 720, 1, "stack"], [1440, 900, 1, "stack"], [1920, 1080, 1, "row"], [2560, 1440, 1, "row"], [1440, 900, 1.25, "stack"], [1440, 900, 1.75, "stack"]];
+const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Research: 56, Library: 56, Back: 56, Call: 56, Confirm: 64 };
+{
+  for (const [w, h, dsf, layout] of SIZES) {
+    const tag = `M ${w}×${h}${dsf === 1 ? "" : " @" + dsf}`;
+    const { ctx, page, st, mb } = await open(w, h, { dsf });
+    const m = await page.evaluate(() => {
+      const r = (s) => { const b = document.querySelector(s).getBoundingClientRect(); return [b.left, b.top, b.width, b.height]; };
+      const stage = document.getElementById("stage");
+      return { tier: __play.tier, dpr: devicePixelRatio, keys: [...document.querySelectorAll(".k")].map((k) => { const b = k.getBoundingClientRect(), t = k.parentElement.getBoundingClientRect(); return { dev: k.closest("#rowStation") ? "station" : "companion", name: k.getAttribute("aria-label"), w: b.width, h: b.height, l: b.left - t.left, r: t.right - b.right, top: b.top - t.top, bot: t.bottom - b.bottom }; }),
+        trays: { station: r("#rowStation"), companion: r("#rowCompanion") }, shells: { station: r("#shStation"), companion: r("#shCompanion") }, rows: __play.geom.rows,
+        bar: { height: r("#bar")[3], tabs: [r("#tabStation"), r("#tabCompanion")], dock: r("#dockCtl"), keysBtn: r("#keysBtn") }, sw: stage.scrollWidth, cw: stage.clientWidth, sh: stage.scrollHeight, ch: stage.clientHeight, caddy: r("#caddySheet"), cradle: r("#cradle"), inner: [innerWidth, innerHeight] };
+    });
+    const e = 1 / m.dpr + 1e-6;   // a CSS px size is whole physical pixels: never more than one device pixel over the minimum
+    eq(m.tier, layout, tag + ": the layout");
+    for (const kk of m.keys) { const min = MIN[kk.name]; expect(kk.w >= min - 1e-6 && kk.w <= min + e && kk.h >= min - 1e-6 && kk.h <= min + e, `${tag}: ${kk.dev} ${kk.name} is ${kk.w} × ${kk.h} CSS px, wanted ${min} × ${min}`); }
+    eq(m.keys.length, 17, tag + ": 10 Station keys and 7 Companion keys");
+    expect(m.keys.every((kk) => kk.top >= 3.9 && kk.bot >= 3.9), tag + ": each key is inside its tray's rows, 4 from the row's top");
+    eq(m.rows, { station: dsf === 1.75 ? 2 : 1, companion: dsf === 1 ? 1 : 2 }, tag + ": the rows in each tray (ruling 6.1)");
+    for (const d of ["station", "companion"]) { near(m.trays[d][2], m.shells[d][2], tag + ": the " + d + " tray is as wide as its shell", 1 / 64 + 0.01); near(m.trays[d][3], 72 * m.rows[d], tag + ": the " + d + " tray is 72 CSS px a row", 1 / 64 + 0.01); }
+    near(m.trays.station[1], m.shells.station[1] + m.shells.station[3], tag + ": the Station tray is joined to its shell", 1 / 64 + 0.01);
+    expect(m.keys.every((kk) => kk.l >= -0.01 && kk.r >= -0.01), tag + ": no row overflows its tray");
+    expect(m.bar.height === 40 && m.bar.tabs.every((t) => t[3] >= 40 && t[3] <= 40 + e && t[2] >= 120) && m.bar.dock[3] >= 40 && m.bar.dock[3] <= 40 + e && m.bar.dock[2] >= 168 && m.bar.keysBtn[3] >= 40, `${tag}: the bar's controls are 40 tall, tabs ≥ 120 wide, Dock ≥ 168 wide (${JSON.stringify(m.bar)})`);
+    // never cut: nothing scrolls sideways, and both shells and the Caddy's block lie wholly across the page
+    expect(m.sw <= m.cw, `${tag}: the page does not scroll sideways (${m.sw} of ${m.cw})`);
+    const geom = await page.evaluate(() => __play.geom);
+    expect(geom.companion.x >= 0 && geom.companion.x + geom.companion.w <= m.cw + 0.5 && geom.station.x >= 0 && geom.station.x + geom.station.w <= m.cw + 0.5, tag + ": the Companion and the Station are whole across the page");
+    expect(m.caddy[0] >= 0 && m.caddy[0] + m.caddy[2] <= m.inner[0] + 0.5, tag + ": the Caddy's block is whole across the page");
+    near(m.caddy[2], (808 * Math.max(1, Math.floor(dsf))) / dsf, tag + ": the Caddy's block is 808 lp wide", 1 / 64 + 0.01);
+    if (dsf === 1) { if (layout === "stack") eq(m.sh + 40, 1812, tag + ": the Stack is 1,812 tall"); else expect(m.sh <= m.ch, tag + ": the Row fits without scrolling"); }
+    if (layout === "row") { near(m.shells.companion[0] - m.shells.station[0] - m.shells.station[2], 24, tag + ": 24 between the shells", 0.02); near(m.caddy[0] + m.caddy[2], m.shells.station[0] + m.shells.station[2], tag + ": the Caddy's block is right-aligned to the Station shell", 0.02); near(m.caddy[1] - m.trays.station[1] - m.trays.station[3], 24, tag + ": 24 under the Station's tray", 0.02); }
+    else { near(m.shells.companion[1] - m.trays.station[1] - m.trays.station[3], 24, tag + ": 24 between the blocks", 0.02); near(m.caddy[1] - m.cradle[1] - m.cradle[3], 24, tag + ": the Caddy's block is 24 under the cradle", 0.02); }
+    // both faces on whole device pixels at the page's top (the Station) and with the Companion scrolled into view
+    eq(await frameBad(page, null, "#fStation", 1024, () => st().evaluate(() => window.__st.capture())), 0, tag + ": the Station's differing device pixels");
+    await page.evaluate(() => { const g = __play.geom.companion, s = document.getElementById("stage"); s.scrollTop = Math.max(0, g.y - 16); }); await page.waitForTimeout(200);
+    eq(await frameBad(page, null, "#fCompanion", 450, () => mb().evaluate(() => window.__mb.capture())), 0, tag + ": the Companion's differing device pixels");
+    await page.evaluate(() => { document.getElementById("stage").scrollTop = 0; }); await page.waitForTimeout(100);
+    await clip(page, `play-${w}x${h}${dsf === 1 ? "" : "-dpr" + dsf}.png`);
+    await ctx.close();
+  }
+}
+
+// ---- K. the Caddy's screen: always shown in its own 808 × 288 block, redrawn only when its lines change; Shift+C is retired (1920 × 1080, the Row) ----
 {
   const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3" });
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   const sheet = () => page.evaluate(() => __play.caddySheet);
-  eq((await sheet()).up, false, "K: hidden by default"); expect(await page.locator("#caddySheet").isHidden(), "K: the sheet is not shown before a dock");
-  await page.click("#dockCtl"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "K: docked");
-  let k = await sheet(); eq(k.up, true, "K: the dock raises the Caddy's screen");
-  eq(await box(page, "#caddySheet"), [734, 760, 808, 288], "K: the sheet"); eq(await box(page, "#caddyView"), [742, 768, 792, 272], "K: the view, 1 lp per view pixel");
-  eq([k.lines.line1, k.lines.line2], ["Companion home", "one crate"], "K: its lines read the docked state");
+  eq((await sheet()).up, true, "K: shown before any dock"); expect(await page.locator("#caddySheet").isVisible(), "K: the block is visible with the Companion away");
+  eq(await box(page, "#caddySheet"), [419, 768, 808, 288], "K: the block, under the Station and right-aligned to its shell"); eq(await box(page, "#caddyView"), [427, 776, 792, 272], "K: the view, 1 lp per view pixel, 8 lp inside");
   eq(await page.evaluate(() => [document.getElementById("caddyView").width, document.getElementById("caddyView").height]), [792, 272], "K: the canvas is the view's 792 × 272");
-  eq(await page.evaluate(() => getComputedStyle(document.getElementById("bench")).display), "none", "K: the workbench stays hidden");
-  await clip(page, "play-caddy-sheet.png");   // the Caddy's screen raised over the shelf, docked with one crate
-  await page.waitForTimeout(6200); eq((await sheet()).up, false, "K: lowered 6000 ms after the dock");
-  await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); k = await sheet(); eq([k.up, k.pinned], [true, true], "K: Shift+C pins it up");
-  await page.waitForTimeout(6200); eq((await sheet()).up, true, "K: a pinned screen stays past 6000 ms");
-  await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); k = await sheet(); eq([k.up, k.pinned], [false, false], "K: Shift+C again lowers it");
-  eq(k.refreshes, 2, "K: two partial refreshes: away at load, then docked (Shift+C redraws nothing)");
-  await ctx.close();
-}
-
-// ---- standard (1440 × 900), the wide developer column and the standalone control, for the captures ----
-{
-  const { ctx, page, st } = await open(1440, 900);
-  await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
-  await page.click("#tabCompanion"); await page.waitForTimeout(400);
-  near((await box(page, "#fCompanion"))[0], 1440 - 1546 + 1068 + 8, "standard: the Companion focused pans −106", 0.51);
-  eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, getComputedStyle(document.getElementById("benchHandle")).display]), ["none", "none"], "standard: no Bench tab and no handle");
-  await page.click("#tabCompanion"); await page.waitForTimeout(300);
-  await clip(page, "play-standard-companion.png");
-  await page.click("#dockCtl"); await page.waitForTimeout(700);   // K, standard tier: no sheet; the bar's note says the Caddy's lines for 4000 ms
-  eq(await page.evaluate(() => [__play.caddySheet.up, document.getElementById("caddySheet").classList.contains("hidden")]), [false, true], "K: standard: no Caddy sheet");
-  eq(await page.evaluate(() => [document.getElementById("note").textContent, !document.getElementById("note").classList.contains("hidden")]), ["Caddy: Companion home · one crate", true], "K: standard: the note shows the Caddy's line after a dock");
-  await page.keyboard.press("Shift+C"); await page.waitForTimeout(200); eq(await page.evaluate(() => __play.caddySheet.up), false, "K: standard: Shift+C does nothing");
-  await page.waitForTimeout(4200); eq(await page.evaluate(() => document.getElementById("note").classList.contains("hidden")), true, "K: standard: the note goes after 4000 ms");
+  const away = (await sheet()).lines; expect(away && away.line1 !== "Companion home", "K: its lines read the away state before a dock (" + JSON.stringify(away) + ")");
+  await page.click("#dockCtl"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "K: docked");
+  const k = await sheet(); eq([k.lines.line1, k.lines.line2], ["Companion home", "one crate"], "K: its lines read the docked state");
+  await clip(page, "play-row-caddy.png");
+  await page.waitForTimeout(6200); eq((await sheet()).up, true, "K: it stays, nothing lowers it");
+  await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); eq((await sheet()).up, true, "K: Shift+C does nothing");
+  eq((await sheet()).refreshes, 2, "K: two partial refreshes: away at load, then docked (nothing else redraws it)");
   await ctx.close();
 }
 {
