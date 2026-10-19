@@ -167,7 +167,7 @@ This settles Home's profile, which the Vivarium spec had left to be measured.
 - the lamp at its top right (the existing 12 × 12 `home-lamp-hairline` off, `home-lamp-amber` when it needs the player);
 - **line 1** (20, `bone`, at most 4 words) at (12, 34);
 - **line 2** (16, `mist`, at most 4 words) at (12, 64);
-- its picture, right-aligned 12 in and vertically centred.
+- its picture, right-aligned 8 in (§11.4 gives each station's size and row).
 
 Nothing is red or negative, and there is never a third line.
 
@@ -416,3 +416,8 @@ There is no subject on a focus. The station's own lines already say its state. *
 5. **Berth order:** waiting crates first, then shut berths, then the portrait berth last, as the art director's proof shows. **An unidentified pod** shows the sealed generic shell (`rackpod:unknown`), as the T-236 ruling requires.
 
 The 5 px gap before the portrait berth (T-198) builds with that ticket.
+
+**After the art director's pass on H3** (work-queue e891c07e):
+- **Line 1 beside the 102 row** (two crates and the portrait) is 16 px, by §11.4's rule. The column ends 8 short of the first berth (96 wide), and "2 crates in" at 20 px is about 99, so it drops to 16. The rule stands as written, and the stills are right.
+- **The Companion's line 1 without a name** ("at home") is right only when no mibi is carried. The builder checks the fixtures: a still meant to show a carried mibi must show its name, as "Dot at home" does.
+- **§4.3's "12 in"** is now 8, as §11.4 and the build have it.
