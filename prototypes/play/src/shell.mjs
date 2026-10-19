@@ -8,6 +8,7 @@ import { canvasPainter, createPaper, caddyLines } from "./caddy.mjs";   // the C
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), DEV = params.has("dev"), SEED = params.get("seed");
 const $ = (id) => document.getElementById(id);
+const BENCH = false;   // the workbench is hidden on the play page (an outdated tool, to be removed): no container, no handle, no tab, never loaded; its own page stays
 const R = 1546;   // the row's width: the Station shell, the gap and the Companion shell
 const SEAT_MS = 160, EASE = [0, 0, 0.2, 1];
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -105,7 +106,8 @@ function layout() {
   // the bar
   place(bar, 0, 0, W, 40);
   const tw = short || narrow ? [12, 124, 236] : [12, 144, 276], tabW = short || narrow ? 104 : 124;
-  ["station", "companion", "bench"].forEach((d, i) => { place(tabs[d], tw[i], 4, tabW, 32); tabs[d].classList.toggle("on", owner === d); tabs[d].setAttribute("aria-pressed", String(owner === d)); });
+  tabs.bench.classList.toggle("hidden", !BENCH);
+  ["station", "companion", "bench"].filter((d) => BENCH || d !== "bench").forEach((d, i) => { place(tabs[d], tw[i], 4, tabW, 32); tabs[d].classList.toggle("on", owner === d); tabs[d].setAttribute("aria-pressed", String(owner === d)); });
   const iconOnly = narrow || (short && W < 1104);
   const dockX = narrow ? W - 232 : short ? (iconOnly ? W - 232 : W - 360) : W - 436, dockW = iconOnly ? 40 : 168;
   place(dockCtl, dockX, 4, dockW, 32);
@@ -113,7 +115,7 @@ function layout() {
   place(devBtn, short || narrow ? W - 112 : W - 160, 4, short || narrow ? 100 : 148, 32);
   devBtn.textContent = short || narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
   layoutDock(iconOnly);
-  const sheetUp = benchRaised && !hasShelf();
+  const sheetUp = BENCH && benchRaised && !hasShelf();
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one where the Caddy's screen has no room (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
   note.classList.toggle("hidden", !(noteCaddy || narrow) || sheetUp);
@@ -154,7 +156,7 @@ function layout() {
 }
 const benchBox = () => (bench.classList.contains("hidden") ? (handle.classList.contains("hidden") ? null : [0, H - 40, W, 40]) : hasShelf() ? [12, 760, R - 24, H - 772] : [0, 40, W, H - 40]);
 function layoutBench() {
-  const shelf = hasShelf(), sheet = benchRaised && !shelf, showHandle = !shelf && !benchRaised && (tier === "wide" || tier === "standard");
+  const shelf = BENCH && hasShelf(), sheet = BENCH && benchRaised && !hasShelf(), showHandle = BENCH && !hasShelf() && !benchRaised && (tier === "wide" || tier === "standard");
   const container = shelf || sheet;
   bench.classList.toggle("hidden", !container); handle.classList.toggle("hidden", !showHandle);
   if (container && !benchLoaded) { benchLoaded = true; frames.bench.src = "../workbench/"; }
@@ -208,7 +210,7 @@ function setOwner(d, opts = {}) {
   const tgt = panTarget(); if (tgt !== ox && !panTween) panTo(tgt); else if (panTween) { panTween.cancel(); panTween = null; panTo(tgt); }
   layout(); if (focus) giveKeys(d);
 }
-const order = ["station", "companion", "bench"];
+const order = BENCH ? ["station", "companion", "bench"] : ["station", "companion"];
 const cycle = (dir) => setOwner(order[(order.indexOf(owner) + dir + order.length) % order.length]);
 
 // the page's keys, caught in the capture phase of each frame's window and of the shell's own, before any device hears them

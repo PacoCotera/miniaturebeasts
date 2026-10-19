@@ -1,4 +1,4 @@
-// Pods' chapter page on the face (station-fix5-pods-spec.md, P1 to P7), in Node on the WebAssembly build, on the props views/pods-props.mjs gives for real pods of the real frames:
+// Pods' chapter page on the face (P1 to P7), in Node on the WebAssembly build, on the props views/pods-props.mjs gives for real pods of the real frames:
 //   P2 a read cell draws its tone only under a placed crop; P3 no flat tone behind the sealed find; P4 the origin comes from the pod's frame and the heading never moves as the rail steps;
 //   P7 a read doing asks for its one plate (no look suffix) and draws its value under the name, an unread doing draws no line; P1 no page cell ends right of x 952 for any frame of S01 to S16.
 // Skipped when the face has not been built (build.sh).

@@ -88,7 +88,7 @@ async function timedStates(visit) {
         hatched.name = h.name;
       }
       await step(/moving/.test(name) ? 7000 : 3000);
-      await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = null; });
+      await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = "12:00"; });
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }

@@ -71,6 +71,21 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), ty, g_tagSlot ? 0 : tw, px, ink);
 }
 
+/* The living window's name tag (T-20261018-235): the same panel and name as build_nameTag, centred on the figure's feet point `fx`, its top at `yBelow` (feetY + 16), or at `yOver` (over the figure) when its bottom would pass
+   8 px inside the window or `forceOver` (a sleeper's tag is always over its curl); slid to stay 8 px inside the window. Returns the tag's rect in out. */
+void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx, int yBelow, int yOver, int forceOver, int out[4]) {
+  int h = si(sp, "regions.nameTag.h", 24), pad = si(sp, "regions.nameTag.pad", 8), px = si(sp, "regions.nameTag.px", 16), round = si(sp, "regions.nameTag.round", 8), mn = si(sp, "regions.nameTag.min", 48), mx = si(sp, "regions.nameTag.max", 1 << 20);
+  int tw = v_measure(name, px), w = tw + 2 * pad; w = (w + round - 1) / round * round; if (w < mn) w = mn; if (w > mx) w = mx;
+  int gx = sk(sp, v_fmt("%s.rect", glass), 0), gy = sk(sp, v_fmt("%s.rect", glass), 1), gw = sk(sp, v_fmt("%s.rect", glass), 2), gh = sk(sp, v_fmt("%s.rect", glass), 3);
+  int x = fx - w / 2, y = yBelow;
+  if (y + h > gy + gh - 8 || forceOver) y = yOver;
+  if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
+  out[0] = x; out[1] = y; out[2] = w; out[3] = h;
+  const char *ink = scol(sp, "colours.nameTag.text");
+  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge"));
+  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, ink);
+}
+
 /* the rest knob on the bezel's bottom rail: 32 x 6, at rest at y 546, lifted to 544 while focused; settling from the lift while the `rest` event plays. A flat plate in the knob's three roles. */
 void build_restKnob(int focused) {
   int r[4]; hrect("regions.knob.rect", r); int drawn_w = hk("regions.knob.drawn", 0), drawn_h = hk("regions.knob.drawn", 1);

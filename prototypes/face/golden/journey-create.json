@@ -23,66 +23,6 @@
     "subject": "two chapters unread"
    },
    {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 1,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 2,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 3,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
-   },
-   {
     "key": "down",
     "said": [
      {
@@ -94,12 +34,14 @@
     ],
     "screen": "create",
     "create": {
-     "f": 3,
-     "choices": [],
+     "f": 0,
+     "choices": [
+      "colour"
+     ],
      "grown": false
     },
     "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
     "subject": "two chapters unread"
    },
    {
@@ -139,66 +81,6 @@
     "subject": "two chapters unread"
    },
    {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 1,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 2,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 3,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
-   },
-   {
     "key": "down",
     "said": [
      {
@@ -210,12 +92,14 @@
     ],
     "screen": "create",
     "create": {
-     "f": 3,
-     "choices": [],
+     "f": 0,
+     "choices": [
+      "colour"
+     ],
      "grown": false
     },
     "ok": "Incubate",
-    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
     "subject": "two chapters unread"
    }
   ],
@@ -250,8 +134,10 @@
     ],
     "screen": "create",
     "create": {
-     "f": 3,
-     "choices": [],
+     "f": 0,
+     "choices": [
+      "colour"
+     ],
      "grown": true
     },
     "ok": null,

@@ -46,9 +46,9 @@ async function walk(visit) {
     // Station M1: the night on Idle, Pip alone asleep on its stand-in cells under the developer switch, the Station time 23:00, 60 s of the face's clock (a stir or two)
     await page.evaluate(() => { const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "23:00"; S.settings.light = "night"; });
     await enter(page, { light: "night", set: (w) => { w.adults(1); } }); await step(40); await step(60000);
-    { const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, rest: window.__st.props?.regions?.residents?.map((r) => r.moving && r.rest) })); if (!u.idle || u.rest?.[0] !== "asleep") fail("idle-night-pip-60000ms: " + JSON.stringify(u)); }
+    { const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, rest: window.__st.props?.regions?.residents?.map((r) => r.rest) })); if (!u.idle || u.rest?.[0] !== "asleep") fail("idle-night-pip-60000ms: " + JSON.stringify(u)); }
     await visit("idle-night-pip-60000ms", page, fail);
-    await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = null; S.settings.light = "day"; });
+    await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = "12:00"; S.settings.light = "day"; });
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };

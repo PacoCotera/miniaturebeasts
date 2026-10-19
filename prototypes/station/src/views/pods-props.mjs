@@ -4,6 +4,7 @@
 // asset manifest registers), mode, cur, empty }. Runs in Node, tested there. It is the only view of Pods: the JavaScript drawing it replaced is deleted.
 import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
+import { keyToken } from "../looks.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { pageGrid } from "../../../ui/specs/derive.mjs";
 import { founderPicture } from "./create-props.mjs";
@@ -77,7 +78,7 @@ export function railOf(m, spec, cur, chapters, req, open, focused, withPips = fa
 function specimenOf(m, spec, cur, R, req, mode) {
   const { st, settings } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
   const sizeClass = shellFrame(st, cur)?.pod?.sizeClass ?? "medium", box = spec.classes.pod[sizeClass], N = R.name;
-  const nameText = cur.idd || st.knownIds.includes(S.speciesOf(cur)) ? S.cap(S.spName(cur)) : spec.strings.unknownPod;   // GB1 C4: a pod whose species is known is named by it, identified or not
+  const nameText = cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod;   // the species shows once the pod is identified, and not before
   const sp = shellFrame(st, cur) ? S.speciesOf(cur) : null;
   const out = {
     beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
@@ -118,7 +119,7 @@ function collectionView(view, m, spec, req) {
     const q = st.tray[i], idle = rs(RM.idle);
     if (!q) { places.push({ empty: true, ringLayers: [idle] }); continue; }
     const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, n = flags ? flags.length : 0, closed = n > 0 && flags.every(Boolean);
-    const name = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.cap(S.spName(q)) : spec.strings.unknownPod;
+    const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod;
     const sp = shellFrame(st, q) ? S.speciesOf(q) : null, size = R.pod.size;
     const layer = (tpl, k) => rs(tpl.replace("{N}", n).replace("{i}", k));
     places.push({
@@ -147,7 +148,8 @@ function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") 
     const state = traitState(fr, t, p.genome);
     const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
     if (state.doing) cell.doing = true;   // a doing: one plate per trait, the same for every value; its value is the line under the name (fix 5 P7)
-    if (state.shows) cell.crop = slot(req, state.doing ? `trait-${sid}-${slug(t.name)}-${pw}x${ph}` : `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
+    if (state.shows && !state.doing && (t.id === "colour" || t.id === "markings")) cell.crop = req({ kind: "traittile", id: `mibi:${sid}~${keyToken(`tile:${t.id}=${state.shows}`)}:adult:${pw}x${ph}`, species: sid, trait: t.id, look: state.shows, size: [pw, ph], until: "the trait's crop master" });   // the layered stand cropped (layered-stand.mjs traitTile), composed in the logic process; its id is in the layered stands' family (mibi:<SXX>~<variant>:adult:<w>x<h>), the variant naming the tile
+    else if (state.shows) cell.crop = slot(req, state.doing ? `trait-${sid}-${slug(t.name)}-${pw}x${ph}` : `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
     cell.lines = [state.line];
     const LM = region.lineMarks, glyph = (key) => slot(req, LM.glyphs[key].slice, [0, 0, ...LM.glyphs[key].size], "the line glyph master");   // the glyphs after the name are the studio's: slots by id (an empty slot draws nothing)
     if (LM) {

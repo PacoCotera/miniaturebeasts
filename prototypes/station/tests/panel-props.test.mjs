@@ -100,7 +100,7 @@ test("Incubate is refused before the panel opens when a bud is already growing, 
   { const { st, h } = open(); h.specs.incubator = incubatorSpec; INTENTS.create.intent(h, "roll", "confirm"); assert.ok(h.ui.panel); st.e = 0; st.d = 0; st.s = 0; const s0 = [st.e, st.d, st.s]; dispatch(h, { screen: "panel", target: "card.incubate", verb: "confirm" }); assert.equal(h.ui.panel, null); assert.equal(st.bud, null); assert.equal(h.said.length, 1, "Create's refusal plate"); assert.deepEqual([st.e, st.d, st.s], s0, "nothing spent"); }
 });
 
-// ---- the Return panels (T-20261016-51; spec §1.6): Return it ❀ +2 (a mibi) or ❀ +1 (a pod) from the rules, "gone for good" on the loss card, the ring on Keep, ← and Keep spend nothing ----
+// ---- the Release panels (spec §1.6): Release it ❀ +2 (a mibi) or ❀ +1 (a pod) from the rules, its fact in the text colour (no loss card), no title, the ring on Release, ← and Keep spend nothing ----
 function wildHost(kind) {
   const st = world(), h = host(st); h.specs.habitat = J("habitat.json");
   if (kind === "mibi") { S.seedAdults(st, "S01", 5, 2, settings); h.ui.screen = "habitat"; h.ui.hab = { id: st.mibis[0].id, f: "wild", namer: null, prev: null }; h.ui.panel = { screen: "habitat", id: "wildMibi", focus: "" }; }
@@ -108,23 +108,23 @@ function wildHost(kind) {
   return h;
 }
 const wview = (h) => panelBuild({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump: "arrival" }, panelSpec, frameSpec, podsSpec);
-for (const [kind, gain, title] of [["mibi", S.PRICE.wildMibi, null], ["pod", S.PRICE.wild, "Return this pod?"]]) {
-  test(`the Return panel (${kind}): the gain from the rules, the loss card says it is gone for good, the ring opens on Keep, the scene stands in the glow's place`, () => {
+for (const [kind, gain] of [["mibi", S.PRICE.wildMibi], ["pod", S.PRICE.wild]]) {
+  test(`the Release panel (${kind}): the gain from the rules, the fact in the text colour, no title, the ring opens on Release, the scene stands in the glow's place`, () => {
     const h = wildHost(kind), v = wview(h), [ret, keep] = v.cards, names = h.st.mibis.map((m) => m.name);
     assert.deepEqual(validate(v.overlay, schema, schema), [], "the overlay validates against panel.props.json");
-    assert.equal(v.overlay.regions.title, title ?? `Return ${names[0]}?`);
+    assert.equal(v.overlay.regions.title, "");
     assert.deepEqual([ret.id, keep.id], ["return", "keep"]);
-    assert.equal(ret.cost, S.gainText(gain)); assert.equal(ret.gain, true); assert.equal(ret.loss, true); assert.equal(ret.line, "gone for good"); assert.equal(ret.mark, frameSpec.regions.marks.room[kind === "mibi" ? "vivarium" : "research"]);
+    assert.equal(ret.cost, S.gainText(gain)); assert.equal(ret.gain, true); assert.equal(ret.loss, false); assert.equal(ret.line, kind === "mibi" ? `${names[0]} lives in the wild from now on` : `it goes back to the ${S.PLACE_WORD[h.st.tray[0].g] || "wild"}`); assert.equal(ret.name, kind === "mibi" ? `Release ${names[0]}` : "Release it"); assert.equal(ret.mark, frameSpec.regions.marks.room[kind === "mibi" ? "vivarium" : "research"]);
     assert.equal(keep.cost, ""); assert.equal(keep.mark, ""); assert.equal(keep.line, ""); assert.equal(keep.name, kind === "mibi" ? `Keep ${names[0]}` : "Keep it");
-    assert.equal(v.overlay.focus.cur, "card.keep", "the ring opens on Keep, the way out");
-    assert.equal(v.line.ok, "Keep " + (kind === "mibi" ? names[0] : "it").replace(/^Keep /, ""));
+    assert.equal(v.overlay.focus.cur, "card.return", "the ring opens on Release, on the left");
+    assert.equal(v.line.ok, ret.name);
     const rc = v.overlay.regions.cards; assert.match(rc[0].art.scene, /^panel-scene-wild-\d+x152$/); assert.equal(rc[0].art.glow, ""); assert.equal(rc[1].art.scene, undefined, "Keep keeps the glow"); assert.ok(rc[1].art.glow);
     for (const c of [ret, keep]) assert.ok(measure(c.name, 20) <= P.limits[2].text, c.name);
     assert.ok(!JSON.stringify(panelSpec.strings[kind === "mibi" ? "wildMibi" : "wildPod"]).match(/[❀\d]/), "no figure in the strings: the gain is the rules'");
   });
-  test(`the Return panel (${kind}): the focused Return card puts the gain on the bottom line`, () => {
+  test(`the Release panel (${kind}): the focused Release card puts the gain on the bottom line`, () => {
     const h = wildHost(kind); h.ui.panel.focus = "card.return"; const v = wview(h);
-    assert.equal(v.line.ok, "Return it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "gone for good");
+    assert.equal(v.line.ok, kind === "mibi" ? `Release ${h.st.mibis[0].name}` : "Release it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
   });
 }
 
@@ -138,7 +138,7 @@ test("the Fit the upgrade? panel: the cost from the rules, the part fitted and t
   assert.deepEqual(validate(v.overlay, schema, schema), []); assert.equal(v.overlay.regions.title, "Fit the upgrade?");
   assert.deepEqual([fit.id, later.id], ["fit", "later"]); assert.equal(fit.cost, S.priceText(e, d, 0)); assert.equal(fit.cost, "⚡ 12 ◆ 4"); assert.equal(fit.gain, false); assert.equal(fit.dim, false); assert.equal(fit.short, "");
   assert.equal(fit.picture, "bench-part-t2-fitted-128"); assert.equal(later.picture, "bench-part-t2-dim-128"); assert.deepEqual([fit.mark, later.mark, fit.line, later.cost], ["", "", "reaches further", ""]);
-  assert.equal(v.overlay.focus.cur, "card.fit"); assert.equal(v.line.ok, "Fit it"); assert.equal(v.line.price, "⚡ 12 ◆ 4"); assert.equal(v.line.subject, "reaches further");
+  assert.equal(v.overlay.focus.cur, "card.fit"); assert.equal(v.line.ok, "Fit it"); assert.equal(v.line.price, "⚡ 12 ◆ 4"); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel");
   for (const c of [fit, later]) assert.ok(measure(c.name, 20) <= P.limits[2].text && words(c.name) <= 3, c.name);
   assert.ok(measure(fit.line, 16) <= 208 && words(fit.line) <= 6); assert.ok(!JSON.stringify(panelSpec.strings.fitUpgrade).match(/[⚡◆❀\d]/), "no figure in the strings");
 });

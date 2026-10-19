@@ -24,7 +24,7 @@
   "open"
  ],
  "focus": {
-  "initial": "the first card that is neither dimmed nor a loss; if every card is one or the other, the way-out card",
+  "initial": "the first card that is not dimmed (the option the player came for, on the left); if every card is dimmed, the way-out card",
   "rule": "◀ ▶ the previous and next card, stopping at the ends; ▲ ▼ do nothing; the graph is not a spec graph: the face walks the props' targets in order",
   "targets": {
    "card": {
@@ -71,7 +71,7 @@
  "growNowAbove": 4,
  "bottomLine": {
   "action": "✓ + the focused card's name + its cost",
-  "subject": "the focused card's line, else \"to {the room}\" when it has a destination mark",
+  "subject": "empty on a card-form panel (the card carries its line in full); on the dock's strip form, the focused card's line, else \"to {the room}\" when it has a destination mark",
   "need": "what is short, if anything",
   "back": "Back"
  },
@@ -90,11 +90,11 @@
    "ms": 2000
   },
   "wildMibi": {
-   "title": "Return {name}?",
+   "title": "",
    "cards": {
     "return": {
-     "name": "Return it",
-     "line": "gone for good"
+     "name": "Release {name}",
+     "line": "{name} lives in the wild from now on"
     },
     "keep": {
      "name": "Keep {name}"
@@ -102,11 +102,11 @@
    }
   },
   "wildPod": {
-   "title": "Return this pod?",
+   "title": "",
    "cards": {
     "return": {
-     "name": "Return it",
-     "line": "gone for good"
+     "name": "Release it",
+     "line": "it goes back to the {place}"
     },
     "keep": {
      "name": "Keep it"
