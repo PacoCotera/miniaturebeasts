@@ -154,7 +154,7 @@ The shells sit 8 left of the window's centre because the page keeps a stable scr
 
 | # | Item | Ruling |
 | --- | --- | --- |
-| 1 | room marks: 24 masters drawn at 28 with pixelated rendering | **Smooth scaling, not pixelated.** The keys are page chrome, so the pixel rule is for the faces only. Draw the marks at 28 CSS with `image-rendering: auto`. A 28 (and 56) master would be sharper. That's the art director's call, and it is not blocking |
+| 1 | room marks: 24 masters drawn at 28 with pixelated rendering | **Agreed with the art director (replaces my first answer, smooth at 28): whole-number scales of the 24 masters only.** In device pixels the mark is 24 × n with n = max(1, round(dpr)), nearest-neighbour, centred in its 56 key: 24 CSS at dpr 1, 48 device px at dpr 1.5 and above. In CSS px the mark runs about 19 to 32, always inside the key. Never a fractional step and never smooth. The keys stay 56; no 28 master is needed |
 | 2 | the Call glyph at 24, the same as ✓ | OK. Both are action glyphs, the same size |
 | 3 | the ring round the device block, its top following the seat | OK |
 | 4 | the seat lowers the shell 8 lp under the joined tray; the tray and cradle stay | OK. **The tray draws over the shell**, so only the shell's 8 lp bottom border goes under it, never the face. Nothing below moves |
