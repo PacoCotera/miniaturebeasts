@@ -348,7 +348,7 @@ There is no subject on a focus. The station's own lines already say its state.
 
 | Station | Column | Line 1 |
 | --- | --- | --- |
-| Pods | 124 | "6 in the case" 121 at 20 |
+| Pods | 122 | "6 in the case" 121 at 20 |
 | Incubator | 142 | "the bud is ready" 121 at 16 |
 | Companion | 170 | "Pip on a trip" 112 at 20; "Maraschino at home" 154 at 16 |
 | Bay | 96 (with the portrait) | "3 crates in" 79 at 16 |
