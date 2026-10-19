@@ -89,7 +89,7 @@ export function restOf(here, time, rules) {
 }
 // A resident's moving set (Station M1 §2.2): { set, walk, shadow } when its species and stage have one and it may play (every cell a placed master, or the developer's "Motion sets (stand-ins)", or the face tests); else "" (a still, main's walk)
 export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
-  const sp = S.speciesOf(mb), I = movingIds(sp, stage, mb.look ?? "species", m.light ?? "day"); if (!I || !(m.motionSets || playable(sp, stage))) return "";   // named by the mibi's look (layer-bake §7): `species` until the bake slot gives mibis a look
+  const sp = S.speciesOf(mb), I = movingIds(sp, stage, mb.look ?? "species", m.light ?? "day"); if (!I || !(m.motionSets || playable(sp, stage))) return "";   // named by the mibi's look (the layer bake): `species` until the bake slot gives mibis a look
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 

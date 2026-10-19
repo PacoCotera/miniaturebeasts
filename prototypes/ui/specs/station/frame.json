@@ -120,7 +120,7 @@
  },
  "navigation": {
   "dock": {
-   "rule": "the Caddy's Dock, a world event. Pressed while the Station has the keys: no navigation (each screen's own cut; Home and Cargo no plate, elsewhere the rule's plate). Pressed while another device has the keys (the play page): Pods, Incubator, Vivarium, one mibi up close with the namer shut, Library and the Probe bench land on Home with the ring on the room, as idle.keys.dock; Home and Cargo play their own arrival; Create or Cross with an unpaid choice, the namer and the Sitting stay, with the plate. Lift never navigates.",
+   "rule": "the Caddy's Dock, a world event. Pressed while the Station has the keys: no navigation (each screen's own cut; Home and Cargo no plate, elsewhere the rule's plate). While another device has the keys, the Station takes the keys and behaves as if it had them; the arrival plays over its screen, and Later returns there; Create or Cross with an unpaid choice, the namer and the Sitting stay, with the plate. Lift never navigates.",
    "stays": ["home", "cargo", "create", "cross", "sitting"],
    "namerStays": true, "arrival": "the Companion's dock plays the arrival (cargo.json regions.arrival) over the screen the player is on, over Home from Idle; mid-decision (frame.json stays other than Home and Cargo with an open choice, the namer, a decision panel) it waits: the plate says \"The Companion is home\" for 2000 ms and the show plays after the next screen change; Home and Cargo are in stays only for navigation", "plates": { "ms": 2000, "crates": "the crates went out with the Companion", "goes": "{Name} goes at the next dock" }
   },
