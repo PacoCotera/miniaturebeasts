@@ -35,7 +35,7 @@ This part is built on the game designer's rule (`specs/sittings-never-lost.md`, 
 - **Its place on Home waits for the T-199 direction.** The game designer's architecture puts the held sitting on the Library's pursuit. The T-192 Probe-well placement above is superseded with T-192's Home.
 - **The Habitat's Portrait plate** is today's golden (`habitat-portrait`), unchanged, with no queue edge.
 
-## Addendum (2026-10-18 22:50): the held and owed frames, re-placed
+## Addendum (2026-10-18 22:46): the held and owed frames, re-placed
 
 **The owner has approved the rule:** earned sittings are never lost. They wait behind the held one as the edge of one unlit frame, with no number, word or amber, and the warning goes. This builds after the Library. The mark is as agreed above; only its places change.
 
