@@ -44,6 +44,8 @@ They are drawn the same way, in the Cargo room's colours:
 
 ## 4. The Library specimen at the Home tone (H4)
 
+> **Superseded by §4b:** the lead confirmed v3 (specimen3) for Home, so §4b applies. The v2 numbers below are no longer used. The §4.2 correction below still holds: painted RGB, not palette-snapped.
+
 - **Tone: signed, for the generator's own output.** I rendered the Home module's generator locally at 344 × 362 (centre at H/2 + 4, scale 1.08, finish with grain 4 and vignette 0.45) for early, mid, late and new states.
 - **Why it passes:**
   - The deep moss ground sits well beside the warm Idle crop in the next window.
