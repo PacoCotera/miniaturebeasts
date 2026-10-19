@@ -369,3 +369,13 @@ There is no subject on a focus. The station's own lines already say its state. *
 - **The berths are 2 apart**, as the art director ruled (§4.3).
 - **The Companion placeholder** is 28 × 46. Confirmed.
 - The ring's dirty-area overrun on the large windows is the architect's.
+
+## 12. Gate of the H1 fix round (b06ef9f9, stills on work-queue 8fadb652)
+
+**PASS, with one wording fix.** The line, the verbs, the stations' inner layout and the fills match §11, and the ring moves are within the architect's limit.
+
+- **The nameless Companion:** line 1 reads **"at home"** or **"on a trip"** (20 px). The station's own name already says "Companion". This replaces §11.5's "the Companion at home / on a trip", which overran the column.
+- **Confirmed:**
+  - the verb cap of 5 words ("Go to the Probe bench");
+  - the line-width test on pairs in need order (only the first two ever show; the widest is 461 of 484);
+  - the Companion's no-name lines are now 2 words, so their 5-word allowance is moot.
