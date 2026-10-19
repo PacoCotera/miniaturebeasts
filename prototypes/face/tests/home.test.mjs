@@ -184,9 +184,9 @@ test("the line never wraps: every pair of needs (the first by its action, the se
   const species = readdirSync(framesDir).filter((x) => x.startsWith("species-")).map((x) => JSON.parse(readFileSync(path.join(framesDir, x), "utf8")).species.name);
   const widest = species.reduce((a, b) => (W(b) > W(a) ? b : a)), NAME_MAX = 160;   // the namer's limit: a name is at most 160 px at Inter 16 (namer.json limit.inter16); the widest letters make the widest name
   let name = ""; while (W(name + "W") <= NAME_MAX) name += "W";
-  const keys = homeSpec.strings.line.order, facts = (k, n) => ({ key: k, n, max: k === "crates" ? 3 : 6, name, species: widest, a: "an", module: homeSpec.strings.needs[k].module }), words = (k, n) => wordsOf(facts(k, n), homeSpec);
-  let worst = 0, at = "";
-  for (const a of keys) for (const b of keys) if (a !== b) for (const na of [1, 2, 6]) for (const nb of [1, 2, 6]) { const w = W(homeSpec.strings.needs[a].lineAction ?? words(a, na).action) + sep + W(words(b, nb).notice); if (w > worst) { worst = w; at = `${a} (${na}) then ${b} (${nb})`; } }
+  const keys = homeSpec.strings.line.order, facts = (k, n) => ({ key: k, n, max: k === "crates" ? 3 : 6, name, species: widest, a: "an" }), words = (k, n) => wordsOf(facts(k, n), { strings: { needs: homeSpec.strings.line.needs } });
+  let worst = 0, at = "";   // the first need comes before the second in the spec order: only those pairs can be on the line
+  for (const a of keys) for (const b of keys) if (keys.indexOf(a) < keys.indexOf(b)) for (const na of [1, 2, 6]) for (const nb of [1, 2, 6]) { const w = W(words(a, na).action) + sep + W(words(b, nb).notice); if (w > worst) { worst = w; at = `${a} (${na}) then ${b} (${nb})`; } }
   console.log(`# the line: the widest pair of needs is ${worst} px of the ${room} the zone leaves its words (${at})`);
   assert.ok(worst <= room, `the widest pair of needs, ${at}, is ${worst} of ${room}`);
   for (const v of Object.values(homeSpec.strings.actions)) assert.ok(W(v) + 16 + 4 <= lineBox[2], v);
@@ -196,7 +196,7 @@ test("the line never wraps: every pair of needs (the first by its action, the se
 // ---- the stations' words ----
 test("the stations say what the spec says: Pods, Incubator in each state, Companion docked and away, Bay waiting and clear, each with the amber lamp where the spec turns it", { skip }, async () => {
   const P = (o) => scene({ adults: 2, ...o }).props.regions, model = (b, over = {}) => ({ st: b.st, sv: b.sv, settings, docked: true, ui: {}, time: 0, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), ...over });
-  { const r = P({}).pods; assert.deepEqual([r.line1, r.line2, r.lamp], ["the case is empty", "", "off"]); }
+  { const r = P({}).pods; assert.deepEqual([r.line1, r.line2, r.lamp], ["empty", "", "off"]); }
   { const r = P({ pods: 3 }).pods; assert.deepEqual([r.line1, r.line2, r.lamp], ["3 in the case", "", "off"], "one kind: no second line"); }
   { const b = scene({ adults: 2, pods: 2 }); b.st.tray[1].species = "S05"; b.st.tray[1].sp = 4; const r = homeBuild(model(b), homeSpec, frameSpec).props.regions.pods; assert.equal(r.line1, "2 in the case"); assert.equal(r.line2, "2 kinds"); }
   { const b = scene({ adults: 2, pods: 1 }); b.st.tray[0].seen = 0; b.st.tray[0].idd = false; const r = homeBuild(model(b), homeSpec, frameSpec).props.regions.pods; assert.equal(r.lamp, "needsYou", "a new pod unread: amber"); }
@@ -209,14 +209,24 @@ test("the stations say what the spec says: Pods, Incubator in each state, Compan
   { const r = P({ crates: 3 }).bay; assert.deepEqual([r.state, r.line1, r.line2, r.lamp, r.berths], ["waiting", "3 crates in", "from the last trip", "needsYou", 3]); }
   { const r = P({ crates: 4, trips: 2 }).bay; assert.deepEqual([r.line1, r.line2], ["4 crates in", "from 2 trips"]); }
   { const r = P({ crates: 2, portrait: true }).bay; assert.deepEqual([r.berths, r.lamp], [4, "needsYou"], "the fourth berth, frame-shaped, while a portrait crate is in"); }
-  { const r = P({ portrait: true }).bay; assert.deepEqual([r.berths, r.lamp, r.line1], [4, "needsYou", "berths clear"]); }
+  { const r = P({ portrait: true }).bay; assert.deepEqual([r.berths, r.lamp, r.line1], [4, "needsYou", "a portrait in"]); }
 });
-test("a station's words are Inter at its sizes at their places: the name 16 at (12, 8), line 1 at 20 at (12, 34), line 2 at 16 at (12, 64), in the station's rectangle", { skip }, async () => {
+test("a station's words are Inter at its sizes at their places: the lamp at (12, 10), the name 16 at (30, 8), line 1 at 20 at (12, 34), line 2 at 16 at (12, 64), in the station's rectangle", { skip }, async () => {
   const f = await start(scene({ adults: 2, crates: 3 }), { dir: node }), S = R.bay.rect, lg = logOf(f);
   assert.deepEqual(typeIn(lg, "bay").map((t) => [t.text, t.px]), [["Bay", 16], ["3 crates in", 20], ["from the last trip", 16]]);
   const cap = (px, y, pitch) => y + Math.floor((pitch - { 16: 12, 20: 14 }[px]) / 2);
-  for (const [id, x, y, px] of [["bay.name", 12, 8, 16], ["bay.line1", 12, 34, 20], ["bay.line2", 12, 64, 16]]) { const r = box(f, id); assert.equal(r[0], S[0] + x, id); assert.ok(r[1] >= S[1] + y && r[1] < S[1] + y + (px === 20 ? 28 : 20), `${id} ${r}: in its line box`); assert.ok(inside(r, S), `${id} ${r} leaves ${S}`); }
-  void cap;
+  for (const [id, x, y, px] of [["bay.name", 30, 8, 16], ["bay.line1", 12, 34, 20], ["bay.line2", 12, 64, 16]]) { const r = box(f, id); assert.equal(r[0], S[0] + x, id); assert.ok(r[1] >= S[1] + y && r[1] < S[1] + y + (px === 20 ? 28 : 20), `${id} ${r}: in its line box`); assert.ok(inside(r, S), `${id} ${r} leaves ${S}`); }
+  void cap; const lamp = box(f, "bay.lamp"); assert.deepEqual(lamp.slice(0, 2), [S[0] + 12, S[1] + 10], "the lamp at (12, 10)");
+  const pic = box(f, "bay.berth.0"), last = box(f, "bay.berth.2"); assert.equal(last[0] + last[2], S[0] + S[2] - 8, "the berths end 8 in from the right edge");
+  for (const id of ["bay.line1", "bay.line2"]) { const r = box(f, id); if (id === "bay.line1") assert.ok(r[0] + r[2] <= pic[0] - 8, `${id} ${r}: a column, 8 clear of the picture`); }
+});
+test("the Pods station draws a slot for each pod (at most six) in a 3 x 2 grid, filled panels for pods and hairline outlines for the rest; a portrait alone makes the Bay say whose it is", { skip }, async () => {
+  let f = await start(scene({ adults: 2, pods: 4 }), { dir: node }); const S = R.pods.rect, slots = [0, 1, 2, 3, 4, 5].map((i) => box(f, `pods.slot.${i}`));
+  assert.equal(f.build.props.regions.pods.slots, 4); assert.ok(slots.slice(0, 4).every((r) => r && r[2] === 24 && r[3] === 32), "four filled slots of 24 x 32");
+  assert.equal(slots[0][1], slots[1][1], "a row"); assert.ok(slots[3][1] > slots[0][1], "a second row"); for (const r of slots.filter(Boolean)) assert.ok(inside(r, S), `${r} leaves ${S}`);
+  f = await start(scene({ adults: 2, portrait: true }), { dir: node }); const lg = logOf(f);
+  assert.deepEqual(typeIn(lg, "bay").map((t) => [t.text, t.px]), [["Bay", 16], ["a portrait in", 16], [f.build.props.regions.bay.line2, 16]]);
+  assert.match(f.build.props.regions.bay.line2, /'s portrait$|^from a sitting$/);
 });
 test("the Vivarium's readout: each part only when non-zero, 'all on a trip' when nobody is home, nothing with no mibi; the Library's header has no count", { skip }, async () => {
   const ro = (o) => scene({ adults: 3, ...o }).props.regions.vivarium.readout;
@@ -236,13 +246,21 @@ test("the needs hold in the spec's order and clear when acted on: crates, the bu
 
 // ---- the dirty area (build spec 7): the lamp change is asserted inside 153,600 px; the ring moving between a bezel and a station is PRINTED (the spec's "Print"): the ring is one nine-slice node and LVGL redraws the whole box of a node that appears,
 //      moves or goes, so a ring round a 620 x 400 bezel redraws its box (258,300 px), over the bound. The numbers are in the log; the question is the lead's (the ring on a large target). ----
-test("a lamp change redraws a small part of the screen; the ring moving between a bezel and a station is measured and printed", { skip }, async () => {
+test("a lamp change redraws a small part of the screen; every move of the ring (a bezel or a station, to another) redraws at most 153,600 px, and the ring is eight LVGL objects that leave none behind", { skip }, async () => {
   const f = await start(scene({ adults: 2, crates: 1, focus: "vivarium" }), { t0: 1000 }); logOf(f); dirty(f);
   const moves = []; let prev = "vivarium";
   for (const to of ["library", "bay", "library", "vivarium", "pods", "vivarium", "incubator", "companion", "bay", "library", "vivarium"]) { withFocus(f, to, 1); moves.push([`${prev} to ${to}`, dirty(f)]); prev = to; assert.deepEqual(f.errors(), []); }
-  const stations = moves.filter(([n]) => !/vivarium|library/.test(n)); for (const [n, d] of stations) assert.ok(d <= 153600, `${n}: ${d} px`);
+  for (const [n, d] of moves) assert.ok(d <= 153600, `${n}: ${d} px`);
   const lamp = scene({ adults: 2, crates: 1, focus: "vivarium" }), off = scene({ adults: 2, focus: "vivarium" }); resend(f, off, 1); dirty(f); resend(f, lamp, 1); const a = dirty(f);
   assert.ok(a > 0 && a <= 153600, `a lamp change redrew ${a} px`);
   console.log(`# Home's ring moving, px redrawn (the bound is 153,600): ${moves.map(([n, d]) => `${n} ${d}`).join(", ")}; a lamp change (the Bay's and the line's) ${a} px`);
   assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas");
+});
+test("the ring moves between targets as the same eight LVGL objects; going away from Home's focus leaves none behind", { skip }, async () => {
+  const f = await start(scene({ adults: 2, crates: 1, focus: "vivarium" }), { dir: node }); logOf(f);
+  const withRing = f.objects(), lg = logOf(f) ?? {}; void lg;
+  withFocus(f, "bay", 1); assert.equal(f.objects(), withRing, "the ring moved to a station: the same count of objects");
+  const rest = scene({ adults: 2, crates: 1 }); rest.props.focus = { ...rest.props.focus, cur: "room" }; resend(f, rest, 3);
+  const fresh = await start(scene({ adults: 2, crates: 1 }), { dir: node }); fresh.build.props.focus.cur = "room"; resend(fresh, fresh.build, 3);
+  assert.equal(f.objects(), fresh.objects(), "after the ring went, the same objects as a Home that never had one: none left behind"); assert.deepEqual(f.errors(), []);
 });

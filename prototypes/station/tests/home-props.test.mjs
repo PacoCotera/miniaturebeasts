@@ -91,25 +91,26 @@ test("the needs hold in the spec's order: crates, the bud, a portrait, a new mib
 
 test("the line at rest: at most two needs, the first by its action and the second by its notice; with none, the goal; the verb of a target on a focus; the Companion away says it is on a trip", () => {
   const sc = scenes(), line = (x, over) => build(x.st, x.sv, over).props.regions.line;
-  assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "a portrait has come"] });
+  assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "Dot's portrait has come"], name: "Dot" });
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "the bud is ready"] }, "two at most, the example of the spec"); }
   { const { st, sv } = sc.docked; assert.ok(line({ st, sv }).goal, "nothing needs the player: the goal"); }
-  for (const [id, verb] of Object.entries({ vivarium: "Open the Vivarium", library: "Open the Library", pods: "Open the Pods", incubator: "Open the Incubator", companion: "Open the Companion", bay: "Open the Bay" })) assert.deepEqual(line(sc.docked, { focus: id }), { verb }, id);
+  for (const [id, verb] of Object.entries({ vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay" })) assert.deepEqual(line(sc.docked, { focus: id }), { verb }, id);
   assert.deepEqual(line(sc.away, { focus: "companion" }), { note: "the Companion is on a trip" }); assert.deepEqual(line(sc.away, { focus: "bay" }), { verb: "Open the Bay" });
 });
 
 test("the stations' words and lamps: Pods, the Incubator in each state, the Companion docked and away, the Bay waiting and clear, a portrait crate in", () => {
   const sc = scenes(), R = (x, over) => build(x.st, x.sv, over).props.regions;
-  assert.deepEqual(R(sc.empty).pods, { line1: "the case is empty", line2: "", lamp: "off" }); assert.deepEqual(R(sc.pods).pods, { line1: "2 in the case", line2: "", lamp: "needsYou" }, "a new pod unread: amber");
+  assert.deepEqual(R(sc.empty).pods, { line1: "empty", line2: "", lamp: "off", slots: 0 }); assert.deepEqual(R(sc.pods).pods, { line1: "2 in the case", line2: "", lamp: "needsYou", slots: 2 }, "a new pod unread: amber");
   assert.deepEqual([R(sc.empty).incubator.state, R(sc.empty).incubator.line1, R(sc.empty).incubator.lamp], ["empty", "empty", "off"]);
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 1, settings); const p = pod(st, "S01"); p.read = [frameOf("S01").chapters[0].id]; p.seen = 1; const i = R({ st, sv: sv0() }).incubator; assert.deepEqual([i.line1, i.line2], ["empty", "a pod can incubate"]); }
   { const st = world(); dock(st); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; const i = R({ st, sv: sv0() }).incubator; assert.deepEqual([i.state, i.line1, i.line2, i.lamp], ["growing", "a bud growing", "a Loika", "off"]); st.bud.start = Date.now() - 1e8; const r = R({ st, sv: sv0() }).incubator; assert.deepEqual([r.state, r.line1, r.line2, r.lamp], ["ready", "the bud is ready", "a Loika", "needsYou"]); }
   { const c = R(sc.docked).companion; assert.equal(c.state, "docked"); assert.match(c.line1, /^\S+ at home$/); assert.equal(c.line2, ""); assert.equal(c.lamp, "off", "never amber: the dock lights the Bay"); }
   { const c = R(sc.away).companion; assert.equal(c.state, "away"); assert.match(c.line1, /^\S+ on a trip$/); assert.equal(c.line2, ""); }
-  assert.deepEqual(R(sc.empty).companion, { state: "docked", line1: "", line2: "", lamp: "off" }, "no one carried: no name to say");
+  assert.deepEqual(R(sc.empty).companion, { state: "docked", line1: "the Companion at home", line2: "", lamp: "off" }, "no one carried: no name to say, so it says the Companion");
   assert.deepEqual(R(sc.crates).bay, { state: "waiting", berths: 3, line1: "2 crates in", line2: "from the last trip", lamp: "needsYou" });
   assert.deepEqual(R(sc.empty).bay, { state: "clear", berths: 3, line1: "berths clear", line2: "", lamp: "off" }); assert.deepEqual(R(sc.away).bay.line1, "berths clear", "away: the berths are clear");
-  assert.deepEqual(R(sc.portrait).bay, { state: "waiting", berths: 4, line1: "1 crate in", line2: "from the last trip", lamp: "needsYou" });
+  assert.deepEqual(R(sc.portrait).bay, { state: "waiting", berths: 4, line1: "a crate in", line2: "from the last trip", lamp: "needsYou" });
+  { const b = R({ st: sc.portrait.st, sv: { ...sc.portrait.sv, bay: [] } }).bay; assert.deepEqual([b.state, b.berths, b.line1, b.lamp], ["waiting", 4, "a portrait in", "needsYou"]); assert.match(b.line2, /^(.+'s portrait|from a sitting)$/, "a portrait alone: whose it is, or where from"); }
   assert.equal(R({ st: sc.crates.st, sv: { ...sc.crates.sv, bay: [crate(1, 1), crate(2, 2), crate(3, 2)] } }).bay.line2, "from 2 trips");
 });
 

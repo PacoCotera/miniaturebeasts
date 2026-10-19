@@ -2,7 +2,7 @@
  "_note": "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the frame after ✓ Skip, the report: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "cargo-bay": {
-   "hash": "4db80af8",
+   "hash": "58b058a7",
    "png": "cargo-bay.png"
   },
   "cargo-bay-one": {
@@ -10,11 +10,11 @@
    "png": "cargo-bay-one.png"
   },
   "cargo-bay-two": {
-   "hash": "7d5847ea",
+   "hash": "63f9611d",
    "png": "cargo-bay-two.png"
   },
   "cargo-bay-empty": {
-   "hash": "a1f5c252",
+   "hash": "3ae1af65",
    "png": "cargo-bay-empty.png"
   },
   "cargo-bay-away": {
@@ -22,15 +22,15 @@
    "png": "cargo-bay-away.png"
   },
   "cargo-bay-waiting": {
-   "hash": "1593e605",
+   "hash": "342bcfaa",
    "png": "cargo-bay-waiting.png"
   },
   "cargo-bay-waiting-many": {
-   "hash": "a7ee92e3",
+   "hash": "22faf5c4",
    "png": "cargo-bay-waiting-many.png"
   },
   "cargo-bay-portrait": {
-   "hash": "877095cd",
+   "hash": "434b7f92",
    "png": "cargo-bay-portrait.png"
   },
   "cargo-bay-portrait-away": {
@@ -106,7 +106,7 @@
    "png": "cargo-arrival-2200.png"
   },
   "cargo-arrival-choice": {
-   "hash": "8bec56dc",
+   "hash": "7d5ba813",
    "png": "cargo-arrival-choice.png"
   },
   "cargo-arrival-empty-trip": {

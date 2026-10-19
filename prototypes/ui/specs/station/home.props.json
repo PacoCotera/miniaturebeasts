@@ -2,7 +2,7 @@
  "$comment": "The props of Home (lvgl-switch.md §2.1): what views/home-props.mjs gives the face. Props name what, never where: strings, states, counts, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from home.json and the palette). Home draws no host picture: the top bar's picture, the lamps and the cap are the frame's. Checked by prototypes/station/tests/home-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum, oneOf).",
  "$defs": {
   "lamp": { "enum": ["off", "needsYou"] },
-  "station": { "type": "object", "required": ["line1", "line2", "lamp"], "additionalProperties": false, "properties": { "line1": { "type": "string" }, "line2": { "type": "string" }, "lamp": { "$ref": "lamp" }, "state": { "enum": ["empty", "growing", "ready", "docked", "away", "waiting", "clear"] }, "berths": { "enum": [3, 4] } } },
+  "station": { "type": "object", "required": ["line1", "line2", "lamp"], "additionalProperties": false, "properties": { "line1": { "type": "string" }, "line2": { "type": "string" }, "lamp": { "$ref": "lamp" }, "state": { "enum": ["empty", "growing", "ready", "docked", "away", "waiting", "clear"] }, "berths": { "enum": [3, 4] }, "name": { "type": "string" }, "slots": { "type": "integer" } } },
   "goal": { "type": "object", "required": ["text", "icons", "plain"], "additionalProperties": false, "properties": { "text": { "type": "string" }, "icons": { "type": "string" }, "plain": { "type": "string" } } },
   "target": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay"] }, "group": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay"] }, "enabled": { "type": "boolean" } } }
  },
@@ -12,7 +12,7 @@
   "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
    "bar": { "type": "object", "required": ["place", "date", "clock"], "additionalProperties": false, "properties": { "place": { "type": "string" }, "date": { "type": "string" }, "clock": { "type": "string" } } },
    "line": { "oneOf": [
-    { "type": "object", "required": ["needs"], "additionalProperties": false, "properties": { "needs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 2 } } },
+    { "type": "object", "required": ["needs"], "additionalProperties": false, "properties": { "needs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 2 }, "name": { "type": "string" } } },
     { "type": "object", "required": ["goal"], "additionalProperties": false, "properties": { "goal": { "$ref": "goal" } } },
     { "type": "object", "required": ["verb"], "additionalProperties": false, "properties": { "verb": { "type": "string" }, "subject": { "type": "string" } } },
     { "type": "object", "required": ["note"], "additionalProperties": false, "properties": { "note": { "type": "string" } } },

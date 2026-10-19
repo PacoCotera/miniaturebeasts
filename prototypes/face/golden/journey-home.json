@@ -24,7 +24,7 @@
     "screen": "cargo",
     "focus": "room",
     "ok": "Open the bay",
-    "subject": "two crates to the rack",
+    "subject": "two crates to the case",
     "idle": false
    },
    {
@@ -71,12 +71,13 @@
      "state": "docked",
      "line1": "Dot at home",
      "line2": "",
-     "lamp": "off"
+     "lamp": "off",
+     "name": "Dot"
     },
     "line": {
      "needs": [
       "Open the Bay",
-      "a new pod in the rack"
+      "a new pod in the case"
      ]
     },
     "plate": ""
@@ -94,7 +95,7 @@
     ],
     "screen": "home",
     "focus": "pods",
-    "ok": "Open the Pods",
+    "ok": "Go to Pods",
     "subject": "",
     "idle": false
    },
@@ -109,7 +110,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "",
     "idle": false
    },
@@ -124,7 +125,7 @@
     ],
     "screen": "home",
     "focus": "companion",
-    "ok": "Open the Companion",
+    "ok": "Go to the Probe bench",
     "subject": "",
     "idle": false
    },
@@ -288,7 +289,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "",
     "idle": false
    },
@@ -303,7 +304,7 @@
     ],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "",
     "idle": false
    },
@@ -312,7 +313,7 @@
     "said": [],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "",
     "idle": false
    },
@@ -342,7 +343,7 @@
     ],
     "screen": "home",
     "focus": "companion",
-    "ok": "Open the Companion",
+    "ok": "Go to the Probe bench",
     "subject": "",
     "idle": false
    },
@@ -357,7 +358,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "",
     "idle": false
    },
@@ -372,7 +373,7 @@
     ],
     "screen": "home",
     "focus": "pods",
-    "ok": "Open the Pods",
+    "ok": "Go to Pods",
     "subject": "",
     "idle": false
    },
@@ -381,7 +382,7 @@
     "said": [],
     "screen": "home",
     "focus": "pods",
-    "ok": "Open the Pods",
+    "ok": "Go to Pods",
     "subject": "",
     "idle": false
    },
@@ -396,7 +397,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "",
     "idle": false
    },
@@ -411,7 +412,7 @@
     ],
     "screen": "home",
     "focus": "pods",
-    "ok": "Open the Pods",
+    "ok": "Go to Pods",
     "subject": "",
     "idle": false
    },
@@ -470,7 +471,7 @@
     ],
     "screen": "home",
     "focus": "incubator",
-    "ok": "Open the Incubator",
+    "ok": "Go to the Incubator",
     "subject": "",
     "idle": false
    },
@@ -502,7 +503,7 @@
     ],
     "screen": "home",
     "focus": "library",
-    "ok": "Open the Library",
+    "ok": "Go to the Library",
     "subject": "",
     "idle": false
    },
@@ -566,7 +567,7 @@
     ],
     "screen": "home",
     "focus": "companion",
-    "ok": "Open the Companion",
+    "ok": "Go to the Probe bench",
     "subject": "",
     "idle": false
    },
@@ -598,7 +599,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "",
     "idle": false
    },
@@ -630,7 +631,7 @@
     ],
     "screen": "home",
     "focus": "pods",
-    "ok": "Open the Pods",
+    "ok": "Go to Pods",
     "subject": "",
     "idle": false
    }

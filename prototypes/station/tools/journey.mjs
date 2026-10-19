@@ -138,7 +138,7 @@ s = await st(); expect(s.dock.docked, "docked");
 await page.waitForTimeout(1800); await frameShot("cargo-arrival-show", true);
 await hpress("confirm", 400);   // any key skips the show to its choice
 { const p = await props(), u = await ui();
-  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && p.overlay?.form === "strip" && p.overlay.focus.cur === "card.open" && p.frame.line.ok === "Open the bay" && p.frame.line.subject === "two crates to the rack" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: the strip, the ring on Open the bay: " + JSON.stringify([p.overlay?.focus, p.frame.line])); }
+  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && p.overlay?.form === "strip" && p.overlay.focus.cur === "card.open" && p.frame.line.ok === "Open the bay" && p.frame.line.subject === "two crates to the case" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: the strip, the ring on Open the bay: " + JSON.stringify([p.overlay?.focus, p.frame.line])); }
 await frameShot("cargo-arrival-choice", true);
 await hpress("right", 200); { const p = await props(); expect(p.overlay.focus.cur === "card.later" && p.frame.line.ok === "Later" && p.frame.line.subject === "they wait while docked", "home-dock-arrival: ▶ is Later: " + JSON.stringify(p.frame.line)); }
 await hpress("back", 600);   // ← is Later: the dither back to Home, as it was
@@ -182,12 +182,12 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
 { stepOf("home-pad"); let u = await ui(); expect(u.screen === "home" && u.home === "room", "home-pad: Home with the ring on the room: " + JSON.stringify(u));
   const first = (await line()); expect(first.ok === null && first.goal && !first.back, "home-pad: nothing needs the player (the pods are seen): the goal is the line, ✓ does nothing at rest and there is no ← cap on Home: " + JSON.stringify(first));
   u = await hpress("up"); expect(u.home === "vivarium", "home-pad: ▲ from rest is the Vivarium: " + u.home);
-  expect((await line()).ok === "Open the Vivarium", "home-pad: the line names the verb: " + JSON.stringify(await line()));
+  expect((await line()).ok === "Go to the Vivarium", "home-pad: the line names the verb: " + JSON.stringify(await line()));
   u = await hpress("right"); expect(u.home === "library", "home-pad: ▶ from the Vivarium is the Library: " + u.home);
   u = await hpress("right"); expect(u.home === "library", "home-pad: the Library has nothing to its right: " + u.home);
   u = await hpress("down"); expect(u.home === "bay", "home-pad: ▼ from the Library is the Bay: " + u.home);
   u = await hpress("left"); expect(u.home === "companion", "home-pad: ◀ from the Bay is the Companion: " + u.home);
-  expect(/Companion$/.test((await line()).ok ?? "") || (await line()).subject === "the Companion is on a trip", "home-pad: the Companion's line: " + JSON.stringify(await line()));
+  expect(/Probe bench$/.test((await line()).ok ?? "") || (await line()).subject === "the Companion is on a trip", "home-pad: the Companion's line: " + JSON.stringify(await line()));
   u = await hpress("left"); expect(u.home === "incubator", "home-pad: ◀ from the Companion is the Incubator: " + u.home);
   u = await hpress("left"); expect(u.home === "pods", "home-pad: ◀ from the Incubator is Pods: " + u.home);
   u = await hpress("left"); expect(u.home === "pods", "home-pad: Pods has nothing to its left: " + u.home);
@@ -377,7 +377,7 @@ const needs = [await compareShot("S04", 4101, 0, "pods-compare-one", 1), await c
 expect(needs.some((n) => n > 0), "at least one Compare pair has a trait that differs (the data; the build marks none): " + needs.join(" | "));
 {   // the empty rack (docked, the bay empty): the cradle under the beam and nothing else; the wells are put back after
   await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, waiting: g.waiting }; g.tray = []; g.waiting = []; window.__st.UI.pods.cur = null; window.__st.UI.pods.cmp = null; }); await page.waitForTimeout(500);
-  const el = await line(); expect(el.subject === "the rack is empty" && el.need === "take the Companion exploring", "the empty rack's lines: " + JSON.stringify(el));
+  const el = await line(); expect(el.subject === "the case is empty" && el.need === "take the Companion exploring", "the empty case's lines: " + JSON.stringify(el));
   await frameShot("pods-empty-rack");
   await page.evaluate(() => window.__st.seedCrate("S04", 1, 9090)); await page.waitForTimeout(400);   // docked, a crate waiting in the bay
   const crateLine = await line(); expect(crateLine.need === "open the crates first", "the empty rack with a crate in the bay: " + JSON.stringify(crateLine));

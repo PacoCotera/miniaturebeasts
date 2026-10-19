@@ -132,7 +132,7 @@ export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
   if (S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
-  if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
+  { const rc = readyCrates(st, settings, now)[0]; if (rc) out.push({ key: "portrait", act: "cargo", name: S.mibiById(st, rc.mibiId)?.name ?? "" }); }
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
   const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
@@ -154,7 +154,7 @@ export function homeBuild(m, spec, frame) {
   const pods = (() => {
     const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
     const amber = st.tray.some((p) => !p.idd && !p.seen) || st.tray.some((p) => S.podGlints(st, p));
-    return { line1: n ? fill(T.pods.count, { n }) : T.pods.empty, line2: n && k >= 2 ? fill(T.pods.kinds, { k }) : "", lamp: amber ? "needsYou" : "off" };
+    return { line1: n ? fill(T.pods.count, { n }) : T.pods.empty, line2: n && k >= 2 ? fill(T.pods.kinds, { k }) : "", lamp: amber ? "needsYou" : "off", slots: Math.min(n, 6) };
   })();
   const incubator = (() => {
     const bud = st.bud, ready = S.budReady(st, settings), state = !bud ? "empty" : ready ? "ready" : "growing", name = bud ? S.spName(bud) : "", I = T.incubator, grow = !bud && couldIncubate(st, settings);
@@ -162,11 +162,12 @@ export function homeBuild(m, spec, frame) {
   })();
   const companion = (() => {
     const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion;
-    return { state: docked ? "docked" : "away", line1: mb ? fill(docked ? C.docked : C.away, { name: mb.name }) : "", line2: "", lamp: "off" };
+    return { state: docked ? "docked" : "away", line1: mb ? fill(docked ? C.docked : C.away, { name: mb.name }) : docked ? C.dockedNoName : C.awayNoName, line2: "", lamp: "off", ...(mb ? { name: mb.name } : {}) };
   })();
   const bay = (() => {
     const cs = docked ? S.bayCrates(st, sv) : [], bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
-    return { state: cs.length ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : "", lamp: bs.amber ? "needsYou" : "off" };
+    const waiting = cs.length > 0 || bs.sitting > 0, rc0 = readyCrates(st, settings, now)[0], pname = rc0 ? S.mibiById(st, rc0.mibiId)?.name ?? "" : "";
+    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
   })();
   // the windows: the Vivarium's readout (each part only when non-zero; "all on a trip" when nobody is home)
   const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;
@@ -184,7 +185,8 @@ export function homeBuild(m, spec, frame) {
 function lineOf(m, spec, frame, v) {
   const Sg = spec.strings, { cur } = v;
   if (cur === "room") {
-    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, spec); return i === 0 ? (Sg.needs[nd.key].lineAction ?? w.action) : w.notice; }) };   // the first by the verb the line names (lineAction where the Bay's name is capitalised), the second by its notice
+    const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled
+    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : nd.key === "portrait" && !nd.name ? Sg.line.needs.portrait.noticeNoName : w.notice; }), ...(v.needs.slice(1, 2)[0]?.key === "portrait" && v.needs[1].name && spec.regions.line.needs > 1 ? { name: v.needs[1].name } : {}) };   // name: drawn in orange inside the portrait notice
     const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);
     return g ? { goal: g } : {};
   }

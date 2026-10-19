@@ -63,7 +63,6 @@
    "component": "panel",
    "build": "bezel",
    "window": [24,78,604,362],
-   "windowRadius": 6,
    "placeholder": {"fill":"stone","edge":"mist"}
   },
   "library": {
@@ -71,7 +70,6 @@
    "component": "panel",
    "build": "bezel",
    "window": [656,78,344,362],
-   "windowRadius": 6,
    "placeholder": {"fill":"stone","edge":"mist"}
   },
   "console": {
@@ -89,26 +87,30 @@
    "fill": "panel",
    "edge": "hairline",
    "bevel": "bevel",
-   "name": [12,8],
+   "lamp": [12,10,12,12],
+   "name": [30,8],
    "namePx": 16,
    "nameColour": "fog",
-   "lamp": [202,12,12,12],
    "line1": [12,34],
    "line1Px": 20,
+   "line1Px2": 16,
    "line1Colour": "bone",
    "line2": [12,64],
    "line2Px": 16,
    "line2Colour": "mist",
-   "pictureInset": 12,
+   "pictureInset": 8,
+   "columnGap": 8,
+   "bayLine2Right": 214,
    "placeholder": {"fill":"stone","edge":"mist"},
+   "slot": {"size":[24,32],"radius":6,"edge":"hairline"},
    "ring": 12
   },
   "pods": {
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
    "rect": [32,477,226,98],
    "build": "station",
-   "picture": [104,68],
-   "wells": {"size":[32,32],"gap":4,"cols":3,"rows":2}
+   "picture": [76,66],
+   "slots": {"size":[24,32],"gap":2,"cols":3,"rows":2}
   },
   "incubator": {
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
@@ -126,7 +128,7 @@
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
    "rect": [766,477,226,98],
    "build": "station",
-   "picture": {"berth":[26,24],"gap":4,"berths":3,"withPortrait":4}
+   "picture": {"berth":[26,24],"gap":2,"berths":3,"withPortrait":4,"top":32}
   },
   "rackPod": {
    "class": "rack",
@@ -248,17 +250,17 @@
    "bay": "Bay"
   },
   "actions": {
-   "vivarium": "Open the Vivarium",
-   "library": "Open the Library",
-   "pods": "Open the Pods",
-   "incubator": "Open the Incubator",
-   "companion": "Open the Companion",
+   "vivarium": "Go to the Vivarium",
+   "library": "Go to the Library",
+   "pods": "Go to Pods",
+   "incubator": "Go to the Incubator",
+   "companion": "Go to the Probe bench",
    "bay": "Open the Bay"
   },
   "notes": {"companionAway":"the Companion is on a trip"},
   "readout": {"home":"{n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
   "stations": {
-   "pods": {"empty":"the case is empty","count":"{n} in the case","kinds":"{k} kinds"},
+   "pods": {"empty":"empty","count":"{n} in the case","kinds":"{k} kinds"},
    "incubator": {
     "empty": "empty",
     "canIncubate": "a pod can incubate",
@@ -266,10 +268,18 @@
     "ready": "the bud is ready",
     "species": "{a} {Species}"
    },
-   "companion": {"away":"{name} on a trip","docked":"{name} at home"},
+   "companion": {
+    "away": "{name} on a trip",
+    "docked": "{name} at home",
+    "awayNoName": "the Companion on a trip",
+    "dockedNoName": "the Companion at home"
+   },
    "bay": {
     "waiting": "{n} crates in",
-    "waitingOne": "{n} crate in",
+    "waitingOne": "a crate in",
+    "portrait": "a portrait in",
+    "portraitName": "{name}'s portrait",
+    "portraitNoName": "from a sitting",
     "lastTrip": "from the last trip",
     "trips": "from {n} trips",
     "clear": "berths clear"
@@ -283,15 +293,14 @@
     "notice": "{count} crates wait in the bay",
     "noticeOne": "a crate waits in the bay",
     "action": "Open the bay",
-    "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)",
-    "lineAction": "Open the Bay"
+    "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)"
    },
    "budReady": {"module":"incubator","notice":"the bud is ready","action":"Open the bud"},
    "meet": {"module":null,"notice":"meet {name}","action":"Meet {name}"},
    "newPods": {
     "module": "pods",
-    "notice": "{count} new pods in the rack",
-    "noticeOne": "a new pod in the rack",
+    "notice": "{count} new pods in the case",
+    "noticeOne": "a new pod in the case",
     "action": "Look at the pods"
    },
    "glints": {"module":"pods","notice":"{count} pods glint","noticeOne":"a pod glints","action":"Look at the pods"},
@@ -315,17 +324,21 @@
     "action": "Look at the pods",
     "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure"
    },
-   "budGrowing": {"module":null,"notice":"a bud is growing","action":"Look at the Incubator"},
-   "portrait": {
-    "module": "cargo",
-    "notice": "a portrait has come",
-    "action": "Open the Bay",
-    "rule": "a portrait crate is in the Bay: a sitting crate that is ready (sitting.mjs readyCrates)"
-   }
+   "budGrowing": {"module":null,"notice":"a bud is growing","action":"Look at the Incubator"}
   },
   "line": {
    "rule": "the line at rest: at most two needs joined by a dot, amber, with the amber lamp before them; the first carries the confirm cap and says its action, the second its notice. With none, the goal (frame.json strings.goal), mist. With a target focused: the target's verb with the cap, then its subject, if it has one, in mist.",
-   "order": ["crates","budReady","portrait","meet","newPods","glints","waitingPods","couldGrow"]
+   "order": ["crates","budReady","portrait","meet","newPods","glints","waitingPods","couldGrow"],
+   "needs": {
+    "crates": {"action":"Open the Bay","notice":"{count} crates wait in the Bay","noticeOne":"a crate waits in the Bay"},
+    "budReady": {"action":"Open the bud","notice":"the bud is ready"},
+    "portrait": {"action":"Open the Bay","notice":"{name}'s portrait has come","noticeNoName":"a portrait has come"},
+    "meet": {"action":"Meet {name}","notice":"meet {name}"},
+    "newPods": {"action":"Look at the pods","notice":"{count} new pods in the case","noticeOne":"a new pod in the case"},
+    "glints": {"action":"Look at the pods","notice":"{count} pods glint","noticeOne":"a pod glints"},
+    "waitingPods": {"action":"Look at the pods","notice":"{count} pods wait for a well","noticeOne":"a pod waits for a well"},
+    "couldGrow": {"action":"Look at the pods","notice":"{a} {species} pod, ready to incubate"}
+   }
   }
  },
  "colours": {"ground":"ground"}

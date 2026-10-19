@@ -102,7 +102,7 @@ test("the line: Open them all (Open it for one) when a crate is ready, none othe
   assert.deepEqual(L("empty"), { ok: null, back: "Home", subject: "", need: "" }); assert.deepEqual(L("away"), { ok: null, back: "Home", subject: "", need: "" });
   assert.deepEqual([L("waiting").ok, L("waiting").subject], [null, "a pod waits for a well"]); assert.equal(L("waitingAway").subject, "four pods wait for a well");
   { const st = world(); sitting(st); assert.equal(build(st, sv0()).line.ok, "Open it", "a portrait crate alone: Open it"); assert.equal(build(st, sv0([crate(1)])).line.ok, "Open them all"); }
-  const st = world(); S.seedPodFromGenome(st, podGenome(frameOf("S01"), 5), settings, T0); assert.equal(build(st, sv0([crate(1)])).line.need, "a new pod in the rack", "the notice after the crates, not the crates' own");
+  const st = world(); S.seedPodFromGenome(st, podGenome(frameOf("S01"), 5), settings, T0); assert.equal(build(st, sv0([crate(1)])).line.need, "a new pod in the case", "the notice after the crates, not the crates' own");
   assert.ok(spec.strings.skip === "Skip" && spec.strings.open === "Open them all" && spec.strings.openOne === "Open it" && spec.strings.newPods.one === "Look at the pods" && spec.strings.newPods.few === "Look at the pods");
   for (const k of ["done", "ribbon"]) assert.equal(spec.strings[k], undefined, k + " goes"); for (const k of ["crates", "cratesOne", "empty", "away", "opening", "report"]) assert.equal(spec.strings.subjects[k], undefined, "subjects." + k + " goes");
 });

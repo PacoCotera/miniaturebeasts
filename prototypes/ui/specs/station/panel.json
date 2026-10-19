@@ -130,14 +130,14 @@
    "cards": {
     "open": {
      "name": "Open the bay",
-     "line": "{n in words} crates to the rack"
+     "line": "{n in words} crates to the case"
     },
     "later": {
      "name": "Later",
      "line": "they wait while docked"
     }
    },
-   "oneCrate": "a crate to the rack"
+   "oneCrate": "a crate to the case"
   },
   "growNow": {
    "title": "Hatch the {Species} now?",
