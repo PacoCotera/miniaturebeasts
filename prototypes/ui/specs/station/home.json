@@ -130,6 +130,44 @@
    "build": "station",
    "picture": {"berth":[26,24],"gap":2,"berths":3,"withPortrait":4,"top":32}
   },
+  "window": {
+   "rect": [24,78,604,362],
+   "offGrid": "the build spec's numbers: the Vivarium bezel's window",
+   "component": "livingWindow",
+   "painting": {"source": "Idle's painting of the light (frame.json idle.regions.vivarium), cut 1:1", "at": [64,194], "cx": 64, "rows": [194,555], "note": "columns cx to cx + 603, rows 194 to 555 (the art director: cx = 64); the face cuts it from the same picture the Vivarium uses, so there is no new master"},
+   "shade": {"px": 2, "colour": "void", "edges": ["top","left"], "note": "section 11.5: the window's inner shade, 2 px along the inside top and left edges, drawn as rects"},
+   "foot": [24,435,604,5],
+   "placeholder": {"fill": "stone", "edge": "mist"}
+  },
+  "resident": {
+   "component": "livingWindow",
+   "part": "residents",
+   "clip": "window",
+   "adult": [144,152],
+   "juvenile": [104,112],
+   "max": 6,
+   "lift": 0,
+   "asleep": {"ink": [96,88]},
+   "walk": {
+    "ground": [32,280,588,156],
+    "keepOut": [548,344,80,96],
+    "profile": {"from": "vivarium.json regions.resident.walk.profile", "dx": 40, "dy": -36, "note": "groundTop_home(x) = groundTop_viv(x - 24 + cx) - 36 with cx = 64; the window's foot is feetY 435; F.x is held to 32 + floor(W/2) .. 620 - ceil(W/2), so the box x runs 32 .. 620 - W; the rows are the lowest groundTop (316 - 36 = 280) to the foot"},
+    "keepOutRule": "a figure meets the keep-out when its box reaches x 548 and its feet reach y 344; the keep-out stands only while the away frame shows"
+   }
+  },
+  "nameTag": {
+   "build": "nameTag", "component": "panel", "h": 24, "px": 16, "pad": 8, "round": 8, "min": 48, "max": 176, "below": 16, "over": 32,
+   "note": "the Vivarium's tag (vivarium.json regions.nameTag), on the mibi that has an event, until the player visits it; no lift"
+  },
+  "away": {
+   "rect": [556,352,64,64],
+   "offGrid": "the build spec's numbers: 64 x 64 at (556, 352)",
+   "component": "panel",
+   "fill": "panel", "edge": "hairline",
+   "size": {"adult": 54, "juvenile": 40},
+   "caption": {"px": 16, "colour": "frost", "y": 418, "centre": 588},
+   "note": "the first mibi out on a trip, at its world size, composed from its stand and bottom-centred; the walkers keep out of [548, 344, 80, 96] while it shows"
+  },
   "rackPod": {
    "class": "rack",
    "size": [24,32],
@@ -257,6 +295,7 @@
    "companion": "Go to the Probe bench",
    "bay": "Open the Bay"
   },
+  "away": "away",
   "notes": {"companionAway":"the Companion is on a trip"},
   "readout": {"home":"{n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
   "stations": {
@@ -341,5 +380,5 @@
    }
   }
  },
- "colours": {"ground":"ground"}
+ "colours": {"ground":"ground","nameTag":{"fill":"panel","edge":"hairline","text":"bone"},"waitingLamp":{"fill":"sky","rim":"void"}}
 }

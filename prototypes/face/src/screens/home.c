@@ -18,8 +18,8 @@
 #define MAXS 3
 /* The living window is Idle's painting (frame.json idle) and the Vivarium's whole: the same code reads the regions of the spec it is drawing for. On Idle (g_idle) `regions.glass` is `idle.regions.vivarium` and every other `regions.` is
    `idle.regions.`, in the frame spec: the residents, the bed and the walk are the same rules on the other rectangles. */
-static int g_idle, g_viv;   /* g_viv: the Vivarium's whole (vivarium.json): `regions.glass` is `regions.window`; every other region keeps its name */
-static const char *hp(const char *p) { if (g_viv) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
+static int g_idle, g_viv, g_home;   /* g_home: Home's Vivarium window (home.json regions.glass and regions.resident): the same code on a 604 x 362 crop of Idle's painting */   /* g_viv: the Vivarium's whole (vivarium.json): `regions.glass` is `regions.window`; every other region keeps its name */
+static const char *hp(const char *p) { if (g_home) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (g_viv) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
 static const char *sp(void) { return g_viv ? "vivarium" : g_idle ? "frame" : H; }
 static int hi(const char *p, int d) { return spec_int(sp(), hp(p), d); }
 static int hk(const char *base, int k) { return spec_int(sp(), v_fmt("%s.%d", hp(base), k), 0); }
@@ -32,8 +32,8 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
    Bresenham), and at most one group tick is applied a frame (a later frame drops the time past it by moving the walk's origin later in whole ticks), so at most half of the boxes change in any frame. Its own 32-bit LCG runs from its seed. A focused resident stands on its pixel and its idle and walk freeze; with motion off it stands
    at its start. The walk state lives while the screen shows and starts again from the seeds when Home is shown again; a new id starts from its own seed, a props change with the same seed keeps the state. */
 static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the ground band */
-static int g_pn, g_pdy, g_px[8], g_pt[8];   /* the ground profile: band starts of F.x and the lowest feetY of each (vivarium.json regions.resident.walk.profile), g_pdy added */
-static int ground_top(int fx) { int t = g_pt[0]; for (int i = 0; i < g_pn; i++) if (fx >= g_px[i]) t = g_pt[i]; return t + g_pdy; }
+static int g_pn, g_pdx, g_pdy, g_px[8], g_pt[8];   /* the ground profile: band starts of F.x and the lowest feetY of each (vivarium.json regions.resident.walk.profile), g_pdy added */
+static int ground_top(int fx) { int t = g_pt[0]; for (int i = 0; i < g_pn; i++) if (fx + g_pdx >= g_px[i]) t = g_pt[i]; return t + g_pdy; }   /* Home reads the whole's profile at x + dx, dy higher: groundTop_home(x) = groundTop_viv(x - 24 + cx) - 36 */
 static void walk_load(void) {
   if (g_viv) {   /* the whole (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 16..1008, and the keep-out is the spec's */
     g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
@@ -42,10 +42,15 @@ static void walk_load(void) {
     g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
     g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
   }
+  else if (g_home) {   /* Home's window (home.json regions.resident.walk): the box.x range 32 .. 620, the keep-out only while the away frame shows (the corner's feet row is the rect's top less one: the feet reach it) */
+    int away = *v_pstr("regions.glass.away.picture") != 0;
+    g_kx = away ? hk("regions.resident.walk.keepOut", 0) : 1 << 20; g_ky = hk("regions.resident.walk.keepOut", 1) - 1;
+    g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
+  }
   g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
   /* the ground profile, the whole's and Idle's, 80 px lower on Idle */
-  g_pn = 0;
-  if (g_viv || g_idle) { g_pdy = g_idle ? spec_int("vivarium", "regions.resident.walk.profile.idle", 80) : 0;
+  g_pn = 0; g_pdx = 0; g_pdy = 0;
+  if (g_viv || g_idle || g_home) { g_pdy = g_idle ? spec_int("vivarium", "regions.resident.walk.profile.idle", 80) : g_home ? hi("regions.resident.walk.profile.dy", 0) : 0; if (g_home) g_pdx = hi("regions.resident.walk.profile.dx", 0);
     int n = spec_len("vivarium", "regions.resident.walk.profile.x"); if (n > 8) n = 8;
     for (int i = 0; i < n; i++) { g_px[i] = spec_int("vivarium", v_fmt("regions.resident.walk.profile.x.%d", i), 0); g_pt[i] = spec_int("vivarium", v_fmt("regions.resident.walk.profile.top.%d", i), 0); g_pn = i + 1; } }}
 typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, nstep, step; long done; int live; } wk_t;
@@ -354,7 +359,7 @@ static int ent_focused(const ent_t *e, const char *cur);
 static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(); g_mv_motion = motion;
-  { int ctx = g_viv ? 2 : g_idle; if (g_ctx != ctx) { g_have_t0 = 0; g_ctx = ctx; } }
+  { int ctx = g_viv ? 2 : g_idle ? 1 : g_home ? 3 : 0; if (g_ctx != ctx) { g_have_t0 = 0; g_ctx = ctx; } }
   if (!g_have_t0) { g_nw = 0; g_nm = 0; g_nnap = 0; g_t0 = now; g_wticks = 0; g_have_t0 = 1; memset(&g_hh, 0, sizeof g_hh); g_hh.next_stir = -1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
   if (motion) walk_clock(now);
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR;
@@ -523,7 +528,7 @@ static void glass_group(const char *cur) {
   item_t it[MAXR + 2]; int ni = 0, focused = -1;
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) focused = i;
   for (int i = 0; i < g_ne; i++) if (!g_e[i].sleeper && i != focused) it[ni++] = (item_t){ 0, i };
-  it[ni++] = (item_t){ 1, -1 };
+  if (!g_home) it[ni++] = (item_t){ 1, -1 };   /* Home has no bed: the bed and its sleepers are the Vivarium's */
   /* by the feet's y, lower in front (later), left first on a tie; the bed group sorts at the bed's foot */
   int bedFoot = hk("regions.glass.foot", 1);
   for (int a = 1; a < ni; a++) { item_t t = it[a]; int b = a - 1;
@@ -533,7 +538,7 @@ static void glass_group(const char *cur) {
   if (focused >= 0) it[ni++] = (item_t){ 2, focused };
   /* the nodes inside the clip, counted before they are sent */
   int count = 0, lift = hi("regions.resident.lift", 4);
-  int bedPic = has(v_pstr("regions.bed.picture")), lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
+  int bedPic = g_home ? 0 : has(v_pstr("regions.bed.picture")), lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
   const char *mk = v_pstr("regions.bed.mark"); int markN = (mk && *mk) ? wire_has_asset(mk) : bedPic;   /* the bed's mark: its picture away, else a node of no size on the bed's own picture */
   for (int k = 0; k < ni; k++) {
     if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent];
@@ -571,7 +576,8 @@ static void glass_group(const char *cur) {
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
   int idle = v_pbool("idle", 0);
-  if ((strcmp(v_pstr("screen"), "vivarium") != 0 && !idle) || !spec_has(idle ? "frame" : "vivarium") || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
+  int home = strcmp(v_pstr("screen"), "home") == 0;
+  if ((strcmp(v_pstr("screen"), "vivarium") != 0 && !idle && !home) || !spec_has(idle ? "frame" : home ? "home" : "vivarium") || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
   if (!g_have_t0) return 0;
   if (!((long)((now - g_t0) / STEP_MS) + 1 > g_wticks)) return 0;   /* no group tick is due that the walk has not applied */
   if (g_nw > 0 || !(g_nm || g_nnap)) return 1;   /* a still walks: every tick draws, as before */
@@ -595,6 +601,40 @@ void idle_words(void) {
   word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"), 0, 0);
   glass_group("");
   g_idle = 0;
+}
+
+/* ---- Home's Vivarium window (home.json regions.glass, regions.resident; build spec section 3): a 1:1 crop of Idle's painting of the light (columns cx .. cx + 603, rows 194 .. 555, cx = 64), its 2 px inner shade on the top and left, the residents at home
+   (at most six) walking on the Vivarium's ground profile moved to this crop, with their contact shadows, the event tag on one mibi, and the away frame. The same living-window code as the whole's, on this spec's rectangles. Nothing in it is a focus target. ---- */
+static int home_painted(void) { const char *pic = v_pstr("regions.glass.picture"); return pic && *pic && wire_asset_slot(pic) >= 0; }
+int home_window_painted(void) { return home_painted(); }
+static void away_frame(void) {
+  const char *pic = v_pstr("regions.glass.away.picture"); if (!*pic) return;
+  int r[4]; hrect("regions.away.rect", r);
+  char fill[24], edge[24], cap[40], col[24]; spec_str(H, "regions.away.fill", fill, sizeof fill); spec_str(H, "regions.away.edge", edge, sizeof edge); spec_str(H, "regions.away.caption.colour", col, sizeof col); spec_str(H, "strings.away", cap, sizeof cap);
+  v_region("away", LAYER_CHROME);
+  v_rect("away.fill", r[0], r[1], r[2], r[3], fill);
+  v_rect("away.edge.t", r[0], r[1], r[2], 1, edge); v_rect("away.edge.b", r[0], r[1] + r[3] - 1, r[2], 1, edge); v_rect("away.edge.l", r[0], r[1], 1, r[3], edge); v_rect("away.edge.r", r[0] + r[2] - 1, r[1], 1, r[3], edge);
+  if (has(pic) && v_plen("regions.glass.away.figure") == 4) {   /* the figure of its stand at its world size, bottom-centred inside the edge: its window of the picture, clipped to the frame's inside */
+    int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.glass.away.figure.%d", q), 0);
+    int ix = r[0] + 1, iy = r[1] + 1, iw = r[2] - 2, ih = r[3] - 2, dx = ix + (iw - f[2]) / 2, dy = iy + ih - f[3];
+    prim_node(v_id("away.clip"), FN_CLIP, ix, iy, iw, ih, 0, 1, 0);
+    v_name("away.figure"); v_sprite_window("away.figure", pic, f[0], f[1], dx, dy, f[2], f[3]);
+  }
+  v_region("away", LAYER_TYPE);
+  { int px = hi("regions.away.caption.px", 16), w = v_measure(cap, px), cx = hi("regions.away.caption.centre", 588), y = hi("regions.away.caption.y", 418);
+    v_text("away.caption", cap, cx - (w + 1) / 2, y + (px == 16 ? 4 : 5), w, px, col); }   /* y is the line box's top: the cap top 4 under it at 16 px */
+}
+void home_window(void) {
+  g_home = 1; ent_load("");
+  int g[4]; hrect("regions.window.rect", g); char shade[24]; spec_str(H, "regions.window.shade.colour", shade, sizeof shade);
+  int painted = home_painted(), sx = hk("regions.window.painting.at", 0), sy = hk("regions.window.painting.at", 1), sp2 = hi("regions.window.shade.px", 2);
+  v_region("vivarium", LAYER_CHROME);
+  if (painted) { v_name("vivarium"); v_sprite_window("vivarium.glass", v_pstr("regions.glass.picture"), sx, sy, g[0], g[1], g[2], g[3]); }
+  v_rect("vivarium.shade.t", g[0], g[1], painted ? g[2] : 0, painted ? sp2 : 0, shade); v_rect("vivarium.shade.l", g[0], g[1], painted ? sp2 : 0, painted ? g[3] : 0, shade);   /* omitted on a placeholder: nodes of no size */
+  glass_group("");
+  { const char *tag = v_pstr("regions.glass.tag"); if (*tag) for (int i = 0; i < g_ne; i++) if (strcmp(g_e[i].id, tag) == 0) ent_tag(&g_e[i], "regions.window"); }
+  away_frame();
+  g_home = 0;
 }
 
 /* ---- The Vivarium's whole (vivarium.json, station-layouts.md "The Vivarium: the whole"): the living window edge to edge (its flat plates only while the whole's painting is not placed), every mibi at home walking in it, the with-you bed and its

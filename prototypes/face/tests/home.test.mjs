@@ -264,3 +264,71 @@ test("the ring moves between targets as the same eight LVGL objects; going away 
   const fresh = await start(scene({ adults: 2, crates: 1 }), { dir: node }); fresh.build.props.focus.cur = "room"; resend(fresh, fresh.build, 3);
   assert.equal(f.objects(), fresh.objects(), "after the ring went, the same objects as a Home that never had one: none left behind"); assert.deepEqual(f.errors(), []);
 });
+
+// ---- the Vivarium window (build spec 3, H2): the crop of Idle's painting, the inner shade, six walkers on the moved profile, the away frame and its keep-out, the event tag, and the budgets of section 7 ----
+import { movingScene, bootScene, runFrames, STATE, SPEC } from "./moving-scene.mjs";
+const vivSpec = SPEC("vivarium"), PROF = vivSpec.regions.resident.walk.profile, WIN = homeSpec.regions.window, RW = homeSpec.regions.resident.walk;
+const groundTopHome = (fx) => { const x = fx - 24 + WIN.painting.cx; let t = PROF.top[0]; PROF.x.forEach((b, i) => { if (x >= b) t = PROF.top[i]; }); return t - 36; };   // groundTop_home(x) = groundTop_viv(x - 24 + cx) - 36
+const homeScene = (o = {}) => movingScene("home", { motionSets: false, ...o });
+test("the window is the 1:1 crop at (64, 194) of Idle's painting of the light, 604 by 362 at (24, 78), with a 2 px inner shade on the top and left drawn as rects; the placeholder goes, the Library's stays", { skip }, async () => {
+  assert.deepEqual([WIN.painting.cx, WIN.painting.at, WIN.painting.rows, WIN.rect], [64, [64, 194], [194, 555], [24, 78, 604, 362]]);
+  for (const light of ["dawn", "day", "dusk", "night"]) {
+    const sc = homeScene({ adults: 3, juveniles: 1, light }), f = await bootScene(sc, { motion: false, dir: node });
+    assert.equal(sc.props.regions.glass.picture, `idle-vivarium-${light}:1024x568`, "the same painting the Vivarium uses, by the light: no new master");
+    assert.deepEqual(f.errors(), []); assert.deepEqual(box(f, "vivarium.glass"), [24, 78, 604, 362]);
+    assert.deepEqual(box(f, "vivarium.shade.t"), [24, 78, 604, 2]); assert.deepEqual(box(f, "vivarium.shade.l"), [24, 78, 2, 362]);
+    assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting"); assert.deepEqual(box(f, "library.window").slice(2), [344, 362], "the Library is still its placeholder");
+  }
+});
+test("the window shows at most six of the mibis at home, the ones with the most recent activity, in bay order; none at home shows none; the residents are never focus targets", { skip }, async () => {
+  const sc = homeScene({ adults: 8 }), ids = sc.props.regions.residents.map((p) => p.id), all = sc.st.mibis.map((m) => String(m.id));
+  assert.equal(ids.length, 6); assert.deepEqual(ids, all.filter((i) => ids.includes(i)), "bay order"); assert.deepEqual(ids, all.slice(0, 6), "every life event the same turn: ties in bay order");
+  assert.equal(homeScene({ adults: 3, carry: [0, 1, 2], docked: false }).props.regions.residents.length, 0, "all on a trip: nobody walks");
+  assert.equal(homeScene({ adults: 3, carry: [0], docked: true }).props.regions.residents.length, 3, "docked, the carried one is at home and walks (the bed is the Vivarium's)");
+  assert.ok(!sc.props.focus.targets.some((t) => /resident/.test(t.id)));
+});
+test("the walkers keep to the moved ground profile, x 32 to 620, feet to 435, and out of the away frame's keep-out while it shows, over a minute of walking", { skip }, async () => {
+  for (const [name, o] of [["stills", { motionSets: false }], ["moving", { motionSets: true }]]) for (const away of [false, true]) {
+    const sc = homeScene({ adults: 5, juveniles: 3, ...o, ...(away ? { docked: false, carry: [0, 1] } : {}) }), f = await bootScene(sc, { motion: true, dir: node }), res = sc.props.regions.residents, M = f.M;
+    assert.equal(!!sc.props.regions.glass.away, away); assert.equal(res.length, 6); assert.deepEqual(f.errors(), []);
+    const fig = res.map((p) => p.figure ?? [0, 0, p.stage === "juvenile" ? 104 : 144, p.stage === "juvenile" ? 112 : 152]);
+    let moved = 0; const seen = new Set();
+    runFrames(f, 60000, { each: () => { res.forEach((p, i) => { let x = M._face_test_mv(i, 0), feet = M._face_test_mv(i, 1); if (x < -1000) { const b = box(f, `g.${p.id}`); x = b[0] + WIN.rect[0]; feet = b[1] + b[3] + WIN.rect[1]; }   /* a still: its picture box (the clip's own coordinates), the feet its bottom edge */ const W = fig[i][2], fx = x + Math.floor(W / 2); seen.add(i);
+      assert.ok(x >= RW.ground[0] && x + W <= RW.ground[0] + RW.ground[2], `${name}: ${p.id} x ${x} + ${W} leaves 32 .. 620`); assert.ok(feet <= 435, `${p.id} feet ${feet} below the foot 435`);
+      assert.ok(feet >= groundTopHome(fx), `${name}: ${p.id} feet ${feet} above the profile ${groundTopHome(fx)} at ${fx}`);
+      if (away) assert.ok(!(x + W > RW.keepOut[0] && feet >= RW.keepOut[1]), `${name}: ${p.id} at (${x}, ${feet}) meets the away frame's keep-out`); moved++; }); } });
+    assert.ok(moved > 0 && seen.size === 6, `${name}: all six walked and were read`); assert.deepEqual(f.errors(), []);
+  }
+});
+test("the away frame: 64 x 64 at (556, 352), a panel ground and a hairline edge, the first mibi out on a trip at its world size bottom-centred, the caption 'away' in frost centred under it at y 418; with nobody away there is none", { skip }, async () => {
+  const sc = homeScene({ adults: 4, docked: false, carry: [1, 2] }); sc.props.regions.glass.away.figure = [47, 105, 49, 43];   /* an adult's figure as the host measures it: [dx, dy, W, H] in its 144 x 152 picture (the Node test has no layered stand to measure) */
+  const f = await bootScene(sc, { motion: false, dir: node }), fr = homeSpec.regions.away;
+  assert.deepEqual([fr.rect, fr.fill, fr.edge, fr.caption.colour, fr.caption.y, fr.caption.centre], [[556, 352, 64, 64], "panel", "hairline", "frost", 418, 588]);
+  assert.deepEqual(box(f, "away.fill"), [556, 352, 64, 64]); assert.deepEqual(box(f, "away.edge.t"), [556, 352, 64, 1]); assert.deepEqual(box(f, "away.edge.l"), [556, 352, 1, 64]);
+  const fb = box(f, "away.figure"), fg = fb && [fb[0] + 557, fb[1] + 353, fb[2], fb[3]];   /* the clip's own coordinates, its inside at (557, 353) */
+  assert.ok(fg && fg[0] >= 557 && fg[0] + fg[2] <= 619 && fg[1] + fg[3] === 352 + 63, `the figure ${fg}: bottom-centred inside the edge`); assert.equal(Math.abs((fg[0] + fg[2] / 2) - 588) <= 1, true, "centred");
+  const cap = box(f, "away.caption"), lg = logOf(f); assert.ok(Math.abs(cap[0] + cap[2] / 2 - 588) <= 1 && cap[1] >= 418 && cap[1] < 418 + 20, `the caption ${cap}`); assert.ok(typeIn(lg, "away").some((t) => t.text === "away" && t.px === 16));
+  const none = await bootScene(homeScene({ adults: 4 }), { motion: false, dir: node }); assert.equal(box(none, "away.fill"), null, "docked: no frame");
+  const first = homeScene({ adults: 4, docked: false, carry: [2, 1] }); assert.equal(first.props.regions.glass.away.picture.includes("144x152"), true);
+});
+test("the event tag is the house name tag on that mibi only, at feetY + 16 (flipped over the figure past the window's foot), no lift; nobody else has one", { skip }, async () => {
+  const sc = homeScene({ adults: 3, juveniles: 1, ui: { meet: 4 } }), f = await bootScene(sc, { motion: false, dir: node }), id = String(sc.st.mibis[3].id), W = sc.props.regions.residents;
+  assert.equal(sc.props.regions.glass.tag, id); const tag = box(f, "nameTag"), mv = box(f, `g.${id}`); assert.ok(tag, "the tag"); assert.deepEqual(typeIn(logOf(f), "nameTag").map((t) => t.text), [W.find((p) => p.id === id).name]);
+  assert.ok(tag[0] >= 24 + 8 && tag[0] + tag[2] <= 24 + 604 - 8, "slid inside the window"); assert.equal(homeScene({ adults: 3 }).props.regions.glass.tag, undefined);
+  const g = await bootScene(homeScene({ adults: 3 }), { motion: false, dir: node }); assert.equal(box(g, "nameTag"), null); void mv;
+});
+test("budgets of section 7 on Home with the window: at most 400 objects, props at most 32 KiB, no frame over 153,600 px with six residents walking (stills and moving sets, a breathing swap included), the household tick inside 148,000", { skip }, async () => {
+  assert.equal(vivSpec.rules.tickBudget, 148000);
+  for (const [name, o] of [["stills", { motionSets: false }], ["moving", { motionSets: true }]]) {
+    const sc = homeScene({ adults: 8, juveniles: 2, ...o, docked: false, carry: [0] }), f = await bootScene(sc, { motion: true, dir: node });
+    assert.ok(f.objects() <= 400, `${name}: ${f.objects()} objects`); assert.ok(JSON.stringify(sc.props).length <= 32 * 1024, `${name}: props ${JSON.stringify(sc.props).length} B`);
+    const r = runFrames(f, 30000, { cadence: [16, 0, 0], top: false }); console.log(`# Home's window (${name}): ${f.objects()} objects, worst frame ${r.worst} px, worst household tick ${r.worstTick} px, ${r.deferred} deferred`);
+    assert.ok(r.worst <= 153600, `${name}: a frame redrew ${r.worst} px`); assert.ok(r.worstTick <= 148000, `${name}: a tick ${r.worstTick} px`); assert.equal(r.overflows, 0); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+  }
+});
+test("a lamp change and the ring moving between a bezel and a station stay inside the budget with the window drawn", { skip }, async () => {
+  const sc = homeScene({ adults: 6, juveniles: 2, motionSets: true }), f = await bootScene(sc, { motion: false, dir: node }); f.sc = sc; logOf(f); dirty(f);
+  const moves = []; let prev = "room";
+  for (const to of ["vivarium", "library", "bay", "vivarium", "pods", "vivarium", "room"]) { sc.props.focus.cur = to; f.props({ ...sc.props, motion: false }); f.frame((f.t += 16)); moves.push([`${prev} to ${to}`, dirty(f)]); prev = to; }
+  for (const [n, d] of moves) assert.ok(d > 0 && d <= 153600, `${n}: ${d} px`); console.log(`# Home's ring with the window, px: ${moves.map(([n, d]) => `${n} ${d}`).join(", ")}`);
+});

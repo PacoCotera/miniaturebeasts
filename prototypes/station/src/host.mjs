@@ -110,7 +110,7 @@ const living = () => ({ time: timeNow(), restRules: SPECS.vivarium?.rules?.rest,
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody(light = lightNow()) {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "" });   // place: the save has no place name yet
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
   const body = homeBuild(model(), SPECS.home, SPECS.frame);
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
