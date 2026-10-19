@@ -133,3 +133,35 @@ This is for the build ticket after T-236, on `prototypes/play/` (`index.html`, `
 ### 6.5 The Station row's side margin
 
 - It is **8 CSS px, shrinking to 4**, by the 6.1 rule. At 1.75 the Station wraps, so the one-row 585-of-594 case does not arise.
+
+## 7. Gate of the T-240 build (c90ea5a1, captures on work-queue 2783d36c)
+
+**PASS, with two small fixes (7.1).** At all six captures:
+- the arrangement matches §1 and §6;
+- every key measures at least §2's minimums at every dpr;
+- the two-row trays at dpr 1.25 and 1.75 are as §6.1 (Station: D-pad and rooms, then ← ✓ at the right; Companion: the D-pad, then the actions, centred);
+- the faces are on whole device pixels;
+- in Row, the Caddy sits under the Station, right-aligned, inside 1,080.
+
+The shells sit 8 left of the window's centre because the page keeps a stable scrollbar gutter. That's right: nothing jumps when the page starts to scroll.
+
+### 7.1 Fixes
+
+1. **The keys are centred in their row, not top-aligned.** This corrects my §6.1, "each key 4 from the row's top". A 56 key sits 8 from the row's top and a 64 key 4 from it, so all the key centres share one line. In the captures, ✓ hangs 8 below the others.
+2. **Item 9 (1280 × 720): the reveal aligns the tray's bottom with the window's bottom, and the block alone, without the 16 page margin.** The block is 688 and the visible height 680, so only the shell's 8 lp top border leaves the view, and the face is whole. If the face is still cut after this, the alignment includes a margin. Below 720 tall, the face's top may go out of view; the keys never do.
+
+### 7.2 The builder's open items
+
+| # | Item | Ruling |
+| --- | --- | --- |
+| 1 | room marks: 24 masters drawn at 28 with pixelated rendering | **Smooth scaling, not pixelated.** The keys are page chrome, so the pixel rule is for the faces only. Draw the marks at 28 CSS with `image-rendering: auto`. A 28 (and 56) master would be sharper. That's the art director's call, and it is not blocking |
+| 2 | the Call glyph at 24, the same as ✓ | OK. Both are action glyphs, the same size |
+| 3 | the ring round the device block, its top following the seat | OK |
+| 4 | the seat lowers the shell 8 lp under the joined tray; the tray and cradle stay | OK. **The tray draws over the shell**, so only the shell's 8 lp bottom border goes under it, never the face. Nothing below moves |
+| 5 | the tray in `--panel` with the hairline inset; the shell's bottom corners square, the tray's rounded | OK. Shell and tray read as one block |
+| 6 | keys top-aligned; in one row, the actions flush right | **Centred** (7.1.1). Flush right is OK |
+| 7 | the bar 40 tall | OK |
+| 8 | Narrow keeps the old control widths (tabs 104, an icon Dock) | OK. **Every control there is 40 tall, and the icon-only Dock is at least 40 × 40.** The width minimums existed for label room in Stack and Row |
+| 10 | bench JS and CSS removed; hidden `#fBench` and `#tabBench` kept for the journey | OK |
+
+**Note for the art director, not blocking:** the Caddy screen is drawn on pure white with system type, which reads as unstyled at this size. An e-paper ground and ink belong to its own look.
