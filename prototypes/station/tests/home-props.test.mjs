@@ -106,7 +106,7 @@ test("the stations' words and lamps: Pods, the Incubator in each state, the Comp
   { const st = world(); dock(st); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; const i = R({ st, sv: sv0() }).incubator; assert.deepEqual([i.state, i.line1, i.line2, i.lamp], ["growing", "a bud growing", "a Loika", "off"]); st.bud.start = Date.now() - 1e8; const r = R({ st, sv: sv0() }).incubator; assert.deepEqual([r.state, r.line1, r.line2, r.lamp], ["ready", "the bud is ready", "a Loika", "needsYou"]); }
   { const c = R(sc.docked).companion; assert.equal(c.state, "docked"); assert.match(c.line1, /^\S+ at home$/); assert.equal(c.line2, ""); assert.equal(c.lamp, "off", "never amber: the dock lights the Bay"); }
   { const c = R(sc.away).companion; assert.equal(c.state, "away"); assert.match(c.line1, /^\S+ on a trip$/); assert.equal(c.line2, ""); }
-  assert.deepEqual(R(sc.empty).companion, { state: "docked", line1: "the Companion at home", line2: "", lamp: "off" }, "no one carried: no name to say, so it says the Companion");
+  assert.deepEqual(R(sc.empty).companion, { state: "docked", line1: "at home", line2: "", lamp: "off" }, "no one carried: no name to say");
   assert.deepEqual(R(sc.crates).bay, { state: "waiting", berths: 3, line1: "2 crates in", line2: "from the last trip", lamp: "needsYou" });
   assert.deepEqual(R(sc.empty).bay, { state: "clear", berths: 3, line1: "berths clear", line2: "", lamp: "off" }); assert.deepEqual(R(sc.away).bay.line1, "berths clear", "away: the berths are clear");
   assert.deepEqual(R(sc.portrait).bay, { state: "waiting", berths: 4, line1: "a crate in", line2: "from the last trip", lamp: "needsYou" });

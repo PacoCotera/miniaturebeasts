@@ -271,8 +271,8 @@
    "companion": {
     "away": "{name} on a trip",
     "docked": "{name} at home",
-    "awayNoName": "the Companion on a trip",
-    "dockedNoName": "the Companion at home"
+    "awayNoName": "on a trip",
+    "dockedNoName": "at home"
    },
    "bay": {
     "waiting": "{n} crates in",

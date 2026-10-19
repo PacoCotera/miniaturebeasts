@@ -588,7 +588,7 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   // the words: a station's names, a verb of four words or fewer, a station's lines of four words or fewer, no digits in the needs, never outing
   for (const w of Object.values(home.strings.titles)) assert.equal(wordsIn(w), 1, w);
   for (const s of stringsOf(home.strings.actions)) assert.ok(wordsIn(s) <= 5, s);   // section 11 words them: "Go to the Probe bench" is five (the four-word rule is the stations' lines)
-  for (const s of stringsOf(home.strings.stations)) assert.ok(wordsIn(s.replace(/\{(\w+)\}/g, "x")) <= (/^the Companion /.test(s) ? 5 : 4), s);   // the Companion with no name says "the Companion at home" / "on a trip" (section 11.4: five words, at 16 px)
+  for (const s of stringsOf(home.strings.stations)) assert.ok(wordsIn(s.replace(/\{(\w+)\}/g, "x")) <= 4, s);
   for (const s of stringsOf(home.strings.needs)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.ok(!/outing|pocket/.test(JSON.stringify(home.strings)));
   is(home.strings.line.order, ["crates", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);

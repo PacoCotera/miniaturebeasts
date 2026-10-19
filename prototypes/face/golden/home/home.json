@@ -2,7 +2,7 @@
  "_note": "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "home-fresh": {
-   "hash": "4157385a",
+   "hash": "1bae4697",
    "png": "home-fresh.png"
   },
   "home-rest-goal": {
@@ -14,19 +14,19 @@
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
-   "hash": "4fa2e6eb",
+   "hash": "edb83e32",
    "png": "home-focus-vivarium.png"
   },
   "home-focus-library": {
-   "hash": "f1181d8b",
+   "hash": "840eb052",
    "png": "home-focus-library.png"
   },
   "home-focus-pods": {
-   "hash": "ccd8b0ce",
+   "hash": "02dba3e7",
    "png": "home-focus-pods.png"
   },
   "home-focus-incubator": {
-   "hash": "0b32423b",
+   "hash": "9a41f342",
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
@@ -38,11 +38,11 @@
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
-   "hash": "ca226a3e",
+   "hash": "165ace3f",
    "png": "home-focus-bay.png"
   },
   "home-vivarium-all-home": {
-   "hash": "a7b09b66",
+   "hash": "97852053",
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
@@ -54,27 +54,27 @@
    "png": "home-vivarium-none-home.png"
   },
   "home-incubator-empty": {
-   "hash": "5687f41d",
+   "hash": "ee362758",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-can": {
-   "hash": "2a77d5be",
+   "hash": "973ac5c3",
    "png": "home-incubator-can.png"
   },
   "home-incubator-growing": {
-   "hash": "3c5f7147",
+   "hash": "cc4b81ca",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-ready": {
-   "hash": "2bf8eca7",
+   "hash": "4e558f22",
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {
-   "hash": "70b7e843",
+   "hash": "c2c4544a",
    "png": "home-bay-waiting.png"
   },
   "home-bay-portrait": {
-   "hash": "4f129b31",
+   "hash": "01458ec4",
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {
@@ -86,11 +86,11 @@
    "png": "home-companion-away.png"
   },
   "home-pods-empty": {
-   "hash": "5687f41d",
+   "hash": "ee362758",
    "png": "home-pods-empty.png"
   },
   "home-pods-full": {
-   "hash": "a4d22ba1",
+   "hash": "cb7ee7a4",
    "png": "home-pods-full.png"
   }
  }
